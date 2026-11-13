@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc/driver",
+    "rustc/metadata",
+    "minirust/tooling",
+    "rust/tree-borrows",
+    "agents/lsp-integration"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-12)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

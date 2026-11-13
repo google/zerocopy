@@ -1,0 +1,252 @@
+{
+  "miri": {
+    "rustc_private_crates": [
+      "rustc_abi",
+      "rustc_apfloat",
+      "rustc_ast",
+      "rustc_codegen_ssa",
+      "rustc_const_eval",
+      "rustc_data_structures",
+      "rustc_driver",
+      "rustc_errors",
+      "rustc_hir",
+      "rustc_hir_analysis",
+      "rustc_index",
+      "rustc_interface",
+      "rustc_log",
+      "rustc_metadata",
+      "rustc_middle",
+      "rustc_session",
+      "rustc_span",
+      "rustc_symbol_mangling",
+      "rustc_target"
+    ],
+    "zmiri_flags": [
+      "-Zmiri-deterministic-concurrency",
+      "-Zmiri-deterministic-floats",
+      "-Zmiri-disable-alignment-check",
+      "-Zmiri-disable-data-race-detector",
+      "-Zmiri-disable-isolation",
+      "-Zmiri-disable-leak-backtraces",
+      "-Zmiri-disable-stacked-borrows",
+      "-Zmiri-disable-validation",
+      "-Zmiri-disable-weak-memory-emulation",
+      "-Zmiri-fixed-schedule",
+      "-Zmiri-genmc",
+      "-Zmiri-ignore-leaks",
+      "-Zmiri-many-seeds",
+      "-Zmiri-many-seeds-keep-going",
+      "-Zmiri-max-extra-rounding-error",
+      "-Zmiri-mute-stdout-stderr",
+      "-Zmiri-native-lib-enable-tracing",
+      "-Zmiri-no-extra-rounding-error",
+      "-Zmiri-no-short-fd-operations",
+      "-Zmiri-permissive-provenance",
+      "-Zmiri-recursive-validation",
+      "-Zmiri-report-progress",
+      "-Zmiri-retag-fields",
+      "-Zmiri-strict-provenance",
+      "-Zmiri-symbolic-alignment-check",
+      "-Zmiri-track-alloc-accesses",
+      "-Zmiri-track-weak-memory-loads",
+      "-Zmiri-tree-borrows",
+      "-Zmiri-tree-borrows-implicit-writes",
+      "-Zmiri-tree-borrows-no-precise-interior-mut",
+      "-Zmiri-tree-borrows-relax-custom-allocator-uniqueness"
+    ],
+    "test_suite_counts": {
+      "deps": 2,
+      "fail": 547,
+      "fail-dep": 91,
+      "genmc": 67,
+      "many-seeds": 3,
+      "native-lib": 15,
+      "panic": 13,
+      "pass": 375,
+      "pass-dep": 68,
+      "utils": 8
+    },
+    "total_test_files": 1189,
+    "cargo_miri_setup_lines": {
+      "src/tools/miri/cargo-miri/build.rs": [],
+      "src/tools/miri/cargo-miri/src/main.rs": [
+        "L31: // - We use `rustc-build-sysroot`, and set `RUSTC` back to us, together with `MIRI_CALLED_FROM_SETUP`,",
+        "L32: //   so that the sysroot build rustc invocations end up in `phase_rustc` with `RustcPhase::Setup`.",
+        "L60: // Dispatch running as part of sysroot compilation."
+      ],
+      "src/tools/miri/cargo-miri/src/setup.rs": [
+        "L8: use rustc_build_sysroot::{BuildMode, SysrootBuilder, SysrootConfig, SysrootStatus};",
+        "L25: let print_sysroot = only_setup && has_arg_flag(\"--print-sysroot\"); // whether we just print the sysroot path",
+        "L26: let show_setup = only_setup && !print_sysroot;",
+        "L27: if !only_setup && let Some(sysroot) = std::env::var_os(\"MIRI_SYSROOT\") {",
+        "L29: return sysroot.into();",
+        "L42: let rustup_src = rustc_build_sysroot::rustc_sysroot_src(miri_for_host())",
+        "L43: .expect(\"could not determine sysroot source directory\");",
+        "L68: // Determine where to put the sysroot.",
+        "L69: let sysroot_dir = get_sysroot_dir();",
+        "L82: let sysroot_config = if no_std {",
+        "L113: command.env(\"MIRI_SYSROOT\", &sysroot_dir);",
+        "L138: // not apply `RUSTFLAGS` to the sysroot either.",
+        "L144: eprint!(\"Preparing a sysroot for Miri (target: {target})\");",
+        "L146: eprint!(\" in {}\", sysroot_dir.display());",
+        "L152: \"A sysroot for Miri is now available in `{}`.\\n\",",
+        "L153: sysroot_dir.display()",
+        "L164: let status = SysrootBuilder::new(&sysroot_dir, target)",
+        "L167: .sysroot_config(sysroot_config)",
+        "L176: \"A sysroot for Miri is already available in `{}`.\",",
+        "L177: sysroot_dir.display()",
+        "L184: Err(err) => show_error!(\"failed to build sysroot: {err:?}\"),",
+        "L187: if print_sysroot {",
+        "L188: // Print just the sysroot and nothing else to stdout; this way we do not need any escaping.",
+        "L189: println!(\"{}\", sysroot_dir.display());",
+        "L192: sysroot_dir"
+      ],
+      "src/tools/miri/cargo-miri/src/util.rs": [
+        "L111: // This code is taken from `RUSTFLAGS` handling in cargo.",
+        "L247: /// Determines where the sysroot of this execution is",
+        "L250: pub fn get_sysroot_dir() -> PathBuf {",
+        "L271: /// Deletes the Miri sysroot cache",
+        "L273: pub fn clean_sysroot() {",
+        "L276: \"MIRI_SYSROOT is set. Please clean your custom sysroot cache directory manually.\"",
+        "L280: let sysroot_dir = get_sysroot_dir();",
+        "L282: eprintln!(\"Cleaning sysroot cache at {}\", sysroot_dir.display());",
+        "L285: remove_dir_all_idem(&sysroot_dir).unwrap_or_else(|err| show_error!(\"{}\", err));"
+      ],
+      "src/tools/miri/cargo-miri/src/phases.rs": [
+        "L36: cargo miri setup --print-sysroot",
+        "L37: This will print the path to the generated sysroot (and nothing else) on stdout.",
+        "L41: - $(rustc --print sysroot)/share/doc/miri/README.md",
+        "L127: // If cleaning the target directory & sysroot cache,",
+        "L129: // sysroot in this execution.",
+        "L133: clean_sysroot();",
+        "L141: let miri_sysroot = get_sysroot_dir();",
+        "L245: // sysroot, so asking it to behave like a target build makes even less sense.",
+        "L255: cmd.env(\"MIRI_SYSROOT\", miri_sysroot);",
+        "L268: /// `rustc` called during sysroot build.",
+        "L319: let mut rustc = miri_for_host(); // sysroot doesn't matter for this so we just use the host",
+        "L392: \"there should be no interpretation during sysroot build\"",
+        "L466: // Set the sysroot -- except during setup, where we don't have an existing sysroot yet",
+        "L467: // and where the bootstrap wrapper adds its own `--sysroot` flag so we can't set ours.",
+        "L468: cmd.arg(\"--sysroot\").arg(env::var_os(\"MIRI_SYSROOT\").unwrap());",
+        "L476: // the build fails. (Regular testing avoids this because the sysroot is a literal copy of",
+        "L477: // what `cargo build` produces, but since Miri builds its own sysroot this does not work for",
+        "L480: // re-export of the sysroot crate. We do this by swapping out the source file: if",
+        "L516: // When we're running `cargo-miri` from `x.py` we need to pass the sysroot explicitly",
+        "L518: if let Some(sysroot) = env::var_os(\"MIRI_HOST_SYSROOT\") {",
+        "L519: cmd.arg(\"--sysroot\").arg(sysroot);",
+        "L600: // Set the sysroot. Not necessary in rustdoc, where we already set the sysroot in",
+        "L603: cmd.arg(\"--sysroot\").arg(env::var_os(\"MIRI_SYSROOT\").unwrap());",
+        "L675: // rustdoc needs to know the right sysroot.",
+        "L676: cmd.arg(\"--sysroot\").arg(env::var_os(\"MIRI_SYSROOT\").unwrap());",
+        "L678: cmd.arg(\"--cfg\").arg(\"miri\");"
+      ]
+    }
+  },
+  "rust_analyzer": {
+    "crates/project-model/src/sysroot.rs": {
+      "lines": 592,
+      "head": "//! Loads \"sysroot\" crate.\n//!\n//! One confusing point here is that normally sysroot is a bunch of `.rlib`s,\n//! but we can't process `.rlib` and need source code instead. The source code\n//! is typically installed with `rustup component add rust-src` command.\n\nuse core::fmt;\nuse std::{env, fs, ops::Not, path::Path, process::Command};\n\nuse anyhow::{Result, format_err};\nuse base_db::Env;\nuse itertools::Itertools;\nuse paths::{AbsPath, AbsPathBuf, Utf8PathBuf};\nuse rustc_hash::FxHashMap;\nuse stdx::format_to;\nuse toolchain::{Tool, probe_for_binary};\n\nuse crate::{\n    CargoWorkspace, ManifestPath, ProjectJson, RustSourceWorkspaceConfig,\n    cargo_workspace::{CargoMetadataConfig, FetchMetadata},\n    utf8_stdout,\n};\n\n#[derive(Debug, Clone, PartialEq, Eq)]\npub struct Sysroot {\n    root: Option<AbsPathBuf>,\n    rust_lib_src_root: Option<AbsPathBuf>,\n    workspace: RustLibSrcWorkspace,\n    error: Option<String>,\n}\n\n#[derive(Debug, Clone, Eq, PartialEq)]\npub enum RustLibSrcWorkspace {\n    Workspace { ws: CargoWorkspace, metadata_err: Option<String> },\n    Json(ProjectJson),\n    Stitched(stitched::Stitched),\n    Empty,\n}\n\nimpl fmt::Display for RustLibSrcWorkspace {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        match self {\n            RustLibSrcWorkspace::Workspace { ws, .. } => {\n                write!(f, \"workspace {}\", ws.workspace_root())\n            }\n            RustLibSrcWorkspace::Json(json) => write!(f, \"json {}\", json.manifest_or_root()),\n            RustLibSrcWorkspace::Stitched(stitched) => {\n                write!(f, \"stitched with {} crates\", stitched.crates.len())\n            }\n            RustLibSrcWorkspace::Empty => write!(f, \"empty\"),\n        }\n    }\n}\n\nimpl Sysroot {\n    pub const fn empty() -> Sysroot {\n        Sysroot {\n            root: None,\n            rust_lib_src_root: None,\n            workspace: RustLibSrcWorkspace::Empty,\n            error: None,\n        }\n    }\n\n    /// Returns sysroot \"root\" directory, where `bin/`, `etc/`, `lib/`, `libexec/`\n    /// subfolder live, like:\n    /// `$HOME/.rustup/toolchains/nightly-2022-07-23-x86_64-unknown-linux-gnu`\n    pub fn root(&self) -> Option<&AbsPath> {\n        self.root.as_deref()\n    }\n\n    /// Returns the sysroot \"source\" directory, where stdlib sources are located, like:\n    /// `$HOME/.rustup/toolchains/nightly-2022-07-23-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library`\n    pub fn rust_lib_src_root(&self) -> Option<&AbsPath> {\n        self.rust_lib_src_root.as_deref()\n    }\n\n    pub fn is_rust_lib_src_empty(&self) -> bool {\n        match &self.workspace {\n            RustLibSrcWorkspace::Workspace { ws, .. } => ws.packages().next().is_none(),"
+    },
+    "crates/project-model/src/workspace.rs": {
+      "lines": 1989,
+      "head": "//! Handles lowering of build-system specific workspace information (`cargo\n//! metadata` or `rust-project.json`) into representation stored in the salsa\n//! database -- `CrateGraph`.\n\nuse std::thread::Builder;\nuse std::{collections::VecDeque, fmt, fs, iter, ops::Deref, sync, thread};\n\nuse anyhow::Context;\nuse base_db::{\n    CrateBuilderId, CrateDisplayName, CrateGraphBuilder, CrateName, CrateOrigin,\n    CrateWorkspaceData, DependencyBuilder, Env, LangCrateOrigin, ProcMacroLoadingError,\n    ProcMacroPaths, target::TargetLoadResult,\n};\nuse cfg::{CfgAtom, CfgDiff, CfgOptions};\nuse intern::{Symbol, sym};\nuse paths::{AbsPath, AbsPathBuf, Utf8Path, Utf8PathBuf};\nuse rustc_hash::{FxHashMap, FxHashSet};\nuse semver::Version;\nuse span::{Edition, FileId};\nuse toolchain::Tool;\nuse tracing::instrument;\nuse tracing::{debug, error, info};\nuse triomphe::Arc;\n\nuse crate::{\n    CargoConfig, CargoWorkspace, CfgOverrides, InvocationStrategy, ManifestPath, Package,\n    ProjectJson, ProjectManifest, RustSourceWorkspaceConfig, Sysroot, TargetData, TargetKind,\n    WorkspaceBuildScripts,\n    build_dependencies::{BuildScriptOutput, ProcMacroDylibPath},\n    cargo_config_file::CargoConfigFile,\n    cargo_workspace::{CargoMetadataConfig, DepKind, FetchMetadata, PackageData, RustLibSource},\n    env::{cargo_config_env, inject_cargo_env, inject_cargo_package_env, inject_rustc_tool_env},\n    project_json::{Crate, CrateArrayIdx},\n    sysroot::RustLibSrcWorkspace,\n    toolchain_info::{QueryConfig, rustc_cfg, target_data, target_tuple, version},\n    utf8_stdout,\n};\n\npub type FileLoader<'a> = &'a mut dyn for<'b> FnMut(&'b AbsPath) -> Option<FileId>;\n\n/// `PackageRoot` describes a package root folder.\n/// Which may be an external dependency, or a member of\n/// the current workspace.\n#[derive(Debug, Clone, Eq, PartialEq, Hash)]\npub struct PackageRoot {\n    /// Is from the local filesystem and may be edited\n    pub is_local: bool,\n    /// Directories to include\n    pub include: Vec<AbsPathBuf>,\n    /// Directories to exclude\n    pub exclude: Vec<AbsPathBuf>,\n}\n\n#[derive(Clone)]\npub struct ProjectWorkspace {\n    pub kind: ProjectWorkspaceKind,\n    /// The sysroot loaded for this workspace.\n    pub sysroot: Sysroot,\n    /// Holds cfg flags for the current target. We get those by running\n    /// `rustc --print cfg`.\n    // FIXME: make this a per-crate map, as, eg, build.rs might have a\n    // different target.\n    pub rustc_cfg: Vec<CfgAtom>,\n    /// The toolchain version used by this workspace.\n    pub toolchain: Option<Version>,\n    /// The target data layout queried for workspace.\n    pub target: TargetLoadResult,\n    /// A set of cfg overrides for this workspace.\n    pub cfg_overrides: CfgOverrides,\n    /// Additional includes to add for the VFS.\n    pub extra_includes: Vec<AbsPathBuf>,\n    /// Set `cfg(test)` for local crates\n    pub set_test: bool,\n}\n\n#[derive(Clone)]\n#[allow(clippy::large_enum_variant)]\npub enum ProjectWorkspaceKind {\n    /// Project workspace was discovered by running `cargo metadata` and `rustc --print sysroot`.\n    Cargo {"
+    },
+    "crates/proc-macro-api/src/lib.rs": {
+      "lines": 278,
+      "head": "//! Client-side Proc-Macro crate\n//!\n//! We separate proc-macro expanding logic to an extern program to allow\n//! different implementations (e.g. wasm or dylib loading). And this crate\n//! is used to provide basic infrastructure for communication between two\n//! processes: Client (RA itself), Server (the external program)\n\n#![cfg_attr(not(feature = \"in-rust-tree\"), allow(unused_crate_dependencies))]\n#![cfg_attr(\n    feature = \"in-rust-tree\",\n    feature(proc_macro_internals, proc_macro_diagnostic, proc_macro_span, rustc_private)\n)]\n#![allow(internal_features, unused_features)]\n\n#[cfg(feature = \"in-rust-tree\")]\nextern crate rustc_driver as _;\n\npub mod bidirectional_protocol;\npub mod legacy_protocol;\npub mod pool;\npub mod process;\npub mod transport;\n\nuse paths::{AbsPath, AbsPathBuf};\nuse semver::Version;\nuse span::{ErasedFileAstId, FIXUP_ERASED_FILE_AST_ID_MARKER, Span};\nuse std::{fmt, io, sync::Arc, time::SystemTime};\n\nuse crate::{\n    bidirectional_protocol::SubCallback, pool::ProcMacroServerPool, process::ProcMacroServerProcess,\n};\n\n/// The versions of the server protocol\npub mod version {\n    pub const NO_VERSION_CHECK_VERSION: u32 = 0;\n    pub const VERSION_CHECK_VERSION: u32 = 1;\n    pub const ENCODE_CLOSE_SPAN_VERSION: u32 = 2;\n    pub const HAS_GLOBAL_SPANS: u32 = 3;\n    pub const RUST_ANALYZER_SPAN_SUPPORT: u32 = 4;\n    /// Whether literals encode their kind as an additional u32 field and idents their rawness as a u32 field.\n    pub const EXTENDED_LEAF_DATA: u32 = 5;\n    pub const HASHED_AST_ID: u32 = 6;\n\n    /// Current API version of the proc-macro protocol.\n    pub const CURRENT_API_VERSION: u32 = HASHED_AST_ID;\n}\n\n/// Protocol format for communication between client and server.\n#[derive(Copy, Clone, Debug, PartialEq, Eq)]\npub enum ProtocolFormat {\n    /// JSON-based legacy protocol (newline-delimited JSON).\n    JsonLegacy,\n    /// Bidirectional postcard protocol with sub-request support.\n    BidirectionalPostcardPrototype,\n}\n\nimpl fmt::Display for ProtocolFormat {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        match self {\n            ProtocolFormat::JsonLegacy => write!(f, \"json-legacy\"),\n            ProtocolFormat::BidirectionalPostcardPrototype => {\n                write!(f, \"bidirectional-postcard-prototype\")\n            }\n        }\n    }\n}\n\n/// Represents different kinds of procedural macros that can be expanded by the external server.\n#[derive(Copy, Clone, Eq, PartialEq, Debug, serde_derive::Serialize, serde_derive::Deserialize)]\npub enum ProcMacroKind {\n    /// A macro that derives implementations for a struct or enum.\n    CustomDerive,\n    /// An attribute-like procedural macro.\n    Attr,\n    // This used to be called FuncLike, so that's what the server expects currently.\n    #[serde(alias = \"Bang\")]\n    #[serde(rename(serialize = \"FuncLike\", deserialize = \"FuncLike\"))]\n    Bang,\n}\n"
+    },
+    "crates/proc-macro-srv/src/lib.rs": {
+      "lines": 384,
+      "head": "//! RA Proc Macro Server\n//!\n//! This library is able to call compiled Rust custom derive dynamic libraries on arbitrary code.\n//! The general idea here is based on <https://github.com/fedochet/rust-proc-macro-expander>.\n//!\n//! But we adapt it to better fit RA needs:\n//!\n//! * We use `tt` for proc-macro `TokenStream` server, it is easier to manipulate and interact with\n//!   RA than `proc-macro2` token stream.\n\n#![cfg(feature = \"in-rust-tree\")]\n#![feature(proc_macro_internals, proc_macro_diagnostic, proc_macro_span, rustc_private)]\n#![expect(internal_features, clippy::disallowed_types, clippy::print_stderr)]\n#![allow(unused_features, unused_crate_dependencies)]\n#![deny(deprecated_safe, clippy::undocumented_unsafe_blocks)]\n#![cfg_attr(test, expect(unreachable_pub))]\n\nextern crate rustc_codegen_ssa;\nextern crate rustc_driver as _;\nextern crate rustc_interface;\nextern crate rustc_lexer;\nextern crate rustc_metadata;\nextern crate rustc_proc_macro;\nextern crate rustc_span;\n\nmod bridge;\nmod dylib;\nmod server_impl;\nmod token_stream;\n\nuse std::{\n    collections::{HashMap, HashSet, hash_map::Entry},\n    env,\n    ffi::OsString,\n    fs,\n    ops::Range,\n    path::{Path, PathBuf},\n    sync::{Arc, Mutex, PoisonError},\n    thread,\n};\n\nuse paths::{Utf8Path, Utf8PathBuf};\nuse span::{FIXUP_ERASED_FILE_AST_ID_MARKER, Span};\nuse temp_dir::TempDir;\n\npub use crate::server_impl::token_id::SpanId;\n\npub use rustc_proc_macro::Delimiter;\npub use span;\n\npub use crate::bridge::*;\npub use crate::server_impl::literal_from_str;\npub use crate::token_stream::{TokenStream, TokenStreamIter, literal_to_string};\n\n#[derive(Copy, Clone, Eq, PartialEq, Debug)]\npub enum ProcMacroKind {\n    CustomDerive,\n    Attr,\n    Bang,\n}\n\npub const RUSTC_VERSION_STRING: &str = env!(\"RUSTC_VERSION\");\n\npub struct ProcMacroSrv<'env> {\n    expanders: Mutex<HashMap<Utf8PathBuf, Arc<dylib::Expander>>>,\n    env: &'env EnvSnapshot,\n    temp_dir: TempDir,\n}\n\nimpl<'env> ProcMacroSrv<'env> {\n    pub fn new(env: &'env EnvSnapshot) -> Self {\n        Self {\n            expanders: Default::default(),\n            env,\n            temp_dir: TempDir::with_prefix(\"proc-macro-srv\").unwrap(),\n        }\n    }\n\n    pub fn join_spans(&self, first: Span, second: Span) -> Option<Span> {\n        first.join(second, |_, _| {"
+    },
+    "crates/proc-macro-srv-cli/src/main.rs": {
+      "lines": 105,
+      "head": "//! A standalone binary for `proc-macro-srv`.\n//! Driver for proc macro server\n#![cfg_attr(feature = \"in-rust-tree\", feature(rustc_private))]\n#![cfg_attr(not(feature = \"in-rust-tree\"), allow(unused_crate_dependencies))]\n#![allow(clippy::print_stdout, clippy::print_stderr)]\n\n#[cfg(feature = \"in-rust-tree\")]\nextern crate rustc_driver as _;\n\nmod version;\n\nuse clap::{Command, ValueEnum};\nuse proc_macro_api::ProtocolFormat;\n\n#[cfg(feature = \"in-rust-tree\")]\nuse proc_macro_srv_cli::main_loop::run;\n\nfn main() -> std::io::Result<()> {\n    let v = std::env::var(\"RUST_ANALYZER_INTERNALS_DO_NOT_USE\");\n    if v.is_err() {\n        eprintln!(\n            \"This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\"\n        );\n        eprintln!(\n            \"Note that this tool's API is highly unstable and may break without prior notice\"\n        );\n        std::process::exit(122);\n    }\n    let matches = Command::new(\"proc-macro-srv\")\n        .args(&[\n            clap::Arg::new(\"format\")\n                .long(\"format\")\n                .action(clap::ArgAction::Set)\n                .default_value(\"json-legacy\")\n                .value_parser(clap::builder::EnumValueParser::<ProtocolFormatArg>::new()),\n            clap::Arg::new(\"version\")\n                .long(\"version\")\n                .action(clap::ArgAction::SetTrue)\n                .help(\"Prints the version of the proc-macro-srv\"),\n        ])\n        .get_matches();\n    if matches.get_flag(\"version\") {\n        println!(\"rust-analyzer-proc-macro-srv {}\", version::version());\n        return Ok(());\n    }\n    let &format = matches\n        .get_one::<ProtocolFormatArg>(\"format\")\n        .expect(\"format value should always be present\");\n\n    let mut stdin = std::io::BufReader::new(std::io::stdin());\n    let mut stdout = std::io::stdout();\n\n    run(&mut stdin, &mut stdout, format.into())\n}\n\n/// Wrapper for CLI argument parsing that implements `ValueEnum`.\n#[derive(Copy, Clone)]\nstruct ProtocolFormatArg(ProtocolFormat);\n\nimpl From<ProtocolFormatArg> for ProtocolFormat {\n    fn from(arg: ProtocolFormatArg) -> Self {\n        arg.0\n    }\n}\n\nimpl ValueEnum for ProtocolFormatArg {\n    fn value_variants<'a>() -> &'a [Self] {\n        &[\n            ProtocolFormatArg(ProtocolFormat::JsonLegacy),\n            ProtocolFormatArg(ProtocolFormat::BidirectionalPostcardPrototype),\n        ]\n    }\n\n    fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {\n        match self.0 {\n            ProtocolFormat::JsonLegacy => Some(clap::builder::PossibleValue::new(\"json-legacy\")),\n            ProtocolFormat::BidirectionalPostcardPrototype => {\n                Some(clap::builder::PossibleValue::new(\"bidirectional-postcard-prototype\"))\n            }\n        }"
+    }
+  },
+  "proc_macro_and_doctest": {
+    "library/proc_macro/src/bridge/mod.rs": {
+      "lines": 449,
+      "matches": [
+        "L121: pub struct BridgeConfig<'a> {",
+        "L132: impl !Send for BridgeConfig<'_> {}",
+        "L133: impl !Sync for BridgeConfig<'_> {}"
+      ]
+    },
+    "library/proc_macro/src/bridge/client.rs": {
+      "lines": 299,
+      "matches": [
+        "L9: ApiTags, BridgeConfig, Buffer, Decode, Diagnostic, Encode, ExpnGlobals, Literal, PanicMessage,",
+        "L222: pub(super) run: extern \"C\" fn(BridgeConfig<'_>) -> Buffer,",
+        "L245: fn run_client<A: for<'a, 's> Decode<'a, 's, ()>>(",
+        "L246: config: BridgeConfig<'_>,",
+        "L249: let BridgeConfig { input: mut buf, dispatch, force_show_panics, .. } = config;",
+        "L285: run_client(bridge, f)",
+        "L295: run_client(bridge, |(input, input2)| f(input, input2))"
+      ]
+    },
+    "library/proc_macro/src/bridge/server.rs": {
+      "lines": 314,
+      "matches": [
+        "L11: ApiTags, BridgeConfig, Buffer, Decode, Diagnostic, Encode, ExpnGlobals, Literal, Mark, Marked,",
+        "L142: run_client: extern \"C\" fn(BridgeConfig<'_>) -> Buffer,",
+        "L191: run_client: extern \"C\" fn(BridgeConfig<'_>) -> Buffer,",
+        "L203: run_client(BridgeConfig {",
+        "L220: run_client(BridgeConfig { input, dispatch: (&mut dispatch).into(), force_show_panics })",
+        "L261: run_client: extern \"C\" fn(BridgeConfig<'_>) -> Buffer,",
+        "L272: buf = strategy.run_bridge_and_client(&mut dispatcher, buf, run_client, force_show_panics);"
+      ]
+    },
+    "compiler/rustc_expand/src/proc_macro_server.rs": {
+      "lines": 853,
+      "matches": []
+    },
+    "compiler/rustc_metadata/src/creader.rs": {
+      "lines": 1388,
+      "matches": []
+    },
+    "src/librustdoc/doctest.rs": {
+      "lines": 1255,
+      "matches": [
+        "L657: .test_builder",
+        "L660: let mut compiler = wrapped_rustc_command(&rustdoc_options.test_builder_wrappers, rustc_binary);",
+        "L717: wrapped_rustc_command(&rustdoc_options.test_builder_wrappers, rustc_binary);"
+      ]
+    },
+    "src/librustdoc/config.rs": {
+      "lines": 1155,
+      "matches": [
+        "L134: pub(crate) test_builder: Option<PathBuf>,",
+        "L137: pub(crate) test_builder_wrappers: Vec<PathBuf>,",
+        "L211: .field(\"test_builder_wrappers\", &self.test_builder_wrappers)",
+        "L722: let test_builder_wrappers =",
+        "L723: matches.opt_strs(\"test-builder-wrapper\").iter().map(PathBuf::from).collect();",
+        "L877: let test_builder = matches.opt_str(\"test-builder\").map(PathBuf::from);",
+        "L951: test_builder,",
+        "L954: test_builder_wrappers,"
+      ]
+    },
+    "doctest_probe": {
+      "rc": 0,
+      "stdout": "running 1 test\ntest /tmp/doctest_probe/lib.rs - demo (line 1) ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+      "stderr": "",
+      "captured_invocations": [
+        {
+          "args": [
+            "@/tmp/doctest_probe/rustdoc-cfgs",
+            "--edition",
+            "2015",
+            "--target",
+            "x86_64-unknown-linux-gnu",
+            "--color",
+            "never",
+            "--crate-type=bin",
+            "-o",
+            "/tmp/doctest_probe/rust_out",
+            "-"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,4985 @@
+{
+  "s1991_known_bug_count": 309,
+  "s1100_known_bug_count": 337,
+  "n1112_known_bug_count": 328,
+  "by_origin": {
+    "type_or_borrow_checking": 258,
+    "codegen_lowering_or_llvm": 15,
+    "mir_construction": 32,
+    "const_eval_or_mir_construction": 4
+  },
+  "fixed_in_1100": [
+    {
+      "file": "tests/crashes/108428.rs",
+      "bug_ref": "#108428",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108428",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118603.rs",
+      "bug_ref": "#118603",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118603",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120873.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123690.rs",
+      "bug_ref": "#123690",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123690",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138361.rs",
+      "bug_ref": "#138361",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138361",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138660.rs",
+      "bug_ref": "#138660",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138660",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148621.rs",
+      "bug_ref": "#148621",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148621",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149703.rs",
+      "bug_ref": "#149703",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149703",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150969.rs",
+      "bug_ref": "#150969",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150969",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/160553.rs",
+      "bug_ref": "#160553",
+      "issue_url": "https://github.com/rust-lang/rust/issues/160553",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/resolve/multiple_definitions_attribute_merging.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/const-traits/unsatisfied-const-trait-bound.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    }
+  ],
+  "fixed_in_n1112": [
+    {
+      "file": "tests/crashes/102047.rs",
+      "bug_ref": "#102047",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102047",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/102252-2.rs",
+      "bug_ref": "#102252",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102252",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/102252.rs",
+      "bug_ref": "#102252",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102252",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/108428.rs",
+      "bug_ref": "#108428",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108428",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/108814.rs",
+      "bug_ref": "#108814",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108814",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/110534.rs",
+      "bug_ref": "#110534",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110534",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/110627.rs",
+      "bug_ref": "#110627",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110627",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/115435.rs",
+      "bug_ref": "#115435",
+      "issue_url": "https://github.com/rust-lang/rust/issues/115435",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117392-2.rs",
+      "bug_ref": "#117392",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117392",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117392.rs",
+      "bug_ref": "#117392",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117392",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118603.rs",
+      "bug_ref": "#118603",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118603",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119095.rs",
+      "bug_ref": "#119095",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119095",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119786-1.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119786-2.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119786-3.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120254.rs",
+      "bug_ref": "#120254",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120254",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120873.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/122529.rs",
+      "bug_ref": "#122529",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122529",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/122710.rs",
+      "bug_ref": "#122710",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122710",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123157.rs",
+      "bug_ref": "#123157",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123157",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123690.rs",
+      "bug_ref": "#123690",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123690",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/124440.rs",
+      "bug_ref": "rust-lang/rust#124440",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124440",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125553.rs",
+      "bug_ref": "rust-lang/rust#125553",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125553",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125841.rs",
+      "bug_ref": "rust-lang/rust#125841",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125841",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126667.rs",
+      "bug_ref": "rust-lang/rust#126667",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126667",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126680.rs",
+      "bug_ref": "rust-lang/rust#126680",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126680",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/127033.rs",
+      "bug_ref": "#127033",
+      "issue_url": "https://github.com/rust-lang/rust/issues/127033",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/129372.rs",
+      "bug_ref": "#129372",
+      "issue_url": "https://github.com/rust-lang/rust/issues/129372",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130524.rs",
+      "bug_ref": "#130524",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130524",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130797.rs",
+      "bug_ref": "#130797",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130797",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131373.rs",
+      "bug_ref": "#131373",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131373",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131787.rs",
+      "bug_ref": "#131787",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131787",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131886.rs",
+      "bug_ref": "#131886",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131886",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/134838.rs",
+      "bug_ref": "#134838",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134838",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135122.rs",
+      "bug_ref": "#135122",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135122",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135617.rs",
+      "bug_ref": "#135617",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135617",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135718.rs",
+      "bug_ref": "#135718",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135718",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/136666.rs",
+      "bug_ref": "#136666",
+      "issue_url": "https://github.com/rust-lang/rust/issues/136666",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138361.rs",
+      "bug_ref": "#138361",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138361",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138660.rs",
+      "bug_ref": "#138660",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138660",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138707.rs",
+      "bug_ref": "#138707",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138707",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/139120.rs",
+      "bug_ref": "#139120",
+      "issue_url": "https://github.com/rust-lang/rust/issues/139120",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/139381.rs",
+      "bug_ref": "#139381",
+      "issue_url": "https://github.com/rust-lang/rust/issues/139381",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140303.rs",
+      "bug_ref": "#140303",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140303",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140850.rs",
+      "bug_ref": "#140850",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140850",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/141124.rs",
+      "bug_ref": "#141124",
+      "issue_url": "https://github.com/rust-lang/rust/issues/141124",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/146965.rs",
+      "bug_ref": "#146965",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146965",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/147719.rs",
+      "bug_ref": "#147719",
+      "issue_url": "https://github.com/rust-lang/rust/issues/147719",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148511.rs",
+      "bug_ref": "#148511",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148511",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148621.rs",
+      "bug_ref": "#148621",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148621",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149162.rs",
+      "bug_ref": "#149162",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149162",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149703.rs",
+      "bug_ref": "#149703",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149703",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150263.rs",
+      "bug_ref": "#150263",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150263",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150517.rs",
+      "bug_ref": "#150517",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150517",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150969.rs",
+      "bug_ref": "#150969",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150969",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/151069.rs",
+      "bug_ref": "#151069",
+      "issue_url": "https://github.com/rust-lang/rust/issues/151069",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/155761-1.rs",
+      "bug_ref": "#155761",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155761",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/160553.rs",
+      "bug_ref": "#160553",
+      "issue_url": "https://github.com/rust-lang/rust/issues/160553",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-alias-projection.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-different-layout.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-marker-no-target-lifetime.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-multi-field.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-nested.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-tuple-phantom-position.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/corrected-field-mismatch-coerce-shared-issue-156315.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/missing-generic-args-coerce-shared-issue-156315.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-1.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-10.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-11.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-12.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-13.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-15.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-16.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-17.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-18.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-4.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-5.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-6.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-8.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-9.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/checked-type-alias/unused-generic-arguments-not-wfchecked.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/linkage-attr/common-linkage-non-zero-init.rs",
+      "bug_ref": "#109681",
+      "issue_url": "https://github.com/rust-lang/rust/issues/109681",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/resolve/multiple_definitions_attribute_merging.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/const-traits/unsatisfied-const-trait-bound.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    }
+  ],
+  "added_after_1991": [
+    {
+      "file": "tests/crashes/108248.rs",
+      "bug_ref": "#108248",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108248",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126725.rs",
+      "bug_ref": "#126725",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126725",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138262.rs",
+      "bug_ref": "#138262",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138262",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140693.rs",
+      "bug_ref": "#140693",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140693",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/141590.rs",
+      "bug_ref": "#141590",
+      "issue_url": "https://github.com/rust-lang/rust/issues/141590",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/142155.rs",
+      "bug_ref": "#142155",
+      "issue_url": "https://github.com/rust-lang/rust/issues/142155",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/142229.rs",
+      "bug_ref": "#142229",
+      "issue_url": "https://github.com/rust-lang/rust/issues/142229",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/142717.rs",
+      "bug_ref": "#142717",
+      "issue_url": "https://github.com/rust-lang/rust/issues/142717",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/144241.rs",
+      "bug_ref": "#144241",
+      "issue_url": "https://github.com/rust-lang/rust/issues/144241",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/145217.rs",
+      "bug_ref": "#145217",
+      "issue_url": "https://github.com/rust-lang/rust/issues/145217",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/146210.rs",
+      "bug_ref": "#146210",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146210",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/146353.rs",
+      "bug_ref": "#146353",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146353",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149562.rs",
+      "bug_ref": "#149562",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149562",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/152410.rs",
+      "bug_ref": "#152410",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152410",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/152414.rs",
+      "bug_ref": "#152414",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152414",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/152416.rs",
+      "bug_ref": "#152416",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152416",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/152626.rs",
+      "bug_ref": "#152626",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152626",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/153005.rs",
+      "bug_ref": "#153005",
+      "issue_url": "https://github.com/rust-lang/rust/issues/153005",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/153362.rs",
+      "bug_ref": "#153362",
+      "issue_url": "https://github.com/rust-lang/rust/issues/153362",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/153375.rs",
+      "bug_ref": "#153375",
+      "issue_url": "https://github.com/rust-lang/rust/issues/153375",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/153947.rs",
+      "bug_ref": "#153947",
+      "issue_url": "https://github.com/rust-lang/rust/issues/153947",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154296.rs",
+      "bug_ref": "#154296",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154296",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154367.rs",
+      "bug_ref": "#154367",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154367",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154779.rs",
+      "bug_ref": "#154779",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154779",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154782.rs",
+      "bug_ref": "#154782",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154782",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154871.rs",
+      "bug_ref": "#154871",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154871",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154903.rs",
+      "bug_ref": "#154903",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154903",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154963.rs",
+      "bug_ref": "#154963",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154963",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/155482-2.rs",
+      "bug_ref": "#155482",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155482",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/155482.rs",
+      "bug_ref": "#155482",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155482",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/157197.rs",
+      "bug_ref": "#157197",
+      "issue_url": "https://github.com/rust-lang/rust/issues/157197",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/158243.rs",
+      "bug_ref": "#158243",
+      "issue_url": "https://github.com/rust-lang/rust/issues/158243",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/158797.rs",
+      "bug_ref": "#158797",
+      "issue_url": "https://github.com/rust-lang/rust/issues/158797",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/160329.rs",
+      "bug_ref": "#160329",
+      "issue_url": "https://github.com/rust-lang/rust/issues/160329",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/invalid-niche-discriminant.rs",
+      "bug_ref": "#144501",
+      "issue_url": "https://github.com/rust-lang/rust/issues/144501",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/associated-types/higher-ranked/incomplete-hr-alias-relate-ICE.rs",
+      "bug_ref": "#140211",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140211",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/associated-types/issue-67684.rs",
+      "bug_ref": "#163817",
+      "issue_url": "https://github.com/rust-lang/rust/issues/163817",
+      "origin": "mir_optimization",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-1.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-10.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-11.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-12.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-13.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-15.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-16.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-17.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-18.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-4.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-5.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-6.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-8.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/higher-ranked-auto-trait-9.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/witness-auto-trait/witness-lifetime-dependent-auto-trait-119095.rs",
+      "bug_ref": "#119095",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119095",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/alias-static-interface-lifetime-151861.rs",
+      "bug_ref": "#151861",
+      "issue_url": "https://github.com/rust-lang/rust/issues/151861",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/closure-static-interface-lifetime-160979.rs",
+      "bug_ref": "#160979",
+      "issue_url": "https://github.com/rust-lang/rust/issues/160979",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/higher-ranked.rs",
+      "bug_ref": "#151861",
+      "issue_url": "https://github.com/rust-lang/rust/issues/151861",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/marker-trait-blanket-151861.rs",
+      "bug_ref": "#151861",
+      "issue_url": "https://github.com/rust-lang/rust/issues/151861",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/projection-hide-one-bound-153215.rs",
+      "bug_ref": "#153215",
+      "issue_url": "https://github.com/rust-lang/rust/issues/153215",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/projection-hide-unrelated-bounds-163886.rs",
+      "bug_ref": "#163886",
+      "issue_url": "https://github.com/rust-lang/rust/issues/163886",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/rpit-shorten-through-impl-161038.rs",
+      "bug_ref": "#161038",
+      "issue_url": "https://github.com/rust-lang/rust/issues/161038",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/rpit-static-raw-ptr-160979.rs",
+      "bug_ref": "#160979",
+      "issue_url": "https://github.com/rust-lang/rust/issues/160979",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/unrelated-bounds-liveness.rs",
+      "bug_ref": "#163886",
+      "issue_url": "https://github.com/rust-lang/rust/issues/163886",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/checked-type-aliases/unused-generic-arguments-not-wfchecked.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coherence/dyn-trait-overlap/pr-review-132289-1.rs",
+      "bug_ref": "#57893",
+      "issue_url": "https://github.com/rust-lang/rust/issues/57893",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coherence/dyn-trait-overlap/pr-review-132289-2.rs",
+      "bug_ref": "#57893",
+      "issue_url": "https://github.com/rust-lang/rust/issues/57893",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coherence/dyn-trait-overlap/size_of-assumes-sized-115435.rs",
+      "bug_ref": "#115435",
+      "issue_url": "https://github.com/rust-lang/rust/issues/115435",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/higher-ranked/leak-check/old-solver-only-leak-check-on-ambig-async-closure.rs",
+      "bug_ref": "#147719",
+      "issue_url": "https://github.com/rust-lang/rust/issues/147719",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/higher-ranked/leak-check/old-solver-only-leak-check-on-ambig-closure-sig.rs",
+      "bug_ref": "#124440",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124440",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/higher-ranked/leak-check/old-solver-only-leak-check-on-ambig.rs",
+      "bug_ref": "#110534",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110534",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/issues/borrowck-ambiguity-ice-148511.rs",
+      "bug_ref": "#148511",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148511",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/issues/relate-mir-borrowck-ice-117392.rs",
+      "bug_ref": "#117392",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117392",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/issues/relate-mir-borrowck-ice-149162.rs",
+      "bug_ref": "#149162",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149162",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/member-constraints/incomplete-constraint.rs",
+      "bug_ref": "trait-system-refactor-initiative#227",
+      "issue_url": "https://github.com/rust-lang/rust/issues/227",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/non-defining-uses/no-defining-use-return-hir-typeck-ty-ice-127033.rs",
+      "bug_ref": "#127033",
+      "issue_url": "https://github.com/rust-lang/rust/issues/127033",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/field-access-on-type-ascription-134838.rs",
+      "bug_ref": "#134838",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134838",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/in-closure-capture-ice-119786-1.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/in-closure-capture-ice-119786-2.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/in-closure-capture-ice-119786-3.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/in-closure-capture-ice-125553.rs",
+      "bug_ref": "#125553",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125553",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/incompatible-closure-captures-field-of-opaque.rs",
+      "bug_ref": "#155497",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155497",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/switch-int-terminator-126680.rs",
+      "bug_ref": "#126680",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126680",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/switch-int-terminator-140850.rs",
+      "bug_ref": "#140850",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140850",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-hir-typeck/trait-upcasting-131886.rs",
+      "bug_ref": "#131886",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131886",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/recursive-type-alias-impl-trait-declaration-too-subtle-2.rs",
+      "bug_ref": "trait-system-refactor-initiative#143",
+      "issue_url": "https://github.com/rust-lang/rust/issues/143",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/min_specialization/unexpected-infer-var-ice-102252-2.rs",
+      "bug_ref": "#102252",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102252",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/min_specialization/unexpected-infer-var-ice-102252.rs",
+      "bug_ref": "#102252",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102252",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/error-reporting/trait-bound-holds-for-ty-error-140303.rs",
+      "bug_ref": "#140303",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140303",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/assembly/incomplete-guidance-normalize-impl-header.rs",
+      "bug_ref": "#138707",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138707",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/cycles/use-impl-to-normalize-own-self-ty-ice.rs",
+      "bug_ref": "#149015",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149015",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalization-shadowing/mir-inlining-ice-146965.rs",
+      "bug_ref": "#146965",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146965",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalize/old-solver-caching-bug-151069.rs",
+      "bug_ref": "#151069",
+      "issue_url": "https://github.com/rust-lang/rust/issues/151069",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalize/old-solver-hr-alias-norm-not-idempotent-129372.rs",
+      "bug_ref": "#129372",
+      "issue_url": "https://github.com/rust-lang/rust/issues/129372",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalize/old-solver-hr-alias-norm-not-idempotent-131373.rs",
+      "bug_ref": "#131373",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131373",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalize/old-solver-projection-cache-bug-135718.rs",
+      "bug_ref": ": #135718",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135718",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalize/success-results-in-unconstrained-infer.rs",
+      "bug_ref": "#135122",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135122",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/overflow/incorrect-old-solver-caching-ice-148095.rs",
+      "bug_ref": "#148095",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148095",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/projection-cache-rematch-impl-122529.rs",
+      "bug_ref": "#122529",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122529",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/projection-cache-rematch-impl-141124.rs",
+      "bug_ref": "#141124",
+      "issue_url": "https://github.com/rust-lang/rust/issues/141124",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/trivial-bounds/cant-normalize-fully-concrete-const.rs",
+      "bug_ref": "#135617",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135617",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/implied_bounds2.rs",
+      "bug_ref": "trait-system-refactor-initiative#293",
+      "issue_url": "https://github.com/rust-lang/rust/issues/293",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/implied_lifetime_wf_check3.rs",
+      "bug_ref": "trait-system-refactor-initiative#293",
+      "issue_url": "https://github.com/rust-lang/rust/issues/293",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/implied_lifetime_wf_check4_static.rs",
+      "bug_ref": "trait-system-refactor-initiative#293",
+      "issue_url": "https://github.com/rust-lang/rust/issues/293",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/unbounded_opaque_type.rs",
+      "bug_ref": "trait-system-refactor-initiative#293",
+      "issue_url": "https://github.com/rust-lang/rust/issues/293",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-inference/snapshot-infer-leakage/leak-infer-ice-120254.rs",
+      "bug_ref": "#120254",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120254",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    }
+  ],
+  "s1991_known_bugs": [
+    {
+      "file": "tests/crashes/100041.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/101036.rs",
+      "bug_ref": "#101036",
+      "issue_url": "https://github.com/rust-lang/rust/issues/101036",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/102047.rs",
+      "bug_ref": "#102047",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102047",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/102252-2.rs",
+      "bug_ref": "#102252",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102252",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/102252.rs",
+      "bug_ref": "#102252",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102252",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/103708.rs",
+      "bug_ref": "#103708",
+      "issue_url": "https://github.com/rust-lang/rust/issues/103708",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/104685.rs",
+      "bug_ref": "#104685",
+      "issue_url": "https://github.com/rust-lang/rust/issues/104685",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/105238-1.rs",
+      "bug_ref": "#105238",
+      "issue_url": "https://github.com/rust-lang/rust/issues/105238",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/105238-2.rs",
+      "bug_ref": "#105238",
+      "issue_url": "https://github.com/rust-lang/rust/issues/105238",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/106473.rs",
+      "bug_ref": "#106473",
+      "issue_url": "https://github.com/rust-lang/rust/issues/106473",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/108428.rs",
+      "bug_ref": "#108428",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108428",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/108814.rs",
+      "bug_ref": "#108814",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108814",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/110378.rs",
+      "bug_ref": "#110378",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110378",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/110534.rs",
+      "bug_ref": "#110534",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110534",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/110627.rs",
+      "bug_ref": "#110627",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110627",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/111419.rs",
+      "bug_ref": "#111419",
+      "issue_url": "https://github.com/rust-lang/rust/issues/111419",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/111742.rs",
+      "bug_ref": "#111742",
+      "issue_url": "https://github.com/rust-lang/rust/issues/111742",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/113846.rs",
+      "bug_ref": "#113846",
+      "issue_url": "https://github.com/rust-lang/rust/issues/113846",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/114198-2.rs",
+      "bug_ref": "#114198",
+      "issue_url": "https://github.com/rust-lang/rust/issues/114198",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/114198.rs",
+      "bug_ref": "#114198",
+      "issue_url": "https://github.com/rust-lang/rust/issues/114198",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/114212-2.rs",
+      "bug_ref": "#114212",
+      "issue_url": "https://github.com/rust-lang/rust/issues/114212",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/114212.rs",
+      "bug_ref": "#114212",
+      "issue_url": "https://github.com/rust-lang/rust/issues/114212",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/114880.rs",
+      "bug_ref": "#114880",
+      "issue_url": "https://github.com/rust-lang/rust/issues/114880",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/115435.rs",
+      "bug_ref": "#115435",
+      "issue_url": "https://github.com/rust-lang/rust/issues/115435",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/116519-2.rs",
+      "bug_ref": "#116519",
+      "issue_url": "https://github.com/rust-lang/rust/issues/116519",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/116519.rs",
+      "bug_ref": "#116519",
+      "issue_url": "https://github.com/rust-lang/rust/issues/116519",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/116554.rs",
+      "bug_ref": "#116554",
+      "issue_url": "https://github.com/rust-lang/rust/issues/116554",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/116947.rs",
+      "bug_ref": "#116947",
+      "issue_url": "https://github.com/rust-lang/rust/issues/116947",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117392-2.rs",
+      "bug_ref": "#117392",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117392",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117392.rs",
+      "bug_ref": "#117392",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117392",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117460.rs",
+      "bug_ref": "#117460",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117460",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117496.rs",
+      "bug_ref": "#117496",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117496",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/117795.rs",
+      "bug_ref": "#117795",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117795",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118038.rs",
+      "bug_ref": "#118038",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118038",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118244.rs",
+      "bug_ref": "#118244",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118244",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118603.rs",
+      "bug_ref": "#118603",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118603",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118778.rs",
+      "bug_ref": "#118778",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118778",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118784.rs",
+      "bug_ref": "#118784",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118784",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118952-2.rs",
+      "bug_ref": "#118952",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118952",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/118952.rs",
+      "bug_ref": "#118952",
+      "issue_url": "https://github.com/rust-lang/rust/issues/118952",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119095.rs",
+      "bug_ref": "#119095",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119095",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119786-1.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119786-2.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119786-3.rs",
+      "bug_ref": "#119786",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119786",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119824.rs",
+      "bug_ref": "#119824",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119824",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/119940.rs",
+      "bug_ref": "#119940",
+      "issue_url": "https://github.com/rust-lang/rust/issues/119940",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120016.rs",
+      "bug_ref": "#120016",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120016",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120175.rs",
+      "bug_ref": "#120175",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120175",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120254.rs",
+      "bug_ref": "#120254",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120254",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/120873.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/121575.rs",
+      "bug_ref": "#121575",
+      "issue_url": "https://github.com/rust-lang/rust/issues/121575",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/121858.rs",
+      "bug_ref": "#121858",
+      "issue_url": "https://github.com/rust-lang/rust/issues/121858",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/121963.rs",
+      "bug_ref": "#121963",
+      "issue_url": "https://github.com/rust-lang/rust/issues/121963",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/122259.rs",
+      "bug_ref": "#122259",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122259",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/122529.rs",
+      "bug_ref": "#122529",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122529",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/122710.rs",
+      "bug_ref": "#122710",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122710",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/122903-1.rs",
+      "bug_ref": "#122903",
+      "issue_url": "https://github.com/rust-lang/rust/issues/122903",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123140.rs",
+      "bug_ref": "#123140",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123140",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123157.rs",
+      "bug_ref": "#123157",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123157",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123690.rs",
+      "bug_ref": "#123690",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123690",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123810.rs",
+      "bug_ref": "#123810",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123810",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123862.rs",
+      "bug_ref": "#123862",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123862",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/123887.rs",
+      "bug_ref": "rust-lang/rust#123887",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123887",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/124189.rs",
+      "bug_ref": "#124189",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124189",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/124340.rs",
+      "bug_ref": "#124340",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124340",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/124440.rs",
+      "bug_ref": "rust-lang/rust#124440",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124440",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/124751.rs",
+      "bug_ref": "rust-lang/rust#124751",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124751",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125553.rs",
+      "bug_ref": "rust-lang/rust#125553",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125553",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125768.rs",
+      "bug_ref": "rust-lang/rust#125768",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125768",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125769.rs",
+      "bug_ref": "rust-lang/rust#125769",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125769",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125772.rs",
+      "bug_ref": "rust-lang/rust#125772",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125772",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125801.rs",
+      "bug_ref": "rust-lang/rust#125801",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125801",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/125841.rs",
+      "bug_ref": "rust-lang/rust#125841",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125841",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126443.rs",
+      "bug_ref": "#126443",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126443",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126667.rs",
+      "bug_ref": "rust-lang/rust#126667",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126667",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126680.rs",
+      "bug_ref": "rust-lang/rust#126680",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126680",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/126696.rs",
+      "bug_ref": "rust-lang/rust#126696",
+      "issue_url": "https://github.com/rust-lang/rust/issues/126696",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/127033.rs",
+      "bug_ref": "#127033",
+      "issue_url": "https://github.com/rust-lang/rust/issues/127033",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/129372.rs",
+      "bug_ref": "#129372",
+      "issue_url": "https://github.com/rust-lang/rust/issues/129372",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/129556.rs",
+      "bug_ref": "rust-lang/rust#129556",
+      "issue_url": "https://github.com/rust-lang/rust/issues/129556",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130346.rs",
+      "bug_ref": "rust-lang/rust#130346",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130346",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130395.rs",
+      "bug_ref": "#130395",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130395",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130411.rs",
+      "bug_ref": "#130411",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130411",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130524.rs",
+      "bug_ref": "#130524",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130524",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/130797.rs",
+      "bug_ref": "#130797",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130797",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131373.rs",
+      "bug_ref": "#131373",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131373",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131534.rs",
+      "bug_ref": "#131534",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131534",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131762.rs",
+      "bug_ref": "#131762",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131762",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131787.rs",
+      "bug_ref": "#131787",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131787",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/131886.rs",
+      "bug_ref": "#131886",
+      "issue_url": "https://github.com/rust-lang/rust/issues/131886",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/132126.rs",
+      "bug_ref": "#132126",
+      "issue_url": "https://github.com/rust-lang/rust/issues/132126",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/132960.rs",
+      "bug_ref": "#132960",
+      "issue_url": "https://github.com/rust-lang/rust/issues/132960",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/134061.rs",
+      "bug_ref": "#134061",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134061",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/134479.rs",
+      "bug_ref": "#134479",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134479",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/134587.rs",
+      "bug_ref": "#134587",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134587",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/134615.rs",
+      "bug_ref": "#134615",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134615",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/134838.rs",
+      "bug_ref": "#134838",
+      "issue_url": "https://github.com/rust-lang/rust/issues/134838",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135122.rs",
+      "bug_ref": "#135122",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135122",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135617.rs",
+      "bug_ref": "#135617",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135617",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135718.rs",
+      "bug_ref": "#135718",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135718",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/135720.rs",
+      "bug_ref": "#135720",
+      "issue_url": "https://github.com/rust-lang/rust/issues/135720",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/136188.rs",
+      "bug_ref": "#136188",
+      "issue_url": "https://github.com/rust-lang/rust/issues/136188",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/136416.rs",
+      "bug_ref": "#136416",
+      "issue_url": "https://github.com/rust-lang/rust/issues/136416",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/136442.rs",
+      "bug_ref": "#136442",
+      "issue_url": "https://github.com/rust-lang/rust/issues/136442",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/136666.rs",
+      "bug_ref": "#136666",
+      "issue_url": "https://github.com/rust-lang/rust/issues/136666",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/136766.rs",
+      "bug_ref": "#136766",
+      "issue_url": "https://github.com/rust-lang/rust/issues/136766",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/137049.rs",
+      "bug_ref": "#137049",
+      "issue_url": "https://github.com/rust-lang/rust/issues/137049",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/137129.rs",
+      "bug_ref": "#137129",
+      "issue_url": "https://github.com/rust-lang/rust/issues/137129",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/137187.rs",
+      "bug_ref": "#137187",
+      "issue_url": "https://github.com/rust-lang/rust/issues/137187",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138008.rs",
+      "bug_ref": "#138008",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138008",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138009.rs",
+      "bug_ref": "#138009",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138009",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138156.rs",
+      "bug_ref": "#138156",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138156",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138361.rs",
+      "bug_ref": "#138361",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138361",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138534.rs",
+      "bug_ref": "#138534",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138534",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138564.rs",
+      "bug_ref": "#138564",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138564",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138660.rs",
+      "bug_ref": "#138660",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138660",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/138707.rs",
+      "bug_ref": "#138707",
+      "issue_url": "https://github.com/rust-lang/rust/issues/138707",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/139120.rs",
+      "bug_ref": "#139120",
+      "issue_url": "https://github.com/rust-lang/rust/issues/139120",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/139381.rs",
+      "bug_ref": "#139381",
+      "issue_url": "https://github.com/rust-lang/rust/issues/139381",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140099.rs",
+      "bug_ref": "#140099",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140099",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140123-2.rs",
+      "bug_ref": "#140123",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140123",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140123-3.rs",
+      "bug_ref": "#140123",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140123",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140123-4.rs",
+      "bug_ref": "#140123",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140123",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140123.rs",
+      "bug_ref": "#140123",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140123",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140303.rs",
+      "bug_ref": "#140303",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140303",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140381.rs",
+      "bug_ref": "#140381",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140381",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/140850.rs",
+      "bug_ref": "#140850",
+      "issue_url": "https://github.com/rust-lang/rust/issues/140850",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/141124.rs",
+      "bug_ref": "#141124",
+      "issue_url": "https://github.com/rust-lang/rust/issues/141124",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/141293.rs",
+      "bug_ref": "#141293",
+      "issue_url": "https://github.com/rust-lang/rust/issues/141293",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/146261.rs",
+      "bug_ref": "#146261",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146261",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/146706.rs",
+      "bug_ref": "#146706",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146706",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/146965.rs",
+      "bug_ref": "#146965",
+      "issue_url": "https://github.com/rust-lang/rust/issues/146965",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/147719.rs",
+      "bug_ref": "#147719",
+      "issue_url": "https://github.com/rust-lang/rust/issues/147719",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/147917.rs",
+      "bug_ref": "#147917",
+      "issue_url": "https://github.com/rust-lang/rust/issues/147917",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148511.rs",
+      "bug_ref": "#148511",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148511",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148614.rs",
+      "bug_ref": "#148614",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148614",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148621.rs",
+      "bug_ref": "#148621",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148621",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148628.rs",
+      "bug_ref": "#148628",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148628",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148629.rs",
+      "bug_ref": "#148629",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148629",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148632.rs",
+      "bug_ref": "#148632",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148632",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148888.rs",
+      "bug_ref": "#148888",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148888",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/148890.rs",
+      "bug_ref": "#148890",
+      "issue_url": "https://github.com/rust-lang/rust/issues/148890",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149162.rs",
+      "bug_ref": "#149162",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149162",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149703.rs",
+      "bug_ref": "#149703",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149703",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149748.rs",
+      "bug_ref": "#149748",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149748",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/149809.rs",
+      "bug_ref": "#149809",
+      "issue_url": "https://github.com/rust-lang/rust/issues/149809",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150049.rs",
+      "bug_ref": "#150049",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150049",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150128.rs",
+      "bug_ref": "#150128",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150128",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150263.rs",
+      "bug_ref": "#150263",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150263",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150387.rs",
+      "bug_ref": "#150387",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150387",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150403.rs",
+      "bug_ref": "#150403",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150403",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150517.rs",
+      "bug_ref": "#150517",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150517",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150545.rs",
+      "bug_ref": "#150545",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150545",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150749.rs",
+      "bug_ref": "#150749",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150749",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/150969.rs",
+      "bug_ref": "#150969",
+      "issue_url": "https://github.com/rust-lang/rust/issues/150969",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/151069.rs",
+      "bug_ref": "#151069",
+      "issue_url": "https://github.com/rust-lang/rust/issues/151069",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/152205.rs",
+      "bug_ref": "#152205",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152205",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/152295.rs",
+      "bug_ref": "#152295",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152295",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154556.rs",
+      "bug_ref": "#154556",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154556",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/154964.rs",
+      "bug_ref": "#154964",
+      "issue_url": "https://github.com/rust-lang/rust/issues/154964",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/155761-1.rs",
+      "bug_ref": "#155761",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155761",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/160553.rs",
+      "bug_ref": "#160553",
+      "issue_url": "https://github.com/rust-lang/rust/issues/160553",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/34127.rs",
+      "bug_ref": "#34127",
+      "issue_url": "https://github.com/rust-lang/rust/issues/34127",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/54888.rs",
+      "bug_ref": "#54888",
+      "issue_url": "https://github.com/rust-lang/rust/issues/54888",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/87577.rs",
+      "bug_ref": "#87577",
+      "issue_url": "https://github.com/rust-lang/rust/issues/87577",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/88296.rs",
+      "bug_ref": "#88296",
+      "issue_url": "https://github.com/rust-lang/rust/issues/88296",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/93182.rs",
+      "bug_ref": "#93182",
+      "issue_url": "https://github.com/rust-lang/rust/issues/93182",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/94846.rs",
+      "bug_ref": "#94846",
+      "issue_url": "https://github.com/rust-lang/rust/issues/94846",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/98322.rs",
+      "bug_ref": "#98322",
+      "issue_url": "https://github.com/rust-lang/rust/issues/98322",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/project-to-simd-array-field.rs",
+      "bug_ref": "#137108",
+      "issue_url": "https://github.com/rust-lang/rust/issues/137108",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-alias-projection.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-different-layout.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-marker-no-target-lifetime.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-multi-field.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-nested.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/coerce-shared-tuple-phantom-position.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/corrected-field-mismatch-coerce-shared-issue-156315.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/malformed-marker-coerce-shared-issue-156309.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/crashes/reborrow/missing-generic-args-coerce-shared-issue-156315.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/associated-const-bindings/dyn-compat-self-const-projections-in-assoc-const-ty.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/early/const_arg_trivial_macro_expansion-1.rs",
+      "bug_ref": "#132647",
+      "issue_url": "https://github.com/rust-lang/rust/issues/132647",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/late-bound-vars/in_closure.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/late-bound-vars/late-bound-in-return-issue-77357.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/late-bound-vars/late-bound-in-where-issue-83993.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/late-bound-vars/simple.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/std/const-generics-range.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/const-generics/issues/issue-85031-2.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/assume-gat-normalization-for-nested-goals.rs",
+      "bug_ref": "#117606",
+      "issue_url": "https://github.com/rust-lang/rust/issues/117606",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/issue-90014-tait.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/extended/lending_iterator.rs",
+      "bug_ref": "#133805",
+      "issue_url": "https://github.com/rust-lang/rust/issues/133805",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/extended/lending_iterator_2.rs",
+      "bug_ref": "#133805",
+      "issue_url": "https://github.com/rust-lang/rust/issues/133805",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/hrtb-implied-1.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/hrtb-implied-2.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/issue-87735.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/issue-87755.rs",
+      "bug_ref": "#87755",
+      "issue_url": "https://github.com/rust-lang/rust/issues/87755",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/issue-87803.rs",
+      "bug_ref": "#87803",
+      "issue_url": "https://github.com/rust-lang/rust/issues/87803",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/issue-88382.rs",
+      "bug_ref": "#88382",
+      "issue_url": "https://github.com/rust-lang/rust/issues/88382",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/issue-88526.rs",
+      "bug_ref": "#88526",
+      "issue_url": "https://github.com/rust-lang/rust/issues/88526",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/generic-associated-types/bugs/issue-91762.rs",
+      "bug_ref": "#91762",
+      "issue_url": "https://github.com/rust-lang/rust/issues/91762",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/consts/constifconst-call-in-const-position.rs",
+      "bug_ref": "#102498",
+      "issue_url": "https://github.com/rust-lang/rust/issues/102498",
+      "origin": "const_eval_or_mir_construction",
+      "verified_mir_to_asm_effect": "catches_if_lowered_to_mir",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/consts/non-const-value-in-const-irrefutable-pat-binding.rs",
+      "bug_ref": "#152831",
+      "issue_url": "https://github.com/rust-lang/rust/issues/152831",
+      "origin": "const_eval_or_mir_construction",
+      "verified_mir_to_asm_effect": "catches_if_lowered_to_mir",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/consts/non-sync-references-in-const.rs",
+      "bug_ref": "#49206",
+      "issue_url": "https://github.com/rust-lang/rust/issues/49206",
+      "origin": "const_eval_or_mir_construction",
+      "verified_mir_to_asm_effect": "catches_if_lowered_to_mir",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/consts/unstable-const-fn-in-libcore.rs",
+      "bug_ref": "#110395",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110395",
+      "origin": "const_eval_or_mir_construction",
+      "verified_mir_to_asm_effect": "catches_if_lowered_to_mir",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/default-type-normalize-issue-50318.rs",
+      "bug_ref": "#50318",
+      "issue_url": "https://github.com/rust-lang/rust/issues/50318",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/default-type-self-projection-ice-issue-125014.rs",
+      "bug_ref": "#125014",
+      "issue_url": "https://github.com/rust-lang/rust/issues/125014",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/issue-40582.rs",
+      "bug_ref": "#40582",
+      "issue_url": "https://github.com/rust-lang/rust/issues/40582",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/source-impl-requires-constraining-predicates-ambig.rs",
+      "bug_ref": "#132519",
+      "issue_url": "https://github.com/rust-lang/rust/issues/132519",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/specialization/spec-influences-inference-issue-36262.rs",
+      "bug_ref": "#36262",
+      "issue_url": "https://github.com/rust-lang/rust/issues/36262",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/issue-46589.rs",
+      "bug_ref": "#46589",
+      "issue_url": "https://github.com/rust-lang/rust/issues/46589",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/issue-46589.rs",
+      "bug_ref": "#46589",
+      "issue_url": "https://github.com/rust-lang/rust/issues/46589",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/filtering-lending-iterator-issue-92985.rs",
+      "bug_ref": "#92985",
+      "issue_url": "https://github.com/rust-lang/rust/issues/92985",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-cursor-issue-108704.rs",
+      "bug_ref": "#108704",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108704",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-cursor-issue-108704.rs",
+      "bug_ref": "#108704",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108704",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-cursor-issue-57165.rs",
+      "bug_ref": "#57165",
+      "issue_url": "https://github.com/rust-lang/rust/issues/57165",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-cursor-issue-57165.rs",
+      "bug_ref": "#57165",
+      "issue_url": "https://github.com/rust-lang/rust/issues/57165",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-cursor-issue-63908.rs",
+      "bug_ref": "#63908",
+      "issue_url": "https://github.com/rust-lang/rust/issues/63908",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-cursor-issue-63908.rs",
+      "bug_ref": "#63908",
+      "issue_url": "https://github.com/rust-lang/rust/issues/63908",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/iterating-updating-mutref.rs",
+      "bug_ref": "#46859",
+      "issue_url": "https://github.com/rust-lang/rust/issues/46859",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-112087.rs",
+      "bug_ref": "#112087",
+      "issue_url": "https://github.com/rust-lang/rust/issues/112087",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-123839.rs",
+      "bug_ref": "#123839",
+      "issue_url": "https://github.com/rust-lang/rust/issues/123839",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-124070.rs",
+      "bug_ref": "#124070",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124070",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-124254.rs",
+      "bug_ref": "#124254",
+      "issue_url": "https://github.com/rust-lang/rust/issues/124254",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-21906.rs",
+      "bug_ref": "#21906",
+      "issue_url": "https://github.com/rust-lang/rust/issues/21906",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-51526.rs",
+      "bug_ref": "#51526",
+      "issue_url": "https://github.com/rust-lang/rust/issues/51526",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-51545.rs",
+      "bug_ref": "#51545",
+      "issue_url": "https://github.com/rust-lang/rust/issues/51545",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-54663.rs",
+      "bug_ref": "#54663",
+      "issue_url": "https://github.com/rust-lang/rust/issues/54663",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-58787.rs",
+      "bug_ref": "#58787",
+      "issue_url": "https://github.com/rust-lang/rust/issues/58787",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/nll/polonius/nll-problem-case-3-issue-68934.rs",
+      "bug_ref": "#68934",
+      "issue_url": "https://github.com/rust-lang/rust/issues/68934",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/closures/static-closures-with-nonstatic-return.rs",
+      "bug_ref": "#84366",
+      "issue_url": "https://github.com/rust-lang/rust/issues/84366",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/wf/wf-normalization-sized.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coherence/coherence-negative-outlives-lifetimes.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coherence/indirect-impl-for-trait-obj-coherence.rs",
+      "bug_ref": "#57893",
+      "issue_url": "https://github.com/rust-lang/rust/issues/57893",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coherence/orphan-check-alias.rs",
+      "bug_ref": "#99554",
+      "issue_url": "https://github.com/rust-lang/rust/issues/99554",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/view-types/must-restrict.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/strict-provenance/inline1.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/strict-provenance/inline2.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/strict-provenance/segfault.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/strict-provenance/zero.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/as-cast/inline1.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/as-cast/inline2.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/as-cast/segfault.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/as-cast/zero.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/exposed-provenance/inline1.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/exposed-provenance/inline2.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/exposed-provenance/segfault.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/codegen/equal-pointers-unequal/exposed-provenance/zero.rs",
+      "bug_ref": "#107975",
+      "issue_url": "https://github.com/rust-lang/rust/issues/107975",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/implied-bounds/dyn-erasure-no-tait.rs",
+      "bug_ref": "#112905",
+      "issue_url": "https://github.com/rust-lang/rust/issues/112905",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/implied-bounds/dyn-erasure-tait.rs",
+      "bug_ref": "#112905",
+      "issue_url": "https://github.com/rust-lang/rust/issues/112905",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/implied-bounds/implied-bounds-on-nested-references-plus-variance-2.rs",
+      "bug_ref": "#25860",
+      "issue_url": "https://github.com/rust-lang/rust/issues/25860",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/implied-bounds/implied-bounds-on-trait-hierarchy-2.rs",
+      "bug_ref": "#84591",
+      "issue_url": "https://github.com/rust-lang/rust/issues/84591",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/implied-bounds/normalization-preserve-equality.rs",
+      "bug_ref": "#106569",
+      "issue_url": "https://github.com/rust-lang/rust/issues/106569",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/rfcs/rfc-0000-never_patterns/120240-async-fn-never-arg.rs",
+      "bug_ref": "#120240",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120240",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/normalize-tait-in-const.rs",
+      "bug_ref": "#110395",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110395",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/in-trait/method-compatability-via-leakage-cycle.rs",
+      "bug_ref": "#139788",
+      "issue_url": "https://github.com/rust-lang/rust/issues/139788",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/impl-trait/rpit/precise-capture-155151.rs",
+      "bug_ref": "#155151",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155151",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/suggest-fully-qualified-closure.rs",
+      "bug_ref": "#103705",
+      "issue_url": "https://github.com/rust-lang/rust/issues/103705",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/const-traits/const-closure-trait-method-fail.rs",
+      "bug_ref": "#110395",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110395",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/const-traits/unsatisfied-const-trait-bound.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/non_lifetime_binders/placeholders-dont-outlive-static.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/non_lifetime_binders/type-match-with-late-bound.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/next-solver/normalize/normalize-param-env-2.rs",
+      "bug_ref": "#92505",
+      "issue_url": "https://github.com/rust-lang/rust/issues/92505",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/traits/normalize/normalize-diverging-alias-in-defaulted-type-parameter.rs",
+      "bug_ref": "#156271",
+      "issue_url": "https://github.com/rust-lang/rust/issues/156271",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/coroutine/static-coroutine-with-nonstatic-yield.rs",
+      "bug_ref": "#144442",
+      "issue_url": "https://github.com/rust-lang/rust/issues/144442",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/checked-type-alias/unused-generic-arguments-not-wfchecked.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/checked-type-alias/unused-generic-arguments-not-wfchecked.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/drop-tracking-unresolved-typeck-results.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-1.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-10.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-10.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-11.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-11.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-12.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-13.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-13.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-15.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-16.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-16.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-17.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-18.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-4.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-5.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-6.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-8.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/higher-ranked-auto-trait-9.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/return-type-notation/issue-110963-early.rs",
+      "bug_ref": "#110338",
+      "issue_url": "https://github.com/rust-lang/rust/issues/110338",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/in-trait/async-generics-and-bounds.rs",
+      "bug_ref": "#130935",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130935",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/in-trait/async-generics.rs",
+      "bug_ref": "#130935",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130935",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/in-trait/dont-project-to-specializable-projection.rs",
+      "bug_ref": "#108309",
+      "issue_url": "https://github.com/rust-lang/rust/issues/108309",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/dyn/mut-is-pointer-like.rs",
+      "bug_ref": "#133119",
+      "issue_url": "https://github.com/rust-lang/rust/issues/133119",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/dyn/works.rs",
+      "bug_ref": "#133119",
+      "issue_url": "https://github.com/rust-lang/rust/issues/133119",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/dyn/wrong-size.rs",
+      "bug_ref": "#133119",
+      "issue_url": "https://github.com/rust-lang/rust/issues/133119",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/async-await/async-closures/higher-ranked-return.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/macros/metavar_cross_edition_recursive_macros.rs",
+      "bug_ref": "#130484",
+      "issue_url": "https://github.com/rust-lang/rust/issues/130484",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": true
+    },
+    {
+      "file": "tests/ui/recursion/issue-95134.rs",
+      "bug_ref": "#95134",
+      "issue_url": "https://github.com/rust-lang/rust/issues/95134",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/normalize-hidden-types.rs",
+      "bug_ref": "#112691",
+      "issue_url": "https://github.com/rust-lang/rust/issues/112691",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/precise-capture-155151.rs",
+      "bug_ref": "#155151",
+      "issue_url": "https://github.com/rust-lang/rust/issues/155151",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-alias-impl-trait/type-alias-impl-trait-with-cycle-error-4.rs",
+      "bug_ref": "trait-system-refactor-initiative#43",
+      "issue_url": "https://github.com/rust-lang/rust/issues/43",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/lint/keyword-idents/multi-file.rs",
+      "bug_ref": "#132218",
+      "issue_url": "https://github.com/rust-lang/rust/issues/132218",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/resolve/multiple_definitions_attribute_merging.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/resolve/proc_macro_generated_packed.rs",
+      "bug_ref": "#120873",
+      "issue_url": "https://github.com/rust-lang/rust/issues/120873",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/type-inference/box_has_sigdrop.rs",
+      "bug_ref": "unknown",
+      "issue_url": "unknown",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/higher-ranked-outlives-for-capture.rs",
+      "bug_ref": "#42940",
+      "issue_url": "https://github.com/rust-lang/rust/issues/42940",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/borrowck/alias-liveness/opaque-type-param.rs",
+      "bug_ref": "#42940",
+      "issue_url": "https://github.com/rust-lang/rust/issues/42940",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/thread-local/thread-local-static-ref-use-after-free.rs",
+      "bug_ref": "#49682",
+      "issue_url": "https://github.com/rust-lang/rust/issues/49682",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/fn/implied-bounds-impl-header-projections.rs",
+      "bug_ref": "#100051",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100051",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/associated-inherent-types/bugs/wf-check-skipped.rs",
+      "bug_ref": "#100041",
+      "issue_url": "https://github.com/rust-lang/rust/issues/100041",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": true,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/linkage-attr/common-linkage-non-zero-init.rs",
+      "bug_ref": "#109681",
+      "issue_url": "https://github.com/rust-lang/rust/issues/109681",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/ui/marker_trait_attr/overlap-marker-trait-with-static-lifetime.rs",
+      "bug_ref": "#89515",
+      "issue_url": "https://github.com/rust-lang/rust/issues/89515",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend",
+      "has_check_pass": false,
+      "has_run_pass": false
+    },
+    {
+      "file": "tests/codegen-llvm/option-niche-unfixed/option-nonzero-eq.rs",
+      "bug_ref": "#49892",
+      "issue_url": "https://github.com/rust-lang/rust/issues/49892",
+      "origin": "codegen_lowering_or_llvm",
+      "verified_mir_to_asm_effect": "fixes",
+      "has_check_pass": false,
+      "has_run_pass": false
+    }
+  ],
+  "recent_bug_commits_sample": [
+    "1a97ea16c051 Remove `-Z stack-protector=basic`",
+    "af55adb7aa0f Add a regression test for fixed next-solver ICE",
+    "e982cc300b86 std Miri testing: use skip_unsupported_miri_tests to control when tests should be skipped in Miri due to missing shims",
+    "5f413f0ca50a std: map more errno values to ErrorKind on Hermit",
+    "65f2c779102a sync x86_64-msvc-ext2 with check-miri",
+    "c77c7c48d8a8 avoid Terminator:None in MIR inliner",
+    "75ac59620282 Use the nicer `UnusedMultiple` diagnostic from `rustc_attr_parsing`",
+    "722f72096ac2 Don't emit no-op `&T` \u2192 `&T` reborrows",
+    "6e05a38ff300 Partially stabilize `ptr_alignment_type` as `alignment_type`",
+    "365cd2ad072e remove 'x miri' smoke test from PR CI",
+    "c84c4c8d8ef8 add some asserts to custom mir parser to make some if its invariants explicit",
+    "8da94e58c5a9 refactor custom mir parse_body to avoid creating blocks with None terminator",
+    "78fda1991669 BPF: Define max/min atomic width per CPU version",
+    "69e0f2f314cf ref: avoid None terminator in parse_block_def in custom mir parser",
+    "ec4acfa0c08e Update call to llvm::codegen::InitTargetOptionsFromCodeGenFlags",
+    "bbcae618cfd3 fix ICE when reading as signed",
+    "34562bbf4bc5 avoid Terminator:None in mir building by using Either in the builder",
+    "77ebf0ff7cf1 Use an invariant lifetime brand for LLVM types",
+    "27eeb4cd1664 Fix target-features codegen for a new field `target_modifier`",
+    "5dfbd360bcd4 Point at iterator chain method calls where assoc type diverged in returned expr",
+    "f08f01b2ff4c Point at returned expression on E0271 caused by return type",
+    "540126a229b8 MIR opts: dont let optimize(size/none) increase the MIR opt level",
+    "49e0f32181d0 Support __futimens64 on 32-bit GNU/Linux",
+    "3a1ac1b684f8 Replace the name of a removed MIR pass used in a test",
+    "88489c55ed66 coretests: speed up some tests in Miri",
+    "44a7763b6610 Upgrade bundled musl to 1.2.6",
+    "1b7f5809469d fix: Remove confusing self-links from Diag docs",
+    "7b2a5cb692be Use LLVMParseCommandLineOptionsWithError in LLVMRustSetLLVMOptions",
+    "c0118cea9726 Support `SYS_futex_time64` on riscv32 Linux",
+    "0ba46ffd11b3 Fix LLVM commit hash retrieval Use `rust-lang/llvm-project` repository instead of the official one Return an `Err` when an `info` argument doesn't exist",
+    "f338f2a9d5c3 remove stability attributes from intrinsics",
+    "a8e658bcd5f8 rename MIR_borrow_checking timing scope to less confusing name",
+    "cf8e544a7b1b Use the same LLVM commit as the rustc submodule",
+    "fa3f4ae8b25c Add new `--llvm-commit` for the `info` build command",
+    "dc7eb415b81a style-guide: Remove ABI explicitness prescription for extern items",
+    "e7292b4df0f3 calculate_tagged_layout: remove uninhabited",
+    "2fcd995b987b calculate_niche_layout: remove all_indices",
+    "4262d995c2f9 calculate_tagged_layout: calculate_tagged_abi",
+    "2bea9060aa64 calculate_niche_filling_layout: calculate_niche_abi",
+    "eec6fcafe9a2 account for infer const when checking for `[diverging_const; 0]`",
+    "cd220119d2a9 fix Miri ICE on exit with () return type",
+    "28c8c378352a add next-solver regression tests for two fixed ices",
+    "b66ec591930e add next-solver regression test for recursive opaque ICE under validate-mir",
+    "88120e6e4768 turn ABI-controlling target features into a target modifier",
+    "7614775f2789 Keep cargo-miri arguments in one place",
+    "57dd1f896203 tests: llvm 24 can merge addrspace declarations again",
+    "663a4bab1596 add needs-offload to the remaining -Zoffload=Device ui tests",
+    "facc493e457e Update amdgpu datalayout for LLVM 24",
+    "fbd41360b0d6 test(rustfmt): specify edition 2021 for test involving `forced_keywords`",
+    "55950c01e9d3 fix: Ensure r-a matches rustc coercion logic",
+    "23d29d9c21e2 fix unsoundness when compiling `[diverging_const; 0]`",
+    "bc082a39739c Don't use `llvm_type` as the type of `static`s.",
+    "855689d69999 LLVMRustWriteOutputFile: Check the result of runCodeGenPipeline",
+    "82496971019e Remove `AbiAlign`",
+    "81330f91e512 Replace `AbiAlign` with `Align` in `LayoutData`",
+    "6e19b9d0e0c3 fix: Out-of-bounds crash due to copypasta",
+    "6f32cee78189 Add codegen test for step_by(1) loop vectorization",
+    "11a8eaf3783b Accept variadic SysV64, Win64, and Aapcs FnAbis in rustc_public",
+    "c6749d8027e0 offload: build bin crates as cdylib on the device side",
+    "b76246de20a0 offload: make the device build work without `--emit=llvm-bc`/`llvm-ir`",
+    "e083b8bbc06e offload: pass the linked device image to the host pass",
+    "a72068e1e354 Fix rigidity assertion ICE",
+    "79520af69f58 Avoid oscillating line wrapping due to symbol indices",
+    "3ad3b9a06c95 Add codegen test for unused match arms removed after inlining",
+    "3d9692f201d5 Support `cfg_version` in `doc_cfg`",
+    "e684c1946936 add regression tests for inherent associated type fn ptr ICE",
+    "1d0555024910 Add regression test for associated const equality param out of range ICE",
+    "f29e22f99807 create mir for direct-rhs consts",
+    "edf718d00bbb ref: avoid unnecessary MIR traversals in CheckPackedRef",
+    "2caedab4f6ed Adapt async fn inline attrs to #[inline(always)] + #[target_feature] being allowed",
+    "4b9c00c8af06 Tweak suggestion of \"unreachable due to never pattern\"",
+    "bfd66ed8eaa2 Revert \"Fixes adjustment of max_width within macros\"",
+    "863ff55e765b Forward `AbiAlign` `Debug` impl to `Align`",
+    "0d10c7dca066 explicitly test the win32 symbol byte count suffix",
+    "6ef60bbcfc73 Add index_no_trivia helper for token indices",
+    "79ecc0d24218 Bless mir-opt tests again, again",
+    "6d0b049d09c2 Replace `AbiAlign` with `Align` in `Layout::align`",
+    "c30cee08c6d7 Replace `AbiAlign` with `Align` in `{Primitive,Scalar}::default_align`",
+    "0eff598e9479 Replace `AbiAlign` with `Align` in `Float::align`",
+    "df86f6ec8727 Replace `AbiAlign` with `Align` in `Integer::align`",
+    "bc22034eb8bc Replace `AbiAlign` with `Align` in `pointer_align{,_in}`",
+    "930372b3c457 Fix RISC-V inline ASM `clobber_abi` when extra target features are enabled",
+    "9f41e8ff9b5a genmc: Update the documented compiler requirements",
+    "38453bf6b02a genmc: Fix GenMC API for RMWs",
+    "d0eb8f903472 Use an invariant lifetime brand for LLVM modules",
+    "0b2bf3eda375 Move `llvm::Context` into a new submodule",
+    "544faa858e48 return EINVAL to avoid ICE",
+    "9f6141e78128 Initialize ZST results in MIR construction and lowering",
+    "614730d3aadd Don't hardcode basic block names in hint codegen tests",
+    "5ae49d9f6d53 Don't ICE when making diagnostic in `point_at_dyn_trait_in_field_def` if there's no `dyn Trait` field to point at",
+    "36265cfe8f93 Add tests for 165052 ICE",
+    "4bc1baacf2ef use [N x i8] for array index / ptr offset GEP types",
+    "8cde1fb96e95 perf: avoid binary bloat from slice indexing error handling in debug impl for c like enums",
+    "b828b1dd4f1f inhabitedness: use try_normalize_erasing_regions on ADT fields",
+    "2b6cd7659674 Add codegen test for enumerate index compared with slice length",
+    "ccaad2ae6e2e iterate over `params` once, not thrice",
+    "8817e5b54230 remove stabilized feature",
+    "ec3b6ca6322d Enable `outline-atomics` by default on AArch64 FreeBSD",
+    "22aac89e08a8 Enable `outline-atomics` by default on AArch64 OpenBSD",
+    "82c1018bf4d4 Enable `outline-atomics` by default on AArch64 Fuchsia",
+    "abb09bbaf7d4 Enable `outline-atomics` by default on AArch64 Android",
+    "747933f99d5f add example for misaligned elements in subslice_range",
+    "efb9fe53bc40 Update LLVM submodule",
+    "b1b7ce4fb8f4 Fix ICE in prelude edition lint",
+    "1ddda918b444 fix RegionEq direction in canonical query responses",
+    "0d27b39a092a Don't codegen `asm!` if any input operand is `!`.",
+    "101dc61e0797 fixup miri",
+    "4f910e0573ee Remove stability note from `rust_splat`",
+    "8443ca728612 Avoid ICE on None from prepare_vtable_segments",
+    "a7b3761e6e2c skip max_repr_align in Layout::eq_abi",
+    "efdba89bc769 add regression tests for vector shift codegen issues",
+    "9973ea3615d7 Make IoSlice and IoSliceMut methods unstably const",
+    "6a86d05a5d71 fix ICE in `arbitrary_source_item_ordering` Skip anonymous AssocItems generated by RPITIT.",
+    "f39d517432d9 Integration test: assert on exit codes",
+    "5550f2b66a8b remove unneeded `feature(stdarch_loongarch)`",
+    "8590433683ab CI: rfl: move job to Ubuntu 26.04, LLVM 22 and bindgen 0.73.2",
+    "a1d449a37653 make powerpc `Complex` ABI GCC-compatible",
+    "7e1341ed76e5 Remove `TypeKind` from `rustc_codegen_ssa`",
+    "199fb74da70e Prevent ICE when comparing EII impl against generic declaration",
+    "b4c2489625ed Add a future incompat warning for #[no_link]",
+    "7f912f160160 Bless mir-opt panic-abort tests",
+    "a22db910d0ab renovate: Update benchmarks twice per month",
+    "1b97c28b5aeb Add strict methods to `NonZero`",
+    "b5c68b602821 Use runCodeGen Abstraction for new LLVM",
+    "b6c9f78a9e21 core: Split the `resumable_breakpoint` intrinsic and constify it",
+    "39d7cc15127a docs: Nitpick change in `HashMap`'s `.insert_entry()` doc example",
+    "50f2c196d77e Refactor call argument codegen",
+    "50031dfd7825 miri: add missing alignment check in write_bytes",
+    "ef1bc9dfa390 Chore(remote-test-client): Generalize the timeout to all connections",
+    "5a5b55aef725 we do not actually need the ports mirrors currently",
+    "d11be6b23307 fd-views: enable test on Miri",
+    "fd71a95b31b0 add back i686-pc-windows-msvc tests",
+    "db15c6aed44c Concat struct name together with field names",
+    "badf74d84605 move check_naked() from check_attr.rs to codegen_attrs.rs",
+    "cafe6b84236f Remove `type_array` from `rustc_codegen_ssa`",
+    "8c3a4b06b9c4 Add codegen test for power of two implying nonzero with debuginfo",
+    "3b72d2693134 Use an invariant lifetime brand for LLVM contexts",
+    "13a9a25be9f2 sembr src/stabilization-report-template.md",
+    "74346591e8ed Tweak some SimpleCx lifetimes",
+    "e66afcdc3028 Use a raw pointer for ownership of `LLVMBuilderRef`",
+    "7d796653b332 Add regression test for self-referential inherent associated type ICE",
+    "deb577aa2eda Windows: bounds-check the reparse point name in `read_link`",
+    "bb4f948aa911 cg_llvm: clarify Send / Sync story for modules",
+    "74ef3f56b6d4 move `ppcf128` to `core::num::imp`",
+    "dc42004022e1 Remove contradictory inequalities from overflow safety docs",
+    "f831545a9c6b Use LLVMCreateBuilderForModule to create IR builders",
+    "664e1348191e PassWrapper: stop setting Options.ExceptionModel on LLVM 24",
+    "04d74cee3fa5 test: add regression test for miri between-block comment",
+    "4d6070275608 fix: Fix `fetch_semantic` logic bug introduced in rust-lang/rust-analyzer#22272.",
+    "4b535e4a8e20 Use cfi_encoding instead of name in abi checking in miri",
+    "7594d4722a6a miri: fix ICE when caller signature is c-variadic but callee is not",
+    "958ea27baab6 cargo-miri: we can store env vars as strings",
+    "c4b10494e34b Avoid downgrading when there are no prior errors (do not ICE)",
+    "26c788b5ef2a Add regression tests for transmutability issues",
+    "5638439bb4d7 update miri attribute handling",
+    "8ee14d7f3c15 Update to LLVM 23.1.4",
+    "d82fe8ab27bf Avoid stdlib's `impl Hash for Path` for stable hashing",
+    "31d8b41b9613 use a default LLVMContext in LLVMRustPrintPasses",
+    "01844ed7e3c4 Remove docs mentioning instability of wasm64",
+    "f4b3e30380ab Don't ignore unknown LLVM diagnostics",
+    "122c2b7ec15b Const-stabilize {BinaryHeap, BTreeMap, BTreeSet, LinkedList, VecDeque}::{len, is_empty}",
+    "315b0723c60c Const-stabilize {BinaryHeap, BTreeMap, BTreeSet, LinkedList, VecDeque}::{len, is_empty}",
+    "98d211b7748f Lower UEFI targets through LLVM's *uefi triple",
+    "2eef18704df6 update to illumos sysroot 20210501",
+    "a51d3d5efafc [Miri] Document the Priroda test workflow",
+    "8000713cda5b [Miri] Run the Priroda suite in CI",
+    "c5b2fabdf04c [Miri] Add ./miri test-priroda",
+    "7a039bd65e4a [Priroda] Update the VS Code task for the Miri package",
+    "8b6b82f63dc6 [Priroda] Fix rustc-internal lint warnings",
+    "a14fcb3474ad [Miri] Build Priroda from the main package",
+    "771d9a149017 Add supporting APIs for MIR storage reconstruction",
+    "f5fab2df6ef8 skip impossible-clause checks for items excluded from symbol export",
+    "c1d14f171cd8 Make sure pass pipeline callbacks only run once",
+    "4eecd73f8b37 add mir-opt test",
+    "87d99ba94a57 Remove workaround for fixed ABI issue",
+    "db045cefc058 Re-enable x86_64 windows abi-cafe tests",
+    "d016eb115dfd Implement `AsMut<T>` and `AsRef<T>` for `!`.",
+    "22c6b7351dcd Always build native aarch64 outline atomics",
+    "469104e79710 stabilize ExitCodeExt for Windows",
+    "7490ed168fa9 Stabilize `slice_split_once`",
+    "fd851d560adb Make mir-opt blessing work again",
+    "a498a5512b4d Simplify call-site ABI checks",
+    "730a53d17171 miri: use and test new ReadDir::dir support",
+    "8735b14a347b Improve bit permutation codegen",
+    "efecf9b2f36b  Avoid ICE when closure expected signature contains non-lifetime bound variables",
+    "0a266baf9e4e Add MIR move elimination pass",
+    "0bfb05e0a664 tests: drop trailing comma on a couple of checks",
+    "d2cdaaae9f6c Run -Cpasses during OptimizerLastEP",
+    "b0419bd01e28 Miri can now handle the actual apple thread parking implementation",
+    "8aae0354a341 Keep call-site ABI normalization inside the check",
+    "ef45c8263f2d Document that `rustc_codegen_gcc` now uses Josh",
+    "933c86ee6c4c Make tuple chaining easier on mir-opt",
+    "d6b6343f08b6 avoid exporting non-instantiable mono items",
+    "76cca04cd6dd Minor slice::as_ascii documentation fix. Remove backticks.",
+    "236daa7ebc56 Test `#[track_caller]` in async on gcc backend",
+    "0a5b7612e83e Avoid incorrect lifetime suggestion involving `sym::anon`",
+    "f5705f8da4aa Add test for issue 142887",
+    "c26810bbe95c diagnostics,genmc*: Support weak CASes",
+    "f7d8e4ab547b Remove the label starting with 0 in the test binary_asm_labels_allowed.rs",
+    "80d95cc61199 offload: remove device.bin to simplify OffloadWrapper",
+    "b02b1775b63c Tighten patterns to actually check for absence of return attribute",
+    "26754874f41e Introduce CrateMeta struct to name Fixture crate-related fields",
+    "1818a35bc99a Fix(lib/sys): Avoid dead_code warnings under Win7",
+    "b4f0f77ec2c3 Fix `viewMir` panicking in code containing field projections",
+    "dcce5ba614c0 Update LoongArch64 Linux dist builder to LLVM 23",
+    "02b3e2c7b89c Fix(lib/sys): Restore Win7 compilation",
+    "15158dfda9a5 handle trait solver overflow during monomorphization",
+    "a5e6094745a6 Fix `cfg_select!` formatting ICE and error count leaks",
+    "2866e2eb2d55 Add regression test for `cfg_select` invalid fn item recovery ICE",
+    "533343f1163d Revert \"Avoid inlining `floor` into `rem_pio2`\"",
+    "dd49010532dc Test panics and wasm32-wasip3 in CI, not wasip1",
+    "55796909b928 Add a Developer Resources section with links to ABI documentation",
+    "46b5af246a85 remove LLVM workaround",
+    "d005c6506be9 Avoid `&'static mut` references to an owned `llvm::Context`",
+    "d3f7014e7ab8 Use a callback to enforce scoped lifetimes in ModuleLlvm",
+    "60ec7daab75c Move `thin_lto_buffer` to a OnceLock in ModuleLlvm",
+    "9c1eb804990d Prefer WriteConsoleW for stdout on Windows",
+    "ee00430c30df clarify when `Vec::into_boxed_slice()` is in-place",
+    "fca5ba904c8f Add regression test for higher-ranked param env normalization ICE",
+    "90fbfefc6942 Add transmutability test to cover for superseded PR",
+    "f8d7cc9b036a Update LLVM submodule",
+    "c91582927117 Ignore abi-cafe test that ICEs cg_ssa on Windows",
+    "ef56e799c634 next-solver ICE",
+    "6b2723826584 uplift bound variable replacement into rustc_type_ir",
+    "ab76d390b4d6 Retroactively add missing stabilized APIs to relnotes",
+    "da61e9cea75d Add tests for unsoundness involving alias liveness",
+    "193a6dfd710e Test: ICE in valtree due SizeOverflow of const array",
+    "4621dfed5417 Implement `Fn` traits for functions of any ABI",
+    "2b90a47296c3 fix delegation generic parameter remapping ICEs",
+    "4abacb727035 Normalize imported core spans in ABI regression test",
+    "b1c20466de6d Remove Miri from NamedTempFile tests because it doesn't support them with isolation",
+    "f79e2a9c2f84 Break hir-ty up, step 1",
+    "46395c59f91f bootstrap: add an rpath to LLVM library for LLVM tools",
+    "c32c84253f88 codegen Propagate reported errors from ABI checks",
+    "5de53ab2c4dc update documentation for cast_slice functions",
+    "b84677691d2d stabilize ptr_cast_slice",
+    "40eb81f7c589 Make some miri re-exports non-pub",
+    "4d6b52e1ccdd Avoid double-checking self.bound_vars' len in ValidateBoundVars' TypeVisitor impl",
+    "3b1707e3e447 Declare our own separate LLVMRustDiagnosticHandlerCallback",
+    "80a0936c4281 Store and pass the old DiagnosticHandler as a raw pointer",
+    "b3fa759a2483 miri: reimplement `pavg` intrinsics",
+    "8bb1e779750f Fix ABI of small-pair returns",
+    "82e86ef39b32 Run rustup CI with the rustup sysroot compiled by cg_llvm",
+    "11b7677f0672 make ice hook respect color config",
+    "cdd050c048ef std: simplify the miri bypass of the stack overflow detection logic",
+    "a6bcbeb36e2a bootstrap: always build llvm's dylib when linking to it",
+    "a5f8bb4cb968 core: Ignore explicit_tail_calls doc tests on PowerPC",
+    "ac283fa45b8b callconv: mips64: Clarify why padding floats with integer args is correct",
+    "cf94b149f4b4 Mark fixed transmutability tests as fixed",
+    "8ce469e18b35 Enforce comment width in item lists",
+    "a543a1450a5f rustc_public: wrap ABI test assertions for tidy",
+    "b7b52cb47f3d rustc_public: improve ABI test failure context",
+    "4944c3007307 Add more missing Aarch64 LLVM intrinsic mapping",
+    "ad2829837f6b Add missing Aarch64 LLVM intrinsic mapping",
+    "8a081e21c734 Restrict application of optimization attributes from instance",
+    "e3941d67fb71 const-eval: ICE when we hit a non-const fn",
+    "faa2fd32634f move bound variable index shifting into rustc_type_ir",
+    "0c0121640358 Use indoc for multiline strings in tests",
+    "58280c34e81b don't treat inherited opaques as defining",
+    "23f86c5fa56a reject non-async coroutine closures as async callables",
+    "1b7ba1136108 Add a comment on the MIR `shrink_to_fit` of basic blocks",
+    "f774f6117d9d Add precise MIR liveness analysis",
+    "91480ccf4469 ci: Do a quick check for system runtime performance",
+    "c3054b8c6448 update UI tests for pre-borrowck typing environment",
+    "54e795213e01 use pre-borrowck typing env during initial MIR analysis",
+    "916dda0c26e7 Distinguish `repr(C)` ZSTs from others in ABI computation",
+    "e243b6db3ffc Move incr comp session dirs out of CodegenContext",
+    "ebc423bfa293 Make the Azure apt mirror lowest priority since it's not reliable",
+    "f7b1233f4520 Add timeouts and more apt mirrors",
+    "50368416bbf9 Update binutils Ubuntu mirror and add timeout",
+    "6e8835d00dd9 Map llvm.sqrt.v2f64 and llvm.sqrt.v4f32 to the AArch64 builtins",
+    "fcc2e7983a4b Fix bug in inline asm when using a symbol twice",
+    "9ccaf85f1437 Add missing NEON LLVM intriniscs",
+    "4baba5385698 Fix to avoid building LLVM by making sure LLVM FileCheck is found on any architecture",
+    "ec45ecffeee8 Move `loop_hint_attrs` from `Terminator` into `TerminatorKind::Goto`",
+    "9ad4e567a7e7 codegen: tell LLVM that the discriminant is a power of two",
+    "23fa0f40cfb2 codegen: tell LLVM that the discriminant is a power of two",
+    "e31e7228f81b Abby DSL: dont ICE on foralls with unused bound vars",
+    "94fa86c197dc Add `synchronization` import lib to windows-gnullvm dist",
+    "5d6aec67fd42 Sort windows-gnullvm dist libs",
+    "655c025dd1da Shrink MIR basic-block statement vectors to fit before caching them",
+    "9f07bff65e32 require debug assertions",
+    "3e97c85a7f19 transmutability tests",
+    "d84ec36d7226 more things which no longer ICE",
+    "b5cb898c84c1 Fix codegen-llvm tests",
+    "e99838b28059 Fix the floating point clobbers of RISC-V `clobber_abi`",
+    "7d9c4155a20a stabilize String::into_chars",
+    "1e5f74518348 drop support for old BSD ABIs",
+    "15bad34f39c2 stop trusting the user types for stat and dirent",
+    "58eda6ec6775 Use `LLVMGlobalAddMetadata`",
+    "4bfa46e1eb37 bump Windows CI LLVM to 22.1.8",
+    "2855696ddab0 Add note about std debug assertions disabling codegen tests",
+    "384b61a67afc Stabilize `debug_closure_helpers`",
+    "2233d3969bc6 Mangle personality symbol",
+    "3b3e0980a6cc Annotate MIR with dataflow results for testing purposes",
+    "dc513a511a7c Move some LLVM specific options from Linker::link to cg_llvm",
+    "df0599ea9027 Revert \"implement PartialEq<VecDeque<U>> for Vec<T>, &[T], &mut [T], [T; N], &[T; N] and &mut [T; N]\"",
+    "d9d21db1d557 Add the `movdir64b` and `movdiri` x86 target features",
+    "17f3f9cae9fb Add documentation for the  and  attributes",
+    "bef651bcdd89 Rename tests/mir-opt/dataflow.rs to dump_dataflow.rs"
+  ],
+  "curated_soundness_and_miscompilation_catalog": [
+    {
+      "id": "rust-lang/rust#163911",
+      "url": "https://github.com/rust-lang/rust/issues/163911",
+      "title": "x86-64 FFI bool return value miscompilation (missing 8-bit truncation / range metadata mismatch)",
+      "status_at_1991": "fixed_in_1_99_1",
+      "origin": "codegen_lowering",
+      "verified_mir_to_asm_effect": "fixes",
+      "mechanism": "Calling convention return widening/truncation mismatch between C caller/callee and LLVM range metadata."
+    },
+    {
+      "id": "rust-lang/rust#107975",
+      "url": "https://github.com/rust-lang/rust/issues/107975",
+      "title": "Equal pointers compare unequal / miscompilation under GVN after integer-to-pointer cast or exposed provenance",
+      "status_at_1991": "open_known_bug (8 tests in tests/ui/codegen/equal-pointers-unequal/)",
+      "origin": "llvm_optimization",
+      "verified_mir_to_asm_effect": "fixes",
+      "mechanism": "LLVM GVN replaces pointer p with q after `icmp eq p, q` even when p and q have distinct provenance (`llvm/llvm-project#34548`, `#35229`)."
+    },
+    {
+      "id": "rust-lang/rust#63818",
+      "url": "https://github.com/rust-lang/rust/issues/63818",
+      "title": "Self-referential generators/coroutines and `&mut T` where `T: !Unpin` violate LLVM `noalias`",
+      "status_at_1991": "mitigated_workaround (`compiler/rustc_ty_utils/src/abi.rs:365-370` suppresses `noalias` for `!Unpin`)",
+      "origin": "codegen_lowering",
+      "verified_mir_to_asm_effect": "fixes_or_formalizes",
+      "mechanism": "Unqualified `&mut T` uniqueness would invalidate self-referential `Pin<&mut Coroutine>` pointers if `noalias` were emitted without `Unpin`."
+    },
+    {
+      "id": "rust-lang/rust#115567",
+      "url": "https://github.com/rust-lang/rust/issues/115567",
+      "title": "i686 / x86-32 returning `f32`/`f64` via x87 `st(0)` converts signaling NaN (`SNaN`) to quiet NaN (`QNaN`)",
+      "status_at_1991": "open_deviation",
+      "origin": "llvm_backend",
+      "verified_mir_to_asm_effect": "fixes_for_rust_abi_if_xmm_used",
+      "mechanism": "System V i386 ABI and `extern \"Rust\"` on `i686` execute `flds`/`fstps` on return, quieting SNaNs in violation of RFC 3514 byte-preservation for value moves."
+    },
+    {
+      "id": "rust-lang/rust#114479",
+      "url": "https://github.com/rust-lang/rust/issues/114479",
+      "title": "x87 80-bit excess precision on `i586` targets without SSE2 violates IEEE 754 `f32`/`f64` rounding",
+      "status_at_1991": "open_deviation",
+      "origin": "llvm_backend",
+      "verified_mir_to_asm_effect": "fixes",
+      "mechanism": "x87 FPU instructions compute in 80-bit extended precision without per-operation rounding to `binary32`/`binary64`."
+    },
+    {
+      "id": "rust-lang/rust#112480",
+      "url": "https://github.com/rust-lang/rust/issues/112480",
+      "title": "`i686-pc-windows-msvc` 8-byte stack alignment mismatch between `rustc` (`align_of::<u64>() == 8`) and MSVC C frames (4-byte stack alignment)",
+      "status_at_1991": "open_deviation",
+      "origin": "codegen_lowering",
+      "verified_mir_to_asm_effect": "catches_at_abi_boundary",
+      "mechanism": "Borrowing a stack-allocated `u64`/`f64`/`i64` in a frame without 8-byte stack realignment produces a 4-byte-aligned pointer when `align_of::<u64>() == 8`."
+    },
+    {
+      "id": "rust-lang/rust#25860",
+      "url": "https://github.com/rust-lang/rust/issues/25860",
+      "title": "Implied bounds on function arguments allow lifetime extension (`transmute::<&'a T, &'static T>`) without `unsafe`",
+      "status_at_1991": "open (`tests/ui/issues/issue-25860.rs` / type system soundness hole)",
+      "origin": "type_or_borrow_checking",
+      "verified_mir_to_asm_effect": "untouched_frontend (unless post-monomorphization borrow/lifetime checker is run)",
+      "mechanism": "Higher-ranked function pointer subtyping manufactures `'static: 'a` witness without proving the witness type is inhabited."
+    },
+    {
+      "id": "rust-lang/rust#120240",
+      "url": "https://github.com/rust-lang/rust/issues/120240",
+      "title": "Async function with uninhabited `!` parameter pattern miscompiles/crashes during coroutine lowering (`tests/ui/rfcs/rfc-0000-never_patterns/120240-async-fn-never-arg.rs`)",
+      "status_at_1991": "open_known_bug",
+      "origin": "mir_construction",
+      "verified_mir_to_asm_effect": "catches_at_mir_semantics_if_checked",
+      "mechanism": "Coroutine state-machine lowering emits invalid MIR drop/storage live sequences for uninhabited arguments."
+    },
+    {
+      "id": "rust-lang/rust#133119",
+      "url": "https://github.com/rust-lang/rust/issues/133119",
+      "title": "`dyn AsyncFn*` wrong pointer size / metadata coercion (`tests/ui/async-await/dyn/wrong-size.rs`, `works.rs`, `mut-is-pointer-like.rs`)",
+      "status_at_1991": "open_known_bug",
+      "origin": "codegen_lowering",
+      "verified_mir_to_asm_effect": "catches_and_fixes",
+      "mechanism": "Unsized coercion of async trait objects passes mismatched fat/thin pointer layout to codegen."
+    },
+    {
+      "id": "rust-lang/rust#91827",
+      "url": "https://github.com/rust-lang/rust/issues/91827",
+      "title": "MIR Optimization (`GVN` / `ConstProp` / `JumpThreading`) miscompilations found by `rustlantis` differential fuzzer",
+      "status_at_1991": "historical_and_ongoing_class",
+      "origin": "mir_optimization",
+      "verified_mir_to_asm_effect": "fixes (by running from `Runtime(PostCleanup)` at `-Zmir-opt-level=0` or verifying MIR passes against MiniRust/Anneal)",
+      "mechanism": "Unverified MIR-to-MIR transformations in `rustc_mir_transform` folding pointer comparisons, overlapping assignments, or uninhabited branches unsoundly."
+    }
+  ]
+}

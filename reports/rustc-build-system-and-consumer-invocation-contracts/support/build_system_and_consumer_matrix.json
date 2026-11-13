@@ -1,0 +1,229 @@
+{
+  "build_systems": [
+    {
+      "name": "Cargo (standard build / check / test / bench / fix / -Zbuild-std)",
+      "discovery_and_version_probes": [
+        "rustc -vV",
+        "rustc - --crate-name ___ --print=file-names --target <triple> --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings"
+      ],
+      "core_flags_passed": [
+        "--crate-name <name>",
+        "--edition=2015|2018|2021|2024",
+        "<src_path>",
+        "--error-format=json",
+        "--json=diagnostic-rendered-ansi,artifacts,future-incompat",
+        "--crate-type <type>",
+        "--emit=dep-info,metadata,link (or dep-info,metadata for check)",
+        "-C embed-bitcode=no",
+        "-C debuginfo=2 (dev) or -C opt-level=3 (release)",
+        "--check-cfg=cfg(docsrs,test,feature=...)",
+        "-C metadata=<hash>",
+        "-C extra-filename=-<hash>",
+        "--out-dir <dir>",
+        "-L dependency=<dir>",
+        "--extern <name>=<path>"
+      ],
+      "env_vars_set": [
+        "CARGO",
+        "CARGO_MANIFEST_DIR",
+        "CARGO_MANIFEST_PATH",
+        "CARGO_PKG_VERSION",
+        "CARGO_PKG_NAME",
+        "CARGO_CRATE_NAME",
+        "OUT_DIR (when build.rs runs)",
+        "CARGO_MAKEFLAGS (jobserver pipe fds)"
+      ],
+      "reliance_tier": "P0_mandatory"
+    },
+    {
+      "name": "Bazel rules_rust",
+      "discovery_and_version_probes": [
+        "rustc -vV",
+        "process_wrapper subst of ${pwd}"
+      ],
+      "core_flags_passed": [
+        "--crate-name",
+        "--crate-type",
+        "--edition",
+        "--out-dir",
+        "--emit=dep-info,link,metadata",
+        "--error-format=json",
+        "--json=artifacts,diagnostic-rendered-ansi",
+        "--remap-path-prefix=${pwd}=.",
+        "-Ccodegen-units=1",
+        "-Cmetadata=<target_hash>",
+        "--extern <crate>=<rmeta_or_rlib>",
+        "-Ldependency=<dir>",
+        "@<param_file>"
+      ],
+      "env_vars_set": [
+        "CARGO_CFG_TARGET_ARCH",
+        "CARGO_CFG_TARGET_OS",
+        "CARGO_PKG_NAME"
+      ],
+      "reliance_tier": "P0_mandatory"
+    },
+    {
+      "name": "GN (Chromium //build/rust & Fuchsia //build/rust)",
+      "discovery_and_version_probes": [
+        "rustc -vV"
+      ],
+      "core_flags_passed": [
+        "--crate-name",
+        "--crate-type=rlib|bin|cdylib|proc-macro",
+        "--edition",
+        "--emit=dep-info=<dfile>,link=<outfile>",
+        "-Zdep-info-omit-d-target",
+        "--color=always",
+        "--target=<triple>",
+        "-Cembed-bitcode=no",
+        "-Clinker=<clang++>",
+        "-Clink-arg=-fuse-ld=lld",
+        "@<rspfile>"
+      ],
+      "env_vars_set": [
+        "RUSTC_BOOTSTRAP=1 (Fuchsia & Chromium std/cxx bridges)",
+        "OUT_DIR"
+      ],
+      "reliance_tier": "P0_mandatory"
+    },
+    {
+      "name": "Buck2 (prelude//rust)",
+      "discovery_and_version_probes": [
+        "rustc -vV"
+      ],
+      "core_flags_passed": [
+        "@<argfile>",
+        "--crate-name",
+        "--crate-type",
+        "--emit=dep-info,metadata,link",
+        "--error-format=json",
+        "--json=diagnostic-rendered-ansi,artifacts",
+        "-Zdep-info-omit-d-target",
+        "--remap-path-prefix",
+        "--extern"
+      ],
+      "env_vars_set": [
+        "CARGO_PKG_NAME",
+        "CARGO_PKG_VERSION",
+        "CARGO_MANIFEST_DIR"
+      ],
+      "reliance_tier": "P1_high"
+    },
+    {
+      "name": "Linux Kernel Kbuild (rust/Makefile & scripts/Makefile.build)",
+      "discovery_and_version_probes": [
+        "rustc --version",
+        "scripts/min-tool-version.sh rustc"
+      ],
+      "core_flags_passed": [
+        "--target=<arch_json_or_builtin>",
+        "--edition=2021",
+        "--emit=dep-info,obj,metadata",
+        "-Cpanic=abort",
+        "-Cembed-bitcode=no",
+        "-Clto=n",
+        "-Cforce-unwind-tables=n",
+        "-Ccodegen-units=1",
+        "-Csymbol-mangling-version=v0",
+        "-Crelocation-model=static|pie",
+        "-Zbranch-protection=...",
+        "-Zfunction-return=thunk-extern",
+        "-Zcf-protection=branch",
+        "-Zno-jump-tables",
+        "@<cfg_argfile>"
+      ],
+      "env_vars_set": [
+        "RUSTC_BOOTSTRAP=1",
+        "OBJTREE",
+        "SRCTREE"
+      ],
+      "reliance_tier": "P0_mandatory"
+    },
+    {
+      "name": "Android Soong (build/soong/rust)",
+      "discovery_and_version_probes": [
+        "rustc --version"
+      ],
+      "core_flags_passed": [
+        "--crate-name",
+        "--crate-type=rlib|dylib|cdylib|bin|proc-macro",
+        "--emit=link,dep-info",
+        "-Zdep-info-omit-d-target",
+        "-Cpanic=abort",
+        "-Copt-level=z|s|3",
+        "-Crelocation-model=pic",
+        "-Cforce-frame-pointers=yes",
+        "-Zsanitize=hwaddress|cfi|shadow-call-stack",
+        "-Clinker=<clang++>",
+        "--sysroot=/dev/null (no-default-sysroot)"
+      ],
+      "env_vars_set": [
+        "RUSTC_BOOTSTRAP=1",
+        "ANDROID_RUST_VERSION"
+      ],
+      "reliance_tier": "P1_high"
+    },
+    {
+      "name": "Meson & CMake (Corrosion)",
+      "discovery_and_version_probes": [
+        "rustc --version",
+        "rustc -vV",
+        "rustc --print sysroot",
+        "rustc --print target-libdir",
+        "rustc --print native-static-libs"
+      ],
+      "core_flags_passed": [
+        "-C default-linker-libraries=yes (Meson)",
+        "--crate-type",
+        "--emit=dep-info,link",
+        "--out-dir",
+        "-L",
+        "--extern",
+        "-Clink-arg=..."
+      ],
+      "env_vars_set": [
+        "CARGO_HOME",
+        "RUSTC"
+      ],
+      "reliance_tier": "P1_high"
+    },
+    {
+      "name": "Nix (buildRustPackage / crane) & Distro Builders (dh-cargo, rust2rpm)",
+      "discovery_and_version_probes": [
+        "cargo -vV",
+        "rustc -vV"
+      ],
+      "core_flags_passed": [
+        "--offline",
+        "--frozen",
+        "-Copt-level=3",
+        "-Cdebuginfo=2",
+        "--remap-path-prefix=/build/=<pkg>",
+        "-Clink-arg=-Wl,-z,relro,-z,now"
+      ],
+      "env_vars_set": [
+        "SOURCE_DATE_EPOCH",
+        "CARGO_BUILD_JOBS",
+        "RUSTFLAGS",
+        "NIX_CFLAGS_COMPILE"
+      ],
+      "reliance_tier": "P1_high"
+    },
+    {
+      "name": "sccache / ccache (RUSTC_WRAPPER)",
+      "discovery_and_version_probes": [
+        "rustc -vV",
+        "rustc -E / --emit=dep-info source hashing"
+      ],
+      "core_flags_passed": [
+        "Caches only rlib, staticlib, and proc-macro/dep-info invocations with deterministic --out-dir and no incremental state (-Cincremental disables caching)"
+      ],
+      "env_vars_set": [
+        "CARGO_INCREMENTAL=0",
+        "SCCACHE_DIR"
+      ],
+      "reliance_tier": "P1_high"
+    }
+  ]
+}

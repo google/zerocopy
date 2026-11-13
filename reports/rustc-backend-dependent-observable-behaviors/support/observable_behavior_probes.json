@@ -1,0 +1,225 @@
+{
+  "baseline_1991_opt0": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": false,
+      "vtable_eq": true,
+      "const_addr_eq": true,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0xfff8000000000001",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 208,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": -6,
+      "process_abort": -6,
+      "unreachable": -6
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000020220 <cold_never_inline>:\n   20220:\t48 83 ec 28          \tsub    $0x28,%rsp\n   20224:\t48 89 7c 24 10       \tmov    %rdi,0x10(%rsp)\n   20229:\te8 12 a7 ff ff       \tcall   1a940 <_RINvNtCskADBYZwJmSU_4core4hint9black_boxyECsaI8q6QY60dn_5probe>\n   2022e:\t48 89 44 24 08       \tmov    %rax,0x8(%rsp)\n   20233:\teb 06                \tjmp    2023b <cold_never_inline+0x1b>\n   20235:\tff 15 b5 01 04 00    \tcall   *0x401b5(%rip)        # 603f0 <_DYNAMIC+0x318>\n   2023b:\t48 8b 44 24 08       \tmov    0x8(%rsp),%rax\n   20240:\t48 89 44 24 18       \tmov    %rax,0x18(%rsp)\n   20245:\t48 c7 44 24 20 07 00 \tmovq   $0x7,0x20(%rsp)\n   2024c:\t00 00 \n   2024e:\t48 83 c0 07          \tadd    $0x7,%rax\n   20252:\t48 89 04 24          \tmov    %rax,(%rsp)\n   20256:\t48 8b 04 24          \tmov    (%rsp),%rax\n   2025a:\t48 83 c4 28          \tadd    $0x28,%rsp\n   2025e:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "0000000000008f7c r _RNvCsaI8q6QY60dn_5probe8STATIC_A",
+      "0000000000008f8c r _RNvCsaI8q6QY60dn_5probe8STATIC_B",
+      "000000000000b258 r _RNvCsaI8q6QY60dn_5probe16KEEP_USED_LINKER",
+      "000000000000b260 r _RNvCsaI8q6QY60dn_5probe17KEEP_USED_DEFAULT",
+      "0000000000010038 r _RNvCsaI8q6QY60dn_5probe10SEC_ITEM_1",
+      "0000000000010040 r _RNvCsaI8q6QY60dn_5probe10SEC_ITEM_2",
+      "0000000000020220 T cold_never_inline"
+    ]
+  },
+  "baseline_1991_opt3": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": true,
+      "vtable_eq": true,
+      "const_addr_eq": true,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0x7ff8000000000000",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 80,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": -6,
+      "process_abort": -6,
+      "unreachable": 0
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000017370 <cold_never_inline>:\n   17370:\t48 89 7c 24 f8       \tmov    %rdi,-0x8(%rsp)\n   17375:\t48 8d 44 24 f8       \tlea    -0x8(%rsp),%rax\n   1737a:\t48 8b 44 24 f8       \tmov    -0x8(%rsp),%rax\n   1737f:\t48 83 c0 07          \tadd    $0x7,%rax\n   17383:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "00000000000054a0 r _RNvCsaI8q6QY60dn_5probe16KEEP_USED_LINKER",
+      "00000000000054a8 r _RNvCsaI8q6QY60dn_5probe17KEEP_USED_DEFAULT",
+      "000000000000e058 r _RNvCsaI8q6QY60dn_5probe10SEC_ITEM_1",
+      "000000000000e060 r _RNvCsaI8q6QY60dn_5probe10SEC_ITEM_2",
+      "0000000000017370 T cold_never_inline"
+    ]
+  },
+  "baseline_1991_opt3_mergefn": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": true,
+      "vtable_eq": true,
+      "const_addr_eq": true,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0x7ff8000000000000",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 80,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": -6,
+      "process_abort": -6,
+      "unreachable": 0
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000017360 <cold_never_inline>:\n   17360:\t48 89 7c 24 f8       \tmov    %rdi,-0x8(%rsp)\n   17365:\t48 8d 44 24 f8       \tlea    -0x8(%rsp),%rax\n   1736a:\t48 8b 44 24 f8       \tmov    -0x8(%rsp),%rax\n   1736f:\t48 83 c0 07          \tadd    $0x7,%rax\n   17373:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "00000000000054a0 r _RNvCsaI8q6QY60dn_5probe16KEEP_USED_LINKER",
+      "00000000000054a8 r _RNvCsaI8q6QY60dn_5probe17KEEP_USED_DEFAULT",
+      "000000000000e058 r _RNvCsaI8q6QY60dn_5probe10SEC_ITEM_1",
+      "000000000000e060 r _RNvCsaI8q6QY60dn_5probe10SEC_ITEM_2",
+      "0000000000017360 T cold_never_inline"
+    ]
+  },
+  "llvm_opt0": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": false,
+      "vtable_eq": true,
+      "const_addr_eq": true,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0xfff8000000000001",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 208,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": -6,
+      "process_abort": -6,
+      "unreachable": -6
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n00000000000200b0 <cold_never_inline>:\n   200b0:\t48 83 ec 28          \tsub    $0x28,%rsp\n   200b4:\t48 89 7c 24 10       \tmov    %rdi,0x10(%rsp)\n   200b9:\te8 92 a4 ff ff       \tcall   1a550 <_RINvNtCs2F9dQBLtWXO_4core4hint9black_boxyECsg7eGCkvqu8M_5probe>\n   200be:\t48 89 44 24 08       \tmov    %rax,0x8(%rsp)\n   200c3:\teb 06                \tjmp    200cb <cold_never_inline+0x1b>\n   200c5:\tff 15 5d 01 04 00    \tcall   *0x4015d(%rip)        # 60228 <_DYNAMIC+0x318>\n   200cb:\t48 8b 44 24 08       \tmov    0x8(%rsp),%rax\n   200d0:\t48 89 44 24 18       \tmov    %rax,0x18(%rsp)\n   200d5:\t48 c7 44 24 20 07 00 \tmovq   $0x7,0x20(%rsp)\n   200dc:\t00 00 \n   200de:\t48 83 c0 07          \tadd    $0x7,%rax\n   200e2:\t48 89 04 24          \tmov    %rax,(%rsp)\n   200e6:\t48 8b 04 24          \tmov    (%rsp),%rax\n   200ea:\t48 83 c4 28          \tadd    $0x28,%rsp\n   200ee:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "00000000000090a0 r _RNvCsg7eGCkvqu8M_5probe16KEEP_USED_LINKER",
+      "00000000000090a8 r _RNvCsg7eGCkvqu8M_5probe17KEEP_USED_DEFAULT",
+      "00000000000090b0 r _RNvCsg7eGCkvqu8M_5probe8STATIC_A",
+      "00000000000090c0 r _RNvCsg7eGCkvqu8M_5probe8STATIC_B",
+      "000000000000fc38 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_1",
+      "000000000000fc40 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_2",
+      "00000000000200b0 T cold_never_inline"
+    ]
+  },
+  "llvm_opt3": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": true,
+      "vtable_eq": true,
+      "const_addr_eq": true,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0x7ff8000000000000",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 80,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": -6,
+      "process_abort": -6,
+      "unreachable": 0
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000017570 <cold_never_inline>:\n   17570:\t48 89 7c 24 f8       \tmov    %rdi,-0x8(%rsp)\n   17575:\t48 8d 44 24 f8       \tlea    -0x8(%rsp),%rax\n   1757a:\t48 8b 44 24 f8       \tmov    -0x8(%rsp),%rax\n   1757f:\t48 83 c0 07          \tadd    $0x7,%rax\n   17583:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "0000000000005500 r _RNvCsg7eGCkvqu8M_5probe16KEEP_USED_LINKER",
+      "0000000000005508 r _RNvCsg7eGCkvqu8M_5probe17KEEP_USED_DEFAULT",
+      "000000000000e178 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_1",
+      "000000000000e180 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_2",
+      "0000000000017570 T cold_never_inline"
+    ]
+  },
+  "clif_opt0": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": false,
+      "vtable_eq": true,
+      "const_addr_eq": false,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0xfff8000000000001",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 176,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": 101,
+      "process_abort": -6,
+      "unreachable": -6
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000027ed8 <cold_never_inline>:\n   27ed8:\t55                   \tpush   %rbp\n   27ed9:\t48 89 e5             \tmov    %rsp,%rbp\n   27edc:\te8 79 45 ff ff       \tcall   1c45a <_RINvNtCs2F9dQBLtWXO_4core4hint9black_boxyECsg7eGCkvqu8M_5probe>\n   27ee1:\tbe 07 00 00 00       \tmov    $0x7,%esi\n   27ee6:\t48 89 c7             \tmov    %rax,%rdi\n   27ee9:\te8 22 c0 ff ff       \tcall   23f10 <_RNvMs7_NtCs2F9dQBLtWXO_4core3numy12wrapping_add>\n   27eee:\t48 89 ec             \tmov    %rbp,%rsp\n   27ef1:\t5d                   \tpop    %rbp\n   27ef2:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "00000000000070bf r _RNvCsg7eGCkvqu8M_5probe8STATIC_A",
+      "00000000000070cf r _RNvCsg7eGCkvqu8M_5probe8STATIC_B",
+      "0000000000008af8 r _RNvCsg7eGCkvqu8M_5probe16KEEP_USED_LINKER",
+      "0000000000008b00 r _RNvCsg7eGCkvqu8M_5probe17KEEP_USED_DEFAULT",
+      "000000000000e240 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_1",
+      "000000000000e248 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_2",
+      "0000000000027ed8 T cold_never_inline"
+    ]
+  },
+  "clif_opt3": {
+    "build_rc": 0,
+    "build_stderr": "warning: direct cast of function item into an integer\n  --> /tmp/tmp7wjecs5v/probe.rs:92:34\n   |\n92 |     black_box(probe_volatile_u64 as usize);\n   |                                  ^^^^^^^^\n   |\n   = note: `#[warn(function_casts_as_integer)]` on by default\nhelp: first cast to a pointer `as *const ()`\n   |\n92 |     black_box(probe_volatile_u64 as *const () as usize);\n   |                 ",
+    "runtime": {
+      "fn_u32_eq_i32": false,
+      "vtable_eq": true,
+      "const_addr_eq": false,
+      "str_lit_eq": true,
+      "static_ab_eq": false,
+      "const_powi": "0x402f400000000000",
+      "rt_powi": "0x402f400000000000",
+      "nan_add_const": "0x7ff8000000000000",
+      "nan_add_rt": "0xfff8000000000001",
+      "frame_delta_bytes": 192,
+      "bt_has_main": true
+    },
+    "termination_rc": {
+      "abort_intrinsic": 101,
+      "process_abort": -6,
+      "unreachable": -4
+    },
+    "disasm": "<PROBE_BIN>:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n000000000002138c <cold_never_inline>:\n   2138c:\t55                   \tpush   %rbp\n   2138d:\t48 89 e5             \tmov    %rsp,%rbp\n   21390:\t48 8d 47 07          \tlea    0x7(%rdi),%rax\n   21394:\t48 89 ec             \tmov    %rbp,%rsp\n   21397:\t5d                   \tpop    %rbp\n   21398:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:",
+    "symbols": [
+      "00000000000064e0 r _RNvCsg7eGCkvqu8M_5probe8STATIC_A",
+      "00000000000064f0 r _RNvCsg7eGCkvqu8M_5probe8STATIC_B",
+      "0000000000006e30 r _RNvCsg7eGCkvqu8M_5probe16KEEP_USED_LINKER",
+      "0000000000006e38 r _RNvCsg7eGCkvqu8M_5probe17KEEP_USED_DEFAULT",
+      "000000000000c530 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_1",
+      "000000000000c538 r _RNvCsg7eGCkvqu8M_5probe10SEC_ITEM_2",
+      "000000000002138c T cold_never_inline"
+    ]
+  },
+  "arch_asm": {
+    "x86_64-unknown-linux-gnu": "\t.att_syntax\n\t.file\t\"arch_probe.1fa2a6834830f450-cgu.0\"\n\t.section\t.text.atomic_seqcst,\"ax\",@progbits\n\t.globl\tatomic_seqcst\n\t.prefalign\t4, .Lfunc_end0, nop\n\t.type\tatomic_seqcst,@function\natomic_seqcst:\n\t.cfi_startproc\n\txchgq\t%rsi, (%rdi)\n\tmovq\t(%rdi), %rax\n\tretq\n.Lfunc_end0:\n\t.size\tatomic_seqcst, .Lfunc_end0-atomic_seqcst\n\t.cfi_endproc\n\n\t.section\t.text.unlikely.do_abort,\"ax\",@progbits\n\t.globl\tdo_abort\n\t.prefalign\t4, .Lfunc_end1, nop\n\t.type\tdo_abort,@function\ndo_abort:\n\t.cfi_startproc\n\tud2\n.Lfunc_end1:\n\t.size\tdo_abort, .Lfunc_end1-do_abort\n\t.cfi_endproc\n\n\t.section\t.text.do_unreach,\"ax\",@progbits\n\t.globl\tdo_unreach\n\t.prefalign\t4, .Lfunc_end2, nop\n\t.type\tdo_unreach,@function\ndo_unreach:\n\t.cfi_startproc\n\tud2\n.Lfunc_end2:\n\t.size\tdo_unreach, .Lfunc_end2-do_unreach\n\t.cfi_endproc\n\n\t.section\t.text.id_f32,\"ax\",@progbits\n\t.globl\tid_f32\n\t.prefalign\t4, .Lfunc_end3, nop\n\t.type\tid_f32,@function\nid_f32:\n\t.cfi_startproc\n\tretq\n.Lfunc_end3:\n\t.size\tid_f32, .Lfunc_end3-id_f32\n\t.cfi_endproc\n\n\t.ident\t\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"\n\t.section\t\".note.GNU-stack\",\"\",@progbits\n",
+    "aarch64-unknown-linux-gnu": "\t.file\t\"arch_probe.1fa2a6834830f450-cgu.0\"\n\t.section\t.text.atomic_seqcst,\"ax\",@progbits\n\t.globl\tatomic_seqcst\n\t.p2align\t2\n\t.type\tatomic_seqcst,@function\natomic_seqcst:\n\t.cfi_startproc\n\tstlr\tx1, [x0]\n\tldar\tx0, [x0]\n\tret\n.Lfunc_end0:\n\t.size\tatomic_seqcst, .Lfunc_end0-atomic_seqcst\n\t.cfi_endproc\n\n\t.section\t.text.unlikely.do_abort,\"ax\",@progbits\n\t.globl\tdo_abort\n\t.p2align\t2\n\t.type\tdo_abort,@function\ndo_abort:\n\t.cfi_startproc\n\tbrk\t#0x1\n.Lfunc_end1:\n\t.size\tdo_abort, .Lfunc_end1-do_abort\n\t.cfi_endproc\n\n\t.section\t.text.do_unreach,\"ax\",@progbits\n\t.globl\tdo_unreach\n\t.p2align\t2\n\t.type\tdo_unreach,@function\ndo_unreach:\n\t.cfi_startproc\n\tbrk\t#0x1\n.Lfunc_end2:\n\t.size\tdo_unreach, .Lfunc_end2-do_unreach\n\t.cfi_endproc\n\n\t.section\t.text.id_f32,\"ax\",@progbits\n\t.globl\tid_f32\n\t.p2align\t2\n\t.type\tid_f32,@function\nid_f32:\n\t.cfi_startproc\n\tret\n.Lfunc_end3:\n\t.size\tid_f32, .Lfunc_end3-id_f32\n\t.cfi_endproc\n\n\t.ident\t\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"\n\t.section\t\".note.GNU-stack\",\"\",@progbits\n",
+    "i686-unknown-linux-gnu": "\t.att_syntax\n\t.file\t\"arch_probe.1fa2a6834830f450-cgu.0\"\n\t.section\t.text.atomic_seqcst,\"ax\",@progbits\n\t.globl\tatomic_seqcst\n\t.prefalign\t4, .Lfunc_end0, nop\n\t.type\tatomic_seqcst,@function\natomic_seqcst:\n\t.cfi_startproc\n\tmovl\t4(%esp), %eax\n\tmovsd\t8(%esp), %xmm0\n\tmovlps\t%xmm0, (%eax)\n\tlock\t\torl\t$0, (%esp)\n\tmovq\t(%eax), %xmm0\n\tmovd\t%xmm0, %eax\n\tpshufd\t$85, %xmm0, %xmm0\n\tmovd\t%xmm0, %edx\n\tretl\n.Lfunc_end0:\n\t.size\tatomic_seqcst, .Lfunc_end0-atomic_seqcst\n\t.cfi_endproc\n\n\t.section\t.text.unlikely.do_abort,\"ax\",@progbits\n\t.globl\tdo_abort\n\t.prefalign\t4, .Lfunc_end1, nop\n\t.type\tdo_abort,@function\ndo_abort:\n\t.cfi_startproc\n\tud2\n.Lfunc_end1:\n\t.size\tdo_abort, .Lfunc_end1-do_abort\n\t.cfi_endproc\n\n\t.section\t.text.do_unreach,\"ax\",@progbits\n\t.globl\tdo_unreach\n\t.prefalign\t4, .Lfunc_end2, nop\n\t.type\tdo_unreach,@function\ndo_unreach:\n\t.cfi_startproc\n\tud2\n.Lfunc_end2:\n\t.size\tdo_unreach, .Lfunc_end2-do_unreach\n\t.cfi_endproc\n\n\t.section\t.text.id_f32,\"ax\",@progbits\n\t.globl\tid_f32\n\t.prefalign\t4, .Lfunc_end3, nop\n\t.type\tid_f32,@function\nid_f32:\n\t.cfi_startproc\n\tflds\t4(%esp)\n\tretl\n.Lfunc_end3:\n\t.size\tid_f32, .Lfunc_end3-id_f32\n\t.cfi_endproc\n\n\t.ident\t\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"\n\t.section\t\".note.GNU-stack\",\"\",@progbits\n"
+  }
+}

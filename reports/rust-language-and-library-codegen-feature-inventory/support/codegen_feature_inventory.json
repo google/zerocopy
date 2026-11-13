@@ -1,0 +1,5497 @@
+{
+  "counts": {
+    "accepted": 211,
+    "unstable": 257,
+    "removed": 103,
+    "rustc_internal_attrs": 111
+  },
+  "feature_lists": {
+    "accepted": [
+      {
+        "name": "test_accepted_feature",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 30
+      },
+      {
+        "name": "aarch64_target_feature",
+        "since": "1.61.0",
+        "issue": "Some(44839)",
+        "line": 48
+      },
+      {
+        "name": "abi_efiapi",
+        "since": "1.68.0",
+        "issue": "Some(65815)",
+        "line": 50
+      },
+      {
+        "name": "abi_sysv64",
+        "since": "1.24.0",
+        "issue": "Some(36167)",
+        "line": 53
+      },
+      {
+        "name": "abi_thiscall",
+        "since": "1.73.0",
+        "issue": "None",
+        "line": 55
+      },
+      {
+        "name": "adx_target_feature",
+        "since": "1.61.0",
+        "issue": "Some(44839)",
+        "line": 57
+      },
+      {
+        "name": "arbitrary_enum_discriminant",
+        "since": "1.66.0",
+        "issue": "Some(60553)",
+        "line": 59
+      },
+      {
+        "name": "asm_cfg",
+        "since": "1.93.0",
+        "issue": "Some(140364)",
+        "line": 61
+      },
+      {
+        "name": "asm_const",
+        "since": "1.82.0",
+        "issue": "Some(93332)",
+        "line": 63
+      },
+      {
+        "name": "asm_goto",
+        "since": "1.87.0",
+        "issue": "Some(119364)",
+        "line": 65
+      },
+      {
+        "name": "asm_sym",
+        "since": "1.66.0",
+        "issue": "Some(93333)",
+        "line": 67
+      },
+      {
+        "name": "associated_consts",
+        "since": "1.20.0",
+        "issue": "Some(29646)",
+        "line": 69
+      },
+      {
+        "name": "associated_type_bounds",
+        "since": "1.79.0",
+        "issue": "Some(52662)",
+        "line": 71
+      },
+      {
+        "name": "associated_types",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 73
+      },
+      {
+        "name": "async_await",
+        "since": "1.39.0",
+        "issue": "Some(50547)",
+        "line": 75
+      },
+      {
+        "name": "async_closure",
+        "since": "1.85.0",
+        "issue": "Some(62290)",
+        "line": 77
+      },
+      {
+        "name": "async_fn_in_trait",
+        "since": "1.75.0",
+        "issue": "Some(91611)",
+        "line": 79
+      },
+      {
+        "name": "attr_literals",
+        "since": "1.30.0",
+        "issue": "Some(34981)",
+        "line": 81
+      },
+      {
+        "name": "augmented_assignments",
+        "since": "1.8.0",
+        "issue": "Some(28235)",
+        "line": 83
+      },
+      {
+        "name": "avx512_target_feature",
+        "since": "1.89.0",
+        "issue": "Some(44839)",
+        "line": 85
+      },
+      {
+        "name": "bind_by_move_pattern_guards",
+        "since": "1.39.0",
+        "issue": "Some(15287)",
+        "line": 87
+      },
+      {
+        "name": "bindings_after_at",
+        "since": "1.56.0",
+        "issue": "Some(65490)",
+        "line": 90
+      },
+      {
+        "name": "braced_empty_structs",
+        "since": "1.8.0",
+        "issue": "Some(29720)",
+        "line": 92
+      },
+      {
+        "name": "c_str_literals",
+        "since": "1.77.0",
+        "issue": "Some(105723)",
+        "line": 94
+      },
+      {
+        "name": "c_unwind",
+        "since": "1.81.0",
+        "issue": "Some(74990)",
+        "line": 96
+      },
+      {
+        "name": "c_variadic",
+        "since": "1.99.0",
+        "issue": "Some(44930)",
+        "line": 98
+      },
+      {
+        "name": "c_variadic_naked_functions",
+        "since": "1.99.0",
+        "issue": "Some(148767)",
+        "line": 101
+      },
+      {
+        "name": "cfg_attr_multi",
+        "since": "1.33.0",
+        "issue": "Some(54881)",
+        "line": 103
+      },
+      {
+        "name": "cfg_boolean_literals",
+        "since": "1.88.0",
+        "issue": "Some(131204)",
+        "line": 105
+      },
+      {
+        "name": "cfg_doctest",
+        "since": "1.40.0",
+        "issue": "Some(62210)",
+        "line": 107
+      },
+      {
+        "name": "cfg_panic",
+        "since": "1.60.0",
+        "issue": "Some(77443)",
+        "line": 109
+      },
+      {
+        "name": "cfg_select",
+        "since": "1.95.0",
+        "issue": "Some(115585)",
+        "line": 111
+      },
+      {
+        "name": "cfg_target_abi",
+        "since": "1.78.0",
+        "issue": "Some(80970)",
+        "line": 113
+      },
+      {
+        "name": "cfg_target_feature",
+        "since": "1.27.0",
+        "issue": "Some(29717)",
+        "line": 115
+      },
+      {
+        "name": "cfg_target_has_atomic_equal_alignment",
+        "since": "1.97.0",
+        "issue": "Some(93822)",
+        "line": 117
+      },
+      {
+        "name": "cfg_target_vendor",
+        "since": "1.33.0",
+        "issue": "Some(29718)",
+        "line": 119
+      },
+      {
+        "name": "clone_closures",
+        "since": "1.26.0",
+        "issue": "Some(44490)",
+        "line": 121
+      },
+      {
+        "name": "closure_to_fn_coercion",
+        "since": "1.19.0",
+        "issue": "Some(39817)",
+        "line": 123
+      },
+      {
+        "name": "cmpxchg16b_target_feature",
+        "since": "1.69.0",
+        "issue": "Some(44839)",
+        "line": 125
+      },
+      {
+        "name": "collapse_debuginfo",
+        "since": "1.79.0",
+        "issue": "Some(100758)",
+        "line": 127
+      },
+      {
+        "name": "compile_error",
+        "since": "1.20.0",
+        "issue": "Some(40872)",
+        "line": 129
+      },
+      {
+        "name": "conservative_impl_trait",
+        "since": "1.26.0",
+        "issue": "Some(34511)",
+        "line": 131
+      },
+      {
+        "name": "const_constructor",
+        "since": "1.40.0",
+        "issue": "Some(61456)",
+        "line": 133
+      },
+      {
+        "name": "const_extern_fn",
+        "since": "1.83.0",
+        "issue": "Some(64926)",
+        "line": 135
+      },
+      {
+        "name": "const_fn_floating_point_arithmetic",
+        "since": "1.82.0",
+        "issue": "Some(57241)",
+        "line": 137
+      },
+      {
+        "name": "const_fn_fn_ptr_basics",
+        "since": "1.61.0",
+        "issue": "Some(57563)",
+        "line": 139
+      },
+      {
+        "name": "const_fn_trait_bound",
+        "since": "1.61.0",
+        "issue": "Some(93706)",
+        "line": 141
+      },
+      {
+        "name": "const_fn_transmute",
+        "since": "1.56.0",
+        "issue": "Some(53605)",
+        "line": 143
+      },
+      {
+        "name": "const_fn_union",
+        "since": "1.56.0",
+        "issue": "Some(51909)",
+        "line": 145
+      },
+      {
+        "name": "const_fn_unsize",
+        "since": "1.54.0",
+        "issue": "Some(64992)",
+        "line": 147
+      },
+      {
+        "name": "const_generics_defaults",
+        "since": "1.59.0",
+        "issue": "Some(44580)",
+        "line": 149
+      },
+      {
+        "name": "const_if_match",
+        "since": "1.46.0",
+        "issue": "Some(49146)",
+        "line": 151
+      },
+      {
+        "name": "const_impl_trait",
+        "since": "1.61.0",
+        "issue": "Some(77463)",
+        "line": 153
+      },
+      {
+        "name": "const_indexing",
+        "since": "1.26.0",
+        "issue": "Some(29947)",
+        "line": 155
+      },
+      {
+        "name": "const_let",
+        "since": "1.33.0",
+        "issue": "Some(48821)",
+        "line": 159
+      },
+      {
+        "name": "const_loop",
+        "since": "1.46.0",
+        "issue": "Some(52000)",
+        "line": 161
+      },
+      {
+        "name": "const_mut_refs",
+        "since": "1.83.0",
+        "issue": "Some(57349)",
+        "line": 163
+      },
+      {
+        "name": "const_panic",
+        "since": "1.57.0",
+        "issue": "Some(51999)",
+        "line": 165
+      },
+      {
+        "name": "const_raw_ptr_deref",
+        "since": "1.58.0",
+        "issue": "Some(51911)",
+        "line": 167
+      },
+      {
+        "name": "const_refs_to_cell",
+        "since": "1.83.0",
+        "issue": "Some(80384)",
+        "line": 169
+      },
+      {
+        "name": "const_refs_to_static",
+        "since": "1.83.0",
+        "issue": "Some(119618)",
+        "line": 171
+      },
+      {
+        "name": "copy_closures",
+        "since": "1.26.0",
+        "issue": "Some(44490)",
+        "line": 173
+      },
+      {
+        "name": "crate_in_paths",
+        "since": "1.30.0",
+        "issue": "Some(45477)",
+        "line": 175
+      },
+      {
+        "name": "custom_code_classes_in_docs",
+        "since": "1.80.0",
+        "issue": "Some(79483)",
+        "line": 177
+      },
+      {
+        "name": "debugger_visualizer",
+        "since": "1.71.0",
+        "issue": "Some(95939)",
+        "line": 179
+      },
+      {
+        "name": "default_alloc_error_handler",
+        "since": "1.68.0",
+        "issue": "Some(66741)",
+        "line": 181
+      },
+      {
+        "name": "default_type_params",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 183
+      },
+      {
+        "name": "deprecated",
+        "since": "1.9.0",
+        "issue": "Some(29935)",
+        "line": 185
+      },
+      {
+        "name": "derive_default_enum",
+        "since": "1.62.0",
+        "issue": "Some(86985)",
+        "line": 187
+      },
+      {
+        "name": "destructuring_assignment",
+        "since": "1.59.0",
+        "issue": "Some(71126)",
+        "line": 189
+      },
+      {
+        "name": "diagnostic_namespace",
+        "since": "1.78.0",
+        "issue": "Some(111996)",
+        "line": 191
+      },
+      {
+        "name": "do_not_recommend",
+        "since": "1.85.0",
+        "issue": "Some(51992)",
+        "line": 193
+      },
+      {
+        "name": "doc_alias",
+        "since": "1.48.0",
+        "issue": "Some(50146)",
+        "line": 195
+      },
+      {
+        "name": "dotdot_in_tuple_patterns",
+        "since": "1.14.0",
+        "issue": "Some(33627)",
+        "line": 197
+      },
+      {
+        "name": "dotdoteq_in_patterns",
+        "since": "1.26.0",
+        "issue": "Some(28237)",
+        "line": 199
+      },
+      {
+        "name": "drop_types_in_const",
+        "since": "1.22.0",
+        "issue": "Some(33156)",
+        "line": 201
+      },
+      {
+        "name": "dyn_trait",
+        "since": "1.27.0",
+        "issue": "Some(44662)",
+        "line": 203
+      },
+      {
+        "name": "exclusive_range_pattern",
+        "since": "1.80.0",
+        "issue": "Some(37854)",
+        "line": 205
+      },
+      {
+        "name": "exhaustive_integer_patterns",
+        "since": "1.33.0",
+        "issue": "Some(50907)",
+        "line": 207
+      },
+      {
+        "name": "explicit_generic_args_with_impl_trait",
+        "since": "1.63.0",
+        "issue": "Some(83701)",
+        "line": 209
+      },
+      {
+        "name": "expr_fragment_specifier_2024",
+        "since": "1.83.0",
+        "issue": "Some(123742)",
+        "line": 211
+      },
+      {
+        "name": "extended_key_value_attributes",
+        "since": "1.54.0",
+        "issue": "Some(78835)",
+        "line": 213
+      },
+      {
+        "name": "extended_varargs_abi_support",
+        "since": "1.91.0",
+        "issue": "Some(100189)",
+        "line": 216
+      },
+      {
+        "name": "extern_absolute_paths",
+        "since": "1.30.0",
+        "issue": "Some(44660)",
+        "line": 218
+      },
+      {
+        "name": "extern_crate_item_prelude",
+        "since": "1.31.0",
+        "issue": "Some(55599)",
+        "line": 220
+      },
+      {
+        "name": "extern_crate_self",
+        "since": "1.34.0",
+        "issue": "Some(56409)",
+        "line": 223
+      },
+      {
+        "name": "extern_prelude",
+        "since": "1.30.0",
+        "issue": "Some(44660)",
+        "line": 225
+      },
+      {
+        "name": "extern_system_varargs",
+        "since": "1.93.0",
+        "issue": "Some(136946)",
+        "line": 227
+      },
+      {
+        "name": "f16c_target_feature",
+        "since": "1.68.0",
+        "issue": "Some(44839)",
+        "line": 229
+      },
+      {
+        "name": "field_init_shorthand",
+        "since": "1.17.0",
+        "issue": "Some(37340)",
+        "line": 231
+      },
+      {
+        "name": "fn_must_use",
+        "since": "1.27.0",
+        "issue": "Some(43302)",
+        "line": 233
+      },
+      {
+        "name": "format_args_capture",
+        "since": "1.58.0",
+        "issue": "Some(67984)",
+        "line": 235
+      },
+      {
+        "name": "generic_arg_infer",
+        "since": "1.89.0",
+        "issue": "Some(85077)",
+        "line": 237
+      },
+      {
+        "name": "generic_associated_types",
+        "since": "1.65.0",
+        "issue": "Some(44265)",
+        "line": 239
+      },
+      {
+        "name": "generic_param_attrs",
+        "since": "1.27.0",
+        "issue": "Some(48848)",
+        "line": 241
+      },
+      {
+        "name": "global_allocator",
+        "since": "1.28.0",
+        "issue": "Some(27389)",
+        "line": 243
+      },
+      {
+        "name": "globs",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 245
+      },
+      {
+        "name": "half_open_range_patterns",
+        "since": "1.66.0",
+        "issue": "Some(67264)",
+        "line": 247
+      },
+      {
+        "name": "i128_type",
+        "since": "1.26.0",
+        "issue": "Some(35118)",
+        "line": 249
+      },
+      {
+        "name": "if_let",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 251
+      },
+      {
+        "name": "if_let_guard",
+        "since": "1.95.0",
+        "issue": "Some(51114)",
+        "line": 253
+      },
+      {
+        "name": "if_let_rescope",
+        "since": "1.84.0",
+        "issue": "Some(124085)",
+        "line": 255
+      },
+      {
+        "name": "if_while_or_patterns",
+        "since": "1.33.0",
+        "issue": "Some(48215)",
+        "line": 257
+      },
+      {
+        "name": "impl_header_lifetime_elision",
+        "since": "1.31.0",
+        "issue": "Some(15872)",
+        "line": 261
+      },
+      {
+        "name": "impl_trait_projections",
+        "since": "1.74.0",
+        "issue": "Some(103532)",
+        "line": 263
+      },
+      {
+        "name": "imported_main",
+        "since": "1.79.0",
+        "issue": "Some(28937)",
+        "line": 265
+      },
+      {
+        "name": "inclusive_range_syntax",
+        "since": "1.26.0",
+        "issue": "Some(28237)",
+        "line": 267
+      },
+      {
+        "name": "infer_outlives_requirements",
+        "since": "1.30.0",
+        "issue": "Some(44493)",
+        "line": 269
+      },
+      {
+        "name": "inline_const",
+        "since": "1.79.0",
+        "issue": "Some(76001)",
+        "line": 271
+      },
+      {
+        "name": "irrefutable_let_patterns",
+        "since": "1.33.0",
+        "issue": "Some(44495)",
+        "line": 273
+      },
+      {
+        "name": "isa_attribute",
+        "since": "1.67.0",
+        "issue": "Some(74727)",
+        "line": 275
+      },
+      {
+        "name": "item_like_imports",
+        "since": "1.15.0",
+        "issue": "Some(35120)",
+        "line": 278
+      },
+      {
+        "name": "keylocker_x86",
+        "since": "1.89.0",
+        "issue": "Some(134813)",
+        "line": 280
+      },
+      {
+        "name": "label_break_value",
+        "since": "1.65.0",
+        "issue": "Some(48594)",
+        "line": 282
+      },
+      {
+        "name": "let_chains",
+        "since": "1.88.0",
+        "issue": "Some(53667)",
+        "line": 284
+      },
+      {
+        "name": "let_else",
+        "since": "1.65.0",
+        "issue": "Some(87335)",
+        "line": 286
+      },
+      {
+        "name": "lint_reasons",
+        "since": "1.81.0",
+        "issue": "Some(54503)",
+        "line": 288
+      },
+      {
+        "name": "loop_break_value",
+        "since": "1.19.0",
+        "issue": "Some(37339)",
+        "line": 290
+      },
+      {
+        "name": "macro_at_most_once_rep",
+        "since": "1.32.0",
+        "issue": "Some(48075)",
+        "line": 292
+      },
+      {
+        "name": "macro_attributes_in_derive_output",
+        "since": "1.57.0",
+        "issue": "Some(81119)",
+        "line": 294
+      },
+      {
+        "name": "macro_lifetime_matcher",
+        "since": "1.27.0",
+        "issue": "Some(34303)",
+        "line": 296
+      },
+      {
+        "name": "macro_literal_matcher",
+        "since": "1.32.0",
+        "issue": "Some(35625)",
+        "line": 298
+      },
+      {
+        "name": "macro_rules",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 300
+      },
+      {
+        "name": "macro_vis_matcher",
+        "since": "1.30.0",
+        "issue": "Some(41022)",
+        "line": 302
+      },
+      {
+        "name": "macros_in_extern",
+        "since": "1.40.0",
+        "issue": "Some(49476)",
+        "line": 304
+      },
+      {
+        "name": "match_beginning_vert",
+        "since": "1.25.0",
+        "issue": "Some(44101)",
+        "line": 306
+      },
+      {
+        "name": "match_default_bindings",
+        "since": "1.26.0",
+        "issue": "Some(42640)",
+        "line": 308
+      },
+      {
+        "name": "member_constraints",
+        "since": "1.54.0",
+        "issue": "Some(61997)",
+        "line": 310
+      },
+      {
+        "name": "min_const_fn",
+        "since": "1.31.0",
+        "issue": "Some(53555)",
+        "line": 312
+      },
+      {
+        "name": "min_const_generics",
+        "since": "1.51.0",
+        "issue": "Some(74878)",
+        "line": 314
+      },
+      {
+        "name": "min_const_unsafe_fn",
+        "since": "1.33.0",
+        "issue": "Some(55607)",
+        "line": 316
+      },
+      {
+        "name": "min_exhaustive_patterns",
+        "since": "1.82.0",
+        "issue": "Some(119612)",
+        "line": 318
+      },
+      {
+        "name": "more_struct_aliases",
+        "since": "1.16.0",
+        "issue": "Some(37544)",
+        "line": 320
+      },
+      {
+        "name": "movbe_target_feature",
+        "since": "1.70.0",
+        "issue": "Some(44839)",
+        "line": 322
+      },
+      {
+        "name": "move_ref_pattern",
+        "since": "1.49.0",
+        "issue": "Some(68354)",
+        "line": 325
+      },
+      {
+        "name": "naked_functions",
+        "since": "1.88.0",
+        "issue": "Some(90957)",
+        "line": 327
+      },
+      {
+        "name": "native_link_modifiers",
+        "since": "1.61.0",
+        "issue": "Some(81490)",
+        "line": 329
+      },
+      {
+        "name": "native_link_modifiers_bundle",
+        "since": "1.63.0",
+        "issue": "Some(81490)",
+        "line": 331
+      },
+      {
+        "name": "native_link_modifiers_verbatim",
+        "since": "1.67.0",
+        "issue": "Some(81490)",
+        "line": 333
+      },
+      {
+        "name": "native_link_modifiers_whole_archive",
+        "since": "1.61.0",
+        "issue": "Some(81490)",
+        "line": 335
+      },
+      {
+        "name": "nll",
+        "since": "1.63.0",
+        "issue": "Some(43234)",
+        "line": 337
+      },
+      {
+        "name": "no_std",
+        "since": "1.6.0",
+        "issue": "None",
+        "line": 339
+      },
+      {
+        "name": "non_ascii_idents",
+        "since": "1.53.0",
+        "issue": "Some(55467)",
+        "line": 341
+      },
+      {
+        "name": "non_exhaustive",
+        "since": "1.40.0",
+        "issue": "Some(44109)",
+        "line": 343
+      },
+      {
+        "name": "non_modrs_mods",
+        "since": "1.30.0",
+        "issue": "Some(44660)",
+        "line": 345
+      },
+      {
+        "name": "offset_of_nested",
+        "since": "1.82.0",
+        "issue": "Some(120140)",
+        "line": 347
+      },
+      {
+        "name": "or_patterns",
+        "since": "1.53.0",
+        "issue": "Some(54883)",
+        "line": 349
+      },
+      {
+        "name": "packed_bundled_libs",
+        "since": "1.74.0",
+        "issue": "Some(108081)",
+        "line": 351
+      },
+      {
+        "name": "panic_handler",
+        "since": "1.30.0",
+        "issue": "Some(44489)",
+        "line": 354
+      },
+      {
+        "name": "param_attrs",
+        "since": "1.39.0",
+        "issue": "Some(60406)",
+        "line": 356
+      },
+      {
+        "name": "pattern_parentheses",
+        "since": "1.31.0",
+        "issue": "Some(51087)",
+        "line": 358
+      },
+      {
+        "name": "precise_capturing",
+        "since": "1.82.0",
+        "issue": "Some(123432)",
+        "line": 360
+      },
+      {
+        "name": "precise_capturing_in_traits",
+        "since": "1.87.0",
+        "issue": "Some(130044)",
+        "line": 362
+      },
+      {
+        "name": "proc_macro",
+        "since": "1.29.0",
+        "issue": "Some(38356)",
+        "line": 364
+      },
+      {
+        "name": "proc_macro_path_invoc",
+        "since": "1.30.0",
+        "issue": "Some(38356)",
+        "line": 366
+      },
+      {
+        "name": "pub_restricted",
+        "since": "1.18.0",
+        "issue": "Some(32409)",
+        "line": 368
+      },
+      {
+        "name": "question_mark",
+        "since": "1.13.0",
+        "issue": "Some(31436)",
+        "line": 370
+      },
+      {
+        "name": "raw_dylib",
+        "since": "1.71.0",
+        "issue": "Some(58713)",
+        "line": 372
+      },
+      {
+        "name": "raw_identifiers",
+        "since": "1.30.0",
+        "issue": "Some(48589)",
+        "line": 374
+      },
+      {
+        "name": "raw_ref_op",
+        "since": "1.82.0",
+        "issue": "Some(64490)",
+        "line": 376
+      },
+      {
+        "name": "re_rebalance_coherence",
+        "since": "1.41.0",
+        "issue": "Some(55437)",
+        "line": 379
+      },
+      {
+        "name": "relaxed_adts",
+        "since": "1.19.0",
+        "issue": "Some(35626)",
+        "line": 381
+      },
+      {
+        "name": "relaxed_struct_unsize",
+        "since": "1.58.0",
+        "issue": "Some(81793)",
+        "line": 383
+      },
+      {
+        "name": "repr128",
+        "since": "1.89.0",
+        "issue": "Some(56071)",
+        "line": 385
+      },
+      {
+        "name": "repr_align",
+        "since": "1.25.0",
+        "issue": "Some(33626)",
+        "line": 387
+      },
+      {
+        "name": "repr_align_enum",
+        "since": "1.37.0",
+        "issue": "Some(57996)",
+        "line": 390
+      },
+      {
+        "name": "repr_packed",
+        "since": "1.33.0",
+        "issue": "Some(33158)",
+        "line": 392
+      },
+      {
+        "name": "repr_transparent",
+        "since": "1.28.0",
+        "issue": "Some(43036)",
+        "line": 394
+      },
+      {
+        "name": "result_ffi_guarantees",
+        "since": "1.84.0",
+        "issue": "Some(110503)",
+        "line": 397
+      },
+      {
+        "name": "return_position_impl_trait_in_trait",
+        "since": "1.75.0",
+        "issue": "Some(91611)",
+        "line": 399
+      },
+      {
+        "name": "rvalue_static_promotion",
+        "since": "1.21.0",
+        "issue": "Some(38865)",
+        "line": 401
+      },
+      {
+        "name": "s390x_target_feature_vector",
+        "since": "1.93.0",
+        "issue": "Some(145649)",
+        "line": 403
+      },
+      {
+        "name": "self_in_typedefs",
+        "since": "1.32.0",
+        "issue": "Some(49303)",
+        "line": 405
+      },
+      {
+        "name": "self_struct_ctor",
+        "since": "1.32.0",
+        "issue": "Some(51994)",
+        "line": 407
+      },
+      {
+        "name": "sha512_sm_x86",
+        "since": "1.89.0",
+        "issue": "Some(126624)",
+        "line": 409
+      },
+      {
+        "name": "shorter_tail_lifetimes",
+        "since": "1.84.0",
+        "issue": "Some(123739)",
+        "line": 411
+      },
+      {
+        "name": "slice_patterns",
+        "since": "1.42.0",
+        "issue": "Some(62254)",
+        "line": 413
+      },
+      {
+        "name": "slicing_syntax",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 415
+      },
+      {
+        "name": "sse4a_target_feature",
+        "since": "1.91.0",
+        "issue": "Some(44839)",
+        "line": 417
+      },
+      {
+        "name": "static_in_const",
+        "since": "1.17.0",
+        "issue": "Some(35897)",
+        "line": 419
+      },
+      {
+        "name": "static_recursion",
+        "since": "1.17.0",
+        "issue": "Some(29719)",
+        "line": 421
+      },
+      {
+        "name": "struct_field_attributes",
+        "since": "1.20.0",
+        "issue": "Some(38814)",
+        "line": 423
+      },
+      {
+        "name": "struct_variant",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 425
+      },
+      {
+        "name": "target_feature",
+        "since": "1.27.0",
+        "issue": "None",
+        "line": 427
+      },
+      {
+        "name": "target_feature_11",
+        "since": "1.86.0",
+        "issue": "Some(69098)",
+        "line": 429
+      },
+      {
+        "name": "tbm_target_feature",
+        "since": "1.91.0",
+        "issue": "Some(44839)",
+        "line": 431
+      },
+      {
+        "name": "termination_trait",
+        "since": "1.26.0",
+        "issue": "Some(43301)",
+        "line": 433
+      },
+      {
+        "name": "termination_trait_test",
+        "since": "1.27.0",
+        "issue": "Some(48854)",
+        "line": 435
+      },
+      {
+        "name": "tool_attributes",
+        "since": "1.30.0",
+        "issue": "Some(44690)",
+        "line": 437
+      },
+      {
+        "name": "tool_lints",
+        "since": "1.31.0",
+        "issue": "Some(44690)",
+        "line": 439
+      },
+      {
+        "name": "track_caller",
+        "since": "1.46.0",
+        "issue": "Some(47809)",
+        "line": 442
+      },
+      {
+        "name": "trait_upcasting",
+        "since": "1.86.0",
+        "issue": "Some(65991)",
+        "line": 445
+      },
+      {
+        "name": "transparent_enums",
+        "since": "1.42.0",
+        "issue": "Some(60405)",
+        "line": 447
+      },
+      {
+        "name": "tuple_indexing",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 449
+      },
+      {
+        "name": "type_alias_enum_variants",
+        "since": "1.37.0",
+        "issue": "Some(49683)",
+        "line": 451
+      },
+      {
+        "name": "type_macros",
+        "since": "1.13.0",
+        "issue": "Some(27245)",
+        "line": 453
+      },
+      {
+        "name": "type_privacy_lints",
+        "since": "1.79.0",
+        "issue": "Some(48054)",
+        "line": 455
+      },
+      {
+        "name": "underscore_const_names",
+        "since": "1.37.0",
+        "issue": "Some(54912)",
+        "line": 457
+      },
+      {
+        "name": "underscore_imports",
+        "since": "1.33.0",
+        "issue": "Some(48216)",
+        "line": 459
+      },
+      {
+        "name": "underscore_lifetimes",
+        "since": "1.26.0",
+        "issue": "Some(44524)",
+        "line": 461
+      },
+      {
+        "name": "uniform_paths",
+        "since": "1.32.0",
+        "issue": "Some(53130)",
+        "line": 463
+      },
+      {
+        "name": "universal_impl_trait",
+        "since": "1.26.0",
+        "issue": "Some(34511)",
+        "line": 465
+      },
+      {
+        "name": "unrestricted_attribute_tokens",
+        "since": "1.34.0",
+        "issue": "Some(55208)",
+        "line": 467
+      },
+      {
+        "name": "unsafe_attributes",
+        "since": "1.82.0",
+        "issue": "Some(123757)",
+        "line": 469
+      },
+      {
+        "name": "unsafe_block_in_unsafe_fn",
+        "since": "1.52.0",
+        "issue": "Some(71668)",
+        "line": 471
+      },
+      {
+        "name": "unsafe_extern_blocks",
+        "since": "1.82.0",
+        "issue": "Some(123743)",
+        "line": 473
+      },
+      {
+        "name": "use_extern_macros",
+        "since": "1.30.0",
+        "issue": "Some(35896)",
+        "line": 476
+      },
+      {
+        "name": "use_nested_groups",
+        "since": "1.25.0",
+        "issue": "Some(44494)",
+        "line": 478
+      },
+      {
+        "name": "used",
+        "since": "1.30.0",
+        "issue": "Some(40289)",
+        "line": 480
+      },
+      {
+        "name": "while_let",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 482
+      },
+      {
+        "name": "windows_subsystem",
+        "since": "1.18.0",
+        "issue": "Some(37499)",
+        "line": 484
+      }
+    ],
+    "unstable": [
+      {
+        "status": "internal",
+        "name": "abi_unadjusted",
+        "since": "1.16.0",
+        "issue": "None",
+        "line": 240
+      },
+      {
+        "status": "internal",
+        "name": "allocator_internals",
+        "since": "1.20.0",
+        "issue": "None",
+        "line": 242
+      },
+      {
+        "status": "internal",
+        "name": "allow_internal_unsafe",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 247
+      },
+      {
+        "status": "internal",
+        "name": "allow_internal_unstable",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 252
+      },
+      {
+        "status": "unstable",
+        "name": "anonymous_lifetime_in_impl_trait",
+        "since": "1.63.0",
+        "issue": "None",
+        "line": 254
+      },
+      {
+        "status": "internal",
+        "name": "cfg_target_has_reliable_f16_f128",
+        "since": "1.88.0",
+        "issue": "None",
+        "line": 256
+      },
+      {
+        "status": "internal",
+        "name": "cfg_target_has_threads",
+        "since": "1.99.0",
+        "issue": "None",
+        "line": 258
+      },
+      {
+        "status": "internal",
+        "name": "compiler_builtins",
+        "since": "1.13.0",
+        "issue": "None",
+        "line": 260
+      },
+      {
+        "status": "internal",
+        "name": "const_param_ty_unchecked",
+        "since": "1.97.0",
+        "issue": "None",
+        "line": 262
+      },
+      {
+        "status": "internal",
+        "name": "custom_mir",
+        "since": "1.65.0",
+        "issue": "None",
+        "line": 264
+      },
+      {
+        "status": "internal",
+        "name": "eii_internals",
+        "since": "1.94.0",
+        "issue": "None",
+        "line": 266
+      },
+      {
+        "status": "internal",
+        "name": "field_representing_type_raw",
+        "since": "1.96.0",
+        "issue": "None",
+        "line": 268
+      },
+      {
+        "status": "unstable",
+        "name": "generic_assert",
+        "since": "1.63.0",
+        "issue": "None",
+        "line": 270
+      },
+      {
+        "status": "internal",
+        "name": "intrinsics",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 272
+      },
+      {
+        "status": "internal",
+        "name": "lang_items",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 274
+      },
+      {
+        "status": "internal",
+        "name": "link_cfg",
+        "since": "1.14.0",
+        "issue": "None",
+        "line": 276
+      },
+      {
+        "status": "internal",
+        "name": "more_maybe_bounds",
+        "since": "1.82.0",
+        "issue": "None",
+        "line": 278
+      },
+      {
+        "status": "internal",
+        "name": "negative_bounds",
+        "since": "1.71.0",
+        "issue": "None",
+        "line": 280
+      },
+      {
+        "status": "internal",
+        "name": "pattern_complexity_limit",
+        "since": "1.78.0",
+        "issue": "None",
+        "line": 282
+      },
+      {
+        "status": "internal",
+        "name": "prelude_import",
+        "since": "1.2.0",
+        "issue": "None",
+        "line": 284
+      },
+      {
+        "status": "internal",
+        "name": "profiler_runtime",
+        "since": "1.18.0",
+        "issue": "None",
+        "line": 286
+      },
+      {
+        "status": "internal",
+        "name": "rustc_attrs",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 288
+      },
+      {
+        "status": "internal",
+        "name": "staged_api",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 290
+      },
+      {
+        "status": "incomplete",
+        "name": "test_incomplete_feature",
+        "since": "1.96.0",
+        "issue": "None",
+        "line": 292
+      },
+      {
+        "status": "internal",
+        "name": "test_unstable_lint",
+        "since": "1.60.0",
+        "issue": "None",
+        "line": 294
+      },
+      {
+        "status": "unstable",
+        "name": "with_negative_coherence",
+        "since": "1.60.0",
+        "issue": "None",
+        "line": 297
+      },
+      {
+        "status": "unstable",
+        "name": "abi_vectorcall",
+        "since": "1.7.0",
+        "issue": "Some(124485)",
+        "line": 312
+      },
+      {
+        "status": "unstable",
+        "name": "auto_traits",
+        "since": "1.50.0",
+        "issue": "Some(13231)",
+        "line": 315
+      },
+      {
+        "status": "unstable",
+        "name": "box_patterns",
+        "since": "1.0.0",
+        "issue": "Some(29641)",
+        "line": 317
+      },
+      {
+        "status": "internal",
+        "name": "builtin_syntax",
+        "since": "1.71.0",
+        "issue": "Some(110680)",
+        "line": 319
+      },
+      {
+        "status": "unstable",
+        "name": "doc_notable_trait",
+        "since": "1.52.0",
+        "issue": "Some(45040)",
+        "line": 322
+      },
+      {
+        "status": "unstable",
+        "name": "dropck_eyepatch",
+        "since": "1.10.0",
+        "issue": "Some(34761)",
+        "line": 324
+      },
+      {
+        "status": "unstable",
+        "name": "fundamental",
+        "since": "1.0.0",
+        "issue": "Some(29635)",
+        "line": 326
+      },
+      {
+        "status": "internal",
+        "name": "link_llvm_intrinsics",
+        "since": "1.0.0",
+        "issue": "Some(29602)",
+        "line": 328
+      },
+      {
+        "status": "unstable",
+        "name": "linkage",
+        "since": "1.0.0",
+        "issue": "Some(29603)",
+        "line": 330
+      },
+      {
+        "status": "internal",
+        "name": "needs_panic_runtime",
+        "since": "1.10.0",
+        "issue": "Some(32837)",
+        "line": 332
+      },
+      {
+        "status": "internal",
+        "name": "panic_runtime",
+        "since": "1.10.0",
+        "issue": "Some(32837)",
+        "line": 334
+      },
+      {
+        "status": "internal",
+        "name": "pattern_types",
+        "since": "1.79.0",
+        "issue": "Some(123646)",
+        "line": 336
+      },
+      {
+        "status": "internal",
+        "name": "repr_simd",
+        "since": "1.4.0",
+        "issue": "Some(27731)",
+        "line": 338
+      },
+      {
+        "status": "unstable",
+        "name": "rustc_private",
+        "since": "1.0.0",
+        "issue": "Some(27812)",
+        "line": 340
+      },
+      {
+        "status": "internal",
+        "name": "rustdoc_internals",
+        "since": "1.58.0",
+        "issue": "Some(90418)",
+        "line": 342
+      },
+      {
+        "status": "unstable",
+        "name": "rustdoc_missing_doc_code_examples",
+        "since": "1.31.0",
+        "issue": "Some(101730)",
+        "line": 344
+      },
+      {
+        "status": "unstable",
+        "name": "sized_hierarchy",
+        "since": "1.89.0",
+        "issue": "Some(144404)",
+        "line": 346
+      },
+      {
+        "status": "unstable",
+        "name": "structural_match",
+        "since": "1.8.0",
+        "issue": "Some(31434)",
+        "line": 350
+      },
+      {
+        "status": "unstable",
+        "name": "unboxed_closures",
+        "since": "1.0.0",
+        "issue": "Some(29625)",
+        "line": 352
+      },
+      {
+        "status": "unstable",
+        "name": "unqualified_local_imports",
+        "since": "1.83.0",
+        "issue": "Some(138299)",
+        "line": 354
+      },
+      {
+        "status": "unstable",
+        "name": "aarch64_unstable_target_feature",
+        "since": "1.82.0",
+        "issue": "Some(150244)",
+        "line": 368
+      },
+      {
+        "status": "unstable",
+        "name": "aarch64_ver_target_feature",
+        "since": "1.27.0",
+        "issue": "Some(150245)",
+        "line": 370
+      },
+      {
+        "status": "unstable",
+        "name": "abi_avr_interrupt",
+        "since": "1.45.0",
+        "issue": "Some(69664)",
+        "line": 372
+      },
+      {
+        "status": "unstable",
+        "name": "abi_cmse_nonsecure_call",
+        "since": "1.90.0",
+        "issue": "Some(81391)",
+        "line": 374
+      },
+      {
+        "status": "unstable",
+        "name": "abi_custom",
+        "since": "1.89.0",
+        "issue": "Some(140829)",
+        "line": 376
+      },
+      {
+        "status": "unstable",
+        "name": "abi_gpu_kernel",
+        "since": "1.86.0",
+        "issue": "Some(135467)",
+        "line": 378
+      },
+      {
+        "status": "unstable",
+        "name": "abi_msp430_interrupt",
+        "since": "1.16.0",
+        "issue": "Some(38487)",
+        "line": 380
+      },
+      {
+        "status": "unstable",
+        "name": "abi_ptx",
+        "since": "1.15.0",
+        "issue": "Some(38788)",
+        "line": 382
+      },
+      {
+        "status": "unstable",
+        "name": "abi_riscv_interrupt",
+        "since": "1.73.0",
+        "issue": "Some(111889)",
+        "line": 384
+      },
+      {
+        "status": "unstable",
+        "name": "abi_swift",
+        "since": "1.97.0",
+        "issue": "Some(156481)",
+        "line": 386
+      },
+      {
+        "status": "unstable",
+        "name": "abi_x86_interrupt",
+        "since": "1.17.0",
+        "issue": "Some(40180)",
+        "line": 388
+      },
+      {
+        "status": "unstable",
+        "name": "adt_const_params",
+        "since": "1.56.0",
+        "issue": "Some(95174)",
+        "line": 390
+      },
+      {
+        "status": "unstable",
+        "name": "alloc_error_handler",
+        "since": "1.29.0",
+        "issue": "Some(51540)",
+        "line": 392
+      },
+      {
+        "status": "unstable",
+        "name": "apx_target_feature",
+        "since": "1.88.0",
+        "issue": "Some(139284)",
+        "line": 394
+      },
+      {
+        "status": "unstable",
+        "name": "arbitrary_self_types",
+        "since": "1.23.0",
+        "issue": "Some(44874)",
+        "line": 396
+      },
+      {
+        "status": "unstable",
+        "name": "arbitrary_self_types_pointers",
+        "since": "1.83.0",
+        "issue": "Some(44874)",
+        "line": 398
+      },
+      {
+        "status": "unstable",
+        "name": "arm_target_feature",
+        "since": "1.27.0",
+        "issue": "Some(150246)",
+        "line": 400
+      },
+      {
+        "status": "unstable",
+        "name": "asm_const_ptr",
+        "since": "1.99.0",
+        "issue": "Some(128464)",
+        "line": 402
+      },
+      {
+        "status": "unstable",
+        "name": "asm_experimental_arch",
+        "since": "1.58.0",
+        "issue": "Some(93335)",
+        "line": 404
+      },
+      {
+        "status": "unstable",
+        "name": "asm_experimental_reg",
+        "since": "1.85.0",
+        "issue": "Some(133416)",
+        "line": 406
+      },
+      {
+        "status": "unstable",
+        "name": "asm_goto_with_outputs",
+        "since": "1.85.0",
+        "issue": "Some(119364)",
+        "line": 408
+      },
+      {
+        "status": "unstable",
+        "name": "asm_unwind",
+        "since": "1.58.0",
+        "issue": "Some(93334)",
+        "line": 410
+      },
+      {
+        "status": "unstable",
+        "name": "associated_type_defaults",
+        "since": "1.2.0",
+        "issue": "Some(29661)",
+        "line": 412
+      },
+      {
+        "status": "incomplete",
+        "name": "async_drop",
+        "since": "1.88.0",
+        "issue": "Some(126482)",
+        "line": 414
+      },
+      {
+        "status": "incomplete",
+        "name": "async_fn_in_dyn_trait",
+        "since": "1.85.0",
+        "issue": "Some(133119)",
+        "line": 416
+      },
+      {
+        "status": "unstable",
+        "name": "async_fn_track_caller",
+        "since": "1.73.0",
+        "issue": "Some(110011)",
+        "line": 418
+      },
+      {
+        "status": "unstable",
+        "name": "async_for_loop",
+        "since": "1.77.0",
+        "issue": "Some(118898)",
+        "line": 420
+      },
+      {
+        "status": "unstable",
+        "name": "async_trait_bounds",
+        "since": "1.85.0",
+        "issue": "Some(62290)",
+        "line": 422
+      },
+      {
+        "status": "unstable",
+        "name": "avr_target_feature",
+        "since": "1.95.0",
+        "issue": "Some(146889)",
+        "line": 424
+      },
+      {
+        "status": "unstable",
+        "name": "avx10_target_feature",
+        "since": "1.88.0",
+        "issue": "Some(138843)",
+        "line": 426
+      },
+      {
+        "status": "unstable",
+        "name": "bpf_target_feature",
+        "since": "1.54.0",
+        "issue": "Some(150247)",
+        "line": 428
+      },
+      {
+        "status": "unstable",
+        "name": "c_variadic_experimental_arch",
+        "since": "1.97.0",
+        "issue": "Some(155973)",
+        "line": 431
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_contract_checks",
+        "since": "1.86.0",
+        "issue": "Some(128044)",
+        "line": 433
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_overflow_checks",
+        "since": "1.71.0",
+        "issue": "Some(111466)",
+        "line": 435
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_relocation_model",
+        "since": "1.73.0",
+        "issue": "Some(114929)",
+        "line": 437
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_sanitize",
+        "since": "1.41.0",
+        "issue": "Some(39699)",
+        "line": 439
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_sanitizer_cfi",
+        "since": "1.77.0",
+        "issue": "Some(89653)",
+        "line": 441
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_target_compact",
+        "since": "1.63.0",
+        "issue": "Some(96901)",
+        "line": 443
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_target_has_atomic",
+        "since": "1.60.0",
+        "issue": "Some(94039)",
+        "line": 445
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_target_object_format",
+        "since": "1.97.0",
+        "issue": "Some(152586)",
+        "line": 447
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_target_thread_local",
+        "since": "1.7.0",
+        "issue": "Some(29594)",
+        "line": 449
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_ub_checks",
+        "since": "1.79.0",
+        "issue": "Some(123499)",
+        "line": 451
+      },
+      {
+        "status": "unstable",
+        "name": "cfg_version",
+        "since": "1.45.0",
+        "issue": "Some(64796)",
+        "line": 453
+      },
+      {
+        "status": "unstable",
+        "name": "cfi_encoding",
+        "since": "1.71.0",
+        "issue": "Some(89653)",
+        "line": 455
+      },
+      {
+        "status": "incomplete",
+        "name": "checked_type_aliases",
+        "since": "1.99.0",
+        "issue": "Some(112792)",
+        "line": 457
+      },
+      {
+        "status": "unstable",
+        "name": "clflushopt_target_feature",
+        "since": "1.98.0",
+        "issue": "Some(157096)",
+        "line": 459
+      },
+      {
+        "status": "unstable",
+        "name": "closure_lifetime_binder",
+        "since": "1.64.0",
+        "issue": "Some(97362)",
+        "line": 461
+      },
+      {
+        "status": "unstable",
+        "name": "closure_track_caller",
+        "since": "1.57.0",
+        "issue": "Some(87417)",
+        "line": 463
+      },
+      {
+        "status": "unstable",
+        "name": "cmse_nonsecure_entry",
+        "since": "1.48.0",
+        "issue": "Some(75835)",
+        "line": 465
+      },
+      {
+        "status": "unstable",
+        "name": "const_async_blocks",
+        "since": "1.53.0",
+        "issue": "Some(85368)",
+        "line": 467
+      },
+      {
+        "status": "unstable",
+        "name": "const_block_items",
+        "since": "1.95.0",
+        "issue": "Some(149226)",
+        "line": 469
+      },
+      {
+        "status": "unstable",
+        "name": "const_c_variadic",
+        "since": "1.95.0",
+        "issue": "Some(151787)",
+        "line": 471
+      },
+      {
+        "status": "unstable",
+        "name": "const_closures",
+        "since": "1.68.0",
+        "issue": "Some(106003)",
+        "line": 473
+      },
+      {
+        "status": "unstable",
+        "name": "const_destruct",
+        "since": "1.85.0",
+        "issue": "Some(133214)",
+        "line": 475
+      },
+      {
+        "status": "unstable",
+        "name": "const_for",
+        "since": "1.56.0",
+        "issue": "Some(87575)",
+        "line": 477
+      },
+      {
+        "status": "unstable",
+        "name": "const_precise_live_drops",
+        "since": "1.46.0",
+        "issue": "Some(73255)",
+        "line": 479
+      },
+      {
+        "status": "unstable",
+        "name": "const_trait_impl",
+        "since": "1.42.0",
+        "issue": "Some(143874)",
+        "line": 481
+      },
+      {
+        "status": "unstable",
+        "name": "const_try",
+        "since": "1.56.0",
+        "issue": "Some(74935)",
+        "line": 483
+      },
+      {
+        "status": "incomplete",
+        "name": "contracts",
+        "since": "1.86.0",
+        "issue": "Some(128044)",
+        "line": 485
+      },
+      {
+        "status": "internal",
+        "name": "contracts_internals",
+        "since": "1.86.0",
+        "issue": "Some(128044)",
+        "line": 487
+      },
+      {
+        "status": "unstable",
+        "name": "coroutine_clone",
+        "since": "1.65.0",
+        "issue": "Some(95360)",
+        "line": 489
+      },
+      {
+        "status": "unstable",
+        "name": "coroutines",
+        "since": "1.21.0",
+        "issue": "Some(43122)",
+        "line": 491
+      },
+      {
+        "status": "unstable",
+        "name": "coverage_attribute",
+        "since": "1.74.0",
+        "issue": "Some(84605)",
+        "line": 494
+      },
+      {
+        "status": "unstable",
+        "name": "csky_target_feature",
+        "since": "1.73.0",
+        "issue": "Some(150248)",
+        "line": 496
+      },
+      {
+        "status": "unstable",
+        "name": "custom_inner_attributes",
+        "since": "1.30.0",
+        "issue": "Some(54726)",
+        "line": 498
+      },
+      {
+        "status": "unstable",
+        "name": "custom_test_frameworks",
+        "since": "1.30.0",
+        "issue": "Some(50297)",
+        "line": 500
+      },
+      {
+        "status": "unstable",
+        "name": "decl_macro",
+        "since": "1.17.0",
+        "issue": "Some(39412)",
+        "line": 502
+      },
+      {
+        "status": "unstable",
+        "name": "default_field_values",
+        "since": "1.85.0",
+        "issue": "Some(132162)",
+        "line": 505
+      },
+      {
+        "status": "unstable",
+        "name": "deprecated_suggestion",
+        "since": "1.61.0",
+        "issue": "Some(94785)",
+        "line": 507
+      },
+      {
+        "status": "unstable",
+        "name": "deref_patterns",
+        "since": "1.79.0",
+        "issue": "Some(87121)",
+        "line": 509
+      },
+      {
+        "status": "unstable",
+        "name": "derive_from",
+        "since": "1.91.0",
+        "issue": "Some(144889)",
+        "line": 511
+      },
+      {
+        "status": "unstable",
+        "name": "diagnostic_on_const",
+        "since": "1.93.0",
+        "issue": "Some(143874)",
+        "line": 513
+      },
+      {
+        "status": "unstable",
+        "name": "diagnostic_on_move",
+        "since": "1.96.0",
+        "issue": "Some(154181)",
+        "line": 515
+      },
+      {
+        "status": "unstable",
+        "name": "diagnostic_on_type_error",
+        "since": "1.98.0",
+        "issue": "Some(155382)",
+        "line": 517
+      },
+      {
+        "status": "unstable",
+        "name": "diagnostic_on_unknown",
+        "since": "1.96.0",
+        "issue": "Some(152900)",
+        "line": 519
+      },
+      {
+        "status": "unstable",
+        "name": "diagnostic_on_unmatched_args",
+        "since": "1.97.0",
+        "issue": "Some(155642)",
+        "line": 521
+      },
+      {
+        "status": "unstable",
+        "name": "diagnostic_opaque",
+        "since": "1.99.0",
+        "issue": "Some(158813)",
+        "line": 523
+      },
+      {
+        "status": "unstable",
+        "name": "doc_cfg",
+        "since": "1.21.0",
+        "issue": "Some(43781)",
+        "line": 525
+      },
+      {
+        "status": "unstable",
+        "name": "doc_masked",
+        "since": "1.21.0",
+        "issue": "Some(44027)",
+        "line": 527
+      },
+      {
+        "status": "incomplete",
+        "name": "effective_target_features",
+        "since": "1.91.0",
+        "issue": "Some(143352)",
+        "line": 529
+      },
+      {
+        "status": "incomplete",
+        "name": "ergonomic_clones",
+        "since": "1.87.0",
+        "issue": "Some(132290)",
+        "line": 531
+      },
+      {
+        "status": "unstable",
+        "name": "ermsb_target_feature",
+        "since": "1.49.0",
+        "issue": "Some(150249)",
+        "line": 533
+      },
+      {
+        "status": "unstable",
+        "name": "exhaustive_patterns",
+        "since": "1.13.0",
+        "issue": "Some(51085)",
+        "line": 535
+      },
+      {
+        "status": "unstable",
+        "name": "explicit_extern_abis",
+        "since": "1.88.0",
+        "issue": "Some(134986)",
+        "line": 537
+      },
+      {
+        "status": "incomplete",
+        "name": "explicit_tail_calls",
+        "since": "1.72.0",
+        "issue": "Some(112788)",
+        "line": 539
+      },
+      {
+        "status": "incomplete",
+        "name": "export_stable",
+        "since": "1.88.0",
+        "issue": "Some(139939)",
+        "line": 541
+      },
+      {
+        "status": "unstable",
+        "name": "extern_item_impls",
+        "since": "1.94.0",
+        "issue": "Some(125418)",
+        "line": 543
+      },
+      {
+        "status": "unstable",
+        "name": "extern_types",
+        "since": "1.23.0",
+        "issue": "Some(43467)",
+        "line": 545
+      },
+      {
+        "status": "unstable",
+        "name": "f128",
+        "since": "1.78.0",
+        "issue": "Some(116909)",
+        "line": 547
+      },
+      {
+        "status": "unstable",
+        "name": "f16",
+        "since": "1.78.0",
+        "issue": "Some(116909)",
+        "line": 549
+      },
+      {
+        "status": "unstable",
+        "name": "ffi_const",
+        "since": "1.45.0",
+        "issue": "Some(58328)",
+        "line": 551
+      },
+      {
+        "status": "unstable",
+        "name": "ffi_pure",
+        "since": "1.45.0",
+        "issue": "Some(58329)",
+        "line": 553
+      },
+      {
+        "status": "incomplete",
+        "name": "field_projections",
+        "since": "1.96.0",
+        "issue": "Some(145383)",
+        "line": 555
+      },
+      {
+        "status": "unstable",
+        "name": "final_associated_functions",
+        "since": "1.95.0",
+        "issue": "Some(131179)",
+        "line": 557
+      },
+      {
+        "status": "unstable",
+        "name": "fma4_target_feature",
+        "since": "1.97.0",
+        "issue": "Some(155233)",
+        "line": 559
+      },
+      {
+        "status": "unstable",
+        "name": "fmt_debug",
+        "since": "1.82.0",
+        "issue": "Some(129709)",
+        "line": 561
+      },
+      {
+        "status": "unstable",
+        "name": "fn_align",
+        "since": "1.53.0",
+        "issue": "Some(82232)",
+        "line": 563
+      },
+      {
+        "status": "incomplete",
+        "name": "fn_delegation",
+        "since": "1.76.0",
+        "issue": "Some(118212)",
+        "line": 565
+      },
+      {
+        "status": "internal",
+        "name": "freeze_impls",
+        "since": "1.78.0",
+        "issue": "Some(121675)",
+        "line": 567
+      },
+      {
+        "status": "unstable",
+        "name": "frontmatter",
+        "since": "1.88.0",
+        "issue": "Some(136889)",
+        "line": 569
+      },
+      {
+        "status": "unstable",
+        "name": "gen_blocks",
+        "since": "1.75.0",
+        "issue": "Some(117078)",
+        "line": 571
+      },
+      {
+        "status": "incomplete",
+        "name": "generic_const_args",
+        "since": "1.95.0",
+        "issue": "Some(151972)",
+        "line": 573
+      },
+      {
+        "status": "incomplete",
+        "name": "generic_const_exprs",
+        "since": "1.56.0",
+        "issue": "Some(76560)",
+        "line": 576
+      },
+      {
+        "status": "incomplete",
+        "name": "generic_const_items",
+        "since": "1.73.0",
+        "issue": "Some(113521)",
+        "line": 578
+      },
+      {
+        "status": "incomplete",
+        "name": "generic_const_parameter_types",
+        "since": "1.87.0",
+        "issue": "Some(137626)",
+        "line": 580
+      },
+      {
+        "status": "incomplete",
+        "name": "generic_pattern_types",
+        "since": "1.86.0",
+        "issue": "Some(136574)",
+        "line": 582
+      },
+      {
+        "status": "unstable",
+        "name": "global_registration",
+        "since": "1.80.0",
+        "issue": "Some(125119)",
+        "line": 584
+      },
+      {
+        "status": "incomplete",
+        "name": "guard_patterns",
+        "since": "1.85.0",
+        "issue": "Some(129967)",
+        "line": 586
+      },
+      {
+        "status": "unstable",
+        "name": "half_open_range_patterns_in_slices",
+        "since": "1.66.0",
+        "issue": "Some(67264)",
+        "line": 588
+      },
+      {
+        "status": "unstable",
+        "name": "hexagon_target_feature",
+        "since": "1.27.0",
+        "issue": "Some(150250)",
+        "line": 590
+      },
+      {
+        "status": "unstable",
+        "name": "impl_restriction",
+        "since": "1.97.0",
+        "issue": "Some(105077)",
+        "line": 592
+      },
+      {
+        "status": "unstable",
+        "name": "impl_trait_in_assoc_type",
+        "since": "1.70.0",
+        "issue": "Some(63063)",
+        "line": 594
+      },
+      {
+        "status": "unstable",
+        "name": "impl_trait_in_bindings",
+        "since": "1.64.0",
+        "issue": "Some(63065)",
+        "line": 596
+      },
+      {
+        "status": "unstable",
+        "name": "impl_trait_in_fn_trait_return",
+        "since": "1.64.0",
+        "issue": "Some(99697)",
+        "line": 598
+      },
+      {
+        "status": "unstable",
+        "name": "import_trait_associated_functions",
+        "since": "1.86.0",
+        "issue": "Some(134691)",
+        "line": 600
+      },
+      {
+        "status": "incomplete",
+        "name": "inherent_associated_types",
+        "since": "1.52.0",
+        "issue": "Some(8995)",
+        "line": 602
+      },
+      {
+        "status": "unstable",
+        "name": "instrument_fn",
+        "since": "1.98.0",
+        "issue": "Some(157081)",
+        "line": 604
+      },
+      {
+        "status": "unstable",
+        "name": "intra_doc_pointers",
+        "since": "1.51.0",
+        "issue": "Some(80896)",
+        "line": 606
+      },
+      {
+        "status": "unstable",
+        "name": "lahfsahf_target_feature",
+        "since": "1.78.0",
+        "issue": "Some(150251)",
+        "line": 608
+      },
+      {
+        "status": "unstable",
+        "name": "large_assignments",
+        "since": "1.52.0",
+        "issue": "Some(83518)",
+        "line": 610
+      },
+      {
+        "status": "unstable",
+        "name": "link_arg_attribute",
+        "since": "1.76.0",
+        "issue": "Some(99427)",
+        "line": 613
+      },
+      {
+        "status": "unstable",
+        "name": "loongarch_target_feature",
+        "since": "1.73.0",
+        "issue": "Some(150252)",
+        "line": 615
+      },
+      {
+        "status": "unstable",
+        "name": "loop_hints",
+        "since": "1.98.0",
+        "issue": "Some(156874)",
+        "line": 617
+      },
+      {
+        "status": "incomplete",
+        "name": "loop_match",
+        "since": "1.90.0",
+        "issue": "Some(132306)",
+        "line": 619
+      },
+      {
+        "status": "unstable",
+        "name": "m68k_target_feature",
+        "since": "1.85.0",
+        "issue": "Some(134328)",
+        "line": 621
+      },
+      {
+        "status": "unstable",
+        "name": "macro_attr",
+        "since": "1.91.0",
+        "issue": "Some(143547)",
+        "line": 623
+      },
+      {
+        "status": "unstable",
+        "name": "macro_derive",
+        "since": "1.91.0",
+        "issue": "Some(143549)",
+        "line": 625
+      },
+      {
+        "status": "unstable",
+        "name": "macro_guard_matcher",
+        "since": "1.96.0",
+        "issue": "Some(153104)",
+        "line": 627
+      },
+      {
+        "status": "unstable",
+        "name": "macro_metavar_expr",
+        "since": "1.61.0",
+        "issue": "Some(83527)",
+        "line": 629
+      },
+      {
+        "status": "unstable",
+        "name": "macro_metavar_expr_concat",
+        "since": "1.81.0",
+        "issue": "Some(124225)",
+        "line": 631
+      },
+      {
+        "status": "incomplete",
+        "name": "macroless_generic_const_args",
+        "since": "1.99.0",
+        "issue": "Some(159006)",
+        "line": 633
+      },
+      {
+        "status": "unstable",
+        "name": "marker_trait_attr",
+        "since": "1.30.0",
+        "issue": "Some(29864)",
+        "line": 635
+      },
+      {
+        "status": "incomplete",
+        "name": "mgca_type_const_syntax",
+        "since": "1.95.0",
+        "issue": "Some(132980)",
+        "line": 637
+      },
+      {
+        "status": "unstable",
+        "name": "min_adt_const_params",
+        "since": "1.96.0",
+        "issue": "Some(154042)",
+        "line": 640
+      },
+      {
+        "status": "incomplete",
+        "name": "min_generic_const_args",
+        "since": "1.84.0",
+        "issue": "Some(132980)",
+        "line": 643
+      },
+      {
+        "status": "unstable",
+        "name": "min_specialization",
+        "since": "1.7.0",
+        "issue": "Some(31844)",
+        "line": 647
+      },
+      {
+        "status": "unstable",
+        "name": "mips_target_feature",
+        "since": "1.27.0",
+        "issue": "Some(150253)",
+        "line": 649
+      },
+      {
+        "status": "unstable",
+        "name": "more_qualified_paths",
+        "since": "1.54.0",
+        "issue": "Some(86935)",
+        "line": 651
+      },
+      {
+        "status": "incomplete",
+        "name": "move_expr",
+        "since": "1.97.0",
+        "issue": "Some(155050)",
+        "line": 653
+      },
+      {
+        "status": "unstable",
+        "name": "movrs_target_feature",
+        "since": "1.88.0",
+        "issue": "Some(137976)",
+        "line": 655
+      },
+      {
+        "status": "unstable",
+        "name": "multiple_supertrait_upcastable",
+        "since": "1.69.0",
+        "issue": "Some(150833)",
+        "line": 657
+      },
+      {
+        "status": "unstable",
+        "name": "must_not_suspend",
+        "since": "1.57.0",
+        "issue": "Some(83310)",
+        "line": 659
+      },
+      {
+        "status": "incomplete",
+        "name": "mut_ref",
+        "since": "1.79.0",
+        "issue": "Some(123076)",
+        "line": 661
+      },
+      {
+        "status": "unstable",
+        "name": "mut_restriction",
+        "since": "1.99.0",
+        "issue": "Some(105077)",
+        "line": 663
+      },
+      {
+        "status": "unstable",
+        "name": "naked_functions_rustic_abi",
+        "since": "1.88.0",
+        "issue": "Some(138997)",
+        "line": 665
+      },
+      {
+        "status": "unstable",
+        "name": "naked_functions_target_feature",
+        "since": "1.86.0",
+        "issue": "Some(138568)",
+        "line": 667
+      },
+      {
+        "status": "incomplete",
+        "name": "named_fn_trait_parameters",
+        "since": "1.99.0",
+        "issue": "Some(158499)",
+        "line": 669
+      },
+      {
+        "status": "unstable",
+        "name": "native_link_modifiers_as_needed",
+        "since": "1.53.0",
+        "issue": "Some(81490)",
+        "line": 671
+      },
+      {
+        "status": "unstable",
+        "name": "negative_impls",
+        "since": "1.44.0",
+        "issue": "Some(68318)",
+        "line": 673
+      },
+      {
+        "status": "incomplete",
+        "name": "never_patterns",
+        "since": "1.76.0",
+        "issue": "Some(118155)",
+        "line": 675
+      },
+      {
+        "status": "unstable",
+        "name": "never_type",
+        "since": "1.13.0",
+        "issue": "Some(35121)",
+        "line": 677
+      },
+      {
+        "status": "unstable",
+        "name": "new_range",
+        "since": "1.86.0",
+        "issue": "Some(123741)",
+        "line": 679
+      },
+      {
+        "status": "unstable",
+        "name": "no_core",
+        "since": "1.3.0",
+        "issue": "Some(29639)",
+        "line": 681
+      },
+      {
+        "status": "unstable",
+        "name": "non_exhaustive_omitted_patterns_lint",
+        "since": "1.57.0",
+        "issue": "Some(89554)",
+        "line": 683
+      },
+      {
+        "status": "incomplete",
+        "name": "non_lifetime_binders",
+        "since": "1.69.0",
+        "issue": "Some(108185)",
+        "line": 685
+      },
+      {
+        "status": "unstable",
+        "name": "nvptx_target_feature",
+        "since": "1.91.0",
+        "issue": "Some(150254)",
+        "line": 687
+      },
+      {
+        "status": "unstable",
+        "name": "offset_of_enum",
+        "since": "1.75.0",
+        "issue": "Some(120141)",
+        "line": 689
+      },
+      {
+        "status": "unstable",
+        "name": "offset_of_slice",
+        "since": "1.81.0",
+        "issue": "Some(126151)",
+        "line": 691
+      },
+      {
+        "status": "unstable",
+        "name": "optimize_attribute",
+        "since": "1.34.0",
+        "issue": "Some(54882)",
+        "line": 693
+      },
+      {
+        "status": "unstable",
+        "name": "patchable_function_entry",
+        "since": "1.81.0",
+        "issue": "Some(123115)",
+        "line": 695
+      },
+      {
+        "status": "incomplete",
+        "name": "pin_ergonomics",
+        "since": "1.83.0",
+        "issue": "Some(130494)",
+        "line": 697
+      },
+      {
+        "status": "unstable",
+        "name": "postfix_match",
+        "since": "1.79.0",
+        "issue": "Some(121618)",
+        "line": 699
+      },
+      {
+        "status": "unstable",
+        "name": "powerpc_target_feature",
+        "since": "1.27.0",
+        "issue": "Some(150255)",
+        "line": 701
+      },
+      {
+        "status": "unstable",
+        "name": "prfchw_target_feature",
+        "since": "1.78.0",
+        "issue": "Some(150256)",
+        "line": 703
+      },
+      {
+        "status": "unstable",
+        "name": "proc_macro_hygiene",
+        "since": "1.30.0",
+        "issue": "Some(54727)",
+        "line": 705
+      },
+      {
+        "status": "incomplete",
+        "name": "raw_dylib_elf",
+        "since": "1.87.0",
+        "issue": "Some(135694)",
+        "line": 707
+      },
+      {
+        "status": "unstable",
+        "name": "reborrow",
+        "since": "1.91.0",
+        "issue": "Some(145612)",
+        "line": 708
+      },
+      {
+        "status": "incomplete",
+        "name": "ref_pat_eat_one_layer_2024",
+        "since": "1.79.0",
+        "issue": "Some(123076)",
+        "line": 710
+      },
+      {
+        "status": "incomplete",
+        "name": "ref_pat_eat_one_layer_2024_structural",
+        "since": "1.81.0",
+        "issue": "Some(123076)",
+        "line": 712
+      },
+      {
+        "status": "unstable",
+        "name": "register_tool",
+        "since": "1.41.0",
+        "issue": "Some(66079)",
+        "line": 714
+      },
+      {
+        "status": "unstable",
+        "name": "return_type_notation",
+        "since": "1.70.0",
+        "issue": "Some(109417)",
+        "line": 716
+      },
+      {
+        "status": "unstable",
+        "name": "riscv_target_feature",
+        "since": "1.45.0",
+        "issue": "Some(150257)",
+        "line": 718
+      },
+      {
+        "status": "unstable",
+        "name": "rtm_target_feature",
+        "since": "1.35.0",
+        "issue": "Some(150258)",
+        "line": 720
+      },
+      {
+        "status": "unstable",
+        "name": "rust_cold_cc",
+        "since": "1.63.0",
+        "issue": "Some(97544)",
+        "line": 722
+      },
+      {
+        "status": "unstable",
+        "name": "rust_preserve_none_cc",
+        "since": "1.95.0",
+        "issue": "Some(151401)",
+        "line": 724
+      },
+      {
+        "status": "unstable",
+        "name": "rust_tail_cc",
+        "since": "1.98.0",
+        "issue": "Some(157427)",
+        "line": 726
+      },
+      {
+        "status": "unstable",
+        "name": "s390x_target_feature",
+        "since": "1.82.0",
+        "issue": "Some(150259)",
+        "line": 728
+      },
+      {
+        "status": "unstable",
+        "name": "sanitize",
+        "since": "1.91.0",
+        "issue": "Some(39699)",
+        "line": 730
+      },
+      {
+        "status": "unstable",
+        "name": "simd_ffi",
+        "since": "1.0.0",
+        "issue": "Some(27731)",
+        "line": 732
+      },
+      {
+        "status": "unstable",
+        "name": "sparc_target_feature",
+        "since": "1.84.0",
+        "issue": "Some(132783)",
+        "line": 734
+      },
+      {
+        "status": "incomplete",
+        "name": "specialization",
+        "since": "1.7.0",
+        "issue": "Some(31844)",
+        "line": 736
+      },
+      {
+        "status": "incomplete",
+        "name": "splat",
+        "since": "1.98.0",
+        "issue": "Some(153629)",
+        "line": 739
+      },
+      {
+        "status": "unstable",
+        "name": "static_align",
+        "since": "1.91.0",
+        "issue": "Some(146177)",
+        "line": 741
+      },
+      {
+        "status": "unstable",
+        "name": "stmt_expr_attributes",
+        "since": "1.6.0",
+        "issue": "Some(15701)",
+        "line": 743
+      },
+      {
+        "status": "unstable",
+        "name": "strict_provenance_lints",
+        "since": "1.61.0",
+        "issue": "Some(130351)",
+        "line": 745
+      },
+      {
+        "status": "unstable",
+        "name": "super_let",
+        "since": "1.88.0",
+        "issue": "Some(139076)",
+        "line": 747
+      },
+      {
+        "status": "unstable",
+        "name": "supertrait_item_shadowing",
+        "since": "1.86.0",
+        "issue": "Some(89151)",
+        "line": 749
+      },
+      {
+        "status": "unstable",
+        "name": "thread_local",
+        "since": "1.0.0",
+        "issue": "Some(29594)",
+        "line": 751
+      },
+      {
+        "status": "unstable",
+        "name": "trait_alias",
+        "since": "1.24.0",
+        "issue": "Some(41517)",
+        "line": 753
+      },
+      {
+        "status": "unstable",
+        "name": "transmute_generic_consts",
+        "since": "1.70.0",
+        "issue": "Some(109929)",
+        "line": 755
+      },
+      {
+        "status": "unstable",
+        "name": "transparent_unions",
+        "since": "1.37.0",
+        "issue": "Some(60405)",
+        "line": 757
+      },
+      {
+        "status": "unstable",
+        "name": "trivial_bounds",
+        "since": "1.28.0",
+        "issue": "Some(48214)",
+        "line": 759
+      },
+      {
+        "status": "unstable",
+        "name": "try_blocks",
+        "since": "1.29.0",
+        "issue": "Some(154391)",
+        "line": 761
+      },
+      {
+        "status": "unstable",
+        "name": "try_blocks_heterogeneous",
+        "since": "1.94.0",
+        "issue": "Some(149488)",
+        "line": 763
+      },
+      {
+        "status": "unstable",
+        "name": "type_alias_impl_trait",
+        "since": "1.38.0",
+        "issue": "Some(63063)",
+        "line": 765
+      },
+      {
+        "status": "unstable",
+        "name": "type_changing_struct_update",
+        "since": "1.58.0",
+        "issue": "Some(86555)",
+        "line": 768
+      },
+      {
+        "status": "incomplete",
+        "name": "unnamed_enum_variants",
+        "since": "1.98.0",
+        "issue": "Some(156628)",
+        "line": 770
+      },
+      {
+        "status": "incomplete",
+        "name": "unsafe_binders",
+        "since": "1.85.0",
+        "issue": "Some(130516)",
+        "line": 772
+      },
+      {
+        "status": "incomplete",
+        "name": "unsafe_fields",
+        "since": "1.85.0",
+        "issue": "Some(132922)",
+        "line": 774
+      },
+      {
+        "status": "incomplete",
+        "name": "unsized_const_params",
+        "since": "1.82.0",
+        "issue": "Some(95174)",
+        "line": 777
+      },
+      {
+        "status": "internal",
+        "name": "unsized_fn_params",
+        "since": "1.49.0",
+        "issue": "Some(48055)",
+        "line": 779
+      },
+      {
+        "status": "unstable",
+        "name": "used_with_arg",
+        "since": "1.60.0",
+        "issue": "Some(93798)",
+        "line": 781
+      },
+      {
+        "status": "unstable",
+        "name": "view_types",
+        "since": "1.97.0",
+        "issue": "Some(155938)",
+        "line": 783
+      },
+      {
+        "status": "unstable",
+        "name": "wasm_target_feature",
+        "since": "1.30.0",
+        "issue": "Some(150260)",
+        "line": 785
+      },
+      {
+        "status": "unstable",
+        "name": "where_clause_attrs",
+        "since": "1.87.0",
+        "issue": "Some(115590)",
+        "line": 787
+      },
+      {
+        "status": "unstable",
+        "name": "x86_amx_intrinsics",
+        "since": "1.81.0",
+        "issue": "Some(126622)",
+        "line": 789
+      },
+      {
+        "status": "unstable",
+        "name": "x87_target_feature",
+        "since": "1.85.0",
+        "issue": "Some(150261)",
+        "line": 791
+      },
+      {
+        "status": "unstable",
+        "name": "xop_target_feature",
+        "since": "1.81.0",
+        "issue": "Some(127208)",
+        "line": 793
+      },
+      {
+        "status": "unstable",
+        "name": "xtensa_target_feature",
+        "since": "1.98.0",
+        "issue": "Some(157063)",
+        "line": 795
+      },
+      {
+        "status": "unstable",
+        "name": "yeet_expr",
+        "since": "1.62.0",
+        "issue": "Some(96373)",
+        "line": 797
+      },
+      {
+        "status": "unstable",
+        "name": "yield_expr",
+        "since": "1.87.0",
+        "issue": "Some(43122)",
+        "line": 798
+      }
+    ],
+    "removed": [
+      {
+        "name": "abi_amdgpu_kernel",
+        "since": "1.77.0",
+        "issue": "Some(51575)",
+        "line": 56
+      },
+      {
+        "name": "abi_c_cmse_nonsecure_call",
+        "since": "1.90.0",
+        "issue": "Some(81391)",
+        "line": 57
+      },
+      {
+        "name": "advanced_slice_patterns",
+        "since": "1.42.0",
+        "issue": "Some(62254)",
+        "line": 58
+      },
+      {
+        "name": "allocator",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 60
+      },
+      {
+        "name": "allow_fail",
+        "since": "1.60.0",
+        "issue": "Some(46488)",
+        "line": 62
+      },
+      {
+        "name": "associated_const_equality",
+        "since": "1.94.0",
+        "issue": "Some(92827)",
+        "line": 64
+      },
+      {
+        "name": "await_macro",
+        "since": "1.38.0",
+        "issue": "Some(50547)",
+        "line": 66
+      },
+      {
+        "name": "box_syntax",
+        "since": "1.70.0",
+        "issue": "Some(49733)",
+        "line": 69
+      },
+      {
+        "name": "capture_disjoint_fields",
+        "since": "1.69.0",
+        "issue": "Some(53488)",
+        "line": 71
+      },
+      {
+        "name": "const_compare_raw_pointers",
+        "since": "1.46.0",
+        "issue": "Some(53020)",
+        "line": 73
+      },
+      {
+        "name": "const_eval_limit",
+        "since": "1.72.0",
+        "issue": "Some(67217)",
+        "line": 76
+      },
+      {
+        "name": "const_evaluatable_checked",
+        "since": "1.56.0",
+        "issue": "Some(76560)",
+        "line": 78
+      },
+      {
+        "name": "const_fn",
+        "since": "1.54.0",
+        "issue": "Some(57563)",
+        "line": 80
+      },
+      {
+        "name": "const_generics",
+        "since": "1.56.0",
+        "issue": "Some(44580)",
+        "line": 83
+      },
+      {
+        "name": "const_in_array_repeat_expressions",
+        "since": "1.51.0",
+        "issue": "Some(49147)",
+        "line": 86
+      },
+      {
+        "name": "const_raw_ptr_to_usize_cast",
+        "since": "1.55.0",
+        "issue": "Some(51910)",
+        "line": 89
+      },
+      {
+        "name": "const_trait_bound_opt_out",
+        "since": "1.56.0",
+        "issue": "Some(67794)",
+        "line": 92
+      },
+      {
+        "name": "crate_visibility_modifier",
+        "since": "1.63.0",
+        "issue": "Some(53120)",
+        "line": 95
+      },
+      {
+        "name": "custom_attribute",
+        "since": "1.0.0",
+        "issue": "Some(29642)",
+        "line": 97
+      },
+      {
+        "name": "custom_derive",
+        "since": "1.32.0",
+        "issue": "Some(29644)",
+        "line": 100
+      },
+      {
+        "name": "default_type_parameter_fallback",
+        "since": "1.82.0",
+        "issue": "Some(27336)",
+        "line": 103
+      },
+      {
+        "name": "deprecated_safe",
+        "since": "1.95.0",
+        "issue": "Some(94978)",
+        "line": 106
+      },
+      {
+        "name": "derive_smart_pointer",
+        "since": "1.84.0",
+        "issue": "Some(123430)",
+        "line": 108
+      },
+      {
+        "name": "diagnostic_on_unmatch_args",
+        "since": "1.98.0",
+        "issue": "Some(155642)",
+        "line": 110
+      },
+      {
+        "name": "doc_auto_cfg",
+        "since": "1.92.0",
+        "issue": "Some(43781)",
+        "line": 112
+      },
+      {
+        "name": "doc_cfg_hide",
+        "since": "1.92.0",
+        "issue": "Some(43781)",
+        "line": 114
+      },
+      {
+        "name": "doc_keyword",
+        "since": "1.58.0",
+        "issue": "Some(51315)",
+        "line": 116
+      },
+      {
+        "name": "doc_primitive",
+        "since": "1.58.0",
+        "issue": "Some(88070)",
+        "line": 119
+      },
+      {
+        "name": "doc_spotlight",
+        "since": "1.53.0",
+        "issue": "Some(45040)",
+        "line": 124
+      },
+      {
+        "name": "dropck_parametricity",
+        "since": "1.38.0",
+        "issue": "Some(28498)",
+        "line": 127
+      },
+      {
+        "name": "dyn_compatible_for_dispatch",
+        "since": "1.87.0",
+        "issue": "Some(43561)",
+        "line": 135
+      },
+      {
+        "name": "dyn_star",
+        "since": "1.65.0",
+        "issue": "Some(102425)",
+        "line": 138
+      },
+      {
+        "name": "effects",
+        "since": "1.84.0",
+        "issue": "Some(102090)",
+        "line": 141
+      },
+      {
+        "name": "existential_type",
+        "since": "1.38.0",
+        "issue": "Some(63063)",
+        "line": 144
+      },
+      {
+        "name": "extern_in_paths",
+        "since": "1.33.0",
+        "issue": "Some(55600)",
+        "line": 147
+      },
+      {
+        "name": "external_doc",
+        "since": "1.54.0",
+        "issue": "Some(44732)",
+        "line": 150
+      },
+      {
+        "name": "ffi_returns_twice",
+        "since": "1.78.0",
+        "issue": "Some(58314)",
+        "line": 153
+      },
+      {
+        "name": "generator_clone",
+        "since": "1.75.0",
+        "issue": "Some(95360)",
+        "line": 156
+      },
+      {
+        "name": "generators",
+        "since": "1.75.0",
+        "issue": "Some(43122)",
+        "line": 158
+      },
+      {
+        "name": "generic_associated_types_extended",
+        "since": "1.85.0",
+        "issue": "Some(95451)",
+        "line": 160
+      },
+      {
+        "name": "import_shadowing",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 167
+      },
+      {
+        "name": "in_band_lifetimes",
+        "since": "1.61.0",
+        "issue": "Some(44524)",
+        "line": 169
+      },
+      {
+        "name": "infer_static_outlives_requirements",
+        "since": "1.63.0",
+        "issue": "Some(54185)",
+        "line": 172
+      },
+      {
+        "name": "inline_const_pat",
+        "since": "1.88.0",
+        "issue": "Some(76001)",
+        "line": 175
+      },
+      {
+        "name": "issue_5723_bootstrap",
+        "since": "1.95.0",
+        "issue": "None",
+        "line": 179
+      },
+      {
+        "name": "lazy_normalization_consts",
+        "since": "1.56.0",
+        "issue": "Some(72219)",
+        "line": 181
+      },
+      {
+        "name": "lazy_type_alias",
+        "since": "1.72.0",
+        "issue": "Some(112792)",
+        "line": 183
+      },
+      {
+        "name": "lifetime_capture_rules_2024",
+        "since": "1.87.0",
+        "issue": "None",
+        "line": 185
+      },
+      {
+        "name": "link_args",
+        "since": "1.53.0",
+        "issue": "Some(29596)",
+        "line": 187
+      },
+      {
+        "name": "macro_reexport",
+        "since": "1.0.0",
+        "issue": "Some(29638)",
+        "line": 190
+      },
+      {
+        "name": "main",
+        "since": "1.53.0",
+        "issue": "Some(29634)",
+        "line": 193
+      },
+      {
+        "name": "managed_boxes",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 194
+      },
+      {
+        "name": "min_type_alias_impl_trait",
+        "since": "1.56.0",
+        "issue": "Some(63063)",
+        "line": 196
+      },
+      {
+        "name": "mut_preserve_binding_mode_2024",
+        "since": "1.80.0",
+        "issue": "Some(123076)",
+        "line": 199
+      },
+      {
+        "name": "needs_allocator",
+        "since": "1.4.0",
+        "issue": "Some(27389)",
+        "line": 200
+      },
+      {
+        "name": "negate_unsigned",
+        "since": "1.0.0",
+        "issue": "Some(29645)",
+        "line": 203
+      },
+      {
+        "name": "never_type_fallback",
+        "since": "1.93.0",
+        "issue": "Some(65992)",
+        "line": 205
+      },
+      {
+        "name": "no_coverage",
+        "since": "1.74.0",
+        "issue": "Some(84605)",
+        "line": 208
+      },
+      {
+        "name": "no_debug",
+        "since": "1.43.0",
+        "issue": "Some(29721)",
+        "line": 210
+      },
+      {
+        "name": "no_sanitize",
+        "since": "1.91.0",
+        "issue": "Some(39699)",
+        "line": 213
+      },
+      {
+        "name": "no_stack_check",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 218
+      },
+      {
+        "name": "object_safe_for_dispatch",
+        "since": "1.83.0",
+        "issue": "Some(43561)",
+        "line": 221
+      },
+      {
+        "name": "omit_gdb_pretty_printer_section",
+        "since": "1.91.0",
+        "issue": "None",
+        "line": 224
+      },
+      {
+        "name": "on_unimplemented",
+        "since": "1.40.0",
+        "issue": "None",
+        "line": 227
+      },
+      {
+        "name": "opt_out_copy",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 229
+      },
+      {
+        "name": "optin_builtin_traits",
+        "since": "1.50.0",
+        "issue": "Some(13231)",
+        "line": 232
+      },
+      {
+        "name": "overlapping_marker_traits",
+        "since": "1.42.0",
+        "issue": "Some(29864)",
+        "line": 235
+      },
+      {
+        "name": "panic_implementation",
+        "since": "1.28.0",
+        "issue": "Some(44489)",
+        "line": 237
+      },
+      {
+        "name": "platform_intrinsics",
+        "since": "1.78.0",
+        "issue": "Some(27731)",
+        "line": 240
+      },
+      {
+        "name": "plugin",
+        "since": "1.75.0",
+        "issue": "Some(29597)",
+        "line": 243
+      },
+      {
+        "name": "plugin_registrar",
+        "since": "1.75.0",
+        "issue": "Some(29597)",
+        "line": 246
+      },
+      {
+        "name": "precise_pointer_size_matching",
+        "since": "1.76.0",
+        "issue": "Some(56354)",
+        "line": 249
+      },
+      {
+        "name": "pref_align_of",
+        "since": "1.89.0",
+        "issue": "Some(91971)",
+        "line": 251
+      },
+      {
+        "name": "proc_macro_expr",
+        "since": "1.27.0",
+        "issue": "Some(54727)",
+        "line": 253
+      },
+      {
+        "name": "proc_macro_gen",
+        "since": "1.27.0",
+        "issue": "Some(54727)",
+        "line": 255
+      },
+      {
+        "name": "proc_macro_mod",
+        "since": "1.27.0",
+        "issue": "Some(54727)",
+        "line": 257
+      },
+      {
+        "name": "proc_macro_non_items",
+        "since": "1.27.0",
+        "issue": "Some(54727)",
+        "line": 259
+      },
+      {
+        "name": "pub_macro_rules",
+        "since": "1.53.0",
+        "issue": "Some(78855)",
+        "line": 261
+      },
+      {
+        "name": "pushpop_unsafe",
+        "since": "1.2.0",
+        "issue": "None",
+        "line": 263
+      },
+      {
+        "name": "quad_precision_float",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 264
+      },
+      {
+        "name": "quote",
+        "since": "1.33.0",
+        "issue": "Some(29601)",
+        "line": 265
+      },
+      {
+        "name": "ref_pat_everywhere",
+        "since": "1.80.0",
+        "issue": "Some(123076)",
+        "line": 266
+      },
+      {
+        "name": "reflect",
+        "since": "1.0.0",
+        "issue": "Some(27749)",
+        "line": 267
+      },
+      {
+        "name": "register_attr",
+        "since": "1.65.0",
+        "issue": "Some(66080)",
+        "line": 269
+      },
+      {
+        "name": "rust_2018_preview",
+        "since": "1.76.0",
+        "issue": "None",
+        "line": 271
+      },
+      {
+        "name": "rustc_diagnostic_macros",
+        "since": "1.38.0",
+        "issue": "None",
+        "line": 277
+      },
+      {
+        "name": "sanitizer_runtime",
+        "since": "1.17.0",
+        "issue": "None",
+        "line": 279
+      },
+      {
+        "name": "simd",
+        "since": "1.0.0",
+        "issue": "Some(27731)",
+        "line": 280
+      },
+      {
+        "name": "start",
+        "since": "1.86.0",
+        "issue": "Some(29633)",
+        "line": 282
+      },
+      {
+        "name": "static_nobundle",
+        "since": "1.63.0",
+        "issue": "Some(37403)",
+        "line": 284
+      },
+      {
+        "name": "string_deref_patterns",
+        "since": "1.94.0",
+        "issue": "Some(87121)",
+        "line": 287
+      },
+      {
+        "name": "struct_inherit",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 288
+      },
+      {
+        "name": "target_feature_inline_always",
+        "since": "1.97.0",
+        "issue": "Some(145574)",
+        "line": 290
+      },
+      {
+        "name": "test_removed_feature",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 292
+      },
+      {
+        "name": "unmarked_api",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 294
+      },
+      {
+        "name": "unnamed_fields",
+        "since": "1.83.0",
+        "issue": "Some(49804)",
+        "line": 296
+      },
+      {
+        "name": "unsafe_no_drop_flag",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 297
+      },
+      {
+        "name": "unsized_locals",
+        "since": "1.89.0",
+        "issue": "Some(48055)",
+        "line": 299
+      },
+      {
+        "name": "unsized_tuple_coercion",
+        "since": "1.87.0",
+        "issue": "Some(42877)",
+        "line": 300
+      },
+      {
+        "name": "untagged_unions",
+        "since": "1.64.0",
+        "issue": "Some(55149)",
+        "line": 303
+      },
+      {
+        "name": "unwind_attributes",
+        "since": "1.56.0",
+        "issue": "Some(58760)",
+        "line": 308
+      },
+      {
+        "name": "visible_private_types",
+        "since": "1.0.0",
+        "issue": "None",
+        "line": 309
+      },
+      {
+        "name": "wasm_abi",
+        "since": "1.81.0",
+        "issue": "Some(83788)",
+        "line": 311
+      }
+    ],
+    "builtin_attrs": [],
+    "rustc_internal_attrs": [
+      "rustc_abi",
+      "rustc_align",
+      "rustc_align_static",
+      "rustc_allocator",
+      "rustc_allocator_zeroed",
+      "rustc_allocator_zeroed_variant",
+      "rustc_allow_const_fn_unstable",
+      "rustc_allow_incoherent_impl",
+      "rustc_allow_lifetime_dependent_specialization",
+      "rustc_allowed_through_unstable_modules",
+      "rustc_as_ptr",
+      "rustc_attrs",
+      "rustc_autodiff",
+      "rustc_builtin_macro",
+      "rustc_canonical_symbol",
+      "rustc_capture_analysis",
+      "rustc_clean",
+      "rustc_coherence_is_core",
+      "rustc_coinductive",
+      "rustc_comptime",
+      "rustc_confusables",
+      "rustc_const_stable",
+      "rustc_const_stable_indirect",
+      "rustc_const_unstable",
+      "rustc_conversion_suggestion",
+      "rustc_data_structures",
+      "rustc_deallocator",
+      "rustc_default_body_unstable",
+      "rustc_delayed_bug_from_inside_query",
+      "rustc_deny_explicit_impl",
+      "rustc_deprecated_safe_2024",
+      "rustc_diagnostic_item",
+      "rustc_diagnostic_opaque",
+      "rustc_do_not_const_check",
+      "rustc_doc_primitive",
+      "rustc_dummy",
+      "rustc_dump_def_parents",
+      "rustc_dump_def_path",
+      "rustc_dump_generics",
+      "rustc_dump_hidden_type_of_opaques",
+      "rustc_dump_inferred_outlives",
+      "rustc_dump_item_bounds",
+      "rustc_dump_layout",
+      "rustc_dump_object_lifetime_defaults",
+      "rustc_dump_predicates",
+      "rustc_dump_symbol_name",
+      "rustc_dump_user_args",
+      "rustc_dump_variances",
+      "rustc_dump_variances_of_opaques",
+      "rustc_dump_vtable",
+      "rustc_dyn_incompatible_trait",
+      "rustc_effective_visibility",
+      "rustc_eii_foreign_item",
+      "rustc_evaluate_where_clauses",
+      "rustc_expected_cgu_reuse",
+      "rustc_force_inline",
+      "rustc_has_incoherent_inherent_impls",
+      "rustc_if_this_changed",
+      "rustc_inherit_overflow_checks",
+      "rustc_insignificant_dtor",
+      "rustc_intrinsic",
+      "rustc_intrinsic_const_stable_indirect",
+      "rustc_legacy_const_generics",
+      "rustc_lint_opt_deny_field_access",
+      "rustc_lint_opt_ty",
+      "rustc_lint_query_instability",
+      "rustc_lint_untracked_query_information",
+      "rustc_macro_transparency",
+      "rustc_main",
+      "rustc_mir",
+      "rustc_must_implement_one_of",
+      "rustc_must_match_exhaustively",
+      "rustc_never_returns_null_ptr",
+      "rustc_never_type_options",
+      "rustc_no_implicit_autorefs",
+      "rustc_no_implicit_bounds",
+      "rustc_no_mir_inline",
+      "rustc_no_writable",
+      "rustc_non_const_trait_method",
+      "rustc_nonnull_optimization_guaranteed",
+      "rustc_nounwind",
+      "rustc_objc_class",
+      "rustc_objc_selector",
+      "rustc_offload_kernel",
+      "rustc_on_unimplemented",
+      "rustc_panics_when_zero",
+      "rustc_paren_sugar",
+      "rustc_partition_codegened",
+      "rustc_partition_reused",
+      "rustc_pass_by_value",
+      "rustc_pass_indirectly_in_non_rustic_abis",
+      "rustc_preserve_ub_checks",
+      "rustc_proc_macro_decls",
+      "rustc_promotable",
+      "rustc_pub_transparent",
+      "rustc_reallocator",
+      "rustc_regions",
+      "rustc_reservation_impl",
+      "rustc_scalable_vector",
+      "rustc_should_not_be_called_on_const_items",
+      "rustc_simd_monomorphize_lane_limit",
+      "rustc_skip_during_method_dispatch",
+      "rustc_span",
+      "rustc_specialization_trait",
+      "rustc_splat",
+      "rustc_std_internal_symbol",
+      "rustc_strict_coherence",
+      "rustc_test_marker",
+      "rustc_then_this_would_need",
+      "rustc_trivial_field_reads",
+      "rustc_unroll"
+    ]
+  },
+  "compiler_feature_refs": {
+    "deref_patterns": {
+      "rustc_mir_build": [
+        "compiler/rustc_mir_build/src/thir/constant.rs:49"
+      ],
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/consts/lit.rs:31",
+        "compiler/rustc_middle/src/ty/consts/lit.rs:39"
+      ]
+    },
+    "never_patterns": {
+      "rustc_mir_build": [
+        "compiler/rustc_mir_build/src/thir/pattern/check_match.rs:1373"
+      ]
+    },
+    "unsized_fn_params": {
+      "rustc_mir_build": [
+        "compiler/rustc_mir_build/src/builder/expr/as_operand.rs:179"
+      ],
+      "rustc_mir_transform": [
+        "compiler/rustc_mir_transform/src/coroutine/layout.rs:485"
+      ]
+    },
+    "iter": {
+      "rustc_mir_transform": [
+        "compiler/rustc_mir_transform/src/inline.rs:841",
+        "compiler/rustc_mir_transform/src/inline.rs:842"
+      ],
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/context.rs:1238"
+      ],
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:147",
+        "compiler/rustc_codegen_ssa/src/target_features.rs:318",
+        "compiler/rustc_codegen_ssa/src/target_features.rs:348",
+        "compiler/rustc_codegen_ssa/src/codegen_attrs.rs:361"
+      ],
+      "rustc_codegen_llvm": [
+        "compiler/rustc_codegen_llvm/src/attributes.rs:163",
+        "compiler/rustc_codegen_llvm/src/attributes.rs:429",
+        "compiler/rustc_codegen_llvm/src/attributes.rs:647",
+        "compiler/rustc_codegen_llvm/src/llvm_util.rs:605",
+        "compiler/rustc_codegen_llvm/src/asm.rs:1091"
+      ],
+      "rustc_codegen_gcc": [
+        "compiler/rustc_codegen_gcc/build_system/src/test.rs:284"
+      ]
+    },
+    "async_drop": {
+      "rustc_mir_transform": [
+        "compiler/rustc_mir_transform/src/elaborate_drop.rs:691"
+      ]
+    },
+    "staged_api": {
+      "rustc_mir_transform": [
+        "compiler/rustc_mir_transform/src/elaborate_drop.rs:716"
+      ],
+      "rustc_const_eval": [
+        "compiler/rustc_const_eval/src/check_consts/mod.rs:57",
+        "compiler/rustc_const_eval/src/check_consts/mod.rs:106"
+      ]
+    },
+    "const_trait_impl": {
+      "rustc_const_eval": [
+        "compiler/rustc_const_eval/src/check_consts/ops.rs:411"
+      ]
+    },
+    "const_precise_live_drops": {
+      "rustc_const_eval": [
+        "compiler/rustc_const_eval/src/check_consts/post_drop_elaboration.rs:25"
+      ]
+    },
+    "generic_const_exprs": {
+      "rustc_ty_utils": [
+        "compiler/rustc_ty_utils/src/consts.rs:360"
+      ],
+      "rustc_middle": [
+        "compiler/rustc_middle/src/mir/interpret/queries.rs:135"
+      ]
+    },
+    "lock": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/dep_graph/graph.rs:782",
+        "compiler/rustc_middle/src/ty/context.rs:1615"
+      ]
+    },
+    "generic_const_args": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/assoc.rs:151"
+      ]
+    },
+    "intrinsics": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/util.rs:1711"
+      ]
+    },
+    "transmute_generic_consts": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/layout.rs:445"
+      ]
+    },
+    "doc_cfg": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/context.rs:1629"
+      ]
+    },
+    "is_empty": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/context/impl_interner.rs:484"
+      ],
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:411",
+        "compiler/rustc_codegen_ssa/src/codegen_attrs.rs:448"
+      ],
+      "rustc_codegen_llvm": [
+        "compiler/rustc_codegen_llvm/src/attributes.rs:432",
+        "compiler/rustc_codegen_llvm/src/llvm_util.rs:618"
+      ],
+      "rustc_codegen_gcc": [
+        "compiler/rustc_codegen_gcc/src/attributes.rs:156"
+      ]
+    },
+    "sized_hierarchy": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/print/pretty.rs:1219"
+      ]
+    },
+    "return_type_notation": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/ty/print/pretty.rs:1326"
+      ]
+    },
+    "with_negative_coherence": {
+      "rustc_middle": [
+        "compiler/rustc_middle/src/traits/specialization_graph.rs:63"
+      ]
+    },
+    "keys": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:42"
+      ]
+    },
+    "len": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:50",
+        "compiler/rustc_codegen_ssa/src/back/link.rs:3268"
+      ],
+      "rustc_codegen_llvm": [
+        "compiler/rustc_codegen_llvm/src/llvm/mod.rs:491"
+      ]
+    },
+    "clone": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:144"
+      ]
+    },
+    "pop": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:244"
+      ]
+    },
+    "unwrap": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:344"
+      ]
+    },
+    "into_iter": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/target_features.rs:353"
+      ]
+    },
+    "closure_track_caller": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/codegen_attrs.rs:159"
+      ]
+    },
+    "ergonomic_clones": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/mir/mod.rs:229",
+        "compiler/rustc_codegen_ssa/src/mir/mod.rs:403"
+      ]
+    },
+    "sort": {
+      "rustc_codegen_llvm": [
+        "compiler/rustc_codegen_llvm/src/llvm_util.rs:599"
+      ]
+    },
+    "as_ptr": {
+      "rustc_codegen_llvm": [
+        "compiler/rustc_codegen_llvm/src/back/owned_target_machine.rs:49",
+        "compiler/rustc_codegen_llvm/src/llvm/mod.rs:490"
+      ]
+    }
+  },
+  "compiler_attr_refs": {
+    "rustc_private": {
+      "rustc_const_eval": [
+        "compiler/rustc_const_eval/src/check_consts/check.rs:528"
+      ],
+      "rustc_middle": [
+        "compiler/rustc_middle/src/middle/stability.rs:422",
+        "compiler/rustc_middle/src/ty/util.rs:872"
+      ]
+    },
+    "cold": {
+      "rustc_codegen_ssa": [
+        "compiler/rustc_codegen_ssa/src/mir/intrinsic.rs:126",
+        "compiler/rustc_codegen_ssa/src/mir/intrinsic.rs:588"
+      ],
+      "rustc_codegen_cranelift": [
+        "compiler/rustc_codegen_cranelift/src/intrinsics/mod.rs:1555"
+      ]
+    }
+  },
+  "stdlib_features": {
+    "library/core": [
+      "aarch64_unstable_target_feature",
+      "abi_unadjusted",
+      "addr_parse_ascii",
+      "adt_const_params",
+      "align_to_uninit_mut",
+      "allocator_api",
+      "allow_internal_unsafe",
+      "allow_internal_unstable",
+      "arbitrary_self_types",
+      "arm_target_feature",
+      "array_into_iter_constructors",
+      "array_ptr_get",
+      "array_try_from_fn",
+      "array_try_map",
+      "ascii_char",
+      "ascii_char_variants",
+      "asm_experimental_arch",
+      "async_iterator",
+      "atomic_ptr_null",
+      "auto_traits",
+      "autodiff",
+      "avx10_target_feature",
+      "bool_toggle",
+      "bound_copied",
+      "bstr",
+      "bstr_internals",
+      "casefold",
+      "cell_get_cloned",
+      "cell_leak",
+      "cfg_sanitize",
+      "cfg_target_has_atomic",
+      "cfg_target_has_reliable_f16_f128",
+      "cfg_ub_checks",
+      "char_to_u32",
+      "char_unassigned_private_use",
+      "clamp_magnitude",
+      "clflushopt_target_feature",
+      "clone_to_uninit",
+      "cmp_minmax",
+      "cmp_splat",
+      "concat_bytes",
+      "const_carrying_mul_add",
+      "const_closures",
+      "const_cmp",
+      "const_destruct",
+      "const_eval_select",
+      "const_precise_live_drops",
+      "const_select_unpredictable",
+      "const_trait_impl",
+      "const_unsigned_bigint_helpers",
+      "control_flow_into_value",
+      "core_float_math",
+      "core_intrinsics",
+      "core_io",
+      "coroutine_trait",
+      "coroutines",
+      "covariant_unsafe_cell",
+      "coverage_attribute",
+      "cstr_bytes",
+      "cstr_display",
+      "cursor_split",
+      "custom_mir",
+      "darwin_objc",
+      "decl_macro",
+      "default_ignorable",
+      "deprecated_suggestion",
+      "derive_coerce_pointee",
+      "derive_const",
+      "diagnostic_on_const",
+      "diagnostic_on_unmatched_args",
+      "diagnostic_opaque",
+      "disjoint_bitor",
+      "dispatch_from_dyn",
+      "doc_cfg",
+      "doc_notable_trait",
+      "downcast_unchecked",
+      "drop_guard",
+      "duration_constants",
+      "duration_constructors",
+      "duration_integer_division",
+      "duration_millis_float",
+      "error_generic_member_access",
+      "error_iter",
+      "exact_bitshifts",
+      "exact_div",
+      "exact_size_is_empty",
+      "exclusive_wrapper",
+      "explicit_tail_calls",
+      "extern_types",
+      "f128",
+      "f16",
+      "field_projections",
+      "final_associated_functions",
+      "float_exact_integer_constants",
+      "float_masks",
+      "float_minimum_maximum",
+      "forget_unsized",
+      "freeze_impls",
+      "fundamental",
+      "funnel_shifts",
+      "future_join",
+      "hasher_prefixfree_extras",
+      "hexagon_target_feature",
+      "hint_must_use",
+      "hint_prefetch",
+      "impl_restriction",
+      "inplace_iteration",
+      "int_from_ascii",
+      "int_roundings",
+      "integer_atomics",
+      "integer_cast_extras",
+      "integer_casts",
+      "integer_widen_truncate",
+      "intra_doc_pointers",
+      "intrinsics",
+      "io_const_error",
+      "io_slice_as_bytes",
+      "ip",
+      "ip_as_octets",
+      "is_ascii_octdigit",
+      "iter_advance_by",
+      "iter_array_chunks",
+      "iter_collect_into",
+      "iter_from_coroutine",
+      "iter_intersperse",
+      "iter_is_partitioned",
+      "iter_macro",
+      "iter_map_windows",
+      "iter_next_chunk",
+      "iter_order_by",
+      "iter_partition_in_place",
+      "iterator_try_collect",
+      "iterator_try_reduce",
+      "lang_items",
+      "lazy_cell_into_inner",
+      "likely_unlikely",
+      "link_cfg",
+      "link_llvm_intrinsics",
+      "local_waker",
+      "loongarch_target_feature",
+      "macro_metavar_expr",
+      "macro_metavar_expr_concat",
+      "marker_trait_attr",
+      "maybe_dangling",
+      "maybe_uninit_array_assume_init",
+      "maybe_uninit_as_bytes",
+      "maybe_uninit_fill",
+      "maybe_uninit_uninit_array_transpose",
+      "mem_conjure_zst",
+      "mem_copy_fn",
+      "min_specialization",
+      "mips_target_feature",
+      "movrs_target_feature",
+      "multiple_supertrait_upcastable",
+      "must_not_suspend",
+      "negative_impls",
+      "never_type",
+      "new_range",
+      "new_range_remainder",
+      "next_index",
+      "no_core",
+      "nonzero_bitwise",
+      "nonzero_ops",
+      "nvptx_target_feature",
+      "offset_of_enum",
+      "once_cell_get_mut",
+      "once_cell_new_init",
+      "once_cell_try",
+      "once_cell_try_insert",
+      "optimize_attribute",
+      "option_array_transpose",
+      "option_get_or_try_insert_with",
+      "option_into_flat_iter",
+      "option_reduce",
+      "option_reference_flattening",
+      "option_zip",
+      "panic_internals",
+      "pattern_type_macro",
+      "pattern_types",
+      "phantom_variance_markers",
+      "pin_macro_internals",
+      "pointer_is_aligned_to",
+      "pointer_try_cast_aligned",
+      "portable_simd",
+      "powerpc_target_feature",
+      "prelude_import",
+      "ptr_alignment_type",
+      "ptr_as_uninit",
+      "ptr_cast_slice",
+      "ptr_mask",
+      "ptr_metadata",
+      "random",
+      "range_bounds_is_empty",
+      "range_into_bounds",
+      "raw_slice_split",
+      "refcell_try_map",
+      "repr_simd",
+      "return_address",
+      "rev_into_inner",
+      "riscv_target_feature",
+      "rtm_target_feature",
+      "rustc_attrs",
+      "rustdoc_internals",
+      "s390x_target_feature",
+      "seek_stream_len",
+      "set_ptr_value",
+      "share_trait",
+      "signed_bigint_helpers",
+      "simd_ffi",
+      "sized_type_properties",
+      "slice_from_ptr_range",
+      "slice_index_methods",
+      "slice_iter_mut_as_mut_slice",
+      "slice_partial_sort_unstable",
+      "slice_partition_dedup",
+      "slice_ptr_get",
+      "slice_range",
+      "slice_shift",
+      "slice_split_once",
+      "slice_swap_unchecked",
+      "sliceindex_wrappers",
+      "sort_floats",
+      "splat",
+      "split_array",
+      "split_as_slice",
+      "staged_api",
+      "stmt_expr_attributes",
+      "str_copy_from_str",
+      "str_lines_remainder",
+      "str_split_inclusive_remainder",
+      "str_split_remainder",
+      "str_split_whitespace_remainder",
+      "strict_provenance_lints",
+      "titlecase",
+      "trait_alias",
+      "transmutability",
+      "transmute_neo",
+      "transmute_prefix",
+      "transparent_unions",
+      "trim_prefix_suffix",
+      "try_as_dyn",
+      "try_blocks",
+      "try_find",
+      "try_trait_v2",
+      "type_info",
+      "ub_checks",
+      "uint_carryless_mul",
+      "uint_gather_scatter_bits",
+      "unboxed_closures",
+      "unsafe_cell_access",
+      "unsafe_pinned",
+      "unsize",
+      "unsized_fn_params",
+      "unwrap_infallible",
+      "utf16_extra",
+      "variant_count",
+      "view_type_macro",
+      "view_types",
+      "wasm_target_feature",
+      "widening_mul",
+      "with_negative_coherence",
+      "wrapping_int_impl",
+      "wrapping_next_power_of_two",
+      "write_all_vectored",
+      "x86_amx_intrinsics"
+    ],
+    "library/alloc": [
+      "alloc_io",
+      "alloc_slice_into_array",
+      "allocator_api",
+      "allocator_internals",
+      "allow_internal_unstable",
+      "arc_is_unique",
+      "array_into_iter_constructors",
+      "ascii_char",
+      "async_fn_traits",
+      "async_iterator",
+      "binary_heap_as_mut_slice",
+      "binary_heap_drain_sorted",
+      "binary_heap_from_raw_vec",
+      "binary_heap_into_iter_sorted",
+      "binary_heap_peek_mut_refresh",
+      "binary_heap_pop_if",
+      "borrowed_buf_init",
+      "box_as_non_null",
+      "box_into_inner",
+      "box_take",
+      "bstr",
+      "bstr_internals",
+      "btree_cursors",
+      "btree_merge",
+      "btree_set_entry",
+      "btreemap_alloc",
+      "buf_read_has_data_left",
+      "bufreader_peek",
+      "can_vector",
+      "case_ignorable",
+      "casefold",
+      "cast_maybe_uninit",
+      "cell_get_cloned",
+      "cfg_sanitize",
+      "char_internals",
+      "clone_from_ref",
+      "clone_to_uninit",
+      "coerce_unsized",
+      "const_clone",
+      "const_closures",
+      "const_cmp",
+      "const_convert",
+      "const_default",
+      "const_destruct",
+      "const_drop_in_place",
+      "const_eval_select",
+      "const_heap",
+      "const_index",
+      "const_option_ops",
+      "const_precise_live_drops",
+      "const_result_trait_fn",
+      "const_trait_impl",
+      "const_try",
+      "copied_into_inner",
+      "core_intrinsics",
+      "core_io",
+      "core_io_borrowed_buf",
+      "core_io_internals",
+      "coroutine_trait",
+      "cow_is_borrowed",
+      "cursor_split",
+      "decl_macro",
+      "deprecated_suggestion",
+      "deque_extend_front",
+      "deref_pure_trait",
+      "derive_const",
+      "diagnostic_on_move",
+      "dispatch_from_dyn",
+      "doc_cfg",
+      "doc_notable_trait",
+      "downcast_unchecked",
+      "drain_keep_rest",
+      "drop_guard",
+      "dropck_eyepatch",
+      "ergonomic_clones",
+      "error_generic_member_access",
+      "exact_size_is_empty",
+      "extend_one",
+      "extend_one_unchecked",
+      "fmt_arguments_from_str",
+      "fmt_internals",
+      "fn_traits",
+      "formatting_options",
+      "freeze",
+      "fundamental",
+      "generic_atomic",
+      "get_mut_unchecked",
+      "hasher_prefixfree_extras",
+      "impl_restriction",
+      "inplace_iteration",
+      "intra_doc_pointers",
+      "intrinsics",
+      "io_const_error",
+      "io_const_error_internals",
+      "io_slice_as_bytes",
+      "iter_advance_by",
+      "iter_next_chunk",
+      "lang_items",
+      "legacy_receiver_trait",
+      "likely_unlikely",
+      "linked_list_cursors",
+      "linked_list_remove",
+      "linked_list_retain",
+      "local_waker",
+      "map_try_insert",
+      "maybe_uninit_array_assume_init",
+      "maybe_uninit_fill",
+      "maybe_uninit_uninit_array_transpose",
+      "min_specialization",
+      "multiple_supertrait_upcastable",
+      "negative_impls",
+      "never_type",
+      "optimize_attribute",
+      "panic_internals",
+      "pattern",
+      "pin_coerce_unsized_trait",
+      "ptr_alignment_type",
+      "ptr_cast_slice",
+      "ptr_internals",
+      "ptr_metadata",
+      "raw_os_error_ty",
+      "read_array",
+      "read_le",
+      "rev_into_inner",
+      "rustc_attrs",
+      "rustdoc_internals",
+      "seek_stream_len",
+      "set_ptr_value",
+      "share_trait",
+      "sized_type_properties",
+      "slice_from_ptr_range",
+      "slice_index_methods",
+      "slice_internals",
+      "slice_iter_mut_as_mut_slice",
+      "slice_ptr_get",
+      "slice_range",
+      "smart_pointer_try_map",
+      "staged_api",
+      "std_internals",
+      "stmt_expr_attributes",
+      "strict_provenance_lints",
+      "string_into_chars",
+      "string_remove_matches",
+      "string_replace_in_place",
+      "temporary_niche_types",
+      "thin_box",
+      "titlecase",
+      "transmutability",
+      "trivial_clone",
+      "trusted_fused",
+      "trusted_len",
+      "trusted_random_access",
+      "try_blocks",
+      "try_entry",
+      "try_trait_v2",
+      "try_trait_v2_residual",
+      "try_with_capacity",
+      "tuple_trait",
+      "ub_checks",
+      "unboxed_closures",
+      "unicode_internals",
+      "unique_rc_arc",
+      "unsize",
+      "unsized_fn_params",
+      "unwrap_infallible",
+      "vec_as_non_null",
+      "vec_deque_extract_if",
+      "vec_deque_iter_as_slices",
+      "vec_deque_retain_range",
+      "vec_fallible_shrink",
+      "vec_from_fn",
+      "vec_into_chunks",
+      "vec_peek_mut",
+      "vec_push_within_capacity",
+      "vec_recycle",
+      "vec_split_at_spare",
+      "vec_try_remove",
+      "waker_fn",
+      "with_negative_coherence",
+      "write_all_vectored",
+      "wtf8_internals"
+    ],
+    "library/std": [
+      "alloc_error_handler",
+      "alloc_error_hook",
+      "alloc_io",
+      "allocator_api",
+      "allocator_internals",
+      "allow_internal_unsafe",
+      "allow_internal_unstable",
+      "asm_experimental_arch",
+      "async_iterator",
+      "autodiff",
+      "borrowed_buf_init",
+      "bstr",
+      "bstr_internals",
+      "buf_read_has_data_left",
+      "c_size_t",
+      "can_vector",
+      "cast_maybe_uninit",
+      "cfg_accessible",
+      "cfg_eval",
+      "cfg_sanitizer_cfi",
+      "cfg_target_has_threads",
+      "cfg_target_thread_local",
+      "cfi_encoding",
+      "char_internals",
+      "clone_from_ref",
+      "clone_to_uninit",
+      "command_resolved_envs",
+      "concat_bytes",
+      "const_clone",
+      "const_convert",
+      "const_default",
+      "const_format_args",
+      "const_trait_impl",
+      "core_float_math",
+      "core_intrinsics",
+      "core_io",
+      "core_io_borrowed_buf",
+      "core_io_internals",
+      "cstr_display",
+      "current_thread_id",
+      "cursor_split",
+      "custom_test_frameworks",
+      "deadline_api",
+      "decl_macro",
+      "deprecated_suggestion",
+      "derive_const",
+      "diagnostic_on_move",
+      "dir_entry_ext2",
+      "dirfd",
+      "doc_cfg",
+      "doc_masked",
+      "doc_notable_trait",
+      "drop_guard",
+      "dropck_eyepatch",
+      "duration_constants",
+      "duration_constructors",
+      "edition_panic",
+      "error_generic_member_access",
+      "error_iter",
+      "error_reporter",
+      "exact_div",
+      "exact_size_is_empty",
+      "exclusive_wrapper",
+      "exit_status_error",
+      "exitcode_exit_method",
+      "extend_one",
+      "f128",
+      "f16",
+      "ffi_const",
+      "file_buffered",
+      "float_erf",
+      "float_gamma",
+      "float_minimum_maximum",
+      "fmt_internals",
+      "fn_ptr_trait",
+      "format_args_nl",
+      "formatting_options",
+      "funnel_shifts",
+      "generic_atomic",
+      "get_mut_unchecked",
+      "gpu_offload",
+      "hash_map_internals",
+      "hash_map_macro",
+      "hash_set_entry",
+      "hasher_prefixfree_extras",
+      "hashmap_internals",
+      "hint_must_use",
+      "impl_restriction",
+      "int_from_ascii",
+      "intra_doc_pointers",
+      "io_const_error",
+      "io_error_inprogress",
+      "io_error_input_output_error",
+      "io_error_more",
+      "io_error_too_many_open_files",
+      "io_error_uncategorized",
+      "io_slice_as_bytes",
+      "ip",
+      "iter_advance_by",
+      "iter_next_chunk",
+      "lang_items",
+      "lazy_cell_into_inner",
+      "link_cfg",
+      "linkage",
+      "linux_pidfd",
+      "lock_value_accessors",
+      "log_syntax",
+      "macro_metavar_expr_concat",
+      "map_try_insert",
+      "mapped_lock_guards",
+      "maybe_dangling",
+      "maybe_uninit_array_assume_init",
+      "maybe_uninit_fill",
+      "min_specialization",
+      "mpmc_channel",
+      "mpsc_is_disconnected",
+      "must_not_suspend",
+      "needs_panic_runtime",
+      "negative_impls",
+      "never_type",
+      "nonpoison_condvar",
+      "nonpoison_mutex",
+      "nonpoison_rwlock",
+      "normalize_lexically",
+      "once_cell_get_mut",
+      "once_cell_try",
+      "once_cell_try_insert",
+      "once_lock_new_init",
+      "oneshot_channel",
+      "optimize_attribute",
+      "os_str_slice",
+      "panic_always_abort",
+      "panic_can_unwind",
+      "panic_internals",
+      "panic_unwind",
+      "panic_update_hook",
+      "path_absolute_method",
+      "path_trailing_sep",
+      "peer_credentials_unix_socket",
+      "pin_coerce_unsized_trait",
+      "pointer_is_aligned_to",
+      "portable_simd",
+      "prelude_import",
+      "ptr_as_uninit",
+      "ptr_cast_slice",
+      "ptr_mask",
+      "random",
+      "raw_os_error_ty",
+      "read_buf",
+      "read_buf_at",
+      "reentrant_lock",
+      "restricted_std",
+      "rustc_attrs",
+      "rustdoc_internals",
+      "seek_io_take_position",
+      "seek_stream_len",
+      "set_permissions_nofollow",
+      "share_trait",
+      "slice_concat_trait",
+      "slice_internals",
+      "slice_ptr_get",
+      "slice_range",
+      "slice_split_once",
+      "staged_api",
+      "std_internals",
+      "stdarch_internal",
+      "stdio_makes_pipe",
+      "stdio_swap",
+      "stmt_expr_attributes",
+      "str_internals",
+      "strict_provenance_lints",
+      "sync_nonpoison",
+      "sync_unsafe_cell",
+      "tcp_deferaccept",
+      "tcp_keepalive",
+      "tcp_linger",
+      "tcplistener_into_incoming",
+      "temporary_niche_types",
+      "test",
+      "thin_box",
+      "thread_local",
+      "thread_raw",
+      "thread_sleep_until",
+      "thread_spawn_hook",
+      "time_saturating_systemtime",
+      "time_systemtime_limits",
+      "trace_macros",
+      "trim_prefix_suffix",
+      "try_blocks",
+      "try_entry",
+      "try_reserve_kind",
+      "try_trait_v2",
+      "try_with_capacity",
+      "type_alias_impl_trait",
+      "ub_checks",
+      "uint_carryless_mul",
+      "unique_rc_arc",
+      "unix_kill_process_group",
+      "unix_mkfifo",
+      "unix_send_signal",
+      "unix_set_mark",
+      "unix_socket_ancillary_data",
+      "unix_socket_peek",
+      "unwrap_infallible",
+      "used_with_arg",
+      "windows_permissions_ext",
+      "windows_process_extensions_async_pipes",
+      "windows_process_extensions_raw_attribute",
+      "windows_unix_domain_sockets",
+      "write_all_vectored",
+      "wtf8_internals"
+    ],
+    "library/portable-simd": [
+      "cfg_target_has_reliable_f16_f128",
+      "convert_float_to_int",
+      "core_intrinsics",
+      "decl_macro",
+      "f16",
+      "impl_restriction",
+      "portable_simd",
+      "prelude_import",
+      "ptr_metadata",
+      "repr_simd",
+      "rustc_attrs",
+      "staged_api"
+    ],
+    "library/stdarch": [
+      "aarch64_unstable_target_feature",
+      "abi_unadjusted",
+      "allow_internal_unstable",
+      "arm_target_feature",
+      "asm_experimental_arch",
+      "avx10_target_feature",
+      "clflushopt_target_feature",
+      "const_cmp",
+      "const_eval_select",
+      "const_trait_impl",
+      "core_intrinsics",
+      "custom_inner_attributes",
+      "decl_macro",
+      "doc_cfg",
+      "f16",
+      "fmt_helpers_for_derive",
+      "funnel_shifts",
+      "hexagon_target_feature",
+      "link_llvm_intrinsics",
+      "loongarch_target_feature",
+      "maybe_uninit_as_bytes",
+      "min_adt_const_params",
+      "mips_target_feature",
+      "movrs_target_feature",
+      "no_core",
+      "pattern",
+      "powerpc_target_feature",
+      "proc_macro_hygiene",
+      "repr_simd",
+      "riscv_target_feature",
+      "rtm_target_feature",
+      "rustc_attrs",
+      "simd_ffi",
+      "staged_api",
+      "stdarch_neon_f16",
+      "stdarch_x86_avx512_bf16",
+      "stdarch_x86_avx512_f16",
+      "stdarch_x86_rtm",
+      "stmt_expr_attributes",
+      "wasm_target_feature",
+      "x86_amx_intrinsics"
+    ],
+    "library/proc_macro": [
+      "allow_internal_unstable",
+      "decl_macro",
+      "extend_one",
+      "f16",
+      "mem_conjure_zst",
+      "negative_impls",
+      "panic_can_unwind",
+      "proc_macro_totokens",
+      "restricted_std",
+      "rustc_attrs",
+      "rustdoc_internals",
+      "staged_api"
+    ],
+    "library/panic_unwind": [
+      "core_intrinsics",
+      "panic_runtime",
+      "panic_unwind",
+      "rustc_attrs",
+      "staged_api",
+      "std_internals"
+    ],
+    "library/panic_abort": [
+      "panic_runtime",
+      "rustc_attrs",
+      "staged_api",
+      "std_internals"
+    ],
+    "library/compiler-builtins": [
+      "abi_custom",
+      "abi_unadjusted",
+      "asm_experimental_arch",
+      "cfg_target_has_atomic",
+      "compiler_builtins",
+      "compiler_builtins_lib",
+      "core_intrinsics",
+      "decl_macro",
+      "f128",
+      "f16",
+      "lang_items",
+      "linkage",
+      "macro_metavar_expr_concat",
+      "optimize_attribute",
+      "repr_simd",
+      "rustc_attrs",
+      "rustc_private",
+      "test"
+    ]
+  },
+  "stdlib_rustc_attrs": {
+    "library/core": {
+      "rustc_builtin_macro": 62,
+      "rustc_const_unstable": 1054,
+      "rustc_diagnostic_item": 264,
+      "rustc_specialization_trait": 13,
+      "rustc_deny_explicit_impl": 14,
+      "rustc_dyn_incompatible_trait": 12,
+      "rustc_coinductive": 4,
+      "rustc_on_unimplemented": 15,
+      "rustc_pub_transparent": 16,
+      "rustc_const_stable": 875,
+      "rustc_should_not_be_called_on_const_items": 68,
+      "rustc_confusables": 4,
+      "rustc_allow_const_fn_unstable": 51,
+      "rustc_as_ptr": 12,
+      "rustc_never_returns_null_ptr": 16,
+      "rustc_do_not_const_check": 4,
+      "rustc_const_stable_indirect": 9,
+      "rustc_nounwind": 313,
+      "rustc_macro_transparency": 12,
+      "rustc_doc_primitive": 27,
+      "rustc_has_incoherent_inherent_impls": 5,
+      "rustc_no_mir_inline": 4,
+      "rustc_trivial_field_reads": 2,
+      "rustc_comptime": 33,
+      "rustc_splat": 3,
+      "rustc_objc_class": 1,
+      "rustc_objc_selector": 1,
+      "rustc_insignificant_dtor": 2,
+      "rustc_skip_during_method_dispatch": 2,
+      "rustc_no_implicit_autorefs": 10,
+      "rustc_no_writable": 36,
+      "rustc_panics_when_zero": 9,
+      "rustc_inherit_overflow_checks": 58,
+      "rustc_non_const_trait_method": 46,
+      "rustc_promotable": 11,
+      "rustc_paren_sugar": 6,
+      "rustc_default_body_unstable": 1,
+      "rustc_diagnostic_opaque": 8,
+      "rustc_offload_kernel": 2,
+      "rustc_reservation_impl": 1,
+      "rustc_allow_incoherent_impl": 23,
+      "rustc_nonnull_optimization_guaranteed": 2,
+      "rustc_canonical_symbol": 6,
+      "rustc_pass_indirectly_in_non_rustic_abis": 7,
+      "rustc_intrinsic_const_stable_indirect": 89,
+      "rustc_intrinsic": 316,
+      "rustc_allowed_through_unstable_modules": 4,
+      "rustc_preserve_ub_checks": 2,
+      "rustc_autodiff": 2,
+      "rustc_scalable_vector": 11
+    },
+    "library/alloc": {
+      "rustc_diagnostic_item": 31,
+      "rustc_insignificant_dtor": 11,
+      "rustc_never_returns_null_ptr": 8,
+      "rustc_const_stable": 24,
+      "rustc_allow_incoherent_impl": 44,
+      "rustc_allow_const_fn_unstable": 1,
+      "rustc_confusables": 36,
+      "rustc_no_implicit_autorefs": 2,
+      "rustc_const_unstable": 70,
+      "rustc_conversion_suggestion": 2,
+      "rustc_diagnostic_opaque": 2,
+      "rustc_intrinsic": 1,
+      "rustc_allocator": 1,
+      "rustc_nounwind": 5,
+      "rustc_std_internal_symbol": 7,
+      "rustc_allocator_zeroed_variant": 1,
+      "rustc_deallocator": 1,
+      "rustc_reallocator": 1,
+      "rustc_allocator_zeroed": 1,
+      "rustc_no_mir_inline": 1,
+      "rustc_as_ptr": 6,
+      "rustc_must_implement_one_of": 1,
+      "rustc_specialization_trait": 4,
+      "rustc_skip_during_method_dispatch": 1
+    },
+    "library/std": {
+      "rustc_const_unstable": 16,
+      "rustc_const_stable": 29,
+      "rustc_confusables": 10,
+      "rustc_conversion_suggestion": 1,
+      "rustc_std_internal_symbol": 12,
+      "rustc_nounwind": 1,
+      "rustc_do_not_const_check": 1,
+      "rustc_macro_transparency": 8,
+      "rustc_on_unimplemented": 1,
+      "rustc_builtin_macro": 1,
+      "rustc_diagnostic_opaque": 4,
+      "rustc_deprecated_safe_2024": 3,
+      "rustc_nonnull_optimization_guaranteed": 6,
+      "rustc_should_not_be_called_on_const_items": 30,
+      "rustc_canonical_symbol": 8,
+      "rustc_align_static": 8,
+      "rustc_force_inline": 1,
+      "rustc_specialization_trait": 2,
+      "rustc_allow_incoherent_impl": 141,
+      "rustc_lint_query_instability": 23,
+      "rustc_insignificant_dtor": 1
+    },
+    "library/portable-simd": {
+      "rustc_simd_monomorphize_lane_limit": 1,
+      "rustc_const_unstable": 2
+    },
+    "library/stdarch": {
+      "rustc_const_unstable": 3447,
+      "rustc_legacy_const_generics": 3537,
+      "rustc_scalable_vector": 4,
+      "rustc_const_stable": 10,
+      "rustc_args_required_const": 1
+    },
+    "library/proc_macro": {
+      "rustc_builtin_macro": 1
+    },
+    "library/panic_unwind": {
+      "rustc_std_internal_symbol": 5
+    },
+    "library/panic_abort": {
+      "rustc_std_internal_symbol": 3
+    },
+    "library/compiler-builtins": {
+      "rustc_std_internal_symbol": 3
+    }
+  },
+  "test_suite_feature_counts": {
+    "tests/codegen-llvm": {
+      "new_range_api": 1,
+      "new_range_remainder": 1,
+      "stmt_expr_attributes": 5,
+      "no_core": 142,
+      "static_align": 1,
+      "rustc_attrs": 33,
+      "fn_align": 4,
+      "lang_items": 99,
+      "core_intrinsics": 83,
+      "extern_types": 3,
+      "sized_hierarchy": 1,
+      "transparent_unions": 7,
+      "repr_simd": 37,
+      "abi_x86_interrupt": 3,
+      "intrinsics": 6,
+      "f16": 7,
+      "f128": 8,
+      "try_blocks": 1,
+      "darwin_objc": 2,
+      "abi_unadjusted": 4,
+      "const_trait_impl": 1,
+      "link_llvm_intrinsics": 9,
+      "simd_ffi": 6,
+      "arm_target_feature": 4,
+      "mips_target_feature": 3,
+      "riscv_target_feature": 2,
+      "used_with_arg": 1,
+      "generic_const_items": 1,
+      "c_unwind": 1,
+      "allocator_api": 1,
+      "unsafe_unpin": 1,
+      "portable_simd": 3,
+      "abi_gpu_kernel": 7,
+      "explicit_tail_calls": 3,
+      "coroutines": 3,
+      "coroutine_trait": 2,
+      "rust_cold_cc": 1,
+      "error_generic_member_access": 1,
+      "linkage": 4,
+      "shrink_to": 1,
+      "rust_tail_cc": 1,
+      "optimize_attribute": 4,
+      "bpf_target_feature": 2,
+      "exact_size_is_empty": 2,
+      "try_with_capacity": 1,
+      "slice_from_ptr_range": 1,
+      "funnel_shifts": 1,
+      "instrument_fn": 1,
+      "abi_vectorcall": 2,
+      "rust_preserve_none_cc": 1,
+      "asm_experimental_arch": 8,
+      "ascii_char": 3,
+      "pattern_types": 2,
+      "pattern_type_macro": 2,
+      "array_from_fn": 1,
+      "custom_mir": 2,
+      "unboxed_closures": 2,
+      "maybe_dangling": 1,
+      "s390x_target_feature": 1,
+      "iter_repeat_n": 1,
+      "unsafe_pinned": 1,
+      "repr128": 1,
+      "never_type": 1,
+      "loop_hints": 4,
+      "ffi_pure": 1,
+      "ffi_const": 1,
+      "stdarch_aarch64_sve": 1,
+      "patchable_function_entry": 5,
+      "sanitize": 13,
+      "adt_const_params": 1,
+      "type_alias_impl_trait": 3,
+      "unsized_const_params": 1,
+      "cfi_encoding": 1,
+      "arbitrary_self_types": 2,
+      "likely_unlikely": 2,
+      "asm_unwind": 1,
+      "asm_goto_with_outputs": 2,
+      "str_internals": 1,
+      "test": 1,
+      "get_mut_unchecked": 1,
+      "new_uninit": 1,
+      "panic_internals": 1,
+      "const_eval_select": 2,
+      "return_address": 1,
+      "core_intrinsics_fallbacks": 1,
+      "cfg_target_object_format": 1,
+      "ergonomic_clones": 1,
+      "autodiff": 11
+    },
+    "tests/assembly-llvm": {
+      "abi_cmse_nonsecure_call": 2,
+      "cmse_nonsecure_entry": 2,
+      "no_core": 102,
+      "lang_items": 56,
+      "core_intrinsics": 8,
+      "pointer_is_aligned_to": 1,
+      "intrinsics": 21,
+      "adt_const_params": 2,
+      "abi_ptx": 9,
+      "str_internals": 1,
+      "link_llvm_intrinsics": 1,
+      "abi_unadjusted": 1,
+      "repr_simd": 1,
+      "portable_simd": 3,
+      "f16": 16,
+      "f128": 9,
+      "explicit_tail_calls": 2,
+      "effective_target_features": 1,
+      "breakpoint": 1,
+      "uint_carryless_mul": 1,
+      "rustc_attrs": 14,
+      "asm_experimental_arch": 19,
+      "linkage": 1,
+      "fn_align": 1,
+      "c_variadic_experimental_arch": 1,
+      "asm_const_ptr": 2,
+      "abi_gpu_kernel": 3,
+      "asm_experimental_reg": 1,
+      "unsized_fn_params": 7
+    },
+    "tests/mir-opt": {
+      "explicit_tail_calls": 1,
+      "fn_traits": 2,
+      "custom_mir": 67,
+      "core_intrinsics": 77,
+      "asm_unwind": 2,
+      "never_type": 8,
+      "rustc_attrs": 19,
+      "liballoc_internals": 3,
+      "thread_local": 2,
+      "freeze": 4,
+      "pattern_type_range_trait": 1,
+      "const_trait_impl": 1,
+      "pattern_types": 4,
+      "pattern_type_macro": 4,
+      "try_trait_v2": 2,
+      "const_type_name": 1,
+      "adt_const_params": 2,
+      "unsized_const_params": 2,
+      "unsafe_binders": 1,
+      "optimize_attribute": 1,
+      "flt2dec": 1,
+      "num_internals": 1,
+      "allocator_api": 2,
+      "min_const_generics": 1,
+      "slice_ptr_get": 1,
+      "transmute_neo": 1,
+      "transmute_prefix": 1,
+      "exact_size_is_empty": 1,
+      "step_trait": 1,
+      "try_blocks": 1,
+      "portable_simd": 1,
+      "stdarch_aarch64_sve": 1,
+      "tuple_trait": 1,
+      "unboxed_closures": 1,
+      "no_core": 2,
+      "lang_items": 1,
+      "isa_attribute": 1,
+      "sanitize": 1,
+      "unsized_fn_params": 1,
+      "coroutines": 5,
+      "coroutine_trait": 5,
+      "specialization": 1,
+      "coverage_attribute": 1,
+      "async_drop": 3,
+      "impl_trait_in_assoc_type": 1,
+      "stmt_expr_attributes": 4,
+      "closure_track_caller": 1,
+      "offset_of_enum": 2,
+      "arbitrary_self_types_pointers": 1,
+      "loop_match": 2,
+      "never_patterns": 1,
+      "deref_patterns": 1,
+      "ergonomic_clones": 1
+    },
+    "tests/ui": {
+      "link_cfg": 6,
+      "link_arg_attribute": 2,
+      "rustc_attrs": 505,
+      "inherent_associated_types": 78,
+      "allocator_api": 23,
+      "never_type": 132,
+      "unboxed_closures": 101,
+      "box_patterns": 44,
+      "proc_macro_diagnostic": 9,
+      "proc_macro_span": 14,
+      "proc_macro_def_site": 6,
+      "adt_const_params": 159,
+      "unsized_const_params": 68,
+      "transmute_generic_consts": 2,
+      "generic_const_exprs": 241,
+      "min_generic_const_args": 228,
+      "macroless_generic_const_args": 90,
+      "min_specialization": 43,
+      "type_alias_impl_trait": 395,
+      "core_intrinsics": 153,
+      "const_type_name": 4,
+      "const_trait_impl": 251,
+      "mgca_type_const_syntax": 1,
+      "const_param_ty_trait": 28,
+      "generic_const_parameter_types": 26,
+      "staged_api": 120,
+      "generic_const_items": 58,
+      "trait_alias": 78,
+      "type_ascription": 27,
+      "associated_type_defaults": 89,
+      "trusted_len": 2,
+      "min_adt_const_params": 11,
+      "portable_simd": 7,
+      "generic_const_args": 21,
+      "trivial_bounds": 32,
+      "specialization": 118,
+      "const_cmp": 45,
+      "checked_type_aliases": 46,
+      "const_param_ty_unchecked": 2,
+      "transmutability": 84,
+      "with_negative_coherence": 24,
+      "generic_assert": 6,
+      "non_lifetime_binders": 46,
+      "trivial_clone": 1,
+      "no_core": 282,
+      "derive_from": 3,
+      "decl_macro": 144,
+      "lang_items": 111,
+      "derive_coerce_pointee": 9,
+      "arbitrary_self_types": 44,
+      "proc_macro_quote": 30,
+      "try_as_dyn": 18,
+      "type_info": 5,
+      "ptr_metadata": 18,
+      "arbitrary_self_types_pointers": 9,
+      "impl_trait_in_assoc_type": 89,
+      "anonymous_lifetime_in_impl_trait": 4,
+      "rustc_private": 33,
+      "exhaustive_patterns": 12,
+      "f16": 16,
+      "f32_from_f16": 1,
+      "cfg_target_has_reliable_f16_f128": 6,
+      "negative_impls": 117,
+      "transparent_unions": 7,
+      "pointer_is_aligned_to": 1,
+      "reentrant_lock": 1,
+      "extern_types": 49,
+      "gen_blocks": 27,
+      "stmt_expr_attributes": 167,
+      "panic_runtime": 4,
+      "panic_abort": 1,
+      "panic_unwind": 4,
+      "const_closures": 16,
+      "const_destruct": 25,
+      "const_for": 1,
+      "sync_unsafe_cell": 6,
+      "variant_count": 4,
+      "try_trait_v2": 8,
+      "try_trait_v2_residual": 4,
+      "const_try": 7,
+      "const_precise_live_drops": 12,
+      "test": 31,
+      "ptr_internals": 4,
+      "fn_traits": 61,
+      "const_async_blocks": 5,
+      "wrapping_next_power_of_two": 1,
+      "const_raw_ptr_comparison": 4,
+      "fn_align": 7,
+      "intrinsics": 35,
+      "local": 1,
+      "foo": 8,
+      "foo2": 3,
+      "abi_unadjusted": 10,
+      "allow_internal_unstable": 7,
+      "f128": 10,
+      "structural_match": 3,
+      "custom_mir": 12,
+      "pattern_types": 37,
+      "pattern_type_macro": 39,
+      "const_atomic": 1,
+      "maybe_dangling": 1,
+      "const_c_variadic": 4,
+      "c_variadic_va_arg_safe": 2,
+      "const_clone": 4,
+      "slice_from_ptr_range": 3,
+      "const_slice_from_ptr_range": 3,
+      "const_index": 19,
+      "const_volatile": 1,
+      "repr_simd": 85,
+      "const_heap": 19,
+      "mem_conjure_zst": 1,
+      "const_block_items": 12,
+      "half_open_range_patterns_in_slices": 5,
+      "thread_local": 25,
+      "unsize": 28,
+      "auto_traits": 60,
+      "coerce_unsized": 22,
+      "macro_metavar_expr_concat": 10,
+      "extern_item_impls": 82,
+      "eii_internals": 13,
+      "coverage_attribute": 8,
+      "optimize_attribute": 6,
+      "sanitize": 9,
+      "contracts": 30,
+      "iter_arith_traits": 1,
+      "custom_test_frameworks": 10,
+      "frontmatter": 32,
+      "new_range": 1,
+      "coroutines": 162,
+      "ipu_flatten": 1,
+      "more_qualified_paths": 8,
+      "fn_delegation": 125,
+      "iter_advance_by": 2,
+      "iter_array_chunks": 4,
+      "iterator_try_collect": 2,
+      "iterator_try_reduce": 2,
+      "iter_collect_into": 2,
+      "iter_intersperse": 2,
+      "iter_is_partitioned": 2,
+      "iter_map_windows": 3,
+      "iter_next_chunk": 2,
+      "iter_order_by": 2,
+      "iter_partition_in_place": 2,
+      "trusted_random_access": 2,
+      "try_find": 2,
+      "sized_hierarchy": 40,
+      "unsafe_binders": 19,
+      "link_llvm_intrinsics": 16,
+      "simd_ffi": 8,
+      "stdarch_aarch64_sve": 2,
+      "never_patterns": 23,
+      "discriminant_kind": 3,
+      "freeze": 5,
+      "gpu_offload": 1,
+      "dropck_eyepatch": 18,
+      "coroutine_trait": 85,
+      "tuple_trait": 30,
+      "unsized_fn_params": 32,
+      "closure_lifetime_binder": 20,
+      "marker_trait_attr": 26,
+      "fundamental": 6,
+      "yeet_expr": 7,
+      "contracts_internals": 7,
+      "try_blocks": 26,
+      "try_blocks_heterogeneous": 3,
+      "view_types": 8,
+      "view_type_macro": 8,
+      "loop_match": 21,
+      "backtrace_frames": 1,
+      "dispatch_from_dyn": 11,
+      "cfg_version": 4,
+      "cfg_target_compact": 4,
+      "cfg_overflow_checks": 3,
+      "cfg_relocation_model": 2,
+      "cfg_sanitize": 4,
+      "cfg_target_has_atomic": 1,
+      "cfg_target_thread_local": 7,
+      "cfg_target_object_format": 4,
+      "cfg_target_has_threads": 1,
+      "cfg_ub_checks": 4,
+      "fmt_debug": 4,
+      "guard_patterns": 6,
+      "mut_ref": 6,
+      "patchable_function_entry": 2,
+      "fun_default_body": 1,
+      "eq_default_body": 1,
+      "constant_default_body": 1,
+      "unstable_default6": 2,
+      "const_foo": 2,
+      "try_trait": 1,
+      "rust_cold_cc": 5,
+      "unstable_declared": 1,
+      "unstable_test_feature": 9,
+      "my_coro_state": 1,
+      "ptr_alignment_type": 2,
+      "nonzero_from_mut": 1,
+      "ascii_char": 3,
+      "core": 1,
+      "box_into_boxed_slice": 2,
+      "thin_box": 4,
+      "alloc_error_handler": 7,
+      "cfg_accessible": 8,
+      "cfg_eval": 10,
+      "derive_const": 6,
+      "where_clause_attrs": 8,
+      "supertrait_item_shadowing": 12,
+      "offset_of_enum": 4,
+      "generators": 1,
+      "return_type_notation": 45,
+      "proc_macro_hygiene": 14,
+      "diagnostic_on_type_error": 14,
+      "diagnostic_on_move": 12,
+      "diagnostic_on_const": 6,
+      "diagnostic_on_unmatched_args": 10,
+      "diagnostic_on_unknown": 17,
+      "custom_inner_attributes": 21,
+      "diagnostic_opaque": 4,
+      "iter_macro": 10,
+      "yield_expr": 13,
+      "new_range_remainder": 3,
+      "step_trait": 4,
+      "impl_trait_in_fn_trait_return": 10,
+      "pattern_type_range_trait": 7,
+      "generic_pattern_types": 2,
+      "panic_update_hook": 1,
+      "panic_backtrace_config": 1,
+      "internal_output_capture": 2,
+      "alloc_error_hook": 2,
+      "panic_always_abort": 2,
+      "format_args_nl": 1,
+      "prelude_import": 3,
+      "unsized_locals": 1,
+      "builtin_syntax": 5,
+      "deref_patterns": 26,
+      "explicit_tail_calls": 51,
+      "trace_macros": 4,
+      "type_changing_struct_update": 4,
+      "non_exhaustive_omitted_patterns_lint": 4,
+      "unsafe_pinned": 1,
+      "closure_track_caller": 1,
+      "native_link_modifiers_as_needed": 1,
+      "rust1": 5,
+      "x0600": 1,
+      "test_accepted_feature": 1,
+      "unknown_stdlib_feature": 2,
+      "no_sanitize": 1,
+      "no_coverage": 1,
+      "if_let": 2,
+      "test_incomplete_feature": 1,
+      "unknown_rust_feature": 1,
+      "external_doc": 1,
+      "autodiff": 9,
+      "this_feature_does_not_exist": 1,
+      "test_removed_feature": 1,
+      "abi_x86_interrupt": 6,
+      "naked_functions_rustic_abi": 3,
+      "c_variadic_int128": 1,
+      "move_expr": 16,
+      "ffi_const": 4,
+      "ffi_pure": 4,
+      "field_projections": 13,
+      "unsafe_unpin": 1,
+      "abi_vectorcall": 4,
+      "register_tool": 14,
+      "impl_trait_in_bindings": 14,
+      "const_convert": 4,
+      "const_default": 7,
+      "const_t_try": 1,
+      "const_try_residual": 2,
+      "const_ops": 3,
+      "effects": 1,
+      "unstable": 1,
+      "local_feature": 1,
+      "more_maybe_bounds": 4,
+      "fn_ptr_trait": 2,
+      "final_associated_functions": 9,
+      "negative_bounds": 8,
+      "multiple_supertrait_upcastable": 1,
+      "coroutine_clone": 6,
+      "async_iterator": 10,
+      "liballoc_internals": 1,
+      "panic_internals": 2,
+      "cmse_nonsecure_entry": 10,
+      "abi_cmse_nonsecure_call": 11,
+      "darwin_objc": 6,
+      "async_iter_from_iter": 4,
+      "async_for_loop": 4,
+      "must_not_suspend": 16,
+      "async_trait_bounds": 3,
+      "async_fn_traits": 4,
+      "async_drop": 30,
+      "async_fn_in_dyn_trait": 3,
+      "async_closure": 1,
+      "noop_waker": 1,
+      "feat_bar": 1,
+      "feat_moo": 1,
+      "unsafe_fields": 8,
+      "mut_restriction": 9,
+      "cfi_encoding": 2,
+      "cfg_sanitizer_cfi": 2,
+      "linkage": 17,
+      "export_stable": 3,
+      "used_with_arg": 4,
+      "old_feature": 1,
+      "concat_idents": 1,
+      "static_align": 2,
+      "allow_internal_unsafe": 3,
+      "instrument_fn": 1,
+      "globs": 1,
+      "loop_hints": 1,
+      "plugin": 1,
+      "s390x_target_feature": 1,
+      "riscv_target_feature": 4,
+      "x87_target_feature": 3,
+      "wasm_target_feature": 1,
+      "const_eval_select": 5,
+      "thread_spawn_hook": 1,
+      "random": 1,
+      "impl_restriction": 6,
+      "macro_guard_matcher": 5,
+      "concat_bytes": 5,
+      "macro_reexport": 1,
+      "log_syntax": 1,
+      "macro_attr": 9,
+      "macro_metavar_expr": 9,
+      "unstable_macros": 1,
+      "local_unstable": 1,
+      "macro_derive": 3,
+      "super_let": 5,
+      "slice_ptr_get": 3,
+      "abi_msp430_interrupt": 5,
+      "abi_avr_interrupt": 5,
+      "abi_riscv_interrupt": 6,
+      "abi_gpu_kernel": 5,
+      "rust_tail_cc": 4,
+      "rust_preserve_none_cc": 1,
+      "abi_ptx": 1,
+      "abi_custom": 4,
+      "abi_swift": 1,
+      "arm_target_feature": 1,
+      "pin_ergonomics": 30,
+      "unsafe_cell_access": 1,
+      "once_cell_try_insert": 2,
+      "once_cell_try": 2,
+      "unqualified_local_imports": 1,
+      "strict_provenance_lints": 3,
+      "effective_target_features": 1,
+      "lock_value_accessors": 1,
+      "asm_experimental_arch": 5,
+      "lint_reasons": 1,
+      "euclidean_division": 1,
+      "doc_cfg": 1,
+      "is_sorted": 1,
+      "error_iter": 1,
+      "asm_unwind": 7,
+      "vec_as_non_null": 1,
+      "large_assignments": 5,
+      "postfix_match": 6,
+      "unique_rc_arc": 2,
+      "splat": 45,
+      "exclusive_wrapper": 1,
+      "reborrow": 45,
+      "setgroups": 1,
+      "rustdoc_internals": 1,
+      "doc_keyword": 1,
+      "doc_primitive": 1,
+      "windows_process_extensions_raw_attribute": 1,
+      "exit_status_error": 1,
+      "windows_process_extensions_inherit_handles": 1,
+      "ref_pat_eat_one_layer_2024": 3,
+      "unnamed_enum_variants": 1,
+      "asm_const_ptr": 3,
+      "naked_functions_target_feature": 1,
+      "asm_goto_with_outputs": 1,
+      "drain": 1,
+      "collections_bound": 1,
+      "btree_range": 1,
+      "import_trait_associated_functions": 5,
+      "pub_restricted": 1,
+      "share_trait": 9,
+      "ergonomic_clones": 24,
+      "proc_macro_expand": 1,
+      "proc_macro_internals": 1,
+      "proc_macro_raw_ident": 1,
+      "proc_macro_tracked_env": 1,
+      "proc_macro_value": 1,
+      "proc_macro_totokens": 1,
+      "default_field_values": 15,
+      "named_fn_trait_parameters": 1,
+      "deprecated_suggestion": 1,
+      "deprecated": 1,
+      "offset_of_slice": 2,
+      "derive_macro_global_path": 1,
+      "raw_dylib_elf": 7
+    }
+  }
+}

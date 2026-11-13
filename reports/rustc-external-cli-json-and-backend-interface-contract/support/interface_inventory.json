@@ -1,0 +1,5017 @@
+{
+  "baseline_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "top_level_cli_flags_count": 38,
+  "top_level_cli_flags": [
+    {
+      "line": 1985,
+      "stability": "Stable",
+      "kind": "Flag",
+      "short": "-h",
+      "long": "--help",
+      "description": "Display this message",
+      "hint": ""
+    },
+    {
+      "line": 1986,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--cfg",
+      "description": "Configure the compilation environment.\\n\\ SPEC supports the syntax `<NAME>[=\\\"<VALUE>\\\"]`.",
+      "hint": "<SPEC>"
+    },
+    {
+      "line": 1995,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--check-cfg",
+      "description": "Provide list of expected cfgs for checking",
+      "hint": "<SPEC>"
+    },
+    {
+      "line": 1996,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-L",
+      "long": "",
+      "description": "Add a directory to the library search path. \\ The optional KIND can be one of <dependency|crate|native|framework|all> (default: all).",
+      "hint": "[<KIND>=]<PATH>"
+    },
+    {
+      "line": 2005,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-l",
+      "long": "",
+      "description": "Link the generated crate(s) to the specified native\\n\\ library NAME. The optional KIND can be one of\\n\\ <static|framework|dylib> (default: dylib).\\n\\ Optional comma separated MODIFIERS\\n\\ <bundle|verbatim|whole-archive|as-needed>\\n\\ may be specified each with a prefix of either '+' to\\n\\ enable or '-' to disable.",
+      "hint": "[<KIND>[:<MODIFIERS>]=]<NAME>[:<RENAME>]"
+    },
+    {
+      "line": 2020,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--crate-name",
+      "description": "Specify the name of the crate being built",
+      "hint": "<NAME>"
+    },
+    {
+      "line": 2021,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--edition",
+      "description": "&EDITION_STRING",
+      "hint": "EDITION_NAME_LIST"
+    },
+    {
+      "line": 2022,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--emit",
+      "description": "&EMIT_HELP",
+      "hint": "<TYPE>[=<FILE>]"
+    },
+    {
+      "line": 2023,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--print",
+      "description": "&print_request::PRINT_HELP",
+      "hint": "<INFO>[=<FILE>]"
+    },
+    {
+      "line": 2024,
+      "stability": "Stable",
+      "kind": "FlagMulti",
+      "short": "-g",
+      "long": "",
+      "description": "Equivalent to -C debuginfo=2",
+      "hint": ""
+    },
+    {
+      "line": 2025,
+      "stability": "Stable",
+      "kind": "FlagMulti",
+      "short": "-O",
+      "long": "",
+      "description": "Equivalent to -C opt-level=3",
+      "hint": ""
+    },
+    {
+      "line": 2026,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "-o",
+      "long": "",
+      "description": "Write output to FILENAME",
+      "hint": "<FILENAME>"
+    },
+    {
+      "line": 2027,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--out-dir",
+      "description": "Write output to compiler-chosen filename in DIR",
+      "hint": "<DIR>"
+    },
+    {
+      "line": 2028,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--explain",
+      "description": "Provide a detailed explanation of an error message",
+      "hint": "<OPT>"
+    },
+    {
+      "line": 2036,
+      "stability": "Stable",
+      "kind": "Flag",
+      "short": "",
+      "long": "--test",
+      "description": "Build a test harness",
+      "hint": ""
+    },
+    {
+      "line": 2037,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--target",
+      "description": "Target tuple for which the code is compiled",
+      "hint": "<TARGET>"
+    },
+    {
+      "line": 2038,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-A",
+      "long": "--allow",
+      "description": "Set lint allowed",
+      "hint": "<LINT>"
+    },
+    {
+      "line": 2039,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-W",
+      "long": "--warn",
+      "description": "Set lint warnings",
+      "hint": "<LINT>"
+    },
+    {
+      "line": 2040,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--force-warn",
+      "description": "Set lint force-warn",
+      "hint": "<LINT>"
+    },
+    {
+      "line": 2041,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-D",
+      "long": "--deny",
+      "description": "Set lint denied",
+      "hint": "<LINT>"
+    },
+    {
+      "line": 2042,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-F",
+      "long": "--forbid",
+      "description": "Set lint forbidden",
+      "hint": "<LINT>"
+    },
+    {
+      "line": 2043,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--cap-lints",
+      "description": "Set the most restrictive lint level. More restrictive lints are capped at this level",
+      "hint": "<LEVEL>"
+    },
+    {
+      "line": 2051,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "-C",
+      "long": "--codegen",
+      "description": "Set a codegen option",
+      "hint": "<OPT>[=<VALUE>]"
+    },
+    {
+      "line": 2052,
+      "stability": "Stable",
+      "kind": "Flag",
+      "short": "-V",
+      "long": "--version",
+      "description": "Print version info and exit",
+      "hint": ""
+    },
+    {
+      "line": 2053,
+      "stability": "Stable",
+      "kind": "Flag",
+      "short": "-v",
+      "long": "--verbose",
+      "description": "Use verbose output",
+      "hint": ""
+    },
+    {
+      "line": 2059,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--extern",
+      "description": "Specify where an external rust library is located",
+      "hint": "<NAME>[=<PATH>]"
+    },
+    {
+      "line": 2067,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--sysroot",
+      "description": "Override the system root",
+      "hint": "<PATH>"
+    },
+    {
+      "line": 2068,
+      "stability": "Unstable",
+      "kind": "Multi",
+      "short": "-Z",
+      "long": "",
+      "description": "Set unstable / perma-unstable options",
+      "hint": "<FLAG>"
+    },
+    {
+      "line": 2069,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--error-format",
+      "description": "How errors and other messages are produced",
+      "hint": "<human|json|short>"
+    },
+    {
+      "line": 2077,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--json",
+      "description": "Configure the JSON output of the compiler",
+      "hint": "<CONFIG>"
+    },
+    {
+      "line": 2078,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--color",
+      "description": "Configure coloring of output: * auto = colorize",
+      "hint": "if output goes to a tty (default"
+    },
+    {
+      "line": 2089,
+      "stability": "Stable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--diagnostic-width",
+      "description": "Inform rustc of the width of the output so that diagnostics can be truncated to fit",
+      "hint": "<WIDTH>"
+    },
+    {
+      "line": 2097,
+      "stability": "Stable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--remap-path-prefix",
+      "description": "Remap source names in all output (compiler messages and output files)",
+      "hint": "<FROM>=<TO>"
+    },
+    {
+      "line": 2113,
+      "stability": "Unstable",
+      "kind": "Multi",
+      "short": "",
+      "long": "--env-set",
+      "description": "Inject an environment variable",
+      "hint": "<VAR>=<VALUE>"
+    },
+    {
+      "line": 2114,
+      "stability": "Unstable",
+      "kind": "Opt",
+      "short": "-j",
+      "long": "--jobs",
+      "description": "Limit on the number of used parallel jobs",
+      "hint": "<N>"
+    },
+    {
+      "line": 2115,
+      "stability": "Unstable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--jobs-frontend",
+      "description": "Limit on the number of parallel jobs used by frontend",
+      "hint": "<N>"
+    },
+    {
+      "line": 2123,
+      "stability": "Unstable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--jobs-backend",
+      "description": "Limit on the number of parallel jobs used by backend",
+      "hint": "<N>"
+    },
+    {
+      "line": 2131,
+      "stability": "Unstable",
+      "kind": "Opt",
+      "short": "",
+      "long": "--jobs-linker",
+      "description": "Limit on the number of parallel jobs used by linker",
+      "hint": "<N>"
+    }
+  ],
+  "codegen_options_count": 54,
+  "codegen_options": [
+    {
+      "line": 2205,
+      "ident": "ar",
+      "cli_flag": "ar",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_ignore",
+      "tracking": "UNTRACKED",
+      "removed": true,
+      "description": "this option has been removed",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2209,
+      "ident": "code_model",
+      "cli_flag": "code-model",
+      "type": "Option<CodeModel>",
+      "default": "None",
+      "parser": "parse_code_model",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "choose the code model to use (`rustc --print code-models` for details)",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2211,
+      "ident": "codegen_units",
+      "cli_flag": "codegen-units",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "divide crate into N units to optimize in parallel",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2213,
+      "ident": "collapse_macro_debuginfo",
+      "cli_flag": "collapse-macro-debuginfo",
+      "type": "CollapseMacroDebuginfo",
+      "default": "CollapseMacroDebuginfo::Unspecified",
+      "parser": "parse_collapse_macro_debuginfo",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "set option to collapse debuginfo for macros",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2216,
+      "ident": "control_flow_guard",
+      "cli_flag": "control-flow-guard",
+      "type": "CFGuard",
+      "default": "CFGuard::Disabled",
+      "parser": "parse_cfguard",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use Windows Control Flow Guard (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2218,
+      "ident": "debug_assertions",
+      "cli_flag": "debug-assertions",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "explicitly enable the `cfg(debug_assertions)` directive",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2220,
+      "ident": "debuginfo",
+      "cli_flag": "debuginfo",
+      "type": "DebugInfo",
+      "default": "DebugInfo::None",
+      "parser": "parse_debuginfo",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "debug info emission level (0-2, none, line-directives-only, line-tables-only, limited, or full; default: 0)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2223,
+      "ident": "default_linker_libraries",
+      "cli_flag": "default-linker-libraries",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "allow the linker to link its default libraries (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2225,
+      "ident": "dlltool",
+      "cli_flag": "dlltool",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "import library generation tool (ignored except when targeting windows-gnu)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2228,
+      "ident": "dwarf_version",
+      "cli_flag": "dwarf-version",
+      "type": "Option<u32>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "version of DWARF debug information to emit (default: 2 or 4, depending on platform)",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2230,
+      "ident": "embed_bitcode",
+      "cli_flag": "embed-bitcode",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit bitcode in rlibs (default: yes)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2232,
+      "ident": "extra_filename",
+      "cli_flag": "extra-filename",
+      "type": "String",
+      "default": "String::new()",
+      "parser": "parse_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "extra data to put in each output filename",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2234,
+      "ident": "force_frame_pointers",
+      "cli_flag": "force-frame-pointers",
+      "type": "FramePointer",
+      "default": "FramePointer::MayOmit",
+      "parser": "parse_frame_pointer",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "force use of the frame pointers",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2237,
+      "ident": "force_unwind_tables",
+      "cli_flag": "force-unwind-tables",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "force use of unwind tables",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2239,
+      "ident": "help",
+      "cli_flag": "help",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "Print codegen options",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2240,
+      "ident": "incremental",
+      "cli_flag": "incremental",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "enable incremental compilation",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2242,
+      "ident": "inline_threshold",
+      "cli_flag": "inline-threshold",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_ignore",
+      "tracking": "UNTRACKED",
+      "removed": true,
+      "description": "this option has been removed (consider using `-Cllvm-args=--inline-threshold=...`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2247,
+      "ident": "instrument_coverage",
+      "cli_flag": "instrument-coverage",
+      "type": "InstrumentCoverage",
+      "default": "InstrumentCoverage::No",
+      "parser": "parse_instrument_coverage",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "instrument the generated code to support LLVM source-based code coverage reports (note, the compiler build config must include `profiler = true`); implies `-C symbol-mangling-version=v0`",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2251,
+      "ident": "jump_tables",
+      "cli_flag": "jump-tables",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow jump table and lookup table generation from switch case lowering (default: yes)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2253,
+      "ident": "link_arg",
+      "cli_flag": "link-arg",
+      "type": "(/* redirected to link_args */)",
+      "default": "()",
+      "parser": "parse_string_push",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "a single extra argument to append to the linker invocation (can be used several times)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2255,
+      "ident": "link_args",
+      "cli_flag": "link-args",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "extra arguments to append to the linker invocation (space separated)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2258,
+      "ident": "link_dead_code",
+      "cli_flag": "link-dead-code",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "try to generate and link dead code (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2260,
+      "ident": "link_self_contained",
+      "cli_flag": "link-self-contained",
+      "type": "LinkSelfContained",
+      "default": "LinkSelfContained::default()",
+      "parser": "parse_link_self_contained",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "control whether to link Rust provided C objects/libraries or rely on a C toolchain or linker installed in the system",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2263,
+      "ident": "linker",
+      "cli_flag": "linker",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "system linker to link outputs with",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2265,
+      "ident": "linker_features",
+      "cli_flag": "linker-features",
+      "type": "LinkerFeaturesCli",
+      "default": "LinkerFeaturesCli::default()",
+      "parser": "parse_linker_features",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "a comma-separated list of linker features to enable (+) or disable (-): `lld`",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2267,
+      "ident": "linker_flavor",
+      "cli_flag": "linker-flavor",
+      "type": "Option<LinkerFlavorCli>",
+      "default": "None",
+      "parser": "parse_linker_flavor",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "linker flavor",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2269,
+      "ident": "linker_plugin_lto",
+      "cli_flag": "linker-plugin-lto",
+      "type": "LinkerPluginLto",
+      "default": "LinkerPluginLto::Disabled",
+      "parser": "parse_linker_plugin_lto",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "generate build artifacts that are compatible with linker-based LTO",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2272,
+      "ident": "llvm_args",
+      "cli_flag": "llvm-args",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a list of arguments to pass to LLVM (space separated)",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2275,
+      "ident": "lto",
+      "cli_flag": "lto",
+      "type": "LtoCli",
+      "default": "LtoCli::Unspecified",
+      "parser": "parse_lto",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "perform LLVM link-time optimizations",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2277,
+      "ident": "metadata",
+      "cli_flag": "metadata",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "metadata to mangle symbol names with",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2279,
+      "ident": "no_prepopulate_passes",
+      "cli_flag": "no-prepopulate-passes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "give an empty list of passes to the pass manager",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2281,
+      "ident": "no_redzone",
+      "cli_flag": "no-redzone",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable the use of the redzone",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2283,
+      "ident": "no_stack_check",
+      "cli_flag": "no-stack-check",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_ignore",
+      "tracking": "UNTRACKED",
+      "removed": true,
+      "description": "this option has been removed",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2286,
+      "ident": "no_vectorize_loops",
+      "cli_flag": "no-vectorize-loops",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable loop vectorization optimization passes",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2288,
+      "ident": "no_vectorize_slp",
+      "cli_flag": "no-vectorize-slp",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable LLVM's SLP vectorization pass",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2290,
+      "ident": "opt_level",
+      "cli_flag": "opt-level",
+      "type": "String",
+      "default": "\"0\".to_string()",
+      "parser": "parse_string",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "optimization level (0-3, s, or z; default: 0)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2293,
+      "ident": "overflow_checks",
+      "cli_flag": "overflow-checks",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use overflow checks for integer arithmetic",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2296,
+      "ident": "panic",
+      "cli_flag": "panic",
+      "type": "Option<PanicStrategy>",
+      "default": "None",
+      "parser": "parse_opt_panic_strategy",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "panic strategy to compile crate with",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2298,
+      "ident": "passes",
+      "cli_flag": "passes",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a list of extra LLVM passes to run (space separated)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2300,
+      "ident": "prefer_dynamic",
+      "cli_flag": "prefer-dynamic",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "prefer dynamic linking to static linking (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2302,
+      "ident": "profile_generate",
+      "cli_flag": "profile-generate",
+      "type": "SwitchWithOptPath",
+      "default": "SwitchWithOptPath::Disabled",
+      "parser": "parse_switch_with_opt_path",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "compile the program with profiling instrumentation",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2305,
+      "ident": "profile_use",
+      "cli_flag": "profile-use",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use the given `.profdata` file for profile-guided optimization",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2308,
+      "ident": "relocation_model",
+      "cli_flag": "relocation-model",
+      "type": "Option<RelocModel>",
+      "default": "None",
+      "parser": "parse_relocation_model",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "control generation of position-independent code (PIC) (`rustc --print relocation-models` for details)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2311,
+      "ident": "relro_level",
+      "cli_flag": "relro-level",
+      "type": "Option<RelroLevel>",
+      "default": "None",
+      "parser": "parse_relro_level",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "choose which RELRO level to use",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2313,
+      "ident": "remark",
+      "cli_flag": "remark",
+      "type": "Passes",
+      "default": "Passes::Some(Vec::new())",
+      "parser": "parse_passes",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "output remarks for these optimization passes (space separated, or \"all\")",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2315,
+      "ident": "rpath",
+      "cli_flag": "rpath",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "set rpath values in libs/exes (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2317,
+      "ident": "save_temps",
+      "cli_flag": "save-temps",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "save all temporary output files during compilation (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2319,
+      "ident": "soft_float",
+      "cli_flag": "soft-float",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_ignore",
+      "tracking": "UNTRACKED",
+      "removed": true,
+      "description": "this option has been removed (use a corresponding *eabi target instead)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2324,
+      "ident": "split_debuginfo",
+      "cli_flag": "split-debuginfo",
+      "type": "Option<SplitDebuginfo>",
+      "default": "None",
+      "parser": "parse_split_debuginfo",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "how to handle split-debuginfo, a platform-specific option",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2326,
+      "ident": "strip",
+      "cli_flag": "strip",
+      "type": "Strip",
+      "default": "Strip::None",
+      "parser": "parse_strip",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "tell the linker which information to strip (`none` (default), `debuginfo` or `symbols`)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2328,
+      "ident": "symbol_mangling_version",
+      "cli_flag": "symbol-mangling-version",
+      "type": "Option<SymbolManglingVersion>",
+      "default": "None",
+      "parser": "parse_symbol_mangling_version",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "which mangling version to use for symbol names ('legacy', 'v0' (default), or 'hashed')",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2331,
+      "ident": "target_cpu",
+      "cli_flag": "target-cpu",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "select target processor (`rustc --print target-cpus` for details)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2333,
+      "ident": "target_feature",
+      "cli_flag": "target-feature",
+      "type": "String",
+      "default": "String::new()",
+      "parser": "parse_target_feature",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "target specific attributes. (`rustc --print target-features` for details). This feature is unsafe.",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2336,
+      "ident": "unsafe_allow_abi_mismatch",
+      "cli_flag": "unsafe-allow-abi-mismatch",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_comma_list",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "Allow incompatible target modifiers in dependency crates (comma separated list)",
+      "used_in": [],
+      "llvm_specific": false
+    }
+  ],
+  "unstable_options_count": 238,
+  "unstable_options": [
+    {
+      "line": 2353,
+      "ident": "allow_features",
+      "cli_flag": "allow-features",
+      "type": "Option<Vec<String>>",
+      "default": "None",
+      "parser": "parse_opt_comma_list",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "only allow the listed language features to be enabled in code (comma separated)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2357,
+      "ident": "allow_partial_mitigations",
+      "cli_flag": "allow-partial-mitigations",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_allow_partial_mitigations",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "Allow mitigations not enabled for all dependency crates (comma separated list)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2359,
+      "ident": "always_encode_mir",
+      "cli_flag": "always-encode-mir",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "encode MIR of all functions into the crate metadata (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2361,
+      "ident": "annotate_moves",
+      "cli_flag": "annotate-moves",
+      "type": "AnnotateMoves",
+      "default": "AnnotateMoves::Disabled",
+      "parser": "parse_annotate_moves",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit debug info for compiler-generated move and copy operations to make them visible in profilers. Can be a boolean or a size limit in bytes (default: disabled)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2364,
+      "ident": "assert_incr_state",
+      "cli_flag": "assert-incr-state",
+      "type": "Option<IncrementalStateAssertion>",
+      "default": "None",
+      "parser": "parse_assert_incr_state",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "assert that the incremental cache is in given state: either `loaded` or `not-loaded`.",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2367,
+      "ident": "assume_incomplete_release",
+      "cli_flag": "assume-incomplete-release",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "make cfg(version) treat the current version as incomplete (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2369,
+      "ident": "assumptions_on_binders",
+      "cli_flag": "assumptions-on-binders",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow deducing higher-ranked outlives assumptions from all binders (`for<'a>`); implies `-Znext-solver=globally`",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2372,
+      "ident": "autodiff",
+      "cli_flag": "autodiff",
+      "type": "Vec<crate::config::AutoDiff>",
+      "default": "Vec::new()",
+      "parser": "parse_autodiff",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a list of autodiff flags to enable Mandatory setting: `=Enable` Optional extra settings: `=PrintTA` `=PrintAA` `=PrintPerf` `=PrintSteps` `=PrintModBefore` `=PrintModAfter` `=PrintModFinal` `=PrintPasses`, `=NoPostopt` `=LooseTypes` `=Inline` Multiple options can be combined with commas.",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2389,
+      "ident": "autodiff_post_passes",
+      "cli_flag": "autodiff-post-passes",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "set llvm passes to run after enzyme (no passes run when it is empty)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2392,
+      "ident": "binary_dep_depinfo",
+      "cli_flag": "binary-dep-depinfo",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "include artifacts (sysroot, crate dependencies) used during compilation in dep-info (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2395,
+      "ident": "box_noalias",
+      "cli_flag": "box-noalias",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit noalias metadata for box (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2398,
+      "ident": "branch_protection",
+      "cli_flag": "branch-protection",
+      "type": "Option<BranchProtection>",
+      "default": "None",
+      "parser": "parse_branch_protection",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "set options for branch target identification and pointer authentication on AArch64",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2400,
+      "ident": "build_sdylib_interface",
+      "cli_flag": "build-sdylib-interface",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "whether the stable interface is being built",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2402,
+      "ident": "cache_proc_macros",
+      "cli_flag": "cache-proc-macros",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "cache the results of derive proc macro invocations (potentially unsound!) (default: no",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2404,
+      "ident": "cf_protection",
+      "cli_flag": "cf-protection",
+      "type": "CFProtection",
+      "default": "CFProtection::None",
+      "parser": "parse_cfprotection",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "instrument control-flow architecture protection",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2406,
+      "ident": "check_cfg_all_expected",
+      "cli_flag": "check-cfg-all-expected",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "show all expected values in check-cfg diagnostics (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2408,
+      "ident": "checksum_hash_algorithm",
+      "cli_flag": "checksum-hash-algorithm",
+      "type": "Option<SourceFileHashAlgorithm>",
+      "default": "None",
+      "parser": "parse_cargo_src_file_hash",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "hash algorithm of source files used to check freshness in cargo (`blake3` or `sha256`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2410,
+      "ident": "codegen_backend",
+      "cli_flag": "codegen-backend",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "the backend to use",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2412,
+      "ident": "codegen_emit_retag",
+      "cli_flag": "codegen-emit-retag",
+      "type": "Option<CodegenRetagOptions>",
+      "default": "None",
+      "parser": "parse_codegen_retag_options",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit retag function calls in generated code",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2414,
+      "ident": "codegen_source_order",
+      "cli_flag": "codegen-source-order",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "emit mono items in the order of spans in source files (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2416,
+      "ident": "contract_checks",
+      "cli_flag": "contract-checks",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit runtime checks for contract pre- and post-conditions (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2418,
+      "ident": "coverage_options",
+      "cli_flag": "coverage-options",
+      "type": "CoverageOptions",
+      "default": "CoverageOptions::default()",
+      "parser": "parse_coverage_options",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "control details of coverage instrumentation",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2420,
+      "ident": "crate_attr",
+      "cli_flag": "crate-attr",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_string_push",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "inject the given attribute in the crate",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2422,
+      "ident": "cross_crate_inline_threshold",
+      "cli_flag": "cross-crate-inline-threshold",
+      "type": "InliningThreshold",
+      "default": "InliningThreshold::Sometimes(100)",
+      "parser": "parse_inlining_threshold",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "threshold to allow cross crate inlining of functions",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2424,
+      "ident": "debug_info_type_line_numbers",
+      "cli_flag": "debug-info-type-line-numbers",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit type and line information for additional data types (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2426,
+      "ident": "debuginfo_compression",
+      "cli_flag": "debuginfo-compression",
+      "type": "DebugInfoCompression",
+      "default": "DebugInfoCompression::None",
+      "parser": "parse_debuginfo_compression",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "compress debug info sections (none, zlib, zstd, default: none)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2428,
+      "ident": "debuginfo_for_profiling",
+      "cli_flag": "debuginfo-for-profiling",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit discriminators and other data necessary for AutoFDO",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2430,
+      "ident": "deduplicate_diagnostics",
+      "cli_flag": "deduplicate-diagnostics",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "deduplicate identical diagnostics (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2432,
+      "ident": "default_visibility",
+      "cli_flag": "default-visibility",
+      "type": "Option<SymbolVisibility>",
+      "default": "None",
+      "parser": "parse_opt_symbol_visibility",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "overrides the `default_visibility` setting of the target",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2434,
+      "ident": "deny_partial_mitigations",
+      "cli_flag": "deny-partial-mitigations",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_deny_partial_mitigations",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "Deny mitigations not enabled for all dependency crates (comma separated list)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2436,
+      "ident": "dep_info_omit_d_target",
+      "cli_flag": "dep-info-omit-d-target",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "in dep-info output, omit targets for tracking dependencies of the dep-info files themselves (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2439,
+      "ident": "direct_access_external_data",
+      "cli_flag": "direct-access-external-data",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "Direct or use GOT indirect to reference external data symbols",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2441,
+      "ident": "disable_fast_paths",
+      "cli_flag": "disable-fast-paths",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable various performance optimizations in trait solving",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2443,
+      "ident": "disable_incr_comp_backend_caching",
+      "cli_flag": "disable-incr-comp-backend-caching",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable caching of compiled objects by the codegen backend during incremental compilation",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2445,
+      "ident": "disable_param_env_normalization_hack",
+      "cli_flag": "disable-param-env-normalization-hack",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "do not treat all aliases in the environment as rigid with `-Znext-solver`",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2447,
+      "ident": "dual_proc_macros",
+      "cli_flag": "dual-proc-macros",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "load proc macros for both target and host, but only link to the target (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2449,
+      "ident": "dump_dep_graph",
+      "cli_flag": "dump-dep-graph",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "dump the dependency graph to $RUST_DEP_GRAPH (default: /tmp/dep_graph.gv) (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2452,
+      "ident": "dump_mir",
+      "cli_flag": "dump-mir",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "dump MIR state to file. `val` is used to select which passes and functions to dump. For example: `all` matches all passes and functions, `foo` matches all passes for functions whose name contains 'foo', `foo & ConstProp` only the 'ConstProp' pass for function names containing 'foo', `foo | bar` all passes for function names containing 'foo' or 'bar'.",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2459,
+      "ident": "dump_mir_dataflow",
+      "cli_flag": "dump-mir-dataflow",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "in addition to `.mir` files, create graphviz `.dot` files with dataflow results (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2462,
+      "ident": "dump_mir_dir",
+      "cli_flag": "dump-mir-dir",
+      "type": "String",
+      "default": "\"mir_dump\".to_string()",
+      "parser": "parse_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "the directory the MIR is dumped into (default: `mir_dump`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2464,
+      "ident": "dump_mir_exclude_alloc_bytes",
+      "cli_flag": "dump-mir-exclude-alloc-bytes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "exclude the raw bytes of allocations when dumping MIR (used in tests) (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2466,
+      "ident": "dump_mir_exclude_pass_number",
+      "cli_flag": "dump-mir-exclude-pass-number",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "exclude the pass number when dumping MIR (used in tests) (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2468,
+      "ident": "dump_mir_graphviz",
+      "cli_flag": "dump-mir-graphviz",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "in addition to `.mir` files, create graphviz `.dot` files (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2470,
+      "ident": "dump_mono_stats",
+      "cli_flag": "dump-mono-stats",
+      "type": "SwitchWithOptPath",
+      "default": "SwitchWithOptPath::Disabled",
+      "parser": "parse_switch_with_opt_path",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "output statistics about monomorphization collection",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2473,
+      "ident": "dump_mono_stats_format",
+      "cli_flag": "dump-mono-stats-format",
+      "type": "DumpMonoStatsFormat",
+      "default": "DumpMonoStatsFormat::Markdown",
+      "parser": "parse_dump_mono_stats",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "the format to use for -Z dump-mono-stats (`markdown` (default) or `json`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2476,
+      "ident": "dwarf_version",
+      "cli_flag": "dwarf-version",
+      "type": "Option<u32>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "version of DWARF debug information to emit (default: 2 or 4, depending on platform)",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2478,
+      "ident": "dylib_lto",
+      "cli_flag": "dylib-lto",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "enables LTO for dylib crate type",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2480,
+      "ident": "eagerly_emit_delayed_bugs",
+      "cli_flag": "eagerly-emit-delayed-bugs",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "emit delayed bugs eagerly as errors instead of stashing them and emitting them only if an error has not been emitted",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2483,
+      "ident": "ehcont_guard",
+      "cli_flag": "ehcont-guard",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "generate Windows EHCont Guard tables",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2485,
+      "ident": "embed_metadata",
+      "cli_flag": "embed-metadata",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "embed metadata in rlibs and dylibs (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2487,
+      "ident": "embed_source",
+      "cli_flag": "embed-source",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "embed source text in DWARF debug sections (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2489,
+      "ident": "emit_stack_sizes",
+      "cli_flag": "emit-stack-sizes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "emit a section containing stack size metadata (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2491,
+      "ident": "enforce_type_length_limit",
+      "cli_flag": "enforce-type-length-limit",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enforce the type length limit when monomorphizing instances in codegen",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2493,
+      "ident": "experimental_default_bounds",
+      "cli_flag": "experimental-default-bounds",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable default bounds for experimental group of auto traits",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2495,
+      "ident": "export_executable_symbols",
+      "cli_flag": "export-executable-symbols",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "export symbols from executables, as if they were dynamic libraries",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2497,
+      "ident": "external_clangrt",
+      "cli_flag": "external-clangrt",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "rely on user specified linker commands to find clangrt",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2499,
+      "ident": "extra_const_ub_checks",
+      "cli_flag": "extra-const-ub-checks",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "turns on more checks to detect const UB, which can be slow (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2502,
+      "ident": "fewer_names",
+      "cli_flag": "fewer-names",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "reduce memory use by retaining fewer names within compilation artifacts (LLVM-IR) (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2505,
+      "ident": "fixed_x18",
+      "cli_flag": "fixed-x18",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "make the x18 register reserved on AArch64 (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2507,
+      "ident": "flatten_format_args",
+      "cli_flag": "flatten-format-args",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "flatten nested format_args!() and literals into a simplified format_args!() call (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2510,
+      "ident": "fmt_debug",
+      "cli_flag": "fmt-debug",
+      "type": "FmtDebug",
+      "default": "FmtDebug::Full",
+      "parser": "parse_fmt_debug",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "how detailed `#[derive(Debug)]` should be. `full` prints types recursively, `shallow` prints only type names, `none` prints nothing and disables `{:?}`. (default: `full`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2513,
+      "ident": "force_intrinsic_fallback",
+      "cli_flag": "force-intrinsic-fallback",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "always use the fallback body of an intrinsic, if it has one, instead of lowering the intrinsic in the codegen backend (default: no).",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2516,
+      "ident": "force_unstable_if_unmarked",
+      "cli_flag": "force-unstable-if-unmarked",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "force all crates to be `rustc_private` unstable (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2518,
+      "ident": "function_return",
+      "cli_flag": "function-return",
+      "type": "FunctionReturn",
+      "default": "FunctionReturn::default()",
+      "parser": "parse_function_return",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "replace returns with jumps to `__x86_return_thunk` (default: `keep`)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2520,
+      "ident": "function_sections",
+      "cli_flag": "function-sections",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "whether each function should go in its own section",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2522,
+      "ident": "future_incompat_test",
+      "cli_flag": "future-incompat-test",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "forces all lints to be future incompatible, used for internal testing (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2524,
+      "ident": "graphviz_dark_mode",
+      "cli_flag": "graphviz-dark-mode",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "use dark-themed colors in graphviz output (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2526,
+      "ident": "graphviz_font",
+      "cli_flag": "graphviz-font",
+      "type": "String",
+      "default": "\"Courier, monospace\".to_string()",
+      "parser": "parse_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "use the given `fontname` in graphviz output; can be overridden by setting environment variable `RUSTC_GRAPHVIZ_FONT` (default: `Courier, monospace`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2529,
+      "ident": "has_thread_local",
+      "cli_flag": "has-thread-local",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "explicitly enable the `cfg(target_thread_local)` directive",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2531,
+      "ident": "help",
+      "cli_flag": "help",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "Print unstable compiler options",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2532,
+      "ident": "higher_ranked_assumptions",
+      "cli_flag": "higher-ranked-assumptions",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow deducing higher-ranked outlives assumptions from coroutines when proving auto traits",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2534,
+      "ident": "hint_mostly_unused",
+      "cli_flag": "hint-mostly-unused",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "hint that most of this crate will go unused, to minimize work for uncalled functions",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2536,
+      "ident": "hint_msrv",
+      "cli_flag": "hint-msrv",
+      "type": "Option<RustcVersion>",
+      "default": "None",
+      "parser": "parse_rust_version",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "control the minimum rust version for lints",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2538,
+      "ident": "human_readable_cgu_names",
+      "cli_flag": "human-readable-cgu-names",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "generate human-readable, predictable names for codegen units (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2540,
+      "ident": "identify_regions",
+      "cli_flag": "identify-regions",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "display unnamed regions as `'<id>`, using a non-ident unique id (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2542,
+      "ident": "ignore_directory_in_diagnostics_source_blocks",
+      "cli_flag": "ignore-directory-in-diagnostics-source-blocks",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_string_push",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "do not display the source code block in diagnostics for files in the directory",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2544,
+      "ident": "implicit_sysroot_deps",
+      "cli_flag": "implicit-sysroot-deps",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allows rust to search sysroot for a crate's dependencies (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2546,
+      "ident": "incremental_ignore_spans",
+      "cli_flag": "incremental-ignore-spans",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "ignore spans during ICH computation -- used for testing (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2548,
+      "ident": "incremental_info",
+      "cli_flag": "incremental-info",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print high-level information about incremental reuse (or the lack thereof) (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2551,
+      "ident": "incremental_verify_ich",
+      "cli_flag": "incremental-verify-ich",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "verify extended properties for incr. comp. (default: no): - hashes of green query instances - hash collisions of query keys - hash collisions when creating dep-nodes",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2556,
+      "ident": "indirect_branch_cs_prefix",
+      "cli_flag": "indirect-branch-cs-prefix",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "add `cs` prefix to `call` and `jmp` to indirect thunks (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2558,
+      "ident": "inline_llvm",
+      "cli_flag": "inline-llvm",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable LLVM inlining (default: yes)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2560,
+      "ident": "inline_mir",
+      "cli_flag": "inline-mir",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable MIR inlining (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2562,
+      "ident": "inline_mir_forwarder_threshold",
+      "cli_flag": "inline-mir-forwarder-threshold",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "inlining threshold when the caller is a simple forwarding function (default: 30)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2564,
+      "ident": "inline_mir_hint_threshold",
+      "cli_flag": "inline-mir-hint-threshold",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "inlining threshold for functions with inline hint (default: 100)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2566,
+      "ident": "inline_mir_preserve_debug",
+      "cli_flag": "inline-mir-preserve-debug",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "when MIR inlining, whether to preserve debug info for callee variables (default: preserve for debuginfo != None, otherwise remove)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2569,
+      "ident": "inline_mir_threshold",
+      "cli_flag": "inline-mir-threshold",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a default MIR inlining threshold (default: 50)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2571,
+      "ident": "input_stats",
+      "cli_flag": "input-stats",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print some statistics about AST and HIR (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2573,
+      "ident": "instrument_mcount",
+      "cli_flag": "instrument-mcount",
+      "type": "InstrumentMcount",
+      "default": "InstrumentMcount::Disabled",
+      "parser": "parse_instrument_mcount",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "insert function instrument code for mcount-based tracing (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2575,
+      "ident": "instrument_xray",
+      "cli_flag": "instrument-xray",
+      "type": "Option<InstrumentXRay>",
+      "default": "None",
+      "parser": "parse_instrument_xray",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "insert function instrument code for XRay-based tracing (default: no) Optional extra settings: `=always` `=never` `=ignore-loops` `=instruction-threshold=N` `=skip-entry` `=skip-exit` Multiple options can be combined with commas.",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2591,
+      "ident": "internal_testing_features",
+      "cli_flag": "internal-testing-features",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow certain internal language features to be enabled that help exercise & test the compiler",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2593,
+      "ident": "large_data_threshold",
+      "cli_flag": "large-data-threshold",
+      "type": "Option<u64>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "set the threshold for objects to be stored in a \"large data\" section (only effective with -Ccode-model=medium, default: 65536)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2596,
+      "ident": "layout_seed",
+      "cli_flag": "layout-seed",
+      "type": "Option<u64>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "seed layout randomization",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2598,
+      "ident": "link_directives",
+      "cli_flag": "link-directives",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "honor #[link] directives in the compiled crate (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2600,
+      "ident": "link_native_libraries",
+      "cli_flag": "link-native-libraries",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "link native libraries in the linker invocation (default: yes)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2602,
+      "ident": "link_only",
+      "cli_flag": "link-only",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "link the `.rlink` file generated by `-Z no-link` (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2604,
+      "ident": "lint_llvm_ir",
+      "cli_flag": "lint-llvm-ir",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "lint LLVM IR (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2606,
+      "ident": "lint_mir",
+      "cli_flag": "lint-mir",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "lint MIR before and after each transformation",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2608,
+      "ident": "llvm_module_flag",
+      "cli_flag": "llvm-module-flag",
+      "type": "Vec<(String, u32, String)>",
+      "default": "Vec::new()",
+      "parser": "parse_llvm_module_flag",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a list of module flags to pass to LLVM (space separated)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2610,
+      "ident": "llvm_plugins",
+      "cli_flag": "llvm-plugins",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a list LLVM plugins to enable (space separated)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2612,
+      "ident": "llvm_target_feature",
+      "cli_flag": "llvm-target-feature",
+      "type": "String",
+      "default": "String::new()",
+      "parser": "parse_target_feature",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable/disable LLVM-level target features. This feature is unsafe and can cause ABI issues and compiler crashes, because LLVM does not support all target feature combinations.",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2616,
+      "ident": "llvm_time_trace",
+      "cli_flag": "llvm-time-trace",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "generate JSON tracing data file from LLVM data (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2618,
+      "ident": "llvm_writable",
+      "cli_flag": "llvm-writable",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit the LLVM writable attribute for mutable reference arguments (default: no)",
+      "used_in": [],
+      "llvm_specific": true
+    },
+    {
+      "line": 2620,
+      "ident": "location_detail",
+      "cli_flag": "location-detail",
+      "type": "LocationDetail",
+      "default": "LocationDetail::all()",
+      "parser": "parse_location_detail",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "what location details should be tracked when using caller_location, either `none`, or a comma separated list of location details, for which valid options are `file`, `line`, and `column` (default: `file,line,column`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2624,
+      "ident": "ls",
+      "cli_flag": "ls",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "decode and print various parts of the crate metadata for a library crate (space separated)",
+      "used_in": [
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2627,
+      "ident": "macro_backtrace",
+      "cli_flag": "macro-backtrace",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "show macro backtraces (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2629,
+      "ident": "macro_stats",
+      "cli_flag": "macro-stats",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print some statistics about macro expansions (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2631,
+      "ident": "maximal_hir_to_mir_coverage",
+      "cli_flag": "maximal-hir-to-mir-coverage",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "save as much information as possible about the correspondence between MIR and HIR as source scopes (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2634,
+      "ident": "merge_functions",
+      "cli_flag": "merge-functions",
+      "type": "Option<MergeFunctions>",
+      "default": "None",
+      "parser": "parse_merge_functions",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "control the operation of the MergeFunctions LLVM pass, taking the same values as the target option of the same name",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2637,
+      "ident": "meta_stats",
+      "cli_flag": "meta-stats",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "gather metadata statistics (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2639,
+      "ident": "metrics_dir",
+      "cli_flag": "metrics-dir",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "the directory metrics emitted by rustc are dumped into (implicitly enables default set of metrics)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2641,
+      "ident": "min_function_alignment",
+      "cli_flag": "min-function-alignment",
+      "type": "Option<Align>",
+      "default": "None",
+      "parser": "parse_align",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "align all functions to at least this many bytes. Must be a power of 2",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2643,
+      "ident": "min_recursion_limit",
+      "cli_flag": "min-recursion-limit",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "set a minimum recursion limit (final limit = max(this, recursion_limit_from_crate))",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2645,
+      "ident": "mir_enable_passes",
+      "cli_flag": "mir-enable-passes",
+      "type": "Vec<(String, bool)>",
+      "default": "Vec::new()",
+      "parser": "parse_list_with_polarity",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use like `-Zmir-enable-passes=+DestinationPropagation,-InstSimplify`. Forces the specified passes to be enabled, overriding all other checks. In particular, this will enable unsound (known-buggy and hence usually disabled) passes without further warning! Passes that are not specified are enabled or disabled by other flags as usual.",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2650,
+      "ident": "mir_include_spans",
+      "cli_flag": "mir-include-spans",
+      "type": "MirIncludeSpans",
+      "default": "MirIncludeSpans::default()",
+      "parser": "parse_mir_include_spans",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "include extra comments in mir pretty printing, like line numbers and statement indices, details about types, etc. (boolean for all passes, 'nll' to enable in NLL MIR only, default: 'nll')",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2653,
+      "ident": "mir_opt_bisect_limit",
+      "cli_flag": "mir-opt-bisect-limit",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "limit the number of MIR optimization pass executions (global across all bodies). Pass executions after this limit are skipped and reported. (default: no limit)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2657,
+      "ident": "mir_opt_level",
+      "cli_flag": "mir-opt-level",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "MIR optimization level (0-4; default: 1 in non optimized builds and 2 in optimized builds)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2659,
+      "ident": "mir_preserve_ub",
+      "cli_flag": "mir-preserve-ub",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "keep place mention statements and reads in trivial SwitchInt terminators, which are interpreted e.g., by miri; implies -Zmir-opt-level=0 (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2662,
+      "ident": "mir_strip_debuginfo",
+      "cli_flag": "mir-strip-debuginfo",
+      "type": "MirStripDebugInfo",
+      "default": "MirStripDebugInfo::None",
+      "parser": "parse_mir_strip_debuginfo",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "Whether to remove some of the MIR debug info from methods. Default: None",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2664,
+      "ident": "move_size_limit",
+      "cli_flag": "move-size-limit",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "the size at which the `large_assignments` lint starts to be emitted",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2666,
+      "ident": "namespaced_crates",
+      "cli_flag": "namespaced-crates",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow crates to be namespaced by other crates (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2668,
+      "ident": "next_solver",
+      "cli_flag": "next-solver",
+      "type": "NextSolverConfig",
+      "default": "NextSolverConfig::default()",
+      "parser": "parse_next_solver_config",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable and configure the next generation trait solver used by rustc",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2670,
+      "ident": "nll_facts",
+      "cli_flag": "nll-facts",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "dump facts from NLL analysis into side files (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2672,
+      "ident": "nll_facts_dir",
+      "cli_flag": "nll-facts-dir",
+      "type": "String",
+      "default": "\"nll-facts\".to_string()",
+      "parser": "parse_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "the directory the NLL facts are dumped into (default: `nll-facts`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2674,
+      "ident": "no_analysis",
+      "cli_flag": "no-analysis",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "parse and expand the source, but run no analysis",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2676,
+      "ident": "no_codegen",
+      "cli_flag": "no-codegen",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED_NO_CRATE_HASH",
+      "removed": false,
+      "description": "run all passes except codegen; no output",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2678,
+      "ident": "no_generate_arange_section",
+      "cli_flag": "no-generate-arange-section",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "omit DWARF address ranges that give faster lookups",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2680,
+      "ident": "no_implied_bounds_compat",
+      "cli_flag": "no-implied-bounds-compat",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable the compatibility version of the `implied_bounds_ty` query",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2682,
+      "ident": "no_leak_check",
+      "cli_flag": "no-leak-check",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "disable the 'leak check' for subtyping; unsound, but useful for tests",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2684,
+      "ident": "no_link",
+      "cli_flag": "no-link",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "compile without linking",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2686,
+      "ident": "no_parallel_backend",
+      "cli_flag": "no-parallel-backend",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "use `--jobs-backend=1` instead",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2688,
+      "ident": "no_profiler_runtime",
+      "cli_flag": "no-profiler-runtime",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "prevent automatic injection of the profiler_builtins crate",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2690,
+      "ident": "no_steal_thir",
+      "cli_flag": "no-steal-thir",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "don't steal the THIR when we're done with it; useful for rustc drivers (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2692,
+      "ident": "no_trait_vptr",
+      "cli_flag": "no-trait-vptr",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "disable generation of trait vptr in vtable for upcasting",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2694,
+      "ident": "no_unique_section_names",
+      "cli_flag": "no-unique-section-names",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "do not use unique names for text and data sections when -Z function-sections is used",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2696,
+      "ident": "normalize_docs",
+      "cli_flag": "normalize-docs",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "normalize associated items in rustdoc when generating documentation",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2698,
+      "ident": "offload",
+      "cli_flag": "offload",
+      "type": "Vec<crate::config::Offload>",
+      "default": "Vec::new()",
+      "parser": "parse_offload",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "a list of offload flags to enable Mandatory setting: `=Enable` Currently the only option available",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2703,
+      "ident": "on_broken_pipe",
+      "cli_flag": "on-broken-pipe",
+      "type": "OnBrokenPipe",
+      "default": "OnBrokenPipe::Default",
+      "parser": "parse_on_broken_pipe",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "behavior of std::io::ErrorKind::BrokenPipe (SIGPIPE)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2705,
+      "ident": "osx_rpath_install_name",
+      "cli_flag": "osx-rpath-install-name",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "pass `-install_name @rpath/...` to the macOS linker (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2707,
+      "ident": "packed_bundled_libs",
+      "cli_flag": "packed-bundled-libs",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "change rlib format to store native libraries as archives",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2709,
+      "ident": "packed_stack",
+      "cli_flag": "packed-stack",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use packed stack frames (s390x only) (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2711,
+      "ident": "panic_abort_tests",
+      "cli_flag": "panic-abort-tests",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "support compiling tests with panic=abort (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2713,
+      "ident": "panic_in_drop",
+      "cli_flag": "panic-in-drop",
+      "type": "PanicStrategy",
+      "default": "PanicStrategy::Unwind",
+      "parser": "parse_panic_strategy",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "panic strategy for panics in drops",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2715,
+      "ident": "parse_crate_root_only",
+      "cli_flag": "parse-crate-root-only",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "parse the crate root file only; do not parse other files, compile, assemble, or link (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2718,
+      "ident": "patchable_function_entry",
+      "cli_flag": "patchable-function-entry",
+      "type": "PatchableFunctionEntry",
+      "default": "PatchableFunctionEntry::default()",
+      "parser": "parse_patchable_function_entry",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "nop padding at function entry",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2720,
+      "ident": "plt",
+      "cli_flag": "plt",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "whether to use the PLT when calling into shared libraries; only has effect for PIC code on systems with ELF binaries (default: PLT is disabled if full relro is enabled on x86_64)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2724,
+      "ident": "pointer_authentication",
+      "cli_flag": "pointer-authentication",
+      "type": "Vec<(PointerAuthOption, bool)>",
+      "default": "Vec::new()",
+      "parser": "parse_pointer_authentication_list_with_polarity",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "A comma-separated list of pointer authentication options, each prefixed with `+` (enable) or `-` (disable). Available options: `aarch64-jump-table-hardening` - enable hardened lowering for jump-table dispatch `auth-traps` - trap immediately on pointer authentication failure `calls` - enable signing and authentication of all indirect calls `elf-got` - enable authentication of pointers from GOT (ELF only) `function-pointer-type-discrimination` - enable type discrimination on C function pointers `indirect-gotos` - enable signing and authentication of indirect goto targets `init-fini` - enable signing of function pointers in init/fini arrays `init-fini-address-discrimination` - enable address discrimination in init/fini arrays `intrinsics` - pointer authentication intrinsics `return-addresses` - enable signing and authentication of return addresses `typeinfo-vt-ptr-discrimination - incorporate type and address discrimination in authenticated vtable pointers for std::type_info `vt-ptr-addr-discrimination - incorporate address discrimination in authenticated vtable pointers `vt-ptr-type-discrimination - incorporate type discrimination in authenticated vtable pointers Example: `-Zpointer-authentication=+calls,-init-fini`.",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2744,
+      "ident": "polonius",
+      "cli_flag": "polonius",
+      "type": "Polonius",
+      "default": "Polonius::default()",
+      "parser": "parse_polonius",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable polonius-based borrow-checker (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2746,
+      "ident": "pre_link_arg",
+      "cli_flag": "pre-link-arg",
+      "type": "(/* redirected to pre_link_args */)",
+      "default": "()",
+      "parser": "parse_string_push",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "a single extra argument to prepend the linker invocation (can be used several times)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2748,
+      "ident": "pre_link_args",
+      "cli_flag": "pre-link-args",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_list",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "extra arguments to prepend to the linker invocation (space separated)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2750,
+      "ident": "precise_enum_drop_elaboration",
+      "cli_flag": "precise-enum-drop-elaboration",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use a more precise version of drop elaboration for matches on enums (default: yes). This results in better codegen, but has caused miscompilations on some tier 2 platforms. See #77382 and #74551.",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2755,
+      "ident": "print_codegen_stats",
+      "cli_flag": "print-codegen-stats",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print codegen statistics (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2758,
+      "ident": "print_codegen_stats_json",
+      "cli_flag": "print-codegen-stats-json",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print codegen statistics in JSON to a file (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2760,
+      "ident": "print_llvm_passes",
+      "cli_flag": "print-llvm-passes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print the LLVM optimization passes being run (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2762,
+      "ident": "print_mono_items",
+      "cli_flag": "print-mono-items",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print the result of the monomorphization collection pass (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2764,
+      "ident": "print_type_sizes",
+      "cli_flag": "print-type-sizes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "print layout information for each type encountered (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2766,
+      "ident": "proc_macro_backtrace",
+      "cli_flag": "proc-macro-backtrace",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "show backtraces for panics during proc-macro execution (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2768,
+      "ident": "proc_macro_execution_strategy",
+      "cli_flag": "proc-macro-execution-strategy",
+      "type": "ProcMacroExecutionStrategy",
+      "default": "ProcMacroExecutionStrategy::SameThread",
+      "parser": "parse_proc_macro_execution_strategy",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "how to run proc-macro code (default: same-thread)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2771,
+      "ident": "profile_closures",
+      "cli_flag": "profile-closures",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "profile size of closures",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2773,
+      "ident": "profile_sample_use",
+      "cli_flag": "profile-sample-use",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use the given `.prof` file for sampled profile-guided optimization (also known as AutoFDO)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2775,
+      "ident": "profiler_runtime",
+      "cli_flag": "profiler-runtime",
+      "type": "String",
+      "default": "String::from(\"profiler_builtins\")",
+      "parser": "parse_string",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "name of the profiler runtime crate to automatically inject (default: `profiler_builtins`)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2777,
+      "ident": "query_dep_graph",
+      "cli_flag": "query-dep-graph",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "enable queries of the dependency graph for regression testing (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2779,
+      "ident": "randomize_layout",
+      "cli_flag": "randomize-layout",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "randomize the layout of types (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2781,
+      "ident": "reg_struct_return",
+      "cli_flag": "reg-struct-return",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "On x86-32 targets, it overrides the default ABI to return small structs in registers. It is UNSOUND to link together crates that use different values for this flag!",
+      "used_in": [
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2784,
+      "ident": "regparm",
+      "cli_flag": "regparm",
+      "type": "Option<u32>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "On x86-32 targets, setting this to N causes the compiler to pass N arguments in registers EAX, EDX, and ECX instead of on the stack for \"C\", \"cdecl\", and \"stdcall\" fn. It is UNSOUND to link together crates that use different values for this flag!",
+      "used_in": [
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2789,
+      "ident": "relax_elf_relocations",
+      "cli_flag": "relax-elf-relocations",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "whether ELF relocations can be relaxed",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2791,
+      "ident": "remap_cwd_prefix",
+      "cli_flag": "remap-cwd-prefix",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "remap paths under the current working directory to this path prefix",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2793,
+      "ident": "remark_dir",
+      "cli_flag": "remark-dir",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "directory into which to write optimization remarks (if not specified, they will be written to standard error output)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2796,
+      "ident": "renormalize_rigid_aliases",
+      "cli_flag": "renormalize-rigid-aliases",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "do not skip rigid aliases in normalization for internal debugging",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2798,
+      "ident": "retpoline",
+      "cli_flag": "retpoline",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enables retpoline-indirect-branches and retpoline-indirect-calls target features (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2800,
+      "ident": "retpoline_external_thunk",
+      "cli_flag": "retpoline-external-thunk",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enables retpoline-external-thunk, retpoline-indirect-branches and retpoline-indirect-calls target features (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2804,
+      "ident": "sanitizer",
+      "cli_flag": "sanitizer",
+      "type": "SanitizerSet",
+      "default": "SanitizerSet::empty()",
+      "parser": "parse_sanitizers",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use a sanitizer",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2806,
+      "ident": "sanitizer_cfi_canonical_jump_tables",
+      "cli_flag": "sanitizer-cfi-canonical-jump-tables",
+      "type": "Option<bool>",
+      "default": "Some(true)",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable canonical jump tables (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2808,
+      "ident": "sanitizer_cfi_generalize_pointers",
+      "cli_flag": "sanitizer-cfi-generalize-pointers",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable generalizing pointer types (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2810,
+      "ident": "sanitizer_cfi_normalize_integers",
+      "cli_flag": "sanitizer-cfi-normalize-integers",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable normalizing integer types (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2812,
+      "ident": "sanitizer_cfi_diag",
+      "cli_flag": "sanitizer-cfi-diag",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable CFI diagnostics (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2814,
+      "ident": "sanitizer_cfi_recover",
+      "cli_flag": "sanitizer-cfi-recover",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable CFI recovery (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2816,
+      "ident": "sanitizer_dataflow_abilist",
+      "cli_flag": "sanitizer-dataflow-abilist",
+      "type": "Vec<String>",
+      "default": "Vec::new()",
+      "parser": "parse_comma_list",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "additional ABI list files that control how shadow parameters are passed (comma separated)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2818,
+      "ident": "sanitizer_kcfi_arity",
+      "cli_flag": "sanitizer-kcfi-arity",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable KCFI arity indicator (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2820,
+      "ident": "sanitizer_memory_track_origins",
+      "cli_flag": "sanitizer-memory-track-origins",
+      "type": "usize",
+      "default": "0",
+      "parser": "parse_sanitizer_memory_track_origins",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable origins tracking in MemorySanitizer",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2822,
+      "ident": "sanitizer_recover",
+      "cli_flag": "sanitizer-recover",
+      "type": "SanitizerSet",
+      "default": "SanitizerSet::empty()",
+      "parser": "parse_sanitizers",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable recovery for selected sanitizers",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2824,
+      "ident": "saturating_float_casts",
+      "cli_flag": "saturating-float-casts",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "make float->int casts UB-free: numbers outside the integer type's range are clipped to the max/min integer respectively, and NaN is mapped to 0 (default: yes)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2827,
+      "ident": "self_profile",
+      "cli_flag": "self-profile",
+      "type": "SwitchWithOptPath",
+      "default": "SwitchWithOptPath::Disabled",
+      "parser": "parse_switch_with_opt_path",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "run the self profiler and output the raw event data",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2830,
+      "ident": "self_profile_counter",
+      "cli_flag": "self-profile-counter",
+      "type": "String",
+      "default": "\"wall-time\".to_string()",
+      "parser": "parse_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "counter used by the self profiler (default: `wall-time`), one of: `wall-time` (monotonic clock, i.e. `std::time::Instant`) `instructions:u` (retired instructions, userspace-only) `instructions-minus-irqs:u` (subtracting hardware interrupt counts for extra accuracy)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2837,
+      "ident": "self_profile_events",
+      "cli_flag": "self-profile-events",
+      "type": "Option<Vec<String>>",
+      "default": "None",
+      "parser": "parse_opt_comma_list",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "specify the events recorded by the self profiler; for example: `-Z self-profile-events=default,query-keys` all options: none, all, default, generic-activity, query-provider, query-cache-hit query-blocked, incr-cache-load, incr-result-hashing, query-keys, function-args, args, llvm, artifact-sizes",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2842,
+      "ident": "share_generics",
+      "cli_flag": "share-generics",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "make the current crate share its generic instantiations",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2844,
+      "ident": "shell_argfiles",
+      "cli_flag": "shell-argfiles",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "allow argument files to be specified with POSIX \"shell-style\" argument quoting",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2846,
+      "ident": "simulate_remapped_rust_src_base",
+      "cli_flag": "simulate-remapped-rust-src-base",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "simulate the effect of remap-debuginfo = true at bootstrapping by remapping path to rust's source base directory. only meant for testing purposes",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2849,
+      "ident": "small_data_threshold",
+      "cli_flag": "small-data-threshold",
+      "type": "Option<usize>",
+      "default": "None",
+      "parser": "parse_opt_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "Set the threshold for objects to be stored in a \"small data\" section",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2851,
+      "ident": "span_debug",
+      "cli_flag": "span-debug",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "forward proc_macro::Span's `Debug` impl to `Span`",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2854,
+      "ident": "span_free_formats",
+      "cli_flag": "span-free-formats",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "exclude spans when debug-printing compiler state (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2856,
+      "ident": "split_dwarf_inlining",
+      "cli_flag": "split-dwarf-inlining",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "provide minimal debug info in the object/executable to facilitate online symbolication/stack traces in the absence of .dwo/.dwp files when using Split DWARF",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2859,
+      "ident": "split_dwarf_kind",
+      "cli_flag": "split-dwarf-kind",
+      "type": "SplitDwarfKind",
+      "default": "SplitDwarfKind::Split",
+      "parser": "parse_split_dwarf_kind",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "split dwarf variant (only if -Csplit-debuginfo is enabled and on relevant platform) (default: `split`) `split`: sections which do not require relocation are written into a DWARF object (`.dwo`) file which is ignored by the linker `single`: sections which do not require relocation are written into object file but ignored by the linker",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2867,
+      "ident": "split_dwarf_out_dir",
+      "cli_flag": "split-dwarf-out-dir",
+      "type": "Option<PathBuf>",
+      "default": "None",
+      "parser": "parse_opt_pathbuf",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "location for writing split DWARF objects (`.dwo`) if enabled",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2869,
+      "ident": "split_lto_unit",
+      "cli_flag": "split-lto-unit",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable LTO unit splitting (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2871,
+      "ident": "src_hash_algorithm",
+      "cli_flag": "src-hash-algorithm",
+      "type": "Option<SourceFileHashAlgorithm>",
+      "default": "None",
+      "parser": "parse_src_file_hash",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "hash algorithm of source files in debug info (`md5`, `sha1`, or `sha256`)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2874,
+      "ident": "stack_protector",
+      "cli_flag": "stack-protector",
+      "type": "StackProtector",
+      "default": "StackProtector::None",
+      "parser": "parse_stack_protector",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "control stack smash protection strategy (`rustc --print stack-protector-strategies` for details)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2876,
+      "ident": "staticlib_allow_rdylib_deps",
+      "cli_flag": "staticlib-allow-rdylib-deps",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow staticlibs to have rust dylib dependencies",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2878,
+      "ident": "staticlib_hide_internal_symbols",
+      "cli_flag": "staticlib-hide-internal-symbols",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "hide non-exported Rust symbols when building staticlibs by setting STV_HIDDEN",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2880,
+      "ident": "staticlib_rename_internal_symbols",
+      "cli_flag": "staticlib-rename-internal-symbols",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "rename non-exported Rust symbols when building staticlibs to avoid conflicts",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2882,
+      "ident": "staticlib_prefer_dynamic",
+      "cli_flag": "staticlib-prefer-dynamic",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "prefer dynamic linking to static linking for staticlibs (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2884,
+      "ident": "strict_init_checks",
+      "cli_flag": "strict-init-checks",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "control if mem::uninitialized and mem::zeroed panic on more UB",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2887,
+      "ident": "teach",
+      "cli_flag": "teach",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "show extended diagnostic help (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2889,
+      "ident": "temps_dir",
+      "cli_flag": "temps-dir",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "the directory the intermediate files are written to",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2891,
+      "ident": "terminal_urls",
+      "cli_flag": "terminal-urls",
+      "type": "TerminalUrl",
+      "default": "TerminalUrl::No",
+      "parser": "parse_terminal_url",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "use the OSC 8 hyperlink terminal specification to print hyperlinks in the compiler output",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2894,
+      "ident": "thinlto",
+      "cli_flag": "thinlto",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable ThinLTO when possible",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2896,
+      "ident": "threads",
+      "cli_flag": "threads",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "use `--jobs-frontend` instead",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2898,
+      "ident": "time_llvm_passes",
+      "cli_flag": "time-llvm-passes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "measure time of each LLVM pass (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2900,
+      "ident": "time_passes",
+      "cli_flag": "time-passes",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "measure time of each rustc pass (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2902,
+      "ident": "time_passes_format",
+      "cli_flag": "time-passes-format",
+      "type": "TimePassesFormat",
+      "default": "TimePassesFormat::Text",
+      "parser": "parse_time_passes_format",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "the format to use for -Z time-passes (`text` (default) or `json`)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2904,
+      "ident": "tiny_const_eval_limit",
+      "cli_flag": "tiny-const-eval-limit",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "sets a tiny, non-configurable limit for const eval; useful for compiler tests",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2907,
+      "ident": "tls_model",
+      "cli_flag": "tls-model",
+      "type": "Option<TlsModel>",
+      "default": "None",
+      "parser": "parse_tls_model",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "choose the TLS model to use (`rustc --print tls-models` for details)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2909,
+      "ident": "trace_macros",
+      "cli_flag": "trace-macros",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "for every macro invocation, print its name and arguments (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2911,
+      "ident": "track_diagnostics",
+      "cli_flag": "track-diagnostics",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "tracks where in rustc a diagnostic was emitted",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2913,
+      "ident": "translate_remapped_path_to_local_path",
+      "cli_flag": "translate-remapped-path-to-local-path",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "translate remapped paths into local paths when possible (default: yes)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2915,
+      "ident": "trap_unreachable",
+      "cli_flag": "trap-unreachable",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "generate trap instructions for unreachable intrinsics (default: use target setting, usually yes)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2917,
+      "ident": "treat_err_as_bug",
+      "cli_flag": "treat-err-as-bug",
+      "type": "Option<NonZero<usize>>",
+      "default": "None",
+      "parser": "parse_treat_err_as_bug",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "treat the `val`th error that occurs as bug (default if not specified: 0 - don't treat errors as bugs. default if specified without a value: 1 - treat the first error as bug)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2920,
+      "ident": "trim_diagnostic_paths",
+      "cli_flag": "trim-diagnostic-paths",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "in diagnostics, use heuristics to shorten paths referring to items",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2922,
+      "ident": "tune_cpu",
+      "cli_flag": "tune-cpu",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_opt_string",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "select processor to schedule for (`rustc --print target-cpus` for details)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2925,
+      "ident": "typing_mode_post_typeck_until_borrowck",
+      "cli_flag": "typing-mode-post-typeck-until-borrowck",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable `TypingMode::PostTypeckUntilBorrowck`, changing the way opaque types are handled during MIR borrowck",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2928,
+      "ident": "ub_checks",
+      "cli_flag": "ub-checks",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "emit runtime checks for Undefined Behavior (default: -Cdebug-assertions)",
+      "used_in": [
+        "rustc_codegen_ssa"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2930,
+      "ident": "ui_testing",
+      "cli_flag": "ui-testing",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "emit compiler diagnostics in a form suitable for UI testing (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2932,
+      "ident": "uninit_const_chunk_threshold",
+      "cli_flag": "uninit-const-chunk-threshold",
+      "type": "usize",
+      "default": "16",
+      "parser": "parse_number",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "allow generating const initializers with mixed init/uninit chunks, and set the maximum number of chunks for which this is allowed (default: 16)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2935,
+      "ident": "unleash_the_miri_inside_of_you",
+      "cli_flag": "unleash-the-miri-inside-of-you",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "take the brakes off const evaluation. NOTE: this is unsound (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2937,
+      "ident": "unpretty",
+      "cli_flag": "unpretty",
+      "type": "Option<String>",
+      "default": "None",
+      "parser": "parse_unpretty",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "present the input source, unstable (and less-pretty) variants; `normal`, `expanded`, `expanded,identified`, `expanded,hygiene` (with internal representations), `ast-tree` (raw AST before expansion), `ast-tree,expanded` (raw AST after expansion), `hir` (the HIR), `hir,identified`, `hir,typed` (HIR with types for each node), `hir-tree` (dump the raw HIR), `thir-tree`, `thir-flat`, `mir` (the MIR), or `mir-cfg` (graphviz formatted MIR)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2949,
+      "ident": "unsound_mir_opts",
+      "cli_flag": "unsound-mir-opts",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable unsound and buggy MIR optimizations (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2960,
+      "ident": "unstable_options",
+      "cli_flag": "unstable-options",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_no_value",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "adds unstable command line options to rustc interface (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2962,
+      "ident": "use_ctors_section",
+      "cli_flag": "use-ctors-section",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use legacy .ctors section for initializers rather than .init_array",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2964,
+      "ident": "use_sync_unwind",
+      "cli_flag": "use-sync-unwind",
+      "type": "Option<bool>",
+      "default": "None",
+      "parser": "parse_opt_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "Generate sync unwind tables instead of async unwind tables (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2966,
+      "ident": "validate_mir",
+      "cli_flag": "validate-mir",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "validate MIR after each transformation",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2968,
+      "ident": "verbose_asm",
+      "cli_flag": "verbose-asm",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "add descriptive comments from LLVM to the assembly (may change behavior) (default: no)",
+      "used_in": [
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2971,
+      "ident": "verbose_internals",
+      "cli_flag": "verbose-internals",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED_NO_CRATE_HASH",
+      "removed": false,
+      "description": "in general, enable more debug printouts (default: no)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2974,
+      "ident": "verify_llvm_ir",
+      "cli_flag": "verify-llvm-ir",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "verify LLVM IR (default: no)",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_codegen_cranelift"
+      ],
+      "llvm_specific": true
+    },
+    {
+      "line": 2976,
+      "ident": "virtual_function_elimination",
+      "cli_flag": "virtual-function-elimination",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enables dead virtual function elimination optimization. Requires `-Clto[=[fat,yes]]`",
+      "used_in": [
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "llvm_specific": false
+    },
+    {
+      "line": 2979,
+      "ident": "wasi_exec_model",
+      "cli_flag": "wasi-exec-model",
+      "type": "Option<WasiExecModel>",
+      "default": "None",
+      "parser": "parse_wasi_exec_model",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "whether to build a wasi command or reactor",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2984,
+      "ident": "wasm_c_abi",
+      "cli_flag": "wasm-c-abi",
+      "type": "()",
+      "default": "()",
+      "parser": "parse_wasm_c_abi",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "use spec-compliant C ABI for `wasm32-unknown-unknown` (deprecated, always enabled)",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2986,
+      "ident": "wasm_proc_macros",
+      "cli_flag": "wasm-proc-macros",
+      "type": "bool",
+      "default": "false",
+      "parser": "parse_bool",
+      "tracking": "TRACKED",
+      "removed": false,
+      "description": "enable support for compiling and loading wasm proc macros",
+      "used_in": [],
+      "llvm_specific": false
+    },
+    {
+      "line": 2988,
+      "ident": "write_long_types_to_disk",
+      "cli_flag": "write-long-types-to-disk",
+      "type": "bool",
+      "default": "true",
+      "parser": "parse_bool",
+      "tracking": "UNTRACKED",
+      "removed": false,
+      "description": "whether long type names should be written to files instead of being printed in errors",
+      "used_in": [],
+      "llvm_specific": false
+    }
+  ],
+  "codegen_backend_trait_methods": [
+    {
+      "name": "name",
+      "args": "&self",
+      "ret": "&'static str",
+      "line": 36
+    },
+    {
+      "name": "init",
+      "args": "&self, _sess: &Session",
+      "ret": "()",
+      "line": 37
+    },
+    {
+      "name": "print",
+      "args": "&self, _req: &PrintRequest, _out: &mut String, _sess: &Session",
+      "ret": "()",
+      "line": 39
+    },
+    {
+      "name": "target_config",
+      "args": "&self, _sess: &Session",
+      "ret": "TargetConfig",
+      "line": 44
+    },
+    {
+      "name": "supported_crate_types",
+      "args": "&self, _sess: &Session",
+      "ret": "Vec<CrateType>",
+      "line": 53
+    },
+    {
+      "name": "print_passes",
+      "args": "&self",
+      "ret": "()",
+      "line": 65
+    },
+    {
+      "name": "print_version",
+      "args": "&self",
+      "ret": "()",
+      "line": 69
+    },
+    {
+      "name": "replaced_intrinsics",
+      "args": "&self",
+      "ret": "Vec<Symbol>",
+      "line": 74
+    },
+    {
+      "name": "fallback_intrinsics",
+      "args": "&self",
+      "ret": "Vec<Symbol>",
+      "line": 80
+    },
+    {
+      "name": "thin_lto_supported",
+      "args": "&self",
+      "ret": "bool",
+      "line": 85
+    },
+    {
+      "name": "has_zstd",
+      "args": "&self",
+      "ret": "bool",
+      "line": 93
+    },
+    {
+      "name": "has_mnemonic",
+      "args": "&self, _sess: &Session, _mnemonic: &str",
+      "ret": "bool",
+      "line": 101
+    },
+    {
+      "name": "metadata_loader",
+      "args": "&self",
+      "ret": "Box<MetadataLoaderDyn>",
+      "line": 109
+    },
+    {
+      "name": "provide",
+      "args": "&self, _providers: &mut Providers",
+      "ret": "()",
+      "line": 111
+    },
+    {
+      "name": "target_cpu",
+      "args": "&self, sess: &Session",
+      "ret": "String",
+      "line": 114
+    },
+    {
+      "name": "join_codegen",
+      "args": "&self, ongoing_codegen: Box<dyn Any>, sess: &Session, incr_comp_session: Option<&IncrCompSession>, outputs: &OutputFilenames, crate_info: &CrateInfo,",
+      "ret": "(CompiledModules, WorkProductMap)",
+      "line": 124
+    },
+    {
+      "name": "print_pass_timings",
+      "args": "&self",
+      "ret": "()",
+      "line": 132
+    },
+    {
+      "name": "print_statistics",
+      "args": "&self",
+      "ret": "()",
+      "line": 134
+    },
+    {
+      "name": "print_statistics_json",
+      "args": "&self",
+      "ret": "String",
+      "line": 136
+    },
+    {
+      "name": "link",
+      "args": "&self, sess: &Session, compiled_modules: CompiledModules, crate_info: CrateInfo, metadata: EncodedMetadata, outputs: &OutputFilenames,",
+      "ret": "()",
+      "line": 142
+    }
+  ],
+  "print_kinds_enum": [],
+  "output_types_enum": [
+    "$(",
+    "$(#[doc = $doc])*",
+    "$Variant",
+    ")*"
+  ],
+  "crate_types_enum": [],
+  "environment_variables": {
+    "RUSTC_OVERRIDE_VERSION_STRING": [
+      "compiler/rustc_ast/src/attr/version.rs:18",
+      "compiler/rustc_driver_impl/src/lib.rs:896"
+    ],
+    "RUST_BACKTRACE": [
+      "compiler/rustc_errors/src/lib.rs:1466",
+      "compiler/rustc_driver_impl/src/lib.rs:1452",
+      "compiler/rustc_driver_impl/src/lib.rs:1597",
+      "compiler/rustc_codegen_gcc/build_system/src/main.rs:67",
+      "compiler/rustc_codegen_cranelift/build_system/main.rs:53"
+    ],
+    "CARGO_MANIFEST_DIR": [
+      "compiler/rustc_errors/src/markdown/tests/term.rs:7"
+    ],
+    "RUSTC_BLESS": [
+      "compiler/rustc_errors/src/markdown/tests/term.rs:65"
+    ],
+    "RUST_FORBID_DEP_GRAPH_EDGE": [
+      "compiler/rustc_middle/src/dep_graph/graph.rs:1220"
+    ],
+    "RUST_DEP_GRAPH": [
+      "compiler/rustc_incremental/src/assert_dep_graph.rs:212"
+    ],
+    "RUST_DEP_GRAPH_FILTER": [
+      "compiler/rustc_incremental/src/assert_dep_graph.rs:214"
+    ],
+    "RUSTC_FORCE_RUSTC_VERSION": [
+      "compiler/rustc_incremental/src/persist/file_format.rs:193",
+      "compiler/rustc_span/src/def_id.rs:198"
+    ],
+    "UNSTABLE_RUSTDOC_TEST_PATH": [
+      "compiler/rustc_driver_impl/src/lib.rs:384"
+    ],
+    "UNSTABLE_RUSTDOC_TEST_LINE": [
+      "compiler/rustc_driver_impl/src/lib.rs:386"
+    ],
+    "PAGER": [
+      "compiler/rustc_driver_impl/src/lib.rs:461"
+    ],
+    "CFG_VERSION": [
+      "compiler/rustc_driver_impl/src/lib.rs:874",
+      "compiler/rustc_codegen_llvm/src/context.rs:547",
+      "compiler/rustc_windows_rc/src/lib.rs:76",
+      "compiler/rustc_interface/src/util.rs:696"
+    ],
+    "CFG_VER_HASH": [
+      "compiler/rustc_driver_impl/src/lib.rs:875"
+    ],
+    "CFG_VER_DATE": [
+      "compiler/rustc_driver_impl/src/lib.rs:876",
+      "compiler/rustc_session/src/diagnostics.rs:225"
+    ],
+    "CFG_RELEASE": [
+      "compiler/rustc_driver_impl/src/lib.rs:877",
+      "compiler/rustc_span/src/symbol.rs:897",
+      "compiler/rustc_windows_rc/src/lib.rs:83",
+      "compiler/rustc_interface/src/util.rs:559"
+    ],
+    "RUSTC_ICE": [
+      "compiler/rustc_driver_impl/src/lib.rs:1408",
+      "compiler/rustc_driver_impl/src/lib.rs:1576"
+    ],
+    "CFG_RELEASE_CHANNEL": [
+      "compiler/rustc_driver_impl/src/lib.rs:1455",
+      "compiler/rustc_ast_passes/src/feature_gate.rs:649",
+      "compiler/rustc_codegen_ssa/src/back/link.rs:1792",
+      "compiler/rustc_windows_rc/src/lib.rs:79",
+      "compiler/rustc_metadata/src/diagnostics.rs:476"
+    ],
+    "RUSTC_BREAK_ON_ICE": [
+      "compiler/rustc_driver_impl/src/lib.rs:1608"
+    ],
+    "CI": [
+      "compiler/rustc_codegen_llvm/src/llvm_util.rs:79",
+      "compiler/rustc_llvm/build.rs:258"
+    ],
+    "TARGET": [
+      "compiler/rustc_llvm/build.rs:224"
+    ],
+    "HOST": [
+      "compiler/rustc_llvm/build.rs:225"
+    ],
+    "RAYON_NUM_THREADS": [
+      "compiler/rustc_thread_pool/src/lib.rs:491"
+    ],
+    "RAYON_RS_NUM_CPUS": [
+      "compiler/rustc_thread_pool/src/lib.rs:498"
+    ],
+    "CARGO_CFG_TARGET_OS": [
+      "compiler/rustc_driver/build.rs:6",
+      "compiler/rustc/build.rs:6"
+    ],
+    "CARGO_CFG_TARGET_ENV": [
+      "compiler/rustc_driver/build.rs:7",
+      "compiler/rustc/build.rs:7"
+    ],
+    "RUSTC_BOOTSTRAP": [
+      "compiler/rustc_macros/build.rs:4",
+      "compiler/rustc_feature/src/lib.rs:56",
+      "compiler/rustc_feature/src/lib.rs:60"
+    ],
+    "CG_GCCJIT_DUMP_RTL": [
+      "compiler/rustc_codegen_gcc/src/base.rs:181"
+    ],
+    "CG_GCCJIT_DUMP_RTL_ALL": [
+      "compiler/rustc_codegen_gcc/src/base.rs:184"
+    ],
+    "CG_GCCJIT_DUMP_TREE_ALL": [
+      "compiler/rustc_codegen_gcc/src/base.rs:187"
+    ],
+    "CG_GCCJIT_DUMP_IPA_ALL": [
+      "compiler/rustc_codegen_gcc/src/base.rs:190"
+    ],
+    "CG_GCCJIT_DUMP_CODE": [
+      "compiler/rustc_codegen_gcc/src/base.rs:193"
+    ],
+    "CG_GCCJIT_DUMP_GIMPLE": [
+      "compiler/rustc_codegen_gcc/src/base.rs:196"
+    ],
+    "CG_GCCJIT_DUMP_EVERYTHING": [
+      "compiler/rustc_codegen_gcc/src/base.rs:199"
+    ],
+    "CG_GCCJIT_KEEP_INTERMEDIATES": [
+      "compiler/rustc_codegen_gcc/src/base.rs:202"
+    ],
+    "CG_GCCJIT_VERBOSE": [
+      "compiler/rustc_codegen_gcc/src/base.rs:205"
+    ],
+    "CG_GCCJIT_DUMP_MODULE_NAMES": [
+      "compiler/rustc_codegen_gcc/src/back/write.rs:93"
+    ],
+    "CG_GCCJIT_DUMP_ALL_MODULES": [
+      "compiler/rustc_codegen_gcc/src/back/write.rs:96"
+    ],
+    "CG_GCCJIT_DUMP_MODULE": [
+      "compiler/rustc_codegen_gcc/src/back/write.rs:97"
+    ],
+    "CG_GCCJIT_DUMP_TO_FILE": [
+      "compiler/rustc_codegen_gcc/src/back/write.rs:107"
+    ],
+    "PATH": [
+      "compiler/rustc_codegen_gcc/tests/lang_tests.rs:21",
+      "compiler/rustc_codegen_gcc/tests/lang_tests_common.rs:82",
+      "compiler/rustc_codegen_gcc/build_system/src/config.rs:435",
+      "compiler/rustc_codegen_ssa/src/back/linker.rs:131",
+      "compiler/rustc_codegen_ssa/src/back/archive.rs:300",
+      "compiler/rustc_codegen_ssa/src/back/link.rs:1597",
+      "compiler/rustc_codegen_ssa/src/back/link.rs:2285",
+      "compiler/rustc_interface/src/passes.rs:180"
+    ],
+    "CG_GCC_VM_DIR": [
+      "compiler/rustc_codegen_gcc/tests/lang_tests.rs:28",
+      "compiler/rustc_codegen_gcc/tests/lang_tests_common.rs:113"
+    ],
+    "CG_GCC_TEST_TARGET": [
+      "compiler/rustc_codegen_gcc/tests/lang_tests.rs:116",
+      "compiler/rustc_codegen_gcc/tests/lang_tests_common.rs:77"
+    ],
+    "TEST_FLAGS": [
+      "compiler/rustc_codegen_gcc/tests/lang_tests.rs:169",
+      "compiler/rustc_codegen_gcc/tests/lang_tests_common.rs:88"
+    ],
+    "RUSTC": [
+      "compiler/rustc_codegen_gcc/build_system/src/rustc_info.rs:6",
+      "compiler/rustc_codegen_cranelift/build_system/main.rs:146",
+      "compiler/rustc_codegen_cranelift/build_system/rustc_info.rs:38",
+      "compiler/rustc_codegen_cranelift/scripts/rustc-clif.rs:45"
+    ],
+    "GITHUB_ACTIONS": [
+      "compiler/rustc_codegen_gcc/build_system/src/config.rs:247",
+      "compiler/rustc_codegen_cranelift/build_system/utils.rs:234"
+    ],
+    "CG_RUSTFLAGS": [
+      "compiler/rustc_codegen_gcc/build_system/src/build.rs:168"
+    ],
+    "CFG_DISABLE_UNSTABLE_FEATURES": [
+      "compiler/rustc_feature/src/lib.rs:68"
+    ],
+    "CG_CLIF_FORCE_GNU_AS": [
+      "compiler/rustc_codegen_cranelift/src/global_asm.rs:227"
+    ],
+    "CG_CLIF_ENABLE_VERIFIER": [
+      "compiler/rustc_codegen_cranelift/src/lib.rs:256"
+    ],
+    "CG_CLIF_JIT_ARGS": [
+      "compiler/rustc_codegen_cranelift/src/config.rs:20"
+    ],
+    "CARGO": [
+      "compiler/rustc_codegen_cranelift/build_system/main.rs:146",
+      "compiler/rustc_codegen_cranelift/build_system/rustc_info.rs:25",
+      "compiler/rustc_codegen_cranelift/scripts/cargo-clif.rs:33"
+    ],
+    "RUSTDOC": [
+      "compiler/rustc_codegen_cranelift/build_system/main.rs:146",
+      "compiler/rustc_codegen_cranelift/build_system/rustc_info.rs:51",
+      "compiler/rustc_codegen_cranelift/scripts/rustdoc-clif.rs:45"
+    ],
+    "HOST_TRIPLE": [
+      "compiler/rustc_codegen_cranelift/build_system/main.rs:161"
+    ],
+    "TARGET_TRIPLE": [
+      "compiler/rustc_codegen_cranelift/build_system/main.rs:173"
+    ],
+    "BENCH_RUNS": [
+      "compiler/rustc_codegen_cranelift/build_system/bench.rs:30"
+    ],
+    "GITHUB_STEP_SUMMARY": [
+      "compiler/rustc_codegen_cranelift/build_system/bench.rs:32"
+    ],
+    "CARGO_BUILD_INCREMENTAL": [
+      "compiler/rustc_codegen_cranelift/build_system/build_backend.rs:26",
+      "compiler/rustc_codegen_cranelift/build_system/build_sysroot.rs:262"
+    ],
+    "CG_CLIF_EXPENSIVE_CHECKS": [
+      "compiler/rustc_codegen_cranelift/build_system/build_backend.rs:30"
+    ],
+    "CG_CLIF_STDLIB_REMAP_PATH_PREFIX": [
+      "compiler/rustc_codegen_cranelift/build_system/build_sysroot.rs:245"
+    ],
+    "PROFILE": [
+      "compiler/rustc_codegen_cranelift/scripts/filter_profile.rs:21"
+    ],
+    "OUTPUT": [
+      "compiler/rustc_codegen_cranelift/scripts/filter_profile.rs:22"
+    ],
+    "BUILTIN_BACKEND": [
+      "compiler/rustc_codegen_cranelift/scripts/rustdoc-clif.rs:24",
+      "compiler/rustc_codegen_cranelift/scripts/rustc-clif.rs:24",
+      "compiler/rustc_codegen_cranelift/scripts/cargo-clif.rs:20"
+    ],
+    "TOOLCHAIN_NAME": [
+      "compiler/rustc_codegen_cranelift/scripts/rustdoc-clif.rs:49",
+      "compiler/rustc_codegen_cranelift/scripts/rustc-clif.rs:49",
+      "compiler/rustc_codegen_cranelift/scripts/cargo-clif.rs:37"
+    ],
+    "RUSTC_LOG": [
+      "compiler/rustc_session/src/session.rs:533"
+    ],
+    "RUSTC_VERIFY_LLVM_IR": [
+      "compiler/rustc_session/src/session.rs:829"
+    ],
+    "COLORTERM": [
+      "compiler/rustc_session/src/session.rs:1202"
+    ],
+    "TERM": [
+      "compiler/rustc_session/src/session.rs:1202"
+    ],
+    "RUSTC_CTFE_BACKTRACE": [
+      "compiler/rustc_session/src/session.rs:1332"
+    ],
+    "CARGO_CRATE_NAME": [
+      "compiler/rustc_session/src/utils.rs:118"
+    ],
+    "CFG_COMPILER_HOST_TRIPLE": [
+      "compiler/rustc_session/src/config.rs:1413"
+    ],
+    "RUSTC_GRAPHVIZ_FONT": [
+      "compiler/rustc_session/src/config.rs:2827"
+    ],
+    "CFG_DEFAULT_POLONIUS_NEXT": [
+      "compiler/rustc_session/src/config.rs:3639"
+    ],
+    "SDKROOT": [
+      "compiler/rustc_codegen_ssa/src/back/link.rs:4030",
+      "compiler/rustc_codegen_ssa/src/back/apple/tests.rs:32"
+    ],
+    "CFG_LIBDIR_RELATIVE": [
+      "compiler/rustc_target/src/lib.rs:59"
+    ],
+    "CFG_DEFAULT_LINKER": [
+      "compiler/rustc_target/src/spec/mod.rs:2860"
+    ],
+    "RUST_TARGET_PATH": [
+      "compiler/rustc_target/src/spec/mod.rs:3783"
+    ],
+    "CFG_DEFAULT_LINKER_SELF_CONTAINED_LLD_CC": [
+      "compiler/rustc_target/src/spec/base/linux_gnu.rs:12"
+    ],
+    "QNX_TARGET": [
+      "compiler/rustc_target/src/spec/base/qnx_sdp.rs:109"
+    ],
+    "OUT_DIR": [
+      "compiler/rustc_windows_rc/src/lib.rs:32"
+    ],
+    "RUSTC_WINDOWS_RC": [
+      "compiler/rustc_windows_rc/src/lib.rs:36"
+    ],
+    "CARGO_CFG_TARGET_ARCH": [
+      "compiler/rustc_windows_rc/src/lib.rs:39"
+    ],
+    "CARGO_PKG_VERSION_MAJOR": [
+      "compiler/rustc_metadata/src/creader.rs:1253"
+    ],
+    "CARGO_PKG_VERSION_MINOR": [
+      "compiler/rustc_metadata/src/creader.rs:1256"
+    ],
+    "CARGO_PKG_VERSION_PATCH": [
+      "compiler/rustc_metadata/src/creader.rs:1259"
+    ],
+    "CFG_VIRTUAL_RUST_SOURCE_BASE_DIR": [
+      "compiler/rustc_metadata/src/rmeta/decoder.rs:1839",
+      "compiler/rustc_metadata/src/rmeta/decoder.rs:1862"
+    ],
+    "CFG_VIRTUAL_RUSTC_DEV_SOURCE_BASE_DIR": [
+      "compiler/rustc_metadata/src/rmeta/decoder.rs:1850",
+      "compiler/rustc_metadata/src/rmeta/decoder.rs:1873"
+    ],
+    "CARGO_PKG_NAME": [
+      "compiler/rustc_interface/src/passes.rs:321"
+    ],
+    "RUST_MIN_STACK": [
+      "compiler/rustc_interface/src/util.rs:129"
+    ],
+    "CFG_DEFAULT_CODEGEN_BACKEND": [
+      "compiler/rustc_interface/src/util.rs:359"
+    ],
+    "RUSTC_INSTALL_BINDIR": [
+      "compiler/rustc_interface/src/util.rs:499"
+    ]
+  },
+  "artifacts_and_json_samples": {
+    "rlib_members": [
+      "lib.rmeta",
+      "lib.rmeta-link",
+      "sample.sample.d4b8a622cc79eb70-cgu.0.rcgu.o"
+    ],
+    "rmeta_size": 2498,
+    "rmeta_header_hex": "727573740000000a400800000000000023727573746320312e39392e31202835",
+    "rmeta_magic_ascii": "b'rust\\x00\\x00\\x00\\n'",
+    "rmeta_version_u32_be": 1074266112,
+    "dep_info_sample": "sample.d: /tmp/probe/sample.rs\n\nlibsample.a: /tmp/probe/sample.rs\n\nlibsample.rmeta: /tmp/probe/sample.rs:\n",
+    "dylib_rustc_section": [
+      "[30] .rustc            PROGBITS        0000000000000000 12e772 0009d2 00      0   0  1"
+    ],
+    "proc_macro_dynamic_symbols": [
+      "00000000000539e8 D __rustc_proc_macro_decls_9d4b8b66457f702__"
+    ],
+    "json_diagnostic_sample": [
+      "{\"$message_type\":\"diagnostic\",\"message\":\"mismatched types\",\"code\":{\"code\":\"E0308\",\"explanation\":\"Expected type did not match the received type.\\n\\nErroneous code examples:\\n\\n```compile_fail,E0308\\nfn plus_one(x: i32) -> i32 {\\n    x + 1\\n}\\n\\nplus_one(\\\"Not a number\\\");\\n//       ^^^^^^^^^^^^^^ expected `i32`, found `&str`\\n\\nif \\\"Not a bool\\\" {\\n// ^^^^^^^^^^^^ expected `bool`, found `&str`\\n}\\n\\nlet x: f32 = \\\"Not a float\\\";\\n//     ---   ^^^^^^^^^^^^^ expected `f32`, found `&str`\\n//     |\\n//     expected due to this\\n```\\n\\nThis error occurs when an expression was used in a place where the compiler\\nexpected an expression of a different type. It can occur in several cases, the\\nmost common being when calling a function and passing an argument which has a\\ndifferent type than the matching type in the function declaration.\\n\"},\"level\":\"error\",\"spans\":[{\"file_name\":\"/tmp/probe/err.rs\",\"byte_start\":22,\"byte_end\":33,\"line_start\":1,\"line_end\":1,\"column_start\":23,\"column_end\":34,\"is_primary\":true,\"text\":[{\"text\":\"pub fn bad() -> u32 { \\\"not a u32\\\" }\",\"highlight_start\":23,\"highlight_end\":34}],\"label\":\"expected `u32`, found `&str`\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null},{\"file_name\":\"/tmp/probe/err.rs\",\"byte_start\":16,\"byte_end\":19,\"line_start\":1,\"line_end\":1,\"column_start\":17,\"column_end\":20,\"is_primary\":false,\"text\":[{\"text\":\"pub fn bad() -> u32 { \\\"not a u32\\\" }\",\"highlight_start\":17,\"highlight_end\":20}],\"label\":\"expected `u32` because of return type\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null}],\"children\":[],\"rendered\":\"/tmp/probe/err.rs:1:23: error[E0308]: mismatched types: expected `u32`, found `&str`\\n\"}",
+      "{\"$message_type\":\"diagnostic\",\"message\":\"aborting due to 1 previous error\",\"code\":null,\"level\":\"error\",\"spans\":[],\"children\":[],\"rendered\":\"error: aborting due to 1 previous error\\n\"}"
+    ],
+    "json_artifact_sample": [
+      "{\"$message_type\":\"artifact\",\"artifact\":\"libsample.rlib\",\"emit\":\"link\"}"
+    ]
+  }
+}

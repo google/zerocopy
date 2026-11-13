@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "cargo/unit-graph",
+    "build/caching",
+    "rustc/driver",
+    "systems"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Cargo",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "0.100.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

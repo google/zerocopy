@@ -17269,6 +17269,35 @@
         "verification/separation-logic"
       ]
     },
+    "miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "rustc"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/driver",
+        "rustc/metadata",
+        "minirust/tooling",
+        "rust/tree-borrows",
+        "agents/lsp-integration"
+      ]
+    },
     "modern-sfi-lfi-and-ring0-wasm-kernels-2020-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -20705,6 +20734,35 @@
         "isa/simd-crypto"
       ]
     },
+    "rust-language-and-library-codegen-feature-inventory": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "rustc"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "rust/calling-conventions",
+        "rust/layout",
+        "rustc/intrinsics"
+      ]
+    },
     "rust-normative-authority-map-and-rustc-deviations": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -21707,6 +21765,90 @@
         "verification/program-logics"
       ]
     },
+    "rustc-and-llvm-soundness-holes-and-miscompilation-census": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "llvm",
+        "rust/unsafe",
+        "verification/compiler-verification"
+      ]
+    },
+    "rustc-backend-dependent-observable-behaviors": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/codegen",
+        "rust/reference-guarantees",
+        "rust/unsafe",
+        "llvm",
+        "isa/x86-64",
+        "isa/aarch64",
+        "isa/i386"
+      ]
+    },
     "rustc-baseline-toolchain-selection-and-manifest": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -21868,6 +22010,34 @@
         "llvm/versioning",
         "lean/toolchains",
         "anneal/toolchain-baseline"
+      ]
+    },
+    "rustc-build-system-and-consumer-invocation-contracts": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "0.100.0"
+          },
+          "name": "Cargo"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "cargo/unit-graph",
+        "build/caching",
+        "rustc/driver",
+        "systems"
       ]
     },
     "rustc-codegen-backend-abi-intrinsics-and-rv64gc-cross-compilation": {
@@ -22399,6 +22569,43 @@
         "rustc/benchmarks",
         "cargo/corpora",
         "verification/empirical-evaluation"
+      ]
+    },
+    "rustc-external-cli-json-and-backend-interface-contract": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "rustc"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/driver",
+        "rustc/codegen",
+        "rustc/metadata",
+        "rustc/diagnostics",
+        "llvm"
       ]
     },
     "rustc-mir-phases-reachability-and-postcleanup-lowering": {

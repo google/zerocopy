@@ -1,0 +1,1662 @@
+{
+  "tier1_targets": {
+    "x86_64-unknown-linux-gnu": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_pointer_width=\"64\"\ntarget_thread_local\ntarget_vendor=\"unknown\"\nub_checks\nunix",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 137,
+        "sample_lines": [
+          "native                  - Select the CPU of the current host (currently icelake-server).",
+          "alderlake",
+          "amdfam10",
+          "arrowlake",
+          "arrowlake-s",
+          "arrowlake_s",
+          "athlon",
+          "athlon-4",
+          "athlon-fx",
+          "athlon-mp",
+          "athlon-tbird",
+          "athlon-xp",
+          "athlon64",
+          "athlon64-sse3",
+          "atom"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 231,
+        "sample_lines": [
+          "adx                             - Support ADX instructions.",
+          "aes                             - Enable AES instructions.",
+          "amx-avx512                      - Support AMX-AVX512 instructions.",
+          "amx-bf16                        - Support AMX-BF16 instructions.",
+          "amx-complex                     - Support AMX-COMPLEX instructions.",
+          "amx-fp16                        - Support AMX amx-fp16 instructions.",
+          "amx-fp8                         - Support AMX-FP8 instructions.",
+          "amx-int8                        - Support AMX-INT8 instructions.",
+          "amx-movrs                       - Support AMX-MOVRS instructions.",
+          "amx-tile                        - Support AMX-TILE instructions.",
+          "apxf                            - Support extended general purpose register.",
+          "avx                             - Enable AVX instructions.",
+          "avx10.1                         - Support AVX10.1 instruction.",
+          "avx10.2                         - Support AVX10.2 instruction.",
+          "avx2                            - Enable AVX2 instructions."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "off\npacked\nunpacked",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "arch": "x86_64",
+        "cpu": "x86-64",
+        "crt-static-respected": true,
+        "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "default-uwtable": true,
+        "dynamic-linking": true,
+        "env": "gnu",
+        "has-rpath": true,
+        "has-thread-local": true,
+        "link-self-contained": {
+          "components": [
+            "linker"
+          ]
+        },
+        "linker-flavor": "gnu-lld-cc",
+        "llvm-target": "x86_64-unknown-linux-gnu",
+        "max-atomic-width": 64,
+        "metadata": {
+          "description": "64-bit Linux (kernel 3.2+, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "os": "linux",
+        "plt-by-default": false,
+        "position-independent-executables": true,
+        "pre-link-args": {
+          "gnu-cc": [
+            "-m64"
+          ],
+          "gnu-lld-cc": [
+            "-m64"
+          ]
+        },
+        "relro-level": "full",
+        "stack-probes": {
+          "kind": "inline"
+        },
+        "static-position-independent-executables": true,
+        "supported-sanitizers": [
+          "address",
+          "leak",
+          "memory",
+          "thread",
+          "cfi",
+          "kcfi",
+          "safestack",
+          "dataflow",
+          "realtime"
+        ],
+        "supported-split-debuginfo": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "supports-fentry": true,
+        "supports-xray": true,
+        "target-family": [
+          "unix"
+        ],
+        "target-pointer-width": 64
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"neon\"\ntarget_feature=\"outline-atomics\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f128_math\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_pointer_width=\"64\"\ntarget_thread_local\ntarget_vendor=\"unknown\"\nub_checks\nunix",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/aarch64-unknown-linux-gnu/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 84,
+        "sample_lines": [
+          "a64fx",
+          "ampere1",
+          "ampere1a",
+          "ampere1b",
+          "ampere1c",
+          "apple-a10",
+          "apple-a11",
+          "apple-a12",
+          "apple-a13",
+          "apple-a14",
+          "apple-a15",
+          "apple-a16",
+          "apple-a17",
+          "apple-a7",
+          "apple-m4"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 358,
+        "sample_lines": [
+          "aes                                    - Enable AES support.",
+          "bf16                                   - Enable BFloat16 Extension.",
+          "bti                                    - Enable Branch Target Identification.",
+          "crc                                    - Enable Armv8.0-A CRC-32 checksum instructions.",
+          "crt-static                             - Enables C Run-time Libraries to be statically linked.",
+          "cssc                                   - Enable Common Short Sequence Compression (CSSC) instructions.",
+          "dit                                    - Enable Armv8.4-A Data Independent Timing instructions.",
+          "dotprod                                - Enable dot product support.",
+          "dpb                                    - Enable Armv8.2-A data Cache Clean to Point of Persistence.",
+          "dpb2                                   - Enable Armv8.5-A Cache Clean to Point of Deep Persistence.",
+          "ecv                                    - Enable enhanced counter virtualization extension.",
+          "f32mm                                  - Enable Matrix Multiply FP32 Extension.",
+          "f64mm                                  - Enable Matrix Multiply FP64 Extension.",
+          "faminmax                               - Enable FAMIN and FAMAX instructions.",
+          "fcma                                   - Enable Armv8.3-A Floating-point complex number support."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "off\npacked\nunpacked",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "arch": "aarch64",
+        "crt-static-respected": true,
+        "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+        "default-uwtable": true,
+        "dynamic-linking": true,
+        "env": "gnu",
+        "features": "+v8a,+outline-atomics",
+        "frame-pointer": "non-leaf",
+        "has-rpath": true,
+        "has-thread-local": true,
+        "link-self-contained": {
+          "components": [
+            "linker"
+          ]
+        },
+        "linker-flavor": "gnu-lld-cc",
+        "llvm-target": "aarch64-unknown-linux-gnu",
+        "max-atomic-width": 128,
+        "metadata": {
+          "description": "ARM64 Linux (kernel 4.1, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "os": "linux",
+        "position-independent-executables": true,
+        "pre-link-args": {
+          "gnu-cc": [
+            "-Wl,--fix-cortex-a53-843419"
+          ],
+          "gnu-lld-cc": [
+            "-Wl,--fix-cortex-a53-843419"
+          ]
+        },
+        "relro-level": "full",
+        "stack-probes": {
+          "kind": "inline"
+        },
+        "static-position-independent-executables": true,
+        "supported-sanitizers": [
+          "address",
+          "leak",
+          "memory",
+          "thread",
+          "hwaddress",
+          "cfi",
+          "memtag",
+          "kcfi",
+          "realtime"
+        ],
+        "supported-split-debuginfo": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "supports-xray": true,
+        "target-family": [
+          "unix"
+        ],
+        "target-mcount": "\u0001_mcount",
+        "target-pointer-width": 64
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_pointer_width=\"32\"\ntarget_thread_local\ntarget_vendor=\"unknown\"\nub_checks\nunix",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/i686-unknown-linux-gnu/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 136,
+        "sample_lines": [
+          "alderlake",
+          "amdfam10",
+          "arrowlake",
+          "arrowlake-s",
+          "arrowlake_s",
+          "athlon",
+          "athlon-4",
+          "athlon-fx",
+          "athlon-mp",
+          "athlon-tbird",
+          "athlon-xp",
+          "athlon64",
+          "athlon64-sse3",
+          "atom",
+          "atom_sse4_2"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 231,
+        "sample_lines": [
+          "adx                             - Support ADX instructions.",
+          "aes                             - Enable AES instructions.",
+          "amx-avx512                      - Support AMX-AVX512 instructions.",
+          "amx-bf16                        - Support AMX-BF16 instructions.",
+          "amx-complex                     - Support AMX-COMPLEX instructions.",
+          "amx-fp16                        - Support AMX amx-fp16 instructions.",
+          "amx-fp8                         - Support AMX-FP8 instructions.",
+          "amx-int8                        - Support AMX-INT8 instructions.",
+          "amx-movrs                       - Support AMX-MOVRS instructions.",
+          "amx-tile                        - Support AMX-TILE instructions.",
+          "apxf                            - Support extended general purpose register.",
+          "avx                             - Enable AVX instructions.",
+          "avx10.1                         - Support AVX10.1 instruction.",
+          "avx10.2                         - Support AVX10.2 instruction.",
+          "avx2                            - Enable AVX2 instructions."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "off\npacked\nunpacked",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "arch": "x86",
+        "cpu": "pentium4",
+        "crt-static-respected": true,
+        "data-layout": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+        "default-uwtable": true,
+        "dynamic-linking": true,
+        "env": "gnu",
+        "has-rpath": true,
+        "has-thread-local": true,
+        "link-self-contained": {
+          "components": [
+            "linker"
+          ]
+        },
+        "linker-flavor": "gnu-lld-cc",
+        "llvm-target": "i686-unknown-linux-gnu",
+        "max-atomic-width": 64,
+        "metadata": {
+          "description": "32-bit Linux (kernel 3.2, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "os": "linux",
+        "position-independent-executables": true,
+        "pre-link-args": {
+          "gnu-cc": [
+            "-m32"
+          ],
+          "gnu-lld-cc": [
+            "-m32"
+          ]
+        },
+        "relro-level": "full",
+        "rustc-abi": "x86-sse2",
+        "stack-probes": {
+          "kind": "inline"
+        },
+        "static-position-independent-executables": true,
+        "supported-sanitizers": [
+          "address"
+        ],
+        "supported-split-debuginfo": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "supports-fentry": true,
+        "target-family": [
+          "unix"
+        ],
+        "target-pointer-width": 32
+      }
+    },
+    "aarch64-apple-darwin": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"\"\ntarget_family=\"unix\"\ntarget_feature=\"aes\"\ntarget_feature=\"crc\"\ntarget_feature=\"dit\"\ntarget_feature=\"dotprod\"\ntarget_feature=\"dpb\"\ntarget_feature=\"dpb2\"\ntarget_feature=\"fcma\"\ntarget_feature=\"fhm\"\ntarget_feature=\"flagm\"\ntarget_feature=\"flagm2\"\ntarget_feature=\"fp16\"\ntarget_feature=\"frintts\"\ntarget_feature=\"jsconv\"\ntarget_feature=\"lor\"\ntarget_feature=\"lse\"\ntarget_feature=\"lse2\"\ntarget_feature=\"neon\"\ntarget_feature=\"paca\"\ntarget_feature=\"pacg\"\ntarget_feature=\"pan\"\ntarget_feature=\"pmuv3\"\ntarget_feature=\"ras\"\ntarget_feature=\"rcpc\"\ntarget_feature=\"rcpc2\"\ntarget_feature=\"rdm\"\ntarget_feature=\"sb\"\ntarget_feature=\"sha2\"\ntarget_feature=\"sha3\"\ntarget_feature=\"ssbs\"\ntarget_feature=\"v8.1a\"\ntarget_feature=\"v8.2a\"\ntarget_feature=\"v8.3a\"\ntarget_feature=\"v8.4a\"\ntarget_feature=\"vh\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"mach-o\"\ntarget_os=\"macos\"\ntarget_pointer_width=\"64\"\ntarget_thread_local\ntarget_vendor=\"apple\"\nub_checks\nunix",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/aarch64-apple-darwin/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 84,
+        "sample_lines": [
+          "a64fx",
+          "ampere1",
+          "ampere1a",
+          "ampere1b",
+          "ampere1c",
+          "apple-a10",
+          "apple-a11",
+          "apple-a12",
+          "apple-a13",
+          "apple-a14",
+          "apple-a15",
+          "apple-a16",
+          "apple-a17",
+          "apple-a7",
+          "apple-m4"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 358,
+        "sample_lines": [
+          "aes                                    - Enable AES support.",
+          "bf16                                   - Enable BFloat16 Extension.",
+          "bti                                    - Enable Branch Target Identification.",
+          "crc                                    - Enable Armv8.0-A CRC-32 checksum instructions.",
+          "crt-static                             - Enables C Run-time Libraries to be statically linked.",
+          "cssc                                   - Enable Common Short Sequence Compression (CSSC) instructions.",
+          "dit                                    - Enable Armv8.4-A Data Independent Timing instructions.",
+          "dotprod                                - Enable dot product support.",
+          "dpb                                    - Enable Armv8.2-A data Cache Clean to Point of Persistence.",
+          "dpb2                                   - Enable Armv8.5-A Cache Clean to Point of Deep Persistence.",
+          "ecv                                    - Enable enhanced counter virtualization extension.",
+          "f32mm                                  - Enable Matrix Multiply FP32 Extension.",
+          "f64mm                                  - Enable Matrix Multiply FP64 Extension.",
+          "faminmax                               - Enable FAMIN and FAMAX instructions.",
+          "fcma                                   - Enable Armv8.3-A Floating-point complex number support."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "off\npacked\nunpacked",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 0,
+        "stdout": "MACOSX_DEPLOYMENT_TARGET=11.0",
+        "stderr": ""
+      },
+      "target-spec-json": {
+        "abi-return-struct-as-int": true,
+        "arch": "aarch64",
+        "archive-format": "darwin",
+        "binary-format": "mach-o",
+        "cpu": "apple-m1",
+        "crt-objects-fallback": "false",
+        "data-layout": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+        "debuginfo-kind": "dwarf-dsym",
+        "dll-suffix": ".dylib",
+        "dynamic-linking": true,
+        "eh-frame-header": false,
+        "emit-debug-gdb-scripts": false,
+        "frame-pointer": "non-leaf",
+        "function-sections": false,
+        "has-rpath": true,
+        "has-thread-local": true,
+        "is-like-darwin": true,
+        "link-env": [
+          "ZERO_AR_DATE=1"
+        ],
+        "link-env-remove": [
+          "IPHONEOS_DEPLOYMENT_TARGET",
+          "TVOS_DEPLOYMENT_TARGET",
+          "XROS_DEPLOYMENT_TARGET"
+        ],
+        "linker-flavor": "darwin-cc",
+        "linker-is-gnu": false,
+        "lld-flavor": "darwin",
+        "llvm-target": "arm64-apple-macosx",
+        "max-atomic-width": 128,
+        "metadata": {
+          "description": "ARM64 Apple macOS (11.0+, Big Sur+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "os": "macos",
+        "split-debuginfo": "packed",
+        "stack-probes": {
+          "kind": "inline"
+        },
+        "supported-sanitizers": [
+          "address",
+          "thread",
+          "cfi",
+          "realtime"
+        ],
+        "supported-split-debuginfo": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "supports-xray": true,
+        "target-family": [
+          "unix"
+        ],
+        "target-mcount": "\u0001mcount",
+        "target-pointer-width": 64,
+        "vendor": "apple"
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"msvc\"\ntarget_family=\"windows\"\ntarget_feature=\"cmpxchg16b\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"lahfsahf\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"sse3\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"coff\"\ntarget_os=\"windows\"\ntarget_pointer_width=\"64\"\ntarget_thread_local\ntarget_vendor=\"pc\"\nub_checks\nwindows",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-pc-windows-msvc/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 137,
+        "sample_lines": [
+          "native                  - Select the CPU of the current host (currently icelake-server).",
+          "alderlake",
+          "amdfam10",
+          "arrowlake",
+          "arrowlake-s",
+          "arrowlake_s",
+          "athlon",
+          "athlon-4",
+          "athlon-fx",
+          "athlon-mp",
+          "athlon-tbird",
+          "athlon-xp",
+          "athlon64",
+          "athlon64-sse3",
+          "atom"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 231,
+        "sample_lines": [
+          "adx                             - Support ADX instructions.",
+          "aes                             - Enable AES instructions.",
+          "amx-avx512                      - Support AMX-AVX512 instructions.",
+          "amx-bf16                        - Support AMX-BF16 instructions.",
+          "amx-complex                     - Support AMX-COMPLEX instructions.",
+          "amx-fp16                        - Support AMX amx-fp16 instructions.",
+          "amx-fp8                         - Support AMX-FP8 instructions.",
+          "amx-int8                        - Support AMX-INT8 instructions.",
+          "amx-movrs                       - Support AMX-MOVRS instructions.",
+          "amx-tile                        - Support AMX-TILE instructions.",
+          "apxf                            - Support extended general purpose register.",
+          "avx                             - Enable AVX instructions.",
+          "avx10.1                         - Support AVX10.1 instruction.",
+          "avx10.2                         - Support AVX10.2 instruction.",
+          "avx2                            - Enable AVX2 instructions."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "packed",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "abi-return-struct-as-int": true,
+        "arch": "x86_64",
+        "archive-format": "coff",
+        "binary-format": "coff",
+        "cpu": "x86-64",
+        "crt-objects-fallback": "false",
+        "crt-static-allows-dylibs": true,
+        "crt-static-respected": true,
+        "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "debuginfo-kind": "pdb",
+        "dll-prefix": "",
+        "dll-suffix": ".dll",
+        "dll-tls-export": false,
+        "dynamic-linking": true,
+        "emit-debug-gdb-scripts": false,
+        "env": "msvc",
+        "exe-suffix": ".exe",
+        "features": "+cmpxchg16b,+sse3,+lahfsahf",
+        "has-thread-local": true,
+        "is-like-msvc": true,
+        "is-like-windows": true,
+        "linker-flavor": "msvc",
+        "linker-is-gnu": false,
+        "lld-flavor": "link",
+        "llvm-target": "x86_64-pc-windows-msvc",
+        "max-atomic-width": 128,
+        "metadata": {
+          "description": "64-bit MSVC (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "no-default-libraries": false,
+        "os": "windows",
+        "plt-by-default": false,
+        "pre-link-args": {
+          "msvc": [
+            "/NOLOGO"
+          ],
+          "msvc-lld": [
+            "/NOLOGO"
+          ]
+        },
+        "requires-uwtable": true,
+        "split-debuginfo": "packed",
+        "staticlib-prefix": "",
+        "staticlib-suffix": ".lib",
+        "supported-sanitizers": [
+          "address"
+        ],
+        "supported-split-debuginfo": [
+          "packed"
+        ],
+        "target-family": [
+          "windows"
+        ],
+        "target-pointer-width": 64,
+        "vendor": "pc"
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"windows\"\ntarget_feature=\"cmpxchg16b\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"lahfsahf\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"sse3\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_threads\ntarget_object_format=\"coff\"\ntarget_os=\"windows\"\ntarget_pointer_width=\"64\"\ntarget_vendor=\"pc\"\nub_checks\nwindows",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-pc-windows-gnu/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 137,
+        "sample_lines": [
+          "native                  - Select the CPU of the current host (currently icelake-server).",
+          "alderlake",
+          "amdfam10",
+          "arrowlake",
+          "arrowlake-s",
+          "arrowlake_s",
+          "athlon",
+          "athlon-4",
+          "athlon-fx",
+          "athlon-mp",
+          "athlon-tbird",
+          "athlon-xp",
+          "athlon64",
+          "athlon64-sse3",
+          "atom"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 231,
+        "sample_lines": [
+          "adx                             - Support ADX instructions.",
+          "aes                             - Enable AES instructions.",
+          "amx-avx512                      - Support AMX-AVX512 instructions.",
+          "amx-bf16                        - Support AMX-BF16 instructions.",
+          "amx-complex                     - Support AMX-COMPLEX instructions.",
+          "amx-fp16                        - Support AMX amx-fp16 instructions.",
+          "amx-fp8                         - Support AMX-FP8 instructions.",
+          "amx-int8                        - Support AMX-INT8 instructions.",
+          "amx-movrs                       - Support AMX-MOVRS instructions.",
+          "amx-tile                        - Support AMX-TILE instructions.",
+          "apxf                            - Support extended general purpose register.",
+          "avx                             - Enable AVX instructions.",
+          "avx10.1                         - Support AVX10.1 instruction.",
+          "avx10.2                         - Support AVX10.2 instruction.",
+          "avx2                            - Enable AVX2 instructions."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "off",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "abi-return-struct-as-int": true,
+        "arch": "x86_64",
+        "binary-format": "coff",
+        "cpu": "x86-64",
+        "crt-objects-fallback": "mingw",
+        "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "dll-prefix": "",
+        "dll-suffix": ".dll",
+        "dll-tls-export": false,
+        "dynamic-linking": true,
+        "eh-frame-header": false,
+        "emit-debug-gdb-scripts": false,
+        "env": "gnu",
+        "exe-suffix": ".exe",
+        "features": "+cmpxchg16b,+sse3,+lahfsahf",
+        "function-sections": false,
+        "is-like-windows": true,
+        "late-link-args": {
+          "gnu": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-cc": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-lld": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-lld-cc": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ]
+        },
+        "late-link-args-dynamic": {
+          "gnu": [
+            "-lgcc_s"
+          ],
+          "gnu-cc": [
+            "-lgcc_s"
+          ],
+          "gnu-lld": [
+            "-lgcc_s"
+          ],
+          "gnu-lld-cc": [
+            "-lgcc_s"
+          ]
+        },
+        "late-link-args-static": {
+          "gnu": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-cc": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-lld": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-lld-cc": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ]
+        },
+        "linker": "x86_64-w64-mingw32-gcc",
+        "linker-flavor": "gnu-cc",
+        "llvm-target": "x86_64-pc-windows-gnu",
+        "max-atomic-width": 128,
+        "metadata": {
+          "description": "64-bit MinGW (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "os": "windows",
+        "plt-by-default": false,
+        "pre-link-args": {
+          "gnu": [
+            "--dynamicbase",
+            "--disable-auto-image-base",
+            "-m",
+            "i386pep",
+            "--high-entropy-va"
+          ],
+          "gnu-cc": [
+            "-fno-use-linker-plugin",
+            "-Wl,--dynamicbase",
+            "-Wl,--disable-auto-image-base",
+            "-m64",
+            "-Wl,--high-entropy-va"
+          ],
+          "gnu-lld": [
+            "--dynamicbase",
+            "--disable-auto-image-base",
+            "-m",
+            "i386pep",
+            "--high-entropy-va"
+          ],
+          "gnu-lld-cc": [
+            "-fno-use-linker-plugin",
+            "-Wl,--dynamicbase",
+            "-Wl,--disable-auto-image-base",
+            "-m64",
+            "-Wl,--high-entropy-va"
+          ]
+        },
+        "pre-link-objects-fallback": {
+          "dynamic-dylib": [
+            "dllcrt2.o"
+          ],
+          "dynamic-nopic-exe": [
+            "crt2.o"
+          ],
+          "dynamic-pic-exe": [
+            "crt2.o"
+          ],
+          "static-dylib": [
+            "dllcrt2.o"
+          ],
+          "static-nopic-exe": [
+            "crt2.o"
+          ],
+          "static-pic-exe": [
+            "crt2.o"
+          ]
+        },
+        "requires-uwtable": true,
+        "target-family": [
+          "windows"
+        ],
+        "target-mcount": "_mcount",
+        "target-pointer-width": 64,
+        "vendor": "pc"
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"msvc\"\ntarget_family=\"windows\"\ntarget_feature=\"neon\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"coff\"\ntarget_os=\"windows\"\ntarget_pointer_width=\"64\"\ntarget_thread_local\ntarget_vendor=\"pc\"\nub_checks\nwindows",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/aarch64-pc-windows-msvc/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 84,
+        "sample_lines": [
+          "a64fx",
+          "ampere1",
+          "ampere1a",
+          "ampere1b",
+          "ampere1c",
+          "apple-a10",
+          "apple-a11",
+          "apple-a12",
+          "apple-a13",
+          "apple-a14",
+          "apple-a15",
+          "apple-a16",
+          "apple-a17",
+          "apple-a7",
+          "apple-m4"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 358,
+        "sample_lines": [
+          "aes                                    - Enable AES support.",
+          "bf16                                   - Enable BFloat16 Extension.",
+          "bti                                    - Enable Branch Target Identification.",
+          "crc                                    - Enable Armv8.0-A CRC-32 checksum instructions.",
+          "crt-static                             - Enables C Run-time Libraries to be statically linked.",
+          "cssc                                   - Enable Common Short Sequence Compression (CSSC) instructions.",
+          "dit                                    - Enable Armv8.4-A Data Independent Timing instructions.",
+          "dotprod                                - Enable dot product support.",
+          "dpb                                    - Enable Armv8.2-A data Cache Clean to Point of Persistence.",
+          "dpb2                                   - Enable Armv8.5-A Cache Clean to Point of Deep Persistence.",
+          "ecv                                    - Enable enhanced counter virtualization extension.",
+          "f32mm                                  - Enable Matrix Multiply FP32 Extension.",
+          "f64mm                                  - Enable Matrix Multiply FP64 Extension.",
+          "faminmax                               - Enable FAMIN and FAMAX instructions.",
+          "fcma                                   - Enable Armv8.3-A Floating-point complex number support."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "packed",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "abi-return-struct-as-int": true,
+        "arch": "aarch64",
+        "archive-format": "coff",
+        "binary-format": "coff",
+        "crt-objects-fallback": "false",
+        "crt-static-allows-dylibs": true,
+        "crt-static-respected": true,
+        "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+        "debuginfo-kind": "pdb",
+        "dll-prefix": "",
+        "dll-suffix": ".dll",
+        "dll-tls-export": false,
+        "dynamic-linking": true,
+        "emit-debug-gdb-scripts": false,
+        "env": "msvc",
+        "exe-suffix": ".exe",
+        "features": "+v8a,+neon",
+        "frame-pointer": "non-leaf",
+        "has-thread-local": true,
+        "is-like-msvc": true,
+        "is-like-windows": true,
+        "linker-flavor": "msvc",
+        "linker-is-gnu": false,
+        "lld-flavor": "link",
+        "llvm-target": "aarch64-pc-windows-msvc",
+        "max-atomic-width": 128,
+        "metadata": {
+          "description": "ARM64 Windows MSVC",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "no-default-libraries": false,
+        "os": "windows",
+        "pre-link-args": {
+          "msvc": [
+            "/NOLOGO"
+          ],
+          "msvc-lld": [
+            "/NOLOGO"
+          ]
+        },
+        "requires-uwtable": true,
+        "split-debuginfo": "packed",
+        "staticlib-prefix": "",
+        "staticlib-suffix": ".lib",
+        "supported-split-debuginfo": [
+          "packed"
+        ],
+        "target-family": [
+          "windows"
+        ],
+        "target-pointer-width": 64,
+        "vendor": "pc"
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "cfg": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86\"\ntarget_endian=\"little\"\ntarget_env=\"msvc\"\ntarget_family=\"windows\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"coff\"\ntarget_os=\"windows\"\ntarget_pointer_width=\"32\"\ntarget_thread_local\ntarget_vendor=\"pc\"\nub_checks\nwindows",
+        "stderr": ""
+      },
+      "file-names": {
+        "rc": 0,
+        "stdout": "liblib.rlib",
+        "stderr": ""
+      },
+      "target-libdir": {
+        "rc": 0,
+        "stdout": "<HOME>/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/lib/rustlib/i686-pc-windows-msvc/lib",
+        "stderr": ""
+      },
+      "target-cpus": {
+        "rc": 0,
+        "count": 136,
+        "sample_lines": [
+          "alderlake",
+          "amdfam10",
+          "arrowlake",
+          "arrowlake-s",
+          "arrowlake_s",
+          "athlon",
+          "athlon-4",
+          "athlon-fx",
+          "athlon-mp",
+          "athlon-tbird",
+          "athlon-xp",
+          "athlon64",
+          "athlon64-sse3",
+          "atom",
+          "atom_sse4_2"
+        ]
+      },
+      "target-features": {
+        "rc": 0,
+        "count": 231,
+        "sample_lines": [
+          "adx                             - Support ADX instructions.",
+          "aes                             - Enable AES instructions.",
+          "amx-avx512                      - Support AMX-AVX512 instructions.",
+          "amx-bf16                        - Support AMX-BF16 instructions.",
+          "amx-complex                     - Support AMX-COMPLEX instructions.",
+          "amx-fp16                        - Support AMX amx-fp16 instructions.",
+          "amx-fp8                         - Support AMX-FP8 instructions.",
+          "amx-int8                        - Support AMX-INT8 instructions.",
+          "amx-movrs                       - Support AMX-MOVRS instructions.",
+          "amx-tile                        - Support AMX-TILE instructions.",
+          "apxf                            - Support extended general purpose register.",
+          "avx                             - Enable AVX instructions.",
+          "avx10.1                         - Support AVX10.1 instruction.",
+          "avx10.2                         - Support AVX10.2 instruction.",
+          "avx2                            - Enable AVX2 instructions."
+        ]
+      },
+      "relocation-models": {
+        "rc": 0,
+        "stdout": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "stderr": ""
+      },
+      "code-models": {
+        "rc": 0,
+        "stdout": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "stderr": ""
+      },
+      "tls-models": {
+        "rc": 0,
+        "stdout": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "stderr": ""
+      },
+      "split-debuginfo": {
+        "rc": 0,
+        "stdout": "packed",
+        "stderr": ""
+      },
+      "stack-protector-strategies": {
+        "rc": 0,
+        "stdout": "Available stack protector strategies:\n    all\n        Generate stack canaries in all functions.\n\n    strong\n        Generate stack canaries in a function if it either:\n        - has a local variable of `[T; N]` type, regardless of `T` and `N`\n        - takes the address of a local variable.\n\n          (Note that a local variable being borrowed is not equivalent to its\n          address being taken: e.g. some borrows may be removed by optimization,\n          while by-value argument passing may be implemented with reference to a\n          local stack variable in the ABI.)\n\n    basic\n        Generate stack canaries in functions with local variables of `[T; N]`\n        type, where `T` is byte-sized and `N` >= 8.\n\n    none\n        Do not generate stack canaries.",
+        "stderr": ""
+      },
+      "deployment-target": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: only Apple targets currently support deployment version info\n\nerror: aborting due to 1 previous error"
+      },
+      "target-spec-json": {
+        "abi-return-struct-as-int": true,
+        "arch": "x86",
+        "archive-format": "coff",
+        "binary-format": "coff",
+        "cpu": "pentium4",
+        "crt-objects-fallback": "false",
+        "crt-static-allows-dylibs": true,
+        "crt-static-respected": true,
+        "data-layout": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+        "debuginfo-kind": "pdb",
+        "dll-prefix": "",
+        "dll-suffix": ".dll",
+        "dll-tls-export": false,
+        "dynamic-linking": true,
+        "emit-debug-gdb-scripts": false,
+        "env": "msvc",
+        "exe-suffix": ".exe",
+        "has-thread-local": true,
+        "is-like-msvc": true,
+        "is-like-windows": true,
+        "linker-flavor": "msvc",
+        "linker-is-gnu": false,
+        "lld-flavor": "link",
+        "llvm-target": "i686-pc-windows-msvc",
+        "max-atomic-width": 64,
+        "metadata": {
+          "description": "32-bit MSVC (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "no-default-libraries": false,
+        "os": "windows",
+        "pre-link-args": {
+          "msvc": [
+            "/NOLOGO",
+            "/LARGEADDRESSAWARE",
+            "/SAFESEH"
+          ],
+          "msvc-lld": [
+            "/NOLOGO",
+            "/LARGEADDRESSAWARE",
+            "/SAFESEH"
+          ]
+        },
+        "requires-uwtable": true,
+        "rustc-abi": "x86-sse2",
+        "split-debuginfo": "packed",
+        "staticlib-prefix": "",
+        "staticlib-suffix": ".lib",
+        "supported-sanitizers": [
+          "address"
+        ],
+        "supported-split-debuginfo": [
+          "packed"
+        ],
+        "target-family": [
+          "windows"
+        ],
+        "target-pointer-width": 32,
+        "vendor": "pc"
+      }
+    }
+  },
+  "cranelift_vs_llvm_differential": {
+    "x86_64-unknown-linux-gnu": {
+      "cfg": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 43,
+        "clif_lines": 43,
+        "identical": true,
+        "llvm_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f128_math\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_poin",
+        "clif_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f128_math\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_poin",
+        "clif_err": ""
+      },
+      "target-cpus": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 138,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available CPUs for this target:\n    native                  - Select the CPU of the current host (currently icelake-server).\n    alderlake\n    amdfam10\n    arrowlake\n    arrowlake-s\n    arrowlake_s\n    athlon\n    athlon-4\n    athlon-fx\n    athlon-mp\n    athlon-tbird\n    athlon-xp\n    athlon64\n    athlon64-sse3\n    atom\n    atom_sse4_2\n    atom_sse4_2_movbe\n    barcelona\n    bdver1\n    bdver2\n    bdver3\n    bdver4\n    bonnell\n    broadwell\n    btver1\n    btver2\n    c3\n    c3-2\n    c86-4g-m4\n    c86-4g-m6\n    c86-4g-m7\n    c86-4g-m8\n    cannonlake\n    cascadelake\n    clearwaterforest\n    cooperlake\n    core-avx-i\n    core-avx2\n    core2\n    core_2_duo_sse4_1\n    core_2_duo_ssse3\n    core_2nd_gen_avx\n    core_3rd_gen_avx\n    core_4th_gen_avx\n    core_4th_gen_avx_tsx\n    core_5th_gen_avx\n    core_5th_gen_avx_tsx\n    core_aes_pclmulqdq\n    core_i7_sse4_2\n    corei7\n    corei7-avx\n    diamondrapids\n    emeraldrapids\n    generic\n    geode\n    goldmont\n    goldmont-plus\n    goldmont_plus\n    g",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "target-features": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 241,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Features supported by rustc for this target:\n    adx                             - Support ADX instructions.\n    aes                             - Enable AES instructions.\n    amx-avx512                      - Support AMX-AVX512 instructions.\n    amx-bf16                        - Support AMX-BF16 instructions.\n    amx-complex                     - Support AMX-COMPLEX instructions.\n    amx-fp16                        - Support AMX amx-fp16 instructions.\n    amx-fp8                         - Support AMX-FP8 instructions.\n    amx-int8                        - Support AMX-INT8 instructions.\n    amx-movrs                       - Support AMX-MOVRS instructions.\n    amx-tile                        - Support AMX-TILE instructions.\n    apxf                            - Support extended general purpose register.\n    avx                             - Enable AVX instructions.\n    avx10.1                         - Support AVX10.1 instruction.\n    avx10.2                         - Support AVX10.2 in",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "relocation-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 10,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "code-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "tls-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "clif_out": "",
+        "clif_err": ""
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "cfg": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 45,
+        "clif_lines": 43,
+        "identical": false,
+        "llvm_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"neon\"\ntarget_feature=\"outline-atomics\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f128_math\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\nta",
+        "clif_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"neon\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f128_math\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_fo",
+        "clif_err": ""
+      },
+      "target-cpus": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 85,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available CPUs for this target:\n    a64fx\n    ampere1\n    ampere1a\n    ampere1b\n    ampere1c\n    apple-a10\n    apple-a11\n    apple-a12\n    apple-a13\n    apple-a14\n    apple-a15\n    apple-a16\n    apple-a17\n    apple-a7\n    apple-m4\n    apple-m5\n    c1-nano\n    c1-premium\n    c1-pro\n    c1-ultra\n    carmel\n    cortex-a320\n    cortex-a34\n    cortex-a35\n    cortex-a510\n    cortex-a520\n    cortex-a520ae\n    cortex-a53\n    cortex-a55\n    cortex-a57\n    cortex-a65\n    cortex-a65ae\n    cortex-a710\n    cortex-a715\n    cortex-a72\n    cortex-a720\n    cortex-a720ae\n    cortex-a725\n    cortex-a73\n    cortex-a75\n    cortex-a76\n    cortex-a76ae\n    cortex-a77\n    cortex-a78\n    cortex-a78ae\n    cortex-a78c\n    cortex-r82\n    cortex-r82ae\n    cortex-x1\n    cortex-x1c\n    cortex-x2\n    cortex-x3\n    cortex-x4\n    cortex-x925\n    exynos-m3\n    exynos-m4\n    exynos-m5\n    falkor\n    fujitsu-monaka\n    gb10\n    generic         - This is the default target CPU for the current build target (currently aarch6",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "target-features": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 368,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Features supported by rustc for this target:\n    aes                                    - Enable AES support.\n    bf16                                   - Enable BFloat16 Extension.\n    bti                                    - Enable Branch Target Identification.\n    crc                                    - Enable Armv8.0-A CRC-32 checksum instructions.\n    crt-static                             - Enables C Run-time Libraries to be statically linked.\n    cssc                                   - Enable Common Short Sequence Compression (CSSC) instructions.\n    dit                                    - Enable Armv8.4-A Data Independent Timing instructions.\n    dotprod                                - Enable dot product support.\n    dpb                                    - Enable Armv8.2-A data Cache Clean to Point of Persistence.\n    dpb2                                   - Enable Armv8.5-A Cache Clean to Point of Deep Persistence.\n    ecv                                    - Enable enhan",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "relocation-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 10,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "code-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "tls-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "clif_out": "",
+        "clif_err": ""
+      }
+    },
+    "aarch64-apple-darwin": {
+      "cfg": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 76,
+        "clif_lines": 45,
+        "identical": false,
+        "llvm_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"\"\ntarget_family=\"unix\"\ntarget_feature=\"aes\"\ntarget_feature=\"crc\"\ntarget_feature=\"dit\"\ntarget_feature=\"dotprod\"\ntarget_feature=\"dpb\"\ntarget_feature=\"dpb2\"\ntarget_feature=\"fcma\"\ntarget_feature=\"fhm\"\ntarget_feature=\"flagm\"\ntarget_feature=\"flagm2\"\ntarget_feature=\"fp16\"\ntarget_feature=\"frintts\"\ntarget_feature=\"jsconv\"\ntarget_feature=\"lor\"\ntarget_feature=\"lse\"\ntarget_feature=\"lse2\"\ntarget_feature=\"neon\"\ntarget_feature=\"paca\"\ntarget_feature=\"pacg\"\ntarget_feature=\"pan\"\ntarget_feature=\"pmuv3\"\ntarget_feature=\"ras\"\ntarget_feature=\"rcpc\"\ntarget_feature=\"rcpc2\"\ntarget_feature=\"rdm\"\ntarget_feature=\"sb\"\ntarget_feature=\"sha2\"\ntarget_feature=\"sha3\"\ntarget_feature=\"ssbs\"\ntarget_feature=\"v8.1a\"\ntarget_feature=\"v8.2a\"\ntarget_feature=\"v8.3a\"\ntarget_feature=\"v8.4a\"\ntarget_feature=\"vh\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\nta",
+        "clif_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"aarch64\"\ntarget_endian=\"little\"\ntarget_env=\"\"\ntarget_family=\"unix\"\ntarget_feature=\"aes\"\ntarget_feature=\"neon\"\ntarget_feature=\"sha2\"\ntarget_feature=\"sha3\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntar",
+        "clif_err": ""
+      },
+      "target-cpus": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 85,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available CPUs for this target:\n    a64fx\n    ampere1\n    ampere1a\n    ampere1b\n    ampere1c\n    apple-a10\n    apple-a11\n    apple-a12\n    apple-a13\n    apple-a14\n    apple-a15\n    apple-a16\n    apple-a17\n    apple-a7\n    apple-m4\n    apple-m5\n    c1-nano\n    c1-premium\n    c1-pro\n    c1-ultra\n    carmel\n    cortex-a320\n    cortex-a34\n    cortex-a35\n    cortex-a510\n    cortex-a520\n    cortex-a520ae\n    cortex-a53\n    cortex-a55\n    cortex-a57\n    cortex-a65\n    cortex-a65ae\n    cortex-a710\n    cortex-a715\n    cortex-a72\n    cortex-a720\n    cortex-a720ae\n    cortex-a725\n    cortex-a73\n    cortex-a75\n    cortex-a76\n    cortex-a76ae\n    cortex-a77\n    cortex-a78\n    cortex-a78ae\n    cortex-a78c\n    cortex-r82\n    cortex-r82ae\n    cortex-x1\n    cortex-x1c\n    cortex-x2\n    cortex-x3\n    cortex-x4\n    cortex-x925\n    exynos-m3\n    exynos-m4\n    exynos-m5\n    falkor\n    fujitsu-monaka\n    gb10\n    generic\n    grace\n    hip12\n    kryo\n    neoverse-512tvb\n    neoverse-e1\n    neoverse-n1\n    ne",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "target-features": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 368,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Features supported by rustc for this target:\n    aes                                    - Enable AES support.\n    bf16                                   - Enable BFloat16 Extension.\n    bti                                    - Enable Branch Target Identification.\n    crc                                    - Enable Armv8.0-A CRC-32 checksum instructions.\n    crt-static                             - Enables C Run-time Libraries to be statically linked.\n    cssc                                   - Enable Common Short Sequence Compression (CSSC) instructions.\n    dit                                    - Enable Armv8.4-A Data Independent Timing instructions.\n    dotprod                                - Enable dot product support.\n    dpb                                    - Enable Armv8.2-A data Cache Clean to Point of Persistence.\n    dpb2                                   - Enable Armv8.5-A Cache Clean to Point of Deep Persistence.\n    ecv                                    - Enable enhan",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "relocation-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 10,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "code-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "tls-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "clif_out": "",
+        "clif_err": ""
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "cfg": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 46,
+        "clif_lines": 42,
+        "identical": false,
+        "llvm_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"windows\"\ntarget_feature=\"cmpxchg16b\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"lahfsahf\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"sse3\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\nt",
+        "clif_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"windows\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"128\"\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_threads\ntarget_object_format=\"coff\"\ntarget_os=\"windows\"\ntarget_poi",
+        "clif_err": ""
+      },
+      "target-cpus": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 138,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available CPUs for this target:\n    native                  - Select the CPU of the current host (currently icelake-server).\n    alderlake\n    amdfam10\n    arrowlake\n    arrowlake-s\n    arrowlake_s\n    athlon\n    athlon-4\n    athlon-fx\n    athlon-mp\n    athlon-tbird\n    athlon-xp\n    athlon64\n    athlon64-sse3\n    atom\n    atom_sse4_2\n    atom_sse4_2_movbe\n    barcelona\n    bdver1\n    bdver2\n    bdver3\n    bdver4\n    bonnell\n    broadwell\n    btver1\n    btver2\n    c3\n    c3-2\n    c86-4g-m4\n    c86-4g-m6\n    c86-4g-m7\n    c86-4g-m8\n    cannonlake\n    cascadelake\n    clearwaterforest\n    cooperlake\n    core-avx-i\n    core-avx2\n    core2\n    core_2_duo_sse4_1\n    core_2_duo_ssse3\n    core_2nd_gen_avx\n    core_3rd_gen_avx\n    core_4th_gen_avx\n    core_4th_gen_avx_tsx\n    core_5th_gen_avx\n    core_5th_gen_avx_tsx\n    core_aes_pclmulqdq\n    core_i7_sse4_2\n    corei7\n    corei7-avx\n    diamondrapids\n    emeraldrapids\n    generic\n    geode\n    goldmont\n    goldmont-plus\n    goldmont_plus\n    g",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "target-features": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 241,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Features supported by rustc for this target:\n    adx                             - Support ADX instructions.\n    aes                             - Enable AES instructions.\n    amx-avx512                      - Support AMX-AVX512 instructions.\n    amx-bf16                        - Support AMX-BF16 instructions.\n    amx-complex                     - Support AMX-COMPLEX instructions.\n    amx-fp16                        - Support AMX amx-fp16 instructions.\n    amx-fp8                         - Support AMX-FP8 instructions.\n    amx-int8                        - Support AMX-INT8 instructions.\n    amx-movrs                       - Support AMX-MOVRS instructions.\n    amx-tile                        - Support AMX-TILE instructions.\n    apxf                            - Support extended general purpose register.\n    avx                             - Enable AVX instructions.\n    avx10.1                         - Support AVX10.1 instruction.\n    avx10.2                         - Support AVX10.2 in",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "relocation-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 10,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "code-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "clif_out": "",
+        "clif_err": ""
+      },
+      "tls-models": {
+        "llvm_rc": 0,
+        "clif_rc": 0,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "clif_out": "",
+        "clif_err": ""
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "cfg": {
+        "llvm_rc": 0,
+        "clif_rc": 1,
+        "llvm_lines": 41,
+        "clif_lines": 38,
+        "identical": false,
+        "llvm_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_pointer_width=\"32\"\ntarget_thread_local\ntarget_vendor=\"unknown\"\nub_checks\nunix",
+        "clif_out": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\ntarget_has_atomic_load_store=\"64\"\ntarget_has_atomic_load_store=\"8\"\ntarget_has_atomic_load_store=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_has_reliable_f128\ntarget_has_reliable_f128_math\ntarget_has_reliable_f16\ntarget_has_reliable_f16_math\ntarget_has_threads\ntarget_object_format=\"elf\"\ntarget_os=\"linux\"\ntarget_pointer_width=\"32\"\ntarget_thread_local\ntarget_vendor=\"unknown\"\nub_checks\nunix",
+        "clif_err": "error: target feature `x87` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: aborting due to 2 previous errors"
+      },
+      "target-cpus": {
+        "llvm_rc": 0,
+        "clif_rc": 1,
+        "llvm_lines": 137,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available CPUs for this target:\n    alderlake\n    amdfam10\n    arrowlake\n    arrowlake-s\n    arrowlake_s\n    athlon\n    athlon-4\n    athlon-fx\n    athlon-mp\n    athlon-tbird\n    athlon-xp\n    athlon64\n    athlon64-sse3\n    atom\n    atom_sse4_2\n    atom_sse4_2_movbe\n    barcelona\n    bdver1\n    bdver2\n    bdver3\n    bdver4\n    bonnell\n    broadwell\n    btver1\n    btver2\n    c3\n    c3-2\n    c86-4g-m4\n    c86-4g-m6\n    c86-4g-m7\n    c86-4g-m8\n    cannonlake\n    cascadelake\n    clearwaterforest\n    cooperlake\n    core-avx-i\n    core-avx2\n    core2\n    core_2_duo_sse4_1\n    core_2_duo_ssse3\n    core_2nd_gen_avx\n    core_3rd_gen_avx\n    core_4th_gen_avx\n    core_4th_gen_avx_tsx\n    core_5th_gen_avx\n    core_5th_gen_avx_tsx\n    core_aes_pclmulqdq\n    core_i7_sse4_2\n    corei7\n    corei7-avx\n    diamondrapids\n    emeraldrapids\n    generic\n    geode\n    goldmont\n    goldmont-plus\n    goldmont_plus\n    gracemont\n    grandridge\n    graniterapids\n    graniterapids-d\n    graniterapids_d\n    haswell",
+        "clif_out": "",
+        "clif_err": "error: target feature `x87` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: aborting due to 2 previous errors"
+      },
+      "target-features": {
+        "llvm_rc": 0,
+        "clif_rc": 1,
+        "llvm_lines": 241,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Features supported by rustc for this target:\n    adx                             - Support ADX instructions.\n    aes                             - Enable AES instructions.\n    amx-avx512                      - Support AMX-AVX512 instructions.\n    amx-bf16                        - Support AMX-BF16 instructions.\n    amx-complex                     - Support AMX-COMPLEX instructions.\n    amx-fp16                        - Support AMX amx-fp16 instructions.\n    amx-fp8                         - Support AMX-FP8 instructions.\n    amx-int8                        - Support AMX-INT8 instructions.\n    amx-movrs                       - Support AMX-MOVRS instructions.\n    amx-tile                        - Support AMX-TILE instructions.\n    apxf                            - Support extended general purpose register.\n    avx                             - Enable AVX instructions.\n    avx10.1                         - Support AVX10.1 instruction.\n    avx10.2                         - Support AVX10.2 in",
+        "clif_out": "",
+        "clif_err": "error: target feature `x87` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: aborting due to 2 previous errors"
+      },
+      "relocation-models": {
+        "llvm_rc": 0,
+        "clif_rc": 1,
+        "llvm_lines": 10,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available relocation models:\n    static\n    pic\n    pie\n    dynamic-no-pic\n    ropi\n    rwpi\n    ropi-rwpi\n    default",
+        "clif_out": "",
+        "clif_err": "error: target feature `x87` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: aborting due to 2 previous errors"
+      },
+      "code-models": {
+        "llvm_rc": 0,
+        "clif_rc": 1,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available code models:\n    tiny\n    small\n    kernel\n    medium\n    large",
+        "clif_out": "",
+        "clif_err": "error: target feature `x87` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: aborting due to 2 previous errors"
+      },
+      "tls-models": {
+        "llvm_rc": 0,
+        "clif_rc": 1,
+        "llvm_lines": 7,
+        "clif_lines": 0,
+        "identical": false,
+        "llvm_out": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated",
+        "clif_out": "",
+        "clif_err": "error: target feature `x87` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n\nerror: aborting due to 2 previous errors"
+      }
+    },
+    "llvm_specific_flag_probes": {
+      "C_llvm_args": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: Unknown option `-help`"
+      },
+      "C_passes": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "C_no_prepopulate_passes": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "Z_llvm_plugins": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "emit_llvm_ir": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: could not copy \"lib.lib.f5fcf8ae78ad1389-cgu.0.rcgu.ll\" to \"lib.ll\": No such file or directory (os error 2)\n\nerror: aborting due to 1 previous error"
+      },
+      "emit_llvm_bc": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: could not copy \"lib.lib.f5fcf8ae78ad1389-cgu.0.rcgu.bc\" to \"lib.bc\": No such file or directory (os error 2)\n\nerror: aborting due to 1 previous error"
+      },
+      "C_lto_fat": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: LTO is not supported by rustc_codegen_cranelift"
+      },
+      "C_panic_unwind": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "C_target_cpu_native": {
+        "rc": 0,
+        "stdout": "debug_assertions\nfmt_debug=\"full\"\noverflow_checks\npanic=\"unwind\"\nrelocation_model=\"pic\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"gnu\"\ntarget_family=\"unix\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"x87\"\ntarget_has_atomic\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_load_store\ntarget_has_atomic_load_store=\"16\"\ntarget_has_atomic_load_store=\"32\"\n",
+        "stderr": ""
+      },
+      "C_target_feature_unknown": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  }
+}
