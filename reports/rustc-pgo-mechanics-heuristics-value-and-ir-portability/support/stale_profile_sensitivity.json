@@ -1,0 +1,118 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "profraw_and_profdata_format": {
+    "x86_64-unknown-linux-gnu": {
+      "file_size_bytes": 3424,
+      "magic_hex": "0xff6c70726f667281",
+      "version_raw_hex": "0x010000000000000b",
+      "base_version": 11,
+      "variant_ir_prof": true,
+      "variant_csir_prof": false,
+      "variant_func_entry_only": false,
+      "binary_ids_size": 32,
+      "num_data_records": 19,
+      "num_counters": 143,
+      "num_bitmap_bytes": 0,
+      "names_size_bytes": 0,
+      "num_vtables": 18446649162866521456,
+      "value_kind_last": 0,
+      "profdata_size_bytes": 5464,
+      "profdata_summary_lines": [
+        "  Total number of profiled values: 4",
+        "  Value sites histogram:",
+        "\tNumTargets, SiteCount",
+        "\t1, 1",
+        "\t3, 1",
+        "Statistics for memory intrinsic calls sizes profile:",
+        "  Total number of sites: 2",
+        "  Total number of sites with values: 1",
+        "  Total number of profiled values: 2",
+        "  Value sites histogram:",
+        "\tNumTargets, SiteCount",
+        "\t2, 1"
+      ]
+    },
+    "i686-unknown-linux-gnu": {
+      "file_size_bytes": 3120,
+      "magic_hex": "0xff6c70726f665281",
+      "version_raw_hex": "0x010000000000000b",
+      "base_version": 11,
+      "variant_ir_prof": true,
+      "variant_csir_prof": false,
+      "variant_func_entry_only": false,
+      "binary_ids_size": 32,
+      "num_data_records": 19,
+      "num_counters": 143,
+      "num_bitmap_bytes": 0,
+      "names_size_bytes": 0,
+      "num_vtables": 2844633440,
+      "value_kind_last": 0,
+      "profdata_size_bytes": 5464,
+      "profdata_summary_lines": [
+        "  Total number of profiled values: 4",
+        "  Value sites histogram:",
+        "\tNumTargets, SiteCount",
+        "\t1, 1",
+        "\t3, 1",
+        "Statistics for memory intrinsic calls sizes profile:",
+        "  Total number of sites: 2",
+        "  Total number of sites with values: 1",
+        "  Total number of profiled values: 2",
+        "  Value sites histogram:",
+        "\tNumTargets, SiteCount",
+        "\t2, 1"
+      ]
+    },
+    "aarch64-unknown-linux-gnu_elf_sections": {
+      "__llvm_prf_cnts": 16,
+      "__llvm_prf_data": 72,
+      "__llvm_prf_vals": 8,
+      "__llvm_prf_vnds": 240,
+      "__llvm_prf_names": 449
+    }
+  },
+  "stale_profile_mutations_x86_64": {
+    "M0_Unmodified": {
+      "median_runtime_us": 959.12,
+      "speedup_vs_nopgo_pct": 60.73,
+      "pgo_gain_retained_pct": 99.6,
+      "llvm_missing_function_warnings": 0,
+      "llvm_cfg_hash_mismatch_warnings": 0,
+      "mir_span_counter_survival": "100% (function name unchanged)"
+    },
+    "M1_RenameInternalHelper": {
+      "median_runtime_us": 954.38,
+      "speedup_vs_nopgo_pct": 60.92,
+      "pgo_gain_retained_pct": 99.9,
+      "llvm_missing_function_warnings": 0,
+      "llvm_cfg_hash_mismatch_warnings": 0,
+      "mir_span_counter_survival": "100% (function name unchanged)"
+    },
+    "M2_InsertColdLoggingBranchInHotLoop": {
+      "median_runtime_us": 2302.44,
+      "speedup_vs_nopgo_pct": 5.73,
+      "pgo_gain_retained_pct": 9.4,
+      "llvm_missing_function_warnings": 0,
+      "llvm_cfg_hash_mismatch_warnings": 1,
+      "mir_span_counter_survival": "Partial (outer entry + unchanged arms preserved)"
+    },
+    "M3_RefactorLoopConstruct": {
+      "median_runtime_us": 956.34,
+      "speedup_vs_nopgo_pct": 60.84,
+      "pgo_gain_retained_pct": 99.8,
+      "llvm_missing_function_warnings": 0,
+      "llvm_cfg_hash_mismatch_warnings": 0,
+      "mir_span_counter_survival": "Partial (outer entry + unchanged arms preserved)"
+    },
+    "M4_ReorderBranchArms": {
+      "median_runtime_us": 955.62,
+      "speedup_vs_nopgo_pct": 60.87,
+      "pgo_gain_retained_pct": 99.8,
+      "llvm_missing_function_warnings": 0,
+      "llvm_cfg_hash_mismatch_warnings": 0,
+      "mir_span_counter_survival": "Partial (outer entry + unchanged arms preserved)"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+target,config,median_runtime_us,speedup_vs_nopgo_pct,text_bytes,icp_promotions,inlined_calls,memop_optimizations
+x86_64-unknown-linux-gnu,Baseline_NoPGO_O3,2442.38,0.0,251379,0,226,0
+x86_64-unknown-linux-gnu,PGO_Full_O3,953.06,60.98,250787,0,219,1
+x86_64-unknown-linux-gnu,PGO_No_Inlining_Multiplier,954.03,60.94,250787,0,219,1
+x86_64-unknown-linux-gnu,PGO_No_BlockPlacement_TailDup,952.26,61.01,250723,0,219,1
+x86_64-unknown-linux-gnu,PGO_No_HotColdSplit,952.71,60.99,250787,0,219,1
+x86_64-unknown-linux-gnu,PGO_No_IndirectCallPromotion,949.91,61.11,250483,0,218,1
+x86_64-unknown-linux-gnu,PGO_No_MemOpSizeOpt,2265.55,7.24,250691,0,219,0
+i686-unknown-linux-gnu,Baseline_NoPGO_O3,2864.12,0.0,266115,0,226,0
+i686-unknown-linux-gnu,PGO_Full_O3,2402.91,16.1,265859,0,219,1
+i686-unknown-linux-gnu,PGO_No_Inlining_Multiplier,2405.54,16.01,265859,0,219,1
+i686-unknown-linux-gnu,PGO_No_BlockPlacement_TailDup,2356.62,17.72,265811,0,219,1
+i686-unknown-linux-gnu,PGO_No_HotColdSplit,2403.53,16.08,265859,0,219,1
+i686-unknown-linux-gnu,PGO_No_IndirectCallPromotion,2685.97,6.22,265491,0,218,1
+i686-unknown-linux-gnu,PGO_No_MemOpSizeOpt,2605.94,9.01,265843,0,219,0

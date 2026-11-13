@@ -1,0 +1,10 @@
+target,target_cpu,kernels_total_insts,kernels_simd_insts,kernels_simd_share_pct,binary_text_bytes,median_runtime_us,speedup_vs_baseline_cpu_pct
+x86_64-unknown-linux-gnu,x86-64,801,50,6.2,251603,727.0,0.0
+x86_64-unknown-linux-gnu,x86-64-v2,974,157,16.1,252515,707.69,2.66
+x86_64-unknown-linux-gnu,x86-64-v3,1224,351,28.7,255331,767.2,-5.53
+x86_64-unknown-linux-gnu,x86-64-v4,1369,517,37.8,256611,921.96,-26.82
+x86_64-unknown-linux-gnu,native,1363,512,37.6,256579,974.67,-34.07
+aarch64-unknown-linux-gnu,generic,665,231,34.7,2456,,
+aarch64-unknown-linux-gnu,neoverse-n1,730,251,34.4,2788,,
+aarch64-unknown-linux-gnu,neoverse-v1,865,198,22.9,3368,,
+aarch64-unknown-linux-gnu,apple-m1,727,230,31.6,2704,,

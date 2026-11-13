@@ -1,0 +1,13 @@
+rank_by_loo_speed_impact,pass_group,description,x86_64_full12_runtime_us,x86_64_loo_runtime_us,x86_64_loo_slowdown_pct,x86_64_aoi_runtime_us,x86_64_aoi_speedup_vs_mem2reg_pct,x86_64_loo_text_bytes,x86_64_loo_text_delta_bytes,x86_64_loo_bounds_panics,aarch64_loo_text_bytes,aarch64_loo_text_delta_bytes,i686_loo_text_bytes,i686_loo_text_delta_bytes
+1,G1_Inlining,"CGSCC Inlining, Argument Promotion & FunctionAttrs",391.9,2460.1,527.74,1366.07,70.24,996,275,1,1028,60,1628,408
+2,G3_InstCombine_Peephole,"Instruction Combining, AggressiveInstCombine & Reassociate",391.9,649.64,65.77,3101.86,32.43,599,-122,1,552,-416,1055,-165
+3,G4_CFG_Simplify,"SimplifyCFG, JumpThreading & TailCallElim",391.9,543.67,38.73,2961.44,35.49,560,-161,4,516,-452,1050,-170
+4,G7_LoopCanon_LICM,"Loop Simplify/Rotate, LICM, IndVarSimplify, LoopIdiom & LoopDeletion",391.9,511.36,30.48,3048.7,33.58,550,-171,1,500,-468,1046,-174
+5,G2_SROA_EarlyCSE,Scalar Replacement of Aggregates (SROA/Mem2Reg) & MemorySSA EarlyCSE,391.9,479.26,22.29,2784.76,39.33,824,103,1,1028,60,1335,115
+6,G9_Vectorization,"LoopVectorizer, SLPVectorizer & VectorCombine",391.9,421.46,7.54,2893.03,36.98,689,-32,1,496,-472,1061,-159
+7,G8_LoopUnroll,Loop Unrolling (Full & Runtime),391.9,394.04,0.55,3026.13,34.08,721,0,1,968,0,1220,0
+8,G11_Devirt_FuncSpec,"WholeProgramDevirt, LowerTypeTests & GlobalDCE",391.9,392.37,0.12,2646.82,42.34,721,0,1,968,0,1220,0
+9,G6_SCCP_IPSCCP_ConstProp,"Interprocedural & Function SCCP, CalledValueProp & GlobalOpt",391.9,391.81,-0.02,3110.5,32.24,721,0,1,968,0,1220,0
+10,G12_CodegenPrep_TailDup,CGP / DivRemPairs / ConstantHoisting / Machine Late Optimizations,391.9,391.62,-0.07,2879.77,37.26,721,0,1,968,0,1220,0
+11,G10_BoundsCheck_Range,ConstraintElimination & CorrelatedValuePropagation,391.9,391.52,-0.1,3062.02,33.29,721,0,1,968,0,1220,0
+12,G5_GVN_DSE_MemOpt,"GVN, MemCpyOpt, DeadStoreElimination & MergedLoadStoreMotion",391.9,389.62,-0.58,2819.06,38.59,721,0,1,968,0,1220,0

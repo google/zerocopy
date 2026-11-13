@@ -16775,6 +16775,33 @@
         "compilers"
       ]
     },
+    "llvm-pass-ablation-speed-and-size-on-rust-code": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "rustc",
+        "compilers"
+      ]
+    },
     "llvm-scalar-memory-and-loop-optimization-proof-obligations": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -24271,6 +24298,33 @@
         "verification"
       ]
     },
+    "rustc-lto-mechanics-symbol-preservation-and-performance-value": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "build"
+      ]
+    },
     "rustc-mir-artifact-export-settings-and-proof-binding": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -24819,6 +24873,33 @@
         "systems/object-formats"
       ]
     },
+    "rustc-pgo-mechanics-heuristics-value-and-ir-portability": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "compilers"
+      ]
+    },
     "rustc-postcleanup-mir-const-placement-layout-folding-and-ub-checks": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -24991,6 +25072,33 @@
         "anneal/architecture",
         "lean/kernel",
         "verification/soundness"
+      ]
+    },
+    "rustc-size-optimized-compilation-parity-and-transformations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "compilers"
       ]
     },
     "rustc-standard-library-codegen-demand-per-target": {
@@ -29535,6 +29643,34 @@
         "rust",
         "systems",
         "verification"
+      ]
+    },
+    "where-time-goes-in-rust-programs-hot-patterns-and-instruction-mix": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust",
+        "rustc",
+        "llvm",
+        "isa"
       ]
     },
     "zerocopy-byte-apis-cross-target-layout-and-packet-certificates": {

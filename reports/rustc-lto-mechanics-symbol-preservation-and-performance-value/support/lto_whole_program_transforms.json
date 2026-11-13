@@ -1,0 +1,487 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "crate_type_export_rules": {
+    "Executable": {
+      "export_level": "C",
+      "allows_lto": true,
+      "default_lto": "ThinLocal (if CGU > 1 and opt >= 1)"
+    },
+    "StaticLib": {
+      "export_level": "C",
+      "allows_lto": true,
+      "default_lto": "ThinLocal"
+    },
+    "Cdylib": {
+      "export_level": "C",
+      "allows_lto": true,
+      "default_lto": "ThinLocal"
+    },
+    "ProcMacro": {
+      "export_level": "C",
+      "allows_lto": "Requires -Zdylib-lto",
+      "default_lto": "ThinLocal"
+    },
+    "Dylib": {
+      "export_level": "Rust",
+      "allows_lto": "Requires -Zdylib-lto",
+      "default_lto": "ThinLocal"
+    },
+    "Rlib": {
+      "export_level": "Rust",
+      "allows_lto": false,
+      "default_lto": "PreLink bitcode embedding"
+    }
+  },
+  "target_results": {
+    "x86_64-unknown-linux-gnu": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1054,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9408.84
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1217,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9388.38
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 1887,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9390.0
+      },
+      "ThinLTO": {
+        "cgu_object_count": 23,
+        "crate_text_bytes": 224728,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9382.98
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 419472,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9393.93
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 888,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 10167.34
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1028,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9875.67
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 1524,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 10362.91
+      },
+      "ThinLTO": {
+        "cgu_object_count": 23,
+        "crate_text_bytes": 202880,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9862.67
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 370776,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 9877.12
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 2251,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 19109.81
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 2620,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 19273.76
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 4215,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 18839.01
+      },
+      "ThinLTO": {
+        "cgu_object_count": 23,
+        "crate_text_bytes": 236724,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 19274.52
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 439110,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": 18827.24
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1111,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1268,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 1935,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLTO": {
+        "cgu_object_count": 24,
+        "crate_text_bytes": 202332,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 379714,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1179,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1323,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 2013,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLTO": {
+        "cgu_object_count": 17,
+        "crate_text_bytes": 79381,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 139586,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 2229,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 2460,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 3973,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLTO": {
+        "cgu_object_count": 17,
+        "crate_text_bytes": 75722,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 132394,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1040,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1184,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 1692,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLTO": {
+        "cgu_object_count": 17,
+        "crate_text_bytes": 82784,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 139360,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    },
+    "aarch64-apple-darwin": {
+      "NoLTO_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 888,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLocal_16CGU": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 1028,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "NoLTO_1CGU": {
+        "cgu_object_count": 3,
+        "crate_text_bytes": 1524,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "ThinLTO": {
+        "cgu_object_count": 23,
+        "crate_text_bytes": 201048,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "FatLTO": {
+        "cgu_object_count": 2,
+        "crate_text_bytes": 375448,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      },
+      "LinkerPluginLTO": {
+        "cgu_object_count": 4,
+        "crate_text_bytes": 0,
+        "cross_crate_calls_inlined": true,
+        "cross_crate_calls_remaining": 0,
+        "dead_exported_helpers_eliminated": true,
+        "used_static_preserved": true,
+        "median_runtime_us": null
+      }
+    }
+  }
+}

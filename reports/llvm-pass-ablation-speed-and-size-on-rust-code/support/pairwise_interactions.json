@@ -1,0 +1,326 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "x86_64_reference_points": {
+    "mem2reg_minimal_baseline": {
+      "text_bytes": 2106,
+      "inst_count": 463,
+      "bounds_panics": 4,
+      "median_runtime_us": 4590.36,
+      "iqr_runtime_us": 92.68
+    },
+    "canonical_12_group_O3": {
+      "text_bytes": 721,
+      "inst_count": 200,
+      "bounds_panics": 1,
+      "median_runtime_us": 391.9,
+      "iqr_runtime_us": 5.39
+    },
+    "llvm_default_O3": {
+      "text_bytes": 742,
+      "inst_count": 201,
+      "bounds_panics": 1,
+      "median_runtime_us": 391.42,
+      "iqr_runtime_us": 5.5
+    },
+    "llvm_default_Os": {
+      "text_bytes": 501,
+      "inst_count": 149,
+      "bounds_panics": 1,
+      "median_runtime_us": 507.19,
+      "iqr_runtime_us": 2.79
+    },
+    "llvm_default_Oz": {
+      "text_bytes": 458,
+      "inst_count": 147,
+      "bounds_panics": 1,
+      "median_runtime_us": 520.06,
+      "iqr_runtime_us": 13.99
+    }
+  },
+  "top_6_pairwise_interactions": {
+    "G1_Inlining__x__G2_SROA_EarlyCSE": {
+      "baseline_mem2reg_runtime_us": 4590.36,
+      "only_A_runtime_us": 1360.31,
+      "only_B_runtime_us": 2790.49,
+      "both_AB_runtime_us": 549.34,
+      "marginal_lift_A_us": 3230.05,
+      "marginal_lift_B_us": 1799.87,
+      "joint_lift_AB_us": 4041.02,
+      "super_additive_interaction_us": -988.9,
+      "super_additive_interaction_pct": -21.54,
+      "both_AB_text_bytes": 579,
+      "both_AB_bounds_panics": 4
+    },
+    "G1_Inlining__x__G3_InstCombine_Peephole": {
+      "baseline_mem2reg_runtime_us": 4590.36,
+      "only_A_runtime_us": 1360.31,
+      "only_B_runtime_us": 3090.24,
+      "both_AB_runtime_us": 1212.36,
+      "marginal_lift_A_us": 3230.05,
+      "marginal_lift_B_us": 1500.12,
+      "joint_lift_AB_us": 3378.0,
+      "super_additive_interaction_us": -1352.17,
+      "super_additive_interaction_pct": -29.46,
+      "both_AB_text_bytes": 827,
+      "both_AB_bounds_panics": 4
+    },
+    "G2_SROA_EarlyCSE__x__G5_GVN_DSE_MemOpt": {
+      "baseline_mem2reg_runtime_us": 4590.36,
+      "only_A_runtime_us": 2790.49,
+      "only_B_runtime_us": 2813.85,
+      "both_AB_runtime_us": 2548.75,
+      "marginal_lift_A_us": 1799.87,
+      "marginal_lift_B_us": 1776.51,
+      "joint_lift_AB_us": 2041.61,
+      "super_additive_interaction_us": -1534.77,
+      "super_additive_interaction_pct": -33.43,
+      "both_AB_text_bytes": 1092,
+      "both_AB_bounds_panics": 4
+    },
+    "G7_LoopCanon_LICM__x__G9_Vectorization": {
+      "baseline_mem2reg_runtime_us": 4590.36,
+      "only_A_runtime_us": 3035.11,
+      "only_B_runtime_us": 2841.14,
+      "both_AB_runtime_us": 3027.42,
+      "marginal_lift_A_us": 1555.25,
+      "marginal_lift_B_us": 1749.22,
+      "joint_lift_AB_us": 1562.94,
+      "super_additive_interaction_us": -1741.53,
+      "super_additive_interaction_pct": -37.94,
+      "both_AB_text_bytes": 1350,
+      "both_AB_bounds_panics": 4
+    },
+    "G1_Inlining__x__G10_BoundsCheck_Range": {
+      "baseline_mem2reg_runtime_us": 4590.36,
+      "only_A_runtime_us": 1360.31,
+      "only_B_runtime_us": 3085.18,
+      "both_AB_runtime_us": 1361.73,
+      "marginal_lift_A_us": 3230.05,
+      "marginal_lift_B_us": 1505.18,
+      "joint_lift_AB_us": 3228.63,
+      "super_additive_interaction_us": -1506.6,
+      "super_additive_interaction_pct": -32.82,
+      "both_AB_text_bytes": 898,
+      "both_AB_bounds_panics": 4
+    },
+    "G2_SROA_EarlyCSE__x__G9_Vectorization": {
+      "baseline_mem2reg_runtime_us": 4590.36,
+      "only_A_runtime_us": 2790.49,
+      "only_B_runtime_us": 2841.14,
+      "both_AB_runtime_us": 2811.89,
+      "marginal_lift_A_us": 1799.87,
+      "marginal_lift_B_us": 1749.22,
+      "joint_lift_AB_us": 1778.47,
+      "super_additive_interaction_us": -1770.62,
+      "super_additive_interaction_pct": -38.57,
+      "both_AB_text_bytes": 1109,
+      "both_AB_bounds_panics": 4
+    }
+  },
+  "s12_mir_vs_llvm_ablation": {
+    "MIR0_LLVM_O0": {
+      "flags": "-C opt-level=0 -Z mir-opt-level=0",
+      "compile_time_ms": 91.08,
+      "median_runtime_us": 4465.68,
+      "binary_text_bytes": 263539,
+      "panic_bounds_calls": 1
+    },
+    "MIR1_Default_LLVM_O0": {
+      "flags": "-C opt-level=0 -Z mir-opt-level=1",
+      "compile_time_ms": 90.52,
+      "median_runtime_us": 4426.89,
+      "binary_text_bytes": 263475,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_LLVM_O0": {
+      "flags": "-C opt-level=0 -Z mir-opt-level=2",
+      "compile_time_ms": 92.25,
+      "median_runtime_us": 3079.82,
+      "binary_text_bytes": 263347,
+      "panic_bounds_calls": 1
+    },
+    "MIR0_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=0",
+      "compile_time_ms": 195.27,
+      "median_runtime_us": 392.05,
+      "binary_text_bytes": 248723,
+      "panic_bounds_calls": 1
+    },
+    "MIR1_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=1",
+      "compile_time_ms": 196.64,
+      "median_runtime_us": 390.38,
+      "binary_text_bytes": 248723,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_Default_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2",
+      "compile_time_ms": 192.52,
+      "median_runtime_us": 407.21,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR3_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=3",
+      "compile_time_ms": 193.32,
+      "median_runtime_us": 407.32,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR4_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=4",
+      "compile_time_ms": 189.96,
+      "median_runtime_us": 407.56,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_Inline_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-Inline",
+      "compile_time_ms": 197.48,
+      "median_runtime_us": 392.55,
+      "binary_text_bytes": 248723,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_SROA_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-ScalarReplacementOfAggregates",
+      "compile_time_ms": 195.91,
+      "median_runtime_us": 405.36,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_GVN_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-GVN",
+      "compile_time_ms": 192.67,
+      "median_runtime_us": 405.35,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_DSE_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-DeadStoreElimination-initial,-DeadStoreElimination-final",
+      "compile_time_ms": 189.02,
+      "median_runtime_us": 407.24,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_DestProp_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-DestinationPropagation",
+      "compile_time_ms": 190.52,
+      "median_runtime_us": 407.2,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_RefProp_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-ReferencePropagation",
+      "compile_time_ms": 190.17,
+      "median_runtime_us": 407.49,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_JumpThreading_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-JumpThreading",
+      "compile_time_ms": 192.74,
+      "median_runtime_us": 390.83,
+      "binary_text_bytes": 248723,
+      "panic_bounds_calls": 1
+    },
+    "MIR2_No_InstSimplify_LLVM_O3": {
+      "flags": "-C opt-level=3 -Z mir-opt-level=2 -Z mir-enable-passes=-InstSimplify-before-inline,-InstSimplify-after-simplifycfg",
+      "compile_time_ms": 191.21,
+      "median_runtime_us": 407.58,
+      "binary_text_bytes": 248707,
+      "panic_bounds_calls": 1
+    }
+  },
+  "cross_target_8_tier1_baselines": {
+    "x86_64-unknown-linux-gnu": {
+      "mem2reg_baseline_text_bytes": 2106,
+      "mem2reg_baseline_insts": 463,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 721,
+      "full12_O3_insts": 200,
+      "full12_O3_bounds_panics": 1,
+      "default_O3_text_bytes": 742,
+      "default_Os_text_bytes": 501,
+      "default_Oz_text_bytes": 458
+    },
+    "aarch64-unknown-linux-gnu": {
+      "mem2reg_baseline_text_bytes": 1948,
+      "mem2reg_baseline_insts": 506,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 968,
+      "full12_O3_insts": 252,
+      "full12_O3_bounds_panics": 1,
+      "default_O3_text_bytes": 968,
+      "default_Os_text_bytes": 496,
+      "default_Oz_text_bytes": 448
+    },
+    "i686-unknown-linux-gnu": {
+      "mem2reg_baseline_text_bytes": 3576,
+      "mem2reg_baseline_insts": 972,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 1220,
+      "full12_O3_insts": 390,
+      "full12_O3_bounds_panics": 1,
+      "default_O3_text_bytes": 1220,
+      "default_Os_text_bytes": 811,
+      "default_Oz_text_bytes": 789
+    },
+    "x86_64-pc-windows-gnu": {
+      "mem2reg_baseline_text_bytes": 2176,
+      "mem2reg_baseline_insts": 501,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 764,
+      "full12_O3_insts": 213,
+      "full12_O3_bounds_panics": 1,
+      "default_O3_text_bytes": 764,
+      "default_Os_text_bytes": 511,
+      "default_Oz_text_bytes": 475
+    },
+    "x86_64-pc-windows-msvc": {
+      "mem2reg_baseline_text_bytes": 1991,
+      "mem2reg_baseline_insts": 527,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 866,
+      "full12_O3_insts": 245,
+      "full12_O3_bounds_panics": 4,
+      "default_O3_text_bytes": 866,
+      "default_Os_text_bytes": 581,
+      "default_Oz_text_bytes": 540
+    },
+    "i686-pc-windows-msvc": {
+      "mem2reg_baseline_text_bytes": 3226,
+      "mem2reg_baseline_insts": 965,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 1290,
+      "full12_O3_insts": 435,
+      "full12_O3_bounds_panics": 4,
+      "default_O3_text_bytes": 1306,
+      "default_Os_text_bytes": 826,
+      "default_Oz_text_bytes": 810
+    },
+    "aarch64-pc-windows-msvc": {
+      "mem2reg_baseline_text_bytes": 2096,
+      "mem2reg_baseline_insts": 574,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 1016,
+      "full12_O3_insts": 267,
+      "full12_O3_bounds_panics": 4,
+      "default_O3_text_bytes": 1016,
+      "default_Os_text_bytes": 536,
+      "default_Oz_text_bytes": 488
+    },
+    "aarch64-apple-darwin": {
+      "mem2reg_baseline_text_bytes": 1952,
+      "mem2reg_baseline_insts": 538,
+      "mem2reg_baseline_bounds_panics": 4,
+      "full12_O3_text_bytes": 972,
+      "full12_O3_insts": 253,
+      "full12_O3_bounds_panics": 1,
+      "default_O3_text_bytes": 972,
+      "default_Os_text_bytes": 500,
+      "default_Oz_text_bytes": 460
+    }
+  }
+}
