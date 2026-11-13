@@ -1,0 +1,500 @@
+{
+  "schema_version": "1.0",
+  "baseline_rust_version": "1.99.1",
+  "baseline_rust_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "authority_revisions": {
+    "rust": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "reference": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+    "fls": "946eacae5a4a33a89af7832178504692439e7478",
+    "nomicon": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6",
+    "rfcs": "7677feddd580f356f780cb7123aeda6a3708275a",
+    "opsem_team": "d462085814030cc5b21dfa0ce831dfc1619d69b1",
+    "ucg": "d809f91e62968913d808e53397fbcf7cea762cce",
+    "minirust": "063d784186d3252bee242217f218223205c0b568"
+  },
+  "allowed_statuses": [
+    "guaranteed",
+    "unspecified_stable_in_practice",
+    "explicitly_unspecified",
+    "undefined_behavior",
+    "open"
+  ],
+  "areas": [
+    "memory_model_and_data_races",
+    "aliasing",
+    "provenance_and_int_ptr_casts",
+    "validity_and_safety_invariants",
+    "layout_and_repr",
+    "unwinding_panics_and_c_unwind",
+    "floating_point_and_nan_rules",
+    "inline_assembly",
+    "abis_and_extern_abi_strings",
+    "target_features",
+    "intrinsics",
+    "linkage_symbols_and_sections",
+    "volatile_access",
+    "allocation",
+    "constant_evaluation_and_promotion",
+    "drop_order"
+  ],
+  "items": [
+    {
+      "id": "mem.abstract_byte_init_uninit_provenance",
+      "area": "memory_model_and_data_races",
+      "item": "Abstract byte state (init/uninit, provenance fragment)",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/memory-model.md:17-26 (r[memory.bytes.contents], r[memory.bytes.init], r[memory.bytes.uninit])",
+        "fls": "src/values.rst:45-64 (fls_6lg0oaaopc26)",
+        "nomicon": "src/uninitialized.md:1-60",
+        "stdlib": "library/core/src/mem/maybe_uninit.rs:1-120",
+        "rfcs": "text/3559-rust-has-provenance.md:1-140",
+        "opsem": "fcps.md:12,29 (typed copies reset padding to uninit; UCG#301, UCG#558)",
+        "ucg": "reference/src/glossary.md:15-42 (Abstract Byte)",
+        "minirust": "spec/mem/basic.md:1-45 (AbstractByte::Uninit | Init(u8, Option<Prov>))"
+      },
+      "disagreements": "FLS (fls_6lg0oaaopc26) treats uninitialized memory only at value creation rather than defining per-byte provenance fragments; Reference (r[undefined.validity.const-provenance]), UCG, and MiniRust explicitly model 256 init values plus Uninit and provenance per byte.",
+      "rustc_deviations": "In runtime LLVM codegen, uninitialized bytes lower to LLVM poison/undef; LLVM's byte-level poison propagation across bitwise/integer operations has historical edge cases (rust-lang/rust#71043) where Miri/MiniRust strictly track per-byte Uninit."
+    },
+    {
+      "id": "mem.data_race_ub_and_c20_model",
+      "area": "memory_model_and_data_races",
+      "item": "Data race is immediate UB; C++20 access-based atomic ordering model (Release/Acquire/AcqRel/SeqCst/Relaxed, omitting Consume)",
+      "status": "undefined_behavior",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:15-17 (r[undefined.race])",
+        "fls": "src/concurrency.rst:22-26 (fls_isypweqewe78)",
+        "nomicon": "src/races.md:1-55; src/atomics.md:1-180",
+        "stdlib": "library/core/src/sync/atomic.rs:25-155",
+        "rfcs": "N/A (adopted from C++20 N4868 via library/core/src/sync/atomic.rs)",
+        "opsem": "fcps.md:18,31 (atomic loads on read-only memory; rust-lang/rust#115577, #159503)",
+        "ucg": "reference/src/glossary.md:264-277",
+        "minirust": "spec/mem/concurrent.md:1-177"
+      },
+      "disagreements": "stdlib (atomic.rs:25-58) normatively adopts C++20 (with RC11's psc SeqCst fence fix and access-based atomics), whereas MiniRust (spec/mem/concurrent.md) currently specifies only a sequential-consistency data-race detector without relaxed weak-memory read-from graphs, and OOTA (Out-of-Thin-Air) remains open in C++20.",
+      "rustc_deviations": "On AArch64 with +rcpc (ARMv8.3-A), rustc/LLVM lowers Ordering::Acquire loads to LDAPR while lowering Ordering::SeqCst loads to LDAR; this is sound under C++20/RC11 but outside pre-ARMv8.3 IMM Coq proofs."
+    },
+    {
+      "id": "mem.mixed_size_atomic_accesses",
+      "area": "memory_model_and_data_races",
+      "item": "Unsynchronized overlapping atomic accesses of different sizes or alignments",
+      "status": "undefined_behavior",
+      "requires_matching_rustc": false,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:15-17 (r[undefined.race])",
+        "fls": "silent",
+        "nomicon": "silent",
+        "stdlib": "library/core/src/sync/atomic.rs:42-55",
+        "rfcs": "silent",
+        "opsem": "rust-lang/unsafe-code-guidelines#345",
+        "ucg": "silent",
+        "minirust": "spec/mem/concurrent.md:90-140 (rejects overlapping unsynchronized conflicting atomic accesses)"
+      },
+      "disagreements": "Hardware models (x86-TSO and ARMv8 mixed-size) define byte-level coherence for overlapping mixed-size loads/stores, but stdlib (atomic.rs:42-55) and MiniRust make unsynchronized overlapping mixed-size atomic accesses UB (unless both are reads).",
+      "rustc_deviations": "None; rustc lowers atomic intrinsics directly to LLVM atomic load/store/rmw instructions, which declare overlapping mixed-size unsynchronized accesses UB in LLVM LangRef."
+    },
+    {
+      "id": "mem.zero_sized_access_and_max_alloc_size",
+      "area": "memory_model_and_data_races",
+      "item": "Zero-sized accesses are no-ops; dynamic object size bounded by isize::MAX and no wrap-around",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:103-111 (r[undefined.dangling.def])",
+        "fls": "src/values.rst:51-64 (fls_oqhQ62mDLckN, fls_uhwpuv6cx4ip, fls_xuuFKmm181bs)",
+        "nomicon": "src/vec/vec-zsts.md:1-80",
+        "stdlib": "library/core/src/ptr/mod.rs:150-240",
+        "rfcs": "silent",
+        "opsem": "fcps.md:19,23 (ZST accesses/offsets are NOPs UCG#472; size_of_val with len 0 safe rust#126152)",
+        "ucg": "reference/src/glossary.md:98-114 (Allocation)",
+        "minirust": "spec/mem/basic.md:60-130"
+      },
+      "disagreements": "FLS (fls_oqhQ62mDLckN) states that creating an allocated object at base address null is UB, whereas Reference (r[undefined.dangling.def]), stdlib (NonNull::dangling), OpSem (UCG#472), and MiniRust allow 0-sized accesses at any non-null aligned address (and 0-sized raw pointer reads/writes even at null).",
+      "rustc_deviations": "rustc and Miri agree that 0-sized reads/writes do not touch memory after alignment/validity checks."
+    },
+    {
+      "id": "alias.shared_and_mutable_reference_principles",
+      "area": "aliasing",
+      "item": "Shared (&T freeze) and mutable (&mut T unique) aliasing principles and UnsafeCell<T> exception",
+      "status": "undefined_behavior",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:24-48 (r[undefined.alias], r[undefined.immutable])",
+        "fls": "src/ownership-and-deconstruction.rst:137-142 (fls_eT1hnLOx6vxk); src/values.rst:301-306 (fls_b5wsmii7vz3v)",
+        "nomicon": "src/aliasing.md:1-90; src/references.md:1-60",
+        "stdlib": "library/core/src/cell.rs:2100-2260 (UnsafeCell)",
+        "rfcs": "silent",
+        "opsem": "fcps.md:24,34 (&UnsafeCell<T> to *mut T cast legal without .get() UCG#281; closures act like MaybeDangling rust#160745)",
+        "ucg": "reference/src/glossary.md:43-97,115-128",
+        "minirust": "spec/mem/tree_borrows/state_machine.md:1-120"
+      },
+      "disagreements": "Reference (r[undefined.alias]) explicitly notes that the exact aliasing model is not yet decided while fixing the boundary principles (function-call protectors on &T/&mut T except &T with UnsafeCell, Box<T> treated like &'static mut T). MiniRust adopts Tree Borrows; Miri supports both Stacked Borrows (default) and Tree Borrows (-Zmiri-tree-borrows).",
+      "rustc_deviations": "rustc (compiler/rustc_ty_utils/src/abi.rs:356-380) emits LLVM noalias + readonly on &T (when T: Freeze) and noalias on &mut T and Box<T> (when T: Unpin). Neither Stacked Borrows nor Tree Borrows is enforced for !Unpin mutable references in rustc today because of Pin<&mut !Unpin> self-referential generators (rust-lang/rust#63818)."
+    },
+    {
+      "id": "alias.exact_operational_model_sb_vs_tb",
+      "area": "aliasing",
+      "item": "Choice between Stacked Borrows and Tree Borrows (two-phase borrows, lazy Reserved->Active, offset range restriction)",
+      "status": "open",
+      "tracking_issue": "https://github.com/rust-lang/unsafe-code-guidelines/issues/133",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:25 (r[undefined.alias]: 'The exact aliasing rules are not determined yet')",
+        "fls": "src/ownership-and-deconstruction.rst:137-142 (general rule only)",
+        "nomicon": "src/aliasing.md:1-90",
+        "stdlib": "library/core/src/pin.rs:1-250",
+        "rfcs": "text/2025-nested-method-calls.md (two-phase borrows)",
+        "opsem": "fcps.md:24 (UCG#281 favors Tree Borrows over Stacked Borrows on &UnsafeCell<T> -> *mut T)",
+        "ucg": "reference/src/glossary.md:43-97",
+        "minirust": "spec/mem/tree_borrows/tree.md:1-180"
+      },
+      "disagreements": "Stacked Borrows (POPL 2020) eagerly activates &mut T on retag, restricts permissions to the slice subrange, and disables raw pointers derived from &UnsafeCell<T> rather than UnsafeCell::get(); Tree Borrows (PLDI 2025, MiniRust) lazily activates Reserved -> Active on first write, permits offset accesses within the allocation outside the initial reborrow size, and unifies two-phase borrows with ordinary mutable reborrows.",
+      "rustc_deviations": "rustc emits MIR Retag statements (compiler/rustc_mir_build/src/builder/expr/stmt.rs) for Miri, and emits LLVM noalias/readonly/dereferenceable/writable/dead_on_unwind attributes in compiler/rustc_ty_utils/src/abi.rs:350-490 that are sound under both SB and TB."
+    },
+    {
+      "id": "prov.strict_and_exposed_provenance_api",
+      "area": "provenance_and_int_ptr_casts",
+      "item": "Pointer provenance requirement; Strict Provenance (addr, with_addr, without_provenance) and Exposed Provenance (expose_provenance, with_exposed_provenance)",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:103-111,170-198 (r[undefined.dangling.def], r[undefined.validity.const-provenance]); src/expressions/operator-expr.md (pointer casts)",
+        "fls": "src/values.rst:212-216 (fls_c3DaCLQEBpYQ)",
+        "nomicon": "src/casts.md:1-90",
+        "stdlib": "library/core/src/ptr/mod.rs:250-540,923-1115",
+        "rfcs": "text/3559-rust-has-provenance.md:1-260",
+        "opsem": "fcps.md:21,29 (int-to-ptr transmutation questionable rust#122379; pointer byte order UCG#558)",
+        "ucg": "reference/src/glossary.md:199-239 (Pointer Provenance)",
+        "minirust": "spec/mem/intptrcast.md:1-110"
+      },
+      "disagreements": "Transmuting an integer to a pointer (`transmute::<usize, *const T>(addr)`) vs `ptr::with_exposed_provenance(addr)` is marked questionable by OpSem (fcps.md:21, rust-lang/rust#122379): stdlib documents that integer-to-pointer transmute creates a pointer WITHOUT provenance (equivalent to without_provenance), whereas `as` cast (`addr as *const T`) equals `with_exposed_provenance(addr)`.",
+      "rustc_deviations": "LLVM has not yet completed full byte-type / strict-provenance tracking for integer-to-pointer casts via memory (llvm/llvm-project#34548 / #35229), so LLVM optimizer bugs around `icmp eq` pointer-address replacement with mixed provenance remain a known upstream LLVM soundness hazard."
+    },
+    {
+      "id": "prov.pointer_comparison_and_ctfe_provenance",
+      "area": "provenance_and_int_ptr_casts",
+      "item": "Pointer equality (ptr::eq / addr_eq / fn_addr_eq) and forbidden pointer-to-integer reinterpretation in const eval",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:170-198 (r[undefined.validity.const-provenance])",
+        "fls": "silent on CTFE provenance",
+        "nomicon": "silent",
+        "stdlib": "library/core/src/ptr/mod.rs:2507-2610 (eq, addr_eq, fn_addr_eq)",
+        "rfcs": "text/3559-rust-has-provenance.md",
+        "opsem": "fcps.md:29 (UCG#558)",
+        "ucg": "reference/src/glossary.md:199-239",
+        "minirust": "spec/lang/step/operators.md"
+      },
+      "disagreements": "FLS does not specify CTFE provenance rules; Reference (r[undefined.validity.const-provenance]) and rustc CTFE (compiler/rustc_const_eval/src/interpret/validity.rs) strictly forbid reinterpreting pointer bytes with provenance as integer types during const evaluation.",
+      "rustc_deviations": "At runtime, `ptr as usize` and transmuting a pointer to `usize` both succeed (the latter drops provenance without exposing it); at compile time (`const`), `ptr as usize` or transmuting a pointer with provenance to `usize` is rejected as a compile error / CTFE UB."
+    },
+    {
+      "id": "val.primitive_enum_struct_validity_invariants",
+      "area": "validity_and_safety_invariants",
+      "item": "Immediate validity invariants for bool, char, !, scalars, enums, structs, tuples, arrays, NonNull/NonZero scalar ranges, and MaybeUninit",
+      "status": "undefined_behavior",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:112-169,199-201 (r[undefined.validity.*])",
+        "fls": "src/types-and-traits.rst:339-363,699-704,1063-1067,1286-1290 (fls_2sd39mj05mb9, fls_juysxea25owj, fls_f046du2fkgr6, fls_52thmi9hnoks, fls_22e8quna7ed5)",
+        "nomicon": "src/what-unsafe-does.md; src/unchecked-uninit.md",
+        "stdlib": "library/core/src/mem/maybe_uninit.rs:1-150; library/core/src/num/nonzero.rs",
+        "rfcs": "text/1892-uninitialized-uninhabited.md",
+        "opsem": "fcps.md:10,11,20,27 (UCG#439, UCG#440, UCG#510, UCG#413)",
+        "ucg": "reference/src/validity/unions.md; reference/src/validity/function-pointers.md; reference/src/glossary.md:278-337",
+        "minirust": "spec/lang/values.md:1-200"
+      },
+      "disagreements": "FLS (fls_wacoqrtzvrwu) classifies `str` UTF-8 validity as a safety invariant, matching Reference (r[undefined.validity.str]: `str` validity is `[u8]`, i.e., initialized bytes, while UTF-8 is a library safety invariant).",
+      "rustc_deviations": "rustc's `core::mem::uninitialized()` mitigation (ValidityRequirement::UninitMitigated0x01Fill in compiler/rustc_middle/src/ty/layout.rs:207) fills memory with 0x01 rather than trapping on types that allow 0x01 unless `-Zstrict-init-checks` is enabled."
+    },
+    {
+      "id": "val.union_and_reference_pointee_validity",
+      "area": "validity_and_safety_invariants",
+      "item": "Union validity (all byte states valid) vs recursive reference pointee validity (&T pointing to invalid T)",
+      "status": "open",
+      "tracking_issue": "https://github.com/rust-lang/unsafe-code-guidelines/issues/414",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:145-153 (r[undefined.validity.union], r[undefined.validity.reference-box])",
+        "fls": "src/values.rst:47-50 (fls_6lg0oaaopc26); src/expressions.rst:3656-3661 (fls_Vani4665hiJY)",
+        "nomicon": "src/other-reprs.md",
+        "stdlib": "library/core/src/mem/maybe_uninit.rs",
+        "rfcs": "text/2514-union-initialization-and-drop.md",
+        "opsem": "fcps.md:25,26,27,35 (Validity of references does NOT depend on memory contents except uninhabited pointees UCG#414 & UCG#413; Unions are always valid UCG#438; enum discriminant transient change UCG#621)",
+        "ucg": "reference/src/validity/unions.md:1-60",
+        "minirust": "spec/lang/values.md:110-180 (Unions allow arbitrary AbstractByte chunks; reference validity checks non-null, aligned, dereferenceable, not recursive memory content)"
+      },
+      "disagreements": "Reference (r[undefined.validity.union], r[undefined.validity.reference-box]) still carries conservative text saying union validity is undecided and references must point to a valid value, whereas OpSem FCPs (UCG#438, UCG#414, UCG#413) and MiniRust have decided that (1) unions have trivial validity (any AbstractByte sequence is valid) and (2) reference validity does NOT depend on memory contents (except that `&!` / references to uninhabited types are uninhabited).",
+      "rustc_deviations": "Miri and rustc CTFE (`compiler/rustc_const_eval/src/interpret/validity.rs`) enforce recursive reference pointee validity by default (`-Zmiri-validate-recursive` adjustments), while `rustc` LLVM codegen emits `dereferenceable(N) noundef align(A)` on references without reading pointee fields on function entry."
+    },
+    {
+      "id": "layout.repr_rust_c_transparent_simd_packed_align",
+      "area": "layout_and_repr",
+      "item": "Type layout guarantees across repr(Rust), repr(C), repr(transparent), repr(Int), repr(C, Int), repr(packed(N)), repr(align(N)), and repr(simd)",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/type-layout.md:1-727 (r[layout.*])",
+        "fls": "src/types-and-traits.rst; src/attributes.rst:550-765",
+        "nomicon": "src/repr-rust.md; src/other-reprs.md; src/exotic-sizes.md",
+        "stdlib": "library/core/src/mem/mod.rs:375-690 (size_of, align_of, offset_of!)",
+        "rfcs": "text/1358-repr-align.md; text/1399-repr-pack.md; text/1758-repr-transparent.md; text/2195-really-tagged-unions.md; text/2645-transparent-unions.md; text/3308-offset_of.md",
+        "opsem": "fcps.md:8,13,14 (MSVC x86-32 8-align stack bug rust#112480; layout cannot change at runtime UCG#97; size == stride in arrays UCG#176)",
+        "ucg": "reference/src/layout/structs-and-tuples.md; reference/src/layout/enums.md; reference/src/layout/pointers.md; reference/src/layout/scalars.md",
+        "minirust": "spec/lang/representation.md:1-160"
+      },
+      "disagreements": "repr(Rust) field order, padding, and niche placement are explicitly unspecified (r[layout.repr.rust.unspecified]) except for the Option-like null-pointer optimization on single-non-zero-field structs/tuples (r[layout.option-null-ptr]) and ZST 0-size guarantees (r[layout.repr.rust.struct-zst]). Wide pointer (`*const [T]`, `*const dyn Trait`) field order (data pointer vs metadata) is explicitly unspecified (r[layout.pointer.unsized]).",
+      "rustc_deviations": "1) On i686-pc-windows-msvc, 8-byte aligned stack locals passed from C may only be 4-byte aligned (opsem fcps.md:8, rust-lang/rust#112480). 2) Zero-sized arrays/structs inside `#[repr(C)]` differ between C (GCC empty struct size 0 vs standard C11 forbidden) and C++ (`sizeof(Empty) == 1`); rustc gives `#[repr(C)] struct Empty;` size 0 and align 1 (r[layout.repr.c.struct.empty]). 3) 128-bit integers (`i128`/`u128`) had their alignment raised to 16 on x86_64 in LLVM 18 / Rust 1.77, matching C `_BitInt(128)` / `__int128` on SysV64 but differing on Windows MSVC where `i128` has align 16 while MSVC lacks native `__int128`."
+    },
+    {
+      "id": "unwind.panic_strategies_and_c_unwind_ffi",
+      "area": "unwinding_panics_and_c_unwind",
+      "item": "Panic strategies (unwind vs abort), catch_unwind, and FFI unwinding across extern \"C\" vs extern \"C-unwind\"",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/panic.md:1-150 (r[panic.*]); src/behavior-considered-undefined.md:55-57,64-67 (r[undefined.call], r[undefined.runtime]); src/linkage.md:154-183 (r[link.unwinding.*])",
+        "fls": "src/ffi.rst:89-143 (fls_M4LqHf8hbPA8); src/exceptions-and-errors.rst:1-120",
+        "nomicon": "src/unwinding.md:1-120; src/exception-safety.md:1-100",
+        "stdlib": "library/std/src/panic.rs:1-400 (catch_unwind, resume_unwind)",
+        "rfcs": "text/2945-c-unwind-abi.md:1-350; text/1513-less-unwinding.md",
+        "opsem": "rust-lang/rfcs#2945",
+        "ucg": "silent",
+        "minirust": "spec/lang/step/terminators.md (StartUnwind / Resume)"
+      },
+      "disagreements": "Reference (r[panic.unwind.ffi.undefined]) and RFC 2945 state that (1) a Rust panic unwinding out of a non-`-unwind` ABI (such as `extern \"C\"`) causes a process abort (via nounwind cleanup landingpad in rustc), whereas calling a foreign function that unwinds into Rust via a non-`-unwind` ABI, or calling a `\"C-unwind\"` fn through a transmuted `\"C\"` fn pointer that unwinds, is Undefined Behavior; and (2) catching a foreign exception (e.g., C++ `throw`) with `std::panic::catch_unwind` is Undefined Behavior (r[panic.unwind.ffi.catch-foreign]).",
+      "rustc_deviations": "In `compiler/rustc_middle/src/ty/layout.rs:1282` (`fn_can_unwind`), rustc attaches LLVM's `nounwind` attribute to `extern \"C\"` calls and injects an abort-on-unwind landing pad inside Rust-defined `extern \"C\"` functions."
+    },
+    {
+      "id": "float.ieee754_and_nan_bit_patterns",
+      "area": "floating_point_and_nan_rules",
+      "item": "IEEE 754-2008 roundTiesToEven arithmetic, non-deterministic NaN sign/payload rules (preferred, quieting, unchanged, target-extra), and CTFE vs runtime NaN divergence",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/types/numeric.md:29-33 (r[type.numeric.float]); src/behavior-considered-undefined.md:68 (r[undefined.runtime])",
+        "fls": "src/types-and-traits.rst:280-338; src/expressions.rst",
+        "nomicon": "silent",
+        "stdlib": "library/core/src/primitive_docs.rs:1244-1360; library/core/src/num/f32.rs:530-1770; library/core/src/num/f64.rs:690-1770",
+        "rfcs": "text/3514-float-semantics.md:1-323; text/3173-float-next-up-down.md",
+        "opsem": "rust-lang/rfcs#3514; rust-lang/unsafe-code-guidelines#237",
+        "ucg": "reference/src/layout/scalars.md",
+        "minirust": "spec/lang/step/operators.md"
+      },
+      "disagreements": "FLS describes floating-point types only as IEEE 754-2008 binary32/binary64 without specifying NaN payload propagation or SNaN passthrough; RFC 3514 and stdlib (`primitive_docs.rs:1244-1320`) normatively specify exact NaN bit-pattern sets and explicitly allow `SNAN * 1.0` to return an unquieted SNaN and CTFE NaN bits to differ from runtime NaN bits.",
+      "rustc_deviations": "Known target non-conformances documented in RFC 3514 (text/3514-float-semantics.md:172-180): 1) 32-bit x86 (`i686` and `i586`) passes float return values in x87 registers (`fld`/`fstp`), which quietens SNaNs on return and violates bitwise-stability of passed-around floats (rust-lang/rust#115567); 2) `i586` without SSE2 uses 80-bit x87 intermediate precision (rust-lang/rust#114479); 3) legacy MIPS uses inverted SNaN/QNaN quiet bits (llvm/llvm-project#60796); 4) 32-bit ARM NEON flushes subnormals to zero."
+    },
+    {
+      "id": "asm.inline_naked_global_asm_contract",
+      "area": "inline_assembly",
+      "item": "asm!, naked_asm!, and global_asm! register clobbers, options (pure, nomem, readonly, preserves_flags, noreturn, nostack, may_unwind), and ABI invariants",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/inline-assembly.md:1-1728 (r[asm.*]); src/attributes/codegen.md:154-243 (r[attributes.codegen.naked]); src/behavior-considered-undefined.md:61-63 (r[undefined.asm])",
+        "fls": "src/inline-assembly.rst:1-1779 (fls_zEtLZ5KjQcHS, fls_wydu9yft7a3r, fls_wh0wasawjj5s, fls_s0ivlbjefh1u); src/attributes.rst:872-880 (fls_0tYMAQY1V55p, fls_wGbJrz4OpKKb)",
+        "nomicon": "silent",
+        "stdlib": "library/core/src/arch.rs:1-120",
+        "rfcs": "text/2873-inline-asm.md; text/2972-constrained-naked.md; text/3848-asm-const-ptr.md",
+        "opsem": "rust-lang/rfcs#2873, #2972",
+        "ucg": "silent",
+        "minirust": "not modeled in MiniRust spec"
+      },
+      "disagreements": "Reference (r[asm.*]) and FLS (src/inline-assembly.rst) are closely aligned on stable architectures (`x86`, `x86_64`, `arm`, `aarch64`, `riscv32`, `riscv64`, `loongarch32`, `loongarch64`, `s390x`, `arm64ec`), requiring non-output registers, stack pointer, x86 DF=0, x87 stack empty, and FP control bits to be restored on exit.",
+      "rustc_deviations": "Inline assembly is not supported in Miri or CTFE; LLVM's integrated assembler stateful directives (`.section`, `.pushsection`) must be restored before the end of the assembly block (r[asm.directives.stateful])."
+    },
+    {
+      "id": "abi.extern_abi_strings_and_rust_abi",
+      "area": "abis_and_extern_abi_strings",
+      "item": "Extern ABI strings (\"Rust\", \"C\", \"C-unwind\", \"system\", \"system-unwind\", \"efiapi\", \"cdecl\", \"stdcall\", \"fastcall\", \"thiscall\", \"vectorcall\", \"win64\", \"sysv64\", \"aapcs\", \"custom\") and call-site ABI matching",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/items/external-blocks.md:77-245 (r[items.extern.abi.*]); src/behavior-considered-undefined.md:55-57 (r[undefined.call])",
+        "fls": "src/ffi.rst:50-143 (fls_j6pqchx27ast, fls_M4LqHf8hbPA8); src/expressions.rst:3472-3477 (fls_5yeq4oah58dl)",
+        "nomicon": "src/ffi.md:1-350",
+        "stdlib": "library/core/src/ffi/mod.rs:1-220",
+        "rfcs": "text/2945-c-unwind-abi.md; text/3722-explicit-extern-abis.md",
+        "opsem": "fcps.md:8,34 (rust#112480, rust#160745)",
+        "ucg": "reference/src/layout/function-pointers.md:1-60; reference/src/glossary.md:3-14",
+        "minirust": "spec/lang/step/terminators.md"
+      },
+      "disagreements": "`extern \"Rust\"` ABI is explicitly unspecified across compiler versions and flags (`compiler/rustc_abi/src/extern_abi.rs:281-290`), whereas `extern \"C\"` and platform-specific strings (`\"sysv64\"`, `\"win64\"`, `\"aapcs\"`, `\"efiapi\"`) must match the target's C psABI for FFI-compatible types (`#[repr(C)]`, `#[repr(transparent)]`, primitives, thin pointers, `Option<extern \"C\" fn(...)>`).",
+      "rustc_deviations": "1) Calling an `extern \"C\"` function via an `extern \"C-unwind\"` fn pointer (or vice versa) is permitted by UCG (`reference/src/layout/function-pointers.md`) ONLY as long as no unwind actually crosses the call, because their register/stack calling conventions are identical. 2) `i128`/`u128` in `extern \"C\"` was historically warned against by `improper_ctypes_definitions` until LLVM 18 aligned x86_64 `__int128` to 16 bytes (still differs on Windows MSVC where C has no native 128-bit integer). 3) Empty `#[repr(C)] struct S;` has size 0 in Rust vs size 1 in C++, causing ABI offset mismatch if passed by value to C++."
+    },
+    {
+      "id": "target_feature.safety_and_inlining_rules",
+      "area": "target_features",
+      "item": "#[target_feature(enable = \"...\")] safety requirement, safe calls between matching target_feature fns, and #[instruction_set]",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/attributes/codegen.md:438-942,1056-1144 (r[attributes.codegen.target_feature], r[attributes.codegen.instruction_set]); src/behavior-considered-undefined.md:52-54 (r[undefined.target-feature])",
+        "fls": "src/attributes.rst:710-776 (fls_xx51fjkbgg5g)",
+        "nomicon": "silent",
+        "stdlib": "library/core/src/arch.rs",
+        "rfcs": "text/2045-target-feature.md; text/2396-target-feature-1.1.md",
+        "opsem": "rust-lang/rfcs#2045, #2396",
+        "ucg": "silent",
+        "minirust": "not modeled"
+      },
+      "disagreements": "Reference (r[attributes.codegen.target_feature]) and FLS (fls_xx51fjkbgg5g) agree that executing a function with an enabled target feature unsupported by the runtime CPU is UB, and that a safe function with `#[target_feature]` can be called safely from another function enabling a superset of those features (RFC 2396).",
+      "rustc_deviations": "Passing SIMD vectors by value across a boundary where the caller and callee have mismatched target features (e.g. caller compiled without `+avx` calling an `#[inline(never)]` or indirect function compiled with `+avx`) can cause LLVM ABI vector-register mismatches (`rust-lang/rust#116558`); rustc lints/blocks `#[target_feature]` on functions that are coerced to safe `fn` pointers."
+    },
+    {
+      "id": "intrinsics.core_intrinsics_vs_stable_wrappers",
+      "area": "intrinsics",
+      "item": "core::intrinsics internal compiler contracts vs stable stdlib wrappers (core::ptr, core::mem, core::hint, core::sync::atomic)",
+      "status": "unspecified_stable_in_practice",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:49-51 (r[undefined.intrinsic])",
+        "fls": "silent on perma-unstable core::intrinsics",
+        "nomicon": "src/beneath-std.md",
+        "stdlib": "library/core/src/intrinsics/mod.rs:1-3050; library/core/src/hint.rs:1-220",
+        "rfcs": "silent",
+        "opsem": "fcps.md:19,23 (UCG#472, rust#126152)",
+        "ucg": "silent",
+        "minirust": "spec/lang/step/intrinsics.md:1-160"
+      },
+      "disagreements": "`core::intrinsics::*` is permanently unstable (`#![feature(core_intrinsics)]`), so FLS and Reference only state that violating intrinsic preconditions is UB (`r[undefined.intrinsic]`). However, standard library crates (`core`, `alloc`, `std`) and verified compilers must implement the exact semantics documented in `library/core/src/intrinsics/mod.rs` and lowered in `compiler/rustc_codegen_ssa/src/mir/intrinsic.rs`.",
+      "rustc_deviations": "Several intrinsics (`exact_div`, `unchecked_shl`, `unchecked_shr`, `ctlz_nonzero`, `cttz_nonzero`, `assume`, `unreachable`, `copy_nonoverlapping`, `transmute`) are lowered directly to MIR statements/Rvalues (`UnOp`, `BinOp`, `NullaryOp`, `CastKind::Transmute`, `StatementKind::CopyNonOverlapping`) before codegen, whereas others (`arith_offset`, `volatile_load`, `atomic_*`, `fadd_fast`, `catch_unwind`, `vtable_size`) remain call terminators lowered by backend intrinsic codegen."
+    },
+    {
+      "id": "link.linkage_types_and_symbol_attributes",
+      "area": "linkage_symbols_and_sections",
+      "item": "Crate linkage types (bin, lib, rlib, dylib, cdylib, staticlib, proc-macro) and unsafe symbol/section attributes (#[unsafe(no_mangle)], #[unsafe(export_name)], #[unsafe(link_section)], #[used])",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/linkage.md:1-183 (r[link.*]); src/abi.md:10-192 (r[abi.used], r[abi.no_mangle], r[abi.link_section], r[abi.export_name]); src/items/external-blocks.md:246-476 (r[items.extern.attributes.link.*])",
+        "fls": "src/program-structure-and-compilation.rst; src/attributes.rst:400-549,880-960; src/ffi.rst:150-260",
+        "nomicon": "src/ffi.md",
+        "stdlib": "N/A",
+        "rfcs": "text/2603-rust-symbol-name-mangling-v0.md",
+        "opsem": "rust-lang/rust#120363 (Edition 2024 unsafe attributes)",
+        "ucg": "silent",
+        "minirust": "not modeled"
+      },
+      "disagreements": "In Rust 2024 edition (`r[abi.no_mangle.edition2024]`, `r[abi.link_section.edition2024]`, `r[abi.export_name.edition2024]`), `no_mangle`, `link_section`, and `export_name` require `#[unsafe(...)]` because symbol collisions or placing mutable statics into read-only linker sections causes UB. Rust symbol mangling scheme (`legacy` vs `v0`, RFC 2603) is an implementation detail for `Rust` symbols (`rlib`/`dylib`), whereas `#[unsafe(no_mangle)]` and `#[unsafe(export_name = \"...\")]` guarantee exact exported symbol names.",
+      "rustc_deviations": "`#[used]` (`r[abi.used]`) guarantees the compiler keeps the static in the object file, but the platform linker may still GC the section unless `#[used(linker)]` (unstable) or linker `KEEP` scripts are used (`rust-lang/rust#47384`, `rust-lang/rust#90769`)."
+    },
+    {
+      "id": "volatile.read_write_volatile_semantics",
+      "area": "volatile_access",
+      "item": "ptr::read_volatile, ptr::write_volatile, and unaligned/copy volatile intrinsics (MMIO side effects, non-atomicity, trap on non-AM memory)",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/behavior-considered-undefined.md:18-20 (alignment/dangling applies)",
+        "fls": "silent on volatile",
+        "nomicon": "src/ffi.md (volatile section)",
+        "stdlib": "library/core/src/ptr/mod.rs:2149-2315 (read_volatile, write_volatile); library/core/src/intrinsics/mod.rs:989-1045",
+        "rfcs": "text/1467-volatile.md:1-120",
+        "opsem": "fcps.md:19,28,32 (ZST accesses are NOPs even for volatile UCG#472; atomic volatile should exist UCG#615; volatile accesses to non-AM MMIO memory may trap rust#160564)",
+        "ucg": "rust-lang/unsafe-code-guidelines#33, #472, #615",
+        "minirust": "not yet modeled in spec/mem/"
+      },
+      "disagreements": "stdlib (`library/core/src/ptr/mod.rs:2149-2315`) specifies that `read_volatile`/`write_volatile` follow C11 volatile semantics, are NOT atomic across threads on RAM (unsynchronized concurrent volatile access to standard memory is a data race), and perform a no-op when `size_of::<T>() == 0`. OpSem recently finalized two FCPs (`fcps.md:28,32`): volatile accesses to non-Abstract-Machine (MMIO) addresses are allowed to trap (`rust-lang/rust#160564`), and atomic volatile operations are planned (`UCG#615`).",
+      "rustc_deviations": "Because `read_volatile::<T>` returns `T` by value, reading a compound struct or slice via `read_volatile` may be lowered by LLVM into multiple memory instructions or `memcpy` rather than a single hardware instruction; only power-of-two primitive integer/pointer types up to target word size are lowered to single load/store instructions in practice."
+    },
+    {
+      "id": "alloc.global_alloc_and_layout_contract",
+      "area": "allocation",
+      "item": "GlobalAlloc::{alloc, dealloc, realloc, alloc_zeroed}, Layout (size <= isize::MAX, power-of-two align), and Box<T> layout equivalence",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/memory-allocation-and-lifetime.md:1-8 (r[alloc.*]); src/type-layout.md:65-73 (Box layout)",
+        "fls": "src/values.rst:45-64",
+        "nomicon": "src/vec/vec-alloc.md; src/vec/vec-dealloc.md",
+        "stdlib": "library/alloc/src/alloc.rs:1-420 (GlobalAlloc, Layout); library/alloc/src/boxed.rs:1-260",
+        "rfcs": "text/1974-global-allocators.md",
+        "opsem": "fcps.md:30 (Allocations are allowed to grow in-place, but not shrink: rust-lang/rust#159729)",
+        "ucg": "reference/src/layout/pointers.md; reference/src/glossary.md:98-114",
+        "minirust": "spec/mem/basic.md:60-150 (allocate / deallocate)"
+      },
+      "disagreements": "1) `GlobalAlloc::alloc` with a 0-sized `Layout` is Undefined Behavior (`library/alloc/src/alloc.rs:125-145`); callers (`Box::new`, `Vec`) must handle ZSTs without calling the global allocator (using `NonNull::dangling()`). 2) OpSem FCP (`fcps.md:30`, `rust-lang/rust#159729`) specifies that allocations in the Abstract Machine may grow in-place (preserving existing pointers), but may NOT shrink in-place without reallocation.",
+      "rustc_deviations": "rustc optimizes away unused ` __rust_alloc` + `__rust_dealloc` pairs (allocator elision via LLVM `allockind` attributes in `compiler/rustc_codegen_llvm/src/allocator.rs`), which means side effects inside a custom `#[global_allocator]` may be elided if the allocation does not escape."
+    },
+    {
+      "id": "const.ctfe_determinism_and_implicit_promotion",
+      "area": "constant_evaluation_and_promotion",
+      "item": "Compile-time constant evaluation (const / static / const fn), immutability of promoted temporaries, and implicit rvalue static promotion rules",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/const_eval.md:1-343 (r[const-eval.*]); src/destructors.md:379-383 (r[destructors.scope.const-promotion]); src/behavior-considered-undefined.md:42-48,170-198 (r[undefined.immutable], r[undefined.validity.const-provenance])",
+        "fls": "src/values.rst:310-420 (Constant Expressions, Promoted Expressions)",
+        "nomicon": "silent",
+        "stdlib": "library/core/src/hint.rs (const eval hints)",
+        "rfcs": "text/1414-rvalue_static_promotion.md; text/3016-const-ub.md; text/2920-inline-const.md; text/3514-float-semantics.md:89-135",
+        "opsem": "fcps.md:29 (UCG#558)",
+        "ucg": "rust-lang/unsafe-code-guidelines#77",
+        "minirust": "not modeled separately from runtime evaluation"
+      },
+      "disagreements": "Explicit `const { ... }` blocks (RFC 2920) and `const`/`static` initializers have guaranteed compile-time evaluation rules (`r[const-eval.*]`). By contrast, **implicit constant promotion** (`&expr` promoted to `&'static expr`, RFC 1414) has a conservative syntactic rule in `compiler/rustc_mir_transform/src/promote_consts.rs` (no `Drop`, no `UnsafeCell` except behind certain constructors, no fallible operations like `/` or `%` or in-bounds indexing that could panic/overflow), and Reference (`r[destructors.scope.const-promotion]`) leaves the exact set of implicitly promoted expressions partially implementation-defined while guaranteeing that any promoted memory is immutable (`r[undefined.immutable]`).",
+      "rustc_deviations": "A drop-in `rustc` replacement MUST replicate `compiler/rustc_mir_transform/src/promote_consts.rs` (`validate_candidate`) for implicit `&`-promotion, because user code relies on `&0` or `&None::<Cell<i32>>` typechecking with `'static` lifetime without an explicit `const { ... }` block."
+    },
+    {
+      "id": "drop.deterministic_drop_order_and_edition2024_temporaries",
+      "area": "drop_order",
+      "item": "Deterministic drop order for locals (reverse declaration), structs/tuples/arrays/enums (declaration order, forward slice order), function arguments, and Edition 2024 tail-expression temporary scopes",
+      "status": "guaranteed",
+      "requires_matching_rustc": true,
+      "authorities": {
+        "reference": "src/destructors.md:1-645 (r[destructors.*], especially r[destructors.scope.temporary.edition2024] and r[destructors.scope.lifetime-extension.*])",
+        "fls": "src/ownership-and-deconstruction.rst:145-360 (Destructors, Drop Order, Temporary Scopes)",
+        "nomicon": "src/destructors.md; src/drop-flags.md; src/dropck.md; src/leaking.md",
+        "stdlib": "library/core/src/mem/manually_drop.rs; library/core/src/mem/mod.rs:191-220,1045-1065; library/core/src/ptr/mod.rs:830-870 (drop_in_place)",
+        "rfcs": "text/1857-stabilize-drop-order.md:1-250; text/1860-manually-drop.md; text/3606-temporary-lifetime-extension.md",
+        "opsem": "fcps.md:16,17,22 (`*` projection not UB until access reference#1387; `_` pattern does not read or bind rust#103208; redundant StorageDead/StorageLive legal rust#99160)",
+        "ucg": "silent",
+        "minirust": "spec/lang/step/terminators.md"
+      },
+      "disagreements": "Reference (`src/destructors.md:1-645`), FLS (`src/ownership-and-deconstruction.rst`), and RFC 1857 agree on deterministic drop order: local variables drop in reverse declaration order; struct, tuple, and enum variant fields drop in declaration order (first field first, NOT reverse!); array/slice elements drop from index `0` to `len - 1`; closure captures drop in an unspecified order (`r[destructors.operation]`). In Edition 2024 (`r[destructors.scope.temporary.edition2024]`), temporaries in block tail expressions drop *before* local bindings in that block (rather than at the end of the enclosing statement outside the block).",
+      "rustc_deviations": "Closure capture drop order is unspecified by the Reference (`src/destructors.md:88`), and `rustc` orders closure fields according to capture analysis in `compiler/rustc_hir_typeck/src/upvar.rs`. Also, unwinding during a destructor while already unwinding triggers an immediate abort (`core::panicking::panic_in_cleanup` in `library/core/src/panicking.rs`)."
+    },
+    {
+      "id": "layout.repr_rust_field_order_and_wide_ptr_layout",
+      "area": "layout_and_repr",
+      "item": "repr(Rust) struct/enum field ordering, niche placement (outside Option-like null-pointer optimization), and wide pointer (*const [T], *const dyn Trait) data/metadata field order",
+      "status": "explicitly_unspecified",
+      "requires_matching_rustc": false,
+      "authorities": {
+        "reference": "src/type-layout.md:68-73,168-228 (r[layout.pointer.unsized], r[layout.repr.rust.unspecified])",
+        "fls": "src/types-and-traits.rst (Default Representation)",
+        "nomicon": "src/repr-rust.md:1-120",
+        "stdlib": "library/core/src/ptr/metadata.rs:1-150",
+        "rfcs": "text/2580-ptr-meta.md",
+        "opsem": "fcps.md:13 (layout cannot change at runtime within one execution, UCG#97)",
+        "ucg": "reference/src/layout/structs-and-tuples.md; reference/src/layout/pointers.md",
+        "minirust": "spec/lang/representation.md"
+      },
+      "disagreements": "All authorities agree that `repr(Rust)` field offsets, enum discriminant encoding (outside `repr(Int)` / `repr(C)` and guaranteed null-pointer optimization), and wide pointer field order are explicitly unspecified across compiler versions and alternative compilers, provided layout is deterministic within a single compilation/execution (UCG#97).",
+      "rustc_deviations": "A verified compiler does NOT need to match `rustc`'s field-reordering heuristic (`compiler/rustc_abi/src/layout.rs`) unless linking `rlib` crates compiled by `rustc` into the same binary; for standalone or source-recompiled crates, any deterministic layout satisfying alignment and size<=isize::MAX is compliant."
+    },
+    {
+      "id": "abi.extern_rust_and_closure_capture_drop_order",
+      "area": "abis_and_extern_abi_strings",
+      "item": "Calling convention of extern \"Rust\" / extern \"rust-call\" / extern \"rust-cold\" and drop order of closure captured variables",
+      "status": "explicitly_unspecified",
+      "requires_matching_rustc": false,
+      "authorities": {
+        "reference": "src/items/external-blocks.md:100-102 (r[items.extern.abi.rust]); src/destructors.md:88 (r[destructors.operation])",
+        "fls": "src/ffi.rst:60-75",
+        "nomicon": "src/ffi.md",
+        "stdlib": "N/A",
+        "rfcs": "text/1857-stabilize-drop-order.md (explicitly leaves closure capture drop order unspecified)",
+        "opsem": "N/A",
+        "ucg": "reference/src/glossary.md:3-14",
+        "minirust": "spec/lang/step/terminators.md"
+      },
+      "disagreements": "None; Reference, FLS, and RFC 1857 explicitly leave `extern \"Rust\"` calling convention and closure capture drop order unspecified.",
+      "rustc_deviations": "In `compiler/rustc_abi/src/extern_abi.rs:281-290`, `ExternAbi::is_rustic_abi` documents that `Rust`, `RustCall`, `RustCold`, `RustPreserveNone`, and `RustTail` are unstable across compiler versions."
+    }
+  ]
+}

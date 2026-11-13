@@ -19942,6 +19942,76 @@
         "isa/simd-crypto"
       ]
     },
+    "rust-normative-authority-map-and-rustc-deviations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler and standard library documentation (1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "version": "1.99"
+          },
+          "name": "FLS (Ferrocene Language Specification / Rust Project Specification 1.99)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/nomicon",
+            "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+          },
+          "name": "The Rustonomicon"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+          },
+          "name": "Rust RFCs repository"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/opsem-team",
+            "revision": "d462085814030cc5b21dfa0ce831dfc1619d69b1"
+          },
+          "name": "Rust Operational Semantics Team (t-opsem) FCP archive"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines (UCG) repository"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust proposed operational specification"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust",
+        "rust/unsafe",
+        "rustc",
+        "minirust"
+      ]
+    },
     "rust-panic-divergence-and-unreachable-semantics": {
       "observed_at": "2026-09-27",
       "subjects": [
