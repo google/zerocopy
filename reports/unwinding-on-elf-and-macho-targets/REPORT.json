@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc/codegen",
+    "rustc/mir",
+    "rust/calling-conventions",
+    "llvm",
+    "systems/object-formats",
+    "isa/x86-64",
+    "isa/aarch64",
+    "isa/i386",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library (pinned baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "release_date": "2026-10-15"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 submodule (pinned baseline)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-11-12 compiler and Cranelift codegen backend",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS) for Rust 1.99",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

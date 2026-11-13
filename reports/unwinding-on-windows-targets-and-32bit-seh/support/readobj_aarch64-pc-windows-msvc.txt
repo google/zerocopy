@@ -1,0 +1,1234 @@
+
+File: probe_aarch64-pc-windows-msvc.o
+Format: COFF-ARM64
+Arch: aarch64
+AddressSize: 64bit
+Sections [
+  Section {
+    Number: 1
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 0
+    PointerToRawData: 0x294
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0x60300020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 2
+    Name: .data (2E 64 61 74 61 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 0
+    PointerToRawData: 0x294
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0xC0300040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_MEM_READ (0x40000000)
+      IMAGE_SCN_MEM_WRITE (0x80000000)
+    ]
+  }
+  Section {
+    Number: 3
+    Name: .bss (2E 62 73 73 00 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 0
+    PointerToRawData: 0x0
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0xC0300080)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_UNINITIALIZED_DATA (0x80)
+      IMAGE_SCN_MEM_READ (0x40000000)
+      IMAGE_SCN_MEM_WRITE (0x80000000)
+    ]
+  }
+  Section {
+    Number: 4
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 28
+    PointerToRawData: 0x294
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0x60301020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 5
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 224
+    PointerToRawData: 0x2B0
+    PointerToRelocations: 0x390
+    PointerToLineNumbers: 0x0
+    RelocationCount: 11
+    LineNumberCount: 0
+    Characteristics [ (0x60301020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 6
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 8
+    PointerToRawData: 0x6FE
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0x60301020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 7
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 104
+    PointerToRawData: 0x706
+    PointerToRelocations: 0x76E
+    PointerToLineNumbers: 0x0
+    RelocationCount: 4
+    LineNumberCount: 0
+    Characteristics [ (0x60301020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 8
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 76
+    PointerToRawData: 0x84A
+    PointerToRelocations: 0x896
+    PointerToLineNumbers: 0x0
+    RelocationCount: 3
+    LineNumberCount: 0
+    Characteristics [ (0x60301020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 9
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 4
+    PointerToRawData: 0x968
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0x60301020)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 10
+    Name: .data (2E 64 61 74 61 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 32
+    PointerToRawData: 0x96C
+    PointerToRelocations: 0x98C
+    PointerToLineNumbers: 0x0
+    RelocationCount: 1
+    LineNumberCount: 0
+    Characteristics [ (0xC0501040)
+      IMAGE_SCN_ALIGN_16BYTES (0x500000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+      IMAGE_SCN_MEM_WRITE (0x80000000)
+    ]
+  }
+  Section {
+    Number: 11
+    Name: .xdata (2E 78 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 428
+    PointerToRawData: 0x3FE
+    PointerToRelocations: 0x5AA
+    PointerToLineNumbers: 0x0
+    RelocationCount: 34
+    LineNumberCount: 0
+    Characteristics [ (0x40301040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 12
+    Name: .xdata (2E 78 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 100
+    PointerToRawData: 0x796
+    PointerToRelocations: 0x7FA
+    PointerToLineNumbers: 0x0
+    RelocationCount: 8
+    LineNumberCount: 0
+    Characteristics [ (0x40301040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 13
+    Name: .xdata (2E 78 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 100
+    PointerToRawData: 0x8B4
+    PointerToRelocations: 0x918
+    PointerToLineNumbers: 0x0
+    RelocationCount: 8
+    LineNumberCount: 0
+    Characteristics [ (0x40301040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 14
+    Name: .pdata (2E 70 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 48
+    PointerToRawData: 0x996
+    PointerToRelocations: 0x9C6
+    PointerToLineNumbers: 0x0
+    RelocationCount: 12
+    LineNumberCount: 0
+    Characteristics [ (0x40301040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 15
+    Name: .pdata (2E 70 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 16
+    PointerToRawData: 0xA3E
+    PointerToRelocations: 0xA4E
+    PointerToLineNumbers: 0x0
+    RelocationCount: 4
+    LineNumberCount: 0
+    Characteristics [ (0x40301040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 16
+    Name: .pdata (2E 70 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 16
+    PointerToRawData: 0xA76
+    PointerToRelocations: 0xA86
+    PointerToLineNumbers: 0x0
+    RelocationCount: 4
+    LineNumberCount: 0
+    Characteristics [ (0x40301040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_LNK_COMDAT (0x1000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+]
+Relocations [
+  Section (5) .text {
+    0x14 IMAGE_REL_ARM64_BRANCH26 nested_cleanups (19)
+    0x58 IMAGE_REL_ARM64_BRANCH26 _RNvCs5fGHjzWXRav_7___rustc14___rust_dealloc (41)
+    0x68 IMAGE_REL_ARM64_BRANCH26 _RNvNtCsaF4MlZlPuCq_4core9panicking19panic_cannot_unwind (45)
+    0x78 IMAGE_REL_ARM64_BRANCH26 _RNvNvNtCs7wTP75QBMFn_3std9panicking12catch_unwind7cleanup (47)
+    0x80 IMAGE_REL_ARM64_PAGEBASE_REL21 .text (9)
+    0x84 IMAGE_REL_ARM64_PAGEOFFSET_12A .text (9)
+    0x94 IMAGE_REL_ARM64_BRANCH26 _RNvNtCsaF4MlZlPuCq_4core9panicking19panic_cannot_unwind (45)
+    0xA4 IMAGE_REL_ARM64_BRANCH26 _RNvNvNtCs7wTP75QBMFn_3std9panicking12catch_unwind7cleanup (47)
+    0xAC IMAGE_REL_ARM64_PAGEBASE_REL21 .text (9)
+    0xB0 IMAGE_REL_ARM64_PAGEOFFSET_12A .text (9)
+    0xD4 IMAGE_REL_ARM64_BRANCH26 _RNvCs5fGHjzWXRav_7___rustc14___rust_dealloc (41)
+  }
+  Section (7) .text {
+    0x34 IMAGE_REL_ARM64_BRANCH26 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop (8)
+    0x3C IMAGE_REL_ARM64_BRANCH26 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop (8)
+    0x54 IMAGE_REL_ARM64_BRANCH26 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop (8)
+    0x5C IMAGE_REL_ARM64_BRANCH26 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop (8)
+  }
+  Section (8) .text {
+    0x28 IMAGE_REL_ARM64_BRANCH26 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop (8)
+    0x40 IMAGE_REL_ARM64_BRANCH26 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop (8)
+    0x44 IMAGE_REL_ARM64_BRANCH26 _RNvNtCsaF4MlZlPuCq_4core9panicking19panic_cannot_unwind (45)
+  }
+  Section (10) .data {
+    0x0 IMAGE_REL_ARM64_ADDR64 ??_7type_info@@6B@ (65)
+  }
+  Section (11) .xdata {
+    0x10 IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x14 IMAGE_REL_ARM64_ADDR32NB $cppxdata$catch_unwind_entry (43)
+    0x20 IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x24 IMAGE_REL_ARM64_ADDR32NB $cppxdata$catch_unwind_entry (43)
+    0x30 IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x34 IMAGE_REL_ARM64_ADDR32NB $cppxdata$catch_unwind_entry (43)
+    0x40 IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x44 IMAGE_REL_ARM64_ADDR32NB $cppxdata$catch_unwind_entry (43)
+    0x50 IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x54 IMAGE_REL_ARM64_ADDR32NB $cppxdata$catch_unwind_entry (43)
+    0x68 IMAGE_REL_ARM64_ADDR32NB $stateUnwindMap$catch_unwind_entry (51)
+    0x70 IMAGE_REL_ARM64_ADDR32NB $tryMap$catch_unwind_entry (52)
+    0x78 IMAGE_REL_ARM64_ADDR32NB $ip2state$catch_unwind_entry (53)
+    0xBC IMAGE_REL_ARM64_ADDR32NB ?dtor$15@?0?catch_unwind_entry@4HA (50)
+    0xD0 IMAGE_REL_ARM64_ADDR32NB $handlerMap$0$catch_unwind_entry (54)
+    0xE4 IMAGE_REL_ARM64_ADDR32NB $handlerMap$1$catch_unwind_entry (55)
+    0xF8 IMAGE_REL_ARM64_ADDR32NB $handlerMap$2$catch_unwind_entry (56)
+    0x100 IMAGE_REL_ARM64_ADDR32NB _RNvCs5fGHjzWXRav_7___rustc22___rust_panic_type_info (32)
+    0x108 IMAGE_REL_ARM64_ADDR32NB ?catch$10@?0?catch_unwind_entry@4HA (46)
+    0x11C IMAGE_REL_ARM64_ADDR32NB ?catch$13@?0?catch_unwind_entry@4HA (49)
+    0x130 IMAGE_REL_ARM64_ADDR32NB ?catch$9@?0?catch_unwind_entry@4HA (44)
+    0x144 IMAGE_REL_ARM64_ADDR32NB ?catch$12@?0?catch_unwind_entry@4HA (48)
+    0x14C IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x154 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x15C IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x164 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x16C IMAGE_REL_ARM64_ADDR32NB ?catch$9@?0?catch_unwind_entry@4HA (44)
+    0x174 IMAGE_REL_ARM64_ADDR32NB ?catch$10@?0?catch_unwind_entry@4HA (46)
+    0x17C IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x184 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x18C IMAGE_REL_ARM64_ADDR32NB ?catch$12@?0?catch_unwind_entry@4HA (48)
+    0x194 IMAGE_REL_ARM64_ADDR32NB ?catch$13@?0?catch_unwind_entry@4HA (49)
+    0x19C IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x1A4 IMAGE_REL_ARM64_ADDR32NB .text (9)
+  }
+  Section (12) .xdata {
+    0xC IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x10 IMAGE_REL_ARM64_ADDR32NB $cppxdata$nested_cleanups (57)
+    0x24 IMAGE_REL_ARM64_ADDR32NB $stateUnwindMap$nested_cleanups (59)
+    0x34 IMAGE_REL_ARM64_ADDR32NB $ip2state$nested_cleanups (60)
+    0x48 IMAGE_REL_ARM64_ADDR32NB ?dtor$2@?0?nested_cleanups@4HA (58)
+    0x4C IMAGE_REL_ARM64_ADDR32NB .text (17)
+    0x54 IMAGE_REL_ARM64_ADDR32NB .text (17)
+    0x5C IMAGE_REL_ARM64_ADDR32NB .text (17)
+  }
+  Section (13) .xdata {
+    0xC IMAGE_REL_ARM64_ADDR32NB __CxxFrameHandler3 (42)
+    0x10 IMAGE_REL_ARM64_ADDR32NB $cppxdata$nounwind_c_boundary (61)
+    0x24 IMAGE_REL_ARM64_ADDR32NB $stateUnwindMap$nounwind_c_boundary (63)
+    0x34 IMAGE_REL_ARM64_ADDR32NB $ip2state$nounwind_c_boundary (64)
+    0x48 IMAGE_REL_ARM64_ADDR32NB ?dtor$2@?0?nounwind_c_boundary@4HA (62)
+    0x4C IMAGE_REL_ARM64_ADDR32NB .text (22)
+    0x54 IMAGE_REL_ARM64_ADDR32NB .text (22)
+    0x5C IMAGE_REL_ARM64_ADDR32NB .text (22)
+  }
+  Section (14) .pdata {
+    0x0 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x4 IMAGE_REL_ARM64_ADDR32NB .xdata (12)
+    0x8 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0xC IMAGE_REL_ARM64_ADDR32NB .xdata (12)
+    0x10 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x14 IMAGE_REL_ARM64_ADDR32NB .xdata (12)
+    0x18 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x1C IMAGE_REL_ARM64_ADDR32NB .xdata (12)
+    0x20 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x24 IMAGE_REL_ARM64_ADDR32NB .xdata (12)
+    0x28 IMAGE_REL_ARM64_ADDR32NB .text (9)
+    0x2C IMAGE_REL_ARM64_ADDR32NB .xdata (12)
+  }
+  Section (15) .pdata {
+    0x0 IMAGE_REL_ARM64_ADDR32NB .text (17)
+    0x4 IMAGE_REL_ARM64_ADDR32NB .xdata (20)
+    0x8 IMAGE_REL_ARM64_ADDR32NB .text (17)
+    0xC IMAGE_REL_ARM64_ADDR32NB .xdata (20)
+  }
+  Section (16) .pdata {
+    0x0 IMAGE_REL_ARM64_ADDR32NB .text (22)
+    0x4 IMAGE_REL_ARM64_ADDR32NB .xdata (25)
+    0x8 IMAGE_REL_ARM64_ADDR32NB .text (22)
+    0xC IMAGE_REL_ARM64_ADDR32NB .xdata (25)
+  }
+]
+UnwindInformation [
+  RuntimeFunction {
+    Function: catch_unwind_entry (0x0)
+    ExceptionRecord: .xdata (0x0)
+    ExceptionData {
+      FunctionLength: 100
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: No
+      EpilogueScopes: 1
+      ByteCodeLength: 8
+      Prologue [
+        0xe202              ; add fp, sp, #16
+        0x42                ; stp x29, x30, [sp, #16]
+        0x03                ; sub sp, #48
+        0xe4                ; end
+      ]
+      EpilogueScopes [
+        EpilogueScope {
+          StartOffset: 7
+          EpilogueStartIndex: 2
+          Opcodes [
+            0x42                ; ldp x29, x30, [sp, #16]
+            0x03                ; add sp, #48
+            0xe4                ; end
+          ]
+        }
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?catch$9@?0?catch_unwind_entry@4HA (0x64)
+    ExceptionRecord: .xdata +0x18 (0x18)
+    ExceptionData {
+      FunctionLength: 12
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: No
+      EpilogueScopes: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+      EpilogueScopes [
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?catch$10@?0?catch_unwind_entry@4HA (0x70)
+    ExceptionRecord: .xdata +0x28 (0x28)
+    ExceptionData {
+      FunctionLength: 32
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: Yes
+      EpilogueOffset: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?catch$12@?0?catch_unwind_entry@4HA (0x90)
+    ExceptionRecord: .xdata +0x38 (0x38)
+    ExceptionData {
+      FunctionLength: 12
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: No
+      EpilogueScopes: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+      EpilogueScopes [
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?catch$13@?0?catch_unwind_entry@4HA (0x9C)
+    ExceptionRecord: .xdata +0x48 (0x48)
+    ExceptionData {
+      FunctionLength: 32
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: Yes
+      EpilogueOffset: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?dtor$15@?0?catch_unwind_entry@4HA (0xBC)
+    ExceptionRecord: .xdata +0x58 (0x58)
+    ExceptionData {
+      FunctionLength: 36
+      Version: 0
+      ExceptionData: No
+      EpiloguePacked: Yes
+      EpilogueOffset: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: nested_cleanups (0x0)
+    ExceptionRecord: .xdata (0x0)
+    ExceptionData {
+      FunctionLength: 76
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: Yes
+      EpilogueOffset: 2
+      ByteCodeLength: 8
+      Prologue [
+        0xe204              ; add fp, sp, #32
+        0x44                ; stp x29, x30, [sp, #32]
+        0x04                ; sub sp, #64
+        0xe4                ; end
+      ]
+      Epilogue [
+        0x44                ; ldp x29, x30, [sp, #32]
+        0x04                ; add sp, #64
+        0xe4                ; end
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?dtor$2@?0?nested_cleanups@4HA (0x4C)
+    ExceptionRecord: .xdata +0x14 (0x14)
+    ExceptionData {
+      FunctionLength: 28
+      Version: 0
+      ExceptionData: No
+      EpiloguePacked: Yes
+      EpilogueOffset: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: nounwind_c_boundary (0x0)
+    ExceptionRecord: .xdata (0x0)
+    ExceptionData {
+      FunctionLength: 56
+      Version: 0
+      ExceptionData: Yes
+      EpiloguePacked: Yes
+      EpilogueOffset: 2
+      ByteCodeLength: 8
+      Prologue [
+        0xe202              ; add fp, sp, #16
+        0x42                ; stp x29, x30, [sp, #16]
+        0x03                ; sub sp, #48
+        0xe4                ; end
+      ]
+      Epilogue [
+        0x42                ; ldp x29, x30, [sp, #16]
+        0x03                ; add sp, #48
+        0xe4                ; end
+      ]
+      ExceptionHandler [
+        Routine: __CxxFrameHandler3 (0x0)
+        Parameter: 0x0
+      ]
+    }
+  }
+  RuntimeFunction {
+    Function: ?dtor$2@?0?nounwind_c_boundary@4HA (0x38)
+    ExceptionRecord: .xdata +0x14 (0x14)
+    ExceptionData {
+      FunctionLength: 20
+      Version: 0
+      ExceptionData: No
+      EpiloguePacked: No
+      EpilogueScopes: 0
+      ByteCodeLength: 4
+      Prologue [
+        0x81                ; stp x29, x30, [sp, #-16]!
+        0xe4                ; end
+      ]
+      EpilogueScopes [
+      ]
+    }
+  }
+]
+Symbols [
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 0
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0x0
+      Number: 1
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .data
+    Value: 0
+    Section: .data (2)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 0
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0x0
+      Number: 2
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .bss
+    Value: 0
+    Section: .bss (3)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 0
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0x0
+      Number: 3
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (4)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 28
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0x90731CE
+      Number: 4
+      Selection: NoDuplicates (0x1)
+    }
+  }
+  Symbol {
+    Name: _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCsaF4MlZlPuCq_4core3ops4drop4Drop4drop
+    Value: 0
+    Section: .text (4)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 224
+      RelocationCount: 11
+      LineNumberCount: 0
+      Checksum: 0x7F3EE4B7
+      Number: 5
+      Selection: NoDuplicates (0x1)
+    }
+  }
+  Symbol {
+    Name: catch_unwind_entry
+    Value: 0
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .xdata
+    Value: 0
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 428
+      RelocationCount: 34
+      LineNumberCount: 0
+      Checksum: 0x4BBBC477
+      Number: 5
+      Selection: Associative (0x5)
+      AssocSection: .text (5)
+    }
+  }
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (6)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 8
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0xBEBAF58C
+      Number: 6
+      Selection: NoDuplicates (0x1)
+    }
+  }
+  Symbol {
+    Name: frameless_leaf
+    Value: 0
+    Section: .text (6)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (7)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 104
+      RelocationCount: 4
+      LineNumberCount: 0
+      Checksum: 0xFC5F2F3D
+      Number: 7
+      Selection: NoDuplicates (0x1)
+    }
+  }
+  Symbol {
+    Name: nested_cleanups
+    Value: 0
+    Section: .text (7)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .xdata
+    Value: 0
+    Section: .xdata (12)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 100
+      RelocationCount: 8
+      LineNumberCount: 0
+      Checksum: 0x967A7486
+      Number: 7
+      Selection: Associative (0x5)
+      AssocSection: .text (7)
+    }
+  }
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (8)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 76
+      RelocationCount: 3
+      LineNumberCount: 0
+      Checksum: 0x26210B49
+      Number: 8
+      Selection: NoDuplicates (0x1)
+    }
+  }
+  Symbol {
+    Name: nounwind_c_boundary
+    Value: 0
+    Section: .text (8)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .xdata
+    Value: 0
+    Section: .xdata (13)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 100
+      RelocationCount: 8
+      LineNumberCount: 0
+      Checksum: 0xAA7883EA
+      Number: 8
+      Selection: Associative (0x5)
+      AssocSection: .text (8)
+    }
+  }
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (9)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 4
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0xA2EA797F
+      Number: 9
+      Selection: NoDuplicates (0x1)
+    }
+  }
+  Symbol {
+    Name: passthrough_no_cleanup
+    Value: 0
+    Section: .text (9)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .data
+    Value: 0
+    Section: .data (10)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 32
+      RelocationCount: 1
+      LineNumberCount: 0
+      Checksum: 0xEEED3DCF
+      Number: 10
+      Selection: Any (0x2)
+    }
+  }
+  Symbol {
+    Name: _RNvCs5fGHjzWXRav_7___rustc22___rust_panic_type_info
+    Value: 0
+    Section: .data (10)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .pdata
+    Value: 0
+    Section: .pdata (14)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 48
+      RelocationCount: 12
+      LineNumberCount: 0
+      Checksum: 0x8E7B537F
+      Number: 5
+      Selection: Associative (0x5)
+      AssocSection: .text (5)
+    }
+  }
+  Symbol {
+    Name: .pdata
+    Value: 0
+    Section: .pdata (15)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 16
+      RelocationCount: 4
+      LineNumberCount: 0
+      Checksum: 0xA149176A
+      Number: 7
+      Selection: Associative (0x5)
+      AssocSection: .text (7)
+    }
+  }
+  Symbol {
+    Name: .pdata
+    Value: 0
+    Section: .pdata (16)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 16
+      RelocationCount: 4
+      LineNumberCount: 0
+      Checksum: 0x89538800
+      Number: 8
+      Selection: Associative (0x5)
+      AssocSection: .text (8)
+    }
+  }
+  Symbol {
+    Name: @feat.00
+    Value: 0
+    Section: IMAGE_SYM_ABSOLUTE (-1)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $ehgcr_1_3
+    Value: 40
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvCs5fGHjzWXRav_7___rustc14___rust_dealloc
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: __CxxFrameHandler3
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $cppxdata$catch_unwind_entry
+    Value: 96
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?catch$9@?0?catch_unwind_entry@4HA
+    Value: 100
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvNtCsaF4MlZlPuCq_4core9panicking19panic_cannot_unwind
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?catch$10@?0?catch_unwind_entry@4HA
+    Value: 112
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvNvNtCs7wTP75QBMFn_3std9panicking12catch_unwind7cleanup
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?catch$12@?0?catch_unwind_entry@4HA
+    Value: 144
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?catch$13@?0?catch_unwind_entry@4HA
+    Value: 156
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?dtor$15@?0?catch_unwind_entry@4HA
+    Value: 188
+    Section: .text (5)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $stateUnwindMap$catch_unwind_entry
+    Value: 136
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $tryMap$catch_unwind_entry
+    Value: 192
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $ip2state$catch_unwind_entry
+    Value: 332
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $handlerMap$0$catch_unwind_entry
+    Value: 252
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $handlerMap$1$catch_unwind_entry
+    Value: 292
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $handlerMap$2$catch_unwind_entry
+    Value: 312
+    Section: .xdata (11)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $cppxdata$nested_cleanups
+    Value: 28
+    Section: .xdata (12)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?dtor$2@?0?nested_cleanups@4HA
+    Value: 76
+    Section: .text (7)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $stateUnwindMap$nested_cleanups
+    Value: 68
+    Section: .xdata (12)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $ip2state$nested_cleanups
+    Value: 76
+    Section: .xdata (12)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $cppxdata$nounwind_c_boundary
+    Value: 28
+    Section: .xdata (13)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ?dtor$2@?0?nounwind_c_boundary@4HA
+    Value: 56
+    Section: .text (8)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $stateUnwindMap$nounwind_c_boundary
+    Value: 68
+    Section: .xdata (13)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: $ip2state$nounwind_c_boundary
+    Value: 76
+    Section: .xdata (13)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: ??_7type_info@@6B@
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .file
+    Value: 0
+    Section: IMAGE_SYM_DEBUG (-2)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: File (0x67)
+    AuxSymbolCount: 2
+    AuxFileRecord {
+      FileName: unwind_probe.e45a91751a911c8a-cgu.0
+    }
+  }
+]

@@ -1,0 +1,439 @@
+
+File: probe_x86_64-pc-windows-gnu.o
+Format: COFF-x86-64
+Arch: x86_64
+AddressSize: 64bit
+Sections [
+  Section {
+    Number: 1
+    Name: .text (2E 74 65 78 74 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 339
+    PointerToRawData: 0xDC
+    PointerToRelocations: 0x22F
+    PointerToLineNumbers: 0x0
+    RelocationCount: 15
+    LineNumberCount: 0
+    Characteristics [ (0x60500020)
+      IMAGE_SCN_ALIGN_16BYTES (0x500000)
+      IMAGE_SCN_CNT_CODE (0x20)
+      IMAGE_SCN_MEM_EXECUTE (0x20000000)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 2
+    Name: .data (2E 64 61 74 61 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 0
+    PointerToRawData: 0x2C5
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0xC0300040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_MEM_READ (0x40000000)
+      IMAGE_SCN_MEM_WRITE (0x80000000)
+    ]
+  }
+  Section {
+    Number: 3
+    Name: .bss (2E 62 73 73 00 00 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 0
+    PointerToRawData: 0x0
+    PointerToRelocations: 0x0
+    PointerToLineNumbers: 0x0
+    RelocationCount: 0
+    LineNumberCount: 0
+    Characteristics [ (0xC0300080)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_UNINITIALIZED_DATA (0x80)
+      IMAGE_SCN_MEM_READ (0x40000000)
+      IMAGE_SCN_MEM_WRITE (0x80000000)
+    ]
+  }
+  Section {
+    Number: 4
+    Name: .xdata (2E 78 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 100
+    PointerToRawData: 0x2C5
+    PointerToRelocations: 0x329
+    PointerToLineNumbers: 0x0
+    RelocationCount: 3
+    LineNumberCount: 0
+    Characteristics [ (0x40300040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+  Section {
+    Number: 5
+    Name: .pdata (2E 70 64 61 74 61 00 00)
+    VirtualSize: 0x0
+    VirtualAddress: 0x0
+    RawDataSize: 36
+    PointerToRawData: 0x347
+    PointerToRelocations: 0x36B
+    PointerToLineNumbers: 0x0
+    RelocationCount: 9
+    LineNumberCount: 0
+    Characteristics [ (0x40300040)
+      IMAGE_SCN_ALIGN_4BYTES (0x300000)
+      IMAGE_SCN_CNT_INITIALIZED_DATA (0x40)
+      IMAGE_SCN_MEM_READ (0x40000000)
+    ]
+  }
+]
+Relocations [
+  Section (1) .text {
+    0x1 IMAGE_REL_AMD64_REL32 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop (12)
+    0x2A IMAGE_REL_AMD64_REL32 nested_cleanups (14)
+    0x3C IMAGE_REL_AMD64_REL32 _RNvNvNtCs9qcQDiGWtgW_3std9panicking12catch_unwind7cleanup (15)
+    0x6E IMAGE_REL_AMD64_REL32 _RNvCs5fGHjzWXRav_7___rustc14___rust_dealloc (16)
+    0x88 IMAGE_REL_AMD64_REL32 _RNvCs5fGHjzWXRav_7___rustc14___rust_dealloc (16)
+    0x90 IMAGE_REL_AMD64_REL32 _Unwind_Resume (17)
+    0x97 IMAGE_REL_AMD64_REL32 _RNvNtCs2Ja4erDm0Jl_4core9panicking19panic_cannot_unwind (18)
+    0xD7 IMAGE_REL_AMD64_REL32 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop (12)
+    0xE1 IMAGE_REL_AMD64_REL32 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop (12)
+    0xF5 IMAGE_REL_AMD64_REL32 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop (12)
+    0xFF IMAGE_REL_AMD64_REL32 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop (12)
+    0x107 IMAGE_REL_AMD64_REL32 _Unwind_Resume (17)
+    0x129 IMAGE_REL_AMD64_REL32 _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop (12)
+    0x139 IMAGE_REL_AMD64_REL32 _RINvNtCs2Ja4erDm0Jl_4core3ptr9drop_glueNtCsjBwlT6cN9ry_12unwind_probe11DropTrackerEBD_ (11)
+    0x13E IMAGE_REL_AMD64_REL32 _RNvNtCs2Ja4erDm0Jl_4core9panicking19panic_cannot_unwind (18)
+  }
+  Section (4) .xdata {
+    0xC IMAGE_REL_AMD64_ADDR32NB rust_eh_personality (19)
+    0x40 IMAGE_REL_AMD64_ADDR32NB rust_eh_personality (19)
+    0x58 IMAGE_REL_AMD64_ADDR32NB rust_eh_personality (19)
+  }
+  Section (5) .pdata {
+    0x0 IMAGE_REL_AMD64_ADDR32NB .text (0)
+    0x4 IMAGE_REL_AMD64_ADDR32NB .text (0)
+    0x8 IMAGE_REL_AMD64_ADDR32NB .xdata (6)
+    0xC IMAGE_REL_AMD64_ADDR32NB .text (0)
+    0x10 IMAGE_REL_AMD64_ADDR32NB .text (0)
+    0x14 IMAGE_REL_AMD64_ADDR32NB .xdata (6)
+    0x18 IMAGE_REL_AMD64_ADDR32NB .text (0)
+    0x1C IMAGE_REL_AMD64_ADDR32NB .text (0)
+    0x20 IMAGE_REL_AMD64_ADDR32NB .xdata (6)
+  }
+]
+UnwindInformation [
+  RuntimeFunction {
+    StartAddress: catch_unwind_entry (0x0)
+    EndAddress: catch_unwind_entry +0x7D (0x4)
+    UnwindInfoAddress: .xdata (0x8)
+    UnwindInfo {
+      Version: 1
+      Flags [ (0x3)
+        ExceptionHandler (0x1)
+        TerminateHandler (0x2)
+      ]
+      PrologSize: 7
+      FrameRegister: -
+      FrameOffset: -
+      UnwindCodeCount: 4
+      UnwindCodes [
+        0x07: ALLOC_SMALL size=32
+        0x03: PUSH_NONVOL reg=RBX
+        0x02: PUSH_NONVOL reg=RDI
+        0x01: PUSH_NONVOL reg=RSI
+      ]
+      Handler: rust_eh_personality (0xC)
+    }
+  }
+  RuntimeFunction {
+    StartAddress: nested_cleanups (0xC)
+    EndAddress: nested_cleanups +0x5D (0x10)
+    UnwindInfoAddress: GCC_except_table2 +0x28 (0x14)
+    UnwindInfo {
+      Version: 1
+      Flags [ (0x3)
+        ExceptionHandler (0x1)
+        TerminateHandler (0x2)
+      ]
+      PrologSize: 5
+      FrameRegister: -
+      FrameOffset: -
+      UnwindCodeCount: 2
+      UnwindCodes [
+        0x05: ALLOC_SMALL size=64
+        0x01: PUSH_NONVOL reg=RSI
+      ]
+      Handler: rust_eh_personality (0x40)
+    }
+  }
+  RuntimeFunction {
+    StartAddress: nounwind_c_boundary (0x18)
+    EndAddress: nounwind_c_boundary +0x34 (0x1C)
+    UnwindInfoAddress: GCC_except_table4 +0xC (0x20)
+    UnwindInfo {
+      Version: 1
+      Flags [ (0x3)
+        ExceptionHandler (0x1)
+        TerminateHandler (0x2)
+      ]
+      PrologSize: 4
+      FrameRegister: -
+      FrameOffset: -
+      UnwindCodeCount: 1
+      UnwindCodes [
+        0x04: ALLOC_SMALL size=56
+      ]
+      Handler: rust_eh_personality (0x58)
+    }
+  }
+]
+Symbols [
+  Symbol {
+    Name: .text
+    Value: 0
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 339
+      RelocationCount: 15
+      LineNumberCount: 0
+      Checksum: 0x65B1C85D
+      Number: 1
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .data
+    Value: 0
+    Section: .data (2)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 0
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0x0
+      Number: 2
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .bss
+    Value: 0
+    Section: .bss (3)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 0
+      RelocationCount: 0
+      LineNumberCount: 0
+      Checksum: 0x0
+      Number: 3
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .xdata
+    Value: 0
+    Section: .xdata (4)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 100
+      RelocationCount: 3
+      LineNumberCount: 0
+      Checksum: 0xB43ADB0
+      Number: 4
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: .pdata
+    Value: 0
+    Section: .pdata (5)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 1
+    AuxSectionDef {
+      Length: 36
+      RelocationCount: 9
+      LineNumberCount: 0
+      Checksum: 0xAFA222C5
+      Number: 5
+      Selection: 0x0
+    }
+  }
+  Symbol {
+    Name: @feat.00
+    Value: 0
+    Section: IMAGE_SYM_ABSOLUTE (-1)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RINvNtCs2Ja4erDm0Jl_4core3ptr9drop_glueNtCsjBwlT6cN9ry_12unwind_probe11DropTrackerEBD_
+    Value: 0
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvXCsjBwlT6cN9ry_12unwind_probeNtB2_11DropTrackerNtNtNtCs2Ja4erDm0Jl_4core3ops4drop4Drop4drop
+    Value: 16
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: catch_unwind_entry
+    Value: 32
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: nested_cleanups
+    Value: 176
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvNvNtCs9qcQDiGWtgW_3std9panicking12catch_unwind7cleanup
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvCs5fGHjzWXRav_7___rustc14___rust_dealloc
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _Unwind_Resume
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: _RNvNtCs2Ja4erDm0Jl_4core9panicking19panic_cannot_unwind
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: rust_eh_personality
+    Value: 0
+    Section: IMAGE_SYM_UNDEFINED (0)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: GCC_except_table2
+    Value: 16
+    Section: .xdata (4)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: frameless_leaf
+    Value: 160
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: GCC_except_table4
+    Value: 68
+    Section: .xdata (4)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: nounwind_c_boundary
+    Value: 272
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: GCC_except_table5
+    Value: 92
+    Section: .xdata (4)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: Static (0x3)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: passthrough_no_cleanup
+    Value: 336
+    Section: .text (1)
+    BaseType: Null (0x0)
+    ComplexType: Function (0x2)
+    StorageClass: External (0x2)
+    AuxSymbolCount: 0
+  }
+  Symbol {
+    Name: .file
+    Value: 0
+    Section: IMAGE_SYM_DEBUG (-2)
+    BaseType: Null (0x0)
+    ComplexType: Null (0x0)
+    StorageClass: File (0x67)
+    AuxSymbolCount: 2
+    AuxFileRecord {
+      FileName: unwind_probe.e45a91751a911c8a-cgu.0
+    }
+  }
+]
