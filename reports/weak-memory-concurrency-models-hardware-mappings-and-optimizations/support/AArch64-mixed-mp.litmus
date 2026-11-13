@@ -1,0 +1,10 @@
+AArch64 AArch64-mixed-mp
+{ 0:X1=x; 0:X3=y; 1:X1=x; 1:X3=y; }
+ P0           | P1           ;
+ MOV W0,#1    | LDAR W0,[X3] ;
+ STRB W0,[X1] | LDRH W2,[X1] ;
+ MOV W4,#2    |              ;
+ STRB W4,[X1,#1] |           ;
+ MOV W2,#1    |              ;
+ STLR W2,[X3] |              ;
+exists (1:X0=1 /\ (1:X2=0 \/ 1:X2=1 \/ 1:X2=512))

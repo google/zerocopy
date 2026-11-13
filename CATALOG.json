@@ -23080,6 +23080,93 @@
         "verification/compiler-verification"
       ]
     },
+    "weak-memory-concurrency-models-hardware-mappings-and-optimizations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler and core::sync::atomic specification (1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust concurrent memory model (AtomicMemory)"
+        },
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+            "version": "7.58"
+          },
+          "name": "herdtools7 axiomatic memory models (RC11, C11, IMM, AArch64, x86-TSO)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290382",
+            "repository": "weakmemory/imm",
+            "revision": "4ca191b072df081dd3a6d9aa755959dc901b1bd0"
+          },
+          "name": "Intermediate Memory Model (IMM) Coq development"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062352",
+            "url": "https://plv.mpi-sws.org/scfix/paper.pdf"
+          },
+          "name": "Repairing Sequential Consistency in C/C++11 (RC11, PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386010",
+            "repository": "kaist-cp/promising2-coq"
+          },
+          "name": "Promising Semantics 1.0, 2.0, and 2.1 (POPL 2017, PLDI 2020, PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158107",
+            "mixed_size_doi": "10.1145/3009837.3009839"
+          },
+          "name": "Simplifying ARM Concurrency (Flat and MCA models, POPL 2018) and Mixed-Size ARMv8/x86-TSO (POPL 2017)"
+        },
+        {
+          "identity": {
+            "cascompcert_doi": "10.1145/3314221.3314604",
+            "compcerttso_doi": "10.1145/2487241.2487248"
+          },
+          "name": "CompCertTSO (JACM 2013) and CASCompCert (PLDI 2019)"
+        },
+        {
+          "identity": {
+            "ldrf_doi": "10.1145/3192366.3192384",
+            "seq_opt_doi": "10.1145/3527633"
+          },
+          "name": "Local DRF (PLDI 2018) and Sequential Reasoning for Optimizing Compilers Under Weak Memory (TOPLAS 2022)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+          },
+          "name": "Anneal verification framework (weak-memory and sequential refinement primitives)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rust/concurrency",
+        "systems/concurrency-weak-memory",
+        "isa/aarch64",
+        "isa/x86-64",
+        "llvm",
+        "verification/iris"
+      ]
+    },
     "zerocopy-byte-apis-cross-target-layout-and-packet-certificates": {
       "observed_at": "2026-10-14",
       "subjects": [

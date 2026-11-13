@@ -1,0 +1,6 @@
+X86_64 X86-mixed-sbf
+{ x=0; }
+ P0          | P1           ;
+ movb $1,(x) | movw (x),%ax ;
+ movw (x),%bx|              ;
+exists (0:rbx=1)

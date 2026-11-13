@@ -1,0 +1,48 @@
+{
+  "herd7_version": "7.58",
+  "herdtools7_revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+  "litmus_probes": {
+    "LB-data.litmus": {
+      "c11_orig.cat": {
+        "observation": "Sometimes 1 3",
+        "states": 3,
+        "meaning": "C++11/C++20 without po|rf acyclicity permits load-buffering / out-of-thin-air cycle 0:r0=1 /\\ 1:r1=1"
+      },
+      "rc11.cat": {
+        "observation": "Never 0 3",
+        "states": 2,
+        "meaning": "RC11 acyclic(po | rf) forbids LB-data cycle at the cost of forbidding load-to-store reordering on relaxed atomics"
+      }
+    },
+    "C-seqlock.litmus": {
+      "rc11.cat": {
+        "observation": "Never 0 18",
+        "states": 18,
+        "undef": false,
+        "meaning": "Seqlock reader using relaxed atomic payload loads + acquire fence before second sequence load is race-free and never observes torn payload (1:r1=1 /\\ 1:r2=0) when 1:s1=0 /\\ 1:s2=0"
+      }
+    },
+    "C-seqlock-na-race.litmus": {
+      "rc11.cat": {
+        "observation": "Sometimes 2 9",
+        "states": 6,
+        "undef": true,
+        "meaning": "Seqlock reader using non-atomic payload read (*d1) triggers data-race UB (Undef) in C++20/RC11 even when followed by an acquire fence and retry loop"
+      }
+    },
+    "AArch64-mixed-mp.litmus": {
+      "aarch64.cat -variant mixed": {
+        "observation": "Never 0 5",
+        "states": 5,
+        "meaning": "Two 1-byte stores (STRB) followed by STLR flag are ordered before a 2-byte mixed-size read (LDRH) after LDAR flag under herd7 mixed-size AArch64"
+      }
+    },
+    "X86-mixed-sbf.litmus": {
+      "x86_64 -variant mixed": {
+        "observation": "Always 2 0",
+        "states": 1,
+        "meaning": "Mixed-size store-buffer forwarding (1-byte movb $1,(x) forwarded into 2-byte movw (x),%bx) on x86-64"
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+C C-seqlock-na-race
+{ [seq] = 0; [d1] = 0; }
+
+P0 (atomic_int* seq, int* d1) {
+  atomic_store_explicit(seq, 1, memory_order_relaxed);
+  atomic_thread_fence(memory_order_release);
+  *d1 = 1;
+  atomic_store_explicit(seq, 2, memory_order_release);
+}
+
+P1 (atomic_int* seq, int* d1) {
+  int s1 = atomic_load_explicit(seq, memory_order_acquire);
+  int r1 = *d1;
+  atomic_thread_fence(memory_order_acquire);
+  int s2 = atomic_load_explicit(seq, memory_order_relaxed);
+}
+
+exists (1:s1=0 /\ 1:s2=0)
