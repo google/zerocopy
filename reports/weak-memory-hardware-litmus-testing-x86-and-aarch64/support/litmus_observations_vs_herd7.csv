@@ -1,0 +1,10 @@
+litmus_test,x86_64_native_iters,x86_64_weak_observed,x86_64_weak_rate_ppm,qemu_aarch64_on_x86_host_iters,qemu_aarch64_weak_observed,herd7_x86tso_cat,herd7_aarch64_cat,herd7_rc11_cat
+SB_Relaxed,300000,495,1650.0,N/A,N/A,Allowed (Sometimes: store-buffer forwarding r0=0 /\ r1=0),Allowed (Sometimes: store/load reordering r0=0 /\ r1=0),Allowed (Sometimes: Relaxed stores/loads do not synchronize)
+SB_SeqCst_Fence,300000,0,0.0,N/A,N/A,Forbidden (Never: mfence / locked RMW drains FIFO store buffer),Forbidden (Never: dmb ish orders W ->dmb.full R),Forbidden (Never: psc_f total order over SeqCst fences)
+SB_SeqCst_Ops,300000,0,0.0,N/A,N/A,Forbidden (Never: xchg is locked and drains store buffer),Forbidden (Never: STLR [L] ->po LDAR [A] is in bob),Forbidden (Never: psc_base total order over SeqCst accesses)
+SB_RMW_SeqCst,300000,0,0.0,N/A,N/A,Forbidden (Never: lock xadd drains store buffer),Forbidden (Never: ldaddal / ldaxr+stlxr orders RMW ->po R),Forbidden (Never: SeqCst RMW in psc)
+MP_Relaxed,300000,0,0.0,N/A,N/A,Forbidden (Never: x86-TSO preserves W ->po W and R ->po R),Allowed (Sometimes: plain STR/LDR can reorder on Armv8),Allowed (Sometimes: Relaxed accesses do not establish sw/hb)
+MP_RelAcq,300000,0,0.0,N/A,N/A,Forbidden (Never: TSO preserves W ->po W and R ->po R natively),"Forbidden (Never: STLR orders prior W, LDAR/LDAPR orders subsequent R)",Forbidden (Never: Release/Acquire establishes sw and hb)
+LB_Relaxed,300000,0,0.0,N/A,N/A,Forbidden (Never: x86-TSO preserves R ->po W),Allowed (Sometimes: independent LDR ->po STR can reorder on Armv8),Forbidden by acyclic(po | rf) in RC11; Allowed in IMM/Promising 2.0 when independent
+2+2W_Relaxed,300000,0,0.0,N/A,N/A,Forbidden (Never: FIFO store buffer + multi-copy atomic memory),Allowed (Sometimes: stores to distinct addresses can reorder),Allowed (Sometimes: separate mo orders on x and y without synchronization)
+CoRR,300000,0,0.0,N/A,N/A,Forbidden (Never: per-location coherence uniproc),Forbidden (Never: internal po-loc | rf | fr | co acyclicity),Forbidden (Never: coherence / read-read coherence)

@@ -1,0 +1,108 @@
+{
+  "rustc_codegen_crates": {
+    "rustc_codegen_ssa": {
+      "files": 57,
+      "loc": 30320
+    },
+    "rustc_codegen_llvm": {
+      "files": 55,
+      "loc": 30648
+    },
+    "rustc_codegen_cranelift": {
+      "files": 76,
+      "loc": 23514
+    },
+    "rustc_codegen_gcc": {
+      "files": 98,
+      "loc": 34062
+    }
+  },
+  "optimizer_backends": {
+    "LLVM_23_1_1": {
+      "middle_and_backend_sloc_approx": 3820000,
+      "ir_levels": [
+        "LLVM IR (SSA)",
+        "SelectionDAG",
+        "GlobalISel (GMIR)",
+        "MachineInstr (MIR)",
+        "MCInst"
+      ],
+      "pass_count_O3_pipeline": 193,
+      "distinct_pass_classes": 124,
+      "ir_verifier": "llvm::VerifierPass (structural SSA/dominance/type checks only; does not verify semantic refinement)",
+      "tracing_and_instrumentation_hooks": "PassInstrumentationCallbacks (registerBeforeNonSkippedPassCallback / registerAfterPassCallback), -print-after-all, -opt-bisect-limit",
+      "prior_proof_and_tv_tools": [
+        "Alive2 (AliveToolkit/alive2, SMT bitvector/memory refinement)",
+        "Crellvm (Kang et al. PLDI 2018, relational hint emission)",
+        "Vellvm (Zhao et al. / Zakowski et al., Coq ITrees)",
+        "llubi (LLVM 23 UB-aware IR interpreter)"
+      ],
+      "tier1_target_coverage": "8/8 Tier 1 targets (100%)"
+    },
+    "Cranelift_0_121": {
+      "middle_and_backend_sloc_approx": 185000,
+      "ir_levels": [
+        "CLIF SSA IR (with block parameters, no PHI nodes)",
+        "AEGraph (acyclic e-graphs inside SSA skeleton)",
+        "VCode (virtual-register MachInst)",
+        "RegAlloc2 (ion/fastalloc with built-in SSA checker)"
+      ],
+      "pass_count_opt_speed": 11,
+      "isle_rule_files": [
+        "prelude.isle",
+        "opts.isle (mid-end e-graph rewrite rules)",
+        "x64/lower.isle",
+        "aarch64/lower.isle",
+        "s390x/lower.isle",
+        "riscv64/lower.isle"
+      ],
+      "ir_verifier": "cranelift_codegen::verifier (SSA dominance, block-param arity, type checking) + regalloc2::checker (symbolic dataflow equivalence of register assignments!)",
+      "tracing_and_instrumentation_hooks": "CLIF text dumps per phase, e-graph rewrite trace logging, regalloc2 checker annotations",
+      "prior_proof_and_tv_tools": [
+        "VeriISLE (CMU/Alexa VanHattum et al., SMT verification of ISLE lowering rules)",
+        "Crocus (modular semantics for ISLE)",
+        "regalloc2 built-in symbolic checker (production compile-time proof checker)"
+      ],
+      "tier1_target_coverage": "4/8 Tier 1 targets (x86_64-linux, aarch64-linux, aarch64-darwin, x86_64-windows-gnu partial; NO i686 32-bit x86 backend, NO MSVC SEH unwind)"
+    },
+    "GCC_14_libgccjit": {
+      "middle_and_backend_sloc_approx": 5400000,
+      "ir_levels": [
+        "GENERIC (tree)",
+        "GIMPLE (High/Low/SSA)",
+        "RTL (Register Transfer Language)",
+        "Target Assembly"
+      ],
+      "pass_count_O3_pipeline": 268,
+      "ir_verifier": "verify_gimple_in_cfg / verify_ssa / verify_rtl_sharing",
+      "tracing_and_instrumentation_hooks": "gcc-plugin REGISTER_PASS_MANAGER_SETUP / PASS_EXECUTION callbacks, -fdump-tree-all, -fdump-rtl-all",
+      "prior_proof_and_tv_tools": [
+        "smtgcc (Krister Walfridsson, Z3 GIMPLE-to-GIMPLE translation validator)",
+        "seL4 graph-refine (Sewell et al. PLDI 2013, GCC -O2 ARM binary -> C/Simpl SMT equivalence)"
+      ],
+      "tier1_target_coverage": "5/8 Tier 1 targets via GCC cross-compilers (NO *-pc-windows-msvc ABI support in libgccjit)"
+    }
+  },
+  "custom_mir_250_seed_differential_campaign": {
+    "llvm_O0": {
+      "output": "HASH=e76bb4b9df0a322f",
+      "exec_ms": 5.64
+    },
+    "llvm_O3": {
+      "output": "HASH=e76bb4b9df0a322f",
+      "exec_ms": 5.455
+    },
+    "cranelift_O0": {
+      "output": "HASH=e76bb4b9df0a322f",
+      "exec_ms": 5.481
+    },
+    "cranelift_O2": {
+      "output": "HASH=e76bb4b9df0a322f",
+      "exec_ms": 5.473
+    },
+    "miri": {
+      "output": "HASH=e76bb4b9df0a322f",
+      "exec_ms": 98.192
+    }
+  }
+}

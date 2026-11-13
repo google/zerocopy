@@ -1,0 +1,25 @@
+mir_function,llvm_symbol,mir_bbs,llvm_bbs,llvm_insts,status,smt_obligations_checked,reason
+checked_add_and_assert,_RNvCs1yk5BBwLqjP_12golden_probe22checked_add_and_assert,5,5,13,Validated,19,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+match_and_project,_RNvCs1yk5BBwLqjP_12golden_probe17match_and_project,14,11,41,Validated,46,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+intrinsics_and_abort,_RNvCs1yk5BBwLqjP_12golden_probe20intrinsics_and_abort,4,3,7,Validated,14,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+naked_identity,inlined_or_ctor,1,1,1,Unsupported,0,Inline/naked assembly (`asm!`) is opaque to bitvector IR semantics without ISA lifter
+main,_RNvCs1yk5BBwLqjP_12golden_probe4main,6,3,23,Validated,18,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+Choice::Val,inlined_or_ctor,1,1,1,Validated,3,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+Choice::Both,inlined_or_ctor,1,1,1,Validated,3,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f01_WrappingAddU64,f01_WrappingAddU64,2,1,2,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f02_CheckedSubU32,f02_CheckedSubU32,2,1,6,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f03_SaturatingMulU16,f03_SaturatingMulU16,2,1,2,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f04_RotateXorBitwise,f04_RotateXorBitwise,2,1,5,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f05_OptionUnwrapOr,f05_OptionUnwrapOr,2,1,2,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f06_ResultMapErr,_RINvMNtCskADBYZwJmSU_4core6resultINtB3_6ResultmmE3mapmNCNvCscLL2r2ctCFb_9tv_corpus16f06_ResultMapErr0EBU_,2,5,31,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f08_SliceFirstOrZero,f08_SliceFirstOrZero,6,6,15,Validated,18,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f09_MutRefIncrement,f09_MutRefIncrement,2,1,4,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f10_TwoMutRefsSwap,f10_TwoMutRefsSwap,1,1,5,Validated,3,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f11_BoundedLoopSum8,f11_BoundedLoopSum8,7,8,28,Validated_Bounded_Unroll,28,Loop back-edges (1) verified up to unroll k=8 via bounded bitvector induction
+f12_UnboundedSliceSum,f12_UnboundedSliceSum,8,5,28,Validated_Bounded_Unroll,32,Loop back-edges (1) verified up to unroll k=8 via bounded bitvector induction
+f13_SIMD_AutovecMap,f13_SIMD_AutovecMap,10,9,38,Validated_Bounded_Unroll,40,Loop back-edges (1) verified up to unroll k=8 via bounded bitvector induction
+f14_ExposedProvenanceCast,f14_ExposedProvenanceCast,2,1,2,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f15_InlineAsmBarrier,f15_InlineAsmBarrier,2,1,7,Unsupported,0,Inline/naked assembly (`asm!`) is opaque to bitvector IR semantics without ISA lifter
+f16_FloatNaNFold,f16_FloatNaNFold,1,1,3,Validated,3,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f17_NonZeroNicheOption,f17_NonZeroNicheOption,5,5,17,Validated,19,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges
+f18_ByteOrderSwapU64,f18_ByteOrderSwapU64,2,1,2,Validated,6,Exact bitvector & memory-state refinement proven across all basic-block transitions and panic/unwind edges

@@ -1,0 +1,19 @@
+function,category,whole_O3_ir_tv,pass_by_pass_ir_tv,llubi_ub_check,mc_lifting_tv_x86_64_aarch64,failure_taxonomy_code
+f01_WrappingAddU64,scalar_arithmetic,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f02_CheckedSubU32,checked_arithmetic_option,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f03_SaturatingMulU16,intrinsic_saturating,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f04_RotateXorBitwise,bitwise_funnel_shift,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f05_OptionUnwrapOr,enum_select_lowering,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f06_ResultMapErr,enum_branch_phi,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f07_TupleSwapAggregate,aggregate_sroa,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f08_SliceFirstOrZero,slice_bounds_load,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f09_MutRefIncrement,mut_ref_memory_rmw,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f10_TwoMutRefsSwap,noalias_mut_pair,Validated,Validated (10/10 passes),FAIL,Validated (x86_64 + AArch64),none
+f11_BoundedLoopSum8,bounded_constant_loop,Validated,Validated (10/10 passes; unroll k=8),FAIL,Validated (unrolled scalar/SIMD),none
+f12_UnboundedSliceSum,unbounded_loop,Timeout_Or_Bounded_Only,Validated on 8/9 passes; Timeout on G8_LoopVectorize (epilogue + symbolic trip count),FAIL,Unsupported_Unbounded_Vector_Loop,unbounded_loop_vectorization_smt_timeout
+f13_SIMD_AutovecMap,autovectorized_64_loop,Timeout,Validated on G1..G7; Timeout on G8_LoopVectorize_SLP (256-bit/128-bit vector bit-blasting),FAIL,Timeout_Vector_Width_Bitblast,simd_vector_loop_bitblast_timeout
+f14_ExposedProvenanceCast,ptrtoint_exposed_provenance,Validated_With_Warn,Validated (9/9 passes; requires integer-pointer aliasing model),FAIL,Validated (nop register move),ptrtoint_provenance_approximation
+f15_InlineAsmBarrier,inline_asm,Unsupported,Unsupported (opaque `call i64 asm` across all passes),FAIL,Unsupported_Inline_Asm,inline_asm_opaque
+f16_FloatNaNFold,ieee754_float,Validated,Validated (10/10 passes; strict IEEE-754 NaN preservation without fast-math),FAIL,Validated (x86_64 + AArch64),none
+f17_NonZeroNicheOption,niche_range_metadata,Validated,Validated (10/10 passes; `!range` metadata -> icmp elimination),FAIL,Validated (x86_64 + AArch64),none
+f18_ByteOrderSwapU64,bswap_intrinsic,Validated,Validated (10/10 passes; `@llvm.bswap.i64`),FAIL,Validated (`bswapq` / `rev`),none

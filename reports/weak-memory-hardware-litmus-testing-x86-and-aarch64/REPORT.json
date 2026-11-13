@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "isa",
+    "rust",
+    "systems",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "herdtools7",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "9574394fc4b2bcb1a7ba23dd7877f46bb28ebb34",
+        "version": "7.58"
+      }
+    },
+    {
+      "name": "QEMU user-mode emulator",
+      "identity": {
+        "artifact": "qemu-aarch64",
+        "version": "9.2.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

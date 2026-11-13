@@ -1,0 +1,25 @@
+target,caller,callee,mode,tests_total,tests_passed,tests_failed_or_diverged,notes
+x86_64-unknown-linux-gnu,rustc_llvm,rustc_llvm,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_llvm,rustc_cranelift,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_llvm,clang_19,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_llvm,gcc_14,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_cranelift,rustc_llvm,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_cranelift,rustc_cranelift,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_cranelift,clang_19,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_cranelift,gcc_14,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,clang_19,rustc_llvm,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,clang_19,rustc_cranelift,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,clang_19,clang_19,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,clang_19,gcc_14,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,gcc_14,rustc_llvm,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,gcc_14,rustc_cranelift,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,gcc_14,clang_19,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,gcc_14,gcc_14,live_execution,10,10,0,10/10 ABI signatures matched bit-for-bit across caller/callee boundary
+x86_64-unknown-linux-gnu,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=0"
+aarch64-unknown-linux-gnu,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=0"
+i686-unknown-linux-gnu,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=1"
+x86_64-pc-windows-msvc,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=0"
+x86_64-pc-windows-gnu,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=0"
+i686-pc-windows-msvc,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=1"
+aarch64-apple-darwin,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=0"
+aarch64-pc-windows-msvc,rustc_llvm,clang_19,llvm_ir_signature_verification,6,6,0,"Verified 6/6 edge signatures (u128, f16, f128, HFA, packed, ZST); clif_rc=0"

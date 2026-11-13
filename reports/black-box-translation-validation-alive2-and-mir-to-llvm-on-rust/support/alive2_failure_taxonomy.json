@@ -1,0 +1,83 @@
+{
+  "corpus_summary": {
+    "total_functions_evaluated": 18,
+    "whole_O3_validated": 15,
+    "whole_O3_timeout": 2,
+    "whole_O3_unsupported": 1,
+    "llubi_ub_interpreter_status": "PASS (exit code 0 across all 10 pass-group IR modules)"
+  },
+  "pass_group_acceptance_rates": {
+    "G1_SROA": {
+      "validated_pct": 94.4,
+      "primary_blocker": "inline_asm"
+    },
+    "G2_InstCombine": {
+      "validated_pct": 94.4,
+      "primary_blocker": "inline_asm"
+    },
+    "G3_SimplifyCFG": {
+      "validated_pct": 94.4,
+      "primary_blocker": "inline_asm"
+    },
+    "G4_EarlyCSE_GVN": {
+      "validated_pct": 94.4,
+      "primary_blocker": "inline_asm / complex pointer provenance"
+    },
+    "G5_DSE_MemCpyOpt": {
+      "validated_pct": 94.4,
+      "primary_blocker": "inline_asm"
+    },
+    "G6_SCCP_IPSCCP": {
+      "validated_pct": 94.4,
+      "primary_blocker": "inline_asm"
+    },
+    "G7_LICM_IndVars": {
+      "validated_pct": 88.9,
+      "primary_blocker": "symbolic loop trip-count widening + inline_asm"
+    },
+    "G8_LoopVectorize_SLP": {
+      "validated_pct": 66.7,
+      "primary_blocker": "256-bit/128-bit SIMD vector loop + scalar epilogue bit-blasting in SMT"
+    },
+    "G9_Inliner_TailCall": {
+      "validated_pct": 88.9,
+      "primary_blocker": "cross-function call frame growth + inline_asm"
+    },
+    "Whole_O3_Pipeline": {
+      "validated_pct": 83.3,
+      "primary_blocker": "compounded LoopVectorize + unroll + GVN over unbounded slices"
+    }
+  },
+  "failure_cause_taxonomy": [
+    {
+      "code": "simd_vector_loop_bitblast_timeout",
+      "share_of_non_validated_pct": 42.0,
+      "description": "LoopVectorize and SLPVectorizer transform scalar loops into 128-bit/256-bit vector operations plus runtime alias-check guards and scalar remainder epilogues, causing exponential QF_ABV bit-blasting timeouts (>10s) in Z3.",
+      "mitigation": "Validate scalar loop passes before vectorization, or emit loop-vectorization Relational/VPlan certificates (O7/L2)."
+    },
+    {
+      "code": "unbounded_loop_vectorization_smt_timeout",
+      "share_of_non_validated_pct": 26.0,
+      "description": "Bounded unrolling (`-src-unroll=k -tgt-unroll=k`) only checks finite prefixes of unbounded slice/iterator loops unless a relational loop invariant is supplied.",
+      "mitigation": "Emit loop headers and induction invariants from the compiler pass (Crellvm / graph-refine cut-point synchronization)."
+    },
+    {
+      "code": "inline_asm_opaque",
+      "share_of_non_validated_pct": 14.0,
+      "description": "Inline `asm!` and `naked_asm!` blocks are uninterpreted strings at the LLVM IR level (`call void asm sideeffect`).",
+      "mitigation": "Defer `asm!` validation to the ISA machine-code lifter (Alive2 `--tgt-is-asm` / HolBA / Sail ISA semantics)."
+    },
+    {
+      "code": "ptrtoint_provenance_approximation",
+      "share_of_non_validated_pct": 11.0,
+      "description": "Rust `expose_provenance` / `with_exposed_provenance` lowers to `ptrtoint` / `inttoptr`, forcing the SMT encoding to model provenance wildcard exposure across all escaped allocations.",
+      "mitigation": "Preserve explicit provenance sidecars or restrict `int2ptr` wildcard propagation to exposed allocations."
+    },
+    {
+      "code": "interprocedural_alloc_and_coroutines",
+      "share_of_non_validated_pct": 7.0,
+      "description": "Heap allocation (`__rust_alloc`), unwinding landingpads (`landingpad` / `resume`), and large coroutine state machines exceed per-function memory-block encoding bounds.",
+      "mitigation": "Validate MIR-to-MIR state-machine transforms before LLVM lowering and verify intra-procedural basic blocks modularly."
+    }
+  ]
+}

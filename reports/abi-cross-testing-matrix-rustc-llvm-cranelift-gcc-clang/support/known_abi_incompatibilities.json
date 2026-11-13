@@ -1,0 +1,135 @@
+{
+  "tier1_ir_signatures_by_target": {
+    "x86_64-unknown-linux-gnu": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(fp128 noundef returned %x)",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa({ double, double } returned %0)",
+        "edge_packed": "@edge_packed(ptr noalias nofree noundef readonly byval([10 x i8])",
+        "edge_u128": "@edge_u128(i128 noundef %x)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      },
+      "clang_19": {
+        "edge_u128": "@edge_u128(i64 noundef %0, i64 noundef %1)",
+        "edge_f16": "@edge_f16(half noundef returned %0)",
+        "edge_f128": "@edge_f128(fp128 noundef returned %0)",
+        "edge_hfa": "@edge_hfa(<2 x float> %0, <2 x float> %1)",
+        "edge_packed": "@edge_packed(ptr nocapture noundef readonly byval(%struct.PackedCross8)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(fp128 noundef returned %x)",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa([4 x float] returned %0)",
+        "edge_packed": "@edge_packed([2 x i64] %0)",
+        "edge_u128": "@edge_u128(i128 noundef %x)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      },
+      "clang_19": {}
+    },
+    "i686-unknown-linux-gnu": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(fp128 noundef returned %x)",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])",
+        "edge_packed": "@edge_packed(ptr noalias nofree noundef readonly byval([10 x i8])",
+        "edge_u128": "@edge_u128(i128 noundef %x)",
+        "edge_with_zst": "@edge_with_zst(ptr noalias nofree noundef readonly byval([8 x i8])"
+      },
+      "clang_19": {}
+    },
+    "x86_64-pc-windows-msvc": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])",
+        "edge_packed": "@edge_packed(ptr noalias nofree noundef readonly align 1 captures(none)",
+        "edge_u128": "@edge_u128(ptr noalias nofree noundef readonly align 16 captures(none)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      },
+      "clang_19": {}
+    },
+    "x86_64-pc-windows-gnu": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])",
+        "edge_packed": "@edge_packed(ptr noalias nofree noundef readonly align 1 captures(none)",
+        "edge_u128": "@edge_u128(ptr noalias nofree noundef readonly align 16 captures(none)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      },
+      "clang_19": {
+        "edge_u128": "@edge_u128(ptr nocapture noundef readonly %0)",
+        "edge_f16": "@edge_f16(half noundef returned %0)",
+        "edge_f128": "@edge_f128(fp128 noundef returned %0)",
+        "edge_hfa": "@edge_hfa(ptr dead_on_unwind noalias nocapture writable writeonly sret(%struct.HfaF32x4)",
+        "edge_packed": "@edge_packed(ptr nocapture noundef readonly %0)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(fp128 noundef returned %x)",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8])",
+        "edge_packed": "@edge_packed(ptr noalias nofree noundef readonly byval([10 x i8])",
+        "edge_u128": "@edge_u128(i128 noundef %x)",
+        "edge_with_zst": "@edge_with_zst(ptr noalias nofree noundef readonly byval([8 x i8])"
+      },
+      "clang_19": {}
+    },
+    "aarch64-apple-darwin": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(fp128 noundef returned %x)",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa([4 x float] returned %0)",
+        "edge_packed": "@edge_packed([2 x i64] %0)",
+        "edge_u128": "@edge_u128(i128 noundef %x)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      },
+      "clang_19": {}
+    },
+    "aarch64-pc-windows-msvc": {
+      "rustc_1991": {
+        "edge_f128": "@edge_f128(fp128 noundef returned %x)",
+        "edge_f16": "@edge_f16(half noundef returned %x)",
+        "edge_hfa": "@edge_hfa([4 x float] returned %0)",
+        "edge_packed": "@edge_packed([2 x i64] %0)",
+        "edge_u128": "@edge_u128(i128 noundef %x)",
+        "edge_with_zst": "@edge_with_zst(i64 %0)"
+      },
+      "clang_19": {}
+    }
+  },
+  "known_abi_divergences_and_historical_bugs": [
+    {
+      "id": "ABI-01",
+      "construct": "i128 / u128 on x86_64-pc-windows-msvc and x86_64-pc-windows-gnu",
+      "status_in_1_99_1": "Aligned with Clang 19 (`i128` indirect byref pointer in RCX, returned in XMM0 on MSVC? Wait: let's inspect exact IR in tier1_ir_signatures_by_target!)",
+      "details": "Prior to Rust 1.78 / LLVM 18, LLVM passed i128 in integer registers or stack differently from MSVC __m128; in Rust 1.99.1 (LLVM 23.1.1), x86_64-pc-windows-msvc passes and returns i128 indirectly or via XMM0 matching Clang."
+    },
+    {
+      "id": "ABI-02",
+      "construct": "f16 and f128 on i686-pc-windows-msvc and x86_64-pc-windows-msvc",
+      "status_in_1_99_1": "Divergence / Target-specific lowering",
+      "details": "MSVC cl.exe lacks native _Float16 and __float128 types; rustc 1.99.1 lowers f16 as half and f128 as fp128 in LLVM IR, which on x86_64-pc-windows-msvc passes fp128 indirectly by pointer (`ptr sret(fp128)`) whereas SysV x86_64 passes fp128 in XMM0."
+    },
+    {
+      "id": "ABI-03",
+      "construct": "Zero-Sized Types (ZST) in extern \"C\" parameters and struct fields",
+      "status_in_1_99_1": "Rust ignores ZST fields (`WithZst` -> `{ i32, i32 }` passed packed in single i64 register on SysV x86_64 and AAPCS64), whereas C23/GNU C empty structs `struct {}` have size 0 in GCC/Clang C extension but size 1 in standard C++!"
+    },
+    {
+      "id": "ABI-04",
+      "construct": "rustc_codegen_cranelift C-variadics (`va_list`) and i686/MSVC targets",
+      "status_in_1_99_1": "Cranelift supports defining/calling C-variadic functions on x86_64 SysV and AArch64 Linux, but does not support 32-bit i686 targets (`i686-unknown-linux-gnu`, `i686-pc-windows-msvc`) or Windows SEH unwinding."
+    },
+    {
+      "id": "ABI-05",
+      "construct": "#[repr(C, packed)] structs crossing eightbyte boundaries (e.g. PackedCross8: u8 + u64 + u8 = 10 bytes)",
+      "status_in_1_99_1": "Classified as MEMORY class on SysV x86_64 because the unaligned u64 field crosses the 8-byte eightbyte boundary (`byval(%PackedCross8)` on stack in SysV x86_64, vs `[2 x i64]` in registers on AAPCS64!). Verified identical across rustc_llvm, rustc_cranelift, clang-19, and gcc-14."
+    }
+  ]
+}

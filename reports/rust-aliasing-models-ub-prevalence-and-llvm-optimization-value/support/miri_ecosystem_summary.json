@@ -1,0 +1,104 @@
+{
+  "total_failing_crates_cataloged": 7887,
+  "breakdown": {
+    "SB_subobject_provenance_shrinking": 2947,
+    "uninitialized_memory_read": 1161,
+    "SB_aliasing_retag_violation": 2022,
+    "dangling_or_dealloc_layout": 283,
+    "other_ub_or_unsupported": 1188,
+    "misaligned_pointer_access": 138,
+    "concurrency_data_race": 148
+  },
+  "sample_crates": [
+    {
+      "name": "hashbrown",
+      "version": "0.15.4",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/hashbrown/0.15.4"
+    },
+    {
+      "name": "indexmap",
+      "version": "2.10.0",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/indexmap/2.10.0"
+    },
+    {
+      "name": "proc-macro2",
+      "version": "1.0.95",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/proc-macro2/1.0.95"
+    },
+    {
+      "name": "nix",
+      "version": "0.30.1",
+      "error": "accessing memory based on pointer with alignment 1, but alignment 8 is required, accessing memory based on pointer with alignment 2, but alignment 8 is required, incorrect layout on deallocation, uninitialized memory",
+      "log_url": "https://miri.saethlin.dev/logs/nix/0.30.1"
+    },
+    {
+      "name": "zerovec",
+      "version": "0.11.2",
+      "error": "&->&mut, &->&mut (serde_core-1.0.226)",
+      "log_url": "https://miri.saethlin.dev/logs/zerovec/0.11.2"
+    },
+    {
+      "name": "litemap",
+      "version": "0.8.0",
+      "error": "SB-use-outside-provenance (rkyv-0.7.45)",
+      "log_url": "https://miri.saethlin.dev/logs/litemap/0.8.0"
+    },
+    {
+      "name": "icu_normalizer",
+      "version": "2.0.0",
+      "error": "SB-use-outside-provenance (arraystring-0.3.0)",
+      "log_url": "https://miri.saethlin.dev/logs/icu_normalizer/2.0.0"
+    },
+    {
+      "name": "derive_more",
+      "version": "2.0.1",
+      "error": "SB-invalidation",
+      "log_url": "https://miri.saethlin.dev/logs/derive_more/2.0.1"
+    },
+    {
+      "name": "crossbeam-epoch",
+      "version": "0.9.18",
+      "error": "SB-use-outside-provenance",
+      "log_url": "https://miri.saethlin.dev/logs/crossbeam-epoch/0.9.18"
+    },
+    {
+      "name": "petgraph",
+      "version": "0.8.2",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/petgraph/0.8.2"
+    },
+    {
+      "name": "spin",
+      "version": "0.10.0",
+      "error": "SB-invalidation, not granting access to tag <13041> because that would remove [Unique for <13011>] which is strongly protected, not granting access to tag <2107894> because that would remove [Unique for <2107847>] which is strongly protected, not granting access to tag <860809> because that would remove [Unique for <860772>] which is strongly protected",
+      "log_url": "https://miri.saethlin.dev/logs/spin/0.10.0"
+    },
+    {
+      "name": "crossbeam-deque",
+      "version": "0.8.6",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/crossbeam-deque/0.8.6"
+    },
+    {
+      "name": "minimal-lexical",
+      "version": "0.2.1",
+      "error": "SB-use-outside-provenance",
+      "log_url": "https://miri.saethlin.dev/logs/minimal-lexical/0.2.1"
+    },
+    {
+      "name": "rayon-core",
+      "version": "1.12.1",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/rayon-core/1.12.1"
+    },
+    {
+      "name": "rayon",
+      "version": "1.10.0",
+      "error": "SB-use-outside-provenance (crossbeam-epoch-0.9.18)",
+      "log_url": "https://miri.saethlin.dev/logs/rayon/1.10.0"
+    }
+  ]
+}

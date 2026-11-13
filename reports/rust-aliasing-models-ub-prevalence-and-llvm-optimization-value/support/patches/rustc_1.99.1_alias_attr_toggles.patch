@@ -1,0 +1,47 @@
+diff --git a/compiler/rustc_codegen_llvm/src/abi.rs b/compiler/rustc_codegen_llvm/src/abi.rs
+index 4b912e30c1..e8a41f09b2 100644
+--- a/compiler/rustc_codegen_llvm/src/abi.rs
++++ b/compiler/rustc_codegen_llvm/src/abi.rs
+@@ -165,26 +165,42 @@ impl ArgAttributesExt for ArgAttributes {
+         // Always对自己 preference: check environment toggle for S7 aliasing ablation
++        let disable_mut_noalias = std::env::var_os("ANNEAL_NO_MUT_NOALIAS").is_some();
++        let disable_shared_noalias = std::env::var_os("ANNEAL_NO_SHARED_NOALIAS").is_some();
++        let disable_deref = std::env::var_os("ANNEAL_NO_DEREFERENCEABLE").is_some();
++        let disable_noundef = std::env::var_os("ANNEAL_NO_NOUNDEF").is_some();
++        let disable_nonnull = std::env::var_os("ANNEAL_NO_RANGE_NONNULL").is_some();
++        let disable_captures = std::env::var_os("ANNEAL_NO_CAPTURES").is_some();
++
+         if let Some(bytes) = self.pointee_size.bytes_usize() {
+             if bytes != 0 {
+-                if self.regular.contains(ArgAttribute::NonNull) {
++                if !disable_deref && self.regular.contains(ArgAttribute::NonNull) {
+                     llfn.add_attribute(idx, llvm::AttributeKind::Dereferenceable.create_attr(cx.llcx, bytes));
+-                } else {
++                } else if !disable_deref {
+                     llfn.add_attribute(idx, llvm::AttributeKind::DereferenceableOrNull.create_attr(cx.llcx, bytes));
+                 }
+             }
+         }
+         if self.regular.contains(ArgAttribute::NoAlias) {
+-            llfn.add_attribute(idx, llvm::AttributeKind::NoAlias.create_attr(cx.llcx, 0));
++            let is_readonly = self.regular.contains(ArgAttribute::ReadOnly);
++            if (is_readonly && !disable_shared_noalias) || (!is_readonly && !disable_mut_noalias) {
++                llfn.add_attribute(idx, llvm::AttributeKind::NoAlias.create_attr(cx.llcx, 0));
++            }
+         }
+-        if self.regular.contains(ArgAttribute::ReadOnly) {
++        if self.regular.contains(ArgAttribute::ReadOnly) && !disable_shared_noalias {
+             llfn.add_attribute(idx, llvm::AttributeKind::ReadOnly.create_attr(cx.llcx, 0));
+         }
+-        if self.regular.contains(ArgAttribute::NoUndef) {
++        if self.regular.contains(ArgAttribute::NoUndef) && !disable_noundef {
+             llfn.add_attribute(idx, llvm::AttributeKind::NoUndef.create_attr(cx.llcx, 0));
+         }
+-        if self.regular.contains(ArgAttribute::NonNull) {
++        if self.regular.contains(ArgAttribute::NonNull) && !disable_nonnull {
+             llfn.add_attribute(idx, llvm::AttributeKind::NonNull.create_attr(cx.llcx, 0));
+         }
+-        if self.regular.contains(ArgAttribute::CapturesNone) {
++        if self.regular.contains(ArgAttribute::CapturesNone) && !disable_captures {
+             llfn.add_attribute(idx, llvm::AttributeKind::CapturesNone.create_attr(cx.llcx, 0));
+         }
