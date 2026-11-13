@@ -21849,6 +21849,47 @@
         "isa/i386"
       ]
     },
+    "rustc-baseline-repository-map-and-internal-interfaces": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "release_date": "2026-11-12",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/architecture",
+        "rustc/mir",
+        "rustc/codegen",
+        "llvm",
+        "rust",
+        "verification"
+      ]
+    },
     "rustc-baseline-toolchain-selection-and-manifest": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -22608,6 +22649,67 @@
         "llvm"
       ]
     },
+    "rustc-mir-artifact-export-settings-and-proof-binding": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal Rust-to-Lean verification system"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/mir",
+        "rustc/metadata",
+        "anneal",
+        "charon",
+        "verification"
+      ]
+    },
+    "rustc-mir-optimization-passes-semantics-soundness-and-value": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/mir",
+        "rustc/optimizations",
+        "llvm",
+        "verification",
+        "anneal"
+      ]
+    },
     "rustc-mir-phases-reachability-and-postcleanup-lowering": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -22811,6 +22913,38 @@
         "verification/architecture"
       ]
     },
+    "rustc-mir-to-llvm-lowering-and-runtime-visible-semantics": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "llvm",
+        "rust",
+        "verification",
+        "anneal"
+      ]
+    },
     "rustc-miri-freeze-visitor-pointee-retag-and-scalarpair-transmute": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -22870,6 +23004,37 @@
         "rust/transmute",
         "rust/validity",
         "lean/mechanization"
+      ]
+    },
+    "rustc-monomorphization-vtables-statics-symbols-and-cgu-partitioning": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/monomorphization",
+        "rustc/codegen",
+        "rustc/mir",
+        "llvm",
+        "verification"
       ]
     },
     "rustc-name-resolution-local-item-identity-and-type-lowering": {

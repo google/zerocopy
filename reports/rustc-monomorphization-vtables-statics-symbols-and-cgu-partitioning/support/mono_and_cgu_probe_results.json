@@ -1,0 +1,117 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "mono_probe_lazy_items": [
+    "MONO_ITEM fn <Dog as LoudSpeak>::loud @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <Dog as Speak>::id @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <Dog as Speak>::speak @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <std::alloc::Global as std::alloc::Allocator>::deallocate @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn <std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32> as std::ops::Drop>::drop @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32> as std::ops::FnOnce<(u32,)>>::call_once @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <{closure@mono_probe.rs:47:56: 47:64} as std::ops::FnOnce<(u32,)>>::call_once - shim(vtable) @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn exercise_all @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn exercise_all::{closure#0} @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn exercise_all::{closure#1} @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn generic_inline::<Dog> @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn generic_non_inline::<Dog> @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::alloc::Global::alloc_impl_runtime @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::alloc::Layout::from_size_alignment_unchecked::precondition_check @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::boxed::Box::<{closure@mono_probe.rs:47:56: 47:64}>::new @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::boxed::box_new_uninit @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::fmt::Arguments::<'_>::from_str @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::mem::Alignment::new_unchecked::precondition_check @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::ptr::NonNull::<T>::new_unchecked::precondition_check @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn std::ptr::drop_glue::<Dog> - shim(Some(Dog)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<alloc::raw_vec::RawVec<u8>> - shim(Some(alloc::raw_vec::RawVec<u8>)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<dyn std::ops::FnOnce(u32) -> u32> - shim(Some(dyn std::ops::FnOnce(u32) -> u32)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32>> - shim(Some(std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32>)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<std::string::String> - shim(Some(std::string::String)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<std::vec::Vec<u8>> - shim(Some(std::vec::Vec<u8>)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<{closure@mono_probe.rs:47:56: 47:64}> - shim(Some({closure@mono_probe.rs:47:56: 47:64})) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::string::String::new @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn tracked_callee - shim(reify) @@ mono_probe.5f5a970010711670-cgu.0[Internal]",
+    "MONO_ITEM fn tracked_callee @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM static GLOBAL_ARRAY @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM static REF_TO_GLOBAL @@ mono_probe.5f5a970010711670-cgu.0[External]"
+  ],
+  "mono_probe_link_dead_code_items": [
+    "MONO_ITEM fn <Dog as LoudSpeak>::loud @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <Dog as Speak>::id @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <Dog as Speak>::speak @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <std::alloc::Global as std::alloc::Allocator>::deallocate @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32> as std::ops::Drop>::drop @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32> as std::ops::FnOnce<(u32,)>>::call_once @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn <{closure@mono_probe.rs:47:56: 47:64} as std::ops::FnOnce<(u32,)>>::call_once - shim(vtable) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn exercise_all @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn exercise_all::{closure#0} @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn exercise_all::{closure#1} @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn generic_inline::<Dog> @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn generic_non_inline::<Dog> @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::alloc::Global::alloc_impl_runtime @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::alloc::Layout::from_size_alignment_unchecked::precondition_check @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::boxed::Box::<{closure@mono_probe.rs:47:56: 47:64}>::new @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::boxed::box_new_uninit @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::fmt::Arguments::<'_>::from_str @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::mem::Alignment::new_unchecked::precondition_check @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::NonNull::<T>::new_unchecked::precondition_check @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<Dog> - shim(Some(Dog)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<alloc::raw_vec::RawVec<u8>> - shim(Some(alloc::raw_vec::RawVec<u8>)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<dyn std::ops::FnOnce(u32) -> u32> - shim(Some(dyn std::ops::FnOnce(u32) -> u32)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32>> - shim(Some(std::boxed::Box<dyn std::ops::FnOnce(u32) -> u32>)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<std::string::String> - shim(Some(std::string::String)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<std::vec::Vec<u8>> - shim(Some(std::vec::Vec<u8>)) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::ptr::drop_glue::<{closure@mono_probe.rs:47:56: 47:64}> - shim(Some({closure@mono_probe.rs:47:56: 47:64})) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn std::string::String::new @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn tracked_callee - shim(reify) @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM fn tracked_callee @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM static GLOBAL_ARRAY @@ mono_probe.5f5a970010711670-cgu.0[External]",
+    "MONO_ITEM static REF_TO_GLOBAL @@ mono_probe.5f5a970010711670-cgu.0[External]"
+  ],
+  "cgu_non_incremental": {
+    "v1_baseline": [
+      "MONO_ITEM fn mod_a::fa @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u32> @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::inlined_helper @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_b::fb @@ cgu_probe.a82b1b6d9d0d8964-cgu.1[External]",
+      "MONO_ITEM fn mod_c::fc @@ cgu_probe.a82b1b6d9d0d8964-cgu.2[External]"
+    ],
+    "v2_body_edit_in_mod_b": [
+      "MONO_ITEM fn mod_a::fa @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u32> @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::inlined_helper @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_b::fb @@ cgu_probe.a82b1b6d9d0d8964-cgu.1[External]",
+      "MONO_ITEM fn mod_c::fc @@ cgu_probe.a82b1b6d9d0d8964-cgu.2[External]"
+    ],
+    "v3_new_generic_inst_in_mod_c": [
+      "MONO_ITEM fn mod_a::fa @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u32> @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u64> @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_a::inlined_helper @@ cgu_probe.a82b1b6d9d0d8964-cgu.0[External]",
+      "MONO_ITEM fn mod_b::fb @@ cgu_probe.a82b1b6d9d0d8964-cgu.1[External]",
+      "MONO_ITEM fn mod_c::fc @@ cgu_probe.a82b1b6d9d0d8964-cgu.2[External]"
+    ]
+  },
+  "cgu_incremental": {
+    "v1_baseline": [
+      "MONO_ITEM fn mod_a::fa @@ 7yxtcyy69ainp7bv6jy9dua7k[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u32> @@ dd77os261oh14ls6peypvgnbb[External]",
+      "MONO_ITEM fn mod_a::inlined_helper @@ 7yxtcyy69ainp7bv6jy9dua7k[External]",
+      "MONO_ITEM fn mod_b::fb @@ bjm99ol5210hcww6o7h32dgin[External]",
+      "MONO_ITEM fn mod_c::fc @@ btssh5sfqhk3twxkoqscqxxc1[External]"
+    ],
+    "v2_body_edit_in_mod_b": [
+      "MONO_ITEM fn mod_a::fa @@ 7yxtcyy69ainp7bv6jy9dua7k[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u32> @@ dd77os261oh14ls6peypvgnbb[External]",
+      "MONO_ITEM fn mod_a::inlined_helper @@ 7yxtcyy69ainp7bv6jy9dua7k[External]",
+      "MONO_ITEM fn mod_b::fb @@ bjm99ol5210hcww6o7h32dgin[External]",
+      "MONO_ITEM fn mod_c::fc @@ btssh5sfqhk3twxkoqscqxxc1[External]"
+    ],
+    "v3_new_generic_inst_in_mod_c": [
+      "MONO_ITEM fn mod_a::fa @@ 7yxtcyy69ainp7bv6jy9dua7k[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u32> @@ dd77os261oh14ls6peypvgnbb[External]",
+      "MONO_ITEM fn mod_a::generic_shared::<u64> @@ dd77os261oh14ls6peypvgnbb[External]",
+      "MONO_ITEM fn mod_a::inlined_helper @@ 7yxtcyy69ainp7bv6jy9dua7k[External]",
+      "MONO_ITEM fn mod_b::fb @@ bjm99ol5210hcww6o7h32dgin[External]",
+      "MONO_ITEM fn mod_c::fc @@ btssh5sfqhk3twxkoqscqxxc1[External]"
+    ]
+  }
+}

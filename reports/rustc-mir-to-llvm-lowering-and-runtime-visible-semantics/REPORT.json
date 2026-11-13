@@ -1,0 +1,32 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc",
+    "rustc/codegen",
+    "rustc/mir",
+    "llvm",
+    "rust",
+    "verification",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "release_date": "2026-10-15"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 LLVM 23.1.1 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

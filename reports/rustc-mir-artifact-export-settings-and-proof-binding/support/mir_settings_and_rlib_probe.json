@@ -1,0 +1,172 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rlib_members_before": [
+    "lib.rmeta",
+    "lib.rmeta-link",
+    "liblib_probe.lib_probe.3e9e2c9354d0a64-cgu.0.rcgu.o"
+  ],
+  "rlib_members_after": [
+    "lib.rmeta",
+    "lib.rmeta-link",
+    "liblib_probe.lib_probe.3e9e2c9354d0a64-cgu.0.rcgu.o",
+    "anneal_artifact.mir.bin"
+  ],
+  "rlib_link_exit_code": 0,
+  "rlib_binary_run_exit_code": 0,
+  "settings_matrix": [
+    {
+      "label": "baseline_O0_m0",
+      "flags": [
+        "-Copt-level=0",
+        "-Zmir-opt-level=0"
+      ],
+      "mir_lines": 180,
+      "basic_blocks": 14,
+      "assert_terminators": 4,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 2
+    },
+    {
+      "label": "O0_m1_default_debug",
+      "flags": [
+        "-Copt-level=0"
+      ],
+      "mir_lines": 130,
+      "basic_blocks": 14,
+      "assert_terminators": 4,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 2
+    },
+    {
+      "label": "O2_m2_default_release",
+      "flags": [
+        "-Copt-level=2"
+      ],
+      "mir_lines": 222,
+      "basic_blocks": 6,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_m0",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=0"
+      ],
+      "mir_lines": 138,
+      "basic_blocks": 10,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 2
+    },
+    {
+      "label": "O2_m3",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=3"
+      ],
+      "mir_lines": 222,
+      "basic_blocks": 6,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_m4",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=4"
+      ],
+      "mir_lines": 222,
+      "basic_blocks": 6,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_no_inline_mir",
+      "flags": [
+        "-Copt-level=2",
+        "-Zinline-mir=no"
+      ],
+      "mir_lines": 102,
+      "basic_blocks": 10,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 2
+    },
+    {
+      "label": "O2_overflow_checks",
+      "flags": [
+        "-Copt-level=2",
+        "-Coverflow-checks=yes"
+      ],
+      "mir_lines": 242,
+      "basic_blocks": 9,
+      "assert_terminators": 3,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_debug_assertions",
+      "flags": [
+        "-Copt-level=2",
+        "-Cdebug-assertions=yes"
+      ],
+      "mir_lines": 260,
+      "basic_blocks": 11,
+      "assert_terminators": 5,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_ub_checks",
+      "flags": [
+        "-Copt-level=2",
+        "-Zub-checks=yes"
+      ],
+      "mir_lines": 240,
+      "basic_blocks": 8,
+      "assert_terminators": 2,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_panic_abort",
+      "flags": [
+        "-Copt-level=2",
+        "-Cpanic=abort"
+      ],
+      "mir_lines": 222,
+      "basic_blocks": 6,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_debuginfo_2",
+      "flags": [
+        "-Copt-level=2",
+        "-Cdebuginfo=2"
+      ],
+      "mir_lines": 260,
+      "basic_blocks": 6,
+      "assert_terminators": 0,
+      "debug_var_decls": 35,
+      "add_checked_mentions": 1
+    },
+    {
+      "label": "O2_avx2",
+      "flags": [
+        "-Copt-level=2",
+        "-Ctarget-feature=+avx2"
+      ],
+      "mir_lines": 222,
+      "basic_blocks": 6,
+      "assert_terminators": 0,
+      "debug_var_decls": 7,
+      "add_checked_mentions": 1
+    }
+  ]
+}

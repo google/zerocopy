@@ -1,0 +1,840 @@
+{
+  "rust_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "compiler_top_level_crates": 78,
+  "compiler_total_raw_lines": 869824,
+  "compiler_total_approx_sloc": 659410,
+  "longest_crate_chain": [
+    "rustc",
+    "rustc_driver",
+    "rustc_driver_impl",
+    "rustc_interface",
+    "rustc_codegen_llvm",
+    "rustc_codegen_ssa",
+    "rustc_metadata",
+    "rustc_expand",
+    "rustc_ast_passes",
+    "rustc_attr_parsing",
+    "rustc_parse",
+    "rustc_session",
+    "rustc_attr_ir",
+    "rustc_target",
+    "rustc_abi",
+    "rustc_errors",
+    "rustc_lint_defs",
+    "rustc_ast",
+    "rustc_ast_ir",
+    "rustc_span",
+    "rustc_data_structures",
+    "rustc_index",
+    "rustc_serialize",
+    "rustc_hashes"
+  ],
+  "top_depended_crates": [
+    [
+      "rustc_span",
+      53
+    ],
+    [
+      "rustc_data_structures",
+      50
+    ],
+    [
+      "rustc_macros",
+      48
+    ],
+    [
+      "rustc_abi",
+      34
+    ],
+    [
+      "rustc_errors",
+      33
+    ],
+    [
+      "rustc_hir",
+      33
+    ],
+    [
+      "rustc_index",
+      32
+    ],
+    [
+      "rustc_middle",
+      32
+    ],
+    [
+      "rustc_ast",
+      30
+    ],
+    [
+      "rustc_session",
+      28
+    ],
+    [
+      "rustc_target",
+      24
+    ],
+    [
+      "rustc_serialize",
+      23
+    ],
+    [
+      "rustc_feature",
+      15
+    ],
+    [
+      "rustc_hashes",
+      13
+    ],
+    [
+      "rustc_trait_selection",
+      13
+    ]
+  ],
+  "query_count": 326,
+  "codegen_traits": {
+    "AbiBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/abi.rs",
+      "method_count": 1
+    },
+    "AsmBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/asm.rs",
+      "method_count": 1
+    },
+    "AsmCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/asm.rs",
+      "method_count": 2
+    },
+    "BackendTypes": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/backend.rs",
+      "method_count": 0
+    },
+    "CodegenBackend": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/backend.rs",
+      "method_count": 21
+    },
+    "ExtraBackendMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/backend.rs",
+      "method_count": 2
+    },
+    "BuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/builder.rs",
+      "method_count": 139
+    },
+    "ConstCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/consts.rs",
+      "method_count": 25
+    },
+    "CoverageInfoBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/coverageinfo.rs",
+      "method_count": 1
+    },
+    "DebugInfoCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/debuginfo.rs",
+      "method_count": 1
+    },
+    "DebugInfoBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/debuginfo.rs",
+      "method_count": 13
+    },
+    "PreDefineCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/declare.rs",
+      "method_count": 2
+    },
+    "IntrinsicCallBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/intrinsic.rs",
+      "method_count": 9
+    },
+    "MiscCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/misc.rs",
+      "method_count": 10
+    },
+    "StaticCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/statics.rs",
+      "method_count": 2
+    },
+    "StaticBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/statics.rs",
+      "method_count": 1
+    },
+    "BaseTypeCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/type_.rs",
+      "method_count": 20
+    },
+    "DerivedTypeCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/type_.rs",
+      "method_count": 8
+    },
+    "LayoutTypeCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/type_.rs",
+      "method_count": 7
+    },
+    "TypeMembershipCodegenMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/type_.rs",
+      "method_count": 4
+    },
+    "ArgAbiBuilderMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/type_.rs",
+      "method_count": 2
+    },
+    "WriteBackendMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/write.rs",
+      "method_count": 9
+    },
+    "ModuleBufferMethods": {
+      "file": "compiler/rustc_codegen_ssa/src/traits/write.rs",
+      "method_count": 1
+    }
+  },
+  "codegen_traits_total_methods": 281,
+  "llvm_ffi": {
+    "llvm_c_fns": 249,
+    "llvm_rust_wrapper_fns": 132,
+    "wrapper_cpp": {
+      "files": 8,
+      "raw_lines": 4056,
+      "approx_sloc": 3147
+    }
+  },
+  "ir_enums": {
+    "ast_ExprKind": {
+      "file": "compiler/rustc_ast/src/ast.rs",
+      "start_line": 1746,
+      "end_line": 1928,
+      "count": 50,
+      "variants": [
+        "Array",
+        "ConstBlock",
+        "Call",
+        "MethodCall",
+        "Tup",
+        "Binary",
+        "Unary",
+        "Move",
+        "Lit",
+        "Cast",
+        "Type",
+        "Let",
+        "If",
+        "While",
+        "ForLoop",
+        "Loop",
+        "Match",
+        "Closure",
+        "Block",
+        "Gen",
+        "Await",
+        "Use",
+        "TryBlock",
+        "Assign",
+        "AssignOp",
+        "Field",
+        "Index",
+        "Range",
+        "Underscore",
+        "Path",
+        "AddrOf",
+        "Break",
+        "Continue",
+        "Ret",
+        "InlineAsm",
+        "OffsetOf",
+        "MacCall",
+        "Struct",
+        "Repeat",
+        "Paren",
+        "Try",
+        "Yield",
+        "Yeet",
+        "Become",
+        "IncludedBytes",
+        "FormatArgs",
+        "UnsafeBinderCast",
+        "DirectConstArg",
+        "Err",
+        "Dummy"
+      ]
+    },
+    "ast_ItemKind": {
+      "file": "compiler/rustc_ast/src/ast.rs",
+      "start_line": 4122,
+      "end_line": 4201,
+      "count": 20,
+      "variants": [
+        "ExternCrate",
+        "Use",
+        "Static",
+        "Const",
+        "ConstBlock",
+        "Fn",
+        "Mod",
+        "ForeignMod",
+        "GlobalAsm",
+        "TyAlias",
+        "Enum",
+        "Struct",
+        "Union",
+        "Trait",
+        "TraitAlias",
+        "Impl",
+        "MacCall",
+        "MacroDef",
+        "Delegation",
+        "DelegationMac"
+      ]
+    },
+    "ast_PatKind": {
+      "file": "compiler/rustc_ast/src/ast.rs",
+      "start_line": 872,
+      "end_line": 950,
+      "count": 20,
+      "variants": [
+        "Missing",
+        "Wild",
+        "Ident",
+        "Struct",
+        "TupleStruct",
+        "Or",
+        "Path",
+        "Tuple",
+        "Box",
+        "Deref",
+        "Ref",
+        "Expr",
+        "Range",
+        "Slice",
+        "Rest",
+        "Never",
+        "Guard",
+        "Paren",
+        "MacCall",
+        "Err"
+      ]
+    },
+    "ast_TyKind": {
+      "file": "compiler/rustc_ast/src/ast.rs",
+      "start_line": 2510,
+      "end_line": 2573,
+      "count": 23,
+      "variants": [
+        "Slice",
+        "Array",
+        "Ptr",
+        "Ref",
+        "PinnedRef",
+        "FnPtr",
+        "UnsafeBinder",
+        "Never",
+        "Tup",
+        "Path",
+        "TraitObject",
+        "ImplTrait",
+        "Paren",
+        "Infer",
+        "ImplicitSelf",
+        "MacCall",
+        "CVarArgs",
+        "Pat",
+        "FieldOf",
+        "View",
+        "DirectConstArg",
+        "Dummy",
+        "Err"
+      ]
+    },
+    "hir_ExprKind": {
+      "file": "compiler/rustc_hir/src/hir.rs",
+      "start_line": 2571,
+      "end_line": 2707,
+      "count": 35,
+      "variants": [
+        "ConstBlock",
+        "Array",
+        "Call",
+        "MethodCall",
+        "Use",
+        "Tup",
+        "Binary",
+        "Unary",
+        "Lit",
+        "Cast",
+        "Type",
+        "DropTemps",
+        "Let",
+        "If",
+        "Loop",
+        "Match",
+        "Closure",
+        "Block",
+        "Assign",
+        "AssignOp",
+        "Field",
+        "Index",
+        "Path",
+        "AddrOf",
+        "Break",
+        "Continue",
+        "Ret",
+        "Become",
+        "InlineAsm",
+        "OffsetOf",
+        "Struct",
+        "Repeat",
+        "Yield",
+        "UnsafeBinderCast",
+        "Err"
+      ]
+    },
+    "hir_ItemKind": {
+      "file": "compiler/rustc_hir/src/hir.rs",
+      "start_line": 4470,
+      "end_line": 4538,
+      "count": 16,
+      "variants": [
+        "ExternCrate",
+        "Use",
+        "Static",
+        "Const",
+        "Fn",
+        "Macro",
+        "Mod",
+        "ForeignMod",
+        "GlobalAsm",
+        "TyAlias",
+        "Enum",
+        "Struct",
+        "Union",
+        "Trait",
+        "TraitAlias",
+        "Impl"
+      ]
+    },
+    "hir_PatKind": {
+      "file": "compiler/rustc_hir/src/hir.rs",
+      "start_line": 1755,
+      "end_line": 1826,
+      "count": 16,
+      "variants": [
+        "Missing",
+        "Wild",
+        "Binding",
+        "Struct",
+        "TupleStruct",
+        "Or",
+        "Never",
+        "Tuple",
+        "Box",
+        "Deref",
+        "Ref",
+        "Expr",
+        "Guard",
+        "Range",
+        "Slice",
+        "Err"
+      ]
+    },
+    "hir_TyKind": {
+      "file": "compiler/rustc_hir/src/hir.rs",
+      "start_line": 3568,
+      "end_line": 3618,
+      "count": 18,
+      "variants": [
+        "InferDelegation",
+        "Slice",
+        "Array",
+        "Ptr",
+        "Ref",
+        "FnPtr",
+        "UnsafeBinder",
+        "Never",
+        "Tup",
+        "Path",
+        "OpaqueDef",
+        "TraitAscription",
+        "TraitObject",
+        "Err",
+        "Pat",
+        "FieldOf",
+        "View",
+        "Infer"
+      ]
+    },
+    "thir_ExprKind": {
+      "file": "compiler/rustc_middle/src/thir.rs",
+      "start_line": 268,
+      "end_line": 566,
+      "count": 51,
+      "variants": [
+        "Scope",
+        "If",
+        "Call",
+        "ByUse",
+        "Deref",
+        "Binary",
+        "LogicalOp",
+        "Unary",
+        "Cast",
+        "Use",
+        "NeverToAny",
+        "PointerCoercion",
+        "Loop",
+        "LoopMatch",
+        "Let",
+        "Match",
+        "Block",
+        "Assign",
+        "AssignOp",
+        "Field",
+        "Index",
+        "VarRef",
+        "UpvarRef",
+        "Borrow",
+        "RawBorrow",
+        "Break",
+        "Continue",
+        "ConstContinue",
+        "Return",
+        "Become",
+        "ConstBlock",
+        "Repeat",
+        "Array",
+        "Tuple",
+        "Adt",
+        "PlaceTypeAscription",
+        "ValueTypeAscription",
+        "PlaceUnwrapUnsafeBinder",
+        "ValueUnwrapUnsafeBinder",
+        "WrapUnsafeBinder",
+        "Closure",
+        "Literal",
+        "NonHirLiteral",
+        "ZstLiteral",
+        "NamedConst",
+        "ConstParam",
+        "StaticRef",
+        "InlineAsm",
+        "ThreadLocalRef",
+        "Yield",
+        "Reborrow"
+      ]
+    },
+    "thir_PatKind": {
+      "file": "compiler/rustc_middle/src/thir.rs",
+      "start_line": 764,
+      "end_line": 882,
+      "count": 15,
+      "variants": [
+        "Missing",
+        "Wild",
+        "Binding",
+        "Variant",
+        "Leaf",
+        "Deref",
+        "DerefPattern",
+        "Constant",
+        "Range",
+        "Slice",
+        "Array",
+        "Or",
+        "Guard",
+        "Never",
+        "Error"
+      ]
+    },
+    "thir_StmtKind": {
+      "file": "compiler/rustc_middle/src/thir.rs",
+      "start_line": 207,
+      "end_line": 244,
+      "count": 2,
+      "variants": [
+        "Expr",
+        "Let"
+      ]
+    },
+    "mir_MirPhase": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 42,
+      "end_line": 95,
+      "count": 3,
+      "variants": [
+        "Built",
+        "Analysis",
+        "Runtime"
+      ]
+    },
+    "mir_AnalysisPhase": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 100,
+      "end_line": 117,
+      "count": 2,
+      "variants": [
+        "Initial",
+        "PostCleanup"
+      ]
+    },
+    "mir_RuntimePhase": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 122,
+      "end_line": 142,
+      "count": 3,
+      "variants": [
+        "Initial",
+        "PostCleanup",
+        "Optimized"
+      ]
+    },
+    "mir_StatementKind": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 305,
+      "end_line": 456,
+      "count": 13,
+      "variants": [
+        "Assign",
+        "FakeRead",
+        "SetDiscriminant",
+        "StorageLive",
+        "StorageDead",
+        "PlaceMention",
+        "AscribeUserType",
+        "Coverage",
+        "CoverageKind",
+        "Intrinsic",
+        "ConstEvalCounter",
+        "Nop",
+        "BackwardIncompatibleDropHint"
+      ]
+    },
+    "mir_TerminatorKind": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 683,
+      "end_line": 968,
+      "count": 15,
+      "variants": [
+        "Goto",
+        "SwitchInt",
+        "UnwindResume",
+        "UnwindTerminate",
+        "Return",
+        "Unreachable",
+        "Drop",
+        "Call",
+        "TailCall",
+        "Assert",
+        "Yield",
+        "CoroutineDrop",
+        "FalseEdge",
+        "FalseUnwind",
+        "InlineAsm"
+      ]
+    },
+    "mir_Rvalue": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1342,
+      "end_line": 1467,
+      "count": 13,
+      "variants": [
+        "Use",
+        "Repeat",
+        "Ref",
+        "ThreadLocalRef",
+        "RawPtr",
+        "Cast",
+        "BinaryOp",
+        "UnaryOp",
+        "Discriminant",
+        "Aggregate",
+        "CopyForDeref",
+        "WrapUnsafeBinder",
+        "Reborrow"
+      ]
+    },
+    "mir_Operand": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1282,
+      "end_line": 1314,
+      "count": 4,
+      "variants": [
+        "Copy",
+        "Move",
+        "Constant",
+        "RuntimeChecks"
+      ]
+    },
+    "mir_ProjectionElem": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1171,
+      "end_line": 1258,
+      "count": 8,
+      "variants": [
+        "Deref",
+        "Field",
+        "Index",
+        "ConstantIndex",
+        "Subslice",
+        "Downcast",
+        "OpaqueCast",
+        "UnwrapUnsafeBinder"
+      ]
+    },
+    "mir_CastKind": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1470,
+      "end_line": 1519,
+      "count": 12,
+      "variants": [
+        "PointerExposeProvenance",
+        "PointerWithExposedProvenance",
+        "PointerCoercion",
+        "IntToInt",
+        "FloatToInt",
+        "FloatToFloat",
+        "IntToFloat",
+        "PtrToPtr",
+        "FnPtrToPtr",
+        "Transmute",
+        "BoxDerefTransmute",
+        "Subtype"
+      ]
+    },
+    "mir_BinOp": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1608,
+      "end_line": 1698,
+      "count": 26,
+      "variants": [
+        "Add",
+        "AddUnchecked",
+        "AddWithOverflow",
+        "Sub",
+        "SubUnchecked",
+        "SubWithOverflow",
+        "Mul",
+        "MulUnchecked",
+        "MulWithOverflow",
+        "Div",
+        "Rem",
+        "BitXor",
+        "BitAnd",
+        "BitOr",
+        "Shl",
+        "ShlUnchecked",
+        "Shr",
+        "ShrUnchecked",
+        "Eq",
+        "Lt",
+        "Le",
+        "Ne",
+        "Ge",
+        "Gt",
+        "Cmp",
+        "Offset"
+      ]
+    },
+    "mir_UnOp": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1590,
+      "end_line": 1604,
+      "count": 3,
+      "variants": [
+        "Not",
+        "Neg",
+        "PtrMetadata"
+      ]
+    },
+    "mir_AggregateKind": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 1533,
+      "end_line": 1563,
+      "count": 7,
+      "variants": [
+        "Array",
+        "Tuple",
+        "Adt",
+        "Closure",
+        "Coroutine",
+        "CoroutineClosure",
+        "RawPtr"
+      ]
+    },
+    "mir_NonDivergingIntrinsic": {
+      "file": "compiler/rustc_middle/src/mir/syntax.rs",
+      "start_line": 460,
+      "end_line": 483,
+      "count": 2,
+      "variants": [
+        "Assume",
+        "CopyNonOverlapping"
+      ]
+    },
+    "ty_TyKind": {
+      "file": "compiler/rustc_type_ir/src/ty_kind.rs",
+      "start_line": 147,
+      "end_line": 347,
+      "count": 29,
+      "variants": [
+        "Bool",
+        "Char",
+        "Int",
+        "Uint",
+        "Float",
+        "Adt",
+        "Foreign",
+        "Str",
+        "Array",
+        "Pat",
+        "Slice",
+        "RawPtr",
+        "Ref",
+        "FnDef",
+        "FnPtr",
+        "UnsafeBinder",
+        "Dynamic",
+        "Closure",
+        "CoroutineClosure",
+        "Coroutine",
+        "CoroutineWitness",
+        "Never",
+        "Tuple",
+        "Alias",
+        "Param",
+        "Bound",
+        "Placeholder",
+        "Infer",
+        "Error"
+      ]
+    },
+    "ty_InstanceKind": {
+      "file": "compiler/rustc_middle/src/ty/instance.rs",
+      "start_line": 62,
+      "end_line": 96,
+      "count": 5,
+      "variants": [
+        "Item",
+        "Intrinsic",
+        "LlvmIntrinsic",
+        "Virtual",
+        "Shim"
+      ]
+    },
+    "ty_ShimKind": {
+      "file": "compiler/rustc_middle/src/ty/instance.rs",
+      "start_line": 100,
+      "end_line": 198,
+      "count": 12,
+      "variants": [
+        "VTable",
+        "Reify",
+        "FnPtr",
+        "ClosureOnce",
+        "ConstructCoroutineInClosure",
+        "ThreadLocal",
+        "FutureDropPoll",
+        "DropGlue",
+        "Clone",
+        "FnPtrAddr",
+        "AsyncDropGlueCtor",
+        "AsyncDropGlue"
+      ]
+    }
+  }
+}

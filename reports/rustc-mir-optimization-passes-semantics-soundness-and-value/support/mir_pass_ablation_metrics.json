@@ -1,0 +1,221 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "ablation_results": [
+    {
+      "label": "O0_mir0",
+      "flags": [
+        "-Copt-level=0",
+        "-Zmir-opt-level=0"
+      ],
+      "mir_lines": 496,
+      "llvm_ir_lines": 595,
+      "text_section_bytes": 318647,
+      "compile_time_ms": 62.46,
+      "runtime_median_ms": 132.18
+    },
+    {
+      "label": "O0_mir1_default",
+      "flags": [
+        "-Copt-level=0",
+        "-Zmir-opt-level=1"
+      ],
+      "mir_lines": 318,
+      "llvm_ir_lines": 589,
+      "text_section_bytes": 318599,
+      "compile_time_ms": 61.55,
+      "runtime_median_ms": 105.63
+    },
+    {
+      "label": "O0_mir2",
+      "flags": [
+        "-Copt-level=0",
+        "-Zmir-opt-level=2"
+      ],
+      "mir_lines": 280,
+      "llvm_ir_lines": 576,
+      "text_section_bytes": 318583,
+      "compile_time_ms": 62.31,
+      "runtime_median_ms": 100.54
+    },
+    {
+      "label": "O2_mir0",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=0"
+      ],
+      "mir_lines": 484,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 79.28,
+      "runtime_median_ms": 10.23
+    },
+    {
+      "label": "O2_mir1",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=1"
+      ],
+      "mir_lines": 398,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 77.84,
+      "runtime_median_ms": 10.01
+    },
+    {
+      "label": "O2_mir2_default",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=2"
+      ],
+      "mir_lines": 452,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 76.92,
+      "runtime_median_ms": 10.05
+    },
+    {
+      "label": "O2_mir3",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=3"
+      ],
+      "mir_lines": 452,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 78.06,
+      "runtime_median_ms": 10.74
+    },
+    {
+      "label": "O2_mir4",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-opt-level=4"
+      ],
+      "mir_lines": 452,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 80.42,
+      "runtime_median_ms": 10.1
+    },
+    {
+      "label": "O2_no_Inline",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-Inline"
+      ],
+      "mir_lines": 326,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 79.91,
+      "runtime_median_ms": 10.04
+    },
+    {
+      "label": "O2_no_GVN",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-GVN"
+      ],
+      "mir_lines": 534,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 77.29,
+      "runtime_median_ms": 10.03
+    },
+    {
+      "label": "O2_no_SROA",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-ScalarReplacementOfAggregates"
+      ],
+      "mir_lines": 465,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 74.99,
+      "runtime_median_ms": 10.02
+    },
+    {
+      "label": "O2_no_RefProp",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-ReferencePropagation"
+      ],
+      "mir_lines": 480,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 76.38,
+      "runtime_median_ms": 10.0
+    },
+    {
+      "label": "O2_no_DataflowConstProp",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-DataflowConstProp"
+      ],
+      "mir_lines": 452,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 76.28,
+      "runtime_median_ms": 10.41
+    },
+    {
+      "label": "O2_no_JumpThreading",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-JumpThreading"
+      ],
+      "mir_lines": 562,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 78.49,
+      "runtime_median_ms": 10.19
+    },
+    {
+      "label": "O2_no_DestProp",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-DestinationPropagation"
+      ],
+      "mir_lines": 472,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 77.31,
+      "runtime_median_ms": 10.14
+    },
+    {
+      "label": "O2_no_DSE",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-DeadStoreElimination-initial,-DeadStoreElimination-final"
+      ],
+      "mir_lines": 475,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 76.27,
+      "runtime_median_ms": 10.79
+    },
+    {
+      "label": "O2_no_InstSimplify",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-InstSimplify-before-inline,-InstSimplify-after-simplifycfg"
+      ],
+      "mir_lines": 461,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 78.35,
+      "runtime_median_ms": 10.3
+    },
+    {
+      "label": "O2_no_CopyProp",
+      "flags": [
+        "-Copt-level=2",
+        "-Zmir-enable-passes=-CopyProp"
+      ],
+      "mir_lines": 450,
+      "llvm_ir_lines": 442,
+      "text_section_bytes": 317443,
+      "compile_time_ms": 79.09,
+      "runtime_median_ms": 10.51
+    }
+  ]
+}

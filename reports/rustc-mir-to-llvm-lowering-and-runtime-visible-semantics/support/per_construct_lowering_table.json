@@ -1,0 +1,122 @@
+[
+  {
+    "category": "Local classification",
+    "mir_construct": "LocalDecl (mir::Local)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/analyze.rs:non_ssa_locals & locals.rs",
+    "llvm_lowering": "LocalRef::Operand / PendingOperand (SSA Value/Pair/ZeroSized) if !is_non_ssa_local; otherwise LocalRef::Place (entry-block alloca with ABI alignment)"
+  },
+  {
+    "category": "Operand representation",
+    "mir_construct": "OperandValue::{Immediate, Pair, Ref, ZeroSized}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/operand.rs:28-89",
+    "llvm_lowering": "Immediate(V) for Scalar/SimdVector (bool is i1 in SSA, zext to i8 in memory); Pair(V, V) for ScalarPair (wide ptrs, 2-field structs/enums); Ref(PlaceValue) for Memory layouts; ZeroSized for 0-byte types"
+  },
+  {
+    "category": "StatementKind",
+    "mir_construct": "StatementKind::Assign(place, rvalue)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/statement.rs:15-68",
+    "llvm_lowering": "If dest is PendingOperand/Operand: codegen_rvalue_operand + overwrite_local; if dest is LocalRef::Place or projected Place: codegen_rvalue storing into PlaceRef (+ optional codegen_retag_place/operand under -Zcodegen-emit-retag)"
+  },
+  {
+    "category": "StatementKind",
+    "mir_construct": "StatementKind::SetDiscriminant { place, variant_index }",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/statement.rs:69-71, place.rs:codegen_set_discr",
+    "llvm_lowering": "Writes direct tag integer or niche-encoded value to tag field GEP for Variants::Multiple { TagEncoding::Direct | Niche }"
+  },
+  {
+    "category": "StatementKind",
+    "mir_construct": "StatementKind::{StorageLive, StorageDead}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/statement.rs:72-85",
+    "llvm_lowering": "Calls llvm.lifetime.start.p0(size, ptr) and llvm.lifetime.end.p0(size, ptr) on LocalRef::Place allocas when emit_lifetime_markers is enabled"
+  },
+  {
+    "category": "StatementKind",
+    "mir_construct": "StatementKind::Intrinsic(NonDivergingIntrinsic::Assume)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/statement.rs:89-92",
+    "llvm_lowering": "Evaluates boolean operand as i1 immediate and emits call void @llvm.assume(i1 %cond)"
+  },
+  {
+    "category": "StatementKind",
+    "mir_construct": "StatementKind::Intrinsic(NonDivergingIntrinsic::CopyNonOverlapping)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/statement.rs:93-115",
+    "llvm_lowering": "Computes bytes = unchecked_sumul(count, sizeof(T)) and emits call void @llvm.memcpy.p0.p0.i64(ptr align A %dst, ptr align A %src, i64 %bytes, i1 false)"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::Use(operand, with_retag)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:107-135, 792",
+    "llvm_lowering": "Skips store if entirely uninit const; otherwise loads/evaluates OperandRef and stores to dest (setting MemFlags::CAPTURES_READ_ONLY for &Freeze with WithRetag::Yes)"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::Repeat(elem, count)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:193-250",
+    "llvm_lowering": "No-op for ZST; llvm.memset(undef) for uninit const; llvm.memset(byte) for i8/u8; otherwise generates a header/body/next basic-block loop storing elem to each index"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::{Ref, RawPtr}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:629-654, 860-874",
+    "llvm_lowering": "codegen_place(place).val.address() -> Immediate(llptr) for thin pointers or Pair(llptr, llextra) for wide pointers"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::BinaryOp (wrapping, checked, unchecked, wide ptr, float)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:656-712",
+    "llvm_lowering": "Checked ops call @llvm.{s,u}{add,sub,mul}.with.overflow.iN returning {iN, i1} Pair; Unchecked ops emit add/sub/mul/shl/shr with nuw/nsw or exact; Offset emits inbounds gep"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::UnaryOp::{Not, Neg, PtrMetadata}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:713-746",
+    "llvm_lowering": "Not -> xor %x, -1 (or true); Neg -> sub 0, %x or fneg %x; PtrMetadata -> extracts second element llextra from Pair(ptr, meta) or const 0 for thin ptr"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::Discriminant(place)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:747-757, place.rs:codegen_get_discr",
+    "llvm_lowering": "Const 0 for Single variant; loads tag field with !range metadata for Direct tag; compares niche value against valid range for Niche encoding and selects untagged variant or niche tag"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::Cast (12 CastKind variants)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:137-192, 501-628",
+    "llvm_lowering": "Unsize attaches vtable GlobalAlloc::VTable or slice length to Pair; IntToInt -> trunc/zext/sext; FloatToInt -> fptosi/fptoui or saturating intrinsic; PointerExposeProvenance -> ptrtoint; PointerWithExposedProvenance -> inttoptr; Transmute -> bitcast/alloca load-store"
+  },
+  {
+    "category": "Rvalue",
+    "mir_construct": "Rvalue::Aggregate (Tuple, Array, Adt, Closure, Coroutine, RawPtr)",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/rvalue.rs:21-92, 254-335, 810-847",
+    "llvm_lowering": "Packs all-const <=16B aggregates into a single integer store when possible; otherwise projects each field (and downcast + codegen_set_discr for enums) or builds Immediate/Pair via OperandRefBuilder"
+  },
+  {
+    "category": "TerminatorKind",
+    "mir_construct": "TerminatorKind::{Goto, Return, Unreachable}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/block.rs:1647-1664",
+    "llvm_lowering": "Goto merges single-predecessor block or emits br label %bb; Return loads/packs RETURN_PLACE per FnAbi::ret PassMode and emits ret; Unreachable emits unreachable (lowered to ud2/brk trap via Options.TrapUnreachable = true)"
+  },
+  {
+    "category": "TerminatorKind",
+    "mir_construct": "TerminatorKind::SwitchInt { discr, targets }",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/block.rs:1330-1410",
+    "llvm_lowering": "2-target switch emits icmp eq + br i1 (with !prof branch_weights when otherwise is cold); N-target switch emits switch iN %val, label %otherwise [ ... ]"
+  },
+  {
+    "category": "TerminatorKind",
+    "mir_construct": "TerminatorKind::Assert { cond, expected, msg, target, unwind }",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/block.rs:850-980",
+    "llvm_lowering": "Emits icmp + br i1 (with 2000:1 !prof branch weights favoring target) to a cold panic block calling lang item panic_const_* / panic_bounds_check / panic_misaligned_pointer_dereference with implicit caller Location"
+  },
+  {
+    "category": "TerminatorKind",
+    "mir_construct": "TerminatorKind::{Call, TailCall, Drop}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/block.rs:985-1325, 650-845",
+    "llvm_lowering": "Resolves Instance (Virtual -> vtable slot GEP+load, Intrinsic -> codegen_intrinsic_call), marshals args per FnAbi PassMode (Direct/Pair/Cast/Indirect + implicit #[track_caller] Location), emits call/musttail call (or invoke when unwind action has landing pad / cleanuppad)"
+  },
+  {
+    "category": "TerminatorKind",
+    "mir_construct": "TerminatorKind::{InlineAsm, UnwindResume, UnwindTerminate}",
+    "ssa_entry": "rustc_codegen_ssa/src/mir/block.rs:1415-1645, naked_asm.rs",
+    "llvm_lowering": "InlineAsm lowers to LLVM inline asm callbr/call; UnwindResume emits resume {ptr, i32} (Itanium) or cleanupret (MSVC SEH); UnwindTerminate calls core::panicking::panic_cannot_unwind (or nounwind terminate landing pad)"
+  }
+]

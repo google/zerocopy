@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc",
+    "rustc/mir",
+    "rustc/metadata",
+    "anneal",
+    "charon",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1",
+        "release_date": "2026-10-15"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification system",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
