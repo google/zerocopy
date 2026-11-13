@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "isa/x86-64",
+    "isa/i386",
+    "isa/aarch64",
+    "lean/isa-semantics",
+    "verification/isa-coverage"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler (X86_FEATURES, AARCH64_FEATURES, and Tier 1 libcore machine-code footprint)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 X86 and AArch64 TableGen instruction definitions",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "ACL2 x86isa formalization and Sail x86 translations (sail-x86-from-acl2 and sail-tiny-x86)",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "9df88e946034e24212f3aedd8b71b02e4224783e",
+        "sail_x86_from_acl2_revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf",
+        "sail_tiny_x86_revision": "229bd8448937042baa51b0a2d14bc437929b0dce"
+      }
+    },
+    {
+      "name": "K-Framework X86-64-semantics (Dasgupta et al., PLDI 2019) and Strata synthesized x86-64 semantics (Heule et al., PLDI 2016)",
+      "identity": {
+        "k_x86_doi": "10.1145/3314221.3314601",
+        "strata_doi": "10.1145/2908080.2908121",
+        "k_x86_repository": "kframework/X86-64-semantics"
+      }
+    },
+    {
+      "name": "Intel XED (X86 Encoder Decoder) tables and Intel 64 / IA-32 Software Developer's Manual",
+      "identity": {
+        "repository": "intelxed/xed",
+        "license": "Apache-2.0",
+        "sdm_document": "325462-084US"
+      }
+    },
+    {
+      "name": "Arm Machine-Readable Architecture Specification (AArchMRS / ASL v2025-03_rel) and ASLp / Guthrie lifters",
+      "identity": {
+        "artifact": "aarchmrs-v2025-03_rel",
+        "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85",
+        "build_timestamp": "2025-03-21T17:41"
+      }
+    },
+    {
+      "name": "Sail compiler Lean 4 backend, lean-sail runtime, sail-arm (v9.4-a), and sail-tiny-arm-lean",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+        "lean_sail_revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+        "sail_arm_revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+        "sail_tiny_arm_lean_revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b"
+      }
+    },
+    {
+      "name": "HOL4 L3 machine-code models, AWS LNSym, AeneasVerif Kraken, cslib-community/bignum, and MM0 x86 Lean models",
+      "identity": {
+        "hol_revision": "d73e603616d80726506326d83af8f0e74559623c",
+        "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+        "kraken_revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+        "cslib_bignum_revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+        "mm0_revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -1,0 +1,50 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn pure_nomem_add(_1: u64, _2: u64) -> u64 {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: u64;
+    let _3: u64;
+    scope 1 {
+        debug out => _3;
+    }
+
+    bb0: {
+        asm!("lea {2}, [{0} + {1}]", in(reg) copy _1, in(reg) copy _2, lateout(reg) _3, options(PURE | NOMEM | PRESERVES_FLAGS | NOSTACK)) -> [return: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        _0 = copy _3;
+        return;
+    }
+}
+
+fn clobber_c_abi_call(_1: extern "C" fn(u64) -> u64, _2: u64) -> u64 {
+    debug fn_ptr => _1;
+    debug arg => _2;
+    let mut _0: u64;
+    let _3: u64;
+    scope 1 {
+        debug ret => _3;
+    }
+
+    bb0: {
+        asm!("call {0}", in(reg) copy _1, in("di") copy _2, lateout("ax") _3, lateout("cx") _, lateout("dx") _, lateout("si") _, lateout("di") _, lateout("r8") _, lateout("r9") _, lateout("r10") _, lateout("r11") _, lateout("xmm0") _, lateout("xmm1") _, lateout("xmm2") _, lateout("xmm3") _, lateout("xmm4") _, lateout("xmm5") _, lateout("xmm6") _, lateout("xmm7") _, lateout("xmm8") _, lateout("xmm9") _, lateout("xmm10") _, lateout("xmm11") _, lateout("xmm12") _, lateout("xmm13") _, lateout("xmm14") _, lateout("xmm15") _, lateout("zmm16") _, lateout("zmm17") _, lateout("zmm18") _, lateout("zmm19") _, lateout("zmm20") _, lateout("zmm21") _, lateout("zmm22") _, lateout("zmm23") _, lateout("zmm24") _, lateout("zmm25") _, lateout("zmm26") _, lateout("zmm27") _, lateout("zmm28") _, lateout("zmm29") _, lateout("zmm30") _, lateout("zmm31") _, lateout("k0") _, lateout("k1") _, lateout("k2") _, lateout("k3") _, lateout("k4") _, lateout("k5") _, lateout("k6") _, lateout("k7") _, lateout("mm0") _, lateout("mm1") _, lateout("mm2") _, lateout("mm3") _, lateout("mm4") _, lateout("mm5") _, lateout("mm6") _, lateout("mm7") _, lateout("st(0)") _, lateout("st(1)") _, lateout("st(2)") _, lateout("st(3)") _, lateout("st(4)") _, lateout("st(5)") _, lateout("st(6)") _, lateout("st(7)") _, lateout("tmm0") _, lateout("tmm1") _, lateout("tmm2") _, lateout("tmm3") _, lateout("tmm4") _, lateout("tmm5") _, lateout("tmm6") _, lateout("tmm7") _, options()) -> [return: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        _0 = copy _3;
+        return;
+    }
+}
+
+fn naked_identity(_1: u64) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+
+    bb0: {
+        asm!("mov rax, rdi
+ret", options()) -> unwind unreachable;
+    }
+}

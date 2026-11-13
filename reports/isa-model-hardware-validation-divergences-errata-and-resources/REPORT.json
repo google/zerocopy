@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "isa/hardware-validation",
+    "isa/x86-64",
+    "isa/i386",
+    "isa/aarch64",
+    "llvm/errata-mitigations"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler used to compile x86_64, i686, and AArch64 hardware/emulator validation probes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 and LLD hardware errata and speculative-execution mitigation passes",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Intel Xeon Ice Lake-SP (Family 6, Model 106, Stepping 6) native x86-64 / IA-32 execution environment and QEMU 11.1.2 user-mode emulators",
+      "identity": {
+        "cpu": "GenuineIntel-Family6-Model106-Stepping6",
+        "qemu_i386": "11.1.2 (Debian 1:11.1.2+ds-2)",
+        "qemu_aarch64": "11.1.2 (Debian 1:11.1.2+ds-2)"
+      }
+    },
+    {
+      "name": "AeneasVerif Kraken differential validation harness (Tests/TestGeneration.lean) and AWS LNSym co-simulation suite",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+        "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+      }
+    },
+    {
+      "name": "CPU validation, emulator fuzzing, and undocumented-instruction discovery literature (PokeEMU, Kemerlis/sandsifter, RISCV-Torture)",
+      "identity": {
+        "pokeemu_doi": "10.1145/2737924.2737981",
+        "sandsifter_repository": "xoreaxeaxeax/sandsifter",
+        "intel_jcc_erratum_doc": "338848-001US"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

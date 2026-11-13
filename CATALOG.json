@@ -11049,6 +11049,88 @@
         "systems/os-kernels"
       ]
     },
+    "formal-isa-models-x86-64-i386-and-aarch64-coverage": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler (X86_FEATURES, AARCH64_FEATURES, and Tier 1 libcore machine-code footprint)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 X86 and AArch64 TableGen instruction definitions"
+        },
+        {
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "9df88e946034e24212f3aedd8b71b02e4224783e",
+            "sail_tiny_x86_revision": "229bd8448937042baa51b0a2d14bc437929b0dce",
+            "sail_x86_from_acl2_revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf"
+          },
+          "name": "ACL2 x86isa formalization and Sail x86 translations (sail-x86-from-acl2 and sail-tiny-x86)"
+        },
+        {
+          "identity": {
+            "k_x86_doi": "10.1145/3314221.3314601",
+            "k_x86_repository": "kframework/X86-64-semantics",
+            "strata_doi": "10.1145/2908080.2908121"
+          },
+          "name": "K-Framework X86-64-semantics (Dasgupta et al., PLDI 2019) and Strata synthesized x86-64 semantics (Heule et al., PLDI 2016)"
+        },
+        {
+          "identity": {
+            "license": "Apache-2.0",
+            "repository": "intelxed/xed",
+            "sdm_document": "325462-084US"
+          },
+          "name": "Intel XED (X86 Encoder Decoder) tables and Intel 64 / IA-32 Software Developer's Manual"
+        },
+        {
+          "identity": {
+            "artifact": "aarchmrs-v2025-03_rel",
+            "build_timestamp": "2025-03-21T17:41",
+            "url": "https://documentation-service.arm.com/static/67e40f3398aa3c3b6eea6a85"
+          },
+          "name": "Arm Machine-Readable Architecture Specification (AArchMRS / ASL v2025-03_rel) and ASLp / Guthrie lifters"
+        },
+        {
+          "identity": {
+            "lean_sail_revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+            "repository": "rems-project/sail",
+            "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8",
+            "sail_arm_revision": "7d0581642d0e3aaca367bbc5650aca7c53057543",
+            "sail_tiny_arm_lean_revision": "4a474cfc415e46a0f6251c8c7d58a85e6411eb7b"
+          },
+          "name": "Sail compiler Lean 4 backend, lean-sail runtime, sail-arm (v9.4-a), and sail-tiny-arm-lean"
+        },
+        {
+          "identity": {
+            "cslib_bignum_revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+            "hol_revision": "d73e603616d80726506326d83af8f0e74559623c",
+            "kraken_revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+            "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+            "mm0_revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "HOL4 L3 machine-code models, AWS LNSym, AeneasVerif Kraken, cslib-community/bignum, and MM0 x86 Lean models"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "isa/x86-64",
+        "isa/i386",
+        "isa/aarch64",
+        "lean/isa-semantics",
+        "verification/isa-coverage"
+      ]
+    },
     "fuel-step-indexing-clocks-and-tcb-recursion": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -12572,6 +12654,59 @@
         "verification/separation-logic",
         "minirust/semantics",
         "lean/mechanization"
+      ]
+    },
+    "isa-model-hardware-validation-divergences-errata-and-resources": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler used to compile x86_64, i686, and AArch64 hardware/emulator validation probes"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 and LLD hardware errata and speculative-execution mitigation passes"
+        },
+        {
+          "identity": {
+            "cpu": "GenuineIntel-Family6-Model106-Stepping6",
+            "qemu_aarch64": "11.1.2 (Debian 1:11.1.2+ds-2)",
+            "qemu_i386": "11.1.2 (Debian 1:11.1.2+ds-2)"
+          },
+          "name": "Intel Xeon Ice Lake-SP (Family 6, Model 106, Stepping 6) native x86-64 / IA-32 execution environment and QEMU 11.1.2 user-mode emulators"
+        },
+        {
+          "identity": {
+            "lnsym_revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+            "repository": "AeneasVerif/kraken",
+            "revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+          },
+          "name": "AeneasVerif Kraken differential validation harness (Tests/TestGeneration.lean) and AWS LNSym co-simulation suite"
+        },
+        {
+          "identity": {
+            "intel_jcc_erratum_doc": "338848-001US",
+            "pokeemu_doi": "10.1145/2737924.2737981",
+            "sandsifter_repository": "xoreaxeaxeax/sandsifter"
+          },
+          "name": "CPU validation, emulator fuzzing, and undocumented-instruction discovery literature (PokeEMU, Kemerlis/sandsifter, RISCV-Torture)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "isa/hardware-validation",
+        "isa/x86-64",
+        "isa/i386",
+        "isa/aarch64",
+        "llvm/errata-mitigations"
       ]
     },
     "islaris-source-identity-dependency-solving-and-coq-adequacy-replay": {
@@ -15555,6 +15690,113 @@
         "lean/tactics",
         "lean/elaboration",
         "anneal/proof-automation"
+      ]
+    },
+    "machine-code-verification-frameworks-and-assembly-contracts": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler (InlineAsm AST, HIR, MIR TerminatorKind::InlineAsm, and target register classes)"
+        },
+        {
+          "identity": {
+            "path": "src/inline-assembly.md",
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+          },
+          "name": "The Rust Reference (Inline assembly specification)"
+        },
+        {
+          "identity": {
+            "path": "src/inline-assembly.rst",
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "tag": "1.99"
+          },
+          "name": "Ferrocene Language Specification (FLS 1.99 Inline Assembly chapter)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (Events.v EF_inline_asm, EF_annot, and x86/AArch64 Asm.v Pbuiltin semantics)"
+        },
+        {
+          "identity": {
+            "cn2islaris_revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466",
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris and CN2Islaris separation-logic machine-code verification frameworks over Sail/Isla traces"
+        },
+        {
+          "identity": {
+            "cslib_bignum_revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba",
+            "repository": "awslabs/s2n-bignum",
+            "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91"
+          },
+          "name": "s2n-bignum and cslib-community/bignum cryptographic assembly verification frameworks"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+          },
+          "name": "Jasmin cryptographic assembly compiler and Rocq architecture semantics"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Project Everest Vale (Verified Assembly Language for Everest) F* x64 semantics"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+          },
+          "name": "CakeML target-agnostic assembly interface and machine-code Hoare triples"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13",
+            "riscv_coq_revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae"
+          },
+          "name": "MIT PLV Bedrock2 and riscv-coq weak-memory / MMIO machine-code verification stack"
+        },
+        {
+          "identity": {
+            "kraken_revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0",
+            "repository": "leanprover/LNSym",
+            "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92"
+          },
+          "name": "AWS LNSym and AeneasVerif Kraken Lean 4 AArch64/x86-64 machine-code verification frameworks"
+        },
+        {
+          "identity": {
+            "cap_doi": "10.1007/3-540-45927-8_19",
+            "tal_doi": "10.1145/319301.319345",
+            "xcap_doi": "10.1145/113445.113468",
+            "xcap_pldi2006_doi": "10.1145/1133981.1134018"
+          },
+          "name": "Typed Assembly Language (TAL) and Certified Assembly Programming (CAP / XCAP) foundational publications"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "verification/assembly-contracts",
+        "isa/machine-code-verification",
+        "rustc/inline-assembly",
+        "compilers/compcert",
+        "kraken/verification"
       ]
     },
     "mathlib-cache-protocol-artifact-format-and-pruning": {
@@ -24543,6 +24785,59 @@
         "rustc/mir",
         "aeneas/translation",
         "lean/mechanization"
+      ]
+    },
+    "verified-assemblers-encoders-linkers-and-object-format-models": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 prebuilt Tier 1 standard-library archives (libcore, liballoc, libstd, libcompiler_builtins)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 MC layer, BinaryFormat relocation catalogs (ELFRelocs, MachO.h, COFF.h), and TableGen encoders"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+          },
+          "name": "CakeML verified machine-code encoders and ELF binary emitter (x64_targetScript.sml, arm8_targetScript.sml, lab_to_targetScript.sml)"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (MM0) x86-64 decoder, assembler, and ELF generator formalizations (examples/x86.mm0, mm0-lean/x86/)"
+        },
+        {
+          "identity": {
+            "compcertelf_doi": "10.1145/3428265",
+            "linksem_doi": "10.1145/2983990.2983996",
+            "linksem_repository": "rems-project/linksem",
+            "rocksalt_doi": "10.1145/2254064.2254111",
+            "sel4_tv_doi": "10.1145/2491956.2462183"
+          },
+          "name": "CompCertELF, Linksem (Kell et al. OOPSLA 2016), RockSalt (Morrisett et al. PLDI 2012), AbsInt Valex, and seL4 binary translation validation"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-assemblers",
+        "compilers/verified-linkers",
+        "systems/object-formats",
+        "llvm/mc-layer",
+        "isa/encoding"
       ]
     },
     "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap": {

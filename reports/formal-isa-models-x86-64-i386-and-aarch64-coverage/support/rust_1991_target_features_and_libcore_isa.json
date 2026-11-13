@@ -1,0 +1,1841 @@
+{
+  "rust_1991_target_features": {
+    "x86_total": 80,
+    "x86_stable": 56,
+    "x86_cfg_stable": 0,
+    "x86_unstable": 20,
+    "x86_internal_only": 4,
+    "x86_features": [
+      {
+        "feature": "adx",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "aes",
+        "stability": "Stable",
+        "implies": [
+          "sse2"
+        ]
+      },
+      {
+        "feature": "amx-avx512",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-bf16",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-complex",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-fp8",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-fp16",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-int8",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-movrs",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": [
+          "amx-tile"
+        ]
+      },
+      {
+        "feature": "amx-tile",
+        "stability": "Unstable(sym::x86_amx_intrinsics)",
+        "implies": []
+      },
+      {
+        "feature": "apxf",
+        "stability": "Unstable(sym::apx_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "avx",
+        "stability": "Stable",
+        "implies": [
+          "sse4.2"
+        ]
+      },
+      {
+        "feature": "avx2",
+        "stability": "Stable",
+        "implies": [
+          "avx"
+        ]
+      },
+      {
+        "feature": "avx10.1",
+        "stability": "Unstable(sym::avx10_target_feature)",
+        "implies": [
+          "avx512bf16",
+          "avx512bitalg",
+          "avx512bw",
+          "avx512cd",
+          "avx512dq",
+          "avx512f",
+          "avx512fp16",
+          "avx512ifma",
+          "avx512vbmi",
+          "avx512vbmi2",
+          "avx512vl",
+          "avx512vnni",
+          "avx512vpopcntdq"
+        ]
+      },
+      {
+        "feature": "avx10.2",
+        "stability": "Unstable(sym::avx10_target_feature)",
+        "implies": [
+          "avx10.1",
+          "avxvnni",
+          "avxvnniint8",
+          "avxvnniint16"
+        ]
+      },
+      {
+        "feature": "avx512bf16",
+        "stability": "Stable",
+        "implies": [
+          "avx512bw"
+        ]
+      },
+      {
+        "feature": "avx512bitalg",
+        "stability": "Stable",
+        "implies": [
+          "avx512bw"
+        ]
+      },
+      {
+        "feature": "avx512bw",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512cd",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512dq",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512f",
+        "stability": "Stable",
+        "implies": [
+          "avx2",
+          "fma",
+          "f16c"
+        ]
+      },
+      {
+        "feature": "avx512fp16",
+        "stability": "Stable",
+        "implies": [
+          "avx512bw"
+        ]
+      },
+      {
+        "feature": "avx512ifma",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512vbmi",
+        "stability": "Stable",
+        "implies": [
+          "avx512bw"
+        ]
+      },
+      {
+        "feature": "avx512vbmi2",
+        "stability": "Stable",
+        "implies": [
+          "avx512bw"
+        ]
+      },
+      {
+        "feature": "avx512vl",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512vnni",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512vp2intersect",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avx512vpopcntdq",
+        "stability": "Stable",
+        "implies": [
+          "avx512f"
+        ]
+      },
+      {
+        "feature": "avxifma",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "avxneconvert",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "avxvnni",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "avxvnniint8",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "avxvnniint16",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "bmi1",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "bmi2",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "clflushopt",
+        "stability": "Unstable(sym::clflushopt_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "cmpxchg16b",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "ermsb",
+        "stability": "Unstable(sym::ermsb_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "f16c",
+        "stability": "Stable",
+        "implies": [
+          "avx"
+        ]
+      },
+      {
+        "feature": "fma",
+        "stability": "Stable",
+        "implies": [
+          "avx"
+        ]
+      },
+      {
+        "feature": "fma4",
+        "stability": "Unstable(sym::fma4_target_feature)",
+        "implies": [
+          "avx",
+          "sse4a"
+        ]
+      },
+      {
+        "feature": "fxsr",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "gfni",
+        "stability": "Stable",
+        "implies": [
+          "sse2"
+        ]
+      },
+      {
+        "feature": "kl",
+        "stability": "Stable",
+        "implies": [
+          "sse2"
+        ]
+      },
+      {
+        "feature": "lahfsahf",
+        "stability": "Unstable(sym::lahfsahf_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "lzcnt",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "movbe",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "movrs",
+        "stability": "Unstable(sym::movrs_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "pclmulqdq",
+        "stability": "Stable",
+        "implies": [
+          "sse2"
+        ]
+      },
+      {
+        "feature": "popcnt",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "prfchw",
+        "stability": "Unstable(sym::prfchw_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "rdrand",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "rdseed",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "retpoline-external-thunk",
+        "stability": "Stability::InternalOnly { reason: \"use `-Zretpoline-external-thunk` compiler flag instead\", hard_error: false, }",
+        "implies": []
+      },
+      {
+        "feature": "retpoline-indirect-branches",
+        "stability": "Stability::InternalOnly { reason: \"use `-Zretpoline` compiler flag instead\", hard_error: false, }",
+        "implies": []
+      },
+      {
+        "feature": "retpoline-indirect-calls",
+        "stability": "Stability::InternalOnly { reason: \"use `-Zretpoline` compiler flag instead\", hard_error: false, }",
+        "implies": []
+      },
+      {
+        "feature": "rtm",
+        "stability": "Unstable(sym::rtm_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "sha",
+        "stability": "Stable",
+        "implies": [
+          "sse2"
+        ]
+      },
+      {
+        "feature": "sha512",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "sm3",
+        "stability": "Stable",
+        "implies": [
+          "avx"
+        ]
+      },
+      {
+        "feature": "sm4",
+        "stability": "Stable",
+        "implies": [
+          "avx2"
+        ]
+      },
+      {
+        "feature": "soft-float",
+        "stability": "Stability::InternalOnly { reason: \"use a soft-float target instead\", hard_error: false }",
+        "implies": []
+      },
+      {
+        "feature": "sse",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "sse2",
+        "stability": "Stable",
+        "implies": [
+          "sse"
+        ]
+      },
+      {
+        "feature": "sse3",
+        "stability": "Stable",
+        "implies": [
+          "sse2"
+        ]
+      },
+      {
+        "feature": "sse4.1",
+        "stability": "Stable",
+        "implies": [
+          "ssse3"
+        ]
+      },
+      {
+        "feature": "sse4.2",
+        "stability": "Stable",
+        "implies": [
+          "sse4.1"
+        ]
+      },
+      {
+        "feature": "sse4a",
+        "stability": "Stable",
+        "implies": [
+          "sse3"
+        ]
+      },
+      {
+        "feature": "ssse3",
+        "stability": "Stable",
+        "implies": [
+          "sse3"
+        ]
+      },
+      {
+        "feature": "tbm",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "vaes",
+        "stability": "Stable",
+        "implies": [
+          "avx2",
+          "aes"
+        ]
+      },
+      {
+        "feature": "vpclmulqdq",
+        "stability": "Stable",
+        "implies": [
+          "avx",
+          "pclmulqdq"
+        ]
+      },
+      {
+        "feature": "widekl",
+        "stability": "Stable",
+        "implies": [
+          "kl"
+        ]
+      },
+      {
+        "feature": "x87",
+        "stability": "Unstable(sym::x87_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "xop",
+        "stability": "Unstable(sym::xop_target_feature)",
+        "implies": [
+          "fma4",
+          "avx",
+          "sse4a"
+        ]
+      },
+      {
+        "feature": "xsave",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "xsavec",
+        "stability": "Stable",
+        "implies": [
+          "xsave"
+        ]
+      },
+      {
+        "feature": "xsaveopt",
+        "stability": "Stable",
+        "implies": [
+          "xsave"
+        ]
+      },
+      {
+        "feature": "xsaves",
+        "stability": "Stable",
+        "implies": [
+          "xsave"
+        ]
+      }
+    ],
+    "aarch64_total": 94,
+    "aarch64_stable": 44,
+    "aarch64_cfg_stable": 0,
+    "aarch64_unstable": 48,
+    "aarch64_internal_only": 2,
+    "aarch64_features": [
+      {
+        "feature": "aes",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "bf16",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "bti",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "crc",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "cssc",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "dit",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "dotprod",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "dpb",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "dpb2",
+        "stability": "Stable",
+        "implies": [
+          "dpb"
+        ]
+      },
+      {
+        "feature": "ecv",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "f32mm",
+        "stability": "Stable",
+        "implies": [
+          "sve"
+        ]
+      },
+      {
+        "feature": "f64mm",
+        "stability": "Stable",
+        "implies": [
+          "sve"
+        ]
+      },
+      {
+        "feature": "faminmax",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "fcma",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "fhm",
+        "stability": "Stable",
+        "implies": [
+          "fp16"
+        ]
+      },
+      {
+        "feature": "flagm",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "flagm2",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "fp-armv8",
+        "stability": "Stability::InternalOnly { reason: \"Rust ties `fp-armv8` to `neon`\", hard_error: false }",
+        "implies": []
+      },
+      {
+        "feature": "fp8",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "faminmax",
+          "lut",
+          "bf16"
+        ]
+      },
+      {
+        "feature": "fp8dot2",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "fp8dot4"
+        ]
+      },
+      {
+        "feature": "fp8dot4",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "fp8fma"
+        ]
+      },
+      {
+        "feature": "fp8fma",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "fp8"
+        ]
+      },
+      {
+        "feature": "fp16",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "frintts",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "hbc",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "i8mm",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "jsconv",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "lor",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "lse",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "lse2",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "lse128",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "lse"
+        ]
+      },
+      {
+        "feature": "lut",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "mops",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "mte",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "neon",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "outline-atomics",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "paca",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "pacg",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "pan",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "pauth-lr",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "pmuv3",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "rand",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "ras",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "rcpc",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "rcpc2",
+        "stability": "Stable",
+        "implies": [
+          "rcpc"
+        ]
+      },
+      {
+        "feature": "rcpc3",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "rcpc2"
+        ]
+      },
+      {
+        "feature": "rdm",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "reserve-x18",
+        "stability": "InternalOnly { reason: \"use `-Zfixed-x18` compiler flag instead\", hard_error: false }",
+        "implies": []
+      },
+      {
+        "feature": "sb",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "sha2",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "sha3",
+        "stability": "Stable",
+        "implies": [
+          "sha2"
+        ]
+      },
+      {
+        "feature": "sm4",
+        "stability": "Stable",
+        "implies": [
+          "neon"
+        ]
+      },
+      {
+        "feature": "sme",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "bf16"
+        ]
+      },
+      {
+        "feature": "sme-b16b16",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "bf16",
+          "sme2",
+          "sve-b16b16"
+        ]
+      },
+      {
+        "feature": "sme-f8f16",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme-f8f32"
+        ]
+      },
+      {
+        "feature": "sme-f8f32",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme2",
+          "fp8"
+        ]
+      },
+      {
+        "feature": "sme-f16f16",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme2"
+        ]
+      },
+      {
+        "feature": "sme-f64f64",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme"
+        ]
+      },
+      {
+        "feature": "sme-fa64",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme",
+          "sve2"
+        ]
+      },
+      {
+        "feature": "sme-i16i64",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme"
+        ]
+      },
+      {
+        "feature": "sme-lutv2",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      },
+      {
+        "feature": "sme2",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme"
+        ]
+      },
+      {
+        "feature": "sme2p1",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme2"
+        ]
+      },
+      {
+        "feature": "spe",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "ssbs",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "ssve-fp8dot2",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "ssve-fp8dot4"
+        ]
+      },
+      {
+        "feature": "ssve-fp8dot4",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "ssve-fp8fma"
+        ]
+      },
+      {
+        "feature": "ssve-fp8fma",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sme2",
+          "fp8"
+        ]
+      },
+      {
+        "feature": "sve",
+        "stability": "Stable",
+        "implies": [
+          "neon",
+          "fp16"
+        ]
+      },
+      {
+        "feature": "sve-b16b16",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "bf16"
+        ]
+      },
+      {
+        "feature": "sve2",
+        "stability": "Stable",
+        "implies": [
+          "sve"
+        ]
+      },
+      {
+        "feature": "sve2-aes",
+        "stability": "Stable",
+        "implies": [
+          "sve2",
+          "aes"
+        ]
+      },
+      {
+        "feature": "sve2-bitperm",
+        "stability": "Stable",
+        "implies": [
+          "sve2"
+        ]
+      },
+      {
+        "feature": "sve2-sha3",
+        "stability": "Stable",
+        "implies": [
+          "sve2",
+          "sha3"
+        ]
+      },
+      {
+        "feature": "sve2-sm4",
+        "stability": "Stable",
+        "implies": [
+          "sve2",
+          "sm4"
+        ]
+      },
+      {
+        "feature": "sve2p1",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": [
+          "sve2"
+        ]
+      },
+      {
+        "feature": "tme",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "v8.1a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "crc",
+          "lse",
+          "rdm",
+          "pan",
+          "lor",
+          "vh"
+        ]
+      },
+      {
+        "feature": "v8.2a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.1a",
+          "ras",
+          "dpb"
+        ]
+      },
+      {
+        "feature": "v8.3a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.2a",
+          "rcpc",
+          "paca",
+          "pacg",
+          "jsconv"
+        ]
+      },
+      {
+        "feature": "v8.4a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.3a",
+          "dotprod",
+          "dit",
+          "flagm"
+        ]
+      },
+      {
+        "feature": "v8.5a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.4a",
+          "ssbs",
+          "sb",
+          "dpb2",
+          "bti"
+        ]
+      },
+      {
+        "feature": "v8.6a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.5a",
+          "bf16",
+          "i8mm"
+        ]
+      },
+      {
+        "feature": "v8.7a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.6a",
+          "wfxt"
+        ]
+      },
+      {
+        "feature": "v8.8a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.7a",
+          "hbc",
+          "mops"
+        ]
+      },
+      {
+        "feature": "v8.9a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.8a",
+          "cssc"
+        ]
+      },
+      {
+        "feature": "v9.1a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v9a",
+          "v8.6a"
+        ]
+      },
+      {
+        "feature": "v9.2a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v9.1a",
+          "v8.7a"
+        ]
+      },
+      {
+        "feature": "v9.3a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v9.2a",
+          "v8.8a"
+        ]
+      },
+      {
+        "feature": "v9.4a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v9.3a",
+          "v8.9a"
+        ]
+      },
+      {
+        "feature": "v9.5a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v9.4a"
+        ]
+      },
+      {
+        "feature": "v9a",
+        "stability": "Unstable(sym::aarch64_ver_target_feature)",
+        "implies": [
+          "v8.5a"
+        ]
+      },
+      {
+        "feature": "vh",
+        "stability": "Stable",
+        "implies": []
+      },
+      {
+        "feature": "wfxt",
+        "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+        "implies": []
+      }
+    ]
+  },
+  "libcore_disassembly_mnemonics": {
+    "x86_64-unknown-linux-gnu": {
+      "rlib": "libcore-1d288395a3394ed3.rlib",
+      "total_instructions": 34044,
+      "distinct_mnemonics": 199,
+      "top_50_mnemonics": {
+        "movq": 5781,
+        "movl": 2946,
+        "leaq": 2618,
+        "je": 1079,
+        "jne": 1075,
+        "jmp": 1064,
+        "pushq": 1048,
+        "callq": 1045,
+        "popq": 1035,
+        "addq": 1013,
+        "xorl": 1003,
+        "cmpq": 976,
+        "movzbl": 854,
+        "movb": 854,
+        "testb": 702,
+        "cmpl": 554,
+        "andl": 484,
+        "retq": 477,
+        "subq": 459,
+        "testq": 423,
+        "movzwl": 408,
+        "cmpb": 399,
+        "shrq": 345,
+        "shrl": 312,
+        "jae": 288,
+        "incq": 282,
+        "movw": 232,
+        "ja": 228,
+        "leal": 225,
+        "nopw": 225,
+        "testl": 220,
+        "addl": 217,
+        "decq": 199,
+        "jb": 197,
+        "imull": 196,
+        "subl": 160,
+        "movabsq": 160,
+        "nopl": 157,
+        "shll": 144,
+        "orl": 138,
+        "movups": 134,
+        "jmpq": 125,
+        "jbe": 116,
+        "movd": 115,
+        "mulq": 103,
+        "imulq": 101,
+        "cmovneq": 100,
+        "sete": 98,
+        "orq": 98,
+        "andq": 95
+      },
+      "all_mnemonics": {
+        "movq": 5781,
+        "movl": 2946,
+        "leaq": 2618,
+        "je": 1079,
+        "jne": 1075,
+        "jmp": 1064,
+        "pushq": 1048,
+        "callq": 1045,
+        "popq": 1035,
+        "addq": 1013,
+        "xorl": 1003,
+        "cmpq": 976,
+        "movzbl": 854,
+        "movb": 854,
+        "testb": 702,
+        "cmpl": 554,
+        "andl": 484,
+        "retq": 477,
+        "subq": 459,
+        "testq": 423,
+        "movzwl": 408,
+        "cmpb": 399,
+        "shrq": 345,
+        "shrl": 312,
+        "jae": 288,
+        "incq": 282,
+        "movw": 232,
+        "ja": 228,
+        "leal": 225,
+        "nopw": 225,
+        "testl": 220,
+        "addl": 217,
+        "decq": 199,
+        "jb": 197,
+        "imull": 196,
+        "subl": 160,
+        "movabsq": 160,
+        "nopl": 157,
+        "shll": 144,
+        "orl": 138,
+        "movups": 134,
+        "jmpq": 125,
+        "jbe": 116,
+        "movd": 115,
+        "mulq": 103,
+        "imulq": 101,
+        "cmovneq": 100,
+        "sete": 98,
+        "orq": 98,
+        "andq": 95,
+        "negq": 94,
+        "setb": 92,
+        "orb": 91,
+        "addb": 88,
+        "testw": 85,
+        "shlq": 73,
+        "paddq": 66,
+        "pand": 64,
+        "pshufd": 60,
+        "nop": 59,
+        "cmpw": 58,
+        "cmovbq": 57,
+        "movaps": 57,
+        "andb": 56,
+        "adcq": 54,
+        "jle": 52,
+        "punpcklbw": 52,
+        "xorb": 51,
+        "punpcklwd": 49,
+        "pcmpgtb": 48,
+        "movdqa": 47,
+        "xorq": 42,
+        "js": 40,
+        "cmovaq": 40,
+        "adcl": 39,
+        "pinsrw": 37,
+        "cmovel": 36,
+        "movslq": 34,
+        "cmovsq": 33,
+        "notl": 32,
+        "sbbq": 31,
+        "cmoveq": 30,
+        "cmovaeq": 30,
+        "setne": 28,
+        "shrdq": 27,
+        "jo": 27,
+        "negl": 26,
+        "pxor": 26,
+        "cmovael": 26,
+        "notq": 25,
+        "cmovnsq": 24,
+        "movdqu": 24,
+        "subb": 24,
+        "cmovbl": 24,
+        "jg": 23,
+        "notb": 21,
+        "seta": 20,
+        "psrlq": 20,
+        "divl": 19,
+        "jge": 18,
+        "incl": 18,
+        "movswq": 17,
+        "cmovbeq": 17,
+        "setae": 17,
+        "por": 17,
+        "jns": 17,
+        "setns": 17,
+        "setge": 16,
+        "shrb": 15,
+        "pextrw": 14,
+        "decl": 14,
+        "cmovnel": 13,
+        "btl": 13,
+        "andw": 12,
+        "sarq": 12,
+        "movss": 12,
+        "jl": 11,
+        "decb": 11,
+        "btsq": 10,
+        "sbbb": 10,
+        "cmoval": 10,
+        "psrlw": 9,
+        "addw": 9,
+        "xorps": 9,
+        "incb": 9,
+        "bsrq": 8,
+        "btq": 8,
+        "sbbl": 8,
+        "divq": 8,
+        "punpcklqdq": 8,
+        "decw": 7,
+        "movswl": 6,
+        "setl": 6,
+        "psllw": 6,
+        "adcb": 6,
+        "pshuflw": 6,
+        "cmovll": 5,
+        "seto": 5,
+        "mulw": 5,
+        "bsrl": 5,
+        "pcmpeqd": 5,
+        "setno": 4,
+        "subw": 4,
+        "divw": 4,
+        "pslldq": 4,
+        "psrldq": 4,
+        "cvtsi2ss": 4,
+        "mulss": 4,
+        "negw": 4,
+        "cmovsw": 4,
+        "movsd": 4,
+        "sarb": 4,
+        "cmovnsl": 3,
+        "setle": 3,
+        "cmovleq": 3,
+        "sarl": 3,
+        "cmovlq": 3,
+        "shldq": 3,
+        "andps": 3,
+        "ucomiss": 3,
+        "cmovsl": 3,
+        "mull": 2,
+        "divb": 2,
+        "shlb": 2,
+        "negb": 2,
+        "pslld": 2,
+        "psrld": 2,
+        "cmovgeq": 2,
+        "rolq": 2,
+        "cltq": 2,
+        "rolw": 2,
+        "setg": 2,
+        "divss": 2,
+        "cmovbel": 2,
+        "imulb": 2,
+        "imulw": 2,
+        "cvtsi2sd": 2,
+        "mulsd": 2,
+        "andpd": 2,
+        "paddd": 1,
+        "pcmpgtd": 1,
+        "movmskps": 1,
+        "ud2": 1,
+        "cwtl": 1,
+        "sets": 1,
+        "orps": 1,
+        "cmpltss": 1,
+        "cmpneqss": 1,
+        "setbe": 1,
+        "divsd": 1,
+        "movapd": 1,
+        "ucomisd": 1,
+        "xorpd": 1,
+        "cmpltsd": 1,
+        "cmpneqsd": 1,
+        "mulb": 1,
+        "tzcntq": 1,
+        "setp": 1,
+        "pshufhw": 1
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "rlib": "libcore-8a3dad43bbb880dd.rlib",
+      "total_instructions": 47521,
+      "distinct_mnemonics": 165,
+      "top_50_mnemonics": {
+        "movl": 12789,
+        "pushl": 5344,
+        "addl": 2607,
+        "leal": 2416,
+        "popl": 1990,
+        "calll": 1687,
+        "subl": 1675,
+        "cmpl": 1396,
+        "jmp": 1161,
+        "jne": 1131,
+        "movb": 1034,
+        "je": 984,
+        "xorl": 970,
+        "movzbl": 841,
+        "testb": 700,
+        "testl": 589,
+        "andl": 581,
+        "orl": 536,
+        "retl": 521,
+        "shrl": 517,
+        "adcl": 481,
+        "cmpb": 449,
+        "movzwl": 432,
+        "sbbl": 366,
+        "mull": 335,
+        "jae": 289,
+        "movw": 267,
+        "incl": 260,
+        "imull": 254,
+        "decl": 254,
+        "cmovnel": 248,
+        "jb": 231,
+        "movsd": 230,
+        "nopl": 227,
+        "shldl": 215,
+        "nopw": 207,
+        "shll": 204,
+        "ja": 200,
+        "movd": 144,
+        "nop": 129,
+        "shrdl": 126,
+        "setb": 125,
+        "negl": 118,
+        "orb": 102,
+        "addb": 93,
+        "cmovel": 89,
+        "jbe": 89,
+        "cmovbl": 81,
+        "sete": 76,
+        "testw": 72
+      },
+      "all_mnemonics": {
+        "movl": 12789,
+        "pushl": 5344,
+        "addl": 2607,
+        "leal": 2416,
+        "popl": 1990,
+        "calll": 1687,
+        "subl": 1675,
+        "cmpl": 1396,
+        "jmp": 1161,
+        "jne": 1131,
+        "movb": 1034,
+        "je": 984,
+        "xorl": 970,
+        "movzbl": 841,
+        "testb": 700,
+        "testl": 589,
+        "andl": 581,
+        "orl": 536,
+        "retl": 521,
+        "shrl": 517,
+        "adcl": 481,
+        "cmpb": 449,
+        "movzwl": 432,
+        "sbbl": 366,
+        "mull": 335,
+        "jae": 289,
+        "movw": 267,
+        "incl": 260,
+        "imull": 254,
+        "decl": 254,
+        "cmovnel": 248,
+        "jb": 231,
+        "movsd": 230,
+        "nopl": 227,
+        "shldl": 215,
+        "nopw": 207,
+        "shll": 204,
+        "ja": 200,
+        "movd": 144,
+        "nop": 129,
+        "shrdl": 126,
+        "setb": 125,
+        "negl": 118,
+        "orb": 102,
+        "addb": 93,
+        "cmovel": 89,
+        "jbe": 89,
+        "cmovbl": 81,
+        "sete": 76,
+        "testw": 72,
+        "bsrl": 72,
+        "andb": 72,
+        "cmovael": 63,
+        "cmpw": 60,
+        "xorb": 52,
+        "cmoval": 52,
+        "notl": 46,
+        "jle": 45,
+        "movdqa": 42,
+        "js": 41,
+        "setne": 39,
+        "shrb": 39,
+        "sarl": 38,
+        "movaps": 37,
+        "pinsrw": 35,
+        "cmovsl": 33,
+        "subb": 28,
+        "cmovnsl": 27,
+        "movq": 27,
+        "pxor": 26,
+        "paddd": 24,
+        "jo": 24,
+        "jg": 23,
+        "pand": 23,
+        "punpckldq": 23,
+        "pextrw": 23,
+        "jmpl": 21,
+        "jge": 21,
+        "movswl": 20,
+        "psrld": 20,
+        "seta": 19,
+        "pshufd": 19,
+        "xorps": 19,
+        "por": 18,
+        "notb": 18,
+        "movss": 18,
+        "setns": 18,
+        "btl": 17,
+        "jl": 16,
+        "incb": 16,
+        "cmovbel": 15,
+        "setae": 15,
+        "sbbb": 14,
+        "negb": 14,
+        "divl": 13,
+        "decb": 13,
+        "punpcklbw": 12,
+        "movsbl": 12,
+        "movdqu": 11,
+        "fstps": 11,
+        "jns": 10,
+        "cmovll": 9,
+        "psrlw": 9,
+        "seto": 9,
+        "addw": 9,
+        "pcmpeqd": 9,
+        "punpcklwd": 9,
+        "andw": 8,
+        "setge": 8,
+        "psllq": 8,
+        "punpcklqdq": 8,
+        "movups": 8,
+        "decw": 7,
+        "xorpd": 7,
+        "setl": 6,
+        "psllw": 6,
+        "pshuflw": 6,
+        "orpd": 6,
+        "fildll": 6,
+        "mulw": 5,
+        "adcb": 5,
+        "setno": 4,
+        "subw": 4,
+        "pslldq": 4,
+        "psrldq": 4,
+        "psrlq": 4,
+        "pcmpgtb": 4,
+        "mulss": 4,
+        "negw": 4,
+        "cmovsw": 4,
+        "sarb": 4,
+        "cmovlel": 3,
+        "setle": 3,
+        "cmovgel": 3,
+        "divw": 3,
+        "andps": 3,
+        "ucomiss": 3,
+        "shlb": 2,
+        "pslld": 2,
+        "cwtl": 2,
+        "rolw": 2,
+        "setg": 2,
+        "divss": 2,
+        "imulb": 2,
+        "imulw": 2,
+        "fstpl": 2,
+        "mulsd": 2,
+        "andpd": 2,
+        "pcmpgtd": 1,
+        "movmskps": 1,
+        "ud2": 1,
+        "divb": 1,
+        "sets": 1,
+        "orps": 1,
+        "cmpltss": 1,
+        "cmpneqss": 1,
+        "divsd": 1,
+        "movapd": 1,
+        "ucomisd": 1,
+        "cmpltsd": 1,
+        "cmpneqsd": 1,
+        "mulb": 1,
+        "tzcntl": 1,
+        "setp": 1,
+        "pshufhw": 1
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "rlib": "libcore-89b975c6293f41a8.rlib",
+      "total_instructions": 32203,
+      "distinct_mnemonics": 129,
+      "top_50_mnemonics": {
+        "mov": 5707,
+        "add": 3889,
+        "cmp": 1864,
+        "ldr": 1398,
+        "sub": 1336,
+        "adrp": 1304,
+        "ldp": 1273,
+        "stp": 1180,
+        "b": 993,
+        "and": 825,
+        "ldrb": 757,
+        "bl": 720,
+        "str": 620,
+        "ret": 600,
+        "cbz": 515,
+        "strb": 486,
+        "lsr": 481,
+        "tbnz": 460,
+        "b.ne": 453,
+        "b.eq": 408,
+        "csel": 382,
+        "orr": 375,
+        "blr": 331,
+        "movk": 314,
+        "b.hs": 275,
+        "cbnz": 271,
+        "b.hi": 240,
+        "b.lo": 210,
+        "tbz": 210,
+        "stur": 202,
+        "ldrh": 197,
+        "subs": 197,
+        "strh": 177,
+        "lsl": 167,
+        "ubfx": 160,
+        "mul": 157,
+        "cinc": 142,
+        "cmn": 134,
+        "cset": 131,
+        "ldur": 127,
+        "msub": 127,
+        "tst": 121,
+        "ushll": 106,
+        "sturh": 105,
+        "movi": 105,
+        "neg": 98,
+        "b.ls": 97,
+        "umulh": 97,
+        "csinc": 95,
+        "eor": 94
+      },
+      "all_mnemonics": {
+        "mov": 5707,
+        "add": 3889,
+        "cmp": 1864,
+        "ldr": 1398,
+        "sub": 1336,
+        "adrp": 1304,
+        "ldp": 1273,
+        "stp": 1180,
+        "b": 993,
+        "and": 825,
+        "ldrb": 757,
+        "bl": 720,
+        "str": 620,
+        "ret": 600,
+        "cbz": 515,
+        "strb": 486,
+        "lsr": 481,
+        "tbnz": 460,
+        "b.ne": 453,
+        "b.eq": 408,
+        "csel": 382,
+        "orr": 375,
+        "blr": 331,
+        "movk": 314,
+        "b.hs": 275,
+        "cbnz": 271,
+        "b.hi": 240,
+        "b.lo": 210,
+        "tbz": 210,
+        "stur": 202,
+        "ldrh": 197,
+        "subs": 197,
+        "strh": 177,
+        "lsl": 167,
+        "ubfx": 160,
+        "mul": 157,
+        "cinc": 142,
+        "cmn": 134,
+        "cset": 131,
+        "ldur": 127,
+        "msub": 127,
+        "tst": 121,
+        "ushll": 106,
+        "sturh": 105,
+        "movi": 105,
+        "neg": 98,
+        "b.ls": 97,
+        "umulh": 97,
+        "csinc": 95,
+        "eor": 94,
+        "sturb": 91,
+        "ushll2": 91,
+        "ldrsb": 78,
+        "madd": 77,
+        "b.le": 59,
+        "mvn": 59,
+        "fmov": 56,
+        "adds": 50,
+        "ubfiz": 48,
+        "ushl": 48,
+        "ands": 45,
+        "b.gt": 43,
+        "br": 42,
+        "sxth": 41,
+        "ccmp": 41,
+        "bfi": 40,
+        "ushr": 37,
+        "ldurb": 33,
+        "umull": 31,
+        "extr": 30,
+        "dup": 26,
+        "b.ge": 23,
+        "udiv": 22,
+        "umaddl": 22,
+        "bfxil": 21,
+        "adcs": 21,
+        "b.lt": 21,
+        "sxtb": 16,
+        "cneg": 16,
+        "cmgt": 15,
+        "orn": 15,
+        "clz": 14,
+        "csinv": 14,
+        "sbc": 13,
+        "asr": 12,
+        "ldurh": 10,
+        "addp": 10,
+        "fcvt": 10,
+        "ldrsh": 8,
+        "bic": 8,
+        "bics": 7,
+        "sbcs": 7,
+        "ldursh": 6,
+        "ucvtf": 6,
+        "fmul": 6,
+        "smulh": 6,
+        "b.vs": 6,
+        "fcmp": 6,
+        "umov": 6,
+        "sxtw": 5,
+        "cmhi": 4,
+        "adc": 4,
+        "uzp1": 4,
+        "ld4": 4,
+        "smull": 4,
+        "fcsel": 4,
+        "fneg": 4,
+        "csneg": 3,
+        "rev16": 3,
+        "xtn": 3,
+        "ldrsw": 3,
+        "fdiv": 3,
+        "ccmn": 2,
+        "bsl": 2,
+        "cinv": 2,
+        "ror": 2,
+        "smaddl": 2,
+        "ldxp": 2,
+        "stxp": 2,
+        "ld1r": 2,
+        "zip1": 2,
+        "fabs": 2,
+        "fccmp": 2,
+        "ext": 2,
+        "csetm": 1,
+        "brk": 1,
+        "rev": 1,
+        "rbit": 1,
+        "bit": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-assemblers",
+    "compilers/verified-linkers",
+    "systems/object-formats",
+    "llvm/mc-layer",
+    "isa/encoding"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 prebuilt Tier 1 standard-library archives (libcore, liballoc, libstd, libcompiler_builtins)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 MC layer, BinaryFormat relocation catalogs (ELFRelocs, MachO.h, COFF.h), and TableGen encoders",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "CakeML verified machine-code encoders and ELF binary emitter (x64_targetScript.sml, arm8_targetScript.sml, lab_to_targetScript.sml)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+      }
+    },
+    {
+      "name": "Metamath Zero (MM0) x86-64 decoder, assembler, and ELF generator formalizations (examples/x86.mm0, mm0-lean/x86/)",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "CompCertELF, Linksem (Kell et al. OOPSLA 2016), RockSalt (Morrisett et al. PLDI 2012), AbsInt Valex, and seL4 binary translation validation",
+      "identity": {
+        "compcertelf_doi": "10.1145/3428265",
+        "linksem_doi": "10.1145/2983990.2983996",
+        "linksem_repository": "rems-project/linksem",
+        "rocksalt_doi": "10.1145/2254064.2254111",
+        "sel4_tv_doi": "10.1145/2491956.2462183"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

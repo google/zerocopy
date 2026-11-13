@@ -1,0 +1,107 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "verification/assembly-contracts",
+    "isa/machine-code-verification",
+    "rustc/inline-assembly",
+    "compilers/compcert",
+    "kraken/verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler (InlineAsm AST, HIR, MIR TerminatorKind::InlineAsm, and target register classes)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "The Rust Reference (Inline assembly specification)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c",
+        "path": "src/inline-assembly.md"
+      }
+    },
+    {
+      "name": "Ferrocene Language Specification (FLS 1.99 Inline Assembly chapter)",
+      "identity": {
+        "repository": "rust-lang/fls",
+        "revision": "946eacae5a4a33a89af7832178504692439e7478",
+        "tag": "1.99",
+        "path": "src/inline-assembly.rst"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (Events.v EF_inline_asm, EF_annot, and x86/AArch64 Asm.v Pbuiltin semantics)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Islaris and CN2Islaris separation-logic machine-code verification frameworks over Sail/Isla traces",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "cn2islaris_revision": "f34f9a2f0a9b75a6b342aa966d0d14daca58c466"
+      }
+    },
+    {
+      "name": "s2n-bignum and cslib-community/bignum cryptographic assembly verification frameworks",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+        "cslib_bignum_revision": "92dc3ee58280db51bbbb4dd51b85a91abd0178ba"
+      }
+    },
+    {
+      "name": "Jasmin cryptographic assembly compiler and Rocq architecture semantics",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
+      }
+    },
+    {
+      "name": "Project Everest Vale (Verified Assembly Language for Everest) F* x64 semantics",
+      "identity": {
+        "repository": "project-everest/vale",
+        "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+      }
+    },
+    {
+      "name": "CakeML target-agnostic assembly interface and machine-code Hoare triples",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "b064083ebe1bd8e6c47bc55041ce33dd71c1e4e8"
+      }
+    },
+    {
+      "name": "MIT PLV Bedrock2 and riscv-coq weak-memory / MMIO machine-code verification stack",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13",
+        "riscv_coq_revision": "45dc8dfc17c77aabb433355b9d39edc6bfd429ae"
+      }
+    },
+    {
+      "name": "AWS LNSym and AeneasVerif Kraken Lean 4 AArch64/x86-64 machine-code verification frameworks",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "5c05220ff970e3bdd7813ad0c9ef3741522c8b92",
+        "kraken_revision": "c9aa45ee1b273892d7efa7bbf8a8a9391e17b2c0"
+      }
+    },
+    {
+      "name": "Typed Assembly Language (TAL) and Certified Assembly Programming (CAP / XCAP) foundational publications",
+      "identity": {
+        "tal_doi": "10.1145/319301.319345",
+        "cap_doi": "10.1007/3-540-45927-8_19",
+        "xcap_doi": "10.1145/113445.113468",
+        "xcap_pldi2006_doi": "10.1145/1133981.1134018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

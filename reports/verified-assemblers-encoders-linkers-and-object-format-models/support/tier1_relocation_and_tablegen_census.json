@@ -1,0 +1,1326 @@
+{
+  "llvm_23_1_1_tablegen_and_reloc_defs": {
+    "llvm_revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+    "x86_td_files": 65,
+    "x86_td_lines": 89325,
+    "x86_def_and_defm_count": 11867,
+    "aarch64_td_files": 56,
+    "aarch64_td_lines": 113058,
+    "aarch64_def_and_defm_count": 13804,
+    "elf_relocs_x86_64_def_count": 44,
+    "elf_relocs_i386_def_count": 41,
+    "elf_relocs_aarch64_def_count": 236
+  },
+  "tier1_rlib_relocations": {
+    "x86_64-unknown-linux-gnu": {
+      "object_format": "elf64-x86-64",
+      "total_objects_scanned": 312,
+      "total_relocations": 183098,
+      "distinct_relocation_kinds": 8,
+      "relocation_counts": {
+        "R_X86_64_64": 95674,
+        "R_X86_64_32": 69885,
+        "R_X86_64_PC32": 9227,
+        "R_X86_64_GOTPCREL": 6262,
+        "R_X86_64_PLT32": 1970,
+        "R_X86_64_TLSGD": 36,
+        "R_X86_64_DTPOFF32": 28,
+        "R_X86_64_TLSLD": 16
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-1d288395a3394ed3.rlib",
+          "object_count": 1,
+          "total_relocations": 25617,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "R_X86_64_64": 14342,
+            "R_X86_64_32": 8352,
+            "R_X86_64_PC32": 2032,
+            "R_X86_64_GOTPCREL": 732,
+            "R_X86_64_PLT32": 159
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-3988244237fec6ee.rlib",
+          "object_count": 1,
+          "total_relocations": 9535,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "R_X86_64_64": 5614,
+            "R_X86_64_32": 3242,
+            "R_X86_64_GOTPCREL": 333,
+            "R_X86_64_PC32": 231,
+            "R_X86_64_PLT32": 115
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-7e719de9c4abc98f.rlib",
+          "object_count": 1,
+          "total_relocations": 111724,
+          "distinct_relocation_kinds": 8,
+          "relocation_counts": {
+            "R_X86_64_64": 65056,
+            "R_X86_64_32": 33863,
+            "R_X86_64_PC32": 6007,
+            "R_X86_64_GOTPCREL": 5086,
+            "R_X86_64_PLT32": 1632,
+            "R_X86_64_TLSGD": 36,
+            "R_X86_64_DTPOFF32": 28,
+            "R_X86_64_TLSLD": 16
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-2d9557d6e902a200.rlib",
+          "object_count": 309,
+          "total_relocations": 36222,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "R_X86_64_32": 24428,
+            "R_X86_64_64": 10662,
+            "R_X86_64_PC32": 957,
+            "R_X86_64_GOTPCREL": 111,
+            "R_X86_64_PLT32": 64
+          }
+        }
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "object_format": "elf32-i386",
+      "total_objects_scanned": 311,
+      "total_relocations": 190767,
+      "distinct_relocation_kinds": 9,
+      "relocation_counts": {
+        "R_386_32": 171322,
+        "R_386_PLT32": 6401,
+        "R_386_GOTOFF": 6230,
+        "R_386_PC32": 4214,
+        "R_386_GOTPC": 1932,
+        "R_386_GOT32": 595,
+        "R_386_TLS_GD": 36,
+        "R_386_TLS_LDO_32": 23,
+        "R_386_TLS_LDM": 14
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-8a3dad43bbb880dd.rlib",
+          "object_count": 1,
+          "total_relocations": 27271,
+          "distinct_relocation_kinds": 6,
+          "relocation_counts": {
+            "R_386_32": 23727,
+            "R_386_GOTOFF": 1592,
+            "R_386_PC32": 710,
+            "R_386_PLT32": 675,
+            "R_386_GOTPC": 482,
+            "R_386_GOT32": 85
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-32bb9bcaf0eb4df5.rlib",
+          "object_count": 1,
+          "total_relocations": 10028,
+          "distinct_relocation_kinds": 6,
+          "relocation_counts": {
+            "R_386_32": 9240,
+            "R_386_PLT32": 370,
+            "R_386_PC32": 230,
+            "R_386_GOTPC": 103,
+            "R_386_GOTOFF": 77,
+            "R_386_GOT32": 8
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-534b84c23c31850e.rlib",
+          "object_count": 1,
+          "total_relocations": 117385,
+          "distinct_relocation_kinds": 9,
+          "relocation_counts": {
+            "R_386_32": 103584,
+            "R_386_PLT32": 5171,
+            "R_386_GOTOFF": 4231,
+            "R_386_PC32": 2654,
+            "R_386_GOTPC": 1170,
+            "R_386_GOT32": 502,
+            "R_386_TLS_GD": 36,
+            "R_386_TLS_LDO_32": 23,
+            "R_386_TLS_LDM": 14
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-d6c258a1d2eb083b.rlib",
+          "object_count": 308,
+          "total_relocations": 36083,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "R_386_32": 34771,
+            "R_386_PC32": 620,
+            "R_386_GOTOFF": 330,
+            "R_386_PLT32": 185,
+            "R_386_GOTPC": 177
+          }
+        }
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "object_format": "elf64-littleaarch64",
+      "total_objects_scanned": 408,
+      "total_relocations": 205766,
+      "distinct_relocation_kinds": 19,
+      "relocation_counts": {
+        "R_AARCH64_ABS64": 111478,
+        "R_AARCH64_ABS32": 73466,
+        "R_AARCH64_CALL26": 7700,
+        "R_AARCH64_ADR_PREL_PG_HI21": 3981,
+        "R_AARCH64_ADD_ABS_LO12_NC": 3656,
+        "R_AARCH64_PREL32": 2715,
+        "R_AARCH64_JUMP26": 658,
+        "R_AARCH64_ADR_GOT_PAGE": 576,
+        "R_AARCH64_LD64_GOT_LO12_NC": 574,
+        "R_AARCH64_PREL64": 389,
+        "R_AARCH64_LDST8_ABS_LO12_NC": 161,
+        "R_AARCH64_LDST128_ABS_LO12_NC": 104,
+        "R_AARCH64_LDST64_ABS_LO12_NC": 79,
+        "R_AARCH64_TLSDESC_ADR_PAGE21": 53,
+        "R_AARCH64_TLSDESC_LD64_LO12": 53,
+        "R_AARCH64_TLSDESC_ADD_LO12": 53,
+        "R_AARCH64_TLSDESC_CALL": 53,
+        "R_AARCH64_LDST16_ABS_LO12_NC": 10,
+        "R_AARCH64_LDST32_ABS_LO12_NC": 7
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-89b975c6293f41a8.rlib",
+          "object_count": 1,
+          "total_relocations": 29154,
+          "distinct_relocation_kinds": 13,
+          "relocation_counts": {
+            "R_AARCH64_ABS64": 16109,
+            "R_AARCH64_ABS32": 9017,
+            "R_AARCH64_ADR_PREL_PG_HI21": 1219,
+            "R_AARCH64_ADD_ABS_LO12_NC": 1198,
+            "R_AARCH64_CALL26": 720,
+            "R_AARCH64_PREL32": 563,
+            "R_AARCH64_JUMP26": 136,
+            "R_AARCH64_ADR_GOT_PAGE": 85,
+            "R_AARCH64_LD64_GOT_LO12_NC": 84,
+            "R_AARCH64_LDST128_ABS_LO12_NC": 16,
+            "R_AARCH64_LDST64_ABS_LO12_NC": 3,
+            "R_AARCH64_LDST16_ABS_LO12_NC": 2,
+            "R_AARCH64_PREL64": 2
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-f68e2715e2ac2507.rlib",
+          "object_count": 1,
+          "total_relocations": 10999,
+          "distinct_relocation_kinds": 10,
+          "relocation_counts": {
+            "R_AARCH64_ABS64": 6871,
+            "R_AARCH64_ABS32": 3374,
+            "R_AARCH64_CALL26": 416,
+            "R_AARCH64_PREL32": 116,
+            "R_AARCH64_ADR_PREL_PG_HI21": 70,
+            "R_AARCH64_ADD_ABS_LO12_NC": 70,
+            "R_AARCH64_PREL64": 38,
+            "R_AARCH64_JUMP26": 28,
+            "R_AARCH64_ADR_GOT_PAGE": 8,
+            "R_AARCH64_LD64_GOT_LO12_NC": 8
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-f9f1a1f02cfcb825.rlib",
+          "object_count": 1,
+          "total_relocations": 129772,
+          "distinct_relocation_kinds": 18,
+          "relocation_counts": {
+            "R_AARCH64_ABS64": 77529,
+            "R_AARCH64_ABS32": 37768,
+            "R_AARCH64_CALL26": 6393,
+            "R_AARCH64_ADR_PREL_PG_HI21": 2430,
+            "R_AARCH64_ADD_ABS_LO12_NC": 2323,
+            "R_AARCH64_PREL32": 1330,
+            "R_AARCH64_ADR_GOT_PAGE": 483,
+            "R_AARCH64_LD64_GOT_LO12_NC": 482,
+            "R_AARCH64_JUMP26": 378,
+            "R_AARCH64_PREL64": 303,
+            "R_AARCH64_LDST64_ABS_LO12_NC": 64,
+            "R_AARCH64_LDST8_ABS_LO12_NC": 60,
+            "R_AARCH64_TLSDESC_ADR_PAGE21": 53,
+            "R_AARCH64_TLSDESC_LD64_LO12": 53,
+            "R_AARCH64_TLSDESC_ADD_LO12": 53,
+            "R_AARCH64_TLSDESC_CALL": 53,
+            "R_AARCH64_LDST128_ABS_LO12_NC": 10,
+            "R_AARCH64_LDST32_ABS_LO12_NC": 7
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-6d387bb3469b4925.rlib",
+          "object_count": 405,
+          "total_relocations": 35841,
+          "distinct_relocation_kinds": 12,
+          "relocation_counts": {
+            "R_AARCH64_ABS32": 23307,
+            "R_AARCH64_ABS64": 10969,
+            "R_AARCH64_PREL32": 706,
+            "R_AARCH64_ADR_PREL_PG_HI21": 262,
+            "R_AARCH64_CALL26": 171,
+            "R_AARCH64_JUMP26": 116,
+            "R_AARCH64_LDST8_ABS_LO12_NC": 101,
+            "R_AARCH64_LDST128_ABS_LO12_NC": 78,
+            "R_AARCH64_ADD_ABS_LO12_NC": 65,
+            "R_AARCH64_PREL64": 46,
+            "R_AARCH64_LDST64_ABS_LO12_NC": 12,
+            "R_AARCH64_LDST16_ABS_LO12_NC": 8
+          }
+        }
+      }
+    },
+    "aarch64-apple-darwin": {
+      "object_format": "Mach-O arm64",
+      "total_objects_scanned": 376,
+      "total_relocations": 60870,
+      "distinct_relocation_kinds": 11,
+      "relocation_counts": {
+        "ARM64_RELOC_UNSIGNED": 42406,
+        "ARM64_RELOC_BRANCH26": 7711,
+        "ARM64_RELOC_PAGEOFF12": 3981,
+        "ARM64_RELOC_PAGE21": 3931,
+        "ARM64_RELOC_SUBTRACTOR": 1719,
+        "ARM64_RELOC_GOT_LOAD_PAGEOFF12": 359,
+        "ARM64_RELOC_GOT_LOAD_PAGE21": 359,
+        "ARM64_RELOC_ADDEND": 293,
+        "ARM64_RELOC_TLVP_LOAD_PAGEOFF12": 46,
+        "ARM64_RELOC_TLVP_LOAD_PAGE21": 46,
+        "ARM64_RELOC_POINTER_TO_GOT": 19
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-3e4eb39a5fe4e537.rlib",
+          "object_count": 1,
+          "total_relocations": 9332,
+          "distinct_relocation_kinds": 6,
+          "relocation_counts": {
+            "ARM64_RELOC_UNSIGNED": 5628,
+            "ARM64_RELOC_PAGEOFF12": 1299,
+            "ARM64_RELOC_PAGE21": 1299,
+            "ARM64_RELOC_BRANCH26": 839,
+            "ARM64_RELOC_SUBTRACTOR": 266,
+            "ARM64_RELOC_POINTER_TO_GOT": 1
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-2ce5006d2257bd69.rlib",
+          "object_count": 1,
+          "total_relocations": 2858,
+          "distinct_relocation_kinds": 8,
+          "relocation_counts": {
+            "ARM64_RELOC_UNSIGNED": 2153,
+            "ARM64_RELOC_BRANCH26": 448,
+            "ARM64_RELOC_SUBTRACTOR": 108,
+            "ARM64_RELOC_PAGEOFF12": 69,
+            "ARM64_RELOC_PAGE21": 69,
+            "ARM64_RELOC_GOT_LOAD_PAGEOFF12": 5,
+            "ARM64_RELOC_GOT_LOAD_PAGE21": 5,
+            "ARM64_RELOC_POINTER_TO_GOT": 1
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-c8df3f17af30326b.rlib",
+          "object_count": 1,
+          "total_relocations": 40967,
+          "distinct_relocation_kinds": 11,
+          "relocation_counts": {
+            "ARM64_RELOC_UNSIGNED": 27607,
+            "ARM64_RELOC_BRANCH26": 6276,
+            "ARM64_RELOC_PAGEOFF12": 2397,
+            "ARM64_RELOC_PAGE21": 2350,
+            "ARM64_RELOC_SUBTRACTOR": 1249,
+            "ARM64_RELOC_GOT_LOAD_PAGEOFF12": 352,
+            "ARM64_RELOC_GOT_LOAD_PAGE21": 352,
+            "ARM64_RELOC_ADDEND": 291,
+            "ARM64_RELOC_TLVP_LOAD_PAGEOFF12": 46,
+            "ARM64_RELOC_TLVP_LOAD_PAGE21": 46,
+            "ARM64_RELOC_POINTER_TO_GOT": 1
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-a927747ff7623fdf.rlib",
+          "object_count": 373,
+          "total_relocations": 7713,
+          "distinct_relocation_kinds": 9,
+          "relocation_counts": {
+            "ARM64_RELOC_UNSIGNED": 7018,
+            "ARM64_RELOC_PAGEOFF12": 216,
+            "ARM64_RELOC_PAGE21": 213,
+            "ARM64_RELOC_BRANCH26": 148,
+            "ARM64_RELOC_SUBTRACTOR": 96,
+            "ARM64_RELOC_POINTER_TO_GOT": 16,
+            "ARM64_RELOC_GOT_LOAD_PAGEOFF12": 2,
+            "ARM64_RELOC_GOT_LOAD_PAGE21": 2,
+            "ARM64_RELOC_ADDEND": 2
+          }
+        }
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "object_format": "COFF-x86-64",
+      "total_objects_scanned": 280,
+      "total_relocations": 32689,
+      "distinct_relocation_kinds": 5,
+      "relocation_counts": {
+        "IMAGE_REL_AMD64_REL32": 11291,
+        "IMAGE_REL_AMD64_ADDR32NB": 9521,
+        "IMAGE_REL_AMD64_SECREL": 6142,
+        "IMAGE_REL_AMD64_SECTION": 5025,
+        "IMAGE_REL_AMD64_ADDR64": 710
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-f9527ed7f1165c0a.rlib",
+          "object_count": 1,
+          "total_relocations": 6384,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_REL32": 2395,
+            "IMAGE_REL_AMD64_SECREL": 1373,
+            "IMAGE_REL_AMD64_ADDR32NB": 1192,
+            "IMAGE_REL_AMD64_SECTION": 1164,
+            "IMAGE_REL_AMD64_ADDR64": 260
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-f9fd422e5eb593ae.rlib",
+          "object_count": 1,
+          "total_relocations": 1721,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_ADDR32NB": 725,
+            "IMAGE_REL_AMD64_REL32": 498,
+            "IMAGE_REL_AMD64_SECREL": 230,
+            "IMAGE_REL_AMD64_SECTION": 230,
+            "IMAGE_REL_AMD64_ADDR64": 38
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-3854312d46c17a37.rlib",
+          "object_count": 1,
+          "total_relocations": 20401,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_REL32": 7584,
+            "IMAGE_REL_AMD64_ADDR32NB": 6870,
+            "IMAGE_REL_AMD64_SECREL": 3229,
+            "IMAGE_REL_AMD64_SECTION": 2321,
+            "IMAGE_REL_AMD64_ADDR64": 397
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-9968a040cbc4bba8.rlib",
+          "object_count": 277,
+          "total_relocations": 4183,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_SECREL": 1310,
+            "IMAGE_REL_AMD64_SECTION": 1310,
+            "IMAGE_REL_AMD64_REL32": 814,
+            "IMAGE_REL_AMD64_ADDR32NB": 734,
+            "IMAGE_REL_AMD64_ADDR64": 15
+          }
+        }
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "object_format": "COFF-x86-64",
+      "total_objects_scanned": 254,
+      "total_relocations": 121012,
+      "distinct_relocation_kinds": 4,
+      "relocation_counts": {
+        "IMAGE_REL_AMD64_SECREL": 60847,
+        "IMAGE_REL_AMD64_ADDR64": 41094,
+        "IMAGE_REL_AMD64_REL32": 13994,
+        "IMAGE_REL_AMD64_ADDR32NB": 5077
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-d9c7ef74bee84a19.rlib",
+          "object_count": 1,
+          "total_relocations": 16678,
+          "distinct_relocation_kinds": 4,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_SECREL": 8206,
+            "IMAGE_REL_AMD64_ADDR64": 5077,
+            "IMAGE_REL_AMD64_REL32": 2245,
+            "IMAGE_REL_AMD64_ADDR32NB": 1150
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-c6934c651061f32a.rlib",
+          "object_count": 1,
+          "total_relocations": 6070,
+          "distinct_relocation_kinds": 4,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_SECREL": 3240,
+            "IMAGE_REL_AMD64_ADDR64": 2008,
+            "IMAGE_REL_AMD64_REL32": 530,
+            "IMAGE_REL_AMD64_ADDR32NB": 292
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-f903e3d16df36da5.rlib",
+          "object_count": 9,
+          "total_relocations": 70940,
+          "distinct_relocation_kinds": 4,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_SECREL": 31785,
+            "IMAGE_REL_AMD64_ADDR64": 25551,
+            "IMAGE_REL_AMD64_REL32": 10458,
+            "IMAGE_REL_AMD64_ADDR32NB": 3146
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-cddac46a750db0bd.rlib",
+          "object_count": 243,
+          "total_relocations": 27324,
+          "distinct_relocation_kinds": 4,
+          "relocation_counts": {
+            "IMAGE_REL_AMD64_SECREL": 17616,
+            "IMAGE_REL_AMD64_ADDR64": 8458,
+            "IMAGE_REL_AMD64_REL32": 761,
+            "IMAGE_REL_AMD64_ADDR32NB": 489
+          }
+        }
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "object_format": "COFF-i386",
+      "total_objects_scanned": 279,
+      "total_relocations": 26625,
+      "distinct_relocation_kinds": 5,
+      "relocation_counts": {
+        "IMAGE_REL_I386_DIR32": 8132,
+        "IMAGE_REL_I386_SECREL": 6096,
+        "IMAGE_REL_I386_REL32": 5276,
+        "IMAGE_REL_I386_SECTION": 4950,
+        "IMAGE_REL_I386_DIR32NB": 2171
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-623623a6a87de292.rlib",
+          "object_count": 1,
+          "total_relocations": 5708,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_I386_DIR32": 1833,
+            "IMAGE_REL_I386_SECREL": 1343,
+            "IMAGE_REL_I386_SECTION": 1154,
+            "IMAGE_REL_I386_REL32": 831,
+            "IMAGE_REL_I386_DIR32NB": 547
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-23b2946e8e34021c.rlib",
+          "object_count": 1,
+          "total_relocations": 1301,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_I386_REL32": 444,
+            "IMAGE_REL_I386_DIR32": 282,
+            "IMAGE_REL_I386_SECREL": 230,
+            "IMAGE_REL_I386_SECTION": 230,
+            "IMAGE_REL_I386_DIR32NB": 115
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-e3e074a5aac7f186.rlib",
+          "object_count": 1,
+          "total_relocations": 15806,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_I386_DIR32": 5395,
+            "IMAGE_REL_I386_REL32": 3770,
+            "IMAGE_REL_I386_SECREL": 3281,
+            "IMAGE_REL_I386_SECTION": 2324,
+            "IMAGE_REL_I386_DIR32NB": 1036
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-85383917e9971fc7.rlib",
+          "object_count": 276,
+          "total_relocations": 3810,
+          "distinct_relocation_kinds": 5,
+          "relocation_counts": {
+            "IMAGE_REL_I386_SECREL": 1242,
+            "IMAGE_REL_I386_SECTION": 1242,
+            "IMAGE_REL_I386_DIR32": 622,
+            "IMAGE_REL_I386_DIR32NB": 473,
+            "IMAGE_REL_I386_REL32": 231
+          }
+        }
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "object_format": "COFF-ARM64",
+      "total_objects_scanned": 274,
+      "total_relocations": 32549,
+      "distinct_relocation_kinds": 12,
+      "relocation_counts": {
+        "IMAGE_REL_ARM64_ADDR32NB": 7345,
+        "IMAGE_REL_ARM64_BRANCH26": 5033,
+        "IMAGE_REL_ARM64_SECREL": 5027,
+        "IMAGE_REL_ARM64_PAGEBASE_REL21": 4760,
+        "IMAGE_REL_ARM64_SECTION": 4704,
+        "IMAGE_REL_ARM64_PAGEOFFSET_12A": 3221,
+        "IMAGE_REL_ARM64_PAGEOFFSET_12L": 1589,
+        "IMAGE_REL_ARM64_ADDR64": 710,
+        "IMAGE_REL_ARM64_SECREL_HIGH12A": 69,
+        "IMAGE_REL_ARM64_SECREL_LOW12A": 56,
+        "IMAGE_REL_ARM64_REL32": 21,
+        "IMAGE_REL_ARM64_SECREL_LOW12L": 14
+      },
+      "per_crate": {
+        "libcore": {
+          "rlib_filename": "libcore-738e71017fc3ebfe.rlib",
+          "object_count": 1,
+          "total_relocations": 6599,
+          "distinct_relocation_kinds": 9,
+          "relocation_counts": {
+            "IMAGE_REL_ARM64_PAGEBASE_REL21": 1291,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12A": 1266,
+            "IMAGE_REL_ARM64_SECREL": 1094,
+            "IMAGE_REL_ARM64_SECTION": 1094,
+            "IMAGE_REL_ARM64_BRANCH26": 832,
+            "IMAGE_REL_ARM64_ADDR32NB": 722,
+            "IMAGE_REL_ARM64_ADDR64": 260,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12L": 25,
+            "IMAGE_REL_ARM64_REL32": 15
+          }
+        },
+        "liballoc": {
+          "rlib_filename": "liballoc-f425d0c340191edf.rlib",
+          "object_count": 1,
+          "total_relocations": 1652,
+          "distinct_relocation_kinds": 7,
+          "relocation_counts": {
+            "IMAGE_REL_ARM64_ADDR32NB": 588,
+            "IMAGE_REL_ARM64_BRANCH26": 412,
+            "IMAGE_REL_ARM64_SECREL": 230,
+            "IMAGE_REL_ARM64_SECTION": 230,
+            "IMAGE_REL_ARM64_PAGEBASE_REL21": 77,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12A": 77,
+            "IMAGE_REL_ARM64_ADDR64": 38
+          }
+        },
+        "libstd": {
+          "rlib_filename": "libstd-9588195ba9037bdf.rlib",
+          "object_count": 1,
+          "total_relocations": 20324,
+          "distinct_relocation_kinds": 12,
+          "relocation_counts": {
+            "IMAGE_REL_ARM64_ADDR32NB": 5473,
+            "IMAGE_REL_ARM64_BRANCH26": 3510,
+            "IMAGE_REL_ARM64_PAGEBASE_REL21": 3134,
+            "IMAGE_REL_ARM64_SECREL": 2403,
+            "IMAGE_REL_ARM64_SECTION": 2080,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12A": 1819,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12L": 1363,
+            "IMAGE_REL_ARM64_ADDR64": 397,
+            "IMAGE_REL_ARM64_SECREL_HIGH12A": 69,
+            "IMAGE_REL_ARM64_SECREL_LOW12A": 56,
+            "IMAGE_REL_ARM64_SECREL_LOW12L": 14,
+            "IMAGE_REL_ARM64_REL32": 6
+          }
+        },
+        "libcompiler_builtins": {
+          "rlib_filename": "libcompiler_builtins-d6384e6653370d26.rlib",
+          "object_count": 271,
+          "total_relocations": 3974,
+          "distinct_relocation_kinds": 8,
+          "relocation_counts": {
+            "IMAGE_REL_ARM64_SECREL": 1300,
+            "IMAGE_REL_ARM64_SECTION": 1300,
+            "IMAGE_REL_ARM64_ADDR32NB": 562,
+            "IMAGE_REL_ARM64_BRANCH26": 279,
+            "IMAGE_REL_ARM64_PAGEBASE_REL21": 258,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12L": 201,
+            "IMAGE_REL_ARM64_PAGEOFFSET_12A": 59,
+            "IMAGE_REL_ARM64_ADDR64": 15
+          }
+        }
+      }
+    }
+  },
+  "tier1_probe_relocations": {
+    "x86_64-unknown-linux-gnu": {
+      "probe-O0": {
+        "object_format": "elf64-x86-64",
+        "object_size_bytes": 4872,
+        "section_count": 27,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RINvNtCskADBYZwJmSU_4core10intrinsics11rotate_leftyECs26iP3XRi29Z_11probe_reloc",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".rela.text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvMs16_NtNtCskADBYZwJmSU_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rela.text._RNvMs16_NtNtCskADBYZwJmSU_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rodata._RNvMs16_NtNtCskADBYZwJmSU_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rela.rodata._RNvMs16_NtNtCskADBYZwJmSU_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rela.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rela.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE"
+        ],
+        "total_relocations": 24,
+        "distinct_relocation_kinds": 4,
+        "relocation_counts": {
+          "R_X86_64_PC32": 14,
+          "R_X86_64_GOTPCREL": 7,
+          "R_X86_64_64": 2,
+          "R_X86_64_PLT32": 1
+        }
+      },
+      "probe-O3": {
+        "object_format": "elf64-x86-64",
+        "object_size_bytes": 2824,
+        "section_count": 18,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rela.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rela.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".group",
+          ".data.DW.ref.rust_eh_personality",
+          ".rela.data.DW.ref.rust_eh_personality",
+          ".comment",
+          ".note.GNU"
+        ],
+        "total_relocations": 11,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "R_X86_64_GOTPCREL": 5,
+          "R_X86_64_PC32": 5,
+          "R_X86_64_64": 1
+        }
+      },
+      "probe-Os": {
+        "object_format": "elf64-x86-64",
+        "object_size_bytes": 2808,
+        "section_count": 18,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rela.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rela.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".group",
+          ".data.DW.ref.rust_eh_personality",
+          ".rela.data.DW.ref.rust_eh_personality",
+          ".comment",
+          ".note.GNU"
+        ],
+        "total_relocations": 11,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "R_X86_64_GOTPCREL": 5,
+          "R_X86_64_PC32": 5,
+          "R_X86_64_64": 1
+        }
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "probe-O0": {
+        "object_format": "elf32-i386",
+        "object_size_bytes": 4000,
+        "section_count": 27,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RINvNtCsla01Uw4N3k7_4core10intrinsics11rotate_leftyECs26iP3XRi29Z_11probe_reloc",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".rel.text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvMs16_NtNtCsla01Uw4N3k7_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rel.text._RNvMs16_NtNtCsla01Uw4N3k7_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rodata._RNvMs16_NtNtCsla01Uw4N3k7_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rel.rodata._RNvMs16_NtNtCsla01Uw4N3k7_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rel.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rel.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE"
+        ],
+        "total_relocations": 28,
+        "distinct_relocation_kinds": 6,
+        "relocation_counts": {
+          "R_386_PC32": 8,
+          "R_386_GOTOFF": 7,
+          "R_386_PLT32": 5,
+          "R_386_GOTPC": 4,
+          "R_386_GOT32": 2,
+          "R_386_32": 2
+        }
+      },
+      "probe-O3": {
+        "object_format": "elf32-i386",
+        "object_size_bytes": 2272,
+        "section_count": 18,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rel.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rel.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".group",
+          ".data.DW.ref.rust_eh_personality",
+          ".rel.data.DW.ref.rust_eh_personality",
+          ".comment",
+          ".note.GNU"
+        ],
+        "total_relocations": 13,
+        "distinct_relocation_kinds": 5,
+        "relocation_counts": {
+          "R_386_PC32": 5,
+          "R_386_PLT32": 3,
+          "R_386_GOTPC": 2,
+          "R_386_GOT32": 2,
+          "R_386_32": 1
+        }
+      },
+      "probe-Os": {
+        "object_format": "elf32-i386",
+        "object_size_bytes": 2256,
+        "section_count": 18,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rel.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rel.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".group",
+          ".data.DW.ref.rust_eh_personality",
+          ".rel.data.DW.ref.rust_eh_personality",
+          ".comment",
+          ".note.GNU"
+        ],
+        "total_relocations": 13,
+        "distinct_relocation_kinds": 5,
+        "relocation_counts": {
+          "R_386_PC32": 5,
+          "R_386_PLT32": 3,
+          "R_386_GOTPC": 2,
+          "R_386_GOT32": 2,
+          "R_386_32": 1
+        }
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "probe-O0": {
+        "object_format": "elf64-littleaarch64",
+        "object_size_bytes": 5312,
+        "section_count": 25,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RINvNtCsaWcbhsS8OaW_4core10intrinsics11rotate_leftyECs26iP3XRi29Z_11probe_reloc",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".rela.text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvMs1g_NtNtCsaWcbhsS8OaW_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".rela.text._RNvMs1g_NtNtCsaWcbhsS8OaW_4core4sync6atomicINtB6_6AtomicjE9fetch_addCs26iP3XRi29Z_11probe_reloc",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rela.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rela.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".rodata.str1.1"
+        ],
+        "total_relocations": 26,
+        "distinct_relocation_kinds": 8,
+        "relocation_counts": {
+          "R_AARCH64_CALL26": 11,
+          "R_AARCH64_PREL32": 5,
+          "R_AARCH64_ADR_GOT_PAGE": 2,
+          "R_AARCH64_LD64_GOT_LO12_NC": 2,
+          "R_AARCH64_ABS64": 2,
+          "R_AARCH64_PREL64": 2,
+          "R_AARCH64_ADR_PREL_PG_HI21": 1,
+          "R_AARCH64_ADD_ABS_LO12_NC": 1
+        }
+      },
+      "probe-O3": {
+        "object_format": "elf64-littleaarch64",
+        "object_size_bytes": 3208,
+        "section_count": 18,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rela.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rela.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".group",
+          ".data.DW.ref.rust_eh_personality",
+          ".rela.data.DW.ref.rust_eh_personality",
+          ".comment",
+          ".note.GNU"
+        ],
+        "total_relocations": 14,
+        "distinct_relocation_kinds": 7,
+        "relocation_counts": {
+          "R_AARCH64_CALL26": 3,
+          "R_AARCH64_PREL32": 3,
+          "R_AARCH64_ADR_GOT_PAGE": 2,
+          "R_AARCH64_LD64_GOT_LO12_NC": 2,
+          "R_AARCH64_PREL64": 2,
+          "R_AARCH64_JUMP26": 1,
+          "R_AARCH64_ABS64": 1
+        }
+      },
+      "probe-Os": {
+        "object_format": "elf64-littleaarch64",
+        "object_size_bytes": 3208,
+        "section_count": 18,
+        "sections_sample": [
+          ".strtab",
+          ".text",
+          ".text._RNvCs26iP3XRi29Z_11probe_reloc15external_helper",
+          ".text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".rela.text._RNvXCs26iP3XRi29Z_11probe_relocNtB2_10MultiplierNtB2_9Processor7process",
+          ".text.probe_entry",
+          ".rela.text.probe_entry",
+          ".gcc_except_table.probe_entry",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc12STATIC_TABLE",
+          ".data._RNvCs26iP3XRi29Z_11probe_reloc14GLOBAL_COUNTER",
+          ".group",
+          ".data.DW.ref.rust_eh_personality",
+          ".rela.data.DW.ref.rust_eh_personality",
+          ".comment",
+          ".note.GNU"
+        ],
+        "total_relocations": 14,
+        "distinct_relocation_kinds": 7,
+        "relocation_counts": {
+          "R_AARCH64_CALL26": 3,
+          "R_AARCH64_PREL32": 3,
+          "R_AARCH64_ADR_GOT_PAGE": 2,
+          "R_AARCH64_LD64_GOT_LO12_NC": 2,
+          "R_AARCH64_PREL64": 2,
+          "R_AARCH64_JUMP26": 1,
+          "R_AARCH64_ABS64": 1
+        }
+      }
+    },
+    "aarch64-apple-darwin": {
+      "probe-O0": {
+        "object_format": "Mach-O arm64",
+        "object_size_bytes": 3200,
+        "section_count": 7,
+        "sections_sample": [
+          "__text",
+          "__gcc_except_tab",
+          "__data",
+          "__cstring",
+          "__const",
+          "__compact_unwind",
+          "__eh_frame"
+        ],
+        "total_relocations": 29,
+        "distinct_relocation_kinds": 6,
+        "relocation_counts": {
+          "ARM64_RELOC_UNSIGNED": 11,
+          "ARM64_RELOC_BRANCH26": 6,
+          "ARM64_RELOC_SUBTRACTOR": 5,
+          "ARM64_RELOC_PAGEOFF12": 3,
+          "ARM64_RELOC_PAGE21": 3,
+          "ARM64_RELOC_POINTER_TO_GOT": 1
+        }
+      },
+      "probe-O3": {
+        "object_format": "Mach-O arm64",
+        "object_size_bytes": 1736,
+        "section_count": 5,
+        "sections_sample": [
+          "__text",
+          "__gcc_except_tab",
+          "__data",
+          "__compact_unwind",
+          "__eh_frame"
+        ],
+        "total_relocations": 15,
+        "distinct_relocation_kinds": 6,
+        "relocation_counts": {
+          "ARM64_RELOC_UNSIGNED": 5,
+          "ARM64_RELOC_BRANCH26": 3,
+          "ARM64_RELOC_PAGEOFF12": 2,
+          "ARM64_RELOC_PAGE21": 2,
+          "ARM64_RELOC_SUBTRACTOR": 2,
+          "ARM64_RELOC_POINTER_TO_GOT": 1
+        }
+      },
+      "probe-Os": {
+        "object_format": "Mach-O arm64",
+        "object_size_bytes": 1736,
+        "section_count": 5,
+        "sections_sample": [
+          "__text",
+          "__gcc_except_tab",
+          "__data",
+          "__compact_unwind",
+          "__eh_frame"
+        ],
+        "total_relocations": 15,
+        "distinct_relocation_kinds": 6,
+        "relocation_counts": {
+          "ARM64_RELOC_UNSIGNED": 5,
+          "ARM64_RELOC_BRANCH26": 3,
+          "ARM64_RELOC_PAGEOFF12": 2,
+          "ARM64_RELOC_PAGE21": 2,
+          "ARM64_RELOC_SUBTRACTOR": 2,
+          "ARM64_RELOC_POINTER_TO_GOT": 1
+        }
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "probe-O0": {
+        "object_format": "COFF-x86-64",
+        "object_size_bytes": 4209,
+        "section_count": 23,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".rdata",
+          ".rdata",
+          ".data",
+          ".data",
+          ".xdata"
+        ],
+        "total_relocations": 44,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "IMAGE_REL_AMD64_ADDR32NB": 28,
+          "IMAGE_REL_AMD64_REL32": 13,
+          "IMAGE_REL_AMD64_ADDR64": 3
+        }
+      },
+      "probe-O3": {
+        "object_format": "COFF-x86-64",
+        "object_size_bytes": 2389,
+        "section_count": 12,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".data",
+          ".data",
+          ".xdata",
+          ".pdata"
+        ],
+        "total_relocations": 26,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "IMAGE_REL_AMD64_ADDR32NB": 19,
+          "IMAGE_REL_AMD64_REL32": 5,
+          "IMAGE_REL_AMD64_ADDR64": 2
+        }
+      },
+      "probe-Os": {
+        "object_format": "COFF-x86-64",
+        "object_size_bytes": 2383,
+        "section_count": 12,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".data",
+          ".data",
+          ".xdata",
+          ".pdata"
+        ],
+        "total_relocations": 26,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "IMAGE_REL_AMD64_ADDR32NB": 19,
+          "IMAGE_REL_AMD64_REL32": 5,
+          "IMAGE_REL_AMD64_ADDR64": 2
+        }
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "probe-O0": {
+        "object_format": "COFF-x86-64",
+        "object_size_bytes": 2431,
+        "section_count": 6,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".xdata",
+          ".rdata",
+          ".pdata"
+        ],
+        "total_relocations": 31,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "IMAGE_REL_AMD64_REL32": 15,
+          "IMAGE_REL_AMD64_ADDR32NB": 13,
+          "IMAGE_REL_AMD64_ADDR64": 3
+        }
+      },
+      "probe-O3": {
+        "object_format": "COFF-x86-64",
+        "object_size_bytes": 1330,
+        "section_count": 5,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".xdata",
+          ".pdata"
+        ],
+        "total_relocations": 11,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "IMAGE_REL_AMD64_REL32": 5,
+          "IMAGE_REL_AMD64_ADDR32NB": 4,
+          "IMAGE_REL_AMD64_ADDR64": 2
+        }
+      },
+      "probe-Os": {
+        "object_format": "COFF-x86-64",
+        "object_size_bytes": 1312,
+        "section_count": 5,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".xdata",
+          ".pdata"
+        ],
+        "total_relocations": 11,
+        "distinct_relocation_kinds": 3,
+        "relocation_counts": {
+          "IMAGE_REL_AMD64_REL32": 5,
+          "IMAGE_REL_AMD64_ADDR32NB": 4,
+          "IMAGE_REL_AMD64_ADDR64": 2
+        }
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "probe-O0": {
+        "object_format": "COFF-i386",
+        "object_size_bytes": 3509,
+        "section_count": 17,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".rdata",
+          ".rdata",
+          ".data",
+          ".data"
+        ],
+        "total_relocations": 19,
+        "distinct_relocation_kinds": 2,
+        "relocation_counts": {
+          "IMAGE_REL_I386_DIR32": 13,
+          "IMAGE_REL_I386_REL32": 6
+        }
+      },
+      "probe-O3": {
+        "object_format": "COFF-i386",
+        "object_size_bytes": 2315,
+        "section_count": 13,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".data",
+          ".data",
+          ".sxdata",
+          ".xdata"
+        ],
+        "total_relocations": 15,
+        "distinct_relocation_kinds": 2,
+        "relocation_counts": {
+          "IMAGE_REL_I386_DIR32": 11,
+          "IMAGE_REL_I386_REL32": 4
+        }
+      },
+      "probe-Os": {
+        "object_format": "COFF-i386",
+        "object_size_bytes": 2307,
+        "section_count": 13,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".data",
+          ".data",
+          ".sxdata",
+          ".xdata"
+        ],
+        "total_relocations": 15,
+        "distinct_relocation_kinds": 2,
+        "relocation_counts": {
+          "IMAGE_REL_I386_DIR32": 11,
+          "IMAGE_REL_I386_REL32": 4
+        }
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "probe-O0": {
+        "object_format": "COFF-ARM64",
+        "object_size_bytes": 4381,
+        "section_count": 22,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".rdata",
+          ".rdata",
+          ".data",
+          ".data",
+          ".xdata"
+        ],
+        "total_relocations": 32,
+        "distinct_relocation_kinds": 5,
+        "relocation_counts": {
+          "IMAGE_REL_ARM64_ADDR32NB": 20,
+          "IMAGE_REL_ARM64_BRANCH26": 5,
+          "IMAGE_REL_ARM64_ADDR64": 3,
+          "IMAGE_REL_ARM64_PAGEBASE_REL21": 2,
+          "IMAGE_REL_ARM64_PAGEOFFSET_12A": 2
+        }
+      },
+      "probe-O3": {
+        "object_format": "COFF-ARM64",
+        "object_size_bytes": 2321,
+        "section_count": 11,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".data",
+          ".xdata",
+          ".pdata"
+        ],
+        "total_relocations": 24,
+        "distinct_relocation_kinds": 5,
+        "relocation_counts": {
+          "IMAGE_REL_ARM64_ADDR32NB": 17,
+          "IMAGE_REL_ARM64_BRANCH26": 3,
+          "IMAGE_REL_ARM64_ADDR64": 2,
+          "IMAGE_REL_ARM64_PAGEBASE_REL21": 1,
+          "IMAGE_REL_ARM64_PAGEOFFSET_12A": 1
+        }
+      },
+      "probe-Os": {
+        "object_format": "COFF-ARM64",
+        "object_size_bytes": 2388,
+        "section_count": 12,
+        "sections_sample": [
+          ".text",
+          ".data",
+          ".bss",
+          ".text",
+          ".text",
+          ".text",
+          ".data",
+          ".data",
+          ".data",
+          ".data",
+          ".xdata",
+          ".pdata"
+        ],
+        "total_relocations": 26,
+        "distinct_relocation_kinds": 5,
+        "relocation_counts": {
+          "IMAGE_REL_ARM64_ADDR32NB": 17,
+          "IMAGE_REL_ARM64_BRANCH26": 3,
+          "IMAGE_REL_ARM64_PAGEBASE_REL21": 2,
+          "IMAGE_REL_ARM64_PAGEOFFSET_12A": 2,
+          "IMAGE_REL_ARM64_ADDR64": 2
+        }
+      }
+    }
+  }
+}
