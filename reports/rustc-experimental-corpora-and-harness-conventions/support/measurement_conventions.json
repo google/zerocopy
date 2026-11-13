@@ -1,0 +1,98 @@
+{
+  "reference_host_profile_observed": {
+    "os": "Linux 7.1.6-1rodete1-amd64 x86_64 GNU/Linux",
+    "cpu_model": "Intel(R) Xeon(R) CPU @ 2.60GHz (Family 6, Model 106, Stepping 6, Ice Lake-SP)",
+    "logical_cpus": 96,
+    "sockets": 2,
+    "cores_per_socket": 24,
+    "threads_per_core": 2,
+    "numa_nodes": {
+      "node0": "0-23,48-71",
+      "node1": "24-47,72-95"
+    },
+    "caches": {
+      "l1d": "2.3 MiB (48 instances, 48 KiB/core)",
+      "l1i": "1.5 MiB (48 instances, 32 KiB/core)",
+      "l2": "60 MiB (48 instances, 1.25 MiB/core)",
+      "l3": "108 MiB (2 instances, 54 MiB/socket)"
+    },
+    "isa_extensions": [
+      "sse2",
+      "ssse3",
+      "sse4.1",
+      "sse4.2",
+      "avx",
+      "avx2",
+      "fma",
+      "bmi1",
+      "bmi2",
+      "avx512f",
+      "avx512dq",
+      "avx512bw",
+      "avx512vl",
+      "avx512vbmi",
+      "avx512_vnni",
+      "vaes",
+      "vpclmulqdq",
+      "sha_ni"
+    ],
+    "ram_total_kib": 247581128,
+    "hypervisor": "KVM (cpufreq sysfs not exposed; pin single-socket physical cores 0-23 via taskset/numactl)"
+  },
+  "execution_isolation_rules": {
+    "numa_and_core_pinning": "Run single-threaded benchmarks via `numactl --cpunodebind=0 --membind=0 taskset -c <physical_core>` avoiding sibling hyperthreads (cores 0..23 vs siblings 48..71)",
+    "aslr_control": "Disable ASLR via `setarch $(uname -m) -R` to stabilize stack/heap page alignment across runs",
+    "environment_sanitization": "Fixed `LC_ALL=C.UTF-8`, `TZ=UTC`, `RUST_BACKTRACE=0`, and identical directory path lengths for `RUSTFLAGS` / `--remap-path-prefix`",
+    "bare_metal_governor_when_available": "Set `/sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to `performance`, disable turbo boost (`no_turbo=1`), and drop page cache only before cold-I/O tests"
+  },
+  "statistical_protocol": {
+    "warmup_iterations": "Minimum 3 full process warmup runs (or 500 ms in-process warmup in benchlib)",
+    "sample_size": "Minimum N=30 process invocations for compile-time and CLI application workloads; minimum M=100 in-process iterations per invocation for microbenchmarks",
+    "hardware_counters": "Record wall-clock ns (`CLOCK_MONOTONIC_RAW`), user/sys CPU time, max RSS (`ru_maxrss`), and `perf stat` counters (`instructions:u`, `cycles:u`, `branches:u`, `branch-misses:u`, `L1-dcache-load-misses:u`) when PMU access permits",
+    "summary_estimators": [
+      "median (p50)",
+      "interquartile_range (IQR = p75 - p25)",
+      "Normalized IQR (IQR / median)",
+      "median_absolute_deviation (MAD)",
+      "mean and sample standard deviation (for comparison only)",
+      "10,000-resample percentile bootstrap 95% confidence interval on median ratio (candidate / baseline)"
+    ],
+    "hypothesis_and_noise_gate": "Two-sided Mann-Whitney U test (alpha = 0.01) paired with a minimum effect-size threshold (> 1.0% instruction-count delta or > 1.5% wall-clock median delta when Normalized IQR < 2.0%). Flag any benchmark with Normalized IQR >= 3.0% as noisy and require re-run under stricter core isolation."
+  },
+  "binary_size_accounting": {
+    "tool": "`llvm-size -A --radix=10` (from `llvm-tools-preview` 23.1.1) and ELF/PE/Mach-O section parser",
+    "tracked_sections": {
+      "executable_code": [
+        ".text",
+        "__TEXT,__text"
+      ],
+      "read_only_data": [
+        ".rodata",
+        "__TEXT,__const",
+        ".rdata"
+      ],
+      "initialized_data": [
+        ".data",
+        ".data.rel.ro",
+        "__DATA,__data"
+      ],
+      "zero_initialized_bss": [
+        ".bss",
+        "__DATA,__bss"
+      ],
+      "unwind_tables": [
+        ".eh_frame",
+        ".eh_frame_hdr",
+        ".pdata",
+        ".xdata",
+        "__TEXT,__unwind_info"
+      ],
+      "debug_and_symbols": [
+        ".debug_*",
+        ".symtab",
+        ".strtab"
+      ]
+    },
+    "primary_parity_metric": "Sum of allocatable loadable code + read-only data (`.text + .rodata`) and total stripped image size (`strip --strip-debug`)"
+  }
+}

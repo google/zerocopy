@@ -1,0 +1,296 @@
+{
+  "applications": [
+    {
+      "id": "ripgrep",
+      "repository": "BurntSushi/ripgrep",
+      "tag": "14.1.1",
+      "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "head_observed": "178cc027e283fd965cb72d0a7395b219eada170c",
+      "crate_types": [
+        "bin"
+      ],
+      "workload": "Regex search (`rg -n --no-ignore 'fn [a-z0-9_]+\\(' compiler/`) over the pinned `rust-lang/rust` `58cf8f9c35b355199727627d07ae34a4e2846d67` `compiler/` tree",
+      "exercises": [
+        "SIMD byte/substring search (memchr/aho-corasick)",
+        "DFA/NFA regex state machines",
+        "parallel directory traversal (ignore/crossbeam-deque)",
+        "mmap/read syscall throughput"
+      ]
+    },
+    {
+      "id": "fd",
+      "repository": "sharkdp/fd",
+      "tag": "v10.2.0",
+      "revision": "b19136871310b01500b4f09eadd7387b8476be47",
+      "head_observed": "24d90b28d25438af2a8f2e7f7e46d03d6828da94",
+      "crate_types": [
+        "bin"
+      ],
+      "workload": "Parallel filesystem traversal and glob/regex path matching (`fd --no-ignore --extension rs . compiler/ library/`) over `rust-lang/rust` `58cf8f9c35b355199727627d07ae34a4e2846d67`",
+      "exercises": [
+        "work-stealing thread pool",
+        "OS directory entry decoding",
+        "globset/regex matching",
+        "CLI argument parsing (clap)"
+      ]
+    },
+    {
+      "id": "rustc-self-compile",
+      "repository": "rust-lang/rust",
+      "tag": "1.99.1",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "crate_types": [
+        "dylib",
+        "rlib",
+        "bin"
+      ],
+      "workload": "`./x.py build --stage 1 library/std compiler/rustc` and compiling `serde_json` + `regex` with the stage-1 compiler",
+      "exercises": [
+        "65-crate compiler DAG (`rustc_middle`, `rustc_mir_transform`, `rustc_codegen_ssa`)",
+        "proc-macro expansion (`rustc_macros`)",
+        "dynamic linking (`librustc_driver.so`)"
+      ]
+    },
+    {
+      "id": "tokio-axum-hyper-server",
+      "repository": "tokio-rs/tokio",
+      "revision": "9a1b076c0084e2bca8558818bffd2273ec5ae5bd",
+      "companion_repositories": {
+        "tokio-rs/axum": "601d775da87c42c2ec20dfad035c8dec80733843",
+        "hyperium/hyper": "793af1ed2a3f1fd65e5a8de85b368daa58b15279",
+        "tokio-rs/mio": "b0578c2d166c55b02c18c64bc183ff8191bfba41"
+      },
+      "crate_types": [
+        "rlib",
+        "bin"
+      ],
+      "workload": "In-process multi-threaded work-stealing HTTP/1.1 + HTTP/2 echo and JSON routing loopback benchmark (10,000 requests across 64 concurrent tasks)",
+      "exercises": [
+        "coroutine/async state-machine lowering (`Coroutine` MIR)",
+        "`Pin<&mut Self>` polling",
+        "atomic task wakers and epoll/kqueue/IOCP reactor",
+        "`Bytes` reference counting"
+      ]
+    },
+    {
+      "id": "serde-json-workload",
+      "repository": "serde-rs/json",
+      "revision": "3f17d2c6ea1588bd7b714359522bd94751465275",
+      "crate_types": [
+        "rlib"
+      ],
+      "workload": "DOM (`serde_json::Value`) and typed struct (`#[derive(Serialize, Deserialize)]`) parse + serialize round-trip on canada.json, citm_catalog.json, and twitter.json",
+      "exercises": [
+        "float parsing/formatting (`ryu`/`itoa`)",
+        "UTF-8 validation and string escaping",
+        "monomorphized visitor dispatch",
+        "branch-heavy lexer loops"
+      ]
+    },
+    {
+      "id": "regex-workload",
+      "repository": "rust-lang/regex",
+      "revision": "5ea3eb1e95f0338e283f5f0b4681f0891a1cd836",
+      "crate_types": [
+        "rlib"
+      ],
+      "workload": "`regex-automata` and `regex` compile + search suite over UTF-8 haystack corpus (literal prefix acceleration, PikeVM, lazy DFA, bounded backtracker)",
+      "exercises": [
+        "lookup tables and byte classes",
+        "autovectorized and explicit SIMD (`teddy`)",
+        "tight state-transition switch loops"
+      ]
+    },
+    {
+      "id": "image-codec-workload",
+      "repository": "image-rs/image",
+      "revision": "aae5fb91a27386801babec31ab07b9a1821e3b03",
+      "companion_repositories": {
+        "rust-lang/flate2-rs": "8ad8fd76828fb30532845a7353e101f95bf07221",
+        "dropbox/rust-brotli": "85dbcc34999e365b965329f5ae66120a04ad87bf"
+      },
+      "crate_types": [
+        "rlib"
+      ],
+      "workload": "Deterministic PNG, JPEG, and WebP decode + Lanczos3 resize + PNG encode pipeline on synthetic 1024x1024 RGBA8 test buffers",
+      "exercises": [
+        "SIMD pixel filtering and IDCT",
+        "Deflate/LZ77 bitstream decoding (`flate2`)",
+        "bounds-check elimination in nested slice loops",
+        "floating-point resampling"
+      ]
+    },
+    {
+      "id": "ffi-cdylib-and-staticlib",
+      "repository": "rust-lang/rust",
+      "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "crate_types": [
+        "cdylib",
+        "staticlib"
+      ],
+      "workload": "`verified_crc32c_step` `#![no_std]` library compiled as both `cdylib` (`liblib.so`, 5,280 B) and `staticlib` (`liblib.a`, 7,730,098 B) linked into a C99 consumer (`main.c`) verifying `crc32c(\"123456789\") == 0xe3069283`, plus cross-target `--emit=obj,llvm-ir,asm` across all 8 Tier 1 targets",
+      "exercises": [
+        "C calling convention (`extern \"C\"`)",
+        "ELF/PE/Mach-O symbol export visibility",
+        "static archive bundling vs dynamic shared library relocation"
+      ],
+      "empirical_results_on_1_99_1": {
+        "staticlib_size_bytes": 7730098,
+        "cdylib_size_bytes": 5280,
+        "c_consumer_output": "crc32c=0xe3069283",
+        "tier1_emit": {
+          "x86_64-unknown-linux-gnu": {
+            "returncode": 0,
+            "elapsed_sec": 0.0321,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1931,
+              "lib.ll": 3721,
+              "lib.o": 1424
+            }
+          },
+          "x86_64-pc-windows-msvc": {
+            "returncode": 0,
+            "elapsed_sec": 0.0312,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1813,
+              "lib.ll": 3674,
+              "lib.o": 1014
+            }
+          },
+          "x86_64-pc-windows-gnu": {
+            "returncode": 0,
+            "elapsed_sec": 0.0298,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1674,
+              "lib.ll": 3673,
+              "lib.o": 876
+            }
+          },
+          "aarch64-unknown-linux-gnu": {
+            "returncode": 0,
+            "elapsed_sec": 0.0341,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1624,
+              "lib.ll": 3826,
+              "lib.o": 1432
+            }
+          },
+          "aarch64-apple-darwin": {
+            "returncode": 0,
+            "elapsed_sec": 0.0321,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1100,
+              "lib.ll": 3656,
+              "lib.o": 592
+            }
+          },
+          "aarch64-pc-windows-msvc": {
+            "returncode": 0,
+            "elapsed_sec": 0.0327,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1398,
+              "lib.ll": 3765,
+              "lib.o": 732
+            }
+          },
+          "i686-unknown-linux-gnu": {
+            "returncode": 0,
+            "elapsed_sec": 0.0308,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 2312,
+              "lib.ll": 3641,
+              "lib.o": 1112
+            }
+          },
+          "i686-pc-windows-msvc": {
+            "returncode": 0,
+            "elapsed_sec": 0.0312,
+            "stderr": "",
+            "artifacts": {
+              "lib.s": 1761,
+              "lib.ll": 3589,
+              "lib.o": 791
+            }
+          }
+        }
+      }
+    }
+  ],
+  "benchmark_suite": {
+    "rustc_perf": {
+      "repository": "rust-lang/rustc-perf",
+      "revision": "b9d680e5dda9b6d9ff98716e9eed705dad3c105d",
+      "workspace_msrv": "1.97.0",
+      "compile_time_primary_benchmarks": [
+        "bitmaps-3.2.1",
+        "cargo-0.87.1",
+        "clap_derive-4.5.32",
+        "cranelift-codegen-0.119.0",
+        "diesel-2.2.10",
+        "eza-0.21.2",
+        "helloworld",
+        "html5ever-0.31.0",
+        "hyper-1.6.0",
+        "image-0.25.6",
+        "libc-0.2.172",
+        "nalgebra-0.33.0",
+        "regex-automata-0.4.8",
+        "ripgrep-14.1.1",
+        "serde-1.0.219",
+        "serde_derive-1.0.219",
+        "stm32f4-0.15.1",
+        "syn-2.0.101",
+        "tokio-webpush-simple",
+        "tuple-stress",
+        "unify-linearly",
+        "webrender-2022"
+      ],
+      "runtime_benchmark_harness": "collector/benchlib (`benchlib::benchmark::run_benchmark_group`)"
+    },
+    "supplemental_domain_benchmarks": {
+      "simd_heavy": [
+        {
+          "name": "stdarch-core-arch-kernels",
+          "source": "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67:library/stdarch/crates/core_arch",
+          "description": "Explicit SSE2/AVX2/AVX-512 (`x86_64`) and NEON (`aarch64`) horizontal reductions, byte shuffles, and saturating arithmetic"
+        },
+        {
+          "name": "portable-simd-f32x8-i32x8",
+          "source": "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67:library/portable-simd",
+          "description": "`core::simd::Simd<T, N>` dot-product, masked load/store, and swizzle kernels lowered through `simd_*` intrinsics"
+        },
+        {
+          "name": "byteorder-ahash-simd",
+          "source": "Amanieu/ahash@a9d649d18d6a + BurntSushi/byteorder@5a82625fae46",
+          "description": "AES-NI / vectorized folded-multiply hashing and unaligned endianness bulk conversions"
+        }
+      ],
+      "unwinding_heavy": [
+        {
+          "name": "catch-unwind-drop-ladder",
+          "source": "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67:library/panic_unwind",
+          "description": "Deep call stacks (depth 8, 32, 128) with nested `Drop` guards, `std::panic::catch_unwind`, and `extern \"C-unwind\"` frames exercising DWARF `.eh_frame` / Windows `.pdata`+`.xdata` SEH personality routines"
+        }
+      ],
+      "concurrency_heavy": [
+        {
+          "name": "parking-lot-mutex-rwlock-contention",
+          "source": "Amanieu/parking_lot@03d36d62fecbd85ce7cea1babfae23c673f0c6a3",
+          "description": "Multi-threaded (1, 4, 16, 48 threads) CAS/fetch_add spin-then-park mutex and rwlock contention exercising SeqCst/AcqRel/Acquire/Release atomics"
+        },
+        {
+          "name": "tokio-mpsc-work-stealing",
+          "source": "tokio-rs/tokio@9a1b076c0084e2bca8558818bffd2273ec5ae5bd",
+          "description": "Cross-thread bounded MPSC channel ping-pong and work-stealing queue transitions under relaxed-memory atomic fences"
+        }
+      ]
+    }
+  }
+}

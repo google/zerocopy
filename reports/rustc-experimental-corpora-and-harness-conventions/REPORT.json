@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/corpora",
+    "rustc/benchmarks",
+    "cargo/corpora",
+    "verification/empirical-evaluation"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and Tier 1 target standard libraries",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc-perf compiler and runtime benchmark suite",
+      "identity": {
+        "repository": "rust-lang/rustc-perf",
+        "revision": "b9d680e5dda9b6d9ff98716e9eed705dad3c105d"
+      }
+    },
+    {
+      "name": "ripgrep line-oriented search tool",
+      "identity": {
+        "repository": "BurntSushi/ripgrep",
+        "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+        "tag": "14.1.1"
+      }
+    },
+    {
+      "name": "fd filesystem search utility",
+      "identity": {
+        "repository": "sharkdp/fd",
+        "revision": "b19136871310b01500b4f09eadd7387b8476be47",
+        "tag": "v10.2.0"
+      }
+    },
+    {
+      "name": "Tokio asynchronous runtime",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "9a1b076c0084e2bca8558818bffd2273ec5ae5bd"
+      }
+    },
+    {
+      "name": "Axum web application framework",
+      "identity": {
+        "repository": "tokio-rs/axum",
+        "revision": "601d775da87c42c2ec20dfad035c8dec80733843"
+      }
+    },
+    {
+      "name": "Hyper HTTP implementation",
+      "identity": {
+        "repository": "hyperium/hyper",
+        "revision": "793af1ed2a3f1fd65e5a8de85b368daa58b15279"
+      }
+    },
+    {
+      "name": "serde_json JSON serialization library",
+      "identity": {
+        "repository": "serde-rs/json",
+        "revision": "3f17d2c6ea1588bd7b714359522bd94751465275"
+      }
+    },
+    {
+      "name": "regex regular expression engine",
+      "identity": {
+        "repository": "rust-lang/regex",
+        "revision": "5ea3eb1e95f0338e283f5f0b4681f0891a1cd836"
+      }
+    },
+    {
+      "name": "image pure-Rust codec library",
+      "identity": {
+        "repository": "image-rs/image",
+        "revision": "aae5fb91a27386801babec31ab07b9a1821e3b03"
+      }
+    },
+    {
+      "name": "hashbrown SwissTable hash map library",
+      "identity": {
+        "repository": "rust-lang/hashbrown",
+        "revision": "0622304393c802aef285257e4864147cc2ac7374"
+      }
+    },
+    {
+      "name": "parking_lot synchronization primitives",
+      "identity": {
+        "repository": "Amanieu/parking_lot",
+        "revision": "03d36d62fecbd85ce7cea1babfae23c673f0c6a3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

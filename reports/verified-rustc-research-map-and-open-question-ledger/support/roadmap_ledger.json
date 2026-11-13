@@ -1,0 +1,731 @@
+{
+  "baseline_coordinates": {
+    "rust_repository": "rust-lang/rust",
+    "rust_revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "rust_version": "1.99.1",
+    "llvm_repository": "rust-lang/llvm-project",
+    "llvm_revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+    "llvm_version": "23.1.1",
+    "lean_repository": "leanprover/lean4",
+    "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+    "lean_version": "v4.34.1"
+  },
+  "rustc_1_99_1_compiler_crate_dag": {
+    "total_compiler_crates": 78,
+    "max_dag_depth": 23,
+    "crates_by_depth": {
+      "0": [
+        "rustc_arena",
+        "rustc_baked_icu_data",
+        "rustc_codegen_cranelift",
+        "rustc_codegen_gcc",
+        "rustc_error_codes",
+        "rustc_fs_util",
+        "rustc_graphviz",
+        "rustc_hashes",
+        "rustc_index_macros",
+        "rustc_lexer",
+        "rustc_llvm",
+        "rustc_log",
+        "rustc_macros",
+        "rustc_proc_macro",
+        "rustc_thread_pool",
+        "rustc_type_ir_macros",
+        "rustc_windows_rc"
+      ],
+      "1": [
+        "rustc_parse_format",
+        "rustc_serialize"
+      ],
+      "2": [
+        "rustc_index"
+      ],
+      "3": [
+        "rustc_data_structures"
+      ],
+      "4": [
+        "rustc_span"
+      ],
+      "5": [
+        "rustc_ast_ir",
+        "rustc_error_messages",
+        "rustc_feature",
+        "rustc_hir_id"
+      ],
+      "6": [
+        "rustc_ast"
+      ],
+      "7": [
+        "rustc_ast_pretty",
+        "rustc_lint_defs"
+      ],
+      "8": [
+        "rustc_errors"
+      ],
+      "9": [
+        "rustc_abi"
+      ],
+      "10": [
+        "rustc_target",
+        "rustc_type_ir"
+      ],
+      "11": [
+        "rustc_attr_ir",
+        "rustc_next_trait_solver"
+      ],
+      "12": [
+        "rustc_crate_store",
+        "rustc_hir",
+        "rustc_session"
+      ],
+      "13": [
+        "rustc_hir_pretty",
+        "rustc_middle",
+        "rustc_parse"
+      ],
+      "14": [
+        "rustc_attr_parsing",
+        "rustc_incremental",
+        "rustc_infer",
+        "rustc_mir_dataflow",
+        "rustc_pattern_analysis",
+        "rustc_public_bridge",
+        "rustc_query_impl",
+        "rustc_symbol_mangling",
+        "rustc_transmute",
+        "rustc_ty_walk"
+      ],
+      "15": [
+        "rustc_ast_lowering",
+        "rustc_ast_passes",
+        "rustc_monomorphize",
+        "rustc_privacy",
+        "rustc_public",
+        "rustc_trait_selection"
+      ],
+      "16": [
+        "rustc_borrowck",
+        "rustc_const_eval",
+        "rustc_expand",
+        "rustc_hir_analysis",
+        "rustc_lint",
+        "rustc_mir_build",
+        "rustc_passes",
+        "rustc_sanitizers",
+        "rustc_traits",
+        "rustc_ty_utils"
+      ],
+      "17": [
+        "rustc_builtin_macros",
+        "rustc_hir_typeck",
+        "rustc_metadata",
+        "rustc_mir_transform"
+      ],
+      "18": [
+        "rustc_codegen_ssa",
+        "rustc_resolve"
+      ],
+      "19": [
+        "rustc_codegen_llvm"
+      ],
+      "20": [
+        "rustc_interface"
+      ],
+      "21": [
+        "rustc_driver_impl"
+      ],
+      "22": [
+        "rustc_driver"
+      ],
+      "23": [
+        "rustc-main"
+      ]
+    }
+  },
+  "design_areas": [
+    {
+      "id": "contract",
+      "title": "1. Drop-In Compiler Contract, CLI/JSON Surfaces, and Deviation Policy",
+      "rustc_crates": [
+        "rustc_driver",
+        "rustc_Driver_impl",
+        "rustc_interface",
+        "rustc_session",
+        "rustc_errors",
+        "rustc_feature",
+        "rustc_lint"
+      ],
+      "normative_sources": [
+        "rust-lang/reference@bcd62f35e8bf",
+        "rust-lang/fls@946eacae5a4a",
+        "rust-lang/rfcs@7677feddd580"
+      ],
+      "topic_queries": [
+        "compilers/verified-rustc",
+        "rustc/conditional-compilation",
+        "cargo/unit-graphs",
+        "cross-tool/diagnostics"
+      ],
+      "existing_packages": [
+        "rustc-baseline-toolchain-selection-and-manifest",
+        "cargo-unit-graphs-feature-resolution-and-rustc-invocations",
+        "cargo-rustc-wrapper-caching-and-extraction-coverage",
+        "rustc-conditional-compilation-source-spans-and-diagnostics",
+        "cross-tool-source-spans-utf8-columns-and-diagnostic-normalization"
+      ],
+      "answered_fully": [
+        "Pinned baseline version (Rust 1.99.1 @ 58cf8f9c35b3, LLVM 23.1.1 @ 1b9c0d5ff9bb, Lean v4.34.1 @ 5045d0056413) and Tier 1 release archive SHA-256 digests",
+        "Sysroot `#![feature(...)]` census (469 features across core/alloc/std/compiler_builtins) and `RUSTC_BOOTSTRAP=1` mechanics",
+        "Cargo `--message-format=json` diagnostic span schema and `RUSTC_WRAPPER` invocation interception"
+      ],
+      "answered_partly": [
+        "Complete inventory of `rustc` CLI flags (`-C`, `-Z`, `--emit`, `--print`) whose observable output depends on the codegen backend (`rustc_codegen_ssa`)",
+        "Point-release miscompilation ledger (`1.98.1`, `1.99.1`, `1.100.0`) vs open `I-unsound` / `I-miscompile` upstream issues at `1.99.1`"
+      ],
+      "unanswered_questions": [
+        "How major non-Cargo build systems (`bazel`/`rules_rust`, `buck2`, `gn`, Linux kernel `rust/`, Android `Soong`, `meson`, `cmake`) invoke `rustc` and which unstable flags they pass",
+        "Exact taxonomy of implementation-defined vs unspecified vs undefined behaviors across the Rust Reference, FLS 1.99, and Unsafe Code Guidelines where backend choices become observable",
+        "Qualification assurance-case structure (ISO 26262, DO-178C, IEC 61508, Common Criteria) for mixed verified/unverified compilation and known-bug deviation documentation"
+      ]
+    },
+    {
+      "id": "end-to-end-theorem",
+      "title": "2. End-to-End Compiler Correctness Theorem, Composition, and Property Transfer",
+      "rustc_crates": [
+        "rustc_middle",
+        "rustc_codegen_ssa"
+      ],
+      "anneal_modules": [
+        "trusted/lean/Trusted",
+        "trusted/audit",
+        "theory/Anneal"
+      ],
+      "normative_sources": [
+        "joshlf/anneal@7abf0691c404",
+        "leanprover/lean4@5045d0056413"
+      ],
+      "topic_queries": [
+        "anneal/behavior-codecs",
+        "anneal/refinement",
+        "verification/refinement",
+        "verification/semantic-models/compiler-verification"
+      ],
+      "existing_packages": [
+        "anneal-behavior-codec-and-partial-compile-refinement-algebra",
+        "anneal-forward-compatible-mir-semantics-and-reference-admissible-refinement",
+        "anneal-mir-to-x86-compiler-vcgen-and-variable-step-refinement",
+        "compcert-sel4-everest-pass-composition-and-proof-maintenance",
+        "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026",
+        "cross-prover-interoperability-verified-checkers-and-tcb-accounting",
+        "semantic-models-lenses-hyperproperties-and-putnam-tcb-boundary",
+        "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap"
+      ],
+      "answered_fully": [
+        "Framed-lens and behavior-codec formulation of partial-compilation refinement in Anneal (`Trusted.CrateTheorem` and `VerificationResult`)",
+        "Comparison of CompCert, CakeML, seL4, and CertiKOS vertical pass composition and simulation relation styles"
+      ],
+      "answered_partly": [
+        "Horizontal composition across separately compiled crates, unverified FFI/runtime shims, and LTO module merging (CompCertX, Kang et al. SepComp, DimSum, CompCertM)",
+        "Cross-prover guarantee composition between Lean 4 kernel theorems and standalone certificate checkers"
+      ],
+      "unanswered_questions": [
+        "Exact transfer theorem signature connecting Anneal's source-level `VerificationResult` (`Compiler.Verified`) on `Runtime(PostCleanup)` MIR to target ISA machine traces across all eight Tier 1 targets",
+        "Preservation of constant-time / side-channel hyperproperties and stack-bound quantitative properties across separate compilation and linker relaxation"
+      ]
+    },
+    {
+      "id": "mir-and-aliasing",
+      "title": "3. MIR Operational Semantics, Memory Allocation, Provenance, Floating-Point, and Layout",
+      "rustc_crates": [
+        "rustc_middle",
+        "rustc_abi",
+        "rustc_const_eval",
+        "rustc_mir_dataflow"
+      ],
+      "normative_sources": [
+        "minirust/minirust@063d784186d3",
+        "rust-lang/unsafe-code-guidelines@d809f91e6296",
+        "rust-lang/opsem-team@d46208581403"
+      ],
+      "topic_queries": [
+        "rustc/mir",
+        "minirust",
+        "rust/aliasing",
+        "rust/layout",
+        "lean/ieee754"
+      ],
+      "existing_packages": [
+        "anneal-pme-mir-semantics-and-polar-ctfe-admission",
+        "anneal-scalar-mir-differential-execution-and-capture-alignment",
+        "lean-miri-interpreter-hooks-move-deinit-and-provenance-fragments",
+        "minirust-core-calculi-basic-memory-and-nondeterminism",
+        "minirust-representation-transfers-provenance-and-primitive-lowering",
+        "minirust-source-lowering-miri-differential-and-open-contract-boundaries",
+        "minirust-tree-borrows-protectors-and-program-logic-correspondence",
+        "tree-borrows-two-stage-protector-release-and-reborrow-contracts",
+        "rustc-mir-phases-reachability-and-postcleanup-lowering",
+        "rustc-postcleanup-mir-const-placement-layout-folding-and-ub-checks",
+        "rustc-postcleanup-mir-place-path-lens-and-borrow-semantics",
+        "rustc-postcleanup-mir-unevaluated-consts-promoted-bodies-and-alloc-decoding",
+        "rust-validity-initialization-padding-and-transmute-semantics",
+        "rust-raw-pointer-validity-provenance-and-wide-metadata",
+        "rust-aggregate-dst-and-target-layout-guarantees",
+        "lean-ieee754-floatspec-cryptography-and-constant-time"
+      ],
+      "answered_fully": [
+        "Stacked Borrows vs Tree Borrows two-stage protector release semantics and MiniRust `BasicMemory` / `FlatMemory` interfaces",
+        "PostCleanup MIR place-path lenses, unevaluated constants, promoted bodies, and `GlobalAlloc` decoding"
+      ],
+      "answered_partly": [
+        "Construct-by-construct operational semantics of every `StatementKind`, `Rvalue`, `TerminatorKind`, `CastKind` (including `BoxDerefTransmute` in `1.99.1`), and `NullOp` in `rustc 1.99.1`",
+        "End-to-end IEEE 754 floating-point NaN payload, signed zero, FMA contraction, and `f16`/`f128` semantics across MIR, LLVM IR, and x86/AArch64"
+      ],
+      "unanswered_questions": [
+        "Empirical prevalence of Stacked Borrows vs Tree Borrows violations and the performance value of `noalias` / `readonly` annotations across the pinned crate and benchmark corpora",
+        "Exact stack-object allocation lifetime (`StorageLive`/`StorageDead`), pointer-to-integer-to-pointer exposed provenance (`Strict Provenance` vs `PNVI-ae-udi`), and `rustc_abi` layout algorithm correspondence across all eight Tier 1 data layouts"
+      ]
+    },
+    {
+      "id": "concurrency",
+      "title": "4. Concurrency Theory, Relaxed Memory Models, and Tier 1 Atomic Lowerings",
+      "rustc_crates": [
+        "rustc_middle",
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm"
+      ],
+      "normative_sources": [
+        "rust-lang/unsafe-code-guidelines@d809f91e6296"
+      ],
+      "topic_queries": [
+        "rust/atomics",
+        "isa/weak-memory"
+      ],
+      "existing_packages": [
+        "assembly-atomic-fence-mappings-and-aarch64-x86-weak-memory-models",
+        "rust-atomics-weak-memory-and-aliasing-operational-models",
+        "anneal-memory-bridge-weak-memory-atomics-constant-time-and-bare-metal",
+        "anneal-concurrency-weak-memory-kernels-and-storage-survey"
+      ],
+      "answered_fully": [
+        "RC11, Promising 2.0, IMM, x86-TSO, and ARMv8 Flat operational and axiomatic model relationships"
+      ],
+      "answered_partly": [
+        "Instruction mappings for atomic loads, stores, RMWs, `cmpxchg`, and fences on `x86_64` and `aarch64`"
+      ],
+      "unanswered_questions": [
+        "Exact instruction sequences emitted by `rustc 1.99.1` across all eight Tier 1 targets (including `i686` 64-bit `cmpxchg8b` lock-free atomics, `aarch64` LSE vs LL/SC `+outline-atomics`, and Windows/Darwin target defaults)",
+        "Empirical litmus-test validation (`herd7` / `litmus7`) on real x86-64 and AArch64 hardware and sound compiler optimization rules under mixed-size and non-atomic/atomic accesses"
+      ]
+    },
+    {
+      "id": "platform-conventions",
+      "title": "5. Tier 1 Platform Conventions: Calling Conventions, Unwinding, TLS, Startup, Object Formats, and Linking",
+      "rustc_crates": [
+        "rustc_target",
+        "rustc_abi",
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_sanitizers"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3:compiler/rustc_target"
+      ],
+      "topic_queries": [
+        "rust/ffi",
+        "rustc/codegen",
+        "systems/elf",
+        "anneal/subprocess-supervision"
+      ],
+      "existing_packages": [
+        "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026",
+        "configured-rust-capture-fnabi-placement-and-formality-specr-boundaries",
+        "rust-ffi-abi-witnesses-c-unwind-and-machine-resource-linking",
+        "rustc-drop-elaboration-unwind-landing-pads-and-extensible-mir-semantics",
+        "anneal-subprocess-supervision-elf-runpath-and-archive-packaging",
+        "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026"
+      ],
+      "answered_fully": [
+        "High-level `FnAbi` `PassMode` (`Ignore`, `Direct`, `Pair`, `Cast`, `Indirect`) structure and DWARF CFI unwind principles"
+      ],
+      "answered_partly": [
+        "ELF64 relocation and linker-driver mechanics on Linux"
+      ],
+      "unanswered_questions": [
+        "Complete per-target `abi::compute_abi_info` classification rules in `rustc 1.99.1` across all eight Tier 1 targets (SysV AMD64, Windows x64, AAPCS64, Darwin AAPCS64, Windows ARM64, i386 SysV, and 32-bit Windows MSVC cdecl/stdcall/fastcall/vectorcall)",
+        "Windows x64 `.pdata`/`.xdata` (`__CxxFrameHandler3`), Windows 32-bit `i686-pc-windows-msvc` `fs:[0]` SEH registration chains, and Apple Mach-O `__unwind_info` compact unwinding encodings",
+        "Thread-local storage models (`LocalExec`, `InitialExec`, `GeneralDynamic`, `LocalDynamic`, ELF `__tls_get_addr`, Mach-O `_tlv_bootstrap`, PE `.tls` `_tls_index`) across Tier 1 targets",
+        "Stack probes (`__rust_probestack`, inline page probing, Windows `__chkstk`), red-zone rules, frame pointers, startup CRT objects (`lang_start`), object sections/relocations (ELF, COFF/PE, Mach-O), linker invocation flags, dynamic loading/code signing, OS syscall models, and clean-room Linux-hosted cross-compilation for all 8 Tier 1 targets"
+      ]
+    },
+    {
+      "id": "intrinsics-and-assembly",
+      "title": "6. Compiler Intrinsics, Vendor SIMD Intrinsics, Target Features, and Inline Assembly",
+      "rustc_crates": [
+        "rustc_middle",
+        "rustc_codegen_ssa",
+        "rustc_target",
+        "rustc_builtin_macros"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3:library/core/src/intrinsics",
+        "rust-lang/rust@58cf8f9c35b3:library/stdarch"
+      ],
+      "topic_queries": [
+        "rust/inline-assembly",
+        "rustc/intrinsics"
+      ],
+      "existing_packages": [
+        "rust-inline-assembly-contracts-relocations-and-simd-correspondence",
+        "rustc-codegen-backend-abi-intrinsics-and-rv64gc-cross-compilation"
+      ],
+      "answered_fully": [
+        "Total count of `#[rustc_intrinsic]` declarations (`316`) and unique `core_arch` `#[link_name = \"llvm.*\"]` bindings (`8,115`) in Rust `1.99.1`"
+      ],
+      "answered_partly": [
+        "Inline assembly contract structure and SIMD correspondence overview"
+      ],
+      "unanswered_questions": [
+        "Complete taxonomy and independent semantic specifications of all 316 `core::intrinsics` and 81 `simd_*` intrinsics in `rustc 1.99.1`, distinguishing MIR-lowered intrinsics (`LowerIntrinsics`) from backend-lowered intrinsics",
+        "Machine-readable vendor ISA specification availability (Intel XED / Intrinsics Guide XML, ARM Exploration Tools ASL) for generating verified semantics for `core::arch::{x86, x86_64, aarch64}`",
+        "Per-target scalar/vector instruction and `compiler_builtins` libcall lowering tables (`i128` division, `f16`/`f128` soft-float, saturating/checked arithmetic, bit manipulation)",
+        "Target-feature implication graphs (`compiler/rustc_target/src/target_features.rs`), runtime detection (`std_detect`), `asm!`/`global_asm!`/`#[unsafe(naked)]` operand/constraint lowering, and ecosystem assembly census"
+      ]
+    },
+    {
+      "id": "isa-models",
+      "title": "7. Formal ISA Models (x86-64, i386, AArch64), Hardware Validation, and Verified Assemblers/Linkers",
+      "rustc_crates": [
+        "rustc_target"
+      ],
+      "normative_sources": [
+        "leanprover/lean4@5045d0056413"
+      ],
+      "topic_queries": [
+        "isa",
+        "verification/machine-code"
+      ],
+      "existing_packages": [
+        "asl-l3-lnsym-and-isa-verification-frameworks-lean-adaptation",
+        "sail-isa-models-lean-backend-and-rv64d-decoding-framing",
+        "anneal-acceptance-frontier-isa-roadmap-and-verifier-bibliography",
+        "anneal-backend-codegen-binaries-lifters-and-sandboxes-survey"
+      ],
+      "answered_fully": [
+        "Survey of Sail, ARM ASL, L3, and `leanprover/LNSym` AArch64 formalization architectures"
+      ],
+      "answered_partly": [
+        "Adaptation strategies for importing Sail/ASL ISA semantics into Lean 4"
+      ],
+      "unanswered_questions": [
+        "Detailed coverage comparison of mechanized `x86-64`, `i386` (32-bit x86), and `AArch64` ISA models (ACL2 `x86isa`, K-x86, Sail-x86, Bedrock2/kami, HOL4 L3, CompCert x86/AArch64, LNSym, Islaris/Sail-ARM) across user-mode GP, SIMD (SSE2\u2013AVX-512, NEON/SVE), FP, flags, and system instructions",
+        "Empirical instruction-mnemonic frequency census in LLVM-compiled Rust binaries across the pinned corpora to define the minimal ISA subset required for `-O3` parity",
+        "Hardware differential validation methodologies (random instruction fuzzing, CPU errata, undocumented flag behavior) and verified assembler/encoder/linker/object-format precedents"
+      ]
+    },
+    {
+      "id": "verified-mode",
+      "title": "8. Verified Mode at Function Granularity, Binary Attribution, Attestation, and LLVM-Free Sysroot",
+      "rustc_crates": [
+        "rustc_codegen_ssa",
+        "rustc_monomorphize",
+        "rustc_Symbol_mangling",
+        "rustc_metadata"
+      ],
+      "anneal_modules": [
+        "trusted/rustc-capture",
+        "trusted/cargo-anneal",
+        "trusted/audit"
+      ],
+      "normative_sources": [
+        "joshlf/anneal@7abf0691c404",
+        "rust-lang/rust@58cf8f9c35b3"
+      ],
+      "topic_queries": [
+        "anneal/trust-boundary",
+        "rustc/codegen"
+      ],
+      "existing_packages": [
+        "anneal-public-mir-discovery-interprocedural-calls-and-obligation-inventory",
+        "anneal-trusted-boundary-audit-olean-stubbing-and-conservativity",
+        "open-rust-library-certificate-closure-and-consumer-acceptance-protocols",
+        "compiler-concurrent-source-modification-and-hermetic-input-binding"
+      ],
+      "answered_fully": [
+        "Anneal two-phase `.olean` trust-boundary audit and public MIR obligation inventory"
+      ],
+      "answered_partly": [
+        "Codegen-backend trait surface (`CodegenBackend`, `ExtraBackendMethods`, `WriteBackendMethods`) in `rustc 1.99.1`"
+      ],
+      "unanswered_questions": [
+        "Mechanism for per-function routing between a verified backend and an unverified/validated fallback backend within a single compilation or across CGUs (`compiler/rustc_codegen_ssa` partitioning and linker symbol resolution)",
+        "Complete catalog of semantic metadata `rustc_codegen_llvm` passes to LLVM (`noalias`, `nonnull`, `noundef`, `align`, `dereferenceable`, `range`, `!alias.scope`, `!noalias`, `tb_AA`, `inbounds`, `nuw`/`nsw`, `unreachable`)",
+        "Complete byte-by-byte origin attribution of a linked Rust executable (`crt1.o`, `libgcc_s`/`libunwind`, `libc`, `compiler_builtins`, `std` prebuilt `.rlib`, user CGUs, linker stubs) and building the entire Tier 1 sysroot and host tools without LLVM",
+        "Cryptographic attestation and proof-certificate bundling formats (in-section ELF/COFF/Mach-O vs detached content-addressed archives) and reproducible build guarantees"
+      ]
+    },
+    {
+      "id": "normal-compilation",
+      "title": "9. Normal Compilation Modes: Profiles, PGO, LTO, Debuginfo, Hardening, and Size Optimization",
+      "rustc_crates": [
+        "rustc_session",
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_sanitizers"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3"
+      ],
+      "topic_queries": [
+        "rustc/codegen",
+        "llvm/lto"
+      ],
+      "existing_packages": [
+        "cargo-unit-graphs-feature-resolution-and-rustc-invocations"
+      ],
+      "answered_fully": [],
+      "answered_partly": [
+        "Cargo profile flag generation (`dev`, `release`, `test`, `bench`)"
+      ],
+      "unanswered_questions": [
+        "Census of `Cargo.toml` `[profile.*]`, `.cargo/config.toml` `rustflags`, and build-script flags used across the wild crates.io ecosystem",
+        "Mechanics, cross-module assumptions, and empirical speed/size value of ThinLTO, Fat LTO, `-Cembed-bitcode`, and instrumentation/sample PGO (`-Cprofile-generate` / `-Cprofile-use`) in `rustc 1.99.1`",
+        "DWARF v4/v5 and Windows CodeView/PDB debuginfo emission requirements for GDB, LLDB, and WinDbg compatibility",
+        "Security hardening flags (`-Crelro-level`, `-Cstrip`, `-Zstack-protector`, `-Zcf-protection`, `-Zbranch-protection`, `-Ccontrol-flow-guard`, sanitizers) and size optimization (`opt-level=s`, `opt-level=z`, `-Cpanic=abort`, `-Zbuild-std`)"
+      ]
+    },
+    {
+      "id": "rustc-internals",
+      "title": "10. rustc Internal Architecture, MIR Artifact Export, MIR Passes, Monomorphization, and Lowering",
+      "rustc_crates": [
+        "rustc_middle",
+        "rustc_mir_transform",
+        "rustc_monomorphize",
+        "rustc_const_eval",
+        "rustc_codegen_ssa",
+        "rustc_codegen_llvm",
+        "rustc_symbol_mangling"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3"
+      ],
+      "topic_queries": [
+        "rustc/mir",
+        "rustc/const-evaluation",
+        "rustc/cross-crate"
+      ],
+      "existing_packages": [
+        "rustc-mir-phases-reachability-and-postcleanup-lowering",
+        "rustc-mir-steal-lifetimes-and-dual-profile-capture",
+        "rustc-const-evaluation-monomorphization-and-pme-capture",
+        "rustc-cross-crate-rmeta-provenance-and-foreign-mir-inlining",
+        "rustc-name-resolution-local-item-identity-and-type-lowering",
+        "anssa-block-argument-ssa-mem2reg-and-mir-semantic-hazards-2026"
+      ],
+      "answered_fully": [
+        "`Steal<Body>` lifecycle across `mir_built`, `mir_promoted`, `mir_drops_elaborated_and_const_checked`, and `optimized_mir` queries",
+        "Cross-crate `.rmeta` MIR serialization and `InstanceKind` categories"
+      ],
+      "answered_partly": [
+        "Individual MIR pass hazards (`DestinationPropagation`, `CopyProp`, `GVN`, `Inline`, `ElaborateDrops`)"
+      ],
+      "unanswered_questions": [
+        "Complete 65-crate dependency DAG and query interface map of `compiler/` at `58cf8f9c35b355199727627d07ae34a4e2846d67` showing the exact boundary between frontend/typeck and backend codegen",
+        "Canonical, deterministic external MIR artifact format binding source, compiler settings, layouts, and `GlobalAlloc` tables",
+        "Complete inventory of all ~85 passes in `rustc_mir_transform` at `mir-opt-level=0..4`, their soundness record (`I-unsound`/`I-miscompile`), and their empirical runtime value when LLVM `-O3` runs downstream",
+        "Complete specification of `rustc_monomorphize::collector`, shim synthesis (`CloneShim`, `DropGlue`, `VTableShim`, `FnPtrShim`, `ReifyShim`, `ThreadLocalShim`), vtable layout, static/constant emission, symbol mangling (`v0` vs `legacy`), CGU partitioning (`rustc_monomorphize::partitioning`), `rustc_codegen_ssa::mir` statement/terminator lowering, and panic/abort/entry-point lowering"
+      ]
+    },
+    {
+      "id": "ecosystem-demand",
+      "title": "11. Standard-Library and Ecosystem Code-Generation Demand and Runtime Hotspots",
+      "rustc_crates": [
+        "rustc_middle"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3:library"
+      ],
+      "topic_queries": [
+        "compilers/verified-rustc/corpora",
+        "rust/stdlib"
+      ],
+      "existing_packages": [
+        "rustc-experimental-corpora-and-harness-conventions"
+      ],
+      "answered_fully": [
+        "Top 100 crates by recent downloads with SHA-256 checksums, 1,129-crate dependency closure, and 25-crate stratified Tier 1 build matrix"
+      ],
+      "answered_partly": [],
+      "unanswered_questions": [
+        "Complete census of MIR constructs, intrinsics, inline assembly, target features, and FFI ABIs exercised by compiling `core`, `alloc`, `std`, and `compiler_builtins` across all eight Tier 1 targets",
+        "Download-weighted census of MIR constructs, intrinsics, SIMD, inline assembly, and `unsafe` blocks across the crates.io sample",
+        "Empirical CPU-time profiling breakdown across the application and benchmark corpora (where execution time is spent: stdlib collections/formatting/atomics vs `memcpy`/`memcmp` vs user loops vs allocator)"
+      ]
+    },
+    {
+      "id": "proof-system-and-irs",
+      "title": "12. Proof-Producing Compilation, Relational Logics, Compiler IRs, E-Graphs, and Decision Procedures",
+      "rustc_crates": [],
+      "anneal_modules": [
+        "trusted/lean",
+        "theory/Anneal"
+      ],
+      "normative_sources": [
+        "leanprover/lean4@5045d0056413"
+      ],
+      "topic_queries": [
+        "verification/refinement",
+        "smt",
+        "llvm/translation-validation",
+        "lean/tactic-extensions"
+      ],
+      "existing_packages": [
+        "translation-validation-certifying-compilation-and-pass-refinement-certificates",
+        "anllvm-clean-slate-ir-semantics-and-tree-borrows-lowering",
+        "anllvm-globalisel-backend-and-certificate-checkers",
+        "opencompl-riscv-lean-lean-mlir-and-ship-your-interpreter-2026",
+        "smt-sat-alethe-carcara-and-numerical-proof-certificate-reconstruction",
+        "anneal-solvers-decision-procedures-and-certificates-survey",
+        "lean-bitvec-proof-term-scaling-bv-omega-bv-decide-and-meta-fvar-caching",
+        "lean-tactic-extensions-simp-omega-and-grind"
+      ],
+      "answered_fully": [
+        "Lean 4 `bv_decide` (LRAT) and `bv_omega` proof-term scaling and Alethe/Carcara SMT certificate checking"
+      ],
+      "answered_partly": [
+        "Survey of translation validation and certifying compilation literature (Necula, Tristan, Alive2, CakeML, CompCert, Crellvm)"
+      ],
+      "unanswered_questions": [
+        "Quantitative comparison of certificate sizes, generation speeds, and checking speeds across Crellvm, CompCert validator passes, CakeML, Self-Certifying Compilation, and PCC/TAL",
+        "Relational logic and simulation completeness results (Benton RHL, Barthe product programs, stutter simulations, prophecy variables) for loop vectorization, GVN, and instruction scheduling",
+        "Mechanized IR representation trade-offs (CFG of basic blocks vs SSA with phi nodes vs block-argument SSA vs RVSDG/Sea-of-Nodes vs CPS/ANF) and proof-producing equality saturation (`egg`/`egglog`) with cycle-free extraction",
+        "Complete formal semantics of the LLVM 23.1.1 IR fragment emitted by `rustc 1.99.1`, derivation expressiveness prototypes on representative `-O3` optimizations, and derivation volume estimates"
+      ]
+    },
+    {
+      "id": "optimizer",
+      "title": "13. LLVM -O3 Pipeline Inventory, Pass Ablation, Parity-Critical Optimizations, and Backend Candidates",
+      "rustc_crates": [
+        "rustc_codegen_llvm",
+        "rustc_llvm"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3:compiler/rustc_codegen_llvm",
+        "rust-lang/llvm-project@1b9c0d5ff9bb"
+      ],
+      "topic_queries": [
+        "llvm",
+        "compilers/verified-rustc"
+      ],
+      "existing_packages": [
+        "anneal-mid-level-ir-optimizations-and-lowering-survey",
+        "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026"
+      ],
+      "answered_fully": [
+        "`regalloc2` symbolic validation checker architecture"
+      ],
+      "answered_partly": [
+        "High-level survey of mid-level IR optimizations (`mem2reg`, GVN, LICM, inlining)"
+      ],
+      "unanswered_questions": [
+        "Exact LLVM 23.1.1 NewPM pass pipeline constructed by `rustc 1.99.1` (`compiler/rustc_codegen_llvm/src/back/write.rs`) across `opt-level=0,1,2,3,s,z`, ThinLTO, Fat LTO, and PGO",
+        "Empirical LLVM pass ablation study measuring the runtime speed and code-size contribution of each optimization family on Rust code",
+        "Detailed transformation and side-condition obligations for parity-critical scalar/memory passes (`SROA`, `Mem2Reg`, `InstCombine`, `EarlyCSE`, `GVN`, `MemCpyOpt`, `DSE`), loop/vectorization passes (`IndVarSimplify`, `LICM`, `LoopUnroll`, `LoopVectorize`, `SLPVectorizer`), interprocedural passes (`Inliner`, `ArgumentPromotion`, `DeadArgElim`, `IPSCCP`, Devirtualization), and codegen passes (`InstructionSelection`, `MachineLICM`, `GreedyRegAlloc`, `MachineBlockPlacement`, `ShrinkWrap`, `Peephole`)",
+        "Reusability of LLVM 23.1.1 TableGen `.td` instruction/scheduling descriptions, hardware latency/throughput tables, comparison of GCC (`rustc_codegen_gcc`) vs Cranelift (`rustc_codegen_cranelift`) vs LLVM, and evaluation of CompCert/CakeML/Cranelift as proven baseline backends"
+      ]
+    },
+    {
+      "id": "validated-llvm",
+      "title": "14. Validated LLVM Tier: Black-Box Translation Validation vs Derivation-Emitting LLVM",
+      "rustc_crates": [
+        "rustc_codegen_llvm"
+      ],
+      "normative_sources": [
+        "rust-lang/llvm-project@1b9c0d5ff9bb",
+        "AliveToolkit/alive2@adacbd5180cc"
+      ],
+      "topic_queries": [
+        "llvm/translation-validation"
+      ],
+      "existing_packages": [
+        "translation-validation-certifying-compilation-and-pass-refinement-certificates",
+        "anllvm-clean-slate-ir-semantics-and-tree-borrows-lowering"
+      ],
+      "answered_fully": [],
+      "answered_partly": [
+        "Alive2 and Crellvm translation-validation architectures and memory-model mismatch points"
+      ],
+      "unanswered_questions": [
+        "Empirical coverage, timeout rate, false-positive rate, and unsupported-construct breakdown when running `alive-tv` across LLVM 23.1.1 `-O3` pass transitions on the pinned Rust crate and benchmark corpora",
+        "Pass-by-pass engineering effort and line-of-code invasion required to instrument LLVM 23.1.1 passes (`SROA`, `InstCombine`, `GVN`, `LICM`, `Inliner`, `SelectionDAG`/`GlobalISel`, `GreedyRegAlloc`) to emit checkable rewrite hints"
+      ]
+    },
+    {
+      "id": "checker-substrate",
+      "title": "15. Checker Substrate, Lean 4 Native Compilation Trust Chain, and Delivered Toolchain TCB",
+      "rustc_crates": [],
+      "anneal_modules": [
+        "trusted/audit",
+        "trusted/cargo-anneal"
+      ],
+      "normative_sources": [
+        "leanprover/lean4@5045d0056413"
+      ],
+      "topic_queries": [
+        "lean/kernel-replay",
+        "lean/environment-identity",
+        "anneal/trust-boundary",
+        "verification/external-kernels"
+      ],
+      "existing_packages": [
+        "untrusted-proof-dependencies-effect-isolation-and-guarantee-verification",
+        "cross-prover-interoperability-verified-checkers-and-tcb-accounting",
+        "lean-kernel-memory-ceilings-whnf-scaling-and-validator-architectures",
+        "lean-olean-ilean-format-and-compilation-determinism",
+        "lean-environment-identity-imports-and-trust-admissions",
+        "deductive-proof-object-and-refinement-certificate-kernels-2013-2026"
+      ],
+      "answered_fully": [
+        "Independent Lean 4 kernel checkers (`lean4checker`, `SafeVerify`, `Comparator`, `Nanoda`) and `.olean` memory/import isolation",
+        "Lean `v4.34.1` bundled Clang/LLD `22.1.4` and shared library inventory (`rustc-baseline-toolchain-selection-and-manifest`)"
+      ],
+      "answered_partly": [
+        "Lean 4 `whnf` / `isDefEq` memory scaling on symbolic verification goals"
+      ],
+      "unanswered_questions": [
+        "Full audit of Lean `v4.34.1` Lean-to-C compiler (`src/Lean/Compiler/IR/EmitC.lean`), reference-counting runtime (`libleanshared.so`), `libgmp` Bignum dependency, `@[extern]` / `@[implemented_by]` attributes, and `native_decide` (`Lean.ofReduceBool`) trust implications",
+        "Empirical scaling of the Lean 4 kernel and standalone checkers at per-function compiler-derivation scale ($10^4$ to $10^6$ step certificates) and full x86-64/AArch64 ISA model scale",
+        "Complete TCB component inventory of the delivered drop-in `rustc` toolchain binary distribution"
+      ]
+    },
+    {
+      "id": "validation-and-planning",
+      "title": "16. Compiler Validation Infrastructure (compiletest, Fuzzers, Crater) and Program Planning",
+      "rustc_crates": [
+        "rustc_driver"
+      ],
+      "normative_sources": [
+        "rust-lang/rust@58cf8f9c35b3:src/tools/compiletest"
+      ],
+      "topic_queries": [
+        "compilers/verified-rustc/roadmap",
+        "compilers/verified-rustc/corpora"
+      ],
+      "existing_packages": [
+        "rustc-baseline-toolchain-selection-and-manifest",
+        "rustc-experimental-corpora-and-harness-conventions",
+        "compcert-sel4-everest-pass-composition-and-proof-maintenance"
+      ],
+      "answered_fully": [
+        "Pinned toolchain baseline (`1.99.1` + Lean `v4.34.1`) and shared experimental crate, application, and benchmark corpora"
+      ],
+      "answered_partly": [
+        "Historical verification effort ratios for CompCert, seL4, and Project Everest"
+      ],
+      "unanswered_questions": [
+        "Mechanics of `src/tools/compiletest` and `x.py test` in `rustc 1.99.1` for testing alternate codegen backends, and machine-readable classification of all ~25,000+ tests in `tests/ui`, `tests/codegen`, `tests/assembly`, `tests/mir-opt`, and `tests/run-make`",
+        "Differential testing and fuzzing infrastructure (`rustlantis`, `abi-cafe`, `csmith`/`rustsmith`, `icemaker`, `cargo-careful`), Crater ecosystem regression methodology, and cross-target QEMU/Wine/hardware test execution recipes for all 8 Tier 1 targets",
+        "Quantitative person-year effort models, clean-room licensing/SDK redistribution constraints (Apple Xcode SDK, Microsoft Windows SDK/MSVC, Rust trademark policy), and kill criteria for the verified `-O3` backend"
+      ]
+    }
+  ]
+}
