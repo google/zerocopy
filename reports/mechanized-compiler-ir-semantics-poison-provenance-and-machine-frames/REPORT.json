@@ -1,0 +1,469 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "llvm",
+    "rust",
+    "rustc",
+    "lean",
+    "verification",
+    "anneal",
+    "isa"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM 21.1.8 IR, Analysis, and Transforms headers and opt/llc tools",
+      "identity": {
+        "package": "llvm-21-dev",
+        "release": "llvmorg-21.1.8",
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_codegen_ssa and rustc_codegen_llvm)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "Rust compiler LLVM ABI/retag lowering and Miri Tree Borrows operational state machine",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "Rust compiler and Miri Tree Borrows reference state",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "92b5b8c87c61b20adc9001b41baf587634a74734"
+      }
+    },
+    {
+      "name": "Lean 4 C++ kernel and theorem prover toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal repository principles and trusted refinement boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Vellvm Coq/Rocq VIR semantics, byte-level poison memory (DTYPE_B), and nondeterministic freeze",
+      "identity": {
+        "inspected_revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e",
+        "repository": "vellvm/vellvm",
+        "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+      }
+    },
+    {
+      "name": "Alive2 SMT translation validator for LLVM IR",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "adacbd5180ccf95075e9867c4f0c259f59c9fef2",
+        "version": "v21.0"
+      }
+    },
+    {
+      "name": "Crellvm relational Coq translation validator for LLVM",
+      "identity": {
+        "repository": "snu-sf/crellvm",
+        "revision": "668249b88756233f96b3ef21f12993501a348afc"
+      }
+    },
+    {
+      "name": "lean-mlir (VeIR) LLVM dialect semantics and LLVMRiscV peephole refinement pipeline",
+      "identity": {
+        "inspected_revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+      }
+    },
+    {
+      "name": "seL4 GraphLang binary translation validator and stack-slot scalarizer (graph-refine)",
+      "identity": {
+        "inspected_revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4",
+        "repository": "seL4/graph-refine",
+        "revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+      }
+    },
+    {
+      "name": "Anneal universal refinement kernel and trusted boundary audit",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Rust language reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 instruction semantics",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Rust compiler MIR transforms, ABI layout, and SSA codegen",
+      "identity": {
+        "paths": "compiler/rustc_mir_transform/src/{sroa.rs,ssa.rs}, compiler/rustc_abi/src/{lib.rs,layout.rs}, compiler/rustc_codegen_ssa/src/mir/{analyze.rs,operand.rs,place.rs,rvalue.rs,block.rs,statement.rs,retag.rs}, compiler/rustc_codegen_cranelift/src/discriminant.rs, compiler/rustc_codegen_llvm/src/{abi.rs,builder.rs}, compiler/rustc_ty_utils/src/abi.rs",
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Rust compiler retag-on-typed-copy refactoring (PR #154341)",
+      "identity": {
+        "paths": "compiler/rustc_middle/src/mir/syntax.rs, compiler/rustc_mir_transform/src/sroa.rs, compiler/rustc_const_eval/src/interpret/step.rs, compiler/rustc_codegen_ssa/src/mir/{rvalue.rs,retag.rs}",
+        "pull_request": "rust-lang/rust#154341",
+        "repository": "rust-lang/rust",
+        "revision": "e402c1edf047a23b0cfef40c6097d1caa294050b"
+      }
+    },
+    {
+      "name": "Cranelift SSA construction frontend (SSABuilder)",
+      "identity": {
+        "crate": "cranelift-frontend",
+        "paths": "cranelift/frontend/src/ssa.rs",
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "version": "0.136.2"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and LCNF join-point IR",
+      "identity": {
+        "paths": "src/Lean/Compiler/LCNF/{Basic.lean,Check.lean,JoinPoints.lean,CSE.lean,SimpCase.lean}",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Anneal architecture, design, and trust-model specification",
+      "identity": {
+        "paths": "PRINCIPLES.md, docs/architecture.md, docs/design.md, docs/trust-model.md",
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Alive2 bounded translation validator for LLVM IR optimizations",
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "repository": "AliveToolkit/alive2",
+        "venue": "PLDI 2021"
+      }
+    },
+    {
+      "name": "Crellvm credible compilation and relational simulation validator for LLVM",
+      "identity": {
+        "doi": "10.1145/3192366.3192377",
+        "repository": "snu-sf/crellvm",
+        "venue": "PLDI 2018"
+      }
+    },
+    {
+      "name": "Vellvm and VIR interaction-tree LLVM IR semantics and vmem2reg pass",
+      "identity": {
+        "doi_icfp21": "10.1145/3473572",
+        "doi_pldi13": "10.1145/2491956.2462164",
+        "doi_popl12": "10.1145/2103656.2103709",
+        "repository": "vellvm/vellvm"
+      }
+    },
+    {
+      "name": "CompCert, CompCertSSA, and Chamois-CompCert (RTLpath and BTL block simulation)",
+      "identity": {
+        "doi_cacm09": "10.1145/1538788.1538814",
+        "doi_oopsla23": "10.1145/3622840",
+        "doi_toplas14": "10.1145/2579080",
+        "repository": "AbsInt/CompCert"
+      }
+    },
+    {
+      "name": "Equality saturation and e-graph frameworks (Peggy, egg, egglog, Cranelift aegraphs)",
+      "identity": {
+        "doi_egg": "10.1145/3434304",
+        "doi_egglog": "10.1145/3591239",
+        "doi_peggy": "10.1145/1480881.1480915",
+        "repository_egg": "egraphs-good/egg",
+        "repository_egglog": "egraphs-good/egglog",
+        "repository_wasmtime": "bytecodealliance/wasmtime"
+      }
+    },
+    {
+      "name": "Lean-MLIR SSA dialect semantics and peephole verification framework",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "ae0dd933",
+        "tag": "ITP24",
+        "venue": "ITP 2024"
+      }
+    },
+    {
+      "name": "CakeML verified multi-IR middle-end (flatLang, closLang, bvl, bvi, dataLang, wordLang)",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "repository": "CakeML/cakeml",
+        "venue": "JFP 2019"
+      }
+    },
+    {
+      "name": "Stacked Borrows, Tree Borrows, Miri, and SimulIris aliasing and protector verification",
+      "identity": {
+        "doi_pldi25": "10.1145/3729269",
+        "doi_popl20": "10.1145/3371109",
+        "doi_popl22": "10.1145/3498687",
+        "repository": "rust-lang/miri"
+      }
+    },
+    {
+      "name": "Polyhedral and SIMD vectorization tools (PolyVerify, Pluto, ISL, Polly, Polygeist, HELIX, VeGen, Diospyros)",
+      "identity": {
+        "doi_diospyros": "10.1145/3445814.3446707",
+        "doi_pluto": "10.1145/1375581.1375595",
+        "doi_polyverify": "10.1145/3434321",
+        "doi_vegen": "10.1145/3445814.3446692",
+        "repository": "bondhugula/pluto"
+      }
+    },
+    {
+      "name": "High-level lowering and automatic differentiation tools (CertiCoq, Maranget, Enzyme, Tapenade, CertiGrad, SciLean)",
+      "identity": {
+        "doi_certicoq": "10.1145/3473591",
+        "doi_maranget": "10.1145/1411304.1411311",
+        "doi_tapenade": "10.1145/2450153.2450158",
+        "repository_certicoq": "CertiCoq/certicoq",
+        "repository_enzyme": "EnzymeAD/Enzyme",
+        "repository_scilean": "lecopivo/SciLean"
+      }
+    },
+    {
+      "name": "Relational equivalence and C-to-Rust migration tools (SymDiff, LLReve, UC-KLEE, C2Rust, CROWN, Laertes, TCE)",
+      "identity": {
+        "doi_crown": "10.1007/978-3-031-37706-8_23",
+        "doi_laertes": "10.1145/3485495",
+        "doi_llreve": "10.1145/2642937.2642987",
+        "doi_symdiff": "10.1007/978-3-642-31424-7_54",
+        "doi_tce": "10.1109/ICSE.2015.103",
+        "doi_ucklee": "10.1007/978-3-642-22110-1_55",
+        "repository": "immunant/c2rust"
+      }
+    },
+    {
+      "name": "Taming Undefined Behavior in LLVM (PLDI 2017)",
+      "identity": {
+        "authors": "Juneyoung Lee, Yoonseung Kim, YoungJu Song, Chung-Kil Hur, Sanjoy Das, David Majnemer, John Regehr, Nuno P. Lopes",
+        "doi": "10.1145/3062341.3062343",
+        "venue": "PLDI 2017",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Reconciling High-Level Optimizations and Low-Level Code in LLVM (OOPSLA 2018)",
+      "identity": {
+        "authors": "Juneyoung Lee, Chung-Kil Hur, Ralf Jung, Zhengyang Liu, John Regehr, Nuno P. Lopes",
+        "doi": "10.1145/3276495",
+        "venue": "OOPSLA 2018",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust (POPL 2020)",
+      "identity": {
+        "authors": "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer",
+        "doi": "10.1145/3371109",
+        "venue": "POPL 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Tree Borrows (PLDI 2025)",
+      "identity": {
+        "authors": "Neven Villani, Johannes Hostert, Ralf Jung, Derek Dreyer",
+        "doi": "10.1145/3735592",
+        "venue": "PLDI 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Simuliris mechanized Tree Borrows and Stacked Borrows refinement",
+      "identity": {
+        "repository": "iris/simuliris",
+        "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
+        "url": "https://gitlab.mpi-sws.org/iris/simuliris"
+      }
+    },
+    {
+      "name": "Practical Improvements to the Construction and Destruction of Static Single Assignment Form (SPE 1998)",
+      "identity": {
+        "authors": "Preston Briggs, Keith D. Cooper, Timothy J. Harvey, L. Taylor Simpson",
+        "doi": "10.1002/(SICI)1097-024X(199807)28:8<859::AID-SPE175>3.0.CO;2-Z",
+        "venue": "Software: Practice and Experience",
+        "year": "1998"
+      }
+    },
+    {
+      "name": "Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves (JAR 2008)",
+      "identity": {
+        "authors": "Laurence Rideau, Bernard P. Serpette, Xavier Leroy",
+        "doi": "10.1007/s10817-008-9097-3",
+        "venue": "Journal of Automated Reasoning",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Revisiting Out-of-SSA Translation for Correctness, Code Quality, and Efficiency (CGO 2009)",
+      "identity": {
+        "authors": "Benoit Boissinot, Alain Darte, Benoit Dupont de Dinechin, Christophe Guillon, Fabrice Rastello",
+        "doi": "10.1109/CGO.2009.19",
+        "venue": "CGO 2009",
+        "year": "2009"
+      }
+    },
+    {
+      "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)",
+      "identity": {
+        "authors": "Jeehoon Kang, Yoonseung Kim, YoungJu Song, Juneyoung Lee, Sanghak Park, Mark Dongyeon Shin, Yonghyun Kim, Sungkeun Cho, Joonwon Choi, Chung-Kil Hur, Kwangkeun Yi",
+        "doi": "10.1145/3192366.3192398",
+        "venue": "PLDI 2018",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Modular, Compositional, and Executable Formal Semantics for LLVM IR (Vellvm, ICFP 2021)",
+      "identity": {
+        "authors": "Yannick Zakowski, Calvin Beck, Irene Yoon, Ilia Zaichuk, Vadim Zaliva, Steve Zdancewic",
+        "doi": "10.1145/3473572",
+        "venue": "ICFP 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Ownership Guided C to Rust Translation (CROWN, CAV 2023)",
+      "identity": {
+        "authors": "Hanliang Zhang, Cristina David, Yijun Yu, Meng Wang",
+        "doi": "10.1007/978-3-031-37709-9_22",
+        "venue": "CAV 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc) MIR optimizer, coroutine lowering, and LLVM codegen issue archive",
+      "identity": {
+        "issues": "#24292, #28728, #54878, #63616, #63818, #63934, #110947, #118328, #120613, #141038, #146383",
+        "repository": "rust-lang/rust"
+      }
+    },
+    {
+      "name": "opencompl/riscv-lean",
+      "identity": {
+        "commit": "7c6b500c1744f40d928fb131125cd06edf9f4fce",
+        "kind": "git",
+        "ref": "main",
+        "repo": "opencompl/riscv-lean",
+        "role": "primary",
+        "summary": "Two-stage RISC-V 64-bit semantics purification bridging LeanRV64D's monadic Sail executors (SailM ExecutionResult) via monadic skeletons (RISCV/Skeleton.lean) and intermediate pure functions (RISCV/SailPure.lean, RISCV/SailToRV64.lean, 61 theorems) to a pure BitVec 64 instruction dialect (RISCV/Instructions.lean, RISCV/SailPureToInstructions.lean, 87 operations, 69 theorems).",
+        "url": "https://github.com/opencompl/riscv-lean"
+      }
+    },
+    {
+      "name": "opencompl/lean-mlir",
+      "identity": {
+        "commit": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+        "kind": "git",
+        "ref": "main",
+        "repo": "opencompl/lean-mlir",
+        "role": "primary",
+        "summary": "MLIR SSA dialect framework embedding opencompl/riscv-lean as RISCV64.RV64 (SSA/Projects/RISCV64/Base.lean) and coupling it to LLVM IR via the hybrid dialect LLVMPlusRiscV (SSA/Projects/LLVMRiscV/LLVMAndRiscv.lean) and peephole refinement rewrites (SSA/Projects/LLVMRiscV/PeepholeRefine.lean).",
+        "url": "https://github.com/opencompl/lean-mlir"
+      }
+    },
+    {
+      "name": "BasisResearch/ship-your-interpreter",
+      "identity": {
+        "commit": "fb07094cff916318c34b07494a7d739f1e53989b",
+        "kind": "git",
+        "ref": "main",
+        "repo": "BasisResearch/ship-your-interpreter",
+        "role": "primary",
+        "summary": "End-to-end verified RISC-V 64-bit ELF interpreter and compiler over the Sail RV64 model (Lean_RV64D_executable) proved using only standard Lean axioms (propext, Classical.choice, Quot.sound) via #simp_nf decodeN, TextPiece byte pinning, RetireReads/stepObs_exec, reflective SWP symbolic execution, and Iris adequacy.",
+        "url": "https://github.com/BasisResearch/ship-your-interpreter"
+      }
+    },
+    {
+      "name": "opencompl/sail-riscv-lean",
+      "identity": {
+        "commit": "11d8fa212a60c05dcc9fe5db925dd4d06dad65b5",
+        "kind": "git",
+        "ref": "main",
+        "repo": "opencompl/sail-riscv-lean",
+        "role": "comparison",
+        "summary": "Sail-generated Lean 4 RV64D specification (Lean_RV64D) pinned by opencompl/riscv-lean's lake-manifest.json and vendored in executable form (Lean_RV64D_executable) by BasisResearch/ship-your-interpreter.",
+        "url": "https://github.com/opencompl/sail-riscv-lean"
+      }
+    },
+    {
+      "name": "rems-project/lean-sail",
+      "identity": {
+        "commit": "079463134b9c50450b8393e1566a09fc492a34d9",
+        "kind": "git",
+        "ref": "v5",
+        "repo": "rems-project/lean-sail",
+        "role": "comparison",
+        "summary": "Lean 4 support library for Sail-generated monadic specifications (PreSail, EStateM, SequentialState, IntRange.forIn') pinned by opencompl/riscv-lean.",
+        "url": "https://github.com/rems-project/lean-sail"
+      }
+    },
+    {
+      "name": "joshlf/anneal-private",
+      "identity": {
+        "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "kind": "git",
+        "ref": "skeleton",
+        "repo": "joshlf/anneal-private",
+        "role": "comparison",
+        "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json).",
+        "url": "https://github.com/joshlf/anneal-private"
+      }
+    },
+    {
+      "name": "Lammich Isabelle-LLVM: A Verified LLVM Code Generator Framework (ITP 2019 / IJCAR 2022)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2019.22",
+        "publication": "ITP 2019, LIPIcs vol. 141, Article 22"
+      }
+    },
+    {
+      "name": "Li and Gunter K-LLVM: A Relatively Complete Semantics of LLVM IR (ECOOP 2020)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2020.7",
+        "publication": "ECOOP 2020, LIPIcs vol. 166, Article 7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

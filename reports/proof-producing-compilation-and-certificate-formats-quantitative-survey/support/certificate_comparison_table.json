@@ -1,0 +1,285 @@
+{
+  "schema_version": "1.0",
+  "description": "Quantitative comparison table of 17 proof-producing compilation and certificate-checking architectures with primary-source citations.",
+  "systems": [
+    {
+      "id": "necula-pcc-touchstone-specialj",
+      "name": "Proof-Carrying Code (Touchstone / Special J) & Oracle-Based PCC",
+      "sources": [
+        "Necula (POPL 1997, doi:10.1145/263699.263712; CMU-CS-98-154, 1998)",
+        "Necula & Lee (OSDI 1996, doi:10.1145/238721.238781; PLDI 1998, doi:10.1145/277650.277752)",
+        "Colby, Lee, Necula et al. (PLDI 2000, doi:10.1145/349299.349315)",
+        "Necula & Rahul (POPL 2001, Oracle-Based Checking of Untrusted Software)"
+      ],
+      "certificate_format": "LF deductive representations (Explicit LF -> Implicit LF_i -> Binary bit-stream Oracle strings driving a nondeterministic Prolog/Horn logic interpreter over VCGen obligations)",
+      "size_vs_code": "Explicit LF: 1.5x-4.0x machine code; Implicit LF_i: ~0.30x-0.90x; Oracle bit-stream: 0.10x-0.19x of native x86/DEC Alpha machine code (12%-20% overhead on Special J Java benchmarks)",
+      "generation_time": "1.2x-2.0x of base compilation time (Touchstone / Special J)",
+      "checking_time": "1.3 ms-45 ms per kernel filter / Java class file (linear in proof size for LF_i; linear in VC search trace for Oracle PCC)",
+      "tcb": "23,000 LoC C (VCGen + LF type checker) in Touchstone; reduced to ~2,400 LoC C for Oracle PCC checker + ~1,500 LoC LF rules (unverified VCGen remains in TCB)",
+      "completeness": "Complete for type/memory safety invariants propagated by the certifying compiler's loop-invariant annotations; not functional equivalence",
+      "optimizations_covered": "Register allocation, instruction scheduling, loop invariant code motion, array bounds-check elimination, null-check elimination",
+      "acceptance_rate": "100% on Touchstone / Special J safe subsets (safety only)"
+    },
+    {
+      "id": "tal-talx86-fpcc",
+      "name": "Typed Assembly Language (TALx86) & Foundational PCC (FPCC)",
+      "sources": [
+        "Morrisett, Walker, Crary, Glew (TOPLAS 1999, doi:10.1145/319301.319345)",
+        "Grossman, Morrisett et al. (PLDI 1999, TALx86)",
+        "Appel (LICS 2001, doi:10.1109/LICS.2001.932501)",
+        "Hamid, Shao et al. (LICS 2002, doi:10.1109/LICS.2002.1029819)"
+      ],
+      "certificate_format": "Basic-block register-file and stack-frame type annotations (.tal / binary TAL types); FPCC: foundational Coq/Twelf semantic type-safety derivations down to machine ISA decoding",
+      "size_vs_code": "TALx86 uncompressed: ~1.0x-2.0x object code; compressed binary TAL: 0.25x-0.45x of x86 object code",
+      "generation_time": "Type-directed Popcorn -> TALx86 compilation: ~1.3x base compile time",
+      "checking_time": "Syntactic TALx86 linear scan: <50 ms per module; FPCC foundational Twelf/Coq kernel checking: seconds per module",
+      "tcb": "TALx86: ~8,000 LoC OCaml type checker + assembler; FPCC: ~2,700 LoC LF/Coq ISA semantics + kernel",
+      "completeness": "Complete for System F / Popcorn type-preserving compilation; does not prove input-output functional equivalence",
+      "optimizations_covered": "Closure conversion, CPS/SSA lowering, register allocation, stack frame layout, simple dead-code elimination",
+      "acceptance_rate": "100% for programs compiled by the type-preserving Popcorn compiler"
+    },
+    {
+      "id": "pnueli-tv-1998",
+      "name": "Pnueli, Siegel, and Singerman Translation Validation",
+      "sources": [
+        "Pnueli, Siegel, Singerman (TACAS 1998, LNCS 1384, doi:10.1007/BFb0054170)"
+      ],
+      "certificate_format": "Cut-point mapping, control-abstraction mapping, data-abstraction mapping, and per-cut-point invariants forming a Proof Script discharged by TLV/CVC",
+      "size_vs_code": "~0.5x-2.0x of source/target IR text (cut-point variable mappings + invariant formulas)",
+      "generation_time": "10 ms-500 ms per routine on SIGNAL-to-C synchronous reactive code",
+      "checking_time": "100 ms-several seconds per routine via BDD/SMT verification condition checking",
+      "tcb": "Unverified C verification-condition generator + BDD/SMT solver",
+      "completeness": "Sound for refinement of synchronous single-loop reactive programs; incomplete when loop structure changes non-structurally",
+      "optimizations_covered": "Synchronous clock-calculus scheduling, scalarization, dead-code elimination in SIGNAL->C",
+      "acceptance_rate": "High on single-loop synchronous SIGNAL programs; inapplicable to general control-flow restructuring"
+    },
+    {
+      "id": "necula-tv-gcc-2000",
+      "name": "Necula Translation Validation for an Optimizing Compiler (GCC 2.91)",
+      "sources": [
+        "Necula (PLDI 2000, doi:10.1145/349299.349314)"
+      ],
+      "certificate_format": "Inferred simulation relation (control-flow cut-point correspondence + conjunction of linear/Herbrand equalities between source and target RTL variables) checked by symbolic execution + Nelson-Oppen congruence/linear solver",
+      "size_vs_code": "No external certificate persisted by default; internal simulation relation has O(|V_src| + |V_tgt|) equality atoms (~0.3x-0.8x IR size)",
+      "generation_time": "Combined inference + checking: ~4x GCC compilation time (~15-300 ms per function on SPECint95 / Linux 2.2 kernel)",
+      "checking_time": "Included in the ~4x compile-time overhead",
+      "tcb": "~9,000 LoC OCaml validator (symbolic evaluator + congruence/Simplex solver; unverified)",
+      "completeness": "Heuristic constraint solving; incomplete for distributive arithmetic, loop interchange, or uninstrumented loop peeling",
+      "optimizations_covered": "GCC -O2: CSE, instruction scheduling, register allocation, loop unrolling, strength reduction, branch optimization",
+      "acceptance_rate": "100% of Linux 2.2 kernel functions under -O2 except those using inline asm or unsupported loop transformations (~96%+ overall pass-instance validation on SPEC95/Linux)"
+    },
+    {
+      "id": "rinard-credible-compilation",
+      "name": "Rinard & Marinov Credible Compilation",
+      "sources": [
+        "Rinard (MIT-LCS-TR-776, 1999)",
+        "Rinard & Marinov (FLoC / Run-Time Result Verification Workshop 1999)"
+      ],
+      "certificate_format": "Compiler-emitted simulation invariants at CFG cut-points + per-basic-block equational/first-order proof scripts connecting source and target states",
+      "size_vs_code": "~1.5x-5.0x of IR size (explicit cut-point invariants + equational rewrite chains)",
+      "generation_time": "~1.5x-3.0x pass execution time",
+      "checking_time": "Linear in proof script + local SMT/theorem-prover discharge per cut-point path",
+      "tcb": "Simulation VC generator + core first-order proof checker",
+      "completeness": "Relative to the expressiveness of first-order cut-point invariants emitted by the compiler pass",
+      "optimizations_covered": "Constant propagation, common subexpression elimination, dead code elimination, loop invariant code motion, induction variable elimination",
+      "acceptance_rate": "100% on instrumented passes emitting invariants"
+    },
+    {
+      "id": "crellvm-2018",
+      "name": "Crellvm: Verified Credible Compilation for LLVM",
+      "sources": [
+        "Kang, Kim, Song, Lee, Park, Shin, Kim, Cho, Choi, Hur, Yi (PLDI 2018, doi:10.1145/3192366.3192377)",
+        "snu-sf/crellvm @ 668249b88756233f96b3ef21f12993501a348afc"
+      ],
+      "certificate_format": "Protobuf/JSON Proof Hints (.hint) containing post-dropping relational invariants (propagated MayDiff sets, physical/logical pointer relations, and step-specific hints) consumed by an OCaml validator extracted from Coq",
+      "size_vs_code": "Compact hint files: ~0.4x-2.5x of bitcode size per pass (~5 KB-120 KB per function pass instance)",
+      "generation_time": "1.6% compile-time overhead inside instrumented LLVM 3.7 (3.6% on SPEC CINT2006)",
+      "checking_time": "~330x-1,100x slower than LLVM compilation (22.6 hours CPU time across 12 cores to validate SPEC CINT2006 + MiBench + llvm-test-suite)",
+      "tcb": "Coq kernel + Vellvm-derived Coq operational semantics + OCaml extraction (~35,000 LoC Coq proof, zero SMT solver in TCB)",
+      "completeness": "Sound for behavioral refinement; incomplete when optimizations cross basic-block boundaries in ways not captured by single-cut-point Relational Hoare Logic with MayDiff",
+      "optimizations_covered": "GVN, SROA, Mem2Reg, LICM, InstCombine (subset) in LLVM 3.7",
+      "acceptance_rate": "78.1% of optimized function-pass instances on SPEC CINT2006 (GVN: 71.1%, SROA: 98.4%, LICM: 88.2%, InstCombine: 65.5%)"
+    },
+    {
+      "id": "tristan-leroy-verified-validators",
+      "name": "Tristan & Leroy Verified Translation Validators (Scheduling, LCM, Software Pipelining)",
+      "sources": [
+        "Tristan & Leroy (POPL 2008, doi:10.1145/1328438.1328444)",
+        "Tristan & Leroy (POPL 2009, doi:10.1145/1480881.1480893)",
+        "Tristan & Leroy (PLDI 2010, doi:10.1145/1806596.1806609)"
+      ],
+      "certificate_format": "Zero external certificate (or lightweight CFG structural markers): the untrusted pass emits transformed RTL/Mach; the Coq-verified validator reconstructs symbolic evaluation trees / normalized dataflow equations in memory",
+      "size_vs_code": "0x external certificate bytes (pure source + target IR pair)",
+      "generation_time": "Standard untrusted pass execution time (0% hint-emission overhead)",
+      "checking_time": "10%-35% of total CompCert compilation time (linear/quasi-linear symbolic execution + syntactic tree equality)",
+      "tcb": "Coq kernel + OCaml extraction (zero TCB growth: validator is proved sound in Coq via `validate f f' = true -> forward_simulation f f'`)",
+      "completeness": "Incomplete by design (rejects transformations that reorder memory stores or violate local symbolic normalization), handled safely by fallback to unoptimized code",
+      "optimizations_covered": "Trace/list instruction scheduling (POPL 2008), Lazy Code Motion (POPL 2009), Modulo Software Pipelining (PLDI 2010)",
+      "acceptance_rate": "98.5%-100% of scheduled/LCM functions in CompCert benchmark suite"
+    },
+    {
+      "id": "llvm-md-value-graph-tv",
+      "name": "Value-Graph Translation Validation for LLVM (Tristan, Govereau, Morrisett)",
+      "sources": [
+        "Tristan, Govereau, Morrisett (PLDI 2011, doi:10.1145/1993498.1993533)"
+      ],
+      "certificate_format": "No external certificate: builds gated SSA Value-Dependency Graphs (E-Graphs / VDGs with gating phi and mu/eta loop nodes), saturates with 38 normalization rules, and checks root equivalence",
+      "size_vs_code": "0x external certificate; in-memory value graph is ~2x-8x of LLVM IR nodes",
+      "generation_time": "0% (unmodified LLVM 2.8 `-O2` pipeline)",
+      "checking_time": "~0.5 s-4.0 s per function (saturation capped at 10 iterations)",
+      "tcb": "~5,000 LoC unverified OCaml value-graph builder and rewrite engine",
+      "completeness": "Incomplete (cannot validate loop structure mutations, deep pointer alias disambiguation, or inlining)",
+      "optimizations_covered": "GVN, LICM, DSE, SCCP, dead-code elimination, loop deletion, jump threading",
+      "acceptance_rate": "68%-91% on individual intra-procedural passes; ~67% across composite multi-pass `-O2` intra-procedural pipeline on SPEC CINT2000 (`gcc`, `bzip2`, `gzip`)"
+    },
+    {
+      "id": "pec-kundu-tatlock-lerner",
+      "name": "PEC: Parametrized Equivalence Checking",
+      "sources": [
+        "Kundu, Tatlock, Lerner (PLDI 2009, doi:10.1145/1542476.1542513)"
+      ],
+      "certificate_format": "Parameterized rewrite rule (source CFG skeleton <-> target CFG skeleton + side conditions) validated once offline via generate-and-test + SMT (Yices) synthesis of bisimulation invariants",
+      "size_vs_code": "0x per-compilation runtime certificate (meta-level bisimulation relation is synthesized once per optimization rule)",
+      "generation_time": "Offline meta-validation: 0.2 s-14.5 s per parameterized optimization rule",
+      "checking_time": "0 ms at compile time (once the parameterized transformation rule is proved sound)",
+      "tcb": "PEC VC generator + Yices SMT solver + semantics encoding",
+      "completeness": "Covers parameterized CFG transformations expressible with affine/first-order side conditions",
+      "optimizations_covered": "Copy propagation, constant propagation, CSE, LICM, loop unrolling, software pipelining, looppeeling, loop reversal, loop fusion, loop unswitching",
+      "acceptance_rate": "Validated 16 of 16 parameterized optimization patterns (100% of targeted catalog)"
+    },
+    {
+      "id": "peggy-tate-eqsat",
+      "name": "Peggy: Equality Saturation for Optimizing Compilers",
+      "sources": [
+        "Tate, Stepp, Tatlock, Lerner (POPL 2009, doi:10.1145/1480881.1480915)"
+      ],
+      "certificate_format": "Program Expression Graph (PEG) equivalence classes with theta/eval/pass loop operators; proof witness is the sequence of equality axioms connecting initial PEG node to ILP-extracted PEG node",
+      "size_vs_code": "In-memory PEG grows to 1,000-15,000 nodes per Java method (~10x-50x input bytecode instructions)",
+      "generation_time": "~1.2 s-6.0 s per method (equality saturation + CPLEX/GLPK pseudo-Boolean ILP extraction)",
+      "checking_time": "Linear in the extracted rewrite chain when replayed as local PEG axiom steps",
+      "tcb": "PEG conversion + axiom rules (unless replayed in an ITP)",
+      "completeness": "Bounded by saturation iteration limit and axiom set",
+      "optimizations_covered": "Loop-invariant code motion, strength reduction, algebraic simplification, loop peeling, cross-iteration CSE, partial redundancy elimination",
+      "acceptance_rate": "97%+ of SpecJVM98 methods processed within memory/timeout budgets"
+    },
+    {
+      "id": "compcert-compcertssa-kvx",
+      "name": "CompCert, CompCertSSA, and Chamois/CompCert-KVX Verified Validators (RTLpath / BTL)",
+      "sources": [
+        "Leroy (CACM 2009, doi:10.1145/1538788.1538814)",
+        "Barthe, Demange, Pichardie (TOPLAS 2014, doi:10.1145/2579080, CompCertSSA)",
+        "Six, Boulmé, Monniaux (OOPSLA 2020, PACMPL 4, RTLpath superblock symbolic execution)",
+        "Gourdin, Six, Boulmé, Monniaux (OOPSLA 2023, doi:10.1145/3622840, BTL Block-Translation Validation)"
+      ],
+      "certificate_format": "Chamois/KVX BTL: untrusted OCaml oracle emits transformed BTL blocks + Gluing/History Invariants (`gluemap` mapping live target registers to symbolic source expressions) + framing annotations",
+      "size_vs_code": "Gluing invariants (`gluemap`) are ~0.15x-0.40x of the BTL IR representation; zero external file persisted after in-memory Coq validator accepts",
+      "generation_time": "Included in untrusted OCaml scheduling/superblock oracle (~5%-15% of compile time)",
+      "checking_time": "15%-40% of total CompCert-KVX compile time via Coq-extracted hash-consed symbolic execution engine",
+      "tcb": "Coq kernel + OCaml extraction + target assembly printer (~1,500 LoC trusted frontend/printer)",
+      "completeness": "Complete for linear/superblock instruction scheduling, register renaming, and local CSE/constant-folding when gluing invariants are provided by the oracle",
+      "optimizations_covered": "SSA DOM-tree construction & destruction (CompCertSSA), IRC register allocation (`regalloc`), superblock scheduling, VLIW bundling, CSE, lazy code motion, strength reduction (CompCert-KVX BTL)",
+      "acceptance_rate": "99.8%-100% of functions in TACLeBench / PolyBench / CompCert test suite (with safe no-op fallback on the <0.2% rejected blocks)"
+    },
+    {
+      "id": "cakeml-proof-producing",
+      "name": "CakeML Proof-Producing Translation (Hol2min / Compiler Evaluation)",
+      "sources": [
+        "Myreen & Owens (ICFP 2012, doi:10.1145/2364527.2364545)",
+        "Tan, Myreen, Kumar, Fox, Owens, Norrish (JFP 2019, doi:10.1017/S0956796818000229)",
+        "CakeML/cakeml @ f73189499bb295f0859dec7ee38c169c48da682c"
+      ],
+      "certificate_format": "HOL4 LCF kernel theorem objects (`|- EvaluatesTo hol_fn cake_ast` for synthesis; and in-logic theorem evaluation `|- compile config prog = SOME (bytes, ...)` combined with the once-proved compiler correctness theorem)",
+      "size_vs_code": "Proof-producing synthesis (Hol2min): ~20x-80x of AST size in HOL4 theorem steps; In-logic verified compiler execution: 1 theorem application + concrete byte list (~1x binary size)",
+      "generation_time": "Hol2min synthesis: ~0.5 s-10 s per function; In-logic CakeML bootstrap compilation in HOL4: hours (whereas verified native binary runs in seconds)",
+      "checking_time": "Checked during generation by HOL4 LCF kernel (or in seconds if replayed via OpenTheory/CakeML kernel)",
+      "tcb": "HOL4 kernel (~2,500 LoC SML) + x86-64/ARMv8 ISA model",
+      "completeness": "100% for total/terminating HOL functions within the supported monadic/pure subset",
+      "optimizations_covered": "12-IR pipeline (flatLang, closLang, BVL, BVI, dataLang, wordLang, stackLang, labLang): closure conversion, inlining, constant folding, dead-code elimination, SSA-like word optimizations, IRC register allocation",
+      "acceptance_rate": "100% within the supported HOL4 / CakeML language subset"
+    },
+    {
+      "id": "fiat-crypto-rupicola",
+      "name": "Fiat Cryptography & Rupicola Proof-Producing Synthesis",
+      "sources": [
+        "Erbsen, Philipoom, Gross, Sloan, Chlipala (S&P 2019, doi:10.1109/SP.2019.00005; mit-plv/fiat-crypto @ b4ad623c6a5bde0c71169493963a308c612fce3f)",
+        "Pit-Claudel, Peng, Gross, Chlipala (PLDI 2022, doi:10.1145/3519939.3523706, Rupicola)"
+      ],
+      "certificate_format": "Coq kernel proof terms (`Expr`) constructed via partial evaluation (`cbv`/`vm_compute` in Fiat-Crypto) or Ltac2 relational compilation tactics (`Rupicola`) proving Bedrock2/C AST refines the Gallina functional spec",
+      "size_vs_code": "Coq `.vo` proof objects are 10x-100x larger than the emitted C/Bedrock2 code (~500 KB-8 MB `.vo` for a 200-line Curve25519 / P-256 routine)",
+      "generation_time": "Fiat-Crypto pipeline: 2 s-45 s per curve primitive; Rupicola relational compilation: 5 s-90 s per function",
+      "checking_time": "Coq kernel `coqchk` replay: 0.5 s-10 s per primitive",
+      "tcb": "Coq kernel + Bedrock2/C AST pretty-printer",
+      "completeness": "Domain-specific (straight-line / counted-loop modular arithmetic in Fiat-Crypto; annotated Gallina monadic programs in Rupicola)",
+      "optimizations_covered": "Multi-limb Montgomery/Solinas reduction, carry-chain propagation, constant folding, dead-var elimination, stack/register allocation hints, in-place buffer reuse (Rupicola)",
+      "acceptance_rate": "100% on parameterized elliptic-curve primes and Rupicola-annotated Gallina kernels"
+    },
+    {
+      "id": "vale-cryptopt",
+      "name": "Vale (Verified Assembly Language for Everest) & CryptOpt",
+      "sources": [
+        "Bond et al. (USENIX Security 2017, Vale)",
+        "Fromherz et al. (POPL 2019, doi:10.1145/3290343, A Verified, Efficient Embedding of a Verifiable Assembly Language)",
+        "Kuepper et al. (PLDI 2023 / arXiv:2211.10665v3, CryptOpt)"
+      ],
+      "certificate_format": "Vale: Dafny/F* verification conditions + F* normalizer VCGen proofs over assembly ASTs; CryptOpt: Fiat-Crypto equivalence check via symbolic execution + SMT / Coq reflection",
+      "size_vs_code": "Vale `.fst`/`.dfy` annotations are 3x-8x of emitted assembly lines",
+      "generation_time": "Vale F*/Z3 verification: 5 s-120 s per cryptographic routine (AES-GCM, Poly1305, SHA-256)",
+      "checking_time": "F* typechecking + Z3 SMT discharge: 5 s-120 s (or Coq reflection in StarVale)",
+      "tcb": "Vale: F*/Dafny + Z3 + assembly printer (StarVale removes Z3 for core VCGen via Coq reflection)",
+      "completeness": "Complete for structured assembly blocks with developer-supplied loop invariants and framing",
+      "optimizations_covered": "Instruction scheduling, SIMD/AVX2/NEON vectorization, carry-flag pipelining, register allocation",
+      "acceptance_rate": "100% on manually annotated Everest cryptographic assembly routines"
+    },
+    {
+      "id": "sel4-graph-refine",
+      "name": "seL4 Binary Translation Validation (graph-refine / GraphLang)",
+      "sources": [
+        "Sewell, Myreen, Klein (PLDI 2013, doi:10.1145/2491956.2462183; seL4/graph-refine @ 94c93d18830d680fc6732d21fb16ca58ebca9dc5)"
+      ],
+      "certificate_format": "GraphLang control-flow graphs + cut-point pairing hints + SMT-LIB2 bit-vector/array verification conditions discharged by Z3/CVC4 + HOL4/Isabelle decompilation into logic",
+      "size_vs_code": "GraphLang + SMT VCs: ~5x-20x of ARMv7/RISC-V binary size (~15 MB of SMT VCs for ~9,500 LoC C kernel)",
+      "generation_time": "Decompilation into HOL4 + GraphLang extraction: ~20-40 minutes for entire seL4 kernel",
+      "checking_time": "~2-6 CPU hours across SMT solvers (Z3/SONOLAR/CVC4) for all ~600 kernel functions",
+      "tcb": "HOL4/Isabelle decompiler + Python validator (`graph-refine`) + external SMT solvers (no SMT proof reconstruction in original PLDI 2013 pipeline)",
+      "completeness": "Handles GCC 4.5 `-O2` loop peeling/unrolling via bounded unrolling + cut-point matching; fails on cross-function inlining mismatch if not mirrored in C parser",
+      "optimizations_covered": "GCC -O2: register allocation, stack slot scalarization, CSE, instruction scheduling, tail-call optimization, loop rotation/peeling",
+      "acceptance_rate": "100% of seL4 C kernel functions (~600 functions) at GCC `-O2` after disabling conflicting inlining heuristics"
+    },
+    {
+      "id": "egraph-explanations-egg",
+      "name": "E-Graph Explanations and Small Proofs from Congruence Closure (egg / TreeExplanation)",
+      "sources": [
+        "Willsey et al. (POPL 2021, doi:10.1145/3434304, egg)",
+        "Flatt, Coward, Willsey, Tatlock, Panchekha (FMCAD 2022, doi:10.34727/2022/isbn.978-3-85448-053-2_13)",
+        "Support probe: support/egg_proof_metrics.json (egg 0.11.0)"
+      ],
+      "certificate_format": "TreeExplanation (DAG of `Rewrite{rule, term}` and congruence child proofs serialized with `let`-bindings) vs. FlatExplanation (linearized tree of single-subterm rewrites)",
+      "size_vs_code": "DAG `TreeExplanation` with `let`-sharing: 1-10 steps (~0.6 KB-2.5 KB S-exp for 15-322 e-nodes); unshared `FlatExplanation` blows up exponentially ($2^{d+3}-1$ steps, reaching 319 steps / 290.0 KB vs 10 steps / 2.5 KB at depth 6)",
+      "generation_time": "Saturation: 37 us-1,993 us; Greedy proof-size extraction / explanation: 50 us-1,992 us per expression",
+      "checking_time": "Linear in DAG step count ($O(|E_{DAG}|)$) when checked by a DAG-aware congruential checker (`checkDirectedRefinementTrace`, <1 ms in Lean 4 kernel)",
+      "tcb": "Zero solver TCB: only the Lean 4 certificate checker (`checkDirectedRefinementTrace_sound`) is trusted",
+      "completeness": "Complete for congruence closure + rewrite rules applied during equality saturation",
+      "optimizations_covered": "Algebraic simplification, strength reduction, instruction selection (`Zba`/`Zbb` `sh1add`/`sh2add`/`sh3add`/`andn`), bitmask folding",
+      "acceptance_rate": "100% of equalities derived in the e-graph have a finite TreeExplanation"
+    },
+    {
+      "id": "sat-smt-drat-lrat-alethe",
+      "name": "SAT and SMT Proof Certificate Formats (DRAT, LRAT, Alethe / Carcara / Lean-SMT)",
+      "sources": [
+        "Heule, Hunt, Wetzler (CADE 2013 / JAR 2017, DRAT/LRAT)",
+        "Tan, Heule, Myreen (TACAS 2021, doi:10.1007/978-3-030-72013-1_14, cake_lpr)",
+        "Barbosa et al. / Andreotti et al. (CAV 2023, doi:10.1007/978-3-031-37703-7_18, Carcara / Alethe)",
+        "Mohamed et al. (CAV 2025, arXiv:2505.15796, lean-smt)",
+        "Support probe: SideConditionBench.lean / MeasureSideConditions.lean"
+      ],
+      "certificate_format": "DRAT: clausal additions/deletions without hints; LRAT: explicit RUP unit-propagation clause ID chains; Alethe: SMT-LIB2-like natural-deduction + resolution + theory lemmas (`la_generic`, `lia_generic`, bit-blasting)",
+      "size_vs_code": "DRAT: 1x-50x of CNF size; LRAT: ~1.5x-4.0x of DRAT size (due to explicit clause ID hints); Alethe: ~2x-15x of SMT-LIB2 query size; Lean proof term reconstruction without sharing (`bv_omega`): 8,416 DAG nodes vs 230 DAG nodes with algebraic `Nat.mod_eq_of_lt` lemma (36.6x reduction)",
+      "generation_time": "CaDiCaL + LRAT generation: ~1.1x-1.4x of SAT solve time; cvc5 Alethe generation: ~1.2x-1.8x of SMT solve time",
+      "checking_time": "LRAT (`cake_lpr` / `Std.Tactic.BVDecide`): linear in proof size (~5x-20x faster than DRAT backward propagation); Carcara Alethe checker: ~10%-40% of cvc5 solve time; Lean kernel replay of algebraic lemma: 0.78 ms vs 48.1 ms for raw `bv_omega` (61.7x speedup)",
+      "tcb": "`cake_lpr`: HOL4/CakeML kernel; `Carcara`: ~15,000 LoC Rust (external checker); `lean-smt` / `SideConditionBench`: Lean 4 kernel (`propext`, `Classical.choice`, `Quot.sound` only; whereas `bv_decide` Stage 2 invokes `Lean.ofReduceBool` / `_native.bv_decide.ax`)",
+      "completeness": "DRAT/LRAT: refutationally complete for propositional UNSAT; Alethe: covers UF, LRA, LIA, and BV (via bit-blasting)",
+      "optimizations_covered": "Bit-vector peepholes, range/overflow bounds, pointer disjointness, alias/offset non-overlap, branch-condition infeasibility",
+      "acceptance_rate": "LRAT: 100% of CaDiCaL UNSAT runs; Carcara: >99% of cvc5 Alethe proofs; `lean-smt`: 94%-98% reconstruction rate on SMT-LIB QF_UF/QF_LIA/QF_BV benchmarks within timeout"
+    }
+  ]
+}

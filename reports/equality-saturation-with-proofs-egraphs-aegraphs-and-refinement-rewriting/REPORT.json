@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "lean",
+    "anneal",
+    "rustc",
+    "isa"
+  ],
+  "subjects": [
+    {
+      "name": "Cranelift ISLE compiler and acyclic e-graph optimizer",
+      "identity": {
+        "crates": "cranelift-isle, cranelift-codegen",
+        "paths": "cranelift/isle/isle/src/{ast.rs,sema.rs,trie_again.rs,codegen.rs}, cranelift/codegen/src/egraph/{mod.rs,cost.rs,elaborate.rs}, cranelift/codegen/src/{opts.rs,inst_predicates.rs,ir/memflags.rs,prelude_opt.isle}, cranelift/codegen/src/opts/{README.md,arithmetic.isle,bitops.isle,shifts.isle}, cranelift/codegen/src/isa/{riscv64,aarch64,x64}/{lower.isle,inst.isle}",
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "version": "0.132.0"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 layout, DST extent, and vtable traits baseline",
+      "identity": {
+        "paths": "compiler/rustc_middle/src/ty/vtable.rs, compiler/rustc_trait_selection/src/traits/vtable.rs, compiler/rustc_codegen_ssa/src/mir/{place.rs,rvalue.rs}",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust compiler Cranelift and SSA codegen backends",
+      "identity": {
+        "paths": "compiler/rustc_codegen_cranelift/src/{num.rs,codegen_i128.rs,unsize.rs,vtable.rs,value_and_place.rs}, compiler/rustc_codegen_ssa/src/mir/{place.rs,rvalue.rs}, compiler/rustc_middle/src/ty/vtable.rs, compiler/rustc_trait_selection/src/traits/vtable.rs",
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Rust compiler-builtins 128-bit multiplication overflow intrinsics",
+      "identity": {
+        "paths": "compiler-builtins/src/int/mul.rs",
+        "repository": "rust-lang/compiler-builtins",
+        "revision": "351d48e4b95f1665cfd3360e3ba8f3dd4d3fb3c1"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4f9c81"
+      }
+    },
+    {
+      "name": "egg equality saturation library",
+      "identity": {
+        "crate": "egg",
+        "repository": "egraphs-good/egg",
+        "version": "0.11.0"
+      }
+    },
+    {
+      "name": "Willsey, Nandi, Wang, Flatt, Tatlock, and Panchekha egg: Fast and Extensible Equality Saturation (POPL 2021)",
+      "identity": {
+        "doi": "10.1145/3434304",
+        "publication": "PACMPL 5 (POPL), Article 23, 2021"
+      }
+    },
+    {
+      "name": "Flatt, Coward, Willsey, Tatlock, and Panchekha Small Proofs from Congruence Closure (FMCAD 2022)",
+      "identity": {
+        "doi": "10.34727/2022/isbn.978-3-85448-053-2_13",
+        "publication": "FMCAD 2022, pp. 75-83"
+      }
+    },
+    {
+      "name": "Zhang, Zucker, Klock, Willsey, Tatlock, and Wang Better Together: Unifying Datalog and Equality Saturation (egglog, PLDI 2023)",
+      "identity": {
+        "doi": "10.1145/3591239",
+        "publication": "PACMPL 7 (PLDI), Article 125, 2023",
+        "repository": "egraphs-good/egglog"
+      }
+    },
+    {
+      "name": "Rossel, Koehler, Goens, and Steuwer Lean-Egg: Equality Saturation Tactic for Lean 4",
+      "identity": {
+        "repository": "marcusrossel/lean-egg"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

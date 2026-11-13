@@ -1,0 +1,30 @@
+{
+  "egg_version": "0.11.0",
+  "flatt_fmcad2022_shortcut_demo": {"opt_dag_steps": 2, "opt_flat_steps": 4, "unopt_dag_steps": 8, "unopt_flat_steps": 16},
+  "benchmarks": [
+    {"case": "dst_slice_addr", "ac_enabled": false, "eclasses": 15, "enodes": 18, "iterations": 2, "start_cost": 16, "best_cost": 15, "best_expr": "(+ (+ base (& (+ hdr (- align 1)) (- 0 align))) (* idx 4))", "dag_let_steps_opt": 1, "flat_steps_opt": 1, "dag_let_steps_unopt": 1, "flat_steps_unopt": 1, "sat_us": 37, "extract_us": 9, "explain_us": 50},
+    {"case": "dst_slice_addr", "ac_enabled": true, "eclasses": 17, "enodes": 34, "iterations": 4, "start_cost": 16, "best_cost": 13, "best_expr": "(+ base (sh2add idx (& (+ hdr (- align 1)) (- 0 align))))", "dag_let_steps_opt": 5, "flat_steps_opt": 5, "dag_let_steps_unopt": 5, "flat_steps_unopt": 5, "sat_us": 88, "extract_us": 6, "explain_us": 102},
+    {"case": "nested_zba_zbb", "ac_enabled": false, "eclasses": 19, "enodes": 28, "iterations": 3, "start_cost": 17, "best_cost": 9, "best_expr": "(sh3add (andn x (| m1 m2)) (sh2add y z))", "dag_let_steps_opt": 7, "flat_steps_opt": 7, "dag_let_steps_unopt": 7, "flat_steps_unopt": 7, "sat_us": 40, "extract_us": 5, "explain_us": 77},
+    {"case": "nested_zba_zbb", "ac_enabled": true, "eclasses": 21, "enodes": 69, "iterations": 5, "start_cost": 17, "best_cost": 9, "best_expr": "(sh2add y (sh3add (andn x (| m1 m2)) z))", "dag_let_steps_opt": 10, "flat_steps_opt": 10, "dag_let_steps_unopt": 10, "flat_steps_unopt": 10, "sat_us": 282, "extract_us": 7, "explain_us": 354},
+    {"case": "deep_chain_8", "ac_enabled": false, "eclasses": 18, "enodes": 28, "iterations": 3, "start_cost": 19, "best_cost": 9, "best_expr": "(* (sh3add (sh2add (sh1add a b) c) d) 2)", "dag_let_steps_opt": 8, "flat_steps_opt": 8, "dag_let_steps_unopt": 8, "flat_steps_unopt": 8, "sat_us": 44, "extract_us": 5, "explain_us": 109},
+    {"case": "deep_chain_8", "ac_enabled": true, "eclasses": 18, "enodes": 35, "iterations": 5, "start_cost": 19, "best_cost": 9, "best_expr": "(* (sh3add (sh2add (sh1add a b) c) d) 2)", "dag_let_steps_opt": 8, "flat_steps_opt": 8, "dag_let_steps_unopt": 8, "flat_steps_unopt": 8, "sat_us": 91, "extract_us": 4, "explain_us": 146},
+    {"case": "shared_dag_depth4", "ac_enabled": false, "eclasses": 13, "enodes": 24, "iterations": 4, "start_cost": 14, "best_cost": 9, "best_expr": "(dup (dup (dup (dup (* (andn x m1) 4)))))", "dag_let_steps_opt": 3, "flat_steps_opt": 3, "dag_let_steps_unopt": 3, "flat_steps_unopt": 3, "sat_us": 45, "extract_us": 5, "explain_us": 83},
+    {"case": "shared_dag_depth4", "ac_enabled": true, "eclasses": 24, "enodes": 322, "iterations": 6, "start_cost": 14, "best_cost": 9, "best_expr": "(dup (dup (dup (dup (* (andn x m1) 4)))))", "dag_let_steps_opt": 3, "flat_steps_opt": 3, "dag_let_steps_unopt": 3, "flat_steps_unopt": 3, "sat_us": 1993, "extract_us": 25, "explain_us": 1992}
+  ],
+  "shared_dag_scaling": [
+    {"depth": 1, "dag_let_steps": 5, "flat_steps": 9, "let_sexp_bytes": 628, "flat_sexp_bytes": 693},
+    {"depth": 2, "dag_let_steps": 6, "flat_steps": 19, "let_sexp_bytes": 921, "flat_sexp_bytes": 2240},
+    {"depth": 3, "dag_let_steps": 7, "flat_steps": 39, "let_sexp_bytes": 1262, "flat_sexp_bytes": 7198},
+    {"depth": 4, "dag_let_steps": 8, "flat_steps": 79, "let_sexp_bytes": 1645, "flat_sexp_bytes": 23722},
+    {"depth": 5, "dag_let_steps": 9, "flat_steps": 159, "let_sexp_bytes": 2070, "flat_sexp_bytes": 81266},
+    {"depth": 6, "dag_let_steps": 10, "flat_steps": 319, "let_sexp_bytes": 2537, "flat_sexp_bytes": 289986}
+  ],
+  "ac_scaling": [
+    {"terms": 2, "eclasses": 3, "enodes": 4, "sat_us": 27},
+    {"terms": 3, "eclasses": 7, "enodes": 16, "sat_us": 38},
+    {"terms": 4, "eclasses": 15, "enodes": 63, "sat_us": 123},
+    {"terms": 5, "eclasses": 31, "enodes": 248, "sat_us": 485},
+    {"terms": 6, "eclasses": 63, "enodes": 900, "sat_us": 2222},
+    {"terms": 7, "eclasses": 202, "enodes": 2627, "sat_us": 3593}
+  ]
+}

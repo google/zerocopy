@@ -1,0 +1,892 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "smt",
+    "lean",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Translation Validation (TACAS 1998)",
+      "identity": {
+        "doi": "10.1007/BFb0054170",
+        "venue": "TACAS 1998",
+        "year": "1998"
+      }
+    },
+    {
+      "name": "Translation Validation for an Optimizing Compiler (PLDI 2000)",
+      "identity": {
+        "doi": "10.1145/349299.349314",
+        "venue": "PLDI 2000",
+        "year": "2000"
+      }
+    },
+    {
+      "name": "Formal Verification of Translation Validators (POPL 2008)",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "venue": "POPL 2008",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "venue": "PLDI 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "An SMT Encoding of LLVM's Memory Model for Bounded Translation Validation (CAV 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-81688-9_35",
+        "venue": "CAV 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Proof-Carrying Code",
+      "identity": {
+        "doi": "10.1145/263699.263712",
+        "publication": "POPL 1997"
+      }
+    },
+    {
+      "name": "A Certifying Code Generation Phase",
+      "identity": {
+        "doi": "10.1016/j.entcs.2007.09.008",
+        "publication": "ENTCS 190(4), 2007"
+      }
+    },
+    {
+      "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008"
+      }
+    },
+    {
+      "name": "Translation Certification for Smart Contracts",
+      "identity": {
+        "doi": "10.1007/978-3-030-99461-7_6",
+        "publication": "FLOPS 2022"
+      }
+    },
+    {
+      "name": "Katamaran ICFP 2022 paper",
+      "identity": {
+        "doi": "10.1145/3547628"
+      }
+    },
+    {
+      "name": "CakeML backend author manuscript",
+      "identity": {
+        "pdf-pages": "59",
+        "printed-date": "2018-11-19",
+        "url": "https://cakeml.org/jfp19.pdf"
+      }
+    },
+    {
+      "name": "Lean4Lean versioned paper",
+      "identity": {
+        "arxiv": "2403.14064v3"
+      }
+    },
+    {
+      "name": "hax architecture and Lean documentation",
+      "identity": {
+        "repository": "cryspen/hax",
+        "revision": "cc6da074ca754ca9d406ec922daad3221aacbce5"
+      }
+    },
+    {
+      "name": "Electrolysis README",
+      "identity": {
+        "git-blob": "670746012e99efc7b239bc5cd41f9ee2d967997b",
+        "repository": "Kha/electrolysis"
+      }
+    },
+    {
+      "name": "Crellvm PLDI 2018 paper",
+      "identity": {
+        "author-copy": "https://sf.snu.ac.kr/publications/crellvm.pdf",
+        "doi": "10.1145/3192366.3192377",
+        "publication": "PLDI 2018"
+      }
+    },
+    {
+      "name": "Crellvm checker research snapshot",
+      "identity": {
+        "repository": "snu-sf/crellvm",
+        "revision": "668249b88756233f96b3ef21f12993501a348afc"
+      }
+    },
+    {
+      "name": "Verified instruction scheduling validators",
+      "identity": {
+        "author-copy": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008"
+      }
+    },
+    {
+      "name": "Alive2 bounded translation validation paper",
+      "identity": {
+        "author-copy": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+        "doi": "10.1145/3453483.3454030",
+        "publication": "PLDI 2021"
+      }
+    },
+    {
+      "name": "Translation certification for smart contracts",
+      "identity": {
+        "author-copy": "https://webspace.science.uu.nl/~swier004/publications/2024-scp.pdf",
+        "doi": "10.1016/j.scico.2023.103051",
+        "publication": "SCP 233 (2024) 103051"
+      }
+    },
+    {
+      "name": "Plutus translation relation research artifact",
+      "identity": {
+        "repository": "basetunnel/2022-scp-translation-relations",
+        "revision": "72e619f3243498a612d8c6c5090b88117c404489"
+      }
+    },
+    {
+      "name": "AutoCorres PLDI 2014 paper",
+      "identity": {
+        "author-copy": "https://trustworthy.systems/publications/nicta_full_text/7629.pdf",
+        "doi": "10.1145/2594291.2594296",
+        "pdf-pages": "11",
+        "publication": "PLDI 2014"
+      }
+    },
+    {
+      "name": "AutoCorres upstream project description",
+      "identity": {
+        "observed": "2026-10-14",
+        "url": "https://trustworthy.systems/projects/OLD/autocorres/"
+      }
+    },
+    {
+      "name": "Cogent uniqueness types and certifying compilation",
+      "identity": {
+        "author-copy": "https://www.trustworthy.systems/publications/papers/OConnor_CRJAKMSK_21.pdf",
+        "doi": "10.1017/S095679682100023X",
+        "pdf-pages": "67",
+        "publication": "JFP 2021 e25"
+      }
+    },
+    {
+      "name": "Dargent data layout refinement",
+      "identity": {
+        "author-copy": "https://trustworthy.systems/publications/papers/Chen_LOKMJR_23.pdf",
+        "doi": "10.1145/3571240",
+        "pdf-pages": "27",
+        "publication": "PACMPL 7 POPL 2023 article 47"
+      }
+    },
+    {
+      "name": "Certificate translation for optimizing compilers",
+      "identity": {
+        "author-copy": "https://software.imdea.org/~ckunz/publications/certtrans-SAS06.pdf",
+        "doi": "10.1007/11823230_20",
+        "publication": "SAS 2006 extended abstract, LNCS 4134 pp.301-317"
+      }
+    },
+    {
+      "name": "PotPie ITP 2024 paper",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2024.33",
+        "publication": "ITP 2024 article 33",
+        "publisher-copy": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol309-itp2024/LIPIcs.ITP.2024.33/LIPIcs.ITP.2024.33.pdf"
+      }
+    },
+    {
+      "name": "PotPie publication artifact",
+      "identity": {
+        "repository": "uwplse/potpie",
+        "revision": "a57f960958901dee3b8075be0a312d6a194be456",
+        "version": "v0.5"
+      }
+    },
+    {
+      "name": "Alive2 bounded translation validation",
+      "identity": {
+        "coordinates": "sections5,7,8.1;15-page author PDF",
+        "doi": "10.1145/3453483.3454030",
+        "primary_url": "https://web.ist.utl.pt/nuno.lopes/pubs/alive2-pldi21.pdf",
+        "publication": "PLDI2021"
+      }
+    },
+    {
+      "name": "CryptOpt verified equivalence checking",
+      "identity": {
+        "arxiv": "2211.10665v3",
+        "coordinates": "sections6.1-6.4;32-page PDF",
+        "primary_url": "https://arxiv.org/pdf/2211.10665v3",
+        "publication": "2023-05-22 full paper"
+      }
+    },
+    {
+      "name": "Jitterbug BPF JIT verification",
+      "identity": {
+        "coordinates": "section4 Definitions1-5 Theorem1;sections6-7;22-page PDF",
+        "primary_url": "https://www.usenix.org/system/files/osdi20-nelson.pdf",
+        "publication": "OSDI2020"
+      }
+    },
+    {
+      "name": "Trivet LLVM Lean validation",
+      "identity": {
+        "arxiv": "2609.19583v1",
+        "coordinates": "Definition2.1 and section3;14-page PDF",
+        "primary_url": "https://arxiv.org/pdf/2609.19583v1",
+        "publication": "2026-09-17 preprint"
+      }
+    },
+    {
+      "name": "EquiVM foundational bytecode refinement",
+      "identity": {
+        "arxiv": "2607.26306v1",
+        "coordinates": "section5 Figure9;34-page PDF",
+        "primary_url": "https://arxiv.org/pdf/2607.26306v1",
+        "publication": "2026-07-28 preprint"
+      }
+    },
+    {
+      "name": "Owlang compositional open safety",
+      "identity": {
+        "arxiv": "2510.10015v1",
+        "coordinates": "section5 Theorems5.1-5.2;34-page PDF",
+        "primary_url": "https://arxiv.org/pdf/2510.10015v1",
+        "publication": "2025-10-11 preprint"
+      }
+    },
+    {
+      "name": "RustCompCert ongoing work",
+      "identity": {
+        "arxiv": "2602.07455v1",
+        "coordinates": "section2 and footnote2;3-page PDF",
+        "primary_url": "https://arxiv.org/pdf/2602.07455v1",
+        "publication": "2026-02-07 preprint"
+      }
+    },
+    {
+      "name": "Computing Correctly with Inductive Relations",
+      "identity": {
+        "coordinates": "section3 Figure1 and section6.3;15-page author PDF",
+        "primary_url": "https://lemonidas.github.io/pdf/ComputingCorrectly.pdf",
+        "publication": "PLDI2022"
+      }
+    },
+    {
+      "name": "AliveToolkit/alive2",
+      "identity": {
+        "path": "README.md",
+        "repository": "AliveToolkit/alive2",
+        "revision": "5d0eb277235b73f71000501c3a4f5ab9b2586915"
+      }
+    },
+    {
+      "name": "0xADE1A1DE/CryptOpt",
+      "identity": {
+        "path": "Readme.md",
+        "repository": "0xADE1A1DE/CryptOpt",
+        "revision": "c089d8ce3cace748a0a22e25d7adfbf2cfc6a883"
+      }
+    },
+    {
+      "name": "uw-unsat/jitterbug",
+      "identity": {
+        "path": "README.md",
+        "repository": "uw-unsat/jitterbug",
+        "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+      }
+    },
+    {
+      "name": "vellvm/vellvm",
+      "identity": {
+        "path": "README.md",
+        "repository": "vellvm/vellvm",
+        "revision": "4c6db50077cbc0df3fb3156c0570129201cc35f3"
+      }
+    },
+    {
+      "name": "mit-plv/fiat-crypto",
+      "identity": {
+        "repository": "mit-plv/fiat-crypto",
+        "revision": "b4ad623c6a5bde0c71169493963a308c612fce3f"
+      }
+    },
+    {
+      "name": "Translation Validation for a Verified OS Kernel (Sewell, Myreen & Klein / seL4 graph-refine)",
+      "identity": {
+        "doi": "10.1145/2491956.2462183",
+        "publication": "PLDI 2013",
+        "repository": "seL4/graph-refine",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Decompilation into Logic — Improved (Myreen, Gordon & Slind)",
+      "identity": {
+        "doi": "10.1109/FMCAD.2012.6462558",
+        "publication": "FMCAD 2012",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Cogent: Verifying High-Assurance File System Implementations (Amani et al.)",
+      "identity": {
+        "doi": "10.1145/2872362.2872404",
+        "publication": "ASPLOS 2016",
+        "repository": "seL4/cogent",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Refinement through Restraint: Bringing Down the Cost of Verification (O'Connor et al. / Cogent Value-Update Semantics)",
+      "identity": {
+        "doi": "10.1145/2951913.2951940",
+        "publication": "ICFP 2016",
+        "repository": "seL4/cogent",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Dargent: A Silver Bullet for Verified Data Layout Refinement (Chen et al.)",
+      "identity": {
+        "doi": "10.1145/3571240",
+        "publication": "POPL 2023",
+        "repository": "seL4/cogent",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Pancake: Verified Systems Programming Made Sweeter (Aman Pohjola et al.)",
+      "identity": {
+        "doi": "10.1145/3623759.3624544",
+        "publication": "PLOS 2023",
+        "repository": "CakeML/pancake",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Metamath Zero: Designing a Theorem Prover Prover (Carneiro / mm0-c .mmb verifier)",
+      "identity": {
+        "doi": "10.1145/3372885.3373826",
+        "publication": "CPP 2020",
+        "repository": "digama0/mm0",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Kraken AArch64 Consumer-Bound Certificate Checker",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "8af78062037bc237b341d20252aafd1797c1bcb7"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4c4633b"
+      }
+    },
+    {
+      "name": "Necula and Lee Safe Kernel Extensions Without Run-Time Checking (OSDI 1996)",
+      "identity": {
+        "doi": "10.1145/238721.238781",
+        "publication": "OSDI 1996, pp. 229-243",
+        "sha256": "259080d93293f69c26cbc96545c89171f99250bf981d9855c867c19de62edaf1"
+      }
+    },
+    {
+      "name": "Necula and Lee The Design and Implementation of a Certifying Compiler (PLDI 1998)",
+      "identity": {
+        "doi": "10.1145/277650.277752",
+        "publication": "PLDI 1998, pp. 333-344",
+        "sha256": "3786c9e25fa576d25a2f1b9d281163e0716e030f7d9b5cf20fd6058c8a90dedb"
+      }
+    },
+    {
+      "name": "Necula Compiling with Proofs (CMU-CS-98-154)",
+      "identity": {
+        "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+        "publication": "CMU-CS-98-154, September 1998",
+        "sha256": "2e90089ee85c46c80f32e9ac69e4b75261fb7733d8519be5120587136168fc23"
+      }
+    },
+    {
+      "name": "Colby, Lee, Necula, Blau, Plesko, and Cline A Certifying Compiler for Java (PLDI 2000)",
+      "identity": {
+        "doi": "10.1145/349299.349315",
+        "publication": "PLDI 2000, pp. 95-107",
+        "sha256": "796b107a04e1765e1fd8fe72801cf03fbb28d47d042ca0bce8e24d96fa60d3b2"
+      }
+    },
+    {
+      "name": "Appel Foundational Proof-Carrying Code (LICS 2001)",
+      "identity": {
+        "doi": "10.1109/LICS.2001.932501",
+        "publication": "LICS 2001, pp. 247-256",
+        "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+      }
+    },
+    {
+      "name": "Hamid, Shao, Trifonov, Monnier, and Ni A Syntactic Approach to Foundational Proof-Carrying Code (LICS 2002)",
+      "identity": {
+        "artifact_archive": "https://flint.cs.yale.edu/flint/publications/safpcc.coq8.tar.gz",
+        "artifact_sha256": "1aa2b2d9562818e4d960d3fd25a3afb04ed5a52ecb286b0f2f47680d5a481854",
+        "doi": "10.1109/LICS.2002.1029819",
+        "publication": "LICS 2002, pp. 89-100",
+        "sha256": "7cd6d8a1f3a568854caec22dc425c26455ac60f526617fd1b65ba097adbc1eda"
+      }
+    },
+    {
+      "name": "Hamid and Shao Interfacing Hoare Logic and Type Systems for Foundational Proof-Carrying Code (TPHOLs 2004)",
+      "identity": {
+        "artifact_archive": "https://flint.cs.yale.edu/flint/publications/rtpcc.coq.tar.gz",
+        "artifact_sha256": "9e49279920de0be865df4db85e1b7ca45b1bf6b7a490fcf7cb67f8f4e6e26a5a",
+        "doi": "10.1007/978-3-540-30142-4_9",
+        "publication": "TPHOLs 2004, LNCS 3223, pp. 118-135",
+        "sha256": "d44a8c650c57d50f8e2dbfe21dc8cb82623599a7706d27181b6eb84eba8c4592"
+      }
+    },
+    {
+      "name": "Yang and Hawblitzel Safe to the Last Instruction: Automated Verification of a Type-Safe Operating System (PLDI 2010)",
+      "identity": {
+        "doi": "10.1145/1806596.1806610",
+        "publication": "PLDI 2010, pp. 99-110",
+        "repository": "Microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691",
+        "sha256": "01c92b63b3fc5efd487605229655566a9bca4dffe29458f93c3e5d2883087072"
+      }
+    },
+    {
+      "name": "Gu et al. CertiKOS: An Extensible Architecture for Building Certified Concurrent OS Kernels (OSDI 2016)",
+      "identity": {
+        "isbn": "978-1-931971-33-1",
+        "publication": "OSDI 2016, pp. 653-669",
+        "sha256": "46e7696765ce06d6fef0a40e06483fc9ae4e6379902487d2da151f070249235a"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Necula Compiling with Proofs",
+      "identity": {
+        "coordinates": "chapter2 Theorem2.1;277-page dissertation",
+        "primary_url": "https://people.eecs.berkeley.edu/~necula/Papers/thesis.pdf",
+        "publication": "CMU-CS-98-154;1998-09-18"
+      }
+    },
+    {
+      "name": "From System F to Typed Assembly Language",
+      "identity": {
+        "coordinates": "section7.3;41-page author PDF",
+        "doi": "10.1145/319301.319345",
+        "primary_url": "https://www.cs.cmu.edu/~dpw/papers/tal-toplas.pdf",
+        "publication": "TOPLAS21(3),1999"
+      }
+    },
+    {
+      "name": "Appel FPCC primary project account",
+      "identity": {
+        "primary_url": "https://www.cs.princeton.edu/~appel/fpcc.html",
+        "publication": "Princeton FPCC project1999-2005"
+      }
+    },
+    {
+      "name": "Appel Foundational Proof-Carrying Code",
+      "identity": {
+        "doi": "10.1109/LICS.2001.932501",
+        "inspection": "full10-page author PDF;sections2,5",
+        "primary_url": "https://www.cs.princeton.edu/~appel/papers/fpcc.pdf",
+        "publication": "LICS2001",
+        "sha256": "03078cc39e2b94460e2e7b48a7ef112754bcacbf4bf108986ed108c69b922bf9"
+      }
+    },
+    {
+      "name": "Bohrer/Crary TWAM",
+      "identity": {
+        "coordinates": "Theorem1 and section3.5;23-page PDF",
+        "primary_url": "https://www.cs.cmu.edu/~crary/papers/2018/twam.pdf",
+        "publication": "2018 author paper"
+      }
+    },
+    {
+      "name": "Linux kernel eBPF verifier and post-check fixups",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "0fcb05b72344f40806cbe810de8872f1698bf053"
+      }
+    },
+    {
+      "name": "PREVAIL eBPF abstract interpreter",
+      "identity": {
+        "doi": "10.1145/3314221.3314590",
+        "publication": "PLDI 2019",
+        "repository": "vbpf/prevail",
+        "revision": "b88da311df4d99175ca2d5fe91d9fe2a43fb11b7"
+      }
+    },
+    {
+      "name": "VeRefine flow-sensitive refinement type checker for eBPF",
+      "identity": {
+        "doi": "10.1145/3763799",
+        "publication": "PACMPL 9 OOPSLA2 Article 410 2025"
+      }
+    },
+    {
+      "name": "Abstraction-Carrying Code",
+      "identity": {
+        "doi": "10.1007/978-3-540-31980-1_25",
+        "publication": "TACAS 2006"
+      }
+    },
+    {
+      "name": "Jitk in-kernel verified cBPF JIT compiler",
+      "identity": {
+        "publication": "USENIX OSDI 2014",
+        "url": "https://www.usenix.org/conference/osdi14/technical-sessions/presentation/wang_xi"
+      }
+    },
+    {
+      "name": "Jitterbug verified Linux eBPF JIT synthesis and verification",
+      "identity": {
+        "publication": "USENIX OSDI 2020",
+        "repository": "uw-unsat/jitterbug",
+        "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+      }
+    },
+    {
+      "name": "CertrBPF verified rBPF interpreter and CompCert JIT",
+      "identity": {
+        "doi": "10.1007/978-3-031-13188-2_15",
+        "publication": "CAV 2022 and CAV 2024",
+        "repository": "future-proof-iot/CertFC",
+        "revision": "75690097c946c555cc4ce1e69d13ef86dc738180"
+      }
+    },
+    {
+      "name": "SafeBPF hardware-assisted MTE and SFI eBPF sandboxing",
+      "identity": {
+        "arxiv": "2409.07508",
+        "publication": "ACM CCSW 2024",
+        "revision": "710b33fe3cecb2624e4b1e4a2653692e3dc57638"
+      }
+    },
+    {
+      "name": "Rex safe Rust kernel extensions and panic cleanup runtime",
+      "identity": {
+        "publication": "USENIX ATC 2025",
+        "repository": "rex-rs/rex",
+        "revision": "9188a85bc40b54c98d661d512648f9efa1310f2b"
+      }
+    },
+    {
+      "name": "JVMS Java SE25",
+      "identity": {
+        "url": "https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-4.html#jvms-4.10",
+        "version": "Java SE25"
+      }
+    },
+    {
+      "name": "Jinja",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "352a4e06c2e2c1dc358200e2a87bd930e458ca90"
+      }
+    },
+    {
+      "name": "PREVAIL",
+      "identity": {
+        "repository": "vbpf/prevail",
+        "revision": "cefe6a799f8b8f37aa2560e196f223802717c1e7"
+      }
+    },
+    {
+      "name": "eBPF flow-sensitive refinement types",
+      "identity": {
+        "doi": "10.1145/3763799",
+        "publication": "PACMPL9 OOPSLA2 Article410 2025"
+      }
+    },
+    {
+      "name": "cvc5 1.4.2",
+      "identity": {
+        "binary_sha256": "74a9c8ab076ed0dbced2aef27de675846e4a8937e3f3d49125721f2d91bdcf4d",
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d"
+      }
+    },
+    {
+      "name": "Carcara 1.1.0",
+      "identity": {
+        "binary_sha256": "4016f1129baf0b82b1a4ee9c64ec2f4f0376cabe75cb07674fdd452847f8963f",
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "Lean 4.34.1",
+      "identity": {
+        "Init_olean_sha256": "e350f457fb746028d5761304fd7df55a83b46ea56cdd7702fdee32600b57db22",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "shared_library_sha256": "6588b7e38450ea749006dcd90bbaea9393a5ca1b64727a2e7138f3c9427c2b50"
+      }
+    },
+    {
+      "name": "Owned fixed finite byte semantics",
+      "identity": {
+        "artifact": "ByteLaws.lean",
+        "sha256": "275e5f09043bc8091f3b962aada7e6a1b2d24876d9aeca0b323d5e38ac983acc"
+      }
+    },
+    {
+      "name": "Owned local Alethe expansion producer",
+      "identity": {
+        "artifact": "translate.py",
+        "sha256": "34f43a206b1a3756004fbc0e37bfb3914208460eaad68333b20ff9b2be19f684"
+      }
+    },
+    {
+      "name": "SMTCoq/smtcoq",
+      "identity": {
+        "repository": "SMTCoq/smtcoq",
+        "revision": "7b870140f2ff7e4547a7db614a305d8b2945afa3"
+      }
+    },
+    {
+      "name": "ufmg-smite/carcara",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "20bf49c5ce31089ac83118574c888669355aaae1"
+      }
+    },
+    {
+      "name": "cvc5/LFSC",
+      "identity": {
+        "repository": "cvc5/LFSC",
+        "revision": "5a127dbbcf9a0f822768e783dbf892ee90c435d5"
+      }
+    },
+    {
+      "name": "cvc5/cvc5",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "f0bc3373ef032a3fc5006f22778aaae7b274f429"
+      }
+    },
+    {
+      "name": "ufmg-smite/lean-smt",
+      "identity": {
+        "repository": "ufmg-smite/lean-smt",
+        "revision": "9abdd01c13dc7ac2bac4d68d17ee661c63ed0894"
+      }
+    },
+    {
+      "name": "isabelle-prover/mirror-isabelle",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "39c77411f67871f5a8f06140c588e196a9aa9ca8"
+      }
+    },
+    {
+      "name": "Owned input bundle",
+      "identity": {
+        "source_sha256": "f6db0f454be824e8bd7a48a6a4434afd963d3dac9edac3ac447c4dbec77f6f09"
+      }
+    },
+    {
+      "name": "cvc5",
+      "identity": {
+        "archive_sha256": "24397f7d022e755876ca836193d4c5f9c1d4326f0f6c01f7d7fc1ddd6bc5096c",
+        "release": "1.4.2",
+        "repository": "cvc5/cvc5",
+        "revision": "282d5e0c84baf49c780704c532f87ba66d8b513d"
+      }
+    },
+    {
+      "name": "Rust1.99",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    {
+      "name": "SMT-LIB ArraysEx",
+      "identity": {
+        "definition_url": "https://smt-lib.org/theories-ArraysEx.shtml",
+        "release": "2024-07-21",
+        "version": "2.7"
+      }
+    },
+    {
+      "name": "marijnheule/drat-trim",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "digama0/frat",
+      "identity": {
+        "repository": "digama0/frat",
+        "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5"
+      }
+    },
+    {
+      "name": "IsaFoL/IsaFoL",
+      "identity": {
+        "repository": "IsaFoL/IsaFoL",
+        "revision": "1475076cea603c64d3dfe70c91014a5264e0479b"
+      }
+    },
+    {
+      "name": "CakeML/cakeml",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "f73189499bb295f0859dec7ee38c169c48da682c"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "StephanGocht/VeriPB",
+      "identity": {
+        "repository": "StephanGocht/VeriPB",
+        "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+      }
+    },
+    {
+      "name": "VeriPB current proof format overview",
+      "identity": {
+        "format": "version 3",
+        "observed": "2026-10-14",
+        "url": "https://veripb.org/overview.html"
+      }
+    },
+    {
+      "name": "leanprover-community/mathlib4",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "b16cf9ed26f2e49057943824f2f74f9783b7cb40"
+      }
+    },
+    {
+      "name": "jrh13/hol-light",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "233b83c3202370e03c54de2bd090e4d34f677e91"
+      }
+    },
+    {
+      "name": "FloVer FMCAD 2018 paper",
+      "identity": {
+        "title": "A Verified Certificate Checker for Finite-Precision Error Bounds in Coq and HOL4",
+        "url": "https://www.cs.utexas.edu/~hunt/FMCAD/FMCAD18/papers/paper2.pdf",
+        "venue": "FMCAD 2018"
+      }
+    },
+    {
+      "name": "Gappa upstream integration documentation",
+      "identity": {
+        "observed": "2026-10-14",
+        "url": "https://gappa.gitlabpages.inria.fr/gappa/tools.html"
+      }
+    },
+    {
+      "name": "Gappa Rocq library",
+      "identity": {
+        "revision": "e4f093c3f8fef4bb163e5b29c92d95514a4c9bdf",
+        "url": "https://gitlab.inria.fr/gappa/coq"
+      }
+    },
+    {
+      "name": "FloVer current upstream",
+      "identity": {
+        "revision": "2b846b7242db7435c97ba694393db47842b19860",
+        "url": "https://gitlab.mpi-sws.org/AVA/FloVer"
+      }
+    },
+    {
+      "name": "Why3 upstream",
+      "identity": {
+        "revision": "d0a8077e157935d0d80a7a2156ecf5a98a2aae3e",
+        "url": "https://gitlab.inria.fr/why3/why3"
+      }
+    },
+    {
+      "name": "Gappa1.11.0 release source",
+      "identity": {
+        "artifact": "gappalib-coq-1.11.0.tar.gz",
+        "sha512": "654d4787998ce085b8ce7e6f6c266e826e9581b34002c1c0995972a3927800e5732f8e6205ea63047aca84327413f4e2f774e2c5627fe7b98fba809250c0b857"
+      }
+    },
+    {
+      "name": "BTL Block-Translation Validation for CompCert-KVX (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622840",
+        "publication": "PACMPL 7 (OOPSLA2), Article 286, 2023"
+      }
+    },
+    {
+      "name": "Tristan, Govereau, and Morrisett Evaluating Value-Graph Translation Validation for LLVM (PLDI 2011)",
+      "identity": {
+        "doi": "10.1145/1993498.1993533",
+        "publication": "PLDI 2011, pp. 295-305"
+      }
+    },
+    {
+      "name": "Kundu, Tatlock, and Lerner Proving Optimizations Correct Using Parameterized Program Equivalence (PLDI 2009)",
+      "identity": {
+        "doi": "10.1145/1542476.1542513",
+        "publication": "PLDI 2009, pp. 327-337"
+      }
+    },
+    {
+      "name": "Tate, Stepp, Tatlock, and Lerner Equality Saturation: A New Approach to Optimization (POPL 2009)",
+      "identity": {
+        "doi": "10.1145/1480881.1480915",
+        "publication": "POPL 2009, pp. 264-276"
+      }
+    },
+    {
+      "name": "Pit-Claudel, Peng, Gross, and Chlipala Effective Interactive Proofs for Higher-Order Imperative Programs (Rupicola, PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523706",
+        "publication": "PLDI 2022, pp. 156-171"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

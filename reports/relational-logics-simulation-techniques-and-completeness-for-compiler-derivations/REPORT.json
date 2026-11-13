@@ -1,0 +1,380 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "verification",
+    "lean",
+    "anneal",
+    "minirust"
+  ],
+  "subjects": [
+    {
+      "name": "Iris source",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+      }
+    },
+    {
+      "name": "Historical RustBelt lifetime implementation",
+      "identity": {
+        "archive": "lambda-rust-popl18.tar.gz",
+        "repository": "iris/lambda-rust",
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "Iris 3.1 conceptual foundation",
+      "identity": {
+        "doi": "10.1017/S0956796818000151",
+        "publication": "Iris from the Ground Up",
+        "version": "Iris 3.1"
+      }
+    },
+    {
+      "name": "RustBelt use of Iris for Rust ownership and borrowing",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "RustBelt: Securing the Foundations of the Rust Programming Language",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "Aeneas draft first-order sequential separation logic",
+      "identity": {
+        "pull_request": "1352",
+        "repository": "AeneasVerif/aeneas",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      }
+    },
+    {
+      "name": "Iris-Lean implementation status",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47"
+      }
+    },
+    {
+      "name": "iris-lean",
+      "identity": {
+        "commit": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+        "lean_toolchain": "leanprover/lean4:v4.29.0",
+        "repository": "leanprover-community/iris-lean",
+        "tree": "de91073ccc69a74b5ed56df1c41cc61f6bf05816"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "commit": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed",
+        "repository": "minirust/minirust"
+      }
+    },
+    {
+      "name": "specr",
+      "identity": {
+        "commit": "15200eb5e6",
+        "repository": "minirust/specr"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "repository": "leanprover/lean4",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Transfinite Iris source",
+      "identity": {
+        "revision": "dde9f193fb3d504be680480b2ca21052edae49df",
+        "url": "https://gitlab.mpi-sws.org/iris/transfinite"
+      }
+    },
+    {
+      "name": "Transfinite Iris PLDI final paper",
+      "identity": {
+        "artifact": "2021-pldi-transfinite-iris-final.pdf",
+        "doi": "10.1145/3453483.3454031",
+        "sha256": "9fa709124b9c058076809816475c26212776a3084ea6322267af562978523427"
+      }
+    },
+    {
+      "name": "Transfinite Iris technical documentation",
+      "identity": {
+        "artifact": "2021-pldi-transfinite-iris-final-appendix.pdf",
+        "sha256": "d9cbc16acd64e3a2deea0afcba45a117bf137dc002066a10a33bd5d197f191b8",
+        "version": "May 14 2021"
+      }
+    },
+    {
+      "name": "Simuliris",
+      "identity": {
+        "archive_sha256": "06dbeeb1ddda80ffe93b26fd20d8597f9c9a63767ae2a7e74e4dae696952fb9b",
+        "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
+        "url": "https://gitlab.mpi-sws.org/iris/simuliris"
+      }
+    },
+    {
+      "name": "Iris",
+      "identity": {
+        "archive_sha256": "3b45252c8b915dcee1149dd0d185391898cc836619b7c4e1fc1f636acb23057b",
+        "package": "rocq-iris.dev.2026-09-10.3.b3495ef9",
+        "repository": "rocq-iris/iris",
+        "revision": "b3495ef9f0805b0dc7c1b1abbdc8cf473ede121b"
+      }
+    },
+    {
+      "name": "stdpp",
+      "identity": {
+        "archive_sha256": "e9588be3a78ad1b54a045a3237e5ae2ca7e0db8aebf1e0cfe8e90a6a64e0e6f2",
+        "package": "rocq-stdpp.dev.2026-09-09.1.c3186aad",
+        "repository": "rocq-iris/stdpp",
+        "revision": "c3186aad493872e3a9774ac0b42ca2f591b05835"
+      }
+    },
+    {
+      "name": "Rocq native checker and compiler",
+      "identity": {
+        "native_checker_sha256": "d24cd16bfb4d25f13eba4178ee33eabc128f3ae4c03bebe56bae7521a0081de9",
+        "repository": "rocq-prover/rocq",
+        "source_archive_sha256": "a45280ab4fbaac7540b136a6b073b4a6db15739ec1e149bded43fa6f4fc25f20",
+        "version": "9.2.0"
+      }
+    },
+    {
+      "name": "Owned observation-only audit annotations",
+      "identity": {
+        "artifact": "PlannedAuditFramework.v + PlannedAuditResources.v + PlannedAuditExamples.v, concatenated in that order",
+        "sha256": "d5a95c12243012b279d7f7a8c1d427c297987a09f00754f2c62998e8fd083c54"
+      }
+    },
+    {
+      "name": "Rust standard-library contracts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d8ef4f3fe7031514cbd7d056b7b058814987ecec"
+      }
+    },
+    {
+      "name": "RustBelt lifetime archive",
+      "identity": {
+        "sha256": "b35bf71ccf43367493a18db9af428279a4c56e3a2e7d57fbbc90a2de1cbe3996",
+        "url": "https://gitlab.mpi-sws.org/iris/lambda-rust/-/archive/popl18/lambda-rust-popl18.tar.gz"
+      }
+    },
+    {
+      "name": "RustHornBelt 2022 prophecy artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.6417462",
+        "sha256": "7e67c2d49b3b655113675c0d517d76589d615c9622eac2d91417d99263959121"
+      }
+    },
+    {
+      "name": "RefinedRust 2026-v2 resource/Lithium source",
+      "identity": {
+        "doi": "10.5281/zenodo.21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Diaframe 2022 source artifact",
+      "identity": {
+        "artifact": "diaframe-artifact-source.tgz",
+        "doi": "10.5281/zenodo.6414787",
+        "sha256": "2f93bc6b13e99f4a37ce95c57fa99c5d131643676baca0b2d5388bacb9a49f12"
+      }
+    },
+    {
+      "name": "Quiver",
+      "identity": {
+        "revision": "e9636365a782e5a7e86cb14afb0016065116bf8d",
+        "url": "https://gitlab.mpi-sws.org/iris/quiver"
+      }
+    },
+    {
+      "name": "Quiver PLDI 2024 paper",
+      "identity": {
+        "doi": "10.1145/3656413",
+        "sha256": "f868c976531a9ed386d4a396ede212d948a843fef946be1b7712b338c227df3f"
+      }
+    },
+    {
+      "name": "Program Logics a la Carte source artifact",
+      "identity": {
+        "archive": "the_artifact.zip",
+        "sha256": "bf5d86d5fef425b6031640391dddda4f60b3b029d680019ddaedefd17e4d3378",
+        "version": "v2",
+        "zenodo": "14180355"
+      }
+    },
+    {
+      "name": "Logical Relations a la Carte thesis",
+      "identity": {
+        "document_date": "March 2026",
+        "source_commit_cited_not_accessed": "5ed76562ee78badeb8768e7cb00c1ea37557b709",
+        "url": "https://ethz.ch/content/dam/ethz/special-interest/infk/inst-pls/plf-dam/documents/StudentProjects/MasterTheses/2025-Jonas-Thesis.pdf"
+      }
+    },
+    {
+      "name": "MiniRust memory interface",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed"
+      }
+    },
+    {
+      "name": "Lean",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification architecture and trust boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5fc1139f2208b3c9cfb513573c4a731cc32bb457"
+      }
+    },
+    {
+      "name": "Anneal Trusted.Attributes and audit guard",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal repository principles and trusted refinement boundary",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "24367bd1a8c784f2578535954f9915e24894a56f"
+      }
+    },
+    {
+      "name": "Anneal universal refinement kernel and trusted boundary audit",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "beb778bb135474a67dc017c185d2753a60693d8c"
+      }
+    },
+    {
+      "name": "Bundled Anneal Rust Compiler Toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Pinned Rust Compiler Source Baseline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_mir_transform, rustc_codegen_ssa, rustc_codegen_llvm, and rustc_ty_utils)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 opt optimizer and IR headers",
+      "identity": {
+        "include_root": "/usr/include/llvm-21/llvm",
+        "package": "llvm-21-dev",
+        "release": "llvmorg-21.1.8",
+        "repository": "llvm/llvm-project",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+        "version": "21.1.8"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel Verification Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Benton Simple Relational Correctness Proofs for Static Analyses and Program Transformations (POPL 2004)",
+      "identity": {
+        "doi": "10.1145/964001.964003",
+        "publication": "POPL 2004, pp. 14-25"
+      }
+    },
+    {
+      "name": "Barthe, Crespo, and Kunz Relational Verification Using Product Programs (FM 2011)",
+      "identity": {
+        "doi": "10.1007/978-3-642-21437-0_17",
+        "publication": "FM 2011, LNCS 6664, pp. 200-214"
+      }
+    },
+    {
+      "name": "Sousa and Dillig Cartesian Hoare Logic for Verifying k-Safety Properties (PLDI 2016)",
+      "identity": {
+        "doi": "10.1145/2908080.2908092",
+        "publication": "PLDI 2016, pp. 57-69"
+      }
+    },
+    {
+      "name": "Kozen and Patron Certification of Compiler Optimizations Using Kleene Algebra with Tests (CL 2000)",
+      "identity": {
+        "doi": "10.1007/3-540-44957-4_38",
+        "publication": "CL 2000, LNAI 1861, pp. 568-582"
+      }
+    },
+    {
+      "name": "Leroy and Blazy Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations (JAR 2008)",
+      "identity": {
+        "doi": "10.1007/s10817-008-9099-1",
+        "publication": "Journal of Automated Reasoning 41(1), 2008, pp. 1-31"
+      }
+    },
+    {
+      "name": "Song, Cho, Kim, Hur, and Kang CompCertM: CompCert with C-Assembly Linking and Lightweight Modular Verification (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371113",
+        "publication": "PACMPL 4 (POPL), Article 45, 2020"
+      }
+    },
+    {
+      "name": "Frumin, Krebbers, and Birkedal ReLoC: A Mechanised Relational Logic for Fine-Grained Concurrency (LICS 2018)",
+      "identity": {
+        "doi": "10.1145/3209108.3209174",
+        "publication": "LICS 2018, pp. 442-451"
+      }
+    },
+    {
+      "name": "Churchill, Padon, Sharma, and Aiken Semantic Program Alignment for Equivalence Checking (PLDI 2019)",
+      "identity": {
+        "doi": "10.1145/3314221.3314596",
+        "publication": "PLDI 2019, pp. 1027-1040"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
