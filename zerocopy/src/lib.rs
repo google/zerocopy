@@ -397,6 +397,8 @@ pub use crate::{
 extern crate alloc;
 #[cfg(any(feature = "alloc", test))]
 use alloc::{boxed::Box, vec::Vec};
+#[cfg(all(feature = "alloc", not(no_zerocopy_allocator_api_1_100_0)))]
+use core::alloc::Allocator;
 #[cfg(any(feature = "alloc", test))]
 use core::alloc::Layout;
 
@@ -3886,6 +3888,52 @@ pub unsafe trait FromZeros: TryFromBytes {
         // FIXME(#429): Add a "SAFETY" comment and remove this `allow`.
         #[allow(clippy::undocumented_unsafe_blocks)]
         Ok(unsafe { Box::from_raw(ptr) })
+    }
+
+    /// Creates a `Box<Self, A>` from zeroed bytes in the allocator `alloc`.
+    ///
+    /// This function is like [`new_box_zeroed`], but allocates with `alloc`
+    /// instead of the global allocator. It likewise never creates a temporary
+    /// instance of `Self` on the stack.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if `alloc` reports an allocation failure.
+    ///
+    /// [`new_box_zeroed`]: FromZeros::new_box_zeroed
+    #[must_use = "has no side effects (other than allocation)"]
+    #[cfg(not(no_zerocopy_allocator_api_1_100_0))]
+    #[cfg(feature = "alloc")]
+    #[cfg_attr(doc_cfg, doc(cfg(all(rust = "1.100.0", feature = "alloc"))))]
+    #[inline]
+    fn new_box_zeroed_in<A: Allocator>(alloc: A) -> Result<Box<Self, A>, AllocError>
+    where
+        Self: Sized,
+    {
+        let layout = Layout::new::<Self>();
+        if layout.size() == 0 {
+            // SAFETY: Per [1], when `Self` is a ZST, the pointer does not have
+            // to come from `alloc`; it only has to be non-null and
+            // sufficiently aligned. As in `new_box_zeroed`,
+            // `NonNull::dangling` produces such a pointer. The box holds a
+            // valid `Self`: a ZST has no bytes, so its bytes are vacuously all
+            // zero, which is valid because `Self: FromZeros`. Using a dangling
+            // pointer avoids calling `Self::new_zeroed`, and thus allocating
+            // stack space for `Self`.
+            //
+            // [1] Per https://doc.rust-lang.org/1.100.0/std/boxed/struct.Box.html#method.from_raw_in:
+            //
+            //   If the size of the pointee is zero, then the raw pointer can
+            //   be any sufficiently aligned non-null pointer, e.g.
+            //   `ptr::dangling`.
+            return Ok(unsafe { Box::from_raw_in(NonNull::dangling().as_ptr(), alloc) });
+        }
+
+        let ptr = alloc.allocate_zeroed(layout).map_err(|_| AllocError)?.cast::<Self>();
+        // SAFETY: `ptr` points to a block of memory which `alloc` allocated
+        // with the layout of `Self`. Its bytes are all zero, which is a valid
+        // `Self` because `Self: FromZeros`.
+        Ok(unsafe { Box::from_raw_in(ptr.as_ptr(), alloc) })
     }
 
     /// Creates a `Box<Self>` from zeroed bytes with `count` trailing elements.
@@ -8046,6 +8094,21 @@ mod tests {
             #[allow(clippy::unit_cmp)]
             {
                 assert_eq!(<()>::new_box_zeroed(), Ok(Box::new(())));
+            }
+        }
+
+        #[cfg(not(no_zerocopy_allocator_api_1_100_0))]
+        #[test]
+        fn test_new_box_zeroed_in() {
+            use std::alloc::System;
+
+            assert_eq!(u64::new_box_zeroed_in(System), Ok(Box::new_in(0, System)));
+            drop(<[u32; 0x1000]>::new_box_zeroed_in(System));
+            // This exercises the unsafe code for ZSTs, especially when running
+            // under Miri.
+            #[allow(clippy::unit_cmp)]
+            {
+                assert_eq!(<()>::new_box_zeroed_in(System), Ok(Box::new_in((), System)));
             }
         }
 

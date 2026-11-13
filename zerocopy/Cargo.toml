@@ -53,6 +53,11 @@ exclude = [".*"]
 # [1] https://fuchsia-review.googlesource.com/c/fuchsia/+/1433139/1/third_party/rust_crates/Cargo.toml
 
 
+# From 1.100.0, Rust supports the `Allocator` trait and allocator-generic
+# collections such as `Box<T, A>` (previously gated by the `allocator_api`
+# feature).
+no-zerocopy-allocator-api-1-100-0 = "1.100.0"
+
 # From 1.89.0, Rust supports x86 AVX-12 SIMD types (previously gated by the
 # `stdarch_x86_avx512` feature).
 no-zerocopy-simd-x86-avx12-1-89-0 = "1.89.0"
