@@ -1,0 +1,3334 @@
+{
+  "rust_1_99_1_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_23_1_1_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "x86_features": [
+    {
+      "name": "adx",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "adx"
+      }
+    },
+    {
+      "name": "aes",
+      "stability": "Stable",
+      "implies": [
+        "sse2"
+      ],
+      "llvm_mapping": {
+        "llvm": "aes"
+      }
+    },
+    {
+      "name": "amx-avx512",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-avx512"
+      }
+    },
+    {
+      "name": "amx-bf16",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-bf16"
+      }
+    },
+    {
+      "name": "amx-complex",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-complex"
+      }
+    },
+    {
+      "name": "amx-fp8",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-fp8"
+      }
+    },
+    {
+      "name": "amx-fp16",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-fp16"
+      }
+    },
+    {
+      "name": "amx-int8",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-int8"
+      }
+    },
+    {
+      "name": "amx-movrs",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [
+        "amx-tile"
+      ],
+      "llvm_mapping": {
+        "llvm": "amx-movrs"
+      }
+    },
+    {
+      "name": "amx-tile",
+      "stability": "Unstable(sym::x86_amx_intrinsics)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "amx-tile"
+      }
+    },
+    {
+      "name": "apxf",
+      "stability": "Unstable(sym::apx_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "egpr",
+        "both_deps": [
+          "push2pop2",
+          "ppx",
+          "ndd",
+          "ccmp",
+          "cf",
+          "nf",
+          "zu"
+        ]
+      }
+    },
+    {
+      "name": "avx",
+      "stability": "Stable",
+      "implies": [
+        "sse4.2"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx"
+      }
+    },
+    {
+      "name": "avx2",
+      "stability": "Stable",
+      "implies": [
+        "avx"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx2"
+      }
+    },
+    {
+      "name": "avx10.1",
+      "stability": "Unstable(sym::avx10_target_feature)",
+      "implies": [
+        "avx512bf16",
+        "avx512bitalg",
+        "avx512bw",
+        "avx512cd",
+        "avx512dq",
+        "avx512f",
+        "avx512fp16",
+        "avx512ifma",
+        "avx512vbmi",
+        "avx512vbmi2",
+        "avx512vl",
+        "avx512vnni",
+        "avx512vpopcntdq"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx10.1"
+      }
+    },
+    {
+      "name": "avx10.2",
+      "stability": "Unstable(sym::avx10_target_feature)",
+      "implies": [
+        "avx10.1",
+        "avxvnni",
+        "avxvnniint8",
+        "avxvnniint16"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx10.2"
+      }
+    },
+    {
+      "name": "avx512bf16",
+      "stability": "Stable",
+      "implies": [
+        "avx512bw"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512bf16"
+      }
+    },
+    {
+      "name": "avx512bitalg",
+      "stability": "Stable",
+      "implies": [
+        "avx512bw"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512bitalg"
+      }
+    },
+    {
+      "name": "avx512bw",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512bw"
+      }
+    },
+    {
+      "name": "avx512cd",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512cd"
+      }
+    },
+    {
+      "name": "avx512dq",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512dq"
+      }
+    },
+    {
+      "name": "avx512f",
+      "stability": "Stable",
+      "implies": [
+        "avx2",
+        "fma",
+        "f16c"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512f"
+      }
+    },
+    {
+      "name": "avx512fp16",
+      "stability": "Stable",
+      "implies": [
+        "avx512bw"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512fp16"
+      }
+    },
+    {
+      "name": "avx512ifma",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512ifma"
+      }
+    },
+    {
+      "name": "avx512vbmi",
+      "stability": "Stable",
+      "implies": [
+        "avx512bw"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512vbmi"
+      }
+    },
+    {
+      "name": "avx512vbmi2",
+      "stability": "Stable",
+      "implies": [
+        "avx512bw"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512vbmi2"
+      }
+    },
+    {
+      "name": "avx512vl",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512vl"
+      }
+    },
+    {
+      "name": "avx512vnni",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512vnni"
+      }
+    },
+    {
+      "name": "avx512vp2intersect",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512vp2intersect"
+      }
+    },
+    {
+      "name": "avx512vpopcntdq",
+      "stability": "Stable",
+      "implies": [
+        "avx512f"
+      ],
+      "llvm_mapping": {
+        "llvm": "avx512vpopcntdq"
+      }
+    },
+    {
+      "name": "avxifma",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "avxifma"
+      }
+    },
+    {
+      "name": "avxneconvert",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "avxneconvert"
+      }
+    },
+    {
+      "name": "avxvnni",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "avxvnni"
+      }
+    },
+    {
+      "name": "avxvnniint8",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "avxvnniint8"
+      }
+    },
+    {
+      "name": "avxvnniint16",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "avxvnniint16"
+      }
+    },
+    {
+      "name": "bmi1",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "bmi"
+      }
+    },
+    {
+      "name": "bmi2",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "bmi2"
+      }
+    },
+    {
+      "name": "clflushopt",
+      "stability": "Unstable(sym::clflushopt_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "clflushopt"
+      }
+    },
+    {
+      "name": "cmpxchg16b",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "cx16"
+      }
+    },
+    {
+      "name": "ermsb",
+      "stability": "Unstable(sym::ermsb_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "ermsb"
+      }
+    },
+    {
+      "name": "f16c",
+      "stability": "Stable",
+      "implies": [
+        "avx"
+      ],
+      "llvm_mapping": {
+        "llvm": "f16c"
+      }
+    },
+    {
+      "name": "fma",
+      "stability": "Stable",
+      "implies": [
+        "avx"
+      ],
+      "llvm_mapping": {
+        "llvm": "fma"
+      }
+    },
+    {
+      "name": "fma4",
+      "stability": "Unstable(sym::fma4_target_feature)",
+      "implies": [
+        "avx",
+        "sse4a"
+      ],
+      "llvm_mapping": {
+        "llvm": "fma4"
+      }
+    },
+    {
+      "name": "fxsr",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "fxsr"
+      }
+    },
+    {
+      "name": "gfni",
+      "stability": "Stable",
+      "implies": [
+        "sse2"
+      ],
+      "llvm_mapping": {
+        "llvm": "gfni"
+      }
+    },
+    {
+      "name": "kl",
+      "stability": "Stable",
+      "implies": [
+        "sse2"
+      ],
+      "llvm_mapping": {
+        "llvm": "kl"
+      }
+    },
+    {
+      "name": "lahfsahf",
+      "stability": "Unstable(sym::lahfsahf_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "sahf"
+      }
+    },
+    {
+      "name": "lzcnt",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "lzcnt"
+      }
+    },
+    {
+      "name": "movbe",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "movbe"
+      }
+    },
+    {
+      "name": "movrs",
+      "stability": "Unstable(sym::movrs_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "movrs"
+      }
+    },
+    {
+      "name": "pclmulqdq",
+      "stability": "Stable",
+      "implies": [
+        "sse2"
+      ],
+      "llvm_mapping": {
+        "llvm": "pclmul"
+      }
+    },
+    {
+      "name": "popcnt",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "popcnt"
+      }
+    },
+    {
+      "name": "prfchw",
+      "stability": "Unstable(sym::prfchw_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "prfchw"
+      }
+    },
+    {
+      "name": "rdrand",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "rdrnd"
+      }
+    },
+    {
+      "name": "rdseed",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "rdseed"
+      }
+    },
+    {
+      "name": "retpoline-external-thunk",
+      "stability": "Stability::InternalOnly { reason: \"use `-Zretpoline-external-thunk` compiler flag instead\", hard_error: false, }",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "retpoline-external-thunk"
+      }
+    },
+    {
+      "name": "retpoline-indirect-branches",
+      "stability": "Stability::InternalOnly { reason: \"use `-Zretpoline` compiler flag instead\", hard_error: false, }",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "retpoline-indirect-branches"
+      }
+    },
+    {
+      "name": "retpoline-indirect-calls",
+      "stability": "Stability::InternalOnly { reason: \"use `-Zretpoline` compiler flag instead\", hard_error: false, }",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "retpoline-indirect-calls"
+      }
+    },
+    {
+      "name": "rtm",
+      "stability": "Unstable(sym::rtm_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "rtm"
+      }
+    },
+    {
+      "name": "sha",
+      "stability": "Stable",
+      "implies": [
+        "sse2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sha"
+      }
+    },
+    {
+      "name": "sha512",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sha512"
+      }
+    },
+    {
+      "name": "sm3",
+      "stability": "Stable",
+      "implies": [
+        "avx"
+      ],
+      "llvm_mapping": {
+        "llvm": "sm3"
+      }
+    },
+    {
+      "name": "sm4",
+      "stability": "Stable",
+      "implies": [
+        "avx2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sm4"
+      }
+    },
+    {
+      "name": "soft-float",
+      "stability": "Stability::InternalOnly { reason: \"use a soft-float target instead\", hard_error: false }",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "soft-float"
+      }
+    },
+    {
+      "name": "sse",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "sse"
+      }
+    },
+    {
+      "name": "sse2",
+      "stability": "Stable",
+      "implies": [
+        "sse"
+      ],
+      "llvm_mapping": {
+        "llvm": "sse2"
+      }
+    },
+    {
+      "name": "sse3",
+      "stability": "Stable",
+      "implies": [
+        "sse2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sse3"
+      }
+    },
+    {
+      "name": "sse4.1",
+      "stability": "Stable",
+      "implies": [
+        "ssse3"
+      ],
+      "llvm_mapping": {
+        "llvm": "sse4.1"
+      }
+    },
+    {
+      "name": "sse4.2",
+      "stability": "Stable",
+      "implies": [
+        "sse4.1"
+      ],
+      "llvm_mapping": {
+        "llvm": "sse4.2",
+        "enable_only_deps": [
+          "crc32"
+        ]
+      }
+    },
+    {
+      "name": "sse4a",
+      "stability": "Stable",
+      "implies": [
+        "sse3"
+      ],
+      "llvm_mapping": {
+        "llvm": "sse4a"
+      }
+    },
+    {
+      "name": "ssse3",
+      "stability": "Stable",
+      "implies": [
+        "sse3"
+      ],
+      "llvm_mapping": {
+        "llvm": "ssse3"
+      }
+    },
+    {
+      "name": "tbm",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "tbm"
+      }
+    },
+    {
+      "name": "vaes",
+      "stability": "Stable",
+      "implies": [
+        "avx2",
+        "aes"
+      ],
+      "llvm_mapping": {
+        "llvm": "vaes"
+      }
+    },
+    {
+      "name": "vpclmulqdq",
+      "stability": "Stable",
+      "implies": [
+        "avx",
+        "pclmulqdq"
+      ],
+      "llvm_mapping": {
+        "llvm": "vpclmulqdq"
+      }
+    },
+    {
+      "name": "widekl",
+      "stability": "Stable",
+      "implies": [
+        "kl"
+      ],
+      "llvm_mapping": {
+        "llvm": "widekl"
+      }
+    },
+    {
+      "name": "x87",
+      "stability": "Unstable(sym::x87_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "x87"
+      }
+    },
+    {
+      "name": "xop",
+      "stability": "Unstable(sym::xop_target_feature)",
+      "implies": [
+        "fma4",
+        "avx",
+        "sse4a"
+      ],
+      "llvm_mapping": {
+        "llvm": "xop"
+      }
+    },
+    {
+      "name": "xsave",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "xsave"
+      }
+    },
+    {
+      "name": "xsavec",
+      "stability": "Stable",
+      "implies": [
+        "xsave"
+      ],
+      "llvm_mapping": {
+        "llvm": "xsavec"
+      }
+    },
+    {
+      "name": "xsaveopt",
+      "stability": "Stable",
+      "implies": [
+        "xsave"
+      ],
+      "llvm_mapping": {
+        "llvm": "xsaveopt"
+      }
+    },
+    {
+      "name": "xsaves",
+      "stability": "Stable",
+      "implies": [
+        "xsave"
+      ],
+      "llvm_mapping": {
+        "llvm": "xsaves"
+      }
+    }
+  ],
+  "aarch64_features": [
+    {
+      "name": "aes",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "aes"
+      }
+    },
+    {
+      "name": "bf16",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "bf16"
+      }
+    },
+    {
+      "name": "bti",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "bti"
+      }
+    },
+    {
+      "name": "crc",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "crc"
+      }
+    },
+    {
+      "name": "cssc",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "cssc"
+      }
+    },
+    {
+      "name": "dit",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "dit"
+      }
+    },
+    {
+      "name": "dotprod",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "dotprod"
+      }
+    },
+    {
+      "name": "dpb",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "ccpp"
+      }
+    },
+    {
+      "name": "dpb2",
+      "stability": "Stable",
+      "implies": [
+        "dpb"
+      ],
+      "llvm_mapping": {
+        "llvm": "ccdp"
+      }
+    },
+    {
+      "name": "ecv",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "ecv"
+      }
+    },
+    {
+      "name": "f32mm",
+      "stability": "Stable",
+      "implies": [
+        "sve"
+      ],
+      "llvm_mapping": {
+        "llvm": "f32mm"
+      }
+    },
+    {
+      "name": "f64mm",
+      "stability": "Stable",
+      "implies": [
+        "sve"
+      ],
+      "llvm_mapping": {
+        "llvm": "f64mm"
+      }
+    },
+    {
+      "name": "faminmax",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "faminmax"
+      }
+    },
+    {
+      "name": "fcma",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "complxnum"
+      }
+    },
+    {
+      "name": "fhm",
+      "stability": "Stable",
+      "implies": [
+        "fp16"
+      ],
+      "llvm_mapping": {
+        "llvm": "fp16fml"
+      }
+    },
+    {
+      "name": "flagm",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "flagm"
+      }
+    },
+    {
+      "name": "flagm2",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "altnzcv"
+      }
+    },
+    {
+      "name": "fp-armv8",
+      "stability": "Stability::InternalOnly { reason: \"Rust ties `fp-armv8` to `neon`\", hard_error: false }",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "fp-armv8"
+      }
+    },
+    {
+      "name": "fp8",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "faminmax",
+        "lut",
+        "bf16"
+      ],
+      "llvm_mapping": {
+        "llvm": "fp8"
+      }
+    },
+    {
+      "name": "fp8dot2",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "fp8dot4"
+      ],
+      "llvm_mapping": {
+        "llvm": "fp8dot2"
+      }
+    },
+    {
+      "name": "fp8dot4",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "fp8fma"
+      ],
+      "llvm_mapping": {
+        "llvm": "fp8dot4"
+      }
+    },
+    {
+      "name": "fp8fma",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "fp8"
+      ],
+      "llvm_mapping": {
+        "llvm": "fp8fma"
+      }
+    },
+    {
+      "name": "fp16",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "fullfp16"
+      }
+    },
+    {
+      "name": "frintts",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "fptoint"
+      }
+    },
+    {
+      "name": "hbc",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "hbc"
+      }
+    },
+    {
+      "name": "i8mm",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "i8mm"
+      }
+    },
+    {
+      "name": "jsconv",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "jsconv"
+      }
+    },
+    {
+      "name": "lor",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "lor"
+      }
+    },
+    {
+      "name": "lse",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "lse"
+      }
+    },
+    {
+      "name": "lse2",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "lse2"
+      }
+    },
+    {
+      "name": "lse128",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "lse"
+      ],
+      "llvm_mapping": {
+        "llvm": "lse128"
+      }
+    },
+    {
+      "name": "lut",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "lut"
+      }
+    },
+    {
+      "name": "mops",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "mops"
+      }
+    },
+    {
+      "name": "mte",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "mte"
+      }
+    },
+    {
+      "name": "neon",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "neon",
+        "both_deps": [
+          "fp-armv8"
+        ]
+      }
+    },
+    {
+      "name": "outline-atomics",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "outline-atomics"
+      }
+    },
+    {
+      "name": "paca",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "pauth",
+        "tied": [
+          "paca",
+          "pacg"
+        ]
+      }
+    },
+    {
+      "name": "pacg",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "pauth",
+        "tied": [
+          "paca",
+          "pacg"
+        ]
+      }
+    },
+    {
+      "name": "pan",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "pan"
+      }
+    },
+    {
+      "name": "pauth-lr",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "pauth-lr"
+      }
+    },
+    {
+      "name": "pmuv3",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "perfmon"
+      }
+    },
+    {
+      "name": "rand",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "rand"
+      }
+    },
+    {
+      "name": "ras",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "ras"
+      }
+    },
+    {
+      "name": "rcpc",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "rcpc"
+      }
+    },
+    {
+      "name": "rcpc2",
+      "stability": "Stable",
+      "implies": [
+        "rcpc"
+      ],
+      "llvm_mapping": {
+        "llvm": "rcpc-immo"
+      }
+    },
+    {
+      "name": "rcpc3",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "rcpc2"
+      ],
+      "llvm_mapping": {
+        "llvm": "rcpc3"
+      }
+    },
+    {
+      "name": "rdm",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "rdm"
+      }
+    },
+    {
+      "name": "reserve-x18",
+      "stability": "InternalOnly { reason: \"use `-Zfixed-x18` compiler flag instead\", hard_error: false }",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "reserve-x18"
+      }
+    },
+    {
+      "name": "sb",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "sb"
+      }
+    },
+    {
+      "name": "sha2",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "sha2"
+      }
+    },
+    {
+      "name": "sha3",
+      "stability": "Stable",
+      "implies": [
+        "sha2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sha3"
+      }
+    },
+    {
+      "name": "sm4",
+      "stability": "Stable",
+      "implies": [
+        "neon"
+      ],
+      "llvm_mapping": {
+        "llvm": "sm4"
+      }
+    },
+    {
+      "name": "sme",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "bf16"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme"
+      }
+    },
+    {
+      "name": "sme-b16b16",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "bf16",
+        "sme2",
+        "sve-b16b16"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-b16b16"
+      }
+    },
+    {
+      "name": "sme-f8f16",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme-f8f32"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-f8f16"
+      }
+    },
+    {
+      "name": "sme-f8f32",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme2",
+        "fp8"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-f8f32"
+      }
+    },
+    {
+      "name": "sme-f16f16",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-f16f16"
+      }
+    },
+    {
+      "name": "sme-f64f64",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-f64f64"
+      }
+    },
+    {
+      "name": "sme-fa64",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme",
+        "sve2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-fa64"
+      }
+    },
+    {
+      "name": "sme-i16i64",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme-i16i64"
+      }
+    },
+    {
+      "name": "sme-lutv2",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "sme-lutv2"
+      }
+    },
+    {
+      "name": "sme2",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme2"
+      }
+    },
+    {
+      "name": "sme2p1",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sme2p1"
+      }
+    },
+    {
+      "name": "spe",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "spe"
+      }
+    },
+    {
+      "name": "ssbs",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "ssbs"
+      }
+    },
+    {
+      "name": "ssve-fp8dot2",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "ssve-fp8dot4"
+      ],
+      "llvm_mapping": {
+        "llvm": "ssve-fp8dot2"
+      }
+    },
+    {
+      "name": "ssve-fp8dot4",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "ssve-fp8fma"
+      ],
+      "llvm_mapping": {
+        "llvm": "ssve-fp8dot4"
+      }
+    },
+    {
+      "name": "ssve-fp8fma",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sme2",
+        "fp8"
+      ],
+      "llvm_mapping": {
+        "llvm": "ssve-fp8fma"
+      }
+    },
+    {
+      "name": "sve",
+      "stability": "Stable",
+      "implies": [
+        "neon",
+        "fp16"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve"
+      }
+    },
+    {
+      "name": "sve-b16b16",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "bf16"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve-b16b16"
+      }
+    },
+    {
+      "name": "sve2",
+      "stability": "Stable",
+      "implies": [
+        "sve"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve2"
+      }
+    },
+    {
+      "name": "sve2-aes",
+      "stability": "Stable",
+      "implies": [
+        "sve2",
+        "aes"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve2-aes"
+      }
+    },
+    {
+      "name": "sve2-bitperm",
+      "stability": "Stable",
+      "implies": [
+        "sve2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve2-bitperm"
+      }
+    },
+    {
+      "name": "sve2-sha3",
+      "stability": "Stable",
+      "implies": [
+        "sve2",
+        "sha3"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve2-sha3"
+      }
+    },
+    {
+      "name": "sve2-sm4",
+      "stability": "Stable",
+      "implies": [
+        "sve2",
+        "sm4"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve2-sm4"
+      }
+    },
+    {
+      "name": "sve2p1",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [
+        "sve2"
+      ],
+      "llvm_mapping": {
+        "llvm": "sve2p1"
+      }
+    },
+    {
+      "name": "tme",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": null,
+        "reason": "withdrawn by ARM; removed in LLVM 22"
+      }
+    },
+    {
+      "name": "v8.1a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "crc",
+        "lse",
+        "rdm",
+        "pan",
+        "lor",
+        "vh"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.1a"
+      }
+    },
+    {
+      "name": "v8.2a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.1a",
+        "ras",
+        "dpb"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.2a"
+      }
+    },
+    {
+      "name": "v8.3a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.2a",
+        "rcpc",
+        "paca",
+        "pacg",
+        "jsconv"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.3a"
+      }
+    },
+    {
+      "name": "v8.4a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.3a",
+        "dotprod",
+        "dit",
+        "flagm"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.4a"
+      }
+    },
+    {
+      "name": "v8.5a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.4a",
+        "ssbs",
+        "sb",
+        "dpb2",
+        "bti"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.5a"
+      }
+    },
+    {
+      "name": "v8.6a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.5a",
+        "bf16",
+        "i8mm"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.6a"
+      }
+    },
+    {
+      "name": "v8.7a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.6a",
+        "wfxt"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.7a"
+      }
+    },
+    {
+      "name": "v8.8a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.7a",
+        "hbc",
+        "mops"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.8a"
+      }
+    },
+    {
+      "name": "v8.9a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.8a",
+        "cssc"
+      ],
+      "llvm_mapping": {
+        "llvm": "v8.9a"
+      }
+    },
+    {
+      "name": "v9.1a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v9a",
+        "v8.6a"
+      ],
+      "llvm_mapping": {
+        "llvm": "v9.1a"
+      }
+    },
+    {
+      "name": "v9.2a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v9.1a",
+        "v8.7a"
+      ],
+      "llvm_mapping": {
+        "llvm": "v9.2a"
+      }
+    },
+    {
+      "name": "v9.3a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v9.2a",
+        "v8.8a"
+      ],
+      "llvm_mapping": {
+        "llvm": "v9.3a"
+      }
+    },
+    {
+      "name": "v9.4a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v9.3a",
+        "v8.9a"
+      ],
+      "llvm_mapping": {
+        "llvm": "v9.4a"
+      }
+    },
+    {
+      "name": "v9.5a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v9.4a"
+      ],
+      "llvm_mapping": {
+        "llvm": "v9.5a"
+      }
+    },
+    {
+      "name": "v9a",
+      "stability": "Unstable(sym::aarch64_ver_target_feature)",
+      "implies": [
+        "v8.5a"
+      ],
+      "llvm_mapping": {
+        "llvm": "v9a"
+      }
+    },
+    {
+      "name": "vh",
+      "stability": "Stable",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "vh"
+      }
+    },
+    {
+      "name": "wfxt",
+      "stability": "Unstable(sym::aarch64_unstable_target_feature)",
+      "implies": [],
+      "llvm_mapping": {
+        "llvm": "wfxt"
+      }
+    }
+  ],
+  "arm_features": [
+    {
+      "name": "aclass",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "acquire-release",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "aes",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "neon"
+      ]
+    },
+    {
+      "name": "atomics-32",
+      "stability": "Stability::InternalOnly { reason: \"unsound because it changes the ABI of atomic operations\", hard_error: false, }",
+      "implies": []
+    },
+    {
+      "name": "crc",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "d32",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "dotprod",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "neon"
+      ]
+    },
+    {
+      "name": "dsp",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "fp-armv8",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "vfp4"
+      ]
+    },
+    {
+      "name": "fp16",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "neon"
+      ]
+    },
+    {
+      "name": "fpregs",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "i8mm",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "neon"
+      ]
+    },
+    {
+      "name": "mclass",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "mve",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v8.1m.main",
+        "dsp",
+        "fpregs"
+      ]
+    },
+    {
+      "name": "mve.fp",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "mve"
+      ]
+    },
+    {
+      "name": "neon",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "vfp3"
+      ]
+    },
+    {
+      "name": "rclass",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "sha2",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "neon"
+      ]
+    },
+    {
+      "name": "soft-float",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "thumb-mode",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "thumb2",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "trustzone",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "v5te",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "v6",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v5te"
+      ]
+    },
+    {
+      "name": "v6k",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v6"
+      ]
+    },
+    {
+      "name": "v6m",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v6"
+      ]
+    },
+    {
+      "name": "v6t2",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v6k",
+        "v8m",
+        "thumb2"
+      ]
+    },
+    {
+      "name": "v7",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v6t2"
+      ]
+    },
+    {
+      "name": "v8",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v7",
+        "acquire-release"
+      ]
+    },
+    {
+      "name": "v8.1m.main",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v8m.main"
+      ]
+    },
+    {
+      "name": "v8m",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v6m"
+      ]
+    },
+    {
+      "name": "v8m.main",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "v7"
+      ]
+    },
+    {
+      "name": "vfp2",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "vfp3",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "vfp2",
+        "d32"
+      ]
+    },
+    {
+      "name": "vfp4",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": [
+        "vfp3"
+      ]
+    },
+    {
+      "name": "virtualization",
+      "stability": "Unstable(sym::arm_target_feature)",
+      "implies": []
+    }
+  ],
+  "riscv_features": [
+    {
+      "name": "a",
+      "stability": "Stable",
+      "implies": [
+        "zaamo",
+        "zalrsc"
+      ]
+    },
+    {
+      "name": "b",
+      "stability": "Stable",
+      "implies": [
+        "zba",
+        "zbb",
+        "zbs"
+      ]
+    },
+    {
+      "name": "c",
+      "stability": "Stable",
+      "implies": [
+        "zca"
+      ]
+    },
+    {
+      "name": "d",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "f"
+      ]
+    },
+    {
+      "name": "e",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "f",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zicsr"
+      ]
+    },
+    {
+      "name": "forced-atomics",
+      "stability": "Stability::InternalOnly { reason: \"unsound because it changes the ABI of atomic operations\", hard_error: false, }",
+      "implies": []
+    },
+    {
+      "name": "m",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "relax",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "rva23u64",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "m",
+        "a",
+        "f",
+        "d",
+        "c",
+        "b",
+        "v",
+        "zicsr",
+        "zicntr",
+        "zihpm",
+        "ziccif",
+        "ziccrse",
+        "ziccamoa",
+        "zicclsm",
+        "zic64b",
+        "za64rs",
+        "zihintpause",
+        "zba",
+        "zbb",
+        "zbs",
+        "zicbom",
+        "zicbop",
+        "zicboz",
+        "zfhmin",
+        "zkt",
+        "zvfhmin",
+        "zvbb",
+        "zvkt",
+        "zihintntl",
+        "zicond",
+        "zimop",
+        "zcmop",
+        "zcb",
+        "zfa",
+        "zawrs",
+        "supm"
+      ]
+    },
+    {
+      "name": "supm",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "unaligned-scalar-mem",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "unaligned-vector-mem",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "v",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl128b",
+        "zve64d"
+      ]
+    },
+    {
+      "name": "za64rs",
+      "stability": "Stable",
+      "implies": [
+        "za128rs"
+      ]
+    },
+    {
+      "name": "za128rs",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zaamo",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zabha",
+      "stability": "Stable",
+      "implies": [
+        "zaamo"
+      ]
+    },
+    {
+      "name": "zacas",
+      "stability": "Stable",
+      "implies": [
+        "zaamo"
+      ]
+    },
+    {
+      "name": "zalrsc",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zama16b",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zawrs",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zba",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zbb",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zbc",
+      "stability": "Stable",
+      "implies": [
+        "zbkc"
+      ]
+    },
+    {
+      "name": "zbkb",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zbkc",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zbkx",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zbs",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zca",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zcb",
+      "stability": "Stable",
+      "implies": [
+        "zca"
+      ]
+    },
+    {
+      "name": "zcmop",
+      "stability": "Stable",
+      "implies": [
+        "zca"
+      ]
+    },
+    {
+      "name": "zdinx",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zfinx"
+      ]
+    },
+    {
+      "name": "zfa",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "f"
+      ]
+    },
+    {
+      "name": "zfbfmin",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "f"
+      ]
+    },
+    {
+      "name": "zfh",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zfhmin"
+      ]
+    },
+    {
+      "name": "zfhmin",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "f"
+      ]
+    },
+    {
+      "name": "zfinx",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zicsr"
+      ]
+    },
+    {
+      "name": "zhinx",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zhinxmin"
+      ]
+    },
+    {
+      "name": "zhinxmin",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zfinx"
+      ]
+    },
+    {
+      "name": "zic64b",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zicbom",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zicbop",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zicboz",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "ziccamoa",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "ziccif",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zicclsm",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "ziccrse",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zicntr",
+      "stability": "Stable",
+      "implies": [
+        "zicsr"
+      ]
+    },
+    {
+      "name": "zicond",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zicsr",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zifencei",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zihintntl",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zihintpause",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zihpm",
+      "stability": "Stable",
+      "implies": [
+        "zicsr"
+      ]
+    },
+    {
+      "name": "zimop",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zk",
+      "stability": "Stable",
+      "implies": [
+        "zkn",
+        "zkr",
+        "zkt"
+      ]
+    },
+    {
+      "name": "zkn",
+      "stability": "Stable",
+      "implies": [
+        "zbkb",
+        "zbkc",
+        "zbkx",
+        "zkne",
+        "zknd",
+        "zknh"
+      ]
+    },
+    {
+      "name": "zknd",
+      "stability": "Stable",
+      "implies": [
+        "zkne_or_zknd"
+      ]
+    },
+    {
+      "name": "zkne",
+      "stability": "Stable",
+      "implies": [
+        "zkne_or_zknd"
+      ]
+    },
+    {
+      "name": "zkne_or_zknd",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "zknh",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zkr",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zks",
+      "stability": "Stable",
+      "implies": [
+        "zbkb",
+        "zbkc",
+        "zbkx",
+        "zksed",
+        "zksh"
+      ]
+    },
+    {
+      "name": "zksed",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zksh",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zkt",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "ztso",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "zvbb",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvkb"
+      ]
+    },
+    {
+      "name": "zvbc",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve64x"
+      ]
+    },
+    {
+      "name": "zve32f",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x",
+        "f"
+      ]
+    },
+    {
+      "name": "zve32x",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl32b",
+        "zicsr"
+      ]
+    },
+    {
+      "name": "zve64d",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve64f",
+        "d"
+      ]
+    },
+    {
+      "name": "zve64f",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32f",
+        "zve64x"
+      ]
+    },
+    {
+      "name": "zve64x",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x",
+        "zvl64b"
+      ]
+    },
+    {
+      "name": "zvfbfmin",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32f"
+      ]
+    },
+    {
+      "name": "zvfbfwma",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zfbfmin",
+        "zvfbfmin"
+      ]
+    },
+    {
+      "name": "zvfh",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvfhmin",
+        "zve32f",
+        "zfhmin"
+      ]
+    },
+    {
+      "name": "zvfhmin",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32f"
+      ]
+    },
+    {
+      "name": "zvkb",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x"
+      ]
+    },
+    {
+      "name": "zvkg",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x"
+      ]
+    },
+    {
+      "name": "zvkn",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvkned",
+        "zvknhb",
+        "zvkb",
+        "zvkt"
+      ]
+    },
+    {
+      "name": "zvknc",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvkn",
+        "zvbc"
+      ]
+    },
+    {
+      "name": "zvkned",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x"
+      ]
+    },
+    {
+      "name": "zvkng",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvkn",
+        "zvkg"
+      ]
+    },
+    {
+      "name": "zvknha",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x"
+      ]
+    },
+    {
+      "name": "zvknhb",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvknha",
+        "zve64x"
+      ]
+    },
+    {
+      "name": "zvks",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvksed",
+        "zvksh",
+        "zvkb",
+        "zvkt"
+      ]
+    },
+    {
+      "name": "zvksc",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvks",
+        "zvbc"
+      ]
+    },
+    {
+      "name": "zvksed",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x"
+      ]
+    },
+    {
+      "name": "zvksg",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvks",
+        "zvkg"
+      ]
+    },
+    {
+      "name": "zvksh",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zve32x"
+      ]
+    },
+    {
+      "name": "zvkt",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "zvl32b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "zvl64b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl32b"
+      ]
+    },
+    {
+      "name": "zvl128b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl64b"
+      ]
+    },
+    {
+      "name": "zvl256b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl128b"
+      ]
+    },
+    {
+      "name": "zvl512b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl256b"
+      ]
+    },
+    {
+      "name": "zvl1024b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl512b"
+      ]
+    },
+    {
+      "name": "zvl2048b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl1024b"
+      ]
+    },
+    {
+      "name": "zvl4096b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl2048b"
+      ]
+    },
+    {
+      "name": "zvl8192b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl4096b"
+      ]
+    },
+    {
+      "name": "zvl16384b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl8192b"
+      ]
+    },
+    {
+      "name": "zvl32768b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl16384b"
+      ]
+    },
+    {
+      "name": "zvl65536b",
+      "stability": "Unstable(sym::riscv_target_feature)",
+      "implies": [
+        "zvl32768b"
+      ]
+    }
+  ],
+  "wasm_features": [
+    {
+      "name": "atomics",
+      "stability": "Unstable(sym::wasm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "bulk-memory",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "exception-handling",
+      "stability": "Unstable(sym::wasm_target_feature)",
+      "implies": []
+    },
+    {
+      "name": "extended-const",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "gc",
+      "stability": "Unstable(sym::wasm_target_feature)",
+      "implies": [
+        "reference-types"
+      ]
+    },
+    {
+      "name": "multivalue",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "mutable-globals",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "nontrapping-fptoint",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "reference-types",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "relaxed-simd",
+      "stability": "Stable",
+      "implies": [
+        "simd128"
+      ]
+    },
+    {
+      "name": "sign-ext",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "simd128",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "tail-call",
+      "stability": "Stable",
+      "implies": []
+    },
+    {
+      "name": "wide-arithmetic",
+      "stability": "Unstable(sym::wasm_target_feature)",
+      "implies": []
+    }
+  ],
+  "vector_abi_required_features": {
+    "x86_and_x86_64": [
+      {
+        "bits": 128,
+        "feature": "sse"
+      },
+      {
+        "bits": 256,
+        "feature": "avx"
+      },
+      {
+        "bits": 512,
+        "feature": "avx512f"
+      }
+    ],
+    "aarch64": [
+      {
+        "bits": 128,
+        "feature": "neon"
+      },
+      {
+        "scalable": true,
+        "feature": "sve"
+      }
+    ]
+  },
+  "abi_required_features_by_target": {
+    "x86_default": {
+      "required": [
+        "x87"
+      ],
+      "incompatible": [
+        "soft-float"
+      ]
+    },
+    "x86_sse2": {
+      "required": [
+        "x87",
+        "sse2"
+      ],
+      "incompatible": [
+        "soft-float"
+      ]
+    },
+    "x86_64_default": {
+      "required": [
+        "x87",
+        "sse2"
+      ],
+      "incompatible": [
+        "soft-float"
+      ]
+    },
+    "aarch64_default": {
+      "required": [
+        "neon"
+      ],
+      "incompatible": []
+    },
+    "aarch64_softfloat": {
+      "required": [],
+      "incompatible": [
+        "neon",
+        "fp-armv8"
+      ]
+    }
+  },
+  "available_target_cpus": {
+    "x86_64-unknown-linux-gnu": [
+      "alderlake",
+      "amdfam10",
+      "arrowlake",
+      "arrowlake-s",
+      "arrowlake_s",
+      "athlon",
+      "athlon-4",
+      "athlon-fx",
+      "athlon-mp",
+      "athlon-tbird",
+      "athlon-xp",
+      "athlon64",
+      "athlon64-sse3",
+      "atom",
+      "atom_sse4_2",
+      "atom_sse4_2_movbe",
+      "barcelona",
+      "bdver1",
+      "bdver2",
+      "bdver3",
+      "bdver4",
+      "bonnell",
+      "broadwell",
+      "btver1",
+      "btver2",
+      "c3",
+      "c3-2",
+      "c86-4g-m4",
+      "c86-4g-m6",
+      "c86-4g-m7",
+      "c86-4g-m8",
+      "cannonlake",
+      "cascadelake",
+      "clearwaterforest",
+      "cooperlake",
+      "core-avx-i",
+      "core-avx2",
+      "core2",
+      "core_2_duo_sse4_1",
+      "core_2_duo_ssse3",
+      "core_2nd_gen_avx",
+      "core_3rd_gen_avx",
+      "core_4th_gen_avx",
+      "core_4th_gen_avx_tsx",
+      "core_5th_gen_avx",
+      "core_5th_gen_avx_tsx",
+      "core_aes_pclmulqdq",
+      "core_i7_sse4_2",
+      "corei7",
+      "corei7-avx",
+      "diamondrapids",
+      "emeraldrapids",
+      "generic",
+      "geode",
+      "goldmont",
+      "goldmont-plus",
+      "goldmont_plus",
+      "gracemont",
+      "grandridge",
+      "graniterapids",
+      "graniterapids-d",
+      "graniterapids_d",
+      "haswell",
+      "i386",
+      "i486",
+      "i586",
+      "i686",
+      "icelake-client",
+      "icelake-server",
+      "icelake_client",
+      "icelake_server",
+      "ivybridge",
+      "k6",
+      "k6-2",
+      "k6-3",
+      "k8",
+      "k8-sse3",
+      "knl",
+      "knm",
+      "lakemont",
+      "lunarlake",
+      "meteorlake",
+      "mic_avx512",
+      "nehalem",
+      "nocona",
+      "novalake",
+      "opteron",
+      "opteron-sse3",
+      "pantherlake",
+      "penryn",
+      "pentium",
+      "pentium-m",
+      "pentium-mmx",
+      "pentium2",
+      "pentium3",
+      "pentium3m",
+      "pentium4",
+      "pentium4m",
+      "pentium_4",
+      "pentium_4_sse3",
+      "pentium_ii",
+      "pentium_iii",
+      "pentium_iii_no_xmm_regs",
+      "pentium_m",
+      "pentium_mmx",
+      "pentium_pro",
+      "pentiumpro",
+      "prescott",
+      "raptorlake",
+      "rocketlake",
+      "sandybridge",
+      "sapphirerapids",
+      "sierraforest",
+      "silvermont",
+      "skx",
+      "skylake",
+      "skylake-avx512",
+      "skylake_avx512",
+      "slm",
+      "tigerlake",
+      "tremont",
+      "westmere",
+      "wildcatlake",
+      "winchip-c6",
+      "winchip2",
+      "x86-64",
+      "x86-64-v2",
+      "x86-64-v3",
+      "x86-64-v4",
+      "yonah",
+      "znver1",
+      "znver2",
+      "znver3",
+      "znver4",
+      "znver5",
+      "znver6"
+    ],
+    "i686-unknown-linux-gnu": [
+      "alderlake",
+      "amdfam10",
+      "arrowlake",
+      "arrowlake-s",
+      "arrowlake_s",
+      "athlon",
+      "athlon-4",
+      "athlon-fx",
+      "athlon-mp",
+      "athlon-tbird",
+      "athlon-xp",
+      "athlon64",
+      "athlon64-sse3",
+      "atom",
+      "atom_sse4_2",
+      "atom_sse4_2_movbe",
+      "barcelona",
+      "bdver1",
+      "bdver2",
+      "bdver3",
+      "bdver4",
+      "bonnell",
+      "broadwell",
+      "btver1",
+      "btver2",
+      "c3",
+      "c3-2",
+      "c86-4g-m4",
+      "c86-4g-m6",
+      "c86-4g-m7",
+      "c86-4g-m8",
+      "cannonlake",
+      "cascadelake",
+      "clearwaterforest",
+      "cooperlake",
+      "core-avx-i",
+      "core-avx2",
+      "core2",
+      "core_2_duo_sse4_1",
+      "core_2_duo_ssse3",
+      "core_2nd_gen_avx",
+      "core_3rd_gen_avx",
+      "core_4th_gen_avx",
+      "core_4th_gen_avx_tsx",
+      "core_5th_gen_avx",
+      "core_5th_gen_avx_tsx",
+      "core_aes_pclmulqdq",
+      "core_i7_sse4_2",
+      "corei7",
+      "corei7-avx",
+      "diamondrapids",
+      "emeraldrapids",
+      "generic",
+      "geode",
+      "goldmont",
+      "goldmont-plus",
+      "goldmont_plus",
+      "gracemont",
+      "grandridge",
+      "graniterapids",
+      "graniterapids-d",
+      "graniterapids_d",
+      "haswell",
+      "i386",
+      "i486",
+      "i586",
+      "i686",
+      "icelake-client",
+      "icelake-server",
+      "icelake_client",
+      "icelake_server",
+      "ivybridge",
+      "k6",
+      "k6-2",
+      "k6-3",
+      "k8",
+      "k8-sse3",
+      "knl",
+      "knm",
+      "lakemont",
+      "lunarlake",
+      "meteorlake",
+      "mic_avx512",
+      "nehalem",
+      "nocona",
+      "novalake",
+      "opteron",
+      "opteron-sse3",
+      "pantherlake",
+      "penryn",
+      "pentium",
+      "pentium-m",
+      "pentium-mmx",
+      "pentium2",
+      "pentium3",
+      "pentium3m",
+      "pentium4",
+      "pentium4m",
+      "pentium_4",
+      "pentium_4_sse3",
+      "pentium_ii",
+      "pentium_iii",
+      "pentium_iii_no_xmm_regs",
+      "pentium_m",
+      "pentium_mmx",
+      "pentium_pro",
+      "pentiumpro",
+      "prescott",
+      "raptorlake",
+      "rocketlake",
+      "sandybridge",
+      "sapphirerapids",
+      "sierraforest",
+      "silvermont",
+      "skx",
+      "skylake",
+      "skylake-avx512",
+      "skylake_avx512",
+      "slm",
+      "tigerlake",
+      "tremont",
+      "westmere",
+      "wildcatlake",
+      "winchip-c6",
+      "winchip2",
+      "x86-64",
+      "x86-64-v2",
+      "x86-64-v3",
+      "x86-64-v4",
+      "yonah",
+      "znver1",
+      "znver2",
+      "znver3",
+      "znver4",
+      "znver5",
+      "znver6"
+    ],
+    "aarch64-unknown-linux-gnu": [
+      "a64fx",
+      "ampere1",
+      "ampere1a",
+      "ampere1b",
+      "ampere1c",
+      "apple-a10",
+      "apple-a11",
+      "apple-a12",
+      "apple-a13",
+      "apple-a14",
+      "apple-a15",
+      "apple-a16",
+      "apple-a17",
+      "apple-a7",
+      "apple-m4",
+      "apple-m5",
+      "c1-nano",
+      "c1-premium",
+      "c1-pro",
+      "c1-ultra",
+      "carmel",
+      "cortex-a320",
+      "cortex-a34",
+      "cortex-a35",
+      "cortex-a510",
+      "cortex-a520",
+      "cortex-a520ae",
+      "cortex-a53",
+      "cortex-a55",
+      "cortex-a57",
+      "cortex-a65",
+      "cortex-a65ae",
+      "cortex-a710",
+      "cortex-a715",
+      "cortex-a72",
+      "cortex-a720",
+      "cortex-a720ae",
+      "cortex-a725",
+      "cortex-a73",
+      "cortex-a75",
+      "cortex-a76",
+      "cortex-a76ae",
+      "cortex-a77",
+      "cortex-a78",
+      "cortex-a78ae",
+      "cortex-a78c",
+      "cortex-r82",
+      "cortex-r82ae",
+      "cortex-x1",
+      "cortex-x1c",
+      "cortex-x2",
+      "cortex-x3",
+      "cortex-x4",
+      "cortex-x925",
+      "exynos-m3",
+      "exynos-m4",
+      "exynos-m5",
+      "falkor",
+      "fujitsu-monaka",
+      "gb10",
+      "generic",
+      "grace",
+      "hip12",
+      "kryo",
+      "neoverse-512tvb",
+      "neoverse-e1",
+      "neoverse-n1",
+      "neoverse-n2",
+      "neoverse-n3",
+      "neoverse-v1",
+      "neoverse-v2",
+      "neoverse-v3",
+      "neoverse-v3ae",
+      "olympus",
+      "oryon-1",
+      "rigel",
+      "saphira",
+      "thunderx",
+      "thunderx2t99",
+      "thunderx3t110",
+      "thunderxt81",
+      "thunderxt83",
+      "thunderxt88",
+      "tsv110"
+    ],
+    "aarch64-apple-darwin": [
+      "a64fx",
+      "ampere1",
+      "ampere1a",
+      "ampere1b",
+      "ampere1c",
+      "apple-a10",
+      "apple-a11",
+      "apple-a12",
+      "apple-a13",
+      "apple-a14",
+      "apple-a15",
+      "apple-a16",
+      "apple-a17",
+      "apple-a7",
+      "apple-m4",
+      "apple-m5",
+      "c1-nano",
+      "c1-premium",
+      "c1-pro",
+      "c1-ultra",
+      "carmel",
+      "cortex-a320",
+      "cortex-a34",
+      "cortex-a35",
+      "cortex-a510",
+      "cortex-a520",
+      "cortex-a520ae",
+      "cortex-a53",
+      "cortex-a55",
+      "cortex-a57",
+      "cortex-a65",
+      "cortex-a65ae",
+      "cortex-a710",
+      "cortex-a715",
+      "cortex-a72",
+      "cortex-a720",
+      "cortex-a720ae",
+      "cortex-a725",
+      "cortex-a73",
+      "cortex-a75",
+      "cortex-a76",
+      "cortex-a76ae",
+      "cortex-a77",
+      "cortex-a78",
+      "cortex-a78ae",
+      "cortex-a78c",
+      "cortex-r82",
+      "cortex-r82ae",
+      "cortex-x1",
+      "cortex-x1c",
+      "cortex-x2",
+      "cortex-x3",
+      "cortex-x4",
+      "cortex-x925",
+      "exynos-m3",
+      "exynos-m4",
+      "exynos-m5",
+      "falkor",
+      "fujitsu-monaka",
+      "gb10",
+      "generic",
+      "grace",
+      "hip12",
+      "kryo",
+      "neoverse-512tvb",
+      "neoverse-e1",
+      "neoverse-n1",
+      "neoverse-n2",
+      "neoverse-n3",
+      "neoverse-v1",
+      "neoverse-v2",
+      "neoverse-v3",
+      "neoverse-v3ae",
+      "olympus",
+      "oryon-1",
+      "rigel",
+      "saphira",
+      "thunderx",
+      "thunderx2t99",
+      "thunderx3t110",
+      "thunderxt81",
+      "thunderxt83",
+      "thunderxt88",
+      "tsv110"
+    ],
+    "aarch64-pc-windows-msvc": [
+      "a64fx",
+      "ampere1",
+      "ampere1a",
+      "ampere1b",
+      "ampere1c",
+      "apple-a10",
+      "apple-a11",
+      "apple-a12",
+      "apple-a13",
+      "apple-a14",
+      "apple-a15",
+      "apple-a16",
+      "apple-a17",
+      "apple-a7",
+      "apple-m4",
+      "apple-m5",
+      "c1-nano",
+      "c1-premium",
+      "c1-pro",
+      "c1-ultra",
+      "carmel",
+      "cortex-a320",
+      "cortex-a34",
+      "cortex-a35",
+      "cortex-a510",
+      "cortex-a520",
+      "cortex-a520ae",
+      "cortex-a53",
+      "cortex-a55",
+      "cortex-a57",
+      "cortex-a65",
+      "cortex-a65ae",
+      "cortex-a710",
+      "cortex-a715",
+      "cortex-a72",
+      "cortex-a720",
+      "cortex-a720ae",
+      "cortex-a725",
+      "cortex-a73",
+      "cortex-a75",
+      "cortex-a76",
+      "cortex-a76ae",
+      "cortex-a77",
+      "cortex-a78",
+      "cortex-a78ae",
+      "cortex-a78c",
+      "cortex-r82",
+      "cortex-r82ae",
+      "cortex-x1",
+      "cortex-x1c",
+      "cortex-x2",
+      "cortex-x3",
+      "cortex-x4",
+      "cortex-x925",
+      "exynos-m3",
+      "exynos-m4",
+      "exynos-m5",
+      "falkor",
+      "fujitsu-monaka",
+      "gb10",
+      "generic",
+      "grace",
+      "hip12",
+      "kryo",
+      "neoverse-512tvb",
+      "neoverse-e1",
+      "neoverse-n1",
+      "neoverse-n2",
+      "neoverse-n3",
+      "neoverse-v1",
+      "neoverse-v2",
+      "neoverse-v3",
+      "neoverse-v3ae",
+      "olympus",
+      "oryon-1",
+      "rigel",
+      "saphira",
+      "thunderx",
+      "thunderx2t99",
+      "thunderx3t110",
+      "thunderxt81",
+      "thunderxt83",
+      "thunderxt88",
+      "tsv110"
+    ]
+  }
+}

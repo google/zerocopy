@@ -1,0 +1,2042 @@
+{
+  "rust_1_99_1_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_23_1_1_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "nightly_2026_11_12_commit": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+  "field_matrix_by_key": {
+    "abi-return-struct-as-int": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "arch": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "aarch64",
+        "aarch64-pc-windows-msvc": "aarch64",
+        "aarch64-unknown-linux-gnu": "aarch64",
+        "i686-pc-windows-msvc": "x86",
+        "i686-unknown-linux-gnu": "x86",
+        "x86_64-pc-windows-gnu": "x86_64",
+        "x86_64-pc-windows-msvc": "x86_64",
+        "x86_64-unknown-linux-gnu": "x86_64"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "aarch64",
+        "aarch64-pc-windows-msvc": "aarch64",
+        "aarch64-unknown-linux-gnu": "aarch64",
+        "i686-pc-windows-msvc": "x86",
+        "i686-unknown-linux-gnu": "x86",
+        "x86_64-pc-windows-gnu": "x86_64",
+        "x86_64-pc-windows-msvc": "x86_64",
+        "x86_64-unknown-linux-gnu": "x86_64"
+      }
+    },
+    "archive-format": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "darwin",
+        "aarch64-pc-windows-msvc": "coff",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "coff",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "coff",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "darwin",
+        "aarch64-pc-windows-msvc": "coff",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "coff",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "coff",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "binary-format": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "mach-o",
+        "aarch64-pc-windows-msvc": "coff",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "coff",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "coff",
+        "x86_64-pc-windows-msvc": "coff",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "mach-o",
+        "aarch64-pc-windows-msvc": "coff",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "coff",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "coff",
+        "x86_64-pc-windows-msvc": "coff",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "cpu": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "apple-m1",
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "pentium4",
+        "i686-unknown-linux-gnu": "pentium4",
+        "x86_64-pc-windows-gnu": "x86-64",
+        "x86_64-pc-windows-msvc": "x86-64",
+        "x86_64-unknown-linux-gnu": "x86-64"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "apple-m1",
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "pentium4",
+        "i686-unknown-linux-gnu": "pentium4",
+        "x86_64-pc-windows-gnu": "x86-64",
+        "x86_64-pc-windows-msvc": "x86-64",
+        "x86_64-unknown-linux-gnu": "x86-64"
+      }
+    },
+    "crt-objects-fallback": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "false",
+        "aarch64-pc-windows-msvc": "false",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "false",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "mingw",
+        "x86_64-pc-windows-msvc": "false",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "false",
+        "aarch64-pc-windows-msvc": "false",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "false",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "mingw",
+        "x86_64-pc-windows-msvc": "false",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "crt-static-allows-dylibs": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "crt-static-respected": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "data-layout": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+        "aarch64-pc-windows-msvc": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+        "aarch64-unknown-linux-gnu": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+        "i686-pc-windows-msvc": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+        "i686-unknown-linux-gnu": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+        "x86_64-pc-windows-gnu": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "x86_64-pc-windows-msvc": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "x86_64-unknown-linux-gnu": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+        "aarch64-pc-windows-msvc": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+        "aarch64-unknown-linux-gnu": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+        "i686-pc-windows-msvc": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+        "i686-unknown-linux-gnu": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+        "x86_64-pc-windows-gnu": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "x86_64-pc-windows-msvc": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+        "x86_64-unknown-linux-gnu": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128"
+      }
+    },
+    "debuginfo-kind": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "dwarf-dsym",
+        "aarch64-pc-windows-msvc": "pdb",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "pdb",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "pdb",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "dwarf-dsym",
+        "aarch64-pc-windows-msvc": "pdb",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "pdb",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "pdb",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "default-uwtable": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "dll-prefix": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "",
+        "x86_64-pc-windows-msvc": "",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "",
+        "x86_64-pc-windows-msvc": "",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "dll-suffix": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": ".dylib",
+        "aarch64-pc-windows-msvc": ".dll",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": ".dll",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": ".dll",
+        "x86_64-pc-windows-msvc": ".dll",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": ".dylib",
+        "aarch64-pc-windows-msvc": ".dll",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": ".dll",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": ".dll",
+        "x86_64-pc-windows-msvc": ".dll",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "dll-tls-export": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "dynamic-linking": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "eh-frame-header": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "emit-debug-gdb-scripts": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "env": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "msvc",
+        "aarch64-unknown-linux-gnu": "gnu",
+        "i686-pc-windows-msvc": "msvc",
+        "i686-unknown-linux-gnu": "gnu",
+        "x86_64-pc-windows-gnu": "gnu",
+        "x86_64-pc-windows-msvc": "msvc",
+        "x86_64-unknown-linux-gnu": "gnu"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "msvc",
+        "aarch64-unknown-linux-gnu": "gnu",
+        "i686-pc-windows-msvc": "msvc",
+        "i686-unknown-linux-gnu": "gnu",
+        "x86_64-pc-windows-gnu": "gnu",
+        "x86_64-pc-windows-msvc": "msvc",
+        "x86_64-unknown-linux-gnu": "gnu"
+      }
+    },
+    "exe-suffix": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": ".exe",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": ".exe",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": ".exe",
+        "x86_64-pc-windows-msvc": ".exe",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": ".exe",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": ".exe",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": ".exe",
+        "x86_64-pc-windows-msvc": ".exe",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "features": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "+v8a,+neon",
+        "aarch64-unknown-linux-gnu": "+v8a,+outline-atomics",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "+cmpxchg16b,+sse3,+lahfsahf",
+        "x86_64-pc-windows-msvc": "+cmpxchg16b,+sse3,+lahfsahf",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "+v8a,+neon,+outline-atomics",
+        "aarch64-unknown-linux-gnu": "+v8a,+outline-atomics",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "+cmpxchg16b,+sse3,+lahfsahf",
+        "x86_64-pc-windows-msvc": "+cmpxchg16b,+sse3,+lahfsahf",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "frame-pointer": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "non-leaf",
+        "aarch64-pc-windows-msvc": "non-leaf",
+        "aarch64-unknown-linux-gnu": "non-leaf",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "non-leaf",
+        "aarch64-pc-windows-msvc": "non-leaf",
+        "aarch64-unknown-linux-gnu": "non-leaf",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "function-sections": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "has-rpath": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "has-thread-local": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "is-like-darwin": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "is-like-msvc": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "is-like-windows": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "late-link-args": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-cc": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-lld": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-lld-cc": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-cc": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-lld": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ],
+          "gnu-lld-cc": [
+            "-lmsvcrt",
+            "-lmingwex",
+            "-lmingw32",
+            "-lgcc",
+            "-lmsvcrt",
+            "-lmingwex",
+            "-luser32",
+            "-lkernel32"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "late-link-args-dynamic": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "-lgcc_s"
+          ],
+          "gnu-cc": [
+            "-lgcc_s"
+          ],
+          "gnu-lld": [
+            "-lgcc_s"
+          ],
+          "gnu-lld-cc": [
+            "-lgcc_s"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "-lgcc_s"
+          ],
+          "gnu-cc": [
+            "-lgcc_s"
+          ],
+          "gnu-lld": [
+            "-lgcc_s"
+          ],
+          "gnu-lld-cc": [
+            "-lgcc_s"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "late-link-args-static": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-cc": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-lld": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-lld-cc": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-cc": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-lld": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ],
+          "gnu-lld-cc": [
+            "-lgcc_eh",
+            "-l:libpthread.a"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "link-env": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": [
+          "ZERO_AR_DATE=1"
+        ],
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": [
+          "ZERO_AR_DATE=1"
+        ],
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "link-env-remove": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": [
+          "IPHONEOS_DEPLOYMENT_TARGET",
+          "TVOS_DEPLOYMENT_TARGET",
+          "XROS_DEPLOYMENT_TARGET"
+        ],
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": [
+          "IPHONEOS_DEPLOYMENT_TARGET",
+          "TVOS_DEPLOYMENT_TARGET",
+          "XROS_DEPLOYMENT_TARGET"
+        ],
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "link-self-contained": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": {
+          "components": [
+            "linker"
+          ]
+        },
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": {
+          "components": [
+            "linker"
+          ]
+        },
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": {
+          "components": [
+            "linker"
+          ]
+        }
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": {
+          "components": [
+            "linker"
+          ]
+        },
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": {
+          "components": [
+            "linker"
+          ]
+        },
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": {
+          "components": [
+            "linker"
+          ]
+        }
+      }
+    },
+    "linker": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "x86_64-w64-mingw32-gcc",
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "x86_64-w64-mingw32-gcc",
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "linker-flavor": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "darwin-cc",
+        "aarch64-pc-windows-msvc": "msvc",
+        "aarch64-unknown-linux-gnu": "gnu-lld-cc",
+        "i686-pc-windows-msvc": "msvc",
+        "i686-unknown-linux-gnu": "gnu-lld-cc",
+        "x86_64-pc-windows-gnu": "gnu-cc",
+        "x86_64-pc-windows-msvc": "msvc",
+        "x86_64-unknown-linux-gnu": "gnu-lld-cc"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "darwin-cc",
+        "aarch64-pc-windows-msvc": "msvc",
+        "aarch64-unknown-linux-gnu": "gnu-lld-cc",
+        "i686-pc-windows-msvc": "msvc",
+        "i686-unknown-linux-gnu": "gnu-lld-cc",
+        "x86_64-pc-windows-gnu": "gnu-cc",
+        "x86_64-pc-windows-msvc": "msvc",
+        "x86_64-unknown-linux-gnu": "gnu-lld-cc"
+      }
+    },
+    "linker-is-gnu": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": false,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "lld-flavor": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "darwin",
+        "aarch64-pc-windows-msvc": "link",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "link",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "link",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "darwin",
+        "aarch64-pc-windows-msvc": "link",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "link",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "link",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "llvm-target": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "arm64-apple-macosx",
+        "aarch64-pc-windows-msvc": "aarch64-pc-windows-msvc",
+        "aarch64-unknown-linux-gnu": "aarch64-unknown-linux-gnu",
+        "i686-pc-windows-msvc": "i686-pc-windows-msvc",
+        "i686-unknown-linux-gnu": "i686-unknown-linux-gnu",
+        "x86_64-pc-windows-gnu": "x86_64-pc-windows-gnu",
+        "x86_64-pc-windows-msvc": "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu": "x86_64-unknown-linux-gnu"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "arm64-apple-macosx",
+        "aarch64-pc-windows-msvc": "aarch64-pc-windows-msvc",
+        "aarch64-unknown-linux-gnu": "aarch64-unknown-linux-gnu",
+        "i686-pc-windows-msvc": "i686-pc-windows-msvc",
+        "i686-unknown-linux-gnu": "i686-unknown-linux-gnu",
+        "x86_64-pc-windows-gnu": "x86_64-pc-windows-gnu",
+        "x86_64-pc-windows-msvc": "x86_64-pc-windows-msvc",
+        "x86_64-unknown-linux-gnu": "x86_64-unknown-linux-gnu"
+      }
+    },
+    "max-atomic-width": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": 128,
+        "aarch64-pc-windows-msvc": 128,
+        "aarch64-unknown-linux-gnu": 128,
+        "i686-pc-windows-msvc": 64,
+        "i686-unknown-linux-gnu": 64,
+        "x86_64-pc-windows-gnu": 128,
+        "x86_64-pc-windows-msvc": 128,
+        "x86_64-unknown-linux-gnu": 64
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": 128,
+        "aarch64-pc-windows-msvc": 128,
+        "aarch64-unknown-linux-gnu": 128,
+        "i686-pc-windows-msvc": 64,
+        "i686-unknown-linux-gnu": 64,
+        "x86_64-pc-windows-gnu": 128,
+        "x86_64-pc-windows-msvc": 128,
+        "x86_64-unknown-linux-gnu": 64
+      }
+    },
+    "metadata": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": {
+          "description": "ARM64 Apple macOS (11.0+, Big Sur+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "aarch64-pc-windows-msvc": {
+          "description": "ARM64 Windows MSVC",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "aarch64-unknown-linux-gnu": {
+          "description": "ARM64 Linux (kernel 4.1, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "i686-pc-windows-msvc": {
+          "description": "32-bit MSVC (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "i686-unknown-linux-gnu": {
+          "description": "32-bit Linux (kernel 3.2, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "x86_64-pc-windows-gnu": {
+          "description": "64-bit MinGW (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "x86_64-pc-windows-msvc": {
+          "description": "64-bit MSVC (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "x86_64-unknown-linux-gnu": {
+          "description": "64-bit Linux (kernel 3.2+, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        }
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": {
+          "description": "ARM64 Apple macOS (11.0+, Big Sur+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "aarch64-pc-windows-msvc": {
+          "description": "ARM64 Windows MSVC",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "aarch64-unknown-linux-gnu": {
+          "description": "ARM64 Linux (kernel 4.1, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "i686-pc-windows-msvc": {
+          "description": "32-bit MSVC (Windows 10+)",
+          "host_tools": false,
+          "std": true,
+          "tier": 1
+        },
+        "i686-unknown-linux-gnu": {
+          "description": "32-bit Linux (kernel 3.2, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "x86_64-pc-windows-gnu": {
+          "description": "64-bit MinGW (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "x86_64-pc-windows-msvc": {
+          "description": "64-bit MSVC (Windows 10+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        },
+        "x86_64-unknown-linux-gnu": {
+          "description": "64-bit Linux (kernel 3.2+, glibc 2.17+)",
+          "host_tools": true,
+          "std": true,
+          "tier": 1
+        }
+      }
+    },
+    "no-default-libraries": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": false,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": false,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "os": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "macos",
+        "aarch64-pc-windows-msvc": "windows",
+        "aarch64-unknown-linux-gnu": "linux",
+        "i686-pc-windows-msvc": "windows",
+        "i686-unknown-linux-gnu": "linux",
+        "x86_64-pc-windows-gnu": "windows",
+        "x86_64-pc-windows-msvc": "windows",
+        "x86_64-unknown-linux-gnu": "linux"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "macos",
+        "aarch64-pc-windows-msvc": "windows",
+        "aarch64-unknown-linux-gnu": "linux",
+        "i686-pc-windows-msvc": "windows",
+        "i686-unknown-linux-gnu": "linux",
+        "x86_64-pc-windows-gnu": "windows",
+        "x86_64-pc-windows-msvc": "windows",
+        "x86_64-unknown-linux-gnu": "linux"
+      }
+    },
+    "plt-by-default": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": false
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": false,
+        "x86_64-pc-windows-msvc": false,
+        "x86_64-unknown-linux-gnu": false
+      }
+    },
+    "position-independent-executables": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "pre-link-args": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": {
+          "msvc": [
+            "/NOLOGO"
+          ],
+          "msvc-lld": [
+            "/NOLOGO"
+          ]
+        },
+        "aarch64-unknown-linux-gnu": {
+          "gnu-cc": [
+            "-Wl,--fix-cortex-a53-843419"
+          ],
+          "gnu-lld-cc": [
+            "-Wl,--fix-cortex-a53-843419"
+          ]
+        },
+        "i686-pc-windows-msvc": {
+          "msvc": [
+            "/NOLOGO",
+            "/LARGEADDRESSAWARE",
+            "/SAFESEH"
+          ],
+          "msvc-lld": [
+            "/NOLOGO",
+            "/LARGEADDRESSAWARE",
+            "/SAFESEH"
+          ]
+        },
+        "i686-unknown-linux-gnu": {
+          "gnu-cc": [
+            "-m32"
+          ],
+          "gnu-lld-cc": [
+            "-m32"
+          ]
+        },
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "--dynamicbase",
+            "--disable-auto-image-base",
+            "-m",
+            "i386pep",
+            "--high-entropy-va"
+          ],
+          "gnu-cc": [
+            "-fno-use-linker-plugin",
+            "-Wl,--dynamicbase",
+            "-Wl,--disable-auto-image-base",
+            "-m64",
+            "-Wl,--high-entropy-va"
+          ],
+          "gnu-lld": [
+            "--dynamicbase",
+            "--disable-auto-image-base",
+            "-m",
+            "i386pep",
+            "--high-entropy-va"
+          ],
+          "gnu-lld-cc": [
+            "-fno-use-linker-plugin",
+            "-Wl,--dynamicbase",
+            "-Wl,--disable-auto-image-base",
+            "-m64",
+            "-Wl,--high-entropy-va"
+          ]
+        },
+        "x86_64-pc-windows-msvc": {
+          "msvc": [
+            "/NOLOGO"
+          ],
+          "msvc-lld": [
+            "/NOLOGO"
+          ]
+        },
+        "x86_64-unknown-linux-gnu": {
+          "gnu-cc": [
+            "-m64"
+          ],
+          "gnu-lld-cc": [
+            "-m64"
+          ]
+        }
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": {
+          "msvc": [
+            "/NOLOGO"
+          ],
+          "msvc-lld": [
+            "/NOLOGO"
+          ]
+        },
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": {
+          "msvc": [
+            "/NOLOGO",
+            "/LARGEADDRESSAWARE",
+            "/SAFESEH"
+          ],
+          "msvc-lld": [
+            "/NOLOGO",
+            "/LARGEADDRESSAWARE",
+            "/SAFESEH"
+          ]
+        },
+        "i686-unknown-linux-gnu": {
+          "gnu-cc": [
+            "-m32"
+          ],
+          "gnu-lld-cc": [
+            "-m32"
+          ]
+        },
+        "x86_64-pc-windows-gnu": {
+          "gnu": [
+            "--dynamicbase",
+            "--disable-auto-image-base",
+            "-m",
+            "i386pep",
+            "--high-entropy-va"
+          ],
+          "gnu-cc": [
+            "-fno-use-linker-plugin",
+            "-Wl,--dynamicbase",
+            "-Wl,--disable-auto-image-base",
+            "-m64",
+            "-Wl,--high-entropy-va"
+          ],
+          "gnu-lld": [
+            "--dynamicbase",
+            "--disable-auto-image-base",
+            "-m",
+            "i386pep",
+            "--high-entropy-va"
+          ],
+          "gnu-lld-cc": [
+            "-fno-use-linker-plugin",
+            "-Wl,--dynamicbase",
+            "-Wl,--disable-auto-image-base",
+            "-m64",
+            "-Wl,--high-entropy-va"
+          ]
+        },
+        "x86_64-pc-windows-msvc": {
+          "msvc": [
+            "/NOLOGO"
+          ],
+          "msvc-lld": [
+            "/NOLOGO"
+          ]
+        },
+        "x86_64-unknown-linux-gnu": {
+          "gnu-cc": [
+            "-m64"
+          ],
+          "gnu-lld-cc": [
+            "-m64"
+          ]
+        }
+      }
+    },
+    "pre-link-objects-fallback": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "dynamic-dylib": [
+            "dllcrt2.o"
+          ],
+          "dynamic-nopic-exe": [
+            "crt2.o"
+          ],
+          "dynamic-pic-exe": [
+            "crt2.o"
+          ],
+          "static-dylib": [
+            "dllcrt2.o"
+          ],
+          "static-nopic-exe": [
+            "crt2.o"
+          ],
+          "static-pic-exe": [
+            "crt2.o"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": {
+          "dynamic-dylib": [
+            "dllcrt2.o"
+          ],
+          "dynamic-nopic-exe": [
+            "crt2.o"
+          ],
+          "dynamic-pic-exe": [
+            "crt2.o"
+          ],
+          "static-dylib": [
+            "dllcrt2.o"
+          ],
+          "static-nopic-exe": [
+            "crt2.o"
+          ],
+          "static-pic-exe": [
+            "crt2.o"
+          ]
+        },
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "relro-level": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": "full",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": "full",
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": "full"
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": "full",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": "full",
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": "full"
+      }
+    },
+    "requires-uwtable": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": true,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": true,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": true,
+        "x86_64-pc-windows-msvc": true,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "rustc-abi": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "x86-sse2",
+        "i686-unknown-linux-gnu": "x86-sse2",
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "x86-sse2",
+        "i686-unknown-linux-gnu": "x86-sse2",
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "split-debuginfo": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "packed",
+        "aarch64-pc-windows-msvc": "packed",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "packed",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "packed",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "packed",
+        "aarch64-pc-windows-msvc": "packed",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "packed",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "packed",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "stack-probes": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": {
+          "kind": "inline"
+        },
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": {
+          "kind": "inline"
+        },
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": {
+          "kind": "inline"
+        },
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": {
+          "kind": "inline"
+        }
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": {
+          "kind": "inline"
+        },
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": {
+          "kind": "inline"
+        },
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": {
+          "kind": "inline"
+        },
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": {
+          "kind": "inline"
+        }
+      }
+    },
+    "static-position-independent-executables": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "staticlib-prefix": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": "",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": "",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "staticlib-suffix": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": ".lib",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": ".lib",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": ".lib",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": ".lib",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": ".lib",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": ".lib",
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "supported-sanitizers": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": [
+          "address",
+          "thread",
+          "cfi",
+          "realtime"
+        ],
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": [
+          "address",
+          "leak",
+          "memory",
+          "thread",
+          "hwaddress",
+          "cfi",
+          "memtag",
+          "kcfi",
+          "realtime"
+        ],
+        "i686-pc-windows-msvc": [
+          "address"
+        ],
+        "i686-unknown-linux-gnu": [
+          "address"
+        ],
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": [
+          "address"
+        ],
+        "x86_64-unknown-linux-gnu": [
+          "address",
+          "leak",
+          "memory",
+          "thread",
+          "cfi",
+          "kcfi",
+          "safestack",
+          "dataflow",
+          "realtime"
+        ]
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": [
+          "address",
+          "thread",
+          "cfi",
+          "realtime"
+        ],
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": [
+          "address",
+          "leak",
+          "memory",
+          "thread",
+          "hwaddress",
+          "cfi",
+          "memtag",
+          "kcfi",
+          "realtime"
+        ],
+        "i686-pc-windows-msvc": [
+          "address"
+        ],
+        "i686-unknown-linux-gnu": [
+          "address"
+        ],
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": [
+          "address"
+        ],
+        "x86_64-unknown-linux-gnu": [
+          "address",
+          "leak",
+          "memory",
+          "thread",
+          "cfi",
+          "kcfi",
+          "safestack",
+          "dataflow",
+          "realtime"
+        ]
+      }
+    },
+    "supported-split-debuginfo": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "aarch64-pc-windows-msvc": [
+          "packed"
+        ],
+        "aarch64-unknown-linux-gnu": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "i686-pc-windows-msvc": [
+          "packed"
+        ],
+        "i686-unknown-linux-gnu": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": [
+          "packed"
+        ],
+        "x86_64-unknown-linux-gnu": [
+          "packed",
+          "unpacked",
+          "off"
+        ]
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "aarch64-pc-windows-msvc": [
+          "packed"
+        ],
+        "aarch64-unknown-linux-gnu": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "i686-pc-windows-msvc": [
+          "packed"
+        ],
+        "i686-unknown-linux-gnu": [
+          "packed",
+          "unpacked",
+          "off"
+        ],
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": [
+          "packed"
+        ],
+        "x86_64-unknown-linux-gnu": [
+          "packed",
+          "unpacked",
+          "off"
+        ]
+      }
+    },
+    "supports-fentry": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": null,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": true,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "supports-xray": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": true,
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": true,
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": null,
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": true
+      }
+    },
+    "target-family": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": [
+          "unix"
+        ],
+        "aarch64-pc-windows-msvc": [
+          "windows"
+        ],
+        "aarch64-unknown-linux-gnu": [
+          "unix"
+        ],
+        "i686-pc-windows-msvc": [
+          "windows"
+        ],
+        "i686-unknown-linux-gnu": [
+          "unix"
+        ],
+        "x86_64-pc-windows-gnu": [
+          "windows"
+        ],
+        "x86_64-pc-windows-msvc": [
+          "windows"
+        ],
+        "x86_64-unknown-linux-gnu": [
+          "unix"
+        ]
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": [
+          "unix"
+        ],
+        "aarch64-pc-windows-msvc": [
+          "windows"
+        ],
+        "aarch64-unknown-linux-gnu": [
+          "unix"
+        ],
+        "i686-pc-windows-msvc": [
+          "windows"
+        ],
+        "i686-unknown-linux-gnu": [
+          "unix"
+        ],
+        "x86_64-pc-windows-gnu": [
+          "windows"
+        ],
+        "x86_64-pc-windows-msvc": [
+          "windows"
+        ],
+        "x86_64-unknown-linux-gnu": [
+          "unix"
+        ]
+      }
+    },
+    "target-mcount": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "\u0001mcount",
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": "\u0001_mcount",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "_mcount",
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "\u0001mcount",
+        "aarch64-pc-windows-msvc": null,
+        "aarch64-unknown-linux-gnu": "\u0001_mcount",
+        "i686-pc-windows-msvc": null,
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "_mcount",
+        "x86_64-pc-windows-msvc": null,
+        "x86_64-unknown-linux-gnu": null
+      }
+    },
+    "target-pointer-width": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": 64,
+        "aarch64-pc-windows-msvc": 64,
+        "aarch64-unknown-linux-gnu": 64,
+        "i686-pc-windows-msvc": 32,
+        "i686-unknown-linux-gnu": 32,
+        "x86_64-pc-windows-gnu": 64,
+        "x86_64-pc-windows-msvc": 64,
+        "x86_64-unknown-linux-gnu": 64
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": 64,
+        "aarch64-pc-windows-msvc": 64,
+        "aarch64-unknown-linux-gnu": 64,
+        "i686-pc-windows-msvc": 32,
+        "i686-unknown-linux-gnu": 32,
+        "x86_64-pc-windows-gnu": 64,
+        "x86_64-pc-windows-msvc": 64,
+        "x86_64-unknown-linux-gnu": 64
+      }
+    },
+    "vendor": {
+      "values_1_99_1": {
+        "aarch64-apple-darwin": "apple",
+        "aarch64-pc-windows-msvc": "pc",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "pc",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "pc",
+        "x86_64-pc-windows-msvc": "pc",
+        "x86_64-unknown-linux-gnu": null
+      },
+      "values_nightly_2026_11_12": {
+        "aarch64-apple-darwin": "apple",
+        "aarch64-pc-windows-msvc": "pc",
+        "aarch64-unknown-linux-gnu": null,
+        "i686-pc-windows-msvc": "pc",
+        "i686-unknown-linux-gnu": null,
+        "x86_64-pc-windows-gnu": "pc",
+        "x86_64-pc-windows-msvc": "pc",
+        "x86_64-unknown-linux-gnu": null
+      }
+    }
+  },
+  "emitted_llvm_ir_defaults": {
+    "aarch64-apple-darwin": {
+      "target_datalayout": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+      "target_triple": "arm64-apple-macosx11.0.0",
+      "attributes_0": "noreturn uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"apple-m1\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2,
+        "frame-pointer": 1
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "target_datalayout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+      "target_triple": "aarch64-pc-windows-msvc",
+      "attributes_0": "noreturn uwtable \"frame-pointer\"=\"non-leaf\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+neon,+fp-armv8\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2,
+        "frame-pointer": 1
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "target_datalayout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+      "target_triple": "aarch64-unknown-linux-gnu",
+      "attributes_0": "noreturn uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2,
+        "frame-pointer": 1
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "target_datalayout": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+      "target_triple": "i686-pc-windows-msvc",
+      "attributes_0": "noreturn uwtable \"target-cpu\"=\"pentium4\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "target_datalayout": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+      "target_triple": "i686-unknown-linux-gnu",
+      "attributes_0": "noreturn uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"pentium4\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "target_datalayout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "target_triple": "x86_64-pc-windows-gnu",
+      "attributes_0": "noreturn uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "target_datalayout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "target_triple": "x86_64-pc-windows-msvc",
+      "attributes_0": "noreturn uwtable \"target-cpu\"=\"x86-64\" \"target-features\"=\"+cx16,+sse,+sse2,+sse3,+sahf\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "uwtable": 2
+      }
+    },
+    "x86_64-unknown-linux-gnu": {
+      "target_datalayout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "target_triple": "x86_64-unknown-linux-gnu",
+      "attributes_0": "noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+      "module_flags": {
+        "PIC Level": 2,
+        "RtLibUseGOT": 1,
+        "uwtable": 2
+      }
+    }
+  }
+}
