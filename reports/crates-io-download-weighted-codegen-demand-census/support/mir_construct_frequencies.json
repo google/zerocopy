@@ -1,0 +1,514 @@
+{
+  "crates_measured": 16,
+  "total_functions": 5759,
+  "total_basic_blocks": 34866,
+  "statements": {
+    "StorageDead": 26862,
+    "Assign": 25970,
+    "StorageLive": 23503
+  },
+  "terminators": {
+    "Call": 13741,
+    "Return": 6248,
+    "SwitchInt": 5978,
+    "Goto": 5360,
+    "Drop": 1703,
+    "Unreachable": 830,
+    "UnwindResume": 646,
+    "Assert": 112
+  },
+  "rvalues": {
+    "Use_or_Copy_or_Move": 6690,
+    "Ref": 6008,
+    "Aggregate": 5257,
+    "Cast": 3621,
+    "BinaryOp": 2210,
+    "Discriminant": 1655,
+    "UnaryOp": 297,
+    "RawPtr": 128,
+    "Repeat": 104
+  },
+  "per_crate": {
+    "hashbrown": {
+      "stratum": "core_containers",
+      "mir_bytes": 842656,
+      "functions": 790,
+      "basic_blocks": 3541,
+      "statements": {
+        "Assign": 2678,
+        "StorageLive": 2624,
+        "StorageDead": 2849
+      },
+      "terminators": {
+        "Return": 819,
+        "Call": 1535,
+        "SwitchInt": 326,
+        "Goto": 383,
+        "Unreachable": 123,
+        "UnwindResume": 117,
+        "Drop": 218,
+        "Assert": 6
+      },
+      "rvalues": {
+        "Use_or_Copy_or_Move": 745,
+        "BinaryOp": 131,
+        "Discriminant": 136,
+        "Cast": 226,
+        "Aggregate": 589,
+        "Ref": 841,
+        "UnaryOp": 4,
+        "Repeat": 2,
+        "RawPtr": 4
+      }
+    },
+    "smallvec": {
+      "stratum": "core_containers",
+      "mir_bytes": 315520,
+      "functions": 183,
+      "basic_blocks": 1413,
+      "statements": {
+        "Assign": 871,
+        "StorageLive": 1174,
+        "StorageDead": 1284
+      },
+      "terminators": {
+        "SwitchInt": 140,
+        "Unreachable": 16,
+        "Call": 770,
+        "Goto": 169,
+        "Return": 184,
+        "Drop": 77,
+        "UnwindResume": 38
+      },
+      "rvalues": {
+        "Discriminant": 21,
+        "Ref": 239,
+        "Cast": 72,
+        "Aggregate": 87,
+        "Use_or_Copy_or_Move": 313,
+        "BinaryOp": 124,
+        "RawPtr": 9,
+        "UnaryOp": 6
+      }
+    },
+    "arrayvec": {
+      "stratum": "core_containers",
+      "mir_bytes": 206349,
+      "functions": 186,
+      "basic_blocks": 893,
+      "statements": {
+        "StorageLive": 688,
+        "StorageDead": 756,
+        "Assign": 570
+      },
+      "terminators": {
+        "Call": 481,
+        "Return": 190,
+        "SwitchInt": 69,
+        "Goto": 92,
+        "UnwindResume": 12,
+        "Drop": 26,
+        "Assert": 4,
+        "Unreachable": 10
+      },
+      "rvalues": {
+        "Ref": 152,
+        "Use_or_Copy_or_Move": 138,
+        "Cast": 60,
+        "BinaryOp": 113,
+        "RawPtr": 9,
+        "Aggregate": 82,
+        "UnaryOp": 4,
+        "Discriminant": 11,
+        "Repeat": 1
+      }
+    },
+    "itoa": {
+      "stratum": "numerics_formatting",
+      "mir_bytes": 121082,
+      "functions": 18,
+      "basic_blocks": 377,
+      "statements": {
+        "StorageLive": 519,
+        "Assign": 550,
+        "StorageDead": 552
+      },
+      "terminators": {
+        "Return": 36,
+        "SwitchInt": 50,
+        "Goto": 84,
+        "Call": 206
+      },
+      "rvalues": {
+        "Cast": 124,
+        "BinaryOp": 217,
+        "Use_or_Copy_or_Move": 182,
+        "Aggregate": 2,
+        "Repeat": 1,
+        "RawPtr": 1,
+        "Ref": 13,
+        "UnaryOp": 10
+      }
+    },
+    "ryu": {
+      "stratum": "numerics_formatting",
+      "mir_bytes": 397019,
+      "functions": 40,
+      "basic_blocks": 552,
+      "statements": {
+        "Assign": 1489,
+        "StorageLive": 1392,
+        "StorageDead": 1491
+      },
+      "terminators": {
+        "Call": 222,
+        "Return": 45,
+        "SwitchInt": 115,
+        "Goto": 166,
+        "Assert": 2,
+        "Unreachable": 2
+      },
+      "rvalues": {
+        "Use_or_Copy_or_Move": 279,
+        "Repeat": 1,
+        "Aggregate": 677,
+        "Ref": 10,
+        "Cast": 138,
+        "BinaryOp": 374,
+        "UnaryOp": 6,
+        "Discriminant": 4
+      }
+    },
+    "bitflags": {
+      "stratum": "bit_byte_primitives",
+      "mir_bytes": 141602,
+      "functions": 100,
+      "basic_blocks": 672,
+      "statements": {
+        "StorageLive": 415,
+        "Assign": 378,
+        "StorageDead": 527
+      },
+      "terminators": {
+        "Call": 285,
+        "Return": 112,
+        "UnwindResume": 36,
+        "SwitchInt": 55,
+        "Unreachable": 12,
+        "Goto": 76,
+        "Drop": 96
+      },
+      "rvalues": {
+        "Aggregate": 62,
+        "Use_or_Copy_or_Move": 122,
+        "Ref": 129,
+        "Discriminant": 26,
+        "Cast": 35,
+        "BinaryOp": 2,
+        "UnaryOp": 2
+      }
+    },
+    "byteorder": {
+      "stratum": "bit_byte_primitives",
+      "mir_bytes": 265526,
+      "functions": 171,
+      "basic_blocks": 1007,
+      "statements": {
+        "StorageLive": 891,
+        "Assign": 777,
+        "StorageDead": 1017
+      },
+      "terminators": {
+        "Call": 530,
+        "SwitchInt": 94,
+        "Unreachable": 62,
+        "Goto": 112,
+        "Return": 177
+      },
+      "rvalues": {
+        "Aggregate": 66,
+        "Ref": 154,
+        "Cast": 196,
+        "Discriminant": 52,
+        "Use_or_Copy_or_Move": 122,
+        "Repeat": 40,
+        "UnaryOp": 58,
+        "BinaryOp": 85,
+        "RawPtr": 4
+      }
+    },
+    "bytes": {
+      "stratum": "bit_byte_primitives",
+      "mir_bytes": 955222,
+      "functions": 810,
+      "basic_blocks": 3965,
+      "statements": {
+        "Assign": 3252,
+        "StorageLive": 3005,
+        "StorageDead": 3243
+      },
+      "terminators": {
+        "SwitchInt": 295,
+        "Goto": 434,
+        "Return": 969,
+        "Call": 2011,
+        "Assert": 13,
+        "Unreachable": 78,
+        "UnwindResume": 28,
+        "Drop": 60
+      },
+      "rvalues": {
+        "Use_or_Copy_or_Move": 868,
+        "BinaryOp": 218,
+        "Cast": 463,
+        "Ref": 859,
+        "UnaryOp": 54,
+        "Aggregate": 579,
+        "Discriminant": 97,
+        "Repeat": 55,
+        "RawPtr": 59
+      }
+    },
+    "regex": {
+      "stratum": "parsing_text",
+      "mir_bytes": 471605,
+      "functions": 446,
+      "basic_blocks": 1629,
+      "statements": {
+        "StorageLive": 1353,
+        "Assign": 1241,
+        "StorageDead": 1445
+      },
+      "terminators": {
+        "Call": 827,
+        "Return": 450,
+        "Drop": 111,
+        "UnwindResume": 37,
+        "SwitchInt": 77,
+        "Unreachable": 20,
+        "Goto": 93,
+        "Assert": 6
+      },
+      "rvalues": {
+        "Ref": 542,
+        "Aggregate": 239,
+        "Cast": 106,
+        "Use_or_Copy_or_Move": 274,
+        "Discriminant": 40,
+        "BinaryOp": 27,
+        "UnaryOp": 13
+      }
+    },
+    "glob": {
+      "stratum": "parsing_text",
+      "mir_bytes": 214614,
+      "functions": 99,
+      "basic_blocks": 916,
+      "statements": {
+        "StorageLive": 763,
+        "Assign": 775,
+        "StorageDead": 972
+      },
+      "terminators": {
+        "Call": 335,
+        "Return": 107,
+        "SwitchInt": 155,
+        "Unreachable": 13,
+        "Drop": 58,
+        "Goto": 228,
+        "UnwindResume": 13,
+        "Assert": 5
+      },
+      "rvalues": {
+        "Ref": 266,
+        "Cast": 52,
+        "Discriminant": 57,
+        "Use_or_Copy_or_Move": 216,
+        "BinaryOp": 89,
+        "Aggregate": 90,
+        "UnaryOp": 5
+      }
+    },
+    "serde_json": {
+      "stratum": "serialization",
+      "mir_bytes": 1590148,
+      "functions": 1103,
+      "basic_blocks": 6778,
+      "statements": {
+        "StorageLive": 3692,
+        "Assign": 5224,
+        "StorageDead": 4376
+      },
+      "terminators": {
+        "Call": 2227,
+        "Return": 1149,
+        "Drop": 597,
+        "UnwindResume": 164,
+        "SwitchInt": 1120,
+        "Unreachable": 203,
+        "Goto": 1293,
+        "Assert": 16
+      },
+      "rvalues": {
+        "Use_or_Copy_or_Move": 1291,
+        "Aggregate": 774,
+        "Discriminant": 635,
+        "Cast": 1266,
+        "Ref": 959,
+        "BinaryOp": 270,
+        "UnaryOp": 25,
+        "Repeat": 4
+      }
+    },
+    "proc-macro2": {
+      "stratum": "proc_macro_ast",
+      "mir_bytes": 711071,
+      "functions": 511,
+      "basic_blocks": 3551,
+      "statements": {
+        "StorageLive": 1970,
+        "Assign": 2109,
+        "StorageDead": 2405
+      },
+      "terminators": {
+        "Return": 516,
+        "Call": 1397,
+        "SwitchInt": 540,
+        "Goto": 758,
+        "Assert": 5,
+        "Unreachable": 122,
+        "Drop": 126,
+        "UnwindResume": 56
+      },
+      "rvalues": {
+        "Aggregate": 491,
+        "Use_or_Copy_or_Move": 421,
+        "Ref": 607,
+        "UnaryOp": 3,
+        "BinaryOp": 134,
+        "Discriminant": 245,
+        "Cast": 207,
+        "RawPtr": 1
+      }
+    },
+    "once_cell": {
+      "stratum": "concurrency_sync",
+      "mir_bytes": 157931,
+      "functions": 148,
+      "basic_blocks": 710,
+      "statements": {
+        "StorageLive": 440,
+        "Assign": 456,
+        "StorageDead": 475
+      },
+      "terminators": {
+        "Call": 309,
+        "Return": 150,
+        "UnwindResume": 29,
+        "Drop": 49,
+        "SwitchInt": 65,
+        "Unreachable": 28,
+        "Goto": 68,
+        "Assert": 1
+      },
+      "rvalues": {
+        "Ref": 94,
+        "Cast": 68,
+        "Use_or_Copy_or_Move": 109,
+        "Aggregate": 122,
+        "Discriminant": 41,
+        "BinaryOp": 19,
+        "RawPtr": 3
+      }
+    },
+    "parking_lot": {
+      "stratum": "concurrency_sync",
+      "mir_bytes": 242053,
+      "functions": 173,
+      "basic_blocks": 1050,
+      "statements": {
+        "StorageLive": 710,
+        "Assign": 770,
+        "StorageDead": 888
+      },
+      "terminators": {
+        "Call": 381,
+        "Return": 186,
+        "SwitchInt": 182,
+        "Goto": 249,
+        "Drop": 16,
+        "UnwindResume": 12,
+        "Unreachable": 17
+      },
+      "rvalues": {
+        "Ref": 184,
+        "Cast": 57,
+        "Use_or_Copy_or_Move": 258,
+        "BinaryOp": 102,
+        "Aggregate": 111,
+        "RawPtr": 26,
+        "UnaryOp": 3,
+        "Discriminant": 29
+      }
+    },
+    "mio": {
+      "stratum": "async_io_net",
+      "mir_bytes": 86570,
+      "functions": 97,
+      "basic_blocks": 313,
+      "statements": {
+        "StorageLive": 250,
+        "Assign": 226,
+        "StorageDead": 260
+      },
+      "terminators": {
+        "Call": 164,
+        "Return": 88,
+        "SwitchInt": 17,
+        "Unreachable": 1,
+        "Goto": 28
+      },
+      "rvalues": {
+        "Ref": 80,
+        "Use_or_Copy_or_Move": 41,
+        "Aggregate": 55,
+        "BinaryOp": 25,
+        "UnaryOp": 1,
+        "Discriminant": 5,
+        "Cast": 18,
+        "RawPtr": 1
+      }
+    },
+    "http": {
+      "stratum": "async_io_net",
+      "mir_bytes": 1582683,
+      "functions": 884,
+      "basic_blocks": 7499,
+      "statements": {
+        "StorageLive": 3617,
+        "Assign": 4604,
+        "StorageDead": 4322
+      },
+      "terminators": {
+        "Call": 2061,
+        "Return": 1070,
+        "Drop": 269,
+        "UnwindResume": 104,
+        "SwitchInt": 2678,
+        "Unreachable": 123,
+        "Goto": 1127,
+        "Assert": 54
+      },
+      "rvalues": {
+        "Use_or_Copy_or_Move": 1311,
+        "Ref": 879,
+        "Aggregate": 1231,
+        "Cast": 533,
+        "Discriminant": 256,
+        "BinaryOp": 280,
+        "UnaryOp": 103,
+        "RawPtr": 11
+      }
+    }
+  }
+}

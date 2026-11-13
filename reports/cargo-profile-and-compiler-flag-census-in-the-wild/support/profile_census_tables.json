@@ -1,0 +1,2343 @@
+{
+  "cargo_1991_commit": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+  "rustc_1991_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "empirical_cargo_defaults_by_target": {
+    "x86_64-unknown-linux-gnu": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=0d829a193b442701",
+          "extra-filename=-3a075840236509d0",
+          "incremental=/tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_dev/x86_64-unknown-linux-gnu/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0d829a193b442701 -C extra-filename=-3a075840236509d0 --out-dir /tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_dev/x86_64-unknown-linux-gnu/debug/deps --target x86_64-unknown-linux-gnu -C incremental=/tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_dev/x86_64-unknown-linux-gnu/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_dev/x86_64-unknown-linux-gnu/debug/deps -L dependency=/tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=428bdac955a58e76",
+          "extra-filename=-b17955c8da7efa2c",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=428bdac955a58e76 -C extra-filename=-b17955c8da7efa2c --out-dir /tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_release/x86_64-unknown-linux-gnu/release/deps --target x86_64-unknown-linux-gnu -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_release/x86_64-unknown-linux-gnu/release/deps -L dependency=/tmp/cargo_profile_probe/target/x86_64-unknown-linux-gnu_release/release/deps`"
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=f8a74c3252aa66f7",
+          "extra-filename=-6924ad9a73e16743",
+          "incremental=/tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_dev/x86_64-pc-windows-msvc/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=f8a74c3252aa66f7 -C extra-filename=-6924ad9a73e16743 --out-dir /tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_dev/x86_64-pc-windows-msvc/debug/deps --target x86_64-pc-windows-msvc -C incremental=/tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_dev/x86_64-pc-windows-msvc/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_dev/x86_64-pc-windows-msvc/debug/deps -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=7f22d13265d39355",
+          "extra-filename=-d84fec84d97d4657",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=7f22d13265d39355 -C extra-filename=-d84fec84d97d4657 --out-dir /tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_release/x86_64-pc-windows-msvc/release/deps --target x86_64-pc-windows-msvc -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_release/x86_64-pc-windows-msvc/release/deps -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-msvc_release/release/deps`"
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=b2f32d80631b9db1",
+          "extra-filename=-17d4042509abb7a2",
+          "incremental=/tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_dev/x86_64-pc-windows-gnu/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b2f32d80631b9db1 -C extra-filename=-17d4042509abb7a2 --out-dir /tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_dev/x86_64-pc-windows-gnu/debug/deps --target x86_64-pc-windows-gnu -C incremental=/tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_dev/x86_64-pc-windows-gnu/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_dev/x86_64-pc-windows-gnu/debug/deps -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=269a266cff9fe6b2",
+          "extra-filename=-94ac27e038d10623",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=269a266cff9fe6b2 -C extra-filename=-94ac27e038d10623 --out-dir /tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_release/x86_64-pc-windows-gnu/release/deps --target x86_64-pc-windows-gnu -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_release/x86_64-pc-windows-gnu/release/deps -L dependency=/tmp/cargo_profile_probe/target/x86_64-pc-windows-gnu_release/release/deps`"
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=2ab1cb3789c8c208",
+          "extra-filename=-3d4be2cb61065659",
+          "incremental=/tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_dev/aarch64-unknown-linux-gnu/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=2ab1cb3789c8c208 -C extra-filename=-3d4be2cb61065659 --out-dir /tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_dev/aarch64-unknown-linux-gnu/debug/deps --target aarch64-unknown-linux-gnu -C incremental=/tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_dev/aarch64-unknown-linux-gnu/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_dev/aarch64-unknown-linux-gnu/debug/deps -L dependency=/tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=497fdc4db74dc168",
+          "extra-filename=-12015c18d4cb72d7",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=497fdc4db74dc168 -C extra-filename=-12015c18d4cb72d7 --out-dir /tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_release/aarch64-unknown-linux-gnu/release/deps --target aarch64-unknown-linux-gnu -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_release/aarch64-unknown-linux-gnu/release/deps -L dependency=/tmp/cargo_profile_probe/target/aarch64-unknown-linux-gnu_release/release/deps`"
+      }
+    },
+    "aarch64-apple-darwin": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "split-debuginfo=unpacked",
+          "metadata=a57220c0083ed20f",
+          "extra-filename=-b7e01a6161ba4215",
+          "incremental=/tmp/cargo_profile_probe/target/aarch64-apple-darwin_dev/aarch64-apple-darwin/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a57220c0083ed20f -C extra-filename=-b7e01a6161ba4215 --out-dir /tmp/cargo_profile_probe/target/aarch64-apple-darwin_dev/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -C incremental=/tmp/cargo_profile_probe/target/aarch64-apple-darwin_dev/aarch64-apple-darwin/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/aarch64-apple-darwin_dev/aarch64-apple-darwin/debug/deps -L dependency=/tmp/cargo_profile_probe/target/aarch64-apple-darwin_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=40c883ed54d0e288",
+          "extra-filename=-96c8d4377110617a",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=40c883ed54d0e288 -C extra-filename=-96c8d4377110617a --out-dir /tmp/cargo_profile_probe/target/aarch64-apple-darwin_release/aarch64-apple-darwin/release/deps --target aarch64-apple-darwin -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/aarch64-apple-darwin_release/aarch64-apple-darwin/release/deps -L dependency=/tmp/cargo_profile_probe/target/aarch64-apple-darwin_release/release/deps`"
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=1c69a6e76ab4f10e",
+          "extra-filename=-bd679c3ca54ac64d",
+          "incremental=/tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_dev/aarch64-pc-windows-msvc/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=1c69a6e76ab4f10e -C extra-filename=-bd679c3ca54ac64d --out-dir /tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_dev/aarch64-pc-windows-msvc/debug/deps --target aarch64-pc-windows-msvc -C incremental=/tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_dev/aarch64-pc-windows-msvc/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_dev/aarch64-pc-windows-msvc/debug/deps -L dependency=/tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=301299ccc680ad18",
+          "extra-filename=-cfc56945a94bbff1",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=301299ccc680ad18 -C extra-filename=-cfc56945a94bbff1 --out-dir /tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_release/aarch64-pc-windows-msvc/release/deps --target aarch64-pc-windows-msvc -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_release/aarch64-pc-windows-msvc/release/deps -L dependency=/tmp/cargo_profile_probe/target/aarch64-pc-windows-msvc_release/release/deps`"
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=10016de1ad939685",
+          "extra-filename=-dfc6127b1a91e848",
+          "incremental=/tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_dev/i686-unknown-linux-gnu/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=10016de1ad939685 -C extra-filename=-dfc6127b1a91e848 --out-dir /tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_dev/i686-unknown-linux-gnu/debug/deps --target i686-unknown-linux-gnu -C incremental=/tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_dev/i686-unknown-linux-gnu/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_dev/i686-unknown-linux-gnu/debug/deps -L dependency=/tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=c4d6ae8b2b9aead4",
+          "extra-filename=-c0ac15a10fad6564",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c4d6ae8b2b9aead4 -C extra-filename=-c0ac15a10fad6564 --out-dir /tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_release/i686-unknown-linux-gnu/release/deps --target i686-unknown-linux-gnu -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_release/i686-unknown-linux-gnu/release/deps -L dependency=/tmp/cargo_profile_probe/target/i686-unknown-linux-gnu_release/release/deps`"
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "dev": {
+        "returncode": 0,
+        "codegen_flags": [
+          "embed-bitcode=no",
+          "debuginfo=2",
+          "metadata=87c316a7e8ae8aa2",
+          "extra-filename=-d72532b86da663ab",
+          "incremental=/tmp/cargo_profile_probe/target/i686-pc-windows-msvc_dev/i686-pc-windows-msvc/debug/incremental"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=87c316a7e8ae8aa2 -C extra-filename=-d72532b86da663ab --out-dir /tmp/cargo_profile_probe/target/i686-pc-windows-msvc_dev/i686-pc-windows-msvc/debug/deps --target i686-pc-windows-msvc -C incremental=/tmp/cargo_profile_probe/target/i686-pc-windows-msvc_dev/i686-pc-windows-msvc/debug/incremental -L dependency=/tmp/cargo_profile_probe/target/i686-pc-windows-msvc_dev/i686-pc-windows-msvc/debug/deps -L dependency=/tmp/cargo_profile_probe/target/i686-pc-windows-msvc_dev/debug/deps`"
+      },
+      "release": {
+        "returncode": 0,
+        "codegen_flags": [
+          "opt-level=3",
+          "embed-bitcode=no",
+          "metadata=1124c34dfed25799",
+          "extra-filename=-6a1bd077ac7a55ca",
+          "strip=debuginfo"
+        ],
+        "raw_rustc_invocation": "Running `/usr/local/google/home/joshlf/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc --crate-name profile_probe --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C opt-level=3 -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=1124c34dfed25799 -C extra-filename=-6a1bd077ac7a55ca --out-dir /tmp/cargo_profile_probe/target/i686-pc-windows-msvc_release/i686-pc-windows-msvc/release/deps --target i686-pc-windows-msvc -C strip=debuginfo -L dependency=/tmp/cargo_profile_probe/target/i686-pc-windows-msvc_release/i686-pc-windows-msvc/release/deps -L dependency=/tmp/cargo_profile_probe/target/i686-pc-windows-msvc_release/release/deps`"
+      }
+    }
+  },
+  "target_spec_defaults": {
+    "x86_64-unknown-linux-gnu": {
+      "cpu": "x86-64",
+      "features": null,
+      "frame-pointer": "may-omit (default)",
+      "panic-strategy": "unwind",
+      "split-debuginfo": null,
+      " supported-split-debuginfo": [
+        "packed",
+        "unpacked",
+        "off"
+      ],
+      "plt-by-default": false,
+      "relro-level": "full",
+      "position-independent-executables": true,
+      "static-position-independent-executables": true,
+      "tls-model": null
+    },
+    "x86_64-pc-windows-msvc": {
+      "cpu": "x86-64",
+      "features": "+cmpxchg16b,+sse3,+lahfsahf",
+      "frame-pointer": "may-omit (default)",
+      "panic-strategy": "unwind",
+      "split-debuginfo": "packed",
+      " supported-split-debuginfo": [
+        "packed"
+      ],
+      "plt-by-default": false,
+      "relro-level": null,
+      "position-independent-executables": null,
+      "static-position-independent-executables": null,
+      "tls-model": null
+    },
+    "x86_64-pc-windows-gnu": {
+      "cpu": "x86-64",
+      "features": "+cmpxchg16b,+sse3,+lahfsahf",
+      "frame-pointer": "may-omit (default)",
+      "panic-strategy": "unwind",
+      "split-debuginfo": null,
+      " supported-split-debuginfo": null,
+      "plt-by-default": false,
+      "relro-level": null,
+      "position-independent-executables": null,
+      "static-position-independent-executables": null,
+      "tls-model": null
+    },
+    "aarch64-unknown-linux-gnu": {
+      "cpu": null,
+      "features": "+v8a,+outline-atomics",
+      "frame-pointer": "non-leaf",
+      "panic-strategy": "unwind",
+      "split-debuginfo": null,
+      " supported-split-debuginfo": [
+        "packed",
+        "unpacked",
+        "off"
+      ],
+      "plt-by-default": null,
+      "relro-level": "full",
+      "position-independent-executables": true,
+      "static-position-independent-executables": true,
+      "tls-model": null
+    },
+    "aarch64-apple-darwin": {
+      "cpu": "apple-m1",
+      "features": null,
+      "frame-pointer": "non-leaf",
+      "panic-strategy": "unwind",
+      "split-debuginfo": "packed",
+      " supported-split-debuginfo": [
+        "packed",
+        "unpacked",
+        "off"
+      ],
+      "plt-by-default": null,
+      "relro-level": null,
+      "position-independent-executables": null,
+      "static-position-independent-executables": null,
+      "tls-model": null
+    },
+    "aarch64-pc-windows-msvc": {
+      "cpu": null,
+      "features": "+v8a,+neon",
+      "frame-pointer": "non-leaf",
+      "panic-strategy": "unwind",
+      "split-debuginfo": "packed",
+      " supported-split-debuginfo": [
+        "packed"
+      ],
+      "plt-by-default": null,
+      "relro-level": null,
+      "position-independent-executables": null,
+      "static-position-independent-executables": null,
+      "tls-model": null
+    },
+    "i686-unknown-linux-gnu": {
+      "cpu": "pentium4",
+      "features": null,
+      "frame-pointer": "may-omit (default)",
+      "panic-strategy": "unwind",
+      "split-debuginfo": null,
+      " supported-split-debuginfo": [
+        "packed",
+        "unpacked",
+        "off"
+      ],
+      "plt-by-default": null,
+      "relro-level": "full",
+      "position-independent-executables": true,
+      "static-position-independent-executables": true,
+      "tls-model": null
+    },
+    "i686-pc-windows-msvc": {
+      "cpu": "pentium4",
+      "features": null,
+      "frame-pointer": "may-omit (default)",
+      "panic-strategy": "unwind",
+      "split-debuginfo": "packed",
+      " supported-split-debuginfo": [
+        "packed"
+      ],
+      "plt-by-default": null,
+      "relro-level": null,
+      "position-independent-executables": null,
+      "static-position-independent-executables": null,
+      "tls-model": null
+    }
+  },
+  "top100_crates_profile_summary": {
+    "total_crates": 100,
+    "total_recent_downloads": 8422968730,
+    "crates_with_custom_profiles": 11,
+    "crates_with_custom_profiles_list": [
+      {
+        "rank": 5,
+        "name": "itertools",
+        "version": "0.14.0",
+        "recent_downloads": 122562215,
+        "orig_profiles": {
+          "bench": {
+            "debug": "true"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "debug": "2"
+          }
+        }
+      },
+      {
+        "rank": 7,
+        "name": "indexmap",
+        "version": "2.12.1",
+        "recent_downloads": 120172218,
+        "orig_profiles": {
+          "bench": {
+            "debug": "true"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "debug": "2"
+          }
+        }
+      },
+      {
+        "rank": 12,
+        "name": "base64",
+        "version": "0.22.1",
+        "recent_downloads": 115641002,
+        "orig_profiles": {
+          "bench": {
+            "debug": "true"
+          },
+          "test": {
+            "opt-level": "3"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "debug": "2"
+          },
+          "test": {
+            "opt-level": "3"
+          }
+        }
+      },
+      {
+        "rank": 22,
+        "name": "memchr",
+        "version": "2.7.6",
+        "recent_downloads": 100476937,
+        "orig_profiles": {
+          "release": {
+            "debug": "true"
+          },
+          "bench": {
+            "debug": "true"
+          },
+          "test": {
+            "opt-level": "3",
+            "debug": "true"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "debug": "2"
+          },
+          "release": {
+            "debug": "2"
+          },
+          "test": {
+            "opt-level": "3",
+            "debug": "2"
+          }
+        }
+      },
+      {
+        "rank": 31,
+        "name": "cc",
+        "version": "1.2.47",
+        "recent_downloads": 90433446,
+        "orig_profiles": {
+          "release": {
+            "opt-level": "3",
+            "lto": "true"
+          }
+        },
+        "norm_profiles": {
+          "release": {
+            "opt-level": "3",
+            "lto": "true"
+          }
+        }
+      },
+      {
+        "rank": 39,
+        "name": "clap",
+        "version": "4.5.53",
+        "recent_downloads": 83787131,
+        "orig_profiles": {
+          "dev": {
+            "panic": "abort"
+          },
+          "release": {
+            "lto": "true",
+            "codegen-units": "1",
+            "panic": "abort"
+          },
+          "test": {
+            "opt-level": "1"
+          },
+          "bench": {
+            "lto": "true",
+            "codegen-units": "1"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "lto": "true",
+            "codegen-units": "1"
+          },
+          "dev": {
+            "panic": "abort"
+          },
+          "release": {
+            "lto": "true",
+            "codegen-units": "1",
+            "panic": "abort"
+          },
+          "test": {
+            "opt-level": "1"
+          }
+        }
+      },
+      {
+        "rank": 48,
+        "name": "regex",
+        "version": "1.12.2",
+        "recent_downloads": 79392139,
+        "orig_profiles": {
+          "release": {
+            "debug": "true"
+          },
+          "bench": {
+            "debug": "true"
+          },
+          "dev": {
+            "opt-level": "3",
+            "debug": "true"
+          },
+          "test": {
+            "opt-level": "3",
+            "debug": "true"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "debug": "2"
+          },
+          "dev": {
+            "opt-level": "3",
+            "debug": "2"
+          },
+          "release": {
+            "debug": "2"
+          },
+          "test": {
+            "opt-level": "3",
+            "debug": "2"
+          }
+        }
+      },
+      {
+        "rank": 52,
+        "name": "aho-corasick",
+        "version": "1.1.4",
+        "recent_downloads": 74896980,
+        "orig_profiles": {
+          "release": {
+            "debug": "true"
+          },
+          "bench": {
+            "debug": "true"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "debug": "2"
+          },
+          "release": {
+            "debug": "2"
+          }
+        }
+      },
+      {
+        "rank": 53,
+        "name": "winnow",
+        "version": "0.7.13",
+        "recent_downloads": 73647452,
+        "orig_profiles": {
+          "dev": {
+            "panic": "abort"
+          },
+          "release": {
+            "lto": "true",
+            "codegen-units": "1",
+            "panic": "abort"
+          },
+          "bench": {
+            "lto": "true",
+            "codegen-units": "1",
+            "debug": "true"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "lto": "true",
+            "codegen-units": "1",
+            "debug": "2"
+          },
+          "dev": {
+            "panic": "abort"
+          },
+          "release": {
+            "lto": "true",
+            "codegen-units": "1",
+            "panic": "abort"
+          }
+        }
+      },
+      {
+        "rank": 57,
+        "name": "hyper",
+        "version": "1.8.1",
+        "recent_downloads": 72357887,
+        "orig_profiles": {
+          "release": {
+            "codegen-units": "1",
+            "incremental": "false"
+          },
+          "bench": {
+            "codegen-units": "1",
+            "incremental": "false"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "codegen-units": "1",
+            "incremental": "false"
+          },
+          "release": {
+            "codegen-units": "1",
+            "incremental": "false"
+          }
+        }
+      },
+      {
+        "rank": 75,
+        "name": "rustls-webpki",
+        "version": "0.103.9",
+        "recent_downloads": 66303947,
+        "orig_profiles": {
+          "bench": {
+            "opt-level": "3",
+            "lto": "true",
+            "codegen-units": "1",
+            "debug": "false",
+            "debug-assertions": "false",
+            "rpath": "false"
+          },
+          "release": {
+            "opt-level": "3",
+            "lto": "true",
+            "codegen-units": "1",
+            "debug": "false",
+            "debug-assertions": "false",
+            "rpath": "false"
+          }
+        },
+        "norm_profiles": {
+          "bench": {
+            "opt-level": "3",
+            "lto": "true",
+            "codegen-units": "1",
+            "debug": "0",
+            "debug-assertions": "false",
+            "rpath": "false"
+          },
+          "release": {
+            "opt-level": "3",
+            "lto": "true",
+            "codegen-units": "1",
+            "debug": "0",
+            "debug-assertions": "false",
+            "rpath": "false"
+          }
+        }
+      }
+    ],
+    "setting_counts": {
+      "bench": {
+        "debug": {
+          "true": 7,
+          "false": 1
+        },
+        "lto": {
+          "true": 3
+        },
+        "codegen-units": {
+          "1": 4
+        },
+        "incremental": {
+          "false": 1
+        },
+        "opt-level": {
+          "3": 1
+        },
+        "debug-assertions": {
+          "false": 1
+        },
+        "rpath": {
+          "false": 1
+        }
+      },
+      "test": {
+        "opt-level": {
+          "3": 3,
+          "1": 1
+        },
+        "debug": {
+          "true": 2
+        }
+      },
+      "release": {
+        "debug": {
+          "true": 3,
+          "false": 1
+        },
+        "opt-level": {
+          "3": 2
+        },
+        "lto": {
+          "true": 4
+        },
+        "codegen-units": {
+          "1": 4
+        },
+        "panic": {
+          "abort": 2
+        },
+        "incremental": {
+          "false": 1
+        },
+        "debug-assertions": {
+          "false": 1
+        },
+        "rpath": {
+          "false": 1
+        }
+      },
+      "dev": {
+        "panic": {
+          "abort": 2
+        },
+        "opt-level": {
+          "3": 1
+        },
+        "debug": {
+          "true": 1
+        }
+      }
+    },
+    "setting_downloads": {
+      "bench": {
+        "debug=true": 686788943,
+        "lto=true": 223738530,
+        "codegen-units=1": 296096417,
+        "incremental=false": 72357887,
+        "opt-level=3": 66303947,
+        "debug=false": 66303947,
+        "debug-assertions=false": 66303947,
+        "rpath=false": 66303947
+      },
+      "test": {
+        "opt-level=3": 295510078,
+        "debug=true": 179869076,
+        "opt-level=1": 83787131
+      },
+      "release": {
+        "debug=true": 254766056,
+        "opt-level=3": 156737393,
+        "lto=true": 314171976,
+        "codegen-units=1": 296096417,
+        "panic=abort": 157434583,
+        "incremental=false": 72357887,
+        "debug=false": 66303947,
+        "debug-assertions=false": 66303947,
+        "rpath=false": 66303947
+      },
+      "dev": {
+        "panic=abort": 157434583,
+        "opt-level=3": 79392139,
+        "debug=true": 79392139
+      }
+    }
+  },
+  "registry_3680_crates_profile_census": {
+    "total_unique_crates_scanned": 3680,
+    "crates_with_profile_tables": 200,
+    "profile_table_names": {
+      "release": 123,
+      "bench": 83,
+      "dev": 35,
+      "test": 22,
+      "profiling": 6,
+      "dist": 4,
+      "release-strip": 2,
+      "dev-ci": 2,
+      "wasm-release": 1,
+      "stress-test": 1,
+      "release-lto": 1,
+      "release_like_test": 1,
+      "wasm-test": 1,
+      "shuttle": 1,
+      "release-no-lto": 1,
+      "minimal": 1,
+      "callgrind": 1,
+      "loom": 1,
+      "ci-check": 1
+    },
+    "setting_counts": {
+      "release": {
+        "opt-level": {
+          "3": 43,
+          "z": 6,
+          "2": 2,
+          "s": 2
+        },
+        "lto": {
+          "true": 56,
+          "fat": 13,
+          "thin": 14
+        },
+        "codegen-units": {
+          "1": 62,
+          "16": 2
+        },
+        "panic": {
+          "abort": 37,
+          "unwind": 1
+        },
+        "debug": {
+          "true": 29,
+          "false": 15,
+          "line-tables-only": 1,
+          "1": 4,
+          "full": 1
+        },
+        "debug-assertions": {
+          "false": 10,
+          "true": 3
+        },
+        "strip": {
+          "true": 18,
+          "debuginfo": 3,
+          "symbols": 3,
+          "false": 1
+        },
+        "incremental": {
+          "false": 9,
+          "true": 1
+        },
+        "overflow-checks": {
+          "true": 4,
+          "false": 2
+        },
+        "rpath": {
+          "false": 6
+        },
+        "split-debuginfo": {
+          "packed": 1
+        }
+      },
+      "dev": {
+        "panic": {
+          "abort": 12
+        },
+        "opt-level": {
+          "0": 4,
+          "2": 2,
+          "3": 2,
+          "1": 4
+        },
+        "overflow-checks": {
+          "true": 2
+        },
+        "lto": {
+          "true": 1,
+          "false": 2,
+          "thin": 1,
+          "off": 1
+        },
+        "debug": {
+          "true": 3,
+          "line-tables-only": 3,
+          "false": 2
+        },
+        "incremental": {
+          "true": 2,
+          "false": 1
+        },
+        "debug-assertions": {
+          "true": 2
+        },
+        "split-debuginfo": {
+          "unpacked": 1
+        },
+        "codegen-units": {
+          "4": 1
+        },
+        "rpath": {
+          "false": 1
+        }
+      },
+      "bench": {
+        "lto": {
+          "true": 29,
+          "fat": 4,
+          "thin": 5,
+          "false": 2
+        },
+        "codegen-units": {
+          "1": 32
+        },
+        "debug": {
+          "true": 36,
+          "false": 10,
+          "1": 3,
+          "2": 1
+        },
+        "opt-level": {
+          "3": 24,
+          "2": 1
+        },
+        "debug-assertions": {
+          "false": 12
+        },
+        "incremental": {
+          "true": 2,
+          "false": 1
+        },
+        "rpath": {
+          "false": 6
+        },
+        "inherits": {
+          "profiling": 2,
+          "release": 4
+        },
+        "overflow-checks": {
+          "false": 2
+        },
+        "strip": {
+          "false": 1,
+          "true": 1
+        },
+        "panic": {
+          "unwind": 1
+        }
+      },
+      "test": {
+        "opt-level": {
+          "2": 2,
+          "3": 9,
+          "1": 4
+        },
+        "lto": {
+          "fat": 2,
+          "thin": 1,
+          "true": 1,
+          "false": 1
+        },
+        "debug": {
+          "true": 6,
+          "false": 2
+        },
+        "incremental": {
+          "true": 3
+        },
+        "debug-assertions": {
+          "true": 6
+        },
+        "overflow-checks": {
+          "true": 2
+        },
+        "split-debuginfo": {
+          "packed": 1
+        },
+        "inherits": {
+          "release": 1
+        },
+        "codegen-units": {
+          "2": 1
+        },
+        "rpath": {
+          "false": 1
+        }
+      },
+      "dist": {
+        "opt-level": {
+          "z": 1
+        },
+        "lto": {
+          "fat": 1,
+          "thin": 3
+        },
+        "codegen-units": {
+          "1": 1
+        },
+        "panic": {
+          "abort": 1
+        },
+        "strip": {
+          "true": 1
+        },
+        "inherits": {
+          "release": 4
+        }
+      },
+      "wasm-release": {
+        "opt-level": {
+          "z": 1
+        },
+        "lto": {
+          "fat": 1
+        },
+        "codegen-units": {
+          "1": 1
+        },
+        "inherits": {
+          "release": 1
+        }
+      },
+      "stress-test": {
+        "lto": {
+          "fat": 1
+        },
+        "panic": {
+          "abort": 1
+        },
+        "inherits": {
+          "release": 1
+        }
+      },
+      "release-strip": {
+        "strip": {
+          "symbols": 2
+        },
+        "inherits": {
+          "release": 2
+        }
+      },
+      "release-lto": {
+        "lto": {
+          "true": 1
+        },
+        "codegen-units": {
+          "1": 1
+        },
+        "inherits": {
+          "release": 1
+        }
+      },
+      "profiling": {
+        "debug": {
+          "true": 5,
+          "1": 1
+        },
+        "strip": {
+          "false": 3
+        },
+        "inherits": {
+          "release": 6
+        }
+      },
+      "release_like_test": {
+        "overflow-checks": {
+          "false": 1
+        },
+        "debug-assertions": {
+          "false": 1
+        },
+        "inherits": {
+          "test": 1
+        }
+      },
+      "dev-ci": {
+        "opt-level": {
+          "1": 2
+        },
+        "inherits": {
+          "dev": 2
+        }
+      },
+      "wasm-test": {
+        "opt-level": {
+          "z": 1
+        },
+        "debug": {
+          "true": 1
+        },
+        "inherits": {
+          "test": 1
+        }
+      },
+      "shuttle": {
+        "opt-level": {
+          "3": 1
+        },
+        "inherits": {
+          "test": 1
+        }
+      },
+      "release-no-lto": {
+        "lto": {
+          "off": 1
+        },
+        "inherits": {
+          "release": 1
+        }
+      },
+      "minimal": {
+        "opt-level": {
+          "z": 1
+        },
+        "inherits": {
+          "release": 1
+        }
+      },
+      "callgrind": {
+        "debug": {
+          "1": 1
+        },
+        "strip": {
+          "false": 1
+        },
+        "inherits": {
+          "bench": 1
+        }
+      },
+      "loom": {
+        "opt-level": {
+          "3": 1
+        },
+        "lto": {
+          "true": 1
+        },
+        "inherits": {
+          "test": 1
+        }
+      },
+      "ci-check": {
+        "debug": {
+          "false": 1
+        },
+        "inherits": {
+          "dev": 1
+        }
+      }
+    }
+  },
+  "rustc_s1991_self_build_profiles": {
+    "library_cargo_toml": {
+      "release": {
+        "package_overrides": {
+          "compiler_builtins": {
+            "codegen-units": "10000"
+          },
+          "addr2line": {
+            "debug": "0",
+            "opt-level": "s"
+          },
+          "adler2": {
+            "debug": "0"
+          },
+          "gimli": {
+            "debug": "0",
+            "opt-level": "s"
+          },
+          "miniz_oxide": {
+            "debug": "0",
+            "opt-level": "s"
+          },
+          "object": {
+            "debug": "0"
+          },
+          "rustc-demangle": {
+            "debug": "0",
+            "opt-level": "s"
+          },
+          "panic_abort": {}
+        }
+      },
+      "dev": {
+        "package_overrides": {
+          "panic_abort": {}
+        }
+      },
+      "dist": {
+        "codegen-units": "1",
+        "debug": "1",
+        "inherits": "release",
+        "package_overrides": {
+          "panic_abort": {}
+        }
+      }
+    },
+    "compiler_cargo_toml": {
+      "release": {
+        "package_overrides": {
+          "rustc_thread_pool": {
+            "overflow-checks": "false"
+          },
+          "lld-wrapper": {
+            "debug": "0",
+            "strip": "true"
+          },
+          "wasm-component-ld-wrapper": {
+            "debug": "0",
+            "strip": "true"
+          },
+          "test-float-parse": {
+            "opt-level": "3",
+            "codegen-units": "1"
+          }
+        }
+      },
+      "dev": {
+        "package_overrides": {
+          "test-float-parse": {
+            "opt-level": "3"
+          }
+        }
+      }
+    }
+  },
+  "major_projects_profiles_and_workflows": {
+    "BurntSushi/ripgrep": {
+      "commit": "4649aa9700619f94cf9c66876e9549d83420e16c",
+      "profiles": {
+        "release": {
+          "debug": "1"
+        },
+        "release-lto": {
+          "opt-level": "3",
+          "lto": "fat",
+          "codegen-units": "1",
+          "panic": "abort",
+          "debug": "none",
+          "strip": "symbols",
+          "overflow-checks": "false",
+          "incremental": "false",
+          "debug-assertions": "false",
+          "inherits": "release"
+        },
+        "deb": {
+          "debug": "false",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "# On Windows MSVC, statically link the C runtime so that the resulting EXE does\n# not depend on the vcruntime DLL.\n#\n# See: https://github.com/BurntSushi/ripgrep/pull/1613\n[target.x86_64-pc-windows-msvc]\nrustflags = [\"-C\", \"target-feature=+crt-static\"]\n[target.i686-pc-windows-msvc]\nrustflags = [\"-C\", \"target-feature=+crt-static\"]\n\n# Do the same for MUSL targets. At the time of writing (2023-10-23), this is\n# the default. But the plan is for the default to change to dynamic linking.\n# The whole point of MUSL with respect to ripgrep is to create a fully\n# statically linked executable.\n#\n# See: https://github.com/rust-lang/compiler-team/issues/422\n# See: https://github.com/rust-lang/compiler-team/issues/422#issuecomment-812135847\n[target.x86_64-unknown-linux-musl]\nrustflags = [\n  \"-C\", \"target-feature=+crt-static\",\n  \"-C\", \"link-self-contained=yes\",\n]\n",
+      "workflow_hits": {
+        "release.yml": [
+          "--profile deb"
+        ]
+      }
+    },
+    "sharkdp/fd": {
+      "commit": "b19136871310b01500b4f09eadd7387b8476be47",
+      "profiles": {
+        "release": {
+          "lto": "true",
+          "codegen-units": "1",
+          "strip": "true"
+        }
+      },
+      "cargo_config": null,
+      "workflow_hits": {}
+    },
+    "astral-sh/ruff": {
+      "commit": "cf41c5e87612f0462f18244a57d3361ebe790110",
+      "profiles": {
+        "release": {
+          "lto": "fat",
+          "codegen-units": "16",
+          "package_overrides": {
+            "ruff_python_parser": {
+              "codegen-units": "1"
+            },
+            "ruff_python_ast": {
+              "codegen-units": "1"
+            },
+            "salsa": {
+              "codegen-units": "1"
+            }
+          }
+        },
+        "minimal-size": {
+          "opt-level": "z",
+          "codegen-units": "1",
+          "inherits": "release"
+        },
+        "dev": {
+          "opt-level": "1",
+          "lto": "off",
+          "debug": "line-tables-only",
+          "package_overrides": {
+            "insta": {
+              "opt-level": "3"
+            },
+            "similar": {
+              "opt-level": "3"
+            },
+            "salsa": {
+              "opt-level": "3"
+            },
+            "ruff_python_parser": {
+              "opt-level": "1"
+            }
+          }
+        },
+        "profiling": {
+          "lto": "false",
+          "debug": "full",
+          "strip": "false",
+          "inherits": "release"
+        },
+        "fast-test": {
+          "opt-level": "1",
+          "lto": "off",
+          "debug": "line-tables-only",
+          "inherits": "dev"
+        },
+        "dist": {
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "[alias]\ndev = \"run --package ruff_dev --bin ruff_dev\"\nbenchmark = \"bench -p ruff_benchmark --bench linter --bench formatter --\"\n\n# statically link the C runtime so the executable does not depend on\n# that shared/dynamic library.\n#\n# See: https://github.com/astral-sh/ruff/issues/11503\n[target.'cfg(all(target_env=\"msvc\", target_os = \"windows\"))']\nrustflags = [\"-C\", \"target-feature=+crt-static\"]\n",
+      "workflow_hits": {
+        "build-binaries.yml": [
+          "RUSTFLAGS: \"${{ env.RUSTFLAGS }} -Cprofile-use=${{ github.workspace }}/target/ruff-pgo/ruff.profdata\"",
+          "RUSTFLAGS: \"-C linker=rust-lld -C linker-flavor=ld64.lld -C link-arg=--icf=safe\"",
+          "RUSTFLAGS=\"${RUSTFLAGS:+${RUSTFLAGS} }-C target-feature=+crt-static\"",
+          "RUSTFLAGS=${RUSTFLAGS:+${RUSTFLAGS} }-Cprofile-use=${{ github.workspace }}/target/ruff-pgo/ruff.profdata\" >> \"$GITHUB_ENV\"",
+          "profile-generate -fno-profile-use\"",
+          "profile-use\"",
+          "profile-use=${{ github.workspace }}/target/ruff-pgo/ruff.profdata\"",
+          "profile-use=${{ github.workspace }}/target/ruff-pgo/ruff.profdata\" >> \"$GITHUB_ENV\"",
+          "target-feature=+crt-static\""
+        ],
+        "build-playground.yml": [
+          "CARGO_PROFILE_DEV_LTO: \"false\"",
+          "CARGO_PROFILE_DEV_OPT_LEVEL: 0"
+        ],
+        "ci.yaml": [
+          "--profile ci",
+          "--profile minimal",
+          "--profile profiling",
+          "--profile=profiling",
+          "CARGO_PROFILE_DEV_DEBUG: line-tables-only",
+          "CARGO_PROFILE_DEV_LTO: \"false\"",
+          "CARGO_PROFILE_DEV_OPT_LEVEL: 0",
+          "CARGO_PROFILE_PROFILING_DEBUG: line-tables-only"
+        ],
+        "daily_fuzz.yaml": [
+          "CARGO_PROFILE_DEV_DEBUG: line-tables-only",
+          "CARGO_PROFILE_DEV_LTO: \"false\"",
+          "CARGO_PROFILE_DEV_OPT_LEVEL: 0"
+        ],
+        "memory_report.yaml": [
+          "--profile profiling",
+          "CARGO_PROFILE_PROFILING_DEBUG: line-tables-only"
+        ],
+        "publish-crates.yml": [
+          "--profile minimal"
+        ],
+        "publish-docs.yml": [
+          "CARGO_PROFILE_DEV_LTO: \"false\"",
+          "CARGO_PROFILE_DEV_OPT_LEVEL: 0"
+        ]
+      }
+    },
+    "astral-sh/uv": {
+      "commit": "d5c3f174417418c24ec3c276e01b0f62b961b13c",
+      "profiles": {
+        "dev": {
+          "debug": "line-tables-only"
+        },
+        "release": {
+          "lto": "fat",
+          "codegen-units": "1",
+          "panic": "abort",
+          "strip": "true"
+        },
+        "profiling": {
+          "lto": "false",
+          "codegen-units": "1",
+          "debug": "full",
+          "strip": "false",
+          "inherits": "release"
+        },
+        "fast-build": {
+          "opt-level": "1",
+          "lto": "off",
+          "debug": "0",
+          "strip": "debuginfo",
+          "inherits": "dev"
+        },
+        "fast-build-nightly": {
+          "panic": "abort",
+          "inherits": "fast-build"
+        },
+        "no-debug": {
+          "debug": "0",
+          "strip": "debuginfo",
+          "inherits": "dev"
+        },
+        "no-debug-nightly": {
+          "panic": "abort",
+          "inherits": "no-debug"
+        },
+        "minimal-size": {
+          "opt-level": "z",
+          "codegen-units": "1",
+          "inherits": "release"
+        },
+        "dist": {
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "[alias]\ndev = \"run --package uv-dev --features dev\"\n\n# statically link the C runtime so the executable does not depend on\n# that shared/dynamic library.\n#\n# See: https://github.com/astral-sh/ruff/issues/11503\n[target.'cfg(all(target_env = \"msvc\", target_os = \"windows\"))']\nrustflags = [\"-C\", \"target-feature=+crt-static\"]\n",
+      "workflow_hits": {
+        "bench.yml": [
+          "--profile profiling"
+        ],
+        "build-dev-binaries.yml": [
+          "--profile minimal",
+          "--profile no-debug",
+          "--profile no-debug-nightly",
+          "RUSTFLAGS: -Z unstable-options -C linker-features=+lld -C link-self-contained=+linker"
+        ],
+        "build-release-binaries.yml": [
+          "--profile minimal-size",
+          "RUSTFLAGS: \"-C linker=rust-lld -C linker-flavor=ld64.lld -C link-arg=--icf=safe -Cprofile-use=${{ github.workspace }}/target/uv-pgo/uv.profdata\"",
+          "RUSTFLAGS: \"-C linker=rust-lld -C linker-flavor=ld64.lld -C link-arg=--icf=safe\"",
+          "RUSTFLAGS: \"-C target-feature=+crt-static\"",
+          "RUSTFLAGS: ${{ matrix.platform.target == 'x86_64-pc-windows-msvc' && format('-Cprofile-use={0}/target/uv-pgo/uv.profdata', github.workspace) || '' }}",
+          "RUSTFLAGS=\"${RUSTFLAGS:+${RUSTFLAGS} }--remap-path-prefix=$registry/=registry/\"",
+          "RUSTFLAGS=\"${RUSTFLAGS:+${RUSTFLAGS} }-C link-arg=-B${bundled_lld_dir} -C link-arg=-fuse-ld=lld -C link-arg=-Wl,--icf=all\"",
+          "RUSTFLAGS=\"${RUSTFLAGS:+${RUSTFLAGS} }-C link-arg=-B${bundled_lld_dir} -C link-arg=-fuse-ld=lld\"",
+          "RUSTFLAGS=\"${RUSTFLAGS:+${RUSTFLAGS} }-C target-feature=+crt-static\"",
+          "RUSTFLAGS=\"${RUSTFLAGS:+${RUSTFLAGS} }-Cprofile-use=$PWD/target/uv-pgo/uv.profdata\"",
+          "profile-generate -fno-profile-use\"",
+          "profile-use\"",
+          "profile-use=$PWD/target/uv-pgo/uv.profdata\"",
+          "profile-use=${{ github.workspace }}/target/uv-pgo/uv.profdata\"",
+          "profile-use={0}/target/uv-pgo/uv.profdata', github.workspace) || '' }}",
+          "target-feature=+crt-static\""
+        ],
+        "check-docs.yml": [
+          "--profile minimal"
+        ],
+        "check-generated-files.yml": [
+          "--profile minimal"
+        ],
+        "check-lint.yml": [
+          "--profile minimal"
+        ]
+      }
+    },
+    "helix-editor/helix": {
+      "commit": "a714a818a3a4f6dd5aad3b003a78692f90a1703f",
+      "profiles": {
+        "release": {
+          "lto": "thin"
+        },
+        "opt": {
+          "opt-level": "3",
+          "lto": "fat",
+          "codegen-units": "1",
+          "strip": "true",
+          "inherits": "release"
+        },
+        "integration": {
+          "inherits": "test",
+          "package_overrides": {
+            "helix-core": {
+              "opt-level": "2"
+            },
+            "helix-tui": {
+              "opt-level": "2"
+            },
+            "helix-term": {
+              "opt-level": "2"
+            }
+          }
+        }
+      },
+      "cargo_config": "# we use tokio_unstable to enable runtime::Handle::id so we can separate\n# globals from multiple parallel tests. If that function ever does get removed\n# its possible to replace (with some additional overhead and effort)\n# Annoyingly build.rustflags doesn't work here because it gets overwritten\n# if people have their own global target.<..> config (for example to enable mold)\n# specifying flags this way is more robust as they get merged\n# This still gets overwritten by RUST_FLAGS though, luckily it shouldn't be necessary\n# to set those most of the time. If downstream does overwrite this its not a huge\n# deal since it will only break tests anyway\n[target.\"cfg(all())\"]\nrustflags = [\"--cfg\", \"tokio_unstable\", \"-C\", \"target-feature=-crt-static\"]\n\n\n[alias]\nxtask = \"run --package xtask --\"\nintegration-test = \"test --features integration --profile integration --workspace --test integration\"\n\n",
+      "workflow_hits": {
+        "release.yml": [
+          "--profile opt"
+        ]
+      }
+    },
+    "alacritty/alacritty": {
+      "commit": "aa5d942f46c40184a3f214830ff5f7989f4733a1",
+      "profiles": {
+        "release": {
+          "lto": "thin",
+          "debug": "1",
+          "incremental": "false"
+        }
+      },
+      "cargo_config": null,
+      "workflow_hits": {}
+    },
+    "bytecodealliance/wasmtime": {
+      "commit": "68f6475eac03b53a863c3e9c83ec587265fc70a4",
+      "profiles": {
+        "release": {
+          "build-override": {
+            "opt-level": "0"
+          },
+          "package_overrides": {
+            "wasi-preview1-component-adapter": {
+              "opt-level": "s",
+              "strip": "debuginfo"
+            }
+          }
+        },
+        "dev": {
+          "package_overrides": {
+            "wasi-preview1-component-adapter": {
+              "incremental": "false",
+              "opt-level": "s",
+              "debug-assertions": "false",
+              "overflow-checks": "false"
+            },
+            "wit-bindgen": {
+              "incremental": "false",
+              "debug-assertions": "false",
+              "overflow-checks": "false",
+              "opt-level": "s"
+            },
+            "tokio": {
+              "overflow-checks": "false"
+            },
+            "wasmtime-cli": {
+              "opt-level": "0"
+            }
+          }
+        },
+        "profiling": {
+          "debug": "line-tables-only",
+          "inherits": "bench"
+        },
+        "fastest-runtime": {
+          "lto": "true",
+          "codegen-units": "1",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": null,
+      "workflow_hits": {
+        "main.yml": [
+          "CARGO_PROFILE_DEV_DEBUG_ASSERTIONS: false",
+          "RUSTFLAGS: \"--cfg arc_try_new\"",
+          "RUSTFLAGS: \"--cfg gc_zeal\"",
+          "RUSTFLAGS: \"--cfg pulley_assume_llvm_makes_tail_calls\"",
+          "RUSTFLAGS: \"--cfg pulley_disable_interp_simd\"",
+          "RUSTFLAGS: \"--cfg pulley_tail_calls\"",
+          "RUSTFLAGS: -Alinker-messages",
+          "RUSTFLAGS: -Cpanic=abort"
+        ]
+      }
+    },
+    "denoland/deno": {
+      "commit": "e7b39ebd55c85aaf6a29290c1f5a99e2e21e09dd",
+      "profiles": {
+        "release": {
+          "opt-level": "z",
+          "lto": "true",
+          "codegen-units": "1",
+          "panic": "abort",
+          "debug": "line-tables-only",
+          "split-debuginfo": "packed",
+          "incremental": "false",
+          "package_overrides": {
+            "async-compression": {
+              "opt-level": "3"
+            },
+            "base64-simd": {
+              "opt-level": "3"
+            },
+            "brotli": {
+              "opt-level": "3"
+            },
+            "brotli-decompressor": {
+              "opt-level": "3"
+            },
+            "bytes": {
+              "opt-level": "3"
+            },
+            "deno_bench_util": {
+              "opt-level": "3"
+            },
+            "deno_core": {
+              "opt-level": "3"
+            },
+            "deno_crypto": {
+              "opt-level": "3"
+            },
+            "deno_fetch": {
+              "opt-level": "3"
+            },
+            "deno_ffi": {
+              "opt-level": "3"
+            },
+            "deno_http": {
+              "opt-level": "3"
+            },
+            "deno_http_h1": {
+              "opt-level": "3"
+            },
+            "deno_napi": {
+              "opt-level": "3"
+            },
+            "deno_net": {
+              "opt-level": "3"
+            },
+            "deno_node": {
+              "opt-level": "3"
+            },
+            "deno_runtime": {
+              "opt-level": "3"
+            },
+            "deno_tls": {
+              "opt-level": "3"
+            },
+            "deno_web": {
+              "opt-level": "3"
+            },
+            "deno_process": {
+              "opt-level": "3"
+            },
+            "deno_websocket": {
+              "opt-level": "3"
+            },
+            "fastwebsockets": {
+              "opt-level": "3"
+            },
+            "flate2": {
+              "opt-level": "3"
+            },
+            "futures-util": {
+              "opt-level": "3"
+            },
+            "futures-io": {
+              "opt-level": "3"
+            },
+            "futures-channel": {
+              "opt-level": "3"
+            },
+            "futures-sink": {
+              "opt-level": "3"
+            },
+            "futures-task": {
+              "opt-level": "3"
+            },
+            "futures-core": {
+              "opt-level": "3"
+            },
+            "hyper": {
+              "opt-level": "3"
+            },
+            "miniz_oxide": {
+              "opt-level": "3"
+            },
+            "num-bigint-dig": {
+              "opt-level": "3"
+            },
+            "rand": {
+              "opt-level": "3"
+            },
+            "serde": {
+              "opt-level": "3"
+            },
+            "serde_v8": {
+              "opt-level": "3"
+            },
+            "libsui": {
+              "opt-level": "3"
+            },
+            "test_napi": {
+              "opt-level": "3"
+            },
+            "tokio": {
+              "opt-level": "3"
+            },
+            "url": {
+              "opt-level": "3"
+            },
+            "v8": {
+              "opt-level": "3"
+            },
+            "zstd": {
+              "opt-level": "3"
+            },
+            "zstd-sys": {
+              "opt-level": "3"
+            },
+            "http": {
+              "opt-level": "3"
+            },
+            "http-body": {
+              "opt-level": "3"
+            },
+            "httparse": {
+              "opt-level": "3"
+            },
+            "mio": {
+              "opt-level": "3"
+            },
+            "fnv": {
+              "opt-level": "3"
+            },
+            "hyper-util": {
+              "opt-level": "3"
+            },
+            "httpdate": {
+              "opt-level": "3"
+            },
+            "deno_unsync": {
+              "opt-level": "3"
+            },
+            "deno_semver": {
+              "opt-level": "3"
+            },
+            "deno_npm": {
+              "opt-level": "3"
+            },
+            "deno_lockfile": {
+              "opt-level": "3"
+            },
+            "deno_npm_cache": {
+              "opt-level": "3"
+            },
+            "twox-hash": {
+              "opt-level": "3"
+            }
+          }
+        },
+        "bench": {
+          "opt-level": "z",
+          "lto": "true",
+          "codegen-units": "1",
+          "panic": "abort",
+          "debug": "line-tables-only",
+          "split-debuginfo": "packed",
+          "incremental": "false",
+          "package_overrides": {
+            "deno_npm": {
+              "opt-level": "3"
+            }
+          }
+        },
+        "release-with-debug": {
+          "debug": "true",
+          "inherits": "release-lite"
+        },
+        "release-lite": {
+          "lto": "thin",
+          "codegen-units": "128",
+          "incremental": "true",
+          "inherits": "release",
+          "package_overrides": {
+            "deno_npm": {
+              "opt-level": "3"
+            }
+          }
+        },
+        "dev": {
+          "package_overrides": {
+            "num-bigint-dig": {
+              "opt-level": "3"
+            },
+            "v8": {
+              "opt-level": "1"
+            },
+            "libsui": {
+              "opt-level": "3"
+            },
+            "sha2": {
+              "opt-level": "3"
+            }
+          }
+        }
+      },
+      "cargo_config": "[target.x86_64-pc-windows-msvc]\nrustflags = [\"-C\", \"target-feature=+crt-static\", \"-C\", \"symbol-mangling-version=v0\"]\n\n# Cargo evaluates `target.'cfg(...)'` specs against `rustc --print cfg --target\n# <triple>`, whose output always contains `debug_assertions` no matter which\n# profile is being built. So `cfg(all(windows, debug_assertions))` matches every\n# Windows build and `cfg(all(windows, not(debug_assertions)))` matches none of\n# them, with no warning either way. Don't try to gate rustflags on the profile\n# here \u2014 there is no stable way to do it.\n#\n# This section was previously spelled cfg(all(windows, debug_assertions)) with a\n# debug-only intent, so per the above it has always applied to release builds\n# too. That's what we want (see below); cfg(windows) just says so honestly.\n# A cfg(all(windows, not(debug_assertions))) section setting link-arg=/OPT:ICF\n# was removed: it never matched, and it was redundant anyway because rustc\n# already passes /OPT:REF,ICF whenever optimizations are enabled.\n[target.'cfg(windows)']\nrustflags = [\n  \"-C\",\n  \"target-feature=+crt-static\",\n  \"-C\",\n  # On Windows a thread created without an explicit stack size \u2014 including the\n  # process main thread \u2014 gets the PE header's reserve, and MSVC defaults that\n  # to 1MB. The main V8 isolate runs on the main thread (deno::main ->\n  # create_and_run_current_thread -> a tokio current_thread runtime runs its\n  # spawned task on the thread that calls block_on), and 1MB is not enough for\n  # it: it overf",
+      "workflow_hits": {
+        "ci.generated.yml": [
+          "CARGO_PROFILE_BENCH_INCREMENTAL=false",
+          "CARGO_PROFILE_DEV_DEBUG: 0",
+          "CARGO_PROFILE_RELEASE_INCREMENTAL=false",
+          "RUSTFLAGS",
+          "RUSTFLAGS -C force-frame-pointers=yes -C force-unwind-tables=no -C link-arg=-Wl,--no-eh-frame-hdr\"",
+          "RUSTFLAGS and RUSTDOCFLAGS must be specified, otherwise the doctests fail",
+          "RUSTFLAGS\"",
+          "RUSTFLAGS<<__1",
+          "RUSTFLAGS<<__DENO_RUSTFLAGS\"",
+          "RUSTFLAGS=-Awarnings cargo +nightly-2025-11-12 miri test -p deno_core --features v8",
+          "force-frame-pointers=yes -C force-unwind-tables=no -C link-arg=-Wl,--no-eh-frame-hdr\""
+        ],
+        "node_compat_test.generated.yml": [
+          "RUSTFLAGS: ''"
+        ]
+      }
+    },
+    "pola-rs/polars": {
+      "commit": "437948302e11e15d47fc8b2882f9edb0848e5ebc",
+      "profiles": {
+        "dev": {
+          "debug": "line-tables-only"
+        },
+        "debug-dev": {
+          "debug": "true",
+          "inherits": "dev"
+        },
+        "release": {
+          "lto": "thin",
+          "debug": "line-tables-only",
+          "package_overrides": {
+            "sqlparser": {
+              "opt-level": "s"
+            },
+            "polars-sql": {
+              "opt-level": "s"
+            }
+          }
+        },
+        "nodebug-release": {
+          "debug": "false",
+          "inherits": "release"
+        },
+        "fast-release": {
+          "lto": "false",
+          "inherits": "release"
+        },
+        "debug-release": {
+          "debug": "true",
+          "inherits": "release"
+        },
+        "dist-release": {
+          "lto": "fat",
+          "codegen-units": "1",
+          "debug": "false",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "# Machine-specific cargo settings (PYO3 paths, RUSTFLAGS, CFLAGS, ...) are\n# written to .cargo/config.generated.toml by tools/update-cargo-env.py, which\n# runs automatically in the Makefile. This is done to prevent re-compilation\n# when running cargo check without the Makefile or rust-analyzer.\n#\n# Since this file is committed, any local changes you'd like to make should go\n# in config.local.toml, which is gitignored.\ninclude = [\n  { path = \"config.generated.toml\", optional = true },\n  { path = \"config.local.toml\", optional = true },\n]\n\n[unstable]\nmin-publish-age = true\n\n[registry]\nglobal-min-publish-age = \"35 days\"\n",
+      "workflow_hits": {
+        "benchmark-remote.yml": [
+          "RUSTFLAGS: -C embed-bitcode -D warnings",
+          "target-cpu=native"
+        ],
+        "benchmark.yml": [
+          "--profile nodebug-release",
+          "target-cpu=native",
+          "target-cpu=native`, which the cache key does"
+        ],
+        "docs-global.yml": [
+          "RUSTFLAGS: -C debuginfo=0 # Do not produce debug symbols to keep memory usage down"
+        ],
+        "lint-rust.yml": [
+          "RUSTFLAGS: -C debuginfo=0  # Do not produce debug symbols to keep memory usage down"
+        ]
+      }
+    },
+    "tikv/tikv": {
+      "commit": "33aa721d01822e97d31b4fe409abd4d70850bff1",
+      "profiles": {
+        "dev": {
+          "opt-level": "0",
+          "lto": "false",
+          "codegen-units": "256",
+          "panic": "unwind",
+          "debug": "0",
+          "overflow-checks": "false",
+          "incremental": "true",
+          "debug-assertions": "true",
+          "rpath": "false",
+          "package_overrides": {
+            "grpcio-sys": {
+              "debug": "false",
+              "opt-level": "1"
+            },
+            "librocksdb_sys": {
+              "debug": "false",
+              "opt-level": "1"
+            },
+            "libtitan_sys": {
+              "debug": "false",
+              "opt-level": "1"
+            },
+            "tests": {
+              "debug": "1",
+              "opt-level": "1"
+            }
+          }
+        },
+        "release": {
+          "opt-level": "3",
+          "lto": "thin",
+          "codegen-units": "1",
+          "panic": "unwind",
+          "debug": "false",
+          "overflow-checks": "false",
+          "incremental": "false",
+          "debug-assertions": "false",
+          "rpath": "false",
+          "package_overrides": {
+            "server": {
+              "opt-level": "1",
+              "codegen-units": "4"
+            }
+          }
+        },
+        "test": {
+          "opt-level": "0",
+          "lto": "false",
+          "codegen-units": "16",
+          "debug": "0",
+          "overflow-checks": "true",
+          "incremental": "true",
+          "debug-assertions": "true",
+          "rpath": "false"
+        },
+        "bench": {
+          "opt-level": "3",
+          "lto": "thin",
+          "codegen-units": "1",
+          "debug": "false",
+          "overflow-checks": "false",
+          "incremental": "false",
+          "debug-assertions": "false",
+          "rpath": "false"
+        }
+      },
+      "cargo_config": null,
+      "workflow_hits": {}
+    },
+    "vectordotdev/vector": {
+      "commit": "fda52a69b3da577c95a915d4bb4cf0fddafdb2ae",
+      "profiles": {
+        "release": {
+          "lto": "fat",
+          "codegen-units": "1",
+          "debug": "false"
+        },
+        "bench": {
+          "debug": "true"
+        }
+      },
+      "cargo_config": "[alias]\nvdev = \"run --quiet --package vdev --\"\n\n[env]\n# Build jemalloc assuming 64K pages so binaries also run on aarch64 hosts whose\n# kernels ship with a 64K page size (notably EL8 aarch64). On 4K-page hosts this\n# coarsens jemalloc's allocation granularity; no regression was measured in\n# https://github.com/vectordotdev/vector/pull/18481.\nJEMALLOC_SYS_WITH_LG_PAGE = \"16\"\n# Zero out timestamps in macOS static archives so vendored C libraries (openssl,\n# curl, librdkafka) produce deterministic artifacts. Ignored on Linux.\nZERO_AR_DATE = \"1\"\n# OpenSSL embeds the exact compile time (\"built on: ...\") in libcrypto.a.\n# Setting SOURCE_DATE_EPOCH to a fixed epoch makes OpenSSL 3.x use a\n# reproducible timestamp instead, producing identical artifacts across builds.\nSOURCE_DATE_EPOCH = \"0\"\n\n[target.'cfg(all())']\nrustflags = [\n  \"-D\", \"warnings\",\n  \"-Dclippy::print_stdout\",\n  \"-Dclippy::print_stderr\",\n  \"-Dclippy::dbg_macro\",\n]\n\n# We need to bring in `libstdc++` for things that build against C++ (librdkafka, etc) which comes along in the\n# `cross` base image but _isn't_ in a path searched by the linker normally. Additionally, our custom Docker image that\n# we base on the `cross` image moves `libstdc++` into this custom-looking directory to avoid some _other_ libraries\n# included in the `cross` base image from having a higher precedence than some of the \"self-contained\" libraries that\n# Rust will bundle/use for specific targets like MUSL.\n[target.x86_64-unknown-linux-musl]\nrustflags =",
+      "workflow_hits": {}
+    },
+    "typst/typst": {
+      "commit": "84cca406aafe7f830ed3f37f1cc6f0c8b6b65a03",
+      "profiles": {
+        "dev": {
+          "package_overrides": {
+            "*": {
+              "opt-level": "2"
+            }
+          }
+        },
+        "dev-fast": {
+          "opt-level": "2",
+          "inherits": "dev"
+        },
+        "release": {
+          "lto": "thin",
+          "codegen-units": "1",
+          "package_overrides": {
+            "typst-cli": {
+              "strip": "true"
+            }
+          }
+        }
+      },
+      "cargo_config": "[alias]\n# Runs the main integration test suite.\n#\n# The test wrapper is used to support rerunning the test runner itself on a\n# different commit if test artifacts need to be regenerated to create the test\n# report.\ntestit = \"run --quiet --package=test-wrapper --\"\n\n# Runs the documentation generator.\n#\n# We use the `dev-fast` profile as a reasonable trade-off between Rust and Typst\n# compilation speed. Just `dev` makes the Typst compilation very slow, while\n# `release` makes the Rust compilation very slow.\ndocit = \"run --profile dev-fast --package=typst-docs --\"\n",
+      "workflow_hits": {
+        "ci.yml": [
+          "RUSTFLAGS: \"-Dwarnings\""
+        ]
+      }
+    },
+    "nushell/nushell": {
+      "commit": "a93aaef9f5b918e70eb229c35a8516968c6854ab",
+      "profiles": {
+        "release": {
+          "opt-level": "s",
+          "lto": "thin",
+          "strip": "debuginfo"
+        },
+        "profiling": {
+          "debug": "true",
+          "strip": "false",
+          "inherits": "release"
+        },
+        "ci": {
+          "debug": "false",
+          "strip": "false",
+          "inherits": "dev"
+        }
+      },
+      "cargo_config": "[target.x86_64-pc-windows-msvc]\n# increase the default windows stack size\n# statically link the CRT so users don't have to install it\nrustflags = [\"-C\", \"link-args=-stack:10000000\", \"-C\", \"target-feature=+crt-static\"]\n\n# keeping this but commentting out in case we need them in the future\n\n# set a 2 gb stack size (0x80000000 = 2147483648 bytes = 2 GB)\n# [target.x86_64-unknown-linux-gnu]\n# rustflags = [\"-C\", \"link-args=-Wl,-z stack-size=0x80000000\"]\n\n# set a 2 gb stack size (0x80000000 = 2147483648 bytes = 2 GB)\n# [target.x86_64-apple-darwin]\n# rustflags = [\"-C\", \"link-args=-Wl,-stack_size,0x80000000\"]\n\n# How to use mold in linux and mac\n\n# [target.x86_64-unknown-linux-gnu]\n# linker = \"clang\"\n# rustflags = [\"-C\", \"link-arg=-fuse-ld=/usr/local/bin/mold\"]\n\n# [target.x86_64-apple-darwin]\n# linker = \"clang\"\n# rustflags = [\"-C\", \"link-arg=-fuse-ld=mold\"]\n\n# [target.aarch64-apple-darwin]\n# linker = \"clang\"\n# rustflags = [\"-C\", \"link-arg=-fuse-ld=mold\"]\n\n[target.aarch64-apple-darwin]\n# We can guarantee that this target will always run on a CPU with _at least_\n# these capabilities, so let's optimize for them\nrustflags = [\"-Ctarget-cpu=apple-m1\"]\n\n[alias]\n# Default clippy for library + bin code (no tests)\nnuclippy = \"clippy --workspace --exclude nu_plugin_* --profile ci --all-targets -- -D warnings -D clippy::unwrap_used -D clippy::unchecked_time_subtraction\"\n\n# Clippy just for tests\nnuclippy-tests = \"clippy --workspace --tests --exclude nu_plugin_* --profile ci --all-targets -- -D warn",
+      "workflow_hits": {
+        "beta-test.yml": [
+          "--profile ci"
+        ],
+        "ci.yml": [
+          "--profile ${{"
+        ]
+      }
+    },
+    "uutils/coreutils": {
+      "commit": "12e107fc042f9e8dd4425fb0623657554dfb1b51",
+      "profiles": {
+        "release": {
+          "lto": "fat",
+          "codegen-units": "1",
+          "panic": "abort"
+        },
+        "release-small": {
+          "opt-level": "z",
+          "strip": "true",
+          "inherits": "release"
+        },
+        "profiling": {
+          "panic": "unwind",
+          "debug": "true",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "# Note: keep in mind that this file is completely ignored in several use-cases\n# like e.g. out-of-tree builds ( https://github.com/rust-lang/cargo/issues/2930 ).\n# For this reason this file should be avoided as much as possible when there are alternatives.\n\n[target.i586-unknown-redox]\nlinker = \"i586-unknown-redox-gcc\"\n[target.x86_64-unknown-redox]\nlinker = \"x86_64-unknown-redox-gcc\"\n[target.aarch64-unknown-linux-gnu]\nlinker = \"aarch64-linux-gnu-gcc\"\n[target.riscv64gc-unknown-linux-musl]\nrustflags = [\"-C\", \"target-feature=+crt-static\"]\n[target.'cfg(target_env = \"msvc\")']\nrustflags = [\"-C\", \"target-feature=+crt-static\"]\n\n[env]\n# aws-lc is used only for checksum. Reduce binary size\nAWS_LC_SYS_NO_JITTER_ENTROPY = \"1\"\n",
+      "workflow_hits": {
+        "CICD.yml": [
+          "--profile ci",
+          "--profile=release-small",
+          "RUSTFLAGS Zpanic CARGOFLAGS CLEVEL nodocs",
+          "RUSTFLAGS did not",
+          "RUSTFLAGS\" ; exit 1 ;;",
+          "RUSTFLAGS: \"-Awarnings\"",
+          "RUSTFLAGS=${RUSTFLAGS:+${RUSTFLAGS} }-Cprofile-use=$(cat target/coreutils-pgo/profdata-path.txt)\" >> \"$GITHUB_ENV\"",
+          "RUSTFLAGS=${RUSTFLAGS}\"",
+          "RUSTFLAGS}\" in",
+          "profile-use missing from RUSTFLAGS\" ; exit 1 ;;",
+          "profile-use=$(cat target/coreutils-pgo/profdata-path.txt)\" >> \"$GITHUB_ENV\"",
+          "profile-use=*) ;;"
+        ]
+      }
+    },
+    "firecracker-microvm/firecracker": {
+      "commit": "bd40216958ea021eba27df26f7f1fb0b8040e5b7",
+      "profiles": {
+        "dev": {
+          "panic": "abort"
+        },
+        "ci": {
+          "panic": "unwind",
+          "incremental": "false",
+          "inherits": "dev"
+        },
+        "release": {
+          "lto": "true",
+          "codegen-units": "1",
+          "panic": "abort",
+          "strip": "none"
+        },
+        "bench": {
+          "strip": "debuginfo"
+        }
+      },
+      "cargo_config": "[build]\ntarget-dir = \"build/cargo_target\"\n\n[net]\ngit-fetch-with-cli = true\nretry = 10\n\n[env]\nAWS_LC_SYS_NO_JITTER_ENTROPY = \"1\"\n# disable AVX512 as it adds 600k of binary size\n# this was only used for MMDS token generation\nAWS_LC_SYS_CFLAGS = \"-DMY_ASSEMBLER_IS_TOO_OLD_FOR_512AVX\"\n",
+      "workflow_hits": {}
+    },
+    "fish-shell/fish-shell": {
+      "commit": "4da2a20801914288ded72e2614dd8e0b6e2ccd1a",
+      "profiles": {
+        "release": {
+          "lto": "true",
+          "overflow-checks": "true"
+        },
+        "release-with-debug": {
+          "debug": "true",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "[alias]\nxtask = \"run --package xtask --\"\n",
+      "workflow_hits": {
+        "release.yml": [
+          "RUSTFLAGS=\"-C linker=aarch64-linux-gnu-gcc -C link-arg=-lgcc -C link-arg=-D_FORTIFY_SOURCE=0\" \\"
+        ],
+        "test.yml": [
+          "RUSTFLAGS: \"-Zsanitizer=address\"",
+          "RUSTFLAGS: \"-Zsanitizer=memory -Zsanitizer-memory-track-origins\""
+        ]
+      }
+    },
+    "zed-industries/zed": {
+      "commit": "aff99ecc3249cfa95e720c4d6c1eb4a72105a3ee",
+      "profiles": {
+        "dev": {
+          "codegen-units": "16",
+          "debug": "limited",
+          "split-debuginfo": "unpacked",
+          "incremental": "true",
+          "build-override": {
+            "codegen-units": "16",
+            "split-debuginfo": "unpacked",
+            "debug": "limited"
+          },
+          "package_overrides": {
+            "gpui_macros": {
+              "opt-level": "3"
+            },
+            "derive_refineable": {
+              "opt-level": "3"
+            },
+            "feature_flags_macros": {
+              "opt-level": "3"
+            },
+            "settings_macros": {
+              "opt-level": "3"
+            },
+            "sqlez_macros": {
+              "opt-level": "3",
+              "codegen-units": "1"
+            },
+            "ui_macros": {
+              "opt-level": "3"
+            },
+            "util_macros": {
+              "opt-level": "3"
+            },
+            "quote": {
+              "opt-level": "3"
+            },
+            "syn": {
+              "opt-level": "3"
+            },
+            "proc-macro2": {
+              "opt-level": "3"
+            },
+            "tree-sitter": {
+              "opt-level": "3"
+            },
+            "taffy": {
+              "opt-level": "3"
+            },
+            "resvg": {
+              "opt-level": "3"
+            },
+            "wasmtime": {
+              "opt-level": "3"
+            },
+            "cranelift-codegen": {
+              "opt-level": "3"
+            },
+            "wasmtime-environ": {
+              "opt-level": "3"
+            },
+            "wasmtime-internal-cranelift": {
+              "opt-level": "3"
+            },
+            "minidumper": {
+              "opt-level": "3"
+            },
+            "serde_json": {
+              "opt-level": "3"
+            },
+            "activity_indicator": {
+              "codegen-units": "1"
+            },
+            "assets": {
+              "codegen-units": "1"
+            },
+            "breadcrumbs": {
+              "codegen-units": "1"
+            },
+            "collections": {
+              "codegen-units": "1"
+            },
+            "command_palette": {
+              "codegen-units": "1"
+            },
+            "command_palette_hooks": {
+              "codegen-units": "1"
+            },
+            "edit_prediction_ui": {
+              "codegen-units": "1"
+            },
+            "feature_flags": {
+              "codegen-units": "1"
+            },
+            "file_content": {
+              "codegen-units": "1"
+            },
+            "file_icons": {
+              "codegen-units": "1"
+            },
+            "image_viewer": {
+              "codegen-units": "1"
+            },
+            "install_cli": {
+              "codegen-units": "1"
+            },
+            "journal": {
+              "codegen-units": "1"
+            },
+            "json_schema_store": {
+              "codegen-units": "1"
+            },
+            "llama_cpp": {
+              "codegen-units": "1"
+            },
+            "lmstudio": {
+              "codegen-units": "1"
+            },
+            "menu": {
+              "codegen-units": "1"
+            },
+            "notifications": {
+              "codegen-units": "1"
+            },
+            "ollama": {
+              "codegen-units": "1"
+            },
+            "outline": {
+              "codegen-units": "1"
+            },
+            "paths": {
+              "codegen-units": "1"
+            },
+            "prettier": {
+              "codegen-units": "1"
+            },
+            "project_symbols": {
+              "codegen-units": "1"
+            },
+            "project_bookmarks": {
+              "codegen-units": "1"
+            },
+            "refineable": {
+              "codegen-units": "1"
+            },
+            "release_channel": {
+              "codegen-units": "1"
+            },
+            "reqwest_client": {
+              "codegen-units": "1"
+            },
+            "session": {
+              "codegen-units": "1"
+            },
+            "sidebar": {
+              "codegen-units": "1"
+            },
+            "snippet": {
+              "codegen-units": "1"
+            },
+            "snippets_ui": {
+              "codegen-units": "1"
+            },
+            "telemetry_events": {
+              "codegen-units": "1"
+            },
+            "theme_selector": {
+              "codegen-units": "1"
+            },
+            "time_format": {
+              "codegen-units": "1"
+            },
+            "ui_input": {
+              "codegen-units": "1"
+            },
+            "zed_actions": {
+              "codegen-units": "1"
+            }
+          }
+        },
+        "dbg": {
+          "debug": "full",
+          "inherits": "dev",
+          "build-override": {
+            "debug": "full"
+          }
+        },
+        "release": {
+          "lto": "thin",
+          "codegen-units": "1",
+          "debug": "limited",
+          "package_overrides": {
+            "zed": {
+              "codegen-units": "16"
+            }
+          }
+        },
+        "release-fast": {
+          "lto": "false",
+          "codegen-units": "16",
+          "debug": "full",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "[target.'cfg(all())']\n# v0 mangling scheme provides more detailed backtraces around closures\nrustflags = [\"-C\", \"symbol-mangling-version=v0\", \"--cfg\", \"tokio_unstable\"]\n\n[alias]\nxtask = \"run --package xtask --\"\nperf-test = [\"test\", \"--profile\", \"release-fast\", \"--lib\", \"--bins\", \"--tests\", \"--all-features\", \"--config\", \"target.'cfg(true)'.runner='cargo run -p perf --release'\", \"--config\", \"target.'cfg(true)'.rustflags=[\\\"--cfg\\\", \\\"perf_enabled\\\"]\"]\n# Keep similar flags here to share some ccache\nperf-compare = [\"run\", \"--profile\", \"release-fast\", \"-p\", \"perf\", \"--config\", \"target.'cfg(true)'.rustflags=[\\\"--cfg\\\", \\\"perf_enabled\\\"]\", \"--\", \"compare\"]\n\n[target.'cfg(target_os = \"windows\")']\nrustflags = [\n    \"--cfg\",\n    \"windows_slim_errors\",        # This cfg will reduce the size of `windows::core::Error` from 16 bytes to 4 bytes\n    \"-C\",\n    \"target-feature=+crt-static\", # This fixes the linking issue when compiling livekit on Windows\n]\n\n# We need lld to link libwebrtc.a successfully on aarch64-linux\n[target.aarch64-unknown-linux-gnu]\nrustflags = [\"-C\", \"link-arg=-fuse-ld=lld\"]\n\n[env]\nMACOSX_DEPLOYMENT_TARGET = \"12.0\"\n",
+      "workflow_hits": {}
+    },
+    "servo/servo": {
+      "commit": "1107afe32b59b3c316c1588941b7709983fca9d7",
+      "profiles": {
+        "dev": {
+          "package_overrides": {
+            "crypto-bigint": {
+              "opt-level": "3"
+            },
+            "servo-script": {
+              "codegen-units": "16"
+            },
+            "sha1": {
+              "opt-level": "3"
+            },
+            "sha2": {
+              "opt-level": "3"
+            },
+            "tikv-jemalloc-sys": {
+              "opt-level": "1"
+            }
+          }
+        },
+        "checked-release": {
+          "overflow-checks": "true",
+          "debug-assertions": "true",
+          "inherits": "release"
+        },
+        "coverage": {
+          "debug": "false",
+          "incremental": "false",
+          "inherits": "dev"
+        },
+        "medium": {
+          "opt-level": "2",
+          "debug": "line-tables-only",
+          "incremental": "true",
+          "inherits": "dev"
+        },
+        "production": {
+          "opt-level": "s",
+          "lto": "true",
+          "codegen-units": "1",
+          "debug-assertions": "false",
+          "inherits": "release"
+        },
+        "production-stripped": {
+          "strip": "true",
+          "inherits": "production"
+        },
+        "profiling": {
+          "lto": "thin",
+          "codegen-units": "1",
+          "debug": "true",
+          "debug-assertions": "false",
+          "inherits": "release"
+        }
+      },
+      "cargo_config": "[target.aarch64-linux-android]\nlinker = \"aarch64-linux-android30-clang\"\n\n[target.armv7-linux-androideabi]\nlinker = \"armv7a-linux-androideabi30-clang\"\n\n[target.armv-linux-androideabi]\nlinker = \"armv7a-linux-androideabi30-clang\"\n\n[target.i686-linux-android]\nlinker = \"i686-linux-android30-clang\"\n\n[target.x86_64-linux-android]\nlinker = \"x86_64-linux-android30-clang\"\n\n[target.x86_64-pc-windows-msvc]\nlinker = \"lld-link.exe\"\n\n[target.x86_64-uwp-windows-msvc]\nlinker = \"lld-link.exe\"\n\n[target.i686-pc-windows-msvc]\nlinker = \"lld-link.exe\"\n\n[target.aarch64-pc-windows-msvc]\nlinker = \"lld-link.exe\"\n\n[target.aarch64-uwp-windows-msvc]\nlinker = \"lld-link.exe\"\n\n[env]\nMACOSX_DEPLOYMENT_TARGET = \"13.0\"\nRUSTC_BOOTSTRAP = \"crown,script,script_webcrypto,script_webgpu,script_bindings,style_tests,mozjs,mozjs_sys\"\n# Increase Stylo thread stack size to 8 MiB for all builds to match the recursion depth of\n# Chromium. This only reserves virtual memory space and has almost no overhead.\n# See https://github.com/servo/servo/pull/43888\nSERVO_STYLE_THREAD_STACK_SIZE_KB = \"8192\"\n# jemalloc must be compiled with a page size that is at least equal to the one used by the kernel of\n# the machine on which it will run. Some linux distributions for arm64 configure the page size to\n# 16KB (e.g. Raspberry Pi OS 13) and a few others use a 64KB page size. The upstream `jemalloc` has\n# switched to 64KB pages as the default, but this is not available in `tikv-jemalloc-sys` yet, so we\n# configure it here. FIXME: Remove aft",
+      "workflow_hits": {
+        "android.yml": [
+          "--profile ${{",
+          "RUSTFLAGS: ${{ inputs.profile == 'checked-release' && '-D warnings' || '' }}"
+        ],
+        "bencher.yml": [
+          "--profile ${{"
+        ],
+        "linux-common.yml": [
+          "--profile ${{",
+          "RUSTFLAGS: \"-C link-arg=-fuse-ld=lld\"",
+          "RUSTFLAGS: ${{ inputs.profile == 'checked-release' && '-D warnings' || '' }}"
+        ]
+      }
+    }
+  }
+}

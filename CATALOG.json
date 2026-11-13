@@ -7486,6 +7486,135 @@
         "exocrate"
       ]
     },
+    "cargo-profile-and-compiler-flag-census-in-the-wild": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and opt-dist PGO/BOLT pipeline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "1.99.1"
+          },
+          "name": "Cargo 1.99.1 package manager and profile resolver"
+        },
+        {
+          "identity": {
+            "repository": "BurntSushi/ripgrep",
+            "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+            "tag": "14.1.1"
+          },
+          "name": "ripgrep command-line search tool"
+        },
+        {
+          "identity": {
+            "repository": "sharkdp/fd",
+            "revision": "b19136871310b01500b4f09eadd7387b8476be47",
+            "tag": "v10.2.0"
+          },
+          "name": "fd filesystem search tool"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/ruff",
+            "revision": "cf41c5e87612f0462f18244a57d3361ebe790110"
+          },
+          "name": "Ruff Python linter and formatter"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/uv",
+            "revision": "d5c3f174417418c24ec3c276e01b0f62b961b13c"
+          },
+          "name": "uv Python package and project manager"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "68f6475eac03b53a863c3e9c83ec587265fc70a4"
+          },
+          "name": "Wasmtime WebAssembly runtime"
+        },
+        {
+          "identity": {
+            "repository": "denoland/deno",
+            "revision": "e7b39ebd55c85aaf6a29290c1f5a99e2e21e09dd"
+          },
+          "name": "Deno JavaScript and TypeScript runtime"
+        },
+        {
+          "identity": {
+            "repository": "pola-rs/polars",
+            "revision": "437948302e11e15d47fc8b2882f9edb0848e5ebc"
+          },
+          "name": "Polars DataFrame library"
+        },
+        {
+          "identity": {
+            "repository": "tikv/tikv",
+            "revision": "33aa721d01822e97d31b4fe409abd4d70850bff1"
+          },
+          "name": "TiKV distributed transactional key-value database"
+        },
+        {
+          "identity": {
+            "repository": "vectordotdev/vector",
+            "revision": "fda52a69b3da577c95a915d4bb4cf0fddafdb2ae"
+          },
+          "name": "Vector observability data pipeline"
+        },
+        {
+          "identity": {
+            "repository": "firecracker-microvm/firecracker",
+            "revision": "bd40216958ea021eba27df26f7f1fb0b8040e5b7"
+          },
+          "name": "Firecracker microVM monitor"
+        },
+        {
+          "identity": {
+            "repository": "zed-industries/zed",
+            "revision": "aff99ecc3249cfa95e720c4d6c1eb4a72105a3ee"
+          },
+          "name": "Zed collaborative code editor"
+        },
+        {
+          "identity": {
+            "repository": "servo/servo",
+            "revision": "1107afe32b59b3c316c1588941b7709983fca9d7"
+          },
+          "name": "Servo parallel browser engine"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "7e1392a42ea288d70a266f6553fe06f57f8647ea"
+          },
+          "name": "Linux kernel Rust subsystem build configuration"
+        },
+        {
+          "identity": {
+            "repository": "archlinux/devtools",
+            "revision": "c677b681beb02427762e49deef31f635edc2834f"
+          },
+          "name": "Arch Linux makepkg Rust packaging configuration"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "cargo/profiles",
+        "rustc/codegen",
+        "rustc/driver",
+        "llvm/optimization",
+        "build/packaging"
+      ]
+    },
     "cargo-rustc-wrapper-caching-and-extraction-coverage": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -9516,6 +9645,71 @@
         "rust/calling-conventions",
         "minirust/semantics",
         "anneal/rustc-capture"
+      ]
+    },
+    "crates-io-download-weighted-codegen-demand-census": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and MIR emitter"
+        },
+        {
+          "identity": {
+            "crate_sha256": "bf151400ff0baff5465007dd2f3e717f3fe502074ca563069ce3a6629d07b289",
+            "repository": "rust-lang/hashbrown",
+            "revision": "0622304393c802aef285257e4864147cc2ac7374",
+            "version": "0.15.2"
+          },
+          "name": "hashbrown crate (rank 1 by recent crates.io downloads)"
+        },
+        {
+          "identity": {
+            "crate_sha256": "d5d0adab1ae378d7f53bdebc67a39f1f151407ef230f0ce2883572f5d8985c80",
+            "repository": "dtolnay/syn",
+            "revision": "4e508677213155cf73b4072f7a82f73a26cad3f5",
+            "version": "2.0.96"
+          },
+          "name": "syn crate (rank 2 by recent crates.io downloads)"
+        },
+        {
+          "identity": {
+            "crate_sha256": "b5aba8db14291edd000dfcc4d620c7ebfb122c613afb886ca8803fa4e128a20a",
+            "repository": "rust-lang/libc",
+            "revision": "333bf0394a696c4514e0f200fa9fa461487791b8",
+            "version": "0.2.169"
+          },
+          "name": "libc crate (Platform C FFI declarations)"
+        },
+        {
+          "identity": {
+            "crate_sha256": "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3",
+            "repository": "BurntSushi/memchr",
+            "version": "2.7.4"
+          },
+          "name": "memchr crate (SIMD-accelerated byte search)"
+        },
+        {
+          "identity": {
+            "crate_sha256": "f1bf18183cf54e8d6059647fc3063646a1801cf30896933ec2311622cc4b9a27",
+            "repository": "Amanieu/parking_lot",
+            "revision": "03d36d62fecbd85ce7cea1babfae23c673f0c6a3",
+            "version": "0.12.3"
+          },
+          "name": "parking_lot crate (user-space synchronization primitives)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/corpora",
+        "rustc/codegen",
+        "rustc/mir",
+        "cargo/corpora",
+        "rust/unsafe"
       ]
     },
     "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics": {
@@ -23875,6 +24069,36 @@
         "anneal/architecture",
         "lean/kernel",
         "verification/soundness"
+      ]
+    },
+    "rustc-standard-library-codegen-demand-per-target": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 standard library source tree (core, alloc, std, compiler_builtins, panic_unwind, panic_abort, std_detect, unwind, rtstartup)"
+        },
+        {
+          "identity": {
+            "artifact": "channel-rust-1.99.1.toml",
+            "sha256": "fb152be80975c194aa5fc684b2aec3a6e14e2b855efe2faa4e5f8ae6e590f463",
+            "url": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml"
+          },
+          "name": "Official Rust 1.99.1 Tier 1 target standard library archives (rust-std)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc/stdlib",
+        "rustc/codegen",
+        "rustc/intrinsics",
+        "rustc/mir",
+        "isa/x86_64",
+        "isa/aarch64"
       ]
     },
     "rustc-static-linking-archive-formats-and-linker-driver": {

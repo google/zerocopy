@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc/stdlib",
+    "rustc/codegen",
+    "rustc/intrinsics",
+    "rustc/mir",
+    "isa/x86_64",
+    "isa/aarch64"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 standard library source tree (core, alloc, std, compiler_builtins, panic_unwind, panic_abort, std_detect, unwind, rtstartup)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Official Rust 1.99.1 Tier 1 target standard library archives (rust-std)",
+      "identity": {
+        "artifact": "channel-rust-1.99.1.toml",
+        "url": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+        "sha256": "fb152be80975c194aa5fc684b2aec3a6e14e2b855efe2faa4e5f8ae6e590f463"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

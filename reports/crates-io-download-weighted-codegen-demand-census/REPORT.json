@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/corpora",
+    "rustc/codegen",
+    "rustc/mir",
+    "cargo/corpora",
+    "rust/unsafe"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and MIR emitter",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "hashbrown crate (rank 1 by recent crates.io downloads)",
+      "identity": {
+        "repository": "rust-lang/hashbrown",
+        "revision": "0622304393c802aef285257e4864147cc2ac7374",
+        "version": "0.15.2",
+        "crate_sha256": "bf151400ff0baff5465007dd2f3e717f3fe502074ca563069ce3a6629d07b289"
+      }
+    },
+    {
+      "name": "syn crate (rank 2 by recent crates.io downloads)",
+      "identity": {
+        "repository": "dtolnay/syn",
+        "revision": "4e508677213155cf73b4072f7a82f73a26cad3f5",
+        "version": "2.0.96",
+        "crate_sha256": "d5d0adab1ae378d7f53bdebc67a39f1f151407ef230f0ce2883572f5d8985c80"
+      }
+    },
+    {
+      "name": "libc crate (Platform C FFI declarations)",
+      "identity": {
+        "repository": "rust-lang/libc",
+        "revision": "333bf0394a696c4514e0f200fa9fa461487791b8",
+        "version": "0.2.169",
+        "crate_sha256": "b5aba8db14291edd000dfcc4d620c7ebfb122c613afb886ca8803fa4e128a20a"
+      }
+    },
+    {
+      "name": "memchr crate (SIMD-accelerated byte search)",
+      "identity": {
+        "repository": "BurntSushi/memchr",
+        "version": "2.7.4",
+        "crate_sha256": "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+      }
+    },
+    {
+      "name": "parking_lot crate (user-space synchronization primitives)",
+      "identity": {
+        "repository": "Amanieu/parking_lot",
+        "revision": "03d36d62fecbd85ce7cea1babfae23c673f0c6a3",
+        "version": "0.12.3",
+        "crate_sha256": "f1bf18183cf54e8d6059647fc3063646a1801cf30896933ec2311622cc4b9a27"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

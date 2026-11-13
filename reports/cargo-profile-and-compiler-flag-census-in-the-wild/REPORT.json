@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "cargo/profiles",
+    "rustc/codegen",
+    "rustc/driver",
+    "llvm/optimization",
+    "build/packaging"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler, standard library, and opt-dist PGO/BOLT pipeline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Cargo 1.99.1 package manager and profile resolver",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "ripgrep command-line search tool",
+      "identity": {
+        "repository": "BurntSushi/ripgrep",
+        "revision": "4649aa9700619f94cf9c66876e9549d83420e16c",
+        "tag": "14.1.1"
+      }
+    },
+    {
+      "name": "fd filesystem search tool",
+      "identity": {
+        "repository": "sharkdp/fd",
+        "revision": "b19136871310b01500b4f09eadd7387b8476be47",
+        "tag": "v10.2.0"
+      }
+    },
+    {
+      "name": "Ruff Python linter and formatter",
+      "identity": {
+        "repository": "astral-sh/ruff",
+        "revision": "cf41c5e87612f0462f18244a57d3361ebe790110"
+      }
+    },
+    {
+      "name": "uv Python package and project manager",
+      "identity": {
+        "repository": "astral-sh/uv",
+        "revision": "d5c3f174417418c24ec3c276e01b0f62b961b13c"
+      }
+    },
+    {
+      "name": "Wasmtime WebAssembly runtime",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "68f6475eac03b53a863c3e9c83ec587265fc70a4"
+      }
+    },
+    {
+      "name": "Deno JavaScript and TypeScript runtime",
+      "identity": {
+        "repository": "denoland/deno",
+        "revision": "e7b39ebd55c85aaf6a29290c1f5a99e2e21e09dd"
+      }
+    },
+    {
+      "name": "Polars DataFrame library",
+      "identity": {
+        "repository": "pola-rs/polars",
+        "revision": "437948302e11e15d47fc8b2882f9edb0848e5ebc"
+      }
+    },
+    {
+      "name": "TiKV distributed transactional key-value database",
+      "identity": {
+        "repository": "tikv/tikv",
+        "revision": "33aa721d01822e97d31b4fe409abd4d70850bff1"
+      }
+    },
+    {
+      "name": "Vector observability data pipeline",
+      "identity": {
+        "repository": "vectordotdev/vector",
+        "revision": "fda52a69b3da577c95a915d4bb4cf0fddafdb2ae"
+      }
+    },
+    {
+      "name": "Firecracker microVM monitor",
+      "identity": {
+        "repository": "firecracker-microvm/firecracker",
+        "revision": "bd40216958ea021eba27df26f7f1fb0b8040e5b7"
+      }
+    },
+    {
+      "name": "Zed collaborative code editor",
+      "identity": {
+        "repository": "zed-industries/zed",
+        "revision": "aff99ecc3249cfa95e720c4d6c1eb4a72105a3ee"
+      }
+    },
+    {
+      "name": "Servo parallel browser engine",
+      "identity": {
+        "repository": "servo/servo",
+        "revision": "1107afe32b59b3c316c1588941b7709983fca9d7"
+      }
+    },
+    {
+      "name": "Linux kernel Rust subsystem build configuration",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "7e1392a42ea288d70a266f6553fe06f57f8647ea"
+      }
+    },
+    {
+      "name": "Arch Linux makepkg Rust packaging configuration",
+      "identity": {
+        "repository": "archlinux/devtools",
+        "revision": "c677b681beb02427762e49deef31f635edc2834f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}
