@@ -1,0 +1,118 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "anneal_revisions_examined": [
+    "a7ac073219f4ec3c813431be8239a0405014d5c1",
+    "b1f15f743c423c42c47d674a113519882b6d3738"
+  ],
+  "zero_sorry": true,
+  "zero_native_decide": true,
+  "top_theorem_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "fixture_machine_bytes_count": 29,
+  "fixture_x86_64_instructions_count": 7,
+  "totals": {
+    "total_lines": 642,
+    "total_code_lines": 495,
+    "total_olean_bytes": 1760592,
+    "wall_clock_build_sec": 4.27,
+    "peak_rss_kb": 846672
+  },
+  "per_link_modules": [
+    {
+      "module": "S16Chain/Link1Mir.lean",
+      "total_lines": 101,
+      "code_lines": 73,
+      "build_ms": 379,
+      "olean_bytes": 244728
+    },
+    {
+      "module": "S16Chain/Link2W6Opt.lean",
+      "total_lines": 117,
+      "code_lines": 92,
+      "build_ms": 362,
+      "olean_bytes": 131328
+    },
+    {
+      "module": "S16Chain/Link3AbiLowering.lean",
+      "total_lines": 100,
+      "code_lines": 71,
+      "build_ms": 717,
+      "olean_bytes": 743968
+    },
+    {
+      "module": "S16Chain/Link4X86Isa.lean",
+      "total_lines": 214,
+      "code_lines": 174,
+      "build_ms": 797,
+      "olean_bytes": 477656
+    },
+    {
+      "module": "S16Chain/TopTheorem.lean",
+      "total_lines": 110,
+      "code_lines": 85,
+      "build_ms": 1000,
+      "olean_bytes": 162912
+    }
+  ],
+  "seams": [
+    {
+      "seam_id": "SEAM-1",
+      "boundary": "Link 1 (Anneal MIR) -> Link 2 (SSALike / W6)",
+      "name": "Value Representation & Poison/Undefined-Bit Seam",
+      "lhs_premise_type": "Mathematical Nat / Int values bounded by usizeMax (2^64 - 1) in MirVal.usize",
+      "rhs_premise_type": "Fixed-width two's-complement BitVec 64 machine words (with poison/undef bit masks in AnLLVM/SSALike)",
+      "why_definitions_fail_to_meet": "Anneal MIR evaluates arithmetic in mathematical Nat with explicit overflow assertions (`x + y <= usizeMax`), whereas LLVM IR and x86-64 instructions operate on modular `BitVec 64` rings where `BitVec.ofNat 64 (x + y) = x + y` holds only under a non-overflow side condition.",
+      "bridge_adapter": "wordRepresentsNat (w : BitVec 64) (n : Nat) : Prop := w.toNat = n /\\ n <= usizeMax; seam1_mir_to_ssa_pre_bridge",
+      "bridge_loc": 28,
+      "tcb_placement": "trusted/lean/Trusted/ (value injection relation must be part of the trusted target boundary; bridge proof lives in untrusted theory/)"
+    },
+    {
+      "seam_id": "SEAM-2",
+      "boundary": "Link 1 (Anneal MIR Memory) -> Link 2/3 (SSA Registers & Flat Address Space)",
+      "name": "Memory Model & Provenance Erasing Injection Seam",
+      "lhs_premise_type": "Typed allocation store `AllocId -> Option MirVal` with generation tags (`localGens`) and frame IDs (`frameId`)",
+      "rhs_premise_type": "Promoted SSA virtual registers (`RegId -> BitVec 64`) and flat byte-addressed hardware memory (`BitVec 64 -> UInt8`)",
+      "why_definitions_fail_to_meet": "MIR stack locals whose addresses are taken (`let r = &x; *r` in `alloc_passthrough`) live in disjoint logical allocations indexed by `(frameId, LocalId, gen)`, whereas SROA/mem2reg eliminates the allocation completely or lowers it into `[rsp + disp]` in a shared 64-bit address space.",
+      "bridge_adapter": "promoteSlotToAssign (W6) + MemInjection frame separation invariant (stackDisjointFromCode)",
+      "bridge_loc": 18,
+      "tcb_placement": "Untrusted theory/ for SROA/mem2reg promotion; trusted/lean/Trusted/ only for top-level initial memory well-formedness"
+    },
+    {
+      "seam_id": "SEAM-3",
+      "boundary": "Link 2 (Big-Step Functional / CFG SSA) -> Link 4 (Small-Step Variable-Length Byte Fetch)",
+      "name": "Control-Flow, Fuel, and Variable-Length Instruction Fetch Seam",
+      "lhs_premise_type": "Structured CFG basic-block evaluation (`evalSsaPostO3 : BitVec 64 -> BitVec 64 -> MirOutcome (BitVec 64)`)",
+      "rhs_premise_type": "Small-step byte-indexed `rip` state machine (`runX86 : Nat -> X86State -> Option X86State`) with variable instruction lengths (1, 2, 4, and 7 bytes)",
+      "why_definitions_fail_to_meet": "Big-step/CFG semantics index control flow by abstract `BlockId` without code layout, whereas `X86State` fetches raw `UInt8` bytes at `rip + 0#64 .. rip + 6#64` and advances `rip` by `4#64, 2#64, 7#64, 4#64, 7#64, 4#64, 1#64`. Furthermore, coupling `decodeX86At` to the full `X86State` record prevents `simp` from reusing decode lemmas after register updates.",
+      "bridge_adapter": "loadedAt m codeBase fixtureMachineBytes + state-decoupled `decodeX86At (codeMem : BitVec 64 -> UInt8) (rip : BitVec 64)` + existential step witness `exists k, runX86 k m_init = some m_final`",
+      "bridge_loc": 64,
+      "tcb_placement": "trusted/lean/Trusted/ defines `X86State`, `stepX86`, `runX86`, and `loadedAt`; per-function `k = 7` execution proofs live in untrusted theory/"
+    },
+    {
+      "seam_id": "SEAM-4",
+      "boundary": "Link 2 (Unlimited SSA Locals) -> Link 3/4 (System V AMD64 ABI Calling Convention)",
+      "name": "Calling Convention, Flag Clobber, and Stack Return Seam",
+      "lhs_premise_type": "Positional MIR local slots (`_1 = x`, `_2 = y`, `_0 = ret`)",
+      "rhs_premise_type": "System V AMD64 physical register assignment (`rdi = arg0`, `rsi = arg1`, `rax = ret`), hardware `CF` flag dataflow (`cmpq` -> `cmovaeq`), return address at `readStack64 (regs .rsp)`, `rsp` post-increment (`+ 8#64`), and callee-saved register preservation (`rbx, rbp, r12..r15`)",
+      "why_definitions_fail_to_meet": "MIR has no concept of physical caller/callee-saved registers, condition-code flags (`CF`), or return addresses stored on the stack frame.",
+      "bridge_adapter": "sysvEntryState + calleeSavedPreserved + link3_abi_lowering_sound",
+      "bridge_loc": 42,
+      "tcb_placement": "trusted/lean/Trusted/ (System V ABI entry/exit contract is part of the machine-level theorem statement)"
+    },
+    {
+      "seam_id": "SEAM-5",
+      "boundary": "Link 1 (MirOutcome.returned / .panic / .ub) -> Link 5 (Machine Halting at retAddr)",
+      "name": "Observable Events and Termination Outcome Seam",
+      "lhs_premise_type": "Algebraic sum type `MirOutcome Nat` (`.returned v | .panic | .ub`)",
+      "rhs_premise_type": "Concrete machine state transition `runX86 k m_init = some m_final /\\ m_final.rip = retAddr`",
+      "why_definitions_fail_to_meet": "Hardware machine states do not carry a sum-type constructor `.returned`; normal return is observed by `m_final.rip` reaching the caller's `retAddr` with `rsp = rsp_0 + 8` and the return value in `m_final.regs .rax`.",
+      "bridge_adapter": "HighLevelPost arg0 arg1 (m_final.regs .rax) relating `m_final.regs .rax` back to `evalMirAddBounded st_mir = .returned (m_final.regs .rax).toNat`",
+      "bridge_loc": 24,
+      "tcb_placement": "trusted/lean/Trusted/ (root machine correctness statement)"
+    }
+  ]
+}

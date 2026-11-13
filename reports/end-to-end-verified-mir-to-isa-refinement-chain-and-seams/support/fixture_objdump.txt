@@ -1,0 +1,19 @@
+
+s16_fixture.o:	file format elf64-x86-64
+
+Disassembly of section .text.add_bounded:
+
+0000000000000000 <add_bounded>:
+       0: 48 8d 04 3e                  	leaq	(%rsi,%rdi), %rax
+       4: 31 c9                        	xorl	%ecx, %ecx
+       6: 48 81 fe e9 03 00 00         	cmpq	$0x3e9, %rsi            # imm = 0x3E9
+       d: 48 0f 43 c1                  	cmovaeq	%rcx, %rax
+      11: 48 81 ff e9 03 00 00         	cmpq	$0x3e9, %rdi            # imm = 0x3E9
+      18: 48 0f 43 c1                  	cmovaeq	%rcx, %rax
+      1c: c3                           	retq
+
+Disassembly of section .text.alloc_passthrough:
+
+0000000000000000 <alloc_passthrough>:
+       0: 48 89 f8                     	movq	%rdi, %rax
+       3: c3                           	retq

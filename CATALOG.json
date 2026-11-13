@@ -11419,6 +11419,54 @@
         "verification/compiler-verification"
       ]
     },
+    "end-to-end-verified-mir-to-isa-refinement-chain-and-seams": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "a7ac073219f4ec3c813431be8239a0405014d5c1"
+          },
+          "name": "Anneal functional translation and verified MIR fixtures"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "b1f15f743c423c42c47d674a113519882b6d3738"
+          },
+          "name": "Anneal trusted MIR semantics and reference fixtures"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 x86-64 code generator"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "lean/mechanization",
+        "lean/verification",
+        "verification",
+        "rustc",
+        "isa",
+        "isa/x86-64",
+        "anneal"
+      ]
+    },
     "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -15110,6 +15158,35 @@
         "lean/elaboration"
       ]
     },
+    "lean-derivation-checker-soundness-and-completeness-prototype": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "b1f15f743c423c42c47d674a113519882b6d3738"
+          },
+          "name": "Anneal repository trusted refinement boundary"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "lean/mechanization",
+        "lean/verification",
+        "verification",
+        "compilers"
+      ]
+    },
     "lean-elaboration-hygiene-positions-and-infotree": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -16555,6 +16632,42 @@
         "rust",
         "verification",
         "anneal"
+      ]
+    },
+    "llvm-o3-derivation-formats-expressiveness-and-checking-cost": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 optimizer and x86-64 code generator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "venue": "PLDI 2018",
+            "year": "2018"
+          },
+          "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "verification",
+        "llvm",
+        "rustc",
+        "compilers"
       ]
     },
     "llvm-scalar-memory-and-loop-optimization-proof-obligations": {
@@ -22975,6 +23088,34 @@
         "rustc/linker-driver",
         "llvm/lld",
         "systems/object-formats",
+        "verification"
+      ]
+    },
+    "rustc-build-ir-and-pass-transformation-volume-statistics": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and Tier 1 standard library rlibs"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 optimization pipeline and YAML remark emitter"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "compilers",
         "verification"
       ]
     },

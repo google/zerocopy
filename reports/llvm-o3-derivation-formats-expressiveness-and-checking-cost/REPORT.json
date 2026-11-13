@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "verification",
+    "llvm",
+    "rustc",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rustc) 1.99.1 and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 bundled LLVM 23.1.1 optimizer and x86-64 code generator",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)",
+      "identity": {
+        "doi": "10.1145/3192366.3192377",
+        "venue": "PLDI 2018",
+        "year": "2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

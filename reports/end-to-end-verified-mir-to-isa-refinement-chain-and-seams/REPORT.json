@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "lean",
+    "lean/mechanization",
+    "lean/verification",
+    "verification",
+    "rustc",
+    "isa",
+    "isa/x86-64",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover and kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal functional translation and verified MIR fixtures",
+      "identity": {
+        "branch": "joshlf",
+        "repository": "joshlf/anneal",
+        "revision": "a7ac073219f4ec3c813431be8239a0405014d5c1"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR semantics and reference fixtures",
+      "identity": {
+        "branch": "joshlf",
+        "repository": "joshlf/anneal",
+        "revision": "b1f15f743c423c42c47d674a113519882b6d3738"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc) 1.99.1 x86-64 code generator",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

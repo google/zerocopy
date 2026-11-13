@@ -1,0 +1,2769 @@
+[
+  {
+    "benchmark_id": "T01",
+    "symbol": "t01_vector_slice_loop_with_alias_check",
+    "format": "SimCert",
+    "expressiveness": "RequiresAuxGhost",
+    "step_count": 14,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb0",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "CFG-EdgeSplit",
+        "eq": "v_tgt_0 = eval_CFG-EdgeSplit(v_src_0)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb1",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "eq": "v_tgt_1 = eval_SCEV-RuntimeNoAliasGuard(v_src_1)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb2",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "Loop-VectorRemainderSplit",
+        "eq": "v_tgt_2 = eval_Loop-VectorRemainderSplit(v_src_2)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb0",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "SIMD-LanePackUnroll8",
+        "eq": "v_tgt_3 = eval_SIMD-LanePackUnroll8(v_src_3)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb1",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "SSA-PhiSelectMerge",
+        "eq": "v_tgt_4 = eval_SSA-PhiSelectMerge(v_src_4)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 5,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb2",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "CFG-EdgeSplit",
+        "eq": "v_tgt_5 = eval_CFG-EdgeSplit(v_src_5)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 6,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb0",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "eq": "v_tgt_6 = eval_SCEV-RuntimeNoAliasGuard(v_src_6)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 7,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb1",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "Loop-VectorRemainderSplit",
+        "eq": "v_tgt_7 = eval_Loop-VectorRemainderSplit(v_src_7)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 8,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb2",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "SIMD-LanePackUnroll8",
+        "eq": "v_tgt_8 = eval_SIMD-LanePackUnroll8(v_src_8)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 9,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb0",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "SSA-PhiSelectMerge",
+        "eq": "v_tgt_9 = eval_SSA-PhiSelectMerge(v_src_9)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 10,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb1",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "CFG-EdgeSplit",
+        "eq": "v_tgt_10 = eval_CFG-EdgeSplit(v_src_10)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 11,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb2",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "eq": "v_tgt_11 = eval_SCEV-RuntimeNoAliasGuard(v_src_11)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 12,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb0",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_0",
+        "rule": "Loop-VectorRemainderSplit",
+        "eq": "v_tgt_12 = eval_Loop-VectorRemainderSplit(v_src_12)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 13,
+        "pc_src": "t01_vector_slice_loop_with_alias_check:bb1",
+        "pc_tgt": "t01_vector_slice_loop_with_alias_check:bb_opt_1",
+        "rule": "SIMD-LanePackUnroll8",
+        "eq": "v_tgt_13 = eval_SIMD-LanePackUnroll8(v_src_13)",
+        "aux_ghost": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T01",
+    "symbol": "t01_vector_slice_loop_with_alias_check",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 18,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "CFG-EdgeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Loop-VectorRemainderSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "SIMD-LanePackUnroll8",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "SSA-PhiSelectMerge",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "CFG-EdgeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 6,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_6(st_src, st_tgt)",
+        "post_rel": "R_post_6(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 7,
+        "rule": "Loop-VectorRemainderSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_7(st_src, st_tgt)",
+        "post_rel": "R_post_7(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 8,
+        "rule": "SIMD-LanePackUnroll8",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_8(st_src, st_tgt)",
+        "post_rel": "R_post_8(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 9,
+        "rule": "SSA-PhiSelectMerge",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_9(st_src, st_tgt)",
+        "post_rel": "R_post_9(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 10,
+        "rule": "CFG-EdgeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_10(st_src, st_tgt)",
+        "post_rel": "R_post_10(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 11,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_11(st_src, st_tgt)",
+        "post_rel": "R_post_11(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 12,
+        "rule": "Loop-VectorRemainderSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_12(st_src, st_tgt)",
+        "post_rel": "R_post_12(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 13,
+        "rule": "SIMD-LanePackUnroll8",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_13(st_src, st_tgt)",
+        "post_rel": "R_post_13(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 14,
+        "rule": "SSA-PhiSelectMerge",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_14(st_src, st_tgt)",
+        "post_rel": "R_post_14(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 15,
+        "rule": "CFG-EdgeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_15(st_src, st_tgt)",
+        "post_rel": "R_post_15(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 16,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_16(st_src, st_tgt)",
+        "post_rel": "R_post_16(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 17,
+        "rule": "Loop-VectorRemainderSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_17(st_src, st_tgt)",
+        "post_rel": "R_post_17(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T01",
+    "symbol": "t01_vector_slice_loop_with_alias_check",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 22,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Loop-VectorRemainderSplit",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "SIMD-LanePackUnroll8",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "SSA-PhiSelectMerge",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 7,
+        "rule": "Loop-VectorRemainderSplit",
+        "cone_src_hash": 268435673,
+        "cone_tgt_hash": 536871031,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 8,
+        "rule": "SIMD-LanePackUnroll8",
+        "cone_src_hash": 268435704,
+        "cone_tgt_hash": 536871048,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 9,
+        "rule": "SSA-PhiSelectMerge",
+        "cone_src_hash": 268435735,
+        "cone_tgt_hash": 536871065,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 10,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268435766,
+        "cone_tgt_hash": 536871082,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 11,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "cone_src_hash": 268435797,
+        "cone_tgt_hash": 536871099,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 12,
+        "rule": "Loop-VectorRemainderSplit",
+        "cone_src_hash": 268435828,
+        "cone_tgt_hash": 536871116,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 13,
+        "rule": "SIMD-LanePackUnroll8",
+        "cone_src_hash": 268435859,
+        "cone_tgt_hash": 536871133,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 14,
+        "rule": "SSA-PhiSelectMerge",
+        "cone_src_hash": 268435890,
+        "cone_tgt_hash": 536871150,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 15,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268435921,
+        "cone_tgt_hash": 536871167,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 16,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "cone_src_hash": 268435952,
+        "cone_tgt_hash": 536871184,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 17,
+        "rule": "Loop-VectorRemainderSplit",
+        "cone_src_hash": 268435983,
+        "cone_tgt_hash": 536871201,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 18,
+        "rule": "SIMD-LanePackUnroll8",
+        "cone_src_hash": 268436014,
+        "cone_tgt_hash": 536871218,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 19,
+        "rule": "SSA-PhiSelectMerge",
+        "cone_src_hash": 268436045,
+        "cone_tgt_hash": 536871235,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 20,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268436076,
+        "cone_tgt_hash": 536871252,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 21,
+        "rule": "SCEV-RuntimeNoAliasGuard",
+        "cone_src_hash": 268436107,
+        "cone_tgt_hash": 536871269,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T02",
+    "symbol": "t02_devirtualize_under_lto",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 5,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t02_devirtualize_under_lto:bb0",
+        "pc_tgt": "t02_devirtualize_under_lto:bb_opt_0",
+        "rule": "IP-VtableConstLoadFold",
+        "eq": "v_tgt_0 = eval_IP-VtableConstLoadFold(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t02_devirtualize_under_lto:bb1",
+        "pc_tgt": "t02_devirtualize_under_lto:bb_opt_1",
+        "rule": "IP-IndirectToDirectCall",
+        "eq": "v_tgt_1 = eval_IP-IndirectToDirectCall(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t02_devirtualize_under_lto:bb2",
+        "pc_tgt": "t02_devirtualize_under_lto:bb_opt_0",
+        "rule": "IP-InlineBody",
+        "eq": "v_tgt_2 = eval_IP-InlineBody(v_src_2)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t02_devirtualize_under_lto:bb0",
+        "pc_tgt": "t02_devirtualize_under_lto:bb_opt_1",
+        "rule": "SROA-SliceAlloca",
+        "eq": "v_tgt_3 = eval_SROA-SliceAlloca(v_src_3)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t02_devirtualize_under_lto:bb1",
+        "pc_tgt": "t02_devirtualize_under_lto:bb_opt_0",
+        "rule": "Algebraic-LEA-Combine",
+        "eq": "v_tgt_4 = eval_Algebraic-LEA-Combine(v_src_4)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T02",
+    "symbol": "t02_devirtualize_under_lto",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 6,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "IP-VtableConstLoadFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "IP-IndirectToDirectCall",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "IP-InlineBody",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "SROA-SliceAlloca",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "Algebraic-LEA-Combine",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "IP-VtableConstLoadFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T02",
+    "symbol": "t02_devirtualize_under_lto",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 7,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "IP-VtableConstLoadFold",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "IP-IndirectToDirectCall",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "IP-InlineBody",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "SROA-SliceAlloca",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "Algebraic-LEA-Combine",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "IP-VtableConstLoadFold",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "IP-IndirectToDirectCall",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T03",
+    "symbol": "t03_gvn_licm_noalias_readonly",
+    "format": "SimCert",
+    "expressiveness": "RequiresAuxGhost",
+    "step_count": 8,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb0",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_0",
+        "rule": "Mem-NoAliasDisjoint",
+        "eq": "v_tgt_0 = eval_Mem-NoAliasDisjoint(v_src_0)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb1",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_1",
+        "rule": "Mem-ReadonlyFramePreserved",
+        "eq": "v_tgt_1 = eval_Mem-ReadonlyFramePreserved(v_src_1)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb2",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_0",
+        "rule": "GVN-CSE-Leader",
+        "eq": "v_tgt_2 = eval_GVN-CSE-Leader(v_src_2)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb0",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_1",
+        "rule": "LICM-HoistToPreheader",
+        "eq": "v_tgt_3 = eval_LICM-HoistToPreheader(v_src_3)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb1",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_0",
+        "rule": "SIMD-SplatBroadcast2x64",
+        "eq": "v_tgt_4 = eval_SIMD-SplatBroadcast2x64(v_src_4)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 5,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb2",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_1",
+        "rule": "Mem-NoAliasDisjoint",
+        "eq": "v_tgt_5 = eval_Mem-NoAliasDisjoint(v_src_5)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 6,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb0",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_0",
+        "rule": "Mem-ReadonlyFramePreserved",
+        "eq": "v_tgt_6 = eval_Mem-ReadonlyFramePreserved(v_src_6)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 7,
+        "pc_src": "t03_gvn_licm_noalias_readonly:bb1",
+        "pc_tgt": "t03_gvn_licm_noalias_readonly:bb_opt_1",
+        "rule": "GVN-CSE-Leader",
+        "eq": "v_tgt_7 = eval_GVN-CSE-Leader(v_src_7)",
+        "aux_ghost": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T03",
+    "symbol": "t03_gvn_licm_noalias_readonly",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 9,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "Mem-NoAliasDisjoint",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "Mem-ReadonlyFramePreserved",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "GVN-CSE-Leader",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "LICM-HoistToPreheader",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "SIMD-SplatBroadcast2x64",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "Mem-NoAliasDisjoint",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 6,
+        "rule": "Mem-ReadonlyFramePreserved",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_6(st_src, st_tgt)",
+        "post_rel": "R_post_6(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 7,
+        "rule": "GVN-CSE-Leader",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_7(st_src, st_tgt)",
+        "post_rel": "R_post_7(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 8,
+        "rule": "LICM-HoistToPreheader",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_8(st_src, st_tgt)",
+        "post_rel": "R_post_8(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T03",
+    "symbol": "t03_gvn_licm_noalias_readonly",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 12,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "Mem-NoAliasDisjoint",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "Mem-ReadonlyFramePreserved",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "GVN-CSE-Leader",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "LICM-HoistToPreheader",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "SIMD-SplatBroadcast2x64",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "Mem-NoAliasDisjoint",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "Mem-ReadonlyFramePreserved",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 7,
+        "rule": "GVN-CSE-Leader",
+        "cone_src_hash": 268435673,
+        "cone_tgt_hash": 536871031,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 8,
+        "rule": "LICM-HoistToPreheader",
+        "cone_src_hash": 268435704,
+        "cone_tgt_hash": 536871048,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 9,
+        "rule": "SIMD-SplatBroadcast2x64",
+        "cone_src_hash": 268435735,
+        "cone_tgt_hash": 536871065,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 10,
+        "rule": "Mem-NoAliasDisjoint",
+        "cone_src_hash": 268435766,
+        "cone_tgt_hash": 536871082,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 11,
+        "rule": "Mem-ReadonlyFramePreserved",
+        "cone_src_hash": 268435797,
+        "cone_tgt_hash": 536871099,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T04",
+    "symbol": "t04_inline_across_unwinding_edges",
+    "format": "SimCert",
+    "expressiveness": "RequiresAuxGhost",
+    "step_count": 9,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t04_inline_across_unwinding_edges:bb0",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_0",
+        "rule": "Unwind-CallToInvokeRewrite",
+        "eq": "v_tgt_0 = eval_Unwind-CallToInvokeRewrite(v_src_0)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t04_inline_across_unwinding_edges:bb1",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_1",
+        "rule": "Unwind-LandingPadMerge",
+        "eq": "v_tgt_1 = eval_Unwind-LandingPadMerge(v_src_1)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t04_inline_across_unwinding_edges:bb2",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_0",
+        "rule": "Unwind-DropGuardChain",
+        "eq": "v_tgt_2 = eval_Unwind-DropGuardChain(v_src_2)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t04_inline_across_unwinding_edges:bb0",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_1",
+        "rule": "CFG-UnreachablePrune",
+        "eq": "v_tgt_3 = eval_CFG-UnreachablePrune(v_src_3)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t04_inline_across_unwinding_edges:bb1",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_0",
+        "rule": "Unwind-CallToInvokeRewrite",
+        "eq": "v_tgt_4 = eval_Unwind-CallToInvokeRewrite(v_src_4)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 5,
+        "pc_src": "t04_inline_across_unwinding_edges:bb2",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_1",
+        "rule": "Unwind-LandingPadMerge",
+        "eq": "v_tgt_5 = eval_Unwind-LandingPadMerge(v_src_5)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 6,
+        "pc_src": "t04_inline_across_unwinding_edges:bb0",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_0",
+        "rule": "Unwind-DropGuardChain",
+        "eq": "v_tgt_6 = eval_Unwind-DropGuardChain(v_src_6)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 7,
+        "pc_src": "t04_inline_across_unwinding_edges:bb1",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_1",
+        "rule": "CFG-UnreachablePrune",
+        "eq": "v_tgt_7 = eval_CFG-UnreachablePrune(v_src_7)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 8,
+        "pc_src": "t04_inline_across_unwinding_edges:bb2",
+        "pc_tgt": "t04_inline_across_unwinding_edges:bb_opt_0",
+        "rule": "Unwind-CallToInvokeRewrite",
+        "eq": "v_tgt_8 = eval_Unwind-CallToInvokeRewrite(v_src_8)",
+        "aux_ghost": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T04",
+    "symbol": "t04_inline_across_unwinding_edges",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 11,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "Unwind-LandingPadMerge",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Unwind-DropGuardChain",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "CFG-UnreachablePrune",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "Unwind-LandingPadMerge",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 6,
+        "rule": "Unwind-DropGuardChain",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_6(st_src, st_tgt)",
+        "post_rel": "R_post_6(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 7,
+        "rule": "CFG-UnreachablePrune",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_7(st_src, st_tgt)",
+        "post_rel": "R_post_7(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 8,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_8(st_src, st_tgt)",
+        "post_rel": "R_post_8(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 9,
+        "rule": "Unwind-LandingPadMerge",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_9(st_src, st_tgt)",
+        "post_rel": "R_post_9(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 10,
+        "rule": "Unwind-DropGuardChain",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_10(st_src, st_tgt)",
+        "post_rel": "R_post_10(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T04",
+    "symbol": "t04_inline_across_unwinding_edges",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 14,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "Unwind-LandingPadMerge",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Unwind-DropGuardChain",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "CFG-UnreachablePrune",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "Unwind-LandingPadMerge",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "Unwind-DropGuardChain",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 7,
+        "rule": "CFG-UnreachablePrune",
+        "cone_src_hash": 268435673,
+        "cone_tgt_hash": 536871031,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 8,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "cone_src_hash": 268435704,
+        "cone_tgt_hash": 536871048,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 9,
+        "rule": "Unwind-LandingPadMerge",
+        "cone_src_hash": 268435735,
+        "cone_tgt_hash": 536871065,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 10,
+        "rule": "Unwind-DropGuardChain",
+        "cone_src_hash": 268435766,
+        "cone_tgt_hash": 536871082,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 11,
+        "rule": "CFG-UnreachablePrune",
+        "cone_src_hash": 268435797,
+        "cone_tgt_hash": 536871099,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 12,
+        "rule": "Unwind-CallToInvokeRewrite",
+        "cone_src_hash": 268435828,
+        "cone_tgt_hash": 536871116,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 13,
+        "rule": "Unwind-LandingPadMerge",
+        "cone_src_hash": 268435859,
+        "cone_tgt_hash": 536871133,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T05",
+    "symbol": "t05_sroa_and_mem2reg",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 6,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t05_sroa_and_mem2reg:bb0",
+        "pc_tgt": "t05_sroa_and_mem2reg:bb_opt_0",
+        "rule": "SROA-SliceAlloca",
+        "eq": "v_tgt_0 = eval_SROA-SliceAlloca(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t05_sroa_and_mem2reg:bb1",
+        "pc_tgt": "t05_sroa_and_mem2reg:bb_opt_1",
+        "rule": "Mem2Reg-IDFPhiSelect",
+        "eq": "v_tgt_1 = eval_Mem2Reg-IDFPhiSelect(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t05_sroa_and_mem2reg:bb2",
+        "pc_tgt": "t05_sroa_and_mem2reg:bb_opt_0",
+        "rule": "CFG-DiamondToSelect",
+        "eq": "v_tgt_2 = eval_CFG-DiamondToSelect(v_src_2)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t05_sroa_and_mem2reg:bb0",
+        "pc_tgt": "t05_sroa_and_mem2reg:bb_opt_1",
+        "rule": "SSA-DomSubst",
+        "eq": "v_tgt_3 = eval_SSA-DomSubst(v_src_3)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t05_sroa_and_mem2reg:bb1",
+        "pc_tgt": "t05_sroa_and_mem2reg:bb_opt_0",
+        "rule": "SROA-SliceAlloca",
+        "eq": "v_tgt_4 = eval_SROA-SliceAlloca(v_src_4)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 5,
+        "pc_src": "t05_sroa_and_mem2reg:bb2",
+        "pc_tgt": "t05_sroa_and_mem2reg:bb_opt_1",
+        "rule": "Mem2Reg-IDFPhiSelect",
+        "eq": "v_tgt_5 = eval_Mem2Reg-IDFPhiSelect(v_src_5)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T05",
+    "symbol": "t05_sroa_and_mem2reg",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 6,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "SROA-SliceAlloca",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "Mem2Reg-IDFPhiSelect",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "CFG-DiamondToSelect",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "SSA-DomSubst",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "SROA-SliceAlloca",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "Mem2Reg-IDFPhiSelect",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T05",
+    "symbol": "t05_sroa_and_mem2reg",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 9,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "SROA-SliceAlloca",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "Mem2Reg-IDFPhiSelect",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "CFG-DiamondToSelect",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "SSA-DomSubst",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "SROA-SliceAlloca",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "Mem2Reg-IDFPhiSelect",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "CFG-DiamondToSelect",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 7,
+        "rule": "SSA-DomSubst",
+        "cone_src_hash": 268435673,
+        "cone_tgt_hash": 536871031,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 8,
+        "rule": "SROA-SliceAlloca",
+        "cone_src_hash": 268435704,
+        "cone_tgt_hash": 536871048,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T06",
+    "symbol": "t06_addressing_mode_selection",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 3,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t06_addressing_mode_selection:bb0",
+        "pc_tgt": "t06_addressing_mode_selection:bb_opt_0",
+        "rule": "GEP-InboundsAffineFold",
+        "eq": "v_tgt_0 = eval_GEP-InboundsAffineFold(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t06_addressing_mode_selection:bb1",
+        "pc_tgt": "t06_addressing_mode_selection:bb_opt_1",
+        "rule": "Mach-AddrModeSIBDisp",
+        "eq": "v_tgt_1 = eval_Mach-AddrModeSIBDisp(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t06_addressing_mode_selection:bb2",
+        "pc_tgt": "t06_addressing_mode_selection:bb_opt_0",
+        "rule": "Mach-LoadOpFuse",
+        "eq": "v_tgt_2 = eval_Mach-LoadOpFuse(v_src_2)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T06",
+    "symbol": "t06_addressing_mode_selection",
+    "format": "RelJudg",
+    "expressiveness": "RequiresAuxGhost",
+    "step_count": 4,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "GEP-InboundsAffineFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 1,
+        "rule": "Mach-AddrModeSIBDisp",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Mach-LoadOpFuse",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 3,
+        "rule": "GEP-InboundsAffineFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T06",
+    "symbol": "t06_addressing_mode_selection",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 4,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "GEP-InboundsAffineFold",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "Mach-AddrModeSIBDisp",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Mach-LoadOpFuse",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "GEP-InboundsAffineFold",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T07",
+    "symbol": "t07_regalloc_with_spills",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 12,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t07_regalloc_with_spills:bb0",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_0",
+        "rule": "Mach-LiveRangeSplit",
+        "eq": "v_tgt_0 = eval_Mach-LiveRangeSplit(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t07_regalloc_with_spills:bb1",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_1",
+        "rule": "Mach-FrameSpillSlot",
+        "eq": "v_tgt_1 = eval_Mach-FrameSpillSlot(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t07_regalloc_with_spills:bb2",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_0",
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "eq": "v_tgt_2 = eval_Mach-CalleeSavedSaveRestore(v_src_2)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t07_regalloc_with_spills:bb0",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_1",
+        "rule": "ABI-CallerClobberKill",
+        "eq": "v_tgt_3 = eval_ABI-CallerClobberKill(v_src_3)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t07_regalloc_with_spills:bb1",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_0",
+        "rule": "Mach-LiveRangeSplit",
+        "eq": "v_tgt_4 = eval_Mach-LiveRangeSplit(v_src_4)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 5,
+        "pc_src": "t07_regalloc_with_spills:bb2",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_1",
+        "rule": "Mach-FrameSpillSlot",
+        "eq": "v_tgt_5 = eval_Mach-FrameSpillSlot(v_src_5)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 6,
+        "pc_src": "t07_regalloc_with_spills:bb0",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_0",
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "eq": "v_tgt_6 = eval_Mach-CalleeSavedSaveRestore(v_src_6)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 7,
+        "pc_src": "t07_regalloc_with_spills:bb1",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_1",
+        "rule": "ABI-CallerClobberKill",
+        "eq": "v_tgt_7 = eval_ABI-CallerClobberKill(v_src_7)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 8,
+        "pc_src": "t07_regalloc_with_spills:bb2",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_0",
+        "rule": "Mach-LiveRangeSplit",
+        "eq": "v_tgt_8 = eval_Mach-LiveRangeSplit(v_src_8)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 9,
+        "pc_src": "t07_regalloc_with_spills:bb0",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_1",
+        "rule": "Mach-FrameSpillSlot",
+        "eq": "v_tgt_9 = eval_Mach-FrameSpillSlot(v_src_9)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 10,
+        "pc_src": "t07_regalloc_with_spills:bb1",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_0",
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "eq": "v_tgt_10 = eval_Mach-CalleeSavedSaveRestore(v_src_10)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 11,
+        "pc_src": "t07_regalloc_with_spills:bb2",
+        "pc_tgt": "t07_regalloc_with_spills:bb_opt_1",
+        "rule": "ABI-CallerClobberKill",
+        "eq": "v_tgt_11 = eval_ABI-CallerClobberKill(v_src_11)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T07",
+    "symbol": "t07_regalloc_with_spills",
+    "format": "RelJudg",
+    "expressiveness": "RequiresAuxGhost",
+    "step_count": 16,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "Mach-LiveRangeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 1,
+        "rule": "Mach-FrameSpillSlot",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 3,
+        "rule": "ABI-CallerClobberKill",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 4,
+        "rule": "Mach-LiveRangeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 5,
+        "rule": "Mach-FrameSpillSlot",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 6,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_6(st_src, st_tgt)",
+        "post_rel": "R_post_6(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 7,
+        "rule": "ABI-CallerClobberKill",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_7(st_src, st_tgt)",
+        "post_rel": "R_post_7(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 8,
+        "rule": "Mach-LiveRangeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_8(st_src, st_tgt)",
+        "post_rel": "R_post_8(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 9,
+        "rule": "Mach-FrameSpillSlot",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_9(st_src, st_tgt)",
+        "post_rel": "R_post_9(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 10,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_10(st_src, st_tgt)",
+        "post_rel": "R_post_10(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 11,
+        "rule": "ABI-CallerClobberKill",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_11(st_src, st_tgt)",
+        "post_rel": "R_post_11(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 12,
+        "rule": "Mach-LiveRangeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_12(st_src, st_tgt)",
+        "post_rel": "R_post_12(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 13,
+        "rule": "Mach-FrameSpillSlot",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_13(st_src, st_tgt)",
+        "post_rel": "R_post_13(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 14,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_14(st_src, st_tgt)",
+        "post_rel": "R_post_14(st_src', st_tgt')",
+        "aux_mach_frame": true
+      },
+      {
+        "seq_idx": 15,
+        "rule": "ABI-CallerClobberKill",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_15(st_src, st_tgt)",
+        "post_rel": "R_post_15(st_src', st_tgt')",
+        "aux_mach_frame": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T07",
+    "symbol": "t07_regalloc_with_spills",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 15,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "Mach-LiveRangeSplit",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "Mach-FrameSpillSlot",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "ABI-CallerClobberKill",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "Mach-LiveRangeSplit",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "Mach-FrameSpillSlot",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 7,
+        "rule": "ABI-CallerClobberKill",
+        "cone_src_hash": 268435673,
+        "cone_tgt_hash": 536871031,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 8,
+        "rule": "Mach-LiveRangeSplit",
+        "cone_src_hash": 268435704,
+        "cone_tgt_hash": 536871048,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 9,
+        "rule": "Mach-FrameSpillSlot",
+        "cone_src_hash": 268435735,
+        "cone_tgt_hash": 536871065,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 10,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "cone_src_hash": 268435766,
+        "cone_tgt_hash": 536871082,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 11,
+        "rule": "ABI-CallerClobberKill",
+        "cone_src_hash": 268435797,
+        "cone_tgt_hash": 536871099,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 12,
+        "rule": "Mach-LiveRangeSplit",
+        "cone_src_hash": 268435828,
+        "cone_tgt_hash": 536871116,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 13,
+        "rule": "Mach-FrameSpillSlot",
+        "cone_src_hash": 268435859,
+        "cone_tgt_hash": 536871133,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 14,
+        "rule": "Mach-CalleeSavedSaveRestore",
+        "cone_src_hash": 268435890,
+        "cone_tgt_hash": 536871150,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T08",
+    "symbol": "t08_unroll_and_indvar_simplify",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 16,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb0",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Loop-FullUnroll16",
+        "eq": "v_tgt_0 = eval_Loop-FullUnroll16(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb1",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "eq": "v_tgt_1 = eval_SCEV-IndVarAffineClosedForm(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb2",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Algebraic-MulToShift",
+        "eq": "v_tgt_2 = eval_Algebraic-MulToShift(v_src_2)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb0",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SSA-AccumTreeFold",
+        "eq": "v_tgt_3 = eval_SSA-AccumTreeFold(v_src_3)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb1",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Loop-FullUnroll16",
+        "eq": "v_tgt_4 = eval_Loop-FullUnroll16(v_src_4)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 5,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb2",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "eq": "v_tgt_5 = eval_SCEV-IndVarAffineClosedForm(v_src_5)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 6,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb0",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Algebraic-MulToShift",
+        "eq": "v_tgt_6 = eval_Algebraic-MulToShift(v_src_6)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 7,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb1",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SSA-AccumTreeFold",
+        "eq": "v_tgt_7 = eval_SSA-AccumTreeFold(v_src_7)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 8,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb2",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Loop-FullUnroll16",
+        "eq": "v_tgt_8 = eval_Loop-FullUnroll16(v_src_8)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 9,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb0",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "eq": "v_tgt_9 = eval_SCEV-IndVarAffineClosedForm(v_src_9)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 10,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb1",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Algebraic-MulToShift",
+        "eq": "v_tgt_10 = eval_Algebraic-MulToShift(v_src_10)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 11,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb2",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SSA-AccumTreeFold",
+        "eq": "v_tgt_11 = eval_SSA-AccumTreeFold(v_src_11)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 12,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb0",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Loop-FullUnroll16",
+        "eq": "v_tgt_12 = eval_Loop-FullUnroll16(v_src_12)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 13,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb1",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "eq": "v_tgt_13 = eval_SCEV-IndVarAffineClosedForm(v_src_13)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 14,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb2",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_0",
+        "rule": "Algebraic-MulToShift",
+        "eq": "v_tgt_14 = eval_Algebraic-MulToShift(v_src_14)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 15,
+        "pc_src": "t08_unroll_and_indvar_simplify:bb0",
+        "pc_tgt": "t08_unroll_and_indvar_simplify:bb_opt_1",
+        "rule": "SSA-AccumTreeFold",
+        "eq": "v_tgt_15 = eval_SSA-AccumTreeFold(v_src_15)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T08",
+    "symbol": "t08_unroll_and_indvar_simplify",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 17,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "Loop-FullUnroll16",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Algebraic-MulToShift",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "SSA-AccumTreeFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "Loop-FullUnroll16",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 6,
+        "rule": "Algebraic-MulToShift",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_6(st_src, st_tgt)",
+        "post_rel": "R_post_6(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 7,
+        "rule": "SSA-AccumTreeFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_7(st_src, st_tgt)",
+        "post_rel": "R_post_7(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 8,
+        "rule": "Loop-FullUnroll16",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_8(st_src, st_tgt)",
+        "post_rel": "R_post_8(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 9,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_9(st_src, st_tgt)",
+        "post_rel": "R_post_9(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 10,
+        "rule": "Algebraic-MulToShift",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_10(st_src, st_tgt)",
+        "post_rel": "R_post_10(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 11,
+        "rule": "SSA-AccumTreeFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_11(st_src, st_tgt)",
+        "post_rel": "R_post_11(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 12,
+        "rule": "Loop-FullUnroll16",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_12(st_src, st_tgt)",
+        "post_rel": "R_post_12(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 13,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_13(st_src, st_tgt)",
+        "post_rel": "R_post_13(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 14,
+        "rule": "Algebraic-MulToShift",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_14(st_src, st_tgt)",
+        "post_rel": "R_post_14(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 15,
+        "rule": "SSA-AccumTreeFold",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_15(st_src, st_tgt)",
+        "post_rel": "R_post_15(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 16,
+        "rule": "Loop-FullUnroll16",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_16(st_src, st_tgt)",
+        "post_rel": "R_post_16(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T08",
+    "symbol": "t08_unroll_and_indvar_simplify",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 20,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "Loop-FullUnroll16",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Algebraic-MulToShift",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "SSA-AccumTreeFold",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "Loop-FullUnroll16",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "Algebraic-MulToShift",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 7,
+        "rule": "SSA-AccumTreeFold",
+        "cone_src_hash": 268435673,
+        "cone_tgt_hash": 536871031,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 8,
+        "rule": "Loop-FullUnroll16",
+        "cone_src_hash": 268435704,
+        "cone_tgt_hash": 536871048,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 9,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "cone_src_hash": 268435735,
+        "cone_tgt_hash": 536871065,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 10,
+        "rule": "Algebraic-MulToShift",
+        "cone_src_hash": 268435766,
+        "cone_tgt_hash": 536871082,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 11,
+        "rule": "SSA-AccumTreeFold",
+        "cone_src_hash": 268435797,
+        "cone_tgt_hash": 536871099,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 12,
+        "rule": "Loop-FullUnroll16",
+        "cone_src_hash": 268435828,
+        "cone_tgt_hash": 536871116,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 13,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "cone_src_hash": 268435859,
+        "cone_tgt_hash": 536871133,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 14,
+        "rule": "Algebraic-MulToShift",
+        "cone_src_hash": 268435890,
+        "cone_tgt_hash": 536871150,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 15,
+        "rule": "SSA-AccumTreeFold",
+        "cone_src_hash": 268435921,
+        "cone_tgt_hash": 536871167,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 16,
+        "rule": "Loop-FullUnroll16",
+        "cone_src_hash": 268435952,
+        "cone_tgt_hash": 536871184,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 17,
+        "rule": "SCEV-IndVarAffineClosedForm",
+        "cone_src_hash": 268435983,
+        "cone_tgt_hash": 536871201,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 18,
+        "rule": "Algebraic-MulToShift",
+        "cone_src_hash": 268436014,
+        "cone_tgt_hash": 536871218,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 19,
+        "rule": "SSA-AccumTreeFold",
+        "cone_src_hash": 268436045,
+        "cone_tgt_hash": 536871235,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T09",
+    "symbol": "t09_atomics_coalesce_and_reorder",
+    "format": "SimCert",
+    "expressiveness": "RequiresAuxGhost",
+    "step_count": 5,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t09_atomics_coalesce_and_reorder:bb0",
+        "pc_tgt": "t09_atomics_coalesce_and_reorder:bb_opt_0",
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "eq": "v_tgt_0 = eval_Atomic-MonotonicNonFenceForward(v_src_0)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t09_atomics_coalesce_and_reorder:bb1",
+        "pc_tgt": "t09_atomics_coalesce_and_reorder:bb_opt_1",
+        "rule": "Atomic-AcquireBarrierPreserve",
+        "eq": "v_tgt_1 = eval_Atomic-AcquireBarrierPreserve(v_src_1)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t09_atomics_coalesce_and_reorder:bb2",
+        "pc_tgt": "t09_atomics_coalesce_and_reorder:bb_opt_0",
+        "rule": "Mem-NoAliasDisjoint",
+        "eq": "v_tgt_2 = eval_Mem-NoAliasDisjoint(v_src_2)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t09_atomics_coalesce_and_reorder:bb0",
+        "pc_tgt": "t09_atomics_coalesce_and_reorder:bb_opt_1",
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "eq": "v_tgt_3 = eval_Atomic-MonotonicNonFenceForward(v_src_3)",
+        "aux_ghost": true
+      },
+      {
+        "cut_idx": 4,
+        "pc_src": "t09_atomics_coalesce_and_reorder:bb1",
+        "pc_tgt": "t09_atomics_coalesce_and_reorder:bb_opt_0",
+        "rule": "Atomic-AcquireBarrierPreserve",
+        "eq": "v_tgt_4 = eval_Atomic-AcquireBarrierPreserve(v_src_4)",
+        "aux_ghost": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T09",
+    "symbol": "t09_atomics_coalesce_and_reorder",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 6,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "Atomic-AcquireBarrierPreserve",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Mem-NoAliasDisjoint",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "Atomic-AcquireBarrierPreserve",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 5,
+        "rule": "Mem-NoAliasDisjoint",
+        "gamma_alias": [
+          "noalias(arg0, arg1)"
+        ],
+        "pre_rel": "R_pre_5(st_src, st_tgt)",
+        "post_rel": "R_post_5(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T09",
+    "symbol": "t09_atomics_coalesce_and_reorder",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 7,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "Atomic-AcquireBarrierPreserve",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Mem-NoAliasDisjoint",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "Atomic-AcquireBarrierPreserve",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "Mem-NoAliasDisjoint",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 6,
+        "rule": "Atomic-MonotonicNonFenceForward",
+        "cone_src_hash": 268435642,
+        "cone_tgt_hash": 536871014,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T10",
+    "symbol": "t10_ieee754_fp_valid_rewrites",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 3,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t10_ieee754_fp_valid_rewrites:bb0",
+        "pc_tgt": "t10_ieee754_fp_valid_rewrites:bb_opt_0",
+        "rule": "FP-BitExact-DoubleNegElim",
+        "eq": "v_tgt_0 = eval_FP-BitExact-DoubleNegElim(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t10_ieee754_fp_valid_rewrites:bb1",
+        "pc_tgt": "t10_ieee754_fp_valid_rewrites:bb_opt_1",
+        "rule": "FP-FastMathFlag-Guard",
+        "eq": "v_tgt_1 = eval_FP-FastMathFlag-Guard(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t10_ieee754_fp_valid_rewrites:bb2",
+        "pc_tgt": "t10_ieee754_fp_valid_rewrites:bb_opt_0",
+        "rule": "FP-NaNSignBitPreserve",
+        "eq": "v_tgt_2 = eval_FP-NaNSignBitPreserve(v_src_2)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T10",
+    "symbol": "t10_ieee754_fp_valid_rewrites",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 3,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "FP-BitExact-DoubleNegElim",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "FP-FastMathFlag-Guard",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "FP-NaNSignBitPreserve",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T10",
+    "symbol": "t10_ieee754_fp_valid_rewrites",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 4,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "FP-BitExact-DoubleNegElim",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "FP-FastMathFlag-Guard",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "FP-NaNSignBitPreserve",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "FP-BitExact-DoubleNegElim",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T11",
+    "symbol": "t11_jump_threading",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 4,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t11_jump_threading:bb0",
+        "pc_tgt": "t11_jump_threading:bb_opt_0",
+        "rule": "CFG-EdgeSplit",
+        "eq": "v_tgt_0 = eval_CFG-EdgeSplit(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t11_jump_threading:bb1",
+        "pc_tgt": "t11_jump_threading:bb_opt_1",
+        "rule": "CFG-CorrelatedCondSubst",
+        "eq": "v_tgt_1 = eval_CFG-CorrelatedCondSubst(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t11_jump_threading:bb2",
+        "pc_tgt": "t11_jump_threading:bb_opt_0",
+        "rule": "CFG-DiamondToSelect",
+        "eq": "v_tgt_2 = eval_CFG-DiamondToSelect(v_src_2)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t11_jump_threading:bb0",
+        "pc_tgt": "t11_jump_threading:bb_opt_1",
+        "rule": "CFG-EdgeSplit",
+        "eq": "v_tgt_3 = eval_CFG-EdgeSplit(v_src_3)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T11",
+    "symbol": "t11_jump_threading",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 5,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "CFG-EdgeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "CFG-CorrelatedCondSubst",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "CFG-DiamondToSelect",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "CFG-EdgeSplit",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 4,
+        "rule": "CFG-CorrelatedCondSubst",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_4(st_src, st_tgt)",
+        "post_rel": "R_post_4(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T11",
+    "symbol": "t11_jump_threading",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 6,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "CFG-CorrelatedCondSubst",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "CFG-DiamondToSelect",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "CFG-EdgeSplit",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "CFG-CorrelatedCondSubst",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 5,
+        "rule": "CFG-DiamondToSelect",
+        "cone_src_hash": 268435611,
+        "cone_tgt_hash": 536870997,
+        "side_condition_ok": true
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T12",
+    "symbol": "t12_merge_functions_entry",
+    "format": "SimCert",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 4,
+    "steps": [
+      {
+        "cut_idx": 0,
+        "pc_src": "t12_merge_functions_entry:bb0",
+        "pc_tgt": "t12_merge_functions_entry:bb_opt_0",
+        "rule": "IP-FuncAlphaEquivIso",
+        "eq": "v_tgt_0 = eval_IP-FuncAlphaEquivIso(v_src_0)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 1,
+        "pc_src": "t12_merge_functions_entry:bb1",
+        "pc_tgt": "t12_merge_functions_entry:bb_opt_1",
+        "rule": "IP-CallTargetRedirect",
+        "eq": "v_tgt_1 = eval_IP-CallTargetRedirect(v_src_1)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 2,
+        "pc_src": "t12_merge_functions_entry:bb2",
+        "pc_tgt": "t12_merge_functions_entry:bb_opt_0",
+        "rule": "Type-SignlessBitcastCompat",
+        "eq": "v_tgt_2 = eval_Type-SignlessBitcastCompat(v_src_2)",
+        "aux_ghost": false
+      },
+      {
+        "cut_idx": 3,
+        "pc_src": "t12_merge_functions_entry:bb0",
+        "pc_tgt": "t12_merge_functions_entry:bb_opt_1",
+        "rule": "IP-FuncAlphaEquivIso",
+        "eq": "v_tgt_3 = eval_IP-FuncAlphaEquivIso(v_src_3)",
+        "aux_ghost": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T12",
+    "symbol": "t12_merge_functions_entry",
+    "format": "RelJudg",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 4,
+    "steps": [
+      {
+        "seq_idx": 0,
+        "rule": "IP-FuncAlphaEquivIso",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_0(st_src, st_tgt)",
+        "post_rel": "R_post_0(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 1,
+        "rule": "IP-CallTargetRedirect",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_1(st_src, st_tgt)",
+        "post_rel": "R_post_1(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 2,
+        "rule": "Type-SignlessBitcastCompat",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_2(st_src, st_tgt)",
+        "post_rel": "R_post_2(st_src', st_tgt')",
+        "aux_mach_frame": false
+      },
+      {
+        "seq_idx": 3,
+        "rule": "IP-FuncAlphaEquivIso",
+        "gamma_alias": [],
+        "pre_rel": "R_pre_3(st_src, st_tgt)",
+        "post_rel": "R_post_3(st_src', st_tgt')",
+        "aux_mach_frame": false
+      }
+    ]
+  },
+  {
+    "benchmark_id": "T12",
+    "symbol": "t12_merge_functions_entry",
+    "format": "HybridTrace",
+    "expressiveness": "DirectlyExpressible",
+    "step_count": 5,
+    "steps": [
+      {
+        "step_idx": 0,
+        "rule": "IP-FuncAlphaEquivIso",
+        "cone_src_hash": 268435456,
+        "cone_tgt_hash": 536870912,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 1,
+        "rule": "IP-CallTargetRedirect",
+        "cone_src_hash": 268435487,
+        "cone_tgt_hash": 536870929,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 2,
+        "rule": "Type-SignlessBitcastCompat",
+        "cone_src_hash": 268435518,
+        "cone_tgt_hash": 536870946,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 3,
+        "rule": "IP-FuncAlphaEquivIso",
+        "cone_src_hash": 268435549,
+        "cone_tgt_hash": 536870963,
+        "side_condition_ok": true
+      },
+      {
+        "step_idx": 4,
+        "rule": "IP-CallTargetRedirect",
+        "cone_src_hash": 268435580,
+        "cone_tgt_hash": 536870980,
+        "side_condition_ok": true
+      }
+    ]
+  }
+]

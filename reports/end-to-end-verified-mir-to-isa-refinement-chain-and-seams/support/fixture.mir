@@ -1,0 +1,55 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn add_bounded(_1: usize, _2: usize) -> usize {
+    debug x => _1;
+    debug y => _2;
+    let mut _0: usize;
+    let mut _3: bool;
+    let mut _4: bool;
+    let mut _5: (usize, bool);
+
+    bb0: {
+        _3 = Le(copy _1, const 1000_usize);
+        switchInt(move _3) -> [0: bb4, otherwise: bb1];
+    }
+
+    bb1: {
+        _4 = Le(copy _2, const 1000_usize);
+        switchInt(move _4) -> [0: bb4, otherwise: bb2];
+    }
+
+    bb2: {
+        _5 = AddWithOverflow(copy _1, copy _2);
+        assert(!move (_5.1: bool), "attempt to compute `{} + {}`, which would overflow", copy _1, copy _2) -> [success: bb3, unwind continue];
+    }
+
+    bb3: {
+        _0 = move (_5.0: usize);
+        goto -> bb5;
+    }
+
+    bb4: {
+        _0 = const 0_usize;
+        goto -> bb5;
+    }
+
+    bb5: {
+        return;
+    }
+}
+
+fn alloc_passthrough(_1: usize) -> usize {
+    debug x => _1;
+    let mut _0: usize;
+    let _2: &usize;
+    scope 1 {
+        debug r => _2;
+    }
+
+    bb0: {
+        _2 = &_1;
+        _0 = copy (*_2);
+        return;
+    }
+}

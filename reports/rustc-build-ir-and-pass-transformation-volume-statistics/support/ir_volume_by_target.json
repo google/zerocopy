@@ -1,0 +1,466 @@
+{
+  "x86_64-unknown-linux-gnu": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1079,
+      "opcode_categories": {
+        "memory": 381,
+        "casts": 21,
+        "control_flow": 261,
+        "arith_simd_other": 120,
+        "calls": 112,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 54,
+      "llvm_instructions": 316,
+      "opcode_categories": {
+        "memory": 37,
+        "compare_select": 55,
+        "control_flow": 52,
+        "arith_simd_other": 80,
+        "phi": 44,
+        "calls": 12,
+        "gep": 32,
+        "casts": 4
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2929,
+    "inlining_call_site_reduction_pct": 89.29,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 3142652,
+        "defined_text_symbols": 602,
+        "post_o3_machine_instructions": 34044
+      },
+      "alloc": {
+        "rlib_bytes": 1027344,
+        "defined_text_symbols": 121,
+        "post_o3_machine_instructions": 8299
+      },
+      "std": {
+        "rlib_bytes": 12242318,
+        "defined_text_symbols": 1343,
+        "post_o3_machine_instructions": 96855
+      }
+    }
+  },
+  "aarch64-unknown-linux-gnu": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1079,
+      "opcode_categories": {
+        "memory": 381,
+        "casts": 21,
+        "control_flow": 261,
+        "arith_simd_other": 120,
+        "calls": 112,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 51,
+      "llvm_instructions": 284,
+      "opcode_categories": {
+        "memory": 33,
+        "compare_select": 52,
+        "control_flow": 49,
+        "arith_simd_other": 65,
+        "phi": 37,
+        "calls": 12,
+        "gep": 28,
+        "casts": 8
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2632,
+    "inlining_call_site_reduction_pct": 89.29,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 3279358,
+        "defined_text_symbols": 607,
+        "post_o3_machine_instructions": 32203
+      },
+      "alloc": {
+        "rlib_bytes": 1077088,
+        "defined_text_symbols": 122,
+        "post_o3_machine_instructions": 7350
+      },
+      "std": {
+        "rlib_bytes": 12868686,
+        "defined_text_symbols": 1429,
+        "post_o3_machine_instructions": 90106
+      }
+    }
+  },
+  "i686-unknown-linux-gnu": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1082,
+      "opcode_categories": {
+        "memory": 390,
+        "casts": 20,
+        "control_flow": 261,
+        "arith_simd_other": 116,
+        "calls": 111,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 52,
+      "llvm_instructions": 300,
+      "opcode_categories": {
+        "memory": 38,
+        "compare_select": 52,
+        "control_flow": 50,
+        "arith_simd_other": 67,
+        "phi": 36,
+        "calls": 12,
+        "gep": 31,
+        "casts": 14
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2773,
+    "inlining_call_site_reduction_pct": 89.19,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 2654890,
+        "defined_text_symbols": 604,
+        "post_o3_machine_instructions": 47521
+      },
+      "alloc": {
+        "rlib_bytes": 843540,
+        "defined_text_symbols": 121,
+        "post_o3_machine_instructions": 10327
+      },
+      "std": {
+        "rlib_bytes": 10244386,
+        "defined_text_symbols": 1336,
+        "post_o3_machine_instructions": 124141
+      }
+    }
+  },
+  "aarch64-apple-darwin": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1079,
+      "opcode_categories": {
+        "memory": 381,
+        "casts": 21,
+        "control_flow": 261,
+        "arith_simd_other": 120,
+        "calls": 112,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 51,
+      "llvm_instructions": 284,
+      "opcode_categories": {
+        "memory": 33,
+        "compare_select": 52,
+        "control_flow": 49,
+        "arith_simd_other": 65,
+        "phi": 37,
+        "calls": 12,
+        "gep": 28,
+        "casts": 8
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2632,
+    "inlining_call_site_reduction_pct": 89.29,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 2641088,
+        "defined_text_symbols": 616,
+        "post_o3_machine_instructions": 32111
+      },
+      "alloc": {
+        "rlib_bytes": 849720,
+        "defined_text_symbols": 122,
+        "post_o3_machine_instructions": 7319
+      },
+      "std": {
+        "rlib_bytes": 9832968,
+        "defined_text_symbols": 1344,
+        "post_o3_machine_instructions": 83089
+      }
+    }
+  },
+  "x86_64-pc-windows-msvc": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1079,
+      "opcode_categories": {
+        "memory": 381,
+        "casts": 21,
+        "control_flow": 261,
+        "arith_simd_other": 120,
+        "calls": 112,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 54,
+      "llvm_instructions": 316,
+      "opcode_categories": {
+        "memory": 37,
+        "compare_select": 55,
+        "control_flow": 52,
+        "arith_simd_other": 80,
+        "phi": 44,
+        "calls": 12,
+        "gep": 32,
+        "casts": 4
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2929,
+    "inlining_call_site_reduction_pct": 89.29,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 2489578,
+        "defined_text_symbols": 606,
+        "post_o3_machine_instructions": 35315
+      },
+      "alloc": {
+        "rlib_bytes": 746784,
+        "defined_text_symbols": 168,
+        "post_o3_machine_instructions": 9201
+      },
+      "std": {
+        "rlib_bytes": 6010266,
+        "defined_text_symbols": 1633,
+        "post_o3_machine_instructions": 74740
+      }
+    }
+  },
+  "x86_64-pc-windows-gnu": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1079,
+      "opcode_categories": {
+        "memory": 381,
+        "casts": 21,
+        "control_flow": 261,
+        "arith_simd_other": 120,
+        "calls": 112,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 54,
+      "llvm_instructions": 316,
+      "opcode_categories": {
+        "memory": 37,
+        "compare_select": 55,
+        "control_flow": 52,
+        "arith_simd_other": 80,
+        "phi": 44,
+        "calls": 12,
+        "gep": 32,
+        "casts": 4
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2929,
+    "inlining_call_site_reduction_pct": 89.29,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 2452788,
+        "defined_text_symbols": 595,
+        "post_o3_machine_instructions": 34362
+      },
+      "alloc": {
+        "rlib_bytes": 814738,
+        "defined_text_symbols": 121,
+        "post_o3_machine_instructions": 8459
+      },
+      "std": {
+        "rlib_bytes": 9238548,
+        "defined_text_symbols": 1257,
+        "post_o3_machine_instructions": 92123
+      }
+    }
+  },
+  "aarch64-pc-windows-msvc": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1079,
+      "opcode_categories": {
+        "memory": 381,
+        "casts": 21,
+        "control_flow": 261,
+        "arith_simd_other": 120,
+        "calls": 112,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 51,
+      "llvm_instructions": 284,
+      "opcode_categories": {
+        "memory": 33,
+        "compare_select": 52,
+        "control_flow": 49,
+        "arith_simd_other": 65,
+        "phi": 37,
+        "calls": 12,
+        "gep": 28,
+        "casts": 8
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2632,
+    "inlining_call_site_reduction_pct": 89.29,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 2488066,
+        "defined_text_symbols": 607,
+        "post_o3_machine_instructions": 32147
+      },
+      "alloc": {
+        "rlib_bytes": 742386,
+        "defined_text_symbols": 168,
+        "post_o3_machine_instructions": 7724
+      },
+      "std": {
+        "rlib_bytes": 5972964,
+        "defined_text_symbols": 1629,
+        "post_o3_machine_instructions": 67286
+      }
+    }
+  },
+  "i686-pc-windows-msvc": {
+    "mir": {
+      "mir_functions": 10,
+      "mir_basic_blocks": 176,
+      "mir_statements": 327,
+      "mir_terminators": 176,
+      "mir_total_ops": 503
+    },
+    "llvm_pre_opt": {
+      "llvm_functions": 51,
+      "llvm_basic_blocks": 261,
+      "llvm_instructions": 1082,
+      "opcode_categories": {
+        "memory": 390,
+        "casts": 20,
+        "control_flow": 261,
+        "arith_simd_other": 116,
+        "calls": 111,
+        "gep": 108,
+        "compare_select": 76
+      }
+    },
+    "llvm_post_o3": {
+      "llvm_functions": 8,
+      "llvm_basic_blocks": 52,
+      "llvm_instructions": 300,
+      "opcode_categories": {
+        "memory": 38,
+        "compare_select": 52,
+        "control_flow": 50,
+        "arith_simd_other": 67,
+        "phi": 36,
+        "calls": 12,
+        "gep": 31,
+        "casts": 14
+      }
+    },
+    "o3_to_o0_function_ratio": 0.1569,
+    "o3_to_o0_instruction_ratio": 0.2773,
+    "inlining_call_site_reduction_pct": 89.19,
+    "sysroot_rlibs": {
+      "core": {
+        "rlib_bytes": 2552696,
+        "defined_text_symbols": 606,
+        "post_o3_machine_instructions": 43295
+      },
+      "alloc": {
+        "rlib_bytes": 762788,
+        "defined_text_symbols": 205,
+        "post_o3_machine_instructions": 10222
+      },
+      "std": {
+        "rlib_bytes": 6182648,
+        "defined_text_symbols": 1913,
+        "post_o3_machine_instructions": 83094
+      }
+    }
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "zero_sorry": true,
+  "zero_native_decide": true,
+  "axioms_used": {
+    "checkDeriv_sound": [
+      "propext",
+      "Quot.sound"
+    ],
+    "checkDeriv_complete": [
+      "propext"
+    ],
+    "checkStmtDeriv_iff_valid": [
+      "propext"
+    ],
+    "bench1_refines_to_bench4_refines": [
+      "propext",
+      "Quot.sound"
+    ]
+  },
+  "totals": {
+    "total_lines": 691,
+    "total_code_lines": 531,
+    "total_olean_bytes": 3767536,
+    "wall_clock_build_sec": 3.98,
+    "user_cpu_sec": 3.61,
+    "sys_cpu_sec": 1.14,
+    "peak_rss_kb": 846448,
+    "rule_constructors_covered": 20,
+    "loc_per_rule_constructor": 26.55,
+    "proof_to_checker_code_ratio": 2.95
+  },
+  "per_file": [
+    {
+      "file": "W6Proto/Syntax.lean",
+      "role": "AST & language syntax (RegId, SlotId, AliasTag, Expr, Stmt, Prog)",
+      "total_lines": 49,
+      "code_lines": 28,
+      "elaboration_and_kernel_ms": 589,
+      "olean_bytes": 900424
+    },
+    {
+      "file": "W6Proto/Semantics.lean",
+      "role": "Operational semantics (State, Outcome, refines, evalExpr, evalStmt, stmtRefines)",
+      "total_lines": 119,
+      "code_lines": 88,
+      "elaboration_and_kernel_ms": 446,
+      "olean_bytes": 380664
+    },
+    {
+      "file": "W6Proto/Derivations.lean",
+      "role": "HybridTrace derivation AST (10 ExprRewrite + 10 StmtDeriv constructors)",
+      "total_lines": 56,
+      "code_lines": 40,
+      "elaboration_and_kernel_ms": 628,
+      "olean_bytes": 1224920
+    },
+    {
+      "file": "W6Proto/Checker.lean",
+      "role": "Executable boolean checker (inferExprRewrite, checkDisjointNoAlias, checkStmtDeriv, checkDeriv)",
+      "total_lines": 87,
+      "code_lines": 65,
+      "elaboration_and_kernel_ms": 357,
+      "olean_bytes": 220496
+    },
+    {
+      "file": "W6Proto/Soundness.lean",
+      "role": "Kernel-checked soundness proof (evalExpr_setSlot, inferExprRewrite_sound, checkStmtDeriv_sound, checkDeriv_sound)",
+      "total_lines": 138,
+      "code_lines": 118,
+      "elaboration_and_kernel_ms": 604,
+      "olean_bytes": 666320
+    },
+    {
+      "file": "W6Proto/Completeness.lean",
+      "role": "Declarative ValidDeriv spec, checkDeriv_complete, checkStmtDeriv_iff_valid, and 4 W5 micro-benchmarks",
+      "total_lines": 242,
+      "code_lines": 192,
+      "elaboration_and_kernel_ms": 469,
+      "olean_bytes": 374712
+    }
+  ],
+  "pitfalls_quantified": [
+    {
+      "id": "PITFALL-1",
+      "name": "DecidableEq Synthesis Failure Over Higher-Order State Representations",
+      "symptom": "`Outcome State` fails to synthesize `Decidable (Outcome.val st1 \u2260 Outcome.ub)` when `State` embeds function-typed maps (`RegId \u2192 Int`, `SlotId \u2192 Int`).",
+      "resolution": "Separate syntactic checker decidability (`Stmt`, `Expr`, `RegId`, `SlotId`, `AliasTag` all `deriving DecidableEq`) from semantic `Outcome State` discrimination (`by nofun` / constructor injection).",
+      "loc_impact": 6
+    },
+    {
+      "id": "PITFALL-2",
+      "name": "Implicit Frame Obligations Between Memory Slot Stores and Register Expressions",
+      "symptom": "`promoteSlotToAssign`, `forwardStoreAcrossNoAlias`, and `elimOverwrittenStore` leave `evalExpr (st.setSlot s v) e = evalExpr st e` unreduced because `evalExpr` recurses over `Expr` while reading `st.regs`.",
+      "resolution": "Prove a compositional `[simp]` frame lemma `evalExpr_setSlot` once by structural induction on `Expr` (10 lines), eliminating per-rule frame boilerplate.",
+      "loc_impact": 10
+    },
+    {
+      "id": "PITFALL-3",
+      "name": "Intermediate Statement Witness Synthesis (`inferExprRewrite` vs. Relational Checking)",
+      "symptom": "Relational `checkExprRewrite src tgt rw : Bool` requires existential intermediate expressions in transitive chains, complicating completeness inversion.",
+      "resolution": "Use functional endpoint synthesis `inferExprRewrite : ExprRewrite \u2192 Expr \u00d7 Expr` for algebraic rewrites and explicit `mid : Stmt` witnesses on `StmtDeriv.trans`, yielding 1-line `simp` proofs per constructor in `checkStmtDeriv_complete`.",
+      "loc_impact": -45
+    },
+    {
+      "id": "PITFALL-4",
+      "name": "Quadratic Case-Split Expansion in Multi-Arity Inductive Congruence (`seqCong`)",
+      "symptom": "`cases src <;> cases tgt` on a 7-constructor `Stmt` inductive produces 49 subgoals (48 impossible `false = true` goals).",
+      "resolution": "Chain `<;> simp only [checkStmtDeriv, Bool.and_eq_true] at h <;> try contradiction` or factor a `match src, tgt` inversion lemma before scaling `Stmt` beyond 15 constructors.",
+      "loc_impact": 4
+    }
+  ],
+  "full_scale_extrapolation": {
+    "w5_production_rule_families": 52,
+    "estimated_rule_constructors": 185,
+    "projected_syntax_semantics_kloc": 6.5,
+    "projected_checker_kloc": 4.2,
+    "projected_soundness_proof_kloc": 18.5,
+    "projected_completeness_proof_kloc": 7.8,
+    "projected_total_lean_kloc": 37.0,
+    "projected_engineer_months": "9-14 engineer-months (with 2-tier functional endpoint synthesis + shared frame lemmas)"
+  }
+}
