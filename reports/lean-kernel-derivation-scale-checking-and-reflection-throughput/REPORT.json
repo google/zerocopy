@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "lean",
+    "lean/kernel",
+    "verification",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover and C++ kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Clean-room independent Rust Lean 4 proof checker (nanoda_lib)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "v0.4.32"
+      }
+    },
+    {
+      "name": "Lean 4 NDJSON v3.1.0 kernel exporter (lean4export)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "Self-hosted Lean 4 kernel in Lean 4 (lean4lean)",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

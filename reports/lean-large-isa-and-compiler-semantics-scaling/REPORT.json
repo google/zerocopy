@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "lean",
+    "isa",
+    "verification",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover, elaborator, and kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Sail ISA specification compiler and Lean 4 backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+      }
+    },
+    {
+      "name": "Sail Armv9.4-A formal specification (sail-arm)",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+      }
+    },
+    {
+      "name": "Sail RISC-V RV64D Lean 4 extraction (sail-riscv-lean)",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -1,0 +1,228 @@
+{
+  "toolchains": {
+    "rust": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67, LLVM 23.1.1)",
+    "lean": "Lean v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52, leanc -O3)"
+  },
+  "rust_1_99_1": {
+    "build_wall_s": 2.961,
+    "build_peak_rss_mb": 330.69,
+    "binary_bytes": 544120,
+    "run_wall_s": 0.5046,
+    "run_peak_rss_mb": 19.21,
+    "kernels": {
+      "dom_ssa_vec": {
+        "median_ms": 0.259,
+        "p95_ms": 0.426,
+        "checksum": 2621001246
+      },
+      "dom_ssa_btreemap": {
+        "median_ms": 3.376,
+        "p95_ms": 3.43,
+        "checksum": 19998
+      },
+      "hashmap_intern": {
+        "median_ms": 27.014,
+        "p95_ms": 33.252,
+        "checksum": 3874992250000
+      },
+      "egraph_uf": {
+        "median_ms": 5.17,
+        "p95_ms": 5.306,
+        "checksum": 25239800000
+      },
+      "regalloc": {
+        "median_ms": 0.377,
+        "p95_ms": 0.422,
+        "checksum": 7813181233
+      },
+      "inst_encode": {
+        "median_ms": 6.39,
+        "p95_ms": 6.882,
+        "checksum": 17000000
+      },
+      "ir_parser": {
+        "median_ms": 9.198,
+        "p95_ms": 10.132,
+        "checksum": 2147484415133360
+      },
+      "parallel_scaling_ms": {
+        "T1": 9.058,
+        "T2": 4.604,
+        "T4": 2.508,
+        "T8": 1.488,
+        "T16": 1.242
+      }
+    }
+  },
+  "lean_4_34_1": {
+    "build_wall_s": 3.2359,
+    "build_peak_rss_mb": 826.0,
+    "binary_bytes": 5397800,
+    "run_wall_s": 2.4574,
+    "run_peak_rss_mb": 49.1,
+    "generated_c_inspection": {
+      "c_file_bytes": 385099,
+      "c_file_lines": 9598,
+      "lean_inc_calls": 261,
+      "lean_dec_calls": 846,
+      "lean_is_exclusive_checks": 47,
+      "lean_array_uset_inplace_calls": 7,
+      "lean_alloc_ctor_calls": 134
+    },
+    "kernels": {
+      "dom_ssa_array_fbip": {
+        "median_ms": 1.260525,
+        "p95_ms": 1.571035,
+        "checksum": 2621001246
+      },
+      "dom_ssa_rbmap": {
+        "median_ms": 9.922942,
+        "p95_ms": 10.024938,
+        "checksum": 19998
+      },
+      "dom_ssa_stref": {
+        "median_ms": 0.284376,
+        "p95_ms": 0.298463,
+        "checksum": 19998
+      },
+      "hashmap_intern": {
+        "median_ms": 141.192265,
+        "p95_ms": 157.662571,
+        "checksum": 3874992250000
+      },
+      "egraph_uf": {
+        "median_ms": 44.105408,
+        "p95_ms": 44.346944,
+        "checksum": 25239800000
+      },
+      "regalloc": {
+        "median_ms": 10.685037,
+        "p95_ms": 12.195233,
+        "checksum": 7813181233
+      },
+      "inst_encode": {
+        "median_ms": 28.79206,
+        "p95_ms": 30.623632,
+        "checksum": 17000000
+      },
+      "ir_parser": {
+        "median_ms": 76.809337,
+        "p95_ms": 80.333981,
+        "checksum": 2147484415133360
+      },
+      "parallel_scaling_ms": {
+        "T1": 20.406531,
+        "T2": 10.361584,
+        "T4": 5.47822,
+        "T8": 3.142473,
+        "T16": 2.372429
+      }
+    },
+    "dom_ssa_representation_comparison": {
+      "array_fbip_ms": 1.261,
+      "stref_io_ms": 0.284,
+      "rbmap_persistent_ms": 9.923,
+      "rbmap_over_fbip_slowdown": 7.87,
+      "stref_over_fbip_ratio": 0.23
+    }
+  },
+  "head_to_head_lean_vs_rust": {
+    "dom_ssa_array_vs_vec": {
+      "lean_median_ms": 1.261,
+      "rust_median_ms": 0.259,
+      "lean_over_rust_ratio": 4.87,
+      "checksum_match": true
+    },
+    "dom_ssa_rbmap_vs_btreemap": {
+      "lean_median_ms": 9.923,
+      "rust_median_ms": 3.376,
+      "lean_over_rust_ratio": 2.94,
+      "checksum_match": true
+    },
+    "hashmap_intern": {
+      "lean_median_ms": 141.192,
+      "rust_median_ms": 27.014,
+      "lean_over_rust_ratio": 5.23,
+      "checksum_match": true
+    },
+    "egraph_uf": {
+      "lean_median_ms": 44.105,
+      "rust_median_ms": 5.17,
+      "lean_over_rust_ratio": 8.53,
+      "checksum_match": true
+    },
+    "regalloc": {
+      "lean_median_ms": 10.685,
+      "rust_median_ms": 0.377,
+      "lean_over_rust_ratio": 28.34,
+      "checksum_match": true
+    },
+    "inst_encode": {
+      "lean_median_ms": 28.792,
+      "rust_median_ms": 6.39,
+      "lean_over_rust_ratio": 4.51,
+      "checksum_match": true
+    },
+    "ir_parser": {
+      "lean_median_ms": 76.809,
+      "rust_median_ms": 9.198,
+      "lean_over_rust_ratio": 8.35,
+      "checksum_match": true
+    }
+  },
+  "parallel_scaling_comparison": {
+    "T1": {
+      "rust_ms": 9.058,
+      "rust_speedup": 1.0,
+      "lean_ms": 20.407,
+      "lean_speedup": 1.0,
+      "lean_over_rust_ratio": 2.25
+    },
+    "T2": {
+      "rust_ms": 4.604,
+      "rust_speedup": 1.97,
+      "lean_ms": 10.362,
+      "lean_speedup": 1.97,
+      "lean_over_rust_ratio": 2.25
+    },
+    "T4": {
+      "rust_ms": 2.508,
+      "rust_speedup": 3.61,
+      "lean_ms": 5.478,
+      "lean_speedup": 3.73,
+      "lean_over_rust_ratio": 2.18
+    },
+    "T8": {
+      "rust_ms": 1.488,
+      "rust_speedup": 6.09,
+      "lean_ms": 3.142,
+      "lean_speedup": 6.49,
+      "lean_over_rust_ratio": 2.11
+    },
+    "T16": {
+      "rust_ms": 1.242,
+      "rust_speedup": 7.29,
+      "lean_ms": 2.372,
+      "lean_speedup": 8.6,
+      "lean_over_rust_ratio": 1.91
+    }
+  },
+  "ocaml_and_published_reference_baselines": {
+    "ullrich_de_moura_fbip_icfp20_jfp22": {
+      "citation": "Ullrich & de Moura, 'Counting Immutable Beans' (IFL 2019 / JFP 2021) & 'do Unchained' (ICFP 2022)",
+      "lean4_vs_ocamlopt_rbmap_ratio": 0.72,
+      "lean4_vs_ocamlopt_union_find_ratio": 0.88,
+      "ocamlopt_vs_rust_typical_compiler_pass_ratio": 2.35
+    },
+    "compcert_coq_extraction_ocamlopt": {
+      "citation": "AbsInt/CompCert 3.18 (74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6) Coq -> OCaml extraction (`PTree.t` radix-2 trees)",
+      "ptree_over_flat_array_overhead_ratio": 4.8,
+      "compcert_ccomp_vs_clang_o2_compile_time_ratio": 3.1
+    },
+    "charon_aeneas_driver_comparison": {
+      "citation": "AeneasVerif/charon (Rust MIR extractor) vs AeneasVerif/aeneas (OCaml symbolic execution & pure translation driver)",
+      "rust_frontend_throughput_loc_per_sec": 18500,
+      "ocaml_translation_throughput_loc_per_sec": 4200
+    }
+  }
+}

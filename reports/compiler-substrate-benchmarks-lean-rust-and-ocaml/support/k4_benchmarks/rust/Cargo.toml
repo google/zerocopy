@@ -1,0 +1,9 @@
+[package]
+name = "k4_bench_rs"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1

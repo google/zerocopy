@@ -9246,6 +9246,42 @@
         "anneal"
       ]
     },
+    "compiler-substrate-benchmarks-lean-rust-and-ocaml": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and standard library"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, LCNF compiler, and C runtime"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert verified C compiler (Coq-to-OCaml extraction reference)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "rust",
+        "compilers",
+        "systems"
+      ]
+    },
     "compositional-correctness-linking-and-whole-program-optimization": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -15551,6 +15587,48 @@
         "verification/cryptography"
       ]
     },
+    "lean-kernel-derivation-scale-checking-and-reflection-throughput": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "v0.4.32"
+          },
+          "name": "Clean-room independent Rust Lean 4 proof checker (nanoda_lib)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "Lean 4 NDJSON v3.1.0 kernel exporter (lean4export)"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Self-hosted Lean 4 kernel in Lean 4 (lean4lean)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "lean/kernel",
+        "verification",
+        "compilers"
+      ]
+    },
     "lean-kernel-memory-ceilings-whnf-scaling-and-validator-architectures": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -15596,6 +15674,47 @@
         "lean/kernel",
         "lean/mechanization",
         "anneal/tcb-audit"
+      ]
+    },
+    "lean-large-isa-and-compiler-semantics-scaling": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, elaborator, and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "0f51056900af85d0b18928d6ea2d2271d18184e8"
+          },
+          "name": "Sail ISA specification compiler and Lean 4 backend"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "7d0581642d0e3aaca367bbc5650aca7c53057543"
+          },
+          "name": "Sail Armv9.4-A formal specification (sail-arm)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Sail RISC-V RV64D Lean 4 extraction (sail-riscv-lean)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "isa",
+        "verification",
+        "compilers"
       ]
     },
     "lean-lsp-document-version-cancellation-context": {

@@ -1,0 +1,498 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "axis1_and_axis2_datatype_and_match_scaling": {
+    "monolithic_inductive_and_match": [
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.9125,
+        "user_s": 1.02,
+        "rss_mb": 494.14,
+        "source_bytes": 6465,
+        "olean_bytes": 1314160,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 4956,
+          "opcode_ctor_symbols": 50,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 50
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 4.324,
+        "user_s": 5.96,
+        "rss_mb": 660.56,
+        "source_bytes": 25515,
+        "olean_bytes": 6461088,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 7822,
+          "opcode_ctor_symbols": 200,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 200
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 21.0154,
+        "user_s": 26.09,
+        "rss_mb": 1506.2,
+        "source_bytes": 63915,
+        "olean_bytes": 23234960,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 22032,
+          "opcode_ctor_symbols": 500,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 500
+      },
+      {
+        "status": "timeout",
+        "returncode": -1,
+        "wall_s": 25.0259,
+        "user_s": 25.0259,
+        "rss_mb": 0.0,
+        "source_bytes": 127915,
+        "olean_bytes": 0,
+        "olean_symbol_stats": {},
+        "eval_ns": null,
+        "error_snippet": "Timed out after 25.0s (quadratic noConfusionType / MatcherApp blowup)",
+        "K": 1000
+      },
+      {
+        "status": "timeout",
+        "returncode": -1,
+        "wall_s": 25.026,
+        "user_s": 25.026,
+        "rss_mb": 0.0,
+        "source_bytes": 258915,
+        "olean_bytes": 0,
+        "olean_symbol_stats": {},
+        "eval_ns": null,
+        "error_snippet": "Timed out after 25.0s (quadratic noConfusionType / MatcherApp blowup)",
+        "K": 2000
+      }
+    ],
+    "family_stratified_2level": [
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.8043,
+        "user_s": 0.88,
+        "rss_mb": 486.82,
+        "source_bytes": 5536,
+        "olean_bytes": 1093616,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 3335,
+          "opcode_ctor_symbols": 50,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 50,
+        "families": 1,
+        "opcodes_per_family": 50
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 2.2115,
+        "user_s": 3.07,
+        "rss_mb": 530.03,
+        "source_bytes": 21796,
+        "olean_bytes": 4393488,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 5435,
+          "opcode_ctor_symbols": 200,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 200,
+        "families": 4,
+        "opcodes_per_family": 50
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 5.2216,
+        "user_s": 7.78,
+        "rss_mb": 610.47,
+        "source_bytes": 54616,
+        "olean_bytes": 10400864,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 14272,
+          "opcode_ctor_symbols": 500,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 500,
+        "families": 10,
+        "opcodes_per_family": 50
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 10.7352,
+        "user_s": 15.89,
+        "rss_mb": 746.84,
+        "source_bytes": 109386,
+        "olean_bytes": 20417904,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 18659,
+          "opcode_ctor_symbols": 1000,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 1000,
+        "families": 20,
+        "opcodes_per_family": 50
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 21.8638,
+        "user_s": 30.86,
+        "rss_mb": 1053.09,
+        "source_bytes": 221926,
+        "olean_bytes": 40484192,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 35147,
+          "opcode_ctor_symbols": 2000,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 5,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 2000,
+        "families": 40,
+        "opcodes_per_family": 50
+      }
+    ],
+    "tag_record_table_lookup": [
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4125,
+        "user_s": 0.27,
+        "rss_mb": 466.98,
+        "source_bytes": 736,
+        "olean_bytes": 167824,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1088,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 50
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4123,
+        "user_s": 0.26,
+        "rss_mb": 465.75,
+        "source_bytes": 737,
+        "olean_bytes": 167824,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1090,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 200
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4216,
+        "user_s": 0.24,
+        "rss_mb": 467.77,
+        "source_bytes": 737,
+        "olean_bytes": 167824,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1293,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 500
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4221,
+        "user_s": 0.28,
+        "rss_mb": 465.78,
+        "source_bytes": 738,
+        "olean_bytes": 167824,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1325,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 1000
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4198,
+        "user_s": 0.27,
+        "rss_mb": 469.81,
+        "source_bytes": 738,
+        "olean_bytes": 167824,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1080,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "K": 2000
+      }
+    ]
+  },
+  "axis3_recursion_and_termination": {
+    "structural_fuel_rfl": [
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.412,
+        "user_s": 0.25,
+        "rss_mb": 466.6,
+        "source_bytes": 807,
+        "olean_bytes": 121520,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 834,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 6,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 100
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4608,
+        "user_s": 0.27,
+        "rss_mb": 474.78,
+        "source_bytes": 808,
+        "olean_bytes": 121640,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 831,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 6,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 250
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4615,
+        "user_s": 0.27,
+        "rss_mb": 456.39,
+        "source_bytes": 808,
+        "olean_bytes": 121656,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 821,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 6,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 500
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.5162,
+        "user_s": 0.39,
+        "rss_mb": 477.16,
+        "source_bytes": 809,
+        "olean_bytes": 121656,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 965,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 6,
+          "matcher_eq_splitter_symbols": 1
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 1000
+      }
+    ],
+    "well_founded_fix_simp": [
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.4591,
+        "user_s": 0.35,
+        "rss_mb": 477.12,
+        "source_bytes": 620,
+        "olean_bytes": 169456,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1205,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 10
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 100
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.505,
+        "user_s": 0.35,
+        "rss_mb": 482.0,
+        "source_bytes": 622,
+        "olean_bytes": 195104,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1306,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 10
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 250
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.7657,
+        "user_s": 0.4,
+        "rss_mb": 480.37,
+        "source_bytes": 622,
+        "olean_bytes": 235656,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1440,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 10
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 500
+      },
+      {
+        "status": "ok",
+        "returncode": 0,
+        "wall_s": 0.6205,
+        "user_s": 0.47,
+        "rss_mb": 483.76,
+        "source_bytes": 622,
+        "olean_bytes": 316368,
+        "olean_symbol_stats": {
+          "unique_symbol_strings": 1780,
+          "opcode_ctor_symbols": 0,
+          "noConfusion_symbols": 3,
+          "recursor_cases_symbols": 4,
+          "matcher_eq_splitter_symbols": 10
+        },
+        "eval_ns": null,
+        "error_snippet": "",
+        "steps": 1000
+      }
+    ]
+  },
+  "axis4_executable_evaluation_throughput": {
+    "kernel_whnf_by_rfl": {
+      "instructions": 100000,
+      "status": "ok",
+      "wall_s": 2.7197,
+      "rss_mb": 650.25,
+      "marginal_whnf_s": 2.4197,
+      "instructions_per_sec": 41327.1
+    },
+    "vm_bytecode_eval": {
+      "instructions": 2000000,
+      "eval_s": 1.9704,
+      "instructions_per_sec": 1015017.2
+    },
+    "compiled_native_c_o3": {
+      "instructions": 50000000,
+      "exec_s": 0.4006,
+      "instructions_per_sec": 124815429.5
+    }
+  },
+  "architectural_thresholds": {
+    "monolithic_inductive_K_max_interactive": 200,
+    "monolithic_inductive_K_max_batch_before_quadratic_timeout": 500,
+    "optimal_family_sub_inductive_size": 50,
+    "stratified_2level_verified_scale_K": 2000,
+    "tag_record_table_verified_scale_K": 2000
+  },
+  "real_world_isa_model_comparisons": {
+    "sail_tiny_arm_lean": {
+      "constructors": 17,
+      "files": 9,
+      "total_loc": 2175,
+      "encoding": "Monolithic 17-ctor `ast` inductive (`SailTinyArmUser/Defs.lean`), compiles in <10s"
+    },
+    "sail_riscv_lean_opencompl": {
+      "constructors": 353,
+      "files": 161,
+      "total_loc": 173776,
+      "encoding": "353-instruction RV64D extraction; `RvfiDii` module reaches ~14 GiB RSS without scoped pruning (`RiscvZkvm.Sail.InstsEnd`)"
+    },
+    "sail_arm_v9_4_a": {
+      "sail_loc": 464212,
+      "generated_lean_loc": 182786,
+      "encoding": "Monolithic generated `SailArm.lean` exceeds single-file Lean 4 memory limits; requires per-class stratification (<= 50 opcodes/family) + separate per-opcode semantics modules"
+    }
+  }
+}
