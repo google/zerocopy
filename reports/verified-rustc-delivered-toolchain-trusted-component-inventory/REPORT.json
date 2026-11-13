@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "rustc",
+    "lean",
+    "llvm",
+    "systems",
+    "isa",
+    "security",
+    "verification",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler, rust-lld linker, and 8 Tier 1 target standard-library/CRT artifacts",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "rustc_driver_so_sha256": "5a2cd52edba7d15f8d898b92a912638f5b73a089c7c1bfde5604ab45665602c7",
+        "rustc_sha256": "b53b780f77f952062f8ca8a3b70aef2390b1e45ad91939be94afdc9543026853",
+        "rust_lld_sha256": "9b6f51f983a8184f5d47d224e336cdb35171ad5b138981bc62a22e6d65e7b214",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 bundled LLVM 23.1.1 backend and MC/LLD toolchain",
+      "identity": {
+        "libllvm_so_sha256": "1cfbe1392a767227b88b33ab6187283e281c63f80f9b1ca9010d9cee5fdf9131",
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 kernel, runtime, compiler, and bundled C/linker toolchain",
+      "identity": {
+        "lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+        "leanchecker_sha256": "ccef1bfe9bfeecea65137d94a69033c1a89f360711f50fa3178e7ba3e696fcbe",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal trusted verification kernel interface, .olean boundary auditor, and MIR extractor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    },
+    {
+      "name": "External Lean 4 kernel checkers and exporters (lean4export, lean4lean, nanoda_lib)",
+      "identity": {
+        "lean4export_repository": "leanprover/lean4export",
+        "lean4export_revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+        "lean4lean_repository": "digama0/lean4lean",
+        "lean4lean_revision": "ef6be5b4cbbe993da60a27a4d5c9a71c5dd0da08",
+        "nanoda_repository": "ammkrn/nanoda_lib",
+        "nanoda_revision": "511c72b5f7dc4de59c2ffe3e99e3d78d8bf6bf58"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

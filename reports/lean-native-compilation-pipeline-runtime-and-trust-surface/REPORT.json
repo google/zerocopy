@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "lean",
+    "lean/compiler",
+    "lean/runtime",
+    "lean/kernel",
+    "verification",
+    "anneal/trusted-boundary",
+    "security",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 v4.34.1 compiler pipeline (Lean.Compiler.LCNF, EmitC, IR interpreter), runtime (src/runtime, include/lean/lean.h), and kernel reduction hooks",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 Linux x86_64 release toolchain bundled LLVM/Clang 22.1.4, LLD 22.1.4, GMP 6.3.0, mimalloc v3.4.4, libuv v1.48.0, OpenSSL 3.6.0, and glibc 2.26 stub sysroot",
+      "identity": {
+        "clang_sha256": "9fcd5fc4baeea9c449bcc9ca4b9db7714465107669498b0056a853f22f5f4def",
+        "ld_lld_sha256": "d32d5121d96810b624306e48faacc75e41f7302ad0e4865be63c3bbf8f4cd810",
+        "libleanrt_a_sha256": "9188811c70520cb4f7afae5255491cc295f6a55da96589de273527d3878ac30d",
+        "libleanshared_so_sha256": "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13",
+        "llvm_repository": "llvm/llvm-project",
+        "llvm_revision": "35990504507d79e0b9deb809c8ee5e1b34ceef20",
+        "llvm_version": "22.1.4",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Anneal two-stage boundary auditor and statement-correspondence checker (trusted/audit, trusted/lean)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-13"
+}

@@ -15719,6 +15719,50 @@
         "verification/simulation"
       ]
     },
+    "lean-native-compilation-pipeline-runtime-and-trust-surface": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 compiler pipeline (Lean.Compiler.LCNF, EmitC, IR interpreter), runtime (src/runtime, include/lean/lean.h), and kernel reduction hooks"
+        },
+        {
+          "identity": {
+            "clang_sha256": "9fcd5fc4baeea9c449bcc9ca4b9db7714465107669498b0056a853f22f5f4def",
+            "ld_lld_sha256": "d32d5121d96810b624306e48faacc75e41f7302ad0e4865be63c3bbf8f4cd810",
+            "libleanrt_a_sha256": "9188811c70520cb4f7afae5255491cc295f6a55da96589de273527d3878ac30d",
+            "libleanshared_so_sha256": "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13",
+            "llvm_repository": "llvm/llvm-project",
+            "llvm_revision": "35990504507d79e0b9deb809c8ee5e1b34ceef20",
+            "llvm_version": "22.1.4",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "Lean 4 v4.34.1 Linux x86_64 release toolchain bundled LLVM/Clang 22.1.4, LLD 22.1.4, GMP 6.3.0, mimalloc v3.4.4, libuv v1.48.0, OpenSSL 3.6.0, and glibc 2.26 stub sysroot"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal two-stage boundary auditor and statement-correspondence checker (trusted/audit, trusted/lean)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "lean/compiler",
+        "lean/runtime",
+        "lean/kernel",
+        "verification",
+        "anneal/trusted-boundary",
+        "security",
+        "compilers"
+      ]
+    },
     "lean-olean-ilean-format-and-compilation-determinism": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -28362,6 +28406,71 @@
         "verification/certificates",
         "lean/mechanization",
         "anneal/architecture"
+      ]
+    },
+    "verified-rustc-delivered-toolchain-trusted-component-inventory": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "rust_lld_sha256": "9b6f51f983a8184f5d47d224e336cdb35171ad5b138981bc62a22e6d65e7b214",
+            "rustc_driver_so_sha256": "5a2cd52edba7d15f8d898b92a912638f5b73a089c7c1bfde5604ab45665602c7",
+            "rustc_sha256": "b53b780f77f952062f8ca8a3b70aef2390b1e45ad91939be94afdc9543026853",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, rust-lld linker, and 8 Tier 1 target standard-library/CRT artifacts"
+        },
+        {
+          "identity": {
+            "libllvm_so_sha256": "1cfbe1392a767227b88b33ab6187283e281c63f80f9b1ca9010d9cee5fdf9131",
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 backend and MC/LLD toolchain"
+        },
+        {
+          "identity": {
+            "lean_sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+            "leanchecker_sha256": "ccef1bfe9bfeecea65137d94a69033c1a89f360711f50fa3178e7ba3e696fcbe",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 kernel, runtime, compiler, and bundled C/linker toolchain"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted verification kernel interface, .olean boundary auditor, and MIR extractor"
+        },
+        {
+          "identity": {
+            "lean4export_repository": "leanprover/lean4export",
+            "lean4export_revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+            "lean4lean_repository": "digama0/lean4lean",
+            "lean4lean_revision": "ef6be5b4cbbe993da60a27a4d5c9a71c5dd0da08",
+            "nanoda_repository": "ammkrn/nanoda_lib",
+            "nanoda_revision": "511c72b5f7dc4de59c2ffe3e99e3d78d8bf6bf58"
+          },
+          "name": "External Lean 4 kernel checkers and exporters (lean4export, lean4lean, nanoda_lib)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "rustc",
+        "lean",
+        "llvm",
+        "systems",
+        "isa",
+        "security",
+        "verification",
+        "anneal"
       ]
     },
     "verified-rustc-research-map-and-open-question-ledger": {
