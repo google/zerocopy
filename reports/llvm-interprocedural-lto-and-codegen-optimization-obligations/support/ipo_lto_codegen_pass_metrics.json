@@ -1,0 +1,1511 @@
+{
+  "Inliner": {
+    "path": "lib/Transforms/IPO/Inliner.cpp",
+    "file_count": 1,
+    "loc": 680,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 1
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "BlockFrequencyAnalysis",
+      "EphemeralValuesAnalysis",
+      "FunctionAnalysisManagerCGSCCProxy",
+      "InlineAdvisorAnalysis",
+      "ModuleAnalysisManagerCGSCCProxy",
+      "OptimizationRemarkEmitterAnalysis"
+    ]
+  },
+  "InlineFunction": {
+    "path": "lib/Transforms/Utils/InlineFunction.cpp",
+    "file_count": 1,
+    "loc": 3574,
+    "total_mutation_sites": 67,
+    "mutation_breakdown": {
+      "rauw": 18,
+      "replace_inst": 0,
+      "erase": 26,
+      "irbuilder_create": 6,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 16,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "InlineCost": {
+    "path": "lib/Analysis/InlineCost.cpp",
+    "file_count": 1,
+    "loc": 3477,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "ModuleAnalysisManagerFunctionProxy",
+      "TargetIRAnalysis"
+    ]
+  },
+  "IPSCCP": {
+    "path": "lib/Transforms/IPO/SCCP.cpp",
+    "file_count": 1,
+    "loc": 395,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 3,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "FunctionAnalysisManagerModuleProxy",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "FunctionSpecialization": {
+    "path": "lib/Transforms/IPO/FunctionSpecialization.cpp",
+    "file_count": 1,
+    "loc": 1260,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "FunctionAttrs": {
+    "path": "lib/Transforms/IPO/FunctionAttrs.cpp",
+    "file_count": 1,
+    "loc": 2499,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 4,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "FunctionAnalysisManagerCGSCCProxy",
+      "LazyCallGraphAnalysis"
+    ]
+  },
+  "Attributor": {
+    "path": "lib/Transforms/IPO/Attributor.cpp",
+    "file_count": 1,
+    "loc": 4244,
+    "total_mutation_sites": 11,
+    "mutation_breakdown": {
+      "rauw": 5,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 3,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "FunctionAnalysisManagerCGSCCProxy",
+      "FunctionAnalysisManagerModuleProxy",
+      "OptimizationRemarkEmitterAnalysis"
+    ]
+  },
+  "AttributorAttributes": {
+    "path": "lib/Transforms/IPO/AttributorAttributes.cpp",
+    "file_count": 1,
+    "loc": 13902,
+    "total_mutation_sites": 11,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 2,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 4,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "GlobalOpt": {
+    "path": "lib/Transforms/IPO/GlobalOpt.cpp",
+    "file_count": 1,
+    "loc": 2867,
+    "total_mutation_sites": 52,
+    "mutation_breakdown": {
+      "rauw": 14,
+      "replace_inst": 0,
+      "erase": 34,
+      "irbuilder_create": 4,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "FunctionAnalysisManagerModuleProxy",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "GlobalDCE": {
+    "path": "lib/Transforms/IPO/GlobalDCE.cpp",
+    "file_count": 1,
+    "loc": 454,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "DeadArgumentElimination": {
+    "path": "lib/Transforms/IPO/DeadArgumentElimination.cpp",
+    "file_count": 1,
+    "loc": 1119,
+    "total_mutation_sites": 21,
+    "mutation_breakdown": {
+      "rauw": 9,
+      "replace_inst": 0,
+      "erase": 5,
+      "irbuilder_create": 4,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 2,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 2
+    },
+    "analyses_queried": []
+  },
+  "WholeProgramDevirt": {
+    "path": "lib/Transforms/IPO/WholeProgramDevirt.cpp",
+    "file_count": 1,
+    "loc": 2679,
+    "total_mutation_sites": 47,
+    "mutation_breakdown": {
+      "rauw": 10,
+      "replace_inst": 0,
+      "erase": 12,
+      "irbuilder_create": 15,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 9,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "FunctionAnalysisManagerModuleProxy",
+      "OptimizationRemarkEmitterAnalysis"
+    ]
+  },
+  "LowerTypeTests": {
+    "path": "lib/Transforms/IPO/LowerTypeTests.cpp",
+    "file_count": 1,
+    "loc": 2697,
+    "total_mutation_sites": 63,
+    "mutation_breakdown": {
+      "rauw": 12,
+      "replace_inst": 1,
+      "erase": 12,
+      "irbuilder_create": 20,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 17,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "FunctionAnalysisManagerModuleProxy",
+      "TargetIRAnalysis"
+    ]
+  },
+  "MergeFunctions": {
+    "path": "lib/Transforms/IPO/MergeFunctions.cpp",
+    "file_count": 1,
+    "loc": 1094,
+    "total_mutation_sites": 17,
+    "mutation_breakdown": {
+      "rauw": 4,
+      "replace_inst": 0,
+      "erase": 8,
+      "irbuilder_create": 5,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "HotColdSplitting": {
+    "path": "lib/Transforms/IPO/HotColdSplitting.cpp",
+    "file_count": 1,
+    "loc": 834,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 2,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 2
+    },
+    "analyses_queried": [
+      "BlockFrequencyAnalysis",
+      "FunctionAnalysisManagerModuleProxy",
+      "ProfileSummaryAnalysis",
+      "TargetIRAnalysis"
+    ]
+  },
+  "FunctionImport": {
+    "path": "lib/Transforms/IPO/FunctionImport.cpp",
+    "file_count": 1,
+    "loc": 2220,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 7,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "ThinLTOBitcodeWriter": {
+    "path": "lib/Transforms/IPO/ThinLTOBitcodeWriter.cpp",
+    "file_count": 1,
+    "loc": 634,
+    "total_mutation_sites": 8,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 6,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "FunctionAnalysisManagerModuleProxy",
+      "ModuleSummaryIndexAnalysis"
+    ]
+  },
+  "CalledValuePropagation": {
+    "path": "lib/Transforms/IPO/CalledValuePropagation.cpp",
+    "file_count": 1,
+    "loc": 411,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "ArgumentPromotion": {
+    "path": "lib/Transforms/IPO/ArgumentPromotion.cpp",
+    "file_count": 1,
+    "loc": 967,
+    "total_mutation_sites": 18,
+    "mutation_breakdown": {
+      "rauw": 4,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 4,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 7,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 2
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "FunctionAnalysisManagerCGSCCProxy",
+      "TargetIRAnalysis"
+    ]
+  },
+  "OpenMPOpt": {
+    "path": "lib/Transforms/IPO/OpenMPOpt.cpp",
+    "file_count": 1,
+    "loc": 5987,
+    "total_mutation_sites": 34,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 11,
+      "irbuilder_create": 5,
+      "cfg_mutate": 13,
+      "attr_md_mutate": 3,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 5
+    },
+    "analyses_queried": [
+      "FunctionAnalysisManagerCGSCCProxy",
+      "FunctionAnalysisManagerModuleProxy",
+      "OptimizationRemarkEmitterAnalysis"
+    ]
+  },
+  "CodeGenPrepare": {
+    "path": "lib/CodeGen/CodeGenPrepare.cpp",
+    "file_count": 1,
+    "loc": 9478,
+    "total_mutation_sites": 199,
+    "mutation_breakdown": {
+      "rauw": 43,
+      "replace_inst": 0,
+      "erase": 44,
+      "irbuilder_create": 102,
+      "cfg_mutate": 6,
+      "attr_md_mutate": 4,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "BlockFrequencyAnalysis",
+      "BlockFrequencyInfoWrapperPass",
+      "BranchProbabilityAnalysis",
+      "BranchProbabilityInfoWrapperPass",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LoopAnalysis",
+      "LoopInfoWrapperPass",
+      "ModuleAnalysisManagerFunctionProxy",
+      "ProfileSummaryInfoWrapperPass",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass",
+      "TargetPassConfig",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "SelectionDAGISel": {
+    "path": "lib/CodeGen/SelectionDAG/SelectionDAGISel.cpp",
+    "file_count": 1,
+    "loc": 4637,
+    "total_mutation_sites": 26,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 7,
+      "sdag_combine": 19,
+      "ore_remark": 1
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "AssignmentTrackingAnalysis",
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "BlockFrequencyAnalysis",
+      "BranchProbabilityAnalysis",
+      "BranchProbabilityInfoWrapperPass",
+      "DebugAssignmentTrackingAnalysis",
+      "GCFunctionAnalysis",
+      "GCModuleInfo",
+      "LazyBlockFrequencyInfoPass",
+      "LibcallLoweringInfoWrapper",
+      "MachineModuleInfoWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "SSPLayoutAnalysis",
+      "StackProtector",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "SelectionDAGBuilder": {
+    "path": "lib/CodeGen/SelectionDAG/SelectionDAGBuilder.cpp",
+    "file_count": 1,
+    "loc": 13283,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 4,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "DAGCombiner": {
+    "path": "lib/CodeGen/SelectionDAG/DAGCombiner.cpp",
+    "file_count": 1,
+    "loc": 31999,
+    "total_mutation_sites": 181,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 181,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LegalizeDAG": {
+    "path": "lib/CodeGen/SelectionDAG/LegalizeDAG.cpp",
+    "file_count": 1,
+    "loc": 6388,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 9,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LegalizeTypes": {
+    "path": "lib/CodeGen/SelectionDAG/LegalizeTypes.cpp",
+    "file_count": 1,
+    "loc": 1053,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 2,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "ScheduleDAGRRList": {
+    "path": "lib/CodeGen/SelectionDAG/ScheduleDAGRRList.cpp",
+    "file_count": 1,
+    "loc": 3176,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 2,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "GlobalISel": {
+    "path": "lib/CodeGen/GlobalISel",
+    "file_count": 29,
+    "loc": 39686,
+    "total_mutation_sites": 274,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 260,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 14,
+      "sdag_combine": 0,
+      "ore_remark": 1
+    },
+    "analyses_queried": [
+      "AAResultsWrapperPass",
+      "AssumptionCacheTracker",
+      "BranchProbabilityInfoWrapperPass",
+      "GISelCSEAnalysisWrapperPass",
+      "GISelValueTrackingAnalysisLegacy",
+      "LazyBlockFrequencyInfoPass",
+      "LibcallLoweringInfoWrapper",
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineBranchProbabilityInfoWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "StackProtector",
+      "TargetLibraryInfoWrapperPass",
+      "TargetPassConfig",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "RegisterCoalescer": {
+    "path": "lib/CodeGen/RegisterCoalescer.cpp",
+    "file_count": 1,
+    "loc": 4409,
+    "total_mutation_sites": 6,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 3,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "LiveIntervalsWrapperPass",
+      "MachineLoopInfoWrapperPass"
+    ]
+  },
+  "RAGreedy": {
+    "path": "lib/CodeGen/RegAllocGreedy.cpp",
+    "file_count": 1,
+    "loc": 2997,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "EdgeBundlesWrapperLegacy",
+      "LiveDebugVariablesWrapperLegacy",
+      "LiveIntervalsWrapperPass",
+      "LiveRegMatrixWrapperLegacy",
+      "LiveStacksWrapperLegacy",
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "MachineOptimizationRemarkEmitterPass",
+      "RegAllocEvictionAdvisorAnalysisLegacy",
+      "RegAllocPriorityAdvisorAnalysisLegacy",
+      "SlotIndexesWrapperPass",
+      "SpillPlacementWrapperLegacy",
+      "VirtRegMapWrapperLegacy"
+    ]
+  },
+  "RegAllocFast": {
+    "path": "lib/CodeGen/RegAllocFast.cpp",
+    "file_count": 1,
+    "loc": 1926,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 1,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "SpillPlacement": {
+    "path": "lib/CodeGen/SpillPlacement.cpp",
+    "file_count": 1,
+    "loc": 430,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "EdgeBundlesWrapperLegacy",
+      "MachineBlockFrequencyInfoWrapperPass"
+    ]
+  },
+  "VirtRegMap": {
+    "path": "lib/CodeGen/VirtRegMap.cpp",
+    "file_count": 1,
+    "loc": 798,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "LiveDebugVariablesWrapperLegacy",
+      "LiveIntervalsWrapperPass",
+      "LiveRegMatrixWrapperLegacy",
+      "SlotIndexesWrapperPass",
+      "VirtRegMapWrapperLegacy"
+    ]
+  },
+  "SplitKit": {
+    "path": "lib/CodeGen/SplitKit.cpp",
+    "file_count": 1,
+    "loc": 1945,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 3,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "MachineScheduler": {
+    "path": "lib/CodeGen/MachineScheduler.cpp",
+    "file_count": 1,
+    "loc": 5021,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "LiveIntervalsWrapperPass",
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "TargetPassConfig"
+    ]
+  },
+  "PostRASchedulerList": {
+    "path": "lib/CodeGen/PostRASchedulerList.cpp",
+    "file_count": 1,
+    "loc": 717,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "TargetPassConfig"
+    ]
+  },
+  "MachineBlockPlacement": {
+    "path": "lib/CodeGen/MachineBlockPlacement.cpp",
+    "file_count": 1,
+    "loc": 3934,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineBranchProbabilityInfoWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "MachinePostDominatorTreeWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "TargetPassConfig"
+    ]
+  },
+  "TailDuplicator": {
+    "path": "lib/CodeGen/TailDuplicator.cpp",
+    "file_count": 1,
+    "loc": 1105,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 5,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "BranchFolding": {
+    "path": "lib/CodeGen/BranchFolding.cpp",
+    "file_count": 1,
+    "loc": 2222,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 3,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineBranchProbabilityInfoWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "TargetPassConfig"
+    ]
+  },
+  "MachineOutliner": {
+    "path": "lib/CodeGen/MachineOutliner.cpp",
+    "file_count": 1,
+    "loc": 1552,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 1,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 2,
+      "mir_build": 1,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "BlockFrequencyInfoWrapperPass",
+      "MachineModuleInfoWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "TargetPassConfig"
+    ]
+  },
+  "PrologEpilogInserter": {
+    "path": "lib/CodeGen/PrologEpilogInserter.cpp",
+    "file_count": 1,
+    "loc": 1592,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineOptimizationRemarkEmitterPass"
+    ]
+  },
+  "ShrinkWrap": {
+    "path": "lib/CodeGen/ShrinkWrap.cpp",
+    "file_count": 1,
+    "loc": 1060,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "MachineOptimizationRemarkEmitterPass",
+      "MachinePostDominatorTreeWrapperPass"
+    ]
+  },
+  "CFIFixup": {
+    "path": "lib/CodeGen/CFIFixup.cpp",
+    "file_count": 1,
+    "loc": 354,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 2,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "CFIInstrInserter": {
+    "path": "lib/CodeGen/CFIInstrInserter.cpp",
+    "file_count": 1,
+    "loc": 549,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 5,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "MachineCSE": {
+    "path": "lib/CodeGen/MachineCSE.cpp",
+    "file_count": 1,
+    "loc": 979,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass"
+    ]
+  },
+  "MachineLICM": {
+    "path": "lib/CodeGen/MachineLICM.cpp",
+    "file_count": 1,
+    "loc": 1738,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 1,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAResultsWrapperPass",
+      "RESULT##INFIX##WrapperPass"
+    ]
+  },
+  "MachineSink": {
+    "path": "lib/CodeGen/MachineSink.cpp",
+    "file_count": 1,
+    "loc": 2405,
+    "total_mutation_sites": 7,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 5,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 2,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAResultsWrapperPass",
+      "MachineBlockFrequencyInfoWrapperPass",
+      "MachineBranchProbabilityInfoWrapperPass",
+      "MachineCycleInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass",
+      "MachinePostDominatorTreeWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "TargetPassConfig"
+    ]
+  },
+  "PeepholeOptimizer": {
+    "path": "lib/CodeGen/PeepholeOptimizer.cpp",
+    "file_count": 1,
+    "loc": 2262,
+    "total_mutation_sites": 12,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 6,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 6,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineDominatorTreeWrapperPass",
+      "MachineLoopInfoWrapperPass"
+    ]
+  },
+  "DeadMachineInstructionElim": {
+    "path": "lib/CodeGen/DeadMachineInstructionElim.cpp",
+    "file_count": 1,
+    "loc": 131,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "EarlyIfConversion": {
+    "path": "lib/CodeGen/EarlyIfConversion.cpp",
+    "file_count": 1,
+    "loc": 1477,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 1,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineBranchProbabilityInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "MachineTraceMetricsWrapperPass"
+    ]
+  },
+  "MachineCombiner": {
+    "path": "lib/CodeGen/MachineCombiner.cpp",
+    "file_count": 1,
+    "loc": 728,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "LazyMachineBlockFrequencyInfoPass",
+      "MachineLoopInfoWrapperPass",
+      "MachineTraceMetricsWrapperPass",
+      "ProfileSummaryInfoWrapperPass"
+    ]
+  },
+  "StackColoring": {
+    "path": "lib/CodeGen/StackColoring.cpp",
+    "file_count": 1,
+    "loc": 1372,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "SlotIndexesWrapperPass"
+    ]
+  },
+  "TwoAddressInstructionPass": {
+    "path": "lib/CodeGen/TwoAddressInstructionPass.cpp",
+    "file_count": 1,
+    "loc": 2158,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 5,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "PHIElimination": {
+    "path": "lib/CodeGen/PHIElimination.cpp",
+    "file_count": 1,
+    "loc": 920,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 2,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "AArch64LoadStoreOptimizer": {
+    "path": "lib/Target/AArch64/AArch64LoadStoreOptimizer.cpp",
+    "file_count": 1,
+    "loc": 3357,
+    "total_mutation_sites": 25,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 12,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 13,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAResultsWrapperPass"
+    ]
+  },
+  "AArch64MIPeepholeOpt": {
+    "path": "lib/Target/AArch64/AArch64MIPeepholeOpt.cpp",
+    "file_count": 1,
+    "loc": 1086,
+    "total_mutation_sites": 33,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 12,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 21,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineLoopInfoWrapperPass"
+    ]
+  },
+  "AArch64ConditionalCompares": {
+    "path": "lib/Target/AArch64/AArch64ConditionalCompares.cpp",
+    "file_count": 1,
+    "loc": 1014,
+    "total_mutation_sites": 8,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 6,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineBranchProbabilityInfoWrapperPass",
+      "MachineDominatorTreeWrapperPass",
+      "MachineLoopInfoWrapperPass",
+      "MachineTraceMetricsWrapperPass"
+    ]
+  },
+  "AArch64ConditionOptimizer": {
+    "path": "lib/Target/AArch64/AArch64ConditionOptimizer.cpp",
+    "file_count": 1,
+    "loc": 707,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "MachineDominatorTreeWrapperPass"
+    ]
+  },
+  "AArch64AdvSIMDScalarPass": {
+    "path": "lib/Target/AArch64/AArch64AdvSIMDScalarPass.cpp",
+    "file_count": 1,
+    "loc": 430,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 2,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "AArch64PromoteConstant": {
+    "path": "lib/Target/AArch64/AArch64PromoteConstant.cpp",
+    "file_count": 1,
+    "loc": 591,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 1,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DominatorTreeWrapperPass"
+    ]
+  },
+  "AArch64ISelLowering": {
+    "path": "lib/Target/AArch64/AArch64ISelLowering.cpp",
+    "file_count": 1,
+    "loc": 35375,
+    "total_mutation_sites": 168,
+    "mutation_breakdown": {
+      "rauw": 7,
+      "replace_inst": 0,
+      "erase": 16,
+      "irbuilder_create": 86,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 3,
+      "mir_build": 26,
+      "sdag_combine": 30,
+      "ore_remark": 1
+    },
+    "analyses_queried": []
+  },
+  "AArch64ISelDAGToDAG": {
+    "path": "lib/Target/AArch64/AArch64ISelDAGToDAG.cpp",
+    "file_count": 1,
+    "loc": 8266,
+    "total_mutation_sites": 20,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 20,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "X86ISelLowering": {
+    "path": "lib/Target/X86/X86ISelLowering.cpp",
+    "file_count": 1,
+    "loc": 64729,
+    "total_mutation_sites": 331,
+    "mutation_breakdown": {
+      "rauw": 3,
+      "replace_inst": 0,
+      "erase": 30,
+      "irbuilder_create": 11,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 3,
+      "mir_build": 155,
+      "sdag_combine": 129,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "X86ISelDAGToDAG": {
+    "path": "lib/Target/X86/X86ISelDAGToDAG.cpp",
+    "file_count": 1,
+    "loc": 6893,
+    "total_mutation_sites": 7,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 7,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "X86OptimizeLEAs": {
+    "path": "lib/Target/X86/X86OptimizeLEAs.cpp",
+    "file_count": 1,
+    "loc": 760,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 1,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "LazyMachineBlockFrequencyInfoPass",
+      "ProfileSummaryInfoWrapperPass"
+    ]
+  },
+  "X86FlagsCopyLowering": {
+    "path": "lib/Target/X86/X86FlagsCopyLowering.cpp",
+    "file_count": 1,
+    "loc": 952,
+    "total_mutation_sites": 11,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 7,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 4,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "X86DomainReassignment": {
+    "path": "lib/Target/X86/X86DomainReassignment.cpp",
+    "file_count": 1,
+    "loc": 864,
+    "total_mutation_sites": 6,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 5,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "X86AvoidStoreForwardingBlocks": {
+    "path": "lib/Target/X86/X86AvoidStoreForwardingBlocks.cpp",
+    "file_count": 1,
+    "loc": 741,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 2,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAResultsWrapperPass"
+    ]
+  },
+  "X86FixupBWInsts": {
+    "path": "lib/Target/X86/X86FixupBWInsts.cpp",
+    "file_count": 1,
+    "loc": 503,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 3,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "LazyMachineBlockFrequencyInfoPass",
+      "ProfileSummaryInfoWrapperPass"
+    ]
+  },
+  "X86FixupSetCC": {
+    "path": "lib/Target/X86/X86FixupSetCC.cpp",
+    "file_count": 1,
+    "loc": 165,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 4,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "X86CallFrameOptimization": {
+    "path": "lib/Target/X86/X86CallFrameOptimization.cpp",
+    "file_count": 1,
+    "loc": 650,
+    "total_mutation_sites": 7,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 5,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  }
+}

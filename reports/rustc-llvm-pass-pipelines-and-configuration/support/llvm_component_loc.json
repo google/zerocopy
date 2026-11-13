@@ -1,0 +1,126 @@
+{
+  "lib_subdirs": {
+    "Analysis": {
+      "total_files": 125,
+      "cpp_files": 125,
+      "total_loc": 110582
+    },
+    "AsmParser": {
+      "total_files": 4,
+      "cpp_files": 4,
+      "total_loc": 13236
+    },
+    "BinaryFormat": {
+      "total_files": 14,
+      "cpp_files": 14,
+      "total_loc": 4652
+    },
+    "Bitcode": {
+      "total_files": 12,
+      "cpp_files": 9,
+      "total_loc": 20949
+    },
+    "CodeGen": {
+      "total_files": 367,
+      "cpp_files": 323,
+      "total_loc": 388377
+    },
+    "DebugInfo": {
+      "total_files": 234,
+      "cpp_files": 234,
+      "total_loc": 65207
+    },
+    "IR": {
+      "total_files": 89,
+      "cpp_files": 83,
+      "total_loc": 81734
+    },
+    "LTO": {
+      "total_files": 6,
+      "cpp_files": 6,
+      "total_loc": 6090
+    },
+    "Linker": {
+      "total_files": 3,
+      "cpp_files": 2,
+      "total_loc": 2381
+    },
+    "MC": {
+      "total_files": 93,
+      "cpp_files": 92,
+      "total_loc": 53388
+    },
+    "Object": {
+      "total_files": 38,
+      "cpp_files": 37,
+      "total_loc": 26984
+    },
+    "Passes": {
+      "total_files": 5,
+      "cpp_files": 5,
+      "total_loc": 8355
+    },
+    "ProfileData": {
+      "total_files": 25,
+      "cpp_files": 25,
+      "total_loc": 17451
+    },
+    "Remarks": {
+      "total_files": 13,
+      "cpp_files": 11,
+      "total_loc": 2523
+    },
+    "Support": {
+      "total_files": 201,
+      "cpp_files": 170,
+      "total_loc": 96384
+    },
+    "TableGen": {
+      "total_files": 16,
+      "cpp_files": 14,
+      "total_loc": 11986
+    },
+    "Target": {
+      "total_files": 826,
+      "cpp_files": 380,
+      "total_loc": 894388
+    },
+    "TargetParser": {
+      "total_files": 19,
+      "cpp_files": 17,
+      "total_loc": 11665
+    },
+    "Transforms": {
+      "total_files": 357,
+      "cpp_files": 332,
+      "total_loc": 445509
+    }
+  },
+  "targets": {
+    "AArch64": {
+      "total_files": 178,
+      "total_loc": 272844,
+      "td_loc": 113058
+    },
+    "ARM": {
+      "total_files": 138,
+      "total_loc": 174068,
+      "td_loc": 51752
+    },
+    "RISCV": {
+      "total_files": 195,
+      "total_loc": 146397,
+      "td_loc": 59406
+    },
+    "WebAssembly": {
+      "total_files": 113,
+      "total_loc": 36205,
+      "td_loc": 4792
+    },
+    "X86": {
+      "total_files": 197,
+      "total_loc": 263488,
+      "td_loc": 89325
+    }
+  }
+}

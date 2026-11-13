@@ -1,0 +1,81 @@
+{
+  "compiler/rustc_target/src/spec/base/wasm.rs": [
+    "cvs![\"-wasm-use-legacy-eh=false\"]"
+  ],
+  "compiler/rustc_target/src/spec/json.rs": [
+    "Option<StaticCow<[StaticCow<str>]>>"
+  ],
+  "compiler/rustc_target/src/spec/mod.rs": [
+    "StaticCow<[StaticCow<str>]>",
+    "cvs![]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips64_openwrt_linux_musl.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips64_unknown_linux_gnuabi64.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips64_unknown_linux_muslabi64.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips64el_unknown_linux_gnuabi64.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips64el_unknown_linux_muslabi64.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips_mti_none_elf.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips_unknown_linux_gnu.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips_unknown_linux_musl.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mips_unknown_linux_uclibc.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_mti_none_elf.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_sony_psp.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_sony_psx.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_unknown_linux_gnu.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_unknown_linux_musl.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_unknown_linux_uclibc.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_unknown_netbsd.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsel_unknown_none.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsisa32r6_unknown_linux_gnu.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsisa32r6el_unknown_linux_gnu.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsisa64r6_unknown_linux_gnuabi64.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/mipsisa64r6el_unknown_linux_gnuabi64.rs": [
+    "cvs![\"-mno-check-zero-division\"]"
+  ],
+  "compiler/rustc_target/src/spec/targets/wasm32_unknown_emscripten.rs": [
+    "cvs![]"
+  ],
+  "compiler/rustc_target/src/spec/targets/x86_64_fortanix_unknown_sgx.rs": [
+    "cvs![\"--x86-experimental-lvi-inline-asm-hardening\"]"
+  ]
+}

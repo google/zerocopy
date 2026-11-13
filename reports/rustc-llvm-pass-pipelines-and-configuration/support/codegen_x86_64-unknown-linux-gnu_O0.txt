@@ -1,0 +1,82 @@
+Pass Arguments:  -tti -targetlibinfo -runtime-library-info -targetpassconfig -machinemoduleinfo -libcall-lowering-info -collector-metadata -assumption-cache-tracker -profile-summary-info -machine-branch-prob -pre-isel-intrinsic-lowering -expand-ir-insts -atomic-expand -x86-lower-amx-intrinsics -x86-lower-amx-type -gc-lowering -shadow-stack-gc-lowering -unreachableblockelim -post-inline-ee-instrument -scalarize-masked-mem-intrin -expand-reductions -indirectbr-expand -dwarf-eh-prepare -inline-asm-prepare -safe-stack -stack-protector -debug-ata -x86-isel -x86-argument-stack-slot -finalize-isel -localstackalloc -x86-suppress-apx-for-relocation -x86-slh -x86-flags-copy-lowering -x86-dyn-alloca-expander -x86-fast-pre-tile-config -phi-node-elimination -twoaddressinstruction -regallocfast -x86-fast-tile-config -x86-lower-tile-copy -edge-bundles -x86-fp-stackifier -removeredundantdebugvalues -fixup-statepoint-caller-saved -lazy-machine-block-freq -machine-opt-remark-emitter -prolog-epilog -postrapseudos -x86-expand-pseudo -kcfi -gc-analysis -fentry-insert -xray-instrumentation -patchable-function -x86-compress-evex -funclet-layout -remove-loads-into-fake-uses -stackmap-liveness -livedebugvalues -machine-sanmd -lazy-machine-block-freq -machine-opt-remark-emitter -stack-frame-layout -x86-seses -x86-return-thunks -cfi-instr-inserter -x86-lvi-ret -pseudo-probe-inserter -unpack-mi-bundles -lazy-machine-block-freq -machine-opt-remark-emitter -x86-asm-printer
+Target Transform Information
+Target Library Information
+Runtime Library Function Analysis
+Target Pass Configuration
+Machine Module Information
+Library Function Lowering Analysis
+Create Garbage Collector Module Metadata
+Assumption Cache Tracker
+Profile summary info
+Machine Branch Probability Analysis
+  ModulePass Manager
+    Pre-ISel Intrinsic Lowering
+    FunctionPass Manager
+      Expand IR instructions
+      Expand Atomic instructions
+      Lower AMX intrinsics
+      Lower AMX type for load/store
+      Lower Garbage Collection Instructions
+      Shadow Stack GC Lowering
+      Remove unreachable blocks from the CFG
+      Instrument function entry/exit with calls to e.g. mcount() (post inlining)
+      Scalarize Masked Memory Intrinsics
+      Expand reduction intrinsics
+      Expand indirectbr instructions
+      Exception handling preparation
+      Prepare inline asm insts
+      Safe Stack instrumentation pass
+      Insert stack protectors
+      Assignment Tracking Analysis
+      X86 DAG->DAG Instruction Selection
+      X86 PIC Global Base Reg Initialization
+      Argument Stack Rebase
+      Finalize ISel and expand pseudo-instructions
+      Local Stack Slot Allocation
+      X86 Suppress APX features for relocation
+      X86 speculative load hardening
+      X86 EFLAGS copy lowering
+      X86 DynAlloca Expander
+      Fast Tile Register Preconfigure
+      Eliminate PHI nodes for register allocation
+      Two-Address instruction pass
+      Fast Register Allocator
+      Fast Tile Register Configure
+      X86 Lower Tile Copy
+      Bundle Machine CFG Edges
+      X86 FP Stackifier
+      Remove Redundant DEBUG_VALUE analysis
+      Fixup Statepoint Caller Saved
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Prologue/Epilogue Insertion & Frame Finalization
+      Post-RA pseudo instruction expansion pass
+      X86 pseudo instruction expansion pass
+      Insert KCFI indirect call checks
+      Analyze Machine Code For Garbage Collection
+      Insert fentry calls
+      Insert XRay ops
+      Implement the 'patchable-function' attribute
+      X86 Indirect Branch Tracking
+      X86 vzeroupper inserter
+      Compressing EVEX instrs when possible
+      X86 insert wait instruction
+      Contiguously Lay Out Funclets
+      Remove Loads Into Fake Uses
+      StackMap Liveness Analysis
+      Live DEBUG_VALUE analysis
+      Machine Sanitizer Binary Metadata
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Stack Frame Layout Analysis
+      X86 Speculative Execution Side Effect Suppression
+      X86 Indirect Thunks
+      X86 Return Thunks
+      Check CFA info and insert CFI instructions if needed
+      X86 Load Value Injection (LVI) Ret-Hardening
+      Pseudo Probe Inserter
+      Unpack machine instruction bundles
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      X86 Assembly Printer
+      Free MachineFunction

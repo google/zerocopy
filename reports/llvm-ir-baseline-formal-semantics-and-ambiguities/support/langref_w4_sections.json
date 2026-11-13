@@ -1,0 +1,196 @@
+{
+  "poison_values": [
+    {
+      "line": 5399,
+      "text": "### Poison Values"
+    }
+  ],
+  "undef_values": [
+    {
+      "line": 5223,
+      "text": "### Undefined Values"
+    }
+  ],
+  "freeze_inst": [],
+  "ptrtoaddr_inst": [],
+  "ptrtoint_inst": [],
+  "inttoptr_inst": [],
+  "getelementptr_inst": [],
+  "pointer_aliasing": [
+    {
+      "line": 3750,
+      "text": "### Pointer Aliasing Rules"
+    }
+  ],
+  "pointer_capture": [
+    {
+      "line": 3805,
+      "text": "### Pointer Capture"
+    }
+  ],
+  "noalias_attr": [
+    {
+      "line": 1323,
+      "text": "additional optimization guarantees, like `noalias`, `nonnull` and"
+    },
+    {
+      "line": 1512,
+      "text": "`noalias`"
+    },
+    {
+      "line": 1525,
+      "text": "Note that this definition of `noalias` is intentionally similar"
+    },
+    {
+      "line": 1529,
+      "text": "while LLVM's `noalias` is. Furthermore, the semantics of the `noalias`"
+    },
+    {
+      "line": 1531,
+      "text": "when used on function arguments. On function return values, the `noalias`"
+    }
+  ],
+  "captures_attr": [
+    {
+      "line": 1538,
+      "text": "`captures(...)`"
+    },
+    {
+      "line": 1562,
+      "text": "- `captures(none)`: Pointer not captured."
+    },
+    {
+      "line": 1563,
+      "text": "- `captures(address, provenance)`: Equivalent to omitting the attribute."
+    },
+    {
+      "line": 1564,
+      "text": "- `captures(address)`: Address may be captured, but not provenance."
+    },
+    {
+      "line": 1565,
+      "text": "- `captures(address_is_null)`: Only captures whether the address is null."
+    }
+  ],
+  "writable_attr": [
+    {
+      "line": 1815,
+      "text": "`writable`"
+    },
+    {
+      "line": 1835,
+      "text": "The `writable` attribute cannot be combined with `readnone`,"
+    },
+    {
+      "line": 1864,
+      "text": "The `writable` or `dereferenceable` attribute do not imply the"
+    },
+    {
+      "line": 1887,
+      "text": "by the `writable` attribute. The caller is allowed to access the affected"
+    }
+  ],
+  "initializes_attr": [
+    {
+      "line": 1839,
+      "text": "`initializes((Lo1, Hi1), ...)`"
+    }
+  ],
+  "dead_on_unwind_attr": [
+    {
+      "line": 1878,
+      "text": "`dead_on_unwind`"
+    },
+    {
+      "line": 1910,
+      "text": "conjunction. Conversely, this attribute always implies `dead_on_unwind`. When"
+    },
+    {
+      "line": 1911,
+      "text": "a byte count is specified, `dead_on_unwind` is implied only for that range."
+    }
+  ],
+  "byval_attr": [
+    {
+      "line": 1364,
+      "text": "`byval(<ty>)`"
+    }
+  ],
+  "sret_attr": [
+    {
+      "line": 1465,
+      "text": "`sret(<ty>)`"
+    }
+  ],
+  "noundef_attr": [
+    {
+      "line": 1503,
+      "text": "`noundef` attribute to ensure a pointer is aligned, or otherwise the"
+    },
+    {
+      "line": 1617,
+      "text": "The `nonnull` attribute should be combined with the `noundef` attribute"
+    },
+    {
+      "line": 1634,
+      "text": "implies `noundef`."
+    },
+    {
+      "line": 1699,
+      "text": "`noundef`"
+    },
+    {
+      "line": 1705,
+      "text": "If memory sanitizer is enabled, `noundef` becomes an ABI attribute and"
+    }
+  ],
+  "memory_attr": [
+    {
+      "line": 1810,
+      "text": "This attribute is understood in the same way as the `memory(write)`"
+    },
+    {
+      "line": 2261,
+      "text": "`memory(...)`"
+    },
+    {
+      "line": 2269,
+      "text": "- `memory(none)`: Does not access any memory."
+    },
+    {
+      "line": 2270,
+      "text": "- `memory(read)`: May read (but not write) any memory."
+    },
+    {
+      "line": 2271,
+      "text": "- `memory(write)`: May write (but not read) any memory."
+    }
+  ],
+  "alias_scope_md": [],
+  "lifetime_intrinsics": [],
+  "assume_intrinsic": [],
+  "assume_bundles": [
+    {
+      "line": 3217,
+      "text": "#### Assume Operand Bundles"
+    }
+  ],
+  "atomic_ordering": [
+    {
+      "line": 4082,
+      "text": "### Atomic Memory Ordering Constraints"
+    }
+  ],
+  "volatile_memory": [
+    {
+      "line": 3960,
+      "text": "### Volatile Memory Accesses"
+    }
+  ],
+  "fast_math_flags": [
+    {
+      "line": 4322,
+      "text": "### Fast-Math Flags"
+    }
+  ]
+}

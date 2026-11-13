@@ -1,0 +1,1361 @@
+{
+  "InstCombine": {
+    "path": "lib/Transforms/InstCombine",
+    "file_count": 16,
+    "loc": 56238,
+    "total_mutation_sites": 1559,
+    "mutation_breakdown": {
+      "rauw": 5,
+      "replace_inst": 0,
+      "erase": 6,
+      "irbuilder_create": 1509,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 39,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LastRunTrackingAnalysis",
+      "LazyBlockFrequencyInfoPass",
+      "ModuleAnalysisManagerFunctionProxy",
+      "OptimizationRemarkEmitterAnalysis",
+      "OptimizationRemarkEmitterWrapperPass",
+      "ProfileSummaryInfoWrapperPass",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "AggressiveInstCombine": {
+    "path": "lib/Transforms/AggressiveInstCombine",
+    "file_count": 3,
+    "loc": 3227,
+    "total_mutation_sites": 92,
+    "mutation_breakdown": {
+      "rauw": 17,
+      "replace_inst": 0,
+      "erase": 8,
+      "irbuilder_create": 63,
+      "cfg_mutate": 2,
+      "attr_md_mutate": 2,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "EarlyCSE": {
+    "path": "lib/Transforms/Scalar/EarlyCSE.cpp",
+    "file_count": 1,
+    "loc": 1930,
+    "total_mutation_sites": 14,
+    "mutation_breakdown": {
+      "rauw": 5,
+      "replace_inst": 0,
+      "erase": 9,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "MemorySSAAnalysis",
+      "MemorySSAWrapperPass",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "GVN": {
+    "path": "lib/Transforms/Scalar/GVN.cpp",
+    "file_count": 1,
+    "loc": 4073,
+    "total_mutation_sites": 16,
+    "mutation_breakdown": {
+      "rauw": 8,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 5,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LoopAnalysis",
+      "LoopInfoWrapperPass",
+      "MemoryDependenceAnalysis",
+      "MemoryDependenceWrapperPass",
+      "MemorySSAAnalysis",
+      "MemorySSAWrapperPass",
+      "OptimizationRemarkEmitterAnalysis",
+      "OptimizationRemarkEmitterWrapperPass",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass"
+    ]
+  },
+  "NewGVN": {
+    "path": "lib/Transforms/Scalar/NewGVN.cpp",
+    "file_count": 1,
+    "loc": 4275,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 3,
+      "replace_inst": 3,
+      "erase": 3,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "MemorySSAAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "GVNHoist": {
+    "path": "lib/Transforms/Scalar/GVNHoist.cpp",
+    "file_count": 1,
+    "loc": 1215,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 3,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "DominatorTreeAnalysis",
+      "MemoryDependenceAnalysis",
+      "MemorySSAAnalysis",
+      "PostDominatorTreeAnalysis"
+    ]
+  },
+  "GVNSink": {
+    "path": "lib/Transforms/Scalar/GVNSink.cpp",
+    "file_count": 1,
+    "loc": 850,
+    "total_mutation_sites": 5,
+    "mutation_breakdown": {
+      "rauw": 3,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "SROA": {
+    "path": "lib/Transforms/Scalar/SROA.cpp",
+    "file_count": 1,
+    "loc": 6422,
+    "total_mutation_sites": 130,
+    "mutation_breakdown": {
+      "rauw": 13,
+      "replace_inst": 0,
+      "erase": 14,
+      "irbuilder_create": 88,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 14,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass"
+    ]
+  },
+  "PromoteMemoryToRegister": {
+    "path": "lib/Transforms/Utils/PromoteMemoryToRegister.cpp",
+    "file_count": 1,
+    "loc": 1237,
+    "total_mutation_sites": 24,
+    "mutation_breakdown": {
+      "rauw": 5,
+      "replace_inst": 0,
+      "erase": 19,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "Mem2Reg": {
+    "path": "lib/Transforms/Utils/Mem2Reg.cpp",
+    "file_count": 1,
+    "loc": 116,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass"
+    ]
+  },
+  "SimplifyCFGPass": {
+    "path": "lib/Transforms/Scalar/SimplifyCFGPass.cpp",
+    "file_count": 1,
+    "loc": 447,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "TargetIRAnalysis",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "SimplifyCFGUtils": {
+    "path": "lib/Transforms/Utils/SimplifyCFG.cpp",
+    "file_count": 1,
+    "loc": 9140,
+    "total_mutation_sites": 168,
+    "mutation_breakdown": {
+      "rauw": 19,
+      "replace_inst": 0,
+      "erase": 37,
+      "irbuilder_create": 100,
+      "cfg_mutate": 6,
+      "attr_md_mutate": 6,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "DeadStoreElimination": {
+    "path": "lib/Transforms/Scalar/DeadStoreElimination.cpp",
+    "file_count": 1,
+    "loc": 2915,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 1,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "CycleAnalysis",
+      "CycleInfoWrapperPass",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "MemorySSAAnalysis",
+      "MemorySSAWrapperPass",
+      "PostDominatorTreeAnalysis",
+      "PostDominatorTreeWrapperPass",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass"
+    ]
+  },
+  "MemCpyOptimizer": {
+    "path": "lib/Transforms/Scalar/MemCpyOptimizer.cpp",
+    "file_count": 1,
+    "loc": 2284,
+    "total_mutation_sites": 29,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 20,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 7,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "MemorySSAAnalysis",
+      "PostDominatorTreeAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "CorrelatedValuePropagation": {
+    "path": "lib/Transforms/Scalar/CorrelatedValuePropagation.cpp",
+    "file_count": 1,
+    "loc": 1404,
+    "total_mutation_sites": 72,
+    "mutation_breakdown": {
+      "rauw": 25,
+      "replace_inst": 0,
+      "erase": 27,
+      "irbuilder_create": 20,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DominatorTreeAnalysis",
+      "LazyValueAnalysis"
+    ]
+  },
+  "LazyValueInfo": {
+    "path": "lib/Analysis/LazyValueInfo.cpp",
+    "file_count": 1,
+    "loc": 2320,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "LazyValueAnalysis"
+    ]
+  },
+  "ConstraintElimination": {
+    "path": "lib/Transforms/Scalar/ConstraintElimination.cpp",
+    "file_count": 1,
+    "loc": 2129,
+    "total_mutation_sites": 14,
+    "mutation_breakdown": {
+      "rauw": 8,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 4,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 1
+    },
+    "analyses_queried": [
+      "DominatorTreeAnalysis",
+      "LoopAnalysis",
+      "OptimizationRemarkEmitterAnalysis",
+      "ScalarEvolutionAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "JumpThreading": {
+    "path": "lib/Transforms/Scalar/JumpThreading.cpp",
+    "file_count": 1,
+    "loc": 3300,
+    "total_mutation_sites": 29,
+    "mutation_breakdown": {
+      "rauw": 7,
+      "replace_inst": 0,
+      "erase": 19,
+      "irbuilder_create": 0,
+      "cfg_mutate": 2,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "DominatorTreeAnalysis",
+      "LazyValueAnalysis",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "SCCP": {
+    "path": "lib/Transforms/Scalar/SCCP.cpp",
+    "file_count": 1,
+    "loc": 140,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "SCCPSolver": {
+    "path": "lib/Transforms/Utils/SCCPSolver.cpp",
+    "file_count": 1,
+    "loc": 2484,
+    "total_mutation_sites": 13,
+    "mutation_breakdown": {
+      "rauw": 4,
+      "replace_inst": 0,
+      "erase": 6,
+      "irbuilder_create": 3,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "BDCE": {
+    "path": "lib/Transforms/Scalar/BDCE.cpp",
+    "file_count": 1,
+    "loc": 213,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 1,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DemandedBitsAnalysis"
+    ]
+  },
+  "ADCE": {
+    "path": "lib/Transforms/Scalar/ADCE.cpp",
+    "file_count": 1,
+    "loc": 648,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 1,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "PostDominatorTreeAnalysis"
+    ]
+  },
+  "Reassociate": {
+    "path": "lib/Transforms/Scalar/Reassociate.cpp",
+    "file_count": 1,
+    "loc": 2765,
+    "total_mutation_sites": 14,
+    "mutation_breakdown": {
+      "rauw": 8,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 4,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "TailRecursionElimination": {
+    "path": "lib/Transforms/Scalar/TailRecursionElimination.cpp",
+    "file_count": 1,
+    "loc": 1014,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 5,
+      "irbuilder_create": 2,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "BlockFrequencyAnalysis",
+      "OptimizationRemarkEmitterAnalysis",
+      "OptimizationRemarkEmitterWrapperPass",
+      "TargetIRAnalysis",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "MergedLoadStoreMotion": {
+    "path": "lib/Transforms/Scalar/MergedLoadStoreMotion.cpp",
+    "file_count": 1,
+    "loc": 401,
+    "total_mutation_sites": 7,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 1,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager"
+    ]
+  },
+  "Float2Int": {
+    "path": "lib/Transforms/Scalar/Float2Int.cpp",
+    "file_count": 1,
+    "loc": 515,
+    "total_mutation_sites": 9,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 7,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DominatorTreeAnalysis"
+    ]
+  },
+  "LowerConstantIntrinsics": {
+    "path": "lib/Transforms/Scalar/LowerConstantIntrinsics.cpp",
+    "file_count": 1,
+    "loc": 167,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "DivRemPairs": {
+    "path": "lib/Transforms/Scalar/DivRemPairs.cpp",
+    "file_count": 1,
+    "loc": 433,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DominatorTreeAnalysis",
+      "TargetIRAnalysis"
+    ]
+  },
+  "SpeculativeExecution": {
+    "path": "lib/Transforms/Scalar/SpeculativeExecution.cpp",
+    "file_count": 1,
+    "loc": 361,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "TargetIRAnalysis",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "InferAlignment": {
+    "path": "lib/Transforms/Scalar/InferAlignment.cpp",
+    "file_count": 1,
+    "loc": 196,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 3,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis"
+    ]
+  },
+  "LoopSimplify": {
+    "path": "lib/Transforms/Utils/LoopSimplify.cpp",
+    "file_count": 1,
+    "loc": 913,
+    "total_mutation_sites": 10,
+    "mutation_breakdown": {
+      "rauw": 3,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 0,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 2,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LoopAnalysis",
+      "LoopInfoWrapperPass"
+    ]
+  },
+  "LCSSA": {
+    "path": "lib/Transforms/Utils/LCSSA.cpp",
+    "file_count": 1,
+    "loc": 553,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LoopAnalysis",
+      "LoopInfoWrapperPass"
+    ]
+  },
+  "LoopRotation": {
+    "path": "lib/Transforms/Scalar/LoopRotation.cpp",
+    "file_count": 1,
+    "loc": 107,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LoopRotationUtils": {
+    "path": "lib/Transforms/Utils/LoopRotationUtils.cpp",
+    "file_count": 1,
+    "loc": 983,
+    "total_mutation_sites": 8,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 5,
+      "irbuilder_create": 0,
+      "cfg_mutate": 3,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LICM": {
+    "path": "lib/Transforms/Scalar/LICM.cpp",
+    "file_count": 1,
+    "loc": 3064,
+    "total_mutation_sites": 25,
+    "mutation_breakdown": {
+      "rauw": 8,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 12,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 3,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAResultsWrapperPass",
+      "AssumptionCacheTracker",
+      "DominatorTreeWrapperPass",
+      "LoopInfoWrapperPass",
+      "MemorySSAWrapperPass",
+      "TargetLibraryInfoWrapperPass",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "IndVarSimplify": {
+    "path": "lib/Transforms/Scalar/IndVarSimplify.cpp",
+    "file_count": 1,
+    "loc": 2237,
+    "total_mutation_sites": 15,
+    "mutation_breakdown": {
+      "rauw": 7,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 8,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "ShouldRunExtraSimpleLoopUnswitch"
+    ]
+  },
+  "SimplifyIndVar": {
+    "path": "lib/Transforms/Utils/SimplifyIndVar.cpp",
+    "file_count": 1,
+    "loc": 2287,
+    "total_mutation_sites": 37,
+    "mutation_breakdown": {
+      "rauw": 19,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 16,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LoopUnrollPass": {
+    "path": "lib/Transforms/Scalar/LoopUnrollPass.cpp",
+    "file_count": 1,
+    "loc": 1869,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 8
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LoopAnalysis",
+      "LoopInfoWrapperPass",
+      "ModuleAnalysisManagerFunctionProxy",
+      "OptimizationRemarkEmitterAnalysis",
+      "ScalarEvolutionAnalysis",
+      "ScalarEvolutionWrapperPass",
+      "TargetIRAnalysis",
+      "TargetTransformInfoWrapperPass",
+      "UniformityInfoAnalysis",
+      "UniformityInfoWrapperPass"
+    ]
+  },
+  "LoopUnroll": {
+    "path": "lib/Transforms/Utils/LoopUnroll.cpp",
+    "file_count": 1,
+    "loc": 1759,
+    "total_mutation_sites": 13,
+    "mutation_breakdown": {
+      "rauw": 4,
+      "replace_inst": 0,
+      "erase": 5,
+      "irbuilder_create": 1,
+      "cfg_mutate": 2,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LoopUnrollRuntime": {
+    "path": "lib/Transforms/Utils/LoopUnrollRuntime.cpp",
+    "file_count": 1,
+    "loc": 1151,
+    "total_mutation_sites": 27,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 16,
+      "cfg_mutate": 6,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LoopPeel": {
+    "path": "lib/Transforms/Utils/LoopPeel.cpp",
+    "file_count": 1,
+    "loc": 1446,
+    "total_mutation_sites": 18,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 4,
+      "cfg_mutate": 7,
+      "attr_md_mutate": 1,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "SimpleLoopUnswitch": {
+    "path": "lib/Transforms/Scalar/SimpleLoopUnswitch.cpp",
+    "file_count": 1,
+    "loc": 3814,
+    "total_mutation_sites": 37,
+    "mutation_breakdown": {
+      "rauw": 4,
+      "replace_inst": 0,
+      "erase": 11,
+      "irbuilder_create": 9,
+      "cfg_mutate": 11,
+      "attr_md_mutate": 2,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "LoopIdiomRecognize": {
+    "path": "lib/Transforms/Scalar/LoopIdiomRecognize.cpp",
+    "file_count": 1,
+    "loc": 3606,
+    "total_mutation_sites": 74,
+    "mutation_breakdown": {
+      "rauw": 6,
+      "replace_inst": 0,
+      "erase": 5,
+      "irbuilder_create": 63,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 6
+    },
+    "analyses_queried": []
+  },
+  "LoopDeletion": {
+    "path": "lib/Transforms/Scalar/LoopDeletion.cpp",
+    "file_count": 1,
+    "loc": 546,
+    "total_mutation_sites": 2,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 2
+    },
+    "analyses_queried": []
+  },
+  "LoopStrengthReduce": {
+    "path": "lib/Transforms/Scalar/LoopStrengthReduce.cpp",
+    "file_count": 1,
+    "loc": 7314,
+    "total_mutation_sites": 8,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 2,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionCacheTracker",
+      "DominatorTreeWrapperPass",
+      "IVUsersAnalysis",
+      "IVUsersWrapperPass",
+      "LoopInfoWrapperPass",
+      "ScalarEvolutionWrapperPass",
+      "TargetLibraryInfoWrapperPass",
+      "TargetTransformInfoWrapperPass"
+    ]
+  },
+  "ScalarEvolution": {
+    "path": "lib/Analysis/ScalarEvolution.cpp",
+    "file_count": 1,
+    "loc": 16515,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "LoopAnalysis",
+      "LoopInfoWrapperPass",
+      "ScalarEvolutionAnalysis",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass"
+    ]
+  },
+  "LoopAccessAnalysis": {
+    "path": "lib/Analysis/LoopAccessAnalysis.cpp",
+    "file_count": 1,
+    "loc": 3309,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "LoopAnalysis",
+      "ScalarEvolutionAnalysis",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "LoopVectorize": {
+    "path": "lib/Transforms/Vectorize/LoopVectorize.cpp",
+    "file_count": 1,
+    "loc": 8487,
+    "total_mutation_sites": 29,
+    "mutation_breakdown": {
+      "rauw": 10,
+      "replace_inst": 0,
+      "erase": 11,
+      "irbuilder_create": 4,
+      "cfg_mutate": 4,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 1
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "BlockFrequencyAnalysis",
+      "DemandedBitsAnalysis",
+      "DominatorTreeAnalysis",
+      "LoopAccessAnalysis",
+      "LoopAnalysis",
+      "ModuleAnalysisManagerFunctionProxy",
+      "OptimizationRemarkEmitterAnalysis",
+      "ScalarEvolutionAnalysis",
+      "ShouldRunExtraVectorPasses",
+      "TargetIRAnalysis",
+      "TargetLibraryAnalysis"
+    ]
+  },
+  "VPlan": {
+    "path": "lib/Transforms/Vectorize/VPlan.cpp",
+    "file_count": 1,
+    "loc": 1960,
+    "total_mutation_sites": 21,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 3,
+      "irbuilder_create": 10,
+      "cfg_mutate": 6,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "SLPVectorizer": {
+    "path": "lib/Transforms/Vectorize/SLPVectorizer.cpp",
+    "file_count": 1,
+    "loc": 33278,
+    "total_mutation_sites": 143,
+    "mutation_breakdown": {
+      "rauw": 11,
+      "replace_inst": 0,
+      "erase": 4,
+      "irbuilder_create": 126,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 2,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DemandedBitsAnalysis",
+      "DominatorTreeAnalysis",
+      "LoopAnalysis",
+      "OptimizationRemarkEmitterAnalysis",
+      "ScalarEvolutionAnalysis",
+      "TargetIRAnalysis"
+    ]
+  },
+  "VectorCombine": {
+    "path": "lib/Transforms/Vectorize/VectorCombine.cpp",
+    "file_count": 1,
+    "loc": 6631,
+    "total_mutation_sites": 140,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 133,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 4,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AssumptionAnalysis",
+      "DominatorTreeAnalysis",
+      "TargetIRAnalysis"
+    ]
+  },
+  "LoopLoadElimination": {
+    "path": "lib/Transforms/Scalar/LoopLoadElimination.cpp",
+    "file_count": 1,
+    "loc": 712,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "LoopAccessAnalysis",
+      "LoopAnalysis",
+      "ModuleAnalysisManagerFunctionProxy",
+      "ScalarEvolutionAnalysis"
+    ]
+  },
+  "LoopSink": {
+    "path": "lib/Transforms/Scalar/LoopSink.cpp",
+    "file_count": 1,
+    "loc": 406,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "BlockFrequencyAnalysis",
+      "DominatorTreeAnalysis",
+      "LoopAnalysis",
+      "MemorySSAAnalysis"
+    ]
+  },
+  "LoopDistribute": {
+    "path": "lib/Transforms/Scalar/LoopDistribute.cpp",
+    "file_count": 1,
+    "loc": 1027,
+    "total_mutation_sites": 3,
+    "mutation_breakdown": {
+      "rauw": 1,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 1,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "DominatorTreeAnalysis",
+      "LoopAccessAnalysis",
+      "LoopAnalysis",
+      "OptimizationRemarkEmitterAnalysis",
+      "ScalarEvolutionAnalysis"
+    ]
+  },
+  "BasicAliasAnalysis": {
+    "path": "lib/Analysis/BasicAliasAnalysis.cpp",
+    "file_count": 1,
+    "loc": 2102,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AssumptionAnalysis",
+      "AssumptionCacheTracker",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "TargetLibraryAnalysis",
+      "TargetLibraryInfoWrapperPass"
+    ]
+  },
+  "ScopedNoAliasAA": {
+    "path": "lib/Analysis/ScopedNoAliasAA.cpp",
+    "file_count": 1,
+    "loc": 209,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "TypeBasedAliasAnalysis": {
+    "path": "lib/Analysis/TypeBasedAliasAnalysis.cpp",
+    "file_count": 1,
+    "loc": 840,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "MemorySSA": {
+    "path": "lib/Analysis/MemorySSA.cpp",
+    "file_count": 1,
+    "loc": 2660,
+    "total_mutation_sites": 0,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 0,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": [
+      "AAManager",
+      "AAResultsWrapperPass",
+      "DominatorTreeAnalysis",
+      "DominatorTreeWrapperPass",
+      "MemorySSAAnalysis"
+    ]
+  },
+  "ValueTracking": {
+    "path": "lib/Analysis/ValueTracking.cpp",
+    "file_count": 1,
+    "loc": 10841,
+    "total_mutation_sites": 1,
+    "mutation_breakdown": {
+      "rauw": 0,
+      "replace_inst": 0,
+      "erase": 1,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  },
+  "InstructionSimplify": {
+    "path": "lib/Analysis/InstructionSimplify.cpp",
+    "file_count": 1,
+    "loc": 7947,
+    "total_mutation_sites": 4,
+    "mutation_breakdown": {
+      "rauw": 2,
+      "replace_inst": 0,
+      "erase": 2,
+      "irbuilder_create": 0,
+      "cfg_mutate": 0,
+      "attr_md_mutate": 0,
+      "mir_build": 0,
+      "sdag_combine": 0,
+      "ore_remark": 0
+    },
+    "analyses_queried": []
+  }
+}

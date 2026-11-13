@@ -1,0 +1,6006 @@
+{
+  "processors": [
+    {
+      "record": "anonymous_47293",
+      "name": "generic",
+      "sched_model": "CortexA510Model",
+      "feature_count": 3,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureETE"
+      ]
+    },
+    {
+      "record": "anonymous_47294",
+      "name": "cortex-a34",
+      "sched_model": "CortexA53Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47295",
+      "name": "cortex-a35",
+      "sched_model": "CortexA53Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47296",
+      "name": "cortex-a320",
+      "sched_model": "CortexA320Model",
+      "feature_count": 30,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureNEON",
+        "FeatureMTE",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureETE",
+        "FeaturePerfMon",
+        "FeatureCCIDX",
+        "FeatureCCPP"
+      ]
+    },
+    {
+      "record": "anonymous_47297",
+      "name": "cortex-a53",
+      "sched_model": "CortexA53Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47298",
+      "name": "cortex-a55",
+      "sched_model": "CortexA55Model",
+      "feature_count": 13,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeaturePerfMon",
+        "FeatureCRC"
+      ]
+    },
+    {
+      "record": "anonymous_47299",
+      "name": "cortex-a510",
+      "sched_model": "CortexA510Model",
+      "feature_count": 27,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureMatMulInt8",
+        "FeatureBF16",
+        "FeatureAM",
+        "FeatureMTE",
+        "FeatureETE",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML"
+      ]
+    },
+    {
+      "record": "anonymous_47300",
+      "name": "cortex-a520",
+      "sched_model": "CortexA510Model",
+      "feature_count": 29,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeaturePerfMon",
+        "FeatureAM",
+        "FeatureMTE",
+        "FeatureETE",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureSB",
+        "FeatureSSBS"
+      ]
+    },
+    {
+      "record": "anonymous_47301",
+      "name": "cortex-a520ae",
+      "sched_model": "CortexA510Model",
+      "feature_count": 29,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeaturePerfMon",
+        "FeatureAM",
+        "FeatureMTE",
+        "FeatureETE",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureSB",
+        "FeatureSSBS"
+      ]
+    },
+    {
+      "record": "anonymous_47302",
+      "name": "c1-nano",
+      "sched_model": "C1NanoModel",
+      "feature_count": 35,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_3aOps",
+        "FeatureNEON",
+        "FeatureCLRBHB",
+        "FeatureCHK",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureSPECRES2",
+        "FeatureSSBS",
+        "FeatureRDM",
+        "FeatureVH"
+      ]
+    },
+    {
+      "record": "anonymous_47303",
+      "name": "cortex-a57",
+      "sched_model": "CortexA57Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47304",
+      "name": "cortex-a65",
+      "sched_model": "CortexA53Model",
+      "feature_count": 14,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeatureSSBS",
+        "FeatureRAS"
+      ]
+    },
+    {
+      "record": "anonymous_47305",
+      "name": "cortex-a65ae",
+      "sched_model": "CortexA53Model",
+      "feature_count": 14,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeatureSSBS",
+        "FeatureRAS"
+      ]
+    },
+    {
+      "record": "anonymous_47306",
+      "name": "cortex-a72",
+      "sched_model": "CortexA57Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47307",
+      "name": "cortex-a73",
+      "sched_model": "CortexA57Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47308",
+      "name": "cortex-a75",
+      "sched_model": "CortexA57Model",
+      "feature_count": 13,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeaturePerfMon",
+        "FeatureCRC"
+      ]
+    },
+    {
+      "record": "anonymous_47309",
+      "name": "cortex-a76",
+      "sched_model": "NeoverseN1Model",
+      "feature_count": 14,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeatureSSBS",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47310",
+      "name": "cortex-a76ae",
+      "sched_model": "NeoverseN1Model",
+      "feature_count": 14,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeatureSSBS",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47311",
+      "name": "cortex-a77",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 14,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeaturePerfMon",
+        "FeatureSSBS"
+      ]
+    },
+    {
+      "record": "anonymous_47312",
+      "name": "cortex-a78",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 15,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeaturePerfMon",
+        "FeatureSPE"
+      ]
+    },
+    {
+      "record": "anonymous_47313",
+      "name": "cortex-a78ae",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 15,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureRCPC",
+        "FeaturePerfMon",
+        "FeatureSPE"
+      ]
+    },
+    {
+      "record": "anonymous_47314",
+      "name": "cortex-a78c",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 17,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureFullFP16",
+        "FeatureDotProd",
+        "FeatureFlagM",
+        "FeaturePAuth",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47315",
+      "name": "cortex-a710",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 27,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureCCIDX",
+        "FeatureSSBS",
+        "FeatureETE",
+        "FeatureMTE",
+        "FeatureFP16FML",
+        "FeatureSVEBitPerm",
+        "FeatureBF16"
+      ]
+    },
+    {
+      "record": "anonymous_47316",
+      "name": "cortex-a715",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 30,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureNEON",
+        "FeatureMTE",
+        "FeatureCCIDX",
+        "FeatureFP16FML",
+        "FeatureSVE",
+        "FeatureTRBE",
+        "FeatureSVEBitPerm",
+        "FeatureBF16",
+        "FeatureETE"
+      ]
+    },
+    {
+      "record": "anonymous_47317",
+      "name": "cortex-a720",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 31,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureMTE",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureTRBE",
+        "FeatureSVEBitPerm",
+        "FeatureETE",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureSPE_EEF"
+      ]
+    },
+    {
+      "record": "anonymous_47318",
+      "name": "cortex-a720ae",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 31,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureMTE",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureTRBE",
+        "FeatureSVEBitPerm",
+        "FeatureETE",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureSPE_EEF"
+      ]
+    },
+    {
+      "record": "anonymous_47319",
+      "name": "cortex-a725",
+      "sched_model": "NeoverseN3Model",
+      "feature_count": 31,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureMTE",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureETE",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureSVEBitPerm",
+        "FeatureSPE_EEF",
+        "FeatureTRBE"
+      ]
+    },
+    {
+      "record": "anonymous_47320",
+      "name": "c1-pro",
+      "sched_model": "NeoverseN3Model",
+      "feature_count": 37,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_3aOps",
+        "FeatureNEON",
+        "FeatureCLRBHB",
+        "FeatureCHK",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureSPECRES2",
+        "FeatureSSBS",
+        "FeatureRDM",
+        "FeatureVH"
+      ]
+    },
+    {
+      "record": "anonymous_47321",
+      "name": "cortex-r82",
+      "sched_model": "CortexA55Model",
+      "feature_count": 21,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0rOps",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureSSBS",
+        "FeaturePredRes",
+        "FeatureSB",
+        "FeatureRDM",
+        "FeatureDotProd",
+        "FeatureComplxNum"
+      ]
+    },
+    {
+      "record": "anonymous_47322",
+      "name": "cortex-r82ae",
+      "sched_model": "CortexA55Model",
+      "feature_count": 21,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0rOps",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureSSBS",
+        "FeaturePredRes",
+        "FeatureSB",
+        "FeatureRDM",
+        "FeatureDotProd",
+        "FeatureComplxNum"
+      ]
+    },
+    {
+      "record": "anonymous_47323",
+      "name": "cortex-x1",
+      "sched_model": "NeoverseV1Model",
+      "feature_count": 15,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureRCPC",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureFullFP16",
+        "FeatureDotProd"
+      ]
+    },
+    {
+      "record": "anonymous_47324",
+      "name": "cortex-x1c",
+      "sched_model": "NeoverseV1Model",
+      "feature_count": 19,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureRCPC_IMMO",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureFullFP16",
+        "FeatureDotProd"
+      ]
+    },
+    {
+      "record": "anonymous_47325",
+      "name": "cortex-x2",
+      "sched_model": "NeoverseV2Model",
+      "feature_count": 28,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureMatMulInt8",
+        "FeatureBF16",
+        "FeatureAM",
+        "FeatureMTE",
+        "FeatureETE",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML"
+      ]
+    },
+    {
+      "record": "anonymous_47326",
+      "name": "cortex-x3",
+      "sched_model": "NeoverseV2Model",
+      "feature_count": 30,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureSVE",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureETE",
+        "FeatureTRBE",
+        "FeatureSPE",
+        "FeatureBF16",
+        "FeatureMatMulInt8",
+        "FeatureMTE"
+      ]
+    },
+    {
+      "record": "anonymous_47327",
+      "name": "cortex-x4",
+      "sched_model": "NeoverseV3Model",
+      "feature_count": 31,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeaturePerfMon",
+        "FeatureETE",
+        "FeatureTRBE",
+        "FeatureSPE",
+        "FeatureMTE",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML",
+        "FeatureSPE_EEF",
+        "FeatureCCIDX"
+      ]
+    },
+    {
+      "record": "anonymous_47328",
+      "name": "cortex-x925",
+      "sched_model": "NeoverseV3Model",
+      "feature_count": 31,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureMTE",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureETE",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureSVEBitPerm",
+        "FeatureSPE_EEF",
+        "FeatureTRBE"
+      ]
+    },
+    {
+      "record": "anonymous_47329",
+      "name": "c1-premium",
+      "sched_model": "C1PremiumModel",
+      "feature_count": 37,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_3aOps",
+        "FeatureNEON",
+        "FeatureCLRBHB",
+        "FeatureCHK",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureSPECRES2",
+        "FeatureSSBS",
+        "FeatureRDM",
+        "FeatureVH"
+      ]
+    },
+    {
+      "record": "anonymous_47330",
+      "name": "c1-ultra",
+      "sched_model": "C1UltraModel",
+      "feature_count": 37,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_3aOps",
+        "FeatureNEON",
+        "FeatureCLRBHB",
+        "FeatureCHK",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureSPECRES2",
+        "FeatureSSBS",
+        "FeatureRDM",
+        "FeatureVH"
+      ]
+    },
+    {
+      "record": "anonymous_47331",
+      "name": "gb10",
+      "sched_model": "NeoverseV3Model",
+      "feature_count": 34,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureMTE",
+        "FeatureFP16FML",
+        "FeatureCCIDX",
+        "FeatureETE",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureSVEBitPerm",
+        "FeatureSPE_EEF",
+        "FeatureTRBE"
+      ]
+    },
+    {
+      "record": "anonymous_47332",
+      "name": "grace",
+      "sched_model": "NeoverseV2Model",
+      "feature_count": 29,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureBF16",
+        "FeatureSPE",
+        "FeaturePerfMon",
+        "FeatureETE",
+        "FeatureMatMulInt8",
+        "FeatureNEON",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML",
+        "FeatureMTE"
+      ]
+    },
+    {
+      "record": "anonymous_47333",
+      "name": "neoverse-e1",
+      "sched_model": "CortexA53Model",
+      "feature_count": 14,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureDotProd",
+        "FeatureFPARMv8",
+        "FeatureFullFP16",
+        "FeatureNEON",
+        "FeatureRCPC",
+        "FeatureSSBS",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47334",
+      "name": "neoverse-n1",
+      "sched_model": "NeoverseN1Model",
+      "feature_count": 15,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureDotProd",
+        "FeatureFPARMv8",
+        "FeatureFullFP16",
+        "FeatureNEON",
+        "FeatureRCPC",
+        "FeatureSPE",
+        "FeatureSSBS"
+      ]
+    },
+    {
+      "record": "anonymous_47335",
+      "name": "neoverse-n2",
+      "sched_model": "NeoverseN2Model",
+      "feature_count": 27,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureBF16",
+        "FeatureETE",
+        "FeatureFP16FML",
+        "FeatureMatMulInt8",
+        "FeatureMTE",
+        "FeatureSVE2",
+        "FeatureSVEBitPerm",
+        "FeatureTRBE",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47337",
+      "name": "neoverse-n3",
+      "sched_model": "NeoverseN3Model",
+      "feature_count": 31,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureETE",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureMTE",
+        "FeaturePerfMon",
+        "FeatureRandGen",
+        "FeatureSPE",
+        "FeatureSPE_EEF",
+        "FeatureSVEBitPerm"
+      ]
+    },
+    {
+      "record": "anonymous_47338",
+      "name": "neoverse-512tvb",
+      "sched_model": "NeoverseV1Model",
+      "feature_count": 28,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_4aOps",
+        "FeatureBF16",
+        "FeatureCacheDeepPersist",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureMatMulInt8",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47339",
+      "name": "neoverse-v1",
+      "sched_model": "NeoverseV1Model",
+      "feature_count": 27,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_4aOps",
+        "FeatureBF16",
+        "FeatureCacheDeepPersist",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureMatMulInt8",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47340",
+      "name": "neoverse-v2",
+      "sched_model": "NeoverseV2Model",
+      "feature_count": 27,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_0aOps",
+        "FeatureBF16",
+        "FeatureSPE",
+        "FeaturePerfMon",
+        "FeatureETE",
+        "FeatureMatMulInt8",
+        "FeatureNEON",
+        "FeatureSVEBitPerm",
+        "FeatureFP16FML",
+        "FeatureMTE"
+      ]
+    },
+    {
+      "record": "anonymous_47341",
+      "name": "neoverse-v3",
+      "sched_model": "NeoverseV3Model",
+      "feature_count": 34,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureETE",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureLS64",
+        "FeatureMTE",
+        "FeaturePerfMon",
+        "FeatureRandGen",
+        "FeatureSPE",
+        "FeatureCCIDX"
+      ]
+    },
+    {
+      "record": "anonymous_47342",
+      "name": "neoverse-v3ae",
+      "sched_model": "NeoverseV3AEModel",
+      "feature_count": 34,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureETE",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureLS64",
+        "FeatureMTE",
+        "FeaturePerfMon",
+        "FeatureRandGen",
+        "FeatureSPE",
+        "FeatureSPE_EEF"
+      ]
+    },
+    {
+      "record": "anonymous_47344",
+      "name": "exynos-m3",
+      "sched_model": "ExynosM3Model",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeaturePerfMon",
+        "FeatureNEON",
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "anonymous_47345",
+      "name": "exynos-m4",
+      "sched_model": "ExynosM4Model",
+      "feature_count": 12,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureDotProd",
+        "FeatureFullFP16",
+        "FeaturePerfMon",
+        "FeatureCRC",
+        "FeatureFPARMv8",
+        "FeatureLSE",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47346",
+      "name": "exynos-m5",
+      "sched_model": "ExynosM5Model",
+      "feature_count": 12,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureDotProd",
+        "FeatureFullFP16",
+        "FeaturePerfMon",
+        "FeatureCRC",
+        "FeatureFPARMv8",
+        "FeatureLSE",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47347",
+      "name": "falkor",
+      "sched_model": "FalkorModel",
+      "feature_count": 8,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureRDM"
+      ]
+    },
+    {
+      "record": "anonymous_47348",
+      "name": "saphira",
+      "sched_model": "FalkorModel",
+      "feature_count": 13,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_4aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureSPE",
+        "FeaturePerfMon",
+        "FeatureCRC",
+        "FeatureCCIDX",
+        "FeatureLSE"
+      ]
+    },
+    {
+      "record": "anonymous_47349",
+      "name": "kryo",
+      "sched_model": "KryoModel",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47350",
+      "name": "thunderx",
+      "sched_model": "ThunderXT8XModel",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47351",
+      "name": "thunderxt88",
+      "sched_model": "ThunderXT8XModel",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47352",
+      "name": "thunderxt81",
+      "sched_model": "ThunderXT8XModel",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47353",
+      "name": "thunderxt83",
+      "sched_model": "ThunderXT8XModel",
+      "feature_count": 7,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeaturePerfMon",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "anonymous_47354",
+      "name": "thunderx2t99",
+      "sched_model": "ThunderX2T99Model",
+      "feature_count": 8,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_1aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureLSE",
+        "FeatureRDM"
+      ]
+    },
+    {
+      "record": "anonymous_47355",
+      "name": "thunderx3t110",
+      "sched_model": "ThunderX3T110Model",
+      "feature_count": 15,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_3aOps",
+        "FeatureCRC",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureLSE",
+        "FeatureCCIDX",
+        "FeaturePAuth",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47356",
+      "name": "tsv110",
+      "sched_model": "TSV110Model",
+      "feature_count": 16,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSPE",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureDotProd"
+      ]
+    },
+    {
+      "record": "anonymous_47357",
+      "name": "hip12",
+      "sched_model": "NeoverseV2Model",
+      "feature_count": 40,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_7aOps",
+        "FeatureSVE",
+        "FeatureSVE2",
+        "FeatureSVEBitPerm",
+        "FeatureSVEAES",
+        "FeatureSVESM4",
+        "FeatureSVESHA3",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47358",
+      "name": "apple-a7",
+      "sched_model": "CycloneModel",
+      "feature_count": 6,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon"
+      ]
+    },
+    {
+      "record": "anonymous_47362",
+      "name": "apple-a10",
+      "sched_model": "CycloneModel",
+      "feature_count": 11,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_0aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureCRC",
+        "FeatureRDM",
+        "FeaturePAN",
+        "FeatureLOR"
+      ]
+    },
+    {
+      "record": "anonymous_47363",
+      "name": "apple-a11",
+      "sched_model": "CycloneModel",
+      "feature_count": 11,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureCRC",
+        "FeatureLSE",
+        "FeatureRAS"
+      ]
+    },
+    {
+      "record": "anonymous_47364",
+      "name": "apple-a12",
+      "sched_model": "CycloneModel",
+      "feature_count": 15,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_3aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureComplxNum",
+        "FeatureCRC",
+        "FeatureJS"
+      ]
+    },
+    {
+      "record": "anonymous_47367",
+      "name": "apple-a13",
+      "sched_model": "CycloneModel",
+      "feature_count": 18,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_4aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureSHA3",
+        "FeatureComplxNum"
+      ]
+    },
+    {
+      "record": "anonymous_47371",
+      "name": "apple-a14",
+      "sched_model": "CycloneModel",
+      "feature_count": 25,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_4aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureSHA3",
+        "FeatureAltFPCmp"
+      ]
+    },
+    {
+      "record": "anonymous_47373",
+      "name": "apple-a15",
+      "sched_model": "CycloneModel",
+      "feature_count": 22,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_6aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSHA3",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureComplxNum"
+      ]
+    },
+    {
+      "record": "anonymous_47375",
+      "name": "apple-a16",
+      "sched_model": "CycloneModel",
+      "feature_count": 22,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_6aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSHA3",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureComplxNum"
+      ]
+    },
+    {
+      "record": "anonymous_47379",
+      "name": "apple-a17",
+      "sched_model": "CycloneModel",
+      "feature_count": 22,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_6aOps",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSHA3",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureComplxNum"
+      ]
+    },
+    {
+      "record": "anonymous_47380",
+      "name": "apple-m4",
+      "sched_model": "CycloneModel",
+      "feature_count": 25,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_7aOps",
+        "FeatureSHA2",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSHA3",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureAES",
+        "FeatureBF16"
+      ]
+    },
+    {
+      "record": "anonymous_47382",
+      "name": "apple-m5",
+      "sched_model": "CycloneModel",
+      "feature_count": 33,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_7aOps",
+        "FeatureSHA2",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSHA3",
+        "FeatureFullFP16",
+        "FeatureFP16FML",
+        "FeatureAES",
+        "FeatureBF16"
+      ]
+    },
+    {
+      "record": "anonymous_47385",
+      "name": "a64fx",
+      "sched_model": "A64FXModel",
+      "feature_count": 13,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureFPARMv8",
+        "FeatureNEON",
+        "FeatureSHA2",
+        "FeaturePerfMon",
+        "FeatureFullFP16",
+        "FeatureSVE",
+        "FeatureComplxNum",
+        "FeatureAES",
+        "FeatureCRC"
+      ]
+    },
+    {
+      "record": "anonymous_47386",
+      "name": "fujitsu-monaka",
+      "sched_model": "A64FXModel",
+      "feature_count": 22,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_3aOps",
+        "FeaturePerfMon",
+        "FeatureCCIDX",
+        "FeatureFPAC",
+        "FeatureFP16FML",
+        "FeatureRandGen",
+        "FeatureSSBS",
+        "FeatureLS64",
+        "FeatureCLRBHB",
+        "FeatureSPECRES2"
+      ]
+    },
+    {
+      "record": "anonymous_47387",
+      "name": "carmel",
+      "sched_model": "NoSchedModel",
+      "feature_count": 10,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_2aOps",
+        "FeatureNEON",
+        "FeatureSHA2",
+        "FeatureAES",
+        "FeatureFullFP16",
+        "FeatureCRC",
+        "FeatureLSE",
+        "FeatureRAS",
+        "FeatureRDM",
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "anonymous_47388",
+      "name": "olympus",
+      "sched_model": "OlympusModel",
+      "feature_count": 25,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureBRBE",
+        "FeatureCCIDX",
+        "FeatureCHK",
+        "FeatureETE",
+        "FeatureFAMINMAX",
+        "FeatureFP16FML",
+        "FeatureFP8DOT2",
+        "FeatureFP8DOT4",
+        "FeatureFP8FMA"
+      ]
+    },
+    {
+      "record": "anonymous_47389",
+      "name": "rigel",
+      "sched_model": "OlympusModel",
+      "feature_count": 25,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureBRBE",
+        "FeatureCCIDX",
+        "FeatureCHK",
+        "FeatureETE",
+        "FeatureFAMINMAX",
+        "FeatureFP16FML",
+        "FeatureFP8DOT2",
+        "FeatureFP8DOT4",
+        "FeatureFP8FMA"
+      ]
+    },
+    {
+      "record": "anonymous_47390",
+      "name": "ampere1",
+      "sched_model": "Ampere1Model",
+      "feature_count": 23,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_6aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSSBS",
+        "FeatureRandGen",
+        "FeatureSB",
+        "FeatureSHA2",
+        "FeatureSHA3",
+        "FeatureAES",
+        "FeatureFullFP16"
+      ]
+    },
+    {
+      "record": "anonymous_47391",
+      "name": "ampere1a",
+      "sched_model": "Ampere1Model",
+      "feature_count": 25,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_6aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureMTE",
+        "FeatureSSBS",
+        "FeatureRandGen",
+        "FeatureSB",
+        "FeatureSM4",
+        "FeatureSHA2",
+        "FeatureSHA3"
+      ]
+    },
+    {
+      "record": "anonymous_47392",
+      "name": "ampere1b",
+      "sched_model": "Ampere1BModel",
+      "feature_count": 27,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_7aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureMTE",
+        "FeatureSSBS",
+        "FeatureRandGen",
+        "FeatureSB",
+        "FeatureSM4",
+        "FeatureSHA2",
+        "FeatureSHA3"
+      ]
+    },
+    {
+      "record": "anonymous_47393",
+      "name": "ampere1c",
+      "sched_model": "NeoverseN3Model",
+      "feature_count": 17,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV9_2aOps",
+        "FeatureNEON",
+        "FeatureCSSC",
+        "FeatureCCIDX",
+        "FeatureFP8FMA",
+        "FeatureFAMINMAX",
+        "FeatureLUT",
+        "FeatureSVEAES",
+        "FeatureSVESM4",
+        "FeatureSVESHA3"
+      ]
+    },
+    {
+      "record": "anonymous_47394",
+      "name": "oryon-1",
+      "sched_model": "OryonModel",
+      "feature_count": 23,
+      "tune_feature_count": 1,
+      "sample_features": [
+        "HasV8_6aOps",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureRandGen",
+        "FeaturePAuth",
+        "FeatureSM4",
+        "FeatureSHA2",
+        "FeatureSHA3",
+        "FeatureAES",
+        "FeatureSPE"
+      ]
+    }
+  ],
+  "subtarget_features": [
+    {
+      "record": "FeatureAES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AES support",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureALULSLFast",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Add/Sub operations with lsl shift <= 4 are cheap",
+      "implies": []
+    },
+    {
+      "record": "FeatureAM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Activity Monitors extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureAMVS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.6-A Activity Monitors Virtualization support",
+      "implies": [
+        "FeatureAM"
+      ]
+    },
+    {
+      "record": "FeatureAddrLSLSlow14",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Address operands with shift amount of 1 or 4 are slow",
+      "implies": []
+    },
+    {
+      "record": "FeatureAggressiveFMA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Aggressive FMA for floating-point.",
+      "implies": []
+    },
+    {
+      "record": "FeatureAggressiveInterleaving",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make use of aggressive interleaving during vectorization",
+      "implies": []
+    },
+    {
+      "record": "FeatureAliasSVE2AES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Shorthand for +sve2+sve-aes",
+      "implies": [
+        "FeatureSVEAES",
+        "FeatureSVE2"
+      ]
+    },
+    {
+      "record": "FeatureAliasSVE2BitPerm",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Shorthand for +sve2+sve-bitperm",
+      "implies": [
+        "FeatureSVEBitPerm",
+        "FeatureSVE2"
+      ]
+    },
+    {
+      "record": "FeatureAliasSVE2SHA3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Shorthand for +sve2+sve-sha3",
+      "implies": [
+        "FeatureSVESHA3",
+        "FeatureSVE2"
+      ]
+    },
+    {
+      "record": "FeatureAliasSVE2SM4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Shorthand for +sve2+sve-sm4",
+      "implies": [
+        "FeatureSVESM4",
+        "FeatureSVE2"
+      ]
+    },
+    {
+      "record": "FeatureAlignCmpCSelPairs",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Align certain CMP/FCMP and CSEL/FCSEL instruction pairs",
+      "implies": []
+    },
+    {
+      "record": "FeatureAll",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable all instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureAltFPCmp",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable alternative NZCV format for floating point comparisons",
+      "implies": [
+        "FeatureFlagM"
+      ]
+    },
+    {
+      "record": "FeatureAlternateSExtLoadCVTF32Pattern",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use alternative pattern for sextload convert to f32",
+      "implies": []
+    },
+    {
+      "record": "FeatureArithmeticBccFusion",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses arithmetic+bcc operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureArithmeticCbzFusion",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses arithmetic + cbz/cbnz operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureAscendStoreAddress",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Schedule vector stores by ascending address",
+      "implies": []
+    },
+    {
+      "record": "FeatureAvoidLDAPUR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer add+ldapr to offset ldapur",
+      "implies": []
+    },
+    {
+      "record": "FeatureBF16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable BFloat16 Extension",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureBRBE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Branch Record Buffer Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureBTIE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Enhanced Branch Target Identification extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureBalanceFPOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "balance mix of odd and even D-registers for fp multiply(-accumulate) ops",
+      "implies": []
+    },
+    {
+      "record": "FeatureBranchTargetId",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Branch Target Identification",
+      "implies": []
+    },
+    {
+      "record": "FeatureCCIDX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.3-A Extend of the CCSIDR number of sets",
+      "implies": []
+    },
+    {
+      "record": "FeatureCCPP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.2-A data Cache Clean to Point of Persistence",
+      "implies": []
+    },
+    {
+      "record": "FeatureCHK",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.0-A Check Feature Status Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureCLRBHB",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Clear BHB instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureCMPBR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A base compare and branch instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureCONTEXTIDREL2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable RW operand CONTEXTIDR_EL2",
+      "implies": []
+    },
+    {
+      "record": "FeatureCPA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.5-A Checked Pointer Arithmetic",
+      "implies": []
+    },
+    {
+      "record": "FeatureCRC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.0-A CRC-32 checksum instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureCSSC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Common Short Sequence Compression (CSSC) instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureCacheDeepPersist",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.5-A Cache Clean to Point of Deep Persistence",
+      "implies": [
+        "FeatureCCPP"
+      ]
+    },
+    {
+      "record": "FeatureCallSavedX10",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X10 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX11",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X11 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX12",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X12 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX13",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X13 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX14",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X14 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX15",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X15 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX18",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X18 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X8 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCallSavedX9",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Make X9 callee saved.",
+      "implies": []
+    },
+    {
+      "record": "FeatureCmpBccFusion",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses cmp+bcc operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureComplxNum",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.3-A Floating-point complex number support",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureCrypto",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable cryptographic instructions",
+      "implies": [
+        "FeatureAES",
+        "FeatureNEON",
+        "FeatureSHA2"
+      ]
+    },
+    {
+      "record": "FeatureD128",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.4-A 128-bit Page Table Descriptors, System Registers and instructions",
+      "implies": [
+        "FeatureLSE128"
+      ]
+    },
+    {
+      "record": "FeatureDIT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Data Independent Timing instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableDistinctPredicateDstReg",
+      "feature_string": "false",
+      "attribute": "",
+      "desc": "Disabling selecting a distinct predicate register for the destination operand of instructions that take a governing predicate",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableFastIncVL",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Do not prefer INC/DEC, ALL, { 1, 2, 4 } over ADDVL",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableLatencySchedHeuristic",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Disable latency scheduling heuristic",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableLdp",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer not to emit ldp",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableMaximizeScalableBandwidth",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Determine the maximum scalable vector length for a loop by the largest scalar type rather than the smallest",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableStp",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer not to emit stp",
+      "implies": []
+    },
+    {
+      "record": "FeatureDisableUnpredicatedLdStLower",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Disable lowering unpredicated loads/stores as LDR/STR",
+      "implies": []
+    },
+    {
+      "record": "FeatureDotProd",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable dot product support",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureEL2VMSA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Exception Level 2 Virtual Memory System Architecture",
+      "implies": []
+    },
+    {
+      "record": "FeatureEL3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Exception Level 3",
+      "implies": []
+    },
+    {
+      "record": "FeatureETE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Embedded Trace Extension",
+      "implies": [
+        "FeatureTRBE"
+      ]
+    },
+    {
+      "record": "FeatureEnableSelectOptimize",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable the select optimize pass for select loop heuristics",
+      "implies": []
+    },
+    {
+      "record": "FeatureEnhancedCounterVirtualization",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable enhanced counter virtualization extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureExecuteOnly",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable the generation of execute only code.",
+      "implies": []
+    },
+    {
+      "record": "FeatureExperimentalZeroingPseudos",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Hint to the compiler that the MOVPRFX instruction is merged with destructive operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureExynosCheapAsMoveHandling",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use Exynos specific handling of cheap instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureF16F32DOT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A Advanced SIMD half-precision dot product accumulate to single-precision",
+      "implies": [
+        "FeatureFullFP16",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureF16F32MM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A Advanced SIMD half-precision matrix multiply-accumulate to single-precision",
+      "implies": [
+        "FeatureFullFP16",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureF16MM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A non-widening half-precision matrix multiply-accumulate",
+      "implies": [
+        "FeatureFullFP16",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureF8F16MM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A FP8 to Half-Precision Matrix Multiplication",
+      "implies": [
+        "FeatureFP8",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureF8F32MM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A FP8 to Single-Precision Matrix Multiplication",
+      "implies": [
+        "FeatureFP8",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureFAMINMAX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable FAMIN and FAMAX instructions",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureFMV",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Function Multi Versioning support.",
+      "implies": []
+    },
+    {
+      "record": "FeatureFP16FML",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable FP16 FML instructions",
+      "implies": [
+        "FeatureFullFP16",
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureFP8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable FP8 instructions",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureFP8DOT2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable FP8 2-way dot instructions",
+      "implies": [
+        "FeatureFP8"
+      ]
+    },
+    {
+      "record": "FeatureFP8DOT4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable FP8 4-way dot instructions",
+      "implies": [
+        "FeatureFP8"
+      ]
+    },
+    {
+      "record": "FeatureFP8FMA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.5-A FP8 multiply-add instructions",
+      "implies": [
+        "FeatureFP8"
+      ]
+    },
+    {
+      "record": "FeatureFPAC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.3-A Pointer Authentication Faulting enhancement",
+      "implies": []
+    },
+    {
+      "record": "FeatureFPARMv8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.0-A Floating Point Extensions",
+      "implies": []
+    },
+    {
+      "record": "FeatureFPRCVT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A base convert instructions for SIMD&FP scalar register operands of different input and output sizes",
+      "implies": [
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "FeatureFRInt3264",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable FRInt[32|64][Z|X] instructions that round a floating-point number to an integer (in FP format) forcing it to fit into a 32- or 64-bit int",
+      "implies": [
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "FeatureFastLD1Single",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Single-element LD1 to vector lane has same performance as regular load",
+      "implies": []
+    },
+    {
+      "record": "FeatureFineGrainedTraps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable fine grained virtualization traps extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureFixCortexA53_835769",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Mitigate Cortex-A53 Erratum 835769",
+      "implies": []
+    },
+    {
+      "record": "FeatureFixedLoadLatency4",
+      "feature_string": "4",
+      "attribute": "",
+      "desc": "Use a fixed latency of 4 for loads instead of querying the scheduling model",
+      "implies": []
+    },
+    {
+      "record": "FeatureFlagM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Flag Manipulation instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureForce32BitJumpTables",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Force jump table entries to be 32-bits wide except at MinSize",
+      "implies": []
+    },
+    {
+      "record": "FeatureFullFP16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable half-precision floating-point data processing",
+      "implies": [
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "FeatureFuseAES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses AES crypto operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseAddSub2RegAndConstOne",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses (a + b + 1) and (a - b - 1)",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseAddress",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses address generation and memory operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseAdrpAdd",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses adrp+add operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseArithmeticLogic",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses arithmetic and logic operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseCmpCSel",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU can fuse CMP and CSEL operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseCmpCSet",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU can fuse CMP and CSET operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseCryptoEOR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses AES/PMULL and EOR operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseFCmpFCSel",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU can fuse FCMP and FCSEL operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureFuseLiterals",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CPU fuses literal generation operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureGCIE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable GICv5 (Generic Interrupt Controller) CPU Interface Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureGCS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.4-A Guarded Call Stack Extension",
+      "implies": [
+        "FeatureCHK"
+      ]
+    },
+    {
+      "record": "FeatureHBC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.8-A Hinted Conditional Branches Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureHINTE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable extended A64 hint instruction space",
+      "implies": []
+    },
+    {
+      "record": "FeatureHardenSlsBlr",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Harden against straight line speculation across BLR instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureHardenSlsNoComdat",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Generate thunk code for SLS mitigation in the normal text section",
+      "implies": []
+    },
+    {
+      "record": "FeatureHardenSlsRetBr",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Harden against straight line speculation across RET and BR instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureITE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.4-A Instrumentation Extension",
+      "implies": [
+        "FeatureETE",
+        "FeatureTRBE"
+      ]
+    },
+    {
+      "record": "FeatureJS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.3-A JavaScript FP conversion instructions",
+      "implies": [
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "FeatureLOR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.1-A Limited Ordering Regions extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureLS64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.7-A LD64B/ST64B Accelerator Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureLSCP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A Load-acquire and store-release pair extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureLSE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.1-A Large System Extension (LSE) atomic instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureLSE128",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.4-A 128-bit Atomic instructions",
+      "implies": [
+        "FeatureLSE"
+      ]
+    },
+    {
+      "record": "FeatureLSE2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Large System Extension 2 (LSE2) atomicity rules",
+      "implies": []
+    },
+    {
+      "record": "FeatureLSFE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A base Atomic floating-point in-memory instructions",
+      "implies": [
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "FeatureLSUI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A unprivileged load/store instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureLUT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Lookup Table instructions",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureLdpAlignedOnly",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "In order to emit ldp, first check if the load will be aligned to 2 * element_size",
+      "implies": []
+    },
+    {
+      "record": "FeatureLimited64bitVectorMulBandwidth",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has limited 64bit vector multiply bandwidth compared to scalar multiply",
+      "implies": []
+    },
+    {
+      "record": "FeatureMCAStreamingSched",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable streaming-SVE schedule predicates for MC analysis tools",
+      "implies": []
+    },
+    {
+      "record": "FeatureMEC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Memory Encryption Contexts Extension",
+      "implies": [
+        "FeatureRME"
+      ]
+    },
+    {
+      "record": "FeatureMOPS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.8-A memcpy and memset acceleration instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureMOPS_GO",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable memset acceleration granule only",
+      "implies": [
+        "FeatureMOPS",
+        "FeatureMTE"
+      ]
+    },
+    {
+      "record": "FeatureMPAM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Memory system Partitioning and Monitoring extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureMTE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Memory Tagging Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureMTETC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Virtual Memory Tagging Extension",
+      "implies": [
+        "FeatureMTE"
+      ]
+    },
+    {
+      "record": "FeatureMatMulFP32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Matrix Multiply FP32 Extension",
+      "implies": [
+        "FeatureSVE"
+      ]
+    },
+    {
+      "record": "FeatureMatMulFP64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Matrix Multiply FP64 Extension",
+      "implies": [
+        "FeatureSVE"
+      ]
+    },
+    {
+      "record": "FeatureMatMulInt8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Matrix Multiply Int8 Extension",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureMaxInterleaveFactor4",
+      "feature_string": "4",
+      "attribute": "",
+      "desc": "Set the MaxInterleaveFactor to 4 (from the default 2)",
+      "implies": []
+    },
+    {
+      "record": "FeatureNEON",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Advanced SIMD instructions",
+      "implies": [
+        "FeatureFPARMv8"
+      ]
+    },
+    {
+      "record": "FeatureNMI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.8-A Non-maskable Interrupts",
+      "implies": []
+    },
+    {
+      "record": "FeatureNV",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Nested Virtualization Enchancement",
+      "implies": []
+    },
+    {
+      "record": "FeatureNoBTIAtReturnTwice",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Don't place a BTI instruction after a return-twice",
+      "implies": []
+    },
+    {
+      "record": "FeatureNoLFILoads",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Disable LFI sandboxing for load instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureNoLFIStores",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Disable LFI sandboxing for store instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureNoNegativeImmediates",
+      "feature_string": "false",
+      "attribute": "",
+      "desc": "Convert immediates and instructions to their negated or complemented equivalent when the immediate does not fit in the encoding.",
+      "implies": []
+    },
+    {
+      "record": "FeatureNoSVEFPLD1R",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Avoid using LD1RX instructions for FP",
+      "implies": []
+    },
+    {
+      "record": "FeatureNoZCZeroingFPR64",
+      "feature_string": "false",
+      "attribute": "",
+      "desc": "Has no zero-cycle zeroing instructions for FPR64 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureOCCMO",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A Outer cacheable cache maintenance operations",
+      "implies": []
+    },
+    {
+      "record": "FeatureOutlineAtomics",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable out of line atomics to support LSE instructions",
+      "implies": []
+    },
+    {
+      "record": "FeaturePAN",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.1-A Privileged Access-Never extension",
+      "implies": []
+    },
+    {
+      "record": "FeaturePAN_RWV",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.2-A PAN s1e1R and s1e1W Variants",
+      "implies": [
+        "FeaturePAN"
+      ]
+    },
+    {
+      "record": "FeaturePAuth",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.3-A Pointer Authentication extension",
+      "implies": []
+    },
+    {
+      "record": "FeaturePAuthLR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.5-A PAC enhancements",
+      "implies": []
+    },
+    {
+      "record": "FeaturePRFM_SLC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SLC target for PRFM instruction",
+      "implies": []
+    },
+    {
+      "record": "FeaturePerfMon",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.0-A PMUv3 Performance Monitors extension",
+      "implies": []
+    },
+    {
+      "record": "FeaturePoPS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A Point Of Physical Storage (PoPS) DC instructions",
+      "implies": []
+    },
+    {
+      "record": "FeaturePostRAScheduler",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Schedule again after register allocation",
+      "implies": []
+    },
+    {
+      "record": "FeaturePredRes",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.5-A execution and data prediction invalidation instructions",
+      "implies": []
+    },
+    {
+      "record": "FeaturePredictableSelectIsExpensive",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer likely predicted branches over selects",
+      "implies": []
+    },
+    {
+      "record": "FeaturePsUAO",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.2-A UAO PState",
+      "implies": []
+    },
+    {
+      "record": "FeatureRAS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.0-A Reliability, Availability and Serviceability Extensions",
+      "implies": []
+    },
+    {
+      "record": "FeatureRASv2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.9-A Reliability, Availability and Serviceability Extensions",
+      "implies": [
+        "FeatureRAS"
+      ]
+    },
+    {
+      "record": "FeatureRCPC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable support for RCPC extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureRCPC3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.9-A RCPC instructions for A64 and Advanced SIMD and floating-point instruction set",
+      "implies": [
+        "FeatureRCPC_IMMO"
+      ]
+    },
+    {
+      "record": "FeatureRCPC_IMMO",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A RCPC instructions with Immediate Offsets",
+      "implies": [
+        "FeatureRCPC"
+      ]
+    },
+    {
+      "record": "FeatureRDM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.1-A Rounding Double Multiply Add/Subtract instructions",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureRME",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Realm Management Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureRandGen",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Random Number generation instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveLRForRA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve LR for call use only",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX1",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X1, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX10",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X10, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX11",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X11, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX12",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X12, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX13",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X13, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX14",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X14, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX15",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X15, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX18",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X18, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X2, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX20",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X20, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX21",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X21, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX22",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X22, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX23",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X23, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX24",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X24, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX25",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X25, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX26",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X26, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX27",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X27, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX28",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X28, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X3, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X4, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX5",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X5, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX6",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X6, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX7",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X7, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveX9",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve X9, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureS1POE2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Stage 1 Permission Overlays Extension 2 instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSB",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.5-A Speculation Barrier",
+      "implies": []
+    },
+    {
+      "record": "FeatureSEL2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Secure Exception Level 2 extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureSHA2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SHA1 and SHA256 support",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureSHA3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SHA512 and SHA3 support",
+      "implies": [
+        "FeatureNEON",
+        "FeatureSHA2"
+      ]
+    },
+    {
+      "record": "FeatureSM4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SM3 and SM4 support",
+      "implies": [
+        "FeatureNEON"
+      ]
+    },
+    {
+      "record": "FeatureSME",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension (SME)",
+      "implies": [
+        "FeatureBF16",
+        "FeatureFullFP16"
+      ]
+    },
+    {
+      "record": "FeatureSME2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension 2 (SME2) instructions",
+      "implies": [
+        "FeatureSME"
+      ]
+    },
+    {
+      "record": "FeatureSME2p1",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension 2.1 instructions",
+      "implies": [
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSME2p2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A Scalable Matrix Extension 2.2 instructions",
+      "implies": [
+        "FeatureSME2p1"
+      ]
+    },
+    {
+      "record": "FeatureSME2p3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A Scalable Matrix Extension 2.3 instructions",
+      "implies": [
+        "FeatureSME2p2"
+      ]
+    },
+    {
+      "record": "FeatureSMEB16B16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SME2.1 ZA-targeting non-widening BFloat16 instructions",
+      "implies": [
+        "FeatureSME2",
+        "FeatureSVEB16B16"
+      ]
+    },
+    {
+      "record": "FeatureSMEF16F16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SME non-widening Float16 instructions",
+      "implies": [
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSMEF64F64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension (SME) F64F64 instructions",
+      "implies": [
+        "FeatureSME"
+      ]
+    },
+    {
+      "record": "FeatureSMEF8F16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension (SME) F8F16 instructions",
+      "implies": [
+        "FeatureFP8",
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSMEF8F32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension (SME) F8F32 instructions",
+      "implies": [
+        "FeatureFP8",
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSMEFA64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable the full A64 instruction set in streaming SVE mode",
+      "implies": [
+        "FeatureSME",
+        "FeatureSVE2"
+      ]
+    },
+    {
+      "record": "FeatureSMEI16I64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension (SME) I16I64 instructions",
+      "implies": [
+        "FeatureSME"
+      ]
+    },
+    {
+      "record": "FeatureSME_LUTv2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Matrix Extension (SME) LUTv2 instructions",
+      "implies": [
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSME_MOP4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SME Quarter-tile outer product instructions",
+      "implies": [
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSME_TMOP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SME Structured sparsity outer product instructions.",
+      "implies": [
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSPE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Statistical Profiling extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureSPECRES2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Speculation Restriction Instruction",
+      "implies": [
+        "FeaturePredRes"
+      ]
+    },
+    {
+      "record": "FeatureSPE_EEF",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable extra register in the Statistical Profiling Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureSSBS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Speculative Store Bypass Safe bit",
+      "implies": []
+    },
+    {
+      "record": "FeatureSSVE_AES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A SVE AES support in streaming SVE mode",
+      "implies": [
+        "FeatureSME2",
+        "FeatureSVEAES"
+      ]
+    },
+    {
+      "record": "FeatureSSVE_BitPerm",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A SVE BitPerm support in streaming SVE mode",
+      "implies": [
+        "FeatureSME2",
+        "FeatureSVEBitPerm"
+      ]
+    },
+    {
+      "record": "FeatureSSVE_FEXPA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE FEXPA instruction in Streaming SVE mode",
+      "implies": [
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSSVE_FP8DOT2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE2 FP8 2-way dot product instructions",
+      "implies": [
+        "FeatureFP8",
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSSVE_FP8DOT4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE2 FP8 4-way dot product instructions",
+      "implies": [
+        "FeatureFP8",
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSSVE_FP8FMA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE2 FP8 multiply-add instructions",
+      "implies": [
+        "FeatureFP8",
+        "FeatureSME2"
+      ]
+    },
+    {
+      "record": "FeatureSVE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Vector Extension (SVE) instructions",
+      "implies": [
+        "FeatureFullFP16"
+      ]
+    },
+    {
+      "record": "FeatureSVE2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Vector Extension 2 (SVE2) instructions",
+      "implies": [
+        "FeatureSVE"
+      ]
+    },
+    {
+      "record": "FeatureSVE2p1",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Scalable Vector Extension 2.1 instructions",
+      "implies": [
+        "FeatureSVE2"
+      ]
+    },
+    {
+      "record": "FeatureSVE2p2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A Scalable Vector Extension 2.2 instructions",
+      "implies": [
+        "FeatureSVE2p1"
+      ]
+    },
+    {
+      "record": "FeatureSVE2p3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A Scalable Vector Extension 2.3 instructions",
+      "implies": [
+        "FeatureSVE2p2"
+      ]
+    },
+    {
+      "record": "FeatureSVEAES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE AES and quadword SVE polynomial multiply instructions",
+      "implies": [
+        "FeatureAES"
+      ]
+    },
+    {
+      "record": "FeatureSVEAES2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A SVE multi-vector AES and multi-vector quadword polynomial multiply instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSVEB16B16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE2 non-widening and SME2 Z-targeting non-widening BFloat16 instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSVEBFSCALE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A SVE BFloat16 scaling instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSVEBitPerm",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable bit permutation SVE2 instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSVESHA3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE SHA3 instructions",
+      "implies": [
+        "FeatureSHA3"
+      ]
+    },
+    {
+      "record": "FeatureSVESM4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SVE SM4 instructions",
+      "implies": [
+        "FeatureSM4"
+      ]
+    },
+    {
+      "record": "FeatureSVE_B16MM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A SVE non-widening BFloat16 matrix multiply-accumulate",
+      "implies": [
+        "FeatureSVE"
+      ]
+    },
+    {
+      "record": "FeatureSVE_F16F32MM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.6-A FP16 to FP32 Matrix Multiply instructions",
+      "implies": [
+        "FeatureSVE"
+      ]
+    },
+    {
+      "record": "FeatureSlowMisaligned128Store",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Misaligned 128 bit stores are slow",
+      "implies": []
+    },
+    {
+      "record": "FeatureSlowPaired128",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Paired 128 bit loads and stores are slow",
+      "implies": []
+    },
+    {
+      "record": "FeatureSlowSTRQro",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "STR of Q register with register offset is slow",
+      "implies": []
+    },
+    {
+      "record": "FeatureSpecRestrict",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable architectural speculation restriction",
+      "implies": []
+    },
+    {
+      "record": "FeatureStorePairSuppress",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Store Pair Suppression heuristics",
+      "implies": []
+    },
+    {
+      "record": "FeatureStpAlignedOnly",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "In order to emit stp, first check if the store will be aligned to 2 * element_size",
+      "implies": []
+    },
+    {
+      "record": "FeatureStrictAlign",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Disallow all unaligned memory access",
+      "implies": []
+    },
+    {
+      "record": "FeatureTEV",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable TIndex Exception-like Vector instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureTHE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.9-A Translation Hardening Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureTLBID",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.7-A TLBI Domains extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureTLBIW",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv9.5-A TLBI VMALL for Dirty State",
+      "implies": []
+    },
+    {
+      "record": "FeatureTLB_RMI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A TLB Range and Maintenance instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureTRACEV8_4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.4-A Trace extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureTRBE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Trace Buffer Extension",
+      "implies": []
+    },
+    {
+      "record": "FeatureTaggedGlobals",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use an instruction sequence for taking the address of a global that allows a memory tag in the upper address bits",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseEL1ForTP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Permit use of TPIDR_EL1 for the TLS base",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseEL2ForTP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Permit use of TPIDR_EL2 for the TLS base",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseEL3ForTP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Permit use of TPIDR_EL3 for the TLS base",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseFixedOverScalableIfEqualCost",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer fixed width loop vectorization over scalable if the cost-model assigns equal costs",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseROEL0ForTP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Permit use of TPIDRRO_EL0 for the TLS base",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseRSqrt",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use the reciprocal square root approximation",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseWzrToVecMove",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Move from WZR to insert 0 into vector registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureVH",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.1-A Virtual Host extension",
+      "implies": [
+        "FeatureCONTEXTIDREL2"
+      ]
+    },
+    {
+      "record": "FeatureWFxT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.7-A WFET and WFIT instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureXS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Armv8.7-A limited-TLB-maintenance instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCRegMoveFPR128",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle register moves for FPR128 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCRegMoveFPR32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle register moves for FPR32 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCRegMoveFPR64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle register moves for FPR64 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCRegMoveGPR32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle register moves for GPR32 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCRegMoveGPR64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle register moves for GPR64 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCZeroingFPR128",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle zeroing instructions for FPR128 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCZeroingFPWorkaround",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "The zero-cycle floating-point zeroing instruction has a bug",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCZeroingGPR32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle zeroing instructions for GPR32 registers",
+      "implies": []
+    },
+    {
+      "record": "FeatureZCZeroingGPR64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has zero-cycle zeroing instructions for GPR64 registers",
+      "implies": []
+    },
+    {
+      "record": "HasV8_0aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8a architecture",
+      "implies": [
+        "FeatureEL2VMSA",
+        "FeatureEL3"
+      ]
+    },
+    {
+      "record": "HasV8_0rOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8r architecture",
+      "implies": [
+        "FeatureCONTEXTIDREL2",
+        "FeatureCCPP",
+        "FeatureCRC",
+        "FeatureDIT",
+        "FeatureFlagM",
+        "FeatureLSE",
+        "FeaturePAN",
+        "FeaturePAN_RWV",
+        "FeaturePAuth",
+        "FeatureRAS",
+        "FeatureRCPC",
+        "FeatureRCPC_IMMO",
+        "FeatureSEL2",
+        "FeatureSpecRestrict",
+        "FeatureTLB_RMI",
+        "FeatureTRACEV8_4",
+        "FeaturePsUAO"
+      ]
+    },
+    {
+      "record": "HasV8_1aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.1a architecture",
+      "implies": [
+        "FeatureCRC",
+        "FeatureLOR",
+        "FeatureLSE",
+        "FeaturePAN",
+        "FeatureRDM",
+        "HasV8_0aOps",
+        "FeatureVH"
+      ]
+    },
+    {
+      "record": "HasV8_2aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.2a architecture",
+      "implies": [
+        "FeatureCCPP",
+        "FeaturePAN_RWV",
+        "FeatureRAS",
+        "FeaturePsUAO",
+        "HasV8_1aOps"
+      ]
+    },
+    {
+      "record": "HasV8_3aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.3a architecture",
+      "implies": [
+        "FeatureComplxNum",
+        "FeatureJS",
+        "FeaturePAuth",
+        "FeatureRCPC",
+        "HasV8_2aOps"
+      ]
+    },
+    {
+      "record": "HasV8_4aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.4a architecture",
+      "implies": [
+        "FeatureAM",
+        "FeatureDIT",
+        "FeatureDotProd",
+        "FeatureFlagM",
+        "FeatureLSE2",
+        "FeatureMPAM",
+        "FeatureNV",
+        "FeatureRCPC_IMMO",
+        "FeatureSEL2",
+        "FeatureTLB_RMI",
+        "FeatureTRACEV8_4",
+        "HasV8_3aOps"
+      ]
+    },
+    {
+      "record": "HasV8_5aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.5a architecture",
+      "implies": [
+        "FeatureAltFPCmp",
+        "FeatureBranchTargetId",
+        "FeatureCacheDeepPersist",
+        "FeatureFRInt3264",
+        "FeaturePredRes",
+        "FeatureSB",
+        "FeatureSpecRestrict",
+        "HasV8_4aOps"
+      ]
+    },
+    {
+      "record": "HasV8_6aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.6a architecture",
+      "implies": [
+        "FeatureAMVS",
+        "FeatureBF16",
+        "FeatureEnhancedCounterVirtualization",
+        "FeatureFineGrainedTraps",
+        "FeatureMatMulInt8",
+        "HasV8_5aOps"
+      ]
+    },
+    {
+      "record": "HasV8_7aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.7a architecture",
+      "implies": [
+        "HasV8_6aOps",
+        "FeatureWFxT",
+        "FeatureXS"
+      ]
+    },
+    {
+      "record": "HasV8_8aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.8a architecture",
+      "implies": [
+        "FeatureHBC",
+        "FeatureMOPS",
+        "FeatureNMI",
+        "HasV8_7aOps"
+      ]
+    },
+    {
+      "record": "HasV8_9aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v8.9a architecture",
+      "implies": [
+        "FeatureCHK",
+        "FeatureCLRBHB",
+        "FeatureCSSC",
+        "FeaturePRFM_SLC",
+        "FeatureRASv2",
+        "FeatureSPECRES2",
+        "HasV8_8aOps"
+      ]
+    },
+    {
+      "record": "HasV9_0aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9a architecture",
+      "implies": [
+        "HasV8_5aOps"
+      ]
+    },
+    {
+      "record": "HasV9_1aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.1a architecture",
+      "implies": [
+        "HasV8_6aOps",
+        "HasV9_0aOps"
+      ]
+    },
+    {
+      "record": "HasV9_2aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.2a architecture",
+      "implies": [
+        "HasV8_7aOps",
+        "HasV9_1aOps"
+      ]
+    },
+    {
+      "record": "HasV9_3aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.3a architecture",
+      "implies": [
+        "HasV8_8aOps",
+        "HasV9_2aOps"
+      ]
+    },
+    {
+      "record": "HasV9_4aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.4a architecture",
+      "implies": [
+        "HasV8_9aOps",
+        "HasV9_3aOps"
+      ]
+    },
+    {
+      "record": "HasV9_5aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.5a architecture",
+      "implies": [
+        "FeatureCPA",
+        "HasV9_4aOps"
+      ]
+    },
+    {
+      "record": "HasV9_6aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.6a architecture",
+      "implies": [
+        "FeatureCMPBR",
+        "FeatureHINTE",
+        "FeatureLSUI",
+        "FeatureOCCMO",
+        "HasV9_5aOps"
+      ]
+    },
+    {
+      "record": "HasV9_7aOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ARM v9.7a architecture",
+      "implies": [
+        "FeatureF16F32DOT",
+        "FeatureFPRCVT",
+        "FeatureSVE2p3",
+        "HasV9_6aOps"
+      ]
+    },
+    {
+      "record": "TuneA320",
+      "feature_string": "CortexA320",
+      "attribute": "",
+      "desc": "Cortex-A320 ARM processors",
+      "implies": [
+        "FeatureAggressiveInterleaving",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneA35",
+      "feature_string": "CortexA35",
+      "attribute": "",
+      "desc": "Cortex-A35 ARM processors",
+      "implies": []
+    },
+    {
+      "record": "TuneA510",
+      "feature_string": "CortexA510",
+      "attribute": "",
+      "desc": "Cortex-A510 ARM processors",
+      "implies": [
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneA520",
+      "feature_string": "CortexA520",
+      "attribute": "",
+      "desc": "Cortex-A520 ARM processors",
+      "implies": [
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneA520AE",
+      "feature_string": "CortexA520",
+      "attribute": "",
+      "desc": "Cortex-A520AE ARM processors",
+      "implies": [
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneA53",
+      "feature_string": "CortexA53",
+      "attribute": "",
+      "desc": "Cortex-A53 ARM processors",
+      "implies": [
+        "FeatureBalanceFPOps",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneA55",
+      "feature_string": "CortexA55",
+      "attribute": "",
+      "desc": "Cortex-A55 ARM processors",
+      "implies": [
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneA57",
+      "feature_string": "CortexA57",
+      "attribute": "",
+      "desc": "Cortex-A57 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureBalanceFPOps",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA64FX",
+      "feature_string": "A64FX",
+      "attribute": "",
+      "desc": "Fujitsu A64FX processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureArithmeticBccFusion",
+        "FeatureDisableUnpredicatedLdStLower",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA65",
+      "feature_string": "CortexA65",
+      "attribute": "",
+      "desc": "Cortex-A65 ARM processors",
+      "implies": [
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeaturePredictableSelectIsExpensive"
+      ]
+    },
+    {
+      "record": "TuneA710",
+      "feature_string": "CortexA710",
+      "attribute": "",
+      "desc": "Cortex-A710 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA715",
+      "feature_string": "CortexA715",
+      "attribute": "",
+      "desc": "Cortex-A715 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA72",
+      "feature_string": "CortexA72",
+      "attribute": "",
+      "desc": "Cortex-A72 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeaturePredictableSelectIsExpensive"
+      ]
+    },
+    {
+      "record": "TuneA720",
+      "feature_string": "CortexA720",
+      "attribute": "",
+      "desc": "Cortex-A720 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA720AE",
+      "feature_string": "CortexA720",
+      "attribute": "",
+      "desc": "Cortex-A720AE ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA725",
+      "feature_string": "CortexA725",
+      "attribute": "",
+      "desc": "Cortex-A725 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA73",
+      "feature_string": "CortexA73",
+      "attribute": "",
+      "desc": "Cortex-A73 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePredictableSelectIsExpensive"
+      ]
+    },
+    {
+      "record": "TuneA75",
+      "feature_string": "CortexA75",
+      "attribute": "",
+      "desc": "Cortex-A75 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePredictableSelectIsExpensive"
+      ]
+    },
+    {
+      "record": "TuneA76",
+      "feature_string": "CortexA76",
+      "attribute": "",
+      "desc": "Cortex-A76 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePredictableSelectIsExpensive"
+      ]
+    },
+    {
+      "record": "TuneA77",
+      "feature_string": "CortexA77",
+      "attribute": "",
+      "desc": "Cortex-A77 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePredictableSelectIsExpensive"
+      ]
+    },
+    {
+      "record": "TuneA78",
+      "feature_string": "CortexA78",
+      "attribute": "",
+      "desc": "Cortex-A78 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA78AE",
+      "feature_string": "CortexA78AE",
+      "attribute": "",
+      "desc": "Cortex-A78AE ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneA78C",
+      "feature_string": "CortexA78C",
+      "attribute": "",
+      "desc": "Cortex-A78C ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneAmpere1",
+      "feature_string": "Ampere1",
+      "attribute": "",
+      "desc": "Ampere Computing Ampere-1 processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureALULSLFast",
+        "FeatureArithmeticBccFusion",
+        "FeatureCmpBccFusion",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeatureLdpAlignedOnly",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureStorePairSuppress",
+        "FeatureStpAlignedOnly",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneAmpere1A",
+      "feature_string": "Ampere1A",
+      "attribute": "",
+      "desc": "Ampere Computing Ampere-1A processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureALULSLFast",
+        "FeatureArithmeticBccFusion",
+        "FeatureCmpBccFusion",
+        "FeatureFuseAddress",
+        "FeatureFuseAddSub2RegAndConstOne",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeatureLdpAlignedOnly",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureStorePairSuppress",
+        "FeatureStpAlignedOnly",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneAmpere1B",
+      "feature_string": "Ampere1B",
+      "attribute": "",
+      "desc": "Ampere Computing Ampere-1B processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureALULSLFast",
+        "FeatureArithmeticBccFusion",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeatureLdpAlignedOnly",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeatureStpAlignedOnly",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneAmpere1C",
+      "feature_string": "Ampere1C",
+      "attribute": "",
+      "desc": "Ampere Computing Ampere-1C processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureALULSLFast",
+        "FeatureArithmeticBccFusion",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneAppleA10",
+      "feature_string": "AppleA10",
+      "attribute": "",
+      "desc": "Apple A10",
+      "implies": [
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFuseAES",
+        "FeatureFuseCryptoEOR",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA11",
+      "feature_string": "AppleA11",
+      "attribute": "",
+      "desc": "Apple A11",
+      "implies": [
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFuseAES",
+        "FeatureFuseCryptoEOR",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA12",
+      "feature_string": "AppleA12",
+      "attribute": "",
+      "desc": "Apple A12",
+      "implies": [
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFuseAES",
+        "FeatureFuseCryptoEOR",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA13",
+      "feature_string": "AppleA13",
+      "attribute": "",
+      "desc": "Apple A13",
+      "implies": [
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFuseAES",
+        "FeatureFuseCryptoEOR",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA14",
+      "feature_string": "AppleA14",
+      "attribute": "",
+      "desc": "Apple A14",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureAlignCmpCSelPairs",
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFastLD1Single",
+        "FeatureFuseAddress",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCryptoEOR",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA15",
+      "feature_string": "AppleA15",
+      "attribute": "",
+      "desc": "Apple A15",
+      "implies": [
+        "FeatureAlignCmpCSelPairs",
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFastLD1Single",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCryptoEOR",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA16",
+      "feature_string": "AppleA16",
+      "attribute": "",
+      "desc": "Apple A16",
+      "implies": [
+        "FeatureAlignCmpCSelPairs",
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFastLD1Single",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCryptoEOR",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseFCmpFCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA17",
+      "feature_string": "AppleA17",
+      "attribute": "",
+      "desc": "Apple A17",
+      "implies": [
+        "FeatureAlignCmpCSelPairs",
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFastLD1Single",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCryptoEOR",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseFCmpFCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleA7",
+      "feature_string": "AppleA7",
+      "attribute": "",
+      "desc": "Apple A7 (the CPU formerly known as Cyclone)",
+      "implies": [
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFuseAES",
+        "FeatureFuseCryptoEOR",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureStorePairSuppress",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPWorkaround",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleM4",
+      "feature_string": "AppleM4",
+      "attribute": "",
+      "desc": "Apple M4",
+      "implies": [
+        "FeatureAlignCmpCSelPairs",
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFastLD1Single",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCryptoEOR",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseFCmpFCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneAppleM5",
+      "feature_string": "AppleM5",
+      "attribute": "",
+      "desc": "Apple M5",
+      "implies": [
+        "FeatureAlignCmpCSelPairs",
+        "FeatureAlternateSExtLoadCVTF32Pattern",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureFastLD1Single",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCryptoEOR",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseFCmpFCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNoZCZeroingFPR64",
+        "FeatureZCRegMoveFPR128",
+        "FeatureZCRegMoveGPR64",
+        "FeatureZCZeroingFPR128",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneC1Nano",
+      "feature_string": "C1Nano",
+      "attribute": "",
+      "desc": "C1-Nano ARM Processors",
+      "implies": [
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler",
+        "FeatureUseWzrToVecMove"
+      ]
+    },
+    {
+      "record": "TuneC1Premium",
+      "feature_string": "C1Premium",
+      "attribute": "",
+      "desc": "C1-Premium ARM Processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneC1Pro",
+      "feature_string": "C1Pro",
+      "attribute": "",
+      "desc": "C1-Pro ARM Processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneC1Ultra",
+      "feature_string": "C1Ultra",
+      "attribute": "",
+      "desc": "C1-Ultra ARM Processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneCarmel",
+      "feature_string": "Carmel",
+      "attribute": "",
+      "desc": "Nvidia Carmel processors",
+      "implies": []
+    },
+    {
+      "record": "TuneExynosM3",
+      "feature_string": "ExynosM3",
+      "attribute": "",
+      "desc": "Samsung Exynos-M3 processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureExynosCheapAsMoveHandling",
+        "FeatureForce32BitJumpTables",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneExynosM4",
+      "feature_string": "ExynosM3",
+      "attribute": "",
+      "desc": "Samsung Exynos-M4 processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureArithmeticBccFusion",
+        "FeatureArithmeticCbzFusion",
+        "FeatureExynosCheapAsMoveHandling",
+        "FeatureForce32BitJumpTables",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseArithmeticLogic",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseLiterals",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneFalkor",
+      "feature_string": "Falkor",
+      "attribute": "",
+      "desc": "Qualcomm Falkor processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureSlowSTRQro",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneHIP12",
+      "feature_string": "HIP12",
+      "attribute": "",
+      "desc": "HiSilicon HIP12 processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureFuseAES",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneKryo",
+      "feature_string": "Kryo",
+      "attribute": "",
+      "desc": "Qualcomm Kryo processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneMONAKA",
+      "feature_string": "MONAKA",
+      "attribute": "",
+      "desc": "Fujitsu FUJITSU-MONAKA processors",
+      "implies": [
+        "FeatureArithmeticBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverse512TVB",
+      "feature_string": "Neoverse512TVB",
+      "attribute": "",
+      "desc": "Neoverse 512-TVB ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseE1",
+      "feature_string": "NeoverseE1",
+      "attribute": "",
+      "desc": "Neoverse E1 ARM processors",
+      "implies": [
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseN1",
+      "feature_string": "NeoverseN1",
+      "attribute": "",
+      "desc": "Neoverse N1 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseN2",
+      "feature_string": "NeoverseN2",
+      "attribute": "",
+      "desc": "Neoverse N2 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureLimited64bitVectorMulBandwidth",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseN3",
+      "feature_string": "NeoverseN3",
+      "attribute": "",
+      "desc": "Neoverse N3 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseV1",
+      "feature_string": "NeoverseV1",
+      "attribute": "",
+      "desc": "Neoverse V1 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureDisableMaximizeScalableBandwidth",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureNoSVEFPLD1R",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseV2",
+      "feature_string": "NeoverseV2",
+      "attribute": "",
+      "desc": "Neoverse V2 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureCmpBccFusion",
+        "FeatureDisableLatencySchedHeuristic",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseV3",
+      "feature_string": "NeoverseV3",
+      "attribute": "",
+      "desc": "Neoverse V3 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneNeoverseV3AE",
+      "feature_string": "NeoverseV3AE",
+      "attribute": "",
+      "desc": "Neoverse V3AE ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureLimited64bitVectorMulBandwidth",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneOlympus",
+      "feature_string": "Olympus",
+      "attribute": "",
+      "desc": "NVIDIA Olympus processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneOryon",
+      "feature_string": "Oryon",
+      "attribute": "",
+      "desc": "Nuvia Inc Oryon processors",
+      "implies": [
+        "FeatureAES",
+        "FeatureAES",
+        "FeatureEnableSelectOptimize",
+        "FeatureFPARMv8",
+        "FeatureFP16FML",
+        "FeatureFullFP16",
+        "FeatureFuseAddress",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCryptoEOR",
+        "FeatureMaxInterleaveFactor4",
+        "FeatureNEON",
+        "FeaturePerfMon",
+        "FeatureSHA2",
+        "FeatureSHA2",
+        "FeatureSHA3",
+        "FeatureSM4",
+        "FeatureSPE",
+        "FeaturePostRAScheduler",
+        "HasV8_6aOps"
+      ]
+    },
+    {
+      "record": "TuneR82",
+      "feature_string": "CortexR82",
+      "attribute": "",
+      "desc": "Cortex-R82 ARM processors",
+      "implies": [
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneR82AE",
+      "feature_string": "CortexR82AE",
+      "attribute": "",
+      "desc": "Cortex-R82-AE ARM processors",
+      "implies": [
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneSaphira",
+      "feature_string": "Saphira",
+      "attribute": "",
+      "desc": "Qualcomm Saphira processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler",
+        "FeatureZCZeroingGPR32",
+        "FeatureZCZeroingGPR64"
+      ]
+    },
+    {
+      "record": "TuneTSV110",
+      "feature_string": "TSV110",
+      "attribute": "",
+      "desc": "HiSilicon TS-V110 processors",
+      "implies": [
+        "FeatureFuseAES",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneThunderX",
+      "feature_string": "ThunderX",
+      "attribute": "",
+      "desc": "Cavium ThunderX processors",
+      "implies": [
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneThunderX2T99",
+      "feature_string": "ThunderX2T99",
+      "attribute": "",
+      "desc": "Cavium ThunderX2 processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureArithmeticBccFusion",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneThunderX3T110",
+      "feature_string": "ThunderX3T110",
+      "attribute": "",
+      "desc": "Marvell ThunderX3 processors",
+      "implies": [
+        "FeatureAggressiveFMA",
+        "FeatureArithmeticBccFusion",
+        "FeatureBalanceFPOps",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeatureStrictAlign",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneThunderXT81",
+      "feature_string": "ThunderXT81",
+      "attribute": "",
+      "desc": "Cavium ThunderX processors",
+      "implies": [
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneThunderXT83",
+      "feature_string": "ThunderXT83",
+      "attribute": "",
+      "desc": "Cavium ThunderX processors",
+      "implies": [
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneThunderXT88",
+      "feature_string": "ThunderXT88",
+      "attribute": "",
+      "desc": "Cavium ThunderX processors",
+      "implies": [
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureStorePairSuppress",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneX1",
+      "feature_string": "CortexX1",
+      "attribute": "",
+      "desc": "Cortex-X1 ARM processors",
+      "implies": [
+        "FeatureAddrLSLSlow14",
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneX2",
+      "feature_string": "CortexX2",
+      "attribute": "",
+      "desc": "Cortex-X2 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureCmpBccFusion",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneX3",
+      "feature_string": "CortexX3",
+      "attribute": "",
+      "desc": "Cortex-X3 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneX4",
+      "feature_string": "CortexX4",
+      "attribute": "",
+      "desc": "Cortex-X4 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    },
+    {
+      "record": "TuneX925",
+      "feature_string": "CortexX925",
+      "attribute": "",
+      "desc": "Cortex-X925 ARM processors",
+      "implies": [
+        "FeatureALULSLFast",
+        "FeatureAvoidLDAPUR",
+        "FeatureEnableSelectOptimize",
+        "FeatureFuseAdrpAdd",
+        "FeatureFuseAES",
+        "FeatureFuseCmpCSel",
+        "FeatureFuseCmpCSet",
+        "FeatureMaxInterleaveFactor4",
+        "FeaturePredictableSelectIsExpensive",
+        "FeatureUseFixedOverScalableIfEqualCost",
+        "FeaturePostRAScheduler"
+      ]
+    }
+  ],
+  "register_classes": [
+    {
+      "record": "B_HI_DummyRC",
+      "alignment": 0,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 0
+    },
+    {
+      "record": "CCR",
+      "alignment": 32,
+      "copy_cost": -1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "DD",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 128
+    },
+    {
+      "record": "DDD",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 192
+    },
+    {
+      "record": "DDDD",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "D_HI_DummyRC",
+      "alignment": 0,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FIXED_REGS",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR128",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16i8",
+        "v8i16",
+        "v4i32",
+        "v2i64",
+        "v4f32",
+        "v2f64",
+        "f128",
+        "v8f16",
+        "v8bf16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR128_0to7",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16i8",
+        "v8i16",
+        "v4i32",
+        "v2i64",
+        "v4f32",
+        "v2f64",
+        "v8f16",
+        "v8bf16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR128_lo",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16i8",
+        "v8i16",
+        "v4i32",
+        "v2i64",
+        "v4f32",
+        "v2f64",
+        "v8f16",
+        "v8bf16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR16",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "f16",
+        "bf16",
+        "i16"
+      ],
+      "size": 16
+    },
+    {
+      "record": "FPR16_lo",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "f16"
+      ],
+      "size": 16
+    },
+    {
+      "record": "FPR32",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f32",
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "f64",
+        "i64",
+        "v2f32",
+        "v1f64",
+        "v8i8",
+        "v4i16",
+        "v2i32",
+        "v1i64",
+        "v4f16",
+        "v4bf16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR64_lo",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "v8i8",
+        "v4i16",
+        "v2i32",
+        "v1i64",
+        "v4f16",
+        "v4bf16",
+        "v2f32",
+        "v1f64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPR8",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8",
+        "aarch64mfp8"
+      ],
+      "size": 8
+    },
+    {
+      "record": "GPR32",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR32all",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR32arg",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR32common",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR32sp",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR32sponly",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64all",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64arg",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64common",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64noip",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64sp",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64sponly",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GPR64x8Class",
+      "alignment": 512,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64x8"
+      ],
+      "size": 512
+    },
+    {
+      "record": "H_HI_DummyRC",
+      "alignment": 0,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 0
+    },
+    {
+      "record": "MPR",
+      "alignment": 2048,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 2048
+    },
+    {
+      "record": "MPR128",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 128
+    },
+    {
+      "record": "MPR16",
+      "alignment": 1024,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 1024
+    },
+    {
+      "record": "MPR32",
+      "alignment": 512,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "MPR64",
+      "alignment": 256,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "MPR8",
+      "alignment": 2048,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 2048
+    },
+    {
+      "record": "MatrixIndexGPR32_12_15",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "MatrixIndexGPR32_8_11",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "PNR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "aarch64svcount"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PNR_3b",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "aarch64svcount"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PNR_p8to15",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "aarch64svcount"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PPR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i1",
+        "nxv8i1",
+        "nxv4i1",
+        "nxv2i1",
+        "nxv1i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PPR2",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "PPR2Mul2",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "PPRMul2",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i1",
+        "nxv8i1",
+        "nxv4i1",
+        "nxv2i1",
+        "nxv1i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PPR_3b",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i1",
+        "nxv8i1",
+        "nxv4i1",
+        "nxv2i1",
+        "nxv1i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PPR_p8to15",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i1",
+        "nxv8i1",
+        "nxv4i1",
+        "nxv2i1",
+        "nxv1i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "PPRorPNR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i1",
+        "nxv8i1",
+        "nxv4i1",
+        "nxv2i1",
+        "nxv1i1",
+        "aarch64svcount"
+      ],
+      "size": 16
+    },
+    {
+      "record": "QQ",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "QQQ",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 384
+    },
+    {
+      "record": "QQQQ",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "Q_HI_DummyRC",
+      "alignment": 0,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 0
+    },
+    {
+      "record": "S_HI_DummyRC",
+      "alignment": 0,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 0
+    },
+    {
+      "record": "WSeqPairsClass",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 64
+    },
+    {
+      "record": "W_HI_DummyRC",
+      "alignment": 0,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 0
+    },
+    {
+      "record": "XSeqPairsClass",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPR",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPR2",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "ZPR2Mul2",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "ZPR2Mul2_Hi",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "ZPR2Mul2_Lo",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "ZPR2Strided",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "ZPR2StridedOrContiguous",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 256
+    },
+    {
+      "record": "ZPR3",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 384
+    },
+    {
+      "record": "ZPR3_3b",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 384
+    },
+    {
+      "record": "ZPR4",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "ZPR4Mul4",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "ZPR4Strided",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "ZPR4StridedOrContiguous",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "ZPRMul2",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPRMul2_Hi",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPRMul2_Lo",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPRMul4",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPR_3b",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPR_4b",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8",
+        "nxv8i16",
+        "nxv4i32",
+        "nxv2i64",
+        "nxv2f16",
+        "nxv4f16",
+        "nxv8f16",
+        "nxv2bf16",
+        "nxv4bf16",
+        "nxv8bf16",
+        "nxv2f32",
+        "nxv4f32",
+        "nxv2f64"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZPR_K",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "nxv16i8"
+      ],
+      "size": 128
+    },
+    {
+      "record": "ZTR",
+      "alignment": 512,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 512
+    },
+    {
+      "record": "tcGPR64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "tcGPRnotx16",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "tcGPRnotx16x17",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "tcGPRx16x17",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "tcGPRx17",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    }
+  ]
+}

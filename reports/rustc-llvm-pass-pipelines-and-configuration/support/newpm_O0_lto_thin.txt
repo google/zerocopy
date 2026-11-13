@@ -1,0 +1,5 @@
+function(ee-instrument<>),always-inline,coro-cond(coro-early,cgscc(coro-split),coro-cleanup,globaldce),alloc-token,lower-comment-string,function(annotation-remarks),canonicalize-aliases,name-anon-globals,assign-guid
+
+memprof-remove-attributes,drop-type-tests<assume>,coro-cond(coro-early,cgscc(coro-split),coro-cleanup,globaldce),alloc-token,elim-avail-extern,globaldce,canonicalize-aliases,name-anon-globals,assign-guid
+
+memprof-remove-attributes,drop-type-tests<assume>,coro-cond(coro-early,cgscc(coro-split),coro-cleanup,globaldce),alloc-token,elim-avail-extern,globaldce,canonicalize-aliases,name-anon-globals,assign-guid

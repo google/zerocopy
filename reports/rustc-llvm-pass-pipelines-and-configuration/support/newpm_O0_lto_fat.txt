@@ -1,0 +1,3 @@
+function(ee-instrument<>),always-inline,coro-cond(coro-early,cgscc(coro-split),coro-cleanup,globaldce),alloc-token,lower-comment-string,function(annotation-remarks),canonicalize-aliases,name-anon-globals,assign-guid
+
+memprof-remove-attributes,cross-dso-cfi,wholeprogramdevirt,lowertypetests,drop-type-tests<assume>,coro-cond(coro-early,cgscc(coro-split),coro-cleanup,globaldce),alloc-token,function(annotation-remarks)

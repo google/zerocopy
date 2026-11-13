@@ -1,0 +1,272 @@
+Pass Arguments:  -tti -targetlibinfo -runtime-library-info -targetpassconfig -machinemoduleinfo -assumption-cache-tracker -libcall-lowering-info -profile-summary-info -tbaa -scoped-noalias-aa -collector-metadata -machine-branch-prob -regalloc-evict -regalloc-priority -domtree -basic-aa -aa -objc-arc-contract -pre-isel-intrinsic-lowering -expand-ir-insts -atomic-expand -aarch64-sve-intrinsic-opts -simplifycfg -domtree -loops -loop-simplify -lazy-branch-prob -lazy-block-freq -opt-remark-emitter -scalar-evolution -loop-data-prefetch -aarch64-falkor-hwpf-fix -basic-aa -loop-simplify -canon-freeze -iv-users -loop-reduce -gc-lowering -shadow-stack-gc-lowering -unreachableblockelim -loops -postdomtree -branch-prob -block-freq -consthoist -replace-with-veclib -lazy-branch-prob -lazy-block-freq -opt-remark-emitter -partially-inline-libcalls -post-inline-ee-instrument -scalarize-masked-mem-intrin -expand-reductions -loops -postdomtree -branch-prob -block-freq -lazy-branch-prob -lazy-block-freq -opt-remark-emitter -select-optimize -stack-safety -domtree -basic-aa -aa -aarch64-stack-tagging -loops -aarch64-sve-shuffle-opts -complex-deinterleaving -aa -memoryssa -interleaved-load-combine -domtree -interleaved-access -loops -type-promotion -postdomtree -branch-prob -block-freq -codegenprepare -domtree -dwarf-eh-prepare -aarch64-promote-const -global-merge -inline-asm-prepare -safe-stack -stack-protector -cseinfo -domtree -loops -postdomtree -branch-prob -basic-aa -aa -irtranslator -aarch64-O0-prelegalizer-combiner -localizer -cseinfo -gisel-known-bits -legalizer -aarch64-postlegalizer-lowering -regbankselect -gisel-known-bits -lazy-branch-prob -lazy-block-freq -instruction-select -debug-ata -aarch64-isel -machinedomtree -aarch64-local-dynamic-tls-cleanup -finalize-isel -edge-bundles -lazy-machine-block-freq -machine-opt-remark-emitter -aarch64-machine-sme-abi -aarch64-sme-peephole-opt -early-tailduplication -opt-phis -slotindexes -stack-coloring -localstackalloc -dead-mi-elimination -machinedomtree -aarch64-condopt -machine-loops -machine-trace-metrics -aarch64-ccmp -lazy-machine-block-freq -machine-combiner -aarch64-cond-br-tuning -machine-trace-metrics -early-ifcvt -aarch64-stp-suppress -aarch64-simd-instr-opt -aarch64-stack-tagging-pre-ra -machinedomtree -machine-loops -machine-block-freq -early-machinelicm -machinedomtree -machine-block-freq -machine-cse -machinepostdomtree -machine-cycles -machine-sink -peephole-opt -dead-mi-elimination -aarch64-mi-peephole-opt -aarch64-dead-defs -detect-dead-lanes -init-undef -processimpdefs -unreachable-mbb-elimination -livevars -phi-node-elimination -twoaddressinstruction -machinedomtree -slotindexes -liveintervals -register-coalescer -rename-independent-subregs -machine-scheduler -aarch64-post-coalescer -livedebugvars -livestacks -virtregmap -liveregmatrix -edge-bundles -spill-code-placement -lazy-machine-block-freq -machine-opt-remark-emitter -greedy -virtregrewriter -regallocscoringpass -stack-slot-coloring -aarch64-srlt-define-superregs -machine-cp -machinelicm -aarch64-copyelim -aarch64-a57-fp-load-balancing -removeredundantdebugvalues -fixup-statepoint-caller-saved -postra-machine-sink -machinedomtree -machine-loops -machine-block-freq -machinepostdomtree -lazy-machine-block-freq -machine-opt-remark-emitter -shrink-wrap -prolog-epilog -machine-latecleanup -branch-folder -lazy-machine-block-freq -tailduplication -machine-cp -postrapseudos -aarch64-expand-pseudo -aarch64-ldst-opt -kcfi -aarch64-speculation-hardening -machinedomtree -machine-loops -aarch64-falkor-hwpf-fix-late -postmisched -gc-analysis -machine-block-freq -machinepostdomtree -block-placement -fentry-insert -xray-instrumentation -patchable-function -aarch64-ldst-opt -machine-cp -aarch64-redundantcondbranch -aarch64-fix-cortex-a53-835769-pass -aarch64-code-layout-opt -funclet-layout -remove-loads-into-fake-uses -stackmap-liveness -livedebugvalues -machine-sanmd -machine-outliner -aarch64-sls-hardening -aarch64-ptrauth -aarch64-branch-targets -branch-relaxation -aarch64-jump-tables -cfi-fixup -lazy-machine-block-freq -machine-opt-remark-emitter -stack-frame-layout -pseudo-probe-inserter -unpack-mi-bundles -lazy-machine-block-freq -machine-opt-remark-emitter -aarch64-asm-printer
+Target Transform Information
+Target Library Information
+Runtime Library Function Analysis
+Target Pass Configuration
+Machine Module Information
+Assumption Cache Tracker
+Library Function Lowering Analysis
+Profile summary info
+Type-Based Alias Analysis
+Scoped NoAlias Alias Analysis
+Create Garbage Collector Module Metadata
+Machine Branch Probability Analysis
+Default Regalloc Eviction Advisor
+Default Regalloc Priority Advisor
+  ModulePass Manager
+    FunctionPass Manager
+      Dominator Tree Construction
+      Basic Alias Analysis (stateless AA impl)
+      Function Alias Analysis Results
+      ObjC ARC contraction
+    Pre-ISel Intrinsic Lowering
+    FunctionPass Manager
+      Expand IR instructions
+      Expand Atomic instructions
+    SVE intrinsics optimizations
+      FunctionPass Manager
+        Dominator Tree Construction
+    FunctionPass Manager
+      Simplify the CFG
+      Dominator Tree Construction
+      Natural Loop Information
+      Canonicalize natural loops
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      Optimization Remark Emitter
+      Scalar Evolution Analysis
+      Loop Data Prefetch
+      Falkor HW Prefetch Fix
+      Basic Alias Analysis (stateless AA impl)
+      Canonicalize natural loops
+      Loop Pass Manager
+        Canonicalize Freeze Instructions in Loops
+        Induction Variable Users
+        Loop Strength Reduction
+      Lower Garbage Collection Instructions
+      Shadow Stack GC Lowering
+      Remove unreachable blocks from the CFG
+      Natural Loop Information
+      Post-Dominator Tree Construction
+      Branch Probability Analysis
+      Block Frequency Analysis
+      Constant Hoisting
+      Replace intrinsics with calls to vector library
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      Optimization Remark Emitter
+      Partially inline calls to library functions
+      Instrument function entry/exit with calls to e.g. mcount() (post inlining)
+      Scalarize Masked Memory Intrinsics
+      Expand reduction intrinsics
+      Natural Loop Information
+      Post-Dominator Tree Construction
+      Branch Probability Analysis
+      Block Frequency Analysis
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      Optimization Remark Emitter
+      Optimize selects
+    Stack Safety Analysis
+      FunctionPass Manager
+        Dominator Tree Construction
+        Natural Loop Information
+        Scalar Evolution Analysis
+        Stack Safety Local Analysis
+    FunctionPass Manager
+      Dominator Tree Construction
+      Basic Alias Analysis (stateless AA impl)
+      Function Alias Analysis Results
+      AArch64 Stack Tagging
+      Natural Loop Information
+      Loop Pass Manager
+        SVE Shuffle Optimizations
+      Complex Deinterleaving Pass
+      Function Alias Analysis Results
+      Memory SSA
+      Interleaved Load Combine Pass
+      Dominator Tree Construction
+      Interleaved Access Pass
+      Natural Loop Information
+      Type Promotion
+      Post-Dominator Tree Construction
+      Branch Probability Analysis
+      Block Frequency Analysis
+      CodeGen Prepare
+      Dominator Tree Construction
+      Exception handling preparation
+    AArch64 Promote Constant
+      FunctionPass Manager
+        Dominator Tree Construction
+    FunctionPass Manager
+      Merge internal globals
+      Prepare inline asm insts
+      Safe Stack instrumentation pass
+      Insert stack protectors
+      Analysis containing CSE Info
+      Dominator Tree Construction
+      Natural Loop Information
+      Post-Dominator Tree Construction
+      Branch Probability Analysis
+      Basic Alias Analysis (stateless AA impl)
+      Function Alias Analysis Results
+      IRTranslator
+      AArch64O0PreLegalizerCombiner
+      Localizer
+      Analysis containing CSE Info
+      Analysis for ComputingKnownBits
+      Legalizer
+      AArch64PostLegalizerLowering
+      RegBankSelect
+      Analysis for ComputingKnownBits
+      Lazy Branch Probability Analysis
+      Lazy Block Frequency Analysis
+      InstructionSelect
+      ResetMachineFunction
+      Assignment Tracking Analysis
+      AArch64 Instruction Selection
+      MachineDominator Tree Construction
+      AArch64 Local Dynamic TLS Access Clean-up
+      Finalize ISel and expand pseudo-instructions
+      Bundle Machine CFG Edges
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Machine SME ABI pass
+      SME Peephole Optimization pass
+      Early Tail Duplication
+      Optimize machine instruction PHIs
+      Slot index numbering
+      Merge disjoint stack slots
+      Local Stack Slot Allocation
+      Remove dead machine instructions
+      MachineDominator Tree Construction
+      AArch64 Condition Optimizer
+      Machine Natural Loop Construction
+      Machine Trace Metrics
+      AArch64 Conditional Compares
+      Lazy Machine Block Frequency Analysis
+      Machine InstCombiner
+      AArch64 Conditional Branch Tuning
+      Machine Trace Metrics
+      Early If-Conversion
+      AArch64 Store Pair Suppression
+      AArch64 SIMD instructions optimization pass
+      AArch64 Stack Tagging PreRA
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Machine Block Frequency Analysis
+      Early Machine Loop Invariant Code Motion
+      MachineDominator Tree Construction
+      Machine Block Frequency Analysis
+      Machine Common Subexpression Elimination
+      MachinePostDominator Tree Construction
+      Machine Cycle Info Analysis
+      Machine code sinking
+      Peephole Optimizations
+      Remove dead machine instructions
+      AArch64 MI Peephole Optimization pass
+      AArch64 Dead register definitions
+      Detect Dead Lanes
+      Init Undef Pass
+      Process Implicit Definitions
+      Remove unreachable machine basic blocks
+      Live Variable Analysis
+      Eliminate PHI nodes for register allocation
+      Two-Address instruction pass
+      MachineDominator Tree Construction
+      Slot index numbering
+      Live Interval Analysis
+      Register Coalescer
+      Rename Disconnected Subregister Components
+      Machine Instruction Scheduler
+      AArch64 Post Coalescer pass
+      Debug Variable Analysis
+      Live Stack Slot Analysis
+      Virtual Register Map
+      Live Register Matrix
+      Bundle Machine CFG Edges
+      Spill Code Placement Analysis
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Greedy Register Allocator
+      Virtual Register Rewriter
+      Register Allocation Pass Scoring
+      Stack Slot Coloring
+      AArch64 SRLT Define Super-Regs Pass
+      Machine Copy Propagation Pass
+      Machine Loop Invariant Code Motion
+      AArch64 Redundant Copy Elimination
+      A57 FP Anti-dependency breaker
+      Remove Redundant DEBUG_VALUE analysis
+      Fixup Statepoint Caller Saved
+      PostRA Machine Sink
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Machine Block Frequency Analysis
+      MachinePostDominator Tree Construction
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Shrink Wrapping analysis
+      Prologue/Epilogue Insertion & Frame Finalization
+      Machine Late Instructions Cleanup Pass
+      Control Flow Optimizer
+      Lazy Machine Block Frequency Analysis
+      Tail Duplication
+      Machine Copy Propagation Pass
+      Post-RA pseudo instruction expansion pass
+      AArch64 pseudo instruction expansion pass
+      AArch64 load / store optimization pass
+      Insert KCFI indirect call checks
+      AArch64 speculation hardening pass
+      MachineDominator Tree Construction
+      Machine Natural Loop Construction
+      Falkor HW Prefetch Fix Late Phase
+      PostRA Machine Instruction Scheduler
+      Analyze Machine Code For Garbage Collection
+      Machine Block Frequency Analysis
+      MachinePostDominator Tree Construction
+      Branch Probability Basic Block Placement
+      Insert fentry calls
+      Insert XRay ops
+      Implement the 'patchable-function' attribute
+      AArch64 load / store optimization pass
+      Machine Copy Propagation Pass
+      AArch64 Redundant Conditional Branch Elimination
+      Workaround A53 erratum 835769 pass
+      AArch64 Code Layout Optimization
+      Contiguously Lay Out Funclets
+      Remove Loads Into Fake Uses
+      StackMap Liveness Analysis
+      Live DEBUG_VALUE analysis
+      Machine Sanitizer Binary Metadata
+    Machine Outliner
+    FunctionPass Manager
+      AArch64 sls hardening pass
+      AArch64 Pointer Authentication
+      AArch64 Branch Targets
+      Branch relaxation pass
+      AArch64 Compress Jump Tables
+      Insert CFI remember/restore state instructions
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      Stack Frame Layout Analysis
+      Pseudo Probe Inserter
+      Unpack machine instruction bundles
+      Lazy Machine Block Frequency Analysis
+      Machine Optimization Remark Emitter
+      AArch64 Assembly Printer
+      Free MachineFunction
+Pass Arguments:  -domtree
+  FunctionPass Manager
+    Dominator Tree Construction
+Pass Arguments:  -assumption-cache-tracker -targetlibinfo -domtree -loops -scalar-evolution -stack-safety-local
+Assumption Cache Tracker
+Target Library Information
+  FunctionPass Manager
+    Dominator Tree Construction
+    Natural Loop Information
+    Scalar Evolution Analysis
+    Stack Safety Local Analysis
+Pass Arguments:  -domtree
+  FunctionPass Manager
+    Dominator Tree Construction

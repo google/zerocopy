@@ -1,0 +1,4966 @@
+{
+  "processors": [
+    {
+      "record": "anonymous_43359",
+      "name": "generic",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 3,
+      "tune_feature_count": 6,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureX86_64"
+      ]
+    },
+    {
+      "record": "anonymous_43360",
+      "name": "i386",
+      "sched_model": "GenericModel",
+      "feature_count": 1,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87"
+      ]
+    },
+    {
+      "record": "anonymous_43361",
+      "name": "i486",
+      "sched_model": "GenericModel",
+      "feature_count": 1,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87"
+      ]
+    },
+    {
+      "record": "anonymous_43362",
+      "name": "i586",
+      "sched_model": "GenericModel",
+      "feature_count": 2,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8"
+      ]
+    },
+    {
+      "record": "anonymous_43363",
+      "name": "pentium",
+      "sched_model": "GenericModel",
+      "feature_count": 2,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8"
+      ]
+    },
+    {
+      "record": "anonymous_43364",
+      "name": "pentium-mmx",
+      "sched_model": "GenericModel",
+      "feature_count": 3,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX"
+      ]
+    },
+    {
+      "record": "anonymous_43365",
+      "name": "pentium_mmx",
+      "sched_model": "GenericModel",
+      "feature_count": 3,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX"
+      ]
+    },
+    {
+      "record": "anonymous_43366",
+      "name": "i686",
+      "sched_model": "GenericModel",
+      "feature_count": 3,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43367",
+      "name": "pentiumpro",
+      "sched_model": "GenericModel",
+      "feature_count": 4,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43368",
+      "name": "pentium_pro",
+      "sched_model": "GenericModel",
+      "feature_count": 4,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43369",
+      "name": "pentium2",
+      "sched_model": "GenericModel",
+      "feature_count": 6,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureCMOV",
+        "FeatureFXSR",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43370",
+      "name": "pentium_ii",
+      "sched_model": "GenericModel",
+      "feature_count": 6,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureCMOV",
+        "FeatureFXSR",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43371",
+      "name": "pentium3",
+      "sched_model": "GenericModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE1",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43372",
+      "name": "pentium3m",
+      "sched_model": "GenericModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE1",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43373",
+      "name": "pentium_iii_no_xmm_regs",
+      "sched_model": "GenericModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE1",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43374",
+      "name": "pentium_iii",
+      "sched_model": "GenericModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE1",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43375",
+      "name": "pentium_m",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43376",
+      "name": "pentium-m",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43377",
+      "name": "pentium4",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43378",
+      "name": "pentium4m",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43379",
+      "name": "pentium_4",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43380",
+      "name": "lakemont",
+      "sched_model": "GenericModel",
+      "feature_count": 1,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureCX8"
+      ]
+    },
+    {
+      "record": "anonymous_43381",
+      "name": "yonah",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43382",
+      "name": "prescott",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43383",
+      "name": "pentium_4_sse3",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 7,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43384",
+      "name": "nocona",
+      "sched_model": "GenericPostRAModel",
+      "feature_count": 9,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43385",
+      "name": "core2",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 10,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43386",
+      "name": "core_2_duo_ssse3",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 10,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43387",
+      "name": "penryn",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 10,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE41",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43388",
+      "name": "core_2_duo_sse4_1",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 10,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE41",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43389",
+      "name": "bonnell",
+      "sched_model": "AtomModel",
+      "feature_count": 11,
+      "tune_feature_count": 11,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43390",
+      "name": "atom",
+      "sched_model": "AtomModel",
+      "feature_count": 11,
+      "tune_feature_count": 11,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43391",
+      "name": "silvermont",
+      "sched_model": "SLMModel",
+      "feature_count": 17,
+      "tune_feature_count": 12,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43392",
+      "name": "slm",
+      "sched_model": "SLMModel",
+      "feature_count": 17,
+      "tune_feature_count": 12,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43393",
+      "name": "atom_sse4_2",
+      "sched_model": "SLMModel",
+      "feature_count": 17,
+      "tune_feature_count": 12,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43394",
+      "name": "atom_sse4_2_movbe",
+      "sched_model": "SLMModel",
+      "feature_count": 26,
+      "tune_feature_count": 12,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43395",
+      "name": "goldmont",
+      "sched_model": "SLMModel",
+      "feature_count": 26,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43396",
+      "name": "goldmont_plus",
+      "sched_model": "SLMModel",
+      "feature_count": 28,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43397",
+      "name": "goldmont-plus",
+      "sched_model": "SLMModel",
+      "feature_count": 28,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43398",
+      "name": "tremont",
+      "sched_model": "SLMModel",
+      "feature_count": 30,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43399",
+      "name": "nehalem",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 13,
+      "tune_feature_count": 4,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43400",
+      "name": "corei7",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 13,
+      "tune_feature_count": 4,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43401",
+      "name": "core_i7_sse4_2",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 13,
+      "tune_feature_count": 4,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43402",
+      "name": "westmere",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 14,
+      "tune_feature_count": 4,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43403",
+      "name": "core_aes_pclmulqdq",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 14,
+      "tune_feature_count": 4,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43404",
+      "name": "sandybridge",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 17,
+      "tune_feature_count": 10,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43405",
+      "name": "corei7-avx",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 17,
+      "tune_feature_count": 10,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43406",
+      "name": "core_2nd_gen_avx",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 17,
+      "tune_feature_count": 10,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43407",
+      "name": "ivybridge",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 20,
+      "tune_feature_count": 10,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43408",
+      "name": "core-avx-i",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 20,
+      "tune_feature_count": 10,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43409",
+      "name": "core_3rd_gen_avx",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 20,
+      "tune_feature_count": 10,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43410",
+      "name": "haswell",
+      "sched_model": "HaswellModel",
+      "feature_count": 28,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43411",
+      "name": "core-avx2",
+      "sched_model": "HaswellModel",
+      "feature_count": 28,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43412",
+      "name": "core_4th_gen_avx",
+      "sched_model": "HaswellModel",
+      "feature_count": 28,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43413",
+      "name": "core_4th_gen_avx_tsx",
+      "sched_model": "HaswellModel",
+      "feature_count": 28,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43414",
+      "name": "broadwell",
+      "sched_model": "BroadwellModel",
+      "feature_count": 31,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43415",
+      "name": "core_5th_gen_avx",
+      "sched_model": "BroadwellModel",
+      "feature_count": 31,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43416",
+      "name": "core_5th_gen_avx_tsx",
+      "sched_model": "BroadwellModel",
+      "feature_count": 31,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43417",
+      "name": "skylake",
+      "sched_model": "SkylakeClientModel",
+      "feature_count": 35,
+      "tune_feature_count": 16,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43418",
+      "name": "knl",
+      "sched_model": "HaswellModel",
+      "feature_count": 28,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureCRC32",
+        "FeaturePOPCNT"
+      ]
+    },
+    {
+      "record": "anonymous_43419",
+      "name": "mic_avx512",
+      "sched_model": "HaswellModel",
+      "feature_count": 28,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureCRC32",
+        "FeaturePOPCNT"
+      ]
+    },
+    {
+      "record": "anonymous_43420",
+      "name": "knm",
+      "sched_model": "HaswellModel",
+      "feature_count": 29,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureCRC32",
+        "FeaturePOPCNT"
+      ]
+    },
+    {
+      "record": "anonymous_43421",
+      "name": "skylake-avx512",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 42,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43422",
+      "name": "skx",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 42,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43423",
+      "name": "skylake_avx512",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 42,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43424",
+      "name": "cascadelake",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 43,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43425",
+      "name": "cooperlake",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 44,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43426",
+      "name": "cannonlake",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 44,
+      "tune_feature_count": 18,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43427",
+      "name": "icelake-client",
+      "sched_model": "IceLakeModel",
+      "feature_count": 53,
+      "tune_feature_count": 17,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43428",
+      "name": "icelake_client",
+      "sched_model": "IceLakeModel",
+      "feature_count": 53,
+      "tune_feature_count": 17,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43429",
+      "name": "rocketlake",
+      "sched_model": "IceLakeModel",
+      "feature_count": 53,
+      "tune_feature_count": 17,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43430",
+      "name": "icelake-server",
+      "sched_model": "IceLakeModel",
+      "feature_count": 56,
+      "tune_feature_count": 17,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43431",
+      "name": "icelake_server",
+      "sched_model": "IceLakeModel",
+      "feature_count": 56,
+      "tune_feature_count": 17,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43432",
+      "name": "tigerlake",
+      "sched_model": "IceLakeModel",
+      "feature_count": 58,
+      "tune_feature_count": 17,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43433",
+      "name": "sapphirerapids",
+      "sched_model": "SapphireRapidsModel",
+      "feature_count": 72,
+      "tune_feature_count": 22,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43434",
+      "name": "alderlake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 49,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43435",
+      "name": "gracemont",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 49,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43436",
+      "name": "sierraforest",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 56,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43437",
+      "name": "grandridge",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 56,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43438",
+      "name": "raptorlake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 49,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43439",
+      "name": "meteorlake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 49,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43440",
+      "name": "arrowlake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 55,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43441",
+      "name": "arrowlake-s",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 59,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43442",
+      "name": "arrowlake_s",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 59,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43443",
+      "name": "lunarlake",
+      "sched_model": "LunarlakePModel",
+      "feature_count": 59,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43444",
+      "name": "pantherlake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 58,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43445",
+      "name": "wildcatlake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 58,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43446",
+      "name": "novalake",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 69,
+      "tune_feature_count": 20,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43447",
+      "name": "clearwaterforest",
+      "sched_model": "AlderlakePModel",
+      "feature_count": 61,
+      "tune_feature_count": 19,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureMOVBE"
+      ]
+    },
+    {
+      "record": "anonymous_43448",
+      "name": "emeraldrapids",
+      "sched_model": "SapphireRapidsModel",
+      "feature_count": 72,
+      "tune_feature_count": 22,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43449",
+      "name": "graniterapids",
+      "sched_model": "SapphireRapidsModel",
+      "feature_count": 74,
+      "tune_feature_count": 23,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43450",
+      "name": "graniterapids-d",
+      "sched_model": "SapphireRapidsModel",
+      "feature_count": 75,
+      "tune_feature_count": 23,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43451",
+      "name": "graniterapids_d",
+      "sched_model": "SapphireRapidsModel",
+      "feature_count": 75,
+      "tune_feature_count": 23,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43452",
+      "name": "diamondrapids",
+      "sched_model": "SapphireRapidsModel",
+      "feature_count": 96,
+      "tune_feature_count": 24,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43453",
+      "name": "k6",
+      "sched_model": "GenericModel",
+      "feature_count": 3,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX"
+      ]
+    },
+    {
+      "record": "anonymous_43454",
+      "name": "k6-2",
+      "sched_model": "GenericModel",
+      "feature_count": 4,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeaturePRFCHW"
+      ]
+    },
+    {
+      "record": "anonymous_43455",
+      "name": "k6-3",
+      "sched_model": "GenericModel",
+      "feature_count": 4,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeaturePRFCHW"
+      ]
+    },
+    {
+      "record": "anonymous_43456",
+      "name": "athlon",
+      "sched_model": "GenericModel",
+      "feature_count": 6,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43457",
+      "name": "athlon-tbird",
+      "sched_model": "GenericModel",
+      "feature_count": 6,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43458",
+      "name": "athlon-4",
+      "sched_model": "GenericModel",
+      "feature_count": 8,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureSSE1",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43459",
+      "name": "athlon-xp",
+      "sched_model": "GenericModel",
+      "feature_count": 8,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureSSE1",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43460",
+      "name": "athlon-mp",
+      "sched_model": "GenericModel",
+      "feature_count": 8,
+      "tune_feature_count": 3,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureSSE1",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL"
+      ]
+    },
+    {
+      "record": "anonymous_43461",
+      "name": "k8",
+      "sched_model": "GenericModel",
+      "feature_count": 9,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE2",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43462",
+      "name": "opteron",
+      "sched_model": "GenericModel",
+      "feature_count": 9,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE2",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43463",
+      "name": "athlon64",
+      "sched_model": "GenericModel",
+      "feature_count": 9,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE2",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43464",
+      "name": "athlon-fx",
+      "sched_model": "GenericModel",
+      "feature_count": 9,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE2",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43465",
+      "name": "k8-sse3",
+      "sched_model": "GenericModel",
+      "feature_count": 10,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE3",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCX16",
+        "FeatureCMOV",
+        "FeatureX86_64"
+      ]
+    },
+    {
+      "record": "anonymous_43466",
+      "name": "opteron-sse3",
+      "sched_model": "GenericModel",
+      "feature_count": 10,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE3",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCX16",
+        "FeatureCMOV",
+        "FeatureX86_64"
+      ]
+    },
+    {
+      "record": "anonymous_43467",
+      "name": "athlon64-sse3",
+      "sched_model": "GenericModel",
+      "feature_count": 10,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE3",
+        "FeatureMMX",
+        "FeaturePRFCHW",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCX16",
+        "FeatureCMOV",
+        "FeatureX86_64"
+      ]
+    },
+    {
+      "record": "anonymous_43468",
+      "name": "amdfam10",
+      "sched_model": "GenericModel",
+      "feature_count": 12,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE4A",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCX16",
+        "FeaturePRFCHW",
+        "FeatureLZCNT",
+        "FeaturePOPCNT",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43469",
+      "name": "barcelona",
+      "sched_model": "GenericModel",
+      "feature_count": 12,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureSSE4A",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureCX16",
+        "FeaturePRFCHW",
+        "FeatureLZCNT",
+        "FeaturePOPCNT",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43470",
+      "name": "btver1",
+      "sched_model": "GenericModel",
+      "feature_count": 14,
+      "tune_feature_count": 8,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureSSE4A",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43471",
+      "name": "btver2",
+      "sched_model": "BtVer2Model",
+      "feature_count": 23,
+      "tune_feature_count": 11,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSSE3",
+        "FeatureSSE4A",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43472",
+      "name": "bdver1",
+      "sched_model": "BdVer2Model",
+      "feature_count": 18,
+      "tune_feature_count": 7,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureXOP",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureAES",
+        "FeatureCRC32",
+        "FeaturePRFCHW",
+        "FeaturePCLMUL"
+      ]
+    },
+    {
+      "record": "anonymous_43473",
+      "name": "bdver2",
+      "sched_model": "BdVer2Model",
+      "feature_count": 22,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureXOP",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureAES",
+        "FeatureCRC32",
+        "FeaturePRFCHW",
+        "FeaturePCLMUL"
+      ]
+    },
+    {
+      "record": "anonymous_43474",
+      "name": "bdver3",
+      "sched_model": "BdVer2Model",
+      "feature_count": 24,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureXOP",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureAES",
+        "FeatureCRC32",
+        "FeaturePRFCHW",
+        "FeaturePCLMUL"
+      ]
+    },
+    {
+      "record": "anonymous_43475",
+      "name": "bdver4",
+      "sched_model": "Znver1Model",
+      "feature_count": 29,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureXOP",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureAES",
+        "FeatureCRC32",
+        "FeaturePRFCHW",
+        "FeaturePCLMUL"
+      ]
+    },
+    {
+      "record": "anonymous_43476",
+      "name": "znver1",
+      "sched_model": "Znver1Model",
+      "feature_count": 33,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43477",
+      "name": "znver2",
+      "sched_model": "Znver2Model",
+      "feature_count": 37,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43478",
+      "name": "znver3",
+      "sched_model": "Znver3Model",
+      "feature_count": 42,
+      "tune_feature_count": 15,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43479",
+      "name": "znver4",
+      "sched_model": "Znver4Model",
+      "feature_count": 56,
+      "tune_feature_count": 18,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43480",
+      "name": "znver5",
+      "sched_model": "Znver4Model",
+      "feature_count": 61,
+      "tune_feature_count": 21,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43481",
+      "name": "znver6",
+      "sched_model": "Znver4Model",
+      "feature_count": 66,
+      "tune_feature_count": 16,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureX86_64",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43482",
+      "name": "c86-4g-m4",
+      "sched_model": "C864GM4Model",
+      "feature_count": 33,
+      "tune_feature_count": 14,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureCRC32",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43483",
+      "name": "c86-4g-m6",
+      "sched_model": "C864GM4Model",
+      "feature_count": 33,
+      "tune_feature_count": 14,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureCRC32",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43484",
+      "name": "c86-4g-m7",
+      "sched_model": "C864GM7Model",
+      "feature_count": 50,
+      "tune_feature_count": 18,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureCRC32",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43485",
+      "name": "c86-4g-m8",
+      "sched_model": "C864GM8Model",
+      "feature_count": 51,
+      "tune_feature_count": 18,
+      "sample_features": [
+        "FeatureADX",
+        "FeatureAES",
+        "FeatureAVX2",
+        "FeatureBMI",
+        "FeatureBMI2",
+        "FeatureCLFLUSHOPT",
+        "FeatureCLZERO",
+        "FeatureCMOV",
+        "FeatureCRC32",
+        "FeatureCX16"
+      ]
+    },
+    {
+      "record": "anonymous_43486",
+      "name": "geode",
+      "sched_model": "GenericModel",
+      "feature_count": 4,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeaturePRFCHW"
+      ]
+    },
+    {
+      "record": "anonymous_43487",
+      "name": "winchip-c6",
+      "sched_model": "GenericModel",
+      "feature_count": 2,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureMMX"
+      ]
+    },
+    {
+      "record": "anonymous_43488",
+      "name": "winchip2",
+      "sched_model": "GenericModel",
+      "feature_count": 3,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureMMX",
+        "FeaturePRFCHW"
+      ]
+    },
+    {
+      "record": "anonymous_43489",
+      "name": "c3",
+      "sched_model": "GenericModel",
+      "feature_count": 3,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureMMX",
+        "FeaturePRFCHW"
+      ]
+    },
+    {
+      "record": "anonymous_43490",
+      "name": "c3-2",
+      "sched_model": "GenericModel",
+      "feature_count": 6,
+      "tune_feature_count": 2,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureMMX",
+        "FeatureSSE1",
+        "FeatureFXSR",
+        "FeatureCMOV"
+      ]
+    },
+    {
+      "record": "anonymous_43491",
+      "name": "x86-64",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 8,
+      "tune_feature_count": 5,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64"
+      ]
+    },
+    {
+      "record": "anonymous_43492",
+      "name": "x86-64-v2",
+      "sched_model": "SandyBridgeModel",
+      "feature_count": 13,
+      "tune_feature_count": 9,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43493",
+      "name": "x86-64-v3",
+      "sched_model": "HaswellModel",
+      "feature_count": 21,
+      "tune_feature_count": 13,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    },
+    {
+      "record": "anonymous_43494",
+      "name": "x86-64-v4",
+      "sched_model": "SkylakeServerModel",
+      "feature_count": 25,
+      "tune_feature_count": 14,
+      "sample_features": [
+        "FeatureX87",
+        "FeatureCX8",
+        "FeatureCMOV",
+        "FeatureMMX",
+        "FeatureSSE2",
+        "FeatureFXSR",
+        "FeatureNOPL",
+        "FeatureX86_64",
+        "FeatureCX16",
+        "FeatureLAHFSAHF64"
+      ]
+    }
+  ],
+  "subtarget_features": [
+    {
+      "record": "FeatureADX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ADX instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureAES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AES instructions",
+      "implies": [
+        "FeatureSSE2"
+      ]
+    },
+    {
+      "record": "FeatureAMXAVX512",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-AVX512 instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXBF16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-BF16 instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXCOMPLEX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-COMPLEX instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXFP16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX amx-fp16 instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXFP8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-FP8 instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXINT8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-INT8 instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXMOVRS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-MOVRS instructions",
+      "implies": [
+        "FeatureAMXTILE"
+      ]
+    },
+    {
+      "record": "FeatureAMXTILE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AMX-TILE instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureAVX",
+      "feature_string": "AVX",
+      "attribute": "",
+      "desc": "Enable AVX instructions",
+      "implies": [
+        "FeatureSSE42"
+      ]
+    },
+    {
+      "record": "FeatureAVX10_1",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AVX10.1 instruction",
+      "implies": [
+        "FeatureBF16",
+        "FeatureBITALG",
+        "FeatureCDI",
+        "FeatureDQI",
+        "FeatureFP16",
+        "FeatureIFMA",
+        "FeatureVBMI",
+        "FeatureVBMI2",
+        "FeatureVLX",
+        "FeatureVNNI",
+        "FeatureVPOPCNTDQ"
+      ]
+    },
+    {
+      "record": "FeatureAVX10_1_512",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AVX10.1 instruction",
+      "implies": [
+        "FeatureAVX10_1"
+      ]
+    },
+    {
+      "record": "FeatureAVX10_2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AVX10.2 instruction",
+      "implies": [
+        "FeatureAVX10_1"
+      ]
+    },
+    {
+      "record": "FeatureAVX10_2_512",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AVX10.2 instruction",
+      "implies": [
+        "FeatureAVX10_2"
+      ]
+    },
+    {
+      "record": "FeatureAVX2",
+      "feature_string": "AVX2",
+      "attribute": "",
+      "desc": "Enable AVX2 instructions",
+      "implies": [
+        "FeatureAVX"
+      ]
+    },
+    {
+      "record": "FeatureAVX512",
+      "feature_string": "AVX512",
+      "attribute": "",
+      "desc": "Enable AVX-512 instructions",
+      "implies": [
+        "FeatureAVX2",
+        "FeatureF16C",
+        "FeatureFMA"
+      ]
+    },
+    {
+      "record": "FeatureAVXIFMA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-IFMA",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureAVXNECONVERT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AVX-NE-CONVERT instructions",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureAVXVNNI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support AVX_VNNI encoding",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureAVXVNNIINT16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-VNNI-INT16",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureAVXVNNIINT8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-VNNI-INT8",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureBF16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support bfloat16 floating point",
+      "implies": [
+        "FeatureBWI"
+      ]
+    },
+    {
+      "record": "FeatureBITALG",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Bit Algorithms",
+      "implies": [
+        "FeatureBWI"
+      ]
+    },
+    {
+      "record": "FeatureBMI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support BMI instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureBMI2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support BMI2 instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureBMM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX512 Bit Matrix Multiply",
+      "implies": [
+        "FeatureBWI"
+      ]
+    },
+    {
+      "record": "FeatureBWI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Byte and Word Instructions",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureCCMP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support conditional cmp & test instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureCDI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Conflict Detection Instructions",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureCF",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support conditional faulting",
+      "implies": []
+    },
+    {
+      "record": "FeatureCLDEMOTE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Cache Line Demote",
+      "implies": []
+    },
+    {
+      "record": "FeatureCLFLUSHOPT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Flush A Cache Line Optimized",
+      "implies": []
+    },
+    {
+      "record": "FeatureCLWB",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Cache Line Write Back",
+      "implies": []
+    },
+    {
+      "record": "FeatureCLZERO",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Cache Line Zero",
+      "implies": []
+    },
+    {
+      "record": "FeatureCMOV",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable conditional move instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureCMPCCXADD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support CMPCCXADD instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureCRC32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SSE 4.2 CRC32 instruction (used when SSE4.2 is supported but function is GPR only)",
+      "implies": []
+    },
+    {
+      "record": "FeatureCX16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "64-bit with cmpxchg16b (this is true for most x86-64 chips, but not the first AMD chips)",
+      "implies": [
+        "FeatureCX8"
+      ]
+    },
+    {
+      "record": "FeatureCX8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support CMPXCHG8B instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureDQI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Doubleword and Quadword Instructions",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureEGPR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support extended general purpose register",
+      "implies": []
+    },
+    {
+      "record": "FeatureENQCMD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has ENQCMD instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureERMSB",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "REP MOVS/STOS are fast",
+      "implies": []
+    },
+    {
+      "record": "FeatureEVEX512",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ZMM and 64-bit mask instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureF16C",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support 16-bit floating point conversion instructions",
+      "implies": [
+        "FeatureAVX"
+      ]
+    },
+    {
+      "record": "FeatureFMA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable three-operand fused multiple-add",
+      "implies": [
+        "FeatureAVX"
+      ]
+    },
+    {
+      "record": "FeatureFMA4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable four-operand fused multiple-add",
+      "implies": [
+        "FeatureAVX",
+        "FeatureSSE4A"
+      ]
+    },
+    {
+      "record": "FeatureFP16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support 16-bit floating point",
+      "implies": [
+        "FeatureBWI"
+      ]
+    },
+    {
+      "record": "FeatureFSGSBase",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support FS/GS Base instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureFSRM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "REP MOVSB of short lengths is faster",
+      "implies": []
+    },
+    {
+      "record": "FeatureFXSR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support fxsave/fxrestore instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureGFNI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Galois Field Arithmetic Instructions",
+      "implies": [
+        "FeatureSSE2"
+      ]
+    },
+    {
+      "record": "FeatureHRESET",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has hreset instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureHardenSlsIJmp",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Harden against straight line speculation across indirect JMP instructions.",
+      "implies": []
+    },
+    {
+      "record": "FeatureHardenSlsRet",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Harden against straight line speculation across RET instructions.",
+      "implies": []
+    },
+    {
+      "record": "FeatureIFMA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Integer Fused Multiple-Add",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureINVPCID",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Invalidate Process-Context Identifier",
+      "implies": []
+    },
+    {
+      "record": "FeatureJMPABS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support 64-bit absolute JMP",
+      "implies": []
+    },
+    {
+      "record": "FeatureKL",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support Key Locker kl Instructions",
+      "implies": [
+        "FeatureSSE2"
+      ]
+    },
+    {
+      "record": "FeatureLAHFSAHF64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support LAHF and SAHF instructions in 64-bit mode",
+      "implies": []
+    },
+    {
+      "record": "FeatureLVIControlFlowIntegrity",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prevent indirect calls/branches from using a memory operand, and precede all indirect calls/branches from a register with an LFENCE instruction to serialize control flow. Also decompose RET instructions into a POP+LFENCE+JMP sequence.",
+      "implies": []
+    },
+    {
+      "record": "FeatureLVILoadHardening",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Insert LFENCE instructions to prevent data speculatively injected into loads from being used maliciously.",
+      "implies": []
+    },
+    {
+      "record": "FeatureLWP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable LWP instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureLZCNT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support LZCNT instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureMMX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable MMX instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureMOVBE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support MOVBE instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureMOVDIR64B",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support movdir64b instruction (direct store 64 bytes)",
+      "implies": []
+    },
+    {
+      "record": "FeatureMOVDIRI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support movdiri instruction (direct store integer)",
+      "implies": []
+    },
+    {
+      "record": "FeatureMOVRS",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable MOVRS",
+      "implies": []
+    },
+    {
+      "record": "FeatureMWAITX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable MONITORX/MWAITX timer functionality",
+      "implies": []
+    },
+    {
+      "record": "FeatureNDD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support non-destructive destination",
+      "implies": []
+    },
+    {
+      "record": "FeatureNF",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support status flags update suppression",
+      "implies": []
+    },
+    {
+      "record": "FeatureNOPL",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable NOPL instruction (generally pentium pro+)",
+      "implies": []
+    },
+    {
+      "record": "FeaturePCLMUL",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable packed carry-less multiplication instructions",
+      "implies": [
+        "FeatureSSE2"
+      ]
+    },
+    {
+      "record": "FeaturePCONFIG",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "platform configuration instruction",
+      "implies": []
+    },
+    {
+      "record": "FeaturePKU",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable protection keys",
+      "implies": []
+    },
+    {
+      "record": "FeaturePOPCNT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support POPCNT instruction",
+      "implies": []
+    },
+    {
+      "record": "FeaturePPX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support Push-Pop Acceleration",
+      "implies": []
+    },
+    {
+      "record": "FeaturePREFETCHI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefetch instruction with T0 or T1 Hint",
+      "implies": []
+    },
+    {
+      "record": "FeaturePRFCHW",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support PRFCHW instructions",
+      "implies": []
+    },
+    {
+      "record": "FeaturePTWRITE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support ptwrite instruction",
+      "implies": []
+    },
+    {
+      "record": "FeaturePush2Pop2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support PUSH2/POP2 instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureRAOINT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support RAO-INT instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureRDPID",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support RDPID instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureRDPRU",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support RDPRU instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureRDRAND",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support RDRAND instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureRDSEED",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support RDSEED instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureRTM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support RTM instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveEDI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve EDI, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR10",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R10, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR11",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R11, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR12",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R12, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR13",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R13, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR14",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R14, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR15",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R15, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R16, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR17",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R17, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR18",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R18, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR19",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R19, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR20",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R20, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR21",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R21, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR22",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R22, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR23",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R23, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR24",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R24, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR25",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R25, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR26",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R26, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR27",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R27, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR28",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R28, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR29",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R29, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR30",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R30, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR31",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R31, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR8",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R8, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureReserveR9",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Reserve R9, making it unavailable as a GPR",
+      "implies": []
+    },
+    {
+      "record": "FeatureRetpoline",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Remove speculation of indirect branches from the generated code, either by avoiding them entirely or lowering them with a speculation blocking construct",
+      "implies": [
+        "FeatureRetpolineIndirectBranches",
+        "FeatureRetpolineIndirectCalls"
+      ]
+    },
+    {
+      "record": "FeatureRetpolineExternalThunk",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "When lowering an indirect call or branch using a `retpoline`, rely on the specified user provided thunk rather than emitting one ourselves. Only has effect when combined with some other retpoline feature",
+      "implies": [
+        "FeatureRetpolineIndirectCalls"
+      ]
+    },
+    {
+      "record": "FeatureRetpolineIndirectBranches",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Remove speculation of indirect branches from the generated code",
+      "implies": []
+    },
+    {
+      "record": "FeatureRetpolineIndirectCalls",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Remove speculation of indirect calls from the generated code",
+      "implies": []
+    },
+    {
+      "record": "FeatureSERIALIZE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has serialize instruction",
+      "implies": []
+    },
+    {
+      "record": "FeatureSGX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable Software Guard Extensions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSHA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable SHA instructions",
+      "implies": [
+        "FeatureSSE2"
+      ]
+    },
+    {
+      "record": "FeatureSHA512",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support SHA512 instructions",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureSHSTK",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support CET Shadow-Stack instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSM3",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support SM3 instructions",
+      "implies": [
+        "FeatureAVX"
+      ]
+    },
+    {
+      "record": "FeatureSM4",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support SM4 instructions",
+      "implies": [
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureSSE1",
+      "feature_string": "SSE1",
+      "attribute": "",
+      "desc": "Enable SSE instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureSSE2",
+      "feature_string": "SSE2",
+      "attribute": "",
+      "desc": "Enable SSE2 instructions",
+      "implies": [
+        "FeatureSSE1"
+      ]
+    },
+    {
+      "record": "FeatureSSE3",
+      "feature_string": "SSE3",
+      "attribute": "",
+      "desc": "Enable SSE3 instructions",
+      "implies": [
+        "FeatureSSE2"
+      ]
+    },
+    {
+      "record": "FeatureSSE41",
+      "feature_string": "SSE41",
+      "attribute": "",
+      "desc": "Enable SSE 4.1 instructions",
+      "implies": [
+        "FeatureSSSE3"
+      ]
+    },
+    {
+      "record": "FeatureSSE42",
+      "feature_string": "SSE42",
+      "attribute": "",
+      "desc": "Enable SSE 4.2 instructions",
+      "implies": [
+        "FeatureSSE41"
+      ]
+    },
+    {
+      "record": "FeatureSSE4A",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support SSE 4a instructions",
+      "implies": [
+        "FeatureSSE3"
+      ]
+    },
+    {
+      "record": "FeatureSSEUnalignedMem",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Allow unaligned memory operands with SSE instructions (this may require setting a configuration bit in the processor)",
+      "implies": []
+    },
+    {
+      "record": "FeatureSSSE3",
+      "feature_string": "SSSE3",
+      "attribute": "",
+      "desc": "Enable SSSE3 instructions",
+      "implies": [
+        "FeatureSSE3"
+      ]
+    },
+    {
+      "record": "FeatureSoftFloat",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use software floating point features",
+      "implies": []
+    },
+    {
+      "record": "FeatureSpeculativeExecutionSideEffectSuppression",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prevent speculative execution side channel timing attacks by inserting a speculation barrier before memory reads, memory writes, and conditional branches. Implies LVI Control Flow integrity.",
+      "implies": [
+        "FeatureLVIControlFlowIntegrity"
+      ]
+    },
+    {
+      "record": "FeatureTBM",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable TBM instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureTSXLDTRK",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support TSXLDTRK instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureTaggedGlobals",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use an instruction sequence for taking the address of a global that allows a memory tag in the upper address bits.",
+      "implies": []
+    },
+    {
+      "record": "FeatureUINTR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has UINTR Instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureUSERMSR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support USERMSR instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureUseGPR32InInlineAsm",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable use of GPR32 in inline assembly for APX",
+      "implies": []
+    },
+    {
+      "record": "FeatureVAES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Promote selected AES instructions to AVX512/AVX registers",
+      "implies": [
+        "FeatureAES",
+        "FeatureAVX2"
+      ]
+    },
+    {
+      "record": "FeatureVBMI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Vector Byte Manipulation Instructions",
+      "implies": [
+        "FeatureBWI"
+      ]
+    },
+    {
+      "record": "FeatureVBMI2",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 further Vector Byte Manipulation Instructions",
+      "implies": [
+        "FeatureBWI"
+      ]
+    },
+    {
+      "record": "FeatureVLX",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Vector Length eXtensions",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureVNNI",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Vector Neural Network Instructions",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureVP2INTERSECT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 vp2intersect",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureVPCLMULQDQ",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable vpclmulqdq instructions",
+      "implies": [
+        "FeatureAVX",
+        "FeaturePCLMUL"
+      ]
+    },
+    {
+      "record": "FeatureVPOPCNTDQ",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable AVX-512 Population Count Instructions",
+      "implies": [
+        "FeatureAVX512"
+      ]
+    },
+    {
+      "record": "FeatureWAITPKG",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Wait and pause enhancements",
+      "implies": []
+    },
+    {
+      "record": "FeatureWBNOINVD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Write Back No Invalidate",
+      "implies": []
+    },
+    {
+      "record": "FeatureWIDEKL",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support Key Locker wide Instructions",
+      "implies": [
+        "FeatureKL"
+      ]
+    },
+    {
+      "record": "FeatureX86_64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support 64-bit instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureX87",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable X87 float instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureXOP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable XOP instructions",
+      "implies": [
+        "FeatureFMA4"
+      ]
+    },
+    {
+      "record": "FeatureXSAVE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support xsave instructions",
+      "implies": []
+    },
+    {
+      "record": "FeatureXSAVEC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support xsavec instructions",
+      "implies": [
+        "FeatureXSAVE"
+      ]
+    },
+    {
+      "record": "FeatureXSAVEOPT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support xsaveopt instructions",
+      "implies": [
+        "FeatureXSAVE"
+      ]
+    },
+    {
+      "record": "FeatureXSAVES",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support xsaves instructions",
+      "implies": [
+        "FeatureXSAVE"
+      ]
+    },
+    {
+      "record": "FeatureZU",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Support zero-upper SETcc/IMUL",
+      "implies": []
+    },
+    {
+      "record": "Is16Bit",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "16-bit mode (i8086)",
+      "implies": []
+    },
+    {
+      "record": "Is32Bit",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "32-bit mode (80386)",
+      "implies": []
+    },
+    {
+      "record": "Is64Bit",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "64-bit mode (x86_64)",
+      "implies": []
+    },
+    {
+      "record": "IsX32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "64-bit with ILP32 programming model (e.g. x32 ABI)",
+      "implies": []
+    },
+    {
+      "record": "ProcIntelAtom",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Is Intel Atom processor",
+      "implies": []
+    },
+    {
+      "record": "TuningAllowLight256Bit",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Enable generation of 256-bit load/stores even if we prefer 128-bit",
+      "implies": []
+    },
+    {
+      "record": "TuningBLSFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "BLSR/BLSI/BLSMSK have a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningBranchFusion",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "CMP/TEST can be fused with conditional branches",
+      "implies": []
+    },
+    {
+      "record": "TuningBranchHint",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Target has branch hint feature",
+      "implies": []
+    },
+    {
+      "record": "TuningCOMPRESSFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "V[P]COMPRESSPD/PS/Q/D/W/B with zero-masking has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningEXPANDFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "V[P]EXPANDPD/PS/Q/D/W/B with zero-masking has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningFast11ByteNOP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Target can quickly decode up to 11 byte NOPs",
+      "implies": []
+    },
+    {
+      "record": "TuningFast15ByteNOP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Target can quickly decode up to 15 byte NOPs",
+      "implies": []
+    },
+    {
+      "record": "TuningFast7ByteNOP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Target can quickly decode up to 7 byte NOPs",
+      "implies": []
+    },
+    {
+      "record": "TuningFastBEXTR",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Indicates that the BEXTR instruction is implemented as a single uop with good throughput",
+      "implies": []
+    },
+    {
+      "record": "TuningFastDPWSSD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer vpdpwssd instruction over vpmaddwd+vpaddd instruction sequence",
+      "implies": []
+    },
+    {
+      "record": "TuningFastGather",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Indicates if gather is reasonably fast (this is true for Skylake client and all AVX-512 CPUs)",
+      "implies": []
+    },
+    {
+      "record": "TuningFastHorizontalOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer horizontal vector math instructions (haddp, phsub, etc.) over normal vector instructions with shuffles",
+      "implies": []
+    },
+    {
+      "record": "TuningFastImm16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer a i16 instruction with i16 immediate over extension to i32",
+      "implies": []
+    },
+    {
+      "record": "TuningFastImmVectorShift",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Vector shifts are fast (2/cycle) as opposed to slow (1/cycle)",
+      "implies": []
+    },
+    {
+      "record": "TuningFastLZCNT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "LZCNT instructions are as fast as most simple integer ops",
+      "implies": []
+    },
+    {
+      "record": "TuningFastMOVBE",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer a movbe over a single-use load + bswap / single-use bswap + store",
+      "implies": []
+    },
+    {
+      "record": "TuningFastSHLDRotate",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "SHLD can be used as a faster rotate",
+      "implies": []
+    },
+    {
+      "record": "TuningFastScalarFSQRT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Scalar SQRT is fast (disable Newton-Raphson)",
+      "implies": []
+    },
+    {
+      "record": "TuningFastScalarShiftMasks",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer a left/right scalar logical shift pair over a shift+and pair",
+      "implies": []
+    },
+    {
+      "record": "TuningFastVariableCrossLaneShuffle",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Cross-lane shuffles with variable masks are fast",
+      "implies": []
+    },
+    {
+      "record": "TuningFastVariablePerLaneShuffle",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Per-lane shuffles with variable masks are fast",
+      "implies": []
+    },
+    {
+      "record": "TuningFastVectorFSQRT",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Vector SQRT is fast (disable Newton-Raphson)",
+      "implies": []
+    },
+    {
+      "record": "TuningFastVectorShiftMasks",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer a left/right vector logical shift pair over a shift+and pair",
+      "implies": []
+    },
+    {
+      "record": "TuningGETMANTFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "VGETMANTSS/SD/SH and VGETMANDPS/PD(memory version) has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningInsertVZEROUPPER",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Should insert vzeroupper instructions",
+      "implies": []
+    },
+    {
+      "record": "TuningLEAForSP",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use LEA for adjusting the stack pointer (this is an optimization for Intel Atom processors)",
+      "implies": []
+    },
+    {
+      "record": "TuningLEAUsesAG",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "LEA instruction needs inputs at AG stage",
+      "implies": []
+    },
+    {
+      "record": "TuningLZCNTFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "LZCNT has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningMULCFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "VF[C]MULCPH/SH has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningMULLQFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "VPMULLQ has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningMacroFusion",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Various instructions can be fused with conditional branches",
+      "implies": []
+    },
+    {
+      "record": "TuningNDDMem",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer NDD memory addressing",
+      "implies": []
+    },
+    {
+      "record": "TuningNoDomainDelay",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has no bypass delay when using the 'wrong' domain",
+      "implies": []
+    },
+    {
+      "record": "TuningNoDomainDelayBlend",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has no bypass delay when using the 'wrong' blend type",
+      "implies": []
+    },
+    {
+      "record": "TuningNoDomainDelayMov",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has no bypass delay when using the 'wrong' mov type",
+      "implies": []
+    },
+    {
+      "record": "TuningNoDomainDelayShuffle",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Has no bypass delay when using the 'wrong' shuffle type",
+      "implies": []
+    },
+    {
+      "record": "TuningPERMFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "VPERMD/Q/PS/PD has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningPOPCNTFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "POPCNT has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningPadShortFunctions",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Pad short functions (to prevent a stall when returning too early)",
+      "implies": []
+    },
+    {
+      "record": "TuningPrefer128Bit",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer 128-bit AVX instructions",
+      "implies": []
+    },
+    {
+      "record": "TuningPrefer256Bit",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer 256-bit AVX instructions",
+      "implies": []
+    },
+    {
+      "record": "TuningPreferLegacySetCC",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer to emit legacy SetCC.",
+      "implies": []
+    },
+    {
+      "record": "TuningPreferMaskRegisters",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer AVX512 mask registers over PTEST/MOVMSK",
+      "implies": []
+    },
+    {
+      "record": "TuningPreferMovmskOverVTest",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Prefer movmsk over vtest instruction",
+      "implies": []
+    },
+    {
+      "record": "TuningPreferNoGather",
+      "feature_string": "false",
+      "attribute": "",
+      "desc": "Prefer no gather instructions",
+      "implies": []
+    },
+    {
+      "record": "TuningPreferNoScatter",
+      "feature_string": "false",
+      "attribute": "",
+      "desc": "Prefer no scatter instructions",
+      "implies": []
+    },
+    {
+      "record": "TuningPreferShiftShuffle",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Shifts are faster (or as fast) as shuffle",
+      "implies": []
+    },
+    {
+      "record": "TuningRANGEFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "VRANGEPD/PS/SD/SS has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningSBBDepBreaking",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "SBB with same register has no source dependency",
+      "implies": []
+    },
+    {
+      "record": "TuningSlow3OpsLEA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "LEA instruction with 3 ops or certain registers is slow",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowDivide32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use 8-bit divide for positive values less than 256",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowDivide64",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use 32-bit divide for positive values less than 2^32",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowIncDec",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "INC and DEC instructions are slower than ADD and SUB",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowIndirectCall",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Indirect calls from memory are slow",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowLEA",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "LEA instruction with certain arguments is slow",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowPMADDWD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "PMADDWD is slower than PMULLD",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowPMULLD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "PMULLD instruction is slow (compared to PMULLW/PMULHW and PMULUDQ)",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowPMULLQ",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "PMULLQ instruction is slow",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowSHLD",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "SHLD instruction is slow",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowTwoMemOps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Two memory operand instructions are slow",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowUAMem16",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Slow unaligned 16-byte memory access",
+      "implies": []
+    },
+    {
+      "record": "TuningSlowUAMem32",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Slow unaligned 32-byte memory access",
+      "implies": []
+    },
+    {
+      "record": "TuningTZCNTFalseDeps",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "TZCNT has a false dependency on dest register",
+      "implies": []
+    },
+    {
+      "record": "TuningUseGLMDivSqrtCosts",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use Goldmont specific floating point div/sqrt costs",
+      "implies": []
+    },
+    {
+      "record": "TuningUseSLMArithCosts",
+      "feature_string": "true",
+      "attribute": "",
+      "desc": "Use Silvermont specific arithmetic costs",
+      "implies": []
+    }
+  ],
+  "register_classes": [
+    {
+      "record": "CCR",
+      "alignment": 32,
+      "copy_cost": -1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "CONTROL_REG",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "DEBUG_REG",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "DFCCR",
+      "alignment": 32,
+      "copy_cost": -1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FPCCR",
+      "alignment": 16,
+      "copy_cost": -1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FR16",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "f16"
+      ],
+      "size": 32
+    },
+    {
+      "record": "FR16X",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "f16"
+      ],
+      "size": 32
+    },
+    {
+      "record": "FR32",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FR32X",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FR64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "f64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "FR64X",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "f64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR16",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR16_ABCD",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR16_NOREX",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR16_NOREX2",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_ABCD",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_AD",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_ArgRef",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_BPSP",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_BSI",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_CB",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_DC",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_DIBP",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_NOREX",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_NOREX2",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_NOREX2_NOSP",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_NOREX_NOSP",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_NOSP",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_SIDI",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR32_TC",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64PLTSafe",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_A",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_ABCD",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_AD",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_ArgRef",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_NOREX",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_NOREX2",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_NOREX2_NOSP",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_NOREX_NOSP",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_NOSP",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_TC",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR64_TCW64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR8",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR8_ABCD_H",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR8_ABCD_L",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR8_NOREX",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GR8_NOREX2",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GRH16",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "GRH8",
+      "alignment": 8,
+      "copy_cost": 1,
+      "reg_types": [
+        "i8"
+      ],
+      "size": 0
+    },
+    {
+      "record": "LOW32_ADDR_ACCESS",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "LOW32_ADDR_ACCESS_RBP",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "i32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "RFP32",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "RFP64",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "RFP80",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f80"
+      ],
+      "size": 0
+    },
+    {
+      "record": "RFP80_7",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f80"
+      ],
+      "size": 0
+    },
+    {
+      "record": "RST",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "f80",
+        "f64",
+        "f32"
+      ],
+      "size": 0
+    },
+    {
+      "record": "SEGMENT_REG",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "i16"
+      ],
+      "size": 0
+    },
+    {
+      "record": "TILE",
+      "alignment": 8192,
+      "copy_cost": -1,
+      "reg_types": [
+        "x86amx"
+      ],
+      "size": 8192
+    },
+    {
+      "record": "VK1",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v1i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK16",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK16PAIR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK16WM",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK1PAIR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK1WM",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v1i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK2",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v2i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK2PAIR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK2WM",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v2i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK32",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "v32i1"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK32WM",
+      "alignment": 32,
+      "copy_cost": 1,
+      "reg_types": [
+        "v32i1"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK4",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v4i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK4PAIR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK4WM",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v4i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "v64i1"
+      ],
+      "size": 64
+    },
+    {
+      "record": "VK64WM",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "v64i1"
+      ],
+      "size": 64
+    },
+    {
+      "record": "VK8",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v8i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VK8PAIR",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "untyped"
+      ],
+      "size": 32
+    },
+    {
+      "record": "VK8WM",
+      "alignment": 16,
+      "copy_cost": 1,
+      "reg_types": [
+        "v8i1"
+      ],
+      "size": 16
+    },
+    {
+      "record": "VR128",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "v4f32",
+        "v2f64",
+        "v8f16",
+        "v8bf16",
+        "v16i8",
+        "v8i16",
+        "v4i32",
+        "v2i64",
+        "f128"
+      ],
+      "size": 0
+    },
+    {
+      "record": "VR128X",
+      "alignment": 128,
+      "copy_cost": 1,
+      "reg_types": [
+        "v4f32",
+        "v2f64",
+        "v8f16",
+        "v8bf16",
+        "v16i8",
+        "v8i16",
+        "v4i32",
+        "v2i64",
+        "f128"
+      ],
+      "size": 0
+    },
+    {
+      "record": "VR256",
+      "alignment": 256,
+      "copy_cost": 1,
+      "reg_types": [
+        "v8f32",
+        "v4f64",
+        "v16f16",
+        "v16bf16",
+        "v32i8",
+        "v16i16",
+        "v8i32",
+        "v4i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "VR256X",
+      "alignment": 256,
+      "copy_cost": 1,
+      "reg_types": [
+        "v8f32",
+        "v4f64",
+        "v16f16",
+        "v16bf16",
+        "v32i8",
+        "v16i16",
+        "v8i32",
+        "v4i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "VR512",
+      "alignment": 512,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16f32",
+        "v8f64",
+        "v32f16",
+        "v32bf16",
+        "v64i8",
+        "v32i16",
+        "v16i32",
+        "v8i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "VR512_0_15",
+      "alignment": 512,
+      "copy_cost": 1,
+      "reg_types": [
+        "v16f32",
+        "v8f64",
+        "v64i8",
+        "v32i16",
+        "v16i32",
+        "v8i64"
+      ],
+      "size": 0
+    },
+    {
+      "record": "VR64",
+      "alignment": 64,
+      "copy_cost": 1,
+      "reg_types": [
+        "x86mmx"
+      ],
+      "size": 0
+    }
+  ]
+}

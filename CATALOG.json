@@ -16373,6 +16373,36 @@
         "verification/empirical-evaluation"
       ]
     },
+    "llvm-derivation-emission-instrumentation-architecture-and-cost": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "venue": "PLDI 2018",
+            "year": "2018"
+          },
+          "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "llvm/passes",
+        "llvm/translation-validation",
+        "verification",
+        "verification/refinement",
+        "anneal"
+      ]
+    },
     "llvm-instruction-selection-fallbacks-and-libcall-contracts": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -16402,6 +16432,153 @@
         "isa/i386",
         "isa/aarch64",
         "verification/compiler-verification"
+      ]
+    },
+    "llvm-interprocedural-lto-and-codegen-optimization-obligations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "release_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and LTO driver"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "llvm/passes",
+        "llvm/lto",
+        "llvm/codegen",
+        "verification",
+        "verification/refinement",
+        "anneal"
+      ]
+    },
+    "llvm-ir-baseline-formal-semantics-and-ambiguities": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 LangRef and IR semantics"
+        },
+        {
+          "identity": {
+            "release_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 LLVM codegen backend (rustc_codegen_llvm)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343",
+            "venue": "PLDI 2017",
+            "year": "2017"
+          },
+          "name": "Taming Undefined Behavior in LLVM (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-81688-9_35",
+            "venue": "CAV 2021",
+            "year": "2021"
+          },
+          "name": "An SMT Encoding of LLVM's Memory Model for Bounded Translation Validation (CAV 2021)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "rustc",
+        "rustc/codegen",
+        "rust",
+        "verification",
+        "anneal"
+      ]
+    },
+    "llvm-scalar-memory-and-loop-optimization-proof-obligations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030",
+            "venue": "PLDI 2021",
+            "year": "2021"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377",
+            "venue": "PLDI 2018",
+            "year": "2018"
+          },
+          "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "llvm/passes",
+        "llvm/translation-validation",
+        "verification",
+        "verification/refinement",
+        "anneal"
+      ]
+    },
+    "llvm-tablegen-isa-extraction-and-verified-selector-reuse": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 TableGen definitions and llvm-tblgen"
+        },
+        {
+          "identity": {
+            "release_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 target feature and CPU query wrapper"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "llvm/codegen",
+        "isa",
+        "verification",
+        "anneal"
       ]
     },
     "machine-code-verification-frameworks-and-assembly-contracts": {
@@ -23495,6 +23672,38 @@
         "rustc/abi",
         "anneal/mir-semantics",
         "minirust/semantics"
+      ]
+    },
+    "rustc-llvm-pass-pipelines-and-configuration": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and LLVM wrapper"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/llvm-pipeline",
+        "rustc",
+        "rustc/codegen",
+        "llvm",
+        "llvm/passes",
+        "llvm/lto",
+        "verification"
       ]
     },
     "rustc-mir-artifact-export-settings-and-proof-binding": {
