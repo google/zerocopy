@@ -22888,6 +22888,52 @@
         "anneal/toolchain-baseline"
       ]
     },
+    "rustc-binary-origin-attribution-gc-sections-and-icf-soundness": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and alternative codegen backends (rustc_codegen_llvm, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 submodule pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "rustc/linker-driver",
+        "llvm/lld",
+        "systems/object-formats",
+        "verification"
+      ]
+    },
     "rustc-build-system-and-consumer-invocation-contracts": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -23032,6 +23078,52 @@
         "rustc/intrinsics",
         "rustc/target-spec",
         "isa/riscv64"
+      ]
+    },
+    "rustc-codegen-backend-routing-and-mixed-backend-interoperability": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and alternative codegen backends (rustc_codegen_llvm, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 submodule pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "rustc/monomorphization",
+        "cargo",
+        "llvm",
+        "verification"
       ]
     },
     "rustc-compiletest-bootstrap-and-alternate-backend-test-mechanics": {
@@ -23377,6 +23469,51 @@
         "rustc/mir"
       ]
     },
+    "rustc-dwarf-codeview-debuginfo-emission-and-debugger-contracts": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and alternative codegen backends (rustc_codegen_llvm, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 submodule pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "llvm",
+        "systems/object-formats",
+        "verification"
+      ]
+    },
     "rustc-dynamic-linking-loader-contracts-and-code-signing": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -23672,6 +23809,101 @@
         "rustc/abi",
         "anneal/mir-semantics",
         "minirust/semantics"
+      ]
+    },
+    "rustc-llvm-free-sysroot-cranelift-gcc-and-host-tools-audit": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and alternative codegen backends (rustc_codegen_llvm, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 submodule pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "build",
+        "build/sysroots-and-sdks",
+        "cargo",
+        "llvm",
+        "verification"
+      ]
+    },
+    "rustc-llvm-ir-attributes-metadata-and-cross-path-obligations": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and alternative codegen backends (rustc_codegen_llvm, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 submodule pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "llvm",
+        "llvm/ir-semantics",
+        "llvm/noalias",
+        "rust",
+        "verification",
+        "anneal"
       ]
     },
     "rustc-llvm-pass-pipelines-and-configuration": {
@@ -24511,6 +24743,53 @@
         "rustc/testing",
         "rustc/codegen",
         "verification/compiler-verification"
+      ]
+    },
+    "rustc-tier1-security-hardening-and-mitigation-codegen": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, standard library, and alternative codegen backends (rustc_codegen_llvm, rustc_codegen_cranelift, rustc_codegen_gcc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM 23.1.1 submodule pinned by Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/codegen",
+        "security",
+        "security/binary-hardening",
+        "llvm",
+        "isa",
+        "verification"
       ]
     },
     "safe-rust-ub-freedom-soundness-and-standard-library-verification": {

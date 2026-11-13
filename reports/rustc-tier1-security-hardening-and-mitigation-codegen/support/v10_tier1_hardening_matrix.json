@@ -1,0 +1,217 @@
+{
+  "tier1_target_spec_defaults": {
+    "x86_64-unknown-linux-gnu": {
+      "position_independent_executables": true,
+      "relro_level": "full",
+      "stack_probes": {
+        "kind": "inline"
+      },
+      "frame_pointer": "may-omit",
+      "plt_by_default": false,
+      "supported_sanitizers": [
+        "address",
+        "leak",
+        "memory",
+        "thread",
+        "cfi",
+        "kcfi",
+        "safestack",
+        "dataflow",
+        "realtime"
+      ]
+    },
+    "i686-unknown-linux-gnu": {
+      "position_independent_executables": true,
+      "relro_level": "full",
+      "stack_probes": {
+        "kind": "inline"
+      },
+      "frame_pointer": "may-omit",
+      "plt_by_default": true,
+      "supported_sanitizers": [
+        "address"
+      ]
+    },
+    "aarch64-unknown-linux-gnu": {
+      "position_independent_executables": true,
+      "relro_level": "full",
+      "stack_probes": {
+        "kind": "inline"
+      },
+      "frame_pointer": "non-leaf",
+      "plt_by_default": true,
+      "supported_sanitizers": [
+        "address",
+        "leak",
+        "memory",
+        "thread",
+        "hwaddress",
+        "cfi",
+        "memtag",
+        "kcfi",
+        "realtime"
+      ]
+    },
+    "aarch64-apple-darwin": {
+      "position_independent_executables": true,
+      "relro_level": "none",
+      "stack_probes": {
+        "kind": "inline"
+      },
+      "frame_pointer": "non-leaf",
+      "plt_by_default": true,
+      "supported_sanitizers": [
+        "address",
+        "thread",
+        "cfi",
+        "realtime"
+      ]
+    },
+    "x86_64-pc-windows-msvc": {
+      "position_independent_executables": true,
+      "relro_level": "none",
+      "stack_probes": {
+        "kind": "none"
+      },
+      "frame_pointer": "may-omit",
+      "plt_by_default": false,
+      "supported_sanitizers": [
+        "address"
+      ]
+    },
+    "i686-pc-windows-msvc": {
+      "position_independent_executables": true,
+      "relro_level": "none",
+      "stack_probes": {
+        "kind": "none"
+      },
+      "frame_pointer": "may-omit",
+      "plt_by_default": true,
+      "supported_sanitizers": [
+        "address"
+      ]
+    },
+    "aarch64-pc-windows-msvc": {
+      "position_independent_executables": true,
+      "relro_level": "none",
+      "stack_probes": {
+        "kind": "none"
+      },
+      "frame_pointer": "non-leaf",
+      "plt_by_default": true,
+      "supported_sanitizers": []
+    },
+    "x86_64-pc-windows-gnu": {
+      "position_independent_executables": true,
+      "relro_level": "none",
+      "stack_probes": {
+        "kind": "none"
+      },
+      "frame_pointer": "may-omit",
+      "plt_by_default": false,
+      "supported_sanitizers": []
+    }
+  },
+  "empirical_assembly_probes": {
+    "x86_64_default": {
+      "target": "x86_64-unknown-linux-gnu",
+      "flags": [],
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "has_stack_chk_fail": false,
+      "has_probestack_or_inline_probe": true,
+      "has_paciasp_or_pacibsp": false,
+      "has_guard_dispatch_icall": false,
+      "has_safeseh": false,
+      "asm_excerpt": [
+        "\tsubq\t$4096, %rsp"
+      ]
+    },
+    "x86_64_ssp_strong_cet_retpoline": {
+      "target": "x86_64-unknown-linux-gnu",
+      "flags": [
+        "-Zstack-protector=strong",
+        "-Zcf-protection=full",
+        "-Zretpoline",
+        "-Cunsafe-allow-abi-mismatch=retpoline"
+      ],
+      "has_endbr64": true,
+      "has_retpoline_thunk": true,
+      "has_stack_chk_fail": true,
+      "has_probestack_or_inline_probe": true,
+      "has_paciasp_or_pacibsp": false,
+      "has_guard_dispatch_icall": false,
+      "has_safeseh": false,
+      "asm_excerpt": [
+        "\tendbr64",
+        "\tsubq\t$4096, %rsp",
+        "\tsubq\t$16, %rsp",
+        "\tcallq\t__llvm_retpoline_r11",
+        "\tcallq\t__llvm_retpoline_r11",
+        "\tcallq\t__stack_chk_fail@PLT",
+        "\t.section\t.text.__llvm_retpoline_r11,\"axG\",@progbits,__llvm_retpoline_r11,comdat",
+        "\t.hidden\t__llvm_retpoline_r11",
+        "\t.weak\t__llvm_retpoline_r11",
+        "\t.type\t__llvm_retpoline_r11,@function",
+        "__llvm_retpoline_r11:",
+        "\t.size\t__llvm_retpoline_r11, .Lfunc_end1-__llvm_retpoline_r11"
+      ]
+    },
+    "aarch64_linux_bti_pac_gcs": {
+      "target": "aarch64-unknown-linux-gnu",
+      "flags": [
+        "-Zbranch-protection=bti,pac-ret,leaf,pc,b-key,gcs",
+        "-Cunsafe-allow-abi-mismatch=branch-protection",
+        "-Zstack-protector=all"
+      ],
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "has_stack_chk_fail": true,
+      "has_probestack_or_inline_probe": true,
+      "has_paciasp_or_pacibsp": true,
+      "has_guard_dispatch_icall": false,
+      "has_safeseh": false,
+      "asm_excerpt": [
+        "\thint\t#34",
+        "\thint\t#39",
+        "\thint\t#27",
+        "\thint\t#39",
+        "\thint\t#31",
+        "\tbl\t__stack_chk_fail"
+      ]
+    },
+    "x86_64_msvc_cfguard_ehcont": {
+      "target": "x86_64-pc-windows-msvc",
+      "flags": [
+        "-Ccontrol-flow-guard=checks",
+        "-Zehcont-guard"
+      ],
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "has_stack_chk_fail": false,
+      "has_probestack_or_inline_probe": true,
+      "has_paciasp_or_pacibsp": false,
+      "has_guard_dispatch_icall": true,
+      "has_safeseh": false,
+      "asm_excerpt": [
+        "\tcallq\t__chkstk",
+        "\tsubq\t%rax, %rsp",
+        "\trex64 jmpq\t*__guard_dispatch_icall_fptr(%rip)"
+      ]
+    },
+    "i686_msvc_safeseh": {
+      "target": "i686-pc-windows-msvc",
+      "flags": [],
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "has_stack_chk_fail": false,
+      "has_probestack_or_inline_probe": true,
+      "has_paciasp_or_pacibsp": false,
+      "has_guard_dispatch_icall": false,
+      "has_safeseh": false,
+      "asm_excerpt": [
+        "\tcalll\t__chkstk"
+      ]
+    }
+  }
+}

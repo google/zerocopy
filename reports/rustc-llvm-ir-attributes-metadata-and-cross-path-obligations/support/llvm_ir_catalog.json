@@ -1,0 +1,466 @@
+{
+  "baseline": {
+    "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+    "attribute_kind_count": 49,
+    "metadata_kind_count": 42,
+    "string_attribute_count": 34,
+    "module_flag_count": 36
+  },
+  "enum_attribute_kinds": [
+    {
+      "variant": "AlwaysInline",
+      "discriminant": 0
+    },
+    {
+      "variant": "ByVal",
+      "discriminant": 1
+    },
+    {
+      "variant": "Cold",
+      "discriminant": 2
+    },
+    {
+      "variant": "InlineHint",
+      "discriminant": 3
+    },
+    {
+      "variant": "MinSize",
+      "discriminant": 4
+    },
+    {
+      "variant": "Naked",
+      "discriminant": 5
+    },
+    {
+      "variant": "NoAlias",
+      "discriminant": 6
+    },
+    {
+      "variant": "CapturesAddress",
+      "discriminant": 7
+    },
+    {
+      "variant": "NoInline",
+      "discriminant": 8
+    },
+    {
+      "variant": "NonNull",
+      "discriminant": 9
+    },
+    {
+      "variant": "NoRedZone",
+      "discriminant": 10
+    },
+    {
+      "variant": "NoReturn",
+      "discriminant": 11
+    },
+    {
+      "variant": "NoUnwind",
+      "discriminant": 12
+    },
+    {
+      "variant": "OptimizeForSize",
+      "discriminant": 13
+    },
+    {
+      "variant": "ReadOnly",
+      "discriminant": 14
+    },
+    {
+      "variant": "SExt",
+      "discriminant": 15
+    },
+    {
+      "variant": "StructRet",
+      "discriminant": 16
+    },
+    {
+      "variant": "UWTable",
+      "discriminant": 17
+    },
+    {
+      "variant": "ZExt",
+      "discriminant": 18
+    },
+    {
+      "variant": "InReg",
+      "discriminant": 19
+    },
+    {
+      "variant": "SanitizeThread",
+      "discriminant": 20
+    },
+    {
+      "variant": "SanitizeAddress",
+      "discriminant": 21
+    },
+    {
+      "variant": "SanitizeMemory",
+      "discriminant": 22
+    },
+    {
+      "variant": "NonLazyBind",
+      "discriminant": 23
+    },
+    {
+      "variant": "OptimizeNone",
+      "discriminant": 24
+    },
+    {
+      "variant": "ReadNone",
+      "discriminant": 26
+    },
+    {
+      "variant": "SanitizeHWAddress",
+      "discriminant": 28
+    },
+    {
+      "variant": "WillReturn",
+      "discriminant": 29
+    },
+    {
+      "variant": "StackProtectReq",
+      "discriminant": 30
+    },
+    {
+      "variant": "StackProtectStrong",
+      "discriminant": 31
+    },
+    {
+      "variant": "StackProtect",
+      "discriminant": 32
+    },
+    {
+      "variant": "NoUndef",
+      "discriminant": 33
+    },
+    {
+      "variant": "SanitizeMemTag",
+      "discriminant": 34
+    },
+    {
+      "variant": "NoCfCheck",
+      "discriminant": 35
+    },
+    {
+      "variant": "ShadowCallStack",
+      "discriminant": 36
+    },
+    {
+      "variant": "AllocSize",
+      "discriminant": 37
+    },
+    {
+      "variant": "AllocatedPointer",
+      "discriminant": 38
+    },
+    {
+      "variant": "AllocAlign",
+      "discriminant": 39
+    },
+    {
+      "variant": "SanitizeSafeStack",
+      "discriminant": 40
+    },
+    {
+      "variant": "FnRetThunkExtern",
+      "discriminant": 41
+    },
+    {
+      "variant": "Writable",
+      "discriminant": 42
+    },
+    {
+      "variant": "DeadOnUnwind",
+      "discriminant": 43
+    },
+    {
+      "variant": "DeadOnReturn",
+      "discriminant": 44
+    },
+    {
+      "variant": "CapturesReadOnly",
+      "discriminant": 45
+    },
+    {
+      "variant": "CapturesNone",
+      "discriminant": 46
+    },
+    {
+      "variant": "SanitizeRealtimeNonblocking",
+      "discriminant": 47
+    },
+    {
+      "variant": "SanitizeRealtimeBlocking",
+      "discriminant": 48
+    },
+    {
+      "variant": "Convergent",
+      "discriminant": 49
+    },
+    {
+      "variant": "NoFree",
+      "discriminant": 50
+    }
+  ],
+  "fixed_metadata_kinds": [
+    {
+      "name": "MD_dbg",
+      "id": 0
+    },
+    {
+      "name": "MD_tbaa",
+      "id": 1
+    },
+    {
+      "name": "MD_prof",
+      "id": 2
+    },
+    {
+      "name": "MD_fpmath",
+      "id": 3
+    },
+    {
+      "name": "MD_range",
+      "id": 4
+    },
+    {
+      "name": "MD_tbaa_struct",
+      "id": 5
+    },
+    {
+      "name": "MD_invariant_load",
+      "id": 6
+    },
+    {
+      "name": "MD_alias_scope",
+      "id": 7
+    },
+    {
+      "name": "MD_noalias",
+      "id": 8
+    },
+    {
+      "name": "MD_nontemporal",
+      "id": 9
+    },
+    {
+      "name": "MD_mem_parallel_loop_access",
+      "id": 10
+    },
+    {
+      "name": "MD_nonnull",
+      "id": 11
+    },
+    {
+      "name": "MD_dereferenceable",
+      "id": 12
+    },
+    {
+      "name": "MD_dereferenceable_or_null",
+      "id": 13
+    },
+    {
+      "name": "MD_make_implicit",
+      "id": 14
+    },
+    {
+      "name": "MD_unpredictable",
+      "id": 15
+    },
+    {
+      "name": "MD_invariant_group",
+      "id": 16
+    },
+    {
+      "name": "MD_align",
+      "id": 17
+    },
+    {
+      "name": "MD_loop",
+      "id": 18
+    },
+    {
+      "name": "MD_type",
+      "id": 19
+    },
+    {
+      "name": "MD_section_prefix",
+      "id": 20
+    },
+    {
+      "name": "MD_absolute_symbol",
+      "id": 21
+    },
+    {
+      "name": "MD_associated",
+      "id": 22
+    },
+    {
+      "name": "MD_callees",
+      "id": 23
+    },
+    {
+      "name": "MD_irr_loop",
+      "id": 24
+    },
+    {
+      "name": "MD_access_group",
+      "id": 25
+    },
+    {
+      "name": "MD_callback",
+      "id": 26
+    },
+    {
+      "name": "MD_preserve_access_index",
+      "id": 27
+    },
+    {
+      "name": "MD_vcall_visibility",
+      "id": 28
+    },
+    {
+      "name": "MD_noundef",
+      "id": 29
+    },
+    {
+      "name": "MD_annotation",
+      "id": 30
+    },
+    {
+      "name": "MD_nosanitize",
+      "id": 31
+    },
+    {
+      "name": "MD_func_sanitize",
+      "id": 32
+    },
+    {
+      "name": "MD_exclude",
+      "id": 33
+    },
+    {
+      "name": "MD_memprof",
+      "id": 34
+    },
+    {
+      "name": "MD_callsite",
+      "id": 35
+    },
+    {
+      "name": "MD_kcfi_type",
+      "id": 36
+    },
+    {
+      "name": "MD_pcsections",
+      "id": 37
+    },
+    {
+      "name": "MD_DIAssignID",
+      "id": 38
+    },
+    {
+      "name": "MD_coro_outside_frame",
+      "id": 39
+    },
+    {
+      "name": "MD_mmra",
+      "id": 40
+    },
+    {
+      "name": "MD_noalias_addrspace",
+      "id": 41
+    }
+  ],
+  "string_attributes": [
+    "alloc-family",
+    "alloc-variant-zeroed",
+    "branch-protection-pauth-lr",
+    "branch-target-enforcement",
+    "cmse_nonsecure_call",
+    "cmse_nonsecure_entry",
+    "fentry-call",
+    "frame-pointer",
+    "function-instrument",
+    "guarded-control-stack",
+    "instrument-function-entry-inlined",
+    "interrupt",
+    "mnop-mcount",
+    "mrecord-mcount",
+    "no-builtins",
+    "no-jump-tables",
+    "offload-kernel",
+    "packed-stack",
+    "patchable-function-entry",
+    "patchable-function-entry-section",
+    "patchable-function-prefix",
+    "probe-stack",
+    "sign-return-address",
+    "sign-return-address-key",
+    "target-cpu",
+    "target-features",
+    "tune-cpu",
+    "use-sample-profile",
+    "wasm-import-module",
+    "wasm-import-name",
+    "xray-ignore-loops",
+    "xray-instruction-threshold",
+    "xray-skip-entry",
+    "xray-skip-exit"
+  ],
+  "module_flags": [
+    "CFI Canonical Jump Tables",
+    "CodeView",
+    "Debug Info Version",
+    "EnableSplitLTOUnit",
+    "NumRegisterParameters",
+    "Objective-C Class Properties",
+    "Objective-C Image Info Section",
+    "Objective-C Image Info Version",
+    "Objective-C Is Simulated",
+    "Objective-C Version",
+    "RtLibUseGOT",
+    "Virtual Function Elim",
+    "aarch64-elf-pauthabi-platform",
+    "aarch64-elf-pauthabi-version",
+    "branch-protection-pauth-lr",
+    "branch-target-enforcement",
+    "cf-protection-branch",
+    "cf-protection-return",
+    "cfguard",
+    "cfi-normalize-integers",
+    "ehcontguard",
+    "frame-pointer",
+    "function_return_thunk_extern",
+    "guarded-control-stack",
+    "indirect_branch_cs_prefix",
+    "kcfi",
+    "kcfi-arity",
+    "kcfi-offset",
+    "openmp",
+    "ptrauth-elf-got",
+    "ptrauth-sign-personality",
+    "sign-return-address",
+    "sign-return-address-all",
+    "sign-return-address-with-bkey",
+    "target-abi",
+    "uwtable"
+  ],
+  "sample_emitted_llvm_ir_lines": [
+    "; ModuleID = 'v2_ir_probe.a23f1802458e543b-cgu.0'",
+    "source_filename = \"v2_ir_probe.a23f1802458e543b-cgu.0\"",
+    "target datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"",
+    "target triple = \"x86_64-unknown-linux-gnu\"",
+    "",
+    "!llvm.module.flags = !{!0, !1, !2}",
+    "!llvm.ident = !{!3}",
+    "",
+    "!0 = !{i32 8, !\"PIC Level\", i32 2}",
+    "!1 = !{i32 2, !\"RtLibUseGOT\", i32 1}",
+    "!2 = !{i32 7, !\"uwtable\", i32 2}",
+    "!3 = !{!\"rustc version 1.99.1 (58cf8f9c3 2026-10-13)\"}"
+  ]
+}

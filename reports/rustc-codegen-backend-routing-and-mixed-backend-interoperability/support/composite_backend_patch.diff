@@ -1,0 +1,308 @@
+--- <rust-1.99.1-checkout>/compiler/rustc_codegen_cranelift/src/driver/aot.rs	2026-11-13 02:11:42.419264688 +0000
++++ /tmp/rustc-1.99.1-probes/cg_composite/src/driver/aot.rs	2026-11-13 17:28:18.672726906 +0000
+@@ -266,8 +266,48 @@
+ #[derive(Copy, Clone)]
+ pub(crate) struct AotDriver;
+ 
++pub(crate) enum CompositeModule {
++    Llvm(rustc_codegen_llvm::ModuleLlvm),
++    Clif(AotModule),
++}
++
++fn llvm_backend() -> rustc_codegen_llvm::LlvmCodegenBackend {
++    // LlvmCodegenBackend is a zero-sized struct `LlvmCodegenBackend(())`.
++    unsafe { std::mem::zeroed() }
++}
++
++fn should_route_to_llvm(tcx: Option<TyCtxt<'_>>, cgu_name: &str) -> bool {
++    let policy = std::env::var("AN_COMPOSITE_ROUTE").unwrap_or_else(|_| "alternating".to_string());
++    if policy == "all_llvm" {
++        return true;
++    } else if policy == "all_clif" {
++        return false;
++    } else if let Some(substr) = policy.strip_prefix("llvm_if:") {
++        if let Some(tcx) = tcx {
++            let cgu = tcx.codegen_unit(Symbol::intern(cgu_name));
++            return cgu.items().keys().any(|item| item.symbol_name(tcx).name.contains(substr));
++        }
++        return cgu_name.contains(substr);
++    } else if let Some(substr) = policy.strip_prefix("clif_if:") {
++        if let Some(tcx) = tcx {
++            let cgu = tcx.codegen_unit(Symbol::intern(cgu_name));
++            return !cgu.items().keys().any(|item| item.symbol_name(tcx).name.contains(substr));
++        }
++        return !cgu_name.contains(substr);
++    } else if let Some(seed_str) = policy.strip_prefix("hash:") {
++        let seed: u64 = seed_str.parse().unwrap_or(0);
++        use std::hash::{Hash, Hasher};
++        let mut h = std::collections::hash_map::DefaultHasher::new();
++        seed.hash(&mut h);
++        cgu_name.hash(&mut h);
++        return (h.finish() & 1) == 0;
++    }
++    let sum: usize = cgu_name.bytes().map(|b| b as usize).sum();
++    (sum % 2) == 0
++}
++
+ impl ExtraBackendMethods for AotDriver {
+-    type Module = AotModule;
++    type Module = CompositeModule;
+ 
+     fn codegen_allocator<'tcx>(
+         &self,
+@@ -275,9 +315,13 @@
+         module_name: &str,
+         methods: &[AllocatorMethod],
+     ) -> Self::Module {
+-        let mut allocator_module = make_module(tcx, module_name);
+-        crate::allocator::codegen(tcx, &mut allocator_module.module, methods);
+-        allocator_module
++        if should_route_to_llvm(None, module_name) {
++            CompositeModule::Llvm(llvm_backend().codegen_allocator(tcx, module_name, methods))
++        } else {
++            let mut allocator_module = make_module(tcx, module_name);
++            crate::allocator::codegen(tcx, &mut allocator_module.module, methods);
++            CompositeModule::Clif(allocator_module)
++        }
+     }
+ 
+     fn compile_codegen_unit(
+@@ -285,74 +329,128 @@
+         tcx: TyCtxt<'_>,
+         cgu_name: Symbol,
+     ) -> (ModuleCodegen<Self::Module>, u64) {
+-        let start_time = Instant::now();
+-
+-        let dep_node = tcx.codegen_unit(cgu_name).codegen_dep_node(tcx);
+-        let (module, _) = tcx.dep_graph.with_task(
+-            dep_node,
+-            tcx,
+-            || {
+-                let aot_module = codegen_cgu(tcx, cgu_name);
+-                ModuleCodegen::new_regular(cgu_name.as_str().to_owned(), aot_module)
+-            },
+-            Some(rustc_middle::dep_graph::hash_result),
+-        );
+-
+-        let time_to_codegen = start_time.elapsed();
+-
+-        // We assume that the cost to run LLVM on a CGU is proportional to
+-        // the time we needed for codegenning it.
+-        let cost = time_to_codegen.as_nanos() as u64;
+-
+-        (module, cost)
++        let use_llvm = should_route_to_llvm(Some(tcx), cgu_name.as_str());
++        if std::env::var("AN_COMPOSITE_LOG").as_deref() == Ok("1") {
++            eprintln!("[COMPOSITE] cgu={} -> {}", cgu_name, if use_llvm { "LLVM" } else { "CRANELIFT" });
++        }
++        if use_llvm {
++            let (m, cost) = llvm_backend().compile_codegen_unit(tcx, cgu_name);
++            (
++                ModuleCodegen {
++                    name: m.name,
++                    module_llvm: CompositeModule::Llvm(m.module_llvm),
++                    kind: m.kind,
++                    thin_lto_buffer: m.thin_lto_buffer,
++                },
++                cost,
++            )
++        } else {
++            let start_time = Instant::now();
++            let dep_node = tcx.codegen_unit(cgu_name).codegen_dep_node(tcx);
++            let (module, _) = tcx.dep_graph.with_task(
++                dep_node,
++                tcx,
++                || {
++                    let aot_module = codegen_cgu(tcx, cgu_name);
++                    ModuleCodegen::new_regular(cgu_name.as_str().to_owned(), CompositeModule::Clif(aot_module))
++                },
++                Some(rustc_middle::dep_graph::hash_result),
++            );
++            let cost = start_time.elapsed().as_nanos() as u64;
++            (module, cost)
++        }
+     }
+ }
+ 
+ impl WriteBackendMethods for AotDriver {
+-    type Module = AotModule;
+-    type ModuleBuffer = Infallible;
+-    type TargetMachine = ();
+-    type ThinData = Infallible;
++    type Module = CompositeModule;
++    type ModuleBuffer = <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::ModuleBuffer;
++    type TargetMachine = <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::TargetMachine;
++    type ThinData = <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::ThinData;
+ 
+     fn target_machine_factory(
+         &self,
+-        _sess: &Session,
+-        _opt_level: OptLevel,
+-        _target_features: &[String],
++        sess: &Session,
++        opt_level: OptLevel,
++        target_features: &[String],
+     ) -> TargetMachineFactoryFn<Self> {
+-        Arc::new(|_, _| ())
++        let llvm_tm = llvm_backend().target_machine_factory(sess, opt_level, target_features);
++        Arc::new(move |dcx, config| llvm_tm(dcx, config))
+     }
+ 
+     fn optimize_and_codegen_fat_lto(
+-        _sess: &Session,
+-        _cgcx: &CodegenContext,
+-        _shared_emitter: &SharedEmitter,
+-        _tm_factory: TargetMachineFactoryFn<Self>,
+-        _exported_symbols_for_lto: &[String],
+-        _each_linked_rlib_for_lto: &[PathBuf],
+-        _modules: Vec<FatLtoInput<Self>>,
++        sess: &Session,
++        cgcx: &CodegenContext,
++        shared_emitter: &SharedEmitter,
++        tm_factory: TargetMachineFactoryFn<Self>,
++        exported_symbols_for_lto: &[String],
++        each_linked_rlib_for_lto: &[PathBuf],
++        modules: Vec<FatLtoInput<Self>>,
+     ) -> CompiledModule {
+-        unreachable!()
++        let llvm_modules = modules
++            .into_iter()
++            .map(|m| match m {
++                FatLtoInput::InMemory(mc) => match mc.module_llvm {
++                    CompositeModule::Llvm(ll) => FatLtoInput::InMemory(ModuleCodegen {
++                        name: mc.name,
++                        module_llvm: ll,
++                        kind: mc.kind,
++                        thin_lto_buffer: mc.thin_lto_buffer,
++                    }),
++                    CompositeModule::Clif(_) => panic!("FatLTO received in-memory Cranelift CGU `{}` without LLVM bitcode!", mc.name),
++                },
++                FatLtoInput::Serialized { name, bitcode_path } => FatLtoInput::Serialized { name, bitcode_path },
++            })
++            .collect();
++        let llvm_tm: TargetMachineFactoryFn<rustc_codegen_llvm::LlvmCodegenBackend> =
++            Arc::new(move |dcx, config| tm_factory(dcx, config));
++        <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::optimize_and_codegen_fat_lto(
++            sess,
++            cgcx,
++            shared_emitter,
++            llvm_tm,
++            exported_symbols_for_lto,
++            each_linked_rlib_for_lto,
++            llvm_modules,
++        )
+     }
+ 
+     fn run_thin_lto(
+-        _cgcx: &CodegenContext,
+-        _prof: &SelfProfilerRef,
+-        _dcx: rustc_errors::DiagCtxtHandle<'_>,
+-        _exported_symbols_for_lto: &[String],
+-        _each_linked_rlib_for_lto: &[PathBuf],
+-        _modules: Vec<ThinLtoInput<Self>>,
++        cgcx: &CodegenContext,
++        prof: &SelfProfilerRef,
++        dcx: rustc_errors::DiagCtxtHandle<'_>,
++        exported_symbols_for_lto: &[String],
++        each_linked_rlib_for_lto: &[PathBuf],
++        modules: Vec<ThinLtoInput<Self>>,
+     ) -> (Vec<ThinModule<Self>>, Vec<WorkProduct>) {
+-        unreachable!()
++        panic!("ThinLTO across mixed CompositeModule requires bitcode serialization on all CGUs (received {} modules)", modules.len());
+     }
+ 
+     fn optimize(
+-        _cgcx: &CodegenContext,
+-        _prof: &SelfProfilerRef,
+-        _shared_emitter: &SharedEmitter,
+-        _module: &mut ModuleCodegen<Self::Module>,
+-        _config: &ModuleConfig,
++        cgcx: &CodegenContext,
++        prof: &SelfProfilerRef,
++        shared_emitter: &SharedEmitter,
++        module: &mut ModuleCodegen<Self::Module>,
++        config: &ModuleConfig,
+     ) {
++        if let CompositeModule::Llvm(ll) = &mut module.module_llvm {
++            let dummy = unsafe { std::ptr::read(ll) };
++            let mut mc = ModuleCodegen {
++                name: module.name.clone(),
++                module_llvm: dummy,
++                kind: module.kind,
++                thin_lto_buffer: module.thin_lto_buffer.take(),
++            };
++            <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::optimize(
++                cgcx,
++                prof,
++                shared_emitter,
++                &mut mc,
++                config,
++            );
++            module.thin_lto_buffer = mc.thin_lto_buffer.take();
++            unsafe { std::ptr::write(ll, mc.module_llvm) };
++        }
+     }
+ 
+     fn optimize_and_codegen_thin(
+@@ -372,20 +470,46 @@
+         module: ModuleCodegen<Self::Module>,
+         config: &ModuleConfig,
+     ) -> CompiledModule {
+-        let dcx = DiagCtxt::new(Box::new(shared_emitter.clone()));
+-        compile_cgu(
+-            prof,
+-            dcx.handle(),
+-            &cgcx.output_filenames,
+-            config.emit_ir,
+-            module.module_llvm,
+-            module.name,
+-            module.kind,
+-        )
+-        .unwrap_or_else(|err| dcx.handle().fatal(err))
+-    }
+-
+-    fn serialize_module(_module: Self::Module, _is_thin: bool) -> Self::ModuleBuffer {
+-        unreachable!()
++        match module.module_llvm {
++            CompositeModule::Llvm(ll) => {
++                let mc = ModuleCodegen {
++                    name: module.name,
++                    module_llvm: ll,
++                    kind: module.kind,
++                    thin_lto_buffer: module.thin_lto_buffer,
++                };
++                <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::codegen(
++                    cgcx,
++                    prof,
++                    shared_emitter,
++                    mc,
++                    config,
++                )
++            }
++            CompositeModule::Clif(aot) => {
++                let dcx = DiagCtxt::new(Box::new(shared_emitter.clone()));
++                compile_cgu(
++                    prof,
++                    dcx.handle(),
++                    &cgcx.output_filenames,
++                    config.emit_ir,
++                    aot,
++                    module.name,
++                    module.kind,
++                )
++                .unwrap_or_else(|err| dcx.handle().fatal(err))
++            }
++        }
++    }
++
++    fn serialize_module(module: Self::Module, is_thin: bool) -> Self::ModuleBuffer {
++        match module {
++            CompositeModule::Llvm(ll) => {
++                <rustc_codegen_llvm::LlvmCodegenBackend as WriteBackendMethods>::serialize_module(ll, is_thin)
++            }
++            CompositeModule::Clif(_) => {
++                panic!("Cannot serialize Cranelift AotModule to LLVM bitcode ModuleBuffer (is_thin={})", is_thin)
++            }
++        }
+     }
+ }

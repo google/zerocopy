@@ -1,0 +1,415 @@
+{
+  "x86_64_linux_matrix": {
+    "hello_world": {
+      "dev": {
+        "file_size_bytes": 4537960,
+        "text_bytes": 241747,
+        "rodata_bytes": 21508,
+        "data_rel_ro_bytes": 6976,
+        "eh_frame_bytes": 25308,
+        "gcc_except_table_bytes": 13308,
+        "rela_dyn_bytes": 15960,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4412,
+          "crt_startup": 313,
+          "sysroot_std_core_alloc": 94144,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 32
+        }
+      },
+      "release": {
+        "file_size_bytes": 4537112,
+        "text_bytes": 241651,
+        "rodata_bytes": 21508,
+        "data_rel_ro_bytes": 6976,
+        "eh_frame_bytes": 25156,
+        "gcc_except_table_bytes": 13308,
+        "rela_dyn_bytes": 15960,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4428,
+          "crt_startup": 313,
+          "sysroot_std_core_alloc": 94053,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 18
+        }
+      },
+      "lto_fat": {
+        "file_size_bytes": 1956472,
+        "text_bytes": 223136,
+        "rodata_bytes": 20730,
+        "data_rel_ro_bytes": 5576,
+        "eh_frame_bytes": 19228,
+        "gcc_except_table_bytes": 3444,
+        "rela_dyn_bytes": 8136,
+        "tdata_tbss_bytes": 24,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4231,
+          "crt_startup": 182,
+          "sysroot_std_core_alloc": 75654,
+          "sysroot_backtrace_dwarf": 145926,
+          "local_crate_rust": 467
+        }
+      },
+      "panic_abort": {
+        "file_size_bytes": 4530464,
+        "text_bytes": 240963,
+        "rodata_bytes": 21516,
+        "data_rel_ro_bytes": 7000,
+        "eh_frame_bytes": 24888,
+        "gcc_except_table_bytes": 13244,
+        "rela_dyn_bytes": 15912,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4198,
+          "crt_startup": 162,
+          "sysroot_std_core_alloc": 93807,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 18
+        }
+      }
+    },
+    "cli_tool": {
+      "dev": {
+        "file_size_bytes": 4641928,
+        "text_bytes": 279379,
+        "rodata_bytes": 29396,
+        "data_rel_ro_bytes": 8792,
+        "eh_frame_bytes": 33588,
+        "gcc_except_table_bytes": 13888,
+        "rela_dyn_bytes": 19200,
+        "tdata_tbss_bytes": 104,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4964,
+          "crt_startup": 313,
+          "sysroot_std_core_alloc": 128595,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 1149
+        }
+      },
+      "release": {
+        "file_size_bytes": 4568392,
+        "text_bytes": 254995,
+        "rodata_bytes": 23204,
+        "data_rel_ro_bytes": 7864,
+        "eh_frame_bytes": 26856,
+        "gcc_except_table_bytes": 13396,
+        "rela_dyn_bytes": 17952,
+        "tdata_tbss_bytes": 104,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4428,
+          "crt_startup": 313,
+          "sysroot_std_core_alloc": 104035,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 3265
+        }
+      },
+      "lto_fat": {
+        "file_size_bytes": 2013224,
+        "text_bytes": 237866,
+        "rodata_bytes": 23106,
+        "data_rel_ro_bytes": 5928,
+        "eh_frame_bytes": 20452,
+        "gcc_except_table_bytes": 3744,
+        "rela_dyn_bytes": 8592,
+        "tdata_tbss_bytes": 48,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4260,
+          "crt_startup": 182,
+          "sysroot_std_core_alloc": 84125,
+          "sysroot_backtrace_dwarf": 145926,
+          "local_crate_rust": 6538
+        }
+      },
+      "panic_abort": {
+        "file_size_bytes": 4561184,
+        "text_bytes": 253907,
+        "rodata_bytes": 23196,
+        "data_rel_ro_bytes": 7888,
+        "eh_frame_bytes": 26580,
+        "gcc_except_table_bytes": 13244,
+        "rela_dyn_bytes": 17904,
+        "tdata_tbss_bytes": 104,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4198,
+          "crt_startup": 162,
+          "sysroot_std_core_alloc": 103771,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 2882
+        }
+      }
+    },
+    "async_server": {
+      "dev": {
+        "file_size_bytes": 4583904,
+        "text_bytes": 259411,
+        "rodata_bytes": 25780,
+        "data_rel_ro_bytes": 7840,
+        "eh_frame_bytes": 29316,
+        "gcc_except_table_bytes": 13664,
+        "rela_dyn_bytes": 17496,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4615,
+          "crt_startup": 313,
+          "sysroot_std_core_alloc": 110105,
+          "local_crate_rust": 875,
+          "sysroot_backtrace_dwarf": 148243
+        }
+      },
+      "release": {
+        "file_size_bytes": 4552408,
+        "text_bytes": 250547,
+        "rodata_bytes": 22100,
+        "data_rel_ro_bytes": 7296,
+        "eh_frame_bytes": 26312,
+        "gcc_except_table_bytes": 13360,
+        "rela_dyn_bytes": 16704,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4428,
+          "crt_startup": 313,
+          "sysroot_std_core_alloc": 102150,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 676
+        }
+      },
+      "lto_fat": {
+        "file_size_bytes": 2002552,
+        "text_bytes": 229664,
+        "rodata_bytes": 21130,
+        "data_rel_ro_bytes": 5848,
+        "eh_frame_bytes": 19884,
+        "gcc_except_table_bytes": 3604,
+        "rela_dyn_bytes": 8712,
+        "tdata_tbss_bytes": 24,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4231,
+          "crt_startup": 182,
+          "sysroot_std_core_alloc": 80314,
+          "sysroot_backtrace_dwarf": 145926,
+          "local_crate_rust": 2235
+        }
+      },
+      "panic_abort": {
+        "file_size_bytes": 4545304,
+        "text_bytes": 249683,
+        "rodata_bytes": 22084,
+        "data_rel_ro_bytes": 7320,
+        "eh_frame_bytes": 26004,
+        "gcc_except_table_bytes": 13244,
+        "rela_dyn_bytes": 16656,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4198,
+          "crt_startup": 162,
+          "sysroot_std_core_alloc": 101845,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 576
+        }
+      }
+    },
+    "cdylib": {
+      "dev": {
+        "file_size_bytes": 4513424,
+        "text_bytes": 230467,
+        "rodata_bytes": 20627,
+        "data_rel_ro_bytes": 5856,
+        "eh_frame_bytes": 23920,
+        "gcc_except_table_bytes": 13400,
+        "rela_dyn_bytes": 13416,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4361,
+          "crt_startup": 279,
+          "sysroot_std_core_alloc": 82734,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 282
+        }
+      },
+      "release": {
+        "file_size_bytes": 4505904,
+        "text_bytes": 228339,
+        "rodata_bytes": 18867,
+        "data_rel_ro_bytes": 5736,
+        "eh_frame_bytes": 23300,
+        "gcc_except_table_bytes": 13324,
+        "rela_dyn_bytes": 13272,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4194,
+          "crt_startup": 279,
+          "sysroot_std_core_alloc": 81061,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 121
+        }
+      },
+      "lto_fat": {
+        "file_size_bytes": 1796632,
+        "text_bytes": 211689,
+        "rodata_bytes": 17938,
+        "data_rel_ro_bytes": 5072,
+        "eh_frame_bytes": 17688,
+        "gcc_except_table_bytes": 3016,
+        "rela_dyn_bytes": 7320,
+        "tdata_tbss_bytes": 16,
+        "symbol_origin_bytes": {
+          "other_or_linker": 2554,
+          "crt_startup": 148,
+          "sysroot_std_core_alloc": 65947,
+          "sysroot_backtrace_dwarf": 145926,
+          "local_crate_rust": 420
+        }
+      },
+      "panic_abort": {
+        "file_size_bytes": 4499560,
+        "text_bytes": 227811,
+        "rodata_bytes": 18803,
+        "data_rel_ro_bytes": 5736,
+        "eh_frame_bytes": 23108,
+        "gcc_except_table_bytes": 13244,
+        "rela_dyn_bytes": 13248,
+        "tdata_tbss_bytes": 80,
+        "symbol_origin_bytes": {
+          "other_or_linker": 4098,
+          "crt_startup": 128,
+          "sysroot_std_core_alloc": 80815,
+          "sysroot_backtrace_dwarf": 148243,
+          "local_crate_rust": 115
+        }
+      }
+    },
+    "staticlib": {
+      "dev": {
+        "file_size_bytes": 23352246
+      },
+      "release": {
+        "file_size_bytes": 23336422
+      },
+      "lto_fat": {
+        "file_size_bytes": 7627172
+      },
+      "panic_abort": {
+        "file_size_bytes": 23310382
+      }
+    }
+  },
+  "gc_and_icf_ablation": {
+    "default_gc_sections": {
+      "file_size_bytes": 4568392,
+      "text_bytes": 254995,
+      "rodata_bytes": 23204,
+      "data_rel_ro_bytes": 7864,
+      "eh_frame_bytes": 26856,
+      "gcc_except_table_bytes": 13396,
+      "rela_dyn_bytes": 17952,
+      "tdata_tbss_bytes": 104,
+      "symbol_origin_bytes": {
+        "other_or_linker": 4428,
+        "crt_startup": 313,
+        "sysroot_std_core_alloc": 104035,
+        "sysroot_backtrace_dwarf": 148243,
+        "local_crate_rust": 3265
+      }
+    },
+    "no_gc_sections": {
+      "file_size_bytes": 5455960,
+      "text_bytes": 697949,
+      "rodata_bytes": 107020,
+      "data_rel_ro_bytes": 26280,
+      "eh_frame_bytes": 102748,
+      "gcc_except_table_bytes": 13396,
+      "rela_dyn_bytes": 53400,
+      "tdata_tbss_bytes": 144,
+      "symbol_origin_bytes": {
+        "other_or_linker": 37421,
+        "crt_startup": 313,
+        "sysroot_std_core_alloc": 462302,
+        "sysroot_backtrace_dwarf": 219638,
+        "compiler_builtins": 198,
+        "local_crate_rust": 3265
+      }
+    },
+    "icf_safe": {
+      "file_size_bytes": 4568392,
+      "text_bytes": 254995,
+      "rodata_bytes": 23204,
+      "data_rel_ro_bytes": 7864,
+      "eh_frame_bytes": 26856,
+      "gcc_except_table_bytes": 13396,
+      "rela_dyn_bytes": 17952,
+      "tdata_tbss_bytes": 104,
+      "symbol_origin_bytes": {
+        "other_or_linker": 4428,
+        "crt_startup": 313,
+        "sysroot_std_core_alloc": 104035,
+        "sysroot_backtrace_dwarf": 148243,
+        "local_crate_rust": 3265
+      }
+    },
+    "icf_all": {
+      "file_size_bytes": 4566456,
+      "text_bytes": 253907,
+      "rodata_bytes": 23204,
+      "data_rel_ro_bytes": 7864,
+      "eh_frame_bytes": 26008,
+      "gcc_except_table_bytes": 13396,
+      "rela_dyn_bytes": 17952,
+      "tdata_tbss_bytes": 104,
+      "symbol_origin_bytes": {
+        "other_or_linker": 4428,
+        "crt_startup": 313,
+        "sysroot_std_core_alloc": 104035,
+        "sysroot_backtrace_dwarf": 148243,
+        "local_crate_rust": 3265
+      }
+    },
+    "fn_ptr_probe_icf_none": {
+      "stdout": "p1=0x555619b46ab8 p2=0x555619b46ab8 eq=true sum=2469137",
+      "text_bytes": 241859
+    },
+    "fn_ptr_probe_icf_safe": {
+      "stdout": "p1=0x55a64ab37ab8 p2=0x55a64ab37ab8 eq=true sum=2469137",
+      "text_bytes": 241859
+    },
+    "fn_ptr_probe_icf_all": {
+      "stdout": "p1=0x55e6ba0d67f8 p2=0x55e6ba0d67f8 eq=true sum=2469137",
+      "text_bytes": 241123
+    }
+  },
+  "cross_target_rlib_staticlib": {
+    "x86_64-unknown-linux-gnu": {
+      "staticlib_bytes": 23336456,
+      "single_cgu_object_bytes": 2360
+    },
+    "i686-unknown-linux-gnu": {
+      "staticlib_bytes": 19316796,
+      "single_cgu_object_bytes": 1832
+    },
+    "aarch64-unknown-linux-gnu": {
+      "staticlib_bytes": 24376378,
+      "single_cgu_object_bytes": 2520
+    },
+    "aarch64-apple-darwin": {
+      "staticlib_bytes": 18716088,
+      "single_cgu_object_bytes": 1592
+    },
+    "x86_64-pc-windows-msvc": {
+      "staticlib_bytes": 12817714,
+      "single_cgu_object_bytes": 1928
+    },
+    "i686-pc-windows-msvc": {
+      "staticlib_bytes": 13248146,
+      "single_cgu_object_bytes": 1832
+    },
+    "aarch64-pc-windows-msvc": {
+      "staticlib_bytes": 12610370,
+      "single_cgu_object_bytes": 1901
+    },
+    "x86_64-pc-windows-gnu": {
+      "staticlib_bytes": 17368946,
+      "single_cgu_object_bytes": 1228
+    }
+  }
+}

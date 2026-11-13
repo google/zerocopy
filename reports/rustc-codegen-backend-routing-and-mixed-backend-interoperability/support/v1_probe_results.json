@@ -1,0 +1,176 @@
+{
+  "unwind_drop_clif_if:call_with_guard": {
+    "cgu_routing": [
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.00 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.15 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.01 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.14 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.02 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.13 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.03 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.12 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.04 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.11 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.05 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.10 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.06 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.09 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.07 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.08 -> LLVM"
+    ],
+    "run_rc": 101,
+    "stdout": "res=true dropped=0",
+    "stderr_first": "thread 'main' (3994556) panicked at /tmp/rustc-1.99.1-probes/probe1_unwind_drop.rs:9:13:"
+  },
+  "unwind_drop_llvm_if:call_with_guard": {
+    "cgu_routing": [
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.00 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.15 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.01 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.14 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.02 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.13 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.03 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.12 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.04 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.11 -> LLVM",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.05 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.10 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.06 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.09 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.07 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe1_unwind_drop.66532eee26b53eed-cgu.08 -> CRANELIFT"
+    ],
+    "run_rc": 101,
+    "stdout": "",
+    "stderr_first": "thread 'main' (3994626) panicked at /tmp/rustc-1.99.1-probes/probe1_unwind_drop.rs:9:13:"
+  },
+  "intr_llvm_0_all_clif": {
+    "compile_rc": 0,
+    "stderr_tail": "[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.10 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.01 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.09 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.02 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.08 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.03 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.07 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.04 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.06 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.05 -> CRANELIFT\nwarning: 1 warning emitted\n",
+    "run_rc": 0,
+    "stdout": "clmul=127 funnel=16 cmul=(23, 0)"
+  },
+  "intr_llvm_0_llvm_if:intr_mod": {
+    "compile_rc": 0,
+    "stderr_tail": "[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.10 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.01 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.09 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.02 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.08 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.03 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.07 -> LLVM\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.04 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.06 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.05 -> CRANELIFT\nwarning: 1 warning emitted\n",
+    "run_rc": 0,
+    "stdout": "clmul=127 funnel=16 cmul=(23, 0)"
+  },
+  "intr_llvm_1_all_clif": {
+    "compile_rc": 1,
+    "stderr_tail": "          rust-lld: error: undefined symbol: core::intrinsics::carryless_mul::<u64>\n          >>> referenced by probe2_intr_fixed.6505190bb2f0d52f-cgu.5.o\n          >>>               /tmp/rustc-1.99.1-probes/p2_1_all_clif.probe2_intr_fixed.6505190bb2f0d52f-cgu.5.rcgu.o:(probe2_intr_fixed::intr_mod::do_clmul)\n          \n          rust-lld: error: undefined symbol: core::intrinsics::unchecked_funnel_shl::<u64>\n          >>> referenced by probe2_intr_fixed.6505190bb2f0d52f-cgu.5.o\n          >>>               /tmp/rustc-1.99.1-probes/p2_1_all_clif.probe2_intr_fixed.6505190bb2f0d52f-cgu.5.rcgu.o:(probe2_intr_fixed::intr_mod::do_funnel)\n          collect2: error: ld returned 1 exit status\n          \n\nerror: aborting due to 1 previous error; 1 warning emitted\n",
+    "run_rc": null,
+    "stdout": null
+  },
+  "intr_llvm_1_llvm_if:intr_mod": {
+    "compile_rc": 0,
+    "stderr_tail": "\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.0 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.8 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.1 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.7 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.2 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.6 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.3 -> CRANELIFT\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.5 -> LLVM\n[COMPOSITE] cgu=probe2_intr_fixed.6505190bb2f0d52f-cgu.4 -> CRANELIFT\nwarning: 1 warning emitted\n",
+    "run_rc": 0,
+    "stdout": "clmul=127 funnel=16 cmul=(23, 0)"
+  },
+  "simd_avx_all_llvm": {
+    "compile_rc": 1,
+    "stderr_tail": "error: this function call uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled in the caller\nerror: this function definition uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\nerror: aborting due to 2 previous errors; 8 warnings emitted",
+    "run_rc": null,
+    "stdout": null
+  },
+  "simd_avx_all_clif": {
+    "compile_rc": 1,
+    "stderr_tail": "error: this function call uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled in the caller\nerror: this function definition uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\nerror: aborting due to 2 previous errors; 8 warnings emitted",
+    "run_rc": null,
+    "stdout": null
+  },
+  "simd_avx_llvm_if:simd_callee": {
+    "compile_rc": 1,
+    "stderr_tail": "error: this function call uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled in the caller\nerror: this function definition uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\nerror: aborting due to 2 previous errors; 8 warnings emitted",
+    "run_rc": null,
+    "stdout": null
+  },
+  "simd_avx_clif_if:simd_callee": {
+    "compile_rc": 1,
+    "stderr_tail": "error: this function call uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled in the caller\nerror: this function definition uses SIMD vector type `F32x8` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\nerror: aborting due to 2 previous errors; 8 warnings emitted",
+    "run_rc": null,
+    "stdout": null
+  },
+  "atom128_all_llvm": {
+    "compile_rc": 0,
+    "cgu_routing": [
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.0 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.7 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.1 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.6 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.2 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.5 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.3 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.4 -> LLVM"
+    ],
+    "run_rc": 0,
+    "stdout": "prev=100"
+  },
+  "atom128_all_clif": {
+    "compile_rc": 101,
+    "cgu_routing": [
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.0 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.7 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.1 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.6 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.2 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.5 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.3 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.4 -> CRANELIFT",
+      "Error while defining _RNvNtCs3sjpjgtMGpA_16probe4_atom128_28atom_mod7bump128: Compilation(Unsupported(\"should be implemented in ISLE: inst = `v8 = atomic_rmw.i128 add v5, v0`, type = `Some(types::I128)`\"))"
+    ],
+    "run_rc": null,
+    "stdout": null
+  },
+  "atom128_llvm_if:bump128": {
+    "compile_rc": 0,
+    "cgu_routing": [
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.0 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.7 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.1 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.6 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.2 -> LLVM",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.5 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.3 -> CRANELIFT",
+      "[COMPOSITE] cgu=probe4_atom128_2.28430a7d2594226c-cgu.4 -> CRANELIFT"
+    ],
+    "run_rc": 0,
+    "stdout": "prev=100"
+  },
+  "fuzz_32_seeds_no_lto": {
+    "pass": 14,
+    "fail": 18
+  },
+  "mixed_cgu_lto_thin": {
+    "compile_rc": 101,
+    "panic_line": [
+      "thread 'opt cgu.0' (3996664) panicked at src/driver/aot.rs:511:17:",
+      "Cannot serialize Cranelift AotModule to LLVM bitcode ModuleBuffer (is_thin=true)",
+      "error: the compiler unexpectedly panicked. This is a bug",
+      "thread 'opt cgu.2' (3996668) panicked at src/driver/aot.rs:511:17:",
+      "Cannot serialize Cranelift AotModule to LLVM bitcode ModuleBuffer (is_thin=true)",
+      "error: the compiler unexpectedly panicked. This is a bug",
+      "thread 'opt cgu.3' (3996670) panicked at src/driver/aot.rs:511:17:",
+      "Cannot serialize Cranelift AotModule to LLVM bitcode ModuleBuffer (is_thin=true)",
+      "error: the compiler unexpectedly panicked. This is a bug",
+      "thread 'opt cgu.4' (3996671) panicked at src/driver/aot.rs:511:17:",
+      "Cannot serialize Cranelift AotModule to LLVM bitcode ModuleBuffer (is_thin=true)",
+      "error: the compiler unexpectedly panicked. This is a bug",
+      "thread 'coordinator' (3996663) panicked at <rustup-1.99.1-sysroot>/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_ssa/src/back/write.rs:1731:29:",
+      "<rustup-1.99.1-sysroot>/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_ssa/src/back/write.rs:1731:29: worker thread panicked",
+      "error: the compiler unexpectedly panicked. This is a bug",
+      "thread 'rustc' (3996661) panicked at <rustup-1.99.1-sysroot>/lib/rustlib/rustc-src/rust/compiler/rustc_codegen_ssa/src/back/write.rs:2157:17:",
+      "error: the compiler unexpectedly panicked. This is a bug"
+    ]
+  },
+  "mixed_cgu_lto_fat": {
+    "compile_rc": 101,
+    "panic_line": [
+      "thread 'rustc' (3996682) panicked at src/driver/aot.rs:400:49:",
+      "FatLTO received in-memory Cranelift CGU `test_composite.737241dd93dbddb2-cgu.0` without LLVM bitcode!",
+      "error: the compiler unexpectedly panicked. This is a bug"
+    ]
+  }
+}
