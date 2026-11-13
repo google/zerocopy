@@ -23220,6 +23220,90 @@
         "anneal/toolchain-baseline"
       ]
     },
+    "rustc-benchmark-methodology-and-speed-size-baselines": {
+      "observed_at": "2026-11-13",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 target standard libraries"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-perf",
+            "revision": "b9d680e5dda9b6d9ff98716e9eed705dad3c105d"
+          },
+          "name": "rustc-perf compiler and runtime benchmark suite"
+        },
+        {
+          "identity": {
+            "repository": "serde-rs/json",
+            "revision": "3f17d2c6ea1588bd7b714359522bd94751465275",
+            "version": "1.0.151"
+          },
+          "name": "serde_json JSON serialization library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/regex",
+            "revision": "5ea3eb1e95f0338e283f5f0b4681f0891a1cd836",
+            "version": "1.12.3"
+          },
+          "name": "regex regular expression engine"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/syn",
+            "revision": "4e508677213155cf73b4072f7a82f73a26cad3f5",
+            "version": "2.0.119"
+          },
+          "name": "syn Rust syntax parser library"
+        },
+        {
+          "identity": {
+            "repository": "Amanieu/parking_lot",
+            "revision": "03d36d62fecbd85ce7cea1babfae23c673f0c6a3",
+            "version": "0.12.5"
+          },
+          "name": "parking_lot synchronization primitives"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/bytes",
+            "revision": "acd1e0ffb8f076225759b8005d04f65ef77cccca",
+            "version": "1.11.1"
+          },
+          "name": "bytes byte buffer abstraction library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/hashbrown",
+            "revision": "0622304393c802aef285257e4864147cc2ac7374",
+            "version": "0.16.1"
+          },
+          "name": "hashbrown SwissTable hash map library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/benchmark-baselines",
+        "rustc",
+        "llvm",
+        "compilers",
+        "systems"
+      ]
+    },
     "rustc-binary-origin-attribution-gc-sections-and-icf-soundness": {
       "observed_at": "2026-11-13",
       "subjects": [

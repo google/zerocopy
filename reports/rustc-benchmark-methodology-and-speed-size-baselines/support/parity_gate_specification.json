@@ -1,0 +1,178 @@
+{
+  "specification_version": "1.0.0",
+  "baseline_subject": {
+    "rustc_version": "1.99.1",
+    "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+    "llvm_version": "23.1.1",
+    "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+    "rustc_perf_commit": "b9d680e5dda9b6d9ff98716e9eed705dad3c105d"
+  },
+  "rustc_perf_runtime_suite_inventory": {
+    "num_groups": 12,
+    "num_benchmarks": 35,
+    "groups": {
+      "arc-rc": {
+        "registered_benchmarks": [
+          "rc_alloc",
+          "arc_alloc",
+          "rc_alloc_slice",
+          "arc_alloc_slice",
+          "rc_drop",
+          "arc_drop",
+          "rc_deref",
+          "arc_deref",
+          "rc_deref_slice",
+          "arc_deref_slice",
+          "rc_increment",
+          "arc_increment",
+          "rc_decrement",
+          "arc_decrement",
+          "rc_downgrade_upgrade",
+          "arc_downgrade_upgrade"
+        ],
+        "main_rs_lines": 207
+      },
+      "bufreader": {
+        "registered_benchmarks": [
+          "bufreader_snappy"
+        ],
+        "main_rs_lines": 35
+      },
+      "compression": {
+        "registered_benchmarks": [
+          "brotli-compress",
+          "brotli-decompress"
+        ],
+        "main_rs_lines": 52
+      },
+      "css": {
+        "registered_benchmarks": [
+          "css-parse-fb"
+        ],
+        "main_rs_lines": 18
+      },
+      "fmt": {
+        "registered_benchmarks": [
+          "fmt-write-str",
+          "fmt-debug-derive"
+        ],
+        "main_rs_lines": 44
+      },
+      "hashmap": {
+        "registered_benchmarks": [
+          "hashmap_insert_1m",
+          "hashmap_remove_1m",
+          "hashmap_find_1m",
+          "hashmap_find_misses_1m",
+          "hashmap_iterate_1m"
+        ],
+        "main_rs_lines": 70
+      },
+      "nbody": {
+        "registered_benchmarks": [
+          "nbody_5k"
+        ],
+        "main_rs_lines": 19
+      },
+      "nes": {
+        "registered_benchmarks": [
+          "pinky-nes15"
+        ],
+        "main_rs_lines": 76
+      },
+      "parsing": {
+        "registered_benchmarks": [
+          "nom-json"
+        ],
+        "main_rs_lines": 22
+      },
+      "raytracer": {
+        "registered_benchmarks": [
+          "raytracer"
+        ],
+        "main_rs_lines": 103
+      },
+      "svg": {
+        "registered_benchmarks": [
+          "svg-parse-1",
+          "svg-render-1"
+        ],
+        "main_rs_lines": 34
+      },
+      "text-search": {
+        "registered_benchmarks": [
+          "regex-search-1",
+          "regex-capture-1"
+        ],
+        "main_rs_lines": 22
+      }
+    }
+  },
+  "measurement_and_isolation_protocol": {
+    "process_invocations_N": 30,
+    "warmup_invocations": 3,
+    "in_process_iterations_M": 100,
+    "cpu_pinning": "numactl --cpunodebind=0 --membind=0 taskset -c <physical_core_0_to_22_even>",
+    "aslr_policy": "setarch x86_64 -R for deterministic baseline runs; paired with K=16 LLD --shuffle-sections=*=<seed> ensemble",
+    "noise_gate_max_normalized_iqr_pct": 3.0,
+    "layout_noise_floor_observed_pct": {
+      "bench-serde-json": 19.604,
+      "bench-regex-automata": 69.972,
+      "bench-hashbrown-indexmap": 2.287,
+      "bench-simd-kernels": 2.552,
+      "bench-unwind-drop-ladder": 3.05,
+      "bench-concurrency-sync": 8.565,
+      "bench-compression-image": 5.631,
+      "bench-ffi-no-std-crc32c": 2.39
+    }
+  },
+  "statistical_decision_procedure": {
+    "per_workload_ratio": "R_i = median(T_candidate, i) / median(T_baseline, i)",
+    "confidence_interval": "10,000-resample percentile bootstrap 95% CI [L_i, U_i] on R_i",
+    "rank_test": "Two-sided Mann-Whitney U test (alpha = 0.01) with tie correction",
+    "tost_non_inferiority_criterion": "Reject inferiority H0 (R >= 1 + delta) at alpha = 0.025 one-sided iff upper 95% bootstrap CI bound U <= 1 + delta",
+    "layout_adjusted_significance": "A per-workload regression is layout-robust only if (L_i - 1) exceeds the 16-seed section-shuffle standard deviation sigma_layout,i for workload i"
+  },
+  "parity_tiers": {
+    "Tier_A_Strict_Drop_In_Release_Parity": {
+      "reference_baseline_config": "C05_O3_thinlocal (or matched profile C06/C07/C10)",
+      "runtime_speed_gates": {
+        "suite_geomean_upper_95ci_max_regression_pct": 2.0,
+        "p90_workload_max_regression_pct": 5.0,
+        "worst_case_single_workload_max_regression_pct": 10.0
+      },
+      "binary_size_gates": {
+        "text_plus_rodata_geomean_max_growth_pct": 3.0,
+        "stripped_image_geomean_max_growth_pct": 5.0,
+        "worst_case_workload_text_plus_rodata_max_growth_pct": 10.0
+      },
+      "compile_time_gates": {
+        "non_proof_compile_wall_time_geomean_max_multiplier": 1.5,
+        "proof_checking_and_certificate_emission_max_multiplier": 5.0
+      }
+    },
+    "Tier_B_No_LTO_Verified_Backend_Parity": {
+      "reference_baseline_config": "C04_O3_no_lto (-C opt-level=3 -C lto=off)",
+      "runtime_speed_gates": {
+        "suite_geomean_upper_95ci_max_regression_pct": 5.0,
+        "p90_workload_max_regression_pct": 12.0,
+        "worst_case_single_workload_max_regression_pct": 20.0
+      },
+      "binary_size_gates": {
+        "text_plus_rodata_geomean_max_growth_pct": 10.0,
+        "stripped_image_geomean_max_growth_pct": 15.0,
+        "worst_case_workload_text_plus_rodata_max_growth_pct": 25.0
+      }
+    },
+    "Tier_C_Unoptimized_Fast_Verified_Baseline": {
+      "reference_baseline_config": "C02_O1 (-C opt-level=1) / Cranelift 0.134.0 -O3 -Zinline-mir",
+      "runtime_speed_gates": {
+        "suite_geomean_upper_95ci_max_regression_pct_vs_C05": 65.0,
+        "must_beat_or_match_cranelift_0_134_0_geomean": true
+      },
+      "binary_size_gates": {
+        "text_plus_rodata_geomean_max_growth_pct_vs_C05": 35.0
+      }
+    }
+  }
+}
