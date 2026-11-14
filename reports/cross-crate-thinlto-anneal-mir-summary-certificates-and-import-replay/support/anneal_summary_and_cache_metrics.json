@@ -1,0 +1,458 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "anneal_module_summary_v1": {
+    "schema": "AnnealModuleSummaryV1",
+    "total_symbols": 10,
+    "export_roots": [
+      "dep_math::KEEP_COMPILER_USED",
+      "lto_benchmark_entry"
+    ],
+    "internalized_symbols": [
+      "<dep_math::AffineTransform as dep_math::Transform>::apply",
+      "dep_math::cross_crate_mix_step",
+      "dep_math::cross_crate_poly_eval",
+      "leaf_bench::mod_a::cross_cgu_step_a",
+      "leaf_bench::mod_b::cross_cgu_step_b",
+      "leaf_bench::mod_c::run_dyn_dispatch"
+    ],
+    "dead_stripped_symbols": [
+      "dep_math::dead_exported_helper_1",
+      "dep_math::dead_exported_helper_2"
+    ],
+    "cgu_import_lists": {
+      "dep_math.cgu0": [],
+      "leaf_bench.mod_a": [
+        "dep_math::cross_crate_mix_step"
+      ],
+      "leaf_bench.mod_b": [
+        "leaf_bench::mod_a::cross_cgu_step_a",
+        "dep_math::cross_crate_mix_step",
+        "dep_math::cross_crate_poly_eval"
+      ],
+      "leaf_bench.mod_c": [
+        "<dep_math::AffineTransform as dep_math::Transform>::apply",
+        "dep_math::cross_crate_poly_eval"
+      ],
+      "leaf_bench.root": [
+        "leaf_bench::mod_a::cross_cgu_step_a",
+        "leaf_bench::mod_b::cross_cgu_step_b",
+        "leaf_bench::mod_c::run_dyn_dispatch",
+        "dep_math::cross_crate_mix_step",
+        "dep_math::cross_crate_poly_eval",
+        "<dep_math::AffineTransform as dep_math::Transform>::apply"
+      ]
+    },
+    "symbols": [
+      {
+        "cgu": "dep_math.cgu0",
+        "symbol": "dep_math::cross_crate_mix_step",
+        "guid": "0xf05b4c1255ed1e9d",
+        "mir_sha256": "6f5a06459bc50dab435271745e730f7b7ebc985f1eb6310a9f8dc034727ba9a4",
+        "linkage": "External",
+        "mir_statements": 24,
+        "mir_basic_blocks": 4,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "willreturn_witness": "BoundedLoopSCEV(round: 0..4, step: +1)",
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "dep_math.cgu0",
+        "symbol": "dep_math::cross_crate_poly_eval",
+        "guid": "0x61a57f51c646b822",
+        "mir_sha256": "ea6fb654f5b35f90190d71da1cb77bf0155ddd1e7abfd15385413c8c54c17cd8",
+        "linkage": "External",
+        "mir_statements": 21,
+        "mir_basic_blocks": 4,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "willreturn_witness": "BoundedLoopSCEV(i: 0..3, step: +1)",
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "dep_math.cgu0",
+        "symbol": "<dep_math::AffineTransform as dep_math::Transform>::apply",
+        "guid": "0x2af13de5b85eb38f",
+        "mir_sha256": "b71c03b3b9144d5bbe298964821839adde3d1607745c6cdaa79c8bb75ba11c67",
+        "linkage": "External",
+        "mir_statements": 6,
+        "mir_basic_blocks": 2,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "dep_math::cross_crate_poly_eval",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readonly",
+          "nounwind": true,
+          "willreturn": true,
+          "willreturn_witness": "AcyclicCallToWillReturn(dep_math::cross_crate_poly_eval)",
+          "nofree": true,
+          "nosync": true,
+          "param_attrs": [
+            {
+              "idx": 0,
+              "noalias": true,
+              "readonly": true,
+              "captures_none": true,
+              "nonnull": true
+            }
+          ]
+        }
+      },
+      {
+        "cgu": "dep_math.cgu0",
+        "symbol": "dep_math::dead_exported_helper_1",
+        "guid": "0xc2da0d6f59067c60",
+        "mir_sha256": "5776e2d470528fea7c5ef44b49c19d8b76a603ce0f744d19fe96e7826d9ac1f1",
+        "linkage": "External",
+        "mir_statements": 5,
+        "mir_basic_blocks": 2,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "dep_math::cross_crate_mix_step",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "dep_math.cgu0",
+        "symbol": "dep_math::dead_exported_helper_2",
+        "guid": "0xcc1cc5423b5928ca",
+        "mir_sha256": "541ec3bf7e2598b667ffd31b47e62354adb5287e59930d2607a532eaa6767fd1",
+        "linkage": "External",
+        "mir_statements": 5,
+        "mir_basic_blocks": 2,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "dep_math::cross_crate_mix_step",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "dep_math.cgu0",
+        "symbol": "dep_math::KEEP_COMPILER_USED",
+        "guid": "0x45ea6164447ec282",
+        "mir_sha256": "1aaaf5ffc81b7b01013fa604604a0d8912be2cfade34f2cc3ee6317ca6daf227",
+        "linkage": "External",
+        "mir_statements": 1,
+        "mir_basic_blocks": 1,
+        "rmeta_exported_by_rustc": true,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": true,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "leaf_bench.mod_a",
+        "symbol": "leaf_bench::mod_a::cross_cgu_step_a",
+        "guid": "0xf7253061d8344f6b",
+        "mir_sha256": "1015d48cd89e0a51645f5d85f74ae25daafb4d0d9039d570f92211ab0cbd0d8d",
+        "linkage": "External",
+        "mir_statements": 19,
+        "mir_basic_blocks": 2,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "dep_math::cross_crate_mix_step",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "leaf_bench.mod_b",
+        "symbol": "leaf_bench::mod_b::cross_cgu_step_b",
+        "guid": "0xc60557437ed72e63",
+        "mir_sha256": "d8524fa10e3839b86cfe7ece85cb7f63d97c13f181331a2c144f8e1e7c95d7ac",
+        "linkage": "External",
+        "mir_statements": 12,
+        "mir_basic_blocks": 4,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "leaf_bench::mod_a::cross_cgu_step_a",
+            "callsite_count": 1,
+            "rel_block_freq": 16.0
+          },
+          {
+            "callee": "dep_math::cross_crate_poly_eval",
+            "callsite_count": 1,
+            "rel_block_freq": 16.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readnone",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "leaf_bench.mod_c",
+        "symbol": "leaf_bench::mod_c::run_dyn_dispatch",
+        "guid": "0xc63728ae317cf4d5",
+        "mir_sha256": "34a406e42bbcba3589215353467808af8083d6afd96b7cf850e6040bef8106d1",
+        "linkage": "External",
+        "mir_statements": 14,
+        "mir_basic_blocks": 4,
+        "rmeta_exported_by_rustc": false,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "<dep_math::AffineTransform as dep_math::Transform>::apply",
+            "callsite_count": 1,
+            "rel_block_freq": 16.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readonly",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      },
+      {
+        "cgu": "leaf_bench.root",
+        "symbol": "lto_benchmark_entry",
+        "guid": "0x9319745b9d2c1c03",
+        "mir_sha256": "0aeb8696bd157ac90c277f8df55e859a19b1ae790868fae8e640bc5d84859922",
+        "linkage": "External",
+        "mir_statements": 8,
+        "mir_basic_blocks": 4,
+        "rmeta_exported_by_rustc": true,
+        "anneal_mir_exported": true,
+        "flags": {
+          "used_compiler": false,
+          "used_linker": false,
+          "naked": false,
+          "std_internal": false
+        },
+        "call_edges": [
+          {
+            "callee": "leaf_bench::mod_a::cross_cgu_step_a",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          },
+          {
+            "callee": "leaf_bench::mod_b::cross_cgu_step_b",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          },
+          {
+            "callee": "leaf_bench::mod_c::run_dyn_dispatch",
+            "callsite_count": 1,
+            "rel_block_freq": 1.0
+          }
+        ],
+        "verified_fn_attrs": {
+          "mem_effect": "readonly",
+          "nounwind": true,
+          "willreturn": true,
+          "nofree": true,
+          "nosync": true
+        }
+      }
+    ]
+  },
+  "incremental_certificate_cache_scenarios": [
+    {
+      "scenario": "S1_NoChange_Rebuild",
+      "total_cgus": 5,
+      "cache_hits": 5,
+      "rechecked_cgus": 0,
+      "cache_hit_rate_pct": 100.0,
+      "explanation": "0 CGUs invalidated: 100% certificate cache hit rate (5/5 CGUs reused without re-checking)"
+    },
+    {
+      "scenario": "S2_EditDeadExportedHelperInUpstream",
+      "total_cgus": 5,
+      "cache_hits": 4,
+      "rechecked_cgus": 1,
+      "cache_hit_rate_pct": 80.0,
+      "explanation": "Dead helper is not in any downstream ImportList; only dep_math.cgu0 rebuilds (4/5 = 80.0% cache hit rate)"
+    },
+    {
+      "scenario": "S3_EditLeafModCInternalBodyOnly",
+      "total_cgus": 5,
+      "cache_hits": 3,
+      "rechecked_cgus": 2,
+      "cache_hit_rate_pct": 60.0,
+      "explanation": "Only mod_c and its importer leaf_bench.root rebuild; dep_math, mod_a, mod_b hit cache (3/5 = 60.0% cache hit rate)"
+    },
+    {
+      "scenario": "S4_EditUpstreamMixStepBody_SameSummaryAttrs",
+      "total_cgus": 5,
+      "cache_hits": 1,
+      "rechecked_cgus": 4,
+      "cache_hit_rate_pct": 20.0,
+      "explanation": "mix_step body hash changes in dep_math, mod_a, mod_b, root; mod_c does not import mix_step and hits cache (1/5 = 20.0% cache hit rate)"
+    },
+    {
+      "scenario": "S5_ChangeWhitespaceOrCommentsOnly",
+      "total_cgus": 5,
+      "cache_hits": 5,
+      "rechecked_cgus": 0,
+      "cache_hit_rate_pct": 100.0,
+      "explanation": "Deterministic .anneal-mir SHA-256 and .anneal-summary hashes are span-comment invariant (5/5 = 100.0% cache hit rate)"
+    }
+  ],
+  "benchmark_comparison": [
+    {
+      "configuration": "NoLTO_16CGU",
+      "median_runtime_us": 5728.68,
+      "speedup_vs_nolto_pct": 0.0,
+      "staticlib_text_bytes": 755342,
+      "staticlib_size_reduction_pct": 0.0,
+      "dead_helpers_retained": 0,
+      "used_static_preserved": true
+    },
+    {
+      "configuration": "ThinLocal_16CGU",
+      "median_runtime_us": 5738.42,
+      "speedup_vs_nolto_pct": -0.17,
+      "staticlib_text_bytes": 755401,
+      "staticlib_size_reduction_pct": -0.01,
+      "dead_helpers_retained": 0,
+      "used_static_preserved": true
+    },
+    {
+      "configuration": "LLVM_ThinLTO_CrossCrate",
+      "median_runtime_us": 5056.02,
+      "speedup_vs_nolto_pct": 11.74,
+      "staticlib_text_bytes": 299167,
+      "staticlib_size_reduction_pct": 60.39,
+      "dead_helpers_retained": 0,
+      "used_static_preserved": true
+    },
+    {
+      "configuration": "LLVM_FatLTO_CrossCrate",
+      "median_runtime_us": 5064.42,
+      "speedup_vs_nolto_pct": 11.6,
+      "staticlib_text_bytes": 284148,
+      "staticlib_size_reduction_pct": 62.38,
+      "dead_helpers_retained": 0,
+      "used_static_preserved": true
+    },
+    {
+      "configuration": "AnnealSummary_OracleThinLTO_Replay",
+      "median_runtime_us": 5052.22,
+      "speedup_vs_nolto_pct": 11.81,
+      "staticlib_text_bytes": 298877,
+      "staticlib_size_reduction_pct": 60.43,
+      "dead_helpers_retained": 0,
+      "used_static_preserved": true
+    }
+  ]
+}

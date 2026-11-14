@@ -1,0 +1,7 @@
+target,configuration,loop_fn_insts,indirect_calls_in_loop,direct_calls_in_loop,median_runtime_us,speedup_vs_open_world_pct
+x86_64-unknown-linux-gnu,OpenWorld_Standard_Rustc_LTO,81,4,0,1043.71,0.0
+x86_64-unknown-linux-gnu,ClosedWorld_WPO_Devirt_Single_Funnel_Const,94,1,0,1017.16,2.54
+x86_64-unknown-linux-gnu,ClosedWorld_WPO_Full_Devirt_DAE_ArgProm_GlobalOpt,82,0,0,997.19,4.46
+aarch64-unknown-linux-gnu,OpenWorld_Standard_Rustc_LTO,80,3,1,,
+aarch64-unknown-linux-gnu,ClosedWorld_WPO_Devirt_Single_Funnel_Const,95,0,1,,
+aarch64-unknown-linux-gnu,ClosedWorld_WPO_Full_Devirt_DAE_ArgProm_GlobalOpt,88,0,0,,

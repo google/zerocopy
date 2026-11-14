@@ -1,0 +1,6 @@
+configuration,median_runtime_us,speedup_vs_nolto_pct,staticlib_text_bytes,staticlib_size_reduction_pct,dead_helpers_retained,used_static_preserved
+NoLTO_16CGU,5728.68,0.0,755342,0.0,0,True
+ThinLocal_16CGU,5738.42,-0.17,755401,-0.01,0,True
+LLVM_ThinLTO_CrossCrate,5056.02,11.74,299167,60.39,0,True
+LLVM_FatLTO_CrossCrate,5064.42,11.6,284148,62.38,0,True
+AnnealSummary_OracleThinLTO_Replay,5052.22,11.81,298877,60.43,0,True

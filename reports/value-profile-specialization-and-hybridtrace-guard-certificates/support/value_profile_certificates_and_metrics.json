@@ -1,0 +1,108 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "hybridtrace_vp_certificates": [
+    {
+      "cert_id": "VP1_MemOpSize_16B_AlignedOrUnaligned128",
+      "schema": "VP-MemOpSizeSpecialize",
+      "cert_size_bytes": 304,
+      "check_time_us": 0.121,
+      "verified": true
+    },
+    {
+      "cert_id": "VP1_MemOpSize_12B_OverlappingHeadTail",
+      "schema": "VP-MemOpSizeSpecialize",
+      "cert_size_bytes": 318,
+      "check_time_us": 0.135,
+      "verified": true
+    },
+    {
+      "cert_id": "VP2_IndirectCallPromote_StagePipeline_execute",
+      "schema": "VP-IndirectCallPromote",
+      "cert_size_bytes": 366,
+      "check_time_us": 0.085,
+      "verified": true
+    },
+    {
+      "cert_id": "VP3_VTablePromote_StagePipeline_MultiMethod",
+      "schema": "VP-VTablePromote",
+      "cert_size_bytes": 660,
+      "check_time_us": 0.55,
+      "verified": true
+    }
+  ],
+  "runtime_benchmarks": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "Baseline_NoPGO_Dynamic",
+      "median_runtime_us": 2147.7,
+      "speedup_vs_baseline_pct": 0.0,
+      "share_of_llvm_pgo_gain_pct": 0.0
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "LLVM_23_1_1_PGO_Full",
+      "median_runtime_us": 752.73,
+      "speedup_vs_baseline_pct": 64.95,
+      "share_of_llvm_pgo_gain_pct": 100.0
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "HybridTrace_VP1_MemOpSize_16B_12B",
+      "median_runtime_us": 924.74,
+      "speedup_vs_baseline_pct": 56.94,
+      "share_of_llvm_pgo_gain_pct": 87.7
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "HybridTrace_VP1_plus_VP2_FnPtrPromote",
+      "median_runtime_us": 932.08,
+      "speedup_vs_baseline_pct": 56.6,
+      "share_of_llvm_pgo_gain_pct": 87.1
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "HybridTrace_VP1_plus_VP3_VTablePromote",
+      "median_runtime_us": 650.78,
+      "speedup_vs_baseline_pct": 69.7,
+      "share_of_llvm_pgo_gain_pct": 107.3
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "Baseline_NoPGO_Dynamic",
+      "median_runtime_us": 2548.17,
+      "speedup_vs_baseline_pct": 0.0,
+      "share_of_llvm_pgo_gain_pct": 0.0
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "LLVM_23_1_1_PGO_Full",
+      "median_runtime_us": 1499.78,
+      "speedup_vs_baseline_pct": 41.14,
+      "share_of_llvm_pgo_gain_pct": 100.0
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "HybridTrace_VP1_MemOpSize_16B_12B",
+      "median_runtime_us": 2004.34,
+      "speedup_vs_baseline_pct": 21.34,
+      "share_of_llvm_pgo_gain_pct": 51.9
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "HybridTrace_VP1_plus_VP2_FnPtrPromote",
+      "median_runtime_us": 1477.36,
+      "speedup_vs_baseline_pct": 42.02,
+      "share_of_llvm_pgo_gain_pct": 102.1
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "HybridTrace_VP1_plus_VP3_VTablePromote",
+      "median_runtime_us": 1340.56,
+      "speedup_vs_baseline_pct": 47.39,
+      "share_of_llvm_pgo_gain_pct": 115.2
+    }
+  ]
+}

@@ -1,0 +1,1582 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "per_kernel_timings_us": {
+    "x86-64_Default_Unconstrained": "K1=67.92 K2=51.05 K3=164.85 K4=74.70 K5=69.09 K6=135.92 K7=150.87 K8=8.38",
+    "x86-64-v2_Default_Unconstrained": "K1=67.03 K2=51.96 K3=241.25 K4=74.71 K5=66.06 K6=92.83 K7=189.12 K8=6.55",
+    "x86-64-v3_Default_Unconstrained": "K1=65.00 K2=48.02 K3=164.80 K4=74.69 K5=67.56 K6=93.13 K7=192.98 K8=8.61",
+    "x86-64-v3_StratD_InterleaveCap1_NoGather": "K1=64.05 K2=51.72 K3=164.78 K4=74.71 K5=67.56 K6=93.16 K7=194.16 K8=2.22",
+    "x86-64-v4_Default_Unconstrained": "K1=220.34 K2=29.58 K3=164.76 K4=74.71 K5=67.82 K6=157.03 K7=194.35 K8=7.01",
+    "x86-64-v4_Counterfactual_Force512BitZMM": "K1=118.87 K2=22.43 K3=164.84 K4=74.72 K5=67.82 K6=253.36 K7=150.85 K8=6.55",
+    "x86-64-v4_StratA_Cap256_NoEVEX512_NoGather": "K1=63.81 K2=29.59 K3=164.79 K4=74.71 K5=67.69 K6=156.99 K7=150.89 K8=8.61",
+    "x86-64-v4_StratB_PredicatedTailFold_NoGather": "K1=63.32 K2=43.81 K3=164.78 K4=74.70 K5=67.86 K6=156.99 K7=150.91 K8=4.17",
+    "x86-64-v4_StratC_MinTrip64_CheckCap4": "K1=64.47 K2=29.59 K3=164.78 K4=74.71 K5=67.72 K6=157.04 K7=155.74 K8=8.61",
+    "x86-64-v4_StratD_InterleaveCap1_NoGather": "K1=62.77 K2=33.88 K3=164.78 K4=74.70 K5=67.72 K6=157.29 K7=174.88 K8=8.96",
+    "x86-64-v4_StratE_Hybrid_Cap256_NoGather_UF1": "K1=63.73 K2=54.32 K3=243.65 K4=74.70 K5=67.88 K6=165.05 K7=150.95 K8=2.26",
+    "native_Default_Unconstrained": "K1=225.33 K2=29.55 K3=241.24 K4=74.70 K5=68.03 K6=178.47 K7=165.85 K8=8.23",
+    "native_Counterfactual_Force512BitZMM": "K1=118.61 K2=22.44 K3=243.50 K4=74.70 K5=67.93 K6=250.28 K7=151.60 K8=6.55",
+    "native_StratA_Cap256_NoEVEX512_NoGather": "K1=65.66 K2=29.51 K3=241.37 K4=74.70 K5=67.44 K6=178.42 K7=150.81 K8=8.61",
+    "native_StratB_PredicatedTailFold_NoGather": "K1=63.97 K2=43.78 K3=164.79 K4=74.70 K5=67.75 K6=174.59 K7=166.01 K8=4.17",
+    "native_StratC_MinTrip64_CheckCap4": "K1=65.37 K2=29.50 K3=241.37 K4=74.70 K5=67.47 K6=178.47 K7=150.81 K8=2.08",
+    "native_StratD_InterleaveCap1_NoGather": "K1=62.79 K2=33.86 K3=164.86 K4=74.71 K5=67.68 K6=178.85 K7=150.87 K8=4.51",
+    "native_StratE_Hybrid_Cap256_NoGather_UF1": "K1=62.30 K2=54.32 K3=164.84 K4=74.70 K5=67.69 K6=254.03 K7=150.89 K8=4.64"
+  },
+  "per_kernel_breakdown_8_kernels": {
+    "x86-64_Default_Unconstrained": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 147,
+        "simd_insts": 19,
+        "xmm_insts": 19,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 28
+      },
+      "k2_iter_combinators": {
+        "total_insts": 66,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 12
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 105,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 130,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 35
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 167,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 56,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 85,
+        "simd_insts": 29,
+        "xmm_insts": 29,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    },
+    "x86-64-v2_Default_Unconstrained": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 145,
+        "simd_insts": 18,
+        "xmm_insts": 18,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 28
+      },
+      "k2_iter_combinators": {
+        "total_insts": 63,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 12
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 101,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 130,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 35
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 357,
+        "simd_insts": 117,
+        "xmm_insts": 117,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 56,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 77,
+        "simd_insts": 20,
+        "xmm_insts": 20,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    },
+    "x86-64-v3_Default_Unconstrained": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 110,
+        "simd_insts": 56,
+        "xmm_insts": 19,
+        "ymm_insts": 36,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 11
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 217,
+        "simd_insts": 44,
+        "xmm_insts": 21,
+        "ymm_insts": 22,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 385,
+        "simd_insts": 152,
+        "xmm_insts": 83,
+        "ymm_insts": 52,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "x86-64-v3_StratD_InterleaveCap1_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 167,
+        "simd_insts": 19,
+        "xmm_insts": 14,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 89,
+        "simd_insts": 35,
+        "xmm_insts": 14,
+        "ymm_insts": 20,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 11
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 161,
+        "simd_insts": 14,
+        "xmm_insts": 8,
+        "ymm_insts": 5,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 32
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 385,
+        "simd_insts": 152,
+        "xmm_insts": 83,
+        "ymm_insts": 52,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 53,
+        "simd_insts": 14,
+        "xmm_insts": 10,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    },
+    "x86-64-v4_Default_Unconstrained": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 194,
+        "simd_insts": 92,
+        "xmm_insts": 47,
+        "ymm_insts": 43,
+        "zmm_insts": 0,
+        "kmask_insts": 15,
+        "gather_insts": 5,
+        "branch_insts": 23
+      },
+      "k2_iter_combinators": {
+        "total_insts": 157,
+        "simd_insts": 87,
+        "xmm_insts": 37,
+        "ymm_insts": 49,
+        "zmm_insts": 0,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 208,
+        "simd_insts": 35,
+        "xmm_insts": 19,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 489,
+        "simd_insts": 247,
+        "xmm_insts": 141,
+        "ymm_insts": 82,
+        "zmm_insts": 7,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "x86-64-v4_Counterfactual_Force512BitZMM": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 200,
+        "simd_insts": 98,
+        "xmm_insts": 31,
+        "ymm_insts": 19,
+        "zmm_insts": 46,
+        "kmask_insts": 15,
+        "gather_insts": 5,
+        "branch_insts": 23
+      },
+      "k2_iter_combinators": {
+        "total_insts": 163,
+        "simd_insts": 91,
+        "xmm_insts": 13,
+        "ymm_insts": 26,
+        "zmm_insts": 51,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 210,
+        "simd_insts": 39,
+        "xmm_insts": 13,
+        "ymm_insts": 8,
+        "zmm_insts": 17,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 660,
+        "simd_insts": 410,
+        "xmm_insts": 261,
+        "ymm_insts": 29,
+        "zmm_insts": 103,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 114,
+        "simd_insts": 58,
+        "xmm_insts": 13,
+        "ymm_insts": 27,
+        "zmm_insts": 17,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "x86-64-v4_StratA_Cap256_NoEVEX512_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 157,
+        "simd_insts": 87,
+        "xmm_insts": 37,
+        "ymm_insts": 49,
+        "zmm_insts": 0,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 208,
+        "simd_insts": 35,
+        "xmm_insts": 19,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 489,
+        "simd_insts": 247,
+        "xmm_insts": 141,
+        "ymm_insts": 82,
+        "zmm_insts": 7,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "x86-64-v4_StratB_PredicatedTailFold_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 57,
+        "simd_insts": 29,
+        "xmm_insts": 12,
+        "ymm_insts": 16,
+        "zmm_insts": 0,
+        "kmask_insts": 3,
+        "gather_insts": 0,
+        "branch_insts": 4
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 150,
+        "simd_insts": 20,
+        "xmm_insts": 8,
+        "ymm_insts": 11,
+        "zmm_insts": 0,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 26
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 489,
+        "simd_insts": 247,
+        "xmm_insts": 141,
+        "ymm_insts": 82,
+        "zmm_insts": 7,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 52,
+        "simd_insts": 21,
+        "xmm_insts": 10,
+        "ymm_insts": 10,
+        "zmm_insts": 0,
+        "kmask_insts": 3,
+        "gather_insts": 0,
+        "branch_insts": 4
+      }
+    },
+    "x86-64-v4_StratC_MinTrip64_CheckCap4": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 157,
+        "simd_insts": 87,
+        "xmm_insts": 37,
+        "ymm_insts": 49,
+        "zmm_insts": 0,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 208,
+        "simd_insts": 35,
+        "xmm_insts": 19,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 489,
+        "simd_insts": 247,
+        "xmm_insts": 141,
+        "ymm_insts": 82,
+        "zmm_insts": 7,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "x86-64-v4_StratD_InterleaveCap1_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 167,
+        "simd_insts": 19,
+        "xmm_insts": 14,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 79,
+        "simd_insts": 25,
+        "xmm_insts": 12,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 1,
+        "gather_insts": 0,
+        "branch_insts": 11
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 158,
+        "simd_insts": 11,
+        "xmm_insts": 7,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 32
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 489,
+        "simd_insts": 247,
+        "xmm_insts": 141,
+        "ymm_insts": 82,
+        "zmm_insts": 7,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 53,
+        "simd_insts": 14,
+        "xmm_insts": 10,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    },
+    "x86-64-v4_StratE_Hybrid_Cap256_NoGather_UF1": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 167,
+        "simd_insts": 19,
+        "xmm_insts": 14,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 80,
+        "simd_insts": 26,
+        "xmm_insts": 10,
+        "ymm_insts": 10,
+        "zmm_insts": 5,
+        "kmask_insts": 1,
+        "gather_insts": 0,
+        "branch_insts": 11
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 158,
+        "simd_insts": 12,
+        "xmm_insts": 8,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 32
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 495,
+        "simd_insts": 261,
+        "xmm_insts": 139,
+        "ymm_insts": 95,
+        "zmm_insts": 10,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 53,
+        "simd_insts": 14,
+        "xmm_insts": 10,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    },
+    "native_Default_Unconstrained": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 194,
+        "simd_insts": 92,
+        "xmm_insts": 47,
+        "ymm_insts": 43,
+        "zmm_insts": 0,
+        "kmask_insts": 15,
+        "gather_insts": 5,
+        "branch_insts": 23
+      },
+      "k2_iter_combinators": {
+        "total_insts": 158,
+        "simd_insts": 87,
+        "xmm_insts": 37,
+        "ymm_insts": 49,
+        "zmm_insts": 0,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 208,
+        "simd_insts": 35,
+        "xmm_insts": 19,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 482,
+        "simd_insts": 242,
+        "xmm_insts": 137,
+        "ymm_insts": 79,
+        "zmm_insts": 9,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "native_Counterfactual_Force512BitZMM": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 200,
+        "simd_insts": 98,
+        "xmm_insts": 31,
+        "ymm_insts": 19,
+        "zmm_insts": 46,
+        "kmask_insts": 15,
+        "gather_insts": 5,
+        "branch_insts": 23
+      },
+      "k2_iter_combinators": {
+        "total_insts": 163,
+        "simd_insts": 91,
+        "xmm_insts": 13,
+        "ymm_insts": 26,
+        "zmm_insts": 51,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 210,
+        "simd_insts": 39,
+        "xmm_insts": 13,
+        "ymm_insts": 8,
+        "zmm_insts": 17,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 643,
+        "simd_insts": 402,
+        "xmm_insts": 254,
+        "ymm_insts": 28,
+        "zmm_insts": 103,
+        "kmask_insts": 3,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 114,
+        "simd_insts": 58,
+        "xmm_insts": 13,
+        "ymm_insts": 27,
+        "zmm_insts": 17,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "native_StratA_Cap256_NoEVEX512_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 158,
+        "simd_insts": 87,
+        "xmm_insts": 37,
+        "ymm_insts": 49,
+        "zmm_insts": 0,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 208,
+        "simd_insts": 35,
+        "xmm_insts": 19,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 482,
+        "simd_insts": 242,
+        "xmm_insts": 137,
+        "ymm_insts": 79,
+        "zmm_insts": 9,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "native_StratB_PredicatedTailFold_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 57,
+        "simd_insts": 29,
+        "xmm_insts": 12,
+        "ymm_insts": 16,
+        "zmm_insts": 0,
+        "kmask_insts": 3,
+        "gather_insts": 0,
+        "branch_insts": 4
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 150,
+        "simd_insts": 20,
+        "xmm_insts": 8,
+        "ymm_insts": 11,
+        "zmm_insts": 0,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 26
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 482,
+        "simd_insts": 242,
+        "xmm_insts": 137,
+        "ymm_insts": 79,
+        "zmm_insts": 9,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 52,
+        "simd_insts": 21,
+        "xmm_insts": 10,
+        "ymm_insts": 10,
+        "zmm_insts": 0,
+        "kmask_insts": 3,
+        "gather_insts": 0,
+        "branch_insts": 4
+      }
+    },
+    "native_StratC_MinTrip64_CheckCap4": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 191,
+        "simd_insts": 43,
+        "xmm_insts": 29,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 158,
+        "simd_insts": 87,
+        "xmm_insts": 37,
+        "ymm_insts": 49,
+        "zmm_insts": 0,
+        "kmask_insts": 5,
+        "gather_insts": 0,
+        "branch_insts": 16
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 208,
+        "simd_insts": 35,
+        "xmm_insts": 19,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 37
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 482,
+        "simd_insts": 242,
+        "xmm_insts": 137,
+        "ymm_insts": 79,
+        "zmm_insts": 9,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 110,
+        "simd_insts": 54,
+        "xmm_insts": 38,
+        "ymm_insts": 15,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 13
+      }
+    },
+    "native_StratD_InterleaveCap1_NoGather": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 167,
+        "simd_insts": 19,
+        "xmm_insts": 14,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 79,
+        "simd_insts": 25,
+        "xmm_insts": 12,
+        "ymm_insts": 12,
+        "zmm_insts": 0,
+        "kmask_insts": 1,
+        "gather_insts": 0,
+        "branch_insts": 11
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 158,
+        "simd_insts": 11,
+        "xmm_insts": 7,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 32
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 482,
+        "simd_insts": 242,
+        "xmm_insts": 137,
+        "ymm_insts": 79,
+        "zmm_insts": 9,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 53,
+        "simd_insts": 14,
+        "xmm_insts": 10,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    },
+    "native_StratE_Hybrid_Cap256_NoGather_UF1": {
+      "k1_slice_bounds_iter": {
+        "total_insts": 167,
+        "simd_insts": 19,
+        "xmm_insts": 14,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 36
+      },
+      "k2_iter_combinators": {
+        "total_insts": 80,
+        "simd_insts": 26,
+        "xmm_insts": 10,
+        "ymm_insts": 10,
+        "zmm_insts": 5,
+        "kmask_insts": 1,
+        "gather_insts": 0,
+        "branch_insts": 11
+      },
+      "k3_utf8_scanner": {
+        "total_insts": 45,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 10
+      },
+      "k4_hash_crc_digest": {
+        "total_insts": 112,
+        "simd_insts": 0,
+        "xmm_insts": 0,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 15
+      },
+      "k5_sort_binary_search": {
+        "total_insts": 158,
+        "simd_insts": 12,
+        "xmm_insts": 8,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 32
+      },
+      "k6_zerocopy_endian": {
+        "total_insts": 493,
+        "simd_insts": 257,
+        "xmm_insts": 134,
+        "ymm_insts": 92,
+        "zmm_insts": 14,
+        "kmask_insts": 2,
+        "gather_insts": 0,
+        "branch_insts": 39
+      },
+      "k7_enum_dyn_dispatch": {
+        "total_insts": 54,
+        "simd_insts": 2,
+        "xmm_insts": 2,
+        "ymm_insts": 0,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 5
+      },
+      "k8_simd_numeric_dot": {
+        "total_insts": 53,
+        "simd_insts": 14,
+        "xmm_insts": 10,
+        "ymm_insts": 3,
+        "zmm_insts": 0,
+        "kmask_insts": 0,
+        "gather_insts": 0,
+        "branch_insts": 8
+      }
+    }
+  },
+  "aarch64_neon_vs_sve_strategies": [
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "generic",
+      "strategy": "Default_Unconstrained",
+      "kernels_total_insts": 665,
+      "neon_insts": 99,
+      "sve_insts": 0,
+      "whilelo_insts": 0,
+      "branch_insts": 113,
+      "object_text_bytes": 2620
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "neoverse-n1",
+      "strategy": "Default_Unconstrained",
+      "kernels_total_insts": 730,
+      "neon_insts": 101,
+      "sve_insts": 0,
+      "whilelo_insts": 0,
+      "branch_insts": 130,
+      "object_text_bytes": 2960
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "neoverse-v1",
+      "strategy": "Default_Unconstrained",
+      "kernels_total_insts": 865,
+      "neon_insts": 22,
+      "sve_insts": 150,
+      "whilelo_insts": 0,
+      "branch_insts": 130,
+      "object_text_bytes": 3660
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "neoverse-v1",
+      "strategy": "StratB_PredicatedTailFold",
+      "kernels_total_insts": 673,
+      "neon_insts": 9,
+      "sve_insts": 78,
+      "whilelo_insts": 6,
+      "branch_insts": 111,
+      "object_text_bytes": 2656
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "neoverse-v1",
+      "strategy": "StratD_InterleaveCap1",
+      "kernels_total_insts": 691,
+      "neon_insts": 6,
+      "sve_insts": 46,
+      "whilelo_insts": 0,
+      "branch_insts": 125,
+      "object_text_bytes": 2836
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "neoverse-v1",
+      "strategy": "StratE_PredicatedTail_UF1",
+      "kernels_total_insts": 619,
+      "neon_insts": 6,
+      "sve_insts": 52,
+      "whilelo_insts": 6,
+      "branch_insts": 111,
+      "object_text_bytes": 2436
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "target_cpu": "apple-m1",
+      "strategy": "Default_Unconstrained",
+      "kernels_total_insts": 727,
+      "neon_insts": 95,
+      "sve_insts": 0,
+      "whilelo_insts": 0,
+      "branch_insts": 114,
+      "object_text_bytes": 2988
+    }
+  ]
+}

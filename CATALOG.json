@@ -9944,6 +9944,45 @@
         "rust/unsafe"
       ]
     },
+    "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/mir",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "compilers"
+      ]
+    },
     "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -18456,6 +18495,34 @@
         "systems/sandboxing",
         "isa/aarch64",
         "isa/x86-64"
+      ]
+    },
+    "mutation-resilient-polarity-safe-ir-portable-pgo": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "rustc/mir",
+        "llvm",
+        "compilers"
       ]
     },
     "nix-guix-immutable-closures-mutable-roots-and-toolchain-archive-equivalence": {
@@ -28256,6 +28323,44 @@
         "verification"
       ]
     },
+    "value-profile-specialization-and-hybridtrace-guard-certificates": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "compilers"
+      ]
+    },
     "vendor-intrinsic-specifications-stdarch-verification-and-lean-generation": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -30121,6 +30226,72 @@
         "rustc",
         "llvm",
         "isa"
+      ]
+    },
+    "whole-program-devirt-dae-and-globalopt-exportlist-certificates": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "compilers"
+      ]
+    },
+    "x86-avx512-short-loop-regression-and-vector-width-profitability": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "isa",
+        "compilers"
       ]
     },
     "zerocopy-byte-apis-cross-target-layout-and-packet-certificates": {

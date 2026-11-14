@@ -1,0 +1,11 @@
+target,configuration,median_runtime_us,speedup_vs_baseline_pct,share_of_llvm_pgo_gain_pct
+x86_64-unknown-linux-gnu,Baseline_NoPGO_Dynamic,2147.7,0.0,0.0
+x86_64-unknown-linux-gnu,LLVM_23_1_1_PGO_Full,752.73,64.95,100.0
+x86_64-unknown-linux-gnu,HybridTrace_VP1_MemOpSize_16B_12B,924.74,56.94,87.7
+x86_64-unknown-linux-gnu,HybridTrace_VP1_plus_VP2_FnPtrPromote,932.08,56.6,87.1
+x86_64-unknown-linux-gnu,HybridTrace_VP1_plus_VP3_VTablePromote,650.78,69.7,107.3
+i686-unknown-linux-gnu,Baseline_NoPGO_Dynamic,2548.17,0.0,0.0
+i686-unknown-linux-gnu,LLVM_23_1_1_PGO_Full,1499.78,41.14,100.0
+i686-unknown-linux-gnu,HybridTrace_VP1_MemOpSize_16B_12B,2004.34,21.34,51.9
+i686-unknown-linux-gnu,HybridTrace_VP1_plus_VP2_FnPtrPromote,1477.36,42.02,102.1
+i686-unknown-linux-gnu,HybridTrace_VP1_plus_VP3_VTablePromote,1340.56,47.39,115.2

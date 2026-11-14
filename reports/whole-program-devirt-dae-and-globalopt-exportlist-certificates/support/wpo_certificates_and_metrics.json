@@ -1,0 +1,106 @@
+{
+  "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+  "rust_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "wpo_certificates": [
+    {
+      "cert_id": "WPO_DevirtSingleImpl_SingleCodec_encode_word",
+      "schema": "WPO-DevirtSingleImpl",
+      "cert_size_bytes": 318,
+      "check_time_us": 0.0142,
+      "verified": true
+    },
+    {
+      "cert_id": "WPO_DevirtBranchFunnel_PacketStage_process",
+      "schema": "WPO-DevirtBranchFunnel",
+      "cert_size_bytes": 348,
+      "check_time_us": 0.0125,
+      "verified": true
+    },
+    {
+      "cert_id": "WPO_DevirtConstRet_PacketStage_const_version",
+      "schema": "WPO-DevirtConstRet",
+      "cert_size_bytes": 186,
+      "check_time_us": 0.0119,
+      "verified": true
+    },
+    {
+      "cert_id": "WPO_VFE_SingleCodec_unused_vfe_slot",
+      "schema": "WPO-VFE",
+      "cert_size_bytes": 161,
+      "check_time_us": 0.0122,
+      "verified": true
+    },
+    {
+      "cert_id": "WPO_DAE_and_ArgPromote_internal_helper",
+      "schema": "WPO-DeadArgAndRetElim+WPO-ArgPromoteByVal",
+      "cert_size_bytes": 345,
+      "check_time_us": 0.0118,
+      "verified": true
+    },
+    {
+      "cert_id": "WPO_GlobalOpt_GLOBAL_RO_FACTOR_and_MODE",
+      "schema": "WPO-GlobalOptPromote",
+      "cert_size_bytes": 338,
+      "check_time_us": 0.012,
+      "verified": true
+    }
+  ],
+  "benchmark_matrix": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "OpenWorld_Standard_Rustc_LTO",
+      "loop_fn_insts": 81,
+      "indirect_calls_in_loop": 4,
+      "direct_calls_in_loop": 0,
+      "median_runtime_us": 1043.71,
+      "speedup_vs_open_world_pct": 0.0
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "ClosedWorld_WPO_Devirt_Single_Funnel_Const",
+      "loop_fn_insts": 94,
+      "indirect_calls_in_loop": 1,
+      "direct_calls_in_loop": 0,
+      "median_runtime_us": 1017.16,
+      "speedup_vs_open_world_pct": 2.54
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "ClosedWorld_WPO_Full_Devirt_DAE_ArgProm_GlobalOpt",
+      "loop_fn_insts": 82,
+      "indirect_calls_in_loop": 0,
+      "direct_calls_in_loop": 0,
+      "median_runtime_us": 997.19,
+      "speedup_vs_open_world_pct": 4.46
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "OpenWorld_Standard_Rustc_LTO",
+      "loop_fn_insts": 80,
+      "indirect_calls_in_loop": 3,
+      "direct_calls_in_loop": 1,
+      "median_runtime_us": "",
+      "speedup_vs_open_world_pct": ""
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "ClosedWorld_WPO_Devirt_Single_Funnel_Const",
+      "loop_fn_insts": 95,
+      "indirect_calls_in_loop": 0,
+      "direct_calls_in_loop": 1,
+      "median_runtime_us": "",
+      "speedup_vs_open_world_pct": ""
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "ClosedWorld_WPO_Full_Devirt_DAE_ArgProm_GlobalOpt",
+      "loop_fn_insts": 88,
+      "indirect_calls_in_loop": 0,
+      "direct_calls_in_loop": 0,
+      "median_runtime_us": "",
+      "speedup_vs_open_world_pct": ""
+    }
+  ]
+}
