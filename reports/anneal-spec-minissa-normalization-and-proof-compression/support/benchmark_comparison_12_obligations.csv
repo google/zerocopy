@@ -1,0 +1,13 @@
+id,crate,item,category,spec_lens_kind,mir_blocks,minissa_blocks,mir_stmts,minissa_insts,mir_locals,minissa_ssa_vals,mir_mem_ops,minissa_mem_ops,wp_mir_ast_nodes,wp_minissa_ast_nodes,direct_proof_loc,minissa_proof_loc,direct_workarounds,minissa_workarounds,direct_elab_ms,minissa_elab_ms,direct_rss_mb,minissa_rss_mb
+B01,anneal-slice,slice_len,Slice metadata projection,TupleScalarProjection (_1.1 -> v_len),2,1,8,1,4,1,3,0,184,14,14,3,2,0,340,48,542.0,488.0
+B02,anneal-slice,slice_is_empty,Inlined slice getter + comparison,TransparentInline + TupleScalarProjection (_1.1 == 0),3,1,9,2,5,2,2,0,246,22,22,4,3,0,465,54,556.0,490.0
+B03,anneal-slice,slice_get_unchecked_offset,Pointer-offset arithmetic with SROA,"SroaPairLens ((ptr, len), idx -> ptr + idx * 4)",2,1,10,3,7,3,4,0,312,38,26,5,3,0,520,62,568.0,492.0
+B04,anneal-slice,slice_split_at_checked_tail,"Subslice split + Option<(&[T], &[T])> SROA","EnumPayloadSroaLens (Option::Some((p0, l0, p1, l1)))",4,2,14,4,9,4,6,0,490,52,38,7,5,0,790,85,612.0,498.0
+B05,zerocopy,u16_from_be_bytes,Endian byte-array [u8; 2] recombination,"FixedArraySroaLens ([b0, b1] -> (b0 << 8) | b1)",2,1,11,3,7,3,4,0,680,44,45,6,6,0,1240,78,685.0,502.0
+B06,zerocopy,u32_to_le_low16,byteorder::U32<LE> newtype wrapper projection,"NewtypeWrapperSroaLens (U32([b0,b1,b2,b3]) -> u32)",2,1,8,2,5,2,2,0,290,28,24,4,3,0,490,58,560.0,491.0
+B07,zerocopy,align_up_pow2_mask,Layout alignment rounding ((addr + align - 1) & !(align - 1)),"ScalarMem2RegLens (addr, align -> aligned_addr)",3,1,10,4,6,3,2,0,360,48,30,6,4,0,610,72,578.0,495.0
+B08,zerocopy,size_for_n_with_header,DST layout size computation (hdr + n * stride),"StructSroaLens (LayoutMetadata { hdr, stride }, n)",3,1,11,3,7,3,4,0,395,42,32,5,4,0,640,68,584.0,494.0
+B09,anneal-bitfield,bitfield_extract_u8_nibble,Bitfield shift/mask with #[anneal_spec::spec] getter,TransparentCompanionInline (elides wpReq_inversion + ensures_holds),3,1,9,3,6,3,2,0,420,46,36,5,5,0,720,64,596.0,493.0
+B10,anneal-core,nonzero_u64_get_add1,NonZeroU64::get #[anneal_spec::spec] companion + checked add,TransparentCompanionInline + NicheRangeFact (v >= 1),3,1,9,2,6,2,2,0,380,34,34,5,4,0,680,60,590.0,492.0
+B11,anneal-core,checked_sub_unwrap_or_zero,Checked arithmetic + Option::unwrap_or branch merge,EnumTagSroa + SimplifyCfgSelectLens,4,1,12,3,7,3,4,0,445,40,35,6,4,0,740,66,604.0,495.0
+B12,anneal-slice,mut_counter_step_and_accum,Stateful &mut u64 two-step update + loop header invariant,"FunctionalBorrowReturnLens (&mut T -> (T_in) -> (Ret, T_out))",3,1,10,2,6,2,6,0,590,36,48,6,6,0,1150,70,660.0,496.0

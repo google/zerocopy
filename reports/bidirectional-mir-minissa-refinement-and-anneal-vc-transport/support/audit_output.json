@@ -1,0 +1,70 @@
+{
+  "probe_file": "support/BidirectionalMirMiniSsaTransportProbe.lean",
+  "lean_version": "v4.34.1",
+  "lean_commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+  "flags": ["-DElab.async=false", "-Ddebug.skipKernelTC=false"],
+  "wall_clock_seconds": 3.89,
+  "user_cpu_seconds": 3.73,
+  "peak_rss_kbytes": 573108,
+  "compiler_errors": 0,
+  "compiler_warnings": 0,
+  "sorry_count": 0,
+  "native_decide_count": 0,
+  "new_trusted_definitions_added": 0,
+  "theorems_verified": [
+    {
+      "name": "Theory.verifyMirViaMiniSSA_sound",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "tcb_isolated": true
+    },
+    {
+      "name": "Theory.verifyStatefulMirViaMiniSSA_sound",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "tcb_isolated": true
+    },
+    {
+      "name": "Theory.checkNormBisim_forward_refines",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "tcb_isolated": true
+    },
+    {
+      "name": "Theory.refinesOnly_deadUninitLoad_unsound_for_vc_transport",
+      "axioms": ["propext"],
+      "tcb_isolated": true
+    },
+    {
+      "name": "Theory.refinesOnly_sroaBadPadding_unsound_for_vc_transport",
+      "axioms": ["propext"],
+      "tcb_isolated": true
+    },
+    {
+      "name": "Theory.refinesOnly_aliasedReborrow_unsound_for_vc_transport",
+      "axioms": ["propext"],
+      "tcb_isolated": true
+    },
+    {
+      "name": "Theory.fixture1_mir_verified",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "tcb_isolated": true,
+      "mir_steps": 5,
+      "ssa_steps": 2,
+      "cert_fuel_slack": 3
+    },
+    {
+      "name": "Theory.fixture2_mir_verified",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "tcb_isolated": true,
+      "mir_steps": 7,
+      "ssa_steps": 4,
+      "cert_fuel_slack": 3
+    },
+    {
+      "name": "Theory.fixture3_mir_stateful_verified",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "tcb_isolated": true,
+      "mir_steps": 6,
+      "ssa_steps": 3,
+      "cert_fuel_slack": 3
+    }
+  ]
+}

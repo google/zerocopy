@@ -1,0 +1,167 @@
+{
+  "observed_at": "2026-11-14",
+  "rows": [
+    {
+      "profile": "-O0",
+      "config": "stock_default_mir_opt",
+      "text_bytes": 7113,
+      "total_stack_frame_bytes": 1848,
+      "max_fn_stack_frame_bytes": 344,
+      "compile_time_ms": 80.41,
+      "runtime_median_ms": 13.26
+    },
+    {
+      "profile": "-O0",
+      "config": "raw_mir_opt_0",
+      "text_bytes": 7225,
+      "total_stack_frame_bytes": 1864,
+      "max_fn_stack_frame_bytes": 344,
+      "compile_time_ms": 78.69,
+      "runtime_median_ms": 13.2
+    },
+    {
+      "profile": "-O0",
+      "config": "mir_opt_0_plus_linear_canonicalizer",
+      "text_bytes": 7205,
+      "total_stack_frame_bytes": 1848,
+      "max_fn_stack_frame_bytes": 344,
+      "compile_time_ms": 78.11,
+      "runtime_median_ms": 12.42
+    },
+    {
+      "profile": "-O1",
+      "config": "stock_default_mir_opt",
+      "text_bytes": 1323,
+      "total_stack_frame_bytes": 112,
+      "max_fn_stack_frame_bytes": 72,
+      "compile_time_ms": 96.19,
+      "runtime_median_ms": 2.81
+    },
+    {
+      "profile": "-O1",
+      "config": "raw_mir_opt_0",
+      "text_bytes": 1323,
+      "total_stack_frame_bytes": 112,
+      "max_fn_stack_frame_bytes": 72,
+      "compile_time_ms": 96.71,
+      "runtime_median_ms": 2.91
+    },
+    {
+      "profile": "-O1",
+      "config": "mir_opt_0_plus_linear_canonicalizer",
+      "text_bytes": 1306,
+      "total_stack_frame_bytes": 112,
+      "max_fn_stack_frame_bytes": 72,
+      "compile_time_ms": 97.03,
+      "runtime_median_ms": 2.82
+    },
+    {
+      "profile": "-O2",
+      "config": "stock_default_mir_opt",
+      "text_bytes": 1885,
+      "total_stack_frame_bytes": 88,
+      "max_fn_stack_frame_bytes": 48,
+      "compile_time_ms": 107.16,
+      "runtime_median_ms": 2.36
+    },
+    {
+      "profile": "-O2",
+      "config": "raw_mir_opt_0",
+      "text_bytes": 1859,
+      "total_stack_frame_bytes": 88,
+      "max_fn_stack_frame_bytes": 48,
+      "compile_time_ms": 104.55,
+      "runtime_median_ms": 2.36
+    },
+    {
+      "profile": "-O2",
+      "config": "mir_opt_0_plus_linear_canonicalizer",
+      "text_bytes": 1859,
+      "total_stack_frame_bytes": 88,
+      "max_fn_stack_frame_bytes": 48,
+      "compile_time_ms": 106.46,
+      "runtime_median_ms": 2.38
+    },
+    {
+      "profile": "-O3",
+      "config": "stock_default_mir_opt",
+      "text_bytes": 1885,
+      "total_stack_frame_bytes": 88,
+      "max_fn_stack_frame_bytes": 48,
+      "compile_time_ms": 105.28,
+      "runtime_median_ms": 2.64
+    },
+    {
+      "profile": "-O3",
+      "config": "raw_mir_opt_0",
+      "text_bytes": 1859,
+      "total_stack_frame_bytes": 88,
+      "max_fn_stack_frame_bytes": 48,
+      "compile_time_ms": 107.13,
+      "runtime_median_ms": 2.36
+    },
+    {
+      "profile": "-O3",
+      "config": "mir_opt_0_plus_linear_canonicalizer",
+      "text_bytes": 1859,
+      "total_stack_frame_bytes": 88,
+      "max_fn_stack_frame_bytes": 48,
+      "compile_time_ms": 106.13,
+      "runtime_median_ms": 2.43
+    },
+    {
+      "profile": "-Os",
+      "config": "stock_default_mir_opt",
+      "text_bytes": 984,
+      "total_stack_frame_bytes": 112,
+      "max_fn_stack_frame_bytes": 72,
+      "compile_time_ms": 94.41,
+      "runtime_median_ms": 3.13
+    },
+    {
+      "profile": "-Os",
+      "config": "raw_mir_opt_0",
+      "text_bytes": 984,
+      "total_stack_frame_bytes": 112,
+      "max_fn_stack_frame_bytes": 72,
+      "compile_time_ms": 92.94,
+      "runtime_median_ms": 3.24
+    },
+    {
+      "profile": "-Os",
+      "config": "mir_opt_0_plus_linear_canonicalizer",
+      "text_bytes": 961,
+      "total_stack_frame_bytes": 112,
+      "max_fn_stack_frame_bytes": 72,
+      "compile_time_ms": 93.39,
+      "runtime_median_ms": 3.27
+    },
+    {
+      "profile": "-Oz",
+      "config": "stock_default_mir_opt",
+      "text_bytes": 1309,
+      "total_stack_frame_bytes": 208,
+      "max_fn_stack_frame_bytes": 120,
+      "compile_time_ms": 98.08,
+      "runtime_median_ms": 3.43
+    },
+    {
+      "profile": "-Oz",
+      "config": "raw_mir_opt_0",
+      "text_bytes": 1309,
+      "total_stack_frame_bytes": 208,
+      "max_fn_stack_frame_bytes": 120,
+      "compile_time_ms": 99.88,
+      "runtime_median_ms": 3.37
+    },
+    {
+      "profile": "-Oz",
+      "config": "mir_opt_0_plus_linear_canonicalizer",
+      "text_bytes": 1309,
+      "total_stack_frame_bytes": 208,
+      "max_fn_stack_frame_bytes": 120,
+      "compile_time_ms": 96.91,
+      "runtime_median_ms": 3.38
+    }
+  ]
+}

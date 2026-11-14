@@ -5996,6 +5996,44 @@
         "verification/postmortems"
       ]
     },
+    "anneal-spec-minissa-normalization-and-proof-compression": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal MIR specification and proof pipeline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 Runtime(PostCleanup) MIR"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/anneal-spec-minissa-compression",
+        "anneal",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "zerocopy"
+      ]
+    },
     "anneal-subprocess-supervision-elf-runpath-and-archive-packaging": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -7477,6 +7515,44 @@
         "rust/concurrency",
         "rust/inline-asm",
         "verification/iris"
+      ]
+    },
+    "bidirectional-mir-minissa-refinement-and-anneal-vc-transport": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal trusted MIR verification boundary and refinement definitions"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 Runtime(PostCleanup) MIR semantics"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/bidirectional-mir-minissa",
+        "anneal",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "rustc"
       ]
     },
     "binary-evidence-packaging-provenance-attestations-and-rustc-reproducibility": {
@@ -22237,6 +22313,44 @@
         "rustc/intrinsics"
       ]
     },
+    "rust-postcleanup-mir-type-validity-and-range-invariant-catalog": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 layout, validity, and LLVM ABI lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+          },
+          "name": "The Rust Reference (pinned by rustc 1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 optimizer and attribute verifier"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-type-validity-invariant-catalog",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "llvm",
+        "verification",
+        "anneal"
+      ]
+    },
     "rust-program-startup-runtime-objects-and-entry-state": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -25466,6 +25580,44 @@
         "verification/soundness"
       ]
     },
+    "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 MIR transform pipeline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 code generator bundled with rustc 1.99.1"
+        },
+        {
+          "identity": {
+            "branch": "joshlf",
+            "repository": "joshlf/anneal",
+            "revision": "9027a6c9c5c363ee8fb74c2efc1c0481eaf188bc"
+          },
+          "name": "Anneal MIR capture and verification boundary"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/pre-postcleanup-audit-and-minissa-canonicalizer",
+        "rustc",
+        "rustc/mir",
+        "anneal",
+        "verification",
+        "llvm"
+      ]
+    },
     "rustc-size-optimized-compilation-parity-and-transformations": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -28035,6 +28187,45 @@
         "lean/mechanization",
         "verification/program-verification",
         "verification/separation-logic"
+      ]
+    },
+    "type-validity-seeded-range-and-farkas-bounds-check-elimination": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 x86-64 code generator"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 Scalar and Loop Optimizer (IndVarSimplify, CorrelatedValuePropagation, ConstraintElimination)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/type-validity-bounds-check-elimination",
+        "llvm",
+        "rustc",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "zerocopy"
       ]
     },
     "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {

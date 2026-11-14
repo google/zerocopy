@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir-type-validity-invariant-catalog",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "llvm",
+    "verification",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rustc) 1.99.1 layout, validity, and LLVM ABI lowering",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "The Rust Reference (pinned by rustc 1.99.1)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "82da570bafd9efed421bdbae0f8603ede8dd308b"
+      }
+    },
+    {
+      "name": "LLVM 23.1.1 optimizer and attribute verifier",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

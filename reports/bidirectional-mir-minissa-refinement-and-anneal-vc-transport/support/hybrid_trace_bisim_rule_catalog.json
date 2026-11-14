@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "title": "HybridTrace Normalization Rule Classification (BisimExact vs. GuardedBisim vs. RefinesOnly)",
+  "observed_at": "2026-11-14",
+  "rules": [
+    {
+      "rule_id": "NORM-01",
+      "name": "CopyProp_MoveCopyReg",
+      "mir_construct": "StatementKind::Assign(dst, Rvalue::Use(Operand::Copy(src) | Operand::Move(src)))",
+      "minissa_construct": "copyReg dst src / direct SSA value substitution",
+      "mode": "BisimExact",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "src is statically initialized along all reaching paths (guaranteed by mir_borrowck initialization analysis for non-moved locals)",
+      "fuel_delta_c2": 0
+    },
+    {
+      "rule_id": "NORM-02",
+      "name": "ConstProp_ScalarAndPair",
+      "mir_construct": "StatementKind::Assign(dst, Rvalue::Use(Operand::Constant(c)))",
+      "minissa_construct": "assignConst dst c",
+      "mode": "BisimExact",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "c has been resolved and validated at capture/RequiredConsts (no unevaluated CTFE panic/UB)",
+      "fuel_delta_c2": 0
+    },
+    {
+      "rule_id": "NORM-03",
+      "name": "SimplifyCfg_GotoChainCollapse",
+      "mir_construct": "TerminatorKind::Goto { target: bb_next } where pred(bb_next) == 1",
+      "minissa_construct": "direct sequential composition in merged basic block",
+      "mode": "BisimExact",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "none (pure control-flow administrative step)",
+      "fuel_delta_c2": 1
+    },
+    {
+      "rule_id": "NORM-04",
+      "name": "Mem2Reg_NonEscapingSlot",
+      "mir_construct": "StorageLive(s); StoreField(s, i, v); LoadField(dst, s, i); StorageDead(s)",
+      "minissa_construct": "copyReg dst v / SSA phi node",
+      "mode": "GuardedBisim",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "no address-of (&raw const/mut s or escaping &s) taken; every LoadField is dominated by a definite StoreField of the same type after StorageLive(s) and before StorageDead(s)",
+      "fuel_delta_c2": 3
+    },
+    {
+      "rule_id": "NORM-05",
+      "name": "SROA_ScalarizeAggregateCopy",
+      "mir_construct": "StatementKind::Assign(dst_agg, Rvalue::Use(Operand::Copy(src_agg)))",
+      "minissa_construct": "copyPair (dst_0, dst_1, ...) (src_0, src_1, ...)",
+      "mode": "GuardedBisim",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "paddingValid: aggregate type has no unvalidated niche/discriminant violation and every scalarized field satisfies validValue(FieldTy) at the copy point",
+      "fuel_delta_c2": 0
+    },
+    {
+      "rule_id": "NORM-06",
+      "name": "ElideShortLivedReborrow_SliceSubslice",
+      "mir_construct": "StorageLive(s); s = &(*src)[offset..]; dst = move s; StorageDead(s)",
+      "minissa_construct": "sliceSubSsa dstPtr dstLen srcPtr srcLen offset",
+      "mode": "GuardedBisim",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "noConflict: temporary borrow local s does not escape and no raw-pointer access to the same allocation occurs between StorageLive(s) and StorageDead(s) that would conflict with s's Tree Borrows retag",
+      "fuel_delta_c2": 2
+    },
+    {
+      "rule_id": "NORM-07",
+      "name": "InlineNonRecursiveCallee",
+      "mir_construct": "TerminatorKind::Call { func, args, destination, target: Some(bb_ret), unwind }",
+      "minissa_construct": "inlined callee MiniSSA blocks with parameter bindings and return jump",
+      "mode": "GuardedBisim",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "callee is statically resolved, target_features(callee) ⊆ target_features(caller), and parameter ABI/validity attributes (noundef, align, Tree Borrows two-stage protector entry checks) are preserved as explicit entry guards if not statically discharged",
+      "fuel_delta_c2": 1
+    },
+    {
+      "rule_id": "NORM-08",
+      "name": "CheckDivRem_Preserved",
+      "mir_construct": "Assert(denom != 0) + Assign(dst, BinOp::Div(num, denom))",
+      "minissa_construct": "checkDivSsa dst num denom",
+      "mode": "BisimExact",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "divisor zero check and signed INT_MIN / -1 overflow check are preserved identically",
+      "fuel_delta_c2": 0
+    },
+    {
+      "rule_id": "NORM-09",
+      "name": "DeadLoadElim_Guarded",
+      "mir_construct": "StatementKind::Assign(unused_tmp, Rvalue::Use(Operand::Copy(*ptr_or_slot)))",
+      "minissa_construct": "nop (eliminated)",
+      "mode": "GuardedBisim",
+      "forward_refines": true,
+      "backward_reflects_safety": true,
+      "side_condition_phi": "slotInitAndLive: place is proven live, aligned, dereferenceable, and initialized to a valid value of its type",
+      "fuel_delta_c2": 1
+    },
+    {
+      "rule_id": "NORM-10",
+      "name": "DeadLoadElim_Unguarded",
+      "mir_construct": "StatementKind::Assign(unused_tmp, Rvalue::Use(Operand::Copy(*ptr_or_slot)))",
+      "minissa_construct": "nop (eliminated without proving slotInitAndLive)",
+      "mode": "RefinesOnly",
+      "forward_refines": true,
+      "backward_reflects_safety": false,
+      "side_condition_phi": "REJECTED by checkNormBisim: erasing an uninitialized or out-of-bounds dead load hides source MIR UB (refinesOnly_deadUninitLoad_unsound_for_vc_transport)",
+      "fuel_delta_c2": 1
+    },
+    {
+      "rule_id": "NORM-11",
+      "name": "DeadDivRemElim_Unguarded",
+      "mir_construct": "Assign(unused_tmp, BinOp::Div(num, denom)) without proving denom != 0",
+      "minissa_construct": "nop (eliminated)",
+      "mode": "RefinesOnly",
+      "forward_refines": true,
+      "backward_reflects_safety": false,
+      "side_condition_phi": "REJECTED by checkNormBisim: erasing a dead division by zero hides source MIR UB/panic",
+      "fuel_delta_c2": 1
+    },
+    {
+      "rule_id": "NORM-12",
+      "name": "RemoveStorageMarkers_WithDanglingRawPtr",
+      "mir_construct": "StorageDead(s) while raw pointer p = &raw const s is later dereferenced",
+      "minissa_construct": "keep s live across entire function stack frame",
+      "mode": "RefinesOnly",
+      "forward_refines": true,
+      "backward_reflects_safety": false,
+      "side_condition_phi": "REJECTED by checkNormBisim unless address of s never escapes to a raw pointer dereferenced after StorageDead(s)",
+      "fuel_delta_c2": 1
+    }
+  ]
+}

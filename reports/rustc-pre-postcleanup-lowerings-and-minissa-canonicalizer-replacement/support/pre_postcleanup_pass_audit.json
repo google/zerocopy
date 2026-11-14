@@ -1,0 +1,246 @@
+{
+  "schema_version": "1.0",
+  "rustc_version": "1.99.1",
+  "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "observed_at": "2026-11-14",
+  "pass_groups_count": 16,
+  "any_opt_level_dependency_before_postcleanup": false,
+  "passes": [
+    {
+      "order": 1,
+      "query_stage": "mir_built",
+      "target_phase": "Built",
+      "pass_name": "LintAndRemoveUninhabited",
+      "source_path": "compiler/rustc_mir_transform/src/lint_and_remove_uninhabited.rs:19-162",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:414",
+      "consumes_and_eliminates": "Terminators and basic blocks following typed values of uninhabited types (!, empty enums)",
+      "invariants_established": "Uninhabited call/load continuations replaced by TerminatorKind::Unreachable",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": [
+        "#68304 (uninhabited branch pruning after uninit load)",
+        "#112403 (uninhabited enum branching)"
+      ]
+    },
+    {
+      "order": 2,
+      "query_stage": "mir_built",
+      "target_phase": "Built",
+      "pass_name": "MirLints (CheckForceInline, CheckCallRecursion, CheckPackedRef, CheckConstItemMutation, CheckMutRestriction, FunctionItemReferences)",
+      "source_path": "compiler/rustc_mir_transform/src/lib.rs:416-421",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:416-421",
+      "consumes_and_eliminates": "Read-only lint pass (mutates zero MIR statements)",
+      "invariants_established": "Rejects unaligned references to #[repr(packed)] fields (E0793) before borrowck",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 3,
+      "query_stage": "mir_built",
+      "target_phase": "Built",
+      "pass_name": "SimplifyCfg::Initial + SanityCheck",
+      "source_path": "compiler/rustc_mir_transform/src/simplify.rs:93-260",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:423-424",
+      "consumes_and_eliminates": "Dead basic blocks and trivial Goto chains from MIR building",
+      "invariants_established": "All basic blocks reachable from bb0 or unwind edges for CTFE/promotion",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 4,
+      "query_stage": "mir_promoted",
+      "target_phase": "Analysis(Initial)",
+      "pass_name": "RequiredConstsVisitor::compute_required_consts",
+      "source_path": "compiler/rustc_mir_transform/src/required_consts.rs:14-60",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:474",
+      "consumes_and_eliminates": "Scans ConstOperand nodes (mutates body.required_consts)",
+      "invariants_established": "Populates body.required_consts before constant promotion or dead-code removal so const_err fails even in dead code",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": [
+        "#104416 (post-monomorphization const evaluation error in dead branches)"
+      ]
+    },
+    {
+      "order": 5,
+      "query_stage": "mir_promoted",
+      "target_phase": "Analysis(Initial)",
+      "pass_name": "PromoteTemps",
+      "source_path": "compiler/rustc_mir_transform/src/promote_consts.rs:45-890",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:477-481",
+      "consumes_and_eliminates": "Extracts promotable rvalue temporaries (&123, &[1, 2]) into Promoted[p] sub-bodies",
+      "invariants_established": "Promoted references have 'static lifetime and are proven free of interior mutability (Freeze), Drop, and fallible ops (div-by-zero/oob)",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": [
+        "#53807 (promoting fallible div/index expressions)",
+        "#74440 (promoting UnsafeCell references)"
+      ]
+    },
+    {
+      "order": 6,
+      "query_stage": "mir_promoted",
+      "target_phase": "Analysis(Initial)",
+      "pass_name": "SimplifyCfg::PromoteConsts + InstrumentCoverage",
+      "source_path": "compiler/rustc_mir_transform/src/coverage/mod.rs:1-120",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:481",
+      "consumes_and_eliminates": "Cleans CFG after promotion; injects coverage counters only when -C instrument-coverage is enabled",
+      "invariants_established": "Analysis(Initial) MIR ready for mir_borrowck",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [
+        "-C instrument-coverage"
+      ],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 7,
+      "query_stage": "run_analysis_cleanup_passes",
+      "target_phase": "Analysis(PostCleanup)",
+      "pass_name": "ImpossibleClauses",
+      "source_path": "compiler/rustc_mir_transform/src/impossible_clauses.rs:14-95",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:633",
+      "consumes_and_eliminates": "Basic blocks inside functions/arms with unsatisfiable where-clauses",
+      "invariants_established": "Replaces bodies/blocks guarded by impossible trait predicates with TerminatorKind::Unreachable",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 8,
+      "query_stage": "run_analysis_cleanup_passes",
+      "target_phase": "Analysis(PostCleanup)",
+      "pass_name": "CleanupPostBorrowck",
+      "source_path": "compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs:26-94",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:634",
+      "consumes_and_eliminates": "AscribeUserType, FakeRead, BorrowKind::Fake, FalseEdge, FalseUnwind, user_type_annotations",
+      "invariants_established": "Zero borrowck-only statements/edges remain; ArrayToPointer and MutToConstPointer coercions become CastKind::PtrToPtr",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 9,
+      "query_stage": "run_analysis_cleanup_passes",
+      "target_phase": "Analysis(PostCleanup)",
+      "pass_name": "RemoveNoopLandingPads + SimplifyCfg::PostAnalysis",
+      "source_path": "compiler/rustc_mir_transform/src/remove_noop_landing_pads.rs:14-120",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:635-636",
+      "consumes_and_eliminates": "Cleanup blocks that only contain Nop/StorageDead followed by UnwindResume",
+      "invariants_established": "Trivial unwind landing pads collapsed directly to UnwindAction::Continue",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [
+        "-C panic"
+      ],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 10,
+      "query_stage": "run_analysis_cleanup_passes",
+      "target_phase": "Analysis(PostCleanup)",
+      "pass_name": "Derefer",
+      "source_path": "compiler/rustc_mir_transform/src/deref_separator.rs:18-175",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:637",
+      "consumes_and_eliminates": "Nested ProjectionElem::Deref at non-zero projection index (e.g., (_1.0).*)",
+      "invariants_established": "ProjectionElem::Deref only appears as the FIRST projection element (p.projection[0]) via CopyForDeref temporaries",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": [
+        "#91008 (Deref separator interaction with debuginfo)"
+      ]
+    },
+    {
+      "order": 11,
+      "query_stage": "run_runtime_lowering_passes",
+      "target_phase": "Runtime(Initial)",
+      "pass_name": "CriticalCallEdges (`AddCallGuards`) + PostAnalysisNormalize + Subtyper",
+      "source_path": "compiler/rustc_mir_transform/src/{add_call_guards.rs,post_analysis_normalize.rs,add_subtyping_projections.rs}",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:647-651",
+      "consumes_and_eliminates": "Opaque impl Trait types (revealed to concrete hidden types) and implicit lifetime subtyping in Place assignments",
+      "invariants_established": "All types in Body are fully normalized (TypingMode::PostAnalysis) with explicit Subtype projections",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": [
+        "#109020 (Subtyper projection ordering with opaque types)"
+      ]
+    },
+    {
+      "order": 12,
+      "query_stage": "run_runtime_lowering_passes",
+      "target_phase": "Runtime(Initial)",
+      "pass_name": "ElaborateDrops + CheckDropRecursion",
+      "source_path": "compiler/rustc_mir_transform/src/elaborate_drops.rs:28-1150",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:652-654",
+      "consumes_and_eliminates": "Static/conditional TerminatorKind::Drop on partially moved locals and uninitialized places",
+      "invariants_established": "Inserts stack boolean drop flags; lowers ADT/slice drop ladders and unwind cleanup edges; inserts Retag when -Zmir-emit-retag is active",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [
+        "-Z mir-emit-retag",
+        "-C panic"
+      ],
+      "historical_soundness_issues": [
+        "#86475 (drop flag state on unwind path)",
+        "#99852 (Box drop elaboration order)"
+      ]
+    },
+    {
+      "order": 13,
+      "query_stage": "run_runtime_lowering_passes",
+      "target_phase": "Runtime(Initial)",
+      "pass_name": "AbortUnwindingCalls",
+      "source_path": "compiler/rustc_mir_transform/src/abort_unwinding_calls.rs:18-135",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:658",
+      "consumes_and_eliminates": "UnwindAction::Cleanup / Continue on calls inside non-unwinding functions (extern \"C\", panic=abort)",
+      "invariants_established": "Converts unwind edges across nounwind boundaries into UnwindAction::Terminate(Reason::Abi)",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [
+        "-C panic"
+      ],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 14,
+      "query_stage": "run_runtime_lowering_passes",
+      "target_phase": "Runtime(Initial)",
+      "pass_name": "AddMovesForPackedDrops + EraseDerefTemps + ElaborateBoxDerefs",
+      "source_path": "compiler/rustc_mir_transform/src/{add_moves_for_packed_drops.rs,erase_deref_temps.rs,elaborate_box_derefs.rs}",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:661-663",
+      "consumes_and_eliminates": "Unaligned drops of #[repr(packed)] fields and magic *box_local dereferences",
+      "invariants_established": "Packed fields are moved to aligned temporaries before drop_in_place; Box<T> derefs traverse *(box.0.0: *const T) explicitly",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": []
+    },
+    {
+      "order": 15,
+      "query_stage": "run_runtime_lowering_passes",
+      "target_phase": "Runtime(Initial)",
+      "pass_name": "coroutine::StateTransform + KnownPanicsLint",
+      "source_path": "compiler/rustc_mir_transform/src/coroutine.rs:1-2150",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:664-665",
+      "consumes_and_eliminates": "TerminatorKind::Yield and TerminatorKind::CoroutineDrop in async/gen/coroutine bodies",
+      "invariants_established": "Compiles coroutine bodies into explicit state-machine structs with discriminant SwitchInt dispatchers at bb0",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [
+        "-C overflow-checks (KnownPanicsLint warning only)"
+      ],
+      "historical_soundness_issues": [
+        "#115201 (coroutine live across yield local layout calculation)"
+      ]
+    },
+    {
+      "order": 16,
+      "query_stage": "run_runtime_cleanup_passes",
+      "target_phase": "Runtime(PostCleanup)",
+      "pass_name": "LowerIntrinsics + RemovePlaceMention + SimplifyCfg::PreOptimizations",
+      "source_path": "compiler/rustc_mir_transform/src/{lower_intrinsics.rs:10-346,remove_place_mention.rs:11-40}",
+      "invocation_site": "compiler/rustc_mir_transform/src/lib.rs:672-685",
+      "consumes_and_eliminates": "Calls to core::intrinsics::{unreachable, ub_checks, overflow_checks, forget, copy_nonoverlapping, assume, wrapping_*, unchecked_*, *_with_overflow, read_via_copy, write_via_move, discriminant_value} and StatementKind::PlaceMention",
+      "invariants_established": "All core intrinsics lowered to primitive MIR statements/terminators; ub_checks/overflow_checks lowered to symbolic Operand::RuntimeChecks(op); local_info cleared",
+      "depends_on_opt_level": false,
+      "depends_on_session_flags": [],
+      "historical_soundness_issues": []
+    }
+  ]
+}

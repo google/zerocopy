@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "rustc_version": "1.99.1",
+  "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "observed_at": "2026-11-14",
+  "profiles_tested": [
+    "-O0",
+    "-O1",
+    "-O2",
+    "-O3",
+    "-Os",
+    "-Oz"
+  ],
+  "dumped_functions_per_profile": {
+    "-O0": 7,
+    "-O1": 7,
+    "-O2": 7,
+    "-O3": 7,
+    "-Os": 7,
+    "-Oz": 7
+  },
+  "sha256_by_profile": {
+    "-O0": "9495695396666b5fe472af89170a33b0ad4cf3025601d69f9a2631a8507a7c18",
+    "-O1": "9495695396666b5fe472af89170a33b0ad4cf3025601d69f9a2631a8507a7c18",
+    "-O2": "9495695396666b5fe472af89170a33b0ad4cf3025601d69f9a2631a8507a7c18",
+    "-O3": "9495695396666b5fe472af89170a33b0ad4cf3025601d69f9a2631a8507a7c18",
+    "-Os": "9495695396666b5fe472af89170a33b0ad4cf3025601d69f9a2631a8507a7c18",
+    "-Oz": "9495695396666b5fe472af89170a33b0ad4cf3025601d69f9a2631a8507a7c18"
+  },
+  "unique_sha256_count": 1,
+  "profile_invariant_across_all_6_profiles": true,
+  "required_invariant_flags": [
+    "-C overflow-checks (kept symbolic as Operand::RuntimeChecks(OverflowChecks) in Runtime(PostCleanup) MIR by LowerIntrinsics)",
+    "-C debug-assertions (controls cfg!(debug_assertions) at AST/HIR expansion before mir_built)",
+    "-C panic=unwind vs abort (controls AbortUnwindingCalls and ElaborateDrops landing pads)"
+  ]
+}

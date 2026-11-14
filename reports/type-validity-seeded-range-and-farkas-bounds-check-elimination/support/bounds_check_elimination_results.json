@@ -1,0 +1,297 @@
+{
+  "schema_version": "1.0",
+  "rustc_version": "1.99.1",
+  "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "llvm_version": "23.1.1",
+  "observed_at": "2026-11-14",
+  "e3_kernel_comparison": {
+    "parse_be_u32x4_stock": {
+      "total_insts": 167,
+      "panic_bounds_check_calls": 16,
+      "simd_insts": 0,
+      "runtime_ns_per_64kb": 25185.0
+    },
+    "parse_be_u32x4_minissa_farkas": {
+      "total_insts": 59,
+      "panic_bounds_check_calls": 0,
+      "simd_insts": 0,
+      "runtime_ns_per_64kb": 3400.6,
+      "speedup_ratio": 7.41
+    },
+    "scan_str_chunk8_stock": {
+      "total_insts": 73,
+      "panic_bounds_check_calls": 8,
+      "simd_insts": 0,
+      "runtime_ns_per_64kb": 21215.6
+    },
+    "scan_str_chunk8_minissa_farkas": {
+      "total_insts": 22,
+      "panic_bounds_check_calls": 0,
+      "simd_insts": 10,
+      "runtime_ns_per_64kb": 9000.8,
+      "speedup_ratio": 2.36
+    }
+  },
+  "farkas_certificates_e3_16_lanes": [
+    {
+      "lane_k": 0,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 0,
+      "lambda_guard": 1,
+      "lambda_slack": 15,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 1,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 1,
+      "lambda_guard": 1,
+      "lambda_slack": 14,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 2,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 2,
+      "lambda_guard": 1,
+      "lambda_slack": 13,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 3,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 3,
+      "lambda_guard": 1,
+      "lambda_slack": 12,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 4,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 4,
+      "lambda_guard": 1,
+      "lambda_slack": 11,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 5,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 5,
+      "lambda_guard": 1,
+      "lambda_slack": 10,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 6,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 6,
+      "lambda_guard": 1,
+      "lambda_slack": 9,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 7,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 7,
+      "lambda_guard": 1,
+      "lambda_slack": 8,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 8,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 8,
+      "lambda_guard": 1,
+      "lambda_slack": 7,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 9,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 9,
+      "lambda_guard": 1,
+      "lambda_slack": 6,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 10,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 10,
+      "lambda_guard": 1,
+      "lambda_slack": 5,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 11,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 11,
+      "lambda_guard": 1,
+      "lambda_slack": 4,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 12,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 12,
+      "lambda_guard": 1,
+      "lambda_slack": 3,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 13,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 13,
+      "lambda_guard": 1,
+      "lambda_slack": 2,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 14,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 14,
+      "lambda_guard": 1,
+      "lambda_slack": 1,
+      "certificate_bytes_packed": 16
+    },
+    {
+      "lane_k": 15,
+      "elem_size": 1,
+      "step_const": 16,
+      "lane_offset": 15,
+      "lambda_guard": 1,
+      "lambda_slack": 0,
+      "certificate_bytes_packed": 16
+    }
+  ],
+  "ecosystem_census_totals": {
+    "total_surviving_checks_o3": 1645,
+    "category_a_eliminable": 333,
+    "category_b_eliminable": 540,
+    "category_c_genuinely_reachable": 772
+  },
+  "ecosystem_census": [
+    {
+      "target": "core (rustc 1.99.1 sysroot)",
+      "total_surviving_checks_o3": 412,
+      "panic_bounds_check": 186,
+      "slice_range_len_order_fail": 142,
+      "panic_const_arith_overflow_div_rem": 84,
+      "category_a_type_validity_farkas_eliminable": 68,
+      "category_b_inlining_caller_context_eliminable": 154,
+      "category_c_genuinely_reachable_untrusted_input": 190,
+      "category_a_pct": 16.5,
+      "representative_category_a_pattern": "UTF-8 / ASCII multi-byte chunk loops and slice windowing where `i + K <= s.len()` or `NonZero` step bounds lack inductive header `nuw`"
+    },
+    {
+      "target": "alloc (rustc 1.99.1 sysroot)",
+      "total_surviving_checks_o3": 238,
+      "panic_bounds_check": 114,
+      "slice_range_len_order_fail": 76,
+      "panic_const_arith_overflow_div_rem": 48,
+      "category_a_type_validity_farkas_eliminable": 44,
+      "category_b_inlining_caller_context_eliminable": 89,
+      "category_c_genuinely_reachable_untrusted_input": 105,
+      "category_a_pct": 18.5,
+      "representative_category_a_pattern": "BTree / VecDeque ring-buffer split slice indexing where `cap <= isize::MAX / sizeof(T)` and `head + len <= cap`"
+    },
+    {
+      "target": "std (rustc 1.99.1 sysroot)",
+      "total_surviving_checks_o3": 365,
+      "panic_bounds_check": 172,
+      "slice_range_len_order_fail": 118,
+      "panic_const_arith_overflow_div_rem": 75,
+      "category_a_type_validity_farkas_eliminable": 52,
+      "category_b_inlining_caller_context_eliminable": 112,
+      "category_c_genuinely_reachable_untrusted_input": 201,
+      "category_a_pct": 14.2,
+      "representative_category_a_pattern": "Path / OsStr / BufReader internal buffer cursor `pos + n <= filled <= buf.len()`"
+    },
+    {
+      "target": "E3 8-Kernel Benchmark Suite (`k1`..`k8`)",
+      "total_surviving_checks_o3": 18,
+      "panic_bounds_check": 18,
+      "slice_range_len_order_fail": 0,
+      "panic_const_arith_overflow_div_rem": 0,
+      "category_a_type_validity_farkas_eliminable": 16,
+      "category_b_inlining_caller_context_eliminable": 0,
+      "category_c_genuinely_reachable_untrusted_input": 2,
+      "category_a_pct": 88.9,
+      "representative_category_a_pattern": "All 16 / 16 surviving `panic_bounds_check` calls in `k6_zerocopy_endian` (`while i + 16 <= bytes.len()`) are eliminated!"
+    },
+    {
+      "target": "memchr 2.7.4",
+      "total_surviving_checks_o3": 24,
+      "panic_bounds_check": 16,
+      "slice_range_len_order_fail": 8,
+      "panic_const_arith_overflow_div_rem": 0,
+      "category_a_type_validity_farkas_eliminable": 9,
+      "category_b_inlining_caller_context_eliminable": 7,
+      "category_c_genuinely_reachable_untrusted_input": 8,
+      "category_a_pct": 37.5,
+      "representative_category_a_pattern": "Fallback scalar/SWAR unrolled byte search loops (`i + 4 <= haystack.len()`)"
+    },
+    {
+      "target": "regex-automata 0.4.8",
+      "total_surviving_checks_o3": 318,
+      "panic_bounds_check": 210,
+      "slice_range_len_order_fail": 74,
+      "panic_const_arith_overflow_div_rem": 34,
+      "category_a_type_validity_farkas_eliminable": 64,
+      "category_b_inlining_caller_context_eliminable": 98,
+      "category_c_genuinely_reachable_untrusted_input": 156,
+      "category_a_pct": 20.1,
+      "representative_category_a_pattern": "DFA state transition table lookups where state ID is masked/bounded by header slice invariant"
+    },
+    {
+      "target": "serde_json 1.0.132",
+      "total_surviving_checks_o3": 146,
+      "panic_bounds_check": 94,
+      "slice_range_len_order_fail": 32,
+      "panic_const_arith_overflow_div_rem": 20,
+      "category_a_type_validity_farkas_eliminable": 38,
+      "category_b_inlining_caller_context_eliminable": 42,
+      "category_c_genuinely_reachable_untrusted_input": 66,
+      "category_a_pct": 26.0,
+      "representative_category_a_pattern": "SliceRead string escape / hex4 (`index + 4 <= slice.len()`) and number exponent parsing"
+    },
+    {
+      "target": "hashbrown 0.15.1",
+      "total_surviving_checks_o3": 32,
+      "panic_bounds_check": 14,
+      "slice_range_len_order_fail": 10,
+      "panic_const_arith_overflow_div_rem": 8,
+      "category_a_type_validity_farkas_eliminable": 8,
+      "category_b_inlining_caller_context_eliminable": 12,
+      "category_c_genuinely_reachable_untrusted_input": 12,
+      "category_a_pct": 25.0,
+      "representative_category_a_pattern": "Bucket mask `hash & bucket_mask` where `buckets.len()` is a power of two `<= isize::MAX / sizeof(T)`"
+    },
+    {
+      "target": "zlib-rs 0.4.0",
+      "total_surviving_checks_o3": 92,
+      "panic_bounds_check": 64,
+      "slice_range_len_order_fail": 18,
+      "panic_const_arith_overflow_div_rem": 10,
+      "category_a_type_validity_farkas_eliminable": 34,
+      "category_b_inlining_caller_context_eliminable": 26,
+      "category_c_genuinely_reachable_untrusted_input": 32,
+      "category_a_pct": 37.0,
+      "representative_category_a_pattern": "INFLATE 16-byte / 32-byte sliding window lookahead (`out_pos + 16 <= out_slice.len()`)"
+    }
+  ]
+}
