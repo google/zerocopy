@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/refinement",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/rustc-internals",
+    "compilers/verified-rustc/verified-mode",
+    "lean",
+    "lean/mechanization",
+    "llvm",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "rustc/mir",
+    "verification",
+    "verification/compiler-verification",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library workspace",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR verification boundary and refinement definitions",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

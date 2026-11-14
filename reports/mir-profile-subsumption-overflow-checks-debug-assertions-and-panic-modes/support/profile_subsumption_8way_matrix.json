@@ -1,0 +1,1859 @@
+{
+  "toolchain": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "num_functions": 20,
+  "num_profiles": 8,
+  "pure_functions_subsumed": "144 / 144",
+  "negative_side_effect_tests_rejected_on_release": "8 / 8",
+  "profiles": [
+    {
+      "id": "P0_on_on_unwind",
+      "overflow_checks": "on",
+      "debug_assertions": "on",
+      "panic": "unwind"
+    },
+    {
+      "id": "P1_on_on_abort",
+      "overflow_checks": "on",
+      "debug_assertions": "on",
+      "panic": "abort"
+    },
+    {
+      "id": "P2_on_off_unwind",
+      "overflow_checks": "on",
+      "debug_assertions": "off",
+      "panic": "unwind"
+    },
+    {
+      "id": "P3_on_off_abort",
+      "overflow_checks": "on",
+      "debug_assertions": "off",
+      "panic": "abort"
+    },
+    {
+      "id": "P4_off_on_unwind",
+      "overflow_checks": "off",
+      "debug_assertions": "on",
+      "panic": "unwind"
+    },
+    {
+      "id": "P5_off_on_abort",
+      "overflow_checks": "off",
+      "debug_assertions": "on",
+      "panic": "abort"
+    },
+    {
+      "id": "P6_off_off_unwind",
+      "overflow_checks": "off",
+      "debug_assertions": "off",
+      "panic": "unwind"
+    },
+    {
+      "id": "P7_off_off_abort",
+      "overflow_checks": "off",
+      "debug_assertions": "off",
+      "panic": "abort"
+    }
+  ],
+  "matrix": {
+    "f01_checked_add_pair": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f02_linear_interp": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f03_shift_pack": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f04_signed_abs_delta": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 10,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 10,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 10,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 10,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f05_div_rem_split": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f06_signed_div": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f07_slice_prefix_sum": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 13,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f08_wrapping_mix": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f09_explicit_checked_add": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f10_drop_cleanup_pad": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 2,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 3,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 4,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 2,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 3,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 4,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 2,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 2,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 2,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 2,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f11_midpoint": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 9,
+        "cleanup_blocks": 0,
+        "assert_terminators": 3,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f12_ring_advance": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 2,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 12,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 12,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 12,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 12,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f13_checked_parse_pair": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 21,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 21,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 21,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 21,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 20,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 20,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 20,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 20,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f14_swap_prefix": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f15_frame_header_validate": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 14,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f16_scaled_ext": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 2,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 3,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 4,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 6,
+        "cleanup_blocks": 2,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 3,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 4,
+        "cleanup_blocks": 0,
+        "assert_terminators": 1,
+        "checked_arith_ops": 1,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 2,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 2,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 2,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 2,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 1
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 3,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f17_extract_bits": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 15,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 2,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 11,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "f18_array4_sum": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 7,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 7,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 7,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 8,
+        "cleanup_blocks": 0,
+        "assert_terminators": 7,
+        "checked_arith_ops": 3,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 5,
+        "cleanup_blocks": 0,
+        "assert_terminators": 4,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "n19_side_effecting_debug_assert": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": false,
+        "reason": "REJECTED_SIDE_EFFECT_MUTATION_IN_DEBUG_ASSERT_DIAMOND",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": false,
+        "reason": "REJECTED_SIDE_EFFECT_MUTATION_IN_DEBUG_ASSERT_DIAMOND",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": false,
+        "reason": "REJECTED_SIDE_EFFECT_MUTATION_IN_DEBUG_ASSERT_DIAMOND",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": false,
+        "reason": "REJECTED_SIDE_EFFECT_MUTATION_IN_DEBUG_ASSERT_DIAMOND",
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    },
+    "n20_cfg_debug_assertions_divergent": {
+      "P0_on_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P1_on_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P2_on_off_unwind": {
+        "subsumed": false,
+        "reason": "REJECTED_CFG_DEBUG_ASSERTIONS_CONSTANT_DIVERGENCE",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P3_on_off_abort": {
+        "subsumed": false,
+        "reason": "REJECTED_CFG_DEBUG_ASSERTIONS_CONSTANT_DIVERGENCE",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P4_off_on_unwind": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P5_off_on_abort": {
+        "subsumed": true,
+        "reason": "SUBSUMED_OK",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P6_off_off_unwind": {
+        "subsumed": false,
+        "reason": "REJECTED_CFG_DEBUG_ASSERTIONS_CONSTANT_DIVERGENCE",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      },
+      "P7_off_off_abort": {
+        "subsumed": false,
+        "reason": "REJECTED_CFG_DEBUG_ASSERTIONS_CONSTANT_DIVERGENCE",
+        "basic_blocks": 2,
+        "cleanup_blocks": 0,
+        "assert_terminators": 0,
+        "checked_arith_ops": 0,
+        "unwind_cleanup_edges": 0,
+        "unwind_terminate_edges": 0,
+        "resume_terminators": 0
+      }
+    }
+  }
+}

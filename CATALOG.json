@@ -11137,6 +11137,53 @@
         "aeneas/lean-backend"
       ]
     },
+    "ctfe-const-eval-select-and-reflection-intrinsic-verification-contracts": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted MIR verification boundary and refinement definitions"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "compilers/verified-rustc/verified-mode",
+        "lean",
+        "lean/mechanization",
+        "minirust",
+        "rust",
+        "rust/intrinsics",
+        "rustc",
+        "rustc/ctfe",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ]
+    },
     "dafny-boogie-viper-fstar-why3-and-vc-obligation-architectures": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -19199,6 +19246,52 @@
         "rust/unsafe",
         "verification/iris",
         "verification/separation-logic"
+      ]
+    },
+    "mir-profile-subsumption-overflow-checks-debug-assertions-and-panic-modes": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted MIR verification boundary and refinement definitions"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/rustc-internals",
+        "compilers/verified-rustc/verified-mode",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts": {
@@ -27493,6 +27586,56 @@
         "lean/mechanization"
       ]
     },
+    "self-referential-unpin-coroutine-field-slicing-and-sroa": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 backend submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "compilers/verified-rustc/optimizer",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "minirust",
+        "rust",
+        "rust/async-await",
+        "rust/pin",
+        "rust/tree-borrows",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ]
+    },
     "semantic-models-lenses-hyperproperties-and-putnam-tcb-boundary": {
       "observed_at": "2026-11-04",
       "subjects": [
@@ -29729,6 +29872,54 @@
         "rustc",
         "rustc/mir",
         "verification"
+      ]
+    },
+    "tree-borrows-unwinding-store-sinking-and-protected-dse": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 backend submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "compilers/verified-rustc/optimizer",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "type-validity-seeded-range-and-farkas-bounds-check-elimination": {

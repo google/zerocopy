@@ -1,0 +1,219 @@
+{
+  "toolchain": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67, LLVM 23.1.1)",
+  "iterations": 50000,
+  "stages": {
+    "T0_O0_baseline": {
+      "timings_us": {
+        "C01_B02_unsplit": 4249.6,
+        "C01_B02_split_32b": 3466.4,
+        "C01_B02_split_0b": 3965.6,
+        "C02_codec_unsplit": 4419.34,
+        "C02_codec_split": 3966.63,
+        "C03_nested_unsplit": 7949.8,
+        "C03_nested_split": 7055.49,
+        "C04_ring_unsplit": 4047.83,
+        "C04_ring_split": 3006.02
+      },
+      "checksums": {
+        "C01_B02_unsplit": 328944192220905660,
+        "C01_B02_split_32b": 328944192220905660,
+        "C01_B02_split_0b": 328944192220905660,
+        "C02_codec_unsplit": 10708165096584094032,
+        "C02_codec_split": 10708165096584094032,
+        "C03_nested_unsplit": 10837232548311377167,
+        "C03_nested_split": 10837232548311377167,
+        "C04_ring_unsplit": 18446744073709501615,
+        "C04_ring_split": 18446744073709501615
+      },
+      "asm_metrics": {
+        "run_c01_b02_split_0b": {
+          "frame_bytes": 360,
+          "inst_count": 109,
+          "memcpy_calls": 0
+        },
+        "run_c01_b02_split_32b": {
+          "frame_bytes": 584,
+          "inst_count": 448,
+          "memcpy_calls": 0
+        },
+        "run_c01_b02_unsplit": {
+          "frame_bytes": 376,
+          "inst_count": 111,
+          "memcpy_calls": 0
+        },
+        "run_c02_codec_split": {
+          "frame_bytes": 424,
+          "inst_count": 113,
+          "memcpy_calls": 0
+        },
+        "run_c02_codec_unsplit": {
+          "frame_bytes": 440,
+          "inst_count": 115,
+          "memcpy_calls": 0
+        },
+        "run_c03_nested_split": {
+          "frame_bytes": 392,
+          "inst_count": 111,
+          "memcpy_calls": 0
+        },
+        "run_c03_nested_unsplit": {
+          "frame_bytes": 408,
+          "inst_count": 113,
+          "memcpy_calls": 0
+        },
+        "run_c04_ring_split": {
+          "frame_bytes": 360,
+          "inst_count": 109,
+          "memcpy_calls": 0
+        },
+        "run_c04_ring_unsplit": {
+          "frame_bytes": 456,
+          "inst_count": 115,
+          "memcpy_calls": 0
+        }
+      }
+    },
+    "T3b_two_round_sroa_jumpthread_gvn": {
+      "timings_us": {
+        "C01_B02_unsplit": 545.52,
+        "C01_B02_split_32b": 341.06,
+        "C01_B02_split_0b": 147.09,
+        "C02_codec_unsplit": 605.7,
+        "C02_codec_split": 203.56,
+        "C03_nested_unsplit": 996.94,
+        "C03_nested_split": 885.57,
+        "C04_ring_unsplit": 386.12,
+        "C04_ring_split": 132.39
+      },
+      "checksums": {
+        "C01_B02_unsplit": 328944192220905660,
+        "C01_B02_split_32b": 328944192220905660,
+        "C01_B02_split_0b": 328944192220905660,
+        "C02_codec_unsplit": 10708165096584094032,
+        "C02_codec_split": 10708165096584094032,
+        "C03_nested_unsplit": 10837232548311377167,
+        "C03_nested_split": 10837232548311377167,
+        "C04_ring_unsplit": 18446744073709501615,
+        "C04_ring_split": 18446744073709501615
+      },
+      "asm_metrics": {
+        "run_c01_b02_split_0b": {
+          "frame_bytes": 0,
+          "inst_count": 83,
+          "memcpy_calls": 0
+        },
+        "run_c01_b02_split_32b": {
+          "frame_bytes": 48,
+          "inst_count": 68,
+          "memcpy_calls": 0
+        },
+        "run_c01_b02_unsplit": {
+          "frame_bytes": 80,
+          "inst_count": 118,
+          "memcpy_calls": 0
+        },
+        "run_c02_codec_split": {
+          "frame_bytes": 24,
+          "inst_count": 103,
+          "memcpy_calls": 0
+        },
+        "run_c02_codec_unsplit": {
+          "frame_bytes": 112,
+          "inst_count": 151,
+          "memcpy_calls": 0
+        },
+        "run_c03_nested_split": {
+          "frame_bytes": 128,
+          "inst_count": 74,
+          "memcpy_calls": 0
+        },
+        "run_c03_nested_unsplit": {
+          "frame_bytes": 144,
+          "inst_count": 74,
+          "memcpy_calls": 0
+        },
+        "run_c04_ring_split": {
+          "frame_bytes": 0,
+          "inst_count": 52,
+          "memcpy_calls": 0
+        },
+        "run_c04_ring_unsplit": {
+          "frame_bytes": 112,
+          "inst_count": 75,
+          "memcpy_calls": 0
+        }
+      }
+    },
+    "T4_full_O3": {
+      "timings_us": {
+        "C01_B02_unsplit": 747.75,
+        "C01_B02_split_32b": 295.51,
+        "C01_B02_split_0b": 114.14,
+        "C02_codec_unsplit": 737.95,
+        "C02_codec_split": 154.79,
+        "C03_nested_unsplit": 1380.33,
+        "C03_nested_split": 147.86,
+        "C04_ring_unsplit": 229.8,
+        "C04_ring_split": 30.2
+      },
+      "checksums": {
+        "C01_B02_unsplit": 328944192220905660,
+        "C01_B02_split_32b": 328944192220905660,
+        "C01_B02_split_0b": 328944192220905660,
+        "C02_codec_unsplit": 10708165096584094032,
+        "C02_codec_split": 10708165096584094032,
+        "C03_nested_unsplit": 10837232548311377167,
+        "C03_nested_split": 10837232548311377167,
+        "C04_ring_unsplit": 18446744073709501615,
+        "C04_ring_split": 18446744073709501615
+      },
+      "asm_metrics": {
+        "run_c01_b02_split_0b": {
+          "frame_bytes": 0,
+          "inst_count": 56,
+          "memcpy_calls": 0
+        },
+        "run_c01_b02_split_32b": {
+          "frame_bytes": 0,
+          "inst_count": 50,
+          "memcpy_calls": 0
+        },
+        "run_c01_b02_unsplit": {
+          "frame_bytes": 0,
+          "inst_count": 48,
+          "memcpy_calls": 0
+        },
+        "run_c02_codec_split": {
+          "frame_bytes": 0,
+          "inst_count": 28,
+          "memcpy_calls": 0
+        },
+        "run_c02_codec_unsplit": {
+          "frame_bytes": 104,
+          "inst_count": 78,
+          "memcpy_calls": 0
+        },
+        "run_c03_nested_split": {
+          "frame_bytes": 0,
+          "inst_count": 28,
+          "memcpy_calls": 0
+        },
+        "run_c03_nested_unsplit": {
+          "frame_bytes": 88,
+          "inst_count": 189,
+          "memcpy_calls": 0
+        },
+        "run_c04_ring_split": {
+          "frame_bytes": 0,
+          "inst_count": 52,
+          "memcpy_calls": 0
+        },
+        "run_c04_ring_unsplit": {
+          "frame_bytes": 0,
+          "inst_count": 41,
+          "memcpy_calls": 0
+        }
+      }
+    }
+  }
+}

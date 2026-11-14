@@ -1,0 +1,100 @@
+{
+  "toolchain": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67, LLVM 23.1.1)",
+  "iterations": 200000,
+  "latencies_200k_iters_us": {
+    "W01": {
+      "unopt_us": 413.23,
+      "sunk_or_dse_us": 446.15,
+      "speedup_ratio": 0.926
+    },
+    "W02": {
+      "unopt_us": 235.43,
+      "sunk_or_dse_us": 176.57,
+      "speedup_ratio": 1.333
+    },
+    "W03": {
+      "unopt_us": 557.29,
+      "sunk_or_dse_us": 470.71,
+      "speedup_ratio": 1.184
+    },
+    "W04": {
+      "unopt_us": 589.6,
+      "sunk_or_dse_us": 411.95,
+      "speedup_ratio": 1.431
+    }
+  },
+  "asm_metrics_panic_unwind": {
+    "w01_sunk_to_cleanup": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 1,
+      "total_insts": 18
+    },
+    "w01_unopt_unwind": {
+      "hot_referent_stores": 2,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 11
+    },
+    "w02_loop_promoted_with_cleanup_sink": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 1,
+      "total_insts": 38
+    },
+    "w02_loop_unopt_unwind": {
+      "hot_referent_stores": 2,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 28
+    },
+    "w03_cursor_sunk": {
+      "hot_referent_stores": 3,
+      "cold_cleanup_referent_stores": 3,
+      "total_insts": 25
+    },
+    "w03_cursor_unopt": {
+      "hot_referent_stores": 6,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 23
+    },
+    "w04_drop_overwrite_dse": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 1,
+      "total_insts": 12
+    },
+    "w04_drop_overwrite_unopt": {
+      "hot_referent_stores": 2,
+      "cold_cleanup_referent_stores": 1,
+      "total_insts": 14
+    }
+  },
+  "asm_metrics_panic_abort": {
+    "w01_sunk_to_cleanup": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 9
+    },
+    "w02_loop_promoted_with_cleanup_sink": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 35
+    },
+    "w02_loop_unopt_unwind": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 32
+    },
+    "w03_cursor_sunk": {
+      "hot_referent_stores": 3,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 20
+    },
+    "w03_cursor_unopt": {
+      "hot_referent_stores": 3,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 20
+    },
+    "w04_drop_overwrite_dse": {
+      "hot_referent_stores": 1,
+      "cold_cleanup_referent_stores": 0,
+      "total_insts": 8
+    }
+  }
+}
