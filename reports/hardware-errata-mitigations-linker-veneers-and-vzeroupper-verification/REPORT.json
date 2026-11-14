@@ -1,11 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/isa-models",
     "isa",
+    "lean",
     "llvm",
     "rustc",
-    "lean",
-    "verification"
+    "verification",
+    "verification/isa-coverage"
   ],
   "subjects": [
     {

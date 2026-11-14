@@ -1,8 +1,14 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "cargo/unit-graph",
+    "build",
     "build/caching",
+    "cargo",
+    "cargo/unit-graph",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/contract",
+    "rustc",
+    "rustc/codegen",
     "rustc/driver",
     "systems"
   ],

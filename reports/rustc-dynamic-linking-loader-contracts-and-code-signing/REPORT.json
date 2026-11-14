@@ -1,9 +1,17 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/dynamic-linking",
-    "systems/dynamic-loaders",
-    "security/binary-hardening"
+    "compilers/verified-rustc/platform-conventions",
+    "rust",
+    "rust/calling-conventions",
+    "rustc",
+    "rustc/abi",
+    "rustc/linker-driver",
+    "security",
+    "security/binary-hardening",
+    "systems",
+    "systems/object-formats"
   ],
   "observed_at": "2026-11-13",
   "subjects": [

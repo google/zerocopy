@@ -1,11 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/proof-system-and-irs",
     "lean",
     "lean/mechanization",
     "lean/verification",
     "verification",
-    "compilers"
+    "verification/certificates",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

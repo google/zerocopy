@@ -1,10 +1,15 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rust",
-    "minirust",
+    "compilers/verified-rustc/mir-and-aliasing",
     "llvm",
-    "rustc"
+    "minirust",
+    "rust",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir"
   ],
   "subjects": [
     {

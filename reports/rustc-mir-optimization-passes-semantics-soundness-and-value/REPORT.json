@@ -1,12 +1,15 @@
 {
   "topics": [
+    "anneal",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "rustc/mir",
-    "rustc/optimizations",
+    "compilers/verified-rustc/rustc-internals",
     "llvm",
-    "verification",
-    "anneal"
+    "rustc",
+    "rustc/codegen",
+    "rustc/mir",
+    "rustc/monomorphization",
+    "verification"
   ],
   "subjects": [
     {

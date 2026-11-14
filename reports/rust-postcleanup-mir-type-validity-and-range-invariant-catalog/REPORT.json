@@ -1,13 +1,16 @@
 {
   "topics": [
+    "anneal",
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/mir-type-validity-invariant-catalog",
+    "compilers/verified-rustc/mir-and-aliasing",
+    "llvm",
     "rust",
+    "rust/tree-borrows",
+    "rust/unsafe",
     "rustc",
     "rustc/mir",
-    "llvm",
-    "verification",
-    "anneal"
+    "verification"
   ],
   "subjects": [
     {

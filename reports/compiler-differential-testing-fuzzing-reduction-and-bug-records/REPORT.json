@@ -1,12 +1,20 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers/differential-testing",
-    "rustc/codegen",
-    "rust/miri",
-    "minirust/tooling",
+    "anneal",
     "anneal/mutation-testing",
-    "verification/compiler-verification"
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/validation",
+    "minirust",
+    "minirust/tooling",
+    "rust",
+    "rust/miri",
+    "rustc",
+    "rustc/codegen",
+    "rustc/compiletest",
+    "verification",
+    "verification/compiler-verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

@@ -1,11 +1,17 @@
 {
   "topics": [
+    "cargo",
+    "cargo/corpora",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/ecosystem-demand",
+    "isa",
     "isa/aarch64",
     "isa/x86-64",
     "llvm",
     "rust",
     "rustc",
+    "rustc/codegen",
     "verification"
   ],
   "subjects": [

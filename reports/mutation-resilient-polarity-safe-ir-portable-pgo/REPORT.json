@@ -1,10 +1,13 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "rustc/mir",
+    "compilers/verified-rustc/normal-compilation",
     "llvm",
-    "compilers"
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
+    "rustc/mir"
   ],
   "subjects": [
     {

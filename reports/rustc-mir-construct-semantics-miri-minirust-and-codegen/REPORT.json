@@ -1,13 +1,22 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "rustc/mir",
-    "rustc/mir-phases",
-    "rustc/codegen",
-    "rust/miri",
-    "minirust/semantics",
+    "anneal",
     "anneal/mir-semantics",
-    "llvm/lowering"
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir-and-aliasing",
+    "llvm",
+    "llvm/lowering",
+    "minirust",
+    "minirust/semantics",
+    "rust",
+    "rust/miri",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/codegen",
+    "rustc/mir",
+    "rustc/mir-phases"
   ],
   "subjects": [
     {

@@ -35,11 +35,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/platform-conventions",
         "isa",
-        "compilers"
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats"
       ]
     },
     "aeneas-architecture-translation-pipeline-and-pure-extraction": {
@@ -6025,12 +6031,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers/verified-rustc/anneal-spec-minissa-compression",
         "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
         "lean",
         "lean/mechanization",
         "verification",
+        "verification/compiler-verification",
+        "verification/refinement",
         "zerocopy"
       ]
     },
@@ -7554,13 +7564,18 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/program-planning",
         "isa",
-        "smt",
         "lean",
-        "verification"
+        "llvm",
+        "rustc",
+        "smt",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "bidirectional-mir-minissa-refinement-and-anneal-vc-transport": {
@@ -7592,13 +7607,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers/verified-rustc/bidirectional-mir-minissa",
         "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
         "lean",
         "lean/mechanization",
+        "rustc",
         "verification",
-        "rustc"
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "binary-evidence-packaging-provenance-attestations-and-rustc-reproducibility": {
@@ -7638,16 +7657,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
+        "anneal",
+        "anneal/architecture",
         "build",
         "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
+        "exocrate",
         "rustc",
+        "rustc/codegen",
         "security",
         "systems",
         "verification",
-        "anneal",
-        "exocrate"
+        "verification/compiler-verification"
       ]
     },
     "black-box-translation-validation-alive2-and-mir-to-llvm-on-rust": {
@@ -7671,11 +7694,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "verification",
+        "compilers/verified-rustc/validated-llvm",
         "llvm",
+        "llvm/translation-validation",
         "rustc",
-        "smt"
+        "smt",
+        "verification",
+        "verification/translation-validation"
       ]
     },
     "candidate-optimizers-llvm-cranelift-and-gcc-backend-comparison": {
@@ -7706,11 +7733,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "llvm",
-        "rustc",
         "compilers",
-        "verification"
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "cargo-profile-and-compiler-flag-census-in-the-wild": {
@@ -7834,12 +7865,20 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "build",
+        "build/hermeticity",
+        "cargo",
+        "cargo/corpora",
+        "compilers",
         "compilers/verified-rustc",
-        "cargo/profiles",
+        "compilers/verified-rustc/normal-compilation",
+        "llvm",
+        "llvm/passes",
+        "rustc",
         "rustc/codegen",
-        "rustc/driver",
-        "llvm/optimization",
-        "build/packaging"
+        "rustc/driver"
       ]
     },
     "cargo-rustc-wrapper-caching-and-extraction-coverage": {
@@ -9051,14 +9090,18 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/refinement",
         "compilers",
-        "verification",
-        "verification/refinement",
-        "verification/compcert",
-        "verification/cakeml",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "lean",
         "lean/mechanization",
-        "anneal/refinement"
+        "verification",
+        "verification/cakeml",
+        "verification/compcert",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "compiler-differential-testing-fuzzing-reduction-and-bug-records": {
@@ -9097,13 +9140,21 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers/differential-testing",
-        "rustc/codegen",
-        "rust/miri",
-        "minirust/tooling",
+        "anneal",
         "anneal/mutation-testing",
-        "verification/compiler-verification"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/validation",
+        "minirust",
+        "minirust/tooling",
+        "rust",
+        "rust/miri",
+        "rustc",
+        "rustc/codegen",
+        "rustc/compiletest",
+        "verification",
+        "verification/compiler-verification",
+        "verification/empirical-evaluation"
       ]
     },
     "compiler-isa-sdk-licensing-trademarks-and-upstream-governance": {
@@ -9200,14 +9251,18 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/architecture",
         "compilers",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
         "isa",
         "lean",
+        "llvm",
+        "rustc",
+        "systems",
         "verification",
-        "systems"
+        "verification/compiler-verification"
       ]
     },
     "compiler-preservation-time-protection-and-anneal-ct-certificates-2018-2026": {
@@ -9358,14 +9413,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/architecture",
         "compilers",
-        "verification",
-        "verification/compcert",
-        "verification/cakeml",
-        "rustc",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
         "rust",
-        "anneal"
+        "rustc",
+        "verification",
+        "verification/cakeml",
+        "verification/compcert",
+        "verification/compiler-verification"
       ]
     },
     "compiler-substrate-benchmarks-lean-rust-and-ocaml": {
@@ -9397,10 +9455,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "lean",
-        "rust",
+        "anneal",
+        "anneal/trusted-boundary",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "rust",
         "systems"
       ]
     },
@@ -9441,12 +9504,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "lean",
+        "anneal",
+        "anneal/architecture",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "lean",
         "rustc",
         "verification",
-        "anneal"
+        "verification/compiler-verification"
       ]
     },
     "compositional-correctness-linking-and-whole-program-optimization": {
@@ -9538,15 +9604,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/refinement",
         "compilers",
-        "verification",
-        "verification/refinement",
-        "verification/compcert",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "lean",
+        "lean/mechanization",
+        "llvm",
         "rustc",
         "rustc/monomorphization",
-        "llvm",
-        "lean/mechanization"
+        "verification",
+        "verification/compcert",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026": {
@@ -9772,13 +9843,22 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust/concurrency",
-        "systems/concurrency-weak-memory",
-        "isa/x86-64",
+        "compilers/verified-rustc/validation",
+        "isa",
         "isa/aarch64",
+        "isa/x86-64",
+        "rust",
+        "rust/concurrency",
+        "rustc",
+        "rustc/compiletest",
         "rustc/intrinsics",
-        "verification/compiler-verification"
+        "systems",
+        "systems/concurrency-weak-memory",
+        "verification",
+        "verification/compiler-verification",
+        "verification/empirical-evaluation"
       ]
     },
     "configured-rust-capture-fnabi-placement-and-formality-specr-boundaries": {
@@ -10075,13 +10155,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/coroutine-optimization-and-hybridtrace-scaling",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/optimizer",
         "lean",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "compilers"
+        "verification/compiler-verification"
       ]
     },
     "crates-io-download-weighted-codegen-demand-census": {
@@ -10141,12 +10224,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers/verified-rustc/corpora",
-        "rustc/codegen",
-        "rustc/mir",
+        "cargo",
         "cargo/corpora",
-        "rust/unsafe"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/ecosystem-demand",
+        "rust",
+        "rust/unsafe",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir"
       ]
     },
     "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay": {
@@ -10178,14 +10265,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "rustc/mir",
-        "llvm",
+        "compilers/verified-rustc/normal-compilation",
         "lean",
         "lean/mechanization",
-        "verification",
-        "compilers"
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification"
       ]
     },
     "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics": {
@@ -10231,16 +10321,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/architecture",
         "compilers",
-        "rustc",
-        "rustc/codegen",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "lean",
+        "lean/mechanization",
         "llvm",
         "llvm/noalias",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "verification/refinement",
-        "lean/mechanization",
-        "anneal"
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "cross-prover-guarantee-composition-and-native-checker-soundness": {
@@ -10343,15 +10437,19 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/refinement",
+        "anneal/trusted-boundary",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
         "lean",
         "lean/kernel",
         "lean/mechanization",
         "verification",
         "verification/certificates",
-        "anneal",
-        "anneal/trusted-boundary"
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "cross-prover-interoperability-verified-checkers-and-tcb-accounting": {
@@ -11591,12 +11689,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/isa-models",
         "isa",
         "lean",
-        "compilers"
+        "llvm",
+        "rustc",
+        "verification",
+        "verification/isa-coverage"
       ]
     },
     "deductive-proof-object-and-refinement-certificate-kernels-2013-2026": {
@@ -11724,14 +11825,19 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
+        "anneal",
+        "anneal/architecture",
         "build",
         "cargo",
-        "rustc",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
         "lean",
+        "rustc",
+        "rustc/codegen",
+        "systems",
         "verification",
-        "systems"
+        "verification/compiler-verification"
       ]
     },
     "direct-verified-object-section-and-relocation-emitter-v0": {
@@ -11763,14 +11869,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/isa-models",
+        "isa",
         "lean",
         "lean/mechanization",
+        "llvm",
+        "rustc",
+        "systems",
         "verification",
-        "isa",
-        "systems"
+        "verification/isa-coverage"
       ]
     },
     "ebpf-certificate-verifying-kernels-and-verified-jits-2014-2026": {
@@ -11911,12 +12020,19 @@
         }
       ],
       "topics": [
+        "build",
+        "build/hermeticity",
+        "cargo",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/validation",
+        "rustc",
         "rustc/bootstrap",
         "rustc/codegen",
-        "cargo",
-        "build/self-hosting",
-        "verification/compiler-verification"
+        "rustc/compiletest",
+        "verification",
+        "verification/compiler-verification",
+        "verification/empirical-evaluation"
       ]
     },
     "end-to-end-verified-mir-to-isa-refinement-chain-and-seams": {
@@ -11956,15 +12072,20 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "isa",
+        "isa/x86-64",
         "lean",
         "lean/mechanization",
         "lean/verification",
-        "verification",
         "rustc",
-        "isa",
-        "isa/x86-64",
-        "anneal"
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting": {
@@ -12058,13 +12179,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
-        "verification",
-        "lean",
         "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "isa",
+        "lean",
+        "lean/mechanization",
         "rustc",
-        "isa"
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "exocrate-archive-installation-caching-and-trust-verification": {
@@ -12247,11 +12372,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "isa/x86-64",
-        "isa/i386",
+        "compilers/verified-rustc/isa-models",
+        "isa",
         "isa/aarch64",
+        "isa/i386",
+        "isa/x86-64",
+        "lean",
         "lean/isa-semantics",
+        "verification",
         "verification/isa-coverage"
       ]
     },
@@ -12704,12 +12834,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/isa-models",
         "isa",
+        "lean",
         "llvm",
         "rustc",
-        "lean",
-        "verification"
+        "verification",
+        "verification/isa-coverage"
       ]
     },
     "hybrid-functional-spatial-and-plan-guided-shallow-translation-in-lean4": {
@@ -13012,12 +13145,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
+        "lean/mechanization",
         "llvm",
         "rust",
         "smt",
-        "verification"
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "in-kernel-side-channel-certificates-and-speculative-ct-2018-2026": {
@@ -13378,13 +13516,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
-        "rustc",
-        "llvm",
+        "anneal",
+        "anneal/architecture",
         "build",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
+        "llvm",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "anneal"
+        "verification/compiler-verification"
       ]
     },
     "independent-proof-checkers-and-smaller-trusted-computing-bases": {
@@ -13452,13 +13594,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "lean",
-        "verification",
-        "verification/compiler-verification",
-        "security",
         "anneal",
-        "compilers"
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "security",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "interactive-prover-document-processing-lsp-mcp-and-snapshot-consistency": {
@@ -14013,12 +14159,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "isa/hardware-validation",
-        "isa/x86-64",
-        "isa/i386",
+        "compilers/verified-rustc/isa-models",
+        "isa",
         "isa/aarch64",
-        "llvm/errata-mitigations"
+        "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "llvm/codegen",
+        "verification",
+        "verification/isa-coverage"
       ]
     },
     "islaris-source-identity-dependency-solving-and-coq-adequacy-replay": {
@@ -15793,12 +15944,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
         "lean/mechanization",
         "lean/verification",
         "verification",
-        "compilers"
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "lean-elaboration-hygiene-positions-and-infotree": {
@@ -16003,11 +16157,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "lean",
-        "rustc",
-        "isa",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
+        "lean",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -16124,11 +16284,15 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
         "lean",
         "lean/kernel",
-        "verification",
-        "compilers"
+        "lean/mechanization",
+        "verification"
       ]
     },
     "lean-kernel-memory-ceilings-whnf-scaling-and-validator-architectures": {
@@ -16220,11 +16384,15 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
         "lean",
         "lean/kernel",
-        "verification",
-        "compilers"
+        "lean/mechanization",
+        "verification"
       ]
     },
     "lean-large-isa-and-compiler-semantics-scaling": {
@@ -16261,11 +16429,16 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
         "compilers/verified-rustc",
-        "lean",
+        "compilers/verified-rustc/checker-substrate",
         "isa",
-        "verification",
-        "compilers"
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "verification"
       ]
     },
     "lean-lsp-document-version-cancellation-context": {
@@ -16532,12 +16705,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
         "lean/elaboration",
         "lean/mechanization",
-        "verification"
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "lean-miri-interpreter-hooks-move-deinit-and-provenance-fragments": {
@@ -16634,15 +16810,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "lean",
-        "lean/compiler",
-        "lean/runtime",
-        "lean/kernel",
-        "verification",
+        "anneal",
         "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
         "security",
-        "compilers"
+        "verification"
       ]
     },
     "lean-olean-ilean-format-and-compilation-determinism": {
@@ -17289,9 +17466,13 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/trusted-boundary",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
         "lean",
+        "lean/kernel",
         "lean/mechanization",
         "rust",
         "systems",
@@ -17319,14 +17500,20 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "llvm/lowering",
-        "rustc/codegen",
-        "isa/x86-64",
-        "isa/i386",
+        "compilers/verified-rustc/isa-models",
+        "isa",
         "isa/aarch64",
-        "verification/isa-coverage",
-        "verification/empirical-evaluation"
+        "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "llvm/lowering",
+        "rustc",
+        "rustc/codegen",
+        "verification",
+        "verification/empirical-evaluation",
+        "verification/isa-coverage"
       ]
     },
     "llvm-derivation-emission-instrumentation-architecture-and-cost": {
@@ -17350,13 +17537,17 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/validated-llvm",
         "llvm",
         "llvm/passes",
         "llvm/translation-validation",
+        "smt",
         "verification",
         "verification/refinement",
-        "anneal"
+        "verification/translation-validation"
       ]
     },
     "llvm-instruction-selection-fallbacks-and-libcall-contracts": {
@@ -17380,13 +17571,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/intrinsics-and-assembly",
+        "isa",
+        "isa/aarch64",
+        "isa/i386",
+        "isa/x86-64",
+        "llvm",
         "llvm/lowering",
+        "rustc",
         "rustc/codegen",
         "rustc/intrinsics",
-        "isa/x86-64",
-        "isa/i386",
-        "isa/aarch64",
+        "verification",
         "verification/compiler-verification"
       ]
     },
@@ -17412,14 +17609,19 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
         "llvm",
-        "llvm/passes",
-        "llvm/lto",
         "llvm/codegen",
+        "llvm/lto",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "verification/refinement",
-        "anneal"
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "llvm-ir-baseline-formal-semantics-and-ambiguities": {
@@ -17460,13 +17662,19 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/mechanization",
         "llvm",
+        "rust",
         "rustc",
         "rustc/codegen",
-        "rust",
         "verification",
-        "anneal"
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "llvm-o3-derivation-formats-expressiveness-and-checking-cost": {
@@ -17498,11 +17706,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "verification",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/mechanization",
         "llvm",
         "rustc",
-        "compilers"
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "llvm-oracle-guided-minissa-minimach-replay-prototype-and-parity": {
@@ -17526,10 +17739,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
         "llvm",
+        "llvm/passes",
         "rustc",
-        "verification"
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "llvm-pass-ablation-speed-and-size-on-rust-code": {
@@ -17553,10 +17771,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
         "llvm",
+        "llvm/passes",
         "rustc",
-        "compilers"
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "llvm-scalar-memory-and-loop-optimization-proof-obligations": {
@@ -17588,13 +17811,18 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
         "llvm",
         "llvm/passes",
         "llvm/translation-validation",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "verification/refinement",
-        "anneal"
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "llvm-tablegen-isa-extraction-and-verified-selector-reuse": {
@@ -17619,12 +17847,18 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
+        "isa",
         "llvm",
         "llvm/codegen",
-        "isa",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "anneal"
+        "verification/compiler-verification"
       ]
     },
     "machine-code-verification-frameworks-and-assembly-contracts": {
@@ -17726,12 +17960,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/intrinsics-and-assembly",
+        "rust",
+        "rust/inline-asm",
+        "rustc",
+        "rustc/codegen",
+        "rustc/intrinsics",
+        "verification",
         "verification/assembly-contracts",
-        "isa/machine-code-verification",
-        "rustc/inline-assembly",
-        "compilers/compcert",
-        "kraken/verification"
+        "verification/compcert",
+        "verification/compiler-verification",
+        "verification/isa-coverage"
       ]
     },
     "mathlib-cache-protocol-artifact-format-and-pruning": {
@@ -18254,15 +18495,19 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "isa",
+        "lean",
+        "lean/mechanization",
         "llvm",
         "rust",
         "rustc",
-        "lean",
         "verification",
-        "anneal",
-        "isa"
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "metal-typechain-language-isolated-kernels-1995-2026": {
@@ -18413,13 +18658,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/optimizer",
         "isa",
-        "isa/x86-64",
         "isa/aarch64",
-        "systems"
+        "isa/x86-64",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "systems",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "minirust-core-calculi-basic-memory-and-nondeterminism": {
@@ -18918,12 +19169,19 @@
         }
       ],
       "topics": [
+        "agents",
+        "agents/lsp-integration",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/driver",
-        "rustc/metadata",
+        "compilers/verified-rustc/contract",
+        "minirust",
         "minirust/tooling",
+        "rust",
         "rust/tree-borrows",
-        "agents/lsp-integration"
+        "rustc",
+        "rustc/codegen",
+        "rustc/driver",
+        "rustc/metadata"
       ]
     },
     "modern-sfi-lfi-and-ring0-wasm-kernels-2020-2026": {
@@ -19083,11 +19341,14 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "rustc/mir",
+        "compilers/verified-rustc/normal-compilation",
         "llvm",
-        "compilers"
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir"
       ]
     },
     "nix-guix-immutable-closures-mutable-roots-and-toolchain-archive-equivalence": {
@@ -19426,15 +19687,18 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
         "anneal",
-        "anneal/refinement",
         "anneal/mir-semantics",
-        "verification",
-        "verification/refinement",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "lean",
+        "lean/mechanization",
         "security",
-        "lean/mechanization"
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "open-rust-library-certificate-closure-and-consumer-acceptance-protocols": {
@@ -19693,11 +19957,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
         "llvm",
+        "llvm/passes",
         "rust",
         "rustc",
-        "verification"
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "os-syscall-interfaces-asynchronous-signals-and-environment-models": {
@@ -19746,15 +20015,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
         "compilers",
-        "systems",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
         "isa",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats",
         "verification",
         "verification/cakeml",
-        "verification/compcert",
-        "rustc",
-        "anneal"
+        "verification/compcert"
       ]
     },
     "pcc-tal-verve-foundational-certificate-kernels-1996-2016": {
@@ -19959,14 +20233,18 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "llvm",
-        "llvm/scheduling-models",
-        "llvm/mca",
+        "compilers/verified-rustc/optimizer",
         "isa",
-        "isa/x86-64",
         "isa/aarch64",
+        "isa/x86-64",
+        "llvm",
+        "llvm/codegen",
+        "llvm/passes",
+        "rustc",
         "rustc/codegen",
+        "verification",
         "verification/compiler-verification"
       ]
     },
@@ -20854,12 +21132,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
         "compilers",
-        "verification",
-        "smt",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
-        "anneal"
+        "lean/mechanization",
+        "smt",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "proven-baseline-compiler-candidates-and-reusable-verified-backends": {
@@ -20906,14 +21188,19 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
         "compilers",
-        "verification",
-        "verification/compiler-verification",
-        "isa/x86-64",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
+        "isa",
         "isa/aarch64",
+        "isa/x86-64",
+        "lean",
+        "llvm",
+        "llvm/passes",
+        "rustc",
         "rustc/codegen",
-        "lean"
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {
@@ -21375,12 +21662,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
-        "verification",
-        "lean",
         "anneal",
-        "minirust"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/mechanization",
+        "minirust",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026": {
@@ -21610,11 +21901,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust/unsafe",
-        "rust/tree-borrows",
-        "minirust/memory",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "llvm",
         "llvm/noalias",
+        "minirust",
+        "minirust/memory",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification",
         "verification/separation-logic"
       ]
     },
@@ -21654,11 +21953,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust",
-        "minirust",
+        "compilers/verified-rustc/mir-and-aliasing",
         "llvm",
-        "rustc"
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir"
       ]
     },
     "rust-allocation-box-storage-transfer-and-drop-elaboration": {
@@ -21846,13 +22150,22 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust/unsafe",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "llvm",
+        "llvm/ir-semantics",
+        "minirust",
+        "minirust/memory",
+        "rust",
         "rust/provenance",
-        "rustc/mir",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
         "rustc/codegen",
-        "llvm/memory-model",
-        "minirust/memory"
+        "rustc/mir",
+        "systems",
+        "systems/concurrency-weak-memory"
       ]
     },
     "rust-atomics-weak-memory-and-aliasing-operational-models": {
@@ -22201,12 +22514,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rust/inline-asm",
-        "rustc/inline-assembly",
+        "cargo",
         "cargo/corpora",
-        "isa/x86-64",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/intrinsics-and-assembly",
+        "isa",
         "isa/aarch64",
+        "isa/x86-64",
+        "rust",
+        "rust/inline-asm",
+        "rustc",
+        "rustc/codegen",
+        "rustc/intrinsics",
+        "verification",
         "verification/empirical-evaluation"
       ]
     },
@@ -22414,14 +22735,23 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust/floating-point",
-        "rustc/const-eval",
-        "rustc/codegen",
-        "llvm/floating-point",
-        "isa/x86-64",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "isa",
+        "isa/aarch64",
         "isa/i386",
-        "isa/aarch64"
+        "isa/x86-64",
+        "llvm",
+        "llvm/ir-semantics",
+        "rust",
+        "rust/floating-point",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/codegen",
+        "rustc/const-eval",
+        "rustc/mir"
       ]
     },
     "rust-inline-assembly-contracts-relocations-and-simd-correspondence": {
@@ -22618,12 +22948,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rustc/mir",
+        "compilers/verified-rustc/contract",
+        "rust",
         "rust/calling-conventions",
         "rust/layout",
-        "rustc/intrinsics"
+        "rustc",
+        "rustc/codegen",
+        "rustc/driver",
+        "rustc/intrinsics",
+        "rustc/mir"
       ]
     },
     "rust-llvm-o3-loop-and-slp-vectorization-idiom-census": {
@@ -22647,12 +22982,18 @@
         }
       ],
       "topics": [
+        "cargo",
+        "cargo/corpora",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/ecosystem-demand",
+        "isa",
         "isa/aarch64",
         "isa/x86-64",
         "llvm",
         "rust",
         "rustc",
+        "rustc/codegen",
         "verification"
       ]
     },
@@ -22719,11 +23060,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/contract",
+        "minirust",
         "rust",
         "rust/unsafe",
         "rustc",
-        "minirust"
+        "rustc/codegen",
+        "rustc/driver"
       ]
     },
     "rust-panic-divergence-and-unreachable-semantics": {
@@ -22830,14 +23175,17 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/mir-type-validity-invariant-catalog",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "llvm",
         "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
         "rustc",
         "rustc/mir",
-        "llvm",
-        "verification",
-        "anneal"
+        "verification"
       ]
     },
     "rust-program-startup-runtime-objects-and-entry-state": {
@@ -22878,14 +23226,22 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rustc/driver",
-        "systems/process-control",
-        "systems/object-formats",
-        "isa/x86-64",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
         "isa/aarch64",
         "isa/i386",
+        "isa/x86-64",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/codegen",
+        "rustc/driver",
+        "systems",
+        "systems/object-formats",
+        "systems/process-control",
         "verification"
       ]
     },
@@ -23039,14 +23395,21 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rustc/abi",
-        "llvm",
-        "systems",
-        "isa/x86-64",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
         "isa/aarch64",
         "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/codegen",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -23088,14 +23451,22 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rust/concurrency",
-        "llvm",
-        "systems/object-formats",
-        "isa/x86-64",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
         "isa/aarch64",
         "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rust/concurrency",
+        "rustc",
+        "rustc/abi",
+        "rustc/codegen",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -23880,11 +24251,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rustc/mir",
+        "compilers/verified-rustc/contract",
         "llvm",
+        "rust",
         "rust/unsafe",
+        "rustc",
+        "rustc/codegen",
+        "rustc/driver",
+        "rustc/mir",
+        "verification",
         "verification/compiler-verification"
       ]
     },
@@ -23917,14 +24294,20 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
+        "compilers/verified-rustc/contract",
+        "isa",
+        "isa/aarch64",
+        "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "rust",
         "rust/reference-guarantees",
         "rust/unsafe",
-        "llvm",
-        "isa/x86-64",
-        "isa/aarch64",
-        "isa/i386"
+        "rustc",
+        "rustc/codegen",
+        "rustc/driver"
       ]
     },
     "rustc-baseline-repository-map-and-internal-interfaces": {
@@ -23958,13 +24341,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "rustc/architecture",
-        "rustc/mir",
-        "rustc/codegen",
+        "compilers/verified-rustc/rustc-internals",
         "llvm",
         "rust",
+        "rustc",
+        "rustc/architecture",
+        "rustc/codegen",
+        "rustc/mir",
+        "rustc/monomorphization",
         "verification"
       ]
     },
@@ -24121,14 +24507,21 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "build",
+        "build/hermeticity",
+        "compilers",
         "compilers/verified-rustc",
         "compilers/verified-rustc/baseline",
-        "rustc/toolchains",
-        "rustc/mir",
+        "compilers/verified-rustc/program-planning",
+        "lean",
+        "llvm",
+        "rustc",
         "rustc/codegen",
-        "llvm/versioning",
-        "lean/toolchains",
-        "anneal/toolchain-baseline"
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "rustc-benchmark-methodology-and-speed-size-baselines": {
@@ -24207,12 +24600,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers/verified-rustc/benchmark-baselines",
-        "rustc",
-        "llvm",
         "compilers",
-        "systems"
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/validation",
+        "llvm",
+        "rustc",
+        "rustc/compiletest",
+        "systems",
+        "verification",
+        "verification/empirical-evaluation"
       ]
     },
     "rustc-binary-origin-attribution-gc-sections-and-icf-soundness": {
@@ -24252,13 +24648,20 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
+        "llvm",
+        "llvm/lld",
         "rustc",
         "rustc/codegen",
         "rustc/linker-driver",
-        "llvm/lld",
+        "systems",
         "systems/object-formats",
-        "verification"
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "rustc-build-ir-and-pass-transformation-volume-statistics": {
@@ -24282,11 +24685,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc",
-        "llvm",
         "compilers",
-        "verification"
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rustc",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "rustc-build-system-and-consumer-invocation-contracts": {
@@ -24310,9 +24718,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "cargo/unit-graph",
+        "build",
         "build/caching",
+        "cargo",
+        "cargo/unit-graph",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/contract",
+        "rustc",
+        "rustc/codegen",
         "rustc/driver",
         "systems"
       ]
@@ -24472,13 +24886,18 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "cargo",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
+        "llvm",
         "rustc",
         "rustc/codegen",
         "rustc/monomorphization",
-        "cargo",
-        "llvm",
-        "verification"
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "rustc-compiletest-bootstrap-and-alternate-backend-test-mechanics": {
@@ -24502,12 +24921,18 @@
         }
       ],
       "topics": [
+        "cargo",
+        "cargo/corpora",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/compiletest",
+        "compilers/verified-rustc/validation",
+        "rustc",
         "rustc/bootstrap",
         "rustc/codegen",
-        "build/test-harnesses",
-        "verification/compiler-verification"
+        "rustc/compiletest",
+        "verification",
+        "verification/compiler-verification",
+        "verification/empirical-evaluation"
       ]
     },
     "rustc-conditional-compilation-source-spans-and-diagnostics": {
@@ -24798,14 +25223,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/ctfe-globalalloc-and-promoted-const-contract",
-        "rustc",
-        "rust",
-        "minirust",
+        "compilers/verified-rustc/mir-and-aliasing",
         "lean",
-        "verification",
-        "compilers"
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification"
       ]
     },
     "rustc-drop-elaboration-unwind-landing-pads-and-extensible-mir-semantics": {
@@ -24900,10 +25328,14 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/normal-compilation",
+        "llvm",
+        "llvm/passes",
         "rustc",
         "rustc/codegen",
-        "llvm",
+        "systems",
         "systems/object-formats",
         "verification"
       ]
@@ -24929,10 +25361,18 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/dynamic-linking",
-        "systems/dynamic-loaders",
-        "security/binary-hardening"
+        "compilers/verified-rustc/platform-conventions",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/linker-driver",
+        "security",
+        "security/binary-hardening",
+        "systems",
+        "systems/object-formats"
       ]
     },
     "rustc-experimental-corpora-and-harness-conventions": {
@@ -25027,10 +25467,18 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "cargo",
+        "cargo/corpora",
+        "compilers",
         "compilers/verified-rustc",
         "compilers/verified-rustc/corpora",
-        "rustc/benchmarks",
-        "cargo/corpora",
+        "compilers/verified-rustc/program-planning",
+        "rustc",
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification",
         "verification/empirical-evaluation"
       ]
     },
@@ -25063,12 +25511,14 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/driver",
+        "compilers/verified-rustc/contract",
+        "llvm",
+        "rustc",
         "rustc/codegen",
-        "rustc/metadata",
-        "rustc/diagnostics",
-        "llvm"
+        "rustc/driver",
+        "rustc/metadata"
       ]
     },
     "rustc-inline-assembly-specification-llvm-lowering-and-assembler-syntax": {
@@ -25107,13 +25557,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust/inline-asm",
-        "rustc/inline-assembly",
-        "rustc/codegen",
-        "llvm/mc-layer",
+        "compilers/verified-rustc/intrinsics-and-assembly",
+        "isa",
+        "isa/aarch64",
         "isa/x86-64",
-        "isa/aarch64"
+        "llvm",
+        "llvm/mc-layer",
+        "rust",
+        "rust/inline-asm",
+        "rustc",
+        "rustc/codegen",
+        "rustc/intrinsics"
       ]
     },
     "rustc-intrinsics-simd-and-arch-semantic-sources": {
@@ -25145,13 +25601,20 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/intrinsics",
-        "rustc/codegen",
-        "rust/miri",
-        "llvm/lowering",
-        "isa/x86-64",
+        "compilers/verified-rustc/intrinsics-and-assembly",
+        "isa",
         "isa/aarch64",
+        "isa/x86-64",
+        "llvm",
+        "llvm/lowering",
+        "rust",
+        "rust/miri",
+        "rustc",
+        "rustc/codegen",
+        "rustc/intrinsics",
+        "verification",
         "verification/compiler-verification"
       ]
     },
@@ -25196,13 +25659,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rust/layout",
-        "rust/target-data-layout",
-        "rustc/layout",
-        "rustc/abi",
+        "anneal",
         "anneal/mir-semantics",
-        "minirust/semantics"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "minirust",
+        "minirust/semantics",
+        "rust",
+        "rust/layout",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/abi",
+        "rustc/mir"
       ]
     },
     "rustc-llvm-free-sysroot-cranelift-gcc-and-host-tools-audit": {
@@ -25242,14 +25712,19 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc",
-        "rustc/codegen",
+        "anneal",
+        "anneal/architecture",
         "build",
         "build/sysroots-and-sdks",
         "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
         "llvm",
-        "verification"
+        "rustc",
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "rustc-llvm-ir-attributes-metadata-and-cross-path-obligations": {
@@ -25289,15 +25764,19 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "rustc/codegen",
+        "compilers/verified-rustc/verified-mode",
         "llvm",
         "llvm/ir-semantics",
         "llvm/noalias",
         "rust",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "anneal"
+        "verification/compiler-verification"
       ]
     },
     "rustc-llvm-pass-pipelines-and-configuration": {
@@ -25322,14 +25801,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/llvm-pipeline",
+        "compilers/verified-rustc/optimizer",
+        "llvm",
+        "llvm/lto",
+        "llvm/passes",
         "rustc",
         "rustc/codegen",
-        "llvm",
-        "llvm/passes",
-        "llvm/lto",
-        "verification"
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "rustc-lto-mechanics-symbol-preservation-and-performance-value": {
@@ -25353,10 +25834,14 @@
         }
       ],
       "topics": [
+        "build",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
+        "compilers/verified-rustc/normal-compilation",
         "llvm",
-        "build"
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen"
       ]
     },
     "rustc-mir-artifact-export-settings-and-proof-binding": {
@@ -25380,12 +25865,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc",
-        "rustc/mir",
-        "rustc/metadata",
         "anneal",
         "charon",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/rustc-internals",
+        "rustc",
+        "rustc/codegen",
+        "rustc/metadata",
+        "rustc/mir",
+        "rustc/monomorphization",
         "verification"
       ]
     },
@@ -25446,14 +25935,23 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc/mir",
-        "rustc/mir-phases",
-        "rustc/codegen",
-        "rust/miri",
-        "minirust/semantics",
+        "anneal",
         "anneal/mir-semantics",
-        "llvm/lowering"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "llvm",
+        "llvm/lowering",
+        "minirust",
+        "minirust/semantics",
+        "rust",
+        "rust/miri",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "rustc/mir-phases"
       ]
     },
     "rustc-mir-optimization-passes-semantics-soundness-and-value": {
@@ -25478,13 +25976,16 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "rustc/mir",
-        "rustc/optimizations",
+        "compilers/verified-rustc/rustc-internals",
         "llvm",
-        "verification",
-        "anneal"
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "rustc/monomorphization",
+        "verification"
       ]
     },
     "rustc-mir-phases-reachability-and-postcleanup-lowering": {
@@ -25712,14 +26213,17 @@
         }
       ],
       "topics": [
+        "anneal",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/rustc-internals",
+        "llvm",
+        "rust",
         "rustc",
         "rustc/codegen",
         "rustc/mir",
-        "llvm",
-        "rust",
-        "verification",
-        "anneal"
+        "rustc/monomorphization",
+        "verification"
       ]
     },
     "rustc-miri-freeze-visitor-pointee-retag-and-scalarpair-transmute": {
@@ -25805,12 +26309,14 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/rustc-internals",
+        "llvm",
         "rustc",
-        "rustc/monomorphization",
         "rustc/codegen",
         "rustc/mir",
-        "llvm",
+        "rustc/monomorphization",
         "verification"
       ]
     },
@@ -25862,12 +26368,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc",
+        "anneal",
+        "anneal/architecture",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
         "rust",
+        "rustc",
         "verification",
-        "anneal"
+        "verification/compiler-verification"
       ]
     },
     "rustc-name-resolution-local-item-identity-and-type-lowering": {
@@ -25957,9 +26466,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "llvm",
+        "llvm/mc-layer",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
         "rustc/codegen",
-        "llvm/mc-object-emission",
+        "systems",
         "systems/object-formats"
       ]
     },
@@ -25984,10 +26501,13 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
+        "compilers/verified-rustc/normal-compilation",
         "llvm",
-        "compilers"
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen"
       ]
     },
     "rustc-postcleanup-mir-const-placement-layout-folding-and-ub-checks": {
@@ -26193,13 +26713,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers/verified-rustc/pre-postcleanup-audit-and-minissa-canonicalizer",
-        "rustc",
-        "rustc/mir",
         "anneal",
-        "verification",
-        "llvm"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/rustc-internals",
+        "llvm",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "rustc/monomorphization",
+        "verification"
       ]
     },
     "rustc-size-optimized-compilation-parity-and-transformations": {
@@ -26223,10 +26746,13 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
+        "compilers/verified-rustc/normal-compilation",
         "llvm",
-        "compilers"
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen"
       ]
     },
     "rustc-standard-library-codegen-demand-per-target": {
@@ -26250,13 +26776,20 @@
         }
       ],
       "topics": [
+        "cargo",
+        "cargo/corpora",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/stdlib",
+        "compilers/verified-rustc/ecosystem-demand",
+        "isa",
+        "isa/aarch64",
+        "isa/x86-64",
+        "rust",
+        "rust/unsafe",
+        "rustc",
         "rustc/codegen",
         "rustc/intrinsics",
-        "rustc/mir",
-        "isa/x86_64",
-        "isa/aarch64"
+        "rustc/mir"
       ]
     },
     "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics": {
@@ -26295,13 +26828,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/statetransform-coroutines-and-pin-semantics",
-        "rustc",
-        "rust",
+        "compilers/verified-rustc/mir-and-aliasing",
         "minirust",
-        "verification",
-        "compilers"
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification"
       ]
     },
     "rustc-static-linking-archive-formats-and-linker-driver": {
@@ -26332,10 +26868,18 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/linker-driver",
+        "compilers/verified-rustc/platform-conventions",
+        "llvm",
         "llvm/lld",
-        "systems/static-archives"
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/linker-driver",
+        "systems",
+        "systems/object-formats"
       ]
     },
     "rustc-test-suite-machine-readable-classification": {
@@ -26351,12 +26895,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/corpora",
-        "rustc/compiletest",
-        "rustc/testing",
+        "compilers/verified-rustc/validation",
+        "rustc",
         "rustc/codegen",
-        "verification/compiler-verification"
+        "rustc/compiletest",
+        "verification",
+        "verification/compiler-verification",
+        "verification/empirical-evaluation"
       ]
     },
     "rustc-tier1-security-hardening-and-mitigation-codegen": {
@@ -26396,13 +26943,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/normal-compilation",
+        "isa",
+        "llvm",
+        "llvm/passes",
         "rustc",
         "rustc/codegen",
         "security",
         "security/binary-hardening",
-        "llvm",
-        "isa",
         "verification"
       ]
     },
@@ -26478,17 +27028,21 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/architecture",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "lean",
+        "lean/mechanization",
+        "minirust",
         "rust",
         "rust/unsafe",
         "rustc",
-        "minirust",
         "verification",
-        "verification/separation-logic",
+        "verification/compiler-verification",
         "verification/iris",
-        "lean/mechanization",
-        "anneal"
+        "verification/separation-logic"
       ]
     },
     "sail-isa-models-lean-backend-and-rv64d-decoding-framing": {
@@ -27970,11 +28524,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/intrinsics-and-assembly",
         "isa",
+        "llvm",
         "rust",
+        "rustc",
+        "rustc/codegen",
+        "rustc/intrinsics",
         "verification"
       ]
     },
@@ -28007,11 +28565,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/concurrency",
         "isa",
+        "llvm",
         "rust",
+        "rust/concurrency",
+        "rustc",
+        "systems",
+        "systems/concurrency-weak-memory",
         "verification"
       ]
     },
@@ -28036,11 +28599,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/platform-conventions",
         "isa",
+        "llvm",
         "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -28081,11 +28650,18 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc",
-        "llvm",
-        "isa",
         "build",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -28124,11 +28700,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/platform-conventions",
         "isa",
-        "compilers"
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats"
       ]
     },
     "tier1-linux-hosted-cross-compilation-recipes-and-sysroots": {
@@ -28152,10 +28734,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "rustc/cross-compilation",
+        "build",
         "build/sysroots-and-sdks",
-        "domains/licensing-and-governance"
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "domains",
+        "domains/licensing-and-governance",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/cross-compilation",
+        "systems",
+        "systems/object-formats"
       ]
     },
     "tier1-target-test-execution-emulators-and-combinatorial-coverage": {
@@ -28178,14 +28770,21 @@
         }
       ],
       "topics": [
+        "build",
+        "build/sysroots-and-sdks",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/validation",
+        "isa",
+        "isa/aarch64",
+        "isa/i386",
+        "isa/x86-64",
+        "rustc",
         "rustc/compiletest",
         "rustc/cross-compilation",
-        "isa/x86-64",
-        "isa/i386",
-        "isa/aarch64",
-        "systems/emulation",
-        "verification/compiler-verification"
+        "verification",
+        "verification/compiler-verification",
+        "verification/empirical-evaluation"
       ]
     },
     "tock-asterinas-redleaf-theseus-and-rust-os-isolation-boundaries": {
@@ -28839,13 +29438,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/tree-borrows-stack-coloring-and-dse",
-        "rustc",
-        "rust",
-        "minirust",
-        "llvm",
+        "compilers/verified-rustc/mir-and-aliasing",
         "lean",
+        "llvm",
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
         "verification"
       ]
     },
@@ -28944,13 +29547,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/tree-borrows-unwinding-two-phase-and-unsafecell",
-        "rustc",
-        "rust",
-        "minirust",
-        "llvm",
+        "compilers/verified-rustc/mir-and-aliasing",
         "lean",
+        "llvm",
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
         "verification"
       ]
     },
@@ -28983,13 +29590,17 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-rustc/type-validity-bounds-check-elimination",
-        "llvm",
-        "rustc",
+        "compilers/verified-rustc/optimizer",
         "lean",
         "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
         "verification",
+        "verification/compiler-verification",
         "zerocopy"
       ]
     },
@@ -29022,12 +29633,15 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
         "lean/mechanization",
         "smt",
-        "verification"
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {
@@ -29051,10 +29665,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
         "llvm",
+        "llvm/passes",
         "rustc",
-        "verification"
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "untrusted-proof-dependencies-effect-isolation-and-guarantee-verification": {
@@ -29245,15 +29864,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/normal-compilation",
+        "isa",
+        "isa/aarch64",
+        "isa/x86-64",
         "lean",
         "lean/mechanization",
-        "verification",
-        "isa",
-        "isa/x86-64",
-        "isa/aarch64"
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification"
       ]
     },
     "unwinding-on-elf-and-macho-targets": {
@@ -29294,15 +29917,22 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rustc/mir",
-        "rust/calling-conventions",
-        "llvm",
-        "systems/object-formats",
-        "isa/x86-64",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
         "isa/aarch64",
         "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/codegen",
+        "rustc/mir",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -29344,15 +29974,22 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/codegen",
-        "rustc/mir",
-        "rust/calling-conventions",
-        "llvm",
-        "systems/object-formats",
-        "isa/x86-64",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
         "isa/aarch64",
         "isa/i386",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/codegen",
+        "rustc/mir",
+        "systems",
+        "systems/object-formats",
         "verification"
       ]
     },
@@ -29385,13 +30022,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/normal-compilation",
         "lean",
         "lean/mechanization",
-        "verification",
-        "compilers"
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification"
       ]
     },
     "vendor-intrinsic-specifications-stdarch-verification-and-lean-generation": {
@@ -29415,12 +30055,19 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc/intrinsics",
-        "isa/x86-64",
+        "compilers/verified-rustc/intrinsics-and-assembly",
+        "isa",
         "isa/aarch64",
+        "isa/x86-64",
+        "lean",
         "lean/isa-semantics",
         "lean/mechanization",
+        "rustc",
+        "rustc/codegen",
+        "rustc/intrinsics",
+        "verification",
         "verification/isa-coverage"
       ]
     },
@@ -29608,14 +30255,18 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
+        "lean",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "smt",
         "verification",
         "verification/compiler-verification",
-        "verification/translation-validation",
-        "llvm",
-        "lean",
-        "smt"
+        "verification/translation-validation"
       ]
     },
     "verified-assemblers-encoders-linkers-and-object-format-models": {
@@ -29663,12 +30314,20 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "compilers/verified-assemblers",
-        "compilers/verified-linkers",
-        "systems/object-formats",
+        "compilers/verified-rustc/isa-models",
+        "isa",
+        "isa/encoding",
+        "llvm",
         "llvm/mc-layer",
-        "isa/encoding"
+        "rustc",
+        "rustc/linker-driver",
+        "systems",
+        "systems/object-formats",
+        "verification",
+        "verification/compiler-verification",
+        "verification/isa-coverage"
       ]
     },
     "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening": {
@@ -29700,12 +30359,15 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/normal-compilation",
         "isa",
         "lean",
-        "compilers"
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen"
       ]
     },
     "verified-compiler-effort-precedents-and-agent-proof-productivity": {
@@ -29894,14 +30556,17 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
-        "compilers",
-        "verification",
-        "verification/compcert",
-        "verification/cakeml",
-        "rustc",
+        "agents",
         "anneal",
-        "agents"
+        "anneal/architecture",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "rustc",
+        "verification",
+        "verification/cakeml",
+        "verification/compcert",
+        "verification/compiler-verification"
       ]
     },
     "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment": {
@@ -29933,15 +30598,20 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/optimizer",
+        "isa",
+        "isa/aarch64",
+        "isa/x86-64",
         "lean",
         "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "isa",
-        "isa/x86-64",
-        "isa/aarch64"
+        "verification/compiler-verification"
       ]
     },
     "verified-pre-proof-reachability-pruning-and-address-safe-icf": {
@@ -29973,13 +30643,18 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/verified-mode",
         "lean",
         "lean/mechanization",
+        "llvm",
+        "rustc",
+        "rustc/codegen",
         "verification",
-        "anneal"
+        "verification/compiler-verification"
       ]
     },
     "verified-regalloc2-spill-and-parallel-move-certificate-checker": {
@@ -30020,12 +30695,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
         "lean/mechanization",
+        "rustc",
         "rustc/codegen",
-        "verification"
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap": {
@@ -30445,15 +31124,19 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/architecture",
         "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "lean",
+        "lean/mechanization",
         "rustc",
-        "rustc/mir",
         "rustc/architecture",
+        "rustc/mir",
         "verification",
         "verification/certificates",
-        "lean/mechanization",
-        "anneal/architecture"
+        "verification/compiler-verification"
       ]
     },
     "verified-rustc-delivered-toolchain-trusted-component-inventory": {
@@ -30509,16 +31192,20 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
+        "anneal/trusted-boundary",
         "compilers",
-        "rustc",
-        "lean",
-        "llvm",
-        "systems",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
         "isa",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "llvm",
+        "rustc",
         "security",
-        "verification",
-        "anneal"
+        "systems",
+        "verification"
       ]
     },
     "verified-rustc-designer-dry-run-and-gap-analysis": {
@@ -30607,13 +31294,17 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
         "compilers/verified-rustc",
         "compilers/verified-rustc/dry-run",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/program-planning",
         "lean",
+        "llvm",
+        "rustc",
         "verification",
-        "compilers"
+        "verification/compiler-verification"
       ]
     },
     "verified-rustc-research-map-and-open-question-ledger": {
@@ -30702,14 +31393,16 @@
         }
       ],
       "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
         "compilers/verified-rustc/roadmap",
         "rustc",
         "rustc/architecture",
-        "anneal/architecture",
         "verification",
-        "verification/compiler-verification",
-        "compilers"
+        "verification/compiler-verification"
       ]
     },
     "verified-side-condition-decision-procedures-and-certificate-checkers": {
@@ -31264,12 +31957,16 @@
         }
       ],
       "topics": [
-        "compilers/verified-rustc",
+        "anneal",
         "compilers",
-        "verification",
-        "smt",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
         "lean",
-        "anneal"
+        "lean/mechanization",
+        "smt",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "weak-memory-concurrency-models-hardware-mappings-and-optimizations": {
@@ -31350,12 +32047,18 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rust/concurrency",
-        "systems/concurrency-weak-memory",
+        "compilers/verified-rustc/concurrency",
+        "isa",
         "isa/aarch64",
         "isa/x86-64",
         "llvm",
+        "rust",
+        "rust/concurrency",
+        "systems",
+        "systems/concurrency-weak-memory",
+        "verification",
         "verification/iris"
       ]
     },
@@ -31387,10 +32090,14 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/concurrency",
         "isa",
         "rust",
+        "rust/concurrency",
         "systems",
+        "systems/concurrency-weak-memory",
         "verification"
       ]
     },
@@ -31415,11 +32122,16 @@
         }
       ],
       "topics": [
+        "cargo",
+        "cargo/corpora",
+        "compilers",
         "compilers/verified-rustc",
+        "compilers/verified-rustc/ecosystem-demand",
+        "isa",
+        "llvm",
         "rust",
         "rustc",
-        "llvm",
-        "isa"
+        "rustc/codegen"
       ]
     },
     "whole-program-devirt-dae-and-globalopt-exportlist-certificates": {
@@ -31451,13 +32163,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/normal-compilation",
         "lean",
         "lean/mechanization",
-        "verification",
-        "compilers"
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification"
       ]
     },
     "x86-avx512-short-loop-regression-and-vector-width-profitability": {
@@ -31481,11 +32196,16 @@
         }
       ],
       "topics": [
+        "compilers",
         "compilers/verified-rustc",
-        "rustc",
-        "llvm",
+        "compilers/verified-rustc/optimizer",
         "isa",
-        "compilers"
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "zerocopy-byte-apis-cross-target-layout-and-packet-certificates": {

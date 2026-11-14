@@ -1,11 +1,15 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers/verified-rustc/anneal-spec-minissa-compression",
     "anneal",
+    "anneal/refinement",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/end-to-end-theorem",
     "lean",
     "lean/mechanization",
     "verification",
+    "verification/compiler-verification",
+    "verification/refinement",
     "zerocopy"
   ],
   "subjects": [

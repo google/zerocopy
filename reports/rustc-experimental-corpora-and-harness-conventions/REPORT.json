@@ -1,9 +1,17 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "cargo",
+    "cargo/corpora",
+    "compilers",
     "compilers/verified-rustc",
     "compilers/verified-rustc/corpora",
-    "rustc/benchmarks",
-    "cargo/corpora",
+    "compilers/verified-rustc/program-planning",
+    "rustc",
+    "rustc/codegen",
+    "verification",
+    "verification/compiler-verification",
     "verification/empirical-evaluation"
   ],
   "subjects": [

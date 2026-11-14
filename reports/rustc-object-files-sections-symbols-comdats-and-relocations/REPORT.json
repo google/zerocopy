@@ -1,8 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/platform-conventions",
+    "llvm",
+    "llvm/mc-layer",
+    "rust",
+    "rust/calling-conventions",
+    "rustc",
+    "rustc/abi",
     "rustc/codegen",
-    "llvm/mc-object-emission",
+    "systems",
     "systems/object-formats"
   ],
   "observed_at": "2026-11-13",

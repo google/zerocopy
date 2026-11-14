@@ -170,6 +170,7 @@
         "rust-lang/rfcs@7677feddd580"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/contract",
         "compilers/verified-rustc",
         "rustc/driver",
         "rustc/codegen",
@@ -290,6 +291,7 @@
         "leanprover/lean4@5045d0056413"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/end-to-end-theorem",
         "compilers/verified-rustc",
         "verification/refinement",
         "anneal/refinement"
@@ -416,6 +418,7 @@
         "rust-lang/opsem-team@d46208581403"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/mir-and-aliasing",
         "compilers/verified-rustc",
         "rustc/mir",
         "rust/tree-borrows",
@@ -598,6 +601,7 @@
         "rust-lang/unsafe-code-guidelines@d809f91e6296"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/concurrency",
         "compilers/verified-rustc",
         "rust/concurrency",
         "systems/concurrency-weak-memory"
@@ -670,6 +674,7 @@
         "rust-lang/rust@58cf8f9c35b3:compiler/rustc_target"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/platform-conventions",
         "compilers/verified-rustc",
         "rust/calling-conventions",
         "rustc/linker-driver",
@@ -877,6 +882,7 @@
         "rust-lang/rust@58cf8f9c35b3:library/stdarch"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/intrinsics-and-assembly",
         "compilers/verified-rustc",
         "rustc/intrinsics",
         "rustc/inline-assembly"
@@ -985,6 +991,7 @@
         "leanprover/lean4@5045d0056413"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/isa-models",
         "compilers/verified-rustc",
         "isa/x86-64",
         "isa/aarch64",
@@ -1108,6 +1115,7 @@
         "rust-lang/rust@58cf8f9c35b3"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/verified-mode",
         "compilers/verified-rustc",
         "rustc/codegen",
         "anneal/trust-boundary"
@@ -1234,6 +1242,7 @@
         "rust-lang/rust@58cf8f9c35b3"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/normal-compilation",
         "compilers/verified-rustc",
         "cargo/profiles",
         "llvm/lto"
@@ -1398,6 +1407,7 @@
         "rust-lang/rust@58cf8f9c35b3"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/rustc-internals",
         "compilers/verified-rustc",
         "rustc/architecture",
         "rustc/mir",
@@ -1549,6 +1559,7 @@
         "rust-lang/rust@58cf8f9c35b3:library"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/ecosystem-demand",
         "compilers/verified-rustc",
         "compilers/verified-rustc/corpora",
         "rustc/stdlib"
@@ -1622,6 +1633,7 @@
         "rust-lang/llvm-project@1b9c0d5ff9bb"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/proof-system-and-irs",
         "compilers/verified-rustc",
         "verification",
         "lean/mechanization",
@@ -1811,6 +1823,7 @@
         "rust-lang/llvm-project@1b9c0d5ff9bb"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/optimizer",
         "compilers/verified-rustc",
         "llvm/passes",
         "llvm/codegen"
@@ -2047,6 +2060,7 @@
         "rust-lang/llvm-project@1b9c0d5ff9bb"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/validated-llvm",
         "compilers/verified-rustc",
         "llvm/translation-validation"
       ],
@@ -2096,6 +2110,7 @@
         "leanprover/lean4@5045d0056413"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/checker-substrate",
         "compilers/verified-rustc",
         "lean/kernel",
         "lean/compiler",
@@ -2222,6 +2237,7 @@
         "rust-lang/rust@58cf8f9c35b3:src/tools/compiletest"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/validation",
         "compilers/verified-rustc",
         "rustc/compiletest",
         "compilers/differential-testing",
@@ -2329,6 +2345,7 @@
         "rust-lang/fls@946eacae5a4a"
       ],
       "topic_queries": [
+        "compilers/verified-rustc/program-planning",
         "compilers/verified-rustc",
         "compilers/verified-rustc/baseline",
         "compilers/verified-rustc/corpora",

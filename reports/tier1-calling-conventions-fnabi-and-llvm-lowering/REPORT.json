@@ -1,10 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/platform-conventions",
     "isa",
+    "llvm",
     "rust",
+    "rust/calling-conventions",
+    "rustc",
+    "rustc/abi",
+    "systems",
+    "systems/object-formats",
     "verification"
   ],
   "subjects": [

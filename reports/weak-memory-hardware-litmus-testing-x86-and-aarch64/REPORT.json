@@ -1,9 +1,13 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/concurrency",
     "isa",
     "rust",
+    "rust/concurrency",
     "systems",
+    "systems/concurrency-weak-memory",
     "verification"
   ],
   "subjects": [

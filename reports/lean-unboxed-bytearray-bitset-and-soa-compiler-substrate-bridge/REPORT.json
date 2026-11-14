@@ -1,8 +1,12 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/trusted-boundary",
     "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/checker-substrate",
     "lean",
+    "lean/kernel",
     "lean/mechanization",
     "rust",
     "systems",

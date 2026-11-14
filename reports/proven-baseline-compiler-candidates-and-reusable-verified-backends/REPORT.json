@@ -1,13 +1,18 @@
 {
   "topics": [
-    "compilers/verified-rustc",
     "compilers",
-    "verification",
-    "verification/compiler-verification",
-    "isa/x86-64",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/optimizer",
+    "isa",
     "isa/aarch64",
+    "isa/x86-64",
+    "lean",
+    "llvm",
+    "llvm/passes",
+    "rustc",
     "rustc/codegen",
-    "lean"
+    "verification",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

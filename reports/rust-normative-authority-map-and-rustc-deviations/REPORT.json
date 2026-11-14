@@ -1,10 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/contract",
+    "minirust",
     "rust",
     "rust/unsafe",
     "rustc",
-    "minirust"
+    "rustc/codegen",
+    "rustc/driver"
   ],
   "subjects": [
     {

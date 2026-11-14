@@ -1,9 +1,17 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/linker-driver",
+    "compilers/verified-rustc/platform-conventions",
+    "llvm",
     "llvm/lld",
-    "systems/static-archives"
+    "rust",
+    "rust/calling-conventions",
+    "rustc",
+    "rustc/abi",
+    "rustc/linker-driver",
+    "systems",
+    "systems/object-formats"
   ],
   "observed_at": "2026-11-13",
   "subjects": [

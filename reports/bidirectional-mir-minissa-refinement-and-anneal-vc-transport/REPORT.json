@@ -1,12 +1,16 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers/verified-rustc/bidirectional-mir-minissa",
     "anneal",
+    "anneal/refinement",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/end-to-end-theorem",
     "lean",
     "lean/mechanization",
+    "rustc",
     "verification",
-    "rustc"
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

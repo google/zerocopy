@@ -1,12 +1,16 @@
 {
   "topics": [
+    "anneal",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/validated-llvm",
     "llvm",
     "llvm/passes",
     "llvm/translation-validation",
+    "smt",
     "verification",
     "verification/refinement",
-    "anneal"
+    "verification/translation-validation"
   ],
   "subjects": [
     {

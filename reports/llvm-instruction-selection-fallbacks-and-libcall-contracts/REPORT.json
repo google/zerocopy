@@ -1,12 +1,18 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/intrinsics-and-assembly",
+    "isa",
+    "isa/aarch64",
+    "isa/i386",
+    "isa/x86-64",
+    "llvm",
     "llvm/lowering",
+    "rustc",
     "rustc/codegen",
     "rustc/intrinsics",
-    "isa/x86-64",
-    "isa/i386",
-    "isa/aarch64",
+    "verification",
     "verification/compiler-verification"
   ],
   "subjects": [

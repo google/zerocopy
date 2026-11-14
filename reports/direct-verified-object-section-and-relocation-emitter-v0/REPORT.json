@@ -27,13 +27,16 @@
     }
   ],
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/isa-models",
+    "isa",
     "lean",
     "lean/mechanization",
+    "llvm",
+    "rustc",
+    "systems",
     "verification",
-    "isa",
-    "systems"
+    "verification/isa-coverage"
   ]
 }

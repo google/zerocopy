@@ -1,11 +1,13 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/rustc-internals",
+    "llvm",
     "rustc",
-    "rustc/monomorphization",
     "rustc/codegen",
     "rustc/mir",
-    "llvm",
+    "rustc/monomorphization",
     "verification"
   ],
   "subjects": [

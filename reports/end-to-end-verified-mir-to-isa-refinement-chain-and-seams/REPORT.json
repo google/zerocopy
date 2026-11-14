@@ -1,14 +1,19 @@
 {
   "topics": [
+    "anneal",
+    "anneal/refinement",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/end-to-end-theorem",
+    "isa",
+    "isa/x86-64",
     "lean",
     "lean/mechanization",
     "lean/verification",
-    "verification",
     "rustc",
-    "isa",
-    "isa/x86-64",
-    "anneal"
+    "verification",
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

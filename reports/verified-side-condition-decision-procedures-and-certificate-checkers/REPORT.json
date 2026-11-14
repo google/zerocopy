@@ -1,11 +1,15 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
     "compilers",
-    "verification",
-    "smt",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/proof-system-and-irs",
     "lean",
-    "anneal"
+    "lean/mechanization",
+    "smt",
+    "verification",
+    "verification/certificates",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {
@@ -393,19 +397,19 @@
       }
     },
     {
-      "name": "Certified term rewriting, AC normalization, and Datalog provenance systems (CeTA/IsaFoR, AAC_tactics, Soufflé, Ascent)",
+      "name": "Certified term rewriting, AC normalization, and Datalog provenance systems (CeTA/IsaFoR, AAC_tactics, Souffl\u00e9, Ascent)",
       "identity": {
         "doi": "10.1007/978-3-642-02959-2_10",
-        "suite": "CeTA / IsaFoR (CPF) / AAC_tactics / Soufflé / Ascent",
+        "suite": "CeTA / IsaFoR (CPF) / AAC_tactics / Souffl\u00e9 / Ascent",
         "venue": "CADE-22 / CC 2022"
       }
     },
     {
-      "name": "Cryptographic algebra, PAC ideal-membership, and verified bignum/PQC suites (CryptoLine, Pastèque, Formosa, s2n-bignum)",
+      "name": "Cryptographic algebra, PAC ideal-membership, and verified bignum/PQC suites (CryptoLine, Past\u00e8que, Formosa, s2n-bignum)",
       "identity": {
         "doi": "10.1145/3319535.3354199",
         "repository": "fmlab-iis/cryptoline",
-        "suite": "CryptoLine / Singular / Pacheck / Pastèque / formosa-mlkem / formosa-mldsa / s2n-bignum",
+        "suite": "CryptoLine / Singular / Pacheck / Past\u00e8que / formosa-mlkem / formosa-mldsa / s2n-bignum",
         "venue": "CCS 2019 / FMCAD 2020"
       }
     },

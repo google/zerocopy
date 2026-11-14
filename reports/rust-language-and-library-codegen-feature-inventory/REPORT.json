@@ -1,11 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/codegen",
-    "rustc/mir",
+    "compilers/verified-rustc/contract",
+    "rust",
     "rust/calling-conventions",
     "rust/layout",
-    "rustc/intrinsics"
+    "rustc",
+    "rustc/codegen",
+    "rustc/driver",
+    "rustc/intrinsics",
+    "rustc/mir"
   ],
   "subjects": [
     {

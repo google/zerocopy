@@ -1,14 +1,18 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/refinement",
+    "anneal/trusted-boundary",
     "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/end-to-end-theorem",
     "lean",
     "lean/kernel",
     "lean/mechanization",
     "verification",
     "verification/certificates",
-    "anneal",
-    "anneal/trusted-boundary"
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

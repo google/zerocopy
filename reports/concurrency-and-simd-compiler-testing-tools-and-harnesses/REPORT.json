@@ -1,12 +1,21 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rust/concurrency",
-    "systems/concurrency-weak-memory",
-    "isa/x86-64",
+    "compilers/verified-rustc/validation",
+    "isa",
     "isa/aarch64",
+    "isa/x86-64",
+    "rust",
+    "rust/concurrency",
+    "rustc",
+    "rustc/compiletest",
     "rustc/intrinsics",
-    "verification/compiler-verification"
+    "systems",
+    "systems/concurrency-weak-memory",
+    "verification",
+    "verification/compiler-verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

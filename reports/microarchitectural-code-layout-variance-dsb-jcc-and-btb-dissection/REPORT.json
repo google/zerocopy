@@ -19,12 +19,18 @@
     }
   ],
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/optimizer",
     "isa",
-    "isa/x86-64",
     "isa/aarch64",
-    "systems"
+    "isa/x86-64",
+    "llvm",
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
+    "systems",
+    "verification",
+    "verification/compiler-verification"
   ]
 }

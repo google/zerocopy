@@ -1,12 +1,19 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/verified-mode",
+    "llvm",
+    "llvm/lld",
     "rustc",
     "rustc/codegen",
     "rustc/linker-driver",
-    "llvm/lld",
+    "systems",
     "systems/object-formats",
-    "verification"
+    "verification",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

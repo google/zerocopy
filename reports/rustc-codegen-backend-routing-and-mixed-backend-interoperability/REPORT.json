@@ -1,12 +1,17 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "cargo",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/verified-mode",
+    "llvm",
     "rustc",
     "rustc/codegen",
     "rustc/monomorphization",
-    "cargo",
-    "llvm",
-    "verification"
+    "verification",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

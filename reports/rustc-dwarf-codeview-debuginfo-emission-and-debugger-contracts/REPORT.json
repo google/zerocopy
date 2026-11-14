@@ -1,9 +1,13 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/normal-compilation",
+    "llvm",
+    "llvm/passes",
     "rustc",
     "rustc/codegen",
-    "llvm",
+    "systems",
     "systems/object-formats",
     "verification"
   ],

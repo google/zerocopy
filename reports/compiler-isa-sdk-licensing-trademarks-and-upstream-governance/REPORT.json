@@ -1,13 +1,17 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/architecture",
     "compilers",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/program-planning",
     "isa",
     "lean",
+    "llvm",
+    "rustc",
+    "systems",
     "verification",
-    "systems"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

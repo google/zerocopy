@@ -1,12 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/tree-borrows-unwinding-two-phase-and-unsafecell",
-    "rustc",
-    "rust",
-    "minirust",
-    "llvm",
+    "compilers/verified-rustc/mir-and-aliasing",
     "lean",
+    "llvm",
+    "minirust",
+    "rust",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir",
     "verification"
   ],
   "subjects": [

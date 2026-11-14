@@ -1,12 +1,16 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "compilers",
     "compilers/verified-rustc",
     "compilers/verified-rustc/dry-run",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/program-planning",
     "lean",
+    "llvm",
+    "rustc",
     "verification",
-    "compilers"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

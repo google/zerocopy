@@ -1,10 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/codegen",
-    "rustc/mir",
+    "compilers/verified-rustc/contract",
     "llvm",
+    "rust",
     "rust/unsafe",
+    "rustc",
+    "rustc/codegen",
+    "rustc/driver",
+    "rustc/mir",
+    "verification",
     "verification/compiler-verification"
   ],
   "subjects": [

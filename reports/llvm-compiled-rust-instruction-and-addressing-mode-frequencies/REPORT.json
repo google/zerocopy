@@ -1,13 +1,19 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "llvm/lowering",
-    "rustc/codegen",
-    "isa/x86-64",
-    "isa/i386",
+    "compilers/verified-rustc/isa-models",
+    "isa",
     "isa/aarch64",
-    "verification/isa-coverage",
-    "verification/empirical-evaluation"
+    "isa/i386",
+    "isa/x86-64",
+    "llvm",
+    "llvm/lowering",
+    "rustc",
+    "rustc/codegen",
+    "verification",
+    "verification/empirical-evaluation",
+    "verification/isa-coverage"
   ],
   "subjects": [
     {

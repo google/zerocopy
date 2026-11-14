@@ -1,12 +1,19 @@
 {
   "topics": [
+    "cargo",
+    "cargo/corpora",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/stdlib",
+    "compilers/verified-rustc/ecosystem-demand",
+    "isa",
+    "isa/aarch64",
+    "isa/x86-64",
+    "rust",
+    "rust/unsafe",
+    "rustc",
     "rustc/codegen",
     "rustc/intrinsics",
-    "rustc/mir",
-    "isa/x86_64",
-    "isa/aarch64"
+    "rustc/mir"
   ],
   "subjects": [
     {

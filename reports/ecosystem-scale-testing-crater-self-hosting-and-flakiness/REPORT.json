@@ -1,11 +1,18 @@
 {
   "topics": [
+    "build",
+    "build/hermeticity",
+    "cargo",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/validation",
+    "rustc",
     "rustc/bootstrap",
     "rustc/codegen",
-    "cargo",
-    "build/self-hosting",
-    "verification/compiler-verification"
+    "rustc/compiletest",
+    "verification",
+    "verification/compiler-verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

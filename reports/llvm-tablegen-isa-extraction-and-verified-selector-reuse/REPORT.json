@@ -1,11 +1,17 @@
 {
   "topics": [
+    "anneal",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/optimizer",
+    "isa",
     "llvm",
     "llvm/codegen",
-    "isa",
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "anneal"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

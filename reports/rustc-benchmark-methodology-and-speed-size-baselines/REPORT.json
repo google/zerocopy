@@ -1,11 +1,14 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers/verified-rustc/benchmark-baselines",
-    "rustc",
-    "llvm",
     "compilers",
-    "systems"
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/validation",
+    "llvm",
+    "rustc",
+    "rustc/compiletest",
+    "systems",
+    "verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

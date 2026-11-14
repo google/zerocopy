@@ -27,12 +27,17 @@
     }
   ],
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/verified-mode",
     "lean",
     "lean/mechanization",
+    "llvm",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "anneal"
+    "verification/compiler-verification"
   ]
 }

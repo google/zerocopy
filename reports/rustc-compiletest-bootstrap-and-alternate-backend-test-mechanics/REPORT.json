@@ -1,11 +1,17 @@
 {
   "topics": [
+    "cargo",
+    "cargo/corpora",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/compiletest",
+    "compilers/verified-rustc/validation",
+    "rustc",
     "rustc/bootstrap",
     "rustc/codegen",
-    "build/test-harnesses",
-    "verification/compiler-verification"
+    "rustc/compiletest",
+    "verification",
+    "verification/compiler-verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

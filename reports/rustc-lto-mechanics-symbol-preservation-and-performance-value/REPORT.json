@@ -1,9 +1,13 @@
 {
   "topics": [
+    "build",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
+    "compilers/verified-rustc/normal-compilation",
     "llvm",
-    "build"
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen"
   ],
   "subjects": [
     {

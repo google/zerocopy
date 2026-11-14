@@ -1,12 +1,16 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers",
-    "rustc",
-    "llvm",
+    "anneal",
+    "anneal/architecture",
     "build",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/verified-mode",
+    "llvm",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "anneal"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

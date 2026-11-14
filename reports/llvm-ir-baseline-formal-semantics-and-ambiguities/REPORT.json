@@ -1,12 +1,18 @@
 {
   "topics": [
+    "anneal",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/proof-system-and-irs",
+    "lean",
+    "lean/mechanization",
     "llvm",
+    "rust",
     "rustc",
     "rustc/codegen",
-    "rust",
     "verification",
-    "anneal"
+    "verification/certificates",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

@@ -1,11 +1,18 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/intrinsics",
-    "isa/x86-64",
+    "compilers/verified-rustc/intrinsics-and-assembly",
+    "isa",
     "isa/aarch64",
+    "isa/x86-64",
+    "lean",
     "lean/isa-semantics",
     "lean/mechanization",
+    "rustc",
+    "rustc/codegen",
+    "rustc/intrinsics",
+    "verification",
     "verification/isa-coverage"
   ],
   "subjects": [

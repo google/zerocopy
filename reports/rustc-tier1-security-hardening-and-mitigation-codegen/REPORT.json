@@ -1,12 +1,15 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/normal-compilation",
+    "isa",
+    "llvm",
+    "llvm/passes",
     "rustc",
     "rustc/codegen",
     "security",
     "security/binary-hardening",
-    "llvm",
-    "isa",
     "verification"
   ],
   "subjects": [

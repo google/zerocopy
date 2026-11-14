@@ -1,11 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/corpora",
-    "rustc/compiletest",
-    "rustc/testing",
+    "compilers/verified-rustc/validation",
+    "rustc",
     "rustc/codegen",
-    "verification/compiler-verification"
+    "rustc/compiletest",
+    "verification",
+    "verification/compiler-verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

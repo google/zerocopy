@@ -1,15 +1,19 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/architecture",
     "compilers",
-    "rustc",
-    "rustc/codegen",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/program-planning",
+    "lean",
+    "lean/mechanization",
     "llvm",
     "llvm/noalias",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "verification/refinement",
-    "lean/mechanization",
-    "anneal"
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

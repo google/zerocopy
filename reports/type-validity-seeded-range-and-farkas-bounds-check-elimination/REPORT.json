@@ -1,12 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/type-validity-bounds-check-elimination",
-    "llvm",
-    "rustc",
+    "compilers/verified-rustc/optimizer",
     "lean",
     "lean/mechanization",
+    "llvm",
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
     "verification",
+    "verification/compiler-verification",
     "zerocopy"
   ],
   "subjects": [

@@ -1,13 +1,19 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/codegen",
+    "compilers/verified-rustc/contract",
+    "isa",
+    "isa/aarch64",
+    "isa/i386",
+    "isa/x86-64",
+    "llvm",
+    "rust",
     "rust/reference-guarantees",
     "rust/unsafe",
-    "llvm",
-    "isa/x86-64",
-    "isa/aarch64",
-    "isa/i386"
+    "rustc",
+    "rustc/codegen",
+    "rustc/driver"
   ],
   "subjects": [
     {

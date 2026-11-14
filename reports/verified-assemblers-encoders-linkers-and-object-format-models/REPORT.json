@@ -1,11 +1,19 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-assemblers",
-    "compilers/verified-linkers",
-    "systems/object-formats",
+    "compilers/verified-rustc/isa-models",
+    "isa",
+    "isa/encoding",
+    "llvm",
     "llvm/mc-layer",
-    "isa/encoding"
+    "rustc",
+    "rustc/linker-driver",
+    "systems",
+    "systems/object-formats",
+    "verification",
+    "verification/compiler-verification",
+    "verification/isa-coverage"
   ],
   "subjects": [
     {

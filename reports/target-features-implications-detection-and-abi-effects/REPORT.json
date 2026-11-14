@@ -1,10 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/intrinsics-and-assembly",
     "isa",
+    "llvm",
     "rust",
+    "rustc",
+    "rustc/codegen",
+    "rustc/intrinsics",
     "verification"
   ],
   "subjects": [

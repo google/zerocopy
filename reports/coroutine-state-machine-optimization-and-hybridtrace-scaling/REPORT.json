@@ -1,12 +1,15 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/coroutine-optimization-and-hybridtrace-scaling",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/optimizer",
     "lean",
+    "llvm",
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "compilers"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

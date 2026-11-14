@@ -27,14 +27,19 @@
     }
   ],
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "llvm",
+    "compilers/verified-rustc/optimizer",
+    "isa",
+    "isa/aarch64",
+    "isa/x86-64",
     "lean",
     "lean/mechanization",
+    "llvm",
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "isa",
-    "isa/x86-64",
-    "isa/aarch64"
+    "verification/compiler-verification"
   ]
 }

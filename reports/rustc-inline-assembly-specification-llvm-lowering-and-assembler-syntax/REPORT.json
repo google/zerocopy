@@ -1,12 +1,18 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rust/inline-asm",
-    "rustc/inline-assembly",
-    "rustc/codegen",
-    "llvm/mc-layer",
+    "compilers/verified-rustc/intrinsics-and-assembly",
+    "isa",
+    "isa/aarch64",
     "isa/x86-64",
-    "isa/aarch64"
+    "llvm",
+    "llvm/mc-layer",
+    "rust",
+    "rust/inline-asm",
+    "rustc",
+    "rustc/codegen",
+    "rustc/intrinsics"
   ],
   "subjects": [
     {

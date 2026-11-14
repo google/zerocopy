@@ -1,14 +1,18 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/architecture",
     "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/program-planning",
+    "lean",
+    "lean/mechanization",
     "rustc",
-    "rustc/mir",
     "rustc/architecture",
+    "rustc/mir",
     "verification",
     "verification/certificates",
-    "lean/mechanization",
-    "anneal/architecture"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

@@ -1,13 +1,16 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/architecture",
     "compilers",
-    "verification",
-    "verification/compcert",
-    "verification/cakeml",
-    "rustc",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/program-planning",
     "rust",
-    "anneal"
+    "rustc",
+    "verification",
+    "verification/cakeml",
+    "verification/compcert",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

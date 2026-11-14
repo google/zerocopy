@@ -1,10 +1,18 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rust/unsafe",
-    "rust/tree-borrows",
-    "minirust/memory",
+    "compilers/verified-rustc/mir-and-aliasing",
+    "llvm",
     "llvm/noalias",
+    "minirust",
+    "minirust/memory",
+    "rust",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir",
+    "verification",
     "verification/separation-logic"
   ],
   "subjects": [

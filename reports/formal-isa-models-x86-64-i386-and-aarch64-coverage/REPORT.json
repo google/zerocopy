@@ -1,10 +1,15 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "isa/x86-64",
-    "isa/i386",
+    "compilers/verified-rustc/isa-models",
+    "isa",
     "isa/aarch64",
+    "isa/i386",
+    "isa/x86-64",
+    "lean",
     "lean/isa-semantics",
+    "verification",
     "verification/isa-coverage"
   ],
   "subjects": [

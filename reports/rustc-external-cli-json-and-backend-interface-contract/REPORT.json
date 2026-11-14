@@ -1,11 +1,13 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/driver",
+    "compilers/verified-rustc/contract",
+    "llvm",
+    "rustc",
     "rustc/codegen",
-    "rustc/metadata",
-    "rustc/diagnostics",
-    "llvm"
+    "rustc/driver",
+    "rustc/metadata"
   ],
   "subjects": [
     {

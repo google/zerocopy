@@ -1,13 +1,17 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "llvm",
-    "llvm/scheduling-models",
-    "llvm/mca",
+    "compilers/verified-rustc/optimizer",
     "isa",
-    "isa/x86-64",
     "isa/aarch64",
+    "isa/x86-64",
+    "llvm",
+    "llvm/codegen",
+    "llvm/passes",
+    "rustc",
     "rustc/codegen",
+    "verification",
     "verification/compiler-verification"
   ],
   "subjects": [

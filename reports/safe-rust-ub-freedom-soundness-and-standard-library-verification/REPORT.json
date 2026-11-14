@@ -1,16 +1,20 @@
 {
   "topics": [
-    "compilers/verified-rustc",
+    "anneal",
+    "anneal/architecture",
     "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/program-planning",
+    "lean",
+    "lean/mechanization",
+    "minirust",
     "rust",
     "rust/unsafe",
     "rustc",
-    "minirust",
     "verification",
-    "verification/separation-logic",
+    "verification/compiler-verification",
     "verification/iris",
-    "lean/mechanization",
-    "anneal"
+    "verification/separation-logic"
   ],
   "subjects": [
     {

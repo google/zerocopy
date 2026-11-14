@@ -1,11 +1,18 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/intrinsics-and-assembly",
+    "rust",
+    "rust/inline-asm",
+    "rustc",
+    "rustc/codegen",
+    "rustc/intrinsics",
+    "verification",
     "verification/assembly-contracts",
-    "isa/machine-code-verification",
-    "rustc/inline-assembly",
-    "compilers/compcert",
-    "kraken/verification"
+    "verification/compcert",
+    "verification/compiler-verification",
+    "verification/isa-coverage"
   ],
   "subjects": [
     {

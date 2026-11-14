@@ -1,13 +1,20 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "build",
+    "build/hermeticity",
+    "compilers",
     "compilers/verified-rustc",
     "compilers/verified-rustc/baseline",
-    "rustc/toolchains",
-    "rustc/mir",
+    "compilers/verified-rustc/program-planning",
+    "lean",
+    "llvm",
+    "rustc",
     "rustc/codegen",
-    "llvm/versioning",
-    "lean/toolchains",
-    "anneal/toolchain-baseline"
+    "rustc/mir",
+    "verification",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

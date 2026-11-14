@@ -1,14 +1,17 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers",
     "anneal",
-    "anneal/refinement",
     "anneal/mir-semantics",
-    "verification",
-    "verification/refinement",
+    "anneal/refinement",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/end-to-end-theorem",
+    "lean",
+    "lean/mechanization",
     "security",
-    "lean/mechanization"
+    "verification",
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

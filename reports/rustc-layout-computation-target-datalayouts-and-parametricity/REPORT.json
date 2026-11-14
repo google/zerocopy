@@ -1,12 +1,19 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "rust/layout",
-    "rust/target-data-layout",
-    "rustc/layout",
-    "rustc/abi",
+    "anneal",
     "anneal/mir-semantics",
-    "minirust/semantics"
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir-and-aliasing",
+    "minirust",
+    "minirust/semantics",
+    "rust",
+    "rust/layout",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/abi",
+    "rustc/mir"
   ],
   "subjects": [
     {

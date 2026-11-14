@@ -1,11 +1,18 @@
 {
   "topics": [
+    "agents",
+    "agents/lsp-integration",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/driver",
-    "rustc/metadata",
+    "compilers/verified-rustc/contract",
+    "minirust",
     "minirust/tooling",
+    "rust",
     "rust/tree-borrows",
-    "agents/lsp-integration"
+    "rustc",
+    "rustc/codegen",
+    "rustc/driver",
+    "rustc/metadata"
   ],
   "subjects": [
     {

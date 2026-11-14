@@ -1,13 +1,21 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rustc/codegen",
-    "rust/concurrency",
-    "llvm",
-    "systems/object-formats",
-    "isa/x86-64",
+    "compilers/verified-rustc/platform-conventions",
+    "isa",
     "isa/aarch64",
     "isa/i386",
+    "isa/x86-64",
+    "llvm",
+    "rust",
+    "rust/calling-conventions",
+    "rust/concurrency",
+    "rustc",
+    "rustc/abi",
+    "rustc/codegen",
+    "systems",
+    "systems/object-formats",
     "verification"
   ],
   "subjects": [

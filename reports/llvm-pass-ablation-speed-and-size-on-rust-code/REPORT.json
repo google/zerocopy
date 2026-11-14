@@ -1,9 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/optimizer",
     "llvm",
+    "llvm/passes",
     "rustc",
-    "compilers"
+    "rustc/codegen",
+    "verification",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

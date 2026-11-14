@@ -1,12 +1,21 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "rust/unsafe",
+    "compilers/verified-rustc/mir-and-aliasing",
+    "llvm",
+    "llvm/ir-semantics",
+    "minirust",
+    "minirust/memory",
+    "rust",
     "rust/provenance",
-    "rustc/mir",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
     "rustc/codegen",
-    "llvm/memory-model",
-    "minirust/memory"
+    "rustc/mir",
+    "systems",
+    "systems/concurrency-weak-memory"
   ],
   "subjects": [
     {

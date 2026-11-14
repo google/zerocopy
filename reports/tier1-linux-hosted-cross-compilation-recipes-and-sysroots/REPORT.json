@@ -1,9 +1,19 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "rustc/cross-compilation",
+    "build",
     "build/sysroots-and-sdks",
-    "domains/licensing-and-governance"
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/platform-conventions",
+    "domains",
+    "domains/licensing-and-governance",
+    "rust",
+    "rust/calling-conventions",
+    "rustc",
+    "rustc/abi",
+    "rustc/cross-compilation",
+    "systems",
+    "systems/object-formats"
   ],
   "observed_at": "2026-11-13",
   "subjects": [

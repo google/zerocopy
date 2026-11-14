@@ -1,11 +1,19 @@
 {
   "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "build",
+    "build/hermeticity",
+    "cargo",
+    "cargo/corpora",
+    "compilers",
     "compilers/verified-rustc",
-    "cargo/profiles",
+    "compilers/verified-rustc/normal-compilation",
+    "llvm",
+    "llvm/passes",
+    "rustc",
     "rustc/codegen",
-    "rustc/driver",
-    "llvm/optimization",
-    "build/packaging"
+    "rustc/driver"
   ],
   "subjects": [
     {

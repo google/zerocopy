@@ -1,14 +1,18 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
+    "compilers",
     "compilers/verified-rustc",
-    "rustc",
-    "rustc/codegen",
+    "compilers/verified-rustc/verified-mode",
     "llvm",
     "llvm/ir-semantics",
     "llvm/noalias",
     "rust",
+    "rustc",
+    "rustc/codegen",
     "verification",
-    "anneal"
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

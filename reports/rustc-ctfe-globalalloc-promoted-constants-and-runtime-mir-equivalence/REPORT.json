@@ -1,13 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/ctfe-globalalloc-and-promoted-const-contract",
-    "rustc",
-    "rust",
-    "minirust",
+    "compilers/verified-rustc/mir-and-aliasing",
     "lean",
-    "verification",
-    "compilers"
+    "minirust",
+    "rust",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir",
+    "verification"
   ],
   "subjects": [
     {

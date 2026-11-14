@@ -1,13 +1,20 @@
 {
   "topics": [
+    "build",
+    "build/sysroots-and-sdks",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/validation",
+    "isa",
+    "isa/aarch64",
+    "isa/i386",
+    "isa/x86-64",
+    "rustc",
     "rustc/compiletest",
     "rustc/cross-compilation",
-    "isa/x86-64",
-    "isa/i386",
-    "isa/aarch64",
-    "systems/emulation",
-    "verification/compiler-verification"
+    "verification",
+    "verification/compiler-verification",
+    "verification/empirical-evaluation"
   ],
   "subjects": [
     {

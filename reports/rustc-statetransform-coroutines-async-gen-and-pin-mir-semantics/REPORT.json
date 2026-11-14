@@ -1,12 +1,15 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/statetransform-coroutines-and-pin-semantics",
-    "rustc",
-    "rust",
+    "compilers/verified-rustc/mir-and-aliasing",
     "minirust",
-    "verification",
-    "compilers"
+    "rust",
+    "rust/tree-borrows",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir",
+    "verification"
   ],
   "subjects": [
     {

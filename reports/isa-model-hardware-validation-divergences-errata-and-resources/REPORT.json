@@ -1,11 +1,16 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "isa/hardware-validation",
-    "isa/x86-64",
-    "isa/i386",
+    "compilers/verified-rustc/isa-models",
+    "isa",
     "isa/aarch64",
-    "llvm/errata-mitigations"
+    "isa/i386",
+    "isa/x86-64",
+    "llvm",
+    "llvm/codegen",
+    "verification",
+    "verification/isa-coverage"
   ],
   "subjects": [
     {

@@ -1,11 +1,15 @@
 {
   "topics": [
-    "compilers/verified-rustc",
-    "compilers",
-    "verification",
-    "lean",
     "anneal",
-    "minirust"
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/proof-system-and-irs",
+    "lean",
+    "lean/mechanization",
+    "minirust",
+    "verification",
+    "verification/certificates",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

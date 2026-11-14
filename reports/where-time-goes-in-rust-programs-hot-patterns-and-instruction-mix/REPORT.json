@@ -1,10 +1,15 @@
 {
   "topics": [
+    "cargo",
+    "cargo/corpora",
+    "compilers",
     "compilers/verified-rustc",
+    "compilers/verified-rustc/ecosystem-demand",
+    "isa",
+    "llvm",
     "rust",
     "rustc",
-    "llvm",
-    "isa"
+    "rustc/codegen"
   ],
   "subjects": [
     {

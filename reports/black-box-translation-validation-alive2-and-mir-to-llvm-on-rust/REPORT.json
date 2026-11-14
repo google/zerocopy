@@ -1,10 +1,14 @@
 {
   "topics": [
+    "compilers",
     "compilers/verified-rustc",
-    "verification",
+    "compilers/verified-rustc/validated-llvm",
     "llvm",
+    "llvm/translation-validation",
     "rustc",
-    "smt"
+    "smt",
+    "verification",
+    "verification/translation-validation"
   ],
   "subjects": [
     {
