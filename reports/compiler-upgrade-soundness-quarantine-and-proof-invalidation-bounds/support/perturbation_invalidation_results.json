@@ -1,0 +1,110 @@
+{
+  "lean_toolchain": "leanprover/lean4:v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "total_prototype_modules": 17,
+  "full_compiler_projected_modules": 68,
+  "baseline_module_compile_ms": {
+    "Layer0_TrustedCore": 703.31,
+    "Layer1_Adapter_1991": 459.33,
+    "Layer1_Adapter_1100": 416.07,
+    "Layer2_RuleInterface": 420.3,
+    "Layer2_RuleFamily_01": 369.17,
+    "Layer2_RuleFamily_02": 359.95,
+    "Layer2_RuleFamily_03": 368.19,
+    "Layer2_RuleFamily_04": 369.21,
+    "Layer2_RuleFamily_05": 358.37,
+    "Layer2_RuleFamily_06": 372.64,
+    "Layer2_RuleFamily_07": 362.59,
+    "Layer2_RuleFamily_08": 368.97,
+    "Layer2_RuleRegistry": 372.17,
+    "Layer3_Target_x86_64": 367.6,
+    "Layer3_Target_aarch64": 367.73,
+    "Layer3_Target_i686": 360.24,
+    "Layer4_CrateTheorem": 356.02
+  },
+  "total_baseline_compile_ms": 6751.86,
+  "axiom_audit_output": "'Anneal.QuarantineProto.end_to_end_productive_compiles_x86_64' depends on axioms: [propext, Quot.sound]\n'Anneal.QuarantineProto.end_to_end_productive_compiles_i686' depends on axioms: [propext, Quot.sound]",
+  "zero_sorryAx_verified": true,
+  "perturbations": [
+    {
+      "id": "P1",
+      "name": "rustc 1.100.0 Tier A/B MIR churn (`PhantomDeref` + `BoxDerefTransmute` in `Layer1_Adapter_1100`)",
+      "prototype_modules_rebuilt": [
+        "Layer1_Adapter_1100",
+        "Layer4_CrateTheorem"
+      ],
+      "prototype_rebuilt_count": 2,
+      "prototype_total_modules": 17,
+      "full_68_module_rebuilt_count": 2,
+      "full_68_module_invalidated_pct": 2.94,
+      "layer0_invalidated": 0,
+      "layer2_rule_families_invalidated": 0,
+      "layer3_targets_invalidated": 0,
+      "measured_rebuild_ms": 791.91,
+      "proof_lines_touched": 12
+    },
+    {
+      "id": "P2",
+      "name": "rustc 1.100.0 Tier C ABI change (`i686` `'Rust'` SSE ABI `#161583` in `Layer3_Target_i686`)",
+      "prototype_modules_rebuilt": [
+        "Layer3_Target_i686",
+        "Layer4_CrateTheorem"
+      ],
+      "prototype_rebuilt_count": 2,
+      "prototype_total_modules": 17,
+      "full_68_module_rebuilt_count": 2,
+      "full_68_module_invalidated_pct": 2.94,
+      "layer0_invalidated": 0,
+      "layer2_rule_families_invalidated": 0,
+      "other_layer3_targets_invalidated": 0,
+      "measured_rebuild_ms": 735.24,
+      "proof_lines_touched": 42
+    },
+    {
+      "id": "P3",
+      "name": "Quarantining or modifying one `-O3` optimization rule family (`Layer2_RuleFamily_08` -> `StmtDeriv.refl` fallback)",
+      "prototype_modules_rebuilt": [
+        "Layer2_RuleFamily_08",
+        "Layer2_RuleRegistry",
+        "Layer4_CrateTheorem"
+      ],
+      "prototype_rebuilt_count": 3,
+      "prototype_total_modules": 17,
+      "full_68_module_rebuilt_count": 3,
+      "full_68_module_invalidated_pct": 4.41,
+      "other_51_rule_families_invalidated": 0,
+      "measured_rebuild_ms": 1112.12,
+      "sorryAx_count": 0,
+      "proof_lines_touched": 4
+    },
+    {
+      "id": "P4",
+      "name": "Lean 4 toolchain version migration (`v4.28.0 -> v4.34.1` across `elan`)",
+      "prototype_modules_rebuilt": [
+        "Layer0_TrustedCore",
+        "Layer1_Adapter_1991",
+        "Layer1_Adapter_1100",
+        "Layer2_RuleInterface",
+        "Layer2_RuleFamily_01",
+        "Layer2_RuleFamily_02",
+        "Layer2_RuleFamily_03",
+        "Layer2_RuleFamily_04",
+        "Layer2_RuleFamily_05",
+        "Layer2_RuleFamily_06",
+        "Layer2_RuleFamily_07",
+        "Layer2_RuleFamily_08",
+        "Layer2_RuleRegistry",
+        "Layer3_Target_x86_64",
+        "Layer3_Target_aarch64",
+        "Layer3_Target_i686",
+        "Layer4_CrateTheorem"
+      ],
+      "prototype_rebuilt_count": 17,
+      "full_68_module_rebuilt_count": 68,
+      "full_68_module_invalidated_pct": 100.0,
+      "layer0_v428_compile_ms": 5521.78,
+      "layer0_v4341_compile_ms": 703.31,
+      "measured_rebuild_ms": 6751.86,
+      "source_proof_lines_changed_with_hygiene_rules": 0
+    }
+  ]
+}

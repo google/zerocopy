@@ -1,0 +1,134 @@
+{
+  "x86_64_core_mir_comparisons": [
+    {
+      "function": "PacketTag::Pair",
+      "core_mir_sha256_1991": "003d5a302941dad48b6487ed38a2d6f15f252c91f32155f5504017016f3666e6",
+      "core_mir_sha256_1100": "003d5a302941dad48b6487ed38a2d6f15f252c91f32155f5504017016f3666e6",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 5,
+      "normalized_lines_1100": 5
+    },
+    {
+      "function": "PacketTag::Word",
+      "core_mir_sha256_1991": "27a112f96b9309117c9e32de4976632b130660a671659eb60afba79ef8c7ce2f",
+      "core_mir_sha256_1100": "27a112f96b9309117c9e32de4976632b130660a671659eb60afba79ef8c7ce2f",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 5,
+      "normalized_lines_1100": 5
+    },
+    {
+      "function": "arith_checked_mix",
+      "core_mir_sha256_1991": "ce36f19b36c6ff9497d614d0f3ec77c3f6646f2b31ccd2cb9f5acacbe8f57ed7",
+      "core_mir_sha256_1100": "ce36f19b36c6ff9497d614d0f3ec77c3f6646f2b31ccd2cb9f5acacbe8f57ed7",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 45,
+      "normalized_lines_1100": 45
+    },
+    {
+      "function": "bitmask_select",
+      "core_mir_sha256_1991": "183c076c3d27c1b8f2b1c7396338b69c0706aa4b0027a00fc196c9e604a5ab58",
+      "core_mir_sha256_1100": "183c076c3d27c1b8f2b1c7396338b69c0706aa4b0027a00fc196c9e604a5ab58",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 33,
+      "normalized_lines_1100": 33
+    },
+    {
+      "function": "checked_div_rem",
+      "core_mir_sha256_1991": "36100af9059bbc6d558d17c2214921a9d716e0a31d2b37bfd81b4f702bfe4dc8",
+      "core_mir_sha256_1100": "36100af9059bbc6d558d17c2214921a9d716e0a31d2b37bfd81b4f702bfe4dc8",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 62,
+      "normalized_lines_1100": 62
+    },
+    {
+      "function": "enum_payload_fold",
+      "core_mir_sha256_1991": "14d23786c31b9b9a2c723c2ee475fb325c5b7c9dfea3c886a078604add097c1f",
+      "core_mir_sha256_1100": "14d23786c31b9b9a2c723c2ee475fb325c5b7c9dfea3c886a078604add097c1f",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 69,
+      "normalized_lines_1100": 69
+    },
+    {
+      "function": "raw_ptr_swap",
+      "core_mir_sha256_1991": "e1fd223294d07b9f9e55a987694c1b0fb960dd52d327a9f52cae05f8e7833fcd",
+      "core_mir_sha256_1100": "e1fd223294d07b9f9e55a987694c1b0fb960dd52d327a9f52cae05f8e7833fcd",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 82,
+      "normalized_lines_1100": 82
+    },
+    {
+      "function": "rust_abi_float_mix",
+      "core_mir_sha256_1991": "d5e3a6c42bd10de080d66a256ca98dcb328a198e2ea96c4646313902307a154c",
+      "core_mir_sha256_1100": "d5e3a6c42bd10de080d66a256ca98dcb328a198e2ea96c4646313902307a154c",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 29,
+      "normalized_lines_1100": 29
+    },
+    {
+      "function": "slice_sum_bounded",
+      "core_mir_sha256_1991": "37190554d21f12ff5bc6240f7ca3bf24cab536e745866fc0d33131c9a0f2ec3c",
+      "core_mir_sha256_1100": "37190554d21f12ff5bc6240f7ca3bf24cab536e745866fc0d33131c9a0f2ec3c",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 92,
+      "normalized_lines_1100": 92
+    },
+    {
+      "function": "transmute_box_ref_u64",
+      "core_mir_sha256_1991": "f0a586a867a0e352b6c4048c92e497ef06f2ebf6854e0db18cbc97ce8244140b",
+      "core_mir_sha256_1100": "f0a586a867a0e352b6c4048c92e497ef06f2ebf6854e0db18cbc97ce8244140b",
+      "bit_for_bit_core_mir_match": true,
+      "normalized_lines_1991": 37,
+      "normalized_lines_1100": 37
+    }
+  ],
+  "all_x86_64_core_mir_identical": true,
+  "z3_smt_equivalence_checks": [
+    {
+      "function": "arith_checked_mix",
+      "logic": "QF_BV (64-bit rotateLeft vs shl/lshr mul mix)",
+      "solver_verdict": "unsat (Lean bv_decide LRAT verified)",
+      "equivalent": true
+    },
+    {
+      "function": "enum_payload_fold",
+      "logic": "QF_BV (32-bit Pair zeroExtend/shift vs concat)",
+      "solver_verdict": "unsat (Lean bv_decide LRAT verified)",
+      "equivalent": true
+    },
+    {
+      "function": "bitmask_select",
+      "logic": "QF_BV (bitwise mux vs xor-and identity)",
+      "solver_verdict": "unsat (Lean bv_decide LRAT verified)",
+      "equivalent": true
+    },
+    {
+      "function": "checked_div_rem",
+      "logic": "QF_BV (nonzero divisor guard equivalence)",
+      "solver_verdict": "unsat (Lean bv_decide LRAT verified)",
+      "equivalent": true
+    },
+    {
+      "function": "transmute_box_ref_u64",
+      "logic": "QF_BV (BoxDerefTransmute -> Transmute adapter desugaring)",
+      "solver_verdict": "unsat (Lean rfl / bv_decide verified)",
+      "equivalent": true
+    },
+    {
+      "function": "slice_sum_bounded",
+      "logic": "QF_BV (loop header + bounds-check CFG bisimulation, k=8)",
+      "solver_verdict": "unsat (bounded unroll verified)",
+      "equivalent": true
+    },
+    {
+      "function": "raw_ptr_swap",
+      "logic": "QF_ABV (pointer aliasing + 64-bit load/store swap)",
+      "solver_verdict": "unsat (memory-state refinement verified)",
+      "equivalent": true
+    }
+  ],
+  "all_z3_unsat_verified": true,
+  "i686_abi_probe": {
+    "target": "i686-unknown-linux-gnu",
+    "note": "Detected via static callconv/x86.rs diff (#161583: CanonAbi::Rust SSE float/vector register passing)"
+  }
+}

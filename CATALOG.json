@@ -7517,6 +7517,52 @@
         "verification/iris"
       ]
     },
+    "automated-toolchain-table-regeneration-and-mir-minissa-upgrade-validator": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler, target specifications, and core::intrinsics library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler, target specifications, and core::intrinsics library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 TableGen target description database"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and Std.Tactic.BVDecide bitvector verifier"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "isa",
+        "smt",
+        "lean",
+        "verification"
+      ]
+    },
     "bidirectional-mir-minissa-refinement-and-anneal-vc-transport": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -9356,6 +9402,51 @@
         "rust",
         "compilers",
         "systems"
+      ]
+    },
+    "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and .olean module system"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "v4.28.0-rc1"
+          },
+          "name": "Lean 4 v4.28.0 theorem prover comparison baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "upgrade_revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "versions": "1.99.1 -> 1.100.0"
+          },
+          "name": "Rust 1.99.1 and 1.100.0 compilers"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted-boundary .olean auditor"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "compilers",
+        "rustc",
+        "verification",
+        "anneal"
       ]
     },
     "compositional-correctness-linking-and-whole-program-optimization": {
@@ -11567,6 +11658,45 @@
         "lean/kernel"
       ]
     },
+    "deterministic-distributed-verification-and-remote-build-cache-integration": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler path remapping, archive builder, and metadata encoder"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+            "version": "0.100.0"
+          },
+          "name": "Cargo 0.100.0 fingerprint and dep-info tracker bundled with Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 deterministic .olean serializer and kernel checker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "build",
+        "cargo",
+        "rustc",
+        "lean",
+        "verification",
+        "systems"
+      ]
+    },
     "direct-verified-object-section-and-relocation-emitter-v0": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -13141,6 +13271,46 @@
         "build/caching",
         "rustc/incremental",
         "anneal/architecture"
+      ]
+    },
+    "incremental-function-and-thinlto-summary-proof-cache-architecture": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler incremental dependency graph, CGU partitioning, and ThinLTO summary pipeline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 ModuleSummaryIndex and ThinLTO importer"
+        },
+        {
+          "identity": {
+            "anneal_repository": "joshlf/anneal",
+            "anneal_revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7",
+            "lean_repository": "leanprover/lean4",
+            "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "lean_version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem-checking kernel and Anneal MIR verification infrastructure"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "rustc",
+        "llvm",
+        "build",
+        "verification",
+        "anneal"
       ]
     },
     "independent-proof-checkers-and-smaller-trusted-computing-bases": {
@@ -25430,6 +25600,62 @@
         "rustc/mir",
         "llvm",
         "verification"
+      ]
+    },
+    "rustc-multi-release-mir-abi-drift-and-version-isolated-adapter": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "release_date": "2026-10-15",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library (selected verification baseline)"
+        },
+        {
+          "identity": {
+            "release_date": "2026-09-03",
+            "repository": "rust-lang/rust",
+            "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+            "version": "1.98.1"
+          },
+          "name": "Rust 1.98.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "release_date": "2026-11-12",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly-2026-05-31 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly-2026-11-12 compiler and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "compilers",
+        "rust",
+        "verification",
+        "anneal"
       ]
     },
     "rustc-name-resolution-local-item-identity-and-type-lowering": {

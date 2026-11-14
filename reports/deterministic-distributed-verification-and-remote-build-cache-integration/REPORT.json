@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "build",
+    "cargo",
+    "rustc",
+    "lean",
+    "verification",
+    "systems"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler path remapping, archive builder, and metadata encoder",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Cargo 0.100.0 fingerprint and dep-info tracker bundled with Rust 1.99.1",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5f94df4789f005f9a352888e8355ffc645b7ed0e",
+        "version": "0.100.0"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 deterministic .olean serializer and kernel checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

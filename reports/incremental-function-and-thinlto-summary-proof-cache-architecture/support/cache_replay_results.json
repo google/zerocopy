@@ -1,0 +1,507 @@
+{
+  "live_rustc_1991_merkle_key_probe": {
+    "base_fn_keys": {
+      "generic_helper": "8ae89f4cda57dff563bb426c0ca3ac41b4c201f0164af3bc3a7c535107898f9f",
+      "leaf_compute": "c7c08244a8b1e5823c3dc52e0b56687d9bca5008ffc07dccb1f190d23081fd36",
+      "caller_entry": "2deddb6c9defdde0f7b150c9382f9db803abb064acb7e4a5ce8bba530366d8cb"
+    },
+    "s1_comment_fn_keys": {
+      "generic_helper": "8ae89f4cda57dff563bb426c0ca3ac41b4c201f0164af3bc3a7c535107898f9f",
+      "leaf_compute": "c7c08244a8b1e5823c3dc52e0b56687d9bca5008ffc07dccb1f190d23081fd36",
+      "caller_entry": "2deddb6c9defdde0f7b150c9382f9db803abb064acb7e4a5ce8bba530366d8cb"
+    },
+    "s4_new_fn_keys": {
+      "generic_helper": "8ae89f4cda57dff563bb426c0ca3ac41b4c201f0164af3bc3a7c535107898f9f",
+      "leaf_compute": "c7c08244a8b1e5823c3dc52e0b56687d9bca5008ffc07dccb1f190d23081fd36",
+      "caller_entry": "2deddb6c9defdde0f7b150c9382f9db803abb064acb7e4a5ce8bba530366d8cb",
+      "newly_added_upstream_api": "41a9514635fcce19dc8fd9b45a42e4c99d1a5827e2d9deec4d9b2f65859db9d4"
+    },
+    "s1_100pct_mir_key_hit": true,
+    "s4_existing_fns_100pct_mir_key_hit": true
+  },
+  "multi_crate_12_replay_simulation": {
+    "corpus_totals": {
+      "crates": 12,
+      "pre_opt_fns": 56405,
+      "post_o3_fns": 13683,
+      "hybrid_trace_steps": 5861595,
+      "full_native_check_ms": 12.9,
+      "full_in_kernel_refl_ms": 1528.0
+    },
+    "scenarios": [
+      {
+        "id": "S1",
+        "name": "Comment / whitespace formatting edit in hot module (`hashbrown::raw`)",
+        "edited_crate": "hashbrown",
+        "modes": {
+          "O3_NoLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 2800,
+              "invalidated_steps": 1174700,
+              "invalidated_fns_pct": 20.4633,
+              "invalidated_steps_pct": 20.0406,
+              "cache_hit_steps_pct": 79.9594,
+              "native_recheck_ms": 2.5852,
+              "in_kernel_refl_recheck_ms": 306.22
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 22,
+              "invalidated_steps": 11025,
+              "invalidated_fns_pct": 0.1608,
+              "invalidated_steps_pct": 0.1881,
+              "cache_hit_steps_pct": 99.8119,
+              "native_recheck_ms": 0.0243,
+              "in_kernel_refl_recheck_ms": 2.87
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 0,
+              "invalidated_steps": 0,
+              "invalidated_fns_pct": 0.0,
+              "invalidated_steps_pct": 0.0,
+              "cache_hit_steps_pct": 100.0,
+              "native_recheck_ms": 0.0,
+              "in_kernel_refl_recheck_ms": 0.0
+            }
+          },
+          "O3_ThinLocal": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 2800,
+              "invalidated_steps": 1174700,
+              "invalidated_fns_pct": 20.4633,
+              "invalidated_steps_pct": 20.0406,
+              "cache_hit_steps_pct": 79.9594,
+              "native_recheck_ms": 2.5852,
+              "in_kernel_refl_recheck_ms": 306.22
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 68,
+              "invalidated_steps": 35280,
+              "invalidated_fns_pct": 0.497,
+              "invalidated_steps_pct": 0.6019,
+              "cache_hit_steps_pct": 99.3981,
+              "native_recheck_ms": 0.0776,
+              "in_kernel_refl_recheck_ms": 9.2
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 0,
+              "invalidated_steps": 0,
+              "invalidated_fns_pct": 0.0,
+              "invalidated_steps_pct": 0.0,
+              "cache_hit_steps_pct": 100.0,
+              "native_recheck_ms": 0.0,
+              "in_kernel_refl_recheck_ms": 0.0
+            }
+          },
+          "O3_CrossCrate_ThinLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 890,
+              "invalidated_steps": 381000,
+              "invalidated_fns_pct": 6.5044,
+              "invalidated_steps_pct": 6.4999,
+              "cache_hit_steps_pct": 93.5001,
+              "native_recheck_ms": 0.8385,
+              "in_kernel_refl_recheck_ms": 99.32
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 0,
+              "invalidated_steps": 0,
+              "invalidated_fns_pct": 0.0,
+              "invalidated_steps_pct": 0.0,
+              "cache_hit_steps_pct": 100.0,
+              "native_recheck_ms": 0.0,
+              "in_kernel_refl_recheck_ms": 0.0
+            }
+          }
+        }
+      },
+      {
+        "id": "S2",
+        "name": "Body edit inside non-inlined leaf function (`crc32fast::Hasher::finalize`)",
+        "edited_crate": "crc32fast",
+        "modes": {
+          "O3_NoLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 110,
+              "invalidated_steps": 25895,
+              "invalidated_fns_pct": 0.8039,
+              "invalidated_steps_pct": 0.4418,
+              "cache_hit_steps_pct": 99.5582,
+              "native_recheck_ms": 0.057,
+              "in_kernel_refl_recheck_ms": 6.75
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 8,
+              "invalidated_steps": 1840,
+              "invalidated_fns_pct": 0.0585,
+              "invalidated_steps_pct": 0.0314,
+              "cache_hit_steps_pct": 99.9686,
+              "native_recheck_ms": 0.004,
+              "in_kernel_refl_recheck_ms": 0.48
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 1,
+              "invalidated_steps": 245,
+              "invalidated_fns_pct": 0.0073,
+              "invalidated_steps_pct": 0.0042,
+              "cache_hit_steps_pct": 99.9958,
+              "native_recheck_ms": 0.0005,
+              "in_kernel_refl_recheck_ms": 0.06
+            }
+          },
+          "O3_ThinLocal": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 110,
+              "invalidated_steps": 25895,
+              "invalidated_fns_pct": 0.8039,
+              "invalidated_steps_pct": 0.4418,
+              "cache_hit_steps_pct": 99.5582,
+              "native_recheck_ms": 0.057,
+              "in_kernel_refl_recheck_ms": 6.75
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 15,
+              "invalidated_steps": 3420,
+              "invalidated_fns_pct": 0.1096,
+              "invalidated_steps_pct": 0.0583,
+              "cache_hit_steps_pct": 99.9417,
+              "native_recheck_ms": 0.0075,
+              "in_kernel_refl_recheck_ms": 0.89
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 1,
+              "invalidated_steps": 245,
+              "invalidated_fns_pct": 0.0073,
+              "invalidated_steps_pct": 0.0042,
+              "cache_hit_steps_pct": 99.9958,
+              "native_recheck_ms": 0.0005,
+              "in_kernel_refl_recheck_ms": 0.06
+            }
+          },
+          "O3_CrossCrate_ThinLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 856,
+              "invalidated_steps": 366350,
+              "invalidated_fns_pct": 6.2559,
+              "invalidated_steps_pct": 6.25,
+              "cache_hit_steps_pct": 93.75,
+              "native_recheck_ms": 0.8063,
+              "in_kernel_refl_recheck_ms": 95.5
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 1,
+              "invalidated_steps": 245,
+              "invalidated_fns_pct": 0.0073,
+              "invalidated_steps_pct": 0.0042,
+              "cache_hit_steps_pct": 99.9958,
+              "native_recheck_ms": 0.0005,
+              "in_kernel_refl_recheck_ms": 0.06
+            }
+          }
+        }
+      },
+      {
+        "id": "S3",
+        "name": "Body edit inside widely inlined generic helper (`hashbrown::raw::RawTable::find`)",
+        "edited_crate": "hashbrown",
+        "modes": {
+          "O3_NoLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 2800,
+              "invalidated_steps": 1174700,
+              "invalidated_fns_pct": 20.4633,
+              "invalidated_steps_pct": 20.0406,
+              "cache_hit_steps_pct": 79.9594,
+              "native_recheck_ms": 2.5852,
+              "in_kernel_refl_recheck_ms": 306.22
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 512,
+              "invalidated_steps": 234940,
+              "invalidated_fns_pct": 3.7419,
+              "invalidated_steps_pct": 4.0081,
+              "cache_hit_steps_pct": 95.9919,
+              "native_recheck_ms": 0.517,
+              "in_kernel_refl_recheck_ms": 61.24
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 94,
+              "invalidated_steps": 44120,
+              "invalidated_fns_pct": 0.687,
+              "invalidated_steps_pct": 0.7527,
+              "cache_hit_steps_pct": 99.2473,
+              "native_recheck_ms": 0.0971,
+              "in_kernel_refl_recheck_ms": 11.5
+            }
+          },
+          "O3_ThinLocal": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 2800,
+              "invalidated_steps": 1174700,
+              "invalidated_fns_pct": 20.4633,
+              "invalidated_steps_pct": 20.0406,
+              "cache_hit_steps_pct": 79.9594,
+              "native_recheck_ms": 2.5852,
+              "in_kernel_refl_recheck_ms": 306.22
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 680,
+              "invalidated_steps": 311800,
+              "invalidated_fns_pct": 4.9697,
+              "invalidated_steps_pct": 5.3194,
+              "cache_hit_steps_pct": 94.6806,
+              "native_recheck_ms": 0.6862,
+              "in_kernel_refl_recheck_ms": 81.28
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 94,
+              "invalidated_steps": 44120,
+              "invalidated_fns_pct": 0.687,
+              "invalidated_steps_pct": 0.7527,
+              "cache_hit_steps_pct": 99.2473,
+              "native_recheck_ms": 0.0971,
+              "in_kernel_refl_recheck_ms": 11.5
+            }
+          },
+          "O3_CrossCrate_ThinLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 2410,
+              "invalidated_steps": 1032400,
+              "invalidated_fns_pct": 17.6131,
+              "invalidated_steps_pct": 17.613,
+              "cache_hit_steps_pct": 82.387,
+              "native_recheck_ms": 2.2721,
+              "in_kernel_refl_recheck_ms": 269.13
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 112,
+              "invalidated_steps": 51840,
+              "invalidated_fns_pct": 0.8185,
+              "invalidated_steps_pct": 0.8844,
+              "cache_hit_steps_pct": 99.1156,
+              "native_recheck_ms": 0.1141,
+              "in_kernel_refl_recheck_ms": 13.51
+            }
+          }
+        }
+      },
+      {
+        "id": "S4",
+        "name": "Adding a new unused `pub fn` to an upstream library crate (`zerocopy`)",
+        "edited_crate": "zerocopy",
+        "modes": {
+          "O3_NoLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 2720,
+              "invalidated_steps": 1117200,
+              "invalidated_fns_pct": 19.8787,
+              "invalidated_steps_pct": 19.0597,
+              "cache_hit_steps_pct": 80.9403,
+              "native_recheck_ms": 2.4587,
+              "in_kernel_refl_recheck_ms": 291.23
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 18,
+              "invalidated_steps": 8120,
+              "invalidated_fns_pct": 0.1316,
+              "invalidated_steps_pct": 0.1385,
+              "cache_hit_steps_pct": 99.8615,
+              "native_recheck_ms": 0.0179,
+              "in_kernel_refl_recheck_ms": 2.12
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 1,
+              "invalidated_steps": 310,
+              "invalidated_fns_pct": 0.0073,
+              "invalidated_steps_pct": 0.0053,
+              "cache_hit_steps_pct": 99.9947,
+              "native_recheck_ms": 0.0007,
+              "in_kernel_refl_recheck_ms": 0.08
+            }
+          },
+          "O3_ThinLocal": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 2720,
+              "invalidated_steps": 1117200,
+              "invalidated_fns_pct": 19.8787,
+              "invalidated_steps_pct": 19.0597,
+              "cache_hit_steps_pct": 80.9403,
+              "native_recheck_ms": 2.4587,
+              "in_kernel_refl_recheck_ms": 291.23
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 36,
+              "invalidated_steps": 16400,
+              "invalidated_fns_pct": 0.2631,
+              "invalidated_steps_pct": 0.2798,
+              "cache_hit_steps_pct": 99.7202,
+              "native_recheck_ms": 0.0361,
+              "in_kernel_refl_recheck_ms": 4.28
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 1,
+              "invalidated_steps": 310,
+              "invalidated_fns_pct": 0.0073,
+              "invalidated_steps_pct": 0.0053,
+              "cache_hit_steps_pct": 99.9947,
+              "native_recheck_ms": 0.0007,
+              "in_kernel_refl_recheck_ms": 0.08
+            }
+          },
+          "O3_CrossCrate_ThinLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 856,
+              "invalidated_steps": 366350,
+              "invalidated_fns_pct": 6.2559,
+              "invalidated_steps_pct": 6.25,
+              "cache_hit_steps_pct": 93.75,
+              "native_recheck_ms": 0.8063,
+              "in_kernel_refl_recheck_ms": 95.5
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 1,
+              "invalidated_steps": 310,
+              "invalidated_fns_pct": 0.0073,
+              "invalidated_steps_pct": 0.0053,
+              "cache_hit_steps_pct": 99.9947,
+              "native_recheck_ms": 0.0007,
+              "in_kernel_refl_recheck_ms": 0.08
+            }
+          }
+        }
+      },
+      {
+        "id": "S5",
+        "name": "Toggling `-C target-feature=+avx2` across workspace (Tier 3 ISA key change, Tier 1 MirItemKey reuse)",
+        "edited_crate": "workspace-wide",
+        "modes": {
+          "O3_NoLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "tier1_mir_keys_reused_pct": 98.4,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            }
+          },
+          "O3_ThinLocal": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "tier1_mir_keys_reused_pct": 98.4,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            }
+          },
+          "O3_CrossCrate_ThinLTO": {
+            "whole_crate_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "rustc_16_cgu_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            },
+            "anneal_cone_cache": {
+              "invalidated_post_fns": 13683,
+              "invalidated_steps": 5861595,
+              "tier1_mir_keys_reused_pct": 98.4,
+              "invalidated_fns_pct": 100.0,
+              "invalidated_steps_pct": 100.0,
+              "cache_hit_steps_pct": 0.0,
+              "native_recheck_ms": 12.9,
+              "in_kernel_refl_recheck_ms": 1528.0
+            }
+          }
+        }
+      }
+    ]
+  }
+}

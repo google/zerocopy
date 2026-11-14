@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "lean",
+    "compilers",
+    "rustc",
+    "verification",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 v4.34.1 theorem prover and .olean module system",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.28.0 theorem prover comparison baseline",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+        "version": "v4.28.0-rc1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 and 1.100.0 compilers",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "upgrade_revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "versions": "1.99.1 -> 1.100.0"
+      }
+    },
+    {
+      "name": "Anneal trusted-boundary .olean auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

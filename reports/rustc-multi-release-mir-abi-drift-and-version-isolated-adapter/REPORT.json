@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc",
+    "compilers",
+    "rust",
+    "verification",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library (selected verification baseline)",
+      "identity": {
+        "release_date": "2026-10-15",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.98.1 compiler and standard library",
+      "identity": {
+        "release_date": "2026-09-03",
+        "repository": "rust-lang/rust",
+        "revision": "48a229ceaefd4985c50990b14116b6d856af0985",
+        "version": "1.98.1"
+      }
+    },
+    {
+      "name": "Rust 1.100.0 compiler and standard library",
+      "identity": {
+        "release_date": "2026-11-12",
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-05-31 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Rust nightly-2026-11-12 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

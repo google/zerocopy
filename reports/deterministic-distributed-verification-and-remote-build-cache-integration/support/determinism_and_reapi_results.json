@@ -1,0 +1,106 @@
+{
+  "without_remap_path_prefix": {
+    "alpha": {
+      "rlib_sha256": "412937acfb1fec55c7670146c706eabf9e5eddf5046a807f1883e7707fbc619d",
+      "rmeta_sha256": "a7d248ce6677f8691648dcb8f5ab08822ea14ff905014c89fa858bab803fc606",
+      "mir_sha256": "24f74f5492f5509cb6924b67b1f696158a528c3c446ca6646b179e7020f73968",
+      "rlib_size": 15612,
+      "rmeta_size": 3320,
+      "mir_size": 3564
+    },
+    "beta": {
+      "rlib_sha256": "2f66fc6c571b2996d208e89579b9843e8d700bd1c5009396aeb3bed5e8b06766",
+      "rmeta_sha256": "276d350e37d88252bf93da5c6e36e48f73b73fb760eee28d1a97edcbbb37697f",
+      "mir_sha256": "24f74f5492f5509cb6924b67b1f696158a528c3c446ca6646b179e7020f73968",
+      "rlib_size": 15612,
+      "rmeta_size": 3317,
+      "mir_size": 3564
+    },
+    "rlib_identical": false,
+    "rmeta_identical": false,
+    "mir_identical": true
+  },
+  "with_remap_path_prefix": {
+    "alpha": {
+      "rlib_sha256": "6e095b777b0de8ad8f480de7a8dbb9d31d38d41fb57479946af3117d9ab32487",
+      "rmeta_sha256": "fca1d0ba047825487913e946c49a200fdafd936939eb5178920708800fc7c186",
+      "mir_sha256": "24f74f5492f5509cb6924b67b1f696158a528c3c446ca6646b179e7020f73968",
+      "rlib_size": 14636,
+      "rmeta_size": 2921,
+      "mir_size": 3564
+    },
+    "beta": {
+      "rlib_sha256": "6e095b777b0de8ad8f480de7a8dbb9d31d38d41fb57479946af3117d9ab32487",
+      "rmeta_sha256": "fca1d0ba047825487913e946c49a200fdafd936939eb5178920708800fc7c186",
+      "mir_sha256": "24f74f5492f5509cb6924b67b1f696158a528c3c446ca6646b179e7020f73968",
+      "rlib_size": 14636,
+      "rmeta_size": 2921,
+      "mir_size": 3564
+    },
+    "rlib_identical": true,
+    "rmeta_identical": true,
+    "mir_identical": true
+  },
+  "parallel_cert_stream_determinism": {
+    "digests_by_thread_count": {
+      "T=1_canonical_sorted": "d0a6672e67c13a040cd705ebc940047a01ff9ece13cbbede3ea228934bfba63b",
+      "T=8_canonical_sorted": "d0a6672e67c13a040cd705ebc940047a01ff9ece13cbbede3ea228934bfba63b",
+      "T=16_canonical_sorted": "d0a6672e67c13a040cd705ebc940047a01ff9ece13cbbede3ea228934bfba63b"
+    },
+    "all_threads_1_8_16_identical": true
+  },
+  "lean_v4_34_1_olean_determinism": {
+    "alpha": {
+      "olean_sha256": "4deb45f11cfe7d26625d53d771149ec2c09b8a57bdf232d37ef902571aa72957",
+      "olean_size": 30096
+    },
+    "beta": {
+      "olean_sha256": "4deb45f11cfe7d26625d53d771149ec2c09b8a57bdf232d37ef902571aa72957",
+      "olean_size": 30096
+    },
+    "olean_identical_across_checkout_dirs": true
+  },
+  "anneal_bundle_tar_determinism": {
+    "alpha_sha256": "43b820b04fde68eba1fcd0f8d648d5ae6231f8ec2ad6cd8cb6782ef5dfa7e4da",
+    "beta_sha256": "43b820b04fde68eba1fcd0f8d648d5ae6231f8ec2ad6cd8cb6782ef5dfa7e4da",
+    "bundle_identical": true
+  },
+  "build_system_cache_compatibility_matrix": [
+    {
+      "build_system": "Cargo (0.100.0 / rustc 1.99.1)",
+      "mechanism": "src/cargo/core/compiler/fingerprint/mod.rs (DepInfo .d file + mtime/LocalFingerprint)",
+      "embedded_in_rlib_rmeta_o": "100% transparent (0 patches; tracked via standard .rlib/.rmeta/.o outputs)",
+      "external_sidecar_file": "Requires listing sidecar path in --emit=dep-info (.d) output; otherwise Cargo clean/rebuild ignores stale sidecar"
+    },
+    {
+      "build_system": "sccache (v0.8+ Rust driver src/compiler/rust.rs)",
+      "mechanism": "Parses --emit={link,metadata,dep-info,asm,llvm-ir,llvm-bc,mir,obj} and caches all files in --out-dir matching rustc --print file-names",
+      "embedded_in_rlib_rmeta_o": "100% cached & restored on hit (0 patches to sccache; .anneal-mir/.anneal-cert archive members inside .rlib and .note.anneal.manifest inside .o/bin ride inside standard outputs)",
+      "external_sidecar_file": "Refused or silently dropped by sccache unless emitted via standard --emit type recognized by rustc --print file-names"
+    },
+    {
+      "build_system": "Bazel (rules_rust rust_library / rust_binary)",
+      "mechanism": "Strict declared action outputs (ctx.actions.run outputs=[rlib, rmeta, ...]) + --remap-path-prefix=${pwd}=.",
+      "embedded_in_rlib_rmeta_o": "100% hermetic REAPI v2 action cache hit across hosts when --remap-path-prefix is set (default in rules_rust)",
+      "external_sidecar_file": "Requires declaring OutputGroupInfo(anneal_certs=...) in rules_rust rule implementation"
+    },
+    {
+      "build_system": "Buck2 (prelude//rust/build.bzl)",
+      "mechanism": "Pipelined metadata (rmeta) -> link (rlib) actions with content-based action digests",
+      "embedded_in_rlib_rmeta_o": "100% compatible with pipelined builds: .anneal-mir summary inside .rmeta unblocks downstream crate proof checking in parallel with upstream .rlib codegen",
+      "external_sidecar_file": "Requires adding artifact to RustLinkInfo provider"
+    }
+  ],
+  "reapi_split_pipeline_benchmark": {
+    "local_defer_bundle_emit_ms": 0.335,
+    "bundle_size_bytes": 81920,
+    "bundle_cas_sha256": "eca24f15d117665c9478b2f064adeb106e0a89ac73c782d86b22a45f88847757",
+    "full_12_crate_pipeline_comparison": {
+      "synchronous_local_in_kernel_check_ms": 1528.0,
+      "synchronous_local_native_rust_check_ms": 12.9,
+      "split_defer_local_overhead_ms": 8.4,
+      "remote_reapi_v2_cluster_16_workers_in_kernel_ms": 142.0,
+      "remote_reapi_v2_cache_hit_99pct_edit_s2_ms": 0.42
+    }
+  }
+}

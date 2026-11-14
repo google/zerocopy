@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "rustc",
+    "llvm",
+    "build",
+    "verification",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler incremental dependency graph, CGU partitioning, and ThinLTO summary pipeline",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 bundled LLVM 23.1.1 ModuleSummaryIndex and ThinLTO importer",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem-checking kernel and Anneal MIR verification infrastructure",
+      "identity": {
+        "anneal_repository": "joshlf/anneal",
+        "anneal_revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7",
+        "lean_repository": "leanprover/lean4",
+        "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "lean_version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

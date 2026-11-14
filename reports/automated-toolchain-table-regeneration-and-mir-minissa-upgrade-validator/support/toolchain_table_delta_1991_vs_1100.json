@@ -1,0 +1,699 @@
+{
+  "baseline_toolchain": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "target_toolchain": "1.100.0 (0ef1bc386059596dada8fb65b50425aab2ea637a)",
+  "tier1_targets_checked": 8,
+  "target_spec_json_1991": {
+    "x86_64-unknown-linux-gnu": {
+      "arch": "x86_64",
+      "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "llvm-target": "x86_64-unknown-linux-gnu",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 64,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": "full",
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": null,
+      "cpu": "x86-64",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "aarch64-unknown-linux-gnu": {
+      "arch": "aarch64",
+      "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+      "llvm-target": "aarch64-unknown-linux-gnu",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": "full",
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": "+v8a,+outline-atomics",
+      "cpu": null,
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "i686-unknown-linux-gnu": {
+      "arch": "x86",
+      "data-layout": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+      "llvm-target": "i686-unknown-linux-gnu",
+      "target-pointer-width": 32,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 64,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": "full",
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": null,
+      "cpu": "pentium4",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "aarch64-apple-darwin": {
+      "arch": "aarch64",
+      "data-layout": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+      "llvm-target": "arm64-apple-macosx",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": null,
+      "cpu": "apple-m1",
+      "eh-frame-header": false,
+      "has-thread-local": true
+    },
+    "x86_64-pc-windows-msvc": {
+      "arch": "x86_64",
+      "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "llvm-target": "x86_64-pc-windows-msvc",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": "+cmpxchg16b,+sse3,+lahfsahf",
+      "cpu": "x86-64",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "x86_64-pc-windows-gnu": {
+      "arch": "x86_64",
+      "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "llvm-target": "x86_64-pc-windows-gnu",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": "+cmpxchg16b,+sse3,+lahfsahf",
+      "cpu": "x86-64",
+      "eh-frame-header": false,
+      "has-thread-local": null
+    },
+    "aarch64-pc-windows-msvc": {
+      "arch": "aarch64",
+      "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+      "llvm-target": "aarch64-pc-windows-msvc",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": "+v8a,+neon",
+      "cpu": null,
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "i686-pc-windows-msvc": {
+      "arch": "x86",
+      "data-layout": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+      "llvm-target": "i686-pc-windows-msvc",
+      "target-pointer-width": 32,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 64,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": null,
+      "cpu": "pentium4",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    }
+  },
+  "target_spec_json_1100": {
+    "x86_64-unknown-linux-gnu": {
+      "arch": "x86_64",
+      "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "llvm-target": "x86_64-unknown-linux-gnu",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 64,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": "full",
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": null,
+      "cpu": "x86-64",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "aarch64-unknown-linux-gnu": {
+      "arch": "aarch64",
+      "data-layout": "e-m:e-p270:32:32-p271:32:32-p272:64:64-i8:8:32-i16:16:32-i64:64-i128:128-n32:64-S128-Fn32",
+      "llvm-target": "aarch64-unknown-linux-gnu",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": "full",
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": "+v8a,+outline-atomics",
+      "cpu": null,
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "i686-unknown-linux-gnu": {
+      "arch": "x86",
+      "data-layout": "e-m:e-p:32:32-p270:32:32-p271:32:32-p272:64:64-i128:128-f64:32:64-f80:32-n8:16:32-S128",
+      "llvm-target": "i686-unknown-linux-gnu",
+      "target-pointer-width": 32,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 64,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": "full",
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": null,
+      "cpu": "pentium4",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "aarch64-apple-darwin": {
+      "arch": "aarch64",
+      "data-layout": "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32",
+      "llvm-target": "arm64-apple-macosx",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": {
+        "kind": "inline"
+      },
+      "features": null,
+      "cpu": "apple-m1",
+      "eh-frame-header": false,
+      "has-thread-local": true
+    },
+    "x86_64-pc-windows-msvc": {
+      "arch": "x86_64",
+      "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "llvm-target": "x86_64-pc-windows-msvc",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": "+cmpxchg16b,+sse3,+lahfsahf",
+      "cpu": "x86-64",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "x86_64-pc-windows-gnu": {
+      "arch": "x86_64",
+      "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+      "llvm-target": "x86_64-pc-windows-gnu",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": "+cmpxchg16b,+sse3,+lahfsahf",
+      "cpu": "x86-64",
+      "eh-frame-header": false,
+      "has-thread-local": null
+    },
+    "aarch64-pc-windows-msvc": {
+      "arch": "aarch64",
+      "data-layout": "e-m:w-p270:32:32-p271:32:32-p272:64:64-p:64:64-i32:32-i64:64-i128:128-n32:64-S128-Fn32",
+      "llvm-target": "aarch64-pc-windows-msvc",
+      "target-pointer-width": 64,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 128,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": "+v8a,+neon",
+      "cpu": null,
+      "eh-frame-header": null,
+      "has-thread-local": true
+    },
+    "i686-pc-windows-msvc": {
+      "arch": "x86",
+      "data-layout": "e-m:x-p:32:32-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32-a:0:32-S32",
+      "llvm-target": "i686-pc-windows-msvc",
+      "target-pointer-width": 32,
+      "target-endian": null,
+      "target-c-int-width": null,
+      "max-atomic-width": 64,
+      "min-atomic-width": null,
+      "panic-strategy": null,
+      "relro-level": null,
+      "stack-probes": null,
+      "features": null,
+      "cpu": "pentium4",
+      "eh-frame-header": null,
+      "has-thread-local": true
+    }
+  },
+  "target_spec_deltas": {
+    "x86_64-unknown-linux-gnu": {
+      "classification": "IDENTICAL",
+      "json_field_diffs": {},
+      "callconv_abi_delta": null
+    },
+    "aarch64-unknown-linux-gnu": {
+      "classification": "IDENTICAL",
+      "json_field_diffs": {},
+      "callconv_abi_delta": null
+    },
+    "i686-unknown-linux-gnu": {
+      "classification": "BREAKING_SEMANTIC_DELTA",
+      "json_field_diffs": {},
+      "callconv_abi_delta": "CanonAbi::Rust passes f32/f64 and SIMD vectors in XMM0..XMM2 SSE registers when +sse2 is enabled (rust-lang/rust#161583)"
+    },
+    "aarch64-apple-darwin": {
+      "classification": "IDENTICAL",
+      "json_field_diffs": {},
+      "callconv_abi_delta": null
+    },
+    "x86_64-pc-windows-msvc": {
+      "classification": "IDENTICAL",
+      "json_field_diffs": {},
+      "callconv_abi_delta": null
+    },
+    "x86_64-pc-windows-gnu": {
+      "classification": "IDENTICAL",
+      "json_field_diffs": {},
+      "callconv_abi_delta": null
+    },
+    "aarch64-pc-windows-msvc": {
+      "classification": "IDENTICAL",
+      "json_field_diffs": {},
+      "callconv_abi_delta": null
+    },
+    "i686-pc-windows-msvc": {
+      "classification": "BREAKING_SEMANTIC_DELTA",
+      "json_field_diffs": {},
+      "callconv_abi_delta": "CanonAbi::Rust passes f32/f64 and SIMD vectors in XMM0..XMM2 SSE registers when +sse2 is enabled (rust-lang/rust#161583)"
+    }
+  },
+  "intrinsic_table_summary": {
+    "count_1991": 311,
+    "count_1100": 300,
+    "identical_signatures": 279,
+    "safe_additions_count": 17,
+    "removed_or_consolidated_count": 28,
+    "modified_signature_count": 4,
+    "safe_additions": [
+      {
+        "name": "cos",
+        "sig": "fn cos<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "exp",
+        "sig": "fn exp<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "exp2",
+        "sig": "fn exp2<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "integer_max",
+        "sig": "fn integer_max<T: [const] bounds::IntegerPrimitive>(a: T, b: T) -> T"
+      },
+      {
+        "name": "integer_min",
+        "sig": "fn integer_min<T: [const] bounds::IntegerPrimitive>(a: T, b: T) -> T"
+      },
+      {
+        "name": "log",
+        "sig": "fn log<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "log10",
+        "sig": "fn log10<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "log2",
+        "sig": "fn log2<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "offload_get_num_devices",
+        "sig": "fn offload_get_num_devices() -> i32"
+      },
+      {
+        "name": "sin",
+        "sig": "fn sin<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "type_id_array_len",
+        "sig": "fn type_id_array_len(_id: crate::any::TypeId) -> usize"
+      },
+      {
+        "name": "type_id_element_ty",
+        "sig": "fn type_id_element_ty(_id: crate::any::TypeId) -> Option<crate::any::TypeId>"
+      },
+      {
+        "name": "type_id_function_ptr",
+        "sig": "fn type_id_function_ptr(_type_id: crate::any::TypeId) -> Option<crate::mem::type_info::FnPtr>"
+      },
+      {
+        "name": "type_id_points_mutably",
+        "sig": "fn type_id_points_mutably(_id: crate::any::TypeId) -> bool"
+      },
+      {
+        "name": "type_id_points_to",
+        "sig": "fn type_id_points_to(_id: crate::any::TypeId) -> Option<crate::any::TypeId>"
+      },
+      {
+        "name": "variant_name",
+        "sig": "fn variant_name(_base: crate::any::TypeId, _variant_index: usize) -> &'static str"
+      },
+      {
+        "name": "variant_non_exhaustive",
+        "sig": "fn variant_non_exhaustive(base: crate::any::TypeId, variant: usize) -> bool"
+      }
+    ],
+    "removed_or_consolidated": [
+      {
+        "name": "cosf128",
+        "sig": "fn cosf128(x: f128) -> f128"
+      },
+      {
+        "name": "cosf16",
+        "sig": "fn cosf16(x: f16) -> f16"
+      },
+      {
+        "name": "cosf32",
+        "sig": "fn cosf32(x: f32) -> f32"
+      },
+      {
+        "name": "cosf64",
+        "sig": "fn cosf64(x: f64) -> f64"
+      },
+      {
+        "name": "exp2f128",
+        "sig": "fn exp2f128(x: f128) -> f128"
+      },
+      {
+        "name": "exp2f16",
+        "sig": "fn exp2f16(x: f16) -> f16"
+      },
+      {
+        "name": "exp2f32",
+        "sig": "fn exp2f32(x: f32) -> f32"
+      },
+      {
+        "name": "exp2f64",
+        "sig": "fn exp2f64(x: f64) -> f64"
+      },
+      {
+        "name": "expf128",
+        "sig": "fn expf128(x: f128) -> f128"
+      },
+      {
+        "name": "expf16",
+        "sig": "fn expf16(x: f16) -> f16"
+      },
+      {
+        "name": "expf32",
+        "sig": "fn expf32(x: f32) -> f32"
+      },
+      {
+        "name": "expf64",
+        "sig": "fn expf64(x: f64) -> f64"
+      },
+      {
+        "name": "log10f128",
+        "sig": "fn log10f128(x: f128) -> f128"
+      },
+      {
+        "name": "log10f16",
+        "sig": "fn log10f16(x: f16) -> f16"
+      },
+      {
+        "name": "log10f32",
+        "sig": "fn log10f32(x: f32) -> f32"
+      },
+      {
+        "name": "log10f64",
+        "sig": "fn log10f64(x: f64) -> f64"
+      },
+      {
+        "name": "log2f128",
+        "sig": "fn log2f128(x: f128) -> f128"
+      },
+      {
+        "name": "log2f16",
+        "sig": "fn log2f16(x: f16) -> f16"
+      },
+      {
+        "name": "log2f32",
+        "sig": "fn log2f32(x: f32) -> f32"
+      },
+      {
+        "name": "log2f64",
+        "sig": "fn log2f64(x: f64) -> f64"
+      },
+      {
+        "name": "logf128",
+        "sig": "fn logf128(x: f128) -> f128"
+      },
+      {
+        "name": "logf16",
+        "sig": "fn logf16(x: f16) -> f16"
+      },
+      {
+        "name": "logf32",
+        "sig": "fn logf32(x: f32) -> f32"
+      },
+      {
+        "name": "logf64",
+        "sig": "fn logf64(x: f64) -> f64"
+      },
+      {
+        "name": "sinf128",
+        "sig": "fn sinf128(x: f128) -> f128"
+      },
+      {
+        "name": "sinf16",
+        "sig": "fn sinf16(x: f16) -> f16"
+      },
+      {
+        "name": "sinf32",
+        "sig": "fn sinf32(x: f32) -> f32"
+      },
+      {
+        "name": "sinf64",
+        "sig": "fn sinf64(x: f64) -> f64"
+      }
+    ],
+    "modified_signatures": [
+      {
+        "name": "atomic_load",
+        "sig_1991": "fn atomic_load<T: Copy, const ORD: AtomicOrdering>(src: *const T) -> T",
+        "sig_1100": "fn atomic_load<T: Copy, const ORD: AtomicOrdering, const VOLATILE: bool>(src: *const T,) -> T"
+      },
+      {
+        "name": "atomic_store",
+        "sig_1991": "fn atomic_store<T: Copy, const ORD: AtomicOrdering>(dst: *mut T, val: T) -> ()",
+        "sig_1100": "fn atomic_store<T: Copy, const ORD: AtomicOrdering, const VOLATILE: bool>(dst: *mut T, val: T,) -> ()"
+      },
+      {
+        "name": "fabs",
+        "sig_1991": "fn fabs<T: const bounds::FloatPrimitive>(x: T) -> T",
+        "sig_1100": "fn fabs<T: bounds::FloatPrimitive>(x: T) -> T"
+      },
+      {
+        "name": "offload",
+        "sig_1991": "fn offload<F, T: crate::marker::Tuple, R>(f: F, workgroup_dim: [u32; 3], thread_dim: [u32; 3], dyn_cache: u32, args: T,) -> R",
+        "sig_1100": "fn offload<F, T: crate::marker::Tuple, R>(f: F, workgroup_dim: [u32; 3], thread_dim: [u32; 3], dyn_cache: u32, device_id: i32, args: T,) -> R"
+      }
+    ]
+  },
+  "callconv_source_deltas": [
+    {
+      "file": "compiler/rustc_target/src/callconv/aarch64.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 9,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/amdgpu.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 102,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/arm.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 109,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/avr.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/bpf.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 51,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/csky.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/hexagon.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/loongarch.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/m68k.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/mips.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 9,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/mips64.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 13,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/mod.rs",
+      "classification": "BREAKING_SEMANTIC_DELTA",
+      "diff_lines": 250,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/msp430.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/nvptx64.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/powerpc.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/powerpc64.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 75,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/riscv.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/s390x.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 70,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/sparc.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 110,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/sparc64.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 29,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/wasm.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 127,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/x86.rs",
+      "classification": "BREAKING_SEMANTIC_DELTA",
+      "diff_lines": 57,
+      "summary": "i686 CanonAbi::Rust SSE float/vector register passing (#161583) and PassMode::Indirect/Cast representation updates"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/x86_64.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/x86_win32.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/x86_win64.rs",
+      "classification": "IDENTICAL",
+      "summary": "Zero byte diff across 1.99.1 and 1.100.0"
+    },
+    {
+      "file": "compiler/rustc_target/src/callconv/xtensa.rs",
+      "classification": "SAFE_ADDITION",
+      "diff_lines": 16,
+      "summary": "PassMode::Cast pad_i32_count: u8 and PassMode::Indirect IndirectMode generalization"
+    }
+  ]
+}

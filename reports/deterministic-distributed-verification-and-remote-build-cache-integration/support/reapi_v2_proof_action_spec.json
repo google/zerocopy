@@ -1,0 +1,55 @@
+{
+  "protocol": "build.bazel.remote.execution.v2.Action",
+  "action_kind": "AnnealVerifyBundleAction_v1",
+  "cache_key_derivation": "CompiledArtifactKey (SHA-256 over MirItemKey || CalleeSummaryKey || OptProfileKey || TargetIsaFeatures)",
+  "command": {
+    "arguments": [
+      "/anneal/bin/anneal-checker",
+      "--mode=in-kernel-refl-gmp",
+      "--bundle=input/crate.anneal-bundle.tar.zst",
+      "--out-attestation=output/crate.anneal.verified.json"
+    ],
+    "environment_variables": [
+      {
+        "name": "LEAN_NUM_THREADS",
+        "value": "1"
+      },
+      {
+        "name": "TZ",
+        "value": "UTC"
+      },
+      {
+        "name": "LC_ALL",
+        "value": "C"
+      }
+    ],
+    "output_paths": [
+      "output/crate.anneal.verified.json"
+    ],
+    "platform": {
+      "properties": [
+        {
+          "name": "OSFamily",
+          "value": "Linux"
+        },
+        {
+          "name": "container-image",
+          "value": "docker://ghcr.io/anneal-project/verifier-v4.34.1@sha256:5045d0056413266e57c625dcd7c365b10e377c52"
+        }
+      ]
+    }
+  },
+  "input_root_tree": {
+    "files": [
+      {
+        "path": "input/crate.anneal-bundle.tar.zst",
+        "is_executable": false
+      },
+      {
+        "path": "anneal/bin/anneal-checker",
+        "is_executable": true
+      }
+    ]
+  },
+  "do_not_cache": false
+}
