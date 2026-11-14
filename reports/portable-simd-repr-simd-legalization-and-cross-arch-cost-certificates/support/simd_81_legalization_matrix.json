@@ -1,0 +1,268 @@
+{
+  "total_simd_intrinsics_cataloged": 81,
+  "breakdown_by_source": {
+    "core_intrinsics_simd_mod_rs": 75,
+    "core_intrinsics_simd_scalable_rs": 5,
+    "rustc_codegen_llvm_extra_symbol_simd_shuffle_const_generic": 1
+  },
+  "families": [
+    {
+      "family_id": "Family_1_Lanewise_ALU_Bitwise_And_Shifts",
+      "certificate_schema": "SplitVecCert + SimdLaneUBGuardCert (shift < bw, div != 0, sdiv MIN/-1)",
+      "intrinsics": [
+        "simd_add",
+        "simd_sub",
+        "simd_mul",
+        "simd_div",
+        "simd_rem",
+        "simd_shl",
+        "simd_shr",
+        "simd_and",
+        "simd_or",
+        "simd_xor",
+        "simd_neg",
+        "simd_bswap",
+        "simd_bitreverse",
+        "simd_ctlz",
+        "simd_cttz",
+        "simd_ctpop",
+        "simd_funnel_shl",
+        "simd_funnel_shr",
+        "simd_carryless_mul",
+        "scalable::simd_add",
+        "scalable::simd_sub",
+        "scalable::simd_neg"
+      ],
+      "ub_preconditions": {
+        "simd_shl_shr": "Immediate UB if any lane shift count >= lane_bitwidth or < 0",
+        "simd_div_rem": "Immediate UB if any lane divisor == 0, or signed INT_MIN / -1",
+        "simd_ctlz_cttz": "Calls @llvm.ctlz/@llvm.cttz with is_zero_poison = i1 false (defined at 0)"
+      },
+      "split_512_to_128_neon_i686": "4x 128-bit independent register ops (Split4 via 2 recursive Split2 steps)"
+    },
+    {
+      "family_id": "Family_2_Saturating_And_Pointer_Offset",
+      "certificate_schema": "SplitVecCert + GEPProvenanceCert",
+      "intrinsics": [
+        "simd_saturating_add",
+        "simd_saturating_sub",
+        "simd_arith_offset"
+      ],
+      "ub_preconditions": {
+        "simd_saturating_add_sub": "Total on all integer bit patterns (@llvm.sadd.sat / @llvm.uadd.sat)",
+        "simd_arith_offset": "Wrapping vector getelementptr (preserves per-lane pointer provenance without inbounds UB)"
+      },
+      "split_512_to_128_neon_i686": "uqadd/sqadd on 4x v4i32 NEON; paddusb/psubusb or icmp+select on SSE2"
+    },
+    {
+      "family_id": "Family_3_Comparisons_Masks_And_Bitmasks",
+      "certificate_schema": "SplitVecCert + MaskReprCert (all-ones -1 vs i1 bitmask)",
+      "intrinsics": [
+        "simd_eq",
+        "simd_ne",
+        "simd_lt",
+        "simd_le",
+        "simd_gt",
+        "simd_ge",
+        "simd_select",
+        "simd_select_bitmask",
+        "simd_bitmask"
+      ],
+      "ub_preconditions": {
+        "simd_eq_to_ge": "Emits icmp/fcmp -> sext <N x i1> to <N x iM> (returns -1 for true, 0 for false)",
+        "simd_select": "Checks mask lanes (CTFE/Miri require each lane to be 0 or -1; LLVM truncates LSB to i1)",
+        "simd_bitmask": "Bitcasts <N x i1> to integer/byte array (bit order reversed via @llvm.bitreverse on big-endian)"
+      },
+      "split_512_to_128_neon_i686": "Split2/Split4 slices integer bitmask via (mask & ((1<<W)-1), mask >> W)"
+    },
+    {
+      "family_id": "Family_4_Type_Casts_And_Provenance",
+      "certificate_schema": "SplitVecCert + FloatToIntSatCert",
+      "intrinsics": [
+        "simd_as",
+        "simd_cast",
+        "simd_cast_ptr",
+        "simd_expose_provenance",
+        "simd_with_exposed_provenance",
+        "scalable::simd_as",
+        "scalable::simd_cast"
+      ],
+      "ub_preconditions": {
+        "simd_as": "Float-to-int uses @llvm.fptosi.sat / @llvm.fptoui.sat (clamps NaN->0 and out-of-range to MIN/MAX; never UB)",
+        "simd_cast": "Float-to-int emits raw fptosi / fptoui (out-of-range or NaN/Inf produces poison/UB!)",
+        "simd_expose_with_exposed": "Per-lane ptrtoint / inttoptr provenance broadcast"
+      },
+      "split_512_to_128_neon_i686": "Widening casts split output into 2x/4x registers; narrowing casts pack pairs via xtn/packssdw"
+    },
+    {
+      "family_id": "Family_5_Swizzles_Shuffles_Insert_Extract_Splat",
+      "certificate_schema": "CrossHalfShuffleCert (selectSplit4Lane)",
+      "intrinsics": [
+        "simd_shuffle",
+        "simd_shuffle_const_generic",
+        "simd_insert",
+        "simd_extract",
+        "simd_splat"
+      ],
+      "ub_preconditions": {
+        "simd_insert_extract": "Immediate UB if runtime lane index >= N",
+        "simd_shuffle": "Const index array [u32; M] with all indices < 2*N"
+      },
+      "split_512_to_128_neon_i686": "AArch64 lowers 2/4-reg shuffle to tbl v0.16b, {v0..v3}; x86 AVX2 uses vperm2i128 + vpblendd"
+    },
+    {
+      "family_id": "Family_6_Horizontal_Reductions",
+      "certificate_schema": "OrderedSimdFoldCert (Schema 5a) + ReductionMonoid (Schema 5)",
+      "intrinsics": [
+        "simd_reduce_add_ordered",
+        "simd_reduce_add_unordered",
+        "simd_reduce_mul_ordered",
+        "simd_reduce_mul_unordered",
+        "simd_reduce_min",
+        "simd_reduce_max",
+        "simd_reduce_and",
+        "simd_reduce_or",
+        "simd_reduce_xor",
+        "simd_reduce_all",
+        "simd_reduce_any"
+      ],
+      "ub_preconditions": {
+        "ordered_float_reduce": "Folds lanes strictly left-to-right starting from acc (@llvm.vector.reduce.fadd/fmul without reassoc)",
+        "unordered_float_reduce": "Permits tree reassociation across split halves"
+      },
+      "split_512_to_128_neon_i686": "Ordered fold threads scalar acc sequentially through Split4 chunks (acc0 -> acc1 -> acc2 -> acc3)"
+    },
+    {
+      "family_id": "Family_7_Masked_And_Strided_Memory",
+      "certificate_schema": "MaskedMemCert (simdMaskedLoad_inactive_lane_safe + simdScatter_disjoint_lanes_sound)",
+      "intrinsics": [
+        "simd_masked_load",
+        "simd_masked_store",
+        "simd_gather",
+        "simd_scatter"
+      ],
+      "ub_preconditions": {
+        "masked_load_gather": "Inactive mask lanes suppress page faults and Tree Borrows reads; active lanes must be aligned per SimdAlign",
+        "simd_scatter": "Overlapping active lane addresses have target-defined write order; disjoint active lanes commute deterministically"
+      },
+      "split_512_to_128_neon_i686": "AArch64 NEON & i686 SSE2 legalize masked load/store/gather/scatter into predicated scalar lane-branch diamonds"
+    },
+    {
+      "family_id": "Family_8_Floating_Point_Vector_Math",
+      "certificate_schema": "SplitVecCert + FloatContractCert + ULPBoundsCert",
+      "intrinsics": [
+        "simd_fabs",
+        "simd_fsqrt",
+        "simd_ffloor",
+        "simd_fceil",
+        "simd_ftrunc",
+        "simd_fround",
+        "simd_fround_ties_even",
+        "simd_fsin",
+        "simd_fcos",
+        "simd_fexp",
+        "simd_fexp2",
+        "simd_flog",
+        "simd_flog2",
+        "simd_flog10",
+        "simd_fma",
+        "simd_fmuladd",
+        "simd_fpow",
+        "simd_fpowi",
+        "simd_minimum_number_nsz",
+        "simd_maximum_number_nsz"
+      ],
+      "ub_preconditions": {
+        "simd_fma_ vs_fmuladd": "simd_fma guarantees single rounding (@llvm.fma); simd_fmuladd permits fused or unfused (@llvm.fmuladd)",
+        "simd_minimum_maximum_nsz": "IEEE 754-2019 minimumNumber/maximumNumber with nsz"
+      },
+      "split_512_to_128_neon_i686": "Hardware vector ops for fabs/fsqrt/round/fma; scalar libm loop for sin/cos/exp/log/pow without SVML"
+    }
+  ],
+  "cross_target_probe_compilation": {
+    "x86_64_sse2": {
+      "target_triple": "x86_64-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-cpu=x86-64"
+      ],
+      "asm_bytes": 9178,
+      "xmm_mentions": 404,
+      "ymm_mentions": 0,
+      "zmm_mentions": 0,
+      "neon_vreg_mentions": 0
+    },
+    "x86_64_avx2": {
+      "target_triple": "x86_64-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-cpu=x86-64-v3"
+      ],
+      "asm_bytes": 5758,
+      "xmm_mentions": 98,
+      "ymm_mentions": 55,
+      "zmm_mentions": 0,
+      "neon_vreg_mentions": 0
+    },
+    "x86_64_skylake_avx512": {
+      "target_triple": "x86_64-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-cpu=skylake-avx512"
+      ],
+      "asm_bytes": 5780,
+      "xmm_mentions": 98,
+      "ymm_mentions": 30,
+      "zmm_mentions": 9,
+      "neon_vreg_mentions": 0
+    },
+    "x86_64_znver4": {
+      "target_triple": "x86_64-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-cpu=znver4"
+      ],
+      "asm_bytes": 5780,
+      "xmm_mentions": 98,
+      "ymm_mentions": 30,
+      "zmm_mentions": 9,
+      "neon_vreg_mentions": 0
+    },
+    "x86_64_znver5": {
+      "target_triple": "x86_64-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-cpu=znver5"
+      ],
+      "asm_bytes": 5780,
+      "xmm_mentions": 98,
+      "ymm_mentions": 30,
+      "zmm_mentions": 9,
+      "neon_vreg_mentions": 0
+    },
+    "aarch64_neon": {
+      "target_triple": "aarch64-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-feature=+neon"
+      ],
+      "asm_bytes": 3846,
+      "xmm_mentions": 0,
+      "ymm_mentions": 0,
+      "zmm_mentions": 0,
+      "neon_vreg_mentions": 86
+    },
+    "i686_sse2": {
+      "target_triple": "i686-unknown-linux-gnu",
+      "flags": [
+        "-C",
+        "target-feature=+sse2"
+      ],
+      "asm_bytes": 10924,
+      "xmm_mentions": 427,
+      "ymm_mentions": 0,
+      "zmm_mentions": 0,
+      "neon_vreg_mentions": 0
+    }
+  }
+}

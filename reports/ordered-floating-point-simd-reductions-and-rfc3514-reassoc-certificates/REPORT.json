@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/optimizer",
+    "compilers/verified-rustc/proof-system-and-irs",
+    "isa",
+    "isa/aarch64",
+    "isa/x86-64",
+    "lean",
+    "lean/mechanization",
+    "llvm",
+    "llvm/passes",
+    "rust",
+    "rust/floating-point",
+    "rustc",
+    "rustc/codegen",
+    "verification",
+    "verification/certificates",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover and kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      }
+    },
+    {
+      "name": "Rust RFC 3514 (float_semantics)",
+      "identity": {
+        "path": "text/3514-float-semantics.md",
+        "repository": "rust-lang/rfcs",
+        "revision": "7677feddd580f356f780cb7123aeda6a3708275a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

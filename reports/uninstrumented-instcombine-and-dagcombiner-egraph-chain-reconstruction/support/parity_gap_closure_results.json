@@ -1,0 +1,48 @@
+{
+  "total_cones_evaluated": 500,
+  "rule_library_schema_count": 168,
+  "tier_breakdown": {
+    "Tier1_Pure_AEGraphCert": 154,
+    "Tier2_AEGraph_Plus_BitDomainCert": 340,
+    "Tier3_BvDecideConeCert": 6
+  },
+  "ric_schema_coverage_pct": 98.8,
+  "total_verified_coverage_pct": 100.0,
+  "bv_decide_fallback_pct": 1.2,
+  "median_synthesis_latency_ms": 0.2733,
+  "p99_synthesis_latency_ms": 0.3825,
+  "mean_mitm_enodes": 62.5,
+  "mean_naive_forward_ac_enodes": 866.0,
+  "enode_reduction_ratio": 13.85,
+  "lean_kernel_verification": {
+    "module": "support/lean/ExprChainReconstruction.lean",
+    "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+    "check_wall_sec": 2.26,
+    "max_rss_mb": 564.2,
+    "axioms": [
+      "propext",
+      "Quot.sound"
+    ],
+    "zero_sorry": true,
+    "zero_native_decide": true,
+    "tier1_native_check_us_per_cone": 0.042,
+    "tier2_native_check_us_per_cone": 0.068,
+    "tier3_bv_reflection_us_per_cone": 4.12
+  },
+  "u2_parity_gap_closure": {
+    "benchmark_suites": [
+      "w5_o3_corpus.rs (12 functions)",
+      "full_mir_bench.rs (9 kernels)"
+    ],
+    "llvm_23_native_o3_geomean_speedup": 11.71,
+    "u2_fixed_depth3_conecert_speedup": 11.53,
+    "u2_residual_gap_pct": 1.54,
+    "o1_expr_chain_synthesizer_speedup": 11.7,
+    "o1_residual_gap_pct": 0.09,
+    "gap_closed_pct": 94.4,
+    "i686_text_size_gap_before_bytes": 174,
+    "i686_text_size_gap_after_bytes": 12,
+    "aarch64_text_size_gap_before_bytes": 12,
+    "aarch64_text_size_gap_after_bytes": 0
+  }
+}

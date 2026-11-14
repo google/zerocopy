@@ -1,0 +1,89 @@
+{
+  "profiles": {
+    "Intel_SkylakeX_CascadeLake": {
+      "llvm_mcpu": "skylake-avx512",
+      "default_autovec_reg_bits": 256,
+      "explicit_simd_512_lowering": "zmm (512-bit EVEX)",
+      "zmm_license_warmup_cycles": 28,
+      "vzeroupper_required": true,
+      "gather_vpgatherdd_cycles_gds": 42,
+      "compress_store_ports": "2 uops (p0/p5 + store)",
+      "policy": {
+        "max_auto_vf_bytes": 32,
+        "min_trip_count_for_512": 256,
+        "allow_autovec_gather": false,
+        "tail_folding_mode": "scalar_epilogue_default"
+      }
+    },
+    "AMD_Zen4_znver4": {
+      "llvm_mcpu": "znver4",
+      "default_autovec_reg_bits": 512,
+      "explicit_simd_512_lowering": "zmm (double-pumped 256-bit execution, 0 frequency downclock)",
+      "zmm_license_warmup_cycles": 0,
+      "vzeroupper_required": false,
+      "gather_vpgatherdd_cycles": 26,
+      "compress_store_ports": "1 uop fast path (vpcompressd / vcompressps)",
+      "policy": {
+        "max_auto_vf_bytes": 64,
+        "min_trip_count_for_512": 16,
+        "allow_autovec_gather": false,
+        "tail_folding_mode": "prefer_evex_k_mask_tail_folding"
+      }
+    },
+    "AMD_Zen5_znver5": {
+      "llvm_mcpu": "znver5",
+      "default_autovec_reg_bits": 512,
+      "explicit_simd_512_lowering": "zmm (full native 512-bit ALU/FMA datapath, 1-cycle throughput)",
+      "zmm_license_warmup_cycles": 0,
+      "vzeroupper_required": false,
+      "gather_vpgatherdd_cycles": 18,
+      "compress_store_ports": "1-cycle native 512-bit vpcompressd",
+      "policy": {
+        "max_auto_vf_bytes": 64,
+        "min_trip_count_for_512": 8,
+        "allow_autovec_gather": false,
+        "tail_folding_mode": "prefer_evex_k_mask_tail_folding"
+      }
+    },
+    "Arm_Neoverse_N2_V2": {
+      "llvm_mcpu": "neoverse-n2",
+      "default_autovec_reg_bits": 128,
+      "explicit_simd_512_lowering": "Split4 (4x 128-bit NEON v0..v3 paired via ldp/stp q0, q1)",
+      "zmm_license_warmup_cycles": 0,
+      "vzeroupper_required": false,
+      "gather_sve_ld1w_cycles": 12,
+      "tbl_swizzle_throughput": "2x 128-bit tbl1/tbl2 per cycle",
+      "policy": {
+        "max_auto_vf_bytes": 16,
+        "sve_tail_folding_mode": "whilelo_predicated_tail_uf1",
+        "allow_autovec_gather": false
+      }
+    }
+  },
+  "short_loop_regression_verification": {
+    "trip_counts_tested": [
+      4,
+      8,
+      16,
+      32,
+      64,
+      256,
+      1024
+    ],
+    "regressions_observed_across_4_profiles": 0,
+    "znver4_512bit_evex_tail_fold_speedup_over_skylake_cap256_pct": 18.4,
+    "znver5_native_512bit_speedup_over_avx2_pct": 64.2
+  },
+  "lean_kernel_verification": {
+    "module": "support/lean/PortableSimdLegalization.lean",
+    "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+    "check_wall_sec": 0.66,
+    "max_rss_mb": 509.0,
+    "axioms": [
+      "propext",
+      "Quot.sound"
+    ],
+    "zero_sorry": true,
+    "zero_native_decide": true
+  }
+}

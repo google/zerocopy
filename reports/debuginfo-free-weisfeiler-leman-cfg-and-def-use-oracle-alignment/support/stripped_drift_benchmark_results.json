@@ -1,0 +1,187 @@
+{
+  "llvm_debuginfo_probe": {
+    "dbg0_dilocation_count": 0,
+    "dbg1_dilocation_count": 20,
+    "dbg0_disubprogram_count": 0,
+    "dbg1_disubprogram_count": 4
+  },
+  "sample_wl_k4_all_unique": true,
+  "drift_80_corpus_summary": {
+    "total_functions": 80,
+    "total_optimization_sites": 460,
+    "u3_dbg1_baseline_alignment_pct": 99.13,
+    "u3_dbg0_stripped_alignment_pct": 9.57,
+    "naive_dbg0_ordinal_alignment_pct": 16.3,
+    "o2_wl_dbg0_alignment_pct": 98.04,
+    "o2_wl_precision_pct": 99.34,
+    "o2_wl_recall_pct": 98.04,
+    "o2_wl_f1_pct": 98.69,
+    "o2_wl_post_legality_unsound_count": 0,
+    "o2_wl_speedup_retention_pct": 99.33,
+    "mean_wl_refinement_time_us_per_fn": 41.8
+  },
+  "drift_categories": [
+    {
+      "category_id": "D1_TreeBorrows_vs_ScopedNoAliasAA",
+      "functions": 20,
+      "total_sites": 112,
+      "u3_dbg1_anchorkey_aligned": 112,
+      "u3_dbg0_baseline_aligned": 19,
+      "naive_dbg0_ordinal_aligned": 31,
+      "o2_wl_exact_singleton_aligned": 106,
+      "o2_wl_symmetric_orbit_aligned": 2,
+      "o2_wl_soft_hungarian_aligned": 3,
+      "o2_wl_total_aligned": 111,
+      "o2_wl_alignment_pct": 99.11,
+      "speedup_retained_pct": 99.82
+    },
+    {
+      "category_id": "D2_SimplifyCFG_Switch_And_Freeze_Drift",
+      "functions": 20,
+      "total_sites": 104,
+      "u3_dbg1_anchorkey_aligned": 103,
+      "u3_dbg0_baseline_aligned": 8,
+      "naive_dbg0_ordinal_aligned": 14,
+      "o2_wl_exact_singleton_aligned": 91,
+      "o2_wl_symmetric_orbit_aligned": 4,
+      "o2_wl_soft_hungarian_aligned": 7,
+      "o2_wl_total_aligned": 102,
+      "o2_wl_alignment_pct": 98.08,
+      "speedup_retained_pct": 99.41
+    },
+    {
+      "category_id": "D3_MIR_Mid28_vs_Full42_And_SliceBounds_Drift",
+      "functions": 20,
+      "total_sites": 128,
+      "u3_dbg1_anchorkey_aligned": 127,
+      "u3_dbg0_baseline_aligned": 6,
+      "naive_dbg0_ordinal_aligned": 12,
+      "o2_wl_exact_singleton_aligned": 110,
+      "o2_wl_symmetric_orbit_aligned": 4,
+      "o2_wl_soft_hungarian_aligned": 11,
+      "o2_wl_total_aligned": 125,
+      "o2_wl_alignment_pct": 97.66,
+      "speedup_retained_pct": 99.15
+    },
+    {
+      "category_id": "D4_Inlining_Threshold_And_CallOrder_Drift",
+      "functions": 20,
+      "total_sites": 116,
+      "u3_dbg1_anchorkey_aligned": 114,
+      "u3_dbg0_baseline_aligned": 11,
+      "naive_dbg0_ordinal_aligned": 18,
+      "o2_wl_exact_singleton_aligned": 98,
+      "o2_wl_symmetric_orbit_aligned": 6,
+      "o2_wl_soft_hungarian_aligned": 9,
+      "o2_wl_total_aligned": 113,
+      "o2_wl_alignment_pct": 97.41,
+      "speedup_retained_pct": 98.94
+    }
+  ],
+  "site_class_breakdown": [
+    {
+      "hint_class": "InlineHint",
+      "total_sites": 96,
+      "u3_dbg0_aligned_pct": 14.58,
+      "naive_ordinal_aligned_pct": 22.92,
+      "wl_exact_orbit_pct": 89.58,
+      "wl_symmetric_orbit_pct": 4.17,
+      "wl_soft_hungarian_pct": 5.21,
+      "wl_total_aligned_pct": 98.96,
+      "false_positive_after_legality_check": 0
+    },
+    {
+      "hint_class": "SroaHint",
+      "total_sites": 88,
+      "u3_dbg0_aligned_pct": 11.36,
+      "naive_ordinal_aligned_pct": 18.18,
+      "wl_exact_orbit_pct": 90.91,
+      "wl_symmetric_orbit_pct": 2.27,
+      "wl_soft_hungarian_pct": 5.68,
+      "wl_total_aligned_pct": 98.86,
+      "false_positive_after_legality_check": 0
+    },
+    {
+      "hint_class": "LoopOptHint",
+      "total_sites": 92,
+      "u3_dbg0_aligned_pct": 7.61,
+      "naive_ordinal_aligned_pct": 14.13,
+      "wl_exact_orbit_pct": 86.96,
+      "wl_symmetric_orbit_pct": 4.35,
+      "wl_soft_hungarian_pct": 6.52,
+      "wl_total_aligned_pct": 97.83,
+      "false_positive_after_legality_check": 0
+    },
+    {
+      "hint_class": "VectorizeHint",
+      "total_sites": 84,
+      "u3_dbg0_aligned_pct": 7.14,
+      "naive_ordinal_aligned_pct": 13.1,
+      "wl_exact_orbit_pct": 85.71,
+      "wl_symmetric_orbit_pct": 4.76,
+      "wl_soft_hungarian_pct": 7.14,
+      "wl_total_aligned_pct": 97.62,
+      "false_positive_after_legality_check": 0
+    },
+    {
+      "hint_class": "RegAllocHint",
+      "total_sites": 100,
+      "u3_dbg0_aligned_pct": 7.0,
+      "naive_ordinal_aligned_pct": 13.0,
+      "wl_exact_orbit_pct": 87.0,
+      "wl_symmetric_orbit_pct": 2.0,
+      "wl_soft_hungarian_pct": 8.0,
+      "wl_total_aligned_pct": 97.0,
+      "false_positive_after_legality_check": 0
+    }
+  ],
+  "adversarial_25_symmetry_suite": {
+    "total_adversarial_cases": 25,
+    "categories": {
+      "twin_coordinate_loops_xy": {
+        "cases": 9,
+        "total_sites": 54,
+        "resolved_by_param_root_distance_tiebreak": 38,
+        "resolved_by_orbit_symmetric_hint": 14,
+        "ambiguous_orbit_tier2_skip": 2,
+        "aligned_sites": 52,
+        "alignment_pct": 96.3
+      },
+      "macro_duplicated_callee_arms": {
+        "cases": 8,
+        "total_sites": 48,
+        "resolved_by_param_root_distance_tiebreak": 34,
+        "resolved_by_orbit_symmetric_hint": 13,
+        "ambiguous_orbit_tier2_skip": 1,
+        "aligned_sites": 47,
+        "alignment_pct": 97.92
+      },
+      "simplifycfg_diamond_to_select_collapse": {
+        "cases": 8,
+        "total_sites": 48,
+        "resolved_by_param_root_distance_tiebreak": 41,
+        "resolved_by_orbit_symmetric_hint": 6,
+        "ambiguous_orbit_tier2_skip": 0,
+        "aligned_sites": 47,
+        "alignment_pct": 97.92
+      }
+    },
+    "total_sites": 150,
+    "total_aligned": 146,
+    "overall_adversarial_alignment_pct": 97.33,
+    "unsound_hint_applications": 0,
+    "compilation_panics": 0
+  },
+  "lean_kernel_verification": {
+    "module": "support/lean/WLOracleAlignment.lean",
+    "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+    "check_wall_sec": 0.66,
+    "max_rss_mb": 502.2,
+    "axioms": [
+      "propext",
+      "Quot.sound"
+    ],
+    "zero_sorry": true,
+    "zero_native_decide": true
+  }
+}
