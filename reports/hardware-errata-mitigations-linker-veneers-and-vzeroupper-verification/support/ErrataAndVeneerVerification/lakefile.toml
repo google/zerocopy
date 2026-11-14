@@ -1,0 +1,6 @@
+name = "ErrataAndVeneerVerification"
+version = "0.1.0"
+defaultTargets = ["ErrataAndVeneerVerification"]
+
+[[lean_lib]]
+name = "ErrataAndVeneerVerification"

@@ -1,0 +1,6 @@
+name = "VerifiedCfiAndHardening"
+version = "0.1.0"
+defaultTargets = ["VerifiedCfiAndHardening"]
+
+[[lean_lib]]
+name = "VerifiedCfiAndHardening"

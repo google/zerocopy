@@ -11562,6 +11562,43 @@
         "verification/survey"
       ]
     },
+    "decidable-machine-code-well-formedness-and-errata-byte-validator": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc (LLVM backend and prebuilt Tier 1 sysroots)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "isa",
+        "lean",
+        "compilers"
+      ]
+    },
     "deductive-proof-object-and-refinement-certificate-kernels-2013-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -12636,6 +12673,43 @@
         "vcs/gherrit",
         "vcs/git",
         "vcs/stacked-prs"
+      ]
+    },
+    "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc (and rust-lld)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM (and lld)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "isa",
+        "llvm",
+        "rustc",
+        "lean",
+        "verification"
       ]
     },
     "hybrid-functional-spatial-and-plan-guided-shallow-translation-in-lean4": {
@@ -15906,6 +15980,35 @@
         "lean/tactics",
         "lean/mechanization",
         "verification/survey"
+      ]
+    },
+    "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "rustc",
+        "isa",
+        "compilers",
+        "verification"
       ]
     },
     "lean-ieee754-floatspec-cryptography-and-constant-time": {
@@ -27877,6 +27980,48 @@
         "verification"
       ]
     },
+    "tier1-exhaustive-procedural-abi-differential-campaign-and-fixes": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc (LLVM and Cranelift backends)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM"
+        },
+        {
+          "identity": {
+            "artifact": "clang-19",
+            "version": "19.1.7"
+          },
+          "name": "Clang"
+        },
+        {
+          "identity": {
+            "artifact": "x86_64-linux-gnu-gcc",
+            "version": "15.2.0"
+          },
+          "name": "GCC"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "isa",
+        "compilers"
+      ]
+    },
     "tier1-linux-hosted-cross-compilation-recipes-and-sysroots": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -29378,6 +29523,43 @@
         "systems/object-formats",
         "llvm/mc-layer",
         "isa/encoding"
+      ]
+    },
+    "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc (LLVM backend)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1-rust-1.99.1-stable"
+          },
+          "name": "LLVM"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "isa",
+        "lean",
+        "compilers"
       ]
     },
     "verified-compiler-effort-precedents-and-agent-proof-productivity": {

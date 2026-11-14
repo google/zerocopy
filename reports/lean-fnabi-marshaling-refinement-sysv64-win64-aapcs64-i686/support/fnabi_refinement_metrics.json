@@ -1,0 +1,32 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "module": "LeanFnAbiRefinement.lean",
+  "total_lines": 731,
+  "code_lines": 680,
+  "olean_size_bytes": 4265352,
+  "build_time_ms": 247.18,
+  "sorry_count": 0,
+  "native_decide_count": 0,
+  "eval_check_all_output": [
+    "true",
+    "'LeanFnAbiRefinement.readLoc_writeLoc_id' depends on axioms: [propext, Quot.sound]",
+    "'LeanFnAbiRefinement.abi_locations_disjoint' depends on axioms: [propext, Quot.sound]",
+    "'LeanFnAbiRefinement.decode_encode_call_args_id' depends on axioms: [propext, Quot.sound]",
+    "'LeanFnAbiRefinement.decode_encode_ret_id' depends on axioms: [propext, Quot.sound]"
+  ],
+  "differential_oracle_agreement": {
+    "targets_covered": 8,
+    "procedural_signatures_per_target": 256,
+    "total_target_signature_pairs_verified": 2048,
+    "agreement_rate_pct": 100.0
+  },
+  "proved_theorems": [
+    "readLoc_writeLoc_id",
+    "writeLoc_preserves_calleeSaved",
+    "writeLoc_preserves_spOffset",
+    "readLoc_with_spOffset",
+    "abi_locations_disjoint",
+    "decode_encode_call_args_id",
+    "decode_encode_ret_id"
+  ]
+}

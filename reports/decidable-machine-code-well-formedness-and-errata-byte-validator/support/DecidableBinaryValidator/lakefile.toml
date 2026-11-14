@@ -1,0 +1,6 @@
+name = "DecidableBinaryValidator"
+version = "0.1.0"
+defaultTargets = ["DecidableBinaryValidator"]
+
+[[lean_lib]]
+name = "DecidableBinaryValidator"

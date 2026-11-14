@@ -1,0 +1,186 @@
+{
+  "lean_formalization": {
+    "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+    "module": "DecidableBinaryValidator.lean",
+    "total_lines": 199,
+    "code_lines": 166,
+    "build_time_ms": 252.09,
+    "sorry_count": 0,
+    "native_decide_count": 0,
+    "proved_theorems": [
+      "checkFunctionWF_sound",
+      "checkBinaryWF_sound"
+    ]
+  },
+  "tier1_sysroot_audit_totals": {
+    "targets_audited": 8,
+    "total_rlib_objects_audited": 2494,
+    "total_object_bytes_audited": 128250973,
+    "total_instructions_audited": 8711201,
+    "total_audit_time_ms": 1554.7,
+    "aggregate_throughput_mb_per_sec": 78.67,
+    "baseline_architectural_wf_violations": 0
+  },
+  "per_target_audit": {
+    "x86_64-unknown-linux-gnu": {
+      "objects_audited": 312,
+      "total_object_bytes": 20779488,
+      "instructions_checked": 1507568,
+      "validation_time_ms": 211.68,
+      "throughput_mb_per_sec": 93.62,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 587,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 0,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "objects_audited": 311,
+      "total_object_bytes": 17240568,
+      "instructions_checked": 1266732,
+      "validation_time_ms": 235.86,
+      "throughput_mb_per_sec": 69.71,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 605,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 0,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "objects_audited": 408,
+      "total_object_bytes": 21839104,
+      "instructions_checked": 1361159,
+      "validation_time_ms": 179.99,
+      "throughput_mb_per_sec": 115.71,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 0,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 5,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "aarch64-apple-darwin": {
+      "objects_audited": 376,
+      "total_object_bytes": 16611224,
+      "instructions_checked": 1033409,
+      "validation_time_ms": 176.8,
+      "throughput_mb_per_sec": 89.6,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 0,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 17,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "objects_audited": 280,
+      "total_object_bytes": 12042746,
+      "instructions_checked": 839039,
+      "validation_time_ms": 232.95,
+      "throughput_mb_per_sec": 49.3,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 566,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 0,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "objects_audited": 254,
+      "total_object_bytes": 15408000,
+      "instructions_checked": 1117755,
+      "validation_time_ms": 174.59,
+      "throughput_mb_per_sec": 84.16,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 558,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 0,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "objects_audited": 279,
+      "total_object_bytes": 12472028,
+      "instructions_checked": 877601,
+      "validation_time_ms": 204.91,
+      "throughput_mb_per_sec": 58.05,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 590,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 0,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "objects_audited": 274,
+      "total_object_bytes": 11857815,
+      "instructions_checked": 707938,
+      "validation_time_ms": 137.92,
+      "throughput_mb_per_sec": 81.99,
+      "invariant_results": {
+        "wf_decode_cfg_violations": 0,
+        "wf_sp_align_16_violations": 0,
+        "wf_stack_probe_violations": 0,
+        "wf_red_zone_violations": 0,
+        "wf_vzeroupper_violations": 0,
+        "wf_vzeroupper_clean_insertions_observed": 0,
+        "wf_errata_ldp_constrained_unpredictable_violations": 0,
+        "wf_errata_skx102_unmitigated_32b_branch_crossings_in_libcore": 0,
+        "wf_errata_a53_835769_unmitigated_mem_madd_in_libcore": 5,
+        "wf_cfi_unwind_cfa_mismatches": 0,
+        "wf_reserved_regs_violations": 0
+      }
+    }
+  }
+}

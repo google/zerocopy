@@ -1,0 +1,372 @@
+{
+  "campaign_totals": {
+    "targets_tested": 8,
+    "signatures_per_target": 256,
+    "total_target_signature_compilations": 2048,
+    "total_clang_19_cross_comparisons": 1674
+  },
+  "per_target_summary": {
+    "x86_64-unknown-linux-gnu": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 218,
+      "exact_normalized_llvm_ir_matches": 89,
+      "ir_coercion_differences_register_compatible": 129,
+      "true_calling_convention_divergences": 0
+    },
+    "aarch64-unknown-linux-gnu": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 222,
+      "exact_normalized_llvm_ir_matches": 150,
+      "ir_coercion_differences_register_compatible": 72,
+      "true_calling_convention_divergences": 0
+    },
+    "i686-unknown-linux-gnu": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 179,
+      "exact_normalized_llvm_ir_matches": 52,
+      "ir_coercion_differences_register_compatible": 127,
+      "true_calling_convention_divergences": 0
+    },
+    "x86_64-pc-windows-msvc": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 216,
+      "exact_normalized_llvm_ir_matches": 72,
+      "ir_coercion_differences_register_compatible": 144,
+      "true_calling_convention_divergences": 0
+    },
+    "x86_64-pc-windows-gnu": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 218,
+      "exact_normalized_llvm_ir_matches": 73,
+      "ir_coercion_differences_register_compatible": 143,
+      "true_calling_convention_divergences": 2
+    },
+    "i686-pc-windows-msvc": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 179,
+      "exact_normalized_llvm_ir_matches": 19,
+      "ir_coercion_differences_register_compatible": 160,
+      "true_calling_convention_divergences": 0
+    },
+    "aarch64-apple-darwin": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 222,
+      "exact_normalized_llvm_ir_matches": 148,
+      "ir_coercion_differences_register_compatible": 74,
+      "true_calling_convention_divergences": 0
+    },
+    "aarch64-pc-windows-msvc": {
+      "total_procedural_signatures_compiled": 256,
+      "rustc_llvm_ir_definitions_emitted": 256,
+      "clang_19_c_equivalents_compared": 220,
+      "exact_normalized_llvm_ir_matches": 147,
+      "ir_coercion_differences_register_compatible": 73,
+      "true_calling_convention_divergences": 0
+    }
+  },
+  "live_execution_verification": {
+    "x86_64_unknown_linux_gnu_live": {
+      "rustc_llvm_caller -> rustc_llvm_1.99.1": {
+        "base_6_tests_passed": true,
+        "straddle_u128_after_output": "STRADDLE_AFTER=0x42424242",
+        "straddle_u128_matches_expected_0x42424242": true
+      },
+      "rustc_llvm_caller -> rustc_cranelift": {
+        "base_6_tests_passed": true,
+        "straddle_u128_after_output": "STRADDLE_AFTER=0x3",
+        "straddle_u128_matches_expected_0x42424242": false
+      },
+      "rustc_llvm_caller -> clang_19": {
+        "base_6_tests_passed": true,
+        "straddle_u128_after_output": "STRADDLE_AFTER=0x3",
+        "straddle_u128_matches_expected_0x42424242": false
+      },
+      "rustc_llvm_caller -> gcc_15": {
+        "base_6_tests_passed": true,
+        "straddle_u128_after_output": "STRADDLE_AFTER=0x42424242",
+        "straddle_u128_matches_expected_0x42424242": true
+      }
+    },
+    "i686_unknown_linux_gnu_live": {
+      "native_ia32_exit_code": 0,
+      "qemu_i386_exit_code": 0,
+      "cdecl_sret_pop4_fastcall_stdcall_verified": true
+    },
+    "aarch64_unknown_linux_gnu_live_qemu": {
+      "qemu_aarch64_exit_code": 0,
+      "even_reg_u128_hfa4_hfa5_packed_x8_sret_verified": true
+    }
+  },
+  "divergence_catalog": [
+    {
+      "id": "ABI-01",
+      "severity": "LIVE_CRASH_MISMATCH",
+      "targets": [
+        "x86_64-pc-windows-gnu"
+      ],
+      "signature": "extern \"C\" fn(f128) -> f128",
+      "rustc_1_99_1_behavior": "PassMode::Indirect for both return (ptr sret([16 x i8]) in %rcx) and arg (ptr align 16 in %rdx) because compiler/rustc_target/src/callconv/x86_win64.rs:30-39 only checks Primitive::Int(Integer::I128, _) for the XMM0 return rule and falls through to `a.layout.size.bytes() > 8 => a.make_indirect()`.",
+      "clang_19_gcc_behavior": "Returns fp128 in %xmm0 (and passes fp128 in %xmm0 in clang-19 -target x86_64-w64-mingw32 or via pointer in GCC).",
+      "fix_in_rustc_target": "In compiler/rustc_target/src/callconv/x86_win64.rs:30, match `Primitive::Int(Integer::I128, _) | Primitive::Float(Float::F128)` when `!cx.target_spec().is_like_msvc` for return values."
+    },
+    {
+      "id": "ABI-02",
+      "severity": "LLVM_IR_TYPE_COERCION_DIFF (Register-Compatible, Breaks IR-CFI)",
+      "targets": [
+        "x86_64-unknown-linux-gnu"
+      ],
+      "signature": "extern \"C\" fn(HfaF32x4) -> HfaF32x4 (and HfaF16x4 / MixedIntFloat)",
+      "rustc_1_99_1_behavior": "Coerces two 32-bit float pairs into `{ double, double }` (`Reg::f64()`) in `callconv/x86_64.rs:146-153`.",
+      "clang_19_gcc_behavior": "Coerces into `<2 x float>, <2 x float>` in Clang LLVM IR.",
+      "fix_in_rustc_target": "Both place the two 64-bit eightbytes in the low 64 bits of `%xmm0` and `%xmm1`; Verified `MiniMach` lowers directly to `%xmm0, %xmm1` without intermediate LLVM IR type mismatch."
+    },
+    {
+      "id": "ABI-03",
+      "severity": "LIVE_MISMATCH_ON_6TH_GPR_STRADDLE",
+      "targets": [
+        "x86_64-unknown-linux-gnu"
+      ],
+      "signature": "extern \"C\" fn(u64, u64, u64, u64, u64, u128, u64_or_Single64) -> u64",
+      "rustc_1_99_1_behavior": "When 5 GPRs (%rdi..%r8) are used and only 1 GPR (%r9) remains (`int_regs == 1`), `u128` spills to stack `8(%rsp), 16(%rsp)` AND leaves `%r9` available for the subsequent `u64` or `Single64` parameter (matching GCC 15.2.0 and System V AMD64 psABI).",
+      "clang_19_and_cranelift_behavior": "`clang-19` (LLVM 19.1.7) and `rustc_codegen_cranelift` (0.1.0) burn/exhaust `%r9` when `i128` spills to the stack, placing the subsequent `u64`/`Single64` parameter on the stack at `24(%rsp)`! Live execution of `rustc_llvm` caller -> `clang-19` or `rustc_cranelift` callee reads garbage from `24(%rsp)` instead of `%r9` (`0x42424242` in `rustc_llvm`/`gcc` vs `0x0` in `clang-19`/`cranelift`).",
+      "fix_in_rustc_target": "In `LeanFnAbiRefinement` (`B7`) and `rustc_codegen_cranelift`, do NOT zero `int_avail` when an `i128`/`u128` argument cannot fit in 1 remaining GPR (`int_avail = 1` is preserved for subsequent 8-byte INTEGER arguments, matching `rustc_llvm 1.99.1` and `gcc 15.2.0`)."
+    },
+    {
+      "id": "ABI-04",
+      "severity": "CROSS_ISA_PACKED_AGGREGATE_RULE_CONTRAST",
+      "targets": [
+        "x86_64-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "i686-unknown-linux-gnu",
+        "x86_64-pc-windows-msvc",
+        "x86_64-pc-windows-gnu",
+        "i686-pc-windows-msvc",
+        "aarch64-apple-darwin",
+        "aarch64-pc-windows-msvc"
+      ],
+      "signature": "extern \"C\" fn(Packed1Cross8) -> u64 (`#[repr(C, packed(1))] struct { u8, u64, u8 }`, 10 bytes)",
+      "rustc_1_99_1_behavior": "SysV64 & i686: `byval([10 x i8])` on stack (`x86_64.rs:64` checks `offset.is_aligned(field.align.abi)`). Win64: indirect `ptr align 1` in `%rcx`. AAPCS64 (Linux, Darwin, Windows): `Cast([2 x i64])` in `x0, x1` (`aarch64.rs:149-155` ignores internal field unalignment for composites <= 16B).",
+      "clang_19_gcc_behavior": "Matches `rustc 1.99.1` across all 8 Tier 1 targets.",
+      "fix_in_rustc_target": "Mechanized in `B7`: SysV64 requires per-field alignment check (`hasUnalignedField = false`) for register classification, whereas AAPCS64 classifies any non-HFA composite <= 16B into `[2 x i64]` regardless of packing."
+    },
+    {
+      "id": "ABI-05",
+      "severity": "DARWIN_VS_LINUX_AARCH64_ABI_DIVERGENCES",
+      "targets": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-pc-windows-msvc"
+      ],
+      "signature": "u128 register alignment, narrow integer signext/zeroext, tight stack packing, and variadic stack routing",
+      "rustc_1_99_1_behavior": "(1) `fn(u32, u128)`: Linux & WinARM64 even-align `u128` to `x2:x3` (skipping `x1`), whereas Darwin passes `u128` in `x1:x2` (unless wrapped in a 16B-aligned struct `Align16Pair`, which uses `Reg::i128()` in `x2:x3`). (2) Narrow integers (`i8`, `u8`, `i16`, `u16`): Darwin emits caller `signext`/`zeroext` to 32 bits and packs stack arguments at 1/2/4-byte alignment (`f5_darwin_tight_stack_pack` uses `ldrb`/`ldrh`/`ldr` at `[sp]`, `[sp, #2]`, `[sp, #4]`, `[sp, #8]`), whereas Linux/WinARM64 use 8-byte stack slots. (3) Variadics (`...`): Darwin passes all variadic args on the stack; WinARM64 disables FP regs and passes `f64` variadics in GPRs `x1..x7`; Linux AAPCS64 uses both `x0..x7` and `v0..v7`.",
+      "clang_19_gcc_behavior": "100% agreement between `rustc 1.99.1` and `clang-19` across all three AArch64 targets.",
+      "fix_in_rustc_target": "Mechanized in `B7`'s `AbiKind::{AAPCS, DarwinPCS, Win64}` classifier."
+    },
+    {
+      "id": "ABI-06",
+      "severity": "SIMD_VECTOR_RUST_VS_C_ABI_CONTRAST",
+      "targets": [
+        "x86_64-unknown-linux-gnu",
+        "aarch64-unknown-linux-gnu",
+        "i686-unknown-linux-gnu",
+        "x86_64-pc-windows-msvc",
+        "x86_64-pc-windows-gnu",
+        "i686-pc-windows-msvc",
+        "aarch64-apple-darwin",
+        "aarch64-pc-windows-msvc"
+      ],
+      "signature": "fn(SimdF32x4) -> SimdF32x4 and fn(SimdF32x8) -> SimdF32x8 in `extern \"Rust\"` vs `extern \"C\"`",
+      "rustc_1_99_1_behavior": "In `extern \"Rust\"`, `BackendRepr::SimdVector` is ALWAYS `PassMode::Indirect { on_stack: false }` (`ptr align 16/32` and `sret`) so callers with different `-C target-feature` sets remain ABI-compatible. In `extern \"C\"`, `SimdF32x4` passes in `xmm0`/`v0` (except Win64 `extern \"C\"` which passes 128-bit vectors by pointer in `%rcx` and returns in `%xmm0`, whereas Win64 `extern \"vectorcall\"` passes in `%xmm0`). Furthermore, array-backed `#[repr(C)] struct HvaSimd2 { a: SimdF32x4, b: SimdF32x4 }` in Rust is treated as a 32B memory aggregate (>16B `Indirect`) on AArch64 because `SimdF32x4([f32; 4])` has `FieldsShape::Array`, whereas C `struct HvaSimd2` with `__attribute__((vector_size(16)))` is classified by Clang as a 2-element HVA in `q0, q1`!",
+      "clang_19_gcc_behavior": "Clang classifies `struct HvaSimd2` (`2 x __attribute__((vector_size(16)))`) on AArch64 as `[2 x <4 x float>]` in `q0, q1`, whereas `rustc 1.99.1` classifies `HvaSimd2` containing `#[repr(simd)] struct SimdF32x4([f32; 4])` as `Indirect` (`ptr %v`, `sret` in `x8`) because `LayoutData::homogeneous_aggregate` in `compiler/rustc_abi/src/layout.rs` only recurses into `BackendRepr::SimdVector` when it is not wrapped in an array-field struct or when `Reg::vec` matches!",
+      "fix_in_rustc_target": "In `compiler/rustc_abi/src/layout.rs` (`homogeneous_aggregate`), map `BackendRepr::SimdVector { element, count }` of total size 64 or 128 bits to `HomogeneousAggregate::Homogeneous(Reg { kind: RegKind::Vector, size })` so structs of 1..4 `#[repr(simd)]` vectors match Clang's AArch64/vectorcall HVA rule."
+    },
+    {
+      "id": "ABI-07",
+      "severity": "COMPILER_SIGSEGV_ICE_IN_LLVM_23_1_1",
+      "targets": [
+        "i686-unknown-linux-gnu"
+      ],
+      "signature": "extern \"rust-cold\" fn(...) -> ... on 32-bit x86 non-Windows targets",
+      "rustc_1_99_1_behavior": "`compiler/rustc_target/src/spec/abi_map.rs:104-105` maps `ExternAbi::RustCold` to `CanonAbi::Rust` ONLY when `self.os == OsKind::Windows`, leaving `i686-unknown-linux-gnu` as `CanonAbi::RustCold`. Then `compiler/rustc_codegen_llvm/src/abi.rs:723` unconditionally lowers `CanonAbi::RustCold => llvm::PreserveMost` (`preserve_mostcc`), unlike `CanonAbi::RustPreserveNone` (`lines 724-727`) which restricts `PreserveNone` to `Arch::X86_64 | Arch::AArch64`. In LLVM 23.1.1 (`llvm/lib/Target/X86/X86RegisterInfo.cpp`), `CallingConv::PreserveMost` is only supported on 64-bit x86_64 (`!Is64Bit` hits `llvm_unreachable` / null callee-saved register list), causing `rustc +1.99.1 --target i686-unknown-linux-gnu` to die with `SIGSEGV` (`rc = -11`) in `FPPassManager::runOnFunction`!",
+      "clang_19_gcc_behavior": "Clang rejects `__attribute__((preserve_most))` on 32-bit `i686` targets in frontend target sema (`warning: 'preserve_most' calling convention is not supported for this target`).",
+      "fix_in_rustc_target": "In `compiler/rustc_target/src/spec/abi_map.rs:104-105` (and `compiler/rustc_codegen_llvm/src/abi.rs:723`), match `(ExternAbi::RustCold, ArchKind::X86_64 | ArchKind::Aarch64) if self.os != OsKind::Windows => CanonAbi::RustCold` and map all other architectures (including 32-bit `ArchKind::X86`) to `CanonAbi::Rust` (`llvm::CCallConv`)."
+    }
+  ],
+  "sampled_ir_differences": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f1_f16_pair",
+      "family": "F1_f16_f128",
+      "rustc_1_99_1_ir": "define float @f1_f16_pair(float %0) unnamed_addr",
+      "clang_19_ir": "define dso_local <2 x half> @f1_f16_pair(<2 x half> returned %0) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f1_f16_f32",
+      "family": "F1_f16_f128",
+      "rustc_1_99_1_ir": "define double @f1_f16_f32(double %0) unnamed_addr",
+      "clang_19_ir": "define dso_local <4 x half> @f1_f16_f32(<4 x half> returned %0) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f1_hfa_f16x4",
+      "family": "F1_f16_f128",
+      "rustc_1_99_1_ir": "define double @f1_hfa_f16x4(double returned %0) unnamed_addr",
+      "clang_19_ir": "define dso_local <4 x half> @f1_hfa_f16x4(<4 x half> returned %0) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_id",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i128 @f2_u128_id(i128 noundef returned %x) unnamed_addr",
+      "clang_19_ir": "define dso_local { i64, i64 } @f2_u128_id(i64 noundef %0, i64 noundef %1) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_odd_skip",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i128 @f2_u128_odd_skip(i32 noundef %a, i128 noundef %x) unnamed_addr",
+      "clang_19_ir": "define dso_local { i64, i64 } @f2_u128_odd_skip(i32 noundef %0, i64 noundef %1, i64 noundef %2) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_wrap_u128",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define { i64, i64 } @f2_wrap_u128(i32 noundef %a, { i64, i64 } returned %0) unnamed_addr",
+      "clang_19_ir": "define dso_local { i64, i64 } @f2_wrap_u128(i32 noundef %0, i64 %1, i64 %2) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_mixed_u32_u128",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i128 @f2_mixed_u32_u128(ptr noalias nofree noundef readonly byval([32 x i8]) align 16 captures(none) dereferenceable(32) %m) unnamed_addr",
+      "clang_19_ir": "define dso_local { i64, i64 } @f2_mixed_u32_u128(ptr nocapture noundef readonly byval(%struct.MixedU32U128) align 16 %0) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_1",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_1(i64 noundef %p0, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_1(i64 noundef %0, i64 noundef %1, i64 noundef %2, i32 noundef %3) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_2",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_2(i64 noundef %p0, i64 noundef %p1, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_2(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i32 noundef %4) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_3",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_3(i64 noundef %p0, i64 noundef %p1, i64 noundef %p2, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_3(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i64 noundef %4, i32 noundef %5) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_4",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_4(i64 noundef %p0, i64 noundef %p1, i64 noundef %p2, i64 noundef %p3, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_4(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i64 noundef %4, i64 noundef %5, i32 noundef %6) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_8",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_8(i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_8(i64 noundef %0, i64 noundef %1, i32 noundef %2) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_9",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_9(i64 noundef %p0, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_9(i64 noundef %0, i64 noundef %1, i64 noundef %2, i32 noundef %3) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_10",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_10(i64 noundef %p0, i64 noundef %p1, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_10(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i32 noundef %4) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_11",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_11(i64 noundef %p0, i64 noundef %p1, i64 noundef %p2, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_11(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i64 noundef %4, i32 noundef %5) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_12",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_12(i64 noundef %p0, i64 noundef %p1, i64 noundef %p2, i64 noundef %p3, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_12(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i64 noundef %4, i64 noundef %5, i32 noundef %6) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_16",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_16(i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_16(i64 noundef %0, i64 noundef %1, i32 noundef %2) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_17",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_17(i64 noundef %p0, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_17(i64 noundef %0, i64 noundef %1, i64 noundef %2, i32 noundef %3) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_18",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_18(i64 noundef %p0, i64 noundef %p1, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_18(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i32 noundef %4) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_19",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_19(i64 noundef %p0, i64 noundef %p1, i64 noundef %p2, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_19(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i64 noundef %4, i32 noundef %5) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_20",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_20(i64 noundef %p0, i64 noundef %p1, i64 noundef %p2, i64 noundef %p3, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_20(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i64 noundef %4, i64 noundef %5, i32 noundef %6) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_24",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_24(i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_24(i64 noundef %0, i64 noundef %1, i32 noundef %2) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_25",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_25(i64 noundef %p0, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_25(i64 noundef %0, i64 noundef %1, i64 noundef %2, i32 noundef %3) local_unnamed_addr"
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "function": "f2_u128_pos_26",
+      "family": "F2_i128_u128",
+      "rustc_1_99_1_ir": "define noundef i64 @f2_u128_pos_26(i64 noundef %p0, i64 noundef %p1, i128 noundef %x, i32 noundef %tail) unnamed_addr",
+      "clang_19_ir": "define dso_local noundef i64 @f2_u128_pos_26(i64 noundef %0, i64 noundef %1, i64 noundef %2, i64 noundef %3, i32 noundef %4) local_unnamed_addr"
+    }
+  ]
+}

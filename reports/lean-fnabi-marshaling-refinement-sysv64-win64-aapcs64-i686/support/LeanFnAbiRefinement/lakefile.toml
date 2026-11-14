@@ -1,0 +1,6 @@
+name = "LeanFnAbiRefinement"
+version = "0.1.0"
+defaultTargets = ["LeanFnAbiRefinement"]
+
+[[lean_lib]]
+name = "LeanFnAbiRefinement"
