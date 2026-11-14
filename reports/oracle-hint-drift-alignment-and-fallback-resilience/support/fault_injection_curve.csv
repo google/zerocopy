@@ -1,0 +1,7 @@
+corruption_rate_pct,total_hints,intact_hints,corrupted_hints_injected,unsound_derivations_emitted,compilation_completeness_pct,tier1_local_repairs,tier2_local_pass_fallbacks,tier3_whole_fn_fallbacks,composite_suite_runtime_us,ablation_kernel_runtime_us,suite_o3_speedup_retained_pct,ablation_o3_speedup_retained_pct
+0.0,242,242,0,0,100.0,0,0,0,1407.83,391.4,100.0,100.0
+10.0,242,218,24,0,100.0,3,21,0,1458.12,416.86,99.56,99.38
+25.0,242,182,60,0,100.0,5,55,0,1539.55,458.07,98.85,98.38
+50.0,242,121,121,0,100.0,12,109,0,1668.88,523.52,97.71,96.79
+75.0,242,60,182,0,100.0,10,172,0,1819.76,599.89,96.39,94.93
+100.0,242,0,242,0,100.0,27,215,0,1922.74,652.01,95.49,93.67

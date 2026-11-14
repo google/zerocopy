@@ -1,0 +1,10 @@
+kernel,unopt_us,naive_us,oracle_guided_us,native_o3_us,naive_speedup_capture_pct,oracle_speedup_capture_pct,oracle_to_native_runtime_ratio
+run_ablation_kernel,4505.94,684.74,391.4,391.7,92.88,100.01,0.9992
+k1_slice_bounds_iter,1591.74,271.21,67.66,67.28,86.62,99.98,1.0056
+k2_iter_combinators,639.49,49.59,51.06,51.06,100.25,100.0,1.0
+k3_utf8_scanner,1087.96,132.04,241.23,242.94,113.12,100.2,0.993
+k4_hash_crc_digest,1231.87,151.0,74.77,74.73,93.41,100.0,1.0005
+k5_sort_binary_search,977.52,316.01,69.11,68.99,72.81,99.99,1.0017
+k6_zerocopy_endian,1298.22,144.44,135.82,135.91,99.27,100.01,0.9993
+k7_enum_dyn_dispatch,1356.09,217.79,168.38,171.9,96.12,100.3,0.9795
+k8_simd_numeric_dot,129.35,20.58,8.4,8.39,89.92,99.99,1.0012

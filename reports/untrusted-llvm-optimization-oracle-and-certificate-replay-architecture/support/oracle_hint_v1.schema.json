@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://anneal.dev/schemas/OracleHintV1.schema.json",
+  "title": "OracleHintV1",
+  "description": "Untrusted optimization and profitability oracle schedule extracted from LLVM 23.1.1 to drive deterministic transformation replay and HybridTrace certificate emission in MiniSSA and MiniMach.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "compiler_revision",
+    "llvm_revision",
+    "target_triple",
+    "functions"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "OracleHintV1"
+    },
+    "compiler_revision": {
+      "type": "string"
+    },
+    "llvm_revision": {
+      "type": "string"
+    },
+    "target_triple": {
+      "type": "string"
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/FunctionOracleSchedule"
+      }
+    }
+  },
+  "$defs": {
+    "FunctionOracleSchedule": {
+      "type": "object",
+      "required": [
+        "function_symbol",
+        "def_path_hash",
+        "inline_hints",
+        "sroa_hints",
+        "loop_opt_hints",
+        "vectorize_hints",
+        "isel_hints",
+        "regalloc_hints"
+      ],
+      "properties": {
+        "function_symbol": { "type": "string" },
+        "def_path_hash": { "type": "string" },
+        "inline_hints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/InlineHint" }
+        },
+        "sroa_hints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SroaHint" }
+        },
+        "loop_opt_hints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/LoopOptHint" }
+        },
+        "vectorize_hints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VectorizeHint" }
+        },
+        "isel_hints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ISelHint" }
+        },
+        "regalloc_hints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/RegAllocHint" }
+        }
+      }
+    },
+    "InlineHint": {
+      "type": "object",
+      "required": [
+        "caller_symbol",
+        "callsite_ordinal",
+        "debug_loc",
+        "callee_symbol",
+        "inline_decision",
+        "cost",
+        "threshold"
+      ],
+      "properties": {
+        "caller_symbol": { "type": "string" },
+        "callsite_ordinal": { "type": "integer", "minimum": 0 },
+        "debug_loc": { "type": "string" },
+        "callee_symbol": { "type": "string" },
+        "inline_decision": { "type": "boolean" },
+        "cost": { "type": "integer" },
+        "threshold": { "type": "integer" },
+        "reason": { "type": "string" }
+      }
+    },
+    "SroaHint": {
+      "type": "object",
+      "required": ["mir_local_id", "total_bytes", "slices"],
+      "properties": {
+        "mir_local_id": { "type": "string" },
+        "total_bytes": { "type": "integer", "minimum": 1 },
+        "slices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["byte_offset", "byte_size", "scalar_ty"],
+            "properties": {
+              "byte_offset": { "type": "integer", "minimum": 0 },
+              "byte_size": { "type": "integer", "minimum": 1 },
+              "scalar_ty": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "LoopOptHint": {
+      "type": "object",
+      "required": [
+        "loop_header_anchor",
+        "licm_hoisted_insts",
+        "peel_count",
+        "unroll_factor",
+        "unroll_full",
+        "indvar_widened"
+      ],
+      "properties": {
+        "loop_header_anchor": { "type": "string" },
+        "licm_hoisted_insts": { "type": "integer", "minimum": 0 },
+        "peel_count": { "type": "integer", "minimum": 0 },
+        "unroll_factor": { "type": "integer", "minimum": 1 },
+        "unroll_full": { "type": "boolean" },
+        "indvar_widened": { "type": "boolean" }
+      }
+    },
+    "VectorizeHint": {
+      "type": "object",
+      "required": [
+        "kind",
+        "site_anchor",
+        "vectorization_factor",
+        "interleave_count",
+        "runtime_ptr_checks",
+        "scev_predicates",
+        "reduction_kind",
+        "slp_tree_lanes"
+      ],
+      "properties": {
+        "kind": { "type": "string", "enum": ["LoopVectorize", "SLPVectorizer"] },
+        "site_anchor": { "type": "string" },
+        "vectorization_factor": { "type": "integer", "minimum": 1 },
+        "interleave_count": { "type": "integer", "minimum": 1 },
+        "runtime_ptr_checks": { "type": "integer", "minimum": 0 },
+        "scev_predicates": { "type": "integer", "minimum": 0 },
+        "reduction_kind": { "type": "string" },
+        "slp_tree_lanes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "ISelHint": {
+      "type": "object",
+      "required": ["addressing_modes_sib", "combined_target_idioms"],
+      "properties": {
+        "addressing_modes_sib": { "type": "integer", "minimum": 0 },
+        "combined_target_idioms": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "RegAllocHint": {
+      "type": "object",
+      "required": [
+        "callee_saved_gprs",
+        "stack_frame_bytes",
+        "spill_slot_count",
+        "coalesced_copies",
+        "block_layout_order"
+      ],
+      "properties": {
+        "callee_saved_gprs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "stack_frame_bytes": { "type": "integer", "minimum": 0 },
+        "spill_slot_count": { "type": "integer", "minimum": 0 },
+        "coalesced_copies": { "type": "integer", "minimum": 0 },
+        "block_layout_order": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

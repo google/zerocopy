@@ -1,0 +1,158 @@
+{
+  "baseline_o3_compile_ms": 80.63,
+  "channels": {
+    "Channel_A_YAML_Remarks": {
+      "extraction_wall_ms": 83.28,
+      "overhead_over_base_ms": 2.64,
+      "overhead_pct": 3.28,
+      "raw_payload_bytes": 226205,
+      "bytes_per_function": 17400.4,
+      "llvm_cpp_loc": 0,
+      "pass_group_decision_coverage_pct": {
+        "G1_Inlining": 100.0,
+        "G2_SROA_EarlyCSE": 18.5,
+        "G3_InstCombine_Peephole": 0.0,
+        "G4_CFG_Simplify": 25.0,
+        "G7_LoopCanon_LICM": 83.3,
+        "G8_LoopUnroll": 100.0,
+        "G9_Vectorization": 91.7,
+        "RAGreedy_RegAlloc": 33.3
+      },
+      "overall_decision_coverage_pct": 56.5
+    },
+    "Channel_B_Pass_Boundary_IR_Snapshots": {
+      "extraction_wall_ms": 1676.88,
+      "overhead_over_base_ms": 1596.24,
+      "overhead_pct": 1979.62,
+      "raw_payload_bytes": 8109678,
+      "bytes_per_function": 623821.4,
+      "llvm_cpp_loc": 0,
+      "pass_group_decision_coverage_pct": {
+        "G1_Inlining": 100.0,
+        "G2_SROA_EarlyCSE": 100.0,
+        "G3_InstCombine_Peephole": 85.0,
+        "G4_CFG_Simplify": 100.0,
+        "G7_LoopCanon_LICM": 95.0,
+        "G8_LoopUnroll": 100.0,
+        "G9_Vectorization": 100.0,
+        "RAGreedy_RegAlloc": 95.0
+      },
+      "overall_decision_coverage_pct": 96.9
+    },
+    "Channel_C_ReadOnly_PassInstrumentation_Plugin": {
+      "extraction_wall_ms": 85.43,
+      "overhead_over_base_ms": 4.8,
+      "overhead_pct": 5.95,
+      "raw_payload_bytes": 26866,
+      "compressed_binary_bytes": 2171,
+      "bytes_per_function_raw": 2066.6,
+      "bytes_per_function_compressed": 167.0,
+      "llvm_cpp_loc": 740,
+      "pass_group_decision_coverage_pct": {
+        "G1_Inlining": 100.0,
+        "G2_SROA_EarlyCSE": 100.0,
+        "G3_InstCombine_Peephole": 100.0,
+        "G4_CFG_Simplify": 100.0,
+        "G7_LoopCanon_LICM": 100.0,
+        "G8_LoopUnroll": 100.0,
+        "G9_Vectorization": 100.0,
+        "RAGreedy_RegAlloc": 100.0
+      },
+      "overall_decision_coverage_pct": 100.0
+    },
+    "Channel_D_Hybrid_YAML_Plus_Targeted_SROA_RegAlloc_Inspector": {
+      "extraction_wall_ms": 107.73,
+      "overhead_over_base_ms": 27.1,
+      "overhead_pct": 33.6,
+      "raw_payload_bytes": 26866,
+      "compressed_binary_bytes": 2171,
+      "bytes_per_function_raw": 2066.6,
+      "bytes_per_function_compressed": 167.0,
+      "llvm_cpp_loc": 310,
+      "pass_group_decision_coverage_pct": {
+        "G1_Inlining": 100.0,
+        "G2_SROA_EarlyCSE": 100.0,
+        "G3_InstCombine_Peephole": 92.5,
+        "G4_CFG_Simplify": 100.0,
+        "G7_LoopCanon_LICM": 100.0,
+        "G8_LoopUnroll": 100.0,
+        "G9_Vectorization": 100.0,
+        "RAGreedy_RegAlloc": 100.0
+      },
+      "overall_decision_coverage_pct": 99.1
+    }
+  },
+  "remark_pass_inventory": {
+    "size-info": {
+      "Passed": 0,
+      "Missed": 0,
+      "Analysis": 120
+    },
+    "prolog-epilog": {
+      "Passed": 0,
+      "Missed": 0,
+      "Analysis": 14
+    },
+    "stack-frame-layout": {
+      "Passed": 0,
+      "Missed": 0,
+      "Analysis": 14
+    },
+    "asm-printer": {
+      "Passed": 0,
+      "Missed": 0,
+      "Analysis": 74
+    },
+    "regalloc": {
+      "Passed": 0,
+      "Missed": 12,
+      "Analysis": 0
+    },
+    "inline": {
+      "Passed": 17,
+      "Missed": 11,
+      "Analysis": 0
+    },
+    "dfa-jump-threading": {
+      "Passed": 0,
+      "Missed": 3,
+      "Analysis": 0
+    },
+    "argpromotion": {
+      "Passed": 4,
+      "Missed": 0,
+      "Analysis": 0
+    },
+    "licm": {
+      "Passed": 3,
+      "Missed": 0,
+      "Analysis": 0
+    },
+    "TTI": {
+      "Passed": 2,
+      "Missed": 0,
+      "Analysis": 0
+    },
+    "loop-unroll": {
+      "Passed": 3,
+      "Missed": 0,
+      "Analysis": 0
+    },
+    "loop-interchange": {
+      "Passed": 0,
+      "Missed": 5,
+      "Analysis": 0
+    },
+    "loop-vectorize": {
+      "Passed": 3,
+      "Missed": 2,
+      "Analysis": 11
+    },
+    "slp-vectorizer": {
+      "Passed": 0,
+      "Missed": 32,
+      "Analysis": 0
+    }
+  },
+  "total_remarks_emitted": 330
+}

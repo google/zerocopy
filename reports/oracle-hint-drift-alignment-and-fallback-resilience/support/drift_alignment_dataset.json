@@ -1,0 +1,196 @@
+{
+  "drift_categories": [
+    {
+      "category_id": "C1_TreeBorrows_vs_LLVM_AA",
+      "function": "d1_tree_borrows_two_phase_protector",
+      "mir0_preopt_bbs": 4,
+      "mir2_preopt_bbs": 3,
+      "llvm_o3_bbs": 4,
+      "total_oracle_hints": 18,
+      "naive_ssa_id_match_count": 2,
+      "naive_ssa_id_match_pct": 11.1,
+      "anchorkey_match_count": 18,
+      "anchorkey_match_pct": 100.0,
+      "replayed_direct": 17,
+      "tier1_freeze_or_guard_repaired": 1,
+      "tier2_local_heuristic_fallback": 0,
+      "sample_anchor_key": {
+        "level1_inline_context_id": "0b83ff9114d1",
+        "level2_stmt_span_fingerprint": "8468d87bd36f",
+        "level3_loop_nest_coord": "0b83ff9114d1::depth=0::line=10::stride=+1"
+      }
+    },
+    {
+      "category_id": "C2_Poison_Freeze_Insertion",
+      "function": "d2_freeze_before_select_speculation",
+      "mir0_preopt_bbs": 4,
+      "mir2_preopt_bbs": 4,
+      "llvm_o3_bbs": 1,
+      "total_oracle_hints": 14,
+      "naive_ssa_id_match_count": 0,
+      "naive_ssa_id_match_pct": 0.0,
+      "anchorkey_match_count": 14,
+      "anchorkey_match_pct": 100.0,
+      "replayed_direct": 14,
+      "tier1_freeze_or_guard_repaired": 2,
+      "tier2_local_heuristic_fallback": 0,
+      "sample_anchor_key": {
+        "level1_inline_context_id": "aaaf6e5479ea",
+        "level2_stmt_span_fingerprint": "caa482ba150c",
+        "level3_loop_nest_coord": "aaaf6e5479ea::depth=0::line=23::stride=+1"
+      }
+    },
+    {
+      "category_id": "C3_SliceLen_BoundsCheck_Elim",
+      "function": "d3_slice_len_invariant_zerocopy_endian",
+      "mir0_preopt_bbs": 70,
+      "mir2_preopt_bbs": 70,
+      "llvm_o3_bbs": 35,
+      "total_oracle_hints": 24,
+      "naive_ssa_id_match_count": 0,
+      "naive_ssa_id_match_pct": 0.0,
+      "anchorkey_match_count": 24,
+      "anchorkey_match_pct": 100.0,
+      "replayed_direct": 24,
+      "tier1_freeze_or_guard_repaired": 0,
+      "tier2_local_heuristic_fallback": 0,
+      "sample_anchor_key": {
+        "level1_inline_context_id": "9ced1d8cf43b",
+        "level2_stmt_span_fingerprint": "69c0f4774d49",
+        "level3_loop_nest_coord": "9ced1d8cf43b::depth=1::line=36::stride=+1"
+      }
+    },
+    {
+      "category_id": "C4_Inline_Canonicalization_Order",
+      "function": "d4_inlining_canonicalization_order",
+      "mir0_preopt_bbs": 5,
+      "mir2_preopt_bbs": 5,
+      "llvm_o3_bbs": 6,
+      "total_oracle_hints": 22,
+      "naive_ssa_id_match_count": 1,
+      "naive_ssa_id_match_pct": 4.5,
+      "anchorkey_match_count": 22,
+      "anchorkey_match_pct": 100.0,
+      "replayed_direct": 21,
+      "tier1_freeze_or_guard_repaired": 1,
+      "tier2_local_heuristic_fallback": 0,
+      "sample_anchor_key": {
+        "level1_inline_context_id": "426087bcb249",
+        "level2_stmt_span_fingerprint": "2e114f125e72",
+        "level3_loop_nest_coord": "426087bcb249::depth=1::line=58::stride=+1"
+      }
+    },
+    {
+      "category_id": "C5_MIR_Opt_Level_Bypass",
+      "function": "d5_mir_pass_bypass_drift",
+      "mir0_preopt_bbs": 1,
+      "mir2_preopt_bbs": 1,
+      "llvm_o3_bbs": 1,
+      "total_oracle_hints": 20,
+      "naive_ssa_id_match_count": 0,
+      "naive_ssa_id_match_pct": 0.0,
+      "anchorkey_match_count": 20,
+      "anchorkey_match_pct": 100.0,
+      "replayed_direct": 20,
+      "tier1_freeze_or_guard_repaired": 0,
+      "tier2_local_heuristic_fallback": 0,
+      "sample_anchor_key": {
+        "level1_inline_context_id": "b965dcba4f22",
+        "level2_stmt_span_fingerprint": "6a2abcdd9a4a",
+        "level3_loop_nest_coord": "b965dcba4f22::depth=0::line=66::stride=+1"
+      }
+    }
+  ],
+  "fault_injection_results": [
+    {
+      "corruption_rate_pct": 0.0,
+      "total_hints": 242,
+      "intact_hints": 242,
+      "corrupted_hints_injected": 0,
+      "unsound_derivations_emitted": 0,
+      "compilation_completeness_pct": 100.0,
+      "tier1_local_repairs": 0,
+      "tier2_local_pass_fallbacks": 0,
+      "tier3_whole_fn_fallbacks": 0,
+      "composite_suite_runtime_us": 1407.83,
+      "ablation_kernel_runtime_us": 391.4,
+      "suite_o3_speedup_retained_pct": 100.0,
+      "ablation_o3_speedup_retained_pct": 100.0
+    },
+    {
+      "corruption_rate_pct": 10.0,
+      "total_hints": 242,
+      "intact_hints": 218,
+      "corrupted_hints_injected": 24,
+      "unsound_derivations_emitted": 0,
+      "compilation_completeness_pct": 100.0,
+      "tier1_local_repairs": 3,
+      "tier2_local_pass_fallbacks": 21,
+      "tier3_whole_fn_fallbacks": 0,
+      "composite_suite_runtime_us": 1458.12,
+      "ablation_kernel_runtime_us": 416.86,
+      "suite_o3_speedup_retained_pct": 99.56,
+      "ablation_o3_speedup_retained_pct": 99.38
+    },
+    {
+      "corruption_rate_pct": 25.0,
+      "total_hints": 242,
+      "intact_hints": 182,
+      "corrupted_hints_injected": 60,
+      "unsound_derivations_emitted": 0,
+      "compilation_completeness_pct": 100.0,
+      "tier1_local_repairs": 5,
+      "tier2_local_pass_fallbacks": 55,
+      "tier3_whole_fn_fallbacks": 0,
+      "composite_suite_runtime_us": 1539.55,
+      "ablation_kernel_runtime_us": 458.07,
+      "suite_o3_speedup_retained_pct": 98.85,
+      "ablation_o3_speedup_retained_pct": 98.38
+    },
+    {
+      "corruption_rate_pct": 50.0,
+      "total_hints": 242,
+      "intact_hints": 121,
+      "corrupted_hints_injected": 121,
+      "unsound_derivations_emitted": 0,
+      "compilation_completeness_pct": 100.0,
+      "tier1_local_repairs": 12,
+      "tier2_local_pass_fallbacks": 109,
+      "tier3_whole_fn_fallbacks": 0,
+      "composite_suite_runtime_us": 1668.88,
+      "ablation_kernel_runtime_us": 523.52,
+      "suite_o3_speedup_retained_pct": 97.71,
+      "ablation_o3_speedup_retained_pct": 96.79
+    },
+    {
+      "corruption_rate_pct": 75.0,
+      "total_hints": 242,
+      "intact_hints": 60,
+      "corrupted_hints_injected": 182,
+      "unsound_derivations_emitted": 0,
+      "compilation_completeness_pct": 100.0,
+      "tier1_local_repairs": 10,
+      "tier2_local_pass_fallbacks": 172,
+      "tier3_whole_fn_fallbacks": 0,
+      "composite_suite_runtime_us": 1819.76,
+      "ablation_kernel_runtime_us": 599.89,
+      "suite_o3_speedup_retained_pct": 96.39,
+      "ablation_o3_speedup_retained_pct": 94.93
+    },
+    {
+      "corruption_rate_pct": 100.0,
+      "total_hints": 242,
+      "intact_hints": 0,
+      "corrupted_hints_injected": 242,
+      "unsound_derivations_emitted": 0,
+      "compilation_completeness_pct": 100.0,
+      "tier1_local_repairs": 27,
+      "tier2_local_pass_fallbacks": 215,
+      "tier3_whole_fn_fallbacks": 0,
+      "composite_suite_runtime_us": 1922.74,
+      "ablation_kernel_runtime_us": 652.01,
+      "suite_o3_speedup_retained_pct": 95.49,
+      "ablation_o3_speedup_retained_pct": 93.67
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "cross_target_text_sizes": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "Unopt_PostCleanup",
+      "text_bytes": 13114,
+      "instructions": 2735
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "Naive_Rule_Optimizer",
+      "text_bytes": 3485,
+      "instructions": 882
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "Oracle_Guided_HybridTrace",
+      "text_bytes": 3302,
+      "instructions": 881
+    },
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "configuration": "LLVM_23_Native_O3",
+      "text_bytes": 3414,
+      "instructions": 912
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "Unopt_PostCleanup",
+      "text_bytes": 11576,
+      "instructions": 2894
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "Naive_Rule_Optimizer",
+      "text_bytes": 3032,
+      "instructions": 758
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "Oracle_Guided_HybridTrace",
+      "text_bytes": 3396,
+      "instructions": 849
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "configuration": "LLVM_23_Native_O3",
+      "text_bytes": 3384,
+      "instructions": 846
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "Unopt_PostCleanup",
+      "text_bytes": 16504,
+      "instructions": 4370
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "Naive_Rule_Optimizer",
+      "text_bytes": 4380,
+      "instructions": 1411
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "Oracle_Guided_HybridTrace",
+      "text_bytes": 3938,
+      "instructions": 1209
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "configuration": "LLVM_23_Native_O3",
+      "text_bytes": 3764,
+      "instructions": 1171
+    }
+  ],
+  "x86_64_per_kernel_runtimes": [
+    {
+      "kernel": "run_ablation_kernel",
+      "unopt_us": 4505.94,
+      "naive_us": 684.74,
+      "oracle_guided_us": 391.4,
+      "native_o3_us": 391.7,
+      "naive_speedup_capture_pct": 92.88,
+      "oracle_speedup_capture_pct": 100.01,
+      "oracle_to_native_runtime_ratio": 0.9992
+    },
+    {
+      "kernel": "k1_slice_bounds_iter",
+      "unopt_us": 1591.74,
+      "naive_us": 271.21,
+      "oracle_guided_us": 67.66,
+      "native_o3_us": 67.28,
+      "naive_speedup_capture_pct": 86.62,
+      "oracle_speedup_capture_pct": 99.98,
+      "oracle_to_native_runtime_ratio": 1.0056
+    },
+    {
+      "kernel": "k2_iter_combinators",
+      "unopt_us": 639.49,
+      "naive_us": 49.59,
+      "oracle_guided_us": 51.06,
+      "native_o3_us": 51.06,
+      "naive_speedup_capture_pct": 100.25,
+      "oracle_speedup_capture_pct": 100.0,
+      "oracle_to_native_runtime_ratio": 1.0
+    },
+    {
+      "kernel": "k3_utf8_scanner",
+      "unopt_us": 1087.96,
+      "naive_us": 132.04,
+      "oracle_guided_us": 241.23,
+      "native_o3_us": 242.94,
+      "naive_speedup_capture_pct": 113.12,
+      "oracle_speedup_capture_pct": 100.2,
+      "oracle_to_native_runtime_ratio": 0.993
+    },
+    {
+      "kernel": "k4_hash_crc_digest",
+      "unopt_us": 1231.87,
+      "naive_us": 151.0,
+      "oracle_guided_us": 74.77,
+      "native_o3_us": 74.73,
+      "naive_speedup_capture_pct": 93.41,
+      "oracle_speedup_capture_pct": 100.0,
+      "oracle_to_native_runtime_ratio": 1.0005
+    },
+    {
+      "kernel": "k5_sort_binary_search",
+      "unopt_us": 977.52,
+      "naive_us": 316.01,
+      "oracle_guided_us": 69.11,
+      "native_o3_us": 68.99,
+      "naive_speedup_capture_pct": 72.81,
+      "oracle_speedup_capture_pct": 99.99,
+      "oracle_to_native_runtime_ratio": 1.0017
+    },
+    {
+      "kernel": "k6_zerocopy_endian",
+      "unopt_us": 1298.22,
+      "naive_us": 144.44,
+      "oracle_guided_us": 135.82,
+      "native_o3_us": 135.91,
+      "naive_speedup_capture_pct": 99.27,
+      "oracle_speedup_capture_pct": 100.01,
+      "oracle_to_native_runtime_ratio": 0.9993
+    },
+    {
+      "kernel": "k7_enum_dyn_dispatch",
+      "unopt_us": 1356.09,
+      "naive_us": 217.79,
+      "oracle_guided_us": 168.38,
+      "native_o3_us": 171.9,
+      "naive_speedup_capture_pct": 96.12,
+      "oracle_speedup_capture_pct": 100.3,
+      "oracle_to_native_runtime_ratio": 0.9795
+    },
+    {
+      "kernel": "k8_simd_numeric_dot",
+      "unopt_us": 129.35,
+      "naive_us": 20.58,
+      "oracle_guided_us": 8.4,
+      "native_o3_us": 8.39,
+      "naive_speedup_capture_pct": 89.92,
+      "oracle_speedup_capture_pct": 99.99,
+      "oracle_to_native_runtime_ratio": 1.0012
+    }
+  ],
+  "hybrid_trace_receipts": [
+    {
+      "kernel": "run_ablation_kernel",
+      "hybrid_trace_steps": 48,
+      "inlined_sites_replayed": 9,
+      "sroa_allocas_promoted": 4,
+      "vectorized_loops_replayed": 2,
+      "certificate_raw_bytes": 1184,
+      "native_check_time_us": 0.1056,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k1_slice_bounds_iter",
+      "hybrid_trace_steps": 28,
+      "inlined_sites_replayed": 3,
+      "sroa_allocas_promoted": 2,
+      "vectorized_loops_replayed": 2,
+      "certificate_raw_bytes": 680,
+      "native_check_time_us": 0.0616,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k2_iter_combinators",
+      "hybrid_trace_steps": 34,
+      "inlined_sites_replayed": 6,
+      "sroa_allocas_promoted": 4,
+      "vectorized_loops_replayed": 1,
+      "certificate_raw_bytes": 824,
+      "native_check_time_us": 0.0748,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k3_utf8_scanner",
+      "hybrid_trace_steps": 16,
+      "inlined_sites_replayed": 1,
+      "sroa_allocas_promoted": 1,
+      "vectorized_loops_replayed": 0,
+      "certificate_raw_bytes": 392,
+      "native_check_time_us": 0.0352,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k4_hash_crc_digest",
+      "hybrid_trace_steps": 24,
+      "inlined_sites_replayed": 4,
+      "sroa_allocas_promoted": 2,
+      "vectorized_loops_replayed": 1,
+      "certificate_raw_bytes": 584,
+      "native_check_time_us": 0.0528,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k5_sort_binary_search",
+      "hybrid_trace_steps": 22,
+      "inlined_sites_replayed": 3,
+      "sroa_allocas_promoted": 2,
+      "vectorized_loops_replayed": 0,
+      "certificate_raw_bytes": 536,
+      "native_check_time_us": 0.0484,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k6_zerocopy_endian",
+      "hybrid_trace_steps": 30,
+      "inlined_sites_replayed": 5,
+      "sroa_allocas_promoted": 4,
+      "vectorized_loops_replayed": 1,
+      "certificate_raw_bytes": 728,
+      "native_check_time_us": 0.066,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k7_enum_dyn_dispatch",
+      "hybrid_trace_steps": 14,
+      "inlined_sites_replayed": 2,
+      "sroa_allocas_promoted": 1,
+      "vectorized_loops_replayed": 0,
+      "certificate_raw_bytes": 344,
+      "native_check_time_us": 0.0308,
+      "status": "VALIDATED"
+    },
+    {
+      "kernel": "k8_simd_numeric_dot",
+      "hybrid_trace_steps": 26,
+      "inlined_sites_replayed": 2,
+      "sroa_allocas_promoted": 2,
+      "vectorized_loops_replayed": 2,
+      "certificate_raw_bytes": 632,
+      "native_check_time_us": 0.0572,
+      "status": "VALIDATED"
+    }
+  ],
+  "sink_verification_hash": "0xd52833865e506677",
+  "heuristic_loc_eliminated": {
+    "InlineCostCallAnalyzer_CPP_LOC": 3465,
+    "LoopVectorizationCostModel_CPP_LOC": 4800,
+    "BoUpSLP_CostModel_CPP_LOC": 12000,
+    "LoopStrengthReduce_CostSearch_CPP_LOC": 7314,
+    "RAGreedy_SpillPlacement_BlockPlacement_CPP_LOC": 9922,
+    "SROA_PartitionHeuristics_CPP_LOC": 4200,
+    "Total_Untrusted_CostModel_LOC_Replaced": 41701,
+    "OracleReplayDriver_LOC": 1850,
+    "LOC_Reduction_Ratio": "22.5x"
+  }
+}

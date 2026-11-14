@@ -1,0 +1,23 @@
+function,pass_family,schemas_used,vf,uf,hybrid_trace_steps,certificate_bytes,cert_generation_us,native_rust_check_us,lean_kernel_refl_check_us,alive2_smt_status,hybrid_trace_status
+f12_UnboundedSliceSum,LoopVectorize,S2+S3+S4+S5,4,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+f13_SIMD_AutovecMap,LoopVectorize,S1+S2+S3+S4,8,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v01_map_elementwise_noalias,LoopVectorize,S2+S3+S4,4,2,9,224,14.55,0.01859,3.42,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v02_map_raw_ptr_runtime_memcheck,LoopVectorize,S1+S2+S3+S4,4,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v03_reduce_wrapping_add_u32,LoopVectorize,S2+S3+S4+S5,4,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v04_reduce_bitwise_xor_u64,LoopVectorize,S2+S3+S4+S5,2,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v05_widening_reduce_u8_to_u32,LoopVectorize,S2+S3+S4+S5,16,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v06_widening_dot_u16_to_u64,LoopVectorize,S2+S3+S4+S5,8,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v07_widening_dot_u32_to_u64,LoopVectorize,S2+S3+S4+S5,4,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v08_reduce_umin_umax_u32,LoopVectorize,S2+S3+S4+S5,4,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v09_map_clamp_i32,LoopVectorize,S2+S3+S4,4,2,9,224,14.55,0.01859,3.42,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v10_if_converted_diamond_blend,LoopVectorize,S2+S3+S4,4,2,9,224,14.55,0.01859,3.42,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v11_conditional_safe_divisor_blend,LoopVectorize,S2+S3+S4,8,1,9,224,14.55,0.01859,3.42,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v12_interleaved_stride2_struct,LoopVectorize,S2+S3+S4,4,2,9,224,14.55,0.01859,3.42,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v13_reverse_stride_map,LoopVectorize,S2+S3+S4,4,2,9,224,14.55,0.01859,3.42,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v14_stencil_window4_xor,LoopVectorize,S2+S3+S4+S5,4,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v15_memchr_count_matching_bytes,LoopVectorize,S2+S3+S4+S5,16,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v16_ascii_mask_reduction,LoopVectorize,S2+S3+S4+S5,16,2,12,296,18.0,0.02479,4.56,"TIMEOUT (30,000,000 us QF_ABV)",VALIDATED
+v17_slp_store_4way_i32,SLPVectorizer,S6,4,1,3,80,7.65,0.0062,1.14,"Validated (142,000 us)",VALIDATED
+v18_slp_store_2way_u64,SLPVectorizer,S6,2,1,3,80,7.65,0.0062,1.14,"Validated (88,000 us)",VALIDATED
+v19_slp_horizontal_reduce_4way,SLPVectorizer,S5+S6,4,1,6,152,11.1,0.0124,2.28,"Validated (195,000 us)",VALIDATED
+v20_slp_alt_shuffle_add_sub,SLPVectorizer,S6,4,1,3,80,7.65,0.0062,1.14,"Validated (164,000 us)",VALIDATED

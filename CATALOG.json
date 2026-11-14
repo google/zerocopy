@@ -12587,6 +12587,43 @@
         "lean/tactics"
       ]
     },
+    "hybridtrace-vectorization-slp-and-loop-certificate-library": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "llvm",
+        "rust",
+        "smt",
+        "verification"
+      ]
+    },
     "in-kernel-side-channel-certificates-and-speculative-ct-2018-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -16894,6 +16931,33 @@
         "compilers"
       ]
     },
+    "llvm-oracle-guided-minissa-minimach-replay-prototype-and-parity": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "rustc",
+        "verification"
+      ]
+    },
     "llvm-pass-ablation-speed-and-size-on-rust-code": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -18974,6 +19038,34 @@
         "isa/elf-relocations",
         "lean/mechanization",
         "verification/refinement"
+      ]
+    },
+    "oracle-hint-drift-alignment-and-fallback-resilience": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "rust",
+        "rustc",
+        "verification"
       ]
     },
     "os-syscall-interfaces-asynchronous-signals-and-environment-models": {
@@ -21900,6 +21992,36 @@
         "rust/calling-conventions",
         "rust/layout",
         "rustc/intrinsics"
+      ]
+    },
+    "rust-llvm-o3-loop-and-slp-vectorization-idiom-census": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "isa/aarch64",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rustc",
+        "verification"
       ]
     },
     "rust-normative-authority-map-and-rustc-deviations": {
@@ -27846,6 +27968,33 @@
         "lean/mechanization",
         "verification/program-verification",
         "verification/separation-logic"
+      ]
+    },
+    "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and LLVM wrapper"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 bundled LLVM 23.1.1 submodule"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "llvm",
+        "rustc",
+        "verification"
       ]
     },
     "untrusted-proof-dependencies-effect-isolation-and-guarantee-verification": {
