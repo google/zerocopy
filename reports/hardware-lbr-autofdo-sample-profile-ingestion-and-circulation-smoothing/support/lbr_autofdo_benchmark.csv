@@ -1,0 +1,6 @@
+mutation,nopgo_baseline_us,llvm_sample_use_us,llvm_sample_use_speedup_pct,llvm_retained_pgo_gain_pct,anneal_profgen_smoothed_us,anneal_profgen_speedup_pct,anneal_retained_pgo_gain_pct,anneal_site_survival_pct,polarity_flips_unflipped,mechanism
+M0_Baseline_Unmodified,224.39,48.6,78.34,99.6,47.77,78.71,100.0,100.0,7,Exact DWARF line offsets & mangled symbol match
+M1_InsertEarlyReturnShiftLineOffsets,224.39,239.53,-6.75,-8.6,48.65,78.32,99.5,100.0,7,"Early-return shifts DWARF line offsets by +4 lines (`4->8`, `8->12`), misassociating LLVM sample weights"
+M2_NegateBranchConditionAndSwapArms,224.39,207.23,7.65,9.7,48.66,78.32,99.5,100.0,9,Line-offset profile assigns cold line 4 weight (400) to hot `!= 0` arm; `anneal-profgen` un-flips 2 polarities
+M3_ExtractInlinedHelperChangeInlineStack,224.39,207.67,7.45,9.5,48.64,78.32,99.5,100.0,7,Inline-stack attribution in `.anneal_site_map` maps LBR samples to both caller spine and callee `CanonicalItemKey`
+M4_CrateMetadataDrift,224.39,193.93,13.58,17.3,47.79,78.7,100.0,100.0,7,"Changing `-C metadata` alters `_RNvCs<hash>_`, causing 100% symbol miss in `-Z profile-sample-use`"

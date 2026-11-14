@@ -10278,6 +10278,61 @@
         "verification"
       ]
     },
+    "cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal MIR and Lean 4 verification toolchain"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/devirtualization",
+        "compilers/open-world-lto",
+        "compilers/symbol-visibility",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/dynamic-linking-and-devirtualization",
+        "compilers/verified-rustc/normal-compilation",
+        "compilers/vtable-uniqueness",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/cdylib",
+        "rustc/codegen",
+        "rustc/dylib",
+        "verification"
+      ]
+    },
     "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -12943,6 +12998,64 @@
         "rustc",
         "verification",
         "verification/isa-coverage"
+      ]
+    },
+    "hardware-lbr-autofdo-sample-profile-ingestion-and-circulation-smoothing": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal MIR and Lean 4 verification toolchain"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/anneal-profgen",
+        "compilers",
+        "compilers/autofdo",
+        "compilers/min-cost-circulation",
+        "compilers/polarity-safety",
+        "compilers/sample-pgo",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/normal-compilation",
+        "compilers/verified-rustc/profile-guided-optimization",
+        "isa",
+        "isa/arm-spe",
+        "isa/hardware-lbr",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification"
       ]
     },
     "hybrid-functional-spatial-and-plan-guided-shallow-translation-in-lean4": {
@@ -28849,6 +28962,62 @@
         "verification"
       ]
     },
+    "tarjan-scc-fixpoint-summary-certificates-for-mutually-recursive-thinlto": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal MIR and Lean 4 verification toolchain"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/fixpoint-certificates",
+        "compilers/mutual-recursion",
+        "compilers/nounwind",
+        "compilers/readonly",
+        "compilers/tarjan-scc",
+        "compilers/thinlto",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/interprocedural-lto-summaries",
+        "compilers/verified-rustc/normal-compilation",
+        "compilers/willreturn",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "tier1-atomics-and-fences-instruction-lowering": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -29920,6 +30089,63 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal MIR and Lean 4 verification toolchain"
+        }
+      ],
+      "topics": [
+        "build",
+        "compilers",
+        "compilers/comdat-dedup",
+        "compilers/dead-code-pruning",
+        "compilers/import-budgeting",
+        "compilers/liveclosed",
+        "compilers/monomorphization",
+        "compilers/proof-caching",
+        "compilers/thinlto",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/normal-compilation",
+        "compilers/verified-rustc/thinlto-scaling-and-pruning",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "verification"
       ]
     },
     "type-validity-seeded-range-and-farkas-bounds-check-elimination": {

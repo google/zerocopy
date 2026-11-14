@@ -1,0 +1,70 @@
+{
+  "subject_rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "subject_llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "workspace_crates": [
+    "core_bytes",
+    "zerocopy_layout",
+    "codec_generic",
+    "app_bin"
+  ],
+  "app_bin_cgu_count": 16,
+  "post_inline_surviving_llvm_defs_in_app_bin": 39,
+  "nolto_16cgu_text_bytes": 362499,
+  "thinlto_16cgu_text_bytes": 344838,
+  "nolto_runtime_us": 68.67,
+  "thinlto_runtime_us": 69.47,
+  "configurations": [
+    {
+      "configuration": "C1_Baseline_Naive_PerCGU_Full_Verification",
+      "minissa_fns_processed": 168,
+      "minimach_fns_codegen_and_checked": 168,
+      "minimach_reduction_pct": 0.0,
+      "hybridtrace_cert_bytes": 248640,
+      "cert_size_reduction_pct": 0.0,
+      "verification_wall_clock_ms": 41.16,
+      "verification_speedup_ratio": 1.0,
+      "orphaned_comdat_link_errors": 0,
+      "binary_text_bytes": 344838,
+      "runtime_median_us": 69.47
+    },
+    {
+      "configuration": "C2_Phase1_COMDAT_PrimaryOwner_Dedup_Only",
+      "minissa_fns_processed": 112,
+      "minimach_fns_codegen_and_checked": 112,
+      "minimach_reduction_pct": 33.33,
+      "hybridtrace_cert_bytes": 165760,
+      "cert_size_reduction_pct": 33.33,
+      "verification_wall_clock_ms": 27.44,
+      "verification_speedup_ratio": 1.5,
+      "orphaned_comdat_link_errors": 0,
+      "binary_text_bytes": 344838,
+      "runtime_median_us": 69.47
+    },
+    {
+      "configuration": "C3_Phase2_PostInline_LiveClosed_Pruning_Only",
+      "minissa_fns_processed": 168,
+      "minimach_fns_codegen_and_checked": 88,
+      "minimach_reduction_pct": 47.62,
+      "hybridtrace_cert_bytes": 147040,
+      "cert_size_reduction_pct": 40.86,
+      "verification_wall_clock_ms": 24.12,
+      "verification_speedup_ratio": 1.71,
+      "orphaned_comdat_link_errors": 0,
+      "binary_text_bytes": 344838,
+      "runtime_median_us": 69.47
+    },
+    {
+      "configuration": "C4_Full_TwoPhase_Budgeted_ComdatDedup_PostInlineLiveClosed",
+      "minissa_fns_processed": 96,
+      "minimach_fns_codegen_and_checked": 26,
+      "minimach_reduction_pct": 84.52,
+      "hybridtrace_cert_bytes": 53180,
+      "cert_size_reduction_pct": 78.61,
+      "verification_wall_clock_ms": 8.61,
+      "verification_speedup_ratio": 4.78,
+      "orphaned_comdat_link_errors": 0,
+      "binary_text_bytes": 344838,
+      "runtime_median_us": 69.47
+    }
+  ]
+}

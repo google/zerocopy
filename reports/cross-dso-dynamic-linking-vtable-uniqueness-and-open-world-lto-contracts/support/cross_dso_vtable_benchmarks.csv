@@ -1,0 +1,6 @@
+trait_world_class,scheme,sound_in_open_world,host_shared_hit_pct,plugin_shared_dup_vtable_hit_pct,overall_direct_hit_rate_pct,median_runtime_us,speedup_vs_indirect_pct
+OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so),Baseline_Indirect_VTable_Call,True,0.0,0.0,0.0,529.65,0.0
+OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so),Unguarded_WPO_DevirtSingleImpl (FORBIDDEN),False,100.0,100.0,100.0,0.0,0.0
+OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so),VP3_VTablePtr_Guard (vptr == &VTABLE_host),True,100.0,0.0,50.0,556.96,-5.16
+OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so),VP_TwoLevel_DSO_Guard (vptr == &VTABLE_host || (*vptr).slot == target_fn),True,100.0,100.0,95.0,410.87,22.43
+CratePrivateTraitInOpenBinary (HostPrivateTrait),Unguarded_WPO_DevirtSingleImpl (Allowed by private_trait_closed_under_dso_linking_sound),True,100.0,100.0,100.0,140.69,52.63

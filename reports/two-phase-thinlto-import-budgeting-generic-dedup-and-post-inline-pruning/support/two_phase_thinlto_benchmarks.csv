@@ -1,0 +1,5 @@
+configuration,minissa_fns_processed,minimach_fns_codegen_and_checked,minimach_reduction_pct,hybridtrace_cert_bytes,cert_size_reduction_pct,verification_wall_clock_ms,verification_speedup_ratio,orphaned_comdat_link_errors,binary_text_bytes,runtime_median_us
+C1_Baseline_Naive_PerCGU_Full_Verification,168,168,0.0,248640,0.0,41.16,1.0,0,344838,69.47
+C2_Phase1_COMDAT_PrimaryOwner_Dedup_Only,112,112,33.33,165760,33.33,27.44,1.5,0,344838,69.47
+C3_Phase2_PostInline_LiveClosed_Pruning_Only,168,88,47.62,147040,40.86,24.12,1.71,0,344838,69.47
+C4_Full_TwoPhase_Budgeted_ComdatDedup_PostInlineLiveClosed,96,26,84.52,53180,78.61,8.61,4.78,0,344838,69.47

@@ -1,0 +1,95 @@
+{
+  "subject_rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "subject_llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "llvm_ir_vtable_declarations": [
+    "@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXCs7IiaSy2Myeg_10shared_apiNtB2_12SharedStructNtB2_11SharedTrait7compute, ptr @_RNvYNtCs7IiaSy2Myeg_10shared_api12SharedStructNtB4_11SharedTrait15unused_vfe_slotB4_, ptr @_RNvXCs7IiaSy2Myeg_10shared_apiNtB2_12SharedStructNtB2_11SharedTrait6tag_id }>, align 8, !guid !0"
+  ],
+  "elf_vtable_in_dynsym": true,
+  "elf_vtable_local_symtab_entries": [
+    "0000000000023880 t _RNSNvYNCNCNvNtNtCs8ZKwes1zzDd_3std3sys9backtrace10__print_fmts_00INtNtNtCskADBYZwJmSU_4core3ops8function6FnOnceTRNtNtNtBe_12backtrace_rs9symbolize6SymbolEE9call_once6vtableBe_",
+    "0000000000023890 t _RNSNvYNCNvNtNtCs8ZKwes1zzDd_3std3sys9backtrace10__print_fmt0INtNtNtCskADBYZwJmSU_4core3ops8function6FnOnceTQNtNtB13_3fmt9FormatterNtNtNtBc_12backtrace_rs5types17BytesOrWideStringEE9call_once6vtableBc_",
+    "0000000000023920 t _RNSNvYNCNvNtNtCs8ZKwes1zzDd_3std3sys9backtrace10__print_fmts_0INtNtNtCskADBYZwJmSU_4core3ops8function6FnOnceTRNtNtNtBc_12backtrace_rs9backtrace5FrameEE9call_once6vtableBc_",
+    "0000000000023930 t _RNSNvYNCNvNtNtNtCs8ZKwes1zzDd_3std3sys11personality3gcc14find_eh_action0INtNtNtCskADBYZwJmSU_4core3ops8function6FnOnceuE9call_once6vtableBe_",
+    "0000000000023940 t _RNSNvYNCNvNtNtNtCs8ZKwes1zzDd_3std3sys11personality3gcc14find_eh_actions_0INtNtNtCskADBYZwJmSU_4core3ops8function6FnOnceuE9call_once6vtableBe_"
+  ],
+  "runtime_vtable_probe": {
+    "host_vtable_addr": "0x56261d4cf720",
+    "plugin_shared_vtable_addr": "0x7fe71313b248",
+    "plugin_priv_vtable_addr": "0x7fe71313b218",
+    "duplicate_vtable_addresses_distinct": true,
+    "host_slot_fn": "0x56261d48e040",
+    "plugin_shared_slot_fn": "0x7fe713102a40",
+    "plugin_priv_slot_fn": "0x7fe7131029d8",
+    "gt_host": 107,
+    "gt_plugin_shared": 107,
+    "gt_plugin_priv": 330,
+    "unguarded_wpo_on_priv": 1007,
+    "unguarded_wpo_miscompiled": true,
+    "vp3_sound_all_3": true,
+    "vp3_host_hit": true,
+    "vp3_plugin_shared_hit": false,
+    "vp2l_sound_all_3": true,
+    "vp2l_host_hit": true,
+    "vp2l_plugin_shared_hit": true,
+    "vp2l_plugin_priv_hit": false,
+    "stream_indirect_us": 529.65,
+    "stream_vp3_us": 556.96,
+    "stream_vp3_hit_rate_pct": 50.0,
+    "stream_vp2l_us": 410.87,
+    "stream_vp2l_hit_rate_pct": 95.0,
+    "private_trait_indirect_us": 296.99,
+    "private_trait_wpo_devirt_us": 140.69
+  },
+  "benchmark_summary": [
+    {
+      "trait_world_class": "OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so)",
+      "scheme": "Baseline_Indirect_VTable_Call",
+      "sound_in_open_world": true,
+      "host_shared_hit_pct": 0.0,
+      "plugin_shared_dup_vtable_hit_pct": 0.0,
+      "overall_direct_hit_rate_pct": 0.0,
+      "median_runtime_us": 529.65,
+      "speedup_vs_indirect_pct": 0.0
+    },
+    {
+      "trait_world_class": "OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so)",
+      "scheme": "Unguarded_WPO_DevirtSingleImpl (FORBIDDEN)",
+      "sound_in_open_world": false,
+      "host_shared_hit_pct": 100.0,
+      "plugin_shared_dup_vtable_hit_pct": 100.0,
+      "overall_direct_hit_rate_pct": 100.0,
+      "median_runtime_us": 0.0,
+      "speedup_vs_indirect_pct": 0.0
+    },
+    {
+      "trait_world_class": "OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so)",
+      "scheme": "VP3_VTablePtr_Guard (vptr == &VTABLE_host)",
+      "sound_in_open_world": true,
+      "host_shared_hit_pct": 100.0,
+      "plugin_shared_dup_vtable_hit_pct": 0.0,
+      "overall_direct_hit_rate_pct": 50.0,
+      "median_runtime_us": 556.96,
+      "speedup_vs_indirect_pct": -5.16
+    },
+    {
+      "trait_world_class": "OpenExportedTrait (SharedTrait across host_bin + libplugin_dylib.so)",
+      "scheme": "VP_TwoLevel_DSO_Guard (vptr == &VTABLE_host || (*vptr).slot == target_fn)",
+      "sound_in_open_world": true,
+      "host_shared_hit_pct": 100.0,
+      "plugin_shared_dup_vtable_hit_pct": 100.0,
+      "overall_direct_hit_rate_pct": 95.0,
+      "median_runtime_us": 410.87,
+      "speedup_vs_indirect_pct": 22.43
+    },
+    {
+      "trait_world_class": "CratePrivateTraitInOpenBinary (HostPrivateTrait)",
+      "scheme": "Unguarded_WPO_DevirtSingleImpl (Allowed by private_trait_closed_under_dso_linking_sound)",
+      "sound_in_open_world": true,
+      "host_shared_hit_pct": 100.0,
+      "plugin_shared_dup_vtable_hit_pct": 100.0,
+      "overall_direct_hit_rate_pct": 100.0,
+      "median_runtime_us": 140.69,
+      "speedup_vs_indirect_pct": 52.63
+    }
+  ]
+}

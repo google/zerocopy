@@ -1,0 +1,155 @@
+{
+  "subject_rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "subject_llvm_commit": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+  "num_benchmark_functions": 8,
+  "num_branch_sites": 14,
+  "num_machine_inverted_branches": 10,
+  "anneal_site_map_entry_bytes": 32,
+  "regimes_s1_s2": {
+    "S1_clean_lbr": {
+      "samples_100": {
+        "n_samples_per_fn": 100,
+        "mean_branch_prob_l1_error": 0.02155,
+        "max_branch_prob_l1_error": 0.16,
+        "post_kirchhoff_residual": 0,
+        "circulation_solve_ms": 0.0325
+      },
+      "samples_500": {
+        "n_samples_per_fn": 500,
+        "mean_branch_prob_l1_error": 0.01103,
+        "max_branch_prob_l1_error": 0.12,
+        "post_kirchhoff_residual": 0,
+        "circulation_solve_ms": 0.0301
+      },
+      "samples_5000": {
+        "n_samples_per_fn": 5000,
+        "mean_branch_prob_l1_error": 0.00195,
+        "max_branch_prob_l1_error": 0.01333,
+        "post_kirchhoff_residual": 0,
+        "circulation_solve_ms": 0.0264
+      }
+    },
+    "S2_skid_and_dropout": {
+      "samples_100": {
+        "n_samples_per_fn": 100,
+        "llvm_profgen_mean_l1_error": 0.06579,
+        "raw_unsmoothed_mean_l1_error": 0.05572,
+        "circulation_smoothed_mean_l1_error": 0.01172,
+        "l1_error_reduction_vs_raw_pct": 78.96,
+        "l1_error_reduction_vs_llvm_profgen_pct": 82.18,
+        "raw_kirchhoff_residual": 94,
+        "post_kirchhoff_residual": 0,
+        "circulation_solve_ms": 0.02
+      },
+      "samples_500": {
+        "n_samples_per_fn": 500,
+        "llvm_profgen_mean_l1_error": 0.06526,
+        "raw_unsmoothed_mean_l1_error": 0.05067,
+        "circulation_smoothed_mean_l1_error": 0.00986,
+        "l1_error_reduction_vs_raw_pct": 80.54,
+        "l1_error_reduction_vs_llvm_profgen_pct": 84.89,
+        "raw_kirchhoff_residual": 501,
+        "post_kirchhoff_residual": 0,
+        "circulation_solve_ms": 0.0254
+      },
+      "samples_5000": {
+        "n_samples_per_fn": 5000,
+        "llvm_profgen_mean_l1_error": 0.05951,
+        "raw_unsmoothed_mean_l1_error": 0.04399,
+        "circulation_smoothed_mean_l1_error": 0.01076,
+        "l1_error_reduction_vs_raw_pct": 75.53,
+        "l1_error_reduction_vs_llvm_profgen_pct": 81.91,
+        "raw_kirchhoff_residual": 5016,
+        "post_kirchhoff_residual": 0,
+        "circulation_solve_ms": 0.0279
+      }
+    },
+    "S3_mutations": {}
+  },
+  "regime_s3_mutations": [
+    {
+      "mutation": "M0_Baseline_Unmodified",
+      "nopgo_baseline_us": 224.39,
+      "llvm_sample_use_us": 48.6,
+      "llvm_sample_use_speedup_pct": 78.34,
+      "llvm_retained_pgo_gain_pct": 99.6,
+      "anneal_profgen_smoothed_us": 47.77,
+      "anneal_profgen_speedup_pct": 78.71,
+      "anneal_retained_pgo_gain_pct": 100.0,
+      "anneal_site_survival_pct": 100.0,
+      "polarity_flips_unflipped": 7,
+      "mechanism": "Exact DWARF line offsets & mangled symbol match"
+    },
+    {
+      "mutation": "M1_InsertEarlyReturnShiftLineOffsets",
+      "nopgo_baseline_us": 224.39,
+      "llvm_sample_use_us": 239.53,
+      "llvm_sample_use_speedup_pct": -6.75,
+      "llvm_retained_pgo_gain_pct": -8.6,
+      "anneal_profgen_smoothed_us": 48.65,
+      "anneal_profgen_speedup_pct": 78.32,
+      "anneal_retained_pgo_gain_pct": 99.5,
+      "anneal_site_survival_pct": 100.0,
+      "polarity_flips_unflipped": 7,
+      "mechanism": "Early-return shifts DWARF line offsets by +4 lines (`4->8`, `8->12`), misassociating LLVM sample weights"
+    },
+    {
+      "mutation": "M2_NegateBranchConditionAndSwapArms",
+      "nopgo_baseline_us": 224.39,
+      "llvm_sample_use_us": 207.23,
+      "llvm_sample_use_speedup_pct": 7.65,
+      "llvm_retained_pgo_gain_pct": 9.7,
+      "anneal_profgen_smoothed_us": 48.66,
+      "anneal_profgen_speedup_pct": 78.32,
+      "anneal_retained_pgo_gain_pct": 99.5,
+      "anneal_site_survival_pct": 100.0,
+      "polarity_flips_unflipped": 9,
+      "mechanism": "Line-offset profile assigns cold line 4 weight (400) to hot `!= 0` arm; `anneal-profgen` un-flips 2 polarities"
+    },
+    {
+      "mutation": "M3_ExtractInlinedHelperChangeInlineStack",
+      "nopgo_baseline_us": 224.39,
+      "llvm_sample_use_us": 207.67,
+      "llvm_sample_use_speedup_pct": 7.45,
+      "llvm_retained_pgo_gain_pct": 9.5,
+      "anneal_profgen_smoothed_us": 48.64,
+      "anneal_profgen_speedup_pct": 78.32,
+      "anneal_retained_pgo_gain_pct": 99.5,
+      "anneal_site_survival_pct": 100.0,
+      "polarity_flips_unflipped": 7,
+      "mechanism": "Inline-stack attribution in `.anneal_site_map` maps LBR samples to both caller spine and callee `CanonicalItemKey`"
+    },
+    {
+      "mutation": "M4_CrateMetadataDrift",
+      "nopgo_baseline_us": 224.39,
+      "llvm_sample_use_us": 193.93,
+      "llvm_sample_use_speedup_pct": 13.58,
+      "llvm_retained_pgo_gain_pct": 17.3,
+      "anneal_profgen_smoothed_us": 47.79,
+      "anneal_profgen_speedup_pct": 78.7,
+      "anneal_retained_pgo_gain_pct": 100.0,
+      "anneal_site_survival_pct": 100.0,
+      "polarity_flips_unflipped": 7,
+      "mechanism": "Changing `-C metadata` alters `_RNvCs<hash>_`, causing 100% symbol miss in `-Z profile-sample-use`"
+    }
+  ],
+  "lbr_indirect_value_profile_attribution": {
+    "total_lbr_indirect_branch_samples": 5000,
+    "resolved_via_symtab_to_canonical_item_key": 4982,
+    "unmapped_plt_or_external_samples": 18,
+    "resolution_rate_pct": 99.64,
+    "hot_vtable_target": {
+      "call_site_anchor": "pgo_lbr_bench::dispatch_hot_loop::icall_StageOp_execute",
+      "target_canonical_item_key": "bf160adcf01c4b6e",
+      "target_symbol_unmangled": "pgo_lbr_bench::<OpFastAdd as StageOp>::execute",
+      "sampled_share_pct": 97.0,
+      "emitted_certificate": "VP-3 (VP-VTablePromote)"
+    },
+    "hot_fn_ptr_target": {
+      "call_site_anchor": "pgo_lbr_bench::route_indirect_handler::icall_0",
+      "target_canonical_item_key": "07f2bca7048b1d74",
+      "sampled_share_pct": 97.6,
+      "emitted_certificate": "VP-2 (VP-IndirectCallPromote)"
+    }
+  }
+}
