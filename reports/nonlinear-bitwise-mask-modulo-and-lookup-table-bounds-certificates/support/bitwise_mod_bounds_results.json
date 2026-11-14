@@ -1,0 +1,114 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "lean_verification": {
+    "file": "BitwiseModFarkasBoundsChecker.lean",
+    "lines": 402,
+    "elapsed_ms": 1213.28,
+    "axiom_output": [
+      "'BitwiseModFarkas.bitwiseAndBits_le_right' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'BitwiseModFarkas.bitwiseAndBits_le_left' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'BitwiseModFarkas.nat_land_le_right' depends on axioms: [propext, Quot.sound]",
+      "'BitwiseModFarkas.nat_mod_lt_of_pos' depends on axioms: [propext, Quot.sound]",
+      "'BitwiseModFarkas.nat_shiftr_upper_bound' depends on axioms: [propext]",
+      "'BitwiseModFarkas.checkFarkasCertList_sound' depends on axioms: [propext, Quot.sound]",
+      "'BitwiseModFarkas.checkBitwiseModFarkasCert_sound' depends on axioms: [propext, Quot.sound]",
+      "'BitwiseModFarkas.zlib_huffman_table_lookup_verified' does not depend on any axioms",
+      "'BitwiseModFarkas.hashbrown_probe_slot_verified' does not depend on any axioms",
+      "'BitwiseModFarkas.utf8_dfa_byte_class_verified' does not depend on any axioms",
+      "'BitwiseModFarkas.ring_buffer_modulo_verified' does not depend on any axioms",
+      "'BitwiseModFarkas.alloc_size_class_ctlz_verified' does not depend on any axioms",
+      "'BitwiseModFarkas.zeroDivisorModulo_rejected' does not depend on any axioms"
+    ]
+  },
+  "totals": {
+    "n5_nonlinear_checks_analyzed": 770,
+    "discharged_by_bitwise_mod_farkas": 512,
+    "discharged_pct": 66.49,
+    "by_bridge_rule": {
+      "BRIDGE-AND-CONST": 202,
+      "BRIDGE-AND-VAR": 82,
+      "BRIDGE-LSHR": 123,
+      "BRIDGE-UREM": 48,
+      "BRIDGE-BITCOUNT": 57
+    },
+    "truly_dynamic_untrusted_remaining": 258,
+    "avg_certificate_size_bytes": 25.6,
+    "sorryAx_count": 0,
+    "ofReduceBool_count": 0
+  },
+  "crates": [
+    {
+      "crate": "zlib-rs 0.4.0",
+      "n5_remaining_nonlinear_checks": 32,
+      "bridge_and_const": 18,
+      "bridge_and_var": 6,
+      "bridge_lshr": 4,
+      "bridge_urem": 0,
+      "bridge_bitcount": 2,
+      "discharged_by_bitwise_mod_farkas": 30,
+      "truly_dynamic_untrusted_index": 2,
+      "avg_cert_bytes": 24
+    },
+    {
+      "crate": "regex-automata 0.4.8",
+      "n5_remaining_nonlinear_checks": 156,
+      "bridge_and_const": 42,
+      "bridge_and_var": 14,
+      "bridge_lshr": 38,
+      "bridge_urem": 4,
+      "bridge_bitcount": 6,
+      "discharged_by_bitwise_mod_farkas": 104,
+      "truly_dynamic_untrusted_index": 52,
+      "avg_cert_bytes": 28
+    },
+    {
+      "crate": "hashbrown 0.15.1",
+      "n5_remaining_nonlinear_checks": 12,
+      "bridge_and_const": 2,
+      "bridge_and_var": 8,
+      "bridge_lshr": 1,
+      "bridge_urem": 0,
+      "bridge_bitcount": 1,
+      "discharged_by_bitwise_mod_farkas": 12,
+      "truly_dynamic_untrusted_index": 0,
+      "avg_cert_bytes": 24
+    },
+    {
+      "crate": "serde_json 1.0.132",
+      "n5_remaining_nonlinear_checks": 66,
+      "bridge_and_const": 24,
+      "bridge_and_var": 4,
+      "bridge_lshr": 16,
+      "bridge_urem": 6,
+      "bridge_bitcount": 4,
+      "discharged_by_bitwise_mod_farkas": 54,
+      "truly_dynamic_untrusted_index": 12,
+      "avg_cert_bytes": 24
+    },
+    {
+      "crate": "memchr 2.7.4",
+      "n5_remaining_nonlinear_checks": 8,
+      "bridge_and_const": 4,
+      "bridge_and_var": 2,
+      "bridge_lshr": 0,
+      "bridge_urem": 0,
+      "bridge_bitcount": 2,
+      "discharged_by_bitwise_mod_farkas": 8,
+      "truly_dynamic_untrusted_index": 0,
+      "avg_cert_bytes": 24
+    },
+    {
+      "crate": "core + alloc + std (1.99.1 sysroot)",
+      "n5_remaining_nonlinear_checks": 496,
+      "bridge_and_const": 112,
+      "bridge_and_var": 48,
+      "bridge_lshr": 64,
+      "bridge_urem": 38,
+      "bridge_bitcount": 42,
+      "discharged_by_bitwise_mod_farkas": 304,
+      "truly_dynamic_untrusted_index": 192,
+      "avg_cert_bytes": 26
+    }
+  ]
+}

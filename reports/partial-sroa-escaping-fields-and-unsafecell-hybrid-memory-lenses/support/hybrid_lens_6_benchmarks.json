@@ -1,0 +1,141 @@
+{
+  "totals": {
+    "benchmarks": 6,
+    "mir_mem_ops_before": 47,
+    "hybrid_lens_mem_ops_after": 10,
+    "ast_nodes_before": 4420,
+    "ast_nodes_after": 374,
+    "ast_compression_ratio": 11.82,
+    "proof_loc_before": 226,
+    "proof_loc_after": 34,
+    "proof_loc_compression_ratio": 6.65,
+    "elab_ms_before": 5140,
+    "elab_ms_after": 368,
+    "elab_speedup_ratio": 13.97
+  },
+  "benchmarks": [
+    {
+      "id": "H01",
+      "function": "RingBuffer::push_slice",
+      "aggregate_type": "RingBuffer { head: usize, tail: usize, cap: usize, buf: [u8; 64] }",
+      "reg_fields_promoted": [
+        "head",
+        "tail",
+        "cap"
+      ],
+      "mem_fields_retained": [
+        "buf"
+      ],
+      "mir_mem_ops": 9,
+      "hybrid_lens_mem_ops": 2,
+      "whole_struct_mem_ast_nodes": 840,
+      "hybrid_lens_ast_nodes": 72,
+      "whole_struct_proof_loc": 42,
+      "hybrid_lens_proof_loc": 6,
+      "whole_struct_elab_ms": 980,
+      "hybrid_lens_elab_ms": 68
+    },
+    {
+      "id": "H02",
+      "function": "PacketCursor::advance_and_copy",
+      "aggregate_type": "PacketCursor { pos: usize, limit: usize, scratch: [u8; 32] }",
+      "reg_fields_promoted": [
+        "pos",
+        "limit"
+      ],
+      "mem_fields_retained": [
+        "scratch"
+      ],
+      "mir_mem_ops": 7,
+      "hybrid_lens_mem_ops": 1,
+      "whole_struct_mem_ast_nodes": 690,
+      "hybrid_lens_ast_nodes": 58,
+      "whole_struct_proof_loc": 36,
+      "hybrid_lens_proof_loc": 5,
+      "whole_struct_elab_ms": 810,
+      "hybrid_lens_elab_ms": 59
+    },
+    {
+      "id": "H03",
+      "function": "ArcHeader::increment_strong_if_valid",
+      "aggregate_type": "ArcHeader { strong: AtomicUsize, weak: AtomicUsize, payload_len: usize, flags: u32 }",
+      "reg_fields_promoted": [
+        "payload_len",
+        "flags"
+      ],
+      "mem_fields_retained": [
+        "strong",
+        "weak"
+      ],
+      "mir_mem_ops": 8,
+      "hybrid_lens_mem_ops": 2,
+      "whole_struct_mem_ast_nodes": 760,
+      "hybrid_lens_ast_nodes": 64,
+      "whole_struct_proof_loc": 38,
+      "hybrid_lens_proof_loc": 6,
+      "whole_struct_elab_ms": 890,
+      "hybrid_lens_elab_ms": 62
+    },
+    {
+      "id": "H04",
+      "function": "SmallBuf::append_byte",
+      "aggregate_type": "SmallBuf { len: u8, inline_cap: u8, storage: [u8; 16] }",
+      "reg_fields_promoted": [
+        "len",
+        "inline_cap"
+      ],
+      "mem_fields_retained": [
+        "storage"
+      ],
+      "mir_mem_ops": 6,
+      "hybrid_lens_mem_ops": 1,
+      "whole_struct_mem_ast_nodes": 580,
+      "hybrid_lens_ast_nodes": 50,
+      "whole_struct_proof_loc": 30,
+      "hybrid_lens_proof_loc": 5,
+      "whole_struct_elab_ms": 670,
+      "hybrid_lens_elab_ms": 52
+    },
+    {
+      "id": "H05",
+      "function": "CellCounterWithConfig::tick",
+      "aggregate_type": "CellCounterWithConfig { step: u64, max: u64, count: Cell<u64> }",
+      "reg_fields_promoted": [
+        "step",
+        "max"
+      ],
+      "mem_fields_retained": [
+        "count"
+      ],
+      "mir_mem_ops": 7,
+      "hybrid_lens_mem_ops": 2,
+      "whole_struct_mem_ast_nodes": 640,
+      "hybrid_lens_ast_nodes": 54,
+      "whole_struct_proof_loc": 34,
+      "hybrid_lens_proof_loc": 5,
+      "whole_struct_elab_ms": 740,
+      "hybrid_lens_elab_ms": 56
+    },
+    {
+      "id": "H06",
+      "function": "FramedHeader::parse_into_scratch",
+      "aggregate_type": "FramedHeader { magic: u32, payload_len: u32, epoch: u64, raw_hdr: [u8; 16] }",
+      "reg_fields_promoted": [
+        "magic",
+        "payload_len",
+        "epoch"
+      ],
+      "mem_fields_retained": [
+        "raw_hdr"
+      ],
+      "mir_mem_ops": 10,
+      "hybrid_lens_mem_ops": 2,
+      "whole_struct_mem_ast_nodes": 910,
+      "hybrid_lens_ast_nodes": 76,
+      "whole_struct_proof_loc": 46,
+      "hybrid_lens_proof_loc": 7,
+      "whole_struct_elab_ms": 1050,
+      "hybrid_lens_elab_ms": 71
+    }
+  ]
+}

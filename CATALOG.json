@@ -18074,6 +18074,48 @@
         "verification/compiler-verification"
       ]
     },
+    "loop-invariant-and-recursive-spec-minissa-vc-transport": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted MIR verification boundary and refinement definitions"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 Runtime(PostCleanup) MIR semantics"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "lean",
+        "lean/mechanization",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ]
+    },
     "machine-code-verification-frameworks-and-assembly-contracts": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -19851,6 +19893,52 @@
         "lake/artifact-cache"
       ]
     },
+    "nonlinear-bitwise-mask-modulo-and-lookup-table-bounds-certificates": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 middle-end passes"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted kernel boundary and axiom auditor"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "smt",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
+      ]
+    },
     "observable-behavior-property-transfer-and-anneal-statement-forms": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -20346,6 +20434,61 @@
         "verification",
         "verification/cakeml",
         "verification/compcert"
+      ]
+    },
+    "partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain and Miri Tree Borrows driver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal MIR specification and proof pipeline"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "lean",
+        "lean/mechanization",
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
       ]
     },
     "pcc-tal-verve-foundational-certificate-kernels-1996-2016": {
@@ -28644,6 +28787,61 @@
         "agents/methodology/swarm-orchestration",
         "rust/mir-verification",
         "verification/program-verification"
+      ]
+    },
+    "smart-pointer-and-custom-type-validity-invariant-propagation": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 layout, standard library containers, and LLVM ABI lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 Scalar and Loop Optimizer"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal MIR specification and proof pipeline"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "compilers/verified-rustc/optimizer",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rust",
+        "rust/unsafe",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "smt-sat-alethe-carcara-and-numerical-proof-certificate-reconstruction": {

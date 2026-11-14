@@ -1,0 +1,166 @@
+{
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "llvm_version": "23.1.1 (1b9c0d5ff9bbe7634aead059efe6b11a7eeba145)",
+  "lean_verification": {
+    "file": "SmartPointerValidityAndTypeInvariantProbe.lean",
+    "lines": 252,
+    "elapsed_ms": 697.16,
+    "axiom_output": [
+      "'SmartPointerValidity.seedAdtFieldValidRanges_sound' depends on axioms: [propext]",
+      "'SmartPointerValidity.TypeInvariantContract_sound' does not depend on any axioms",
+      "'SmartPointerValidity.vecChunk16LoopBce_eliminates_all_16' depends on axioms: [propext, Quot.sound]",
+      "'SmartPointerValidity.nonNullSliceRawMetadata_usizeMax_not_bounded_rejected' does not depend on any axioms"
+    ]
+  },
+  "rustc_mir_and_llvm_inspection": {
+    "vec_u8_len": {
+      "has_mir_assume": true,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "@vec_u8_len = unnamed_addr alias i64 (ptr), ptr @string_len"
+    },
+    "vec_u8_capacity": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": true,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "define noundef range(i64 0, -9223372036854775808) i64 @vec_u8_capacity(ptr noalias nofree noundef readonly align 8 captures(none) dereferenceable(24) %v) unnamed_addr #0 !guid !27 {"
+    },
+    "vec_u8_as_slice_len": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "define noundef i64 @vec_u8_as_slice_len(ptr noalias nofree noundef readonly align 8 captures(none) dereferenceable(24) %v) unnamed_addr #0 !guid !26 {"
+    },
+    "vec_zst_len": {
+      "has_mir_assume": true,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "@vec_zst_len = unnamed_addr alias i64 (ptr), ptr @vec_u8_as_slice_len"
+    },
+    "vec_zst_capacity": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "define noundef i64 @vec_zst_capacity(ptr noalias nofree noundef readonly align 8 captures(none) dereferenceable(24) %v) unnamed_addr #1 !guid !29 {"
+    },
+    "string_len": {
+      "has_mir_assume": true,
+      "has_llvm_assume": true,
+      "has_llvm_range_attr_or_meta": true,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "define noundef range(i64 0, -9223372036854775808) i64 @string_len(ptr noalias nofree noundef readonly align 8 captures(none) dereferenceable(24) %s) unnamed_addr #2 !guid !24 {"
+    },
+    "box_slice_len": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "@box_slice_len = unnamed_addr alias i64 (ptr), ptr @arc_slice_len"
+    },
+    "arc_slice_len": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "define noundef i64 @arc_slice_len(ptr noalias nofree noundef readonly align 8 captures(none) dereferenceable(16) %a) unnamed_addr #0 !guid !21 {"
+    },
+    "rc_slice_len": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "@rc_slice_len = unnamed_addr alias i64 (ptr), ptr @arc_slice_len"
+    },
+    "nonnull_slice_len": {
+      "has_mir_assume": false,
+      "has_llvm_assume": false,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 0,
+      "llvm_header": "define noundef i64 @nonnull_slice_len(ptr nofree noundef nonnull readnone captures(none) %p.0, i64 noundef returned %p.1) unnamed_addr #1 !guid !23 {"
+    },
+    "vec_chunk16_sum_stock": {
+      "has_mir_assume": true,
+      "has_llvm_assume": true,
+      "has_llvm_range_attr_or_meta": false,
+      "surviving_panic_bounds_check_calls_o3": 32,
+      "llvm_header": "define noundef i64 @vec_chunk16_sum_stock(ptr noalias nofree noundef readonly align 8 captures(none) dereferenceable(24) %v) unnamed_addr #3 !guid !25 {"
+    }
+  },
+  "smart_pointer_catalog": [
+    {
+      "type": "Vec<T> (sizeof(T) >= 1)",
+      "source_coords": "library/alloc/src/vec/mod.rs:436-439, library/alloc/src/raw_vec/mod.rs:39,85-94",
+      "mir_fields": "buf.inner.ptr: Unique<u8> (NonNull<u8>), buf.inner.cap: UsizeNoHighBit, len: usize",
+      "tier1_language_validity": "ptr >= 1 (NonNull), 0 <= cap <= isize::MAX (UsizeNoHighBit = 0..=0x7fff_ffff_ffff_ffff); len has raw type usize (0..=usize::MAX)",
+      "inlined_mir_assume": "Vec::len() emits intrinsics::assume(len <= T::MAX_SLICE_LEN) (vec/mod.rs:3106); Vec::as_slice() omits assume and uses aggregate_raw_ptr (vec/mod.rs:1865)",
+      "tier2_type_invariant": "len <= cap && cap * sizeof(T) <= isize::MAX",
+      "stock_llvm_23_chunk16_surviving_checks": 32,
+      "minissa_tier1_plus_tier2_surviving_checks": 0
+    },
+    {
+      "type": "Vec<ZST> (sizeof(T) == 0)",
+      "source_coords": "library/alloc/src/raw_vec/mod.rs:46-48, library/alloc/src/vec/mod.rs:3106",
+      "mir_fields": "buf.inner.ptr: Unique<u8>, buf.inner.cap: Cap(0), len: usize",
+      "tier1_language_validity": "ptr >= 1, cap == 0; RawVec::capacity() returns usize::MAX; len in 0..=usize::MAX",
+      "inlined_mir_assume": "T::MAX_SLICE_LEN == usize::MAX (trivial assume)",
+      "tier2_type_invariant": "0 <= len <= usize::MAX (cannot bound len <= isize::MAX!)",
+      "stock_llvm_23_chunk16_surviving_checks": 16,
+      "minissa_tier1_plus_tier2_surviving_checks": 16
+    },
+    {
+      "type": "String",
+      "source_coords": "library/alloc/src/string.rs:365-367",
+      "mir_fields": "vec: Vec<u8> (buf.inner.ptr: Unique<u8>, buf.inner.cap: UsizeNoHighBit, len: usize)",
+      "tier1_language_validity": "ptr >= 1, 0 <= cap <= isize::MAX",
+      "inlined_mir_assume": "String::len() delegates to Vec<u8>::len() -> assume(len <= isize::MAX)",
+      "tier2_type_invariant": "len <= cap <= isize::MAX && valid_utf8(buf[0..len])",
+      "stock_llvm_23_chunk16_surviving_checks": 16,
+      "minissa_tier1_plus_tier2_surviving_checks": 0
+    },
+    {
+      "type": "Box<[T]> (sizeof(T) >= 1)",
+      "source_coords": "library/alloc/src/boxed.rs:235-241",
+      "mir_fields": "0: Unique<[T]> (0.0: NonNull<[T]> -> *const [T] !null), 1: Global",
+      "tier1_language_validity": "VAL-08: addr(ptr) >= align(T), len * sizeof(T) <= isize::MAX (missed by rustc_codegen_llvm abi.rs:561 on parameters and loads!)",
+      "inlined_mir_assume": "PtrMetadata(Deref(b))",
+      "tier2_type_invariant": "Covered directly by Tier 1 VAL-08 once MiniSSA seeds Box<[T]> metadata",
+      "stock_llvm_23_chunk16_surviving_checks": 16,
+      "minissa_tier1_plus_tier2_surviving_checks": 0
+    },
+    {
+      "type": "Arc<[T]> / Rc<[T]> (sizeof(T) >= 1)",
+      "source_coords": "library/alloc/src/sync.rs:274-281,393-405; library/alloc/src/rc.rs:285-289,324-331",
+      "mir_fields": "ptr: NonNull<ArcInner<[T]>> (fat raw pointer: data_ptr !null, metadata: usize)",
+      "tier1_language_validity": "addr(ptr) >= 2 (align(2)); raw fat pointer metadata has full WrappingRange 0..=usize::MAX before Deref!",
+      "inlined_mir_assume": "Deref::deref materializes &[T] (triggering VAL-08 len * sizeof(T) <= isize::MAX)",
+      "tier2_type_invariant": "16 + len * sizeof(T) <= isize::MAX && strong >= 1 && weak >= 1",
+      "stock_llvm_23_chunk16_surviving_checks": 16,
+      "minissa_tier1_plus_tier2_surviving_checks": 0
+    },
+    {
+      "type": "NonNull<[T]> / Unique<[T]>",
+      "source_coords": "library/core/src/ptr/non_null.rs:79-81; library/core/src/ptr/unique.rs:35-43",
+      "mir_fields": "pointer: pattern_type!(*const [T] is !null) (ScalarPair: ptr in 1..=usize::MAX, len in 0..=usize::MAX)",
+      "tier1_language_validity": "addr(ptr) >= 1; len in 0..=usize::MAX (NonNull::slice_from_raw_parts(dangling, usize::MAX) is valid in safe Rust!)",
+      "inlined_mir_assume": "None (must NOT assume len <= isize::MAX unless dereferenced via as_ref() or backed by container invariant)",
+      "tier2_type_invariant": "None on standalone NonNull<[T]>; container-specific when embedded in Box<[T]> or RawVec",
+      "stock_llvm_23_chunk16_surviving_checks": 16,
+      "minissa_tier1_plus_tier2_surviving_checks": 16
+    },
+    {
+      "type": "SmallVec<[T; N]> / Bytes",
+      "source_coords": "ecosystem container ADTs (smallvec, bytes)",
+      "mir_fields": "discriminant/capacity tag + inline array union or heap (ptr, len, cap)",
+      "tier1_language_validity": "NonNull pointer niche where applicable; len/cap are plain usize",
+      "inlined_mir_assume": "as_slice() constructs &[T] via slice::from_raw_parts (emitting VAL-08 on &[T])",
+      "tier2_type_invariant": "#[anneal_spec::type_invariant]: len <= capacity() && capacity() * sizeof(T) <= isize::MAX",
+      "stock_llvm_23_chunk16_surviving_checks": 16,
+      "minissa_tier1_plus_tier2_surviving_checks": 0
+    }
+  ]
+}

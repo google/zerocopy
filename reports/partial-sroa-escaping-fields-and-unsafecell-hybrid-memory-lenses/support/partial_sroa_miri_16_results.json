@@ -1,0 +1,166 @@
+{
+  "miri_version": "0.1.0 (3ef0c22cdb 2026-11-11)",
+  "rustc_baseline": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "flags": "-Zmiri-tree-borrows",
+  "total_cases": 16,
+  "all_matched_expected": true,
+  "pass_count": 11,
+  "expected_ub_count": 5,
+  "lean_verification": {
+    "file": "PartialSroaAndHybridMemoryLensProbe.lean",
+    "lines": 247,
+    "elapsed_ms": 708.22,
+    "axiom_output": [
+      "'PartialSroaHybridLens.partialSroa_subplaceEscape_bisimExact' depends on axioms: [propext]",
+      "'PartialSroaHybridLens.hybridMemoryLens_disjoint_frame_commute' does not depend on any axioms",
+      "'PartialSroaHybridLens.hybridMemoryLens_freezeField_invariant_across_cellWrite' does not depend on any axioms",
+      "'PartialSroaHybridLens.rootRawPtrContainerOf_blocks_partialSroa_rejected' does not depend on any axioms"
+    ]
+  },
+  "cases": [
+    {
+      "id": "P01_subplace_mut_ref_callee_write_buf",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 220.44,
+      "diagnostic": ""
+    },
+    {
+      "id": "P02_subplace_shared_ref_concurrent_scalar_mutation",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 136.46,
+      "diagnostic": ""
+    },
+    {
+      "id": "P03_disjoint_protected_mut_refs_same_struct",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 142.57,
+      "diagnostic": ""
+    },
+    {
+      "id": "P04_subplace_mut_ref_container_of_read_after_parent_write_ub",
+      "category": "ContainerOfHazard",
+      "expected": "UB",
+      "actual": "UB",
+      "matched": true,
+      "elapsed_ms": 133.06,
+      "diagnostic": "error: Undefined Behavior: read access through <526> at alloc214[0x0] is forbidden"
+    },
+    {
+      "id": "P05_subplace_mut_ref_container_of_write_protected_sibling_ub",
+      "category": "ContainerOfHazard",
+      "expected": "UB",
+      "actual": "UB",
+      "matched": true,
+      "elapsed_ms": 136.04,
+      "diagnostic": "error: Undefined Behavior: write access through <530> at alloc214[0x0] is forbidden"
+    },
+    {
+      "id": "P06_subplace_shared_ref_container_of_write_sibling_ub",
+      "category": "ContainerOfHazard",
+      "expected": "UB",
+      "actual": "UB",
+      "matched": true,
+      "elapsed_ms": 135.02,
+      "diagnostic": "error: Undefined Behavior: write access through <526> at alloc216[0x0] is forbidden"
+    },
+    {
+      "id": "P07_root_raw_ptr_addr_of_mut_container_of_allowed",
+      "category": "RootAddressTaken",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 137.96,
+      "diagnostic": ""
+    },
+    {
+      "id": "P08_whole_struct_move_after_subplace_borrow",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 135.68,
+      "diagnostic": ""
+    },
+    {
+      "id": "P09_shared_ref_struct_with_cell_freeze_field_cached",
+      "category": "HybridCellLens",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 136.87,
+      "diagnostic": ""
+    },
+    {
+      "id": "P10_shared_ref_struct_with_cell_write_freeze_field_ub",
+      "category": "HybridCellLens",
+      "expected": "UB",
+      "actual": "UB",
+      "matched": true,
+      "elapsed_ms": 106.05,
+      "diagnostic": ""
+    },
+    {
+      "id": "P11_shared_ref_arc_inner_like_atomic_and_frozen_payload",
+      "category": "HybridCellLens",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 135.69,
+      "diagnostic": ""
+    },
+    {
+      "id": "P12_protected_mut_ref_struct_with_cell_foreign_read_ub",
+      "category": "HybridCellLens",
+      "expected": "UB",
+      "actual": "UB",
+      "matched": true,
+      "elapsed_ms": 132.77,
+      "diagnostic": "error: Undefined Behavior: write access through <528> at alloc214[0x0] is forbidden"
+    },
+    {
+      "id": "P13_hybrid_mut_borrow_packet_builder_subslice",
+      "category": "HybridMutBorrowLens",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 141.39,
+      "diagnostic": ""
+    },
+    {
+      "id": "P14_nested_struct_partial_sroa_inner_buf_escapes",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 140.62,
+      "diagnostic": ""
+    },
+    {
+      "id": "P15_tuple_aggregate_mixed_escape",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 139.24,
+      "diagnostic": ""
+    },
+    {
+      "id": "P16_repr_c_struct_reconstitution_to_out_ptr",
+      "category": "SubplaceRefOnly",
+      "expected": "PASS",
+      "actual": "PASS",
+      "matched": true,
+      "elapsed_ms": 136.56,
+      "diagnostic": ""
+    }
+  ]
+}
