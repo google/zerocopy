@@ -1,0 +1,243 @@
+{
+  "x86_64_workloads_pruning_and_icf": {
+    "hello_world": {
+      "unpruned_no_gc_no_icf": {
+        "text_bytes": 691501,
+        "defined_func_symbols": 2470,
+        "unique_code_bodies": 2294,
+        "estimated_hybrid_trace_steps": 55056
+      },
+      "pruned_gc_sections_only": {
+        "text_bytes": 241651,
+        "defined_func_symbols": 561,
+        "unique_code_bodies": 540,
+        "estimated_hybrid_trace_steps": 12960
+      },
+      "pruned_gc_plus_icf_safe": {
+        "text_bytes": 241651,
+        "defined_func_symbols": 561,
+        "unique_code_bodies": 540,
+        "estimated_hybrid_trace_steps": 12960
+      },
+      "pre_proof_wpo_fatlto_gc_icf_safe": {
+        "text_bytes": 223136,
+        "defined_func_symbols": 401,
+        "unique_code_bodies": 401,
+        "estimated_hybrid_trace_steps": 9624
+      },
+      "summary_metrics": {
+        "gc_sections_dead_code_removed_pct": 65.05,
+        "gc_sections_proof_reduction_factor_x": 4.25,
+        "icf_safe_additional_bodies_folded": 0,
+        "full_pre_proof_pruning_and_icf_reduction_factor_x": 5.72
+      }
+    },
+    "cli_tool": {
+      "unpruned_no_gc_no_icf": {
+        "text_bytes": 698013,
+        "defined_func_symbols": 2483,
+        "unique_code_bodies": 2307,
+        "estimated_hybrid_trace_steps": 55368
+      },
+      "pruned_gc_sections_only": {
+        "text_bytes": 255059,
+        "defined_func_symbols": 599,
+        "unique_code_bodies": 576,
+        "estimated_hybrid_trace_steps": 13824
+      },
+      "pruned_gc_plus_icf_safe": {
+        "text_bytes": 255059,
+        "defined_func_symbols": 599,
+        "unique_code_bodies": 576,
+        "estimated_hybrid_trace_steps": 13824
+      },
+      "pre_proof_wpo_fatlto_gc_icf_safe": {
+        "text_bytes": 237898,
+        "defined_func_symbols": 426,
+        "unique_code_bodies": 426,
+        "estimated_hybrid_trace_steps": 10224
+      },
+      "summary_metrics": {
+        "gc_sections_dead_code_removed_pct": 63.46,
+        "gc_sections_proof_reduction_factor_x": 4.01,
+        "icf_safe_additional_bodies_folded": 0,
+        "full_pre_proof_pruning_and_icf_reduction_factor_x": 5.42
+      }
+    },
+    "async_server": {
+      "unpruned_no_gc_no_icf": {
+        "text_bytes": 692269,
+        "defined_func_symbols": 2472,
+        "unique_code_bodies": 2296,
+        "estimated_hybrid_trace_steps": 55104
+      },
+      "pruned_gc_sections_only": {
+        "text_bytes": 250547,
+        "defined_func_symbols": 584,
+        "unique_code_bodies": 563,
+        "estimated_hybrid_trace_steps": 13512
+      },
+      "pruned_gc_plus_icf_safe": {
+        "text_bytes": 250547,
+        "defined_func_symbols": 584,
+        "unique_code_bodies": 563,
+        "estimated_hybrid_trace_steps": 13512
+      },
+      "pre_proof_wpo_fatlto_gc_icf_safe": {
+        "text_bytes": 229680,
+        "defined_func_symbols": 414,
+        "unique_code_bodies": 414,
+        "estimated_hybrid_trace_steps": 9936
+      },
+      "summary_metrics": {
+        "gc_sections_dead_code_removed_pct": 63.81,
+        "gc_sections_proof_reduction_factor_x": 4.08,
+        "icf_safe_additional_bodies_folded": 0,
+        "full_pre_proof_pruning_and_icf_reduction_factor_x": 5.55
+      }
+    },
+    "cdylib": {
+      "unpruned_no_gc_no_icf": {
+        "text_bytes": 691453,
+        "defined_func_symbols": 2464,
+        "unique_code_bodies": 2288,
+        "estimated_hybrid_trace_steps": 54912
+      },
+      "pruned_gc_sections_only": {
+        "text_bytes": 228339,
+        "defined_func_symbols": 520,
+        "unique_code_bodies": 499,
+        "estimated_hybrid_trace_steps": 11976
+      },
+      "pruned_gc_plus_icf_safe": {
+        "text_bytes": 228339,
+        "defined_func_symbols": 520,
+        "unique_code_bodies": 499,
+        "estimated_hybrid_trace_steps": 11976
+      },
+      "pre_proof_wpo_fatlto_gc_icf_safe": {
+        "text_bytes": 211705,
+        "defined_func_symbols": 368,
+        "unique_code_bodies": 368,
+        "estimated_hybrid_trace_steps": 8832
+      },
+      "summary_metrics": {
+        "gc_sections_dead_code_removed_pct": 66.98,
+        "gc_sections_proof_reduction_factor_x": 4.59,
+        "icf_safe_additional_bodies_folded": 0,
+        "full_pre_proof_pruning_and_icf_reduction_factor_x": 6.22
+      }
+    },
+    "staticlib": {
+      "unpruned_archive": {
+        "text_bytes": 754536,
+        "defined_func_symbols": 3081,
+        "unique_code_bodies": 1,
+        "estimated_hybrid_trace_steps": 24
+      },
+      "pre_proof_reachability_and_icf": {
+        "text_bytes": 284227,
+        "defined_func_symbols": 972,
+        "unique_code_bodies": 1,
+        "estimated_hybrid_trace_steps": 24
+      },
+      "text_bytes_removed_pct": 62.33,
+      "proof_volume_reduction_factor_x": 1.0
+    }
+  },
+  "cross_target_8target_archive_pruning": {
+    "x86_64-unknown-linux-gnu": {
+      "unpruned_text_bytes": 754536,
+      "pruned_text_bytes": 284227,
+      "dead_text_removed_pct": 62.33,
+      "unpruned_unique_bodies": 1,
+      "pruned_unique_bodies": 1,
+      "proof_volume_reduction_factor_x": 1.0
+    },
+    "i686-unknown-linux-gnu": {
+      "unpruned_text_bytes": 840843,
+      "pruned_text_bytes": 346175,
+      "dead_text_removed_pct": 58.83,
+      "unpruned_unique_bodies": 1,
+      "pruned_unique_bodies": 1,
+      "proof_volume_reduction_factor_x": 1.0
+    },
+    "aarch64-unknown-linux-gnu": {
+      "unpruned_text_bytes": 732548,
+      "pruned_text_bytes": 257260,
+      "dead_text_removed_pct": 64.88,
+      "unpruned_unique_bodies": 1,
+      "pruned_unique_bodies": 1,
+      "proof_volume_reduction_factor_x": 1.0
+    },
+    "aarch64-apple-darwin": {
+      "unpruned_text_bytes": 694316,
+      "pruned_text_bytes": 249508,
+      "dead_text_removed_pct": 64.06,
+      "unpruned_unique_bodies": 6,
+      "pruned_unique_bodies": 455,
+      "proof_volume_reduction_factor_x": 0.01
+    },
+    "x86_64-pc-windows-msvc": {
+      "unpruned_text_bytes": 547815,
+      "pruned_text_bytes": 148888,
+      "dead_text_removed_pct": 72.82,
+      "unpruned_unique_bodies": 193,
+      "pruned_unique_bodies": 38,
+      "proof_volume_reduction_factor_x": 5.08
+    },
+    "x86_64-pc-windows-gnu": {
+      "unpruned_text_bytes": 738658,
+      "pruned_text_bytes": 263735,
+      "dead_text_removed_pct": 64.3,
+      "unpruned_unique_bodies": 2210,
+      "pruned_unique_bodies": 443,
+      "proof_volume_reduction_factor_x": 4.99
+    },
+    "i686-pc-windows-msvc": {
+      "unpruned_text_bytes": 574687,
+      "pruned_text_bytes": 183779,
+      "dead_text_removed_pct": 68.02,
+      "unpruned_unique_bodies": 175,
+      "pruned_unique_bodies": 36,
+      "proof_volume_reduction_factor_x": 4.86
+    },
+    "aarch64-pc-windows-msvc": {
+      "unpruned_text_bytes": 523024,
+      "pruned_text_bytes": 136548,
+      "dead_text_removed_pct": 73.89,
+      "unpruned_unique_bodies": 334,
+      "pruned_unique_bodies": 108,
+      "proof_volume_reduction_factor_x": 3.09
+    }
+  },
+  "llvm_addrsig_and_fn_ptr_soundness": {
+    "emitted_SHT_LLVM_ADDRSIG_symbols": [],
+    "lld_icf_modes": {
+      "none": {
+        "stdout": "addr_taken_eq=true sum=5153960764",
+        "symbol_addresses": {
+          "addr_taken_a": "0000000000014a00"
+        },
+        "addr_taken_distinct": true,
+        "call_only_folded": true
+      },
+      "safe": {
+        "stdout": "addr_taken_eq=true sum=5153960764",
+        "symbol_addresses": {
+          "addr_taken_a": "0000000000014a00"
+        },
+        "addr_taken_distinct": true,
+        "call_only_folded": true
+      },
+      "all": {
+        "stdout": "addr_taken_eq=true sum=5153960764",
+        "symbol_addresses": {
+          "addr_taken_a": "0000000000014740"
+        },
+        "addr_taken_distinct": true,
+        "call_only_folded": true
+      }
+    }
+  }
+}

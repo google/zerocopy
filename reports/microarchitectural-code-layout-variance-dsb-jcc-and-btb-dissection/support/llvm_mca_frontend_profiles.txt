@@ -1,0 +1,199 @@
+=== x86_64_icelake_server (x86_64-unknown-linux-gnu / -mcpu=icelake-server) ===
+Iterations:        100
+Instructions:      800
+Total Cycles:      406
+Total uOps:        800
+
+Dispatch Width:    6
+uOps Per Cycle:    1.97
+IPC:               1.97
+Block RThroughput: 1.3
+
+
+Cycles with backend pressure increase [ 68.97% ]
+Throughput Bottlenecks: 
+  Resource Pressure       [ 6.65% ]
+  - ICXPort0  [ 6.40% ]
+  - ICXPort1  [ 3.69% ]
+  - ICXPort5  [ 3.45% ]
+  - ICXPort6  [ 6.40% ]
+  Data Dependencies:      [ 65.52% ]
+  - Register Dependencies [ 65.52% ]
+  - Memory Dependencies   [ 0.00% ]
+
+Critical sequence based on the simulation:
+
+              Instruction                                 Dependency Information
+ +----< 5.    incq	%rcx
+ |
+ |    < loop carried > 
+ |
+ +----> 0.    movzbl	(%rdi,%rcx), %eax                 ## REGISTER dependency:  %rcx
+ +----> 1.    cmpb	$34, %al                          ## REGISTER dependency:  %eax
+ +----> 2.    je	.Lquote                                   ## REGISTER dependency:  %flags
+ |      3.    imulq	$131, %rdx, %rdx
+ |      4.    addq	%rax, %rdx
+ +----> 5.    incq	%rcx                              ## RESOURCE interference:  ICXPort0 [ probability: 10% ]
+ +----> 6.    cmpq	%rsi, %rcx                        ## REGISTER dependency:  %rcx
+ +----> 7.    jb	.Lloop                                    ## REGISTER dependency:  %flags
+ |
+
+=== x86_64_skylake_avx512 (x86_64-unknown-linux-gnu / -mcpu=skylake-avx512) ===
+Iterations:        100
+Instructions:      800
+Total Cycles:      406
+Total uOps:        800
+
+Dispatch Width:    6
+uOps Per Cycle:    1.97
+IPC:               1.97
+Block RThroughput: 1.3
+
+
+Cycles with backend pressure increase [ 42.86% ]
+Throughput Bottlenecks: 
+  Resource Pressure       [ 6.65% ]
+  - SKXPort0  [ 6.40% ]
+  - SKXPort1  [ 3.69% ]
+  - SKXPort5  [ 3.45% ]
+  - SKXPort6  [ 6.40% ]
+  Data Dependencies:      [ 39.41% ]
+  - Register Dependencies [ 39.41% ]
+  - Memory Dependencies   [ 0.00% ]
+
+Critical sequence based on the simulation:
+
+              Instruction                                 Dependency Information
+ +----< 5.    incq	%rcx
+ |
+ |    < loop carried > 
+ |
+ +----> 0.    movzbl	(%rdi,%rcx), %eax                 ## REGISTER dependency:  %rcx
+ +----> 1.    cmpb	$34, %al                          ## REGISTER dependency:  %eax
+ +----> 2.    je	.Lquote                                   ## REGISTER dependency:  %flags
+ |      3.    imulq	$131, %rdx, %rdx
+ |      4.    addq	%rax, %rdx
+ +----> 5.    incq	%rcx                              ## RESOURCE interference:  SKXPort0 [ probability: 10% ]
+ +----> 6.    cmpq	%rsi, %rcx                        ## REGISTER dependency:  %rcx
+ +----> 7.    jb	.Lloop                                    ## REGISTER dependency:  %flags
+ |
+
+=== aarch64_neoverse_v1 (aarch64-unknown-linux-gnu / -mcpu=neoverse-v1) ===
+Iterations:        100
+Instructions:      1000
+Total Cycles:      706
+Total uOps:        1000
+
+Dispatch Width:    15
+uOps Per Cycle:    1.42
+IPC:               1.42
+Block RThroughput: 1.8
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      4     0.33    *                   ldrb	w8, [x0, x2]
+ 1      1     0.25                        lsl	x9, x3, #10
+ 1      1     0.25                        add	x9, x1, x9
+ 1      4     0.33    *                   ldr	w3, [x9, x8, lsl #2]
+ 1      1     0.33                        tst	w3, #0x4
+ 1      1     0.25                        cinc	w4, w4, ne
+ 1      1     0.25                        and	w3, w3, #0x3
+ 1      1     0.25                        add	x2, x2, #1
+ 1      1     0.33                        cmp	x2, x5
+ 1      1     0.50                        b.lo	.Lloop_a64
+
+
+Resources:
+[0.0] - V1UnitB
+[0.1] - V1UnitB
+[1.0] - V1UnitD
+[1.1] - V1UnitD
+[2.0] - V1UnitFlg
+
+=== aarch64_neoverse_n2 (aarch64-unknown-linux-gnu / -mcpu=neoverse-n2) ===
+Iterations:        100
+Instructions:      1000
+Total Cycles:      706
+Total uOps:        1200
+
+Dispatch Width:    5
+uOps Per Cycle:    1.70
+IPC:               1.42
+Block RThroughput: 2.4
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 2      4     0.33    *                   ldrb	w8, [x0, x2]
+ 1      1     0.25                        lsl	x9, x3, #10
+ 1      1     0.25                        add	x9, x1, x9
+ 2      4     0.33    *                   ldr	w3, [x9, x8, lsl #2]
+ 1      1     0.25                        tst	w3, #0x4
+ 1      1     0.25                        cinc	w4, w4, ne
+ 1      1     0.25                        and	w3, w3, #0x3
+ 1      1     0.25                        add	x2, x2, #1
+ 1      1     0.25                        cmp	x2, x5
+ 1      1     0.50                        b.lo	.Lloop_a64
+
+
+Resources:
+[0.0] - N2UnitB
+[0.1] - N2UnitB
+[1.0] - N2UnitD
+[1.1] - N2UnitD
+[2]   - N2UnitL2
+
+=== aarch64_apple_m1 (aarch64-apple-darwin / -mcpu=apple-m1) ===
+Iterations:        100
+Instructions:      1000
+Total Cycles:      807
+Total uOps:        1200
+
+Dispatch Width:    6
+uOps Per Cycle:    1.49
+IPC:               1.24
+Block RThroughput: 3.5
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 2      5     0.50    *                   ldrb	w8, [x0, x2]
+ 1      1     0.50                        lsl	x9, x3, #10
+ 1      2     1.00                        add	x9, x1, x9
+ 2      5     0.50    *                   ldr	w3, [x9, x8, lsl #2]
+ 1      1     0.25                        tst	w3, #0x4
+ 1      1     0.25                        cinc	w4, w4, ne
+ 1      1     0.25                        and	w3, w3, #0x3
+ 1      1     0.25                        add	x2, x2, #1
+ 1      2     1.00                        cmp	x2, x5
+ 1      0     0.50                        b.lo	.Lloop_a64
+
+
+Resources:
+[0.0] - CyUnitB
+[0.1] - CyUnitB
+[1]   - CyUnitBR
+[2.0] - CyUnitFloatDiv
+[2.1] - CyUnitFloatDiv

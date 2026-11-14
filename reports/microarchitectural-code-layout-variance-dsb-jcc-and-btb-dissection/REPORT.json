@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-11-14",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      },
+      "name": "Rust 1.99.1 compiler and Tier 1 target codegen"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      },
+      "name": "LLVM 23.1.1 code generator, llvm-mca, and rust-lld"
+    }
+  ],
+  "topics": [
+    "compilers/verified-rustc",
+    "rustc",
+    "llvm",
+    "isa",
+    "isa/x86-64",
+    "isa/aarch64",
+    "systems"
+  ]
+}

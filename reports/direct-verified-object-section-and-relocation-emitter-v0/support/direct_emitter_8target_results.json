@@ -1,0 +1,89 @@
+{
+  "external_assembler_invocations": 0,
+  "targets_verified": 8,
+  "all_llvm_readobj_passed": true,
+  "all_rust_lld_linked": true,
+  "executable_targets_passed": 3,
+  "per_target": {
+    "x86_64-unknown-linux-gnu": {
+      "target": "x86_64-unknown-linux-gnu",
+      "emitted_obj_size_bytes": 1016,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 4538656,
+      "live_executed": true,
+      "execution_output": "OK:142",
+      "disassembly_excerpt": "\ndirect_x86_64-unknown-linux-gnu.o:\tfile format elf64-x86-64\n\nDisassembly of section .text:\n\n0000000000000000 <direct_helper>:\n       0: 8d 47 23                     \tleal\t0x23(%rdi), %eax\n       3: c3                           \tretq\n       4: 0f 1f 40 00                  \tnopl\t(%rax)\n\n0000000000000008 <direct_entry>:\n       8: 50                           \tpushq\t%rax\n       9: e8 00 00 00 00               \tcallq\t0xe <direct_entry+0x6>\n\t\t000000000000000a:  R_X86_64_PLT32\tdirect_helper-0x4\n       e: 83 c0 07                     \taddl\t$0x7, %eax\n      11: 59                           \tpopq\t%rcx\n      12: c3                           \tretq"
+    },
+    "i686-unknown-linux-gnu": {
+      "target": "i686-unknown-linux-gnu",
+      "emitted_obj_size_bytes": 704,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 4077092,
+      "live_executed": true,
+      "execution_output": "OK:142",
+      "disassembly_excerpt": "\ndirect_i686-unknown-linux-gnu.o:\tfile format elf32-i386\n\nDisassembly of section .text:\n\n00000000 <direct_helper>:\n       0: 8b 44 24 04                  \tmovl\t0x4(%esp), %eax\n       4: 83 c0 23                     \taddl\t$0x23, %eax\n       7: c3                           \tretl\n\n00000008 <direct_entry>:\n       8: 83 ec 0c                     \tsubl\t$0xc, %esp\n       b: ff 74 24 10                  \tpushl\t0x10(%esp)\n       f: e8 fc ff ff ff               \tcalll\t0x10 <direct_entry+0x8>\n\t\t\t00000010:  R_386_PC32\tdirect_helper\n      14: 83 c0 07                     \taddl\t$0x7, %eax\n      17: 83 c4 10                     \taddl\t$0x10, %esp\n      1a: c3                           \tretl"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "target": "aarch64-unknown-linux-gnu",
+      "emitted_obj_size_bytes": 1024,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 1968,
+      "live_executed": true,
+      "execution_output": "OK:142",
+      "disassembly_excerpt": "\ndirect_aarch64-unknown-linux-gnu.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .text:\n\n0000000000000000 <direct_helper>:\n       0: 11008c00     \tadd\tw0, w0, #0x23\n       4: d65f03c0     \tret\n\n0000000000000008 <direct_entry>:\n       8: f81f0ffe     \tstr\tx30, [sp, #-0x10]!\n       c: 94000000     \tbl\t0xc <direct_entry+0x4>\n\t\t000000000000000c:  R_AARCH64_CALL26\tdirect_helper\n      10: 11001c00     \tadd\tw0, w0, #0x7\n      14: f84107fe     \tldr\tx30, [sp], #0x10\n      18: d65f03c0     \tret"
+    },
+    "aarch64-apple-darwin": {
+      "target": "aarch64-apple-darwin",
+      "emitted_obj_size_bytes": 424,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 16864,
+      "live_executed": false,
+      "execution_output": null,
+      "disassembly_excerpt": "\ndirect_aarch64-apple-darwin.o:\tfile format mach-o arm64\n\nDisassembly of section __TEXT,__text:\n\n0000000000000000 <_direct_helper>:\n       0: 11008c00     \tadd\tw0, w0, #0x23\n       4: d65f03c0     \tret\n\n0000000000000008 <_direct_entry>:\n       8: f81f0ffe     \tstr\tx30, [sp, #-0x10]!\n       c: 94000000     \tbl\t0xc <_direct_entry+0x4>\n\t\t000000000000000c:  ARM64_RELOC_BRANCH26\t_direct_helper\n      10: 11001c00     \tadd\tw0, w0, #0x7\n      14: f84107fe     \tldr\tx30, [sp], #0x10\n      18: d65f03c0     \tret"
+    },
+    "x86_64-pc-windows-msvc": {
+      "target": "x86_64-pc-windows-msvc",
+      "emitted_obj_size_bytes": 303,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 2560,
+      "live_executed": false,
+      "execution_output": null,
+      "disassembly_excerpt": "\ndirect_x86_64-pc-windows-msvc.o:\tfile format coff-x86-64\n\nDisassembly of section .text:\n\n0000000000000000 <direct_helper>:\n       0: 8d 41 23                     \tleal\t0x23(%rcx), %eax\n       3: c3                           \tretq\n       4: 0f 1f 40 00                  \tnopl\t(%rax)\n\n0000000000000008 <direct_entry>:\n       8: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       c: e8 00 00 00 00               \tcallq\t0x11 <direct_entry+0x9>\n\t\t000000000000000d:  IMAGE_REL_AMD64_REL32\tdirect_helper\n      11: 83 c0 07                     \taddl\t$0x7, %eax\n      14: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      18: c3                           \tretq"
+    },
+    "x86_64-pc-windows-gnu": {
+      "target": "x86_64-pc-windows-gnu",
+      "emitted_obj_size_bytes": 303,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 2560,
+      "live_executed": false,
+      "execution_output": null,
+      "disassembly_excerpt": "\ndirect_x86_64-pc-windows-gnu.o:\tfile format coff-x86-64\n\nDisassembly of section .text:\n\n0000000000000000 <direct_helper>:\n       0: 8d 41 23                     \tleal\t0x23(%rcx), %eax\n       3: c3                           \tretq\n       4: 0f 1f 40 00                  \tnopl\t(%rax)\n\n0000000000000008 <direct_entry>:\n       8: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       c: e8 00 00 00 00               \tcallq\t0x11 <direct_entry+0x9>\n\t\t000000000000000d:  IMAGE_REL_AMD64_REL32\tdirect_helper\n      11: 83 c0 07                     \taddl\t$0x7, %eax\n      14: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      18: c3                           \tretq"
+    },
+    "i686-pc-windows-msvc": {
+      "target": "i686-pc-windows-msvc",
+      "emitted_obj_size_bytes": 308,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 2560,
+      "live_executed": false,
+      "execution_output": null,
+      "disassembly_excerpt": "\ndirect_i686-pc-windows-msvc.o:\tfile format coff-i386\n\nDisassembly of section .text:\n\n00000000 <_direct_helper>:\n       0: 8b 44 24 04                  \tmovl\t0x4(%esp), %eax\n       4: 83 c0 23                     \taddl\t$0x23, %eax\n       7: c3                           \tretl\n\n00000008 <_direct_entry>:\n       8: 83 ec 0c                     \tsubl\t$0xc, %esp\n       b: ff 74 24 10                  \tpushl\t0x10(%esp)\n       f: e8 00 00 00 00               \tcalll\t0x14 <_direct_entry+0xc>\n\t\t\t00000010:  IMAGE_REL_I386_REL32\t_direct_helper\n      14: 83 c0 07                     \taddl\t$0x7, %eax\n      17: 83 c4 10                     \taddl\t$0x10, %esp\n      1a: c3                           \tretl"
+    },
+    "aarch64-pc-windows-msvc": {
+      "target": "aarch64-pc-windows-msvc",
+      "emitted_obj_size_bytes": 306,
+      "llvm_readobj_validated": true,
+      "rust_lld_linked_successfully": true,
+      "linked_artifact_bytes": 2560,
+      "live_executed": false,
+      "execution_output": null,
+      "disassembly_excerpt": "\ndirect_aarch64-pc-windows-msvc.o:\tfile format coff-arm64\n\nDisassembly of section .text:\n\n0000000000000000 <direct_helper>:\n       0: 11008c00     \tadd\tw0, w0, #0x23\n       4: d65f03c0     \tret\n\n0000000000000008 <direct_entry>:\n       8: f81f0ffe     \tstr\tx30, [sp, #-0x10]!\n       c: 94000000     \tbl\t0xc <direct_entry+0x4>\n\t\t000000000000000c:  IMAGE_REL_ARM64_BRANCH26\tdirect_helper\n      10: 11001c00     \tadd\tw0, w0, #0x7\n      14: f84107fe     \tldr\tx30, [sp], #0x10\n      18: d65f03c0     \tret"
+    }
+  }
+}

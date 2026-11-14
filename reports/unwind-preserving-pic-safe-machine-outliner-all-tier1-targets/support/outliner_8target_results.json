@@ -1,0 +1,249 @@
+{
+  "targets_evaluated": 8,
+  "all_8_targets_assembled_and_linked_zero_errors": true,
+  "max_unwind_table_bloat_bytes": 0,
+  "mean_text_reduction_pct": 48.57,
+  "mean_net_image_reduction_pct": 45.47,
+  "per_target": {
+    "x86_64-unknown-linux-gnu": {
+      "target": "x86_64-unknown-linux-gnu",
+      "baseline_Oz": {
+        "text_bytes": 1849,
+        "unwind_bytes": 280,
+        "text_plus_unwind_bytes": 2129,
+        "obj_file_bytes": 4768
+      },
+      "llvm_23_1_1_outliner_status_on_std": "ok",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 607,
+        "unwind_bytes": 320,
+        "text_plus_unwind_bytes": 927,
+        "obj_file_bytes": 4824
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 623,
+        "unwind_bytes": 280,
+        "text_plus_unwind_bytes": 903,
+        "obj_file_bytes": 4360,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 1226,
+        "text_saved_pct": 66.31,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 1226,
+        "net_text_plus_unwind_saved_pct": 57.59,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "aarch64-unknown-linux-gnu": {
+      "target": "aarch64-unknown-linux-gnu",
+      "baseline_Oz": {
+        "text_bytes": 2072,
+        "unwind_bytes": 240,
+        "text_plus_unwind_bytes": 2312,
+        "obj_file_bytes": 5240
+      },
+      "llvm_23_1_1_outliner_status_on_std": "ok",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 1644,
+        "unwind_bytes": 280,
+        "text_plus_unwind_bytes": 1924,
+        "obj_file_bytes": 6168
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 1500,
+        "unwind_bytes": 240,
+        "text_plus_unwind_bytes": 1740,
+        "obj_file_bytes": 5520,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 572,
+        "text_saved_pct": 27.61,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 572,
+        "net_text_plus_unwind_saved_pct": 24.74,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "i686-unknown-linux-gnu": {
+      "target": "i686-unknown-linux-gnu",
+      "baseline_Oz": {
+        "text_bytes": 2747,
+        "unwind_bytes": 560,
+        "text_plus_unwind_bytes": 3307,
+        "obj_file_bytes": 5052
+      },
+      "llvm_23_1_1_outliner_status_on_std": "LLVM X86InstrInfo.cpp:10691 checks X86::RIP but misses 32-bit PIC .L0$pb GOTPC -> MCAssembler error: expected relocatable expression",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 1081,
+        "unwind_bytes": 640,
+        "text_plus_unwind_bytes": 1721,
+        "obj_file_bytes": 4484
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 1080,
+        "unwind_bytes": 560,
+        "text_plus_unwind_bytes": 1640,
+        "obj_file_bytes": 3864,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 1667,
+        "text_saved_pct": 60.68,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 1667,
+        "net_text_plus_unwind_saved_pct": 50.41,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "x86_64-pc-windows-gnu": {
+      "target": "x86_64-pc-windows-gnu",
+      "baseline_Oz": {
+        "text_bytes": 1839,
+        "unwind_bytes": 36,
+        "text_plus_unwind_bytes": 1875,
+        "obj_file_bytes": 2827
+      },
+      "llvm_23_1_1_outliner_status_on_std": "LLVM X86InstrInfo.cpp:10665 outlines across SEH_BeginEpilogue/SEH_EndEpilogue -> MCWin64EH.cpp error: Missing .seh_endepilogue",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 597,
+        "unwind_bytes": 36,
+        "text_plus_unwind_bytes": 633,
+        "obj_file_bytes": 1821
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 614,
+        "unwind_bytes": 36,
+        "text_plus_unwind_bytes": 650,
+        "obj_file_bytes": 1649,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 1225,
+        "text_saved_pct": 66.61,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 1225,
+        "net_text_plus_unwind_saved_pct": 65.33,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "x86_64-pc-windows-msvc": {
+      "target": "x86_64-pc-windows-msvc",
+      "baseline_Oz": {
+        "text_bytes": 1839,
+        "unwind_bytes": 36,
+        "text_plus_unwind_bytes": 1875,
+        "obj_file_bytes": 3587
+      },
+      "llvm_23_1_1_outliner_status_on_std": "LLVM X86InstrInfo.cpp:10665 outlines across SEH_BeginEpilogue/SEH_EndEpilogue -> MCWin64EH.cpp error: Missing .seh_endepilogue",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 597,
+        "unwind_bytes": 36,
+        "text_plus_unwind_bytes": 633,
+        "obj_file_bytes": 2733
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 613,
+        "unwind_bytes": 36,
+        "text_plus_unwind_bytes": 649,
+        "obj_file_bytes": 2488,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 1226,
+        "text_saved_pct": 66.67,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 1226,
+        "net_text_plus_unwind_saved_pct": 65.39,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "i686-pc-windows-msvc": {
+      "target": "i686-pc-windows-msvc",
+      "baseline_Oz": {
+        "text_bytes": 2702,
+        "unwind_bytes": 0,
+        "text_plus_unwind_bytes": 2702,
+        "obj_file_bytes": 4242
+      },
+      "llvm_23_1_1_outliner_status_on_std": "LLVM X86InstrInfo.cpp:10665 splits CodeView FPO directives -> MCCodeView.cpp error: missing .cv_fpo_endprologue",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 1038,
+        "unwind_bytes": 0,
+        "text_plus_unwind_bytes": 1038,
+        "obj_file_bytes": 3328
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 1035,
+        "unwind_bytes": 0,
+        "text_plus_unwind_bytes": 1035,
+        "obj_file_bytes": 2703,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 1667,
+        "text_saved_pct": 61.7,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 1667,
+        "net_text_plus_unwind_saved_pct": 61.7,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "aarch64-pc-windows-msvc": {
+      "target": "aarch64-pc-windows-msvc",
+      "baseline_Oz": {
+        "text_bytes": 2072,
+        "unwind_bytes": 32,
+        "text_plus_unwind_bytes": 2104,
+        "obj_file_bytes": 3806
+      },
+      "llvm_23_1_1_outliner_status_on_std": "LLVM AArch64InstrInfo.cpp:10792 usesWindowsCFI() returns false unconditionally -> 0 outlined functions",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 2072,
+        "unwind_bytes": 32,
+        "text_plus_unwind_bytes": 2104,
+        "obj_file_bytes": 3806
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 1500,
+        "unwind_bytes": 32,
+        "text_plus_unwind_bytes": 1532,
+        "obj_file_bytes": 3361,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 572,
+        "text_saved_pct": 27.61,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 572,
+        "net_text_plus_unwind_saved_pct": 27.19,
+        "rust_lld_linked_cleanly": true
+      }
+    },
+    "aarch64-apple-darwin": {
+      "target": "aarch64-apple-darwin",
+      "baseline_Oz": {
+        "text_bytes": 2072,
+        "unwind_bytes": 0,
+        "text_plus_unwind_bytes": 2072,
+        "obj_file_bytes": 3336
+      },
+      "llvm_23_1_1_outliner_status_on_std": "ok",
+      "llvm_23_1_1_outliner_nostd_probe": {
+        "text_bytes": 692,
+        "unwind_bytes": 0,
+        "text_plus_unwind_bytes": 692,
+        "obj_file_bytes": 2240
+      },
+      "verified_machine_outliner": {
+        "text_bytes": 1836,
+        "unwind_bytes": 0,
+        "text_plus_unwind_bytes": 1836,
+        "obj_file_bytes": 3208,
+        "outlined_thunks_emitted": 1,
+        "call_sites_outlined": 8,
+        "text_saved_bytes": 236,
+        "text_saved_pct": 11.39,
+        "unwind_table_delta_bytes": 0,
+        "net_text_plus_unwind_saved_bytes": 236,
+        "net_text_plus_unwind_saved_pct": 11.39,
+        "rust_lld_linked_cleanly": true
+      }
+    }
+  }
+}

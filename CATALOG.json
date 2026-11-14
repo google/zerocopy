@@ -11567,6 +11567,45 @@
         "lean/kernel"
       ]
     },
+    "direct-verified-object-section-and-relocation-emitter-v0": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 object/relocation emission"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 MC object writers and rust-lld linker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "isa",
+        "systems"
+      ]
+    },
     "ebpf-certificate-verifying-kernels-and-verified-jits-2014-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -17969,6 +18008,36 @@
         "systems/sandboxing",
         "rust/unsafe",
         "verification/program-logics"
+      ]
+    },
+    "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 target codegen"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 code generator, llvm-mca, and rust-lld"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "isa",
+        "isa/x86-64",
+        "isa/aarch64",
+        "systems"
       ]
     },
     "minirust-core-calculi-basic-memory-and-nondeterminism": {
@@ -28630,6 +28699,46 @@
         "verification/untrusted-dependencies"
       ]
     },
+    "unwind-preserving-pic-safe-machine-outliner-all-tier1-targets": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 unwind-table generation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 MachineOutliner, X86InstrInfo, AArch64InstrInfo, MCWin64EH, and MCCodeView"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "isa",
+        "isa/x86-64",
+        "isa/aarch64"
+      ]
+    },
     "unwinding-on-elf-and-macho-targets": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -29239,6 +29348,84 @@
         "rustc",
         "anneal",
         "agents"
+      ]
+    },
+    "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and Tier 1 target codegen"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 MachineBlockPlacement (Ext-TSP), MachineFunctionSplitter, and X86AsmBackend"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "isa",
+        "isa/x86-64",
+        "isa/aarch64"
+      ]
+    },
+    "verified-pre-proof-reachability-pruning-and-address-safe-icf": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 monomorphization collector and symbol visibility rules"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM 23.1.1 MergeFunctions, SHT_LLVM_ADDRSIG, and rust-lld (--gc-sections / --icf)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "rustc",
+        "llvm",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "anneal"
       ]
     },
     "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap": {
