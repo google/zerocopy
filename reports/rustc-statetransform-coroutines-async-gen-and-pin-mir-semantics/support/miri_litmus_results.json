@@ -1,0 +1,154 @@
+{
+  "miri_version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+  "total_safe_litmus_tests": 20,
+  "tree_borrows_safe_pass_count": 20,
+  "stacked_borrows_safe_pass_count": 20,
+  "forged_unpin_negative_control": {
+    "tree_borrows_detected_ub": true,
+    "tree_borrows_diagnostic": "error: Undefined Behavior: read access through <525> at alloc222[0x0] is forbidden\n   |              ^^^^^^^^^^^^^^ Undefined Behavior occurred here\nerror: aborting due to 1 previous error",
+    "stacked_borrows_detected_ub": true,
+    "stacked_borrows_diagnostic": "error: Undefined Behavior: attempting a read access using <551> at alloc222[0x0], but that tag does not exist in the borrow stack for this location\nerror: aborting due to 1 previous error"
+  },
+  "litmus_tests": [
+    {
+      "id": "L01",
+      "name": "l01_shared_ref_1_yield",
+      "category": "self_ref_shared",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L02",
+      "name": "l02_shared_ref_3_yields",
+      "category": "self_ref_shared",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L03",
+      "name": "l03_mut_ref_1_yield",
+      "category": "self_ref_mut",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L04",
+      "name": "l04_split_at_mut_2_yields",
+      "category": "self_ref_mut_split",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L05",
+      "name": "l05_inner_unpin_sibling_mutation",
+      "category": "inner_unpin_in_outer_pinned",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L06",
+      "name": "l06_outer_and_inner_self_ref",
+      "category": "nested_poll_self_ref",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L07",
+      "name": "l07_layered_reborrow_across_awaits",
+      "category": "layered_reborrow",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L08",
+      "name": "l08_unsafecell_in_frame",
+      "category": "interior_mutability",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L09",
+      "name": "l09_partial_drop_at_suspend0",
+      "category": "partial_drop_suspend",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L10",
+      "name": "l10_partial_drop_at_suspend1",
+      "category": "partial_drop_suspend",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L11",
+      "name": "l11_panic_mid_await_with_self_ref",
+      "category": "unwind_poison_and_drop",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L12",
+      "name": "l12_unresumed_upvar_drop",
+      "category": "unresumed_drop",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L13",
+      "name": "l13_disjoint_saved_locals_storage_reuse",
+      "category": "storage_conflict_overlap",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L14",
+      "name": "l14_saved_index_projection",
+      "category": "saved_index_projection",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L15",
+      "name": "l15_gen_block_movable",
+      "category": "gen_block_movable_unpin",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L16",
+      "name": "l16_gen_fn_with_drops",
+      "category": "gen_fn_partial_drop",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L17",
+      "name": "l17_static_raw_coroutine",
+      "category": "static_coroutine",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L18",
+      "name": "l18_boxed_pin_self_ref",
+      "category": "heap_boxed_pin_self_ref",
+      "tree_borrows": "PASS (0 UB)",
+      "stacked_borrows": "PASS (0 UB)"
+    },
+    {
+      "id": "L19",
+      "name": "l19_resumed_after_return_panics",
+      "category": "state_guard_returned",
+      "tree_borrows": "PASS (defined panic)",
+      "stacked_borrows": "PASS (defined panic)"
+    },
+    {
+      "id": "L20",
+      "name": "l20_resumed_after_panic_panics",
+      "category": "state_guard_poisoned",
+      "tree_borrows": "PASS (defined panic, 0 double-drop)",
+      "stacked_borrows": "PASS (defined panic, 0 double-drop)"
+    }
+  ]
+}

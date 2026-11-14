@@ -1,0 +1,64 @@
+{
+  "pass_name": "StateTransform",
+  "source_files": [
+    "compiler/rustc_mir_transform/src/coroutine/mod.rs",
+    "compiler/rustc_mir_transform/src/coroutine/layout.rs",
+    "compiler/rustc_mir_transform/src/coroutine/drop.rs",
+    "compiler/rustc_mir_transform/src/coroutine/by_move_body.rs",
+    "compiler/rustc_ty_utils/src/abi.rs",
+    "compiler/rustc_middle/src/ty/layout.rs",
+    "src/tools/miri/src/borrow_tracker/tree_borrows/mod.rs"
+  ],
+  "reserved_variants": {
+    "0": {"name": "UNRESUMED", "debug_label": "Unresumed", "resume_behavior": "Jump to former START_BLOCK (entry point)", "drop_behavior": "Jump to drop_clean block (drops captured upvars only)"},
+    "1": {"name": "RETURNED", "debug_label": "Returned", "resume_behavior": "Async/Coroutine: Assert(false, ResumedAfterReturn); Gen: return Option::None; AsyncGen: return Poll::Ready(None)", "drop_behavior": "Fall through to default_block (immediate Return; all locals already dropped)"},
+    "2": {"name": "POISONED", "debug_label": "Panicked", "resume_behavior": "Assert(false, ResumedAfterPanic) when can_unwind is true; omitted when panic=abort or !can_unwind", "drop_behavior": "Fall through to default_block (immediate Return; unwind cleanup already dropped live fields)"},
+    "3..3+K": {"name": "Suspend0..Suspend(K-1)", "debug_label": "Suspend{i}", "resume_behavior": "Emit StorageLive for non-remapped storage-live locals, move resume_arg, Goto(point.resume)", "drop_behavior": "Emit StorageLive for non-remapped storage-live locals, Goto(point.drop) ladder ending at CoroutineDrop -> Return"}
+  },
+  "coroutine_kinds": [
+    {
+      "kind": "Async (async fn / async {})",
+      "movability": "Static (!Unpin unless explicitly overridden)",
+      "self_arg_ty": "Pin<&mut CoroutineState>",
+      "resume_arg_ty": "&mut Context<'_> (bridged to ResumeTy(NonNull<Context>))",
+      "return_ty": "Poll<Output>",
+      "llvm_self_noalias": false,
+      "llvm_self_nofree": false,
+      "llvm_self_writable": false,
+      "tree_borrows_retag_on_self": "NOP (NewPermission::new returns None because !ty_is_unpin)"
+    },
+    {
+      "kind": "Gen (gen fn / gen {})",
+      "movability": "Movable (implements Unpin when upvars/locals are Unpin)",
+      "self_arg_ty": "&mut CoroutineState",
+      "resume_arg_ty": "none (arg_count = 1)",
+      "return_ty": "Option<Yield>",
+      "llvm_self_noalias": true,
+      "llvm_self_nofree": true,
+      "llvm_self_writable": true,
+      "tree_borrows_retag_on_self": "StrongProtector + ReservedFrz (no self-referential borrows permitted across yield in movable gen)"
+    },
+    {
+      "kind": "AsyncGen (async gen fn / async gen {})",
+      "movability": "Static (!Unpin)",
+      "self_arg_ty": "Pin<&mut CoroutineState>",
+      "resume_arg_ty": "&mut Context<'_>",
+      "return_ty": "Poll<Option<Yield>>",
+      "llvm_self_noalias": false,
+      "llvm_self_nofree": false,
+      "llvm_self_writable": false,
+      "tree_borrows_retag_on_self": "NOP (NewPermission::new returns None because !ty_is_unpin)"
+    },
+    {
+      "kind": "Coroutine (#[coroutine] closure, static vs. movable)",
+      "movability": "Static (!Unpin) or Movable (Unpin if fields are Unpin)",
+      "self_arg_ty": "Pin<&mut CoroutineState>",
+      "resume_arg_ty": "Resume",
+      "return_ty": "CoroutineState<Yield, Return>",
+      "llvm_self_noalias": "true iff Movable && fields: Unpin",
+      "llvm_self_nofree": "true iff Movable && fields: Unpin",
+      "llvm_self_writable": "true iff Movable && fields: Unpin",
+      "tree_borrows_retag_on_self": "NOP when Static (!Unpin); StrongProtector + ReservedFrz when Movable (Unpin)"
+    }
+  ]
+}

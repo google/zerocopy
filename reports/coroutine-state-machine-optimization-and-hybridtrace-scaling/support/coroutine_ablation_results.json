@@ -1,0 +1,602 @@
+{
+  "toolchain": "rustc 1.99.1 (LLVM 23.1.1)",
+  "iterations_per_benchmark": 50000,
+  "summary_by_stage": [
+    {
+      "stage": "T0_O0_baseline",
+      "geomean_latency_us": 4579.79,
+      "total_latency_us": 61479.2,
+      "text_bytes": 64173,
+      "sum_driver_frame_bytes": 4016,
+      "sum_driver_memcpy_calls": 2,
+      "sum_driver_instructions": 1028
+    },
+    {
+      "stage": "T1_inline_only",
+      "geomean_latency_us": 1387.07,
+      "total_latency_us": 19286.39,
+      "text_bytes": 34593,
+      "sum_driver_frame_bytes": 4632,
+      "sum_driver_memcpy_calls": 4,
+      "sum_driver_instructions": 2396
+    },
+    {
+      "stage": "T2_inline_sroa_memcpyopt",
+      "geomean_latency_us": 523.67,
+      "total_latency_us": 6982.72,
+      "text_bytes": 22771,
+      "sum_driver_frame_bytes": 1248,
+      "sum_driver_memcpy_calls": 0,
+      "sum_driver_instructions": 1669
+    },
+    {
+      "stage": "T3_plus_jumpthreading_cvp_simplifycfg",
+      "geomean_latency_us": 471.12,
+      "total_latency_us": 6385.35,
+      "text_bytes": 20155,
+      "sum_driver_frame_bytes": 856,
+      "sum_driver_memcpy_calls": 0,
+      "sum_driver_instructions": 1245
+    },
+    {
+      "stage": "T3b_two_round_sroa_jumpthread_gvn",
+      "geomean_latency_us": 339.79,
+      "total_latency_us": 5007.17,
+      "text_bytes": 18058,
+      "sum_driver_frame_bytes": 656,
+      "sum_driver_memcpy_calls": 0,
+      "sum_driver_instructions": 1030
+    },
+    {
+      "stage": "T4_full_O3",
+      "geomean_latency_us": 42.63,
+      "total_latency_us": 1353.95,
+      "text_bytes": 5484,
+      "sum_driver_frame_bytes": 24,
+      "sum_driver_memcpy_calls": 0,
+      "sum_driver_instructions": 585
+    }
+  ],
+  "stages": [
+    {
+      "stage": "T0_O0_baseline",
+      "text_bytes": 64173,
+      "timings_us": {
+        "B01_channel_ping_pong": 2734.75,
+        "B02_buffered_stream_parse": 4016.58,
+        "B03_join4_combinator": 4992.18,
+        "B04_select4_state_machine": 2523.67,
+        "B05_deep_nested_poll_depth8": 16946.79,
+        "B06_large_frame_memcpy_elision": 14643.65,
+        "B07_gen_fibonacci_fold": 1476.29,
+        "B08_async_gen_chunked_sum": 3776.94,
+        "B09_tower_retry_pipeline": 2801.58,
+        "B10_http2_mux_dispatcher": 7566.77
+      },
+      "checksums": {
+        "B01_channel_ping_pong": 2953583130474106855,
+        "B02_buffered_stream_parse": 328944192220905660,
+        "B03_join4_combinator": 5000400000,
+        "B04_select4_state_machine": 1251300000,
+        "B05_deep_nested_poll_depth8": 1251775000,
+        "B06_large_frame_memcpy_elision": 4999900000,
+        "B07_gen_fibonacci_fold": 8750025000,
+        "B08_async_gen_chunked_sum": 3750225000,
+        "B09_tower_retry_pipeline": 1250725000,
+        "B10_http2_mux_dispatcher": 1250675000
+      },
+      "asm_metrics": {
+        "run_b01_channel_ping_pong": {
+          "frame_bytes": 328,
+          "memcpy_calls": 0,
+          "inst_count": 109,
+          "indirect_jmps": 0
+        },
+        "run_b02_buffered_stream_parse": {
+          "frame_bytes": 376,
+          "memcpy_calls": 0,
+          "inst_count": 111,
+          "indirect_jmps": 0
+        },
+        "run_b03_join4_combinator": {
+          "frame_bytes": 424,
+          "memcpy_calls": 0,
+          "inst_count": 112,
+          "indirect_jmps": 0
+        },
+        "run_b04_select4_state_machine": {
+          "frame_bytes": 296,
+          "memcpy_calls": 0,
+          "inst_count": 104,
+          "indirect_jmps": 0
+        },
+        "run_b05_deep_nested_poll_depth8": {
+          "frame_bytes": 600,
+          "memcpy_calls": 1,
+          "inst_count": 106,
+          "indirect_jmps": 0
+        },
+        "run_b06_large_frame_memcpy_elision": {
+          "frame_bytes": 856,
+          "memcpy_calls": 1,
+          "inst_count": 106,
+          "indirect_jmps": 0
+        },
+        "run_b07_gen_fibonacci_fold": {
+          "frame_bytes": 200,
+          "memcpy_calls": 0,
+          "inst_count": 64,
+          "indirect_jmps": 0
+        },
+        "run_b08_async_gen_chunked_sum": {
+          "frame_bytes": 328,
+          "memcpy_calls": 0,
+          "inst_count": 106,
+          "indirect_jmps": 0
+        },
+        "run_b09_tower_retry_pipeline": {
+          "frame_bytes": 312,
+          "memcpy_calls": 0,
+          "inst_count": 106,
+          "indirect_jmps": 0
+        },
+        "run_b10_http2_mux_dispatcher": {
+          "frame_bytes": 296,
+          "memcpy_calls": 0,
+          "inst_count": 104,
+          "indirect_jmps": 0
+        }
+      }
+    },
+    {
+      "stage": "T1_inline_only",
+      "text_bytes": 34593,
+      "timings_us": {
+        "B01_channel_ping_pong": 932.87,
+        "B02_buffered_stream_parse": 1267.05,
+        "B03_join4_combinator": 1231.46,
+        "B04_select4_state_machine": 688.16,
+        "B05_deep_nested_poll_depth8": 7386.52,
+        "B06_large_frame_memcpy_elision": 3570.9,
+        "B07_gen_fibonacci_fold": 843.22,
+        "B08_async_gen_chunked_sum": 954.79,
+        "B09_tower_retry_pipeline": 742.64,
+        "B10_http2_mux_dispatcher": 1668.78
+      },
+      "checksums": {
+        "B01_channel_ping_pong": 2953583130474106855,
+        "B02_buffered_stream_parse": 328944192220905660,
+        "B03_join4_combinator": 5000400000,
+        "B04_select4_state_machine": 1251300000,
+        "B05_deep_nested_poll_depth8": 1251775000,
+        "B06_large_frame_memcpy_elision": 4999900000,
+        "B07_gen_fibonacci_fold": 8750025000,
+        "B08_async_gen_chunked_sum": 3750225000,
+        "B09_tower_retry_pipeline": 1250725000,
+        "B10_http2_mux_dispatcher": 1250675000
+      },
+      "asm_metrics": {
+        "run_b01_channel_ping_pong": {
+          "frame_bytes": 256,
+          "memcpy_calls": 0,
+          "inst_count": 153,
+          "indirect_jmps": 2
+        },
+        "run_b02_buffered_stream_parse": {
+          "frame_bytes": 320,
+          "memcpy_calls": 0,
+          "inst_count": 200,
+          "indirect_jmps": 2
+        },
+        "run_b03_join4_combinator": {
+          "frame_bytes": 352,
+          "memcpy_calls": 0,
+          "inst_count": 219,
+          "indirect_jmps": 2
+        },
+        "run_b04_select4_state_machine": {
+          "frame_bytes": 240,
+          "memcpy_calls": 0,
+          "inst_count": 279,
+          "indirect_jmps": 2
+        },
+        "run_b05_deep_nested_poll_depth8": {
+          "frame_bytes": 1496,
+          "memcpy_calls": 3,
+          "inst_count": 706,
+          "indirect_jmps": 16
+        },
+        "run_b06_large_frame_memcpy_elision": {
+          "frame_bytes": 1064,
+          "memcpy_calls": 1,
+          "inst_count": 157,
+          "indirect_jmps": 2
+        },
+        "run_b07_gen_fibonacci_fold": {
+          "frame_bytes": 168,
+          "memcpy_calls": 0,
+          "inst_count": 76,
+          "indirect_jmps": 2
+        },
+        "run_b08_async_gen_chunked_sum": {
+          "frame_bytes": 256,
+          "memcpy_calls": 0,
+          "inst_count": 181,
+          "indirect_jmps": 2
+        },
+        "run_b09_tower_retry_pipeline": {
+          "frame_bytes": 256,
+          "memcpy_calls": 0,
+          "inst_count": 181,
+          "indirect_jmps": 2
+        },
+        "run_b10_http2_mux_dispatcher": {
+          "frame_bytes": 224,
+          "memcpy_calls": 0,
+          "inst_count": 244,
+          "indirect_jmps": 2
+        }
+      }
+    },
+    {
+      "stage": "T2_inline_sroa_memcpyopt",
+      "text_bytes": 22771,
+      "timings_us": {
+        "B01_channel_ping_pong": 270.53,
+        "B02_buffered_stream_parse": 621.91,
+        "B03_join4_combinator": 460.34,
+        "B04_select4_state_machine": 296.56,
+        "B05_deep_nested_poll_depth8": 2028.21,
+        "B06_large_frame_memcpy_elision": 1691.94,
+        "B07_gen_fibonacci_fold": 294.23,
+        "B08_async_gen_chunked_sum": 382.57,
+        "B09_tower_retry_pipeline": 257.42,
+        "B10_http2_mux_dispatcher": 679.01
+      },
+      "checksums": {
+        "B01_channel_ping_pong": 2953583130474106855,
+        "B02_buffered_stream_parse": 328944192220905660,
+        "B03_join4_combinator": 5000400000,
+        "B04_select4_state_machine": 1251300000,
+        "B05_deep_nested_poll_depth8": 1251775000,
+        "B06_large_frame_memcpy_elision": 4999900000,
+        "B07_gen_fibonacci_fold": 8750025000,
+        "B08_async_gen_chunked_sum": 3750225000,
+        "B09_tower_retry_pipeline": 1250725000,
+        "B10_http2_mux_dispatcher": 1250675000
+      },
+      "asm_metrics": {
+        "run_b01_channel_ping_pong": {
+          "frame_bytes": 48,
+          "memcpy_calls": 0,
+          "inst_count": 101,
+          "indirect_jmps": 2
+        },
+        "run_b02_buffered_stream_parse": {
+          "frame_bytes": 120,
+          "memcpy_calls": 0,
+          "inst_count": 134,
+          "indirect_jmps": 2
+        },
+        "run_b03_join4_combinator": {
+          "frame_bytes": 136,
+          "memcpy_calls": 0,
+          "inst_count": 186,
+          "indirect_jmps": 2
+        },
+        "run_b04_select4_state_machine": {
+          "frame_bytes": 72,
+          "memcpy_calls": 0,
+          "inst_count": 203,
+          "indirect_jmps": 2
+        },
+        "run_b05_deep_nested_poll_depth8": {
+          "frame_bytes": 328,
+          "memcpy_calls": 0,
+          "inst_count": 474,
+          "indirect_jmps": 16
+        },
+        "run_b06_large_frame_memcpy_elision": {
+          "frame_bytes": 376,
+          "memcpy_calls": 0,
+          "inst_count": 105,
+          "indirect_jmps": 2
+        },
+        "run_b07_gen_fibonacci_fold": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 56,
+          "indirect_jmps": 2
+        },
+        "run_b08_async_gen_chunked_sum": {
+          "frame_bytes": 56,
+          "memcpy_calls": 0,
+          "inst_count": 120,
+          "indirect_jmps": 2
+        },
+        "run_b09_tower_retry_pipeline": {
+          "frame_bytes": 56,
+          "memcpy_calls": 0,
+          "inst_count": 116,
+          "indirect_jmps": 2
+        },
+        "run_b10_http2_mux_dispatcher": {
+          "frame_bytes": 56,
+          "memcpy_calls": 0,
+          "inst_count": 174,
+          "indirect_jmps": 2
+        }
+      }
+    },
+    {
+      "stage": "T3_plus_jumpthreading_cvp_simplifycfg",
+      "text_bytes": 20155,
+      "timings_us": {
+        "B01_channel_ping_pong": 191.21,
+        "B02_buffered_stream_parse": 514.95,
+        "B03_join4_combinator": 502.77,
+        "B04_select4_state_machine": 258.05,
+        "B05_deep_nested_poll_depth8": 1669.5,
+        "B06_large_frame_memcpy_elision": 1753.64,
+        "B07_gen_fibonacci_fold": 294.21,
+        "B08_async_gen_chunked_sum": 338.26,
+        "B09_tower_retry_pipeline": 227.97,
+        "B10_http2_mux_dispatcher": 634.79
+      },
+      "checksums": {
+        "B01_channel_ping_pong": 2953583130474106855,
+        "B02_buffered_stream_parse": 328944192220905660,
+        "B03_join4_combinator": 5000400000,
+        "B04_select4_state_machine": 1251300000,
+        "B05_deep_nested_poll_depth8": 1251775000,
+        "B06_large_frame_memcpy_elision": 4999900000,
+        "B07_gen_fibonacci_fold": 8750025000,
+        "B08_async_gen_chunked_sum": 3750225000,
+        "B09_tower_retry_pipeline": 1250725000,
+        "B10_http2_mux_dispatcher": 1250675000
+      },
+      "asm_metrics": {
+        "run_b01_channel_ping_pong": {
+          "frame_bytes": 16,
+          "memcpy_calls": 0,
+          "inst_count": 71,
+          "indirect_jmps": 1
+        },
+        "run_b02_buffered_stream_parse": {
+          "frame_bytes": 96,
+          "memcpy_calls": 0,
+          "inst_count": 101,
+          "indirect_jmps": 1
+        },
+        "run_b03_join4_combinator": {
+          "frame_bytes": 56,
+          "memcpy_calls": 0,
+          "inst_count": 124,
+          "indirect_jmps": 2
+        },
+        "run_b04_select4_state_machine": {
+          "frame_bytes": 16,
+          "memcpy_calls": 0,
+          "inst_count": 150,
+          "indirect_jmps": 3
+        },
+        "run_b05_deep_nested_poll_depth8": {
+          "frame_bytes": 232,
+          "memcpy_calls": 0,
+          "inst_count": 349,
+          "indirect_jmps": 15
+        },
+        "run_b06_large_frame_memcpy_elision": {
+          "frame_bytes": 376,
+          "memcpy_calls": 0,
+          "inst_count": 94,
+          "indirect_jmps": 1
+        },
+        "run_b07_gen_fibonacci_fold": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 54,
+          "indirect_jmps": 2
+        },
+        "run_b08_async_gen_chunked_sum": {
+          "frame_bytes": 16,
+          "memcpy_calls": 0,
+          "inst_count": 85,
+          "indirect_jmps": 2
+        },
+        "run_b09_tower_retry_pipeline": {
+          "frame_bytes": 24,
+          "memcpy_calls": 0,
+          "inst_count": 105,
+          "indirect_jmps": 2
+        },
+        "run_b10_http2_mux_dispatcher": {
+          "frame_bytes": 24,
+          "memcpy_calls": 0,
+          "inst_count": 112,
+          "indirect_jmps": 2
+        }
+      }
+    },
+    {
+      "stage": "T3b_two_round_sroa_jumpthread_gvn",
+      "text_bytes": 18058,
+      "timings_us": {
+        "B01_channel_ping_pong": 102.97,
+        "B02_buffered_stream_parse": 567.93,
+        "B03_join4_combinator": 308.88,
+        "B04_select4_state_machine": 117.68,
+        "B05_deep_nested_poll_depth8": 1141.87,
+        "B06_large_frame_memcpy_elision": 1668.2,
+        "B07_gen_fibonacci_fold": 279.49,
+        "B08_async_gen_chunked_sum": 266.96,
+        "B09_tower_retry_pipeline": 183.89,
+        "B10_http2_mux_dispatcher": 369.3
+      },
+      "checksums": {
+        "B01_channel_ping_pong": 2953583130474106855,
+        "B02_buffered_stream_parse": 328944192220905660,
+        "B03_join4_combinator": 5000400000,
+        "B04_select4_state_machine": 1251300000,
+        "B05_deep_nested_poll_depth8": 1251775000,
+        "B06_large_frame_memcpy_elision": 4999900000,
+        "B07_gen_fibonacci_fold": 8750025000,
+        "B08_async_gen_chunked_sum": 3750225000,
+        "B09_tower_retry_pipeline": 1250725000,
+        "B10_http2_mux_dispatcher": 1250675000
+      },
+      "asm_metrics": {
+        "run_b01_channel_ping_pong": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 41,
+          "indirect_jmps": 0
+        },
+        "run_b02_buffered_stream_parse": {
+          "frame_bytes": 80,
+          "memcpy_calls": 0,
+          "inst_count": 118,
+          "indirect_jmps": 7
+        },
+        "run_b03_join4_combinator": {
+          "frame_bytes": 40,
+          "memcpy_calls": 0,
+          "inst_count": 124,
+          "indirect_jmps": 6
+        },
+        "run_b04_select4_state_machine": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 123,
+          "indirect_jmps": 9
+        },
+        "run_b05_deep_nested_poll_depth8": {
+          "frame_bytes": 184,
+          "memcpy_calls": 0,
+          "inst_count": 267,
+          "indirect_jmps": 7
+        },
+        "run_b06_large_frame_memcpy_elision": {
+          "frame_bytes": 352,
+          "memcpy_calls": 0,
+          "inst_count": 72,
+          "indirect_jmps": 0
+        },
+        "run_b07_gen_fibonacci_fold": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 54,
+          "indirect_jmps": 2
+        },
+        "run_b08_async_gen_chunked_sum": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 73,
+          "indirect_jmps": 2
+        },
+        "run_b09_tower_retry_pipeline": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 70,
+          "indirect_jmps": 2
+        },
+        "run_b10_http2_mux_dispatcher": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 88,
+          "indirect_jmps": 2
+        }
+      }
+    },
+    {
+      "stage": "T4_full_O3",
+      "text_bytes": 5484,
+      "timings_us": {
+        "B01_channel_ping_pong": 77.29,
+        "B02_buffered_stream_parse": 735.58,
+        "B03_join4_combinator": 24.2,
+        "B04_select4_state_machine": 69.91,
+        "B05_deep_nested_poll_depth8": 374.54,
+        "B06_large_frame_memcpy_elision": 18.9,
+        "B07_gen_fibonacci_fold": 9.73,
+        "B08_async_gen_chunked_sum": 11.41,
+        "B09_tower_retry_pipeline": 16.54,
+        "B10_http2_mux_dispatcher": 15.85
+      },
+      "checksums": {
+        "B01_channel_ping_pong": 2953583130474106855,
+        "B02_buffered_stream_parse": 328944192220905660,
+        "B03_join4_combinator": 5000400000,
+        "B04_select4_state_machine": 1251300000,
+        "B05_deep_nested_poll_depth8": 1251775000,
+        "B06_large_frame_memcpy_elision": 4999900000,
+        "B07_gen_fibonacci_fold": 8750025000,
+        "B08_async_gen_chunked_sum": 3750225000,
+        "B09_tower_retry_pipeline": 1250725000,
+        "B10_http2_mux_dispatcher": 1250675000
+      },
+      "asm_metrics": {
+        "run_b01_channel_ping_pong": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 40,
+          "indirect_jmps": 0
+        },
+        "run_b02_buffered_stream_parse": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 48,
+          "indirect_jmps": 0
+        },
+        "run_b03_join4_combinator": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 86,
+          "indirect_jmps": 0
+        },
+        "run_b04_select4_state_machine": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 33,
+          "indirect_jmps": 2
+        },
+        "run_b05_deep_nested_poll_depth8": {
+          "frame_bytes": 24,
+          "memcpy_calls": 0,
+          "inst_count": 178,
+          "indirect_jmps": 0
+        },
+        "run_b06_large_frame_memcpy_elision": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 9,
+          "indirect_jmps": 0
+        },
+        "run_b07_gen_fibonacci_fold": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 37,
+          "indirect_jmps": 0
+        },
+        "run_b08_async_gen_chunked_sum": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 41,
+          "indirect_jmps": 0
+        },
+        "run_b09_tower_retry_pipeline": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 58,
+          "indirect_jmps": 0
+        },
+        "run_b10_http2_mux_dispatcher": {
+          "frame_bytes": 0,
+          "memcpy_calls": 0,
+          "inst_count": 55,
+          "indirect_jmps": 0
+        }
+      }
+    }
+  ]
+}

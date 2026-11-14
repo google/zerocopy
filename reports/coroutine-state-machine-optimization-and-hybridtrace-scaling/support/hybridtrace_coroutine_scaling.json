@@ -1,0 +1,73 @@
+{
+  "lean_version": "Lean 4 v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "steps_per_basic_block": 6,
+  "bytes_per_step_raw": 24,
+  "scaling_points": [
+    {
+      "cfg_basic_blocks": 50,
+      "hybridtrace_steps": 300,
+      "raw_cert_bytes": 7200,
+      "zstd_cert_bytes": 2099,
+      "compression_ratio": 3.43,
+      "native_check_us": 21.94,
+      "native_steps_per_sec": 13672344,
+      "lean_kernel_check_ms": 853.92,
+      "lean_peak_rss_mb": 500.28
+    },
+    {
+      "cfg_basic_blocks": 100,
+      "hybridtrace_steps": 600,
+      "raw_cert_bytes": 14400,
+      "zstd_cert_bytes": 4080,
+      "compression_ratio": 3.53,
+      "native_check_us": 43.31,
+      "native_steps_per_sec": 13854811,
+      "lean_kernel_check_ms": 1969.04,
+      "lean_peak_rss_mb": 520.9
+    },
+    {
+      "cfg_basic_blocks": 200,
+      "hybridtrace_steps": 1200,
+      "raw_cert_bytes": 28800,
+      "zstd_cert_bytes": 8178,
+      "compression_ratio": 3.52,
+      "native_check_us": 86.47,
+      "native_steps_per_sec": 13877970,
+      "lean_kernel_check_ms": 5781.92,
+      "lean_peak_rss_mb": 557.05
+    },
+    {
+      "cfg_basic_blocks": 300,
+      "hybridtrace_steps": 1800,
+      "raw_cert_bytes": 43200,
+      "zstd_cert_bytes": 12488,
+      "compression_ratio": 3.46,
+      "native_check_us": 131.6,
+      "native_steps_per_sec": 13678174,
+      "lean_kernel_check_ms": 12105.92,
+      "lean_peak_rss_mb": 600.74
+    },
+    {
+      "cfg_basic_blocks": 400,
+      "hybridtrace_steps": 2400,
+      "raw_cert_bytes": 57600,
+      "zstd_cert_bytes": 16652,
+      "compression_ratio": 3.46,
+      "native_check_us": 192.1,
+      "native_steps_per_sec": 12493337,
+      "lean_kernel_check_ms": 21569.44,
+      "lean_peak_rss_mb": 634.58
+    },
+    {
+      "cfg_basic_blocks": 500,
+      "hybridtrace_steps": 3000,
+      "raw_cert_bytes": 72000,
+      "zstd_cert_bytes": 20317,
+      "compression_ratio": 3.54,
+      "native_check_us": 238.85,
+      "native_steps_per_sec": 12560095,
+      "lean_kernel_check_ms": 35248.29,
+      "lean_peak_rss_mb": 680.91
+    }
+  ]
+}

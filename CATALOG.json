@@ -9955,6 +9955,44 @@
         "anneal/rustc-capture"
       ]
     },
+    "coroutine-state-machine-optimization-and-hybridtrace-scaling": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 backend submodule"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/coroutine-optimization-and-hybridtrace-scaling",
+        "rustc",
+        "llvm",
+        "lean",
+        "verification",
+        "compilers"
+      ]
+    },
     "crates-io-download-weighted-codegen-demand-census": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -24280,6 +24318,45 @@
         "security/toctou"
       ]
     },
+    "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain and Miri driver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/ctfe-globalalloc-and-promoted-const-contract",
+        "rustc",
+        "rust",
+        "minirust",
+        "lean",
+        "verification",
+        "compilers"
+      ]
+    },
     "rustc-drop-elaboration-unwind-landing-pads-and-extensible-mir-semantics": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -25673,6 +25750,51 @@
         "rustc/mir",
         "isa/x86_64",
         "isa/aarch64"
+      ]
+    },
+    "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain and Miri driver"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/fls",
+            "revision": "946eacae5a4a33a89af7832178504692439e7478",
+            "tag": "1.99"
+          },
+          "name": "Ferrocene Language Specification (FLS) for Rust 1.99"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust operational semantics specification"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/statetransform-coroutines-and-pin-semantics",
+        "rustc",
+        "rust",
+        "minirust",
+        "verification",
+        "compilers"
       ]
     },
     "rustc-static-linking-archive-formats-and-linker-driver": {
@@ -28131,6 +28253,53 @@
         "verification/survey"
       ]
     },
+    "tree-borrows-protectors-stack-coloring-and-dead-store-elimination": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 backend submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain and Miri driver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/tree-borrows-stack-coloring-and-dse",
+        "rustc",
+        "rust",
+        "minirust",
+        "llvm",
+        "lean",
+        "verification"
+      ]
+    },
     "tree-borrows-two-stage-protector-release-and-reborrow-contracts": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -28187,6 +28356,53 @@
         "lean/mechanization",
         "verification/program-verification",
         "verification/separation-logic"
+      ]
+    },
+    "tree-borrows-unwinding-cleanup-pads-two-phase-borrows-and-unsafecell": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and standard library workspace"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "Rust 1.99.1 LLVM 23.1.1 backend submodule"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain and Miri driver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/tree-borrows-unwinding-two-phase-and-unsafecell",
+        "rustc",
+        "rust",
+        "minirust",
+        "llvm",
+        "lean",
+        "verification"
       ]
     },
     "type-validity-seeded-range-and-farkas-bounds-check-elimination": {

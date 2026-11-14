@@ -1,0 +1,7 @@
+{
+  "miri_version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+  "total_tests": 24,
+  "tree_borrows_status": "PASS (24/24)",
+  "stacked_borrows_status": "FAIL (rejects U09 ReservedIM foreign write and U20 protected ReservedFrz foreign read)",
+  "stacked_borrows_returncode": 1
+}

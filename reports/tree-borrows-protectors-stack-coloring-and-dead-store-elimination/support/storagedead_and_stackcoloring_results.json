@@ -1,0 +1,280 @@
+{
+  "toolchain": "rustc 1.99.1 (LLVM 23.1.1)",
+  "miri_tree_borrows_status": "PASS (12/12)",
+  "miri_stacked_borrows_status": "FAIL",
+  "postcleanup_mir_storagelive_audit": {
+    "t01_issue_98112_match_scrutinee_temp": {
+      "storage_live_stmts": 6,
+      "storage_dead_stmts": 6,
+      "locals_with_storage_live": 6,
+      "locals_with_storage_dead": 6,
+      "orphan_storage_dead_locals": 0
+    },
+    "t02_issue_106364_nested_scope_reborrow": {
+      "storage_live_stmts": 6,
+      "storage_dead_stmts": 6,
+      "locals_with_storage_live": 6,
+      "locals_with_storage_dead": 6,
+      "orphan_storage_dead_locals": 0
+    },
+    "t03_issue_111502_loop_inlined_storage": {
+      "storage_live_stmts": 12,
+      "storage_dead_stmts": 15,
+      "locals_with_storage_live": 12,
+      "locals_with_storage_dead": 12,
+      "orphan_storage_dead_locals": 0
+    },
+    "t04_disjoint_scopes_addr_observation": {
+      "storage_live_stmts": 32,
+      "storage_dead_stmts": 32,
+      "locals_with_storage_live": 32,
+      "locals_with_storage_dead": 32,
+      "orphan_storage_dead_locals": 0
+    },
+    "t05_dangling_raw_ptr_past_storagedead": {
+      "storage_live_stmts": 8,
+      "storage_dead_stmts": 8,
+      "locals_with_storage_live": 8,
+      "locals_with_storage_dead": 8,
+      "orphan_storage_dead_locals": 0
+    },
+    "t06_protected_mut_dse_across_call": {
+      "storage_live_stmts": 4,
+      "storage_dead_stmts": 4,
+      "locals_with_storage_live": 4,
+      "locals_with_storage_dead": 4,
+      "orphan_storage_dead_locals": 0
+    },
+    "t07_protected_reserved_foreign_read_then_child_read": {
+      "storage_live_stmts": 7,
+      "storage_dead_stmts": 7,
+      "locals_with_storage_live": 7,
+      "locals_with_storage_dead": 7,
+      "orphan_storage_dead_locals": 0
+    },
+    "t08_loop_repeated_storagelive_storagedead": {
+      "storage_live_stmts": 24,
+      "storage_dead_stmts": 27,
+      "locals_with_storage_live": 24,
+      "locals_with_storage_dead": 24,
+      "orphan_storage_dead_locals": 0
+    },
+    "t09_multi_exit_storagedead": {
+      "storage_live_stmts": 13,
+      "storage_dead_stmts": 17,
+      "locals_with_storage_live": 13,
+      "locals_with_storage_dead": 13,
+      "orphan_storage_dead_locals": 0
+    },
+    "t10_local_subslice_reborrow_sroa": {
+      "storage_live_stmts": 25,
+      "storage_dead_stmts": 25,
+      "locals_with_storage_live": 25,
+      "locals_with_storage_dead": 25,
+      "orphan_storage_dead_locals": 0
+    },
+    "t11_safe_slot_reuse_with_raw_ptr_within_live_range": {
+      "storage_live_stmts": 16,
+      "storage_dead_stmts": 16,
+      "locals_with_storage_live": 16,
+      "locals_with_storage_dead": 16,
+      "orphan_storage_dead_locals": 0
+    },
+    "t12_two_stage_protector_and_local_storagedead": {
+      "storage_live_stmts": 10,
+      "storage_dead_stmts": 10,
+      "locals_with_storage_live": 10,
+      "locals_with_storage_dead": 10,
+      "orphan_storage_dead_locals": 0
+    }
+  },
+  "stack_coloring_and_dse_ablation": [
+    {
+      "config": "C0_O0_no_coloring_no_dse",
+      "flags": [
+        "-Copt-level=0",
+        "-Zmir-opt-level=0",
+        "-Cno-redzone=yes"
+      ],
+      "text_bytes": 5073,
+      "sum_frame_bytes": 6512,
+      "sum_instructions": 611,
+      "functions": {
+        "s01_disjoint_4x512b_buffers": {
+          "frame_bytes": 2184,
+          "inst_count": 90
+        },
+        "s02_match_6arm_256b_scratch": {
+          "frame_bytes": 1752,
+          "inst_count": 191
+        },
+        "s03_dead_local_512b_stores_before_storagedead": {
+          "frame_bytes": 568,
+          "inst_count": 34
+        },
+        "s04_inlined_8x128b_temporaries": {
+          "frame_bytes": 1288,
+          "inst_count": 171
+        },
+        "s05_protected_mut_256b_redundant_stores": {
+          "frame_bytes": 104,
+          "inst_count": 60
+        },
+        "s06_loop_disjoint_2x256b_temps": {
+          "frame_bytes": 616,
+          "inst_count": 65
+        }
+      }
+    },
+    {
+      "config": "C1_O3_no_stack_coloring",
+      "flags": [
+        "-Copt-level=3",
+        "-Zmir-opt-level=0",
+        "-Cno-redzone=yes",
+        "-Cllvm-args=-no-stack-coloring"
+      ],
+      "text_bytes": 6118,
+      "sum_frame_bytes": 4752,
+      "sum_instructions": 736,
+      "functions": {
+        "s01_disjoint_4x512b_buffers": {
+          "frame_bytes": 2080,
+          "inst_count": 282
+        },
+        "s02_match_6arm_256b_scratch": {
+          "frame_bytes": 1056,
+          "inst_count": 163
+        },
+        "s03_dead_local_512b_stores_before_storagedead": {
+          "frame_bytes": 0,
+          "inst_count": 2
+        },
+        "s04_inlined_8x128b_temporaries": {
+          "frame_bytes": 1088,
+          "inst_count": 171
+        },
+        "s05_protected_mut_256b_redundant_stores": {
+          "frame_bytes": 0,
+          "inst_count": 34
+        },
+        "s06_loop_disjoint_2x256b_temps": {
+          "frame_bytes": 528,
+          "inst_count": 84
+        }
+      }
+    },
+    {
+      "config": "C2_O3_full_stack_coloring_and_dse",
+      "flags": [
+        "-Copt-level=3",
+        "-Zmir-opt-level=0",
+        "-Cno-redzone=yes"
+      ],
+      "text_bytes": 5255,
+      "sum_frame_bytes": 1184,
+      "sum_instructions": 724,
+      "functions": {
+        "s01_disjoint_4x512b_buffers": {
+          "frame_bytes": 520,
+          "inst_count": 279
+        },
+        "s02_match_6arm_256b_scratch": {
+          "frame_bytes": 264,
+          "inst_count": 163
+        },
+        "s03_dead_local_512b_stores_before_storagedead": {
+          "frame_bytes": 0,
+          "inst_count": 2
+        },
+        "s04_inlined_8x128b_temporaries": {
+          "frame_bytes": 136,
+          "inst_count": 164
+        },
+        "s05_protected_mut_256b_redundant_stores": {
+          "frame_bytes": 0,
+          "inst_count": 34
+        },
+        "s06_loop_disjoint_2x256b_temps": {
+          "frame_bytes": 264,
+          "inst_count": 82
+        }
+      }
+    },
+    {
+      "config": "C3_Oz_no_stack_coloring",
+      "flags": [
+        "-Copt-level=z",
+        "-Zmir-opt-level=0",
+        "-Cno-redzone=yes",
+        "-Cllvm-args=-no-stack-coloring"
+      ],
+      "text_bytes": 1713,
+      "sum_frame_bytes": 4752,
+      "sum_instructions": 250,
+      "functions": {
+        "s01_disjoint_4x512b_buffers": {
+          "frame_bytes": 2080,
+          "inst_count": 50
+        },
+        "s02_match_6arm_256b_scratch": {
+          "frame_bytes": 1056,
+          "inst_count": 56
+        },
+        "s03_dead_local_512b_stores_before_storagedead": {
+          "frame_bytes": 0,
+          "inst_count": 2
+        },
+        "s04_inlined_8x128b_temporaries": {
+          "frame_bytes": 1088,
+          "inst_count": 91
+        },
+        "s05_protected_mut_256b_redundant_stores": {
+          "frame_bytes": 0,
+          "inst_count": 22
+        },
+        "s06_loop_disjoint_2x256b_temps": {
+          "frame_bytes": 528,
+          "inst_count": 29
+        }
+      }
+    },
+    {
+      "config": "C4_Oz_full_stack_coloring_and_dse",
+      "flags": [
+        "-Copt-level=z",
+        "-Zmir-opt-level=0",
+        "-Cno-redzone=yes"
+      ],
+      "text_bytes": 1603,
+      "sum_frame_bytes": 1184,
+      "sum_instructions": 238,
+      "functions": {
+        "s01_disjoint_4x512b_buffers": {
+          "frame_bytes": 520,
+          "inst_count": 47
+        },
+        "s02_match_6arm_256b_scratch": {
+          "frame_bytes": 264,
+          "inst_count": 56
+        },
+        "s03_dead_local_512b_stores_before_storagedead": {
+          "frame_bytes": 0,
+          "inst_count": 2
+        },
+        "s04_inlined_8x128b_temporaries": {
+          "frame_bytes": 136,
+          "inst_count": 84
+        },
+        "s05_protected_mut_256b_redundant_stores": {
+          "frame_bytes": 0,
+          "inst_count": 22
+        },
+        "s06_loop_disjoint_2x256b_temps": {
+          "frame_bytes": 264,
+          "inst_count": 27
+        }
+      }
+    }
+  ]
+}

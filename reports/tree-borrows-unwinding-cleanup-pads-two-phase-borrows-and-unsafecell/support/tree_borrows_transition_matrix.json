@@ -1,0 +1,557 @@
+{
+  "source_commit": "rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "source_files": [
+    "src/tools/miri/src/borrow_tracker/tree_borrows/perms.rs:10-332",
+    "src/tools/miri/src/borrow_tracker/tree_borrows/tree.rs:132-728",
+    "src/tools/miri/src/borrow_tracker/tree_borrows/mod.rs:109-364"
+  ],
+  "associated_access_on_protector_release": {
+    "Cell": null,
+    "ReservedFrz(conflicted=false)": "Read",
+    "ReservedFrz(conflicted=true)": "Read",
+    "ReservedIM": "Read",
+    "Unique": "Write",
+    "Frozen": "Read",
+    "Disabled": "Read"
+  },
+  "transitions": [
+    {
+      "state": "Cell",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "Cell",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Cell",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=false)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=false)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Disabled",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=false)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=true)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=false)",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=true)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=true)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Disabled",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=true)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedFrz(conflicted=true)",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "ReservedFrz(conflicted=true)",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    },
+    {
+      "state": "ReservedIM",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedIM",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedIM",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedIM",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedIM",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedIM",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "ReservedIM",
+      "new_accessed": true
+    },
+    {
+      "state": "ReservedIM",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": false,
+      "note": "ReservedIM never created under protector (NewPermission::new uses ReservedFrz)"
+    },
+    {
+      "state": "ReservedIM",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": false,
+      "note": "ReservedIM never created under protector (NewPermission::new uses ReservedFrz)"
+    },
+    {
+      "state": "ReservedIM",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": false,
+      "note": "ReservedIM never created under protector (NewPermission::new uses ReservedFrz)"
+    },
+    {
+      "state": "ReservedIM",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": false,
+      "note": "ReservedIM never created under protector (NewPermission::new uses ReservedFrz)"
+    },
+    {
+      "state": "Unique",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "Unique",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Frozen",
+      "new_accessed": true
+    },
+    {
+      "state": "Unique",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "Unique",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Disabled",
+      "new_accessed": true
+    },
+    {
+      "state": "Unique",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "Unique",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    },
+    {
+      "state": "Unique",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Unique",
+      "new_accessed": true
+    },
+    {
+      "state": "Unique",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    },
+    {
+      "state": "Frozen",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Frozen",
+      "new_accessed": true
+    },
+    {
+      "state": "Frozen",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Frozen",
+      "new_accessed": true
+    },
+    {
+      "state": "Frozen",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "Frozen",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Disabled",
+      "new_accessed": true
+    },
+    {
+      "state": "Frozen",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Frozen",
+      "new_accessed": true
+    },
+    {
+      "state": "Frozen",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Frozen",
+      "new_accessed": true
+    },
+    {
+      "state": "Frozen",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "Frozen",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    },
+    {
+      "state": "Disabled",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "Disabled",
+      "protected": false,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Disabled",
+      "new_accessed": true
+    },
+    {
+      "state": "Disabled",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "Disabled",
+      "protected": false,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "OK",
+      "new_perm": "Disabled",
+      "new_accessed": true
+    },
+    {
+      "state": "Disabled",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "Disabled",
+      "protected": true,
+      "access_kind": "Read",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    },
+    {
+      "state": "Disabled",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Child",
+      "reachable": true,
+      "outcome": "UB(ChildAccessForbidden)",
+      "new_perm": null
+    },
+    {
+      "state": "Disabled",
+      "protected": true,
+      "access_kind": "Write",
+      "relatedness": "Foreign",
+      "reachable": true,
+      "outcome": "UB(ProtectedDisabled)",
+      "new_perm": "Disabled"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "toolchain": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "miri_version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)",
+  "differential_cases_total": 30,
+  "native_runtime_pass_count": 30,
+  "miri_tree_borrows_pass_count": 30,
+  "globalalloc_variants_covered": [
+    "GlobalAlloc::Memory(ConstAllocation)",
+    "GlobalAlloc::Function { instance }",
+    "GlobalAlloc::VTable(Ty, List<PolyExistentialPredicate>)",
+    "GlobalAlloc::Static(DefId)",
+    "GlobalAlloc::TypeId { ty }"
+  ],
+  "census_metrics": {
+    "mir_alloc_headers_count": 14,
+    "mir_uninit_byte_runs": 0,
+    "mir_provenance_relocation_entries": 3,
+    "llvm_rodata_constant_globals_count": 116,
+    "llvm_mutable_data_globals_count": 1,
+    "llvm_undef_padding_chunk_count": 11,
+    "self_cyclic_static_verified": true,
+    "mutual_cyclic_statics_verified": true,
+    "interior_mut_static_in_writable_data": true,
+    "frozen_static_in_rodata": true
+  }
+}
