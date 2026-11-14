@@ -1,0 +1,156 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "clean_build_wall_s": 5.284,
+  "clean_build_user_s": 7.96,
+  "peak_rss_mb": 827.4,
+  "total_lines": 866,
+  "total_code_lines": 691,
+  "total_olean_bytes": 8135816,
+  "axioms": [
+    "propext",
+    "Quot.sound"
+  ],
+  "modules": [
+    {
+      "module": "RuleSynth/Syntax.lean",
+      "total_lines": 65,
+      "code_lines": 39,
+      "olean_bytes": 1360984
+    },
+    {
+      "module": "RuleSynth/Semantics.lean",
+      "total_lines": 203,
+      "code_lines": 151,
+      "olean_bytes": 767416
+    },
+    {
+      "module": "RuleSynth/Rules40.lean",
+      "total_lines": 199,
+      "code_lines": 170,
+      "olean_bytes": 2087320
+    },
+    {
+      "module": "RuleSynth/Macros.lean",
+      "total_lines": 104,
+      "code_lines": 76,
+      "olean_bytes": 2147816
+    },
+    {
+      "module": "RuleSynth/Manual40.lean",
+      "total_lines": 256,
+      "code_lines": 236,
+      "olean_bytes": 1242344
+    },
+    {
+      "module": "RuleSynth/Synthesized40.lean",
+      "total_lines": 39,
+      "code_lines": 19,
+      "olean_bytes": 529936
+    }
+  ],
+  "head_to_head_40_rules": {
+    "rules_verified": 40,
+    "expr_rewrite_constructors": 25,
+    "stmt_deriv_constructors": 15,
+    "stmt_ast_constructors_K": 15,
+    "off_diagonal_congruence_pairs_K2": 225,
+    "manual_40_total_lines": 256,
+    "manual_40_code_lines": 236,
+    "manual_40_code_lines_per_rule": 5.9,
+    "manual_40_elab_wall_s": 1.078,
+    "manual_40_olean_bytes": 1242248,
+    "synthesized_40_total_lines": 39,
+    "synthesized_40_code_lines": 19,
+    "synthesized_40_code_lines_per_rule": 0.47,
+    "synthesized_40_with_macros_amortized_code_lines": 95,
+    "synthesized_40_elab_wall_s": 0.564,
+    "synthesized_40_olean_bytes": 529840,
+    "direct_proof_loc_compression_x": 12.42,
+    "amortized_with_macros_compression_x": 2.48
+  },
+  "o3_52_family_185_constructor_taxonomy": [
+    {
+      "class_id": "Class A",
+      "name": "Pure Algebraic, Bitwise, and Poison-Monotonic Peepholes",
+      "rule_families": 24,
+      "constructors": 96,
+      "examples": [
+        "InstCombine",
+        "InstructionSimplify",
+        "SelectionDAG-Peephole",
+        "FP-BitExact",
+        "ICmp-Fold"
+      ],
+      "manual_proof_loc_per_ctor": 58.0,
+      "synth_proof_loc_per_ctor": 6.5,
+      "compression_ratio_x": 8.92,
+      "automation_mechanism": "inferExprRewrite endpoint synthesis + prove_expr_rw_sound + PoisonOr/BitVec simp set"
+    },
+    {
+      "class_id": "Class B",
+      "name": "Structural Congruence, JumpThreading, and CFG Plumbing",
+      "rule_families": 11,
+      "constructors": 40,
+      "examples": [
+        "Expr/Stmt Congruence",
+        "CFG-EdgeSplit",
+        "JumpThreading",
+        "Phi-Prune",
+        "Unwind-LandingPadMerge"
+      ],
+      "manual_proof_loc_per_ctor": 74.0,
+      "synth_proof_loc_per_ctor": 12.0,
+      "compression_ratio_x": 6.17,
+      "automation_mechanism": "Synthesized checkSeqCong_inv / checkIfCong_inv eliminating O(K^2) case splits + prove_hybrid_iff_valid"
+    },
+    {
+      "class_id": "Class C",
+      "name": "Frame-Commuting Memory, Scoped NoAlias, and Atomic Forwarding",
+      "rule_families": 10,
+      "constructors": 30,
+      "examples": [
+        "SROA-SlotPromote",
+        "GVN-NoAliasForward",
+        "LICM-HoistLoad",
+        "DSE-Overwrite",
+        "Atomic-OrderLattice"
+      ],
+      "manual_proof_loc_per_ctor": 125.0,
+      "synth_proof_loc_per_ctor": 24.0,
+      "compression_ratio_x": 5.21,
+      "automation_mechanism": "prove_hybrid_sound + @[hybrid_frame_simps] (evalExpr_setSlot, setSlot_get_ne, setSlot_overwrite)"
+    },
+    {
+      "class_id": "Class D",
+      "name": "Induction, Loop Simulation, and Backend Macro-Rules",
+      "rule_families": 7,
+      "constructors": 19,
+      "examples": [
+        "LoopVectorize-RemainderSplit",
+        "LoopUnroll",
+        "Inliner",
+        "IP-DevirtVtable",
+        "IP-FuncMergeIso",
+        "RegAllocCert"
+      ],
+      "manual_proof_loc_per_ctor": 230.0,
+      "synth_proof_loc_per_ctor": 135.0,
+      "compression_ratio_x": 1.7,
+      "automation_mechanism": "Synthesized completeness/inversion + custom per-rule simulation lemma (e.g., checkRegAllocCert_sound)"
+    }
+  ],
+  "recalibrated_full_compiler_effort": {
+    "w6_manual_baseline_kloc": 37.0,
+    "w6_manual_soundness_kloc": 18.5,
+    "w6_manual_completeness_kloc": 7.8,
+    "w6_manual_engineer_months": "9-14",
+    "rulesynth_syntax_semantics_kloc": 6.5,
+    "rulesynth_declarative_dsl_and_macros_kloc": 2.1,
+    "rulesynth_soundness_proofs_kloc": 4.4,
+    "rulesynth_completeness_proofs_kloc": 0.4,
+    "rulesynth_total_kloc": 13.4,
+    "proof_only_kloc_reduction_x": 5.48,
+    "total_kloc_reduction_x": 2.76,
+    "rulesynth_engineer_months": "3.2-4.8"
+  }
+}

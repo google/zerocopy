@@ -1,0 +1,91 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "library_clean_build_wall_s": 3.229,
+  "library_clean_build_user_s": 3.89,
+  "library_peak_rss_mb": 837.15,
+  "total_lines": 782,
+  "total_code_lines": 557,
+  "total_olean_bytes": 3457024,
+  "proof_to_spec_loc_ratio": 2.06,
+  "axioms": [
+    "propext",
+    "Quot.sound"
+  ],
+  "uses_native_decide_or_ofReduceBool": false,
+  "modules": [
+    {
+      "module": "SideCondCert/Domain.lean",
+      "total_lines": 74,
+      "code_lines": 41,
+      "olean_bytes": 161480
+    },
+    {
+      "module": "SideCondCert/Farkas.lean",
+      "total_lines": 101,
+      "code_lines": 64,
+      "olean_bytes": 417184
+    },
+    {
+      "module": "SideCondCert/BitDomain.lean",
+      "total_lines": 153,
+      "code_lines": 100,
+      "olean_bytes": 573824
+    },
+    {
+      "module": "SideCondCert/AEGraph.lean",
+      "total_lines": 256,
+      "code_lines": 211,
+      "olean_bytes": 1828488
+    },
+    {
+      "module": "SideCondCert/Unified.lean",
+      "total_lines": 82,
+      "code_lines": 55,
+      "olean_bytes": 211224
+    },
+    {
+      "module": "SideCondCert/Corpus50.lean",
+      "total_lines": 116,
+      "code_lines": 86,
+      "olean_bytes": 264824
+    }
+  ],
+  "comparison_50_obligations": {
+    "side_cond_cert_50": {
+      "obligations": 50,
+      "farkas_count": 15,
+      "bit_domain_count": 20,
+      "aegraph_dag_count": 15,
+      "kernel_check_wall_s": 0.571,
+      "kernel_user_s": 0.6,
+      "kernel_rss_mb": 521.57,
+      "per_obligation_kernel_ms": 11.42,
+      "native_check_50_us": 4.2,
+      "corpus_olean_bytes": 264824,
+      "binary_cert_bytes_total": 1000,
+      "trust_axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "supports_poison_refinement_and_freeze": true
+    },
+    "monolithic_omega_bv_decide_50": {
+      "obligations": 50,
+      "kernel_check_wall_s": 0.974,
+      "kernel_user_s": 1.16,
+      "kernel_rss_mb": 749.59,
+      "per_obligation_kernel_ms": 19.48,
+      "olean_bytes": 881408,
+      "trust_axioms": [
+        "propext",
+        "Classical.choice",
+        "Lean.ofReduceBool",
+        "Lean.trustCompiler",
+        "Quot.sound"
+      ],
+      "supports_poison_refinement_and_freeze": false
+    },
+    "kernel_speedup_factor_x": 1.71,
+    "olean_reduction_factor_x": 3.33
+  }
+}

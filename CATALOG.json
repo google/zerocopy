@@ -16178,6 +16178,55 @@
         "anneal/tcb-audit"
       ]
     },
+    "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "v0.4.32"
+          },
+          "name": "Clean-room independent Rust Lean 4 proof checker (nanoda_lib)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "Lean 4 NDJSON v3.1.0 kernel declaration exporter (lean4export)"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Self-hosted Lean 4 kernel in Lean 4 (lean4lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker environment replay checker for Lean 4"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "lean",
+        "lean/kernel",
+        "verification",
+        "compilers"
+      ]
+    },
     "lean-large-isa-and-compiler-semantics-scaling": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -16459,6 +16508,36 @@
         "agents/mcp",
         "agents/lsp-integration",
         "lean/tactic-state"
+      ]
+    },
+    "lean-metaprogrammed-rule-soundness-and-completeness-synthesis": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, macro/tactic elaborator, and kernel typechecker"
+        },
+        {
+          "identity": {
+            "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 optimization pipeline"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "lean",
+        "lean/elaboration",
+        "lean/mechanization",
+        "verification"
       ]
     },
     "lean-miri-interpreter-hooks-move-deinit-and-provenance-fragments": {
@@ -17187,6 +17266,36 @@
         "lean/tactics",
         "lean/elaboration",
         "anneal/proof-automation"
+      ]
+    },
+    "lean-unboxed-bytearray-bitset-and-soa-compiler-substrate-bridge": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, LCNF compiler, and C runtime"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and standard library"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "systems",
+        "verification"
       ]
     },
     "llvm-compiled-rust-instruction-and-addressing-mode-frequencies": {
@@ -28884,6 +28993,43 @@
         "zerocopy"
       ]
     },
+    "unified-farkas-knownbits-and-aegraph-side-condition-certificates": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 middle-end passes"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted kernel boundary and axiom auditor"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "lean",
+        "lean/mechanization",
+        "smt",
+        "verification"
+      ]
+    },
     "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -29834,6 +29980,52 @@
         "lean/mechanization",
         "verification",
         "anneal"
+      ]
+    },
+    "verified-regalloc2-spill-and-parallel-move-certificate-checker": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+            "version": "0.15.2"
+          },
+          "name": "regalloc2 Ion register allocator, parallel-move resolver, and symbolic dataflow checker"
+        },
+        {
+          "identity": {
+            "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 backend"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "v3.18"
+          },
+          "name": "CompCert register allocation (Allocation/Allocproof) and stack frame lowering (Stacking)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-rustc",
+        "compilers",
+        "lean",
+        "lean/mechanization",
+        "rustc/codegen",
+        "verification"
       ]
     },
     "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap": {

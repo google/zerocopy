@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "compilers/verified-rustc",
+    "compilers",
+    "lean",
+    "lean/elaboration",
+    "lean/mechanization",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover, macro/tactic elaborator, and kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 optimization pipeline",
+      "identity": {
+        "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

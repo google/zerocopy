@@ -1,0 +1,202 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "build_wall_s": 4.969,
+  "build_user_s": 5.27,
+  "peak_rss_mb": 824.06,
+  "total_lines": 1188,
+  "total_code_lines": 927,
+  "total_olean_bytes": 5097080,
+  "axioms_soundness": [
+    "propext",
+    "Quot.sound"
+  ],
+  "axioms_completeness": [
+    "propext"
+  ],
+  "axioms_bug_rejections": [],
+  "modules": [
+    {
+      "module": "RegAllocCert/Syntax.lean",
+      "total_lines": 102,
+      "code_lines": 65,
+      "olean_bytes": 2201048
+    },
+    {
+      "module": "RegAllocCert/Semantics.lean",
+      "total_lines": 173,
+      "code_lines": 125,
+      "olean_bytes": 362992
+    },
+    {
+      "module": "RegAllocCert/Certificate.lean",
+      "total_lines": 134,
+      "code_lines": 94,
+      "olean_bytes": 1085800
+    },
+    {
+      "module": "RegAllocCert/Soundness.lean",
+      "total_lines": 255,
+      "code_lines": 224,
+      "olean_bytes": 797424
+    },
+    {
+      "module": "RegAllocCert/Completeness.lean",
+      "total_lines": 163,
+      "code_lines": 138,
+      "olean_bytes": 229024
+    },
+    {
+      "module": "RegAllocCert/Corpus.lean",
+      "total_lines": 361,
+      "code_lines": 281,
+      "olean_bytes": 420792
+    }
+  ],
+  "corpus_10_functions": [
+    {
+      "id": "T01_regalloc_with_spills",
+      "vregs": 13,
+      "spills": 2,
+      "callee_saves": 2,
+      "ssa_insts": 18,
+      "cycles": "2-cycle via %r11",
+      "micro_steps": 112,
+      "regalloc_cert_bytes": 96,
+      "micro_trace_bytes": 2688,
+      "byte_reduction_ratio": 28.0,
+      "step_compression_ratio": 112.0
+    },
+    {
+      "id": "T02_loop_backedge_rotate3",
+      "vregs": 11,
+      "spills": 1,
+      "callee_saves": 1,
+      "ssa_insts": 16,
+      "cycles": "3-cycle via %r11",
+      "micro_steps": 98,
+      "regalloc_cert_bytes": 80,
+      "micro_trace_bytes": 2352,
+      "byte_reduction_ratio": 29.4,
+      "step_compression_ratio": 98.0
+    },
+    {
+      "id": "T03_pressure_68vregs_xchg",
+      "vregs": 68,
+      "spills": 53,
+      "callee_saves": 5,
+      "ssa_insts": 94,
+      "cycles": "2-cycle via xchg",
+      "micro_steps": 642,
+      "regalloc_cert_bytes": 616,
+      "micro_trace_bytes": 15408,
+      "byte_reduction_ratio": 25.01,
+      "step_compression_ratio": 642.0
+    },
+    {
+      "id": "T04_dual_call_clobber_spill",
+      "vregs": 22,
+      "spills": 8,
+      "callee_saves": 3,
+      "ssa_insts": 31,
+      "cycles": "none (call splits)",
+      "micro_steps": 204,
+      "regalloc_cert_bytes": 176,
+      "micro_trace_bytes": 4896,
+      "byte_reduction_ratio": 27.82,
+      "step_compression_ratio": 204.0
+    },
+    {
+      "id": "T05_diamond_swap2_rotate3",
+      "vregs": 19,
+      "spills": 4,
+      "callee_saves": 2,
+      "ssa_insts": 28,
+      "cycles": "2-cycle + 3-cycle",
+      "micro_steps": 186,
+      "regalloc_cert_bytes": 144,
+      "micro_trace_bytes": 4464,
+      "byte_reduction_ratio": 31.0,
+      "step_compression_ratio": 186.0
+    },
+    {
+      "id": "T06_bitmix_ub_guard_spill",
+      "vregs": 26,
+      "spills": 11,
+      "callee_saves": 2,
+      "ssa_insts": 36,
+      "cycles": "2-cycle via %r11",
+      "micro_steps": 228,
+      "regalloc_cert_bytes": 204,
+      "micro_trace_bytes": 5472,
+      "byte_reduction_ratio": 26.82,
+      "step_compression_ratio": 228.0
+    },
+    {
+      "id": "T07_spill_to_spill_cycle",
+      "vregs": 34,
+      "spills": 19,
+      "callee_saves": 4,
+      "ssa_insts": 48,
+      "cycles": "spill 2-cycle via %r11",
+      "micro_steps": 334,
+      "regalloc_cert_bytes": 292,
+      "micro_trace_bytes": 8016,
+      "byte_reduction_ratio": 27.45,
+      "step_compression_ratio": 334.0
+    },
+    {
+      "id": "T08_mixed_gpr_spill_rot3",
+      "vregs": 42,
+      "spills": 27,
+      "callee_saves": 4,
+      "ssa_insts": 62,
+      "cycles": "GPR/spill 3-cycle",
+      "micro_steps": 418,
+      "regalloc_cert_bytes": 380,
+      "micro_trace_bytes": 10032,
+      "byte_reduction_ratio": 26.4,
+      "step_compression_ratio": 418.0
+    },
+    {
+      "id": "T09_chained_bounds_reload",
+      "vregs": 30,
+      "spills": 15,
+      "callee_saves": 3,
+      "ssa_insts": 44,
+      "cycles": "live-range split",
+      "micro_steps": 286,
+      "regalloc_cert_bytes": 256,
+      "micro_trace_bytes": 6864,
+      "byte_reduction_ratio": 26.81,
+      "step_compression_ratio": 286.0
+    },
+    {
+      "id": "T10_sysv_80vregs_unwind",
+      "vregs": 80,
+      "spills": 65,
+      "callee_saves": 6,
+      "ssa_insts": 115,
+      "cycles": "2-cycle + unwind",
+      "micro_steps": 792,
+      "regalloc_cert_bytes": 752,
+      "micro_trace_bytes": 19008,
+      "byte_reduction_ratio": 25.28,
+      "step_compression_ratio": 792.0
+    }
+  ],
+  "corpus_totals": {
+    "total_ssa_insts": 492,
+    "total_micro_steps": 3300,
+    "total_macro_steps": 10,
+    "total_regalloc_cert_bytes": 2996,
+    "total_micro_trace_bytes": 79200,
+    "overall_byte_reduction_x": 26.44,
+    "overall_step_reduction_x": 330.0
+  },
+  "sample_12_crate_projection": {
+    "baseline_regalloc_steps_12_crates": 404450,
+    "baseline_regalloc_raw_bytes_mb": 9.26,
+    "macro_step_count_12_crates": 13683,
+    "macro_cert_bytes_mb": 0.35
+  }
+}
