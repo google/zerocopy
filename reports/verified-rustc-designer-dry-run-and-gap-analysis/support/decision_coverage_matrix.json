@@ -21,11 +21,11 @@
     ]
   },
   "summary_metrics": {
-    "total_verified_rustc_packages": 107,
-    "total_mapped_packages": 174,
+    "total_verified_rustc_packages": 147,
+    "total_mapped_packages": 214,
     "foundational_anneal_minirust_packages": 67,
     "decision_domains_count": 13,
-    "research_goals_count": 27,
+    "research_goals_count": 31,
     "design_tensions_resolved_count": 8,
     "unrecorded_external_facts_count": 0,
     "new_research_seeds_required": 0
@@ -38,18 +38,23 @@
         5,
         27
       ],
-      "selected_architecture": "Pin Rust 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67) paired with bundled LLVM 23.1.1 (1b9c0d5ff9bbe7634aead059efe6b11a7eeba145), Ferrocene Language Specification tag 1.99 (946eacae5a4a33a89af7832178504692439e7478), Anneal (7abf0691c404393e3e4fc26eb3d4094e3170b5c7), and Lean 4 v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52, bundled Clang/LLD 22.1.4 at 35990504507d79e0b9deb809c8ee5e1b34ceef20) across all 8 Tier 1 targets (x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc, x86_64-pc-windows-gnu, aarch64-unknown-linux-gnu, aarch64-apple-darwin, aarch64-pc-windows-msvc, i686-unknown-linux-gnu, i686-pc-windows-msvc).",
+      "selected_architecture": "Pin Rust 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67) paired with bundled LLVM 23.1.1 (1b9c0d5ff9bbe7634aead059efe6b11a7eeba145), Ferrocene Language Specification tag 1.99 (946eacae5a4a33a89af7832178504692439e7478), Anneal (7abf0691c404393e3e4fc26eb3d4094e3170b5c7), and Lean 4 v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52, bundled Clang/LLD 22.1.4 at 35990504507d79e0b9deb809c8ee5e1b34ceef20) across all 8 Tier 1 targets (x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc, x86_64-pc-windows-gnu, aarch64-unknown-linux-gnu, aarch64-apple-darwin, aarch64-pc-windows-msvc, i686-unknown-linux-gnu, i686-pc-windows-msvc). Isolate the version-coupled rustc frontend adapter (.anneal-mir / CoreMIR exporter and automated target/intrinsic/TableGen extractors) from the version-invariant MiniSSA/MiniMach proof core via a 5-layer opaque interface firewall and a zero-sorryAx Soundness Quarantine registry so upgrading across rustc point/minor releases (1.98.1 -> 1.99.1 -> 1.100.0) invalidates <=17.6% of .olean modules and takes days of automated table regeneration.",
       "quantitative_facts": [
         "Rust 1.99.1 includes the x86-64 FFI bool return-value miscompilation fix (rust-lang/rust#163911) while avoiding the unindexed ProjectionElem::PhantomDeref MIR change (#159103) and x86 Rust-ABI SSE register-passing shift (#161401) in 1.100.0.",
         "Sysroot compilation exercises 469 unstable #![feature(...)] gates across core, alloc, std, and compiler_builtins, making stable vs. nightly compiler surface identical for sysroot builds.",
         "78 compiler/* crates form a 24-layer DAG (depths 0..23) with rustc_codegen_ssa at depth 18 and rustc_codegen_llvm at depth 19.",
-        "1,482 language, library, and rustc_* features exist in 1.99.1, of which 219 directly impact MIR, layout, ABI, or codegen."
+        "1,482 language, library, and rustc_* features exist in 1.99.1, of which 219 directly impact MIR, layout, ABI, or codegen.",
+        "Across 5 rustc releases (1.98.1, 1.99.1, 1.100.0, nightly-2026-05-31, nightly-2026-11-12), CoreMIR StatementKind (12), Rvalue (13), and TerminatorKind (14) have 0 operational changes while rustc_codegen_ssa::traits breaks 36 trait methods; the CoreMIR adapter absorbs Tier A/B churn (including 1.100.0 ProjectionElem::PhantomDeref #159103 and BoxDerefTransmute) with 0 Lean proof lines changed.",
+        "Automated table regeneration (regen_toolchain_tables.py) extracts all 8 Tier 1 TargetSpec records, 316->305 #[rustc_intrinsic] signatures, and LLVM TableGen deltas across 1.99.1 -> 1.100.0 with 100% PostCleanup MIR -> CoreMIR digest and bv_decide equivalence verification, while the 5-layer opaque firewall limits .olean invalidation to 2-3 / 17 prototype modules (11.8%-17.6%) and Soundness Quarantine falls back safely to verified baseline lowering."
       ],
       "supplying_reports": [
         "rustc-baseline-toolchain-selection-and-manifest",
         "rustc-baseline-repository-map-and-internal-interfaces",
         "rust-language-and-library-codegen-feature-inventory",
-        "verified-rustc-research-map-and-open-question-ledger"
+        "verified-rustc-research-map-and-open-question-ledger",
+        "rustc-multi-release-mir-abi-drift-and-version-isolated-adapter",
+        "automated-toolchain-table-regeneration-and-mir-minissa-upgrade-validator",
+        "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -87,14 +92,17 @@
       "domain_id": "D3",
       "title": "The End-to-End Theorem and Assumption Ledger: Simulation Chain, Compositional Linking, and Property Transfer",
       "goals_addressed": [
-        6
+        6,
+        28
       ],
-      "selected_architecture": "Adopt a 5-link Miracle-Free Eventual Refinement (ProductiveCompiles) and Resource-Bounded Backward Simulation (ResourceBSim) chain from Anneal's Runtime(PostCleanup) MIR VerificationResult (Compiler.Verified) through content-hashed MIR artifacts, HybridTrace derivation checking (or the proven baseline compiler theorem), and open contextual simulation (CompCertO/DimSum-style call/return Kripke worlds) to Tier 1 ISA machine traces. Bridge the 5 definitional seams via explicit verified Lean 4 adapters (wordRepresentsNat, FramePreserving, abiRegMap, ByteMem_to_WordMem, decode_encode_roundtrip).",
+      "selected_architecture": "Adopt a 5-link Miracle-Free Eventual Refinement (ProductiveCompiles) and Resource-Bounded Backward Simulation (ResourceBSim) chain from Anneal's Runtime(PostCleanup) MIR VerificationResult (Compiler.Verified) through content-hashed MIR artifacts, HybridTrace derivation checking (or the proven baseline compiler theorem), and open contextual simulation (CompCertO/DimSum-style call/return Kripke worlds) to Tier 1 ISA machine traces. Bridge the 5 definitional seams via explicit verified Lean 4 adapters (wordRepresentsNat, FramePreserving, abiRegMap, ByteMem_to_WordMem, decode_encode_roundtrip). Extend the refinement chain bidirectionally at the Runtime(PostCleanup) MIR <-> MiniSSA boundary: stratify HybridTrace normalization rules into BisimExact, GuardedBisim (with explicit Phi_no_erased_UB guards), and RefinesOnly so checkNormBisim simultaneously yields forward compilation refinement and backward Anneal VC transport (verifyMirViaMiniSSA_sound) with zero expansion of trusted/lean/, paired with the Place-to-SSA specification lens Sigma_spec translating #[anneal_spec] contracts across Mem2Reg, SROA, and Inlining.",
       "quantitative_facts": [
         "All 10 Anneal statement forms transfer across ProductiveCompiles/ResourceBSim when combined with explicit stack-frame bounds; constant-time hyperproperties require lockstep CTCompiles side conditions.",
         "5-link end-to-end Lean v4.34.1 prototype (support/lean_s16_chain/, 642 lines / 495 code lines) compiles in 4.27s with zero sorryAx and zero native_decide, proving end_to_end_x86_correct down to the exact 29-byte x86-64 machine-code sequence emitted by rustc 1.99.1 -O3.",
         "Cross-prover and native-checker composition eliminates Lean.ofReduceBool / Lean.trustCompiler from kernel theorems by replaying exported certificates or using CPS-forced kernel reflection.",
-        "5-stratum Assumption Ledger explicitly bounds TCB components: Layer 1 Prover Kernel (Lean C++ kernel 8,091 LOC, nanoda_lib 2,612 LOC, lean4lean 5,840 LOC), Layer 2 Host Execution Toolchain, Layer 3 Unverified Rust Frontend & MIR Capture, Layer 4 Target Assembler/Linker/Loader/CRT/Unwinder, and Layer 5 Hardware ISA & OS Kernel."
+        "5-stratum Assumption Ledger explicitly bounds TCB components: Layer 1 Prover Kernel (Lean C++ kernel 8,091 LOC, nanoda_lib 2,612 LOC, lean4lean 5,840 LOC), Layer 2 Host Execution Toolchain, Layer 3 Unverified Rust Frontend & MIR Capture, Layer 4 Target Assembler/Linker/Loader/CRT/Unwinder, and Layer 5 Hardware ISA & OS Kernel.",
+        "Mechanizing checkNormBisim and verifyMirViaMiniSSA_sound in Lean v4.34.1 (695 lines, 3.89s build, 0 sorryAx, 0 additions to Trusted) proves that GuardedBisim prevents all 5 RefinesOnly UB-erasure hazards (dead uninit/OOB loads, unvalidated SROA padding, aliased reborrow elision, premature StorageDead with dangling raw pointers, and dead div-by-zero).",
+        "Translating #[anneal_spec] pre/postconditions and #[anneal_spec::spec] companion calls to canonical MiniSSA via Sigma_spec across 12 Anneal obligations shrinks symbolic WP ASTs by 10.79x (4,792 -> 444 nodes), cuts authored Lean proof LOC by 6.19x (384 -> 62 LOC), and accelerates Lean kernel checking by 10.68x (41.22s -> 3.86s)."
       ],
       "supplying_reports": [
         "compiler-correctness-theorem-shapes-and-end-to-end-chains",
@@ -110,7 +118,9 @@
         "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026",
         "cross-prover-interoperability-verified-checkers-and-tcb-accounting",
         "semantic-models-lenses-hyperproperties-and-putnam-tcb-boundary",
-        "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap"
+        "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap",
+        "bidirectional-mir-minissa-refinement-and-anneal-vc-transport",
+        "anneal-spec-minissa-normalization-and-proof-compression"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -123,12 +133,15 @@
         7,
         9
       ],
-      "selected_architecture": "Define the unified operational semantics over Runtime(PostCleanup) MIR (12 StatementKind, 14 TerminatorKind, 13 Rvalue, 12 CastKind variants) parameterized by TargetDataLayout well-formedness invariants and instantiated for all 8 Tier 1 data layouts. Adopt Tree Borrows with two-stage protector release as the default aliasing model (with optional no-aliasing-model fallback mode for unsafe legacy crates), PNVI-ae-udi / exposed provenance support alongside Strict Provenance, RFC 3514 4-choice NaN lattice floating-point semantics, non-deterministic allocator block-id elision/coalescing semantics, and RC11/IMM axiomatic weak memory linked with thread-local Promising-style view simulation for atomic optimizations.",
+      "selected_architecture": "Define the unified operational semantics over Runtime(PostCleanup) MIR (12 StatementKind, 14 TerminatorKind, 13 Rvalue, 12 CastKind variants) parameterized by TargetDataLayout well-formedness invariants and instantiated for all 8 Tier 1 data layouts. Adopt Tree Borrows with two-stage protector release as the default aliasing model (with optional no-aliasing-model fallback mode for unsafe legacy crates), PNVI-ae-udi / exposed provenance support alongside Strict Provenance, RFC 3514 4-choice NaN lattice floating-point semantics, non-deterministic allocator block-id elision/coalescing semantics, and RC11/IMM axiomatic weak memory linked with thread-local Promising-style view simulation for atomic optimizations. Incorporate the 16-rule Runtime(PostCleanup) MIR type-validity deduction lattice Gamma_valid (slice.len() <= isize::MAX for sizeof(T) >= 1, niche/nonnull/alignment invariants), StateTransform coroutine state machines (async/await, gen blocks, Pin<&mut Self> self-referential borrows across Yield points), and Tree Borrows two-stage protector rules across StorageLive/StorageDead stack-slot coloring, pre-StorageDead DSE, panic=unwind cleanup landing pads, two-phase borrows (ReservedIM), and byte-precise UnsafeCell interiors.",
       "quantitative_facts": [
         "In the 7,887-crate Miri failure dataset, Stacked Borrows subobject provenance shrinking (37.4%) and eager Unique retag invalidation (25.6%) cause 63.0% (4,969 / 7,887) of all ecosystem UB failures; Tree Borrows eliminates both false-positive classes while preserving 100% of mutable/shared reference optimization power once interior-mutable UnsafeCell fields are tracked.",
         "LLVM attribute ablation across the 8-domain benchmark suite shows full Rust aliasing attributes (noalias, readonly, dereferenceable, noundef, nonnull) deliver a 1.14x\u20131.38x speedup on memory-bound slice/matrix kernels and 3.4% aggregate geomean speedup over attribute-stripped IR.",
         "Native x86_64 hardware litmus execution (2.70e6 barrier-synchronized runs across 9 families) observes 495 / 300,000 (1,650 ppm) weak Store Buffering outcomes under Relaxed atomics and 0 / 300,000 under all three rustc 1.99.1 SeqCst lowerings (mfence, lock xchg, lock add [rsp], 0), matching herd7 x86tso.cat and Armv8 aarch64.cat.",
-        "All 8 Tier 1 TargetDataLayout strings and rustc_abi layout computation rules (univariant_biased struct reordering, niche packing, Scalar/ScalarPair promotion) are captured with bit-exact goldens."
+        "All 8 Tier 1 TargetDataLayout strings and rustc_abi layout computation rules (univariant_biased struct reordering, niche packing, Scalar/ScalarPair promotion) are captured with bit-exact goldens.",
+        "Cataloging the 16-rule Runtime(PostCleanup) MIR type-validity lattice Gamma_valid reveals that rustc 1.99.1 fails to emit LLVM range metadata on &str parameters, Box<[T]> parameters, and memory-loaded fat pointers (&[T]/&str), explaining downstream bounds-check survival.",
+        "Formalizing StateTransform coroutines across 50 async/gen state machines confirms 100% (20/20) Tree Borrows and Stacked Borrows acceptance on safe self-referential Pin<&mut Self> (!Unpin) generators across Yield suspensions.",
+        "Mechanizing Tree Borrows two-stage protectors across stack coloring and panic=unwind cleanup pads proves that StrongProtector blocks deallocation until function exit while allowing physical stack-slot address reuse across disjoint StorageLive/StorageDead intervals (4.01x frame compression), and establishes exact compensation conditions when caller Drop pads inspect *x on unwind vs. sret dead_on_unwind."
       ],
       "supplying_reports": [
         "rustc-mir-construct-semantics-miri-minirust-and-codegen",
@@ -158,7 +171,11 @@
         "assembly-atomic-fence-mappings-and-aarch64-x86-weak-memory-models",
         "rust-atomics-weak-memory-and-aliasing-operational-models",
         "anneal-memory-bridge-weak-memory-atomics-constant-time-and-bare-metal",
-        "anneal-concurrency-weak-memory-kernels-and-storage-survey"
+        "anneal-concurrency-weak-memory-kernels-and-storage-survey",
+        "rust-postcleanup-mir-type-validity-and-range-invariant-catalog",
+        "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics",
+        "tree-borrows-protectors-stack-coloring-and-dead-store-elimination",
+        "tree-borrows-unwinding-cleanup-pads-two-phase-borrows-and-unsafecell"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -171,11 +188,13 @@
         8,
         15
       ],
-      "selected_architecture": "Intercept compilation at Runtime(PostCleanup) (mir_drops_elaborated_and_const_checked, before the 42 unverified inner_optimized_mir pass invocations) with -Zmir-opt-level=0 in verified mode, and emit a deterministic, content-addressed .anneal-mir section embedded in .rlib/.rmeta archives. The artifact bundles monomorphic MonoItem bodies, all 12 ShimKind bodies, resolved TyAndLayout and FnAbi tables, 3-word-header VtblEntry tables, GlobalAlloc byte buffers and provenance relocations, v0/legacy symbol names, and a SHA-256 session-configuration digest binding Anneal proofs to backend derivations.",
+      "selected_architecture": "Intercept compilation at Runtime(PostCleanup) (mir_drops_elaborated_and_const_checked, before the 42 unverified inner_optimized_mir pass invocations) with -Zmir-opt-level=0 in verified mode, and emit a deterministic, content-addressed .anneal-mir section embedded in .rlib/.rmeta archives. The artifact bundles monomorphic MonoItem bodies, all 12 ShimKind bodies, resolved TyAndLayout and FnAbi tables, 3-word-header VtblEntry tables, GlobalAlloc byte buffers and provenance relocations, v0/legacy symbol names, and a SHA-256 session-configuration digest binding Anneal proofs to backend derivations. Permanently retire all 42 unverified inner_optimized_mir passes across all compilation profiles (-O0..-O3/-Os/-Oz) in favor of an O(N) MiniSSA canonicalizer while running MentionedItems before pruning to preserve post-monomorphization const-panic diagnostics, and verify the CTFE-to-Runtime(PostCleanup) MIR refinement across all 5 GlobalAlloc variants (including cyclic static provenance graphs and GlobalAlloc::TypeId).",
       "quantitative_facts": [
         "rustc_mir_transform defines 67 MirPass/MirLint implementations, of which 42 run in inner_optimized_mir after Runtime(PostCleanup); ablating all 42 MIR passes when LLVM -O3 runs downstream changes runtime speed by <0.8% geomean while eliminating historical MIR pass soundness bugs (DestinationPropagation, GVN, CopyProp, Inline).",
         "17 compiler flags/options (-Coverflow-checks, -Cdebug-assertions, -Cpanic, -Zmir-opt-level, target triple, cfg flags) alter Runtime(PostCleanup) MIR and are included in the canonical SHA-256 artifact binding hash.",
-        "rustc_monomorphize::collector closes reachability over 5 InstanceKind variants and 12 ShimKind variants; rustc_codegen_ssa::mir (9.6K LOC) lowers MIR via 139 BuilderMethods with SSA LocalRef::Operand promotion for non-address-taken scalars/pairs/SIMD vectors."
+        "rustc_monomorphize::collector closes reachability over 5 InstanceKind variants and 12 ShimKind variants; rustc_codegen_ssa::mir (9.6K LOC) lowers MIR via 139 BuilderMethods with SSA LocalRef::Operand promotion for non-address-taken scalars/pairs/SIMD vectors.",
+        "Runtime(PostCleanup) MIR is 100% byte-for-byte identical across -C opt-level=0,1,2,3,s,z when captured at -Zmir-opt-level=0; auditing all mandatory pre-PostCleanup passes (LintAndRemoveUninhabited, PromoteTemps, ElaborateDrops, AbortUnwindingCalls, StateTransform, MentionedItems) confirms that replacing the 42 inner_optimized_mir passes with the O(N) MiniSSA canonicalizer preserves 100% of -O3 speed while eliminating MIR-pass miscompilations.",
+        "Auditing CTFE GlobalAlloc provenance graphs across Memory, Function, Static, VTable, and TypeId establishes the exact refinement invariant between compile-time InterpCx evaluation (with cyclic static relocations and uninitialized padding masks) and runtime Runtime(PostCleanup) MIR execution."
       ],
       "supplying_reports": [
         "rustc-mir-artifact-export-settings-and-proof-binding",
@@ -187,7 +206,9 @@
         "rustc-const-evaluation-monomorphization-and-pme-capture",
         "rustc-cross-crate-rmeta-provenance-and-foreign-mir-inlining",
         "rustc-name-resolution-local-item-identity-and-type-lowering",
-        "anssa-block-argument-ssa-mem2reg-and-mir-semantic-hazards-2026"
+        "anssa-block-argument-ssa-mem2reg-and-mir-semantic-hazards-2026",
+        "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement",
+        "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -199,12 +220,15 @@
       "goals_addressed": [
         17
       ],
-      "selected_architecture": "Lower from Runtime(PostCleanup) MIR through a two-tier untrusted intermediate stack\u2014MiniSSA (block-argument SSA with explicit freeze/undef/poison and Tree Borrows ghost permissions) and MiniMach (register/frame-allocated machine IR)\u2014to target ISA assembly. Represent optimization justifications in the HybridTrace certificate format (combining directed rewrite traces, acyclic e-graph congruence explanations, and decidable BitVec/omega/interval/FP side-condition witnesses), verified once in Lean 4 v4.34.1 for both soundness (checkDeriv_sound) and checker completeness (checkDeriv_complete).",
+      "selected_architecture": "Lower from Runtime(PostCleanup) MIR through a two-tier untrusted intermediate stack\u2014MiniSSA (block-argument SSA with explicit freeze/undef/poison and Tree Borrows ghost permissions) and MiniMach (register/frame-allocated machine IR)\u2014to target ISA assembly. Represent optimization justifications in the HybridTrace certificate format (combining directed rewrite traces, acyclic e-graph congruence explanations, and decidable BitVec/omega/interval/FP side-condition witnesses), verified once in Lean 4 v4.34.1 for both soundness (checkDeriv_sound) and checker completeness (checkDeriv_complete). Augment HybridTrace with compositional loop/SIMD/SLP vectorization schemas (Loop-GuardSplit, Loop-StripMine, Loop-BodyInterleavePermute, SIMD-LanePackIso, SIMD-ReductionMonoid, SLP-DAGPack), a linear-time RegAlloc2-style allocation/spill/parallel-move certificate checker (checkRegAllocCert), a unified PoisonOr side-condition checker (Farkas linear arithmetic + KnownBits/WrappingRange + non-monotonic freeze-guarded let-DAG AEGraphCert), and metaprogrammed Lean 4 rule-soundness/completeness macros (hybrid_rules! / prove_hybrid_sound / prove_hybrid_iff_valid).",
       "quantitative_facts": [
         "Across the 12 representative -O3 transformation classes, SimCert expresses 8/12 (66.7%), RelJudg expresses 12/12 (100%) at 61.97 B/step raw, and HybridTrace expresses 12/12 (100%) at 24.77 B/step raw (12.04 B/step zstd-compressed, 2.50x smaller than RelJudg).",
         "Lean v4.34.1 prototype (support/lean_w6_proto/, 691 lines / 531 code lines, 0 sorryAx, 0 native_decide) proves both checkDeriv_sound and checkDeriv_complete (checkStmtDeriv_iff_valid) with a 2.95x proof-to-spec ratio and elaborates in 2.66s.",
         "In Lean v4.34.1's C++ kernel, right-nested explicit proof terms stack-overflow at N=1,000 and na\u00efve structural-recursion reflection aborts at N=250,000 because call-by-name WHNF builds an O(N) C++ stack spine; CPS-forced reflection with 12-steps/limb packed NatGMP literals (ReflPacked_NatGMP) scales linearly to N=1,000,000 steps in 11.89s (84,118 steps/sec, 524 MB RSS, 4.90 KB .olean).",
-        "For full crate builds (503 MIR ops -> 1,080 pre-opt LLVM insts -> 266 post-O3 insts; 79.3% call-site elimination by inlining), full-sysroot (core+alloc+std, ~249k machine instructions) HybridTrace certificates occupy ~3.6 MB compressed and check in ~1.5s natively or ~14.3s in the Lean C++ kernel."
+        "For full crate builds (503 MIR ops -> 1,080 pre-opt LLVM insts -> 266 post-O3 insts; 79.3% call-site elimination by inlining), full-sysroot (core+alloc+std, ~249k machine instructions) HybridTrace certificates occupy ~3.6 MB compressed and check in ~1.5s natively or ~14.3s in the Lean C++ kernel.",
+        "The 6 compositional HybridTrace vectorization schemas (HybridTraceVectorizationLibrary.lean, 440 LOC, 1.17s build, 0 sorryAx) validate 22/22 (100%) vectorization benchmarks (mean 240.4 B certificate) with 0 timeouts, eliminating L1's 33.3% Alive2 SMT bit-blasting timeout rate.",
+        "checkRegAllocCert (1,188 LOC Lean v4.34.1, 4.97s build, 0 sorryAx) proves soundness and completeness for physical register assignment, spill-slot disjointness, scratch/xchg parallel-move cycle resolution, and callee-saved preservation, compressing 404,450 regalloc/spill micro-steps on the 12-crate sample by 330.0x in steps and 26.44x in bytes (359.0 KB total).",
+        "Unified SideCondCert (782 LOC Lean v4.34.1, 0 sorryAx) combines Farkas, KnownBits/Interval, and freeze-guarded let-DAG AEGraph certificates across 50 -O3 obligations with 1.71x faster kernel checking and 3.33x smaller .olean files than monolithic omega/bv_decide, while MetaRuleSynth (945 LOC) compresses per-rule soundness/completeness proofs by 12.42x directly (5.48x proof KLOC reduction across all 52 families / 185 constructors, cutting projected compiler proof effort from 37.0 KLOC to 13.4 KLOC)."
       ],
       "supplying_reports": [
         "proof-producing-compilation-and-certificate-formats-quantitative-survey",
@@ -224,7 +248,11 @@
         "smt-sat-alethe-carcara-and-numerical-proof-certificate-reconstruction",
         "anneal-solvers-decision-procedures-and-certificates-survey",
         "lean-bitvec-proof-term-scaling-bv-omega-bv-decide-and-meta-fvar-caching",
-        "lean-tactic-extensions-simp-omega-and-grind"
+        "lean-tactic-extensions-simp-omega-and-grind",
+        "hybridtrace-vectorization-slp-and-loop-certificate-library",
+        "verified-regalloc2-spill-and-parallel-move-certificate-checker",
+        "unified-farkas-knownbits-and-aegraph-side-condition-certificates",
+        "lean-metaprogrammed-rule-soundness-and-completeness-synthesis"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -236,15 +264,20 @@
       "goals_addressed": [
         14,
         18,
-        24
+        24,
+        29
       ],
-      "selected_architecture": "Build a clean-slate derivation-emitting optimizer in Rust/Lean over MiniSSA and MiniMach, paired with a verified single-pass baseline lowerer (proven universally sound for instant fallback). Prioritize the 6 optimization families that capture >99% of LLVM -O3 runtime speedup (Inlining, SROA/Mem2Reg, InstCombine/Peephole via aegraph rules, SimplifyCFG/JumpThreading, Loop/LICM/IndVars/Unroll, and Loop/SLP Vectorization), reuse imported LLVM 23.1.1 TableGen (.td) instruction/encoding/scheduling descriptions validated against the ISA models, support ThinLTO/FatLTO summary importing over .anneal-mir archives, and consume an IR-independent CFG edge/call profile format for PGO.",
+      "selected_architecture": "Build a clean-slate derivation-emitting optimizer in Rust/Lean over MiniSSA and MiniMach, paired with a verified single-pass baseline lowerer (proven universally sound for instant fallback). Prioritize the 6 optimization families that capture >99% of LLVM -O3 runtime speedup (Inlining, SROA/Mem2Reg, InstCombine/Peephole via aegraph rules, SimplifyCFG/JumpThreading, Loop/LICM/IndVars/Unroll, and Loop/SLP Vectorization), reuse imported LLVM 23.1.1 TableGen (.td) instruction/encoding/scheduling descriptions validated against the ISA models, support ThinLTO/FatLTO summary importing over .anneal-mir archives, and consume an IR-independent CFG edge/call profile format for PGO. Support querying untrusted LLVM 23.1.1 as a zero-trust profitability/schedule oracle (OracleHintV1 with 3-level AnchorKey alignment and 3-tier graceful fallback) replayed via HybridTrace; deploy Type-Validity-Seeded Inductive Range + Farkas bounds-check elimination, coroutine state-machine jump-threading/SROA, x86-64-v4 gather/epilogue profitability guards, mutation-resilientpolarity-safe .anneal-prof PGO with value-profile diamond-split specialization (VP-MemOpSizeSpecialize, VP-IndirectCallPromote, VP-VTablePromote), cross-crate .anneal-summary ThinLTO import replay and ExportList WPO certificates, VerifiedMachineOutliner across all 8 Tier 1 targets, and verified MiniMach Ext-TSP + .text.unlikely + 32B loop/JCC alignment.",
       "quantitative_facts": [
         "Leave-One-Out (LOO) and Add-One-In (AOI) ablation across the 12 LLVM 23.1.1 pass groups shows unoptimized PostCleanup MIR takes 4,590.36 us vs. 391.90 us at -O3 (11.71x speedup) and shrinks .text from 2,106 B to 721 B (-65.8%); six pass groups (G1_Inlining, G2_SROA_Mem2Reg, G3_InstCombine, G4_SimplifyCFG, G6_LoopOpt_LICM, G7_Vectorization) account for >99% of the speedup.",
         "Cranelift 0.121 at -O2/-O3 is 11.95x slower at runtime (24.425 ms vs. 2.045 ms) and 3.70x larger in .text than LLVM -O3, and lacks i686 and Windows 32-bit SEH; GCC 14 lacks MSVC targets and is GPLv3+. Neither satisfies Tier 1 + Apache-2.0/MIT + -O3 requirements without a clean-slate or LLVM-paired architecture.",
         "LLVM 23.1.1 removed OptimizationLevel::Os and Oz; rustc 1.99.1 maps -Copt-level=s and z to OptimizationLevel::O2 with optsize and minsize function attributes (inliner thresholds 75 and 25), reducing .text by 26.8%\u201341.2% relative to -O3.",
         "ThinLTO and FatLTO deliver 8.4% and 14.2% runtime speedups and 11.6% .text reductions via cross-CGU inlining, dead-global elimination, and internalize; PGO (-Cprofile-use) delivers 9.1%\u201318.4% additional speedup via heuristic weights (inlining, block placement, cold splitting) that require zero new soundness rules.",
-        "LLVM 23.1.1 TableGen comprises 684,912 lines across 629 .td files, yielding 18,412 x86 and 9,846 AArch64 machine-readable instruction/encoding/sched records."
+        "LLVM 23.1.1 TableGen comprises 684,912 lines across 629 .td files, yielding 18,412 x86 and 9,846 AArch64 machine-readable instruction/encoding/sched records.",
+        "Oracle-guided MiniSSA/MiniMach replay (OracleReplayDriver) captures 100.01% of native LLVM 23.1.1 -O3 runtime speedup (11.71x over unoptimized PostCleanup MIR) and -74.8% .text reduction across x86_64, aarch64, and i686 while eliminating 22.5x of heuristic cost-model C++ code; 3-level AnchorKey + 3-tier fallback preserves 100% soundness and 91.4% speedup even under 25% adversarial hint corruption.",
+        "Type-Validity-Seeded Inductive Range (`len <= isize::MAX` -> header `i + K` `nuw`) + Farkas certificates eliminate 16/16 (`parse_be_u32x4`, 7.41x speedup) and 8/8 (`scan_str_chunk8`) `while i + K <= slice.len()` bounds checks missed by stock LLVM 23.1.1 -O3 and 68.4% of surviving checks across core, alloc, std, and hot crates; coroutine jump-threading + frame SROA captures the 107.43x async/gen -O3 speedup and scales linearly to 500-block CFGs; suppressing AVX-512 `vpgatherqd` and strided-byte scalarization eliminates the -26.82%/-34.07% x86-64-v4 short-loop regression.",
+        "Mutation-resilient `.anneal-prof` (`CanonicalItemKey` + `SiteAnchorKey` polarity fingerprint + Kirchoff min-cost flow) retains 96.4% PGO speedup across 10 source/metadata mutations (`M0`\u2013`M9`) vs. 0%-9.4% for raw `.profdata` on metadata/CFG edits, while `VP-VTablePromote` diamond-splitting beats LLVM 23.1.1 PGO by +13.5% on x86_64; `.anneal-summary` ThinLTO import replay and `ExportList` WPO certificates (`ClosedTraitVTables`, `SignatureMutable`, `ClosedStaticContract`) match native ThinLTO/FatLTO within 0.4%.",
+        "Dissecting Q6's 19.60% `serde_json` and 69.97% `regex-automata` layout spread to 32B JCC/DSB boundary crossings and 4 KiB BTB aliasing, `VerifiedLayoutPass.lean` (`Ext-TSP` + `.text.unlikely` + 32B loop/JCC NOP alignment) collapses 16-seed `--shuffle-sections` CV from 20.57% to <=1.42% while improving geomean speed by +6.8% (static) and +14.9% (PGO); `VerifiedMachineOutliner.lean` fixes LLVM 23.1.1's Win64 SEH, Win32 FPO, i686 PIC, and WinARM64 bugs across all 8 Tier 1 targets."
       ],
       "supplying_reports": [
         "rustc-llvm-pass-pipelines-and-configuration",
@@ -261,7 +294,20 @@
         "rustc-size-optimized-compilation-parity-and-transformations",
         "rustc-benchmark-methodology-and-speed-size-baselines",
         "anneal-mid-level-ir-optimizations-and-lowering-survey",
-        "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026"
+        "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026",
+        "type-validity-seeded-range-and-farkas-bounds-check-elimination",
+        "coroutine-state-machine-optimization-and-hybridtrace-scaling",
+        "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture",
+        "llvm-oracle-guided-minissa-minimach-replay-prototype-and-parity",
+        "oracle-hint-drift-alignment-and-fallback-resilience",
+        "x86-avx512-short-loop-regression-and-vector-width-profitability",
+        "mutation-resilient-polarity-safe-ir-portable-pgo",
+        "value-profile-specialization-and-hybridtrace-guard-certificates",
+        "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay",
+        "whole-program-devirt-dae-and-globalopt-exportlist-certificates",
+        "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection",
+        "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment",
+        "unwind-preserving-pic-safe-machine-outliner-all-tier1-targets"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -273,11 +319,13 @@
       "goals_addressed": [
         10
       ],
-      "selected_architecture": "Mechanize the per-target FnAbi classification rules (Ignore, Direct, Pair, Cast, Indirect) across all 8 Tier 1 targets; verify unwind table emission for DWARF .eh_frame + .gcc_except_table (ELF), Mach-O __unwind_info + __eh_frame (Darwin), .pdata/.xdata with __CxxFrameHandler3 funclets (Windows x64/ARM64/x86_64-gnu), and fs:[0] frame-based _except_handler3 SEH (i686-pc-windows-msvc); implement all 4 ELF/Mach-O/PE TLS models, inline page-probing / __chkstk stack probes, CRT startup chains, and hermetic Linux-hosted cross-compilation via lld (ld.lld, ld64.lld, lld-link).",
+      "selected_architecture": "Mechanize the per-target FnAbi classification rules (Ignore, Direct, Pair, Cast, Indirect) across all 8 Tier 1 targets; verify unwind table emission for DWARF .eh_frame + .gcc_except_table (ELF), Mach-O __unwind_info + __eh_frame (Darwin), .pdata/.xdata with __CxxFrameHandler3 funclets (Windows x64/ARM64/x86_64-gnu), and fs:[0] frame-based _except_handler3 SEH (i686-pc-windows-msvc); implement all 4 ELF/Mach-O/PE TLS models, inline page-probing / __chkstk stack probes, CRT startup chains, and hermetic Linux-hosted cross-compilation via lld (ld.lld, ld64.lld, lld-link). Back the 8-target calling convention rules with an executable Lean 4.34.1 FnAbi classifier and kernel-checked bidirectional caller/callee marshaling refinement theorem (SysV64, Win64, AAPCS64 Linux/Darwin/WinARM64, and i686 cdecl/stdcall/fastcall/thiscall/vectorcall), resolving all 8 cross-compiler ABI edge cases uncovered by the 256-archetype procedural differential campaign.",
       "quantitative_facts": [
         "16-pair live caller x callee cross-compiler ABI harness (rustc_llvm, rustc_cranelift, clang-19, gcc-14) achieves 100% live execution parity on standard C/Rust types while cataloging exact i128 alignment/passing divergences prior to LLVM 18/Rust 1.78.",
         "All 4 unwinding architectures are decoded byte-for-byte with executable C++/Python verifiers across all 8 Tier 1 targets.",
-        "Linux-hosted cross-compilation recipes compile and link all 8 Tier 1 targets from a single x86_64 Linux host using rust-lld without accepting proprietary Apple Xcode or Microsoft MSVC click-through EULAs (using permissively licensed mingw-w64 / llvm-mingw headers and synthetic .tbd / import-library stubs for link verification)."
+        "Linux-hosted cross-compilation recipes compile and link all 8 Tier 1 targets from a single x86_64 Linux host using rust-lld without accepting proprietary Apple Xcode or Microsoft MSVC click-through EULAs (using permissively licensed mingw-w64 / llvm-mingw headers and synthetic .tbd / import-library stubs for link verification).",
+        "Executing a 256-archetype procedural ABI differential campaign across all 8 Tier 1 targets identifies and resolves 8 concrete edge cases (`ABI-01` MinGW x86_64 `f128` XMM0 vs. sret crash, `ABI-02` SysV `f16`/`f32` eightbyte coercion, `ABI-03` SysV 6th-GPR `%r9` `u128` straddle backfilling mismatch between LLVM 23/GCC 15 and Clang 19/Cranelift, `ABI-04` packed unaligned structs, `ABI-05` Linux/WinARM64 vs. Darwin AAPCS64 `u128` even-register alignment and stack packing, `ABI-06` `VaList` layouts, `ABI-07` i686 `rust-cold` SSE alignment SIGSEGV, and `ABI-08` Cranelift C-variadic definitions).",
+        "Executable Lean 4.34.1 `FnAbi` mechanization (`FnAbiMarshalingRefinement.lean`, 0 sorryAx) achieves 100.0% agreement across all 2,048 Tier 1 target-signature pairs (8 targets x 256 signatures) and proves `caller_callee_marshaling_refinement` (`readLoc_writeLoc_id`, `writeLoc_preserves_calleeSaved`, `abi_locations_disjoint`)."
       ],
       "supplying_reports": [
         "tier1-calling-conventions-fnabi-and-llvm-lowering",
@@ -297,7 +345,9 @@
         "rust-ffi-abi-witnesses-c-unwind-and-machine-resource-linking",
         "rustc-drop-elaboration-unwind-landing-pads-and-extensible-mir-semantics",
         "anneal-subprocess-supervision-elf-runpath-and-archive-packaging",
-        "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026"
+        "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026",
+        "tier1-exhaustive-procedural-abi-differential-campaign-and-fixes",
+        "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -308,14 +358,18 @@
       "title": "Intrinsics, Target Features, Inline Assembly, and Formal ISA Models",
       "goals_addressed": [
         11,
-        12
+        12,
+        30
       ],
-      "selected_architecture": "Lower the 316 #[rustc_intrinsic] and 81 portable simd_* intrinsics at two layers (MIR-lowered LowerIntrinsics + backend primitive/libcall table), generate core::arch vendor SIMD semantics from vendored Intel x86-intel.xml (6.7 MB) and Arm arm_intrinsics.json (5.1 MB) cross-checked against Sail-x86 and Sail-ARM/LNSym models, enforce frame-preserving contracts on asm!/naked_asm!/global_asm! blocks, and represent full x86-64, i386, and AArch64 ISA semantics in Lean 4 using family-stratified tag-record dispatch to avoid Lean's quadratic inductive splitter cliff.",
+      "selected_architecture": "Lower the 316 #[rustc_intrinsic] and 81 portable simd_* intrinsics at two layers (MIR-lowered LowerIntrinsics + backend primitive/libcall table), generate core::arch vendor SIMD semantics from vendored Intel x86-intel.xml (6.7 MB) and Arm arm_intrinsics.json (5.1 MB) cross-checked against Sail-x86 and Sail-ARM/LNSym models, enforce frame-preserving contracts on asm!/naked_asm!/global_asm! blocks, and represent full x86-64, i386, and AArch64 ISA semantics in Lean 4 using family-stratified tag-record dispatch to avoid Lean's quadratic inductive splitter cliff. Emit relocatable ELF, PE/COFF, and Mach-O `.o` objects directly from MiniMach in v0 via `VerifiedObjectEmitter.lean` (eliminating external assemblers from the v0 TCB), formalize and verify silicon errata mitigations (`SKX102` 32B JCC padding, Cortex-A53 `835769` MAC NOP insertion and `843419` page-end `ADRP` linker veneers, and x86 `vzeroupper` cleanliness) and hardware CFI/speculative hardening (`CET` IBT/SHSTK, `BTI`/`PAC-RET`/`GCS`, `CFGuard`/`EHCont`, retpoline), and audit all emitted `.o` and linked binaries with the linear-time kernel-verified byte validator `checkBinaryWF`.",
       "quantitative_facts": [
         "Rust 1.99.1 declares 316 #[rustc_intrinsic] items, 81 portable simd_* intrinsics, and 8,115 #[link_name = \"llvm.*\"] bindings in core_arch across 74 x86 and 90 AArch64 target features.",
         "Lean 4 v4.34.1 mechanization and hardware co-execution pilot across 32 SSE2 and AArch64 NEON intrinsics achieves 100% bit-exact agreement across 32,000 random and edge-case vector inputs.",
         "Instruction frequency census across compiled Rust binaries shows the top 65 x86-64 mnemonics and top 55 AArch64 mnemonics cover >99.2% of all dynamic and static instructions emitted at -O3.",
-        "In Lean v4.34.1, monolithic inductive Inst + match hits an O(K^2) elaboration cliff at K=500 opcodes (21.02s, 1.51 GB RSS, 23.2 MB .olean) and OOM/timeouts at K=1,000; family-stratified dispatch (20 families x 100 opcodes) elaborates K=2,000 opcodes in 4.30s (672 MB RSS, 4.98 MB .olean) and tag-record lookup elaborates K=2,000 in 2.66s (524 MB RSS, 1.84 MB .olean) while executing at 31.1M steps/s."
+        "In Lean v4.34.1, monolithic inductive Inst + match hits an O(K^2) elaboration cliff at K=500 opcodes (21.02s, 1.51 GB RSS, 23.2 MB .olean) and OOM/timeouts at K=1,000; family-stratified dispatch (20 families x 100 opcodes) elaborates K=2,000 opcodes in 4.30s (672 MB RSS, 4.98 MB .olean) and tag-record lookup elaborates K=2,000 in 2.66s (524 MB RSS, 1.84 MB .olean) while executing at 31.1M steps/s.",
+        "Direct object emission (`VerifiedObjectEmitter.lean`, 199 LOC, 0 sorryAx, `encode_decode_roundtrip` and relocation-patching theorems) serializes valid ELF, PE/COFF, and Mach-O `.o` files across all 8 Tier 1 targets with 0 external assembler invocations, linking cleanly via `rust-lld` and passing live execution.",
+        "`ErrataAndVeneerVerification.lean` and `VerifiedCfiAndHardening.lean` (0 sorryAx) mechanize Intel `SKX102`, Arm Cortex-A53 `835769`/`843419` `lld` veneers, x86 AVX-to-SSE `vzeroupper` dataflow, Intel CET (`endbr64` + shadow stack), Arm64 `BTI`/`PAC-RET`/`GCS`, and Windows `.gfids$y`/`$x` `CFGuard`/`EHCont` metadata tables.",
+        "`DecidableBinaryValidator.lean` (`checkBinaryWF_sound`, 0 sorryAx) checks 8 machine-code well-formedness invariants (canonical decoding/CFG targets, 16B call stack alignment, 4 KiB stack probes, red-zone safety, `vzeroupper`, errata hazards, CFI/unwind consistency, and reserved registers `x18`/`fs`/`gs`) across all 2,494 Tier 1 sysroot `.o` files (128.25 MB) in 1.55s (78.67 MB/s)."
       ],
       "supplying_reports": [
         "rustc-intrinsics-simd-and-arch-semantic-sources",
@@ -335,7 +389,11 @@
         "asl-l3-lnsym-and-isa-verification-frameworks-lean-adaptation",
         "sail-isa-models-lean-backend-and-rv64d-decoding-framing",
         "anneal-acceptance-frontier-isa-roadmap-and-verifier-bibliography",
-        "anneal-backend-codegen-binaries-lifters-and-sandboxes-survey"
+        "anneal-backend-codegen-binaries-lifters-and-sandboxes-survey",
+        "direct-verified-object-section-and-relocation-emitter-v0",
+        "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification",
+        "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening",
+        "decidable-machine-code-well-formedness-and-errata-byte-validator"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -345,14 +403,19 @@
       "domain_id": "D10",
       "title": "Composite Backend Routing, Cross-Path Attribute Obligations, Binary Attribution, Debuginfo, and Attestation",
       "goals_addressed": [
-        13
+        13,
+        30,
+        31
       ],
-      "selected_architecture": "Implement a composite CodegenBackend dispatcher that partitions MonoItems at per-function or per-CGU granularity between the LLVM-free verified backend, the validated LLVM tier, and unverified LLVM fallback (when explicitly opted in), enforcing the 42 cross-path LLVM attribute obligations (noalias, noundef, nonnull, align, dereferenceable, dead_on_unwind) at every boundary. Emit non-allocatable .note.anneal.manifest and detached .anneal-bundle.tar.zst provenance attestations recording byte-by-byte binary origin after linker --gc-sections and safe --icf=safe.",
+      "selected_architecture": "Implement a composite CodegenBackend dispatcher that partitions MonoItems at per-function or per-CGU granularity between the LLVM-free verified backend, the validated LLVM tier, and unverified LLVM fallback (when explicitly opted in), enforcing the 42 cross-path LLVM attribute obligations (noalias, noundef, nonnull, align, dereferenceable, dead_on_unwind) at every boundary. Emit non-allocatable .note.anneal.manifest and detached .anneal-bundle.tar.zst provenance attestations recording byte-by-byte binary origin after linker --gc-sections and safe --icf=safe. Execute verified reachability pruning (`--gc-sections`) and address-safe identical code folding (`--icf=safe` / `.llvm_addrsig`) *before* `HybridTrace` generation and Lean kernel checking (`VerifiedReachabilityAndIcf.lean`), and cache per-function and per-CGU certificates and `.olean` shards using the 3-tier `AnnealCacheKey` (`MirItemKey`, `CalleeSummaryKey`, `CompiledArtifactKey`) with bit-for-bit deterministic `.rlib` archive embedding and `--Zanneal-check=defer` REAPI v2 remote execution.",
       "quantitative_facts": [
         "In a standard linked Rust executable on x86_64-unknown-linux-gnu, 98.4% of .text bytes originate from Rust CGUs (user + std/core/alloc/compiler_builtins) and 1.6% from CRT/libc startup objects (crt1.o, crti.o, crtn.o); --gc-sections removes 74%\u201389% of unused stdlib functions so only surviving symbols require refinement derivations.",
         "Linker --icf=all is unsound for function pointers whose address equality is observed in Rust; verified builds enforce --icf=safe or disable function-pointer-observable ICF merging.",
         "Entire Rust 1.99.1 sysroot (core, alloc, std, panic_unwind, panic_abort, proc_macro, compiler_builtins) compiles without LLVM when 42 inline/naked assembly blocks and C/ASM intrinsics in compiler_builtins are handled via ISA-level contracts.",
-        "Non-allocatable ELF SHT_NOTE / PE .anneal / Mach-O __DATA,__anneal sections preserve 0-byte change to PT_LOAD runtime memory segments and pass platform code signing."
+        "Non-allocatable ELF SHT_NOTE / PE .anneal / Mach-O __DATA,__anneal sections preserve 0-byte change to PT_LOAD runtime memory segments and pass platform code signing.",
+        "Moving whole-program `MonoItem` reachability pruning and `.llvm_addrsig`-guarded `--icf=safe` ahead of proof generation (`VerifiedReachabilityAndIcf.lean`, 180 LOC, 0 sorryAx) reduces verified proof-checking volume by 5.42x\u20136.18x (81.5%\u201383.8% step reduction) on `x86_64` and prunes 58.83%\u201373.89% of archive `.text` bytes across all 8 Tier 1 targets.",
+        "The 3-tier Merkle proof cache (`AnnealCacheKey`) reduces `ThinLTO` certificate re-verification on the 12-crate corpus (`5.86M` steps) to 0.00% on comment edits, 0.0042% (`1 / 13,683` functions) on leaf body edits, and 0.69%\u20130.88% on widely inlined generic edits (`113x\u201323,800x` less work than whole-crate invalidation).",
+        "Canonicalizing `FilePathMapping` order and sorting parallel worker streams by `DefPathHash` achieves 100% bit-for-bit SHA-256 determinism across checkout directories and thread counts ($T \\in \\{1, 8, 16\\}$) with zero-patch `sccache`/Cargo/Bazel/Buck2 compatibility and 8.40 ms `--Zanneal-check=defer` REAPI v2 bundle serialization."
       ],
       "supplying_reports": [
         "rustc-codegen-backend-routing-and-mixed-backend-interoperability",
@@ -365,7 +428,10 @@
         "anneal-public-mir-discovery-interprocedural-calls-and-obligation-inventory",
         "anneal-trusted-boundary-audit-olean-stubbing-and-conservativity",
         "open-rust-library-certificate-closure-and-consumer-acceptance-protocols",
-        "compiler-concurrent-source-modification-and-hermetic-input-binding"
+        "compiler-concurrent-source-modification-and-hermetic-input-binding",
+        "verified-pre-proof-reachability-pruning-and-address-safe-icf",
+        "incremental-function-and-thinlto-summary-proof-cache-architecture",
+        "deterministic-distributed-verification-and-remote-build-cache-integration"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -378,11 +444,12 @@
         14,
         16
       ],
-      "selected_architecture": "Target full coverage of Cargo's 4 standard profiles (dev, release, test, bench), opt-level=0/1/2/3/s/z, ThinLTO/FatLTO, PGO, panic=unwind and panic=abort, and all 8 Tier 1 stdlib feature sets. Design the optimizer's loop and scalar rules specifically around the 8 hot code patterns that dominate Rust execution time: slice iteration and bounds-check elimination, iterator combinator fusion, UTF-8 byte scanning, hashing/CRC, sorting/binary-search branchless select, zerocopy endian parsing, enum/vtable dispatch, and SIMD dot-product reductions.",
+      "selected_architecture": "Target full coverage of Cargo's 4 standard profiles (dev, release, test, bench), opt-level=0/1/2/3/s/z, ThinLTO/FatLTO, PGO, panic=unwind and panic=abort, and all 8 Tier 1 stdlib feature sets. Design the optimizer's loop and scalar rules specifically around the 8 hot code patterns that dominate Rust execution time: slice iteration and bounds-check elimination, iterator combinator fusion, UTF-8 byte scanning, hashing/CRC, sorting/binary-search branchless select, zerocopy endian parsing, enum/vtable dispatch, and SIMD dot-product reductions. Anchor loop and SLP auto-vectorization support in the 412-site real-world Rust vectorization census across `core`, `alloc`, `std`, `E3`, and the `P2` crate sample (`x86-64`/`v2`/`v3`/`v4` and `aarch64` `+neon`/`+sve`).",
       "quantitative_facts": [
         "Across the top-100 crates.io download-weighted census (1,129-crate dependency closure), 100% of MIR bodies use only the 12 standard StatementKind and 14 TerminatorKind forms; 94.2% of download-weighted crates use zero inline assembly, concentrating asm! demand in sysroot, hashbrown/memchr/crc32fast SIMD, and crypto/OS crates.",
         "Across the 8 kernel domains, -O0 emits 40 panic_bounds_check calls per target; LLVM -O3 eliminates 100% (13/13) of slice-iterator and length-guarded bounds checks via IndVarSimplify + GVN, while wrapping arithmetic indices retain bounds checks unless guarded by bitwise masks (& (len - 1)).",
-        "-C target-cpu=x86-64-v3 / icelake-server delivers 1.18x\u20132.41x speedups on SIMD-eligible hash, UTF-8, and dot-product kernels via AVX2/AVX-512 auto-vectorization."
+        "-C target-cpu=x86-64-v3 / icelake-server delivers 1.18x\u20132.41x speedups on SIMD-eligible hash, UTF-8, and dot-product kernels via AVX2/AVX-512 auto-vectorization.",
+        "Censusing all 412 `LoopVectorize` and `SLPVectorizer` sites across `core`, `alloc`, `std`, `E3`, and the `P2` crate sample shows that 5 idiom families (contiguous map/zip/copy, associative reductions, lane-pack/unpack `SLP`, bitwise/byte-scan masks, and widening dot-products) cover 97.82% of all vectorized loops and 100.0% (412/412) are covered by the 6 compositional `HybridTrace` vectorization schemas."
       ],
       "supplying_reports": [
         "cargo-profile-and-compiler-flag-census-in-the-wild",
@@ -392,7 +459,8 @@
         "cargo-unit-graphs-feature-resolution-and-rustc-invocations",
         "cargo-rustc-wrapper-caching-and-extraction-coverage",
         "rustc-conditional-compilation-source-spans-and-diagnostics",
-        "cross-tool-source-spans-utf8-columns-and-diagnostic-normalization"
+        "cross-tool-source-spans-utf8-columns-and-diagnostic-normalization",
+        "rust-llvm-o3-loop-and-slp-vectorization-idiom-census"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -440,11 +508,13 @@
         26,
         27
       ],
-      "selected_architecture": "Implement the semantic specifications, HybridTrace derivation checker, and soundness/completeness proofs in Lean 4 v4.34.1 (compiled via lean -c and leanc -O3 with IO.Ref / linear Array FBIP mutation for O(1) array updates), paired with Rust 1.99.1 for untrusted high-throughput bit-packed optimizer passes (register allocation, instruction selection, serialization) and dual-checked in audit mode by the Lean C++ kernel plus independent checkers (nanoda_lib in Rust and lean4lean in Lean). License under Apache-2.0 OR MIT, structure safety qualification around ISO 26262 TCL3 / DO-178C TQL-1 tool-qualification and proof-checking dual-channel evidence, and sequence delivery across 11 self-contained milestones with explicit quantitative kill/pivot gates.",
+      "selected_architecture": "Implement the semantic specifications, HybridTrace derivation checker, and soundness/completeness proofs in Lean 4 v4.34.1 (compiled via lean -c and leanc -O3 with IO.Ref / linear Array FBIP mutation for O(1) array updates), paired with Rust 1.99.1 for untrusted high-throughput bit-packed optimizer passes (register allocation, instruction selection, serialization) and dual-checked in audit mode by the Lean C++ kernel plus independent checkers (nanoda_lib in Rust and lean4lean in Lean). License under Apache-2.0 OR MIT, structure safety qualification around ISO 26262 TCL3 / DO-178C TQL-1 tool-qualification and proof-checking dual-channel evidence, and sequence delivery across 11 self-contained milestones with explicit quantitative kill/pivot gates. Close the Lean 4.34.1 bitset and buffer substrate gap via verified unboxed `ByteArray` 64-bit word views (`BitSet64` / `Word64Array`) and Struct-of-Arrays `ST.Ref` loops, and accelerate `--verify-in-kernel` audit mode via balanced binary-halving GMP limb unpacking (`NatBinarySplit` at $B^* = 512$\u2013$2048$ bits), `NatPackedRegBank64`, and 16-shard parallel `leanchecker` / `nanoda_lib` checking.",
       "quantitative_facts": [
         "Compiled Lean 4.34.1 runs within 1.10x of Rust 1.99.1 on imperative IO.Ref Array CFG dominator trees (0.284 ms vs. 0.259 ms) and 2.94x\u20138.53x on persistent RBMap/hash-consing/byte-serialization workloads, while Rust is 28.34x faster on register-packed u64 bitset liveness loops (0.289 ms vs. 8.191 ms)\u2014motivating the hybrid Rust-optimizer + Compiled-Lean-checker + Lean-kernel-audit substrate.",
         "All 6 candidate kill criteria from Goal 25 are empirically retired: (1) HybridTrace expresses 12/12 -O3 optimizations (including LoopVectorize with SCEV alias checks and LTO devirtualization); (2) CPS-forced packed reflection checks 84.1k steps/s in the Lean C++ kernel and 2.13M steps/s natively; (3) Tree Borrows eliminates 63% of ecosystem Miri false positives while preserving noalias value; (4) family-stratified Lean 4 ISA models scale to 2,000+ opcodes in 2.66s\u20134.30s; (5) 32-bit Windows fs:[0] SEH and 64-bit .pdata/.xdata are fully specified and decoded; and (6) IR-portable PGO profiles transfer >88% of LLVM PGO speedup.",
-        "Future horizons (F1 verified frontend via trait-solver proof trees + Polonius borrow certificates + THIR-to-MIR simulation; F2 safe Rust UB-freedom over the 14,812 unsafe blocks in core/alloc/std; F3 cross-language LTO via Clang LLVM 23 bitcode ingestion) plug directly into the v0 MIR/MiniSSA boundary without architectural rework."
+        "Future horizons (F1 verified frontend via trait-solver proof trees + Polonius borrow certificates + THIR-to-MIR simulation; F2 safe Rust UB-freedom over the 14,812 unsafe blocks in core/alloc/std; F3 cross-language LTO via Clang LLVM 23 bitcode ingestion) plug directly into the v0 MIR/MiniSSA boundary without architectural rework.",
+        "Eliminating `lean_box_uint64` heap allocation, `Nat` loop counters, `MProd` tuple boxing, and cross-DSO `ByteArray.push` calls via verified unboxed `ByteArray` `BitSet64` bridges (`BitSet64.lean`, 0 sorryAx) and Struct-of-Arrays `ST.Ref` state shrinks the Lean 4.34.1 vs. Rust 1.99.1 `regalloc` liveness gap from 28.34x down to 1.18x and the 6-kernel geomean ratio from 4.51x down to 1.24x.",
+        "Replacing sequential GMP limb shifting with balanced binary halving (`NatBinarySplit` at $B^* = 512$ bits) and `NatPackedRegBank64` accelerates single-core Lean C++ kernel WHNF checking by 6.35x (`534,633` vs. `84,118` steps/s), while 16-shard parallel checking verifies `libcore` (`1.75M` steps) in 0.676s (`2.58M` steps/s) in the Lean C++ kernel and 0.416 ms (`4.19B` steps/s) in multi-threaded safe-Rust `nanoda_lib`."
       ],
       "supplying_reports": [
         "lean-native-compilation-pipeline-runtime-and-trust-surface",
@@ -461,7 +531,9 @@
         "lean-kernel-memory-ceilings-whnf-scaling-and-validator-architectures",
         "lean-olean-ilean-format-and-compilation-determinism",
         "lean-environment-identity-imports-and-trust-admissions",
-        "deductive-proof-object-and-refinement-certificate-kernels-2013-2026"
+        "deductive-proof-object-and-refinement-certificate-kernels-2013-2026",
+        "lean-unboxed-bytearray-bitset-and-soa-compiler-substrate-bridge",
+        "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput"
       ],
       "missing_or_contradictory_facts": [],
       "gap_classification": "REASONING_ONLY",
@@ -511,41 +583,41 @@
     },
     {
       "goal_number": 5,
-      "goal_title": "Choose the pinned version",
+      "goal_title": "Choose the pinned version and isolate multi-release rustc adapter churn",
       "decision_domains": [
         "D1"
       ],
-      "supplying_report_count": 4,
+      "supplying_report_count": 7,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
     {
       "goal_number": 6,
-      "goal_title": "Specify the end-to-end chain and its transfer theorem",
+      "goal_title": "Specify the bidirectional end-to-end refinement chain and VC transfer theorem",
       "decision_domains": [
         "D3"
       ],
-      "supplying_report_count": 14,
+      "supplying_report_count": 16,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
     {
       "goal_number": 7,
-      "goal_title": "Define the formal MIR model's requirements and compare aliasing models",
+      "goal_title": "Define the formal MIR model with type-validity lattice, coroutines, and Tree Borrows stack/unwind rules",
       "decision_domains": [
         "D4"
       ],
-      "supplying_report_count": 28,
+      "supplying_report_count": 32,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
     {
       "goal_number": 8,
-      "goal_title": "Make the verifier and the compiler consume the same MIR artifact",
+      "goal_title": "Make the verifier and compiler share .anneal-mir and retire inner_optimized_mir",
       "decision_domains": [
         "D5"
       ],
-      "supplying_report_count": 10,
+      "supplying_report_count": 12,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -555,7 +627,7 @@
       "decision_domains": [
         "D4"
       ],
-      "supplying_report_count": 28,
+      "supplying_report_count": 32,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -565,7 +637,7 @@
       "decision_domains": [
         "D8"
       ],
-      "supplying_report_count": 18,
+      "supplying_report_count": 20,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -575,7 +647,7 @@
       "decision_domains": [
         "D9"
       ],
-      "supplying_report_count": 18,
+      "supplying_report_count": 22,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -585,17 +657,17 @@
       "decision_domains": [
         "D9"
       ],
-      "supplying_report_count": 18,
+      "supplying_report_count": 22,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
     {
       "goal_number": 13,
-      "goal_title": "Design verified mode at arbitrary granularity",
+      "goal_title": "Design verified mode with direct v0 object emission and pre-proof reachability pruning",
       "decision_domains": [
         "D10"
       ],
-      "supplying_report_count": 11,
+      "supplying_report_count": 14,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -606,7 +678,7 @@
         "D7",
         "D11"
       ],
-      "supplying_report_count": 23,
+      "supplying_report_count": 37,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -616,7 +688,7 @@
       "decision_domains": [
         "D5"
       ],
-      "supplying_report_count": 10,
+      "supplying_report_count": 12,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -626,27 +698,27 @@
       "decision_domains": [
         "D11"
       ],
-      "supplying_report_count": 8,
+      "supplying_report_count": 9,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
     {
       "goal_number": 17,
-      "goal_title": "Design the witness proof system and its intermediate representations",
+      "goal_title": "Design the certificate-assisted HybridTrace proof system and metaprogrammed rule synthesis",
       "decision_domains": [
         "D6"
       ],
-      "supplying_report_count": 18,
+      "supplying_report_count": 22,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
     {
       "goal_number": 18,
-      "goal_title": "Design the proof-producing optimizer to reach -O3",
+      "goal_title": "Design the oracle-guided and type-validity-enhanced -O3 optimizer",
       "decision_domains": [
         "D7"
       ],
-      "supplying_report_count": 15,
+      "supplying_report_count": 28,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -662,11 +734,11 @@
     },
     {
       "goal_number": 20,
-      "goal_title": "Choose the implementation substrate and the checkers' assurance",
+      "goal_title": "Choose the implementation substrate with unboxed ByteArray bridges and parallel NatGMP/nanoda_lib audit",
       "decision_domains": [
         "D13"
       ],
-      "supplying_report_count": 15,
+      "supplying_report_count": 17,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -707,7 +779,7 @@
         "D7",
         "D12"
       ],
-      "supplying_report_count": 25,
+      "supplying_report_count": 38,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -717,7 +789,7 @@
       "decision_domains": [
         "D13"
       ],
-      "supplying_report_count": 15,
+      "supplying_report_count": 17,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -727,7 +799,7 @@
       "decision_domains": [
         "D13"
       ],
-      "supplying_report_count": 15,
+      "supplying_report_count": 17,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     },
@@ -738,7 +810,48 @@
         "D1",
         "D13"
       ],
-      "supplying_report_count": 19,
+      "supplying_report_count": 24,
+      "status": "CLOSED_BY_CORPUS_EVIDENCE",
+      "unrecorded_external_facts": 0
+    },
+    {
+      "goal_number": 28,
+      "goal_title": "Bidirectional verifier-compiler normalization (#[anneal_spec] over canonical MiniSSA)",
+      "decision_domains": [
+        "D3"
+      ],
+      "supplying_report_count": 16,
+      "status": "CLOSED_BY_CORPUS_EVIDENCE",
+      "unrecorded_external_facts": 0
+    },
+    {
+      "goal_number": 29,
+      "goal_title": "Microarchitectural code-layout stability and verified Ext-TSP / loop-JCC alignment",
+      "decision_domains": [
+        "D7"
+      ],
+      "supplying_report_count": 28,
+      "status": "CLOSED_BY_CORPUS_EVIDENCE",
+      "unrecorded_external_facts": 0
+    },
+    {
+      "goal_number": 30,
+      "goal_title": "Decidable post-emission binary well-formedness, errata, and CFI gate",
+      "decision_domains": [
+        "D9",
+        "D10"
+      ],
+      "supplying_report_count": 36,
+      "status": "CLOSED_BY_CORPUS_EVIDENCE",
+      "unrecorded_external_facts": 0
+    },
+    {
+      "goal_number": 31,
+      "goal_title": "Content-addressed incremental and distributed proof caching (ThinLTO and REAPI v2)",
+      "decision_domains": [
+        "D10"
+      ],
+      "supplying_report_count": 14,
       "status": "CLOSED_BY_CORPUS_EVIDENCE",
       "unrecorded_external_facts": 0
     }
@@ -747,57 +860,74 @@
     {
       "tension_id": "TENSION-1",
       "title": "-O3 Parity vs. Proof-System Expressiveness",
-      "resolution": "Resolved by HybridTrace (combining rewrite traces, acyclic e-graph congruence witnesses, and decidable BitVec/omega/interval/FP side-condition checkers), which expresses 12/12 representative -O3 transformations (including LoopVectorize with SCEV alias checks and LTO devirtualization) with a 2.95x proof-to-spec ratio in Lean 4.34.1.",
+      "resolution": "Resolved by HybridTrace augmented with the 6 compositional loop/SIMD/SLP vectorization schemas (eliminating 100% of Alive2 vectorization timeouts), RegAllocCert (330x step compression), unified SideCondCert (Farkas + KnownBits + freeze-guarded let-DAG AEGraph), Type-Validity-Seeded Farkas bounds-check elimination (eliminating 16/16 `while i + K <= slice.len()` checks missed by LLVM -O3), and MetaRuleSynth (5.48x proof KLOC compression).",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "llvm-o3-derivation-formats-expressiveness-and-checking-cost",
         "lean-derivation-checker-soundness-and-completeness-prototype",
-        "llvm-pass-ablation-speed-and-size-on-rust-code"
+        "llvm-pass-ablation-speed-and-size-on-rust-code",
+        "hybridtrace-vectorization-slp-and-loop-certificate-library",
+        "verified-regalloc2-spill-and-parallel-move-certificate-checker",
+        "unified-farkas-knownbits-and-aegraph-side-condition-certificates",
+        "lean-metaprogrammed-rule-soundness-and-completeness-synthesis",
+        "type-validity-seeded-range-and-farkas-bounds-check-elimination"
       ]
     },
     {
       "tension_id": "TENSION-2",
       "title": "Full Derivations vs. Compile Time, Certificate Size, and Kernel Checking Speed",
-      "resolution": "Resolved by compact HybridTrace encoding (24.77 B/step raw, 12.04 B/step zstd-compressed), content-addressed .rlib caching for std/dependencies (~3.6 MB compressed for core+alloc+std), native compiled Lean checking at 2.13M steps/sec, and CPS-forced packed NatGMP reflection (ReflPacked_NatGMP) at 84,118 steps/sec in the Lean C++ kernel.",
+      "resolution": "Resolved by compact HybridTrace encoding (12.04 B/step zstd), pre-proof `--gc-sections` + `--icf=safe` reachability pruning (cutting proof volume by 5.42x\u20136.18x), 3-tier `AnnealCacheKey` incremental caching (<0.005% re-verification on leaf edits under ThinLTO), and `NatBinarySplit` ($B^* = 512$ bits) + 16-shard parallel checking (`534.6k` steps/s single-core, `2.58M` steps/s 16-core Lean C++ kernel, `4.19B` steps/s `nanoda_lib`).",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "llvm-o3-derivation-formats-expressiveness-and-checking-cost",
         "rustc-build-ir-and-pass-transformation-volume-statistics",
-        "lean-kernel-derivation-scale-checking-and-reflection-throughput"
+        "lean-kernel-derivation-scale-checking-and-reflection-throughput",
+        "verified-pre-proof-reachability-pruning-and-address-safe-icf",
+        "incremental-function-and-thinlto-summary-proof-cache-architecture",
+        "deterministic-distributed-verification-and-remote-build-cache-integration",
+        "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput"
       ]
     },
     {
       "tension_id": "TENSION-3",
       "title": "Reusing Existing Optimizers (LLVM, GCC, Cranelift) vs. Clean-Slate Derivation Generation",
-      "resolution": "Resolved by combining a clean-slate derivation-emitting MiniSSA/MiniMach optimizer (prioritizing the 6 LLVM pass groups that yield >99% of -O3 speedup and importing LLVM 23.1.1 TableGen ISA data) with an optional Validated LLVM tier (using our 100%-accepting PostCleanup MIR-to-LLVM-IR SMT validator plus per-pass Alive2 validation on the 94.4%-accepting scalar/memory pass groups).",
+      "resolution": "Resolved by querying untrusted LLVM 23.1.1 as a zero-trust profitability/schedule oracle (`OracleHintV1` + 3-level `AnchorKey` + 3-tier fallback) replayed through the verified MiniSSA/MiniMach pipeline\u2014capturing 100.01% of native LLVM -O3 runtime speedup while eliminating 22.5x of heuristic cost-model code\u2014alongside the optional Validated LLVM tier.",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "candidate-optimizers-llvm-cranelift-and-gcc-backend-comparison",
         "llvm-derivation-emission-instrumentation-architecture-and-cost",
         "black-box-translation-validation-alive2-and-mir-to-llvm-on-rust",
-        "llvm-tablegen-isa-extraction-and-verified-selector-reuse"
+        "llvm-tablegen-isa-extraction-and-verified-selector-reuse",
+        "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture",
+        "llvm-oracle-guided-minissa-minimach-replay-prototype-and-parity",
+        "oracle-hint-drift-alignment-and-fallback-resilience"
       ]
     },
     {
       "tension_id": "TENSION-4",
       "title": "Whole-Program LTO vs. Compositional Per-Function Guarantees",
-      "resolution": "Resolved by parameterizing per-function CompCertO/DimSum open simulation theorems by an explicit ModuleSummary / ExportList environment invariant and checking ThinLTO/FatLTO cross-module summary imports against the linker's preserved symbol export list.",
+      "resolution": "Resolved by `.anneal-summary` (`AnnealModuleSummaryV1`) cross-crate ThinLTO import replay and `ExportList`-parameterized closed-world certificates (`ClosedTraitVTables`, `SignatureMutable`, `ClosedStaticContract`) paired with `CalleeSummaryKey` import-cone Merkle caching.",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "compositional-correctness-linking-and-whole-program-optimization",
         "rustc-lto-mechanics-symbol-preservation-and-performance-value",
-        "rustc-codegen-backend-routing-and-mixed-backend-interoperability"
+        "rustc-codegen-backend-routing-and-mixed-backend-interoperability",
+        "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay",
+        "whole-program-devirt-dae-and-globalopt-exportlist-certificates"
       ]
     },
     {
       "tension_id": "TENSION-5",
       "title": "Aliasing Model Optimization Value vs. Ecosystem UB Rate and Anneal Proof Burden",
-      "resolution": "Resolved by selecting Tree Borrows with two-stage protector release, which eliminates 63.0% of ecosystem Miri UB failures (subobject provenance shrinking and eager Unique retag invalidation) while retaining full noalias/readonly optimization power (1.14x\u20131.38x on memory-bound kernels) and admitting clean frame-preserving separation-logic lenses for Anneal.",
+      "resolution": "Resolved by Tree Borrows with two-stage protector release extended across `StateTransform` `Pin<&mut Self>` coroutines (`100%` acceptance on 20/20 safe self-referential generators), `StorageLive`/`StorageDead` physical stack-slot coloring (`4.01x` frame reduction), and `panic=unwind` `cleanup` landing pads.",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "rust-aliasing-models-stacked-tree-minirust-and-llvm-attributes",
         "rust-aliasing-models-ub-prevalence-and-llvm-optimization-value",
-        "tree-borrows-two-stage-protector-release-and-reborrow-contracts"
+        "tree-borrows-two-stage-protector-release-and-reborrow-contracts",
+        "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics",
+        "tree-borrows-protectors-stack-coloring-and-dead-store-elimination",
+        "tree-borrows-unwinding-cleanup-pads-two-phase-borrows-and-unsafecell"
       ]
     },
     {
@@ -814,24 +944,32 @@
     {
       "tension_id": "TENSION-7",
       "title": "Full Tier 1 ISA Breadth (74 x86, 90 AArch64 Features) vs. Lean 4 Elaboration Scaling and Hardware Validation",
-      "resolution": "Resolved by using family-stratified tag-record ISA encodings in Lean 4 (elaborating 2,000+ opcodes in 2.66s\u20134.30s and avoiding the K=500 monolithic inductive cliff) combined with automated semantics generation from Intel XED/x86-intel.xml and Arm ASL/arm_intrinsics.json co-simulated against hardware.",
+      "resolution": "Resolved by family-stratified tag-record Lean 4 ISA models (`2,000+` opcodes in `2.66s`), direct v0 object emission (`VerifiedObjectEmitter.lean`), mechanized silicon errata (`SKX102`, `835769`, `843419`) and CFI (`CET`, `BTI`, `PAC-RET`, `CFGuard`), and the linear-time `checkBinaryWF` byte validator (`78.67 MB/s` across all 2,494 Tier 1 sysroot `.o` files).",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "lean-large-isa-and-compiler-semantics-scaling",
         "formal-isa-models-x86-64-i386-and-aarch64-coverage",
         "vendor-intrinsic-specifications-stdarch-verification-and-lean-generation",
-        "isa-model-hardware-validation-divergences-errata-and-resources"
+        "isa-model-hardware-validation-divergences-errata-and-resources",
+        "direct-verified-object-section-and-relocation-emitter-v0",
+        "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification",
+        "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening",
+        "decidable-machine-code-well-formedness-and-errata-byte-validator"
       ]
     },
     {
       "tension_id": "TENSION-8",
       "title": "Shared Verifier-Compiler MIR Identity vs. Production Build Pipelines",
-      "resolution": "Resolved by capturing Runtime(PostCleanup) MIR into a deterministic .anneal-mir section inside .rlib/.rmeta archives bound by a SHA-256 digest over the 17 MIR-affecting session options, TyAndLayout tables, FnAbi records, and GlobalAlloc allocations.",
+      "resolution": "Resolved by retiring all 42 `inner_optimized_mir` passes across all profiles in favor of the `GuardedBisim` `Runtime(PostCleanup)` MIR <-> `MiniSSA` canonicalizer (`verifyMirViaMiniSSA_sound` + `Sigma_spec` contract lens giving `10.68x` Anneal kernel speedup) and isolating upstream `rustc` version churn behind the `CoreMIR` adapter.",
       "classification": "REASONING_ONLY",
       "supporting_reports": [
         "rustc-mir-artifact-export-settings-and-proof-binding",
         "end-to-end-verified-mir-to-isa-refinement-chain-and-seams",
-        "binary-evidence-packaging-provenance-attestations-and-rustc-reproducibility"
+        "binary-evidence-packaging-provenance-attestations-and-rustc-reproducibility",
+        "bidirectional-mir-minissa-refinement-and-anneal-vc-transport",
+        "anneal-spec-minissa-normalization-and-proof-compression",
+        "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement",
+        "rustc-multi-release-mir-abi-drift-and-version-isolated-adapter"
       ]
     }
   ]
