@@ -841,6 +841,14 @@ where
             Some(len) => len,
             None => return Err(SizeError::new(source).into()),
         };
+        // Validate the cast against all of `source` before splitting it. If we
+        // only validated the prefix after splitting, an error would contain
+        // only the prefix rather than the original `source`.
+        if let Err(e) = Ptr::from_ref(source.deref())
+            .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, Some(count))
+        {
+            return Err(e.with_src(()).with_src(source));
+        }
         let (prefix, bytes) = source.split_at(expected_len).map_err(SizeError::new)?;
         Self::from_bytes_with_elems(prefix, count).map(move |l| (l, bytes))
     }
@@ -910,6 +918,14 @@ where
         } else {
             return Err(SizeError::new(source).into());
         };
+        // Validate the cast against all of `source` before splitting it. If we
+        // only validated the suffix after splitting, an error would contain
+        // only the suffix rather than the original `source`.
+        if let Err(e) = Ptr::from_ref(source.deref())
+            .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, Some(count))
+        {
+            return Err(e.with_src(()).with_src(source));
+        }
         // SAFETY: The preceding `source.len().checked_sub(expected_len)`
         // guarantees that `split_at` is in-bounds.
         let (bytes, suffix) = unsafe { source.split_at_unchecked(split_at) };
@@ -1751,6 +1767,46 @@ mod tests {
         let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], unreasonable_len).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], unreasonable_len).is_err());
+    }
+
+    #[test]
+    fn test_with_elems_alignment_error_returns_whole_source() {
+        // An alignment error from `from_prefix_with_elems` or
+        // `from_suffix_with_elems` must carry all of `source`, not only the
+        // prefix or suffix that was going to be cast.
+
+        // A buffer with an alignment of 8 and an odd size.
+        let mut buf = Align::<[u8; 13], AU64>::default();
+
+        // `buf.t[1..]` has 12 bytes, enough for one `AU64`, but its start (and
+        // thus its 8-byte prefix) is misaligned.
+        let src = &buf.t[1..];
+        let err = Ref::<_, [AU64]>::from_prefix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (src.as_ptr(), src.len()));
+
+        let src = &mut buf.t[1..];
+        let (addr, len) = (src.as_ptr(), src.len());
+        let err = Ref::<_, [AU64]>::from_prefix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (addr, len));
+
+        // `buf.t[..]` is aligned, but its 8-byte suffix starts at offset 5 and
+        // is misaligned.
+        let src = &buf.t[..];
+        let err = Ref::<_, [AU64]>::from_suffix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (src.as_ptr(), src.len()));
+
+        let src = &mut buf.t[..];
+        let (addr, len) = (src.as_ptr(), src.len());
+        let err = Ref::<_, [AU64]>::from_suffix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (addr, len));
     }
 
     #[test]
