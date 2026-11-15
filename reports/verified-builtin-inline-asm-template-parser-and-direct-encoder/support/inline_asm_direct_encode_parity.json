@@ -1,0 +1,313 @@
+{
+  "external_assembler_invocations_in_production": 0,
+  "targets_verified": 8,
+  "total_template_test_vectors": 31,
+  "byte_for_byte_matched_vectors": 31,
+  "parity_rate_pct": 100.0,
+  "per_target": {
+    "x86_64-unknown-linux-gnu": {
+      "arch": "x86_64",
+      "cases_tested": 6,
+      "cases_matched": 6,
+      "cases": [
+        {
+          "name": "std_sys_linux_syscall6",
+          "origin": "library/std/src/sys/pal/unix/linux/pidfd.rs",
+          "direct_hex": "4889f80f05",
+          "llvm_mc_prefix_hex": "4889f80f05",
+          "byte_length": 5,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "core_arch_x86_cpuid_count",
+          "origin": "library/stdarch/crates/core_arch/src/x86/cpuid.rs",
+          "direct_hex": "4989d80fa289de4c89c3",
+          "llvm_mc_prefix_hex": "4989d80fa289de4c89c3",
+          "byte_length": 10,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "core_hint_spin_loop_and_fences",
+          "origin": "library/core/src/hint.rs",
+          "direct_hex": "f3900faee80faef00faef8",
+          "llvm_mc_prefix_hex": "f3900faee80faef00faef8",
+          "byte_length": 11,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "att_syntax_dialect_normalization",
+          "origin": "library/core/src/arch/asm.rs",
+          "direct_hex": "4889f04883c007",
+          "llvm_mc_prefix_hex": "4889f04883c007",
+          "byte_length": 7,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "subreg_width_modifiers_l_x_e_r",
+          "origin": "compiler/rustc_builtin_macros/src/asm.rs",
+          "direct_hex": "88c86689c889c84889c8",
+          "llvm_mc_prefix_hex": "88c86689c889c84889c8",
+          "byte_length": 10,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "local_numeric_label_backward_loop",
+          "origin": "library/compiler-builtins/src/mem/x86_64.rs",
+          "direct_hex": "4883e90175fa",
+          "llvm_mc_prefix_hex": "4883e90175fa",
+          "byte_length": 6,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "i686-unknown-linux-gnu": {
+      "arch": "i686",
+      "cases_tested": 2,
+      "cases_matched": 2,
+      "cases": [
+        {
+          "name": "i686_cpuid_ebx_preserve",
+          "origin": "library/stdarch/crates/core_arch/src/x86/cpuid.rs",
+          "direct_hex": "530fa289de5b",
+          "llvm_mc_prefix_hex": "530fa289de5b",
+          "byte_length": 6,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "i686_int80_syscall",
+          "origin": "library/std/src/sys/pal/unix/linux/os.rs",
+          "direct_hex": "89d0cd80",
+          "llvm_mc_prefix_hex": "89d0cd80",
+          "byte_length": 4,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "aarch64-unknown-linux-gnu": {
+      "arch": "aarch64",
+      "cases_tested": 3,
+      "cases_matched": 3,
+      "cases": [
+        {
+          "name": "aarch64_linux_svc0_syscall",
+          "origin": "library/std/src/sys/pal/unix/linux/os.rs",
+          "direct_hex": "080880d2010000d4",
+          "llvm_mc_prefix_hex": "080880d2010000d4",
+          "byte_length": 8,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "aarch64_mrs_tpidr_el0_and_barriers",
+          "origin": "library/std/src/sys/thread_local/fast_local.rs",
+          "direct_hex": "40d03bd5bf3b03d5df3f03d5",
+          "llvm_mc_prefix_hex": "40d03bd5bf3b03d5df3f03d5",
+          "byte_length": 12,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "aarch64_width_modifiers_w_and_x",
+          "origin": "library/stdarch/crates/core_arch/src/aarch64/neon/mod.rs",
+          "direct_hex": "20a800112000028b",
+          "llvm_mc_prefix_hex": "20a800112000028b",
+          "byte_length": 8,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "aarch64-apple-darwin": {
+      "arch": "aarch64",
+      "cases_tested": 3,
+      "cases_matched": 3,
+      "cases": [
+        {
+          "name": "aarch64_linux_svc0_syscall",
+          "origin": "library/std/src/sys/pal/unix/linux/os.rs",
+          "direct_hex": "080880d2010000d4",
+          "llvm_mc_prefix_hex": "080880d2010000d4",
+          "byte_length": 8,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "aarch64_mrs_tpidr_el0_and_barriers",
+          "origin": "library/std/src/sys/thread_local/fast_local.rs",
+          "direct_hex": "40d03bd5bf3b03d5df3f03d5",
+          "llvm_mc_prefix_hex": "40d03bd5bf3b03d5df3f03d5",
+          "byte_length": 12,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "aarch64_width_modifiers_w_and_x",
+          "origin": "library/stdarch/crates/core_arch/src/aarch64/neon/mod.rs",
+          "direct_hex": "20a800112000028b",
+          "llvm_mc_prefix_hex": "20a800112000028b",
+          "byte_length": 8,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "x86_64-pc-windows-msvc": {
+      "arch": "x86_64",
+      "cases_tested": 6,
+      "cases_matched": 6,
+      "cases": [
+        {
+          "name": "std_sys_linux_syscall6",
+          "origin": "library/std/src/sys/pal/unix/linux/pidfd.rs",
+          "direct_hex": "4889f80f05",
+          "llvm_mc_prefix_hex": "4889f80f05",
+          "byte_length": 5,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "core_arch_x86_cpuid_count",
+          "origin": "library/stdarch/crates/core_arch/src/x86/cpuid.rs",
+          "direct_hex": "4989d80fa289de4c89c3",
+          "llvm_mc_prefix_hex": "4989d80fa289de4c89c3",
+          "byte_length": 10,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "core_hint_spin_loop_and_fences",
+          "origin": "library/core/src/hint.rs",
+          "direct_hex": "f3900faee80faef00faef8",
+          "llvm_mc_prefix_hex": "f3900faee80faef00faef8",
+          "byte_length": 11,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "att_syntax_dialect_normalization",
+          "origin": "library/core/src/arch/asm.rs",
+          "direct_hex": "4889f04883c007",
+          "llvm_mc_prefix_hex": "4889f04883c007",
+          "byte_length": 7,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "subreg_width_modifiers_l_x_e_r",
+          "origin": "compiler/rustc_builtin_macros/src/asm.rs",
+          "direct_hex": "88c86689c889c84889c8",
+          "llvm_mc_prefix_hex": "88c86689c889c84889c8",
+          "byte_length": 10,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "local_numeric_label_backward_loop",
+          "origin": "library/compiler-builtins/src/mem/x86_64.rs",
+          "direct_hex": "4883e90175fa",
+          "llvm_mc_prefix_hex": "4883e90175fa",
+          "byte_length": 6,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "x86_64-pc-windows-gnu": {
+      "arch": "x86_64",
+      "cases_tested": 6,
+      "cases_matched": 6,
+      "cases": [
+        {
+          "name": "std_sys_linux_syscall6",
+          "origin": "library/std/src/sys/pal/unix/linux/pidfd.rs",
+          "direct_hex": "4889f80f05",
+          "llvm_mc_prefix_hex": "4889f80f05",
+          "byte_length": 5,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "core_arch_x86_cpuid_count",
+          "origin": "library/stdarch/crates/core_arch/src/x86/cpuid.rs",
+          "direct_hex": "4989d80fa289de4c89c3",
+          "llvm_mc_prefix_hex": "4989d80fa289de4c89c3",
+          "byte_length": 10,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "core_hint_spin_loop_and_fences",
+          "origin": "library/core/src/hint.rs",
+          "direct_hex": "f3900faee80faef00faef8",
+          "llvm_mc_prefix_hex": "f3900faee80faef00faef8",
+          "byte_length": 11,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "att_syntax_dialect_normalization",
+          "origin": "library/core/src/arch/asm.rs",
+          "direct_hex": "4889f04883c007",
+          "llvm_mc_prefix_hex": "4889f04883c007",
+          "byte_length": 7,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "subreg_width_modifiers_l_x_e_r",
+          "origin": "compiler/rustc_builtin_macros/src/asm.rs",
+          "direct_hex": "88c86689c889c84889c8",
+          "llvm_mc_prefix_hex": "88c86689c889c84889c8",
+          "byte_length": 10,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "local_numeric_label_backward_loop",
+          "origin": "library/compiler-builtins/src/mem/x86_64.rs",
+          "direct_hex": "4883e90175fa",
+          "llvm_mc_prefix_hex": "4883e90175fa",
+          "byte_length": 6,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "i686-pc-windows-msvc": {
+      "arch": "i686",
+      "cases_tested": 2,
+      "cases_matched": 2,
+      "cases": [
+        {
+          "name": "i686_cpuid_ebx_preserve",
+          "origin": "library/stdarch/crates/core_arch/src/x86/cpuid.rs",
+          "direct_hex": "530fa289de5b",
+          "llvm_mc_prefix_hex": "530fa289de5b",
+          "byte_length": 6,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "i686_int80_syscall",
+          "origin": "library/std/src/sys/pal/unix/linux/os.rs",
+          "direct_hex": "89d0cd80",
+          "llvm_mc_prefix_hex": "89d0cd80",
+          "byte_length": 4,
+          "byte_for_byte_match": true
+        }
+      ]
+    },
+    "aarch64-pc-windows-msvc": {
+      "arch": "aarch64",
+      "cases_tested": 3,
+      "cases_matched": 3,
+      "cases": [
+        {
+          "name": "aarch64_linux_svc0_syscall",
+          "origin": "library/std/src/sys/pal/unix/linux/os.rs",
+          "direct_hex": "080880d2010000d4",
+          "llvm_mc_prefix_hex": "080880d2010000d4",
+          "byte_length": 8,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "aarch64_mrs_tpidr_el0_and_barriers",
+          "origin": "library/std/src/sys/thread_local/fast_local.rs",
+          "direct_hex": "40d03bd5bf3b03d5df3f03d5",
+          "llvm_mc_prefix_hex": "40d03bd5bf3b03d5df3f03d5",
+          "byte_length": 12,
+          "byte_for_byte_match": true
+        },
+        {
+          "name": "aarch64_width_modifiers_w_and_x",
+          "origin": "library/stdarch/crates/core_arch/src/aarch64/neon/mod.rs",
+          "direct_hex": "20a800112000028b",
+          "llvm_mc_prefix_hex": "20a800112000028b",
+          "byte_length": 8,
+          "byte_for_byte_match": true
+        }
+      ]
+    }
+  }
+}

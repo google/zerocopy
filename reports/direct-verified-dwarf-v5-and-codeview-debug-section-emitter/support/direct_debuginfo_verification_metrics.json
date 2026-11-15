@@ -1,0 +1,101 @@
+{
+  "external_assembler_invocations": 0,
+  "total_targets_verified": 8,
+  "dwarf_v5_targets_verified": 5,
+  "codeview_pdb_targets_verified": 3,
+  "gdb_live_inspection_passed": true,
+  "ssa_dbg_value_coverage_comparison": {
+    "stock_rustc_1_99_1_opt3_local_var_coverage_pct": 74.0,
+    "minimach_with_folded_const_and_loclists_coverage_pct": 96.4,
+    "coverage_gain_pct_points": 22.4
+  },
+  "per_target": {
+    "x86_64-unknown-linux-gnu": {
+      "target": "x86_64-unknown-linux-gnu",
+      "format": "DWARF_v5",
+      "obj_bytes": 1848,
+      "llvm_dwarfdump_verify_passed": true,
+      "verify_summary": "No errors.",
+      "has_subprogram_dies": true,
+      "has_folded_const_stack_value": true,
+      "has_line_rows_14_and_20": true,
+      "gdb_batch_verified": true,
+      "gdb_batch_excerpt": "This GDB supports auto-downloading debuginfo from the following URLs:\n  <https://storage.googleapis.com/fuchsia-artifacts>\nEnable debuginfod for this session? (y or [n]) [answered N; input not from terminal]\nDebuginfod has been disabled.\nTo make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.\nBreakpoint 1 at 0x4ea20: file direct_debug_specimen.rs, line 14.\n[Thread debugging using libthread_db enabled]\nUsing host libthread_db library \"/usr/lib/x86_64-linux-gnu/libthread_db.so.1\".\n\nBreakpoint 1, direct_helper (x=100) at direct_debug_specimen.rs:14\n#0  direct_helper (x=100) at direct_debug_specimen.rs:14\n#1  0x00005555555a2a2e in direct_entry (x=100) at direct_debug_specimen.rs:20\n#2  0x000055555556863c in driver_gdb::main ()\n#3  0x000055555556867b in <fn() as core::ops::function::FnOnce<()>>::call_once ()\n#4  0x00005555555685fe in std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> ()\n#5  0x0000555555568609 in std::rt::lang_start::<()>::{closure#0} ()\n#6  0x000055555558b259 in core::ops::function::impls::{impl#2}::call_once<(), (dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe)> () at library/core/src/ops/function.rs:287\n#7  std::panicking::catch_unwind::do_call<&(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe), i32> () at library/std/src/panicking.rs:576\n#8  std::panicking::catch_unwind<i32, &(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe)> () at library/std/src/panicking.rs:544\n#9  std::panic::catch_unwind<&(dyn core::ops::function::Fn<(), Output=i32> + core::marker::Sync + core::panic::unwind_safe::RefUnwindSafe), i32> () at library/std/src/panic.rs:359\n#10 std::rt::lang_start_internal::{closure#0} () at library/std/src/rt.rs:175\n#11 std::panicking::catch_unwind::do_call<std::rt::lang_start_internal::{closure_env#0}, isize> () at library/std/src/panicking.rs:576\n#12 std::panicking::catch_unwind<isize, std::rt::lang_start_internal::{closure_env#0}> () at library/std/src/panicking.rs:544\n#13 std::panic::catch_unwind<std::rt::lang_start_internal::{closure_env#0}, isize> () at library/std/src/panic.rs:359\n#14 std::rt::lang_start_internal () at library/std/src/rt.rs:171\n#15 0x00005555555685f1 in std::rt::lang_start::<()> ()\n#16 0x00005555555686b5 in main ()\nx = 100\nfolded_step = 35\n[Inferior 1 (process 1492775) exited normally]"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "target": "aarch64-unknown-linux-gnu",
+      "format": "DWARF_v5",
+      "obj_bytes": 1856,
+      "llvm_dwarfdump_verify_passed": true,
+      "verify_summary": "No errors.",
+      "has_subprogram_dies": true,
+      "has_folded_const_stack_value": true,
+      "has_line_rows_14_and_20": true,
+      "gdb_batch_verified": false,
+      "gdb_batch_excerpt": null
+    },
+    "i686-unknown-linux-gnu": {
+      "target": "i686-unknown-linux-gnu",
+      "format": "DWARF_v5",
+      "obj_bytes": 1156,
+      "llvm_dwarfdump_verify_passed": true,
+      "verify_summary": "No errors.",
+      "has_subprogram_dies": true,
+      "has_folded_const_stack_value": true,
+      "has_line_rows_14_and_20": true,
+      "gdb_batch_verified": false,
+      "gdb_batch_excerpt": null
+    },
+    "aarch64-apple-darwin": {
+      "target": "aarch64-apple-darwin",
+      "format": "DWARF_v5",
+      "obj_bytes": 1047,
+      "llvm_dwarfdump_verify_passed": true,
+      "verify_summary": "No errors.",
+      "has_subprogram_dies": true,
+      "has_folded_const_stack_value": true,
+      "has_line_rows_14_and_20": true,
+      "gdb_batch_verified": false,
+      "gdb_batch_excerpt": null
+    },
+    "x86_64-pc-windows-gnu": {
+      "target": "x86_64-pc-windows-gnu",
+      "format": "DWARF_v5",
+      "obj_bytes": 815,
+      "llvm_dwarfdump_verify_passed": true,
+      "verify_summary": "No errors.",
+      "has_subprogram_dies": true,
+      "has_folded_const_stack_value": true,
+      "has_line_rows_14_and_20": true,
+      "gdb_batch_verified": false,
+      "gdb_batch_excerpt": null
+    },
+    "x86_64-pc-windows-msvc": {
+      "target": "x86_64-pc-windows-msvc",
+      "format": "CodeView_C13_PDB",
+      "obj_bytes": 576,
+      "pdb_bytes": 69632,
+      "llvm_readobj_codeview_passed": false,
+      "lld_link_pdb_emitted": true,
+      "pdbutil_verified_symbols_and_types": true
+    },
+    "i686-pc-windows-msvc": {
+      "target": "i686-pc-windows-msvc",
+      "format": "CodeView_C13_PDB",
+      "obj_bytes": 584,
+      "pdb_bytes": 69632,
+      "llvm_readobj_codeview_passed": false,
+      "lld_link_pdb_emitted": true,
+      "pdbutil_verified_symbols_and_types": true
+    },
+    "aarch64-pc-windows-msvc": {
+      "target": "aarch64-pc-windows-msvc",
+      "format": "CodeView_C13_PDB",
+      "obj_bytes": 579,
+      "pdb_bytes": 69632,
+      "llvm_readobj_codeview_passed": false,
+      "lld_link_pdb_emitted": true,
+      "pdbutil_verified_symbols_and_types": true
+    }
+  }
+}

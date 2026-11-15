@@ -1,0 +1,47 @@
+{
+  "benchmarks": {
+    "bench-serde-json": {
+      "no_tail_dup_threshold_1": {
+        "median_us": 19.4789,
+        "fn_instructions": 83,
+        "unconditional_jmps_in_fn": 10
+      },
+      "default_tail_dup_threshold_2": {
+        "median_us": 21.2877,
+        "fn_instructions": 83,
+        "unconditional_jmps_in_fn": 10
+      },
+      "aggressive_tail_dup_threshold_6_plus_ext_tsp": {
+        "median_us": 18.2167,
+        "fn_instructions": 112,
+        "unconditional_jmps_in_fn": 10
+      },
+      "speedup_pct": 6.48
+    },
+    "bench-bytecode-dispatch": {
+      "no_tail_dup_threshold_1": {
+        "median_us": 142.9094,
+        "fn_instructions": 63,
+        "unconditional_jmps_in_fn": 9
+      },
+      "default_tail_dup_threshold_2": {
+        "median_us": 138.394,
+        "fn_instructions": 79,
+        "unconditional_jmps_in_fn": 9
+      },
+      "aggressive_tail_dup_threshold_6_plus_ext_tsp": {
+        "median_us": 138.04,
+        "fn_instructions": 80,
+        "unconditional_jmps_in_fn": 8
+      },
+      "speedup_pct": 3.41
+    }
+  },
+  "aarch64_2mib_cross_section_branch_relaxation": {
+    "separation_bytes": 2097152,
+    "unrelaxed_condbr19_linker_failed_as_expected": true,
+    "unrelaxed_lld_error_excerpt": "rust-lld: error: /tmp/tmpk6vzv7sj/unrelaxed_aarch64.o:(.text.hot+0x4): relocation R_AARCH64_CONDBR19 out of range: 2097168 is not in [-1048576, 1048575]; references section '.text.unlikely'",
+    "relaxed_jump26_veneer_linked_cleanly": true,
+    "relaxed_qemu_aarch64_executed_cleanly": true
+  }
+}

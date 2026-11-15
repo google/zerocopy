@@ -1,0 +1,104 @@
+{
+  "targets_verified": 8,
+  "live_catch_unwind_verified": true,
+  "live_unwind_tests": {
+    "x86_64-unknown-linux-gnu": {
+      "passed": true,
+      "output": "UNWIND_OK:normal=42,lifo_drops=321"
+    },
+    "i686-unknown-linux-gnu": {
+      "passed": true,
+      "output": "UNWIND_OK:normal=42,lifo_drops=321"
+    }
+  },
+  "per_target": {
+    "x86_64-unknown-linux-gnu": {
+      "target": "x86_64-unknown-linux-gnu",
+      "baseline_text_bytes": 2997,
+      "leaf_only_text_bytes": 2997,
+      "call_outlined_text_bytes": 1704,
+      "leaf_only_text_reduction_pct": 0.0,
+      "call_outlined_text_reduction_pct": 43.14,
+      "net_loadable_reduction_pct": 32.74,
+      "call_thunks_emitted": 5,
+      "call_sites_outlined": 60
+    },
+    "aarch64-unknown-linux-gnu": {
+      "target": "aarch64-unknown-linux-gnu",
+      "baseline_text_bytes": 3892,
+      "leaf_only_text_bytes": 2408,
+      "call_outlined_text_bytes": 1828,
+      "leaf_only_text_reduction_pct": 38.13,
+      "call_outlined_text_reduction_pct": 53.03,
+      "net_loadable_reduction_pct": 47.38,
+      "call_thunks_emitted": 10,
+      "call_sites_outlined": 120
+    },
+    "i686-unknown-linux-gnu": {
+      "target": "i686-unknown-linux-gnu",
+      "baseline_text_bytes": 3608,
+      "leaf_only_text_bytes": 2766,
+      "call_outlined_text_bytes": 2766,
+      "leaf_only_text_reduction_pct": 23.34,
+      "call_outlined_text_reduction_pct": 23.34,
+      "net_loadable_reduction_pct": 28.14,
+      "call_thunks_emitted": 5,
+      "call_sites_outlined": 60
+    },
+    "x86_64-pc-windows-gnu": {
+      "target": "x86_64-pc-windows-gnu",
+      "baseline_text_bytes": 2939,
+      "leaf_only_text_bytes": 2939,
+      "call_outlined_text_bytes": 1731,
+      "leaf_only_text_reduction_pct": 0.0,
+      "call_outlined_text_reduction_pct": 41.1,
+      "net_loadable_reduction_pct": 37.2,
+      "call_thunks_emitted": 4,
+      "call_sites_outlined": 48
+    },
+    "x86_64-pc-windows-msvc": {
+      "target": "x86_64-pc-windows-msvc",
+      "baseline_text_bytes": 2903,
+      "leaf_only_text_bytes": 2903,
+      "call_outlined_text_bytes": 1694,
+      "leaf_only_text_reduction_pct": 0.0,
+      "call_outlined_text_reduction_pct": 41.65,
+      "net_loadable_reduction_pct": 37.65,
+      "call_thunks_emitted": 4,
+      "call_sites_outlined": 48
+    },
+    "i686-pc-windows-msvc": {
+      "target": "i686-pc-windows-msvc",
+      "baseline_text_bytes": 3370,
+      "leaf_only_text_bytes": 2528,
+      "call_outlined_text_bytes": 2528,
+      "leaf_only_text_reduction_pct": 24.99,
+      "call_outlined_text_reduction_pct": 24.99,
+      "net_loadable_reduction_pct": 24.99,
+      "call_thunks_emitted": 5,
+      "call_sites_outlined": 60
+    },
+    "aarch64-pc-windows-msvc": {
+      "target": "aarch64-pc-windows-msvc",
+      "baseline_text_bytes": 3844,
+      "leaf_only_text_bytes": 2360,
+      "call_outlined_text_bytes": 1984,
+      "leaf_only_text_reduction_pct": 38.61,
+      "call_outlined_text_reduction_pct": 48.39,
+      "net_loadable_reduction_pct": 44.84,
+      "call_thunks_emitted": 9,
+      "call_sites_outlined": 108
+    },
+    "aarch64-apple-darwin": {
+      "target": "aarch64-apple-darwin",
+      "baseline_text_bytes": 3604,
+      "leaf_only_text_bytes": 2332,
+      "call_outlined_text_bytes": 1956,
+      "leaf_only_text_reduction_pct": 35.29,
+      "call_outlined_text_reduction_pct": 45.73,
+      "net_loadable_reduction_pct": 45.73,
+      "call_thunks_emitted": 8,
+      "call_sites_outlined": 96
+    }
+  }
+}

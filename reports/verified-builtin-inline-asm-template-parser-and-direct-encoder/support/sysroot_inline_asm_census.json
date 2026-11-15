@@ -1,0 +1,1055 @@
+{
+  "rustc_commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+  "rustc_version": "1.99.1",
+  "total_asm_macro_invocations": 333,
+  "macro_kind_counts": {
+    "asm": 279,
+    "global_asm": 29,
+    "naked_asm": 25
+  },
+  "by_subcrate": {
+    "compiler-builtins": {
+      "naked_asm": 25,
+      "asm": 39,
+      "global_asm": 26
+    },
+    "core": {
+      "asm": 2
+    },
+    "std": {
+      "asm": 28,
+      "global_asm": 2
+    },
+    "std_detect": {
+      "asm": 6
+    },
+    "stdarch": {
+      "asm": 204
+    },
+    "unwind": {
+      "global_asm": 1
+    }
+  },
+  "by_target_arch": {
+    "aarch64": {
+      "asm": 17,
+      "naked_asm": 1
+    },
+    "arm": {
+      "asm": 11,
+      "naked_asm": 16
+    },
+    "arm64ec": {
+      "asm": 4
+    },
+    "avr": {
+      "naked_asm": 2
+    },
+    "csky": {
+      "asm": 1
+    },
+    "hexagon": {
+      "asm": 4,
+      "global_asm": 26
+    },
+    "loongarch": {
+      "asm": 4
+    },
+    "loongarch32": {
+      "asm": 1
+    },
+    "loongarch64": {
+      "asm": 1
+    },
+    "m68k": {
+      "asm": 1
+    },
+    "mips": {
+      "asm": 1
+    },
+    "mips32r6": {
+      "asm": 1
+    },
+    "mips64": {
+      "asm": 1
+    },
+    "mips64r6": {
+      "asm": 1
+    },
+    "multi_or_generic": {
+      "asm": 31,
+      "global_asm": 2
+    },
+    "powerpc": {
+      "asm": 1
+    },
+    "powerpc64": {
+      "asm": 1
+    },
+    "riscv": {
+      "asm": 158
+    },
+    "riscv32": {
+      "asm": 3
+    },
+    "riscv64": {
+      "asm": 3
+    },
+    "s390x": {
+      "asm": 2
+    },
+    "sparc": {
+      "asm": 3,
+      "naked_asm": 2
+    },
+    "sparc64": {
+      "asm": 3,
+      "naked_asm": 2
+    },
+    "wasm": {
+      "global_asm": 1
+    },
+    "x86": {
+      "asm": 65,
+      "naked_asm": 6
+    },
+    "x86_64": {
+      "asm": 38,
+      "naked_asm": 4
+    }
+  },
+  "options_frequency": {
+    "nostack": 258,
+    "pure": 141,
+    "nomem": 139,
+    "preserves_flags": 110,
+    "raw": 26,
+    "readonly": 25,
+    "att_syntax": 19,
+    "noreturn": 4
+  },
+  "operand_specifier_frequency": {
+    "in": 578,
+    "lateout": 115,
+    "inlateout": 113,
+    "out": 94,
+    "inout": 56,
+    "sym": 5,
+    "const": 1
+  },
+  "register_class_and_explicit_reg_frequency": {
+    "reg": 469,
+    "xmm_reg": 31,
+    "\"a0\"": 15,
+    "\"a1\"": 15,
+    "\"a2\"": 15,
+    "\"a3\"": 14,
+    "\"a4\"": 14,
+    "\"a5\"": 14,
+    "\"a6\"": 14,
+    "\"a7\"": 14,
+    "vreg": 12,
+    "\"rdi\"": 10,
+    "reg_byte": 9,
+    "kreg": 9,
+    "\"ecx\"": 8,
+    "\"rcx\"": 7,
+    "\"rsi\"": 6,
+    "\"rax\"": 5,
+    "\"eax\"": 4,
+    "ymm_reg": 4,
+    "zmm_reg": 4,
+    "\"st(0": 4,
+    "\"st(1": 4,
+    "\"st(2": 4,
+    "\"st(3": 4,
+    "\"st(4": 4,
+    "\"st(5": 4,
+    "\"st(6": 4,
+    "\"st(7": 4,
+    "\"rdx\"": 3
+  },
+  "template_modifier_frequency": {
+    ":s": 8,
+    ":d": 8,
+    ":e": 5,
+    ":r": 5,
+    ":h": 4
+  },
+  "assembler_directive_frequency": {
+    ".option": 9,
+    ".cfi_adjust_cfa_offset": 4,
+    ".cfi_def_cfa_register": 4,
+    ".tagtype": 2,
+    ".cfi_startproc": 2,
+    ".cfi_offset": 2,
+    ".cfi_endproc": 2,
+    ".section": 1,
+    ".global": 1,
+    ".arm": 1,
+    ".globl": 1,
+    ".p2align": 1
+  },
+  "top_mnemonics_overall": {
+    "ldrb": 48,
+    "strb": 24,
+    "mov": 21,
+    "sub": 19,
+    "lsls": 18,
+    "adds": 18,
+    "orr": 18,
+    "lsrs": 18,
+    "ecall": 15,
+    "push": 14,
+    "rep": 12,
+    "pop": 12,
+    "bx": 12,
+    "ldr": 9,
+    "add": 9,
+    "setc": 8,
+    "cmp": 8,
+    "test": 8,
+    "fldcw": 5,
+    "ret": 5,
+    "xchg": 4,
+    "lea": 4,
+    "sfence.vma": 4,
+    "mrs": 4,
+    "bl": 4,
+    "ja": 4,
+    "fld": 4,
+    "frndint": 4,
+    "mcr": 3,
+    "vmovss": 3,
+    "vmovsd": 3,
+    "cpucfg": 3,
+    "frintn": 3,
+    "fsqrt": 3,
+    "fstp": 3,
+    "enclu": 2,
+    "mv": 2,
+    "nop": 2,
+    "vmovntdq": 2,
+    "vmovntpd": 2,
+    "vmovntps": 2,
+    "vmovntdqa": 2,
+    "vmovsh": 2,
+    "cpuid": 2,
+    "movnti": 2
+  },
+  "tier1_arch_mnemonics": {
+    "aarch64": {
+      "mrs": 4,
+      "frintn": 3,
+      "fsqrt": 3,
+      "fmadd": 2,
+      "brk": 1,
+      "pacib": 1,
+      "nop": 1,
+      "lsl": 1,
+      "mov": 1,
+      "sub": 1,
+      "subs": 1,
+      "ldr": 1,
+      "b.gt": 1,
+      "ret": 1
+    },
+    "multi_or_generic": {
+      "ecall": 15,
+      "mov": 5,
+      "fld": 4,
+      "frndint": 4,
+      "fldcw": 4,
+      "fstp": 3,
+      "xchg": 2,
+      "enclu": 2,
+      "ldr": 2,
+      "mv": 2,
+      "fstcw": 2,
+      "lea": 1,
+      "rep": 1,
+      "verw": 1,
+      "movb": 1,
+      "mfence": 1,
+      "lfence": 1,
+      "movl": 1,
+      "andl": 1,
+      "andq": 1,
+      "movq": 1,
+      "blx": 1,
+      "svc": 1,
+      "ret": 1,
+      "ldrex": 1,
+      "ptr": 1,
+      "fld1": 1,
+      "fxch": 1
+    },
+    "x86": {
+      "sub": 15,
+      "mov": 11,
+      "rep": 11,
+      "push": 10,
+      "setc": 8,
+      "cmp": 8,
+      "test": 8,
+      "pop": 7,
+      "add": 4,
+      "ja": 4,
+      "vmovss": 3,
+      "vmovsd": 3,
+      "ret": 3,
+      "lea": 3,
+      "vmovntdq": 2,
+      "vmovntpd": 2,
+      "vmovntps": 2,
+      "vmovntdqa": 2,
+      "vmovsh": 2,
+      "cpuid": 2,
+      "xchg": 2,
+      "movnti": 2,
+      "div": 2,
+      "movdqa": 2,
+      "jna": 2,
+      "leave": 2,
+      "jb": 2,
+      "fldcw": 1,
+      "fnstcw": 1,
+      "brk": 1,
+      "pacib": 1,
+      "vmovdqu16": 1,
+      "btl": 1,
+      "btsl": 1,
+      "btrl": 1
+    },
+    "x86_64": {
+      "sub": 12,
+      "mov": 11,
+      "rep": 11,
+      "push": 9,
+      "pop": 7,
+      "cmp": 6,
+      "test": 6,
+      "setc": 4,
+      "add": 4,
+      "ja": 3,
+      "ret": 3,
+      "cpuid": 2,
+      "xchg": 2,
+      "movnti": 2,
+      "div": 2,
+      "movdqa": 2,
+      "jna": 2,
+      "leave": 2,
+      "brk": 1,
+      "pacib": 1,
+      "vmovntdq": 1,
+      "vmovntpd": 1,
+      "vmovntps": 1,
+      "vmovntdqa": 1,
+      "pushfd": 1,
+      "pushfq": 1,
+      "popfd": 1,
+      "popfq": 1,
+      "movntps": 1,
+      "movntdq": 1,
+      "movntpd": 1,
+      "movntdqa": 1,
+      "btq": 1,
+      "btsq": 1,
+      "btrq": 1
+    }
+  },
+  "label_kind_counts": {
+    "named_symbol_label": 2,
+    "numeric_local_label": 9
+  },
+  "tier1_relevant_sites_count": 118,
+  "sample_tier1_sites": [
+    {
+      "file": "library/core/src/num/imp/dec2flt/fpu.rs",
+      "line": 50,
+      "macro": "asm!",
+      "arches": [
+        "x86"
+      ],
+      "options": [
+        "nostack"
+      ],
+      "mnemonics": [
+        "fldcw"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/core/src/num/imp/dec2flt/fpu.rs",
+      "line": 74,
+      "macro": "asm!",
+      "arches": [
+        "x86"
+      ],
+      "options": [
+        "nostack"
+      ],
+      "mnemonics": [
+        "fnstcw"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/fortanix_sgx/arch.rs",
+      "line": 36,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "att_syntax",
+        "nostack"
+      ],
+      "mnemonics": [
+        "xchg",
+        "enclu",
+        "mov"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/fortanix_sgx/arch.rs",
+      "line": 67,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "att_syntax",
+        "preserves_flags",
+        "nostack"
+      ],
+      "mnemonics": [
+        "xchg",
+        "enclu",
+        "mov"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 33,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 97,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 152,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 199,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 256,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 308,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 337,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 382,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 424,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 471,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 515,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 551,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 591,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/os/xous/ffi.rs",
+      "line": 634,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ecall"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/sgx/abi/mem.rs",
+      "line": 40,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "att_syntax",
+        "nostack",
+        "preserves_flags",
+        "nomem",
+        "pure"
+      ],
+      "mnemonics": [
+        "lea"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/sgx/abi/mod.rs",
+      "line": 21,
+      "macro": "global_asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "att_syntax"
+      ],
+      "mnemonics": [],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/sgx/abi/usercalls/alloc.rs",
+      "line": 377,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "att_syntax",
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "rep"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/sgx/abi/usercalls/alloc.rs",
+      "line": 415,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "nostack",
+        "att_syntax"
+      ],
+      "mnemonics": [
+        "mov",
+        "verw",
+        "movb",
+        "mfence",
+        "lfence"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/sgx/abi/usercalls/alloc.rs",
+      "line": 481,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "nostack",
+        "att_syntax",
+        "readonly",
+        "pure"
+      ],
+      "mnemonics": [
+        "movl",
+        "andl",
+        "andq",
+        "movq"
+      ],
+      "directives": [],
+      "modifiers": [
+        ":e",
+        ":e",
+        ":e"
+      ]
+    },
+    {
+      "file": "library/std/src/sys/pal/vexos/mod.rs",
+      "line": 12,
+      "macro": "global_asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "ldr",
+        "blx"
+      ],
+      "directives": [
+        ".section",
+        ".global",
+        ".arm"
+      ],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/windows/mod.rs",
+      "line": 269,
+      "macro": "asm!",
+      "arches": [
+        "aarch64",
+        "arm",
+        "arm64ec",
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "noreturn",
+        "nostack"
+      ],
+      "mnemonics": [],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/windows/mod.rs",
+      "line": 272,
+      "macro": "asm!",
+      "arches": [
+        "aarch64",
+        "arm",
+        "arm64ec",
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "noreturn",
+        "nostack"
+      ],
+      "mnemonics": [],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/pal/windows/mod.rs",
+      "line": 275,
+      "macro": "asm!",
+      "arches": [
+        "aarch64",
+        "arm",
+        "arm64ec",
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "noreturn",
+        "nostack"
+      ],
+      "mnemonics": [
+        "brk"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/personality/gcc.rs",
+      "line": 219,
+      "macro": "asm!",
+      "arches": [
+        "aarch64",
+        "arm",
+        "csky",
+        "hexagon",
+        "loongarch32",
+        "loongarch64",
+        "m68k",
+        "mips",
+        "mips32r6",
+        "mips64",
+        "mips64r6",
+        "powerpc",
+        "powerpc64",
+        "riscv32",
+        "riscv64",
+        "s390x",
+        "sparc",
+        "sparc64",
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "pacib"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/stdio/teeos.rs",
+      "line": 20,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "svc"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/thread/xous.rs",
+      "line": 104,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [
+        "nomem",
+        "nostack",
+        "noreturn"
+      ],
+      "mnemonics": [
+        "ecall",
+        "ret"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/thread_local/key/xous.rs",
+      "line": 75,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "mv"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/std/src/sys/thread_local/key/xous.rs",
+      "line": 116,
+      "macro": "asm!",
+      "arches": [
+        "multi_or_generic"
+      ],
+      "options": [],
+      "mnemonics": [
+        "mv"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/arm_shared/hints.rs",
+      "line": 110,
+      "macro": "asm!",
+      "arches": [
+        "aarch64",
+        "arm",
+        "arm64ec"
+      ],
+      "options": [
+        "nomem",
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "nop"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx.rs",
+      "line": 1934,
+      "macro": "asm!",
+      "arches": [
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntdq"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx.rs",
+      "line": 1963,
+      "macro": "asm!",
+      "arches": [
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntpd"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx.rs",
+      "line": 1993,
+      "macro": "asm!",
+      "arches": [
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntps"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx2.rs",
+      "line": 3290,
+      "macro": "asm!",
+      "arches": [
+        "x86",
+        "x86_64"
+      ],
+      "options": [
+        "pure",
+        "readonly",
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntdqa"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx512f.rs",
+      "line": 31003,
+      "macro": "asm!",
+      "arches": [
+        "x86"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntps"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx512f.rs",
+      "line": 31030,
+      "macro": "asm!",
+      "arches": [
+        "x86"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntpd"
+      ],
+      "directives": [],
+      "modifiers": []
+    },
+    {
+      "file": "library/stdarch/crates/core_arch/src/x86/avx512f.rs",
+      "line": 31057,
+      "macro": "asm!",
+      "arches": [
+        "x86"
+      ],
+      "options": [
+        "nostack",
+        "preserves_flags"
+      ],
+      "mnemonics": [
+        "vmovntdq"
+      ],
+      "directives": [],
+      "modifiers": []
+    }
+  ]
+}
