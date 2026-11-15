@@ -1,0 +1,124 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "rust_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "nanoda_version": "v0.4.32 (0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929)",
+  "axioms": [
+    "propext",
+    "Quot.sound"
+  ],
+  "uses_sorry_or_native_decide": false,
+  "cold_start_anatomy_s2_ms": {
+    "cold_cli_total_p50_ms": 765.109,
+    "cold_cli_total_p95_ms": 811.101,
+    "fork_exec_and_dylib_load_ms": 14.8,
+    "import_modules_olean_mmap_ms": 144.297,
+    "frontend_parser_elab_overhead_ms": 605.662,
+    "actual_kernel_whnf_check_ms": 0.3505
+  },
+  "resident_lean_kernel": {
+    "daemon_init_ms": 144.296914,
+    "base_const_count": 66403,
+    "post_stress_const_count": 66403,
+    "leaked_decls": 0,
+    "scenarios_lean_kernel_ms": {
+      "S2_245_steps": {
+        "p50_ms": 0.350542,
+        "p95_ms": 0.372843,
+        "p99_ms": 0.398583
+      },
+      "S4_310_steps": {
+        "p50_ms": 0.468425,
+        "p95_ms": 0.484782,
+        "p99_ms": 0.502939
+      },
+      "batch10_2450_steps": {
+        "p50_ms": 1.32984,
+        "p95_ms": 1.389226,
+        "p99_ms": 1.446129
+      },
+      "S3_51840_steps_8worker_sharded": {
+        "p50_ms": 3.023687,
+        "p95_ms": 3.498554,
+        "p99_ms": 4.987008
+      },
+      "S3_51840_steps_1worker_seq": {
+        "p50_ms": 24.045994,
+        "p95_ms": 26.415912,
+        "p99_ms": 28.30747
+      }
+    },
+    "tamper_tests": {
+      "corrupted_packet_accepted": false,
+      "corrupted_reject_us": 532.029,
+      "sorryAx_accepted": false,
+      "sorryAx_reject_us": 0.364,
+      "ofReduceBool_accepted": false,
+      "ofReduceBool_reject_us": 0.271,
+      "post_tamper_valid_accepted": true,
+      "post_tamper_valid_us": 379.469
+    },
+    "stress_10000_requests": {
+      "total_ms": 3488.014659,
+      "mean_us_per_req": 348.801466,
+      "rss_kb_before": 464896,
+      "rss_kb_req_100": 464896,
+      "rss_kb_req_1000": 464896,
+      "rss_kb_req_5000": 453124,
+      "rss_kb_req_10000": 453120
+    }
+  },
+  "resident_nanoda_engine_ms": {
+    "S1_0_steps": {
+      "p50_ms": 2e-05,
+      "p95_ms": 2e-05,
+      "p99_ms": 2e-05
+    },
+    "S2_245_steps": {
+      "p50_ms": 0.00013,
+      "p95_ms": 0.00031,
+      "p99_ms": 0.00032
+    },
+    "S4_310_steps": {
+      "p50_ms": 0.00026,
+      "p95_ms": 0.00027,
+      "p99_ms": 0.00028
+    },
+    "batch10_2450_steps": {
+      "p50_ms": 0.00115,
+      "p95_ms": 0.0012,
+      "p99_ms": 0.00121
+    },
+    "S3_51840_steps": {
+      "p50_ms": 0.02313,
+      "p95_ms": 0.02457,
+      "p99_ms": 0.02594
+    }
+  },
+  "dual_engine_end_to_end_with_ipc_ms": {
+    "S1_0_steps": {
+      "p50_ms": 0.042,
+      "p99_ms": 0.068
+    },
+    "S2_245_steps": {
+      "p50_ms": 0.3925,
+      "p99_ms": 0.4666,
+      "speedup_over_cold_cli_p50_x": 1949.1
+    },
+    "S4_310_steps": {
+      "p50_ms": 0.5104,
+      "p99_ms": 0.5709
+    },
+    "batch10_2450_steps": {
+      "p50_ms": 1.3718,
+      "p99_ms": 1.5141
+    },
+    "S3_51840_steps_8worker_pool": {
+      "p50_ms": 3.0657,
+      "p99_ms": 5.055
+    },
+    "libcore_1745344_steps_16worker_pool": {
+      "lean_kernel_16worker_warm_ms": 495.8,
+      "nanoda_16thread_warm_ms": 0.416
+    }
+  }
+}

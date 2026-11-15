@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/checker-substrate",
+    "lean",
+    "lean/kernel",
+    "lean/mechanization",
+    "rust",
+    "systems",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover and C++ kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Clean-room independent Rust Lean 4 proof checker (nanoda_lib)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "v0.4.32"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc) 1.99.1 and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Anneal trusted kernel boundary and axiom auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

@@ -1,0 +1,64 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "axioms": [
+    "propext",
+    "Quot.sound"
+  ],
+  "uses_sorry_or_native_decide": false,
+  "raw_axiom_audit_output": [
+    "'K3SideCond.checkFarkasCertN_sound' depends on axioms: [propext, Quot.sound]",
+    "'K3SideCond.checkBridgedFarkasCert_sound' depends on axioms: [propext, Quot.sound]",
+    "'K3SideCond.checkAEGraphGraduated_sound' depends on axioms: [propext, Quot.sound]",
+    "'K3SideCond.all_80_k3_obligations_verified' does not depend on any axioms"
+  ],
+  "loc_summary": {
+    "files": {
+      "SparseFarkas.lean": {
+        "total_lines": 194,
+        "code_lines": 135
+      },
+      "BitVecBridge.lean": {
+        "total_lines": 93,
+        "code_lines": 55
+      },
+      "FreezeRefinement.lean": {
+        "total_lines": 431,
+        "code_lines": 350
+      },
+      "Corpus80.lean": {
+        "total_lines": 188,
+        "code_lines": 121
+      }
+    },
+    "total_lines": 906,
+    "total_code_lines": 661
+  },
+  "olean_sizes_bytes": {
+    "SparseFarkas.olean": 600144,
+    "BitVecBridge.olean": 337560,
+    "FreezeRefinement.olean": 2513656,
+    "Corpus80.olean": 429704
+  },
+  "corpus_80_breakdown": {
+    "multi_premise_sparse_farkas_k_3_to_6": 30,
+    "bridged_bitvec_to_int_nowrap_farkas": 25,
+    "positive_graduated_freeze_aegraph": 20,
+    "negative_unsound_freeze_rejected": 5,
+    "total_obligations": 80,
+    "x2_expressible_out_of_75_positive": 0,
+    "k3_expressible_out_of_75_positive": 75
+  },
+  "performance_comparison": {
+    "k3_corpus80_rfl_p50_ms": 1410.84,
+    "k3_corpus80_rfl_p95_ms": 1465.24,
+    "k3_per_obligation_ms": 17.635,
+    "omega_55_obligations_p50_ms": 1321.46,
+    "omega_per_obligation_ms": 24.027,
+    "per_obligation_speedup_over_omega_x": 1.36,
+    "cold_lake_env_lean_floor_ms": 765.11,
+    "k3_net_kernel_check_ms": 645.73,
+    "k3_net_per_obligation_ms": 8.072,
+    "omega_net_check_ms": 556.35,
+    "omega_net_per_obligation_ms": 10.115
+  }
+}

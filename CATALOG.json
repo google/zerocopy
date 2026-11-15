@@ -11383,6 +11383,40 @@
         "aeneas/lean-backend"
       ]
     },
+    "csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, LCNF compiler, and C runtime"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and standard library"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "rust",
+        "systems",
+        "verification"
+      ]
+    },
     "ctfe-const-eval-select-and-reflection-intrinsic-verification-contracts": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -19127,6 +19161,39 @@
         "verification/program-logics"
       ]
     },
+    "metaprogrammed-class-d-loop-memory-framing-and-width-polymorphic-bitvec-rules": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover, macro/tactic elaborator, and kernel typechecker"
+        },
+        {
+          "identity": {
+            "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 optimization pipeline"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/elaboration",
+        "lean/mechanization",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
+      ]
+    },
     "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -19854,6 +19921,48 @@
         "systems/sandboxing",
         "isa/aarch64",
         "isa/x86-64"
+      ]
+    },
+    "multi-premise-sparse-farkas-and-freeze-set-refinement-certificates": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "llvm-revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and bundled LLVM 23.1.1 middle-end passes"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted kernel boundary and axiom auditor"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "lean",
+        "lean/mechanization",
+        "smt",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
       ]
     },
     "mutation-resilient-polarity-safe-ir-portable-pgo": {
@@ -20941,6 +21050,55 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "persistent-mmap-lean-kernel-and-nanoda-audit-daemon-for-submillisecond-checks": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "v0.4.32"
+          },
+          "name": "Clean-room independent Rust Lean 4 proof checker (nanoda_lib)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust compiler (rustc) 1.99.1 and standard library"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted kernel boundary and axiom auditor"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "rust",
+        "systems",
+        "verification"
       ]
     },
     "portable-simd-repr-simd-legalization-and-cross-arch-cost-certificates": {

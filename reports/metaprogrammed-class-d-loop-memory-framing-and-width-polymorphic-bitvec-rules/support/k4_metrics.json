@@ -1,0 +1,123 @@
+{
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "axioms": [
+    "propext",
+    "Quot.sound"
+  ],
+  "uses_sorry_or_native_decide": false,
+  "raw_axiom_audit_output": [
+    "'RuleSynthV2.Synthesized.checkClassCDDeriv_sound_synth' depends on axioms: [propext, Quot.sound]",
+    "'RuleSynthV2.Synthesized.checkClassCDDeriv_iff_valid_synth' depends on axioms: [propext]",
+    "'RuleSynthV2.Synthesized.checkBVRewrite_sound_synth' depends on axioms: [propext, Quot.sound]",
+    "'RuleSynthV2.Manual.checkClassCDDeriv_sound_manual' depends on axioms: [propext, Quot.sound]",
+    "'RuleSynthV2.Manual.checkBVRewrite_sound_manual' depends on axioms: [propext, Quot.sound]"
+  ],
+  "rules_verified": {
+    "class_c_memory_frame_rules": 8,
+    "class_d_loop_and_call_rules": 17,
+    "class_cd_total": 25,
+    "class_a_multi_width_bitvec_templates": 30,
+    "bitvec_widths_supported": [
+      8,
+      16,
+      32,
+      64,
+      128
+    ],
+    "class_a_concrete_width_instances": 150,
+    "total_abstract_rules": 55,
+    "total_concrete_width_rules": 175
+  },
+  "head_to_head_55_rules": {
+    "manual_total_lines": 314,
+    "manual_code_lines": 289,
+    "manual_proof_only_code_lines": 286,
+    "manual_code_loc_per_abstract_rule": 5.2,
+    "synthesized_total_lines": 40,
+    "synthesized_code_lines": 17,
+    "synthesized_proof_only_code_lines": 14,
+    "synthesized_code_loc_per_abstract_rule": 0.25,
+    "synthesized_including_macros_and_combinators_code_lines": 170,
+    "direct_proof_code_compression_ratio_x": 20.43,
+    "manual_olean_bytes": 917048,
+    "synthesized_olean_bytes": 766352,
+    "olean_reduction_ratio_x": 1.2,
+    "manual_elab_median_s": 1.0798,
+    "synthesized_elab_median_s": 1.516
+  },
+  "modules_loc": {
+    "BitVecWidth.lean": {
+      "total_lines": 228,
+      "code_lines": 181
+    },
+    "MemFrame.lean": {
+      "total_lines": 214,
+      "code_lines": 152
+    },
+    "LoopCombinators.lean": {
+      "total_lines": 143,
+      "code_lines": 99
+    },
+    "Rules55.lean": {
+      "total_lines": 131,
+      "code_lines": 101
+    },
+    "MacrosV2.lean": {
+      "total_lines": 88,
+      "code_lines": 57
+    },
+    "SynthesizedClassCD25.lean": {
+      "total_lines": 40,
+      "code_lines": 17
+    },
+    "ManualClassCD25.lean": {
+      "total_lines": 314,
+      "code_lines": 289
+    }
+  },
+  "full_compiler_185_constructor_recalibration_kloc": {
+    "ir_and_semantics_spec_kloc": 8.6,
+    "class_a_96_multi_width_bitvec": {
+      "manual_kloc": 5.8,
+      "x5_rulesynth_kloc": 0.65,
+      "k4_rulesynth_v2_kloc": 0.48,
+      "k4_compression_over_manual_x": 12.08
+    },
+    "class_b_40_cfg_congruence": {
+      "manual_kloc": 5.2,
+      "x5_rulesynth_kloc": 0.68,
+      "k4_rulesynth_v2_kloc": 0.52,
+      "k4_compression_over_manual_x": 10.0
+    },
+    "class_c_30_memory_frame": {
+      "manual_kloc": 4.7,
+      "x5_rulesynth_kloc": 0.9,
+      "k4_rulesynth_v2_kloc": 0.42,
+      "k4_compression_over_manual_x": 11.19
+    },
+    "class_d_19_loop_and_interproc": {
+      "manual_kloc": 4.4,
+      "x5_rulesynth_kloc": 2.57,
+      "k4_rulesynth_v2_kloc": 0.34,
+      "k4_compression_over_manual_x": 12.94,
+      "k4_compression_over_x5_x": 7.56
+    },
+    "completeness_and_iff_valid_185": {
+      "manual_kloc": 6.2,
+      "x5_rulesynth_kloc": 0.42,
+      "k4_rulesynth_v2_kloc": 0.32,
+      "k4_compression_over_manual_x": 19.38
+    },
+    "Reusable_MacrosV2_and_LoopCombinators_kloc": 0.54,
+    "totals": {
+      "manual_proofs_only_kloc": 26.3,
+      "x5_proofs_only_kloc": 5.22,
+      "k4_proofs_only_kloc": 2.62,
+      "k4_vs_manual_proof_compression_x": 10.04,
+      "k4_vs_x5_proof_compression_x": 1.99,
+      "manual_total_compiler_kloc": 37.0,
+      "x5_total_compiler_kloc": 13.4,
+      "k4_total_compiler_kloc": 11.22
+    }
+  }
+}
