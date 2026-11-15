@@ -2101,18 +2101,26 @@ pub unsafe trait TryFromBytes {
     {
         static_assert_dst_is_not_zst!(Self);
         match Ptr::from_ref(source).try_cast_into_no_leftover::<Self, BecauseImmutable>(None) {
-            Ok(source) => {
+            Ok(ptr) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                match source.try_into_safe() {
+                match ptr.try_into_safe() {
                     Ok(valid) => Ok(valid.as_ref()),
-                    Err(e) => {
-                        Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
-                    }
+                    Err(e) => Err(e
+                        .map_src(
+                            #[inline(always)]
+                            |_| source,
+                        )
+                        .into()),
                 }
             }
-            Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+            Err(e) => Err(e
+                .map_src(
+                    #[inline(always)]
+                    |_| source,
+                )
+                .into()),
         }
     }
 
@@ -2745,18 +2753,26 @@ pub unsafe trait TryFromBytes {
     {
         match Ptr::from_ref(source).try_cast_into_no_leftover::<Self, BecauseImmutable>(Some(count))
         {
-            Ok(source) => {
+            Ok(ptr) => {
                 // This call may panic. If that happens, it doesn't cause any soundness
                 // issues, as we have not generated any invalid state which we need to
                 // fix before returning.
-                match source.try_into_safe() {
-                    Ok(source) => Ok(source.as_ref()),
-                    Err(e) => {
-                        Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into())
-                    }
+                match ptr.try_into_safe() {
+                    Ok(valid) => Ok(valid.as_ref()),
+                    Err(e) => Err(e
+                        .map_src(
+                            #[inline(always)]
+                            |_| source,
+                        )
+                        .into()),
                 }
             }
-            Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+            Err(e) => Err(e
+                .map_src(
+                    #[inline(always)]
+                    |_| source,
+                )
+                .into()),
         }
     }
 
@@ -8346,6 +8362,23 @@ mod tests {
         check(&source);
         check(&source[..]);
         check(source.as_bytes());
+    }
+
+    #[test]
+    fn test_try_ref_from_bytes_validity_error_restores_original_source() {
+        let source: &[u8] = &[2];
+        let err = bool::try_ref_from_bytes(source).unwrap_err();
+        assert!(matches!(err, TryCastError::Validity(_)));
+        assert!(ptr::eq(err.into_src(), source));
+
+        let source: &[u8] = &[2, 2];
+        let err = <[bool; 2]>::try_ref_from_bytes(source).unwrap_err();
+        assert!(matches!(err, TryCastError::Validity(_)));
+        assert!(ptr::eq(err.into_src(), source));
+
+        let err = <[bool]>::try_ref_from_bytes_with_elems(source, 2).unwrap_err();
+        assert!(matches!(err, TryCastError::Validity(_)));
+        assert!(ptr::eq(err.into_src(), source));
     }
 
     #[test]
