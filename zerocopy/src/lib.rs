@@ -8368,6 +8368,14 @@ mod tests {
     fn test_try_ref_from_bytes_validity_error_restores_original_source() {
         use crate::util::testutil::Align;
 
+        // Success path
+        let valid_bytes: &[u8] = &[1, 0];
+        let b = bool::try_ref_from_bytes(&valid_bytes[..1]).unwrap();
+        assert_eq!(*b, true);
+
+        let slice = <[bool]>::try_ref_from_bytes_with_elems(valid_bytes, 2).unwrap();
+        assert_eq!(slice, &[true, false]);
+
         let source: &[u8] = &[2];
         let err = bool::try_ref_from_bytes(source).unwrap_err();
         assert!(matches!(err, TryCastError::Validity(_)));
