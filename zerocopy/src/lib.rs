@@ -8371,7 +8371,7 @@ mod tests {
         // Success path
         let valid_bytes: &[u8] = &[1, 0];
         let b = bool::try_ref_from_bytes(&valid_bytes[..1]).unwrap();
-        assert_eq!(*b, true);
+        assert!(*b);
 
         let slice = <[bool]>::try_ref_from_bytes_with_elems(valid_bytes, 2).unwrap();
         assert_eq!(slice, &[true, false]);
