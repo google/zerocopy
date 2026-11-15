@@ -8366,6 +8366,8 @@ mod tests {
 
     #[test]
     fn test_try_ref_from_bytes_validity_error_restores_original_source() {
+        use crate::util::testutil::Align;
+
         let source: &[u8] = &[2];
         let err = bool::try_ref_from_bytes(source).unwrap_err();
         assert!(matches!(err, TryCastError::Validity(_)));
@@ -8379,6 +8381,32 @@ mod tests {
         let err = <[bool]>::try_ref_from_bytes_with_elems(source, 2).unwrap_err();
         assert!(matches!(err, TryCastError::Validity(_)));
         assert!(ptr::eq(err.into_src(), source));
+
+        // Size error
+        let empty: &[u8] = &[];
+        let err = bool::try_ref_from_bytes(empty).unwrap_err();
+        assert!(matches!(err, TryCastError::Size(_)));
+        assert!(ptr::eq(err.into_src(), empty));
+
+        let short: &[u8] = &[0];
+        let err = <[bool; 2]>::try_ref_from_bytes(short).unwrap_err();
+        assert!(matches!(err, TryCastError::Size(_)));
+        assert!(ptr::eq(err.into_src(), short));
+
+        let err = <[bool]>::try_ref_from_bytes_with_elems(short, 5).unwrap_err();
+        assert!(matches!(err, TryCastError::Size(_)));
+        assert!(ptr::eq(err.into_src(), short));
+
+        // Alignment error
+        let aligned = Align::<[u8; 8], u32>::new([0u8; 8]);
+        let unaligned = &aligned.t[1..5];
+        let err = u32::try_ref_from_bytes(unaligned).unwrap_err();
+        assert!(matches!(err, TryCastError::Alignment(_)));
+        assert!(ptr::eq(err.into_src(), unaligned));
+
+        let err = <[u32]>::try_ref_from_bytes_with_elems(unaligned, 1).unwrap_err();
+        assert!(matches!(err, TryCastError::Alignment(_)));
+        assert!(ptr::eq(err.into_src(), unaligned));
     }
 
     #[test]
