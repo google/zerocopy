@@ -11177,6 +11177,62 @@
         "agents/proof-engineering"
       ]
     },
+    "cross-release-abi-compatibility-fingerprinting-and-automatic-thunk-bridge": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler and FnAbi calling convention lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 compiler and i686 SSE CanonAbi::Rust transition (#161583)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted verification boundary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/abi",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/contract",
+        "compilers/verified-rustc/program-planning",
+        "compilers/verified-rustc/toolchain-evolution-and-quarantine",
+        "compilers/verified-rustc/verified-mode",
+        "isa",
+        "isa/x86",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/abi",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ]
+    },
     "cross-tool-source-spans-utf8-columns-and-diagnostic-normalization": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -27930,6 +27986,56 @@
         "lean/mechanization"
       ]
     },
+    "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler incremental dependency graph, proc-macro expansion server, and ThinLTO pipeline"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted verification boundary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/caching",
+        "build",
+        "build/reproducible-builds",
+        "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/caching-build-systems-and-determinism",
+        "compilers/verified-rustc/program-planning",
+        "compilers/verified-rustc/verified-mode",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/thinlto",
+        "rust",
+        "rust/proc-macro",
+        "rustc",
+        "rustc/incremental",
+        "verification",
+        "verification/compiler-verification"
+      ]
+    },
     "self-referential-unpin-coroutine-field-slicing-and-sroa": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -30475,6 +30581,102 @@
         "verification",
         "verification/compiler-verification",
         "zerocopy"
+      ]
+    },
+    "typeclass-insulated-layer0-coremir-and-automated-lean-proof-repair": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and .olean module system"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "upgrade_revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "versions": "1.99.1 -> 1.100.0"
+          },
+          "name": "Rust 1.99.1 and 1.100.0 compilers"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal trusted verification boundary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "compilers/verified-rustc/toolchain-evolution-and-quarantine",
+        "compilers/verified-rustc/verified-mode",
+        "lake",
+        "lean",
+        "lean/mechanization",
+        "lean/metaprogramming",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification",
+        "verification/proof-maintenance"
+      ]
+    },
+    "unified-cargo-anneal-and-verified-rustc-diagnostic-mapping-and-ux": {
+      "observed_at": "2026-11-14",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1 compiler diagnostic emitter and MIR span pipeline"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+          },
+          "name": "Anneal cargo-anneal CLI and trusted verification boundary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/cli",
+        "build",
+        "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/contract",
+        "compilers/verified-rustc/developer-ux-and-diagnostics",
+        "compilers/verified-rustc/program-planning",
+        "compilers/verified-rustc/verified-mode",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/diagnostics",
+        "rustc/mir",
+        "verification",
+        "verification/compiler-verification"
       ]
     },
     "unified-farkas-knownbits-and-aegraph-side-condition-certificates": {

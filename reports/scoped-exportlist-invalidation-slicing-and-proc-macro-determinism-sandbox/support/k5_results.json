@@ -1,0 +1,253 @@
+{
+  "scoped_export_12crate_simulation": {
+    "corpus_totals": {
+      "crates": 12,
+      "total_post_o3_fns": 13683,
+      "total_hybrid_trace_steps": 5861595,
+      "total_wpo_fns": 1842,
+      "total_wpo_steps": 912450,
+      "wpo_breakdown": {
+        "wpd_fns": 712,
+        "wpd_steps": 358400,
+        "globalopt_fns": 490,
+        "globalopt_steps": 241650,
+        "dae_fns": 640,
+        "dae_steps": 312400
+      }
+    },
+    "scenarios": [
+      {
+        "id": "E1",
+        "name": "Add new `#[no_mangle] pub extern \"C\" fn ffi_entry()` to root crate",
+        "description": "Adds a fresh exported C-ABI symbol `ffi_entry` (`SymbolId = 90001`). No existing internal function or static changes `isExported`, and no trait hierarchy changes `closedVtableCount`.",
+        "schemes": {
+          "whole_thinlto_monolithic_exportlist": {
+            "invalidated_fns": 13683,
+            "invalidated_steps": 5861595,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 100.0,
+            "invalidated_total_steps_pct": 100.0,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 2271.936,
+            "nanoda_recheck_ms": 1.39895
+          },
+          "wpo_only_monolithic_exportlist": {
+            "invalidated_fns": 1843,
+            "invalidated_steps": 912730,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 13.4693,
+            "invalidated_total_steps_pct": 15.5714,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 353.771,
+            "nanoda_recheck_ms": 0.21784
+          },
+          "pass_family_exportlist_partition": {
+            "invalidated_fns": 641,
+            "invalidated_steps": 312680,
+            "invalidated_wpo_fns": 640,
+            "invalidated_wpo_steps": 312400,
+            "invalidated_total_fns_pct": 4.6846,
+            "invalidated_total_steps_pct": 5.3344,
+            "invalidated_wpo_steps_pct": 34.2375,
+            "lean_kernel_recheck_ms": 121.194,
+            "nanoda_recheck_ms": 0.07463
+          },
+          "scoped_export_cert_slicing": {
+            "invalidated_fns": 1,
+            "invalidated_steps": 280,
+            "invalidated_wpo_fns": 0,
+            "invalidated_wpo_steps": 0,
+            "invalidated_total_fns_pct": 0.0073,
+            "invalidated_total_steps_pct": 0.0048,
+            "invalidated_wpo_steps_pct": 0.0,
+            "lean_kernel_recheck_ms": 0.109,
+            "nanoda_recheck_ms": 7e-05
+          }
+        }
+      },
+      {
+        "id": "E2",
+        "name": "Toggle `#[used]` or C-ABI export on one internal helper (`crc32fast::specialized::pclmulqdq`)",
+        "description": "Flips `isExported` from `false` to `true` for a single helper symbol (`SymbolId = 4208`). Only the helper itself and its 3 direct DAE-specialized callers cite `SymbolId = 4208`.",
+        "schemes": {
+          "whole_thinlto_monolithic_exportlist": {
+            "invalidated_fns": 13683,
+            "invalidated_steps": 5861595,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 100.0,
+            "invalidated_total_steps_pct": 100.0,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 2271.936,
+            "nanoda_recheck_ms": 1.39895
+          },
+          "wpo_only_monolithic_exportlist": {
+            "invalidated_fns": 1842,
+            "invalidated_steps": 912450,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 13.462,
+            "invalidated_total_steps_pct": 15.5666,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 353.663,
+            "nanoda_recheck_ms": 0.21777
+          },
+          "pass_family_exportlist_partition": {
+            "invalidated_fns": 640,
+            "invalidated_steps": 312400,
+            "invalidated_wpo_fns": 640,
+            "invalidated_wpo_steps": 312400,
+            "invalidated_total_fns_pct": 4.6773,
+            "invalidated_total_steps_pct": 5.3296,
+            "invalidated_wpo_steps_pct": 34.2375,
+            "lean_kernel_recheck_ms": 121.085,
+            "nanoda_recheck_ms": 0.07456
+          },
+          "scoped_export_cert_slicing": {
+            "invalidated_fns": 4,
+            "invalidated_steps": 1820,
+            "invalidated_wpo_fns": 4,
+            "invalidated_wpo_steps": 1820,
+            "invalidated_total_fns_pct": 0.0292,
+            "invalidated_total_steps_pct": 0.031,
+            "invalidated_wpo_steps_pct": 0.1995,
+            "lean_kernel_recheck_ms": 0.705,
+            "nanoda_recheck_ms": 0.00043
+          }
+        }
+      },
+      {
+        "id": "E3a",
+        "name": "Add `impl core::fmt::Display for CustomError` (open formatting trait vtable)",
+        "description": "Adds a new vtable for `core::fmt::Display` (`TraitId = 1`). Because `Display` already has >32 implementations and never triggers `WPO-DevirtSingleImpl` or `WPO-DevirtBranchFunnel`, zero WPD certificates cite `ScopedTraitEntry(TraitId = 1)`.",
+        "schemes": {
+          "whole_thinlto_monolithic_exportlist": {
+            "invalidated_fns": 13683,
+            "invalidated_steps": 5861595,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 100.0,
+            "invalidated_total_steps_pct": 100.0,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 2271.936,
+            "nanoda_recheck_ms": 1.39895
+          },
+          "wpo_only_monolithic_exportlist": {
+            "invalidated_fns": 1843,
+            "invalidated_steps": 912790,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 13.4693,
+            "invalidated_total_steps_pct": 15.5724,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 353.795,
+            "nanoda_recheck_ms": 0.21785
+          },
+          "pass_family_exportlist_partition": {
+            "invalidated_fns": 713,
+            "invalidated_steps": 358740,
+            "invalidated_wpo_fns": 712,
+            "invalidated_wpo_steps": 358400,
+            "invalidated_total_fns_pct": 5.2108,
+            "invalidated_total_steps_pct": 6.1202,
+            "invalidated_wpo_steps_pct": 39.2789,
+            "lean_kernel_recheck_ms": 139.047,
+            "nanoda_recheck_ms": 0.08562
+          },
+          "scoped_export_cert_slicing": {
+            "invalidated_fns": 1,
+            "invalidated_steps": 340,
+            "invalidated_wpo_fns": 0,
+            "invalidated_wpo_steps": 0,
+            "invalidated_total_fns_pct": 0.0073,
+            "invalidated_total_steps_pct": 0.0058,
+            "invalidated_wpo_steps_pct": 0.0,
+            "lean_kernel_recheck_ms": 0.132,
+            "nanoda_recheck_ms": 8e-05
+          }
+        }
+      },
+      {
+        "id": "E3b",
+        "name": "Add 2nd implementation `impl InternalPolicy for FastEngine` to closed strategy trait",
+        "description": "Increases `closedVtableCount` from `1` to `2` on `InternalPolicy` (`TraitId = 89`). Only the 6 functions whose `WPO-DevirtSingleImpl` certificates cite `TraitId = 89` transition to `WPO-DevirtBranchFunnel`; all other 147 traits are untouched.",
+        "schemes": {
+          "whole_thinlto_monolithic_exportlist": {
+            "invalidated_fns": 13683,
+            "invalidated_steps": 5861595,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 100.0,
+            "invalidated_total_steps_pct": 100.0,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 2271.936,
+            "nanoda_recheck_ms": 1.39895
+          },
+          "wpo_only_monolithic_exportlist": {
+            "invalidated_fns": 1843,
+            "invalidated_steps": 912860,
+            "invalidated_wpo_fns": 1842,
+            "invalidated_wpo_steps": 912450,
+            "invalidated_total_fns_pct": 13.4693,
+            "invalidated_total_steps_pct": 15.5736,
+            "invalidated_wpo_steps_pct": 100.0,
+            "lean_kernel_recheck_ms": 353.822,
+            "nanoda_recheck_ms": 0.21787
+          },
+          "pass_family_exportlist_partition": {
+            "invalidated_fns": 713,
+            "invalidated_steps": 358810,
+            "invalidated_wpo_fns": 712,
+            "invalidated_wpo_steps": 358400,
+            "invalidated_total_fns_pct": 5.2108,
+            "invalidated_total_steps_pct": 6.1214,
+            "invalidated_wpo_steps_pct": 39.2789,
+            "lean_kernel_recheck_ms": 139.074,
+            "nanoda_recheck_ms": 0.08563
+          },
+          "scoped_export_cert_slicing": {
+            "invalidated_fns": 7,
+            "invalidated_steps": 3490,
+            "invalidated_wpo_fns": 6,
+            "invalidated_wpo_steps": 3080,
+            "invalidated_total_fns_pct": 0.0512,
+            "invalidated_total_steps_pct": 0.0595,
+            "invalidated_wpo_steps_pct": 0.3376,
+            "lean_kernel_recheck_ms": 1.353,
+            "nanoda_recheck_ms": 0.00083
+          }
+        }
+      }
+    ]
+  },
+  "rustc_1991_procmacro_sandbox_probe": {
+    "runs_per_case": 10,
+    "total_probe_elapsed_ms": 1715.61,
+    "cases": {
+      "DetPureDerive": {
+        "unsandboxed_unique_mir_keys": 1,
+        "sandboxed_unique_mir_keys": 1,
+        "sandboxed_deterministic_100pct": true,
+        "dual_seed_digest_matches": true,
+        "sample_mir_key": "145171a162526e1481bd8dde084b45c8e24d9662ac3423ac7a62d2371af080e4"
+      },
+      "HashMapOrderDerive": {
+        "unsandboxed_unique_mir_keys": 10,
+        "sandboxed_unique_mir_keys": 1,
+        "sandboxed_deterministic_100pct": true,
+        "dual_seed_digest_matches": false,
+        "latent_hashmap_order_detected_by_dual_seed": true,
+        "sample_mir_key_seed_a": "a61df79c8009df272b53367fa2b42d9c41df532ad5e1fae292a1891324e84d3b",
+        "sample_mir_key_seed_b": "25bbc04e1ba28701f5bcfe3fd7c531c9747de146c8dac7a9149310ad1880ac0e"
+      },
+      "WallClockDerive": {
+        "unsandboxed_unique_mir_keys": 10,
+        "sandboxed_unique_mir_keys": 1,
+        "sandboxed_deterministic_100pct": true,
+        "sample_mir_key": "17ae33837a9ccc5b1678efbb55e1a60390effb61eae7634a0ef24b3866c95be9"
+      }
+    }
+  }
+}

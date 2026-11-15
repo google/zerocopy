@@ -1,0 +1,245 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "cargo-anneal / rustc-codegen-anneal",
+          "semanticVersion": "1.99.1-anneal.6",
+          "informationUri": "https://github.com/joshlf/anneal",
+          "rules": [
+            {
+              "id": "W_ANNEAL_0101",
+              "shortDescription": {
+                "text": "optimization rule family `RuleFamily_34_LoopStrengthReduce` is active in Soundness Quarantine; fell back to ve"
+              },
+              "help": {
+                "text": "pass `-Zanneal-unquarantine=RuleFamily_34` after upgrading `.olean` proof or `-Zanneal-deny-quarantine` to fail CI on quarantined fallbacks"
+              }
+            },
+            {
+              "id": "E_ANNEAL_0102",
+              "shortDescription": {
+                "text": "inline `asm!` block lacks a verified `#[anneal::asm_spec(...)]` register/memory clobber contract under `-Zanne"
+              },
+              "help": {
+                "text": "annotate the enclosing function or block with `#[anneal::asm_spec(clobbers = \"none\", memory = \"none\")]`"
+              }
+            },
+            {
+              "id": "E_ANNEAL_0103",
+              "shortDescription": {
+                "text": "`const_eval_select` call site cannot be automatically discharged by `ConstEvalSelectEquiv` (`ObsEquivOnValid` "
+              },
+              "help": {
+                "text": "attach `#[anneal::const_select_proof(theorem = \"Proof.CtfeCustom.ctfe_rt_obs_equiv\")]`"
+              }
+            },
+            {
+              "id": "E_ANNEAL_0104",
+              "shortDescription": {
+                "text": "`anneal-audit-daemon` rejected `HybridTrace` step #14 (`RuleFamily_12_BitwiseXor`) for `crate::crypto::mix_rou"
+              },
+              "help": {
+                "text": "wrote reproducible minidump bundle `target/anneal-repro/mix_round-stmt14.anneal-repro.tar.zst` (run `cargo anneal minimize-repro` to inspect)"
+              }
+            },
+            {
+              "id": "I_ANNEAL_0201",
+              "shortDescription": {
+                "text": "verified `.note.anneal.manifest` binary attestation: `13,683 / 13,683` functions kernel-checked (`0` `sorryAx`"
+              },
+              "help": {
+                "text": "run `cargo anneal audit-binary --format=sarif target/release/app` to export SARIF 2.1.0 report"
+              }
+            },
+            {
+              "id": "E_ANNEAL_0301",
+              "shortDescription": {
+                "text": "procedural macro `#[derive(HashMapOrderDerive)]` produced divergent `TokenStream` digests across dual-seed san"
+              },
+              "help": {
+                "text": "enable hermetic `LD_PRELOAD=libanneal_procmacro_det.so` sandbox or replace `std::collections::HashMap` with `BTreeMap` in the proc-macro implementation"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "W_ANNEAL_0101",
+          "level": "warning",
+          "message": {
+            "text": "optimization rule family `RuleFamily_34_LoopStrengthReduce` is active in Soundness Quarantine; fell back to verified `StmtDeriv.refl` baseline (`0` sorryAx)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/HotLoop.rs"
+                },
+                "region": {
+                  "startLine": 42,
+                  "endLine": 42,
+                  "startColumn": 13,
+                  "endColumn": 39,
+                  "snippet": {
+                    "text": "        acc = acc.wrapping_add(i * stride);"
+                  }
+                }
+              }
+            }
+          ],
+          "relatedLocations": [
+            {
+              "id": 1,
+              "message": {
+                "text": "inlined from `crate::HotLoop::accumulate_strided` (`StmtOrd #14 -> #3`)"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/lib.rs"
+                },
+                "region": {
+                  "startLine": 88,
+                  "startColumn": 9
+                }
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "E_ANNEAL_0102",
+          "level": "error",
+          "message": {
+            "text": "inline `asm!` block lacks a verified `#[anneal::asm_spec(...)]` register/memory clobber contract under `-Zanneal-strict-asm`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/arch_x86.rs"
+                },
+                "region": {
+                  "startLine": 19,
+                  "endLine": 19,
+                  "startColumn": 9,
+                  "endColumn": 46,
+                  "snippet": {
+                    "text": "        core::arch::asm!(\"pause\", options(nomem, nostack));"
+                  }
+                }
+              }
+            }
+          ],
+          "relatedLocations": []
+        },
+        {
+          "ruleId": "E_ANNEAL_0103",
+          "level": "error",
+          "message": {
+            "text": "`const_eval_select` call site cannot be automatically discharged by `ConstEvalSelectEquiv` (`ObsEquivOnValid` proof missing for custom arms)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/ctfe_custom.rs"
+                },
+                "region": {
+                  "startLine": 54,
+                  "endLine": 54,
+                  "startColumn": 5,
+                  "endColumn": 62,
+                  "snippet": {
+                    "text": "    core::intrinsics::const_eval_select((x,), ctfe_arm, rt_arm)"
+                  }
+                }
+              }
+            }
+          ],
+          "relatedLocations": []
+        },
+        {
+          "ruleId": "E_ANNEAL_0104",
+          "level": "error",
+          "message": {
+            "text": "`anneal-audit-daemon` rejected `HybridTrace` step #14 (`RuleFamily_12_BitwiseXor`) for `crate::crypto::mix_round`"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/crypto.rs"
+                },
+                "region": {
+                  "startLine": 103,
+                  "endLine": 103,
+                  "startColumn": 14,
+                  "endColumn": 37,
+                  "snippet": {
+                    "text": "    let y = (x ^ mask).rotate_left(7);"
+                  }
+                }
+              }
+            }
+          ],
+          "relatedLocations": []
+        },
+        {
+          "ruleId": "I_ANNEAL_0201",
+          "level": "note",
+          "message": {
+            "text": "verified `.note.anneal.manifest` binary attestation: `13,683 / 13,683` functions kernel-checked (`0` `sorryAx`, `0` `Lean.ofReduceBool`, axioms: `[propext, Quot.sound]`)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/main.rs"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 1,
+                  "startColumn": 1,
+                  "endColumn": 15,
+                  "snippet": {
+                    "text": "pub fn main() {"
+                  }
+                }
+              }
+            }
+          ],
+          "relatedLocations": []
+        },
+        {
+          "ruleId": "E_ANNEAL_0301",
+          "level": "error",
+          "message": {
+            "text": "procedural macro `#[derive(HashMapOrderDerive)]` produced divergent `TokenStream` digests across dual-seed sandbox expansion (`-Zanneal-verify-procmacro-determinism`)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "src/schema.rs"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 12,
+                  "startColumn": 10,
+                  "endColumn": 28,
+                  "snippet": {
+                    "text": "#[derive(HashMapOrderDerive)]"
+                  }
+                }
+              }
+            }
+          ],
+          "relatedLocations": []
+        }
+      ]
+    }
+  ]
+}

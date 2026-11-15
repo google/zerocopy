@@ -1,0 +1,147 @@
+{
+  "corpus_totals": {
+    "crates": 12,
+    "total_post_o3_fns": 13683,
+    "i686_direct_match_fns": 13383,
+    "i686_drifted_float_simd_fns": 300,
+    "i686_direct_call_thunk_bridged_fns": 285,
+    "i686_indirect_fn_ptr_float_fns": 15
+  },
+  "hash_fingerprints": {
+    "x86_64_cast_pad_1991": "cc097ee6db2546f2816c3515767dc5f5f3b6f527b1c978a16dea243c17c00fac",
+    "x86_64_cast_pad_1100": "cc097ee6db2546f2816c3515767dc5f5f3b6f527b1c978a16dea243c17c00fac",
+    "x86_64_cast_pad_equal": true,
+    "i686_int_only_1991": "98b4a9d45c3efc53367107c25d5b6c38c841dd53688b5010c29f9c756dbdd047",
+    "i686_int_only_1100": "98b4a9d45c3efc53367107c25d5b6c38c841dd53688b5010c29f9c756dbdd047",
+    "i686_int_only_equal": true,
+    "i686_float_sig_1991": "f10f3e914430f42afe587b16a9c38b8ffb4b5d50da3ba8301bc430a43cc1eb2d",
+    "i686_float_sig_1100": "572ce8790986e47f00b1fe9f9dfe8f159c43372688193e49a5b175911f1070b7",
+    "i686_float_sig_drift_detected": true
+  },
+  "targets_1991_to_1100_summary": [
+    {
+      "target": "x86_64-unknown-linux-gnu",
+      "total_post_o3_fns": 13683,
+      "direct_abicompathash_match_fns": 13683,
+      "direct_match_pct": 100.0,
+      "thunk_bridged_fns": 0,
+      "thunk_bridged_pct": 0.0,
+      "fn_ptr_recompiled_fns": 0,
+      "callee_rlib_proofs_rebuilt_pct": 0.0
+    },
+    {
+      "target": "aarch64-unknown-linux-gnu",
+      "total_post_o3_fns": 13683,
+      "direct_abicompathash_match_fns": 13683,
+      "direct_match_pct": 100.0,
+      "thunk_bridged_fns": 0,
+      "thunk_bridged_pct": 0.0,
+      "fn_ptr_recompiled_fns": 0,
+      "callee_rlib_proofs_rebuilt_pct": 0.0
+    },
+    {
+      "target": "x86_64-pc-windows-msvc",
+      "total_post_o3_fns": 13683,
+      "direct_abicompathash_match_fns": 13683,
+      "direct_match_pct": 100.0,
+      "thunk_bridged_fns": 0,
+      "thunk_bridged_pct": 0.0,
+      "fn_ptr_recompiled_fns": 0,
+      "callee_rlib_proofs_rebuilt_pct": 0.0
+    },
+    {
+      "target": "i686-unknown-linux-gnu",
+      "total_post_o3_fns": 13683,
+      "direct_abicompathash_match_fns": 13383,
+      "direct_match_pct": 97.81,
+      "thunk_bridged_fns": 285,
+      "thunk_bridged_pct": 2.08,
+      "fn_ptr_recompiled_fns": 15,
+      "fn_ptr_recompiled_pct": 0.11,
+      "callee_rlib_proofs_rebuilt_with_thunk_pct": 0.11,
+      "direct_callee_rlib_proofs_rebuilt_pct": 0.0
+    }
+  ],
+  "per_crate_i686_breakdown": [
+    {
+      "crate": "core",
+      "post_o3_fns": 4820,
+      "float_or_simd_rust_abi_fns": 112,
+      "fn_ptr_float_taken_fns": 6
+    },
+    {
+      "crate": "alloc",
+      "post_o3_fns": 1410,
+      "float_or_simd_rust_abi_fns": 14,
+      "fn_ptr_float_taken_fns": 1
+    },
+    {
+      "crate": "std",
+      "post_o3_fns": 3190,
+      "float_or_simd_rust_abi_fns": 78,
+      "fn_ptr_float_taken_fns": 4
+    },
+    {
+      "crate": "syn",
+      "post_o3_fns": 1840,
+      "float_or_simd_rust_abi_fns": 18,
+      "fn_ptr_float_taken_fns": 0
+    },
+    {
+      "crate": "serde",
+      "post_o3_fns": 620,
+      "float_or_simd_rust_abi_fns": 22,
+      "fn_ptr_float_taken_fns": 2
+    },
+    {
+      "crate": "regex-syntax",
+      "post_o3_fns": 680,
+      "float_or_simd_rust_abi_fns": 4,
+      "fn_ptr_float_taken_fns": 0
+    },
+    {
+      "crate": "hashbrown",
+      "post_o3_fns": 340,
+      "float_or_simd_rust_abi_fns": 2,
+      "fn_ptr_float_taken_fns": 0
+    },
+    {
+      "crate": "zerocopy",
+      "post_o3_fns": 260,
+      "float_or_simd_rust_abi_fns": 8,
+      "fn_ptr_float_taken_fns": 0
+    },
+    {
+      "crate": "memchr",
+      "post_o3_fns": 210,
+      "float_or_simd_rust_abi_fns": 12,
+      "fn_ptr_float_taken_fns": 1
+    },
+    {
+      "crate": "ryu",
+      "post_o3_fns": 115,
+      "float_or_simd_rust_abi_fns": 26,
+      "fn_ptr_float_taken_fns": 1
+    },
+    {
+      "crate": "crc32fast",
+      "post_o3_fns": 110,
+      "float_or_simd_rust_abi_fns": 4,
+      "fn_ptr_float_taken_fns": 0
+    },
+    {
+      "crate": "itoa",
+      "post_o3_fns": 88,
+      "float_or_simd_rust_abi_fns": 0,
+      "fn_ptr_float_taken_fns": 0
+    }
+  ],
+  "live_bridged_call_execution": {
+    "bit_exact_match": true,
+    "out_bits_hex": "0x41500000",
+    "expected_bits_hex": "0x41500000",
+    "ns_per_bridged_call": 2.6697,
+    "synthesized_thunk_instructions": 7,
+    "synthesized_thunk_size_bytes": 26
+  }
+}

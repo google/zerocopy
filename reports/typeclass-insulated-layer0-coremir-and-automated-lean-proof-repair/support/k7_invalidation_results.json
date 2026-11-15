@@ -1,0 +1,110 @@
+{
+  "prototype_dag_summary": {
+    "total_modules_open_layer0": 19,
+    "rule_family_modules_proto": 8,
+    "scaled_compiler_total_modules": 70,
+    "scaled_compiler_rule_families": 52,
+    "cold_build_19_modules_ms": 7410.27
+  },
+  "perturbations": {
+    "P5_add_machstate_ghost_fields": {
+      "description": "Add `asyncDropEpoch : Nat` and `provenanceGen : UInt64` to `ConcreteMachState`",
+      "x10_monolithic_proto_rebuilt": "17 / 17 (100.0%)",
+      "x10_monolithic_scaled_rebuilt": "68 / 68 (100.0%)",
+      "x10_rule_families_rebuilt": 52,
+      "k7_open_layer0_proto_rebuilt_modules": [
+        "Layer0d_ConcreteInst",
+        "Layer4_CrateTheorem"
+      ],
+      "k7_open_layer0_proto_rebuilt_count": 2,
+      "k7_open_layer0_proto_rebuilt_pct": 10.53,
+      "k7_open_layer0_scaled_rebuilt_count": 2,
+      "k7_open_layer0_scaled_total_modules": 70,
+      "k7_open_layer0_scaled_rebuilt_pct": 2.86,
+      "k7_rule_families_rebuilt": 0,
+      "k7_rebuild_elapsed_ms": 785.16
+    },
+    "P6_add_open_stmt_extension_variants": {
+      "description": "Add `asyncDropGlue` and `coroutineYield` to `ConcreteExt`",
+      "x10_monolithic_proto_rebuilt": "17 / 17 (100.0%)",
+      "x10_monolithic_scaled_rebuilt": "68 / 68 (100.0%)",
+      "x10_rule_families_rebuilt": 52,
+      "k7_open_layer0_proto_rebuilt_modules": [
+        "Layer0d_ConcreteInst",
+        "Layer4_CrateTheorem"
+      ],
+      "k7_open_layer0_proto_rebuilt_count": 2,
+      "k7_open_layer0_proto_rebuilt_pct": 10.53,
+      "k7_open_layer0_scaled_rebuilt_count": 2,
+      "k7_open_layer0_scaled_total_modules": 70,
+      "k7_open_layer0_scaled_rebuilt_pct": 2.86,
+      "k7_rule_families_rebuilt": 0,
+      "k7_rebuild_elapsed_ms": 768.12
+    },
+    "P7_cross_cutting_rule_interface_field_repair": {
+      "description": "Add mandatory `quarantineTag : UInt16` to `VerifiedOptRule` in `Layer2_RuleInterface`",
+      "broken_rule_family_modules": 8,
+      "automatically_repaired_modules": 8,
+      "manual_edits_required": 0,
+      "total_repair_and_rebuild_ms": 8908.05,
+      "per_module_repair_receipts": [
+        {
+          "module": "Layer2_RuleFamily_01.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 579.84
+        },
+        {
+          "module": "Layer2_RuleFamily_02.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 565.7
+        },
+        {
+          "module": "Layer2_RuleFamily_03.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 580.74
+        },
+        {
+          "module": "Layer2_RuleFamily_04.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 592.69
+        },
+        {
+          "module": "Layer2_RuleFamily_05.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 588.84
+        },
+        {
+          "module": "Layer2_RuleFamily_06.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 599.93
+        },
+        {
+          "module": "Layer2_RuleFamily_07.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 578.6
+        },
+        {
+          "module": "Layer2_RuleFamily_08.lean",
+          "diagnostics_detected": 1,
+          "fields_inserted": 1,
+          "post_repair_exit_code": 0,
+          "repair_elapsed_ms": 557.83
+        }
+      ]
+    }
+  }
+}

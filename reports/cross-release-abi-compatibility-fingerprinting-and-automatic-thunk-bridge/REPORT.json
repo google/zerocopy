@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/abi",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/contract",
+    "compilers/verified-rustc/program-planning",
+    "compilers/verified-rustc/toolchain-evolution-and-quarantine",
+    "compilers/verified-rustc/verified-mode",
+    "isa",
+    "isa/x86",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/abi",
+    "verification",
+    "verification/compiler-verification",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and FnAbi calling convention lowering",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.100.0 compiler and i686 SSE CanonAbi::Rust transition (#161583)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal trusted verification boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-14"
+}

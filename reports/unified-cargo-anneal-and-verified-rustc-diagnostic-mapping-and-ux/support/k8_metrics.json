@@ -1,0 +1,47 @@
+{
+  "rustc_1991_sideband_span_shift_probe": {
+    "inserted_comment_lines": 50,
+    "orig_mir_item_key": "d670059b00aa937aa5ea16ff69a1572e0a264863e25d8cf20368ede86fe59164",
+    "shifted_mir_item_key": "d670059b00aa937aa5ea16ff69a1572e0a264863e25d8cf20368ede86fe59164",
+    "mir_item_key_100pct_identical": true,
+    "tracked_stmt_ordinals_total": 46,
+    "local_file_stmt_ordinals": 44,
+    "local_ordinals_with_exact_plus_50_line_shift": 44,
+    "inlined_core_stmt_ordinals": 2,
+    "inlined_core_ordinals_preserved_exact": 2,
+    "all_ordinals_resolved_exact_100pct": true,
+    "sample_stmt_ord_inspection": {
+      "stmt_ord": 3,
+      "orig_span": "src/checksum.rs:5:15",
+      "shifted_span": "src/checksum.rs:55:15",
+      "canonical_op": "let mut _7: u64;"
+    }
+  },
+  "diagnostic_suite_validation": {
+    "total_canonical_scenarios": 6,
+    "codes_tested": [
+      "W_ANNEAL_0101",
+      "E_ANNEAL_0102",
+      "E_ANNEAL_0103",
+      "E_ANNEAL_0104",
+      "I_ANNEAL_0201",
+      "E_ANNEAL_0301"
+    ],
+    "rustc_json_schema_valid": true,
+    "sarif_210_version": "2.1.0",
+    "sarif_210_rules_count": 6,
+    "sarif_210_results_count": 6,
+    "post_shift_diagnostic_lines_exact_100pct": true
+  },
+  "repro_minidump_benchmark": {
+    "bundle_size_bytes": 513,
+    "generation_elapsed_ms": 1.078,
+    "within_5ms_budget": true,
+    "bundle_members": [
+      "ReplayRepro.lean",
+      "core_mir_slice.json",
+      "failed_hybrid_step.json",
+      "manifest.json"
+    ]
+  }
+}

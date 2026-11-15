@@ -1,0 +1,281 @@
+[
+  {
+    "$message_type": "diagnostic",
+    "message": "optimization rule family `RuleFamily_34_LoopStrengthReduce` is active in Soundness Quarantine; fell back to verified `StmtDeriv.refl` baseline (`0` sorryAx)",
+    "code": {
+      "code": "W_ANNEAL_0101",
+      "explanation": null
+    },
+    "level": "warning",
+    "spans": [
+      {
+        "file_name": "src/HotLoop.rs",
+        "byte_start": 0,
+        "byte_end": 43,
+        "line_start": 42,
+        "line_end": 42,
+        "column_start": 13,
+        "column_end": 39,
+        "is_primary": true,
+        "text": [
+          {
+            "text": "        acc = acc.wrapping_add(i * stride);",
+            "highlight_start": 13,
+            "highlight_end": 39
+          }
+        ],
+        "label": "quarantined rewrite skipped here; unoptimized step verified via `StmtDeriv.refl`",
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "expansion": null
+      }
+    ],
+    "children": [
+      {
+        "message": "inlined from `crate::HotLoop::accumulate_strided` (`StmtOrd #14 -> #3`)",
+        "code": null,
+        "level": "note",
+        "spans": [
+          {
+            "file_name": "src/lib.rs",
+            "byte_start": 0,
+            "byte_end": 0,
+            "line_start": 88,
+            "line_end": 88,
+            "column_start": 9,
+            "column_end": 19,
+            "is_primary": false,
+            "text": [],
+            "label": null
+          }
+        ],
+        "children": [],
+        "rendered": null
+      },
+      {
+        "message": "pass `-Zanneal-unquarantine=RuleFamily_34` after upgrading `.olean` proof or `-Zanneal-deny-quarantine` to fail CI on quarantined fallbacks",
+        "code": null,
+        "level": "help",
+        "spans": [],
+        "children": [],
+        "rendered": null
+      }
+    ],
+    "rendered": "warning[W_ANNEAL_0101]: optimization rule family `RuleFamily_34_LoopStrengthReduce` is active in Soundness Quarantine; fell back to verified `StmtDeriv.refl` baseline (`0` sorryAx)\n  --> src/HotLoop.rs:42:13\n   |\n 42 |         acc = acc.wrapping_add(i * stride);\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^ quarantined rewrite skipped here; unoptimized step verified via `StmtDeriv.refl`\n   = note: inlined from `crate::HotLoop::accumulate_strided` (`StmtOrd #14 -> #3`) (src/lib.rs:88:9)\n   = help: pass `-Zanneal-unquarantine=RuleFamily_34` after upgrading `.olean` proof or `-Zanneal-deny-quarantine` to fail CI on quarantined fallbacks"
+  },
+  {
+    "$message_type": "diagnostic",
+    "message": "inline `asm!` block lacks a verified `#[anneal::asm_spec(...)]` register/memory clobber contract under `-Zanneal-strict-asm`",
+    "code": {
+      "code": "E_ANNEAL_0102",
+      "explanation": null
+    },
+    "level": "error",
+    "spans": [
+      {
+        "file_name": "src/arch_x86.rs",
+        "byte_start": 0,
+        "byte_end": 59,
+        "line_start": 19,
+        "line_end": 19,
+        "column_start": 9,
+        "column_end": 46,
+        "is_primary": true,
+        "text": [
+          {
+            "text": "        core::arch::asm!(\"pause\", options(nomem, nostack));",
+            "highlight_start": 9,
+            "highlight_end": 46
+          }
+        ],
+        "label": "unannotated `TerminatorKind::InlineAsm` (`StmtOrd #7`)",
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "expansion": null
+      }
+    ],
+    "children": [
+      {
+        "message": "annotate the enclosing function or block with `#[anneal::asm_spec(clobbers = \"none\", memory = \"none\")]`",
+        "code": null,
+        "level": "help",
+        "spans": [],
+        "children": [],
+        "rendered": null
+      }
+    ],
+    "rendered": "error[E_ANNEAL_0102]: inline `asm!` block lacks a verified `#[anneal::asm_spec(...)]` register/memory clobber contract under `-Zanneal-strict-asm`\n  --> src/arch_x86.rs:19:9\n   |\n 19 |         core::arch::asm!(\"pause\", options(nomem, nostack));\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unannotated `TerminatorKind::InlineAsm` (`StmtOrd #7`)\n   = help: annotate the enclosing function or block with `#[anneal::asm_spec(clobbers = \"none\", memory = \"none\")]`"
+  },
+  {
+    "$message_type": "diagnostic",
+    "message": "`const_eval_select` call site cannot be automatically discharged by `ConstEvalSelectEquiv` (`ObsEquivOnValid` proof missing for custom arms)",
+    "code": {
+      "code": "E_ANNEAL_0103",
+      "explanation": null
+    },
+    "level": "error",
+    "spans": [
+      {
+        "file_name": "src/ctfe_custom.rs",
+        "byte_start": 0,
+        "byte_end": 63,
+        "line_start": 54,
+        "line_end": 54,
+        "column_start": 5,
+        "column_end": 62,
+        "is_primary": true,
+        "text": [
+          {
+            "text": "    core::intrinsics::const_eval_select((x,), ctfe_arm, rt_arm)",
+            "highlight_start": 5,
+            "highlight_end": 62
+          }
+        ],
+        "label": "`MirConstFoldCert` requires `ObsEquivOnValid P ctfe_arm rt_arm` (`StmtOrd #11`)",
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "expansion": null
+      }
+    ],
+    "children": [
+      {
+        "message": "attach `#[anneal::const_select_proof(theorem = \"Proof.CtfeCustom.ctfe_rt_obs_equiv\")]`",
+        "code": null,
+        "level": "help",
+        "spans": [],
+        "children": [],
+        "rendered": null
+      }
+    ],
+    "rendered": "error[E_ANNEAL_0103]: `const_eval_select` call site cannot be automatically discharged by `ConstEvalSelectEquiv` (`ObsEquivOnValid` proof missing for custom arms)\n  --> src/ctfe_custom.rs:54:5\n   |\n 54 |     core::intrinsics::const_eval_select((x,), ctfe_arm, rt_arm)\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `MirConstFoldCert` requires `ObsEquivOnValid P ctfe_arm rt_arm` (`StmtOrd #11`)\n   = help: attach `#[anneal::const_select_proof(theorem = \"Proof.CtfeCustom.ctfe_rt_obs_equiv\")]`"
+  },
+  {
+    "$message_type": "diagnostic",
+    "message": "`anneal-audit-daemon` rejected `HybridTrace` step #14 (`RuleFamily_12_BitwiseXor`) for `crate::crypto::mix_round`",
+    "code": {
+      "code": "E_ANNEAL_0104",
+      "explanation": null
+    },
+    "level": "error",
+    "spans": [
+      {
+        "file_name": "src/crypto.rs",
+        "byte_start": 0,
+        "byte_end": 38,
+        "line_start": 103,
+        "line_end": 103,
+        "column_start": 14,
+        "column_end": 37,
+        "is_primary": true,
+        "text": [
+          {
+            "text": "    let y = (x ^ mask).rotate_left(7);",
+            "highlight_start": 14,
+            "highlight_end": 37
+          }
+        ],
+        "label": "`Kernel.check` / `nanoda_lib` rejected certificate at `StmtOrd #14`",
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "expansion": null
+      }
+    ],
+    "children": [
+      {
+        "message": "wrote reproducible minidump bundle `target/anneal-repro/mix_round-stmt14.anneal-repro.tar.zst` (run `cargo anneal minimize-repro` to inspect)",
+        "code": null,
+        "level": "help",
+        "spans": [],
+        "children": [],
+        "rendered": null
+      }
+    ],
+    "rendered": "error[E_ANNEAL_0104]: `anneal-audit-daemon` rejected `HybridTrace` step #14 (`RuleFamily_12_BitwiseXor`) for `crate::crypto::mix_round`\n  --> src/crypto.rs:103:14\n   |\n103 |     let y = (x ^ mask).rotate_left(7);\n   |              ^^^^^^^^^^^^^^^^^^^^^^^ `Kernel.check` / `nanoda_lib` rejected certificate at `StmtOrd #14`\n   = help: wrote reproducible minidump bundle `target/anneal-repro/mix_round-stmt14.anneal-repro.tar.zst` (run `cargo anneal minimize-repro` to inspect)"
+  },
+  {
+    "$message_type": "diagnostic",
+    "message": "verified `.note.anneal.manifest` binary attestation: `13,683 / 13,683` functions kernel-checked (`0` `sorryAx`, `0` `Lean.ofReduceBool`, axioms: `[propext, Quot.sound]`)",
+    "code": {
+      "code": "I_ANNEAL_0201",
+      "explanation": null
+    },
+    "level": "note",
+    "spans": [
+      {
+        "file_name": "src/main.rs",
+        "byte_start": 0,
+        "byte_end": 15,
+        "line_start": 1,
+        "line_end": 1,
+        "column_start": 1,
+        "column_end": 15,
+        "is_primary": true,
+        "text": [
+          {
+            "text": "pub fn main() {",
+            "highlight_start": 1,
+            "highlight_end": 15
+          }
+        ],
+        "label": "ELF `.note.anneal.manifest` matches `AnnealCacheKey` root `0x8f4e...29a1`",
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "expansion": null
+      }
+    ],
+    "children": [
+      {
+        "message": "run `cargo anneal audit-binary --format=sarif target/release/app` to export SARIF 2.1.0 report",
+        "code": null,
+        "level": "help",
+        "spans": [],
+        "children": [],
+        "rendered": null
+      }
+    ],
+    "rendered": "note[I_ANNEAL_0201]: verified `.note.anneal.manifest` binary attestation: `13,683 / 13,683` functions kernel-checked (`0` `sorryAx`, `0` `Lean.ofReduceBool`, axioms: `[propext, Quot.sound]`)\n  --> src/main.rs:1:1\n   |\n  1 | pub fn main() {\n   | ^^^^^^^^^^^^^^ ELF `.note.anneal.manifest` matches `AnnealCacheKey` root `0x8f4e...29a1`\n   = help: run `cargo anneal audit-binary --format=sarif target/release/app` to export SARIF 2.1.0 report"
+  },
+  {
+    "$message_type": "diagnostic",
+    "message": "procedural macro `#[derive(HashMapOrderDerive)]` produced divergent `TokenStream` digests across dual-seed sandbox expansion (`-Zanneal-verify-procmacro-determinism`)",
+    "code": {
+      "code": "E_ANNEAL_0301",
+      "explanation": null
+    },
+    "level": "error",
+    "spans": [
+      {
+        "file_name": "src/schema.rs",
+        "byte_start": 0,
+        "byte_end": 29,
+        "line_start": 12,
+        "line_end": 12,
+        "column_start": 10,
+        "column_end": 28,
+        "is_primary": true,
+        "text": [
+          {
+            "text": "#[derive(HashMapOrderDerive)]",
+            "highlight_start": 10,
+            "highlight_end": 28
+          }
+        ],
+        "label": "`MirItemKey` under `Seed A` (`a61df79c...`) != `Seed B` (`25bbc04e...`)",
+        "suggested_replacement": null,
+        "suggestion_applicability": null,
+        "expansion": null
+      }
+    ],
+    "children": [
+      {
+        "message": "enable hermetic `LD_PRELOAD=libanneal_procmacro_det.so` sandbox or replace `std::collections::HashMap` with `BTreeMap` in the proc-macro implementation",
+        "code": null,
+        "level": "help",
+        "spans": [],
+        "children": [],
+        "rendered": null
+      }
+    ],
+    "rendered": "error[E_ANNEAL_0301]: procedural macro `#[derive(HashMapOrderDerive)]` produced divergent `TokenStream` digests across dual-seed sandbox expansion (`-Zanneal-verify-procmacro-determinism`)\n  --> src/schema.rs:12:10\n   |\n 12 | #[derive(HashMapOrderDerive)]\n   |          ^^^^^^^^^^^^^^^^^^ `MirItemKey` under `Seed A` (`a61df79c...`) != `Seed B` (`25bbc04e...`)\n   = help: enable hermetic `LD_PRELOAD=libanneal_procmacro_det.so` sandbox or replace `std::collections::HashMap` with `BTreeMap` in the proc-macro implementation"
+  }
+]
