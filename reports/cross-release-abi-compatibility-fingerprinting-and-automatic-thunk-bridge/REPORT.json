@@ -2,12 +2,10 @@
   "topics": [
     "anneal",
     "anneal/abi",
+    "anneal/architecture",
     "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/contract",
     "compilers/verified-rustc/program-planning",
-    "compilers/verified-rustc/toolchain-evolution-and-quarantine",
-    "compilers/verified-rustc/verified-mode",
     "isa",
     "isa/x86",
     "lean",

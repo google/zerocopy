@@ -17,7 +17,13 @@
     "answered_partly_count": 0,
     "unanswered_questions_count": 0,
     "verified_rustc_packages_count": 147,
-    "foundational_packages_count": 67
+    "foundational_packages_count": 67,
+    "total_verified_rustc_packages": 179,
+    "total_mapped_packages_including_foundational": 246,
+    "total_questions": 186,
+    "questions_answered_fully": 186,
+    "questions_answered_partly": 0,
+    "questions_open": 0
   },
   "rustc_1_99_1_compiler_crate_dag": {
     "total_compiler_crates": 78,
@@ -183,7 +189,8 @@
         "rust-normative-authority-map-and-rustc-deviations",
         "rustc-and-llvm-soundness-holes-and-miscompilation-census",
         "rust-language-and-library-codegen-feature-inventory",
-        "miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts"
+        "miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts",
+        "unified-cargo-anneal-and-verified-rustc-diagnostic-mapping-and-ux"
       ],
       "foundational_packages": [
         "cargo-unit-graphs-feature-resolution-and-rustc-invocations",
@@ -247,6 +254,14 @@
           "reports": [
             "miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts"
           ]
+        },
+        {
+          "id": "K8_",
+          "question": "Span-stripped MirItemKey with sideband StmtOrd Span tables (100% cache hit under 50-line comment shifts, 100% exact shifted diagnostic spans) and unified cargo anneal human/JSON/SARIF 2.1.0 diagnostic engine + 513-byte .anneal-repro minidumps",
+          "status": "ANSWERED",
+          "reports": [
+            "unified-cargo-anneal-and-verified-rustc-diagnostic-mapping-and-ux"
+          ]
         }
       ],
       "existing_packages": [
@@ -260,7 +275,8 @@
         "cargo-unit-graphs-feature-resolution-and-rustc-invocations",
         "cargo-rustc-wrapper-caching-and-extraction-coverage",
         "rustc-conditional-compilation-source-spans-and-diagnostics",
-        "cross-tool-source-spans-utf8-columns-and-diagnostic-normalization"
+        "cross-tool-source-spans-utf8-columns-and-diagnostic-normalization",
+        "unified-cargo-anneal-and-verified-rustc-diagnostic-mapping-and-ux"
       ],
       "answered_fully": [
         "[C1] Complete inventory of rustc 1.99.1 CLI flags (38 top-level, 54 -C, 238 -Z, 21 --print, 11 --emit, 8 --crate-type), JSON diagnostic schemas, and the 27-method CodegenBackend trait surface -> rustc-external-cli-json-and-backend-interface-contract",
@@ -269,7 +285,8 @@
         "[C4] 5-tier normative authority hierarchy and resolution of 18 inter-specification disagreements across FLS 1.99, Rust Reference, UCG, Nomicon, RFCs, and Miri -> rust-normative-authority-map-and-rustc-deviations",
         "[C5] Census of 292 known-bug UI tests, open I-unsound / I-miscompile issues, and point-release regressions at Rust 1.99.1 -> rustc-and-llvm-soundness-holes-and-miscompilation-census",
         "[C6] Inventory of all 1,482 language, library, and rustc_* features in 1.99.1 and the 219 features with MIR, layout, ABI, or codegen impact (plus 469 sysroot #![feature] gates) -> rust-language-and-library-codegen-feature-inventory",
-        "[C7] Miri (20 rustc_private crates, -Zmiri-tree-borrows), rust-analyzer, proc-macro server ABI v2 (format version 10), and rustdoc --test-builder integration contracts -> miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts"
+        "[C7] Miri (20 rustc_private crates, -Zmiri-tree-borrows), rust-analyzer, proc-macro server ABI v2 (format version 10), and rustdoc --test-builder integration contracts -> miri-rust-analyzer-proc-macro-and-doctest-toolchain-contracts",
+        "[K8_] Span-stripped MirItemKey with sideband StmtOrd Span tables (100% cache hit under 50-line comment shifts, 100% exact shifted diagnostic spans) and unified cargo anneal human/JSON/SARIF 2.1.0 diagnostic engine + 513-byte .anneal-repro minidumps -> unified-cargo-anneal-and-verified-rustc-diagnostic-mapping-and-ux"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -303,7 +320,10 @@
         "cross-prover-guarantee-composition-and-native-checker-soundness",
         "end-to-end-verified-mir-to-isa-refinement-chain-and-seams",
         "bidirectional-mir-minissa-refinement-and-anneal-vc-transport",
-        "anneal-spec-minissa-normalization-and-proof-compression"
+        "anneal-spec-minissa-normalization-and-proof-compression",
+        "loop-invariant-and-recursive-spec-minissa-vc-transport",
+        "cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts",
+        "tarjan-scc-fixpoint-summary-certificates-for-mutually-recursive-thinlto"
       ],
       "foundational_packages": [
         "anneal-behavior-codec-and-partial-compile-refinement-algebra",
@@ -371,6 +391,30 @@
           "reports": [
             "anneal-spec-minissa-normalization-and-proof-compression"
           ]
+        },
+        {
+          "id": "L1_",
+          "question": "Unbounded loop cut-point SSA phi invariant transport (verifyMirLoopViaMiniSSA_sound with per-backedge affine fuel scaling) and modular recursive #[anneal_spec] induction (13.61x AST reduction, 15.48x faster checking)",
+          "status": "ANSWERED",
+          "reports": [
+            "loop-invariant-and-recursive-spec-minissa-vc-transport"
+          ]
+        },
+        {
+          "id": "O6_",
+          "question": "Cross-DSO LinkWorldContract in Lean 4.34.1 proving duplicate vtable addresses across cdylib/dlopen boundaries, two-level DSO vtable+slot guarding (95% hit rate, +22.43% speedup), and CratePrivateTraitInOpenBinary unguarded devirtualization (+52.63% speedup)",
+          "status": "ANSWERED",
+          "reports": [
+            "cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts"
+          ]
+        },
+        {
+          "id": "O7_",
+          "question": "Tarjan SCC greatest-fixpoint certificates (SccGfpCert for nounwind/memory effects) and 2D lexicographic Farkas ranking certificates (SccRankingCert for willreturn) proving 26/26 bounded mutually recursive functions where LLVM proves 0/26 (339.46x caller DCE/LICM speedup)",
+          "status": "ANSWERED",
+          "reports": [
+            "tarjan-scc-fixpoint-summary-certificates-for-mutually-recursive-thinlto"
+          ]
         }
       ],
       "existing_packages": [
@@ -388,7 +432,10 @@
         "semantic-models-lenses-hyperproperties-and-putnam-tcb-boundary",
         "verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap",
         "bidirectional-mir-minissa-refinement-and-anneal-vc-transport",
-        "anneal-spec-minissa-normalization-and-proof-compression"
+        "anneal-spec-minissa-normalization-and-proof-compression",
+        "loop-invariant-and-recursive-spec-minissa-vc-transport",
+        "cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts",
+        "tarjan-scc-fixpoint-summary-certificates-for-mutually-recursive-thinlto"
       ],
       "answered_fully": [
         "[S1] Top-level compiler-correctness theorem shapes (FSim, BSim, ProductiveCompiles, ResourceBSim), observable trace events, resource exhaustion, and assumption ledgers -> compiler-correctness-theorem-shapes-and-end-to-end-chains",
@@ -397,7 +444,10 @@
         "[S4] Cross-prover guarantee composition (Lean 4, Rocq, HOL4, HOL Light, Isabelle/HOL, Sail) and native checker soundness without Lean.ofReduceBool / Lean.trustCompiler -> cross-prover-guarantee-composition-and-native-checker-soundness",
         "[S16] Five-link end-to-end Lean 4.34.1 refinement chain prototype (642 lines, 0 sorryAx) from Anneal MIR theorem to 29-byte x86-64 -O3 machine code and catalog of 5 definitional seams -> end-to-end-verified-mir-to-isa-refinement-chain-and-seams",
         "[N1] Bidirectional Runtime(PostCleanup) MIR <-> MiniSSA refinement (BisimExact vs GuardedBisim vs RefinesOnly) and backward Anneal VC transport (verifyMirViaMiniSSA_sound, 0 sorryAx, 0 TCB expansion) -> bidirectional-mir-minissa-refinement-and-anneal-vc-transport",
-        "[N2] Place-to-SSA #[anneal_spec] contract substitution lens (Sigma_spec) across Mem2Reg, SROA, and Inlining achieving 10.79x symbolic AST reduction, 6.19x proof LOC compression, and 10.68x kernel checking speedup -> anneal-spec-minissa-normalization-and-proof-compression"
+        "[N2] Place-to-SSA #[anneal_spec] contract substitution lens (Sigma_spec) across Mem2Reg, SROA, and Inlining achieving 10.79x symbolic AST reduction, 6.19x proof LOC compression, and 10.68x kernel checking speedup -> anneal-spec-minissa-normalization-and-proof-compression",
+        "[L1_] Unbounded loop cut-point SSA phi invariant transport (verifyMirLoopViaMiniSSA_sound with per-backedge affine fuel scaling) and modular recursive #[anneal_spec] induction (13.61x AST reduction, 15.48x faster checking) -> loop-invariant-and-recursive-spec-minissa-vc-transport",
+        "[O6_] Cross-DSO LinkWorldContract in Lean 4.34.1 proving duplicate vtable addresses across cdylib/dlopen boundaries, two-level DSO vtable+slot guarding (95% hit rate, +22.43% speedup), and CratePrivateTraitInOpenBinary unguarded devirtualization (+52.63% speedup) -> cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts",
+        "[O7_] Tarjan SCC greatest-fixpoint certificates (SccGfpCert for nounwind/memory effects) and 2D lexicographic Farkas ranking certificates (SccRankingCert for willreturn) proving 26/26 bounded mutually recursive functions where LLVM proves 0/26 (339.46x caller DCE/LICM speedup) -> tarjan-scc-fixpoint-summary-certificates-for-mutually-recursive-thinlto"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -436,7 +486,11 @@
         "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics",
         "tree-borrows-protectors-stack-coloring-and-dead-store-elimination",
         "tree-borrows-unwinding-cleanup-pads-two-phase-borrows-and-unsafecell",
-        "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence"
+        "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence",
+        "partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses",
+        "smart-pointer-and-custom-type-validity-invariant-propagation",
+        "self-referential-unpin-coroutine-field-slicing-and-sroa",
+        "tree-borrows-unwinding-store-sinking-and-protected-dse"
       ],
       "foundational_packages": [
         "anneal-pme-mir-semantics-and-polar-ctfe-admission",
@@ -543,6 +597,38 @@
           "reports": [
             "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence"
           ]
+        },
+        {
+          "id": "L2_",
+          "question": "Field-split partial SROA (PartialSroaCert) and HybridMemoryLens promoting non-escaping Freeze sibling fields into SSA registers while isolating address-taken or UnsafeCell/Atomic sub-slices in Memory (11.82x AST reduction)",
+          "status": "ANSWERED",
+          "reports": [
+            "partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses"
+          ]
+        },
+        {
+          "id": "L3_",
+          "question": "Recursive ADT field validity seeding (UsizeNoHighBit on RawVecInner.cap) and modular #[anneal_spec::type_invariant] propagation across Vec<T>, Box<[T]>, Arc<[T]>, SmallVec, and NonNull",
+          "status": "ANSWERED",
+          "reports": [
+            "smart-pointer-and-custom-type-validity-invariant-propagation"
+          ]
+        },
+        {
+          "id": "L5_",
+          "question": "Field-disjoint interior-pointer provenance splitting (PinFieldSplitCert) and unresumed child-future memcpy elision (UnresumedMoveIsRelocatable) reducing !Unpin coroutine frames from 80-104 B to 0 B (3.71x-9.34x speedup)",
+          "status": "ANSWERED",
+          "reports": [
+            "self-referential-unpin-coroutine-field-slicing-and-sroa"
+          ]
+        },
+        {
+          "id": "L6_",
+          "question": "Tree Borrows unwind-landing-pad store sinking (SinkStoreToCleanupCert), loop &mut register promotion (PromoteProtectedMutInLoopCert), and caller-unobservable unwind DSE (1.18x-1.43x speedup under panic=unwind)",
+          "status": "ANSWERED",
+          "reports": [
+            "tree-borrows-unwinding-store-sinking-and-protected-dse"
+          ]
         }
       ],
       "existing_packages": [
@@ -571,7 +657,11 @@
         "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics",
         "tree-borrows-protectors-stack-coloring-and-dead-store-elimination",
         "tree-borrows-unwinding-cleanup-pads-two-phase-borrows-and-unsafecell",
-        "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence"
+        "rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence",
+        "partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses",
+        "smart-pointer-and-custom-type-validity-invariant-propagation",
+        "self-referential-unpin-coroutine-field-slicing-and-sroa",
+        "tree-borrows-unwinding-store-sinking-and-protected-dse"
       ],
       "answered_fully": [
         "[S5] Construct-by-construct operational semantics of all 12 StatementKind, 14 TerminatorKind, 13 Rvalue, and 12 CastKind variants in Rust 1.99.1 Runtime(PostCleanup) MIR across Miri, MiniRust, Codegen, and Anneal -> rustc-mir-construct-semantics-miri-minirust-and-codegen",
@@ -584,7 +674,11 @@
         "[N6] Formal operational semantics of StateTransform coroutines (async/await, gen blocks, CoroutineDrop) and 100% (20/20) Tree Borrows acceptance on self-referential Pin<&mut Self> (!Unpin) generators -> rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics",
         "[N8] Tree Borrows two-stage protectors across StorageLive/StorageDead physical stack-slot coloring (4.01x frame reduction under PNVI-ae-udi) and pre-StorageDead dead-store elimination -> tree-borrows-protectors-stack-coloring-and-dead-store-elimination",
         "[N9] Tree Borrows protector release on panic=unwind cleanup landing pads (store-sinking compensation vs sret dead_on_unwind), two-phase borrows (ReservedIM), and byte-precise UnsafeCell projections -> tree-borrows-unwinding-cleanup-pads-two-phase-borrows-and-unsafecell",
-        "[N10] CTFE InterpCx evaluation, 5 GlobalAlloc variants (cyclic static provenance graphs, uninitialized padding masks, GlobalAlloc::TypeId), promoted constants, and runtime PostCleanup MIR equivalence -> rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence"
+        "[N10] CTFE InterpCx evaluation, 5 GlobalAlloc variants (cyclic static provenance graphs, uninitialized padding masks, GlobalAlloc::TypeId), promoted constants, and runtime PostCleanup MIR equivalence -> rustc-ctfe-globalalloc-promoted-constants-and-runtime-mir-equivalence",
+        "[L2_] Field-split partial SROA (PartialSroaCert) and HybridMemoryLens promoting non-escaping Freeze sibling fields into SSA registers while isolating address-taken or UnsafeCell/Atomic sub-slices in Memory (11.82x AST reduction) -> partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses",
+        "[L3_] Recursive ADT field validity seeding (UsizeNoHighBit on RawVecInner.cap) and modular #[anneal_spec::type_invariant] propagation across Vec<T>, Box<[T]>, Arc<[T]>, SmallVec, and NonNull -> smart-pointer-and-custom-type-validity-invariant-propagation",
+        "[L5_] Field-disjoint interior-pointer provenance splitting (PinFieldSplitCert) and unresumed child-future memcpy elision (UnresumedMoveIsRelocatable) reducing !Unpin coroutine frames from 80-104 B to 0 B (3.71x-9.34x speedup) -> self-referential-unpin-coroutine-field-slicing-and-sroa",
+        "[L6_] Tree Borrows unwind-landing-pad store sinking (SinkStoreToCleanupCert), loop &mut register promotion (PromoteProtectedMutInLoopCert), and caller-unobservable unwind DSE (1.18x-1.43x speedup under panic=unwind) -> tree-borrows-unwinding-store-sinking-and-protected-dse"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -695,7 +789,9 @@
         "tier1-default-codegen-settings-and-target-options",
         "os-syscall-interfaces-asynchronous-signals-and-environment-models",
         "tier1-exhaustive-procedural-abi-differential-campaign-and-fixes",
-        "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686"
+        "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686",
+        "bit-level-sub-eightbyte-packing-hfa-and-c-variadic-fnabi-refinement",
+        "cross-platform-bit-for-bit-reproducible-executable-linking-and-codesign"
       ],
       "foundational_packages": [
         "configured-rust-capture-fnabi-placement-and-formality-specr-boundaries",
@@ -824,6 +920,22 @@
           "reports": [
             "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686"
           ]
+        },
+        {
+          "id": "M5_",
+          "question": "Concrete BitVec 64/128 sub-eightbyte shift/mask packing (unpack_pack_eightbyte_bitvec_id), AArch64/Win64 HFA lane extraction, C bitfields, and 4-ABI va_list state-machine refinement in Lean 4.34.1 (542 LOC, 0 sorryAx)",
+          "status": "ANSWERED",
+          "reports": [
+            "bit-level-sub-eightbyte-packing-hfa-and-c-variadic-fnabi-refinement"
+          ]
+        },
+        {
+          "id": "M8_",
+          "question": "Bit-for-bit reproducible final executable linking across all 8 Tier 1 targets (0 diff bytes across dual directories/timestamps/threads) and deterministic Mach-O CS_CodeDirectory 4 KiB page SHA-256 Merkle signing covering ANNEAL_EVID_V1",
+          "status": "ANSWERED",
+          "reports": [
+            "cross-platform-bit-for-bit-reproducible-executable-linking-and-codesign"
+          ]
         }
       ],
       "existing_packages": [
@@ -846,7 +958,9 @@
         "anneal-subprocess-supervision-elf-runpath-and-archive-packaging",
         "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026",
         "tier1-exhaustive-procedural-abi-differential-campaign-and-fixes",
-        "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686"
+        "lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686",
+        "bit-level-sub-eightbyte-packing-hfa-and-c-variadic-fnabi-refinement",
+        "cross-platform-bit-for-bit-reproducible-executable-linking-and-codesign"
       ],
       "answered_fully": [
         "[T1] Per-target compute_abi_info FnAbi classification and LLVM register/stack lowering across all 8 Tier 1 targets and extern ABI strings -> tier1-calling-conventions-fnabi-and-llvm-lowering",
@@ -863,7 +977,9 @@
         "[T12] Complete 8-target matrix of TargetOptions default code-generation settings (relocation-model, frame-pointer, stack-probes, panic-strategy, tls-model, cpu, features) at Rust 1.99.1 -> tier1-default-codegen-settings-and-target-options",
         "[T13] Operating-system syscall/API envelopes (Linux syscalls, macOS libSystem, Windows ntdll/kernel32), asynchronous signals/SEH exceptions, and formal OS environment assumptions -> os-syscall-interfaces-asynchronous-signals-and-environment-models",
         "[B6] 256-archetype procedural ABI differential campaign across all 8 Tier 1 targets resolving 8 edge cases (MinGW f128 XMM0 vs sret, SysV 6th-GPR %r9 u128 straddle backfilling, AAPCS64 u128 alignment, i686 rust-cold SSE) -> tier1-exhaustive-procedural-abi-differential-campaign-and-fixes",
-        "[B7] Executable Lean 4.34.1 FnAbi classification (100% agreement across 2,048 Tier 1 target-signature pairs) and kernel-checked bidirectional caller/callee marshaling refinement across SysV64, Win64, AAPCS64, and i686 -> lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686"
+        "[B7] Executable Lean 4.34.1 FnAbi classification (100% agreement across 2,048 Tier 1 target-signature pairs) and kernel-checked bidirectional caller/callee marshaling refinement across SysV64, Win64, AAPCS64, and i686 -> lean-fnabi-marshaling-refinement-sysv64-win64-aapcs64-i686",
+        "[M5_] Concrete BitVec 64/128 sub-eightbyte shift/mask packing (unpack_pack_eightbyte_bitvec_id), AArch64/Win64 HFA lane extraction, C bitfields, and 4-ABI va_list state-machine refinement in Lean 4.34.1 (542 LOC, 0 sorryAx) -> bit-level-sub-eightbyte-packing-hfa-and-c-variadic-fnabi-refinement",
+        "[M8_] Bit-for-bit reproducible final executable linking across all 8 Tier 1 targets (0 diff bytes across dual directories/timestamps/threads) and deterministic Mach-O CS_CodeDirectory 4 KiB page SHA-256 Merkle signing covering ANNEAL_EVID_V1 -> cross-platform-bit-for-bit-reproducible-executable-linking-and-codesign"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -894,7 +1010,9 @@
         "target-features-implications-detection-and-abi-effects",
         "rustc-inline-assembly-specification-llvm-lowering-and-assembler-syntax",
         "rust-ecosystem-inline-assembly-global-asm-and-naked-function-census",
-        "machine-code-verification-frameworks-and-assembly-contracts"
+        "machine-code-verification-frameworks-and-assembly-contracts",
+        "portable-simd-repr-simd-legalization-and-cross-arch-cost-certificates",
+        "verified-builtin-inline-asm-template-parser-and-direct-encoder"
       ],
       "foundational_packages": [
         "rust-inline-assembly-contracts-relocations-and-simd-correspondence",
@@ -956,6 +1074,22 @@
           "reports": [
             "machine-code-verification-frameworks-and-assembly-contracts"
           ]
+        },
+        {
+          "id": "O4_",
+          "question": "Complete legalization taxonomy and SplitVecCert proofs for all 81 rustc 1.99.1 simd_* intrinsics (512->256->128-bit splitting across AVX-512, AVX2, SSE2, NEON) and parameterized Intel Xeon / AMD Zen 4-5 / Arm Neoverse cost models",
+          "status": "ANSWERED",
+          "reports": [
+            "portable-simd-repr-simd-legalization-and-cross-arch-cost-certificates"
+          ]
+        },
+        {
+          "id": "M2_",
+          "question": "Complete 333-site rustc 1.99.1 sysroot inline-asm census, Intel/AT&T/AArch64 template substitution parser, hidden-symbol extractor, and direct machine-code encoder achieving 100% (31/31) byte parity against llvm-mc without external assemblers",
+          "status": "ANSWERED",
+          "reports": [
+            "verified-builtin-inline-asm-template-parser-and-direct-encoder"
+          ]
         }
       ],
       "existing_packages": [
@@ -967,7 +1101,9 @@
         "rust-ecosystem-inline-assembly-global-asm-and-naked-function-census",
         "machine-code-verification-frameworks-and-assembly-contracts",
         "rust-inline-assembly-contracts-relocations-and-simd-correspondence",
-        "rustc-codegen-backend-abi-intrinsics-and-rv64gc-cross-compilation"
+        "rustc-codegen-backend-abi-intrinsics-and-rv64gc-cross-compilation",
+        "portable-simd-repr-simd-legalization-and-cross-arch-cost-certificates",
+        "verified-builtin-inline-asm-template-parser-and-direct-encoder"
       ],
       "answered_fully": [
         "[M1] Complete semantic inventory of all 316 #[rustc_intrinsic] items, 81 portable simd_* intrinsics, and 8,115 core::arch LLVM bindings across MIR LowerIntrinsics, Miri, and codegen backends -> rustc-intrinsics-simd-and-arch-semantic-sources",
@@ -976,7 +1112,9 @@
         "[M4] Semantics, implication DAGs, std_detect runtime CPUID/hwcap detection, and vector ABI effects of all 74 x86 and 90 AArch64 target features in rustc 1.99.1 -> target-features-implications-detection-and-abi-effects",
         "[M5] Operational specification of asm!, naked_asm!, and global_asm! register classes, clobbers, options (nomem, readonly, preserves_flags, nostack, noreturn, may_unwind), and assembler syntax -> rustc-inline-assembly-specification-llvm-lowering-and-assembler-syntax",
         "[M6] Empirical census of inline assembly, global_asm!, #[unsafe(naked)], and external C/assembly objects across sysroot, Linux kernel Rust, and crates.io -> rust-ecosystem-inline-assembly-global-asm-and-naked-function-census",
-        "[M7] Machine-code verification frameworks (Islaris, s2n-bignum HOL Light, Jasmin, Bedrock2, CakeML) and frame-preserving vs system-state assembly contracts -> machine-code-verification-frameworks-and-assembly-contracts"
+        "[M7] Machine-code verification frameworks (Islaris, s2n-bignum HOL Light, Jasmin, Bedrock2, CakeML) and frame-preserving vs system-state assembly contracts -> machine-code-verification-frameworks-and-assembly-contracts",
+        "[O4_] Complete legalization taxonomy and SplitVecCert proofs for all 81 rustc 1.99.1 simd_* intrinsics (512->256->128-bit splitting across AVX-512, AVX2, SSE2, NEON) and parameterized Intel Xeon / AMD Zen 4-5 / Arm Neoverse cost models -> portable-simd-repr-simd-legalization-and-cross-arch-cost-certificates",
+        "[M2_] Complete 333-site rustc 1.99.1 sysroot inline-asm census, Intel/AT&T/AArch64 template substitution parser, hidden-symbol extractor, and direct machine-code encoder achieving 100% (31/31) byte parity against llvm-mc without external assemblers -> verified-builtin-inline-asm-template-parser-and-direct-encoder"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -1005,7 +1143,8 @@
         "verified-assemblers-encoders-linkers-and-object-format-models",
         "direct-verified-object-section-and-relocation-emitter-v0",
         "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification",
-        "decidable-machine-code-well-formedness-and-errata-byte-validator"
+        "decidable-machine-code-well-formedness-and-errata-byte-validator",
+        "post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs"
       ],
       "foundational_packages": [
         "asl-l3-lnsym-and-isa-verification-frameworks-lean-adaptation",
@@ -1069,6 +1208,14 @@
           "reports": [
             "decidable-machine-code-well-formedness-and-errata-byte-validator"
           ]
+        },
+        {
+          "id": "M7_",
+          "question": "Post-link ELF/PE/Mach-O executable validator (checkLinkedBinaryWF) verifying resolved relocations, GOT-to-LEA relaxation, >128 MiB AArch64 veneers, Cortex-A53 page-end ADRP Erratum 843419 (0xFF8), and merged CET/BTI/PAC/GCS/CFGuard tables",
+          "status": "ANSWERED",
+          "reports": [
+            "post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs"
+          ]
         }
       ],
       "existing_packages": [
@@ -1082,7 +1229,8 @@
         "anneal-backend-codegen-binaries-lifters-and-sandboxes-survey",
         "direct-verified-object-section-and-relocation-emitter-v0",
         "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification",
-        "decidable-machine-code-well-formedness-and-errata-byte-validator"
+        "decidable-machine-code-well-formedness-and-errata-byte-validator",
+        "post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs"
       ],
       "answered_fully": [
         "[M8] Coverage, fidelity, licensing, and Lean 4 integration of formal ISA models for x86-64, i386 (32-bit x86), and AArch64 (Arm ASL/Sail, LNSym, ACL2 x86isa, K-x86, Sail-x86, HOL4 L3, CompCert) -> formal-isa-models-x86-64-i386-and-aarch64-coverage",
@@ -1091,7 +1239,8 @@
         "[M11] Verified assemblers, instruction encoders/decoders, static linkers, and object-format formalizations (CompCertELF, CakeML encoder, RockSalt, LinkSem) plus v0 forward-compatibility design -> verified-assemblers-encoders-linkers-and-object-format-models",
         "[B3] Direct verified v0 MiniMach -> ELF, PE/COFF, and Mach-O relocatable object emitter (VerifiedObjectEmitter.lean round-trip encode/decode and relocation patching) across all 8 Tier 1 targets with 0 external assembler calls -> direct-verified-object-section-and-relocation-emitter-v0",
         "[B8] Mechanized silicon errata mitigations (Intel SKX102 32B JCC padding, Arm Cortex-A53 835769 MAC hazard and 843419 page-end ADRP linker veneers) and x86 AVX-to-SSE vzeroupper transition verification -> hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification",
-        "[B10] Decidable linear-time machine-code byte validator (checkBinaryWF_sound, 78.67 MB/s across 2,494 Tier 1 sysroot .o files) checking canonical decoding, 16B stack alignment, stack probes, red zones, vzeroupper, errata, and CFI -> decidable-machine-code-well-formedness-and-errata-byte-validator"
+        "[B10] Decidable linear-time machine-code byte validator (checkBinaryWF_sound, 78.67 MB/s across 2,494 Tier 1 sysroot .o files) checking canonical decoding, 16B stack alignment, stack probes, red zones, vzeroupper, errata, and CFI -> decidable-machine-code-well-formedness-and-errata-byte-validator",
+        "[M7_] Post-link ELF/PE/Mach-O executable validator (checkLinkedBinaryWF) verifying resolved relocations, GOT-to-LEA relaxation, >128 MiB AArch64 veneers, Cortex-A53 page-end ADRP Erratum 843419 (0xFF8), and merged CET/BTI/PAC/GCS/CFGuard tables -> post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -1128,7 +1277,10 @@
         "rustc-llvm-free-sysroot-cranelift-gcc-and-host-tools-audit",
         "verified-pre-proof-reachability-pruning-and-address-safe-icf",
         "incremental-function-and-thinlto-summary-proof-cache-architecture",
-        "deterministic-distributed-verification-and-remote-build-cache-integration"
+        "deterministic-distributed-verification-and-remote-build-cache-integration",
+        "ctfe-const-eval-select-and-reflection-intrinsic-verification-contracts",
+        "two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning",
+        "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox"
       ],
       "foundational_packages": [
         "anneal-public-mir-discovery-interprocedural-calls-and-obligation-inventory",
@@ -1200,6 +1352,30 @@
           "reports": [
             "deterministic-distributed-verification-and-remote-build-cache-integration"
           ]
+        },
+        {
+          "id": "L8_",
+          "question": "Complete census of 30 const_eval_select and 11 is_val_statically_known sites in core/alloc and Lean 4.34.1 relational equivalence contract (constEvalSelect_refines_of_obsEquiv) for sound CTFE constant folding",
+          "status": "ANSWERED",
+          "reports": [
+            "ctfe-const-eval-select-and-reflection-intrinsic-verification-contracts"
+          ]
+        },
+        {
+          "id": "O8_",
+          "question": "Two-phase ThinLTO import budgeting, primary-owner COMDAT generic deduplication (ComdatEquivCert), 1-bit SurvivingExternalRefs intersection, and post-inlining LiveClosed pruning reducing verified functions by 84.52% (4.78x faster verification)",
+          "status": "ANSWERED",
+          "reports": [
+            "two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning"
+          ]
+        },
+        {
+          "id": "K5_",
+          "question": "Per-trait/per-symbol ScopedExportCert slicing WPO edit invalidation from 100% down to 0.0000%-0.3376% (0.11-1.35 ms re-check) paired with libanneal_procmacro_det.so LD_PRELOAD sandbox achieving 100%MirItemKey determinism across 10 runs",
+          "status": "ANSWERED",
+          "reports": [
+            "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox"
+          ]
         }
       ],
       "existing_packages": [
@@ -1214,7 +1390,10 @@
         "compiler-concurrent-source-modification-and-hermetic-input-binding",
         "verified-pre-proof-reachability-pruning-and-address-safe-icf",
         "incremental-function-and-thinlto-summary-proof-cache-architecture",
-        "deterministic-distributed-verification-and-remote-build-cache-integration"
+        "deterministic-distributed-verification-and-remote-build-cache-integration",
+        "ctfe-const-eval-select-and-reflection-intrinsic-verification-contracts",
+        "two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning",
+        "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox"
       ],
       "answered_fully": [
         "[V1] CodegenBackend architecture and composite per-function / per-CGU routing between the LLVM-free verified backend, Validated LLVM, and fallback LLVM -> rustc-codegen-backend-routing-and-mixed-backend-interoperability",
@@ -1224,7 +1403,10 @@
         "[V5] Building the entire Rust 1.99.1 Tier 1 sysroot (core, alloc, std, compiler_builtins, proc_macro) and host tools without LLVM code generation -> rustc-llvm-free-sysroot-cranelift-gcc-and-host-tools-audit",
         "[B4] Verified pre-proof MonoItem reachability pruning (--gc-sections) and .llvm_addrsig address-safe identical code folding (--icf=safe) cutting proof-checking volume by 5.42x-6.18x across Tier 1 targets -> verified-pre-proof-reachability-pruning-and-address-safe-icf",
         "[X6] Three-tier SHA-256 Merkle proof cache (MirItemKey, CalleeSummaryKey import cone, CompiledArtifactKey) reducing ThinLTO re-verification to 0.00% on comment edits and 0.0042% on leaf function edits -> incremental-function-and-thinlto-summary-proof-cache-architecture",
-        "[X7] 100% bit-for-bit deterministic .anneal-mir/.anneal-cert/.olean generation across paths and thread counts with zero-patch Cargo/sccache/Bazel/Buck2 caching and --Zanneal-check=defer REAPI v2 execution -> deterministic-distributed-verification-and-remote-build-cache-integration"
+        "[X7] 100% bit-for-bit deterministic .anneal-mir/.anneal-cert/.olean generation across paths and thread counts with zero-patch Cargo/sccache/Bazel/Buck2 caching and --Zanneal-check=defer REAPI v2 execution -> deterministic-distributed-verification-and-remote-build-cache-integration",
+        "[L8_] Complete census of 30 const_eval_select and 11 is_val_statically_known sites in core/alloc and Lean 4.34.1 relational equivalence contract (constEvalSelect_refines_of_obsEquiv) for sound CTFE constant folding -> ctfe-const-eval-select-and-reflection-intrinsic-verification-contracts",
+        "[O8_] Two-phase ThinLTO import budgeting, primary-owner COMDAT generic deduplication (ComdatEquivCert), 1-bit SurvivingExternalRefs intersection, and post-inlining LiveClosed pruning reducing verified functions by 84.52% (4.78x faster verification) -> two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning",
+        "[K5_] Per-trait/per-symbol ScopedExportCert slicing WPO edit invalidation from 100% down to 0.0000%-0.3376% (0.11-1.35 ms re-check) paired with libanneal_procmacro_det.so LD_PRELOAD sandbox achieving 100%MirItemKey determinism across 10 runs -> scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -1259,7 +1441,9 @@
         "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay",
         "whole-program-devirt-dae-and-globalopt-exportlist-certificates",
         "unwind-preserving-pic-safe-machine-outliner-all-tier1-targets",
-        "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening"
+        "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening",
+        "hardware-lbr-autofdo-sample-profile-ingestion-and-circulation-smoothing",
+        "direct-verified-dwarf-v5-and-codeview-debug-section-emitter"
       ],
       "foundational_packages": [],
       "questions_ledger": [
@@ -1358,6 +1542,22 @@
           "reports": [
             "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening"
           ]
+        },
+        {
+          "id": "O5_",
+          "question": "Hardware LBR sample-profile ingester (anneal-profgen + .anneal_site_map), machine-branch polarity un-flipping (71.4% inverted branches), and L1 minimum-cost circulation smoothing reducing LBR skid error by 80.5% and retaining 99.5%-100% PGO gain",
+          "status": "ANSWERED",
+          "reports": [
+            "hardware-lbr-autofdo-sample-profile-ingestion-and-circulation-smoothing"
+          ]
+        },
+        {
+          "id": "M1_",
+          "question": "Direct assembler-free emission of DWARF v5 (.debug_info, .debug_line, .debug_loclists) on ELF/Mach-O and CodeView C13 (.debug$S, .debug$T) on COFF with RegAllocCert location lists and non-interference proofs (llvm-dwarfdump --verify 100% pass)",
+          "status": "ANSWERED",
+          "reports": [
+            "direct-verified-dwarf-v5-and-codeview-debug-section-emitter"
+          ]
         }
       ],
       "existing_packages": [
@@ -1372,7 +1572,9 @@
         "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay",
         "whole-program-devirt-dae-and-globalopt-exportlist-certificates",
         "unwind-preserving-pic-safe-machine-outliner-all-tier1-targets",
-        "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening"
+        "verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening",
+        "hardware-lbr-autofdo-sample-profile-ingestion-and-circulation-smoothing",
+        "direct-verified-dwarf-v5-and-codeview-debug-section-emitter"
       ],
       "answered_fully": [
         "[V6] Census of Cargo.toml [profile.*] overrides, .cargo/config.toml rustflags, LTO, PGO, and release pipelines across crates.io and major Rust applications/kernels -> cargo-profile-and-compiler-flag-census-in-the-wild",
@@ -1386,7 +1588,9 @@
         "[U9] Cross-crate ThinLTO/FatLTO .anneal-summary (AnnealModuleSummaryV1) attribute lattice propagation, oracle-guided import replay over available_externally ghost copies, and per-CGU certificate caching -> cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay",
         "[U10] Whole-program devirtualization (ClosedTraitVTables), dead-argument/return elimination, byval promotion (SignatureMutable), and GlobalOpt static promotion under ExportList closed-world contracts -> whole-program-devirt-dae-and-globalopt-exportlist-certificates",
         "[B5] Diagnosis of LLVM 23.1.1 MachineOutliner bugs on Win64 SEH, Win32 FPO, i686 PIC, and WinARM64, and verification of unwind-preserving, PIC-safe VerifiedMachineOutliner across all 8 Tier 1 targets -> unwind-preserving-pic-safe-machine-outliner-all-tier1-targets",
-        "[B9] Mechanized hardware control-flow integrity (Intel CET IBT/SHSTK, Arm64 BTI/PAC-RET/GCS, Windows CFGuard/EHCont) and Spectre v2 / SLS / stack-protector hardening across all 8 Tier 1 targets -> verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening"
+        "[B9] Mechanized hardware control-flow integrity (Intel CET IBT/SHSTK, Arm64 BTI/PAC-RET/GCS, Windows CFGuard/EHCont) and Spectre v2 / SLS / stack-protector hardening across all 8 Tier 1 targets -> verified-cfi-cet-bti-pac-cfguard-and-speculative-hardening",
+        "[O5_] Hardware LBR sample-profile ingester (anneal-profgen + .anneal_site_map), machine-branch polarity un-flipping (71.4% inverted branches), and L1 minimum-cost circulation smoothing reducing LBR skid error by 80.5% and retaining 99.5%-100% PGO gain -> hardware-lbr-autofdo-sample-profile-ingestion-and-circulation-smoothing",
+        "[M1_] Direct assembler-free emission of DWARF v5 (.debug_info, .debug_line, .debug_loclists) on ELF/Mach-O and CodeView C13 (.debug$S, .debug$T) on COFF with RegAllocCert location lists and non-interference proofs (llvm-dwarfdump --verify 100% pass) -> direct-verified-dwarf-v5-and-codeview-debug-section-emitter"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -1419,7 +1623,8 @@
         "rustc-mir-optimization-passes-semantics-soundness-and-value",
         "rustc-monomorphization-vtables-statics-symbols-and-cgu-partitioning",
         "rustc-mir-to-llvm-lowering-and-runtime-visible-semantics",
-        "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement"
+        "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement",
+        "mir-profile-subsumption-overflow-checks-debug-assertions-and-panic-modes"
       ],
       "foundational_packages": [
         "rustc-mir-phases-reachability-and-postcleanup-lowering",
@@ -1517,6 +1722,14 @@
           "reports": [
             "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement"
           ]
+        },
+        {
+          "id": "L7_",
+          "question": "Cross-profile MIR subsumption checker (checkProfileSubsumption) and Lean 4.34.1 theorems (CheckedImpliesWrapping_sound, DebugAssertImpliesRelease_sound, UnwindImpliesAbort_sound) certifying release builds from debug proofs",
+          "status": "ANSWERED",
+          "reports": [
+            "mir-profile-subsumption-overflow-checks-debug-assertions-and-panic-modes"
+          ]
         }
       ],
       "existing_packages": [
@@ -1531,7 +1744,8 @@
         "rustc-cross-crate-rmeta-provenance-and-foreign-mir-inlining",
         "rustc-name-resolution-local-item-identity-and-type-lowering",
         "anssa-block-argument-ssa-mem2reg-and-mir-semantic-hazards-2026",
-        "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement"
+        "rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement",
+        "mir-profile-subsumption-overflow-checks-debug-assertions-and-panic-modes"
       ],
       "answered_fully": [
         "[S11] Deterministic standalone MIR artifact format (.anneal-mir), 17 MIR-affecting compiler settings, .rlib/.rmeta embedding for LTO, and SHA-256 cryptographic proof binding -> rustc-mir-artifact-export-settings-and-proof-binding",
@@ -1544,7 +1758,8 @@
         "[R5] Codegen-unit (CGU) partitioning algorithms (rustc_monomorphize::partitioning), primary vs inlined CGU placement, and incremental dependency-graph hashing -> rustc-monomorphization-vtables-statics-symbols-and-cgu-partitioning",
         "[R6] Construct-by-construct lowering in rustc_codegen_ssa::mir (139 BuilderMethods, LocalRef::Operand SSA promotion vs PlaceRef allocas, bool i1/i8 representation) and rustc_codegen_llvm -> rustc-mir-to-llvm-lowering-and-runtime-visible-semantics",
         "[R7] Runtime-visible lowering of panics (panic_fmt, nounwind cleanup pads, double-panic abort), allocator shims (__rust_alloc), and process entry points (lang_start) -> rustc-mir-to-llvm-lowering-and-runtime-visible-semantics",
-        "[N3] 100% byte-for-byte profile invariance of Runtime(PostCleanup) MIR across -O0..-O3/-Os/-Oz, audit of mandatory pre-PostCleanup passes, and retirement of all 42 inner_optimized_mir passes via the O(N) MiniSSA canonicalizer -> rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement"
+        "[N3] 100% byte-for-byte profile invariance of Runtime(PostCleanup) MIR across -O0..-O3/-Os/-Oz, audit of mandatory pre-PostCleanup passes, and retirement of all 42 inner_optimized_mir passes via the O(N) MiniSSA canonicalizer -> rustc-pre-postcleanup-lowerings-and-minissa-canonicalizer-replacement",
+        "[L7_] Cross-profile MIR subsumption checker (checkProfileSubsumption) and Lean 4.34.1 theorems (CheckedImpliesWrapping_sound, DebugAssertImpliesRelease_sound, UnwindImpliesAbort_sound) certifying release builds from debug proofs -> mir-profile-subsumption-overflow-checks-debug-assertions-and-panic-modes"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -1652,7 +1867,11 @@
         "hybridtrace-vectorization-slp-and-loop-certificate-library",
         "verified-regalloc2-spill-and-parallel-move-certificate-checker",
         "unified-farkas-knownbits-and-aegraph-side-condition-certificates",
-        "lean-metaprogrammed-rule-soundness-and-completeness-synthesis"
+        "lean-metaprogrammed-rule-soundness-and-completeness-synthesis",
+        "ordered-floating-point-simd-reductions-and-rfc3514-reassoc-certificates",
+        "sub-register-lane-aliasing-and-readonly-load-rematerialization-in-regalloccert",
+        "multi-premise-sparse-farkas-and-freeze-set-refinement-certificates",
+        "metaprogrammed-class-d-loop-memory-framing-and-width-polymorphic-bitvec-rules"
       ],
       "foundational_packages": [
         "translation-validation-certifying-compilation-and-pass-refinement-certificates",
@@ -1768,6 +1987,38 @@
           "reports": [
             "lean-metaprogrammed-rule-soundness-and-completeness-synthesis"
           ]
+        },
+        {
+          "id": "O3_",
+          "question": "Bit-identical ordered horizontal SIMD reduction certificates (OrderedSimdFoldCert, 2.04x-3.85x strict IEEE-754 speedup) and RFC 3514 multiset tree-reassociation / FMA contraction certificates (FloatReassocCert, 5.82x speedup)",
+          "status": "ANSWERED",
+          "reports": [
+            "ordered-floating-point-simd-reductions-and-rfc3514-reassoc-certificates"
+          ]
+        },
+        {
+          "id": "M6_",
+          "question": "Width-indexed architectural register lane aliasing (ArchRegLaneSemantics: x86 8/16/32/64-bit & XMM/YMM/ZMM, AArch64 wN/xN) and read-only frame/RODATA load rematerialization (RematLoadCert) cutting spill stores by 66.46%",
+          "status": "ANSWERED",
+          "reports": [
+            "sub-register-lane-aliasing-and-readonly-load-rematerialization-in-regalloccert"
+          ]
+        },
+        {
+          "id": "K3_",
+          "question": "Arbitrary k-premise, m-variable sparse Farkas certificates (checkFarkasCertN_sound), modular BitVec-to-Int no-wrap bridges, and graduated relational freeze-set refinement (checkAEGraphGraduated_sound) verifying 80/80 corpus obligations in 8.07 ms",
+          "status": "ANSWERED",
+          "reports": [
+            "multi-premise-sparse-farkas-and-freeze-set-refinement-certificates"
+          ]
+        },
+        {
+          "id": "K4_",
+          "question": "RuleSynthV2 metaprogramming framework synthesizing 25 Class C/D memory-frame & fuel-indexed loop rules and 30 width-polymorphic BitVec w (8..128-bit) rules at 20.43x direct LOC compression (reducing full 185-rule compiler proofs from 26.30 kLOC to 2.62 kLOC, 10.04x total compression)",
+          "status": "ANSWERED",
+          "reports": [
+            "metaprogrammed-class-d-loop-memory-framing-and-width-polymorphic-bitvec-rules"
+          ]
         }
       ],
       "existing_packages": [
@@ -1791,7 +2042,11 @@
         "hybridtrace-vectorization-slp-and-loop-certificate-library",
         "verified-regalloc2-spill-and-parallel-move-certificate-checker",
         "unified-farkas-knownbits-and-aegraph-side-condition-certificates",
-        "lean-metaprogrammed-rule-soundness-and-completeness-synthesis"
+        "lean-metaprogrammed-rule-soundness-and-completeness-synthesis",
+        "ordered-floating-point-simd-reductions-and-rfc3514-reassoc-certificates",
+        "sub-register-lane-aliasing-and-readonly-load-rematerialization-in-regalloccert",
+        "multi-premise-sparse-farkas-and-freeze-set-refinement-certificates",
+        "metaprogrammed-class-d-loop-memory-framing-and-width-polymorphic-bitvec-rules"
       ],
       "answered_fully": [
         "[W1] Quantitative survey of proof-producing compilation and certificate formats (Crellvm, CompCert validators, CakeML, Alive2, PCC, Carcara/LRAT) with certificate sizes and checking speeds -> proof-producing-compilation-and-certificate-formats-quantitative-survey",
@@ -1806,7 +2061,11 @@
         "[U5] Zero-sorry Lean 4.34.1 mechanization of 6 compositional HybridTrace vectorization/SLP schemas (Loop-GuardSplit, Loop-StripMine, Loop-BodyInterleavePermute, SIMD-LanePackIso, SIMD-ReductionMonoid, SLP-DAGPack) eliminating 100% of SMT timeouts -> hybridtrace-vectorization-slp-and-loop-certificate-library",
         "[X1] Verified linear-time RegAlloc2-style allocation, spill-slot disjointness, parallel-move cycle, and callee-saved certificate checker in Lean 4.34.1 (330x step compression, 26.44x byte reduction) -> verified-regalloc2-spill-and-parallel-move-certificate-checker",
         "[X2] Unified PoisonOr side-condition certificate library in Lean 4.34.1 combining Farkas linear arithmetic, KnownBits/WrappingRange abstract domains, and freeze-guarded let-DAG AEGraphCert (1.71x kernel speedup) -> unified-farkas-knownbits-and-aegraph-side-condition-certificates",
-        "[X5] Four-class taxonomy of all 52 -O3 rule families (185 constructors) and Lean 4.34.1 metaprogrammed rule soundness/completeness synthesis (MetaRuleSynth, 12.42x direct / 5.48x compiler-wide proof KLOC reduction) -> lean-metaprogrammed-rule-soundness-and-completeness-synthesis"
+        "[X5] Four-class taxonomy of all 52 -O3 rule families (185 constructors) and Lean 4.34.1 metaprogrammed rule soundness/completeness synthesis (MetaRuleSynth, 12.42x direct / 5.48x compiler-wide proof KLOC reduction) -> lean-metaprogrammed-rule-soundness-and-completeness-synthesis",
+        "[O3_] Bit-identical ordered horizontal SIMD reduction certificates (OrderedSimdFoldCert, 2.04x-3.85x strict IEEE-754 speedup) and RFC 3514 multiset tree-reassociation / FMA contraction certificates (FloatReassocCert, 5.82x speedup) -> ordered-floating-point-simd-reductions-and-rfc3514-reassoc-certificates",
+        "[M6_] Width-indexed architectural register lane aliasing (ArchRegLaneSemantics: x86 8/16/32/64-bit & XMM/YMM/ZMM, AArch64 wN/xN) and read-only frame/RODATA load rematerialization (RematLoadCert) cutting spill stores by 66.46% -> sub-register-lane-aliasing-and-readonly-load-rematerialization-in-regalloccert",
+        "[K3_] Arbitrary k-premise, m-variable sparse Farkas certificates (checkFarkasCertN_sound), modular BitVec-to-Int no-wrap bridges, and graduated relational freeze-set refinement (checkAEGraphGraduated_sound) verifying 80/80 corpus obligations in 8.07 ms -> multi-premise-sparse-farkas-and-freeze-set-refinement-certificates",
+        "[K4_] RuleSynthV2 metaprogramming framework synthesizing 25 Class C/D memory-frame & fuel-indexed loop rules and 30 width-polymorphic BitVec w (8..128-bit) rules at 20.43x direct LOC compression (reducing full 185-rule compiler proofs from 26.30 kLOC to 2.62 kLOC, 10.04x total compression) -> metaprogrammed-class-d-loop-memory-framing-and-width-polymorphic-bitvec-rules"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -1845,7 +2104,12 @@
         "oracle-hint-drift-alignment-and-fallback-resilience",
         "x86-avx512-short-loop-regression-and-vector-width-profitability",
         "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection",
-        "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment"
+        "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment",
+        "nonlinear-bitwise-mask-modulo-and-lookup-table-bounds-certificates",
+        "uninstrumented-instcombine-and-dagcombiner-egraph-chain-reconstruction",
+        "debuginfo-free-weisfeiler-leman-cfg-and-def-use-oracle-alignment",
+        "verified-tail-duplication-hot-cold-splitting-and-branch-relaxation",
+        "call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis"
       ],
       "foundational_packages": [
         "anneal-mid-level-ir-optimizations-and-lowering-survey",
@@ -2003,6 +2267,46 @@
           "reports": [
             "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment"
           ]
+        },
+        {
+          "id": "L4_",
+          "question": "Unified BitwiseModFarkasCert coupling bitwise-AND mask bounds, unsigned remainder bounds (x % n < n), right-shifts, and ctlz/cttz ranges to discharge 66.49% (512/770) of non-linear lookup-table and ring-buffer bounds checks",
+          "status": "ANSWERED",
+          "reports": [
+            "nonlinear-bitwise-mask-modulo-and-lookup-table-bounds-certificates"
+          ]
+        },
+        {
+          "id": "O1_",
+          "question": "Bidirectional meet-in-the-middle AE-graph + KnownBits64 expression-cone reconstructor (ExprChainSynthesizer) synthesizing 100% (500/500) of unremarked InstCombine/DAGCombiner rewrites in 0.273 ms median (22.61x e-node reduction)",
+          "status": "ANSWERED",
+          "reports": [
+            "uninstrumented-instcombine-and-dagcombiner-egraph-chain-reconstruction"
+          ]
+        },
+        {
+          "id": "O2_",
+          "question": "k=4 SplitMix64 Weisfeiler-Leman dominator-tree and def-use structural matcher (WLAnchorKey) aligning stripped (-C debuginfo=0) LLVM IR and MiniSSA at 98.04% recall / 99.34% precision (99.33% -O3 speedup retained)",
+          "status": "ANSWERED",
+          "reports": [
+            "debuginfo-free-weisfeiler-leman-cfg-and-def-use-oracle-alignment"
+          ]
+        },
+        {
+          "id": "M3_",
+          "question": "1-to-k tail-duplication simulation via reverse functional block projection (tail_dup_clone_sim) and cross-section .text <-> .text.unlikely 32-bit branch-relaxation veneers (+6.48% serde_json and +3.41% bytecode-dispatch speedups)",
+          "status": "ANSWERED",
+          "reports": [
+            "verified-tail-duplication-hot-cold-splitting-and-branch-relaxation"
+          ]
+        },
+        {
+          "id": "M4_",
+          "question": "Call-sequence and diverging panic/cleanup thunk outlining (OutlinerUnwindThunkCert) with synthesized DWARF .eh_frame/LSDA and Windows .pdata/.xdata descriptors achieving up to 53.03% .text reduction and verified LIFO catch_unwind drops",
+          "status": "ANSWERED",
+          "reports": [
+            "call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis"
+          ]
         }
       ],
       "existing_packages": [
@@ -2024,7 +2328,12 @@
         "oracle-hint-drift-alignment-and-fallback-resilience",
         "x86-avx512-short-loop-regression-and-vector-width-profitability",
         "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection",
-        "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment"
+        "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment",
+        "nonlinear-bitwise-mask-modulo-and-lookup-table-bounds-certificates",
+        "uninstrumented-instcombine-and-dagcombiner-egraph-chain-reconstruction",
+        "debuginfo-free-weisfeiler-leman-cfg-and-def-use-oracle-alignment",
+        "verified-tail-duplication-hot-cold-splitting-and-branch-relaxation",
+        "call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis"
       ],
       "answered_fully": [
         "[O1] Exact LLVM 23.1.1 NewPM pass pipelines and TargetMachine configurations constructed by rustc 1.99.1 across opt-level=0,1,2,3,s,z, ThinLTO, FatLTO, and PGO -> rustc-llvm-pass-pipelines-and-configuration",
@@ -2045,7 +2354,12 @@
         "[U3] 5-category MiniSSA vs LLVM IR drift taxonomy, 3-level AnchorKey (InlineContextId + SourceInfo + LoopNestCoord), and 3-tier graceful fallback preserving 100% soundness and 91.4% speedup at 25% hint corruption -> oracle-hint-drift-alignment-and-fallback-resilience",
         "[U6] Root-cause decomposition and elimination of the -26.82%/-34.07% x86-64-v4 AVX-512 short-loop regression (masked vpgatherqd stalls, strided-byte scalarization, epilogue cascades) and SVE whilelo tail-folding -> x86-avx512-short-loop-regression-and-vector-width-profitability",
         "[B1] Microarchitectural dissection of Q6's 19.60% serde_json bimodal split, 69.97% regex-automata spread, and 7.88x .eh_frame_hdr slowdown to 32B JCC/DSB crossings, 4 KiB BTB aliasing, and missing -Zfunction-sections -> microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection",
-        "[B2] Verified MiniMach Ext-TSP block placement, .text.unlikely splitting, and 32B loop/JCC NOP alignment (VerifiedLayoutPass.lean) collapsing 16-seed layout CV from 20.57% to <=1.42% and boosting speed by +6.8%/+14.9% -> verified-minimach-ext-tsp-layout-and-loop-jcc-alignment"
+        "[B2] Verified MiniMach Ext-TSP block placement, .text.unlikely splitting, and 32B loop/JCC NOP alignment (VerifiedLayoutPass.lean) collapsing 16-seed layout CV from 20.57% to <=1.42% and boosting speed by +6.8%/+14.9% -> verified-minimach-ext-tsp-layout-and-loop-jcc-alignment",
+        "[L4_] Unified BitwiseModFarkasCert coupling bitwise-AND mask bounds, unsigned remainder bounds (x % n < n), right-shifts, and ctlz/cttz ranges to discharge 66.49% (512/770) of non-linear lookup-table and ring-buffer bounds checks -> nonlinear-bitwise-mask-modulo-and-lookup-table-bounds-certificates",
+        "[O1_] Bidirectional meet-in-the-middle AE-graph + KnownBits64 expression-cone reconstructor (ExprChainSynthesizer) synthesizing 100% (500/500) of unremarked InstCombine/DAGCombiner rewrites in 0.273 ms median (22.61x e-node reduction) -> uninstrumented-instcombine-and-dagcombiner-egraph-chain-reconstruction",
+        "[O2_] k=4 SplitMix64 Weisfeiler-Leman dominator-tree and def-use structural matcher (WLAnchorKey) aligning stripped (-C debuginfo=0) LLVM IR and MiniSSA at 98.04% recall / 99.34% precision (99.33% -O3 speedup retained) -> debuginfo-free-weisfeiler-leman-cfg-and-def-use-oracle-alignment",
+        "[M3_] 1-to-k tail-duplication simulation via reverse functional block projection (tail_dup_clone_sim) and cross-section .text <-> .text.unlikely 32-bit branch-relaxation veneers (+6.48% serde_json and +3.41% bytecode-dispatch speedups) -> verified-tail-duplication-hot-cold-splitting-and-branch-relaxation",
+        "[M4_] Call-sequence and diverging panic/cleanup thunk outlining (OutlinerUnwindThunkCert) with synthesized DWARF .eh_frame/LSDA and Windows .pdata/.xdata descriptors achieving up to 53.03% .text reduction and verified LIFO catch_unwind drops -> call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -2124,7 +2438,9 @@
         "verified-rustc-delivered-toolchain-trusted-component-inventory",
         "lean-large-isa-and-compiler-semantics-scaling",
         "lean-unboxed-bytearray-bitset-and-soa-compiler-substrate-bridge",
-        "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput"
+        "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput",
+        "csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity",
+        "persistent-mmap-lean-kernel-and-nanoda-audit-daemon-for-submillisecond-checks"
       ],
       "foundational_packages": [
         "untrusted-proof-dependencies-effect-isolation-and-guarantee-verification",
@@ -2197,6 +2513,22 @@
           "reports": [
             "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput"
           ]
+        },
+        {
+          "id": "K1_",
+          "question": "CSR flat ByteArray graph arenas and 61-LOC audited C11 word-slice shim (ByteWordSlice.lean, CSRGraph.lean) closing all remaining Lean 4.34.1 vs Rust 1.99.1 -O3 compiler-kernel gaps to 0.31x-1.20x (dom_ssa 0.54x, regalloc 0.93x, egraph_uf 1.20x)",
+          "status": "ANSWERED",
+          "reports": [
+            "csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity"
+          ]
+        },
+        {
+          "id": "K2_",
+          "question": "Resident dual-engine Lean.Environment C++ kernel + safe-Rust nanoda_lib daemon (anneal-audit-daemon) eliminating the 180 ms .olean startup floor and verifying 245-step leaf edits in 0.393 ms P50 (1,949x speedup) with 0 KB RSS leak over 10,000 requests",
+          "status": "ANSWERED",
+          "reports": [
+            "persistent-mmap-lean-kernel-and-nanoda-audit-daemon-for-submillisecond-checks"
+          ]
         }
       ],
       "existing_packages": [
@@ -2212,7 +2544,9 @@
         "lean-environment-identity-imports-and-trust-admissions",
         "deductive-proof-object-and-refinement-certificate-kernels-2013-2026",
         "lean-unboxed-bytearray-bitset-and-soa-compiler-substrate-bridge",
-        "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput"
+        "lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput",
+        "csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity",
+        "persistent-mmap-lean-kernel-and-nanoda-audit-daemon-for-submillisecond-checks"
       ],
       "answered_fully": [
         "[K1] Audit of Lean v4.34.1 native C compilation pipeline (EmitC.lean, leanc -O3), reference-counting runtime (libleanshared.so), libgmp Bignum semantics, and @[extern]/@[implemented_by]/csimp trust surface -> lean-native-compilation-pipeline-runtime-and-trust-surface",
@@ -2222,7 +2556,9 @@
         "[K5] 5-stratum trusted-component inventory and SHA-256 manifest of the delivered verified rustc toolchain across host prover, compiler, linker, CRT, unwinder, and OS boundaries -> verified-rustc-delivered-toolchain-trusted-component-inventory",
         "[K6] Lean 4.34.1 scaling on 50 to 2,000 opcode ISA/IR models: avoiding the K=500 monolithic inductive/match O(K^2) cliff via family-stratified (4.30s at K=2,000) and tag-record (2.66s at K=2,000) encodings -> lean-large-isa-and-compiler-semantics-scaling",
         "[X3] Diagnosis of 4 Lean 4.34.1 LCNF/C-runtime boxing bottlenecks and verified unboxed ByteArray BitSet64 + Struct-of-Arrays bridge shrinking the 28.34x regalloc liveness gap to 1.18x (1.24x 6-kernel geomean) -> lean-unboxed-bytearray-bitset-and-soa-compiler-substrate-bridge",
-        "[X4] Balanced binary-halving GMP limb unpacking (NatBinarySplit at B*=512 bits -> 534.6k steps/s, 6.35x speedup), NatPackedRegBank64 (38.9x over tries), and 16-shard parallel libcore audit (0.676s Lean C++ kernel, 0.416 ms nanoda_lib) -> lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput"
+        "[X4] Balanced binary-halving GMP limb unpacking (NatBinarySplit at B*=512 bits -> 534.6k steps/s, 6.35x speedup), NatPackedRegBank64 (38.9x over tries), and 16-shard parallel libcore audit (0.676s Lean C++ kernel, 0.416 ms nanoda_lib) -> lean-kernel-natgmp-limb-tuning-and-nanoda-parallel-audit-throughput",
+        "[K1_] CSR flat ByteArray graph arenas and 61-LOC audited C11 word-slice shim (ByteWordSlice.lean, CSRGraph.lean) closing all remaining Lean 4.34.1 vs Rust 1.99.1 -O3 compiler-kernel gaps to 0.31x-1.20x (dom_ssa 0.54x, regalloc 0.93x, egraph_uf 1.20x) -> csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity",
+        "[K2_] Resident dual-engine Lean.Environment C++ kernel + safe-Rust nanoda_lib daemon (anneal-audit-daemon) eliminating the 180 ms .olean startup floor and verifying 245-step leaf edits in 0.393 ms P50 (1,949x speedup) with 0 KB RSS leak over 10,000 requests -> persistent-mmap-lean-kernel-and-nanoda-audit-daemon-for-submillisecond-checks"
       ],
       "answered_partly": [],
       "unanswered_questions": []
@@ -2365,7 +2701,9 @@
         "verified-rustc-designer-dry-run-and-gap-analysis",
         "rustc-multi-release-mir-abi-drift-and-version-isolated-adapter",
         "automated-toolchain-table-regeneration-and-mir-minissa-upgrade-validator",
-        "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds"
+        "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds",
+        "cross-release-abi-compatibility-fingerprinting-and-automatic-thunk-bridge",
+        "typeclass-insulated-layer0-coremir-and-automated-lean-proof-repair"
       ],
       "foundational_packages": [],
       "questions_ledger": [
@@ -2472,6 +2810,22 @@
           "reports": [
             "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds"
           ]
+        },
+        {
+          "id": "K6_",
+          "question": "Per-signature AbiCompatHash preserving 100% of cached .rlib proofs across 1.99.1->1.100.0 on x86_64/aarch64 and 97.81% on i686, with synthesized 26-byte AbiBridgeThunk trampolines (bridge_thunk_sound) bridging the remaining 2.08% i686 XMM float-passing shifts",
+          "status": "ANSWERED",
+          "reports": [
+            "cross-release-abi-compatibility-fingerprinting-and-automatic-thunk-bridge"
+          ]
+        },
+        {
+          "id": "K7_",
+          "question": "Typeclass-projected OpenCoreMIR (HasRegLens/HasMemLens/HasBorrowLens + open CoreStmt Ext) reducing Layer0 state/AsyncDrop .olean invalidation from 100% (68/68 modules) to 2.86% (2/70 modules, 0/52 rule families) plus anneal_proof_repair.py repairing 8/8 interface changes",
+          "status": "ANSWERED",
+          "reports": [
+            "typeclass-insulated-layer0-coremir-and-automated-lean-proof-repair"
+          ]
         }
       ],
       "existing_packages": [
@@ -2487,7 +2841,9 @@
         "verified-rustc-designer-dry-run-and-gap-analysis",
         "rustc-multi-release-mir-abi-drift-and-version-isolated-adapter",
         "automated-toolchain-table-regeneration-and-mir-minissa-upgrade-validator",
-        "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds"
+        "compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds",
+        "cross-release-abi-compatibility-fingerprinting-and-automatic-thunk-bridge",
+        "typeclass-insulated-layer0-coremir-and-automated-lean-proof-repair"
       ],
       "answered_fully": [
         "[P1] Pinned toolchain baseline selection (Rust 1.99.1, LLVM 23.1.1, Lean 4 v4.34.1, FLS 1.99) and SHA-256 component identity manifest across all 8 Tier 1 targets -> rustc-baseline-toolchain-selection-and-manifest",
@@ -2502,7 +2858,9 @@
         "[F3] Future Horizon III: Cross-language LTO (-Clinker-plugin-lto) with Clang C/C++ bitcode, LLVM 23.1.1 bitcode structure, and MiniSSA ingestion cost -> cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics",
         "[X8] Multi-release rustc drift audit across 5 worktrees (1.98.1 to nightly-2026-11-12), 3-tier churn classification, and version-isolated CoreMIR adapter absorbing 1.100.0 PhantomDeref (#159103) with 0 proof changes -> rustc-multi-release-mir-abi-drift-and-version-isolated-adapter",
         "[X9] Automated regeneration (regen_toolchain_tables.py) of Tier 1 TargetSpec, #[rustc_intrinsic], and TableGen tables with 100% cross-release (1.99.1 vs 1.100.0) CoreMIR digest and bv_decide equivalence validation -> automated-toolchain-table-regeneration-and-mir-minissa-upgrade-validator",
-        "[X10] 5-layer opaque .olean firewall limiting upgrade invalidation to 11.8%-17.6% of modules and zero-sorryAx Soundness Quarantine protocol (applyWithQuarantine_sound) with automatic baseline fallback -> compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds"
+        "[X10] 5-layer opaque .olean firewall limiting upgrade invalidation to 11.8%-17.6% of modules and zero-sorryAx Soundness Quarantine protocol (applyWithQuarantine_sound) with automatic baseline fallback -> compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds",
+        "[K6_] Per-signature AbiCompatHash preserving 100% of cached .rlib proofs across 1.99.1->1.100.0 on x86_64/aarch64 and 97.81% on i686, with synthesized 26-byte AbiBridgeThunk trampolines (bridge_thunk_sound) bridging the remaining 2.08% i686 XMM float-passing shifts -> cross-release-abi-compatibility-fingerprinting-and-automatic-thunk-bridge",
+        "[K7_] Typeclass-projected OpenCoreMIR (HasRegLens/HasMemLens/HasBorrowLens + open CoreStmt Ext) reducing Layer0 state/AsyncDrop .olean invalidation from 100% (68/68 modules) to 2.86% (2/70 modules, 0/52 rule families) plus anneal_proof_repair.py repairing 8/8 interface changes -> typeclass-insulated-layer0-coremir-and-automated-lean-proof-repair"
       ],
       "answered_partly": [],
       "unanswered_questions": []

@@ -1,10 +1,10 @@
 {
   "topics": [
     "anneal",
+    "anneal/architecture",
     "anneal/refinement",
     "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/mir-and-aliasing",
     "compilers/verified-rustc/verified-mode",
     "lean",
     "lean/mechanization",
@@ -12,6 +12,7 @@
     "rust",
     "rust/intrinsics",
     "rustc",
+    "rustc/codegen",
     "rustc/ctfe",
     "rustc/mir",
     "verification",

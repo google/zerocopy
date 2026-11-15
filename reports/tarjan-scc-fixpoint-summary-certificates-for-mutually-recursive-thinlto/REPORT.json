@@ -1,5 +1,7 @@
 {
   "topics": [
+    "anneal",
+    "anneal/refinement",
     "compilers",
     "compilers/fixpoint-certificates",
     "compilers/mutual-recursion",
@@ -8,8 +10,7 @@
     "compilers/tarjan-scc",
     "compilers/thinlto",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/interprocedural-lto-summaries",
-    "compilers/verified-rustc/normal-compilation",
+    "compilers/verified-rustc/end-to-end-theorem",
     "compilers/willreturn",
     "lean",
     "lean/mechanization",
@@ -17,7 +18,9 @@
     "llvm/passes",
     "rustc",
     "rustc/codegen",
-    "verification"
+    "verification",
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

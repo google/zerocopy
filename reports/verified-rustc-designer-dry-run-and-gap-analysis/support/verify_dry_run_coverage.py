@@ -6,7 +6,7 @@
 # license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 # This file may not be copied, modified, or distributed except according to
 # those terms.
-"""Verify designer dry-run decision coverage and gap closure across all 13 domains and 31 goals."""
+"""Verify designer dry-run decision coverage and gap closure across all 13 domains and 35 goals."""
 
 import argparse
 import json
@@ -50,8 +50,8 @@ def main() -> int:
     if len(domains) != 13:
         sys.stderr.write(f"Expected 13 decision domains, found {len(domains)}\n")
         return 1
-    if len(goals) != 31:
-        sys.stderr.write(f"Expected 31 research goals, found {len(goals)}\n")
+    if len(goals) != 35:
+        sys.stderr.write(f"Expected 35 research goals, found {len(goals)}\n")
         return 1
 
     covered_goals = set()
@@ -73,8 +73,8 @@ def main() -> int:
             sys.stderr.write(f"Domain {d['domain_id']} is missing facts or reports\n")
             return 1
 
-    if covered_goals != set(range(1, 32)):
-        missing_g = set(range(1, 32)) - covered_goals
+    if covered_goals != set(range(1, 36)):
+        missing_g = set(range(1, 36)) - covered_goals
         sys.stderr.write(f"Missing research goals: {sorted(missing_g)}\n")
         return 1
 

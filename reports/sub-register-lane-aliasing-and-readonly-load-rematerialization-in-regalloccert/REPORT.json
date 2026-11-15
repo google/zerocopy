@@ -30,7 +30,6 @@
     "compilers",
     "compilers/register-allocation",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/isa-models",
     "compilers/verified-rustc/proof-system-and-irs",
     "isa",
     "isa/aarch64",
@@ -39,6 +38,7 @@
     "lean",
     "lean/mechanization",
     "verification",
+    "verification/certificates",
     "verification/compiler-verification",
     "verification/translation-validation"
   ]

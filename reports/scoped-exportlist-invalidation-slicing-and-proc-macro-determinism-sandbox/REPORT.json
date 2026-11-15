@@ -1,14 +1,13 @@
 {
   "topics": [
     "anneal",
+    "anneal/architecture",
     "anneal/caching",
     "build",
     "build/reproducible-builds",
     "cargo",
     "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/caching-build-systems-and-determinism",
-    "compilers/verified-rustc/program-planning",
     "compilers/verified-rustc/verified-mode",
     "lean",
     "lean/mechanization",
@@ -17,6 +16,7 @@
     "rust",
     "rust/proc-macro",
     "rustc",
+    "rustc/codegen",
     "rustc/incremental",
     "verification",
     "verification/compiler-verification"

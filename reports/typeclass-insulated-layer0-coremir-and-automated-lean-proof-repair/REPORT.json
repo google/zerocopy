@@ -1,12 +1,11 @@
 {
   "topics": [
     "anneal",
+    "anneal/architecture",
     "anneal/refinement",
     "compilers",
     "compilers/verified-rustc",
     "compilers/verified-rustc/program-planning",
-    "compilers/verified-rustc/toolchain-evolution-and-quarantine",
-    "compilers/verified-rustc/verified-mode",
     "lake",
     "lean",
     "lean/mechanization",

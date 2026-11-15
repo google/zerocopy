@@ -3,7 +3,6 @@
     "anneal",
     "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/optimizer",
     "compilers/verified-rustc/proof-system-and-irs",
     "isa",
     "isa/aarch64",

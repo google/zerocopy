@@ -5,7 +5,6 @@
     "compilers",
     "compilers/verified-rustc",
     "compilers/verified-rustc/rustc-internals",
-    "compilers/verified-rustc/verified-mode",
     "lean",
     "lean/mechanization",
     "llvm",
@@ -13,6 +12,7 @@
     "rustc",
     "rustc/codegen",
     "rustc/mir",
+    "rustc/monomorphization",
     "verification",
     "verification/compiler-verification",
     "verification/refinement"

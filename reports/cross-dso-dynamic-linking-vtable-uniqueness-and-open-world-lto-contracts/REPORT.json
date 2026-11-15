@@ -1,12 +1,13 @@
 {
   "topics": [
+    "anneal",
+    "anneal/refinement",
     "compilers",
     "compilers/devirtualization",
     "compilers/open-world-lto",
     "compilers/symbol-visibility",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/dynamic-linking-and-devirtualization",
-    "compilers/verified-rustc/normal-compilation",
+    "compilers/verified-rustc/end-to-end-theorem",
     "compilers/vtable-uniqueness",
     "lean",
     "lean/mechanization",
@@ -16,7 +17,9 @@
     "rustc/cdylib",
     "rustc/codegen",
     "rustc/dylib",
-    "verification"
+    "verification",
+    "verification/compiler-verification",
+    "verification/refinement"
   ],
   "subjects": [
     {

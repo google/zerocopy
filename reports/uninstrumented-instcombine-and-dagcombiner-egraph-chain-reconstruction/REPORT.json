@@ -4,7 +4,6 @@
     "compilers",
     "compilers/verified-rustc",
     "compilers/verified-rustc/optimizer",
-    "compilers/verified-rustc/proof-system-and-irs",
     "lean",
     "lean/mechanization",
     "llvm",

@@ -9,7 +9,6 @@
     "compilers/sample-pgo",
     "compilers/verified-rustc",
     "compilers/verified-rustc/normal-compilation",
-    "compilers/verified-rustc/profile-guided-optimization",
     "isa",
     "isa/arm-spe",
     "isa/hardware-lbr",

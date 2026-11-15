@@ -4,7 +4,6 @@
     "anneal/refinement",
     "compilers",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/end-to-end-theorem",
     "compilers/verified-rustc/mir-and-aliasing",
     "lean",
     "lean/mechanization",

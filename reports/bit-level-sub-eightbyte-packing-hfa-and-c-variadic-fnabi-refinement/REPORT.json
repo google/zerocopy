@@ -36,10 +36,14 @@
     "isa/x86-64",
     "lean",
     "lean/mechanization",
+    "rust",
+    "rust/calling-conventions",
     "rustc",
+    "rustc/abi",
     "rustc/codegen",
     "systems",
     "systems/abi",
+    "systems/object-formats",
     "verification",
     "verification/compiler-verification"
   ]

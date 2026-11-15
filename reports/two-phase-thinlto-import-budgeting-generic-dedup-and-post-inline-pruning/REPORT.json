@@ -1,5 +1,7 @@
 {
   "topics": [
+    "anneal",
+    "anneal/architecture",
     "build",
     "compilers",
     "compilers/comdat-dedup",
@@ -10,15 +12,15 @@
     "compilers/proof-caching",
     "compilers/thinlto",
     "compilers/verified-rustc",
-    "compilers/verified-rustc/normal-compilation",
-    "compilers/verified-rustc/thinlto-scaling-and-pruning",
+    "compilers/verified-rustc/verified-mode",
     "lean",
     "lean/mechanization",
     "llvm",
     "llvm/passes",
     "rustc",
     "rustc/codegen",
-    "verification"
+    "verification",
+    "verification/compiler-verification"
   ],
   "subjects": [
     {

@@ -6,7 +6,7 @@
 # license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 # This file may not be copied, modified, or distributed except according to
 # those terms.
-"""Verify that all 17 design areas, 154 program questions, and 147 verified-rustc packages are answered and indexed."""
+"""Verify that all 17 design areas, 186 program questions, and 179 verified-rustc packages are answered and indexed."""
 
 import argparse
 import json
@@ -36,7 +36,7 @@ def main() -> int:
     total_open = sum(len(a["unanswered_questions"]) for a in areas)
     total_q = sum(len(a["questions_ledger"]) for a in areas)
 
-    if total_q != 154 or total_full != 154 or total_part != 0 or total_open != 0:
+    if total_q != 186 or total_full != 186 or total_part != 0 or total_open != 0:
         sys.stderr.write(
             f"Ledger mismatch: total_q={total_q}, full={total_full}, part={total_part}, open={total_open}\n"
         )
@@ -53,8 +53,8 @@ def main() -> int:
                 return 1
             all_referenced_pkgs.update(q["reports"])
 
-    if len(vr_pkgs) != 147:
-        sys.stderr.write(f"Expected 147 unique verified-rustc packages, found {len(vr_pkgs)}\n")
+    if len(vr_pkgs) != 179:
+        sys.stderr.write(f"Expected 179 unique verified-rustc packages, found {len(vr_pkgs)}\n")
         return 1
 
     cat_path = REPO_ROOT / "CATALOG.json"
