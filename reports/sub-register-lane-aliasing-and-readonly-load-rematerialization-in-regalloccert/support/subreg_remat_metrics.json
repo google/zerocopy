@@ -1,0 +1,146 @@
+{
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "live_hardware_lane_probes": {
+    "x86_64": "X86_SUBREG_LAWS_OK final=0x1020304",
+    "aarch64_qemu": "AARCH64_SUBREG_LAWS_OK lo64=0x222200001111 hi64=0x0"
+  },
+  "sysroot_libcore_subregister_census": {
+    "x86_64_libcore": {
+      "total_insts": 34045,
+      "gpr_lo8_al_r15b": 2565,
+      "gpr_hi8_ah_dh": 14,
+      "gpr_lo16_ax_r15w": 507,
+      "gpr_lo32_zext_eax_r15d": 7722,
+      "gpr_full64_rax_r15": 16765,
+      "vec128_xmm": 975,
+      "vec256_ymm": 0
+    },
+    "aarch64_libcore": {
+      "total_insts": 32204,
+      "gpr_w32_zext": 10274,
+      "gpr_x64_full": 16423,
+      "vec_scalar_b_h_s_d": 169,
+      "vec_neon_v_q": 1188
+    }
+  },
+  "w_core_remat_load_cert_evaluation": {
+    "workloads": [
+      {
+        "workload": "W1_serde_json_escape_scan",
+        "live_vregs": 54,
+        "unoptimized_spill_stores": 18,
+        "constI_only_spill_stores": 14,
+        "remat_frameAddr_eliminated": 5,
+        "remat_rodataLoad_eliminated": 3,
+        "remat_immutableArg_eliminated": 2,
+        "rematLoadCert_spill_stores": 4,
+        "additional_spill_store_reduction_pct": 71.43
+      },
+      {
+        "workload": "W2_regex_dfa_step_unrolled",
+        "live_vregs": 62,
+        "unoptimized_spill_stores": 24,
+        "constI_only_spill_stores": 18,
+        "remat_frameAddr_eliminated": 7,
+        "remat_rodataLoad_eliminated": 4,
+        "remat_immutableArg_eliminated": 3,
+        "rematLoadCert_spill_stores": 4,
+        "additional_spill_store_reduction_pct": 77.78
+      },
+      {
+        "workload": "W3_hashbrown_probe_insert",
+        "live_vregs": 48,
+        "unoptimized_spill_stores": 15,
+        "constI_only_spill_stores": 12,
+        "remat_frameAddr_eliminated": 5,
+        "remat_rodataLoad_eliminated": 2,
+        "remat_immutableArg_eliminated": 2,
+        "rematLoadCert_spill_stores": 3,
+        "additional_spill_store_reduction_pct": 75.0
+      },
+      {
+        "workload": "W4_deflate_lz77_match_window",
+        "live_vregs": 74,
+        "unoptimized_spill_stores": 31,
+        "constI_only_spill_stores": 25,
+        "remat_frameAddr_eliminated": 8,
+        "remat_rodataLoad_eliminated": 6,
+        "remat_immutableArg_eliminated": 4,
+        "rematLoadCert_spill_stores": 7,
+        "additional_spill_store_reduction_pct": 72.0
+      },
+      {
+        "workload": "W5_sha256_compress_schedule",
+        "live_vregs": 68,
+        "unoptimized_spill_stores": 28,
+        "constI_only_spill_stores": 26,
+        "remat_frameAddr_eliminated": 4,
+        "remat_rodataLoad_eliminated": 8,
+        "remat_immutableArg_eliminated": 3,
+        "rematLoadCert_spill_stores": 11,
+        "additional_spill_store_reduction_pct": 57.69
+      },
+      {
+        "workload": "W6_ed25519_field_mul_reduce",
+        "live_vregs": 80,
+        "unoptimized_spill_stores": 35,
+        "constI_only_spill_stores": 32,
+        "remat_frameAddr_eliminated": 6,
+        "remat_rodataLoad_eliminated": 7,
+        "remat_immutableArg_eliminated": 5,
+        "rematLoadCert_spill_stores": 14,
+        "additional_spill_store_reduction_pct": 56.25
+      },
+      {
+        "workload": "W7_format_float_dragonbox",
+        "live_vregs": 58,
+        "unoptimized_spill_stores": 21,
+        "constI_only_spill_stores": 17,
+        "remat_frameAddr_eliminated": 5,
+        "remat_rodataLoad_eliminated": 5,
+        "remat_immutableArg_eliminated": 2,
+        "rematLoadCert_spill_stores": 5,
+        "additional_spill_store_reduction_pct": 70.59
+      },
+      {
+        "workload": "W8_btree_node_split_rebalance",
+        "live_vregs": 52,
+        "unoptimized_spill_stores": 19,
+        "constI_only_spill_stores": 14,
+        "remat_frameAddr_eliminated": 6,
+        "remat_rodataLoad_eliminated": 1,
+        "remat_immutableArg_eliminated": 2,
+        "rematLoadCert_spill_stores": 5,
+        "additional_spill_store_reduction_pct": 64.29
+      }
+    ],
+    "totals": {
+      "unoptimized_spill_stores": 191,
+      "constI_only_spill_stores": 158,
+      "rematLoadCert_spill_stores": 53,
+      "additional_stores_eliminated_over_constI": 105,
+      "additional_spill_store_reduction_over_constI_pct": 66.46,
+      "total_spill_store_reduction_vs_unoptimized_pct": 72.25
+    }
+  },
+  "lean_mechanization": {
+    "lean_file": "support/VerifiedSubRegAndRematCert.lean",
+    "total_lines": 343,
+    "code_lines": 294,
+    "check_time_ms": 860.49,
+    "eval_output": "true",
+    "axioms_output": [
+      "'VerifiedSubRegAndRematCert.extractGprLane_writeGprLane_same' does not depend on any axioms",
+      "'VerifiedSubRegAndRematCert.gprWritePreservesLane_sound' depends on axioms: [propext]",
+      "'VerifiedSubRegAndRematCert.lo32_zext_zeroes_hi32' does not depend on any axioms",
+      "'VerifiedSubRegAndRematCert.rex_ah_conflict_rejected' does not depend on any axioms",
+      "'VerifiedSubRegAndRematCert.vex128_zeroes_upper_vs_legacy_sse_preserves_upper' does not depend on any axioms",
+      "'VerifiedSubRegAndRematCert.checkSubRegLiveInterference_sound' depends on axioms: [propext, Quot.sound]",
+      "'VerifiedSubRegAndRematCert.bug_eax_clobbers_ah_rejected' depends on axioms: [propext]",
+      "'VerifiedSubRegAndRematCert.checkRematLoadCert_sound' depends on axioms: [propext, Quot.sound]"
+    ],
+    "sorry_count": 0,
+    "native_decide_count": 0
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "lld_version": "LLD 23.1.1 (rust-lld)",
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "tier1_linked_executables_audit": {
+    "per_target": {
+      "x86_64-unknown-linux-gnu": {
+        "binary_format": "ELF",
+        "linked_size_bytes": 2040,
+        "validation_time_ms": 10.93,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "i686-unknown-linux-gnu": {
+        "binary_format": "ELF",
+        "linked_size_bytes": 1624,
+        "validation_time_ms": 10.72,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "aarch64-unknown-linux-gnu": {
+        "binary_format": "ELF",
+        "linked_size_bytes": 2216,
+        "validation_time_ms": 10.48,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "aarch64-apple-darwin": {
+        "binary_format": "Mach-O",
+        "linked_size_bytes": 17088,
+        "validation_time_ms": 10.51,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "x86_64-pc-windows-msvc": {
+        "binary_format": "PE/COFF (MSVC)",
+        "linked_size_bytes": 2560,
+        "validation_time_ms": 10.06,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "x86_64-pc-windows-gnu": {
+        "binary_format": "PE32+ (MinGW)",
+        "linked_size_bytes": 3584,
+        "validation_time_ms": 9.49,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "i686-pc-windows-msvc": {
+        "binary_format": "PE/COFF (MSVC)",
+        "linked_size_bytes": 2560,
+        "validation_time_ms": 9.85,
+        "checkLinkedBinaryWF_passed": true
+      },
+      "aarch64-pc-windows-msvc": {
+        "binary_format": "PE/COFF (MSVC)",
+        "linked_size_bytes": 2560,
+        "validation_time_ms": 10.25,
+        "checkLinkedBinaryWF_passed": true
+      }
+    },
+    "total_bytes_validated": 34232,
+    "total_time_ms": 252.92
+  },
+  "postlink_hazard_and_relaxation_oracles": {
+    "gotpcrelx_mov_to_lea_relaxation": {
+      "pre_link_reloc": "R_X86_64_REX_GOTPCRELX (48 8b 05 movq)",
+      "post_link_relaxed": "48 8d 05 (leaq target_val(%rip), %rax)",
+      "verified": true
+    },
+    "aarch64_128mib_range_extension_veneer": {
+      "caller_vaddr": "0x200008",
+      "callee_vaddr": "0x10000000",
+      "distance_bytes": 266338296,
+      "synthesized_thunk": "__AArch64AbsLongThunk_far_target_fn (ldr x16, ...; br x16)",
+      "bti_pac_gcs_note_preserved": true,
+      "verified": true
+    },
+    "silent_gnu_property_drop_negative_control": {
+      "reproduced_bitwise_and_drop_when_one_obj_lacks_note": true,
+      "rejected_by_checkLinkedBinaryWF": true
+    },
+    "cortex_a53_843419_postlink_check": {
+      "adrp_vaddr": "0x211ff8 (page offset 0xff8)",
+      "dependent_ldr_vaddr": "0x212000",
+      "synthesized_veneer": "__CortexA53843419_212000",
+      "unpatched_rejected_when_requireA53Fix": true,
+      "patched_accepted_by_checkLinkedBinaryWF": true
+    }
+  },
+  "lean_mechanization": {
+    "lean_file": "support/VerifiedPostLinkValidator.lean",
+    "total_lines": 349,
+    "code_lines": 297,
+    "check_time_ms": 912.38,
+    "eval_output": "true",
+    "axioms_output": [
+      "'VerifiedPostLinkValidator.gotpcrelx_mov_to_lea_equiv' depends on axioms: [propext, Quot.sound]",
+      "'VerifiedPostLinkValidator.checkLinked843419Site_sound' depends on axioms: [propext, Quot.sound]",
+      "'VerifiedPostLinkValidator.bti_j_rejected_as_veneer_target' depends on axioms: [propext]",
+      "'VerifiedPostLinkValidator.missing_obj_gnu_property_detected' depends on axioms: [propext, Quot.sound]",
+      "'VerifiedPostLinkValidator.gcs_shadow_stack_sound_and_catches_tamper' depends on axioms: [propext,",
+      " Classical.choice,",
+      " Quot.sound]",
+      "'VerifiedPostLinkValidator.checkLinkedBinaryWF_sound' depends on axioms: [propext, Quot.sound]"
+    ],
+    "sorry_count": 0,
+    "native_decide_count": 0
+  }
+}

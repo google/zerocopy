@@ -1,0 +1,45 @@
+{
+  "observed_at": "2026-11-14",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      },
+      "name": "Rust 1.99.1 compiler and prebuilt sysroot object corpus"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+        "version": "23.1.1"
+      },
+      "name": "LLVM 23.1.1 register allocator and target instruction encoders"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 theorem prover and kernel typechecker"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/register-allocation",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/isa-models",
+    "compilers/verified-rustc/proof-system-and-irs",
+    "isa",
+    "isa/aarch64",
+    "isa/i386",
+    "isa/x86-64",
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/compiler-verification",
+    "verification/translation-validation"
+  ]
+}

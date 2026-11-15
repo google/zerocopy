@@ -1,0 +1,118 @@
+{
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "clang_version": "19.1.7",
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "tier1_targets_tested": 8,
+  "live_execution": {
+    "x86_64_unknown_linux_gnu": {
+      "exit_code": 0,
+      "stdout": "X86_64_LIVE_OK sub8=0xf8:0x8003:0x11223347 p10=0x10203040506073b va_straddle=0x66668888bbbbccca"
+    },
+    "aarch64_unknown_linux_gnu_qemu": {
+      "exit_code": 0,
+      "stdout": "AARCH64_LIVE_OK p10=0x10203040506073b a64_va=0x306b"
+    }
+  },
+  "per_target_signatures_and_bitfields": {
+    "x86_64-unknown-linux-gnu": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(i64 %0) unnamed_addr #1 !guid !9",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(double %0) unnamed_addr #1 !guid !10",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum(ptr noalias nofree noundef readonly byval([10 x i8]) align 1 captures(none) dereferenceable(10) %p) unnamed_addr #2 !guid !6",
+      "hfa4_ir": "define",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef zeroext %s_u8, i16 noundef signext %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #1 !guid !8",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #3 personality ptr @rust_eh_personality !guid !11",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(i32 %0) local_unnamed_addr #1"
+    },
+    "aarch64-unknown-linux-gnu": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(i64 %0) unnamed_addr #1 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(i64 %0) unnamed_addr #1 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum([2 x i64] %0) unnamed_addr #1 !guid !6",
+      "hfa4_ir": "define [4 x float] @abi_hfa4_sum([4 x float] %0) unnamed_addr #1 !guid !5",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef %s_u8, i16 noundef %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #1 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #2 personality ptr @rust_eh_personality !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(i64 %0) local_unnamed_addr #1"
+    },
+    "i686-unknown-linux-gnu": {
+      "sub8_tuple_ir": "define void @abi_sub8_unpack_and_repack(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([8 x i8]) align 4 captures(none) dereferenceable(8) initializes((0, 1), (2, 8)) %_0, ptr noalias nofree noundef readonly byval([8 x i8]) align 4 captures(none) dereferenceable(8) %s) unnamed_addr #1 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(ptr noalias nofree noundef readonly byval([8 x i8]) align 4 captures(none) dereferenceable(8) %s) unnamed_addr #2 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum(ptr noalias nofree noundef readonly byval([10 x i8]) align 4 captures(none) dereferenceable(10) %p) unnamed_addr #2 !guid !5",
+      "hfa4_ir": "define void @abi_hfa4_sum(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8]) align 4 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr noalias nofree noundef readonly byval([16 x i8]) align 4 captures(none) dereferenceable(16) %h) unnamed_addr #1 !guid !4",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef zeroext %s_u8, i16 noundef signext %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #3 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #4 personality ptr @rust_eh_personality !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(ptr nocapture noundef readonly byval(%struct.MixedBF) align 4 %0) local_unnamed_addr #1"
+    },
+    "aarch64-apple-darwin": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(i64 %0) unnamed_addr #1 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(i64 %0) unnamed_addr #1 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum([2 x i64] %0) unnamed_addr #1 !guid !6",
+      "hfa4_ir": "define [4 x float] @abi_hfa4_sum([4 x float] %0) unnamed_addr #1 !guid !5",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef zeroext %s_u8, i16 noundef signext %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #1 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #2 personality ptr @rust_eh_personality !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define range(i32 0, 7944) i32 @bf_extract_mixed(i64 %0) local_unnamed_addr #1"
+    },
+    "x86_64-pc-windows-msvc": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(i64 %0) unnamed_addr #3 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(i64 %0) unnamed_addr #3 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum(ptr noalias nofree noundef readonly align 1 captures(none) dead_on_return dereferenceable(10) %p) unnamed_addr #2 !guid !5",
+      "hfa4_ir": "define void @abi_hfa4_sum(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8]) align 4 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr noalias nofree noundef readonly align 4 captures(none) dead_on_return dereferenceable(16) %h) unnamed_addr #1 !guid !4",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef zeroext %s_u8, i16 noundef signext %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #3 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #4 personality ptr @__CxxFrameHandler3 !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(i64 %0) local_unnamed_addr #1"
+    },
+    "x86_64-pc-windows-gnu": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(i64 %0) unnamed_addr #3 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(i64 %0) unnamed_addr #3 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum(ptr noalias nofree noundef readonly align 1 captures(none) dead_on_return dereferenceable(10) %p) unnamed_addr #2 !guid !5",
+      "hfa4_ir": "define void @abi_hfa4_sum(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8]) align 4 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr noalias nofree noundef readonly align 4 captures(none) dead_on_return dereferenceable(16) %h) unnamed_addr #1 !guid !4",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef zeroext %s_u8, i16 noundef signext %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #3 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #4 personality ptr @rust_eh_personality !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(i64 %0) local_unnamed_addr #1"
+    },
+    "i686-pc-windows-msvc": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(ptr noalias nofree noundef readonly byval([8 x i8]) align 4 captures(none) dereferenceable(8) %s) unnamed_addr #2 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(ptr noalias nofree noundef readonly byval([8 x i8]) align 4 captures(none) dereferenceable(8) %s) unnamed_addr #2 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum(ptr noalias nofree noundef readonly byval([10 x i8]) align 4 captures(none) dereferenceable(10) %p) unnamed_addr #2 !guid !5",
+      "hfa4_ir": "define void @abi_hfa4_sum(ptr dead_on_unwind noalias nofree noundef writable writeonly sret([16 x i8]) align 4 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr noalias nofree noundef readonly byval([16 x i8]) align 4 captures(none) dereferenceable(16) %h) unnamed_addr #1 !guid !4",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef zeroext %s_u8, i16 noundef signext %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #3 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #4 personality ptr @__CxxFrameHandler3 !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(ptr nocapture noundef readonly byval(%struct.MixedBF) align 4 %0) local_unnamed_addr #1"
+    },
+    "aarch64-pc-windows-msvc": {
+      "sub8_tuple_ir": "define i64 @abi_sub8_unpack_and_repack(i64 %0) unnamed_addr #1 !guid !8",
+      "sub_f16_f32_ir": "define noundef float @abi_sub_f16_f32_lane(i64 %0) unnamed_addr #1 !guid !9",
+      "packed10_ir": "define noundef i64 @abi_packed10_sum([2 x i64] %0) unnamed_addr #1 !guid !6",
+      "hfa4_ir": "define [4 x float] @abi_hfa4_sum([4 x float] %0) unnamed_addr #1 !guid !5",
+      "stack_sub32_ext_ir": "define noundef i64 @abi_stack_sub32_ext(i64 noundef %r0, i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, i64 noundef %r6, i64 noundef %r7, i8 noundef %s_u8, i16 noundef %s_i16, i32 noundef %s_u32, i64 noundef %s_u64) unnamed_addr #1 !guid !7",
+      "variadic_step_ir": "define noundef i64 @abi_variadic_step(i64 noundef %f0, i64 noundef %f1, i64 noundef %f2, i64 noundef %f3, i64 noundef %f4, ...) unnamed_addr #2 personality ptr @__CxxFrameHandler3 !guid !10",
+      "c_bitfield_layout": {},
+      "c_bitfield_extract_ir": "define dso_local range(i32 0, 7944) i32 @bf_extract_mixed(i64 %0) local_unnamed_addr #1"
+    }
+  },
+  "lean_mechanization": {
+    "lean_file": "support/ConcreteBitVecFnAbiRefinement.lean",
+    "total_lines": 542,
+    "code_lines": 475,
+    "check_time_ms": 6071.81,
+    "eval_output": "true",
+    "axioms_output": [
+      "'ConcreteBitVecFnAbiRefinement.unpack_pack_eightbyte_three_fields_id' depends on axioms: [propext, Quot.sound]",
+      "'ConcreteBitVecFnAbiRefinement.unpack_pack_eightbyte_bitvec_id' depends on axioms: [propext, Quot.sound]",
+      "'ConcreteBitVecFnAbiRefinement.darwin_compact_stack_pack_unpack_id' depends on axioms: [propext, Quot.sound]",
+      "'ConcreteBitVecFnAbiRefinement.decode_encode_hfa_lanes_id' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'ConcreteBitVecFnAbiRefinement.sysv_vs_msvc_mixed_bitfield_divergence' does not depend on any axioms",
+      "'ConcreteBitVecFnAbiRefinement.va_arg_extract_sound_sysv64' depends on axioms: [propext, Quot.sound]",
+      "'ConcreteBitVecFnAbiRefinement.va_arg_extract_sound_aapcs64' depends on axioms: [propext]",
+      "'ConcreteBitVecFnAbiRefinement.va_arg_extract_sound_win64' does not depend on any axioms",
+      "'ConcreteBitVecFnAbiRefinement.va_arg_extract_sound_darwin64' does not depend on any axioms"
+    ],
+    "sorry_count": 0,
+    "native_decide_count": 0
+  }
+}

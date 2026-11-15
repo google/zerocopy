@@ -1,0 +1,117 @@
+{
+  "rustc_version": "1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "lld_version": "LLD 23.1.1 (rust-lld)",
+  "lean_version": "v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52)",
+  "all_8_targets_bit_for_bit_reproducible": true,
+  "per_target_reproducibility": {
+    "x86_64-unknown-linux-gnu": {
+      "unnormalized_size_alpha": 6744,
+      "unnormalized_size_beta": 6768,
+      "unnormalized_diff_bytes": 2766,
+      "normalized_size_bytes": 6504,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "9d4031721ff5f6ab7dc6ad2e295795e4d895a2431dc3264347110f1861e205aa",
+      "bit_for_bit_identical": true
+    },
+    "i686-unknown-linux-gnu": {
+      "unnormalized_size_alpha": 6344,
+      "unnormalized_size_beta": 6364,
+      "unnormalized_diff_bytes": 2937,
+      "normalized_size_bytes": 6100,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "53681b65b04c05c9175b4d9a8015864441c5a30232a9509ae82766afacdbe253",
+      "bit_for_bit_identical": true
+    },
+    "aarch64-unknown-linux-gnu": {
+      "unnormalized_size_alpha": 7272,
+      "unnormalized_size_beta": 7288,
+      "unnormalized_diff_bytes": 2732,
+      "normalized_size_bytes": 7024,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "d70a077ee07c542cc45d9830bc6d86508618f3af5868661dfd63f6b80f39ef63",
+      "bit_for_bit_identical": true
+    },
+    "aarch64-apple-darwin": {
+      "unnormalized_size_alpha": 34064,
+      "unnormalized_size_beta": 34080,
+      "unnormalized_diff_bytes": 542,
+      "normalized_size_bytes": 33968,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "a44f77f737a5aa0cfdc49486c0083d55d0adb2491913046663e50ed3b682f22c",
+      "bit_for_bit_identical": true
+    },
+    "x86_64-pc-windows-msvc": {
+      "unnormalized_size_alpha": 3584,
+      "unnormalized_size_beta": 3584,
+      "unnormalized_diff_bytes": 62,
+      "normalized_size_bytes": 3584,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "2ee2ea1149754e38ca03909ed8800fffd0951426a2c707eefe82bb0c5da0c3ea",
+      "bit_for_bit_identical": true
+    },
+    "x86_64-pc-windows-gnu": {
+      "unnormalized_size_alpha": 10240,
+      "unnormalized_size_beta": 10240,
+      "unnormalized_diff_bytes": 1612,
+      "normalized_size_bytes": 9728,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "c3e3e3d049a5fc47699e019c7aa13853261eb910c79241c70f104a47e56948fe",
+      "bit_for_bit_identical": true
+    },
+    "i686-pc-windows-msvc": {
+      "unnormalized_size_alpha": 3584,
+      "unnormalized_size_beta": 3584,
+      "unnormalized_diff_bytes": 60,
+      "normalized_size_bytes": 3584,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "82079b996560dd789a43d461df24f6d50c110e197ff01420b273176a04cc45c0",
+      "bit_for_bit_identical": true
+    },
+    "aarch64-pc-windows-msvc": {
+      "unnormalized_size_alpha": 3584,
+      "unnormalized_size_beta": 3584,
+      "unnormalized_diff_bytes": 63,
+      "normalized_size_bytes": 3584,
+      "normalized_diff_bytes": 0,
+      "normalized_sha256": "c4663c3aab2654abbfaf810cfe212b26791deb6648877b1dfdd9fa851e966cf4",
+      "bit_for_bit_identical": true
+    }
+  },
+  "macho_adhoc_codesign_verification": {
+    "superblob_offset": 33536,
+    "superblob_length_bytes": 432,
+    "cd_version": "0x20400",
+    "hash_type": "SHA-256 (2)",
+    "page_size_bytes": 4096,
+    "code_limit_bytes": 33536,
+    "n_code_slots": 9,
+    "verified_page_slots": 9,
+    "all_page_hashes_valid": true,
+    "anneal_evidence_offset": 16384,
+    "anneal_evidence_page_slot": 4,
+    "post_sign_evidence_tamper_rejected": true
+  },
+  "lean_mechanization": {
+    "lean_file": "support/VerifiedReproducibleLinkAndSign.lean",
+    "total_lines": 280,
+    "code_lines": 243,
+    "check_time_ms": 859.61,
+    "eval_output": "true",
+    "axioms_output": [
+      "'VerifiedReproducibleLinkAndSign.scrubHostEnv_invariant' does not depend on any axioms",
+      "'VerifiedReproducibleLinkAndSign.hashPageIdeal_injective' depends on axioms: [propext, Quot.sound]",
+      "'VerifiedReproducibleLinkAndSign.repro_macho_pipeline_env_invariant' depends on axioms: [propext,",
+      " Classical.choice,",
+      " Quot.sound]",
+      "'VerifiedReproducibleLinkAndSign.codesign_covers_anneal_evidence' depends on axioms: [propext, Quot.sound]",
+      "'VerifiedReproducibleLinkAndSign.repro_pe_pipeline_env_invariant' depends on axioms: [propext,",
+      " Classical.choice,",
+      " Quot.sound]",
+      "'VerifiedReproducibleLinkAndSign.pe_authenticode_covers_anneal_evidence_and_excludes_checksum' depends on axioms: [propext,",
+      " Classical.choice,",
+      " Quot.sound]"
+    ],
+    "sorry_count": 0,
+    "native_decide_count": 0
+  }
+}
