@@ -490,6 +490,43 @@ impl TrailingSliceLayout {
         Some(size)
     }
 
+    /// Computes the size described by this layout for `elems` trailing slice
+    /// elements without overflow checks.
+    ///
+    /// # Safety
+    ///
+    /// The complete object size for `elems` elements must fit in `usize`.
+    #[inline(always)]
+    #[allow(unstable_name_collisions)]
+    #[cfg_attr(kani, kani::requires(self.size_for_elems(elems).is_some()))]
+    #[cfg_attr(kani, kani::ensures(|&size| Some(size) == self.size_for_elems(elems)))]
+    pub(crate) unsafe fn size_for_elems_unchecked(self, elems: usize) -> usize {
+        #[cfg(all(kani, kani_slow))]
+        #[kani::proof_for_contract(TrailingSliceLayout::size_for_elems_unchecked)]
+        #[kani::solver(kissat)]
+        fn proof() {
+            let layout: TrailingSliceLayout = kani::any();
+            let elems: usize = kani::any();
+            if layout.size_for_elems(elems).is_some() {
+                // SAFETY: We verified that `size_for_elems(elems).is_some()`.
+                unsafe { layout.size_for_elems_unchecked(elems) };
+            }
+        }
+
+        #[allow(unused_imports)]
+        use crate::util::polyfills::*;
+
+        // SAFETY: The caller guarantees that the complete object size fits in
+        // `usize`. Because `self.offset`, `elems * self.elem_size`, and
+        // `self.padding_for_elems(elems)` are non-negative components of the
+        // complete object size, the multiplication cannot overflow `usize`.
+        let trailing_size = unsafe { elems.unchecked_mul(self.elem_size) };
+        // SAFETY: By the same argument, adding `self.offset` cannot overflow `usize`.
+        let trailing_end = unsafe { self.offset.unchecked_add(trailing_size) };
+        // SAFETY: By the same argument, adding trailing padding cannot overflow `usize`.
+        unsafe { trailing_end.unchecked_add(self.padding_for_elems(elems)) }
+    }
+
     /// Returns `true` only when `self` and `other` describe the same size for
     /// every trailing slice length.
     ///
@@ -3227,6 +3264,10 @@ mod tests {
         for elems in 0..8 {
             assert_eq!(align4.size_for_elems(elems), Some(2 + 4 * elems));
             assert_eq!(align4.size_for_elems(elems), align2.size_for_elems(elems));
+            // SAFETY: `size_for_elems` returned `Some`.
+            assert_eq!(unsafe { align4.size_for_elems_unchecked(elems) }, 2 + 4 * elems);
+            // SAFETY: `size_for_elems` returned `Some`.
+            assert_eq!(unsafe { align2.size_for_elems_unchecked(elems) }, 2 + 4 * elems);
         }
 
         let dynamically_padded = TrailingSliceLayout { elem_size: 1, ..align4 };

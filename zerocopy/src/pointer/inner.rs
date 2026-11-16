@@ -229,6 +229,16 @@ where
         unsafe { MetadataOf::new_unchecked(meta) }
     }
 
+    /// Computes the size of `self`'s referent in bytes.
+    #[inline(always)]
+    #[must_use]
+    pub fn size_of_val_raw(self) -> usize {
+        let meta = T::pointer_to_metadata(self.as_ptr());
+        // SAFETY: By invariant on `PtrInner`, `self` refers to an allocation
+        // whose size fits in `isize::MAX` (and thus `usize`).
+        unsafe { T::size_for_metadata_unchecked(meta) }
+    }
+
     /// Produces a `PtrInner` with the same address and provenance as `self` but
     /// the given `meta`.
     ///
@@ -640,6 +650,33 @@ mod tests {
         let ptr = unsafe { ptr.with_meta(8) };
 
         assert_eq!(ptr.meta().get(), 8);
+    }
+
+    #[test]
+    fn test_size_of_val_raw() {
+        let val: u32 = 42;
+        let ptr = PtrInner::from_ref(&val);
+        assert_eq!(ptr.size_of_val_raw(), 4);
+
+        let arr = [0u8; 16];
+        let ptr = PtrInner::from_ref(&arr);
+        assert_eq!(ptr.size_of_val_raw(), 16);
+
+        let slice: &[u8] = &arr[..];
+        let ptr = PtrInner::from_ref(slice);
+        assert_eq!(ptr.size_of_val_raw(), 16);
+
+        // SAFETY: 8 is <= 16
+        let ptr = unsafe { ptr.with_meta(8) };
+        assert_eq!(ptr.size_of_val_raw(), 8);
+
+        let zst: () = ();
+        let ptr = PtrInner::from_ref(&zst);
+        assert_eq!(ptr.size_of_val_raw(), 0);
+
+        let zst_slice: &[()] = &[(), (), ()];
+        let ptr = PtrInner::from_ref(zst_slice);
+        assert_eq!(ptr.size_of_val_raw(), 0);
     }
 
     #[test]

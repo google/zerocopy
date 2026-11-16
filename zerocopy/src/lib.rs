@@ -869,6 +869,20 @@ pub unsafe trait KnownLayout {
         meta.size_for_metadata(Self::LAYOUT)
     }
 
+    /// Computes the size of an object of type `Self` with the given pointer
+    /// metadata without overflow checks.
+    ///
+    /// # Safety
+    ///
+    /// The resulting size must fit in a [`usize`].
+    #[doc(hidden)]
+    #[must_use]
+    #[inline(always)]
+    unsafe fn size_for_metadata_unchecked(meta: Self::PointerMetadata) -> usize {
+        // SAFETY: The caller promises that the resulting size fits in a `usize`.
+        unsafe { meta.size_for_metadata_unchecked(Self::LAYOUT) }
+    }
+
     /// Computes whether `meta` can describe a valid allocation of `Self`.
     ///
     /// # Safety
@@ -965,6 +979,20 @@ pub trait PointerMetadata: Copy + Eq + Debug + Ord {
     /// `size_for_metadata` promises to only return `None` if the resulting size
     /// would not fit in a `usize`.
     fn size_for_metadata(self, layout: DstLayout) -> Option<usize>;
+
+    /// Computes the size of the object with the given layout and pointer
+    /// metadata without overflow checks.
+    ///
+    /// # Panics
+    ///
+    /// If `Self = ()`, `layout` must describe a sized type. If `Self = usize`,
+    /// `layout` must describe a slice DST. Otherwise, `size_for_metadata_unchecked`
+    /// may panic.
+    ///
+    /// # Safety
+    ///
+    /// The resulting size must fit in a `usize`.
+    unsafe fn size_for_metadata_unchecked(self, layout: DstLayout) -> usize;
 }
 
 impl PointerMetadata for () {
@@ -984,6 +1012,15 @@ impl PointerMetadata for () {
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::SliceDst(_) => None,
+        }
+    }
+
+    #[inline(always)]
+    unsafe fn size_for_metadata_unchecked(self, layout: DstLayout) -> usize {
+        match layout.size_info {
+            SizeInfo::Sized { size } => size,
+            // SAFETY: The caller promises that `layout` describes a sized type for `Self = ()`.
+            SizeInfo::SliceDst(_) => unsafe { core::hint::unreachable_unchecked() },
         }
     }
 }
@@ -1006,6 +1043,16 @@ impl PointerMetadata for usize {
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::Sized { .. } => None,
+        }
+    }
+
+    #[inline(always)]
+    unsafe fn size_for_metadata_unchecked(self, layout: DstLayout) -> usize {
+        match layout.size_info {
+            // SAFETY: The caller promises that the resulting size fits in a `usize`.
+            SizeInfo::SliceDst(trailing) => unsafe { trailing.size_for_elems_unchecked(self) },
+            // SAFETY: The caller promises that `layout` describes a slice DST for `Self = usize`.
+            SizeInfo::Sized { .. } => unsafe { core::hint::unreachable_unchecked() },
         }
     }
 }
