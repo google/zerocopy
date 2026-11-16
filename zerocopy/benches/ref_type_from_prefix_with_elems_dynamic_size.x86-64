@@ -1,26 +1,18 @@
 bench_ref_type_from_prefix_with_elems_dynamic_size:
 	mov rax, rdi
-	lea rdi, [rcx + rcx]
-	test rcx, rcx
-	sets r8b
-	cmp rdi, -5
-	setae r9b
-	or r9b, r8b
-	jne .LBB5_3
-	add rdi, 4
+	movabs rdi, 4611686018427387901
+	cmp rcx, rdi
+	ja .LBB5_2
+	lea rdi, [2*rcx + 4]
 	cmp rdi, rdx
-	ja .LBB5_3
-	movabs rdx, 4611686018427387902
-	cmp rcx, rdx
-	setb dl
-	test sil, 1
-	sete r8b
-	test dl, r8b
-	jne .LBB5_4
-.LBB5_3:
+	seta dl
+	or dl, sil
+	test dl, 1
+	je .LBB5_3
+.LBB5_2:
 	mov qword ptr [rax], 0
 	ret
-.LBB5_4:
+.LBB5_3:
 	mov qword ptr [rax], rsi
 	mov qword ptr [rax + 8], rdi
 	mov qword ptr [rax + 16], rcx
