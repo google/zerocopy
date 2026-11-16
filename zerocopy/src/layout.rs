@@ -495,10 +495,22 @@ impl TrailingSliceLayout {
     ///
     /// # Safety
     ///
-    /// The complete object size for `elems` elements must fit in `usize`.
+    /// The trailing slice's byte range (`offset..offset + elems * elem_size`)
+    /// must be representable in `usize` and contained within the complete object
+    /// size, which must also fit in `usize`.
     #[inline(always)]
     #[allow(unstable_name_collisions)]
-    #[cfg_attr(kani, kani::requires(self.size_for_elems(elems).is_some()))]
+    #[cfg_attr(
+        kani,
+        kani::requires(
+            elems
+                .checked_mul(self.elem_size)
+                .and_then(|trailing_size| self.offset.checked_add(trailing_size))
+                .is_some_and(|trailing_end| {
+                    self.size_for_elems(elems).is_some_and(|size| trailing_end <= size)
+                })
+        )
+    )]
     #[cfg_attr(kani, kani::ensures(|&size| Some(size) == self.size_for_elems(elems)))]
     pub(crate) unsafe fn size_for_elems_unchecked(self, elems: usize) -> usize {
         #[cfg(all(kani, kani_slow))]
@@ -507,23 +519,29 @@ impl TrailingSliceLayout {
         fn proof() {
             let layout: TrailingSliceLayout = kani::any();
             let elems: usize = kani::any();
-            if layout.size_for_elems(elems).is_some() {
-                // SAFETY: We verified that `size_for_elems(elems).is_some()`.
-                unsafe { layout.size_for_elems_unchecked(elems) };
+            if let Some(trailing_size) = elems.checked_mul(layout.elem_size) {
+                if let Some(trailing_end) = layout.offset.checked_add(trailing_size) {
+                    if layout.size_for_elems(elems).is_some_and(|size| trailing_end <= size) {
+                        // SAFETY: Preconditions are satisfied.
+                        unsafe { layout.size_for_elems_unchecked(elems) };
+                    }
+                }
             }
         }
 
         #[allow(unused_imports)]
         use crate::util::polyfills::*;
 
-        // SAFETY: The caller guarantees that the complete object size fits in
-        // `usize`. Because `self.offset`, `elems * self.elem_size`, and
-        // `self.padding_for_elems(elems)` are non-negative components of the
-        // complete object size, the multiplication cannot overflow `usize`.
+        // SAFETY: The caller guarantees that `elems * self.elem_size` is
+        // representable in `usize`.
         let trailing_size = unsafe { elems.unchecked_mul(self.elem_size) };
-        // SAFETY: By the same argument, adding `self.offset` cannot overflow `usize`.
+        // SAFETY: The caller guarantees that `self.offset + trailing_size` does
+        // not overflow `usize`.
         let trailing_end = unsafe { self.offset.unchecked_add(trailing_size) };
-        // SAFETY: By the same argument, adding trailing padding cannot overflow `usize`.
+        // SAFETY: The caller guarantees that `trailing_end` is contained in the
+        // complete object size, which fits in `usize`. Since `self.padding_for_elems(elems)`
+        // is the non-negative difference between the complete object size and
+        // `trailing_end`, adding it cannot overflow `usize`.
         unsafe { trailing_end.unchecked_add(self.padding_for_elems(elems)) }
     }
 
