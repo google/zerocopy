@@ -869,6 +869,27 @@ pub unsafe trait KnownLayout {
         meta.size_for_metadata(Self::LAYOUT)
     }
 
+    /// Computes the size of an object of type `Self` with the given pointer
+    /// metadata without overflow checks.
+    ///
+    /// # Safety
+    ///
+    /// The resulting size must fit in a [`usize`].
+    #[doc(hidden)]
+    #[must_use]
+    #[inline(always)]
+    #[cfg_attr(
+        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+        coverage(off)
+    )]
+    unsafe fn size_for_metadata_unchecked(meta: Self::PointerMetadata) -> usize {
+        // SAFETY: The caller promises that the resulting size fits in a `usize`.
+        // By invariant on `Self::LAYOUT`, if `Self` is a slice DST,
+        // `offset + elems * elem_size` does not overflow and is no greater than
+        // the complete object size.
+        unsafe { meta.size_for_metadata_unchecked(Self::LAYOUT) }
+    }
+
     /// Computes whether `meta` can describe a valid allocation of `Self`.
     ///
     /// # Safety
@@ -965,6 +986,22 @@ pub trait PointerMetadata: Copy + Eq + Debug + Ord {
     /// `size_for_metadata` promises to only return `None` if the resulting size
     /// would not fit in a `usize`.
     fn size_for_metadata(self, layout: DstLayout) -> Option<usize>;
+
+    /// Computes the size of the object with the given layout and pointer
+    /// metadata without overflow checks.
+    ///
+    /// # Panics
+    ///
+    /// If `Self = ()`, `layout` must describe a sized type. If `Self = usize`,
+    /// `layout` must describe a slice DST. Otherwise, `size_for_metadata_unchecked`
+    /// may panic.
+    ///
+    /// # Safety
+    ///
+    /// The resulting size must fit in a `usize`. If `Self = usize`, the trailing
+    /// slice's byte range (`offset..offset + elems * elem_size`) must be
+    /// representable in `usize` and contained within the complete object size.
+    unsafe fn size_for_metadata_unchecked(self, layout: DstLayout) -> usize;
 }
 
 impl PointerMetadata for () {
@@ -984,6 +1021,19 @@ impl PointerMetadata for () {
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::SliceDst(_) => None,
+        }
+    }
+
+    #[inline(always)]
+    #[cfg_attr(
+        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+        coverage(off)
+    )]
+    unsafe fn size_for_metadata_unchecked(self, layout: DstLayout) -> usize {
+        match layout.size_info {
+            SizeInfo::Sized { size } => size,
+            // SAFETY: The caller promises that `layout` describes a sized type for `Self = ()`.
+            SizeInfo::SliceDst(_) => unsafe { core::hint::unreachable_unchecked() },
         }
     }
 }
@@ -1006,6 +1056,22 @@ impl PointerMetadata for usize {
             // NOTE: This branch is unreachable, but we return `None` rather
             // than `unreachable!()` to avoid generating panic paths.
             SizeInfo::Sized { .. } => None,
+        }
+    }
+
+    #[inline(always)]
+    #[cfg_attr(
+        all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS),
+        coverage(off)
+    )]
+    unsafe fn size_for_metadata_unchecked(self, layout: DstLayout) -> usize {
+        match layout.size_info {
+            // SAFETY: The caller promises that the resulting size fits in a
+            // `usize` and that the trailing slice's byte range is representable
+            // and contained in the complete object size.
+            SizeInfo::SliceDst(trailing) => unsafe { trailing.size_for_elems_unchecked(self) },
+            // SAFETY: The caller promises that `layout` describes a slice DST for `Self = usize`.
+            SizeInfo::Sized { .. } => unsafe { core::hint::unreachable_unchecked() },
         }
     }
 }
@@ -6825,6 +6891,24 @@ mod tests {
         test!([()], layout(0, 1, Some(0), true));
         test!([u8], layout(0, 1, Some(1), true));
         test!(str, layout(0, 1, Some(1), true));
+
+        // Test `size_for_metadata_unchecked`
+        // SAFETY: Sized types have empty metadata and fit in `usize`.
+        assert_eq!(unsafe { <() as KnownLayout>::size_for_metadata_unchecked(()) }, 0);
+        // SAFETY: Sized types have empty metadata and fit in `usize`.
+        assert_eq!(unsafe { <u8 as KnownLayout>::size_for_metadata_unchecked(()) }, 1);
+        // SAFETY: Sized types have empty metadata and fit in `usize`.
+        assert_eq!(unsafe { <u64 as KnownLayout>::size_for_metadata_unchecked(()) }, 8);
+        // SAFETY: 10 elements of `u8` (10 bytes) fit in `usize`.
+        assert_eq!(unsafe { <[u8] as KnownLayout>::size_for_metadata_unchecked(10) }, 10);
+        // SAFETY: 10 elements of `u16` (20 bytes) fit in `usize`.
+        assert_eq!(unsafe { <[u16] as KnownLayout>::size_for_metadata_unchecked(10) }, 20);
+        // SAFETY: 10 elements of `()` (0 bytes) fit in `usize`.
+        assert_eq!(unsafe { <[()] as KnownLayout>::size_for_metadata_unchecked(10) }, 0);
+        // SAFETY: `u8::LAYOUT` describes a sized type.
+        assert_eq!(unsafe { ().size_for_metadata_unchecked(u8::LAYOUT) }, 1);
+        // SAFETY: `<[u8]>::LAYOUT` describes a slice DST with 10 bytes fitting in `usize`.
+        assert_eq!(unsafe { 10usize.size_for_metadata_unchecked(<[u8]>::LAYOUT) }, 10);
     }
 
     #[test]

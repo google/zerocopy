@@ -370,16 +370,7 @@ pub mod cast {
     unsafe impl<T: ?Sized + KnownLayout> Project<T, [u8]> for AsBytesCast {
         #[inline(always)]
         fn project(src: PtrInner<'_, T>) -> *mut [u8] {
-            let bytes = match T::size_of_val_raw(src.as_non_null()) {
-                Some(bytes) => bytes,
-                // SAFETY: `KnownLayout::size_of_val_raw` promises to always
-                // return `Some` so long as the resulting size fits in a
-                // `usize`. By invariant on `PtrInner`, `src` refers to a range
-                // of bytes whose size fits in an `isize`, which implies that it
-                // also fits in a `usize`.
-                None => unsafe { core::hint::unreachable_unchecked() },
-            };
-
+            let bytes = src.size_of_val_raw();
             core::ptr::slice_from_raw_parts_mut(src.as_ptr().cast::<u8>(), bytes)
         }
     }
