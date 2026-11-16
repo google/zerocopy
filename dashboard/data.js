@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794522651329,
+  "lastUpdate": 1794858480557,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23905,6 +23905,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1652,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "tokananiy@gmail.com",
+            "name": "Toka Nani",
+            "username": "NaniToka"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "0f4623ace6d17078dabe62799cf86f5533eba522",
+          "message": "[pointer] Exploit PtrInner isize::MAX invariant in AsBytesCast::project (#3926)\n\n* [pointer] Exploit PtrInner isize::MAX invariant in AsBytesCast::project\n\nCurrently, `AsBytesCast::project` (which backs `Ptr::as_bytes`) computes the\nbyte length of `src: PtrInner<'_, T>` by invoking `T::size_of_val_raw`. When\n`T` is a slice DST, this routes through `TrailingSliceLayout::size_for_elems`,\nwhich performs runtime bounds and overflow checks (`checked_mul` and\n`trailing_size > max_trailing_bytes`) and unwraps `None` via `unreachable_unchecked`.\n\nBecause `size_for_elems` performs runtime branches, LLVM frequently fails to\neliminate the branch instructions even when the `None` path is unreachable.\n\nHowever, `PtrInner<'_, T>` guarantees by its core safety invariant that its\nreferent is entirely contained within an allocated object, meaning its total\nsize does not exceed `isize::MAX`. Consequently, computing the object's byte\nlength cannot overflow `usize`.\n\nThis change:\n1. Adds `size_for_elems_unchecked` to `TrailingSliceLayout`, performing\n   unchecked arithmetic (`unchecked_mul`, `unchecked_add`) for slice DSTs.\n2. Adds `size_for_metadata_unchecked` to `PointerMetadata` and `KnownLayout`.\n3. Adds `PtrInner::size_of_val_raw` that delegates to `size_for_metadata_unchecked`\n   under `PtrInner`'s size invariant.\n4. Updates `AsBytesCast::project` to use `src.size_of_val_raw()` directly,\n   eliminating the checked arithmetic and error branches.\n5. Adds unit tests covering `PtrInner::size_of_val_raw` across sized types,\n   slice DSTs, and zero-sized types.\n\nFixes #3903\n\nSigned-off-by: Toka Nani <tokananiy@gmail.com>\n\n* [pointer] Strengthen TrailingSliceLayout::size_for_elems_unchecked precondition\n\nAddress Codex review feedback:\n1. Strengthen the safety precondition and Kani contracts on\n   `TrailingSliceLayout::size_for_elems_unchecked` to require that the trailing\n   slice's byte range (`offset..offset + elems * elem_size`) is representable in\n   `usize` and contained within the complete object size.\n2. Propagate this precondition through `PointerMetadata::size_for_metadata_unchecked`\n   and `KnownLayout::size_for_metadata_unchecked`.\n3. Add unit tests for `size_for_metadata_unchecked` and gate unreachable branches\n   with `coverage(off)` under nightly coverage to maintain 100% patch coverage.\n\nSigned-off-by: Toka Nani <tokananiy@gmail.com>\n\n---------\n\nSigned-off-by: Toka Nani <tokananiy@gmail.com>",
+          "timestamp": "2026-11-16T18:45:10Z",
+          "tree_id": "91584d49526aef60be8456a9b2c24c4c052013d0",
+          "url": "https://github.com/google/zerocopy/commit/0f4623ace6d17078dabe62799cf86f5533eba522"
+        },
+        "date": 1794858477880,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1382,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1613,
             "unit": "seconds"
           }
         ]
