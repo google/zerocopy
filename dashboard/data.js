@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794858480557,
+  "lastUpdate": 1794934498404,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23939,6 +23939,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1613,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "dinadegttyarenko6@gmail.com",
+            "name": "0z5a",
+            "username": "0z5a"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "ec133ce4d7993775413d852f91c9e3eb2a2a0897",
+          "message": "Preserve source in Ref::from_*_with_elems errors (#3924)\n\n* Preserve source in Ref::from_*_with_elems errors\n\n`Ref::from_prefix_with_elems` and `Ref::from_suffix_with_elems` split\n`source` before checking alignment. If the check fails, the returned\n`CastError` contains only the prefix or suffix that was going to be\ncast. The rest of `source` is dropped, and for `&mut [u8]` the caller\ncannot get it back.\n\nEvery other prefix/suffix constructor returns the whole `source` in this\ncase: `Ref::from_prefix`, `Ref::from_suffix` and\n`FromBytes::ref_from_{prefix,suffix}_with_elems`. `into_src` is\ndocumented to produce \"the source underlying the failed conversion\".\n\nCheck the cast against the unsplit `source` before splitting, so that a\nfailure returns the original `source`. The existing split and\n`from_bytes_with_elems` path is unchanged, and so is its safety\nargument.\n\n* Optimize Ref::from_{prefix,suffix}_with_elems\n\nDelegate size and alignment validation in `Ref::from_prefix_with_elems`\nand `Ref::from_suffix_with_elems` to a single `Ptr::try_cast_into` call,\nsplit `source` using the returned remainder length, and construct the\nresulting `Ref` directly via `Ref::new_unchecked` instead of\nre-validating through `Ref::from_bytes_with_elems`.\n\nAdd regression coverage for zero-element suffix alignment.\n\n---------\n\nCo-authored-by: Jack Wrenn <jswrenn@google.com>",
+          "timestamp": "2026-11-17T15:49:53Z",
+          "tree_id": "972ddc111976f219f41aa3e1dbc14f0241fb4263",
+          "url": "https://github.com/google/zerocopy/commit/ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+        },
+        "date": 1794934495654,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1414,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1645,
             "unit": "seconds"
           }
         ]
