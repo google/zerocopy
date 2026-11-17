@@ -26,9 +26,21 @@ zerocopy::cryptocorrosion_derive_traits! {
 
 zerocopy::cryptocorrosion_derive_traits! {
 //~[msrv, stable, nightly]^ ERROR: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
+    #[repr(C)]
+    #[doc::rewrite]
+    pub struct QualifiedAttributeNotPermitted(u8);
+}
+
+zerocopy::cryptocorrosion_derive_traits! {
+//~[msrv, stable, nightly]^ ERROR: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
     @munch_attrs
     tag: (__internal_cryptocorrosion_muncher_tag)
     repr: (C)
-    attrs: (#[cfg(feature = "disabled")])
-    tokens: (pub struct BypassedAttribute(u8);)
+    doc_literals: ()
+    doc_attributes: (#[doc::rewrite])
+    derives: ()
+    allows: ()
+    warns: ()
+    denies: ()
+    tokens: (pub struct DirectQualifiedNotPermitted(u8);)
 }
