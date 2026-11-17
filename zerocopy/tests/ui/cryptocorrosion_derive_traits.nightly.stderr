@@ -45,36 +45,36 @@ error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`,
 36 | |     @munch_attrs
 37 | |     tag: (__internal_cryptocorrosion_muncher_tag)
 ...  |
-40 | |     tokens: (#[doc::rewrite] pub struct DirectQualifiedInTokensNotPermitted(u8);)
+40 | |     tokens: (pub struct DirectQualifiedNotPermitted(u8);)
 41 | | }
    | |_^
    |
-   = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
   --> $DIR/cryptocorrosion_derive_traits.rs:43:1
    |
 43 | / zerocopy::cryptocorrosion_derive_traits! {
 44 | |
-45 | |     @munch_attrs
+45 | |     @validate_and_emit_struct
 46 | |     tag: (__internal_cryptocorrosion_muncher_tag)
 ...  |
-49 | |     tokens: (pub struct DirectStructEmitterNotPermitted(u8);)
-50 | | }
+50 | |     struct: (pub struct DirectEmitterNotPermitted(u8);)
+51 | | }
    | |_^
    |
    = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
-  --> $DIR/cryptocorrosion_derive_traits.rs:52:1
+  --> $DIR/cryptocorrosion_derive_traits.rs:53:1
    |
-52 | / zerocopy::cryptocorrosion_derive_traits! {
-53 | |
-54 | |     @munch_attrs
-55 | |     tag: (__internal_cryptocorrosion_muncher_tag)
+53 | / zerocopy::cryptocorrosion_derive_traits! {
+54 | |
+55 | |     @validate_and_emit_union
+56 | |     tag: (__internal_cryptocorrosion_muncher_tag)
 ...  |
-58 | |     tokens: (pub union DirectUnionEmitterNotPermitted { a: u8, })
-59 | | }
+59 | |     union: (pub union DirectEmitterUnionNotPermitted { a: u8, })
+60 | | }
    | |_^
    |
    = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
