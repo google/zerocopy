@@ -837,12 +837,51 @@ where
         count: usize,
     ) -> Result<(Ref<B, T>, B), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match T::size_for_metadata(count) {
-            Some(len) => len,
-            None => return Err(SizeError::new(source).into()),
+        let remainder = match Ptr::from_ref(source.deref())
+            .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, Some(count))
+        {
+            Ok((_, remainder)) => remainder,
+            Err(e) => return Err(e.with_src(()).with_src(source)),
         };
-        let (prefix, bytes) = source.split_at(expected_len).map_err(SizeError::new)?;
-        Self::from_bytes_with_elems(prefix, count).map(move |l| (l, bytes))
+
+        // SAFETY: By `Ptr::try_cast_into`'s safety postcondition, `remainder`
+        // refers to a byte subrange within `source.deref()`, and by
+        // `ByteSlice`'s dereference-stability contract, `source.len()` equals
+        // `source.deref().len()`. Both `len` methods measure bytes, so
+        // `source.len() >= remainder.len()` and `unchecked_sub` cannot
+        // underflow.
+        #[allow(unstable_name_collisions)]
+        let split_at = unsafe { source.len().unchecked_sub(remainder.len()) };
+        let (bytes, suffix) = source.split_at(split_at).map_err(SizeError::new)?;
+        // SAFETY: By its safety postcondition, `try_cast_into` validated
+        // `Some(count)` via `T::size_for_metadata(count)` [1] and returned a
+        // `Ptr<T>` aligned as required for references [2] alongside a
+        // non-overlapping `remainder`, which together cover `source.deref()`
+        // and place the `Ptr<T>` at `source.deref()`'s address. Therefore,
+        // `split_at` equals that `Ptr<T>`'s byte length, for which
+        // `T::size_for_metadata(count)` returned `Some(split_at)`. By the
+        // safety postcondition of `SplitByteSlice::split_at`, `bytes` has
+        // `source.deref()`'s aligned address and length `split_at`, and
+        // `ByteSlice` and its applicable subtraits preserve that address and
+        // length across `deref`, `deref_mut`, and `into`, satisfying both
+        // preconditions of `new_unchecked`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.size_of_val.html:
+        //
+        //     Returns the size of the pointed-to value in bytes.
+        //
+        //     ... when `T` has no statically-known size ... `size_of_val` can
+        //     be used to get the dynamically-known size.
+        //
+        // [2] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.align_of_val.html:
+        //
+        //     Returns the ABI-required minimum alignment of the type of the
+        //     value that `val` points to.
+        //
+        //     Every reference to a value of the type `T` must be a multiple of
+        //     this number.
+        let r = unsafe { Ref::new_unchecked(bytes, count) };
+        Ok((r, suffix))
     }
 
     /// Constructs a `Ref` from the suffix of the given bytes with DST length
@@ -901,19 +940,47 @@ where
         count: usize,
     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
         static_assert_dst_is_not_zst!(T);
-        let expected_len = match T::size_for_metadata(count) {
-            Some(len) => len,
-            None => return Err(SizeError::new(source).into()),
+        let remainder = match Ptr::from_ref(source.deref())
+            .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, Some(count))
+        {
+            Ok((_, remainder)) => remainder,
+            Err(e) => return Err(e.with_src(()).with_src(source)),
         };
-        let split_at = if let Some(split_at) = source.len().checked_sub(expected_len) {
-            split_at
-        } else {
-            return Err(SizeError::new(source).into());
-        };
-        // SAFETY: The preceding `source.len().checked_sub(expected_len)`
-        // guarantees that `split_at` is in-bounds.
-        let (bytes, suffix) = unsafe { source.split_at_unchecked(split_at) };
-        Self::from_bytes_with_elems(suffix, count).map(move |l| (bytes, l))
+
+        let split_at = remainder.len();
+        let (prefix, bytes) = source.split_at(split_at).map_err(SizeError::new)?;
+        // SAFETY: By its safety postcondition, `try_cast_into` validated
+        // `Some(count)` via `T::size_for_metadata(count)` [1] and returned a
+        // `Ptr<T>` aligned as required for references [2] alongside a
+        // non-overlapping `remainder`, which together cover `source.deref()`
+        // and place `remainder` at `source.deref()`'s address. More precisely,
+        // `PtrInner::try_cast_into` constructs the typed suffix from the
+        // `r_slice` produced by `split_at_unchecked(split_at)` and returns its
+        // `l_slice` as `remainder`. Thus, even when the `T` instance has size
+        // zero, the typed pointer and the `bytes` produced by splitting
+        // `source` at `remainder.len()` have the same aligned address and byte
+        // length, for which `T::size_for_metadata(count)` returned
+        // `Some(bytes.len())`. By `SplitByteSlice`, `ByteSlice`, and its
+        // applicable subtraits, `bytes` retains that address and length across
+        // `deref`, `deref_mut`, and `into`, satisfying both preconditions of
+        // `new_unchecked`.
+        //
+        // [1] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.size_of_val.html:
+        //
+        //     Returns the size of the pointed-to value in bytes.
+        //
+        //     ... when `T` has no statically-known size ... `size_of_val` can
+        //     be used to get the dynamically-known size.
+        //
+        // [2] Per https://doc.rust-lang.org/1.56.0/core/mem/fn.align_of_val.html:
+        //
+        //     Returns the ABI-required minimum alignment of the type of the
+        //     value that `val` points to.
+        //
+        //     Every reference to a value of the type `T` must be a multiple of
+        //     this number.
+        let r = unsafe { Ref::new_unchecked(bytes, count) };
+        Ok((prefix, r))
     }
 }
 
@@ -1751,6 +1818,60 @@ mod tests {
         let unreasonable_len = usize::MAX / mem::size_of::<AU64>() + 1;
         assert!(Ref::<_, [AU64]>::from_prefix_with_elems(&buf.t[..], unreasonable_len).is_err());
         assert!(Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..], unreasonable_len).is_err());
+    }
+
+    #[test]
+    fn test_with_elems_alignment_error_returns_whole_source() {
+        // An alignment error from `from_prefix_with_elems` or
+        // `from_suffix_with_elems` must carry all of `source`, not only the
+        // prefix or suffix that was going to be cast.
+
+        // A buffer with an alignment of 8 and an odd size.
+        let mut buf = Align::<[u8; 13], AU64>::default();
+
+        // `buf.t[1..]` has 12 bytes, enough for one `AU64`, but its start (and
+        // thus its 8-byte prefix) is misaligned.
+        let src = &buf.t[1..];
+        let err = Ref::<_, [AU64]>::from_prefix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (src.as_ptr(), src.len()));
+
+        let src = &mut buf.t[1..];
+        let (addr, len) = (src.as_ptr(), src.len());
+        let err = Ref::<_, [AU64]>::from_prefix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (addr, len));
+
+        // `buf.t[..]` is aligned, but its 8-byte suffix starts at offset 5 and
+        // is misaligned.
+        let src = &buf.t[..];
+        let err = Ref::<_, [AU64]>::from_suffix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (src.as_ptr(), src.len()));
+
+        let src = &mut buf.t[..];
+        let (addr, len) = (src.as_ptr(), src.len());
+        let err = Ref::<_, [AU64]>::from_suffix_with_elems(src, 1).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (addr, len));
+
+        // Even a zero-element suffix at odd end-offset 13 is misaligned for
+        // `[AU64]` and must return the whole `source`, whereas an aligned end
+        // offset succeeds.
+        let src = &mut buf.t[..];
+        let (addr, len) = (src.as_ptr(), src.len());
+        let err = Ref::<_, [AU64]>::from_suffix_with_elems(src, 0).unwrap_err();
+        assert!(matches!(err, ConvertError::Alignment(_)));
+        let err_src = err.into_src();
+        assert_eq!((err_src.as_ptr(), err_src.len()), (addr, len));
+
+        let (prefix, r) = Ref::<_, [AU64]>::from_suffix_with_elems(&buf.t[..8], 0).unwrap();
+        assert_eq!(prefix.len(), 8);
+        assert_eq!(r.len(), 0);
     }
 
     #[test]
