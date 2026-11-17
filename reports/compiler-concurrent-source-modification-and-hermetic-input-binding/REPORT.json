@@ -26,6 +26,14 @@
       }
     },
     {
+      "name": "Rust nightly toolchain (rustc_driver FileLoader macro expansion probe)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
       "name": "Cargo source pinned by rust-lang/rust",
       "identity": {
         "repository": "rust-lang/cargo",
@@ -79,5 +87,5 @@
       }
     }
   ],
-  "observed_at": "2026-11-12"
+  "observed_at": "2026-11-17"
 }

@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "domains",
+    "domains/graphics",
+    "security",
+    "systems",
+    "systems/sandboxing"
+  ],
+  "subjects": [
+    {
+      "name": "WHATWG HTML Standard (sandboxed browsing contexts and opaque Origin: null)",
+      "identity": {
+        "url": "https://html.spec.whatwg.org/multipage/browsers.html#sandboxed-origin-browsing-context-flag"
+      }
+    },
+    {
+      "name": "W3C Content Security Policy Level 3",
+      "identity": {
+        "url": "https://www.w3.org/TR/CSP3/"
+      }
+    },
+    {
+      "name": "W3C SVG Integration (animated image mode) and SVG 1.1 Path / SMIL 3.0",
+      "identity": {
+        "url": "https://www.w3.org/TR/SVG11/animate.html"
+      }
+    },
+    {
+      "name": "lean-zip Silesia operating-point curve",
+      "identity": {
+        "repository": "kim-em/lean-zip",
+        "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb"
+      }
+    },
+    {
+      "name": "zlib v1.3.2 Silesia operating-point curve",
+      "identity": {
+        "repository": "madler/zlib",
+        "revision": "da607da739fa6047df13e66a2af6b8bec7c2a498",
+        "version": "1.3.2"
+      }
+    },
+    {
+      "name": "miniz_oxide upstream Silesia operating-point curve",
+      "identity": {
+        "repository": "Frommi/miniz_oxide",
+        "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38"
+      }
+    }
+  ],
+  "observed_at": "2026-11-17"
+}

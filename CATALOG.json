@@ -3819,6 +3819,57 @@
         "zerocopy/soundness-policy"
       ]
     },
+    "anneal-frozen-scalar-kernel-specs-and-partial-verification-escapes": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "31b91b61b84e0058db44cacbd6d189a90433c2d1"
+          },
+          "name": "Anneal MIR integration branch baseline (MirAst, MirSemantics, MirWp, extract.rs, RecordingLoader)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "5c960dd3f1b94321307d4500a4e180c753bfaad0"
+          },
+          "name": "Anneal main branch baseline (PureLift evaluator)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Lean-miri semantics pinned by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/specification",
+        "verification",
+        "verification/soundness",
+        "lean",
+        "rust",
+        "rust/unsafe"
+      ]
+    },
     "anneal-fuel-free-mir-lifting-and-alias-erasure": {
       "observed_at": "2026-11-07",
       "subjects": [
@@ -8967,7 +9018,7 @@
       ]
     },
     "compiler-concurrent-source-modification-and-hermetic-input-binding": {
-      "observed_at": "2026-11-12",
+      "observed_at": "2026-11-17",
       "subjects": [
         {
           "identity": {
@@ -8983,6 +9034,14 @@
             "version": "1.101.0-nightly (2026-10-20)"
           },
           "name": "Rust nightly toolchain (rustc and rustc_driver execution)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly toolchain (rustc_driver FileLoader macro expansion probe)"
         },
         {
           "identity": {
@@ -9899,6 +9958,57 @@
         "verification/refinement",
         "rust/calling-conventions",
         "rustc/abi"
+      ]
+    },
+    "compression-benchmark-methodology-and-rust-vs-lean-zip-pareto-comparison": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "ref": "master",
+            "repository": "kim-em/lean-zip",
+            "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb"
+          },
+          "name": "lean-zip verified DEFLATE/INFLATE implementation"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38"
+          },
+          "name": "miniz_oxide upstream pure-Rust baseline"
+        },
+        {
+          "identity": {
+            "repository": "madler/zlib",
+            "revision": "da607da739fa6047df13e66a2af6b8bec7c2a498",
+            "version": "1.3.2"
+          },
+          "name": "zlib v1.3.2 C baseline"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "11acb17ec6b07a8f9e9173e6845197929540936b",
+            "version": "v4.35.0-rc2"
+          },
+          "name": "Lean 4 toolchain v4.35.0-rc2"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust nightly toolchain 1.102.0-nightly (LLVM 23.1.5)"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/compression",
+        "systems",
+        "lean",
+        "rust"
       ]
     },
     "concurrency-and-simd-compiler-testing-tools-and-harnesses": {
@@ -12182,6 +12292,40 @@
         "systems/ebpf-pcc",
         "verification/refinement",
         "lean/kernel"
+      ]
+    },
+    "deflate-inflate-algorithms-optimal-dp-and-block-splitting": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38"
+          },
+          "name": "miniz_oxide DEFLATE/INFLATE reference architecture"
+        },
+        {
+          "identity": {
+            "repository": "madler/zlib",
+            "revision": "da607da739fa6047df13e66a2af6b8bec7c2a498",
+            "version": "1.3.2"
+          },
+          "name": "zlib v1.3.2 (examples/enough.c, inftrees.c, deflate.c)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust nightly toolchain 1.102.0-nightly (LLVM 23.1.5)"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/compression",
+        "rust",
+        "compilers"
       ]
     },
     "deterministic-distributed-verification-and-remote-build-cache-integration": {
@@ -17206,6 +17350,51 @@
         "verification/compiler-verification"
       ]
     },
+    "lean-mir-semantics-scalar-truncation-idempotence-and-fast-step-transfer": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain v4.34.1 (kernel, LCNF, Perceus ExplicitRC, WF.Fix, EmitC)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "11acb17ec6b07a8f9e9173e6845197929540936b",
+            "version": "v4.35.0-rc2"
+          },
+          "name": "Lean 4 toolchain v4.35.0-rc2 (LCNF.floatLetIn IO ordering and lean.h C ABI evolution)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "31b91b61b84e0058db44cacbd6d189a90433c2d1"
+          },
+          "name": "Anneal MIR integration branch baseline (Trusted.MirAst, Trusted.MirSemantics, Theory.MirWp)"
+        },
+        {
+          "identity": {
+            "repository": "kim-em/lean-zip",
+            "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb"
+          },
+          "name": "kim-em/lean-zip native codec patterns motivating FFI and WF cures"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/kernel",
+        "lean/elaboration",
+        "lean/codegen",
+        "lean/memory-management",
+        "verification",
+        "verification/soundness",
+        "anneal"
+      ]
+    },
     "lean-miri-interpreter-hooks-move-deinit-and-provenance-fragments": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -20397,6 +20586,58 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "opaque-origin-csp-sandboxes-smil-svg-and-harmonic-pareto-rendering": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "url": "https://html.spec.whatwg.org/multipage/browsers.html#sandboxed-origin-browsing-context-flag"
+          },
+          "name": "WHATWG HTML Standard (sandboxed browsing contexts and opaque Origin: null)"
+        },
+        {
+          "identity": {
+            "url": "https://www.w3.org/TR/CSP3/"
+          },
+          "name": "W3C Content Security Policy Level 3"
+        },
+        {
+          "identity": {
+            "url": "https://www.w3.org/TR/SVG11/animate.html"
+          },
+          "name": "W3C SVG Integration (animated image mode) and SVG 1.1 Path / SMIL 3.0"
+        },
+        {
+          "identity": {
+            "repository": "kim-em/lean-zip",
+            "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb"
+          },
+          "name": "lean-zip Silesia operating-point curve"
+        },
+        {
+          "identity": {
+            "repository": "madler/zlib",
+            "revision": "da607da739fa6047df13e66a2af6b8bec7c2a498",
+            "version": "1.3.2"
+          },
+          "name": "zlib v1.3.2 Silesia operating-point curve"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38"
+          },
+          "name": "miniz_oxide upstream Silesia operating-point curve"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/graphics",
+        "security",
+        "systems",
+        "systems/sandboxing"
       ]
     },
     "open-rust-library-certificate-closure-and-consumer-acceptance-protocols": {
@@ -24320,6 +24561,52 @@
         "anneal/forward-compatibility"
       ]
     },
+    "rust-safe-byte-kernel-bounds-check-elimination-and-autovectorization-idioms": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain 1.102.0-nightly with LLVM 23.1.5"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "version": "23.1.5"
+          },
+          "name": "LLVM 23.1.5 backend bundled with rustc 1.102.0-nightly"
+        },
+        {
+          "identity": {
+            "repository": "oyvindln/adler2",
+            "revision": "89a031a0f42eeff31c70dc598cbf31f1680f",
+            "version": "2.0.1"
+          },
+          "name": "oyvindln/adler2 upstream crate baseline (4-lane chunks_exact pattern)"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38",
+            "version": "0.9.1"
+          },
+          "name": "Frommi/miniz_oxide upstream crate baseline"
+        }
+      ],
+      "topics": [
+        "rustc",
+        "rustc/codegen",
+        "llvm",
+        "llvm/optimization",
+        "rust",
+        "rust/unsafe",
+        "compilers",
+        "compilers/vectorization"
+      ]
+    },
     "rust-stack-discipline-probes-red-zones-and-overflow": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -27510,6 +27797,59 @@
         "rust/layout-folding",
         "anneal/rustc-capture",
         "anneal/forward-compatibility"
+      ]
+    },
+    "rustc-postcleanup-mir-lowering-of-safe-rust-idioms-and-verifier-admission": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust nightly toolchain 1.98.0-nightly (f8a08b688cbe, Box Unique/NonNull Transmute & baseline miniz_oxide MIR)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain 1.102.0-nightly (3ef0c22cdb86, BoxRaw BoxDerefTransmute)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "31b91b61b84e0058db44cacbd6d189a90433c2d1"
+          },
+          "name": "Anneal MIR capture extractor baseline (extract.rs, capture.rs, ir.rs, lean.rs)"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38",
+            "version": "0.9.1"
+          },
+          "name": "Frommi/miniz_oxide upstream crate (0.9.1)"
+        },
+        {
+          "identity": {
+            "repository": "oyvindln/adler2",
+            "revision": "89a031a0f42eeff31c70dc598b398cbf31f1680f",
+            "version": "2.0.1"
+          },
+          "name": "oyvindln/adler2 upstream crate (2.0.1)"
+        }
+      ],
+      "topics": [
+        "rustc",
+        "rustc/mir",
+        "rust",
+        "rust/language-semantics",
+        "anneal",
+        "anneal/mir-capture",
+        "build/debugging"
       ]
     },
     "rustc-postcleanup-mir-place-path-lens-and-borrow-semantics": {
@@ -33739,6 +34079,52 @@
         "rustc",
         "rustc/codegen",
         "verification"
+      ]
+    },
+    "x86-64-adler32-simd-lane-overflow-bounds-and-avx512-codegen-width": {
+      "observed_at": "2026-11-17",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust nightly toolchain 1.102.0-nightly (3ef0c22cdb86) and Miri"
+        },
+        {
+          "identity": {
+            "artifact": "LLVM",
+            "version": "23.1.5"
+          },
+          "name": "LLVM 23.1.5 x86-64 Ice Lake backend"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain v4.34.1 (Adler-32 lane overflow proofs)"
+        },
+        {
+          "identity": {
+            "repository": "oyvindln/adler2",
+            "revision": "89a031a0f42eeff31c70dc598cbf31f1680f",
+            "version": "2.0.1"
+          },
+          "name": "oyvindln/adler2 upstream crate baseline"
+        }
+      ],
+      "topics": [
+        "isa",
+        "isa/x86-64",
+        "llvm",
+        "llvm/vectorization",
+        "rust",
+        "rust/unsafe",
+        "verification",
+        "lean"
       ]
     },
     "x86-avx512-short-loop-regression-and-vector-width-profitability": {

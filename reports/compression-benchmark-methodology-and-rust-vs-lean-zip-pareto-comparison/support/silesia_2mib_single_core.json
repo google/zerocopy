@@ -1,0 +1,7579 @@
+{
+  "methodology": {
+    "cpu_pinning": "taskset -c 4 (Intel Xeon Platinum Ice Lake single core)",
+    "prefix_limit_bytes": 2097152,
+    "throughput_unit": "MiB/s (1048576 bytes/s)",
+    "raw_stream": "RFC 1951 raw DEFLATE (windowBits=-15), levels 1..9",
+    "profiles": {
+      "miniz_oxide_0_9_1": "Upstream miniz_oxide 0.9.1 pure-Rust baseline",
+      "zlib_1_3_2": "Upstream madler/zlib v1.3.2 compiled with gcc -O3",
+      "lean_zip_2f7a63f": "Lean 4 lean-zip at commit 2f7a63f38195bc667a926881b55d10c9f8a88eeb (-O3 -flto)",
+      "rust_safe_hash4_bt": "Safe Rust slice-based tagged hash4 + BCE + backward-DP optimal parser",
+      "rust_safe_row_hash_bt": "Safe Rust 64-byte row-hash scratch matcher + BCE + backward-DP optimal parser",
+      "rust_unsafe_bt_dp_simd": "Unsafe Rust unchecked BT/DP + AVX-512/VNNI Adler-32",
+      "rust_unsafe_row_hash_simd": "Unsafe Rust 16-way row-hash SIMD match finder + AVX-512/VNNI Adler-32"
+    }
+  },
+  "rows": [
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1108248,
+      "ratio": 0.528454,
+      "compress_mibs": 86.74,
+      "decompress_mibs": 174.22
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1649604,
+      "ratio": 0.786592,
+      "compress_mibs": 162.22,
+      "decompress_mibs": 347.95
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 856331,
+      "ratio": 0.40833,
+      "compress_mibs": 168.96,
+      "decompress_mibs": 296.82
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 364006,
+      "ratio": 0.173572,
+      "compress_mibs": 266.33,
+      "decompress_mibs": 509.55
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1311896,
+      "ratio": 0.625561,
+      "compress_mibs": 97.0,
+      "decompress_mibs": 199.71
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1129642,
+      "ratio": 0.538655,
+      "compress_mibs": 136.77,
+      "decompress_mibs": 261.68
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 894647,
+      "ratio": 0.426601,
+      "compress_mibs": 113.75,
+      "decompress_mibs": 223.56
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 812548,
+      "ratio": 0.387453,
+      "compress_mibs": 147.82,
+      "decompress_mibs": 275.13
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1702949,
+      "ratio": 0.812029,
+      "compress_mibs": 102.67,
+      "decompress_mibs": 219.92
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 881758,
+      "ratio": 0.420455,
+      "compress_mibs": 119.92,
+      "decompress_mibs": 230.96
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 484798,
+      "ratio": 0.23117,
+      "compress_mibs": 218.31,
+      "decompress_mibs": 415.56
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1557702,
+      "ratio": 0.74277,
+      "compress_mibs": 113.32,
+      "decompress_mibs": 235.35
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 915672,
+      "ratio": 0.436626,
+      "compress_mibs": 77.55,
+      "decompress_mibs": 264.83
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1628994,
+      "ratio": 0.776765,
+      "compress_mibs": 41.78,
+      "decompress_mibs": 382.58
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 737710,
+      "ratio": 0.351768,
+      "compress_mibs": 102.2,
+      "decompress_mibs": 384.09
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 278845,
+      "ratio": 0.132964,
+      "compress_mibs": 153.65,
+      "decompress_mibs": 735.04
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1197089,
+      "ratio": 0.570817,
+      "compress_mibs": 45.86,
+      "decompress_mibs": 186.44
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 832041,
+      "ratio": 0.396748,
+      "compress_mibs": 72.74,
+      "decompress_mibs": 403.83
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 699120,
+      "ratio": 0.333366,
+      "compress_mibs": 92.33,
+      "decompress_mibs": 338.47
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 681106,
+      "ratio": 0.324777,
+      "compress_mibs": 95.16,
+      "decompress_mibs": 381.24
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1593878,
+      "ratio": 0.76002,
+      "compress_mibs": 42.64,
+      "decompress_mibs": 251.24
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 706478,
+      "ratio": 0.336875,
+      "compress_mibs": 88.05,
+      "decompress_mibs": 322.02
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 394587,
+      "ratio": 0.188154,
+      "compress_mibs": 151.37,
+      "decompress_mibs": 543.8
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1446099,
+      "ratio": 0.689554,
+      "compress_mibs": 47.23,
+      "decompress_mibs": 221.49
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 835114,
+      "ratio": 0.398213,
+      "compress_mibs": 44.04,
+      "decompress_mibs": 334.03
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1624693,
+      "ratio": 0.774714,
+      "compress_mibs": 38.09,
+      "decompress_mibs": 382.52
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 705230,
+      "ratio": 0.33628,
+      "compress_mibs": 54.28,
+      "decompress_mibs": 420.53
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 238413,
+      "ratio": 0.113684,
+      "compress_mibs": 134.74,
+      "decompress_mibs": 891.07
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1165864,
+      "ratio": 0.555927,
+      "compress_mibs": 34.02,
+      "decompress_mibs": 217.55
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 795352,
+      "ratio": 0.379253,
+      "compress_mibs": 55.13,
+      "decompress_mibs": 444.43
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 628776,
+      "ratio": 0.299824,
+      "compress_mibs": 56.22,
+      "decompress_mibs": 393.86
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 633515,
+      "ratio": 0.302083,
+      "compress_mibs": 65.42,
+      "decompress_mibs": 432.63
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1556113,
+      "ratio": 0.742013,
+      "compress_mibs": 27.26,
+      "decompress_mibs": 271.18
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 637512,
+      "ratio": 0.303989,
+      "compress_mibs": 57.89,
+      "decompress_mibs": 376.94
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 329103,
+      "ratio": 0.156929,
+      "compress_mibs": 105.42,
+      "decompress_mibs": 622.54
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1429154,
+      "ratio": 0.681474,
+      "compress_mibs": 34.68,
+      "decompress_mibs": 224.79
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 831803,
+      "ratio": 0.396635,
+      "compress_mibs": 39.81,
+      "decompress_mibs": 305.83
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1622637,
+      "ratio": 0.773734,
+      "compress_mibs": 38.55,
+      "decompress_mibs": 385.38
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 729129,
+      "ratio": 0.347676,
+      "compress_mibs": 46.33,
+      "decompress_mibs": 364.95
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 223223,
+      "ratio": 0.106441,
+      "compress_mibs": 120.29,
+      "decompress_mibs": 913.34
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1160991,
+      "ratio": 0.553604,
+      "compress_mibs": 28.14,
+      "decompress_mibs": 230.32
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 786105,
+      "ratio": 0.374844,
+      "compress_mibs": 49.57,
+      "decompress_mibs": 406.42
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 622337,
+      "ratio": 0.296753,
+      "compress_mibs": 50.73,
+      "decompress_mibs": 353.8
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 629018,
+      "ratio": 0.299939,
+      "compress_mibs": 54.08,
+      "decompress_mibs": 414.66
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1556736,
+      "ratio": 0.74231,
+      "compress_mibs": 27.34,
+      "decompress_mibs": 266.71
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 629660,
+      "ratio": 0.300245,
+      "compress_mibs": 52.24,
+      "decompress_mibs": 359.57
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 317030,
+      "ratio": 0.151172,
+      "compress_mibs": 99.19,
+      "decompress_mibs": 647.24
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1437167,
+      "ratio": 0.685295,
+      "compress_mibs": 30.21,
+      "decompress_mibs": 220.92
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 814956,
+      "ratio": 0.388601,
+      "compress_mibs": 25.87,
+      "decompress_mibs": 313.9
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1621746,
+      "ratio": 0.773309,
+      "compress_mibs": 37.49,
+      "decompress_mibs": 383.22
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 720179,
+      "ratio": 0.343408,
+      "compress_mibs": 33.02,
+      "decompress_mibs": 381.44
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 217048,
+      "ratio": 0.103497,
+      "compress_mibs": 98.81,
+      "decompress_mibs": 963.69
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1154192,
+      "ratio": 0.550362,
+      "compress_mibs": 26.27,
+      "decompress_mibs": 234.2
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 781698,
+      "ratio": 0.372743,
+      "compress_mibs": 45.57,
+      "decompress_mibs": 442.53
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 606291,
+      "ratio": 0.289102,
+      "compress_mibs": 36.46,
+      "decompress_mibs": 366.33
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 621732,
+      "ratio": 0.296465,
+      "compress_mibs": 47.99,
+      "decompress_mibs": 427.05
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1547453,
+      "ratio": 0.737883,
+      "compress_mibs": 21.01,
+      "decompress_mibs": 276.07
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 618658,
+      "ratio": 0.294999,
+      "compress_mibs": 40.17,
+      "decompress_mibs": 303.07
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 305610,
+      "ratio": 0.145726,
+      "compress_mibs": 72.12,
+      "decompress_mibs": 589.63
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1429358,
+      "ratio": 0.681571,
+      "compress_mibs": 25.31,
+      "decompress_mibs": 223.48
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 798215,
+      "ratio": 0.380619,
+      "compress_mibs": 16.35,
+      "decompress_mibs": 322.4
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1621201,
+      "ratio": 0.773049,
+      "compress_mibs": 32.1,
+      "decompress_mibs": 385.63
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 715566,
+      "ratio": 0.341208,
+      "compress_mibs": 16.24,
+      "decompress_mibs": 386.21
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 209852,
+      "ratio": 0.100065,
+      "compress_mibs": 62.26,
+      "decompress_mibs": 1004.84
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1147137,
+      "ratio": 0.546998,
+      "compress_mibs": 17.78,
+      "decompress_mibs": 235.61
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 770452,
+      "ratio": 0.36738,
+      "compress_mibs": 34.52,
+      "decompress_mibs": 365.63
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 582427,
+      "ratio": 0.277723,
+      "compress_mibs": 15.72,
+      "decompress_mibs": 376.2
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 615339,
+      "ratio": 0.293417,
+      "compress_mibs": 29.73,
+      "decompress_mibs": 438.81
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1535358,
+      "ratio": 0.732116,
+      "compress_mibs": 13.89,
+      "decompress_mibs": 278.81
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 607678,
+      "ratio": 0.289763,
+      "compress_mibs": 24.21,
+      "decompress_mibs": 314.09
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 290949,
+      "ratio": 0.138735,
+      "compress_mibs": 44.52,
+      "decompress_mibs": 812.88
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1425127,
+      "ratio": 0.679554,
+      "compress_mibs": 23.73,
+      "decompress_mibs": 232.49
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 795344,
+      "ratio": 0.37925,
+      "compress_mibs": 11.43,
+      "decompress_mibs": 263.1
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1621087,
+      "ratio": 0.772995,
+      "compress_mibs": 25.56,
+      "decompress_mibs": 385.55
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 714999,
+      "ratio": 0.340938,
+      "compress_mibs": 11.8,
+      "decompress_mibs": 389.58
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 207672,
+      "ratio": 0.099026,
+      "compress_mibs": 44.09,
+      "decompress_mibs": 1022.13
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1145874,
+      "ratio": 0.546395,
+      "compress_mibs": 15.28,
+      "decompress_mibs": 240.95
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 766671,
+      "ratio": 0.365577,
+      "compress_mibs": 28.35,
+      "decompress_mibs": 479.67
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 576184,
+      "ratio": 0.274746,
+      "compress_mibs": 10.69,
+      "decompress_mibs": 380.26
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 614379,
+      "ratio": 0.292959,
+      "compress_mibs": 24.7,
+      "decompress_mibs": 439.51
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1533759,
+      "ratio": 0.731353,
+      "compress_mibs": 12.29,
+      "decompress_mibs": 278.5
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 605363,
+      "ratio": 0.28866,
+      "compress_mibs": 20.57,
+      "decompress_mibs": 383.37
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 287940,
+      "ratio": 0.1373,
+      "compress_mibs": 35.83,
+      "decompress_mibs": 801.14
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1425127,
+      "ratio": 0.679554,
+      "compress_mibs": 23.8,
+      "decompress_mibs": 232.29
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 794062,
+      "ratio": 0.378638,
+      "compress_mibs": 11.68,
+      "decompress_mibs": 326.59
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1620819,
+      "ratio": 0.772867,
+      "compress_mibs": 25.65,
+      "decompress_mibs": 387.14
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 713255,
+      "ratio": 0.340106,
+      "compress_mibs": 7.96,
+      "decompress_mibs": 404.16
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 205963,
+      "ratio": 0.098211,
+      "compress_mibs": 32.5,
+      "decompress_mibs": 1031.0
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1145343,
+      "ratio": 0.546142,
+      "compress_mibs": 13.46,
+      "decompress_mibs": 240.36
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 765978,
+      "ratio": 0.365247,
+      "compress_mibs": 24.64,
+      "decompress_mibs": 483.57
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 573734,
+      "ratio": 0.273578,
+      "compress_mibs": 7.83,
+      "decompress_mibs": 382.05
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 613878,
+      "ratio": 0.29272,
+      "compress_mibs": 21.43,
+      "decompress_mibs": 429.46
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1532624,
+      "ratio": 0.730812,
+      "compress_mibs": 10.21,
+      "decompress_mibs": 278.53
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 604079,
+      "ratio": 0.288047,
+      "compress_mibs": 16.14,
+      "decompress_mibs": 378.96
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 286497,
+      "ratio": 0.136612,
+      "compress_mibs": 28.55,
+      "decompress_mibs": 827.69
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1425127,
+      "ratio": 0.679554,
+      "compress_mibs": 23.02,
+      "decompress_mibs": 218.88
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 793944,
+      "ratio": 0.378582,
+      "compress_mibs": 11.41,
+      "decompress_mibs": 323.97
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1620804,
+      "ratio": 0.77286,
+      "compress_mibs": 23.26,
+      "decompress_mibs": 376.36
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 711756,
+      "ratio": 0.339392,
+      "compress_mibs": 6.73,
+      "decompress_mibs": 416.21
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 204877,
+      "ratio": 0.097693,
+      "compress_mibs": 27.2,
+      "decompress_mibs": 1018.35
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1145152,
+      "ratio": 0.546051,
+      "compress_mibs": 13.12,
+      "decompress_mibs": 240.58
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 765973,
+      "ratio": 0.365244,
+      "compress_mibs": 24.71,
+      "decompress_mibs": 481.73
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 572712,
+      "ratio": 0.27309,
+      "compress_mibs": 6.09,
+      "decompress_mibs": 325.03
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 613468,
+      "ratio": 0.292524,
+      "compress_mibs": 16.35,
+      "decompress_mibs": 408.52
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1532298,
+      "ratio": 0.730657,
+      "compress_mibs": 8.81,
+      "decompress_mibs": 232.88
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 604063,
+      "ratio": 0.28804,
+      "compress_mibs": 17.24,
+      "decompress_mibs": 379.96
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 285964,
+      "ratio": 0.136358,
+      "compress_mibs": 26.62,
+      "decompress_mibs": 821.18
+    },
+    {
+      "profile": "miniz_oxide_0_9_1",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1425127,
+      "ratio": 0.679554,
+      "compress_mibs": 23.69,
+      "decompress_mibs": 234.61
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 948919,
+      "ratio": 0.45248,
+      "compress_mibs": 143.48,
+      "decompress_mibs": 312.76
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1643811,
+      "ratio": 0.78383,
+      "compress_mibs": 364.83,
+      "decompress_mibs": 297.95
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 795029,
+      "ratio": 0.379099,
+      "compress_mibs": 178.72,
+      "decompress_mibs": 408.91
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 289844,
+      "ratio": 0.138208,
+      "compress_mibs": 490.23,
+      "decompress_mibs": 1037.08
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1264642,
+      "ratio": 0.603028,
+      "compress_mibs": 112.17,
+      "decompress_mibs": 282.75
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 854189,
+      "ratio": 0.407309,
+      "compress_mibs": 230.96,
+      "decompress_mibs": 518.51
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 777441,
+      "ratio": 0.370713,
+      "compress_mibs": 178.41,
+      "decompress_mibs": 409.48
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 724640,
+      "ratio": 0.345535,
+      "compress_mibs": 255.96,
+      "decompress_mibs": 558.82
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1649672,
+      "ratio": 0.786625,
+      "compress_mibs": 186.4,
+      "decompress_mibs": 326.4
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 758417,
+      "ratio": 0.361641,
+      "compress_mibs": 194.61,
+      "decompress_mibs": 475.98
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 421446,
+      "ratio": 0.200961,
+      "compress_mibs": 354.66,
+      "decompress_mibs": 819.28
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1542495,
+      "ratio": 0.735519,
+      "compress_mibs": 174.53,
+      "decompress_mibs": 307.3
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 856618,
+      "ratio": 0.408467,
+      "compress_mibs": 94.38,
+      "decompress_mibs": 469.29
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1627314,
+      "ratio": 0.775964,
+      "compress_mibs": 327.07,
+      "decompress_mibs": 421.34
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 736629,
+      "ratio": 0.351252,
+      "compress_mibs": 130.94,
+      "decompress_mibs": 540.84
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 252797,
+      "ratio": 0.120543,
+      "compress_mibs": 279.59,
+      "decompress_mibs": 1281.47
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1202550,
+      "ratio": 0.573421,
+      "compress_mibs": 88.38,
+      "decompress_mibs": 289.2
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 805567,
+      "ratio": 0.384124,
+      "compress_mibs": 138.62,
+      "decompress_mibs": 599.07
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 674462,
+      "ratio": 0.321609,
+      "compress_mibs": 111.03,
+      "decompress_mibs": 591.93
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 658387,
+      "ratio": 0.313943,
+      "compress_mibs": 146.41,
+      "decompress_mibs": 645.11
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1603852,
+      "ratio": 0.764776,
+      "compress_mibs": 109.86,
+      "decompress_mibs": 355.04
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 669525,
+      "ratio": 0.319254,
+      "compress_mibs": 111.11,
+      "decompress_mibs": 561.85
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 355066,
+      "ratio": 0.169309,
+      "compress_mibs": 217.09,
+      "decompress_mibs": 946.27
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1483459,
+      "ratio": 0.707368,
+      "compress_mibs": 102.75,
+      "decompress_mibs": 314.78
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 828387,
+      "ratio": 0.395006,
+      "compress_mibs": 58.14,
+      "decompress_mibs": 553.12
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1618559,
+      "ratio": 0.771789,
+      "compress_mibs": 119.0,
+      "decompress_mibs": 425.28
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 707593,
+      "ratio": 0.337407,
+      "compress_mibs": 67.09,
+      "decompress_mibs": 578.31
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 240185,
+      "ratio": 0.114529,
+      "compress_mibs": 144.17,
+      "decompress_mibs": 1411.06
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1163947,
+      "ratio": 0.555013,
+      "compress_mibs": 52.04,
+      "decompress_mibs": 311.06
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 794120,
+      "ratio": 0.378666,
+      "compress_mibs": 86.48,
+      "decompress_mibs": 675.39
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 632234,
+      "ratio": 0.301473,
+      "compress_mibs": 65.82,
+      "decompress_mibs": 695.58
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 628328,
+      "ratio": 0.29961,
+      "compress_mibs": 84.79,
+      "decompress_mibs": 680.65
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1554397,
+      "ratio": 0.741194,
+      "compress_mibs": 59.66,
+      "decompress_mibs": 343.92
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 637018,
+      "ratio": 0.303754,
+      "compress_mibs": 68.99,
+      "decompress_mibs": 633.12
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 324369,
+      "ratio": 0.154671,
+      "compress_mibs": 122.51,
+      "decompress_mibs": 1055.54
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1439207,
+      "ratio": 0.686267,
+      "compress_mibs": 55.6,
+      "decompress_mibs": 279.32
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 807786,
+      "ratio": 0.385182,
+      "compress_mibs": 37.54,
+      "decompress_mibs": 529.94
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1616846,
+      "ratio": 0.770972,
+      "compress_mibs": 136.27,
+      "decompress_mibs": 413.69
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 710850,
+      "ratio": 0.33896,
+      "compress_mibs": 42.21,
+      "decompress_mibs": 545.77
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 225838,
+      "ratio": 0.107688,
+      "compress_mibs": 114.41,
+      "decompress_mibs": 1380.3
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1149532,
+      "ratio": 0.54814,
+      "compress_mibs": 42.5,
+      "decompress_mibs": 325.06
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 769880,
+      "ratio": 0.367107,
+      "compress_mibs": 71.6,
+      "decompress_mibs": 693.41
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 608232,
+      "ratio": 0.290028,
+      "compress_mibs": 42.71,
+      "decompress_mibs": 632.28
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 617273,
+      "ratio": 0.294339,
+      "compress_mibs": 62.98,
+      "decompress_mibs": 647.72
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1544183,
+      "ratio": 0.736324,
+      "compress_mibs": 48.41,
+      "decompress_mibs": 330.41
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 622163,
+      "ratio": 0.29667,
+      "compress_mibs": 48.97,
+      "decompress_mibs": 598.22
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 308370,
+      "ratio": 0.147042,
+      "compress_mibs": 94.08,
+      "decompress_mibs": 1024.54
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1432048,
+      "ratio": 0.682854,
+      "compress_mibs": 48.09,
+      "decompress_mibs": 287.28
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 792918,
+      "ratio": 0.378093,
+      "compress_mibs": 28.76,
+      "decompress_mibs": 491.59
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1614190,
+      "ratio": 0.769706,
+      "compress_mibs": 47.73,
+      "decompress_mibs": 417.69
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 704027,
+      "ratio": 0.335706,
+      "compress_mibs": 29.37,
+      "decompress_mibs": 541.49
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 214845,
+      "ratio": 0.102446,
+      "compress_mibs": 109.43,
+      "decompress_mibs": 1413.16
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1146607,
+      "ratio": 0.546745,
+      "compress_mibs": 31.09,
+      "decompress_mibs": 324.97
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 765225,
+      "ratio": 0.364888,
+      "compress_mibs": 52.83,
+      "decompress_mibs": 707.87
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 588077,
+      "ratio": 0.280417,
+      "compress_mibs": 30.51,
+      "decompress_mibs": 604.08
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 606959,
+      "ratio": 0.289421,
+      "compress_mibs": 50.5,
+      "decompress_mibs": 639.61
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1535507,
+      "ratio": 0.732187,
+      "compress_mibs": 26.8,
+      "decompress_mibs": 338.17
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 609406,
+      "ratio": 0.290587,
+      "compress_mibs": 43.35,
+      "decompress_mibs": 570.83
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 300406,
+      "ratio": 0.143245,
+      "compress_mibs": 85.48,
+      "decompress_mibs": 1026.62
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1432444,
+      "ratio": 0.683043,
+      "compress_mibs": 33.09,
+      "decompress_mibs": 290.3
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 789558,
+      "ratio": 0.376491,
+      "compress_mibs": 22.74,
+      "decompress_mibs": 498.52
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1613767,
+      "ratio": 0.769504,
+      "compress_mibs": 45.74,
+      "decompress_mibs": 424.83
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 700360,
+      "ratio": 0.333958,
+      "compress_mibs": 19.41,
+      "decompress_mibs": 550.12
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 205923,
+      "ratio": 0.098192,
+      "compress_mibs": 79.88,
+      "decompress_mibs": 1287.11
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1145399,
+      "ratio": 0.546169,
+      "compress_mibs": 28.23,
+      "decompress_mibs": 323.7
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 765048,
+      "ratio": 0.364803,
+      "compress_mibs": 49.91,
+      "decompress_mibs": 707.76
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 575333,
+      "ratio": 0.27434,
+      "compress_mibs": 17.96,
+      "decompress_mibs": 620.12
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 603453,
+      "ratio": 0.287749,
+      "compress_mibs": 39.48,
+      "decompress_mibs": 640.83
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1531493,
+      "ratio": 0.730273,
+      "compress_mibs": 22.59,
+      "decompress_mibs": 325.08
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 602722,
+      "ratio": 0.2874,
+      "compress_mibs": 33.38,
+      "decompress_mibs": 569.28
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 288250,
+      "ratio": 0.137448,
+      "compress_mibs": 62.33,
+      "decompress_mibs": 1047.55
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1432418,
+      "ratio": 0.68303,
+      "compress_mibs": 33.1,
+      "decompress_mibs": 293.55
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 788628,
+      "ratio": 0.376047,
+      "compress_mibs": 20.38,
+      "decompress_mibs": 500.6
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1613209,
+      "ratio": 0.769238,
+      "compress_mibs": 43.36,
+      "decompress_mibs": 416.01
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 698975,
+      "ratio": 0.333297,
+      "compress_mibs": 16.86,
+      "decompress_mibs": 538.12
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 203432,
+      "ratio": 0.097004,
+      "compress_mibs": 61.51,
+      "decompress_mibs": 1253.51
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1145171,
+      "ratio": 0.54606,
+      "compress_mibs": 26.28,
+      "decompress_mibs": 319.89
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 765044,
+      "ratio": 0.364801,
+      "compress_mibs": 48.91,
+      "decompress_mibs": 706.59
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 571962,
+      "ratio": 0.272733,
+      "compress_mibs": 13.58,
+      "decompress_mibs": 616.78
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 601540,
+      "ratio": 0.286837,
+      "compress_mibs": 33.27,
+      "decompress_mibs": 621.38
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1530655,
+      "ratio": 0.729873,
+      "compress_mibs": 21.28,
+      "decompress_mibs": 329.49
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 599844,
+      "ratio": 0.286028,
+      "compress_mibs": 27.21,
+      "decompress_mibs": 576.55
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 283734,
+      "ratio": 0.135295,
+      "compress_mibs": 49.38,
+      "decompress_mibs": 1043.04
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1432418,
+      "ratio": 0.68303,
+      "compress_mibs": 33.04,
+      "decompress_mibs": 282.75
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 788743,
+      "ratio": 0.376102,
+      "compress_mibs": 16.74,
+      "decompress_mibs": 491.98
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1613685,
+      "ratio": 0.769465,
+      "compress_mibs": 37.94,
+      "decompress_mibs": 422.18
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 699356,
+      "ratio": 0.333479,
+      "compress_mibs": 14.85,
+      "decompress_mibs": 569.14
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 200569,
+      "ratio": 0.095639,
+      "compress_mibs": 37.78,
+      "decompress_mibs": 1130.55
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1142583,
+      "ratio": 0.544826,
+      "compress_mibs": 22.88,
+      "decompress_mibs": 249.3
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 764871,
+      "ratio": 0.364719,
+      "compress_mibs": 48.08,
+      "decompress_mibs": 687.62
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 570013,
+      "ratio": 0.271803,
+      "compress_mibs": 10.02,
+      "decompress_mibs": 623.9
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 601147,
+      "ratio": 0.286649,
+      "compress_mibs": 25.87,
+      "decompress_mibs": 641.92
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1528919,
+      "ratio": 0.729045,
+      "compress_mibs": 19.69,
+      "decompress_mibs": 337.1
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 599678,
+      "ratio": 0.285949,
+      "compress_mibs": 20.83,
+      "decompress_mibs": 584.64
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 280862,
+      "ratio": 0.133925,
+      "compress_mibs": 30.04,
+      "decompress_mibs": 1080.84
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1424948,
+      "ratio": 0.679468,
+      "compress_mibs": 33.5,
+      "decompress_mibs": 304.35
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 763420,
+      "ratio": 0.364027,
+      "compress_mibs": 6.14,
+      "decompress_mibs": 480.22
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1611617,
+      "ratio": 0.768479,
+      "compress_mibs": 15.16,
+      "decompress_mibs": 415.43
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 668928,
+      "ratio": 0.31897,
+      "compress_mibs": 6.31,
+      "decompress_mibs": 510.89
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 194205,
+      "ratio": 0.092604,
+      "compress_mibs": 4.16,
+      "decompress_mibs": 1267.67
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1123254,
+      "ratio": 0.535609,
+      "compress_mibs": 9.47,
+      "decompress_mibs": 249.42
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 755686,
+      "ratio": 0.360339,
+      "compress_mibs": 8.83,
+      "decompress_mibs": 722.61
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 536045,
+      "ratio": 0.255606,
+      "compress_mibs": 3.59,
+      "decompress_mibs": 639.63
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 588290,
+      "ratio": 0.280519,
+      "compress_mibs": 6.88,
+      "decompress_mibs": 640.85
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1512119,
+      "ratio": 0.721035,
+      "compress_mibs": 11.48,
+      "decompress_mibs": 335.92
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 580120,
+      "ratio": 0.276623,
+      "compress_mibs": 4.92,
+      "decompress_mibs": 572.11
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 276756,
+      "ratio": 0.131968,
+      "compress_mibs": 5.82,
+      "decompress_mibs": 1034.88
+    },
+    {
+      "profile": "rust_safe_hash4_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1384852,
+      "ratio": 0.660349,
+      "compress_mibs": 16.89,
+      "decompress_mibs": 254.11
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 960787,
+      "ratio": 0.458139,
+      "compress_mibs": 146.11,
+      "decompress_mibs": 431.65
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1646927,
+      "ratio": 0.785316,
+      "compress_mibs": 504.75,
+      "decompress_mibs": 441.45
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 782351,
+      "ratio": 0.373054,
+      "compress_mibs": 220.19,
+      "decompress_mibs": 537.38
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 296245,
+      "ratio": 0.141261,
+      "compress_mibs": 477.03,
+      "decompress_mibs": 1339.1
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1266948,
+      "ratio": 0.604128,
+      "compress_mibs": 138.67,
+      "decompress_mibs": 361.26
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 848471,
+      "ratio": 0.404583,
+      "compress_mibs": 287.51,
+      "decompress_mibs": 657.81
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 793206,
+      "ratio": 0.37823,
+      "compress_mibs": 176.61,
+      "decompress_mibs": 525.44
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 728568,
+      "ratio": 0.347408,
+      "compress_mibs": 236.25,
+      "decompress_mibs": 596.03
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1645669,
+      "ratio": 0.784716,
+      "compress_mibs": 130.1,
+      "decompress_mibs": 327.1
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 766290,
+      "ratio": 0.365396,
+      "compress_mibs": 165.11,
+      "decompress_mibs": 463.03
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 418584,
+      "ratio": 0.199596,
+      "compress_mibs": 296.82,
+      "decompress_mibs": 797.26
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1533851,
+      "ratio": 0.731397,
+      "compress_mibs": 158.52,
+      "decompress_mibs": 313.18
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 833188,
+      "ratio": 0.397295,
+      "compress_mibs": 93.94,
+      "decompress_mibs": 509.13
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1624151,
+      "ratio": 0.774456,
+      "compress_mibs": 294.04,
+      "decompress_mibs": 431.24
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 716756,
+      "ratio": 0.341776,
+      "compress_mibs": 133.25,
+      "decompress_mibs": 604.22
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 245456,
+      "ratio": 0.117043,
+      "compress_mibs": 319.02,
+      "decompress_mibs": 1731.02
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1189566,
+      "ratio": 0.567229,
+      "compress_mibs": 69.89,
+      "decompress_mibs": 368.95
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 791666,
+      "ratio": 0.377496,
+      "compress_mibs": 128.53,
+      "decompress_mibs": 752.23
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 654564,
+      "ratio": 0.31212,
+      "compress_mibs": 112.13,
+      "decompress_mibs": 604.11
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 637781,
+      "ratio": 0.304118,
+      "compress_mibs": 147.33,
+      "decompress_mibs": 705.36
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1581842,
+      "ratio": 0.754281,
+      "compress_mibs": 68.91,
+      "decompress_mibs": 374.01
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 647991,
+      "ratio": 0.308986,
+      "compress_mibs": 114.67,
+      "decompress_mibs": 653.82
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 340717,
+      "ratio": 0.162467,
+      "compress_mibs": 216.57,
+      "decompress_mibs": 1154.78
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1472622,
+      "ratio": 0.702201,
+      "compress_mibs": 74.01,
+      "decompress_mibs": 334.02
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 806125,
+      "ratio": 0.38439,
+      "compress_mibs": 52.43,
+      "decompress_mibs": 535.24
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1619694,
+      "ratio": 0.77233,
+      "compress_mibs": 144.33,
+      "decompress_mibs": 430.42
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 710641,
+      "ratio": 0.33886,
+      "compress_mibs": 80.97,
+      "decompress_mibs": 594.22
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 233145,
+      "ratio": 0.111172,
+      "compress_mibs": 227.27,
+      "decompress_mibs": 1782.75
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1172309,
+      "ratio": 0.559,
+      "compress_mibs": 52.17,
+      "decompress_mibs": 387.17
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 765979,
+      "ratio": 0.365247,
+      "compress_mibs": 101.12,
+      "decompress_mibs": 757.74
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 616671,
+      "ratio": 0.294052,
+      "compress_mibs": 65.54,
+      "decompress_mibs": 631.6
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 621849,
+      "ratio": 0.296521,
+      "compress_mibs": 93.51,
+      "decompress_mibs": 698.72
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1570777,
+      "ratio": 0.749005,
+      "compress_mibs": 51.91,
+      "decompress_mibs": 369.73
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 623430,
+      "ratio": 0.297275,
+      "compress_mibs": 75.37,
+      "decompress_mibs": 649.6
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 316825,
+      "ratio": 0.151074,
+      "compress_mibs": 152.78,
+      "decompress_mibs": 1250.7
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1460749,
+      "ratio": 0.696539,
+      "compress_mibs": 59.24,
+      "decompress_mibs": 348.01
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 801006,
+      "ratio": 0.381949,
+      "compress_mibs": 39.1,
+      "decompress_mibs": 560.83
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1616897,
+      "ratio": 0.770997,
+      "compress_mibs": 87.97,
+      "decompress_mibs": 435.28
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 709165,
+      "ratio": 0.338156,
+      "compress_mibs": 54.42,
+      "decompress_mibs": 611.66
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 222935,
+      "ratio": 0.106304,
+      "compress_mibs": 154.58,
+      "decompress_mibs": 1849.71
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1145811,
+      "ratio": 0.546365,
+      "compress_mibs": 39.69,
+      "decompress_mibs": 364.02
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 765856,
+      "ratio": 0.365189,
+      "compress_mibs": 68.4,
+      "decompress_mibs": 743.56
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 599824,
+      "ratio": 0.286018,
+      "compress_mibs": 47.09,
+      "decompress_mibs": 706.9
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 613394,
+      "ratio": 0.292489,
+      "compress_mibs": 66.9,
+      "decompress_mibs": 727.43
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1540470,
+      "ratio": 0.734553,
+      "compress_mibs": 34.93,
+      "decompress_mibs": 365.65
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 614588,
+      "ratio": 0.293058,
+      "compress_mibs": 55.96,
+      "decompress_mibs": 654.85
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 304983,
+      "ratio": 0.145427,
+      "compress_mibs": 113.15,
+      "decompress_mibs": 1294.95
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1429792,
+      "ratio": 0.681778,
+      "compress_mibs": 45.85,
+      "decompress_mibs": 327.41
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 796404,
+      "ratio": 0.379755,
+      "compress_mibs": 33.22,
+      "decompress_mibs": 555.89
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1616203,
+      "ratio": 0.770666,
+      "compress_mibs": 86.95,
+      "decompress_mibs": 436.58
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 705139,
+      "ratio": 0.336236,
+      "compress_mibs": 39.24,
+      "decompress_mibs": 638.01
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 212774,
+      "ratio": 0.101459,
+      "compress_mibs": 120.12,
+      "decompress_mibs": 1840.18
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1144095,
+      "ratio": 0.545547,
+      "compress_mibs": 37.03,
+      "decompress_mibs": 367.13
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 765183,
+      "ratio": 0.364868,
+      "compress_mibs": 59.87,
+      "decompress_mibs": 717.47
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 585899,
+      "ratio": 0.279378,
+      "compress_mibs": 35.01,
+      "decompress_mibs": 733.47
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 608738,
+      "ratio": 0.290269,
+      "compress_mibs": 57.03,
+      "decompress_mibs": 734.21
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1536685,
+      "ratio": 0.732749,
+      "compress_mibs": 31.5,
+      "decompress_mibs": 367.14
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 608361,
+      "ratio": 0.290089,
+      "compress_mibs": 47.83,
+      "decompress_mibs": 666.7
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 293833,
+      "ratio": 0.14011,
+      "compress_mibs": 86.06,
+      "decompress_mibs": 1233.52
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1429789,
+      "ratio": 0.681777,
+      "compress_mibs": 45.52,
+      "decompress_mibs": 328.94
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 790394,
+      "ratio": 0.376889,
+      "compress_mibs": 23.36,
+      "decompress_mibs": 544.24
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1615733,
+      "ratio": 0.770442,
+      "compress_mibs": 75.84,
+      "decompress_mibs": 433.92
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 701906,
+      "ratio": 0.334695,
+      "compress_mibs": 24.71,
+      "decompress_mibs": 635.38
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 203909,
+      "ratio": 0.097231,
+      "compress_mibs": 73.41,
+      "decompress_mibs": 1844.94
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1143531,
+      "ratio": 0.545278,
+      "compress_mibs": 28.96,
+      "decompress_mibs": 353.01
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 764083,
+      "ratio": 0.364343,
+      "compress_mibs": 50.05,
+      "decompress_mibs": 739.34
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 577920,
+      "ratio": 0.275574,
+      "compress_mibs": 21.96,
+      "decompress_mibs": 692.63
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 603544,
+      "ratio": 0.287792,
+      "compress_mibs": 39.08,
+      "decompress_mibs": 718.78
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1533377,
+      "ratio": 0.731171,
+      "compress_mibs": 23.95,
+      "decompress_mibs": 367.1
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 601704,
+      "ratio": 0.286915,
+      "compress_mibs": 33.46,
+      "decompress_mibs": 657.78
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 285574,
+      "ratio": 0.136172,
+      "compress_mibs": 56.55,
+      "decompress_mibs": 1165.26
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1429010,
+      "ratio": 0.681405,
+      "compress_mibs": 38.91,
+      "decompress_mibs": 329.77
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 771147,
+      "ratio": 0.367712,
+      "compress_mibs": 12.54,
+      "decompress_mibs": 557.17
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1615160,
+      "ratio": 0.770168,
+      "compress_mibs": 34.71,
+      "decompress_mibs": 429.41
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 685122,
+      "ratio": 0.326692,
+      "compress_mibs": 21.16,
+      "decompress_mibs": 572.58
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 200076,
+      "ratio": 0.095404,
+      "compress_mibs": 19.02,
+      "decompress_mibs": 1710.56
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1130212,
+      "ratio": 0.538927,
+      "compress_mibs": 16.74,
+      "decompress_mibs": 344.37
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 757091,
+      "ratio": 0.361009,
+      "compress_mibs": 17.43,
+      "decompress_mibs": 761.98
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 558024,
+      "ratio": 0.266087,
+      "compress_mibs": 11.59,
+      "decompress_mibs": 696.41
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 594136,
+      "ratio": 0.283306,
+      "compress_mibs": 16.16,
+      "decompress_mibs": 716.27
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1525210,
+      "ratio": 0.727277,
+      "compress_mibs": 19.05,
+      "decompress_mibs": 368.07
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 589216,
+      "ratio": 0.28096,
+      "compress_mibs": 12.03,
+      "decompress_mibs": 658.52
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 288197,
+      "ratio": 0.137423,
+      "compress_mibs": 17.52,
+      "decompress_mibs": 1257.65
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1388226,
+      "ratio": 0.661958,
+      "compress_mibs": 23.12,
+      "decompress_mibs": 304.33
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 763770,
+      "ratio": 0.364194,
+      "compress_mibs": 7.46,
+      "decompress_mibs": 551.79
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1613204,
+      "ratio": 0.769236,
+      "compress_mibs": 20.77,
+      "decompress_mibs": 413.34
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 673241,
+      "ratio": 0.321026,
+      "compress_mibs": 10.99,
+      "decompress_mibs": 625.45
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 195063,
+      "ratio": 0.093013,
+      "compress_mibs": 8.02,
+      "decompress_mibs": 1865.82
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1127513,
+      "ratio": 0.53764,
+      "compress_mibs": 11.79,
+      "decompress_mibs": 354.57
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 755236,
+      "ratio": 0.360125,
+      "compress_mibs": 10.91,
+      "decompress_mibs": 767.84
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 545992,
+      "ratio": 0.260349,
+      "compress_mibs": 6.87,
+      "decompress_mibs": 723.75
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 589189,
+      "ratio": 0.280947,
+      "compress_mibs": 10.13,
+      "decompress_mibs": 720.19
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1519047,
+      "ratio": 0.724338,
+      "compress_mibs": 13.46,
+      "decompress_mibs": 368.82
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 583299,
+      "ratio": 0.278139,
+      "compress_mibs": 7.46,
+      "decompress_mibs": 676.85
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 280669,
+      "ratio": 0.133833,
+      "compress_mibs": 9.71,
+      "decompress_mibs": 1338.62
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1386040,
+      "ratio": 0.660915,
+      "compress_mibs": 18.59,
+      "decompress_mibs": 303.58
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 758238,
+      "ratio": 0.361556,
+      "compress_mibs": 5.83,
+      "decompress_mibs": 568.23
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1612451,
+      "ratio": 0.768877,
+      "compress_mibs": 13.29,
+      "decompress_mibs": 431.23
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 666520,
+      "ratio": 0.317822,
+      "compress_mibs": 6.65,
+      "decompress_mibs": 634.05
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 191372,
+      "ratio": 0.091253,
+      "compress_mibs": 3.25,
+      "decompress_mibs": 1912.58
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1122974,
+      "ratio": 0.535476,
+      "compress_mibs": 8.68,
+      "decompress_mibs": 349.68
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 754800,
+      "ratio": 0.359917,
+      "compress_mibs": 10.02,
+      "decompress_mibs": 762.36
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 534148,
+      "ratio": 0.254702,
+      "compress_mibs": 3.87,
+      "decompress_mibs": 734.79
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 586158,
+      "ratio": 0.279502,
+      "compress_mibs": 5.82,
+      "decompress_mibs": 724.55
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1510863,
+      "ratio": 0.720436,
+      "compress_mibs": 9.88,
+      "decompress_mibs": 374.19
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 577395,
+      "ratio": 0.275323,
+      "compress_mibs": 3.82,
+      "decompress_mibs": 574.23
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 274058,
+      "ratio": 0.130681,
+      "compress_mibs": 4.04,
+      "decompress_mibs": 1182.1
+    },
+    {
+      "profile": "rust_unsafe_bt_dp_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1377489,
+      "ratio": 0.656838,
+      "compress_mibs": 15.65,
+      "decompress_mibs": 283.23
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 945652,
+      "ratio": 0.450922,
+      "compress_mibs": 68.8,
+      "decompress_mibs": 218.69
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1650554,
+      "ratio": 0.787045,
+      "compress_mibs": 166.28,
+      "decompress_mibs": 309.51
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 797196,
+      "ratio": 0.380133,
+      "compress_mibs": 184.2,
+      "decompress_mibs": 410.67
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 288898,
+      "ratio": 0.137757,
+      "compress_mibs": 449.3,
+      "decompress_mibs": 944.19
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1264597,
+      "ratio": 0.603007,
+      "compress_mibs": 101.97,
+      "decompress_mibs": 316.05
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 858533,
+      "ratio": 0.40938,
+      "compress_mibs": 178.94,
+      "decompress_mibs": 564.61
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 771081,
+      "ratio": 0.36768,
+      "compress_mibs": 206.5,
+      "decompress_mibs": 459.3
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 725600,
+      "ratio": 0.345993,
+      "compress_mibs": 227.9,
+      "decompress_mibs": 543.93
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1654835,
+      "ratio": 0.789087,
+      "compress_mibs": 112.63,
+      "decompress_mibs": 313.07
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 752877,
+      "ratio": 0.359,
+      "compress_mibs": 171.43,
+      "decompress_mibs": 452.21
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 426117,
+      "ratio": 0.203188,
+      "compress_mibs": 352.64,
+      "decompress_mibs": 808.23
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1544860,
+      "ratio": 0.736647,
+      "compress_mibs": 118.31,
+      "decompress_mibs": 294.29
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 862198,
+      "ratio": 0.411128,
+      "compress_mibs": 106.85,
+      "decompress_mibs": 437.81
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1633996,
+      "ratio": 0.77915,
+      "compress_mibs": 196.26,
+      "decompress_mibs": 397.38
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 740440,
+      "ratio": 0.353069,
+      "compress_mibs": 138.05,
+      "decompress_mibs": 493.49
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 256543,
+      "ratio": 0.122329,
+      "compress_mibs": 377.09,
+      "decompress_mibs": 1291.61
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1203605,
+      "ratio": 0.573924,
+      "compress_mibs": 71.0,
+      "decompress_mibs": 329.58
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 804703,
+      "ratio": 0.383712,
+      "compress_mibs": 121.02,
+      "decompress_mibs": 636.53
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 684529,
+      "ratio": 0.326409,
+      "compress_mibs": 139.3,
+      "decompress_mibs": 539.64
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 660848,
+      "ratio": 0.315117,
+      "compress_mibs": 163.89,
+      "decompress_mibs": 613.96
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1598611,
+      "ratio": 0.762277,
+      "compress_mibs": 59.64,
+      "decompress_mibs": 331.23
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 676127,
+      "ratio": 0.322402,
+      "compress_mibs": 127.83,
+      "decompress_mibs": 529.38
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 363775,
+      "ratio": 0.173461,
+      "compress_mibs": 262.93,
+      "decompress_mibs": 922.67
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1480422,
+      "ratio": 0.70592,
+      "compress_mibs": 60.43,
+      "decompress_mibs": 298.63
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 821656,
+      "ratio": 0.391796,
+      "compress_mibs": 58.94,
+      "decompress_mibs": 452.32
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1624329,
+      "ratio": 0.77454,
+      "compress_mibs": 51.6,
+      "decompress_mibs": 381.83
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 735468,
+      "ratio": 0.350698,
+      "compress_mibs": 76.32,
+      "decompress_mibs": 492.72
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 232475,
+      "ratio": 0.110853,
+      "compress_mibs": 212.75,
+      "decompress_mibs": 1338.31
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1164563,
+      "ratio": 0.555307,
+      "compress_mibs": 48.29,
+      "decompress_mibs": 320.35
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 771812,
+      "ratio": 0.368029,
+      "compress_mibs": 82.0,
+      "decompress_mibs": 681.7
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 630812,
+      "ratio": 0.300795,
+      "compress_mibs": 71.18,
+      "decompress_mibs": 524.09
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 631591,
+      "ratio": 0.301166,
+      "compress_mibs": 88.15,
+      "decompress_mibs": 621.63
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1562185,
+      "ratio": 0.744908,
+      "compress_mibs": 43.87,
+      "decompress_mibs": 319.3
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 632626,
+      "ratio": 0.30166,
+      "compress_mibs": 76.9,
+      "decompress_mibs": 521.59
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 323161,
+      "ratio": 0.154095,
+      "compress_mibs": 153.8,
+      "decompress_mibs": 994.14
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1441201,
+      "ratio": 0.687218,
+      "compress_mibs": 41.84,
+      "decompress_mibs": 273.91
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 807920,
+      "ratio": 0.385246,
+      "compress_mibs": 47.42,
+      "decompress_mibs": 462.73
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1622460,
+      "ratio": 0.773649,
+      "compress_mibs": 51.08,
+      "decompress_mibs": 380.07
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 720833,
+      "ratio": 0.34372,
+      "compress_mibs": 59.32,
+      "decompress_mibs": 508.44
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 220746,
+      "ratio": 0.10526,
+      "compress_mibs": 151.23,
+      "decompress_mibs": 1434.84
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1159225,
+      "ratio": 0.552762,
+      "compress_mibs": 43.9,
+      "decompress_mibs": 325.1
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 767140,
+      "ratio": 0.365801,
+      "compress_mibs": 68.4,
+      "decompress_mibs": 688.57
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 612951,
+      "ratio": 0.292278,
+      "compress_mibs": 55.14,
+      "decompress_mibs": 580.81
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 622344,
+      "ratio": 0.296757,
+      "compress_mibs": 74.63,
+      "decompress_mibs": 634.89
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1552169,
+      "ratio": 0.740132,
+      "compress_mibs": 39.41,
+      "decompress_mibs": 323.46
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 618410,
+      "ratio": 0.294881,
+      "compress_mibs": 63.99,
+      "decompress_mibs": 558.61
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 308147,
+      "ratio": 0.146936,
+      "compress_mibs": 119.87,
+      "decompress_mibs": 1029.9
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1441082,
+      "ratio": 0.687161,
+      "compress_mibs": 39.99,
+      "decompress_mibs": 269.07
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 795549,
+      "ratio": 0.379347,
+      "compress_mibs": 32.3,
+      "decompress_mibs": 461.38
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1615965,
+      "ratio": 0.770552,
+      "compress_mibs": 42.06,
+      "decompress_mibs": 396.19
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 709107,
+      "ratio": 0.338129,
+      "compress_mibs": 37.19,
+      "decompress_mibs": 523.69
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 219618,
+      "ratio": 0.104722,
+      "compress_mibs": 125.93,
+      "decompress_mibs": 1360.99
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1156748,
+      "ratio": 0.55158,
+      "compress_mibs": 32.25,
+      "decompress_mibs": 324.18
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 764185,
+      "ratio": 0.364392,
+      "compress_mibs": 54.78,
+      "decompress_mibs": 698.97
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 601488,
+      "ratio": 0.286812,
+      "compress_mibs": 34.66,
+      "decompress_mibs": 564.98
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 613743,
+      "ratio": 0.292655,
+      "compress_mibs": 54.82,
+      "decompress_mibs": 514.14
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1545941,
+      "ratio": 0.737162,
+      "compress_mibs": 23.29,
+      "decompress_mibs": 317.51
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 612413,
+      "ratio": 0.292021,
+      "compress_mibs": 47.86,
+      "decompress_mibs": 548.06
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 305981,
+      "ratio": 0.145903,
+      "compress_mibs": 102.96,
+      "decompress_mibs": 1032.54
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1440446,
+      "ratio": 0.686858,
+      "compress_mibs": 30.76,
+      "decompress_mibs": 269.62
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 790404,
+      "ratio": 0.376894,
+      "compress_mibs": 25.62,
+      "decompress_mibs": 446.04
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1615519,
+      "ratio": 0.770339,
+      "compress_mibs": 40.47,
+      "decompress_mibs": 393.85
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 704338,
+      "ratio": 0.335855,
+      "compress_mibs": 26.13,
+      "decompress_mibs": 534.61
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 209469,
+      "ratio": 0.099883,
+      "compress_mibs": 94.66,
+      "decompress_mibs": 1382.67
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1154798,
+      "ratio": 0.550651,
+      "compress_mibs": 29.07,
+      "decompress_mibs": 334.55
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 763291,
+      "ratio": 0.363966,
+      "compress_mibs": 46.14,
+      "decompress_mibs": 691.5
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 587185,
+      "ratio": 0.279992,
+      "compress_mibs": 26.3,
+      "decompress_mibs": 594.87
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 608908,
+      "ratio": 0.29035,
+      "compress_mibs": 44.88,
+      "decompress_mibs": 636.55
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1542289,
+      "ratio": 0.735421,
+      "compress_mibs": 24.71,
+      "decompress_mibs": 328.51
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 604161,
+      "ratio": 0.288086,
+      "compress_mibs": 39.0,
+      "decompress_mibs": 541.17
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 293954,
+      "ratio": 0.140168,
+      "compress_mibs": 74.86,
+      "decompress_mibs": 1072.08
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1440448,
+      "ratio": 0.686859,
+      "compress_mibs": 30.7,
+      "decompress_mibs": 275.25
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 788021,
+      "ratio": 0.375758,
+      "compress_mibs": 21.21,
+      "decompress_mibs": 458.28
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1615366,
+      "ratio": 0.770267,
+      "compress_mibs": 37.09,
+      "decompress_mibs": 373.93
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 701963,
+      "ratio": 0.334722,
+      "compress_mibs": 18.51,
+      "decompress_mibs": 507.76
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 205292,
+      "ratio": 0.097891,
+      "compress_mibs": 72.44,
+      "decompress_mibs": 1332.04
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1153860,
+      "ratio": 0.550203,
+      "compress_mibs": 27.0,
+      "decompress_mibs": 331.77
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 763206,
+      "ratio": 0.363925,
+      "compress_mibs": 44.78,
+      "decompress_mibs": 706.11
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 578271,
+      "ratio": 0.275741,
+      "compress_mibs": 17.7,
+      "decompress_mibs": 467.82
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 607198,
+      "ratio": 0.289535,
+      "compress_mibs": 27.57,
+      "decompress_mibs": 511.46
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1539040,
+      "ratio": 0.733871,
+      "compress_mibs": 16.13,
+      "decompress_mibs": 330.31
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 599746,
+      "ratio": 0.285981,
+      "compress_mibs": 29.76,
+      "decompress_mibs": 529.04
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 287388,
+      "ratio": 0.137037,
+      "compress_mibs": 57.26,
+      "decompress_mibs": 1078.21
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1440448,
+      "ratio": 0.686859,
+      "compress_mibs": 30.6,
+      "decompress_mibs": 278.99
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 786303,
+      "ratio": 0.374938,
+      "compress_mibs": 17.58,
+      "decompress_mibs": 453.13
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1615131,
+      "ratio": 0.770154,
+      "compress_mibs": 35.09,
+      "decompress_mibs": 397.23
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 700361,
+      "ratio": 0.333958,
+      "compress_mibs": 14.66,
+      "decompress_mibs": 550.26
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 201540,
+      "ratio": 0.096102,
+      "compress_mibs": 50.77,
+      "decompress_mibs": 1350.5
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1153351,
+      "ratio": 0.549961,
+      "compress_mibs": 24.73,
+      "decompress_mibs": 336.45
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 763197,
+      "ratio": 0.363921,
+      "compress_mibs": 43.89,
+      "decompress_mibs": 706.58
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 572258,
+      "ratio": 0.272874,
+      "compress_mibs": 11.45,
+      "decompress_mibs": 597.32
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 605225,
+      "ratio": 0.288594,
+      "compress_mibs": 28.57,
+      "decompress_mibs": 643.11
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1536368,
+      "ratio": 0.732597,
+      "compress_mibs": 18.87,
+      "decompress_mibs": 334.08
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 596406,
+      "ratio": 0.284389,
+      "compress_mibs": 23.13,
+      "decompress_mibs": 553.92
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 282117,
+      "ratio": 0.134524,
+      "compress_mibs": 41.1,
+      "decompress_mibs": 1102.34
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1440448,
+      "ratio": 0.686859,
+      "compress_mibs": 31.03,
+      "decompress_mibs": 270.51
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 765079,
+      "ratio": 0.364818,
+      "compress_mibs": 6.17,
+      "decompress_mibs": 507.72
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1612862,
+      "ratio": 0.769073,
+      "compress_mibs": 14.14,
+      "decompress_mibs": 396.23
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 681412,
+      "ratio": 0.324923,
+      "compress_mibs": 6.58,
+      "decompress_mibs": 512.4
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 197507,
+      "ratio": 0.094179,
+      "compress_mibs": 5.98,
+      "decompress_mibs": 1028.53
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1130667,
+      "ratio": 0.539144,
+      "compress_mibs": 9.84,
+      "decompress_mibs": 300.95
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 757256,
+      "ratio": 0.361088,
+      "compress_mibs": 8.73,
+      "decompress_mibs": 685.64
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 544162,
+      "ratio": 0.259477,
+      "compress_mibs": 4.0,
+      "decompress_mibs": 631.84
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 589806,
+      "ratio": 0.281241,
+      "compress_mibs": 6.98,
+      "decompress_mibs": 644.58
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1518420,
+      "ratio": 0.724039,
+      "compress_mibs": 9.9,
+      "decompress_mibs": 328.32
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 582998,
+      "ratio": 0.277995,
+      "compress_mibs": 5.07,
+      "decompress_mibs": 568.43
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 279497,
+      "ratio": 0.133275,
+      "compress_mibs": 6.82,
+      "decompress_mibs": 1108.04
+    },
+    {
+      "profile": "rust_safe_row_hash_bt",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1408044,
+      "ratio": 0.671408,
+      "compress_mibs": 15.25,
+      "decompress_mibs": 250.67
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 956135,
+      "ratio": 0.455921,
+      "compress_mibs": 145.93,
+      "decompress_mibs": 408.26
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1663674,
+      "ratio": 0.793302,
+      "compress_mibs": 567.84,
+      "decompress_mibs": 405.78
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 796304,
+      "ratio": 0.379707,
+      "compress_mibs": 200.72,
+      "decompress_mibs": 483.37
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 294987,
+      "ratio": 0.140661,
+      "compress_mibs": 464.98,
+      "decompress_mibs": 1257.47
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1275054,
+      "ratio": 0.607993,
+      "compress_mibs": 110.81,
+      "decompress_mibs": 362.66
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 886204,
+      "ratio": 0.422575,
+      "compress_mibs": 180.95,
+      "decompress_mibs": 629.95
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 796135,
+      "ratio": 0.379627,
+      "compress_mibs": 191.06,
+      "decompress_mibs": 472.73
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 730071,
+      "ratio": 0.348125,
+      "compress_mibs": 233.0,
+      "decompress_mibs": 606.0
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1663908,
+      "ratio": 0.793413,
+      "compress_mibs": 115.02,
+      "decompress_mibs": 345.85
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 764544,
+      "ratio": 0.364563,
+      "compress_mibs": 172.67,
+      "decompress_mibs": 530.29
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 416218,
+      "ratio": 0.198468,
+      "compress_mibs": 351.51,
+      "decompress_mibs": 947.73
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1580053,
+      "ratio": 0.753428,
+      "compress_mibs": 197.44,
+      "decompress_mibs": 348.92
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 857074,
+      "ratio": 0.408685,
+      "compress_mibs": 81.38,
+      "decompress_mibs": 569.08
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1626958,
+      "ratio": 0.775794,
+      "compress_mibs": 222.05,
+      "decompress_mibs": 415.51
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 730004,
+      "ratio": 0.348093,
+      "compress_mibs": 124.7,
+      "decompress_mibs": 597.19
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 260974,
+      "ratio": 0.124442,
+      "compress_mibs": 303.59,
+      "decompress_mibs": 1515.34
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1176156,
+      "ratio": 0.560835,
+      "compress_mibs": 61.8,
+      "decompress_mibs": 339.67
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 804279,
+      "ratio": 0.38351,
+      "compress_mibs": 118.47,
+      "decompress_mibs": 689.14
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 677508,
+      "ratio": 0.323061,
+      "compress_mibs": 112.02,
+      "decompress_mibs": 700.14
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 656234,
+      "ratio": 0.312917,
+      "compress_mibs": 144.57,
+      "decompress_mibs": 711.39
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1567997,
+      "ratio": 0.747679,
+      "compress_mibs": 58.35,
+      "decompress_mibs": 354.92
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 674181,
+      "ratio": 0.321475,
+      "compress_mibs": 110.6,
+      "decompress_mibs": 587.42
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 356183,
+      "ratio": 0.169841,
+      "compress_mibs": 215.72,
+      "decompress_mibs": 1151.44
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1437586,
+      "ratio": 0.685494,
+      "compress_mibs": 59.39,
+      "decompress_mibs": 309.21
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 822675,
+      "ratio": 0.392282,
+      "compress_mibs": 62.41,
+      "decompress_mibs": 567.17
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1617128,
+      "ratio": 0.771107,
+      "compress_mibs": 113.58,
+      "decompress_mibs": 411.59
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 724410,
+      "ratio": 0.345426,
+      "compress_mibs": 63.54,
+      "decompress_mibs": 463.82
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 236053,
+      "ratio": 0.112559,
+      "compress_mibs": 188.17,
+      "decompress_mibs": 1274.75
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1157926,
+      "ratio": 0.552142,
+      "compress_mibs": 45.75,
+      "decompress_mibs": 361.69
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 773586,
+      "ratio": 0.368875,
+      "compress_mibs": 85.54,
+      "decompress_mibs": 752.4
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 631373,
+      "ratio": 0.301062,
+      "compress_mibs": 77.71,
+      "decompress_mibs": 704.84
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 626049,
+      "ratio": 0.298523,
+      "compress_mibs": 87.42,
+      "decompress_mibs": 673.58
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1552167,
+      "ratio": 0.740131,
+      "compress_mibs": 40.66,
+      "decompress_mibs": 337.24
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 637436,
+      "ratio": 0.303953,
+      "compress_mibs": 76.04,
+      "decompress_mibs": 664.35
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 325345,
+      "ratio": 0.155137,
+      "compress_mibs": 138.55,
+      "decompress_mibs": 1160.99
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1429940,
+      "ratio": 0.681849,
+      "compress_mibs": 46.49,
+      "decompress_mibs": 320.93
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 807319,
+      "ratio": 0.38496,
+      "compress_mibs": 45.71,
+      "decompress_mibs": 580.7
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1615498,
+      "ratio": 0.770329,
+      "compress_mibs": 55.53,
+      "decompress_mibs": 412.81
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 710038,
+      "ratio": 0.338573,
+      "compress_mibs": 56.0,
+      "decompress_mibs": 490.0
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 226375,
+      "ratio": 0.107944,
+      "compress_mibs": 160.17,
+      "decompress_mibs": 1629.65
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1148841,
+      "ratio": 0.54781,
+      "compress_mibs": 40.94,
+      "decompress_mibs": 354.97
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 767883,
+      "ratio": 0.366155,
+      "compress_mibs": 71.2,
+      "decompress_mibs": 748.85
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 606971,
+      "ratio": 0.289426,
+      "compress_mibs": 54.32,
+      "decompress_mibs": 697.82
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 616410,
+      "ratio": 0.293927,
+      "compress_mibs": 67.42,
+      "decompress_mibs": 678.23
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1542054,
+      "ratio": 0.735309,
+      "compress_mibs": 34.85,
+      "decompress_mibs": 312.63
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 621568,
+      "ratio": 0.296387,
+      "compress_mibs": 61.28,
+      "decompress_mibs": 688.1
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 309421,
+      "ratio": 0.147543,
+      "compress_mibs": 117.73,
+      "decompress_mibs": 1236.46
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1427614,
+      "ratio": 0.680739,
+      "compress_mibs": 44.87,
+      "decompress_mibs": 328.4
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 800663,
+      "ratio": 0.381786,
+      "compress_mibs": 37.12,
+      "decompress_mibs": 589.99
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1614277,
+      "ratio": 0.769747,
+      "compress_mibs": 54.15,
+      "decompress_mibs": 410.32
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 704913,
+      "ratio": 0.336129,
+      "compress_mibs": 42.54,
+      "decompress_mibs": 592.26
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 219152,
+      "ratio": 0.1045,
+      "compress_mibs": 131.36,
+      "decompress_mibs": 1793.1
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1146530,
+      "ratio": 0.546708,
+      "compress_mibs": 37.95,
+      "decompress_mibs": 362.92
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 766030,
+      "ratio": 0.365272,
+      "compress_mibs": 62.83,
+      "decompress_mibs": 756.35
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 594244,
+      "ratio": 0.283358,
+      "compress_mibs": 42.06,
+      "decompress_mibs": 765.29
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 611442,
+      "ratio": 0.291558,
+      "compress_mibs": 57.62,
+      "decompress_mibs": 683.94
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1537688,
+      "ratio": 0.733227,
+      "compress_mibs": 29.82,
+      "decompress_mibs": 311.74
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 613556,
+      "ratio": 0.292566,
+      "compress_mibs": 49.63,
+      "decompress_mibs": 691.73
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 300272,
+      "ratio": 0.143181,
+      "compress_mibs": 99.39,
+      "decompress_mibs": 1284.85
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1427613,
+      "ratio": 0.680739,
+      "compress_mibs": 43.27,
+      "decompress_mibs": 322.34
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 793499,
+      "ratio": 0.37837,
+      "compress_mibs": 25.6,
+      "decompress_mibs": 471.76
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1613784,
+      "ratio": 0.769512,
+      "compress_mibs": 46.41,
+      "decompress_mibs": 407.7
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 700893,
+      "ratio": 0.334212,
+      "compress_mibs": 16.57,
+      "decompress_mibs": 592.7
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 208692,
+      "ratio": 0.099512,
+      "compress_mibs": 97.28,
+      "decompress_mibs": 1847.97
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1145015,
+      "ratio": 0.545986,
+      "compress_mibs": 30.6,
+      "decompress_mibs": 361.98
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 764501,
+      "ratio": 0.364542,
+      "compress_mibs": 52.43,
+      "decompress_mibs": 758.19
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 580174,
+      "ratio": 0.276649,
+      "compress_mibs": 22.75,
+      "decompress_mibs": 724.05
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 605829,
+      "ratio": 0.288882,
+      "compress_mibs": 38.16,
+      "decompress_mibs": 668.23
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1533760,
+      "ratio": 0.731354,
+      "compress_mibs": 25.38,
+      "decompress_mibs": 348.4
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 606338,
+      "ratio": 0.289124,
+      "compress_mibs": 34.63,
+      "decompress_mibs": 680.3
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 291113,
+      "ratio": 0.138813,
+      "compress_mibs": 70.66,
+      "decompress_mibs": 1255.25
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1426674,
+      "ratio": 0.680291,
+      "compress_mibs": 32.99,
+      "decompress_mibs": 276.69
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 792380,
+      "ratio": 0.377836,
+      "compress_mibs": 14.98,
+      "decompress_mibs": 465.58
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1613250,
+      "ratio": 0.769258,
+      "compress_mibs": 37.26,
+      "decompress_mibs": 409.9
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 701089,
+      "ratio": 0.334305,
+      "compress_mibs": 14.4,
+      "decompress_mibs": 571.1
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 200878,
+      "ratio": 0.095786,
+      "compress_mibs": 46.2,
+      "decompress_mibs": 1902.23
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1148301,
+      "ratio": 0.547553,
+      "compress_mibs": 21.3,
+      "decompress_mibs": 362.2
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 766368,
+      "ratio": 0.365433,
+      "compress_mibs": 47.75,
+      "decompress_mibs": 779.92
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 570601,
+      "ratio": 0.272084,
+      "compress_mibs": 12.03,
+      "decompress_mibs": 691.9
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 600351,
+      "ratio": 0.28627,
+      "compress_mibs": 27.6,
+      "decompress_mibs": 657.18
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1536316,
+      "ratio": 0.732573,
+      "compress_mibs": 19.14,
+      "decompress_mibs": 342.8
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 599556,
+      "ratio": 0.285891,
+      "compress_mibs": 22.26,
+      "decompress_mibs": 660.58
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 282626,
+      "ratio": 0.134767,
+      "compress_mibs": 37.69,
+      "decompress_mibs": 1255.22
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1446612,
+      "ratio": 0.689798,
+      "compress_mibs": 32.03,
+      "decompress_mibs": 303.22
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 757703,
+      "ratio": 0.361301,
+      "compress_mibs": 8.15,
+      "decompress_mibs": 579.44
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1613201,
+      "ratio": 0.769234,
+      "compress_mibs": 19.31,
+      "decompress_mibs": 410.08
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 671016,
+      "ratio": 0.319965,
+      "compress_mibs": 10.89,
+      "decompress_mibs": 623.73
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 199745,
+      "ratio": 0.095246,
+      "compress_mibs": 9.29,
+      "decompress_mibs": 1813.77
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1126828,
+      "ratio": 0.537313,
+      "compress_mibs": 11.86,
+      "decompress_mibs": 348.69
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 758692,
+      "ratio": 0.361773,
+      "compress_mibs": 11.86,
+      "decompress_mibs": 745.93
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 535945,
+      "ratio": 0.255558,
+      "compress_mibs": 6.72,
+      "decompress_mibs": 765.95
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 592037,
+      "ratio": 0.282305,
+      "compress_mibs": 10.4,
+      "decompress_mibs": 652.12
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1511741,
+      "ratio": 0.720854,
+      "compress_mibs": 13.05,
+      "decompress_mibs": 361.18
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 578541,
+      "ratio": 0.27587,
+      "compress_mibs": 7.74,
+      "decompress_mibs": 684.99
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 286020,
+      "ratio": 0.136385,
+      "compress_mibs": 11.57,
+      "decompress_mibs": 1156.0
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1386682,
+      "ratio": 0.661222,
+      "compress_mibs": 16.95,
+      "decompress_mibs": 306.84
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 755681,
+      "ratio": 0.360337,
+      "compress_mibs": 4.81,
+      "decompress_mibs": 583.7
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1611037,
+      "ratio": 0.768202,
+      "compress_mibs": 9.8,
+      "decompress_mibs": 376.41
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 665979,
+      "ratio": 0.317564,
+      "compress_mibs": 5.25,
+      "decompress_mibs": 645.55
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 186525,
+      "ratio": 0.088942,
+      "compress_mibs": 2.93,
+      "decompress_mibs": 1920.16
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1123737,
+      "ratio": 0.53584,
+      "compress_mibs": 7.18,
+      "decompress_mibs": 353.05
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 755691,
+      "ratio": 0.360342,
+      "compress_mibs": 7.09,
+      "decompress_mibs": 779.22
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 531555,
+      "ratio": 0.253465,
+      "compress_mibs": 3.92,
+      "decompress_mibs": 775.5
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 584735,
+      "ratio": 0.278823,
+      "compress_mibs": 4.26,
+      "decompress_mibs": 677.02
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1509435,
+      "ratio": 0.719755,
+      "compress_mibs": 7.87,
+      "decompress_mibs": 356.9
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 576566,
+      "ratio": 0.274928,
+      "compress_mibs": 4.08,
+      "decompress_mibs": 690.36
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 271865,
+      "ratio": 0.129635,
+      "compress_mibs": 3.72,
+      "decompress_mibs": 1251.63
+    },
+    {
+      "profile": "rust_unsafe_row_hash_simd",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1380726,
+      "ratio": 0.658381,
+      "compress_mibs": 11.07,
+      "decompress_mibs": 302.94
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 964558,
+      "ratio": 0.459937,
+      "compress_mibs": 144.7263,
+      "decompress_mibs": 190.528
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1650941,
+      "ratio": 0.78723,
+      "compress_mibs": 116.4105,
+      "decompress_mibs": 228.8797
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 811491,
+      "ratio": 0.386949,
+      "compress_mibs": 185.5444,
+      "decompress_mibs": 258.5245
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 296290,
+      "ratio": 0.141282,
+      "compress_mibs": 445.6444,
+      "decompress_mibs": 564.8867
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1266135,
+      "ratio": 0.60374,
+      "compress_mibs": 109.5172,
+      "decompress_mibs": 175.5852
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 843676,
+      "ratio": 0.402296,
+      "compress_mibs": 193.2821,
+      "decompress_mibs": 294.9804
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 801415,
+      "ratio": 0.382144,
+      "compress_mibs": 186.0996,
+      "decompress_mibs": 233.2853
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 769764,
+      "ratio": 0.367052,
+      "compress_mibs": 198.5336,
+      "decompress_mibs": 278.3507
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1654316,
+      "ratio": 0.788839,
+      "compress_mibs": 106.9082,
+      "decompress_mibs": 179.1685
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 771473,
+      "ratio": 0.367867,
+      "compress_mibs": 173.7558,
+      "decompress_mibs": 223.2312
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 428876,
+      "ratio": 0.204504,
+      "compress_mibs": 251.6038,
+      "decompress_mibs": 409.6693
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1534024,
+      "ratio": 0.73148,
+      "compress_mibs": 71.5923,
+      "decompress_mibs": 124.0158
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 860689,
+      "ratio": 0.410408,
+      "compress_mibs": 73.9128,
+      "decompress_mibs": 222.3883
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1639967,
+      "ratio": 0.781997,
+      "compress_mibs": 70.9494,
+      "decompress_mibs": 229.7866
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 759080,
+      "ratio": 0.361958,
+      "compress_mibs": 113.0748,
+      "decompress_mibs": 284.488
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 251443,
+      "ratio": 0.119897,
+      "compress_mibs": 285.9715,
+      "decompress_mibs": 664.403
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1204759,
+      "ratio": 0.574474,
+      "compress_mibs": 69.7892,
+      "decompress_mibs": 183.2352
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 799229,
+      "ratio": 0.381102,
+      "compress_mibs": 117.9934,
+      "decompress_mibs": 311.5679
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 687295,
+      "ratio": 0.327728,
+      "compress_mibs": 113.3593,
+      "decompress_mibs": 270.2485
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 697099,
+      "ratio": 0.332403,
+      "compress_mibs": 125.8971,
+      "decompress_mibs": 318.0548
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1610776,
+      "ratio": 0.768078,
+      "compress_mibs": 63.1746,
+      "decompress_mibs": 190.6917
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 675317,
+      "ratio": 0.322016,
+      "compress_mibs": 112.9738,
+      "decompress_mibs": 257.9742
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 358507,
+      "ratio": 0.170949,
+      "compress_mibs": 216.2607,
+      "decompress_mibs": 512.6651
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1491062,
+      "ratio": 0.710994,
+      "compress_mibs": 57.0432,
+      "decompress_mibs": 141.5448
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 829899,
+      "ratio": 0.395727,
+      "compress_mibs": 46.9348,
+      "decompress_mibs": 233.3414
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1634657,
+      "ratio": 0.779465,
+      "compress_mibs": 44.7776,
+      "decompress_mibs": 231.639
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 739394,
+      "ratio": 0.352571,
+      "compress_mibs": 67.2331,
+      "decompress_mibs": 301.266
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 226448,
+      "ratio": 0.107979,
+      "compress_mibs": 107.0008,
+      "decompress_mibs": 753.0685
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1189904,
+      "ratio": 0.56739,
+      "compress_mibs": 45.2945,
+      "decompress_mibs": 186.5982
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 792539,
+      "ratio": 0.377912,
+      "compress_mibs": 70.0198,
+      "decompress_mibs": 319.9587
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 625407,
+      "ratio": 0.298217,
+      "compress_mibs": 51.1035,
+      "decompress_mibs": 283.6716
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 661054,
+      "ratio": 0.315215,
+      "compress_mibs": 62.1737,
+      "decompress_mibs": 332.851
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1595750,
+      "ratio": 0.760913,
+      "compress_mibs": 41.7042,
+      "decompress_mibs": 193.6642
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 627977,
+      "ratio": 0.299443,
+      "compress_mibs": 57.9438,
+      "decompress_mibs": 278.9966
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 324618,
+      "ratio": 0.15479,
+      "compress_mibs": 90.3413,
+      "decompress_mibs": 572.2128
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1485814,
+      "ratio": 0.708491,
+      "compress_mibs": 41.3873,
+      "decompress_mibs": 160.8937
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 828444,
+      "ratio": 0.395033,
+      "compress_mibs": 51.8722,
+      "decompress_mibs": 235.8879
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1634657,
+      "ratio": 0.779465,
+      "compress_mibs": 31.0147,
+      "decompress_mibs": 224.663
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 739394,
+      "ratio": 0.352571,
+      "compress_mibs": 64.944,
+      "decompress_mibs": 299.2616
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 215399,
+      "ratio": 0.10271,
+      "compress_mibs": 66.2252,
+      "decompress_mibs": 554.2796
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1189904,
+      "ratio": 0.56739,
+      "compress_mibs": 45.6487,
+      "decompress_mibs": 184.1041
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 792539,
+      "ratio": 0.377912,
+      "compress_mibs": 67.3837,
+      "decompress_mibs": 307.2406
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 599141,
+      "ratio": 0.285693,
+      "compress_mibs": 32.1972,
+      "decompress_mibs": 286.6141
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 611665,
+      "ratio": 0.291665,
+      "compress_mibs": 32.3318,
+      "decompress_mibs": 227.1936
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1595750,
+      "ratio": 0.760913,
+      "compress_mibs": 41.9625,
+      "decompress_mibs": 193.7362
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 612896,
+      "ratio": 0.292252,
+      "compress_mibs": 36.5944,
+      "decompress_mibs": 275.3674
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 301262,
+      "ratio": 0.143653,
+      "compress_mibs": 55.4699,
+      "decompress_mibs": 445.338
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1485814,
+      "ratio": 0.708491,
+      "compress_mibs": 38.9217,
+      "decompress_mibs": 162.0392
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 828444,
+      "ratio": 0.395033,
+      "compress_mibs": 49.7736,
+      "decompress_mibs": 235.2136
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1615511,
+      "ratio": 0.770336,
+      "compress_mibs": 20.7003,
+      "decompress_mibs": 201.5769
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 739394,
+      "ratio": 0.352571,
+      "compress_mibs": 66.2256,
+      "decompress_mibs": 301.4656
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 204791,
+      "ratio": 0.097652,
+      "compress_mibs": 39.4797,
+      "decompress_mibs": 623.4523
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1189904,
+      "ratio": 0.56739,
+      "compress_mibs": 33.9591,
+      "decompress_mibs": 185.3718
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 792539,
+      "ratio": 0.377912,
+      "compress_mibs": 44.0259,
+      "decompress_mibs": 224.9158
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 599141,
+      "ratio": 0.285693,
+      "compress_mibs": 31.9908,
+      "decompress_mibs": 286.9505
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 611665,
+      "ratio": 0.291665,
+      "compress_mibs": 24.2333,
+      "decompress_mibs": 158.9955
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1595750,
+      "ratio": 0.760913,
+      "compress_mibs": 41.834,
+      "decompress_mibs": 192.8664
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 612896,
+      "ratio": 0.292252,
+      "compress_mibs": 36.3982,
+      "decompress_mibs": 275.6131
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 284220,
+      "ratio": 0.135527,
+      "compress_mibs": 33.5605,
+      "decompress_mibs": 461.527
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1429626,
+      "ratio": 0.681699,
+      "compress_mibs": 14.9857,
+      "decompress_mibs": 150.8334
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 796759,
+      "ratio": 0.379924,
+      "compress_mibs": 22.2443,
+      "decompress_mibs": 212.3129
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1615396,
+      "ratio": 0.770281,
+      "compress_mibs": 17.9512,
+      "decompress_mibs": 130.8509
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 698686,
+      "ratio": 0.333159,
+      "compress_mibs": 19.2459,
+      "decompress_mibs": 192.0586
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 213880,
+      "ratio": 0.101986,
+      "compress_mibs": 44.5796,
+      "decompress_mibs": 751.6683
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1148731,
+      "ratio": 0.547758,
+      "compress_mibs": 17.9598,
+      "decompress_mibs": 152.3068
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 765840,
+      "ratio": 0.365181,
+      "compress_mibs": 31.2215,
+      "decompress_mibs": 325.1906
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 589866,
+      "ratio": 0.28127,
+      "compress_mibs": 25.2519,
+      "decompress_mibs": 293.5805
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 610046,
+      "ratio": 0.290893,
+      "compress_mibs": 25.4981,
+      "decompress_mibs": 228.4768
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1543464,
+      "ratio": 0.735981,
+      "compress_mibs": 15.6306,
+      "decompress_mibs": 166.6775
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 609055,
+      "ratio": 0.29042,
+      "compress_mibs": 29.8696,
+      "decompress_mibs": 275.9404
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 297658,
+      "ratio": 0.141934,
+      "compress_mibs": 42.7737,
+      "decompress_mibs": 466.7756
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1431275,
+      "ratio": 0.682485,
+      "compress_mibs": 15.5193,
+      "decompress_mibs": 115.1391
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 800992,
+      "ratio": 0.381943,
+      "compress_mibs": 32.9944,
+      "decompress_mibs": 233.4497
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1615511,
+      "ratio": 0.770336,
+      "compress_mibs": 17.9654,
+      "decompress_mibs": 199.5702
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 697636,
+      "ratio": 0.332659,
+      "compress_mibs": 25.4004,
+      "decompress_mibs": 220.1938
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 204791,
+      "ratio": 0.097652,
+      "compress_mibs": 39.3584,
+      "decompress_mibs": 646.4364
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1146008,
+      "ratio": 0.546459,
+      "compress_mibs": 14.3342,
+      "decompress_mibs": 131.3285
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 763392,
+      "ratio": 0.364014,
+      "compress_mibs": 36.7296,
+      "decompress_mibs": 304.4413
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 577651,
+      "ratio": 0.275445,
+      "compress_mibs": 20.5115,
+      "decompress_mibs": 278.7237
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 644679,
+      "ratio": 0.307407,
+      "compress_mibs": 35.1239,
+      "decompress_mibs": 337.1723
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1539392,
+      "ratio": 0.734039,
+      "compress_mibs": 15.8305,
+      "decompress_mibs": 176.0097
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 601395,
+      "ratio": 0.286767,
+      "compress_mibs": 30.784,
+      "decompress_mibs": 278.96
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 284220,
+      "ratio": 0.135527,
+      "compress_mibs": 34.3246,
+      "decompress_mibs": 478.5595
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1429626,
+      "ratio": 0.681699,
+      "compress_mibs": 19.3697,
+      "decompress_mibs": 151.3006
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 789557,
+      "ratio": 0.37649,
+      "compress_mibs": 13.8269,
+      "decompress_mibs": 218.0193
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1614541,
+      "ratio": 0.769873,
+      "compress_mibs": 17.4631,
+      "decompress_mibs": 193.5095
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 693623,
+      "ratio": 0.330745,
+      "compress_mibs": 14.6116,
+      "decompress_mibs": 220.0542
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 204753,
+      "ratio": 0.097634,
+      "compress_mibs": 33.2647,
+      "decompress_mibs": 777.6425
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1145315,
+      "ratio": 0.546129,
+      "compress_mibs": 16.0924,
+      "decompress_mibs": 151.2326
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 765103,
+      "ratio": 0.36483,
+      "compress_mibs": 29.7133,
+      "decompress_mibs": 332.8558
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 571429,
+      "ratio": 0.272479,
+      "compress_mibs": 11.2473,
+      "decompress_mibs": 278.7686
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 606395,
+      "ratio": 0.289152,
+      "compress_mibs": 20.4058,
+      "decompress_mibs": 223.919
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1535070,
+      "ratio": 0.731978,
+      "compress_mibs": 12.9534,
+      "decompress_mibs": 175.679
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 600931,
+      "ratio": 0.286546,
+      "compress_mibs": 20.7485,
+      "decompress_mibs": 280.1218
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 284220,
+      "ratio": 0.135527,
+      "compress_mibs": 26.8797,
+      "decompress_mibs": 483.5588
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1431312,
+      "ratio": 0.682503,
+      "compress_mibs": 15.7802,
+      "decompress_mibs": 114.545
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 775769,
+      "ratio": 0.369915,
+      "compress_mibs": 2.2261,
+      "decompress_mibs": 175.0335
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1623200,
+      "ratio": 0.774002,
+      "compress_mibs": 3.1856,
+      "decompress_mibs": 83.8489
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 692740,
+      "ratio": 0.330324,
+      "compress_mibs": 2.4858,
+      "decompress_mibs": 178.516
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 202471,
+      "ratio": 0.096546,
+      "compress_mibs": 1.8854,
+      "decompress_mibs": 580.1263
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1134184,
+      "ratio": 0.540821,
+      "compress_mibs": 3.0511,
+      "decompress_mibs": 94.6266
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 762866,
+      "ratio": 0.363763,
+      "compress_mibs": 3.3384,
+      "decompress_mibs": 335.7842
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 555913,
+      "ratio": 0.26508,
+      "compress_mibs": 1.8292,
+      "decompress_mibs": 225.9891
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 597186,
+      "ratio": 0.28476,
+      "compress_mibs": 2.6192,
+      "decompress_mibs": 208.212
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1522630,
+      "ratio": 0.726047,
+      "compress_mibs": 3.0121,
+      "decompress_mibs": 84.5919
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 590101,
+      "ratio": 0.281382,
+      "compress_mibs": 2.2417,
+      "decompress_mibs": 206.2587
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 282940,
+      "ratio": 0.134916,
+      "compress_mibs": 2.1662,
+      "decompress_mibs": 446.292
+    },
+    {
+      "profile": "lean_zip_2f7a63f",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1409160,
+      "ratio": 0.67194,
+      "compress_mibs": 3.2433,
+      "decompress_mibs": 85.3108
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 944460,
+      "ratio": 0.450354,
+      "compress_mibs": 73.7577,
+      "decompress_mibs": 260.5616
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 904279,
+      "ratio": 0.431194,
+      "compress_mibs": 62.7752,
+      "decompress_mibs": 269.9292
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 863487,
+      "ratio": 0.411743,
+      "compress_mibs": 40.6051,
+      "decompress_mibs": 283.2818
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 843720,
+      "ratio": 0.402317,
+      "compress_mibs": 43.3495,
+      "decompress_mibs": 269.6601
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 813761,
+      "ratio": 0.388031,
+      "compress_mibs": 23.865,
+      "decompress_mibs": 264.3203
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 798103,
+      "ratio": 0.380565,
+      "compress_mibs": 14.8665,
+      "decompress_mibs": 272.1583
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 795110,
+      "ratio": 0.379138,
+      "compress_mibs": 12.355,
+      "decompress_mibs": 275.2674
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 793692,
+      "ratio": 0.378462,
+      "compress_mibs": 9.8047,
+      "decompress_mibs": 274.1042
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "dickens",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 793692,
+      "ratio": 0.378462,
+      "compress_mibs": 9.8104,
+      "decompress_mibs": 275.0044
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1635650,
+      "ratio": 0.779939,
+      "compress_mibs": 49.1335,
+      "decompress_mibs": 327.6282
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1633770,
+      "ratio": 0.779042,
+      "compress_mibs": 48.6016,
+      "decompress_mibs": 325.7974
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1632912,
+      "ratio": 0.778633,
+      "compress_mibs": 47.94,
+      "decompress_mibs": 328.4116
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1623666,
+      "ratio": 0.774224,
+      "compress_mibs": 42.7154,
+      "decompress_mibs": 328.5144
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1621208,
+      "ratio": 0.773052,
+      "compress_mibs": 41.37,
+      "decompress_mibs": 327.1409
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1620426,
+      "ratio": 0.772679,
+      "compress_mibs": 39.2365,
+      "decompress_mibs": 328.6951
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1620107,
+      "ratio": 0.772527,
+      "compress_mibs": 37.1802,
+      "decompress_mibs": 329.4805
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1619724,
+      "ratio": 0.772345,
+      "compress_mibs": 32.011,
+      "decompress_mibs": 330.3987
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mozilla",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1619641,
+      "ratio": 0.772305,
+      "compress_mibs": 26.0263,
+      "decompress_mibs": 331.0688
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 749495,
+      "ratio": 0.357387,
+      "compress_mibs": 100.4469,
+      "decompress_mibs": 344.815
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 744107,
+      "ratio": 0.354818,
+      "compress_mibs": 89.7481,
+      "decompress_mibs": 359.5621
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 712307,
+      "ratio": 0.339654,
+      "compress_mibs": 53.375,
+      "decompress_mibs": 384.2831
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 713145,
+      "ratio": 0.340054,
+      "compress_mibs": 61.0743,
+      "decompress_mibs": 351.7568
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 718224,
+      "ratio": 0.342476,
+      "compress_mibs": 29.8777,
+      "decompress_mibs": 330.2642
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 712682,
+      "ratio": 0.339833,
+      "compress_mibs": 16.4683,
+      "decompress_mibs": 331.5427
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 712190,
+      "ratio": 0.339599,
+      "compress_mibs": 12.5771,
+      "decompress_mibs": 333.6336
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 709153,
+      "ratio": 0.338151,
+      "compress_mibs": 5.5291,
+      "decompress_mibs": 345.6294
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "mr",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 709218,
+      "ratio": 0.338181,
+      "compress_mibs": 4.9223,
+      "decompress_mibs": 348.2328
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 305872,
+      "ratio": 0.145851,
+      "compress_mibs": 200.2572,
+      "decompress_mibs": 677.2721
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 286062,
+      "ratio": 0.136405,
+      "compress_mibs": 186.6462,
+      "decompress_mibs": 723.9667
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 267373,
+      "ratio": 0.127493,
+      "compress_mibs": 160.0069,
+      "decompress_mibs": 793.6186
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 248182,
+      "ratio": 0.118342,
+      "compress_mibs": 119.7967,
+      "decompress_mibs": 772.9716
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 226505,
+      "ratio": 0.108006,
+      "compress_mibs": 96.0996,
+      "decompress_mibs": 831.277
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 214933,
+      "ratio": 0.102488,
+      "compress_mibs": 68.3563,
+      "decompress_mibs": 871.4403
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 210897,
+      "ratio": 0.100564,
+      "compress_mibs": 53.3881,
+      "decompress_mibs": 867.3384
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 203543,
+      "ratio": 0.097057,
+      "compress_mibs": 22.4453,
+      "decompress_mibs": 895.6027
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "nci",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 200716,
+      "ratio": 0.095709,
+      "compress_mibs": 12.1762,
+      "decompress_mibs": 919.4566
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1218335,
+      "ratio": 0.580947,
+      "compress_mibs": 48.3199,
+      "decompress_mibs": 174.2115
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1199177,
+      "ratio": 0.571812,
+      "compress_mibs": 43.7184,
+      "decompress_mibs": 177.4151
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1181593,
+      "ratio": 0.563427,
+      "compress_mibs": 34.7306,
+      "decompress_mibs": 181.0871
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1170995,
+      "ratio": 0.558374,
+      "compress_mibs": 32.3762,
+      "decompress_mibs": 183.8898
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1156813,
+      "ratio": 0.551611,
+      "compress_mibs": 23.8839,
+      "decompress_mibs": 186.7582
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1150328,
+      "ratio": 0.548519,
+      "compress_mibs": 17.2933,
+      "decompress_mibs": 188.3761
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1149021,
+      "ratio": 0.547896,
+      "compress_mibs": 14.9329,
+      "decompress_mibs": 189.9174
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1148090,
+      "ratio": 0.547452,
+      "compress_mibs": 12.6589,
+      "decompress_mibs": 190.0366
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "ooffice",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1148079,
+      "ratio": 0.547447,
+      "compress_mibs": 12.5602,
+      "decompress_mibs": 190.273
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 851156,
+      "ratio": 0.405863,
+      "compress_mibs": 81.2756,
+      "decompress_mibs": 320.5196
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 833523,
+      "ratio": 0.397455,
+      "compress_mibs": 75.4099,
+      "decompress_mibs": 332.0979
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 821656,
+      "ratio": 0.391796,
+      "compress_mibs": 62.0454,
+      "decompress_mibs": 344.2856
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 799236,
+      "ratio": 0.381105,
+      "compress_mibs": 54.5914,
+      "decompress_mibs": 342.7877
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 784255,
+      "ratio": 0.373962,
+      "compress_mibs": 41.8548,
+      "decompress_mibs": 338.2675
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 772374,
+      "ratio": 0.368297,
+      "compress_mibs": 31.1503,
+      "decompress_mibs": 279.4587
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 768504,
+      "ratio": 0.366451,
+      "compress_mibs": 25.3549,
+      "decompress_mibs": 351.6965
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 767773,
+      "ratio": 0.366103,
+      "compress_mibs": 21.901,
+      "decompress_mibs": 352.7854
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "osdb",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 767773,
+      "ratio": 0.366103,
+      "compress_mibs": 21.9116,
+      "decompress_mibs": 352.7586
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 746908,
+      "ratio": 0.356153,
+      "compress_mibs": 85.444,
+      "decompress_mibs": 289.6678
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 709954,
+      "ratio": 0.338532,
+      "compress_mibs": 74.2097,
+      "decompress_mibs": 284.128
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 670891,
+      "ratio": 0.319906,
+      "compress_mibs": 48.5208,
+      "decompress_mibs": 321.7863
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 644207,
+      "ratio": 0.307182,
+      "compress_mibs": 53.9907,
+      "decompress_mibs": 320.9082
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 605891,
+      "ratio": 0.288911,
+      "compress_mibs": 28.9673,
+      "decompress_mibs": 317.3279
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 583436,
+      "ratio": 0.278204,
+      "compress_mibs": 15.4334,
+      "decompress_mibs": 327.8355
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 576914,
+      "ratio": 0.275094,
+      "compress_mibs": 10.8521,
+      "decompress_mibs": 329.5549
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 572202,
+      "ratio": 0.272847,
+      "compress_mibs": 5.0722,
+      "decompress_mibs": 324.5659
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "reymont",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 572191,
+      "ratio": 0.272842,
+      "compress_mibs": 5.0549,
+      "decompress_mibs": 324.7873
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 709948,
+      "ratio": 0.33853,
+      "compress_mibs": 95.1272,
+      "decompress_mibs": 334.0792
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 684085,
+      "ratio": 0.326197,
+      "compress_mibs": 87.419,
+      "decompress_mibs": 347.443
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 666546,
+      "ratio": 0.317834,
+      "compress_mibs": 69.9593,
+      "decompress_mibs": 356.9787
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 635738,
+      "ratio": 0.303144,
+      "compress_mibs": 64.0795,
+      "decompress_mibs": 353.668
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 618633,
+      "ratio": 0.294987,
+      "compress_mibs": 43.9134,
+      "decompress_mibs": 360.8658
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 612326,
+      "ratio": 0.29198,
+      "compress_mibs": 29.3874,
+      "decompress_mibs": 367.0786
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 610819,
+      "ratio": 0.291261,
+      "compress_mibs": 24.8474,
+      "decompress_mibs": 369.3896
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 609263,
+      "ratio": 0.290519,
+      "compress_mibs": 19.241,
+      "decompress_mibs": 369.6625
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "samba",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 609131,
+      "ratio": 0.290456,
+      "compress_mibs": 18.6038,
+      "decompress_mibs": 370.3507
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1607651,
+      "ratio": 0.766588,
+      "compress_mibs": 42.2016,
+      "decompress_mibs": 221.9989
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1590793,
+      "ratio": 0.758549,
+      "compress_mibs": 37.9311,
+      "decompress_mibs": 227.5326
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1572350,
+      "ratio": 0.749755,
+      "compress_mibs": 30.6877,
+      "decompress_mibs": 234.7653
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1555002,
+      "ratio": 0.741483,
+      "compress_mibs": 30.986,
+      "decompress_mibs": 244.7968
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1546276,
+      "ratio": 0.737322,
+      "compress_mibs": 21.6684,
+      "decompress_mibs": 242.3576
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1535086,
+      "ratio": 0.731986,
+      "compress_mibs": 15.4446,
+      "decompress_mibs": 247.0408
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1533565,
+      "ratio": 0.731261,
+      "compress_mibs": 13.7969,
+      "decompress_mibs": 247.6103
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1532034,
+      "ratio": 0.730531,
+      "compress_mibs": 9.7923,
+      "decompress_mibs": 248.205
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "sao",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1532034,
+      "ratio": 0.730531,
+      "compress_mibs": 9.7842,
+      "decompress_mibs": 248.5619
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 750243,
+      "ratio": 0.357744,
+      "compress_mibs": 90.2784,
+      "decompress_mibs": 294.464
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 713701,
+      "ratio": 0.340319,
+      "compress_mibs": 80.1205,
+      "decompress_mibs": 310.3943
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 683924,
+      "ratio": 0.32612,
+      "compress_mibs": 61.1553,
+      "decompress_mibs": 321.861
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 649010,
+      "ratio": 0.309472,
+      "compress_mibs": 57.2694,
+      "decompress_mibs": 312.0363
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 621241,
+      "ratio": 0.296231,
+      "compress_mibs": 35.1626,
+      "decompress_mibs": 307.3901
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 609981,
+      "ratio": 0.290862,
+      "compress_mibs": 24.6299,
+      "decompress_mibs": 315.9237
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 606280,
+      "ratio": 0.289097,
+      "compress_mibs": 20.5146,
+      "decompress_mibs": 317.6765
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 603598,
+      "ratio": 0.287818,
+      "compress_mibs": 15.495,
+      "decompress_mibs": 316.8022
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "webster",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 603580,
+      "ratio": 0.287809,
+      "compress_mibs": 15.304,
+      "decompress_mibs": 319.1535
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 1445962,
+      "ratio": 0.689488,
+      "compress_mibs": 49.862,
+      "decompress_mibs": 193.2149
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 1435861,
+      "ratio": 0.684672,
+      "compress_mibs": 45.7332,
+      "decompress_mibs": 204.0356
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 1421699,
+      "ratio": 0.677919,
+      "compress_mibs": 36.1598,
+      "decompress_mibs": 221.4758
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 1449660,
+      "ratio": 0.691252,
+      "compress_mibs": 32.3707,
+      "decompress_mibs": 180.3529
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 1436810,
+      "ratio": 0.685124,
+      "compress_mibs": 23.5365,
+      "decompress_mibs": 190.2204
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 1432789,
+      "ratio": 0.683207,
+      "compress_mibs": 21.5717,
+      "decompress_mibs": 193.8262
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 1432789,
+      "ratio": 0.683207,
+      "compress_mibs": 21.6118,
+      "decompress_mibs": 193.9059
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 1432788,
+      "ratio": 0.683207,
+      "compress_mibs": 21.5624,
+      "decompress_mibs": 194.3118
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "x-ray",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 1432788,
+      "ratio": 0.683207,
+      "compress_mibs": 21.6106,
+      "decompress_mibs": 193.4031
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 1,
+      "out_size": 415120,
+      "ratio": 0.197945,
+      "compress_mibs": 156.2755,
+      "decompress_mibs": 504.5575
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 2,
+      "out_size": 380984,
+      "ratio": 0.181667,
+      "compress_mibs": 146.7631,
+      "decompress_mibs": 551.227
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 3,
+      "out_size": 350656,
+      "ratio": 0.167206,
+      "compress_mibs": 114.8888,
+      "decompress_mibs": 588.9086
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 4,
+      "out_size": 351844,
+      "ratio": 0.167772,
+      "compress_mibs": 94.9751,
+      "decompress_mibs": 548.4544
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 5,
+      "out_size": 316365,
+      "ratio": 0.150855,
+      "compress_mibs": 66.8833,
+      "decompress_mibs": 585.5349
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 6,
+      "out_size": 297772,
+      "ratio": 0.141989,
+      "compress_mibs": 45.698,
+      "decompress_mibs": 637.6337
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 7,
+      "out_size": 290658,
+      "ratio": 0.138597,
+      "compress_mibs": 37.8063,
+      "decompress_mibs": 635.655
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 8,
+      "out_size": 283639,
+      "ratio": 0.13525,
+      "compress_mibs": 22.2363,
+      "decompress_mibs": 666.1488
+    },
+    {
+      "profile": "zlib_1_3_2",
+      "file": "xml",
+      "size": 2097152,
+      "level": 9,
+      "out_size": 283400,
+      "ratio": 0.135136,
+      "compress_mibs": 20.3049,
+      "decompress_mibs": 663.9246
+    }
+  ]
+}

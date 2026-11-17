@@ -303,6 +303,51 @@ Why **both** `fs::canonicalize(path)` and `(meta.dev(), meta.ino())` on the open
 - `SourceMap` keys its internal cache by un-canonicalized `FileName`, so `./lib.rs` and `sub/../lib.rs` both invoke `FileLoader::read_file`. Canonicalizing via `fs::canonicalize` collapses symlinks, `.`, and `..` to a single `PathBuf` key (`pattern4_alias_caught`).
 - However, `fs::canonicalize` does **not** collapse POSIX hardlinks: two hardlinks `/dir/lib.rs` and `/dir/hardlink_lib.rs` resolve to two distinct canonical `PathBuf`s that share the same underlying inode `(meta.dev(), meta.ino())`. Checking `fstat` `(st_dev, st_ino)` on the open `File` handle detects any mid-compilation mutation across hardlinks (`pattern4_hardlink_caught`), while copying declared inputs into a fresh per-invocation staging directory before compilation eliminates external hardlinks altogether.
 
+#### 5.1 Fail-Closed `FileLoader` Refusals Triggered by Standard-Library Macro Spans
+
+Pattern 4 must distinguish source-file integrity checks on user crate files from
+unsatisfiable source-snippet reads triggered inside standard-library macro
+expansions. In `rust-lang/rust` (`f8a08b688cbe`), builtin formatting expansion
+calls `SourceMap::span_to_snippet(unexpanded_fmt_span).ok()` unconditionally
+during `make_format_args` (`compiler/rustc_builtin_macros/src/format.rs:272`),
+before lowering or dead-code elimination. When a format string literal originates
+inside `core`'s own `SourceFile` rather than the caller's token tree,
+`span_to_snippet` invokes `ensure_source_file_source_present`, causing
+`FileLoader::read_file` to request `library/core/src/panic.rs` or
+`library/core/src/macros/mod.rs`:
+
+- **Why nested standard-library format macros trigger undeclared reads:** In
+  Editions `2021` and `2024`, `core::panic::unreachable_2021`
+  (`library/core/src/panic.rs:89-96`) expands `unreachable!("msg")` and
+  `unreachable!("bad {}", x)` to
+  `$crate::panic!("internal error: entered unreachable code: {}", $crate::format_args!(...))`.
+  In `library/core/src/macros/mod.rs:796-803` and `876-883`, `unimplemented!("msg")`
+  and `todo!("msg")` likewise wrap `$crate::format_args!(...)` inside an outer
+  `$crate::panic!("...: {}", ...)` defined in `core`. Because the outer literal
+  carries a span inside `core`, expanding even an `#[allow(unused)]` function
+  under `-C opt-level=0 -C debug-assertions=no -C overflow-checks=no` issues an
+  undeclared read against `core/src/panic.rs` (`unreachable!`) or
+  `core/src/macros/mod.rs` (`todo!`, `unimplemented!`), identically whether
+  `rust-src` is installed (`<sysroot>/lib/rustlib/src/...`) or stripped (`--sysroot`
+  without `lib/rustlib/src`, falling back to `/rustc/<sha>/library/core/src/...`).
+  Edition `2015` `unreachable!("bad {}", x)` also triggers `core/src/panic.rs`
+  via `$crate::concat!` token spans (`panic.rs:80-82`), whereas single-literal
+  `unreachable!("msg")` in `2015` routes to `unreachable_display` (`panic.rs:77-79`)
+  with zero reads.
+- **Why direct-span macros and `0`-arg forms admit cleanly:** `panic!("msg")`,
+  `panic!("bad {}", x)`, `assert!(...)`, `assert_eq!(...)`, `debug_assert!(...)`,
+  and bare `0`-argument `unreachable!()`, `todo!()`, and `unimplemented!()` either
+  forward the caller's own literal span into `format_args!` or bypass
+  `format_args!` (`panicking::panic(...)`), issuing zero reads outside declared
+  crate inputs (`run_fileloader_macro_probe.py`: `32/32` edition × sysroot cells
+  verified).
+- **Auditor policy implication:** Even though `make_format_args` discards the
+  error via `.ok()` so `rustc` exits `0`, a Pattern 4 `FileLoader` that logs and
+  fail-closes on *every* refused `read_file` rejects ordinary dependencies
+  containing `unreachable!("...")` on unselected paths unless either the loader
+  exempts synthetic `.rmeta` snippet lookups or downstream code avoids nested-literal
+  `core` format wrappers on the crate-wide AST.
+
 ---
 
 ## Boundaries
@@ -320,6 +365,10 @@ Why **both** `fs::canonicalize(path)` and `(meta.dev(), meta.ino())` on the open
 
 ### 1. Primary Upstream Source Coordinates
 
+- **`rust-lang/rust` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`, `1.98.0-nightly`):**
+  - `compiler/rustc_builtin_macros/src/format.rs:272` (`make_format_args` calling `SourceMap::span_to_snippet(unexpanded_fmt_span).ok()`).
+  - `compiler/rustc_span/src/source_map.rs:611-617, 1058-1070` (`span_to_snippet`, `ensure_source_file_source_present`).
+  - `library/core/src/panic.rs:71-96` (`unreachable_2015`, `unreachable_2021`) and `library/core/src/macros/mod.rs:796-803, 876-883` (`unimplemented!`, `todo!`).
 - **`rust-lang/rust` (`49d734536222bf28bb6d07d885b3a81d145981da`):**
   - `compiler/rustc_span/src/source_map.rs:80-182, 280-426, 1096-1121, 1229-1288` (`FileLoader`, `RealFileLoader`, `SourceMap::load_file`, `load_binary_file`, `try_new_source_file`, `ensure_source_file_source_present`, `FilePathMapping::to_real_filename`).
   - `compiler/rustc_span/src/lib.rs:327-358, 2132-2327, 2552-2626` (`RealFileName::hash`, `StableSourceFileId`, `SourceFile::new`, `add_external_src`, `src_modified`, `normalize_src`).
@@ -348,19 +397,22 @@ Why **both** `fs::canonicalize(path)` and `(meta.dev(), meta.ino())` on the open
 - [`support/rustc_concurrent_source_probes.py`](support/rustc_concurrent_source_probes.py) and [`support/rustc_probe_results.json`](support/rustc_probe_results.json): Standalone FIFO-synchronized `rustc 1.101.0-nightly` probe suite covering intra-crate temporal skew (`Exp 1`), non-canonical path and symlink split-brain (`Exp 2`), `include!` vs. `include_str!` vs. `include_bytes!` caching and deletion (`Exp 3a–3c`), `write_out_deps` `file_depinfo` post-expansion checksum mismatch (`Exp 3d`), `collect_invocations` `mod` vs. macro ordering (`Exp 3e`), and cross-crate `ensure_source_file_source_present` `src_hash` validation (`Exp 4a–4d`).
 - [`support/compiler_mmap_and_fifo_probes.py`](support/compiler_mmap_and_fifo_probes.py) and [`support/compiler_probe_results.json`](support/compiler_probe_results.json): Standalone `strace` ingestion matrix across `clang-19`, `gcc-15`, `rustc`, `go tool compile`, and `javac` at $1{,}000\text{ B}$, $16{,}384\text{ B}$, and $20{,}000\text{ B}$ (`Exp 1`), plus FIFO-synchronized `clang-19` vs. `gcc-15` probes for in-place `mmap` page-cache mutation (`Exp 2a`), `ftruncate(0)` `SIGBUS` (`Exp 2b`), NUL-sentinel append overrun (`Exp 2c`), and re-included unguarded headers (`Exp 2d`).
 - [`support/cargo_and_driver_toctou_probes.py`](support/cargo_and_driver_toctou_probes.py) and [`support/cargo_and_driver_probe_results.json`](support/cargo_and_driver_probe_results.json): Standalone probe suite for Cargo `Mtime` (`Probe 1A`, `Probe 1B`), Cargo `-Z checksum-freshness` (`Probe 2A`, `Probe 2B` `proc_macro::tracked::path` poisoning, `Probe 2C` non-canonical alias poisoning), GNU Make (`Probe 3`), and the five `rustc_driver` source-binding patterns (`Probe 4`, Patterns 1–5).
+- [`support/fileloader_macro_probe.rs`](support/fileloader_macro_probe.rs) and [`support/run_fileloader_macro_probe.py`](support/run_fileloader_macro_probe.py): Standalone `rustc_driver` closed-namespace `FileLoader` probe verifying across `32` edition × sysroot cells (`2015`/`2018`/`2021`/`2024`, default vs. stripped `--sysroot`) which `unreachable!`/`todo!`/`unimplemented!`/`panic!`/`assert!` expansions trigger `SourceMap::span_to_snippet` reads into `library/core/src/{panic,macros/mod}.rs`.
 
 ---
 
 ## Revalidation
 
-Run the three self-contained probe suites from a checkout of this package:
+Run the four self-contained probe suites from a checkout of this package:
 
 ```console
 python3 reports/compiler-concurrent-source-modification-and-hermetic-input-binding/support/rustc_concurrent_source_probes.py
 python3 reports/compiler-concurrent-source-modification-and-hermetic-input-binding/support/compiler_mmap_and_fifo_probes.py
 python3 reports/compiler-concurrent-source-modification-and-hermetic-input-binding/support/cargo_and_driver_toctou_probes.py
+python3 reports/compiler-concurrent-source-modification-and-hermetic-input-binding/support/run_fileloader_macro_probe.py
 ```
 
 1. **`rustc_concurrent_source_probes.py`** verifies that `Exp 1` outputs `first=10, second=20`, `Exp 2` outputs `a=1, b=2, c=2` from a single inode, `Exp 3a–3e` reproduce the `load_file` vs. `load_binary_file` and `write_out_deps` behaviors, and `Exp 4a–4d` reproduce cross-crate snippet suppression on modified `.rmeta` sources.
 2. **`compiler_mmap_and_fifo_probes.py`** verifies the 15-cell `strace` syscall matrix (`clang-19` switching from `pread64` at $1{,}000\text{ B}$ and $16{,}384\text{ B}$ to `mmap` at $20{,}000\text{ B}$) and confirms `clang-19`'s live `mmap` token mutation (`211`), `SIGBUS` (`254`) on `ftruncate(0)` and EOF append, and `gcc-15`'s re-read of unguarded headers (`12` vs. `11`).
 3. **`cargo_and_driver_toctou_probes.py`** verifies Cargo `Mtime` same-tick poisoning, both Cargo `-Z checksum-freshness` poisoning vectors (`tracked::path` and non-canonical path aliases), GNU Make mid-build poisoning, and `rustc_driver` Patterns 1–5.
+4. **`run_fileloader_macro_probe.py`** verifies all `32` macro-expansion cells under a fail-closed `FileLoader` (requiring an installed `rustc-dev` nightly component), confirming exits `3` with `core/src/{panic,macros/mod}.rs` refusals for nested-`format_args!` expansions and exits `0` for direct-span and `0`-argument forms.

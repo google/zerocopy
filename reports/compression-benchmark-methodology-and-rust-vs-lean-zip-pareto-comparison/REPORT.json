@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "domains",
+    "domains/compression",
+    "systems",
+    "lean",
+    "rust"
+  ],
+  "subjects": [
+    {
+      "name": "lean-zip verified DEFLATE/INFLATE implementation",
+      "identity": {
+        "repository": "kim-em/lean-zip",
+        "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb",
+        "ref": "master"
+      }
+    },
+    {
+      "name": "miniz_oxide upstream pure-Rust baseline",
+      "identity": {
+        "repository": "Frommi/miniz_oxide",
+        "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38"
+      }
+    },
+    {
+      "name": "zlib v1.3.2 C baseline",
+      "identity": {
+        "repository": "madler/zlib",
+        "revision": "da607da739fa6047df13e66a2af6b8bec7c2a498",
+        "version": "1.3.2"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain v4.35.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "11acb17ec6b07a8f9e9173e6845197929540936b",
+        "version": "v4.35.0-rc2"
+      }
+    },
+    {
+      "name": "Rust nightly toolchain 1.102.0-nightly (LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    }
+  ],
+  "observed_at": "2026-11-17"
+}

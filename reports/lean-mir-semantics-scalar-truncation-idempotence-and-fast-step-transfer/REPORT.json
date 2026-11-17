@@ -1,0 +1,45 @@
+{
+  "topics": [
+    "lean",
+    "lean/kernel",
+    "lean/elaboration",
+    "lean/codegen",
+    "lean/memory-management",
+    "verification",
+    "verification/soundness",
+    "anneal"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain v4.34.1 (kernel, LCNF, Perceus ExplicitRC, WF.Fix, EmitC)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain v4.35.0-rc2 (LCNF.floatLetIn IO ordering and lean.h C ABI evolution)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "11acb17ec6b07a8f9e9173e6845197929540936b",
+        "version": "v4.35.0-rc2"
+      }
+    },
+    {
+      "name": "Anneal MIR integration branch baseline (Trusted.MirAst, Trusted.MirSemantics, Theory.MirWp)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "31b91b61b84e0058db44cacbd6d189a90433c2d1"
+      }
+    },
+    {
+      "name": "kim-em/lean-zip native codec patterns motivating FFI and WF cures",
+      "identity": {
+        "repository": "kim-em/lean-zip",
+        "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb"
+      }
+    }
+  ],
+  "observed_at": "2026-11-17"
+}
