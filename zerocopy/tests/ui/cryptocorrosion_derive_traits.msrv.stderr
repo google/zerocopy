@@ -24,5 +24,19 @@ error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`,
    |
    = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 2 previous errors
+error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
+  --> $DIR/cryptocorrosion_derive_traits.rs:27:1
+   |
+27 | / zerocopy::cryptocorrosion_derive_traits! {
+28 | |
+29 | |     @munch_attrs
+30 | |     tag: (__internal_cryptocorrosion_muncher_tag)
+...  |
+33 | |     tokens: (pub struct BypassedAttribute(u8);)
+34 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 3 previous errors
 
