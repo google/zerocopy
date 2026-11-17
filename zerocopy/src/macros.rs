@@ -989,23 +989,124 @@ macro_rules! include_value {
 macro_rules! cryptocorrosion_derive_traits {
     (
         #[repr($repr:ident)]
-        $(#[$attr:meta])*
-        $vis:vis struct $name:ident $(<$($tyvar:ident),*>)?
-        $(
-            (
-                $($tuple_field_vis:vis $tuple_field_ty:ty),*
-            );
-        )?
-
-        $(
-            {
-                $($field_vis:vis $field_name:ident: $field_ty:ty,)*
-            }
-        )?
+        $($rest:tt)*
     ) => {
         $crate::cryptocorrosion_derive_traits!(@assert_allowed_struct_repr #[repr($repr)]);
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ()
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[doc = $doc:expr] $($rest:tt)*)
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ($($attrs)* #[doc = $doc])
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[doc($($doc:tt)*)] $($rest:tt)*)
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ($($attrs)* #[doc($($doc)*)])
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[derive($($derives:tt)*)] $($rest:tt)*)
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ($($attrs)* #[derive($($derives)*)])
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[allow($($allows:tt)*)] $($rest:tt)*)
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ($($attrs)* #[allow($($allows)*)])
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[warn($($warns:tt)*)] $($rest:tt)*)
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ($($attrs)* #[warn($($warns)*)])
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[deny($($denies:tt)*)] $($rest:tt)*)
+    ) => {
+        $crate::cryptocorrosion_derive_traits!(
+            @munch_attrs
+            repr: ($repr)
+            attrs: ($($attrs)* #[deny($($denies)*)])
+            tokens: ($($rest)*)
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (#[$attr:meta] $($rest:tt)*)
+    ) => {
+        compile_error!(
+            "unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted"
+        );
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (
+            $vis:vis struct $name:ident $(<$($tyvar:ident),*>)?
+            $(
+                (
+                    $($tuple_field_vis:vis $tuple_field_ty:ty),*
+                );
+            )?
 
-        $(#[$attr])*
+            $(
+                {
+                    $($field_vis:vis $field_name:ident: $field_ty:ty,)*
+                }
+            )?
+        )
+    ) => {
+        $($attrs)*
         #[repr($repr)]
         $vis struct $name $(<$($tyvar),*>)?
         $(
@@ -1041,6 +1142,9 @@ macro_rules! cryptocorrosion_derive_traits {
                 // requires all field types to be `FromBytes`. Thus, all
                 // initialized byte sequences constitutes valid instances of
                 // `Self`.
+                //
+                // Furthermore, forwarded attributes are strictly validated to
+                // ensure no attribute macros rewrite the struct's fields.
                 true
             }
 
@@ -1050,6 +1154,8 @@ macro_rules! cryptocorrosion_derive_traits {
         // SAFETY: This macro only accepts `#[repr(C)]` and
         // `#[repr(transparent)]` structs, and this `impl` block requires all
         // field types to be `FromBytes`, which is a sub-trait of `FromZeros`.
+        // Furthermore, forwarded attributes are strictly validated to ensure
+        // no attribute macros rewrite the struct's fields.
         unsafe impl $(<$($tyvar),*>)? $crate::FromZeros for $name$(<$($tyvar),*>)?
         where
             $(
@@ -1065,7 +1171,9 @@ macro_rules! cryptocorrosion_derive_traits {
 
         // SAFETY: This macro only accepts `#[repr(C)]` and
         // `#[repr(transparent)]` structs, and this `impl` block requires all
-        // field types to be `FromBytes`.
+        // field types to be `FromBytes`. Furthermore, forwarded attributes are
+        // strictly validated to ensure no attribute macros rewrite the
+        // struct's fields.
         unsafe impl $(<$($tyvar),*>)? $crate::FromBytes for $name$(<$($tyvar),*>)?
         where
             $(
@@ -1082,7 +1190,9 @@ macro_rules! cryptocorrosion_derive_traits {
         // SAFETY: This macro only accepts `#[repr(C)]` and
         // `#[repr(transparent)]` structs, this `impl` block requires all field
         // types to be `IntoBytes`, and a padding check is used to ensures that
-        // there are no padding bytes.
+        // there are no padding bytes. Furthermore, forwarded attributes are
+        // strictly validated to ensure no attribute macros rewrite the
+        // struct's fields.
         unsafe impl $(<$($tyvar),*>)? $crate::IntoBytes for $name$(<$($tyvar),*>)?
         where
             $(
@@ -1109,7 +1219,9 @@ macro_rules! cryptocorrosion_derive_traits {
 
         // SAFETY: This macro only accepts `#[repr(C)]` and
         // `#[repr(transparent)]` structs, and this `impl` block requires all
-        // field types to be `Immutable`.
+        // field types to be `Immutable`. Furthermore, forwarded attributes are
+        // strictly validated to ensure no attribute macros rewrite the
+        // struct's fields.
         unsafe impl $(<$($tyvar),*>)? $crate::Immutable for $name$(<$($tyvar),*>)?
         where
             $(
@@ -1122,6 +1234,128 @@ macro_rules! cryptocorrosion_derive_traits {
         {
             fn only_derive_is_allowed_to_implement_this_trait() {}
         }
+    };
+    (
+        @munch_attrs
+        repr: (C)
+        attrs: ($($attrs:tt)*)
+        tokens: (
+            $vis:vis union $name:ident {
+                $(
+                    $field_name:ident: $field_ty:ty,
+                )*
+            }
+        )
+    ) => {
+        $($attrs)*
+        #[repr(C)]
+        $vis union $name {
+            $(
+                $field_name: $field_ty,
+            )*
+        }
+
+        // SAFETY: See inline.
+        unsafe impl $crate::TryFromBytes for $name
+        where
+            $(
+                $field_ty: $crate::FromBytes,
+            )*
+        {
+            #[inline(always)]
+            fn is_safe<A>(_: $crate::Maybe<'_, Self, A>) -> bool
+            where
+                A: $crate::invariant::Alignment,
+            {
+                // SAFETY: This macro only accepts `#[repr(C)]` unions, and this
+                // `impl` block requires all field types to be `FromBytes`.
+                // Thus, all initialized byte sequences constitutes valid
+                // instances of `Self`.
+                //
+                // Furthermore, forwarded attributes are strictly validated to
+                // ensure no attribute macros rewrite the union's fields.
+                true
+            }
+
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
+        // block requires all field types to be `FromBytes`, which is a
+        // sub-trait of `FromZeros`. Furthermore, forwarded attributes are
+        // strictly validated to ensure no attribute macros rewrite the union's
+        // fields.
+        unsafe impl $crate::FromZeros for $name
+        where
+            $(
+                $field_ty: $crate::FromBytes,
+            )*
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
+        // block requires all field types to be `FromBytes`. Furthermore,
+        // forwarded attributes are strictly validated to ensure no attribute
+        // macros rewrite the union's fields.
+        unsafe impl $crate::FromBytes for $name
+        where
+            $(
+                $field_ty: $crate::FromBytes,
+            )*
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, this `impl`
+        // block requires all field types to be `IntoBytes`, and a padding check
+        // is used to ensures that there are no padding bytes before or after
+        // any field. Furthermore, forwarded attributes are strictly validated to
+        // ensure no attribute macros rewrite the union's fields.
+        unsafe impl $crate::IntoBytes for $name
+        where
+            $(
+                $field_ty: $crate::IntoBytes,
+            )*
+            (): $crate::util::macro_util::PaddingFree<
+                Self,
+                {
+                    $crate::union_padding!(
+                        Self,
+                        None::<usize>,
+                        None::<usize>,
+                        [$($field_ty),*]
+                    )
+                },
+            >,
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+
+        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
+        // block requires all field types to be `Immutable`. Furthermore,
+        // forwarded attributes are strictly validated to ensure no attribute
+        // macros rewrite the union's fields.
+        unsafe impl $crate::Immutable for $name
+        where
+            $(
+                $field_ty: $crate::Immutable,
+            )*
+        {
+            fn only_derive_is_allowed_to_implement_this_trait() {}
+        }
+    };
+    (
+        @munch_attrs
+        repr: ($repr:ident)
+        attrs: ($($attrs:tt)*)
+        tokens: (
+            $vis:vis union $name:ident {
+                $($rest:tt)*
+            }
+        )
+    ) => {
+        compile_error!("unions must be `#[repr(C)]`");
     };
     (@assert_allowed_struct_repr #[repr(transparent)]) => {};
     (@assert_allowed_struct_repr #[repr(C)]) => {};
@@ -1152,103 +1386,6 @@ macro_rules! cryptocorrosion_derive_traits {
                 $($($field_ty),*)?
             ]
         )
-    };
-    (
-        #[repr(C)]
-        $(#[$attr:meta])*
-        $vis:vis union $name:ident {
-            $(
-                $field_name:ident: $field_ty:ty,
-            )*
-        }
-    ) => {
-        $(#[$attr])*
-        #[repr(C)]
-        $vis union $name {
-            $(
-                $field_name: $field_ty,
-            )*
-        }
-
-        // SAFETY: See inline.
-        unsafe impl $crate::TryFromBytes for $name
-        where
-            $(
-                $field_ty: $crate::FromBytes,
-            )*
-        {
-            #[inline(always)]
-            fn is_safe<A>(_: $crate::Maybe<'_, Self, A>) -> bool
-            where
-                A: $crate::invariant::Alignment,
-            {
-                // SAFETY: This macro only accepts `#[repr(C)]` unions, and this
-                // `impl` block requires all field types to be `FromBytes`.
-                // Thus, all initialized byte sequences constitutes valid
-                // instances of `Self`.
-                true
-            }
-
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
-
-        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
-        // block requires all field types to be `FromBytes`, which is a
-        // sub-trait of `FromZeros`.
-        unsafe impl $crate::FromZeros for $name
-        where
-            $(
-                $field_ty: $crate::FromBytes,
-            )*
-        {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
-
-        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
-        // block requires all field types to be `FromBytes`.
-        unsafe impl $crate::FromBytes for $name
-        where
-            $(
-                $field_ty: $crate::FromBytes,
-            )*
-        {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
-
-        // SAFETY: This macro only accepts `#[repr(C)]` unions, this `impl`
-        // block requires all field types to be `IntoBytes`, and a padding check
-        // is used to ensures that there are no padding bytes before or after
-        // any field.
-        unsafe impl $crate::IntoBytes for $name
-        where
-            $(
-                $field_ty: $crate::IntoBytes,
-            )*
-            (): $crate::util::macro_util::PaddingFree<
-                Self,
-                {
-                    $crate::union_padding!(
-                        Self,
-                        None::<usize>,
-                        None::<usize>,
-                        [$($field_ty),*]
-                    )
-                },
-            >,
-        {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
-
-        // SAFETY: This macro only accepts `#[repr(C)]` unions, and this `impl`
-        // block requires all field types to be `Immutable`.
-        unsafe impl $crate::Immutable for $name
-        where
-            $(
-                $field_ty: $crate::Immutable,
-            )*
-        {
-            fn only_derive_is_allowed_to_implement_this_trait() {}
-        }
     };
 }
 

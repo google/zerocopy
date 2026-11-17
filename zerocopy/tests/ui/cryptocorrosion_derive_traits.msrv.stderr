@@ -1,0 +1,28 @@
+error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
+  --> $DIR/cryptocorrosion_derive_traits.rs:13:1
+   |
+13 | / zerocopy::cryptocorrosion_derive_traits! {
+14 | |
+15 | |     #[repr(C)]
+16 | |     #[inline]
+17 | |     pub struct UnpermittedAttribute(u8);
+18 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
+  --> $DIR/cryptocorrosion_derive_traits.rs:20:1
+   |
+20 | / zerocopy::cryptocorrosion_derive_traits! {
+21 | |
+22 | |     #[repr(C)]
+23 | |     #[cfg(feature = "disabled")]
+24 | |     pub struct CfgNotPermitted(u8);
+25 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 2 previous errors
+
