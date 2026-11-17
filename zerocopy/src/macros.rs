@@ -1204,7 +1204,7 @@ macro_rules! cryptocorrosion_derive_traits {
             tag: (__internal_cryptocorrosion_muncher_tag)
             repr: ($repr)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[doc = $doc])
+            attrs_out: ($($emitted)* (__verified #[doc = $doc]))
             struct: ($($struct_def)*)
         );
     };
@@ -1221,7 +1221,7 @@ macro_rules! cryptocorrosion_derive_traits {
             tag: (__internal_cryptocorrosion_muncher_tag)
             repr: ($repr)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[doc($($doc)*)])
+            attrs_out: ($($emitted)* (__verified #[doc($($doc)*)]))
             struct: ($($struct_def)*)
         );
     };
@@ -1238,7 +1238,7 @@ macro_rules! cryptocorrosion_derive_traits {
             tag: (__internal_cryptocorrosion_muncher_tag)
             repr: ($repr)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[derive($($derives_in)*)])
+            attrs_out: ($($emitted)* (__verified #[derive($($derives_in)*)]))
             struct: ($($struct_def)*)
         );
     };
@@ -1255,7 +1255,7 @@ macro_rules! cryptocorrosion_derive_traits {
             tag: (__internal_cryptocorrosion_muncher_tag)
             repr: ($repr)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[allow($($allows_in)*)])
+            attrs_out: ($($emitted)* (__verified #[allow($($allows_in)*)]))
             struct: ($($struct_def)*)
         );
     };
@@ -1272,7 +1272,7 @@ macro_rules! cryptocorrosion_derive_traits {
             tag: (__internal_cryptocorrosion_muncher_tag)
             repr: ($repr)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[warn($($warns_in)*)])
+            attrs_out: ($($emitted)* (__verified #[warn($($warns_in)*)]))
             struct: ($($struct_def)*)
         );
     };
@@ -1289,7 +1289,7 @@ macro_rules! cryptocorrosion_derive_traits {
             tag: (__internal_cryptocorrosion_muncher_tag)
             repr: ($repr)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[deny($($denies_in)*)])
+            attrs_out: ($($emitted)* (__verified #[deny($($denies_in)*)]))
             struct: ($($struct_def)*)
         );
     };
@@ -1298,7 +1298,7 @@ macro_rules! cryptocorrosion_derive_traits {
         tag: (__internal_cryptocorrosion_muncher_tag)
         repr: ($repr:ident)
         attrs_in: ()
-        attrs_out: ($($attrs:tt)*)
+        attrs_out: ( $( (__verified #[$attr:ident $($attr_args:tt)*]) )* )
         struct: (
             $vis:vis struct $name:ident $(<$($tyvar:ident),*>)?
             $(
@@ -1314,7 +1314,9 @@ macro_rules! cryptocorrosion_derive_traits {
             )?
         )
     ) => {
-        $($attrs)*
+        $(
+            #[$attr $($attr_args)*]
+        )*
         #[repr($repr)]
         $vis struct $name $(<$($tyvar),*>)?
         $(
@@ -1462,7 +1464,7 @@ macro_rules! cryptocorrosion_derive_traits {
             @validate_and_emit_union
             tag: (__internal_cryptocorrosion_muncher_tag)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[doc = $doc])
+            attrs_out: ($($emitted)* (__verified #[doc = $doc]))
             union: ($($union_def)*)
         );
     };
@@ -1477,7 +1479,7 @@ macro_rules! cryptocorrosion_derive_traits {
             @validate_and_emit_union
             tag: (__internal_cryptocorrosion_muncher_tag)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[doc($($doc)*)])
+            attrs_out: ($($emitted)* (__verified #[doc($($doc)*)]))
             union: ($($union_def)*)
         );
     };
@@ -1492,7 +1494,7 @@ macro_rules! cryptocorrosion_derive_traits {
             @validate_and_emit_union
             tag: (__internal_cryptocorrosion_muncher_tag)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[derive($($derives_in)*)])
+            attrs_out: ($($emitted)* (__verified #[derive($($derives_in)*)]))
             union: ($($union_def)*)
         );
     };
@@ -1507,7 +1509,7 @@ macro_rules! cryptocorrosion_derive_traits {
             @validate_and_emit_union
             tag: (__internal_cryptocorrosion_muncher_tag)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[allow($($allows_in)*)])
+            attrs_out: ($($emitted)* (__verified #[allow($($allows_in)*)]))
             union: ($($union_def)*)
         );
     };
@@ -1522,7 +1524,7 @@ macro_rules! cryptocorrosion_derive_traits {
             @validate_and_emit_union
             tag: (__internal_cryptocorrosion_muncher_tag)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[warn($($warns_in)*)])
+            attrs_out: ($($emitted)* (__verified #[warn($($warns_in)*)]))
             union: ($($union_def)*)
         );
     };
@@ -1537,7 +1539,7 @@ macro_rules! cryptocorrosion_derive_traits {
             @validate_and_emit_union
             tag: (__internal_cryptocorrosion_muncher_tag)
             attrs_in: ($($rest)*)
-            attrs_out: ($($emitted)* #[deny($($denies_in)*)])
+            attrs_out: ($($emitted)* (__verified #[deny($($denies_in)*)]))
             union: ($($union_def)*)
         );
     };
@@ -1545,7 +1547,7 @@ macro_rules! cryptocorrosion_derive_traits {
         @validate_and_emit_union
         tag: (__internal_cryptocorrosion_muncher_tag)
         attrs_in: ()
-        attrs_out: ($($attrs:tt)*)
+        attrs_out: ( $( (__verified #[$attr:ident $($attr_args:tt)*]) )* )
         union: (
             $vis:vis union $name:ident {
                 $(
@@ -1554,7 +1556,9 @@ macro_rules! cryptocorrosion_derive_traits {
             }
         )
     ) => {
-        $($attrs)*
+        $(
+            #[$attr $($attr_args)*]
+        )*
         #[repr(C)]
         $vis union $name {
             $(

@@ -51,5 +51,33 @@ error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`,
    |
    = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 4 previous errors
+error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
+  --> $DIR/cryptocorrosion_derive_traits.rs:43:1
+   |
+43 | / zerocopy::cryptocorrosion_derive_traits! {
+44 | |
+45 | |     @validate_and_emit_struct
+46 | |     tag: (__internal_cryptocorrosion_muncher_tag)
+...  |
+50 | |     struct: (pub struct DirectEmitterNotPermitted(u8);)
+51 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
+  --> $DIR/cryptocorrosion_derive_traits.rs:53:1
+   |
+53 | / zerocopy::cryptocorrosion_derive_traits! {
+54 | |
+55 | |     @validate_and_emit_union
+56 | |     tag: (__internal_cryptocorrosion_muncher_tag)
+...  |
+59 | |     union: (pub union DirectEmitterUnionNotPermitted { a: u8, })
+60 | | }
+   | |_^
+   |
+   = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 6 previous errors
 
