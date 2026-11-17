@@ -45,11 +45,11 @@ error: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`,
 36 | |     @munch_attrs
 37 | |     tag: (__internal_cryptocorrosion_muncher_tag)
 ...  |
-45 | |     tokens: (pub struct DirectQualifiedNotPermitted(u8);)
-46 | | }
+40 | |     tokens: (pub struct DirectQualifiedNotPermitted(u8);)
+41 | | }
    | |_^
    |
-   = note: this error originates in the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `$crate::cryptocorrosion_derive_traits` which comes from the expansion of the macro `zerocopy::cryptocorrosion_derive_traits` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 4 previous errors
 

@@ -36,11 +36,6 @@ zerocopy::cryptocorrosion_derive_traits! {
     @munch_attrs
     tag: (__internal_cryptocorrosion_muncher_tag)
     repr: (C)
-    doc_literals: ()
-    doc_attributes: (#[doc::rewrite])
-    derives: ()
-    allows: ()
-    warns: ()
-    denies: ()
+    attrs: (#[doc::rewrite])
     tokens: (pub struct DirectQualifiedNotPermitted(u8);)
 }
