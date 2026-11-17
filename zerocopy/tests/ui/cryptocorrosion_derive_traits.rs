@@ -36,25 +36,24 @@ zerocopy::cryptocorrosion_derive_traits! {
     @munch_attrs
     tag: (__internal_cryptocorrosion_muncher_tag)
     repr: (C)
-    attrs: (#[doc::rewrite])
-    tokens: (pub struct DirectQualifiedNotPermitted(u8);)
+    attrs: ()
+    tokens: (#[doc::rewrite] pub struct DirectQualifiedInTokensNotPermitted(u8);)
 }
 
 zerocopy::cryptocorrosion_derive_traits! {
 //~[msrv, stable, nightly]^ ERROR: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
-    @validate_and_emit_struct
+    @munch_attrs
     tag: (__internal_cryptocorrosion_muncher_tag)
     repr: (C)
-    attrs_in: ()
-    attrs_out: (#[doc::rewrite])
-    struct: (pub struct DirectEmitterNotPermitted(u8);)
+    attrs: (#[doc::rewrite])
+    tokens: (pub struct DirectStructEmitterNotPermitted(u8);)
 }
 
 zerocopy::cryptocorrosion_derive_traits! {
 //~[msrv, stable, nightly]^ ERROR: unsupported attribute in `cryptocorrosion_derive_traits!`: only `#[doc]`, `#[derive]`, `#[allow]`, `#[warn]`, and `#[deny]` are permitted
-    @validate_and_emit_union
+    @munch_attrs
     tag: (__internal_cryptocorrosion_muncher_tag)
-    attrs_in: ()
-    attrs_out: (#[doc::rewrite])
-    union: (pub union DirectEmitterUnionNotPermitted { a: u8, })
+    repr: (C)
+    attrs: (#[doc::rewrite])
+    tokens: (pub union DirectUnionEmitterNotPermitted { a: u8, })
 }
