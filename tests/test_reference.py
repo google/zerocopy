@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import FrozenInstanceError
 import importlib.util
 import json
 import os
@@ -17,14 +18,18 @@ sys.modules[SPEC.name] = reference
 SPEC.loader.exec_module(reference)
 
 
+POLICY_DATA = {"schema": "reference-corpus/1", "topic_namespaces": ["optics", "sensors"]}
+POLICY = reference.parse_policy(json.dumps(POLICY_DATA).encode("utf-8"))
+
+
 def valid_metadata(**overrides):
     data = {
-        "topics": ["lean", "lean/elaboration"],
+        "topics": ["optics", "optics/calibration"],
         "subjects": [
             {
-                "name": "Lean 4",
+                "name": "Sensor model",
                 "identity": {
-                    "repository": "leanprover/lean4",
+                    "repository": "example/sensors",
                     "revision": "0123456789abcdef0123456789abcdef01234567",
                     "version": "v4.30.0-rc2",
                 },
@@ -45,6 +50,7 @@ def make_root(tmp_path: Path) -> Path:
     (root / "tests").mkdir()
     (root / "tools" / "reference.py").write_bytes(SCRIPT.read_bytes())
     (root / "tests" / "test_reference.py").write_text("# tests\n", encoding="utf-8")
+    (root / "CORPUS.json").write_text(json.dumps(POLICY_DATA), encoding="utf-8")
     (root / "CATALOG.json").write_bytes(reference._catalog_bytes([]))
     return root
 
@@ -75,7 +81,7 @@ def refresh_catalog(root: Path) -> None:
     root_entries, problems = reference._root_structure(root)
     if problems:
         raise AssertionError([problem.message for problem in problems])
-    reports, problems = reference._load_reports(root, root_entries)
+    reports, problems = reference._load_reports(root, root_entries, POLICY)
     if problems:
         raise AssertionError([problem.message for problem in problems])
     (root / "CATALOG.json").write_bytes(reference._catalog_bytes(reports))
@@ -173,7 +179,7 @@ class ReferenceToolTests(unittest.TestCase):
         )
         (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
         root_entries, _ = reference._root_structure(root)
-        _, problems = reference._load_reports(root, root_entries)
+        _, problems = reference._load_reports(root, root_entries, POLICY)
         self.assertTrue(any("duplicate object key" in p.message for p in problems))
 
     def test_nonstandard_json_constants_are_rejected(self):
@@ -185,7 +191,7 @@ class ReferenceToolTests(unittest.TestCase):
         )
         (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
         root_entries, _ = reference._root_structure(root)
-        _, problems = reference._load_reports(root, root_entries)
+        _, problems = reference._load_reports(root, root_entries, POLICY)
         self.assertTrue(any("invalid JSON constant" in p.message for p in problems))
 
     def test_lone_unicode_surrogate_is_rejected(self):
@@ -198,17 +204,17 @@ class ReferenceToolTests(unittest.TestCase):
         )
         (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
         root_entries, _ = reference._root_structure(root)
-        _, problems = reference._load_reports(root, root_entries)
-        self.assertTrue(any("Unicode scalar" in p.message for p in problems))
+        _, problems = reference._load_reports(root, root_entries, POLICY)
+        self.assertTrue(any("scalar UTF-8" in p.message for p in problems))
 
     def test_metadata_validation(self):
         cases = [
             ({"subjects": valid_metadata()["subjects"], "observed_at": "2026-09-24"}, "missing metadata keys"),
             (valid_metadata(extra="x"), "unknown metadata keys"),
             (valid_metadata(topics=[]), "'topics' must be a non-empty array"),
-            (valid_metadata(topics=["Lean/Bad"]), "lowercase slash-separated"),
+            (valid_metadata(topics=["Optics/Bad"]), "lowercase slash-separated"),
             (valid_metadata(topics=["unknown/subtopic"]), "top-level namespace 'unknown'"),
-            (valid_metadata(topics=["lean", "lean"]), "duplicate topic"),
+            (valid_metadata(topics=["optics", "optics"]), "duplicate topic"),
             (valid_metadata(subjects=[]), "'subjects' must be a non-empty array"),
             (valid_metadata(subjects=[{"name": "X", "identity": {}}]), "identity must be a non-empty object"),
             (valid_metadata(subjects=[{"name": "X", "identity": {"revision": ""}}]), "must be a non-empty string"),
@@ -219,7 +225,7 @@ class ReferenceToolTests(unittest.TestCase):
                 root = make_root(self.tmp_path / str(idx))
                 add_report(root, metadata=metadata)
                 root_entries, _ = reference._root_structure(root)
-                _, problems = reference._load_reports(root, root_entries)
+                _, problems = reference._load_reports(root, root_entries, POLICY)
                 self.assertTrue(any(needle in p.message for p in problems))
 
     def test_subject_names_need_not_be_unique(self):
@@ -228,8 +234,8 @@ class ReferenceToolTests(unittest.TestCase):
             root,
             metadata=valid_metadata(
                 subjects=[
-                    {"name": "Lean 4", "identity": {"revision": "aaa"}},
-                    {"name": "Lean 4", "identity": {"revision": "bbb"}},
+                    {"name": "Sensor model", "identity": {"revision": "aaa"}},
+                    {"name": "Sensor model", "identity": {"revision": "bbb"}},
                 ]
             ),
         )
@@ -245,7 +251,7 @@ class ReferenceToolTests(unittest.TestCase):
             ),
         )
         root_entries, _ = reference._root_structure(root)
-        _, problems = reference._load_reports(root, root_entries)
+        _, problems = reference._load_reports(root, root_entries, POLICY)
         self.assertTrue(any("unknown keys" in p.message for p in problems))
 
     def test_immediate_children_of_reports_are_packages(self):
@@ -257,7 +263,7 @@ class ReferenceToolTests(unittest.TestCase):
 
     def test_package_names_are_simple_slugs(self):
         root = make_root(self.tmp_path)
-        (root / "reports" / "Lean.Bad").mkdir(parents=True)
+        (root / "reports" / "Optics.Bad").mkdir(parents=True)
         self.assertTrue(any("lowercase ASCII words" in p.message for p in reference._check_root(root)))
 
     def test_package_requires_report_root_files(self):
@@ -280,15 +286,36 @@ class ReferenceToolTests(unittest.TestCase):
     def test_invalid_report_never_produces_report_object(self):
         root = make_root(self.tmp_path)
         package = add_report(root, metadata=valid_metadata(subjects=[]))
-        report, problems = reference._load_report(package)
+        report, problems = reference._load_report(package, POLICY)
         self.assertIsNone(report)
         self.assertTrue(problems)
+
+    def test_support_bytes_modes_and_links_are_opaque(self):
+        root = make_root(self.tmp_path)
+        package = add_report(root)
+        probe = package / "probe"
+        probe.write_bytes(b"\x00\xffopaque executable bytes\n")
+        probe.chmod(0o755)
+        external = self.tmp_path / "external-source"
+        external.write_bytes(b"must not inspect or rewrite this target\n")
+        link = package / "external-link"
+        try:
+            link.symlink_to(external)
+        except OSError as exc:
+            self.skipTest(f"symlinks unavailable: {exc}")
+        refresh_catalog(root)
+        self.assertEqual(reference._check_root(root), [])
+        self.assertEqual(probe.read_bytes(), b"\x00\xffopaque executable bytes\n")
+        self.assertEqual(probe.stat().st_mode & 0o777, 0o755)
+        self.assertTrue(link.is_symlink())
+        self.assertEqual(os.readlink(link), str(external))
+        self.assertEqual(external.read_bytes(), b"must not inspect or rewrite this target\n")
 
     def test_catalog_is_canonical_ascii_bytes(self):
         root = make_root(self.tmp_path)
         add_report(root, metadata=valid_metadata(subjects=[{"name": "Léan", "identity": {"revision": "α"}}]))
         root_entries, _ = reference._root_structure(root)
-        reports, problems = reference._load_reports(root, root_entries)
+        reports, problems = reference._load_reports(root, root_entries, POLICY)
         self.assertEqual(problems, [])
         catalog = reference._catalog_bytes(reports)
         catalog.decode("ascii")
@@ -402,10 +429,10 @@ class ReferenceToolTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("reference check passed", result.stdout)
 
-    def test_all_canonical_topic_namespaces_are_accepted(self):
+    def test_all_selected_topic_namespaces_are_accepted(self):
         root = make_root(self.tmp_path)
         topics = []
-        for ns in sorted(reference.TOPIC_NAMESPACES):
+        for ns in sorted(POLICY.topic_namespaces):
             topics.append(ns)
             topics.append(f"{ns}/subtopic")
         add_report(root, metadata=valid_metadata(topics=topics))
@@ -444,7 +471,7 @@ class ReferenceToolTests(unittest.TestCase):
                 root = make_root(self.tmp_path / f"prose-{idx}")
                 add_report(root, prose=prose)
                 root_entries, _ = reference._root_structure(root)
-                _, problems = reference._load_reports(root, root_entries)
+                _, problems = reference._load_reports(root, root_entries, POLICY)
                 self.assertTrue(any(needle in p.message for p in problems), [p.message for p in problems])
 
     def test_prose_headings_inside_fenced_code_blocks_are_ignored(self):
@@ -472,6 +499,93 @@ class ReferenceToolTests(unittest.TestCase):
         add_report(root, prose=prose)
         refresh_catalog(root)
         self.assertEqual(reference._check_root(root), [])
+
+
+    def test_policy_is_strict_and_has_no_fallback(self):
+        invalid = [
+            {},
+            {"schema": "reference-corpus/1"},
+            {**POLICY_DATA, "extra": True},
+            {**POLICY_DATA, "schema": "reference-corpus/2"},
+            {**POLICY_DATA, "topic_namespaces": []},
+            {**POLICY_DATA, "topic_namespaces": "optics"},
+            {**POLICY_DATA, "topic_namespaces": ["optics", "optics"]},
+        ]
+        invalid.extend({**POLICY_DATA, "topic_namespaces": [name]}
+                       for name in ["", "Optics", "two/segments", "é", "-bad", None, 3])
+        for value in invalid:
+            with self.subTest(value=value):
+                with self.assertRaises(reference.ValidationFailure):
+                    reference.parse_policy(json.dumps(value).encode("utf-8"))
+        for data in [b'{} trailing', b'\xff',
+                     b'{"schema":"reference-corpus/1","schema":"reference-corpus/1","topic_namespaces":["optics"]}',
+                     b'{"schema":"reference-corpus/1","topic_namespaces":[NaN]}',
+                     b'{"schema":"reference-corpus/1","topic_namespaces":["\\ud800"]}']:
+            with self.subTest(data=data):
+                with self.assertRaises(reference.ValidationFailure):
+                    reference.parse_policy(data)
+
+    def test_policy_value_is_immutable_and_validated_at_construction(self):
+        with self.assertRaises(FrozenInstanceError):
+            POLICY.topic_namespaces = frozenset({"other"})
+        for namespaces in [frozenset(), frozenset({"bad/name"}), {"optics"}]:
+            with self.subTest(namespaces=namespaces):
+                with self.assertRaises(ValueError):
+                    reference.CorpusPolicy(namespaces)
+
+    def test_unrelated_policy_accepts_its_topics_with_identical_checker(self):
+        root = make_root(self.tmp_path)
+        alternate = {"schema": "reference-corpus/1", "topic_namespaces": ["maps+data", "terrain.v2"]}
+        (root / "CORPUS.json").write_text(json.dumps(alternate), encoding="utf-8")
+        add_report(root, metadata=valid_metadata(topics=["maps+data", "terrain.v2/ridges"]))
+        result = subprocess.run(
+            [sys.executable, str(root / "tools/reference.py"), "catalog"],
+            cwd=self.tmp_path, capture_output=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(reference._check_root(root), [])
+        self.assertEqual((root / "tools/reference.py").read_bytes(), SCRIPT.read_bytes())
+        (root / "CORPUS.json").write_text(json.dumps(POLICY_DATA), encoding="utf-8")
+        self.assertTrue(any("top-level namespace" in p.message for p in reference._check_root(root)))
+
+    def test_missing_wrong_case_and_symlink_policy_are_rejected(self):
+        root = make_root(self.tmp_path)
+        policy = root / "CORPUS.json"
+        policy.rename(root / "corpus.json")
+        self.assertTrue(any("CORPUS.json" in str(p.path) for p in reference._check_root(root)))
+        (root / "corpus.json").unlink()
+        external = self.tmp_path / "external-policy.json"
+        external.write_text(json.dumps(POLICY_DATA), encoding="utf-8")
+        policy.symlink_to(external)
+        self.assertTrue(any("ordinary file" in p.message for p in reference._check_root(root)))
+
+    def test_invalid_policy_does_not_replace_catalog(self):
+        root = make_root(self.tmp_path)
+        original = (root / "CATALOG.json").read_bytes()
+        for data in [b'{}', b'{"schema":"reference-corpus/1","topic_namespaces":[]}']:
+            with self.subTest(data=data):
+                (root / "CORPUS.json").write_bytes(data)
+                result = subprocess.run(
+                    [sys.executable, str(root / "tools/reference.py"), "catalog"],
+                    cwd=self.tmp_path, capture_output=True, check=False,
+                )
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual((root / "CATALOG.json").read_bytes(), original)
+
+    def test_cli_works_from_unrelated_cwd(self):
+        root = make_root(self.tmp_path)
+        result = subprocess.run(
+            [sys.executable, str(root / "tools/reference.py"), "check"],
+            cwd=self.tmp_path, capture_output=True, check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_shared_byte_parser_rejects_invalid_json_and_unicode(self):
+        for data in [b'{"key":1,"key":2}', b'NaN', b'1e999', b'"\\udfff"', b'\xff']:
+            with self.subTest(data=data):
+                with self.assertRaises(reference.ValidationFailure):
+                    reference.parse_json(data)
+        self.assertEqual(reference.parse_json(b'{"name":"caf\xc3\xa9"}'), {"name": "café"})
 
 
 if __name__ == "__main__":

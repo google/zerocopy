@@ -1,0 +1,95 @@
+{
+  "disposition": "verified-public-pin",
+  "instance_owned": [
+    "AGENTS.md",
+    "CORPUS.json",
+    "CORPUS.md",
+    "README.md"
+  ],
+  "managed_files": [
+    {
+      "mode": "100644",
+      "path": "FORMAT.md",
+      "sha256": "9dafd0f0fc8edf37293be5dc376db82f22c340ca5235bf271d6c26ede2e45ecd",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/references/format.md"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/SKILL.md",
+      "sha256": "9520fa8120f9b047bb3557412c24d4b3ef000b1821bafa66ec396959dc7acf4e",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/SKILL.md"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/maintenance/README.md",
+      "sha256": "7d6a1cef55301cbe93d19af84445bd817eb4268f22e2bfb1a866bd2a3134f568",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/maintenance/README.md"
+    },
+    {
+      "mode": "100755",
+      "path": "skills/reference-research/maintenance/reference.py",
+      "sha256": "a57f787dd3822f75a6ff59677eef0c4a5ecef3b2f3bc2d27d8eb86ffe98f653d",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/maintenance/reference.py"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/maintenance/test_reference.py",
+      "sha256": "f3af0f2e2e98b293db6c4a86c9dfa21ea2803b2c235d18a3b1072abde4be3e25",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/maintenance/test_reference.py"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/references/format.md",
+      "sha256": "9dafd0f0fc8edf37293be5dc376db82f22c340ca5235bf271d6c26ede2e45ecd",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/references/format.md"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/references/research.md",
+      "sha256": "c7f2b7733b569beb1bb6eb4091289e0259aa8249900efd2378abd6ff48185ca1",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/references/research.md"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/templates/CORPUS.json",
+      "sha256": "78f7c1be7864b49067e81c9cad70d9ab9a5193e3b588b51340b0f892d67fe464",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/templates/CORPUS.json"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/templates/CORPUS.md",
+      "sha256": "ccc966dd648112d764801fd2af3fec4b5955bbf61bf4f1f1f7c5a5c4d77edbc8",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/templates/CORPUS.md"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/templates/REPORT.json",
+      "sha256": "cff0c09b5e6456ce36110bd09f83c4f6bd7643d6e63ffaf4d374c0e61d49d7fc",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/templates/REPORT.json"
+    },
+    {
+      "mode": "100644",
+      "path": "skills/reference-research/templates/REPORT.md",
+      "sha256": "7f407a1a57996635afd61120a2a128808f80aa4452a4bed7e282ea30a08dfca3",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/templates/REPORT.md"
+    },
+    {
+      "mode": "100644",
+      "path": "tests/test_reference.py",
+      "sha256": "f3af0f2e2e98b293db6c4a86c9dfa21ea2803b2c235d18a3b1072abde4be3e25",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/maintenance/test_reference.py"
+    },
+    {
+      "mode": "100755",
+      "path": "tools/reference.py",
+      "sha256": "a57f787dd3822f75a6ff59677eef0c4a5ecef3b2f3bc2d27d8eb86ffe98f653d",
+      "source": "systems/reference-corpus/runtime/skills/reference-research/maintenance/reference.py"
+    }
+  ],
+  "public_source": {
+    "repository": "https://github.com/joshlf/skills",
+    "revision": "b7ace546cbc3bbc7ad12d43b9ced603e1b889930",
+    "runtime_tree": "3b5bf780fd23ffdba3e0d6e8e76af448772991ab"
+  },
+  "schema": "reference-corpus-materialization/1"
+}

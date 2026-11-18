@@ -14,38 +14,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
-REQUIRED_ROOT_FILES = ("AGENTS.md", "FORMAT.md", "README.md")
+REQUIRED_ROOT_FILES = ("AGENTS.md", "FORMAT.md", "README.md", "CORPUS.json")
 REQUIRED_ROOT_DIRS = ("tools", "tests")
 METADATA_KEYS = frozenset({"topics", "subjects", "observed_at"})
 SUBJECT_KEYS = frozenset({"name", "identity"})
 TOPIC_RE = re.compile(r"^[a-z0-9][a-z0-9._+-]*(?:/[a-z0-9][a-z0-9._+-]*)*$")
-TOPIC_NAMESPACES = frozenset(
-    {
-        "aeneas",
-        "agents",
-        "anneal",
-        "build",
-        "cargo",
-        "charon",
-        "compilers",
-        "domains",
-        "exocrate",
-        "isa",
-        "kraken",
-        "lake",
-        "lean",
-        "llvm",
-        "minirust",
-        "rust",
-        "rustc",
-        "security",
-        "smt",
-        "systems",
-        "vcs",
-        "verification",
-        "zerocopy",
-    }
-)
+NAMESPACE_RE = re.compile(r"[a-z0-9][a-z0-9._+-]*\Z")
+CORPUS_SCHEMA = "reference-corpus/1"
 PACKAGE_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 REQUIRED_REPORT_SECTIONS = (
     "## Summary",
@@ -56,6 +31,20 @@ REQUIRED_REPORT_SECTIONS = (
     "## Revalidation",
 )
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+
+
+@dataclass(frozen=True)
+class CorpusPolicy:
+    """Validated instance vocabulary; no report rules are configurable."""
+
+    topic_namespaces: frozenset[str]
+
+    def __post_init__(self) -> None:
+        if (not isinstance(self.topic_namespaces, frozenset)
+                or not self.topic_namespaces
+                or any(not isinstance(name, str) or not NAMESPACE_RE.fullmatch(name)
+                       for name in self.topic_namespaces)):
+            raise ValueError("topic namespaces must be a non-empty frozenset of valid segments")
 
 
 @dataclass(frozen=True)
@@ -88,7 +77,7 @@ class ValidationFailure(Exception):
 
 
 def _candidate_root() -> Path:
-    # abspath keeps the invoked path lexical instead of resolving symlinks.
+    # Keep validation with the invoked lexical tree, without resolving links.
     return Path(os.path.abspath(__file__)).parent.parent
 
 
@@ -169,22 +158,58 @@ def _reject_constant(value: str) -> None:
     raise ValueError(f"invalid JSON constant {value}")
 
 
-def _load_json(path: Path) -> Any:
+def parse_json(data: bytes) -> Any:
+    """Parse strict scalar UTF-8 JSON without reading files or applying policy."""
     try:
         value = json.loads(
-            _read_text(path),
+            data.decode("utf-8"),
             object_pairs_hook=_no_duplicate_keys,
             parse_constant=_reject_constant,
         )
-        json.dumps(value, ensure_ascii=False).encode("utf-8")
-    except UnicodeEncodeError as exc:
-        raise ValidationFailure("JSON strings must contain valid Unicode scalar text") from exc
-    except ValueError as exc:
+        json.dumps(value, ensure_ascii=False, allow_nan=False).encode("utf-8")
+    except UnicodeError as exc:
+        raise ValidationFailure("JSON must contain valid scalar UTF-8 text") from exc
+    except (ValueError, RecursionError) as exc:
         raise ValidationFailure(f"invalid JSON: {exc}") from exc
     return value
 
 
-def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
+def parse_policy(data: bytes) -> CorpusPolicy:
+    """Validate captured CORPUS.json bytes; missing policy has no default."""
+    value = parse_json(data)
+    if not isinstance(value, dict) or set(value) != {"schema", "topic_namespaces"}:
+        raise ValidationFailure("CORPUS.json must contain exactly 'schema' and 'topic_namespaces'")
+    if value["schema"] != CORPUS_SCHEMA:
+        raise ValidationFailure("unsupported CORPUS.json schema")
+    namespaces = value["topic_namespaces"]
+    if not isinstance(namespaces, list) or not namespaces:
+        raise ValidationFailure("topic_namespaces must be a non-empty array")
+    seen: set[str] = set()
+    for index, name in enumerate(namespaces):
+        if not isinstance(name, str) or not NAMESPACE_RE.fullmatch(name):
+            raise ValidationFailure(f"topic_namespaces[{index}] must be a valid single-segment namespace")
+        if name in seen:
+            raise ValidationFailure(f"duplicate topic namespace {name!r}")
+        seen.add(name)
+    return CorpusPolicy(frozenset(seen))
+
+
+def _load_json(path: Path) -> Any:
+    return parse_json(_read_bytes(path))
+
+
+def _load_policy(root: Path, entries: dict[str, Entry]) -> tuple[CorpusPolicy | None, list[Problem]]:
+    path, problems = _require_entry(entries, root, "CORPUS.json", "file")
+    if path is None:
+        return None, problems
+    try:
+        return parse_policy(_read_bytes(path)), []
+    except ValidationFailure as exc:
+        return None, [Problem(path, str(exc))]
+
+
+def validate_metadata(metadata: Any, policy: CorpusPolicy, path: Path) -> list[Problem]:
+    """Check report metadata against one explicitly validated instance policy."""
     if not isinstance(metadata, dict):
         return [Problem(path, "report metadata must be a JSON object")]
 
@@ -214,8 +239,8 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
                 )
             else:
                 namespace = topic.split("/", 1)[0]
-                if namespace not in TOPIC_NAMESPACES:
-                    allowed = ", ".join(sorted(TOPIC_NAMESPACES))
+                if namespace not in policy.topic_namespaces:
+                    allowed = ", ".join(sorted(policy.topic_namespaces))
                     problems.append(
                         Problem(
                             path,
@@ -253,7 +278,7 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
                 problems.append(Problem(path, f"{prefix}.identity must be a non-empty object"))
                 continue
             for key, value in identity.items():
-                if not key.strip():
+                if not isinstance(key, str) or not key.strip():
                     problems.append(Problem(path, f"{prefix}.identity keys must be non-empty strings"))
                 if not isinstance(value, str) or not value.strip():
                     problems.append(
@@ -274,6 +299,10 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
     return problems
 
 
+def _validate_metadata(metadata: Any, path: Path, policy: CorpusPolicy) -> list[Problem]:
+    return validate_metadata(metadata, policy, path)
+
+
 def _root_structure(root: Path) -> tuple[dict[str, Entry], list[Problem]]:
     entries, problems = _directory_entries(root)
     if problems:
@@ -282,7 +311,7 @@ def _root_structure(root: Path) -> tuple[dict[str, Entry], list[Problem]]:
     for name in REQUIRED_ROOT_FILES:
         path, entry_problems = _require_entry(entries, root, name, "file")
         problems.extend(entry_problems)
-        if path is not None:
+        if path is not None and name != "CORPUS.json":
             try:
                 _read_text(path)
             except ValidationFailure as exc:
@@ -355,7 +384,10 @@ def _validate_prose(text: str, path: Path) -> list[Problem]:
     return problems
 
 
-def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
+validate_prose = _validate_prose
+
+
+def _load_report(package: Path, policy: CorpusPolicy) -> tuple[Report | None, list[Problem]]:
     entries, problems = _directory_entries(package)
     if problems:
         return None, problems
@@ -372,7 +404,7 @@ def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
         except ValidationFailure as exc:
             problems.append(Problem(metadata_path, str(exc)))
         else:
-            problems.extend(_validate_metadata(metadata, metadata_path))
+            problems.extend(validate_metadata(metadata, policy, metadata_path))
 
     if prose_path is not None:
         try:
@@ -387,7 +419,7 @@ def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
     return Report(directory=package, metadata=metadata), []
 
 
-def _load_reports(root: Path, root_entries: dict[str, Entry]) -> tuple[list[Report], list[Problem]]:
+def _load_reports(root: Path, root_entries: dict[str, Entry], policy: CorpusPolicy) -> tuple[list[Report], list[Problem]]:
     reports_entry = root_entries.get("reports")
     if reports_entry is None:
         return [], []
@@ -408,7 +440,7 @@ def _load_reports(root: Path, root_entries: dict[str, Entry]) -> tuple[list[Repo
                 Problem(entry.path, "report package names must be lowercase ASCII words separated by single hyphens")
             )
             continue
-        report, package_problems = _load_report(entry.path)
+        report, package_problems = _load_report(entry.path, policy)
         problems.extend(package_problems)
         if report is not None:
             reports.append(report)
@@ -424,7 +456,11 @@ def _catalog_bytes(reports: Sequence[Report]) -> bytes:
 
 def _check_root(root: Path) -> list[Problem]:
     root_entries, problems = _root_structure(root)
-    reports, report_problems = _load_reports(root, root_entries)
+    policy, policy_problems = _load_policy(root, root_entries)
+    problems.extend(policy_problems)
+    if policy is None:
+        return sorted(problems, key=lambda problem: (problem.path.as_posix(), problem.message))
+    reports, report_problems = _load_reports(root, root_entries, policy)
     problems.extend(report_problems)
 
     catalog_entry = root_entries.get("CATALOG.json")
@@ -472,8 +508,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     root_entries, source_problems = _root_structure(root)
 
     if args.command == "catalog":
-        reports, report_problems = _load_reports(root, root_entries)
-        problems = source_problems + report_problems
+        policy, policy_problems = _load_policy(root, root_entries)
+        reports, report_problems = ([], []) if policy is None else _load_reports(root, root_entries, policy)
+        problems = source_problems + policy_problems + report_problems
         if problems:
             for problem in sorted(problems, key=lambda p: (p.path.as_posix(), p.message)):
                 print(problem.render(root), file=sys.stderr)

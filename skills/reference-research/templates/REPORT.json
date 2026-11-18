@@ -1,0 +1,13 @@
+{
+  "topics": ["optics/calibration"],
+  "subjects": [
+    {
+      "name": "Replace with examined subject",
+      "identity": {
+        "artifact": "Replace with durable independently resolvable artifact",
+        "sha256": "Replace with immutable identity when available"
+      }
+    }
+  ],
+  "observed_at": "YYYY-MM-DD"
+}

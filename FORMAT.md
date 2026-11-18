@@ -1,10 +1,19 @@
 # Reference report format
 
-This document defines the semantic and structural contract for reports on the
-`reference` branch. `AGENTS.md` governs branch-wide authority, candidate-tree
-validation, and publication. `tools/reference.py` validates only the
-machine-representable subset described below; a passing check is not a semantic
-review of report prose or evidence.
+This document defines the shared `reference-corpus/1` semantic and structural
+contract. An instance adopts this complete contract as its report authority and
+retains an exact managed local copy at `FORMAT.md`. Project policy in `AGENTS.md`
+owns visibility, allowed actions, publication location and protocol, and additional
+requirements. It cannot silently redefine these shared meanings. A genuine
+semantic conflict blocks the dependent operation.
+
+The caller explicitly selects `CORPUS.md`, which binds corpus identity, root,
+operation, stopping boundary, policy, and exact local resources. Neither the
+working directory nor skill installation selects a corpus. Keep separate bindings
+for separate scopes; missing or conflicting resources block dependent work.
+`CORPUS.json` supplies this instance's topic vocabulary. The candidate-local
+`tools/reference.py` checks only the machine-representable subset of this
+contract; passing validation is not semantic review of prose or evidence.
 
 A report is a self-contained package at one immediate child directory of
 `reports/`:
@@ -28,7 +37,7 @@ making Markdown syntax part of the machine-data format.
 
 Package names and paths are navigation handles, not technical semantics. Package
 names use lowercase ASCII words separated by single hyphens, such as
-`lean-tactic-state-v4-30-0-rc2`; this keeps catalog keys and paths predictable.
+`sensor-calibration-v2-1`; this keeps catalog keys and paths predictable.
 Support material may use any useful organization.
 
 The current tree uses one report format. If the format changes, migrate the
@@ -37,6 +46,26 @@ current corpus coherently unless a demonstrated need for mixed formats appears.
 `CATALOG.json` maps each package name to the exact validated metadata from that
 package's `REPORT.json`. The package path is derivable as `reports/<package>/` and
 is not duplicated in the catalog.
+
+## `CORPUS.json`
+
+Each instance has one required ordinary UTF-8 JSON file at `CORPUS.json`:
+
+```json
+{
+  "schema": "reference-corpus/1",
+  "topic_namespaces": ["optics", "sensors"]
+}
+```
+
+These are illustrative names, not a shared vocabulary. The object has exactly
+these two keys. `schema` must have the shown value. `topic_namespaces` is a
+non-empty array of unique strings; each string matches the single-segment syntax
+`[a-z0-9][a-z0-9._+-]*`. Missing and unknown keys, unsupported versions, duplicate
+JSON keys, non-JSON constants, invalid UTF-8, and non-scalar Unicode are invalid.
+The caller-selected binding points to this data without repeating its list.
+There are no custom report schemas, evidence taxonomies, executable hooks, or
+corpus-name dispatch.
 
 ## `REPORT.json`
 
@@ -72,17 +101,16 @@ slash-separated labels when hierarchy is useful, for example:
 
 ```json
 [
-  "lean",
-  "lean/elaboration",
-  "lean/tactic-state"
+  "optics",
+  "optics/calibration",
+  "optics/sensor-noise"
 ]
 ```
 
-The first `/`-separated segment of every topic must be one of the canonical
-top-level namespaces enforced by `tools/reference.py`: `aeneas`, `agents`,
-`anneal`, `build`, `cargo`, `charon`, `compilers`, `domains`, `exocrate`, `isa`,
-`kraken`, `lake`, `lean`, `llvm`, `minirust`, `rust`, `rustc`, `security`,
-`smt`, `systems`, `vcs`, `verification`, or `zerocopy`.
+Every segment matches `[a-z0-9][a-z0-9._+-]*`; `/` separates segments. The
+first segment must belong to the vocabulary in this instance's `CORPUS.json`.
+There is no default or allow-all vocabulary. The vocabulary supplies retrieval
+labels only; it cannot change report structure or evidence meanings.
 
 Topics are navigation aids only. They do not establish applicability, dependency,
 ownership, or authority. Prefer established names a future agent is likely to
@@ -97,7 +125,7 @@ Subjects must be durable, independently resolvable technical artifacts or
 systems—such as published upstream repository revisions, released toolchains, or
 specifications—not local worktrees, unpushed or throwaway experiment commits,
 unmerged branches, task or issue tracker items, or prior states of the
-`reference` branch itself. When an investigation uses a throwaway prototype,
+corpus itself. When an investigation uses a throwaway prototype,
 local experiment, or counterfactual design variant to test a property, record the
 durable upstream systems or toolchains it characterizes in `subjects` and
 preserve the experimental formulation and runnable probe inside `REPORT.md` and
@@ -110,7 +138,7 @@ Each subject has exactly:
   giving the strongest available coordinates for the examined subject.
 
 `name` is descriptive, not an identifier, and need not be unique. A comparison of
-two revisions may therefore contain two subjects both named `Lean 4`; their
+two revisions may therefore contain two subjects both named `Optical sensor`; their
 `identity` objects distinguish them.
 
 The identity object is intentionally open rather than divided into Git, release,
@@ -118,11 +146,11 @@ artifact, protocol, or specification variants. For example:
 
 ```json
 {
-  "name": "Lean 4",
+  "name": "Optical sensor",
   "identity": {
-    "repository": "leanprover/lean4",
+    "repository": "example/sensor",
     "revision": "0123456789abcdef0123456789abcdef01234567",
-    "version": "v4.30.0-rc2"
+    "version": "v2.1.0"
   }
 }
 ```
@@ -190,7 +218,7 @@ labels (such as `#3730`, checklist row IDs, round numbers, or workstream names),
 and do not refer to types, predicates, functions, or local workstation paths from
 throwaway experiments or unmerged branches as if a reader could look them up
 externally. (Concrete paths whose role is self-explanatory in place—such as
-`/tmp/...` in a reproduction command or `/Users/runner/...` when documenting an
+`/tmp/...` in a reproduction command or `/build/...` when documenting an
 unstripped build-host rpath or `DW_AT_comp_dir` entry in a released binary—are
 fine.) Even when citing a durable upstream revision, state or quote the relevant
 definition, signature, or invariant in `REPORT.md` whenever a bare symbol name or

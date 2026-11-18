@@ -1,44 +1,39 @@
-# Zerocopy reference corpus binding
+# Reference corpus binding
 
-This binding selects the `zerocopy/reference` corpus and the `reference/1`
-interpretation. It applies when the caller explicitly selects the absolute path
-to this `CORPUS.md` and names the operation and stopping boundary. The corpus root
-is the directory containing that selected file. All paths below are relative to
-that bound root; the working directory or an installed skill does not select it.
+This binding selects `zerocopy/reference` and `reference-corpus/1` only when the caller
+supplies this file's absolute path, operation and stopping boundary. The corpus
+root is its parent. Paths below resolve from that root; cwd and installation do
+not select it. The shared-resource record binds the verified public release pin.
 
 | Selection | Bound resource |
 | --- | --- |
-| Corpus ID and scope | `zerocopy/reference` |
-| Interpretation | `reference/1` |
-| Corpus root | Parent directory of the caller-selected absolute `CORPUS.md` |
-| Native policy | `AGENTS.md` |
-| Native report format | `FORMAT.md` |
-| Candidate-local validator | `tools/reference.py` |
-| Native validator tests | `tests/test_reference.py` |
+| Corpus identity and scope | `zerocopy/reference` |
+| Interpretation | `reference-corpus/1` |
+| Native project policy | `AGENTS.md` |
+| Complete adopted report contract | `FORMAT.md` |
+| Instance topic vocabulary | `CORPUS.json` |
+| Candidate-local validator and tests | `tools/reference.py`, `tests/test_reference.py` |
 | Complete research materialization | `skills/reference-research/` |
 | Research entrypoint | `skills/reference-research/SKILL.md` |
-| Common research guidance | `skills/reference-research/references/research.md` |
-| Selected interpretation guidance | `skills/reference-research/references/reference-1.md` |
+| Research guidance and contract source | `skills/reference-research/references/research.md`, `skills/reference-research/references/format.md` |
 | Existing coverage | `CATALOG.json` and original `reports/<package>/` files |
+| Shared source disposition and managed baselines | `SHARED-RESOURCES.json` |
 
-Before relying on the research workflow, read the complete selected policy,
-format, research entrypoint, common guidance and `reference/1` guidance. Missing
-required resources, an unsupported requested interpretation or conflicting
-bindings block that dependent operation. Carry a separate binding for each
-selected corpus scope. Other bundled interpretation resources do not select a
-different corpus or change this branch's report requirements.
+Read the complete selected policy, format, machine vocabulary, research
+entrypoint and guidance before dependent work. The shared format owns report
+meanings; project policy owns visibility, actions, additional requirements and
+publication. Missing resources, unsupported interpretations or genuine semantic
+conflicts block dependent operations. Keep separate bindings for separate scopes.
 
-The caller selects planning, report maintenance or an authorized publication
-operation. Planning stops at questions and investigation tracks. Maintenance
-produces report packages and regenerates the catalog when package names or
-metadata change. This binding grants no publication right. For publication,
-reobserve native policy and current remote state, then follow the candidate
-validation, concurrency and readback protocol in `AGENTS.md`.
+Planning stops at questions and investigation tracks. Maintenance produces final
+packages and regenerates the catalog only when names or metadata change. This
+binding grants no publication right. For authorized publication, reobserve native
+policy and remote state, validate the exact candidate with its own checker, then
+follow the sole-parent fast-forward/concurrency/readback protocol in `AGENTS.md`.
 
-Native maintenance uses this branch's candidate-local standard-library validator
-and complete research materialization. It needs no navigator, captured index,
-toolkit checkout, packaging environment or host-global installation. Query the
-catalog programmatically and read selected original reports with their
-qualifications. Optional navigation receives its own explicit interpretation,
-source/index, executable and cache binding; installation supplies no corpus
-selection or publication authority.
+Basic research and maintenance need no navigator, index, global skill installation
+or toolkit checkout. Optional navigation has a separately selected executable,
+source/index, interpretation and cache. New indexes capture exact policy bytes.
+Historical images and saved handles continue through their separately selected
+qualified retained reader, outside the current runtime. Installing new skills
+must not overwrite that reader. A rebuilt image cannot replace an old handle.

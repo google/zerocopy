@@ -42,3 +42,12 @@ python3 -m unittest discover -s tests -v
 ```
 
 The validator and tests otherwise use only the Python standard library.
+
+## Adopted shared resources
+
+`FORMAT.md` is the complete local `reference-corpus/1` contract. `CORPUS.json`
+contains the instance-owned topic vocabulary. Select `CORPUS.md` explicitly for
+research or maintenance; installation and cwd do not select a corpus.
+`SHARED-RESOURCES.json` records source disposition, managed paths and baseline
+hashes. The complete research skill, standalone checker and tests remain on this
+branch and work without a navigator, home skills or authoring toolkit checkout.

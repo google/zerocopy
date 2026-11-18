@@ -1,0 +1,28 @@
+{
+  "schema": "reference-corpus/1",
+  "topic_namespaces": [
+    "aeneas",
+    "agents",
+    "anneal",
+    "build",
+    "cargo",
+    "charon",
+    "compilers",
+    "domains",
+    "exocrate",
+    "isa",
+    "kraken",
+    "lake",
+    "lean",
+    "llvm",
+    "minirust",
+    "rust",
+    "rustc",
+    "security",
+    "smt",
+    "systems",
+    "vcs",
+    "verification",
+    "zerocopy"
+  ]
+}

@@ -11,8 +11,9 @@ The current tip of `refs/heads/reference` is the canonical corpus state. Git
 history preserves provenance; historical trees are not competing current
 documentation.
 
-This branch is authoritative about its own organization, interpretation, and
-maintenance. It is not authoritative about the systems it documents. Upstream
+This branch owns its organization, project policy and maintenance. It adopts
+the shared `reference-corpus/1` report contract, retaining its complete pinned
+local copy in `FORMAT.md`. It is not authoritative about the systems it documents. Upstream
 source code, specifications, release artifacts, and other primary sources retain
 their own authority.
 
@@ -20,8 +21,11 @@ All documentation needed to interpret or maintain the corpus must live on this
 branch. Files elsewhere may point here, but must not be required to determine
 what the corpus means or how it is maintained.
 
-`AGENTS.md` governs branch-wide behavior. `FORMAT.md` governs report semantics and
-format. `tools/reference.py` mechanically enforces only a subset of those written
+`AGENTS.md` governs branch-wide behavior. `FORMAT.md` is the exact managed local
+copy of the adopted shared report contract. `CORPUS.json` supplies only this
+instance's topic vocabulary; `CORPUS.md` binds exact local resources and the
+caller-selected operation. Shared meanings cannot be silently redefined by
+project policy. A genuine semantic conflict blocks the dependent operation. `tools/reference.py` mechanically enforces only a subset of those written
 contracts. If the tool disagrees with the written contract, treat that as a
 tooling defect rather than inferring a new corpus rule from the implementation.
 
@@ -97,10 +101,10 @@ subjects actually examined, bind claims to supporting evidence, and preserve
 important investigation limits. Package paths are navigation handles and do not
 carry technical applicability semantics.
 
-When upstream software changes, an older report remains a report about the subject
-it identifies. Add another report when preserving newer behavior is useful. When
-the corpus's account of its identified subject is wrong, correct the current
-report; Git history preserves the earlier text as provenance.
+Follow `FORMAT.md` when correcting an account or adding examined versions.
+Preserve findings about older subjects, prefer coherent shared/differing version
+coverage, and split distinct or substantially divergent topics when needed.
+Git history preserves earlier text as provenance.
 
 Prefer reports that avoid future research cost: results that required substantial
 synthesis, are easy to misunderstand, control later engineering decisions, depend
@@ -111,7 +115,7 @@ When turning an open-ended technical prompt, engineering retrospective, or body
 of preliminary findings into corpus reports through iterative multi-round
 research, open and follow
 [`skills/reference-research/SKILL.md`](skills/reference-research/SKILL.md) and
-its complete common and selected `reference/1` guidance. When the caller
+its complete research guidance and shared `reference-corpus/1` format. When the caller
 selects this corpus, use [`CORPUS.md`](CORPUS.md) as the explicit project
 binding. The binding selects this branch's native resources without a
 navigator or toolkit checkout and grants no publication authority.
@@ -167,3 +171,10 @@ to understand the current tree.
 Do not add GitHub Actions or make routine corpus publication depend on repository
 CI without explicit user direction. The intended maintenance path is lightweight,
 deterministic validation followed by direct fast-forward publication.
+
+## Shared resource maintenance
+
+`SHARED-RESOURCES.json` records the selected source disposition, exact managed
+paths and baseline hashes. Instance policy, binding, machine vocabulary, reports
+and catalog remain instance-owned. Compare baseline/local/proposed resources on
+updates; reconcile local edits and unknown files rather than replacing them.
