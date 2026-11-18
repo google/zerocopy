@@ -730,6 +730,15 @@ example of how it can be used for parsing UDP packets.
         impl_dbg_traits!($name, $native, $number_kind);
         impl_fmt_traits!($name, $native, $number_kind);
         impl_ops_traits!($name, $native, $number_kind);
+
+        #[cfg(feature = "defmt")]
+        #[cfg_attr(doc_cfg, doc(cfg(feature = "defmt")))]
+        impl<O: ByteOrder> defmt::Format for $name<O> {
+            #[inline]
+            fn format(&self, f: defmt::Formatter<'_>) {
+                defmt::Format::format(&self.get(), f)
+            }
+        }
     };
 }
 
@@ -1584,6 +1593,16 @@ mod tests {
         assert_eq!(format!("{:?}", val), "U16(10)");
         assert_eq!(format!("{:03?}", val), "U16(010)");
         assert_eq!(format!("{:x?}", val), "U16(a)");
+    }
+
+    #[cfg(feature = "defmt")]
+    #[test]
+    fn test_defmt_format_impl() {
+        // `defmt` needs a global logger to emit anything, so only check that
+        // the impls exist.
+        fn assert_impls_format<T: defmt::Format>() {}
+        call_for_all_types!(assert_impls_format, NativeEndian);
+        call_for_all_types!(assert_impls_format, NonNativeEndian);
     }
 
     #[test]

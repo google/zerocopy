@@ -123,6 +123,7 @@ __internal_use_only_features_that_work_on_stable = [
 ]
 
 [dependencies]
+defmt = { version = "1", optional = true }
 zerocopy-derive = { version = "=0.8.63", path = "zerocopy-derive", optional = true }
 
 # The "associated proc macro pattern" ensures that the versions of zerocopy and
