@@ -110,7 +110,11 @@ can replace future rediscovery.
 When turning an open-ended technical prompt, engineering retrospective, or body
 of preliminary findings into corpus reports through iterative multi-round
 research, open and follow
-[`skills/reference-research/SKILL.md`](skills/reference-research/SKILL.md).
+[`skills/reference-research/SKILL.md`](skills/reference-research/SKILL.md) and
+its complete common and selected `reference/1` guidance. When the caller
+selects this corpus, use [`CORPUS.md`](CORPUS.md) as the explicit project
+binding. The binding selects this branch's native resources without a
+navigator or toolkit checkout and grants no publication authority.
 
 ## Generated state
 
