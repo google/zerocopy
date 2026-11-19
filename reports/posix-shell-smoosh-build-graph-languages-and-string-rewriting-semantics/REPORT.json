@@ -1,0 +1,90 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "pl/string-rewriting",
+    "build",
+    "systems",
+    "systems/posix-shell",
+    "verification",
+    "tooling"
+  ],
+  "subjects": [
+    {
+      "name": "POSIX.1-2024 Shell Command Language",
+      "identity": {
+        "standard": "IEEE Std 1003.1-2024",
+        "edition": "The Open Group Base Specifications Issue 8, Chapter 2",
+        "url": "https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html"
+      }
+    },
+    {
+      "name": "Smoosh mechanized POSIX shell semantics",
+      "identity": {
+        "repository": "mgree/smoosh",
+        "revision": "cc67dbe6a4953e51431997eac025b5e3f46c3d2d",
+        "doi": "10.1145/3371111"
+      }
+    },
+    {
+      "name": "GNU Bash",
+      "identity": {
+        "repository": "mirror/bash",
+        "revision": "b6e23235f28b1c85e18e9a2b7ba8c6b6c46aecbc",
+        "runtime_version": "5.3.9(1)-release"
+      }
+    },
+    {
+      "name": "Debian Almquist Shell (dash)",
+      "identity": {
+        "package": "dash",
+        "version": "0.5.12-12"
+      }
+    },
+    {
+      "name": "GNU Make",
+      "identity": {
+        "repository": "mirror/make",
+        "revision": "c63a5bc6a2881d515bb3020ed477fcba08fb2f3d",
+        "runtime_version": "4.4.1"
+      }
+    },
+    {
+      "name": "CMake",
+      "identity": {
+        "repository": "Kitware/CMake",
+        "revision": "2e0f6af547d479413b5553c635d14e9104ee04e4"
+      }
+    },
+    {
+      "name": "GNU M4",
+      "identity": {
+        "repository": "autotools-mirror/m4",
+        "revision": "e0e0f6eaccdb4ebdef4f7297fdffcbc3c8a4cdb8",
+        "runtime_version": "1.4.21"
+      }
+    },
+    {
+      "name": "GNU Autoconf (M4sugar)",
+      "identity": {
+        "repository": "autotools-mirror/autoconf",
+        "revision": "a5dd14d6894e948bd1c312d11453f70a9dd7b47e"
+      }
+    },
+    {
+      "name": "Tcl",
+      "identity": {
+        "repository": "tcltk/tcl",
+        "revision": "f92685e14c135a586b1e4b842f373a4268c8417a"
+      }
+    },
+    {
+      "name": "GNU Emacs Lisp",
+      "identity": {
+        "repository": "emacs-mirror/emacs",
+        "revision": "dcdd799a863fc8c261e0628dede6da6dc64429d2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

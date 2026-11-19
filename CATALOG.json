@@ -10139,6 +10139,85 @@
         "ffi"
       ]
     },
+    "cobol-decimal-redefines-mumps-globals-fortran-aliasing-and-legacy-ffi": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "standard": "ISO/IEC 1989:2023",
+            "title": "Information technology \u2014 Programming languages, their environments and system software interfaces \u2014 Programming language COBOL"
+          },
+          "name": "ISO/IEC 1989:2023 COBOL"
+        },
+        {
+          "identity": {
+            "repository": "OCamlPro/gnucobol4",
+            "revision": "780745d1bac79adea61808647f5a8e4b98bee8b0"
+          },
+          "name": "GnuCOBOL 4"
+        },
+        {
+          "identity": {
+            "standard": "ANSI/MDC X11.1-1995",
+            "title": "Programming Languages \u2014 M (MUMPS)"
+          },
+          "name": "ANSI/MDC X11.1-1995 MUMPS"
+        },
+        {
+          "identity": {
+            "repository": "YottaDB/YDB",
+            "revision": "7a1fee723cd0d2b4c127e9c670ccc72041ec4bb0"
+          },
+          "name": "YottaDB"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 1539-1:2023",
+            "title": "Information technology \u2014 Programming languages \u2014 Fortran \u2014 Part 1: Base language"
+          },
+          "name": "ISO/IEC 1539-1:2023 Fortran 2023"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c85e6b928dfd2552497fe666f281f3d49c2c0f70",
+            "subproject": "flang"
+          },
+          "name": "LLVM Flang"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "85ae7d8c7c16d1ad96c2e19e17f2e2aa739bd72e",
+            "subproject": "gcc/fortran, libgfortran"
+          },
+          "name": "GCC GFortran"
+        },
+        {
+          "identity": {
+            "compiler": "gcc",
+            "version": "15.2.0 (Debian 15.2.0-14)"
+          },
+          "name": "GCC C Compiler (aliasing probe host)"
+        },
+        {
+          "identity": {
+            "specification": "MathWorks MATLAB MEX C Matrix API (R2018a+ interleaved complex)",
+            "url": "https://www.mathworks.com/help/matlab/c-matrix-api.html"
+          },
+          "name": "MATLAB C Matrix API and Interleaved Complex MEX ABI"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/semantics",
+        "ffi",
+        "ffi/abi",
+        "compilers",
+        "compilers/aliasing",
+        "domains"
+      ]
+    },
     "coherence-orphan-instances-and-module-system-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -29090,6 +29169,96 @@
         "systems/history",
         "runtimes/os-boundary",
         "ffi/os-boundary"
+      ]
+    },
+    "posix-shell-smoosh-build-graph-languages-and-string-rewriting-semantics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "edition": "The Open Group Base Specifications Issue 8, Chapter 2",
+            "standard": "IEEE Std 1003.1-2024",
+            "url": "https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html"
+          },
+          "name": "POSIX.1-2024 Shell Command Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371111",
+            "repository": "mgree/smoosh",
+            "revision": "cc67dbe6a4953e51431997eac025b5e3f46c3d2d"
+          },
+          "name": "Smoosh mechanized POSIX shell semantics"
+        },
+        {
+          "identity": {
+            "repository": "mirror/bash",
+            "revision": "b6e23235f28b1c85e18e9a2b7ba8c6b6c46aecbc",
+            "runtime_version": "5.3.9(1)-release"
+          },
+          "name": "GNU Bash"
+        },
+        {
+          "identity": {
+            "package": "dash",
+            "version": "0.5.12-12"
+          },
+          "name": "Debian Almquist Shell (dash)"
+        },
+        {
+          "identity": {
+            "repository": "mirror/make",
+            "revision": "c63a5bc6a2881d515bb3020ed477fcba08fb2f3d",
+            "runtime_version": "4.4.1"
+          },
+          "name": "GNU Make"
+        },
+        {
+          "identity": {
+            "repository": "Kitware/CMake",
+            "revision": "2e0f6af547d479413b5553c635d14e9104ee04e4"
+          },
+          "name": "CMake"
+        },
+        {
+          "identity": {
+            "repository": "autotools-mirror/m4",
+            "revision": "e0e0f6eaccdb4ebdef4f7297fdffcbc3c8a4cdb8",
+            "runtime_version": "1.4.21"
+          },
+          "name": "GNU M4"
+        },
+        {
+          "identity": {
+            "repository": "autotools-mirror/autoconf",
+            "revision": "a5dd14d6894e948bd1c312d11453f70a9dd7b47e"
+          },
+          "name": "GNU Autoconf (M4sugar)"
+        },
+        {
+          "identity": {
+            "repository": "tcltk/tcl",
+            "revision": "f92685e14c135a586b1e4b842f373a4268c8417a"
+          },
+          "name": "Tcl"
+        },
+        {
+          "identity": {
+            "repository": "emacs-mirror/emacs",
+            "revision": "dcdd799a863fc8c261e0628dede6da6dc64429d2"
+          },
+          "name": "GNU Emacs Lisp"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/semantics",
+        "pl/string-rewriting",
+        "build",
+        "systems",
+        "systems/posix-shell",
+        "verification",
+        "tooling"
       ]
     },
     "post-cmos-analog-neuromorphic-qec-and-molecular-fluidic-compilers": {

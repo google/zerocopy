@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "ffi",
+    "ffi/abi",
+    "compilers",
+    "compilers/aliasing",
+    "domains"
+  ],
+  "subjects": [
+    {
+      "name": "ISO/IEC 1989:2023 COBOL",
+      "identity": {
+        "standard": "ISO/IEC 1989:2023",
+        "title": "Information technology — Programming languages, their environments and system software interfaces — Programming language COBOL"
+      }
+    },
+    {
+      "name": "GnuCOBOL 4",
+      "identity": {
+        "repository": "OCamlPro/gnucobol4",
+        "revision": "780745d1bac79adea61808647f5a8e4b98bee8b0"
+      }
+    },
+    {
+      "name": "ANSI/MDC X11.1-1995 MUMPS",
+      "identity": {
+        "standard": "ANSI/MDC X11.1-1995",
+        "title": "Programming Languages — M (MUMPS)"
+      }
+    },
+    {
+      "name": "YottaDB",
+      "identity": {
+        "repository": "YottaDB/YDB",
+        "revision": "7a1fee723cd0d2b4c127e9c670ccc72041ec4bb0"
+      }
+    },
+    {
+      "name": "ISO/IEC 1539-1:2023 Fortran 2023",
+      "identity": {
+        "standard": "ISO/IEC 1539-1:2023",
+        "title": "Information technology — Programming languages — Fortran — Part 1: Base language"
+      }
+    },
+    {
+      "name": "LLVM Flang",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c85e6b928dfd2552497fe666f281f3d49c2c0f70",
+        "subproject": "flang"
+      }
+    },
+    {
+      "name": "GCC GFortran",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "85ae7d8c7c16d1ad96c2e19e17f2e2aa739bd72e",
+        "subproject": "gcc/fortran, libgfortran"
+      }
+    },
+    {
+      "name": "GCC C Compiler (aliasing probe host)",
+      "identity": {
+        "compiler": "gcc",
+        "version": "15.2.0 (Debian 15.2.0-14)"
+      }
+    },
+    {
+      "name": "MATLAB C Matrix API and Interleaved Complex MEX ABI",
+      "identity": {
+        "specification": "MathWorks MATLAB MEX C Matrix API (R2018a+ interleaved complex)",
+        "url": "https://www.mathworks.com/help/matlab/c-matrix-api.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
