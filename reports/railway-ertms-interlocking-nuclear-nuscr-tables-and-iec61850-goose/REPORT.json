@@ -1,0 +1,121 @@
+{
+  "topics": [
+    "domains/railway-interlocking",
+    "domains/nuclear-substation",
+    "verification/tabular-specifications",
+    "systems/substation-ethernet"
+  ],
+  "subjects": [
+    {
+      "name": "ProB 2 Kernel (B-Method & Event-B Animator / Model Checker)",
+      "identity": {
+        "repository": "hhu-stups/prob2_kernel",
+        "revision": "9f01dbb53751242084735445a871b53fd3fbf4b3"
+      }
+    },
+    {
+      "name": "OSRD (Open Source Railway Designer — ETCS Braking & Conflict Detection)",
+      "identity": {
+        "repository": "OpenRailAssociation/osrd",
+        "revision": "af7025a6fbf91a517baf00157bdf3f2f081256e6"
+      }
+    },
+    {
+      "name": "KeYmaera X Projects — ETCS Case Study Models",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-projects",
+        "revision": "b9d7cb584e8fd1c3cc4f30644e82ba12cbb1d6fe",
+        "subpath": "etcs/etcs.kyx"
+      }
+    },
+    {
+      "name": "libIEC61850 (Open-Source IEC 61850 MMS, GOOSE, SV, and R-GOOSE/R-SV Stack)",
+      "identity": {
+        "repository": "mz-automation/libiec61850",
+        "revision": "6e265c54af66ea686453b6d31c4dcce1cf7ad2bd",
+        "version": "1.6.2"
+      }
+    },
+    {
+      "name": "CENELEC EN 50128:2011+A2:2020 & EN 50129:2018 (Railway Control & Protection Software / Safety-Related Electronic Systems)",
+      "identity": {
+        "standard": "EN 50128:2011+A2:2020 / EN 50129:2018"
+      }
+    },
+    {
+      "name": "ERA ERTMS/ETCS System Requirements Specification (SUBSET-026)",
+      "identity": {
+        "standard": "ERA SUBSET-026-3 v400"
+      }
+    },
+    {
+      "name": "IEC 60880:2006 (Nuclear Power Plants — I&C Systems Important to Safety — Software Aspects for Category A Functions)",
+      "identity": {
+        "standard": "IEC 60880:2006"
+      }
+    },
+    {
+      "name": "IEC 61850-5 / 8-1 / 9-2 / 90-5 & IEC 62351-6:2020 (Substation GOOSE/SV Messaging & Security)",
+      "identity": {
+        "standard": "IEC 61850-8-1 / IEC 61850-9-2 / IEC 61850-90-5 / IEC 62351-6:2020"
+      }
+    },
+    {
+      "name": "Platzer and Quesel (2009) — European Train Control System: A Case Study in Formal Verification",
+      "identity": {
+        "doi": "10.1007/978-3-642-10373-5_13",
+        "venue": "ICFEM 2009, LNCS Vol. 5885, pp. 246-265"
+      }
+    },
+    {
+      "name": "Haxthausen, Peleska, and Kinder (2011) — A Formal Approach for the Construction and Verification of Railway Control Systems",
+      "identity": {
+        "doi": "10.1007/s00165-009-0143-6",
+        "venue": "Formal Aspects of Computing, Vol. 23, No. 2, pp. 191-219 (2011)"
+      }
+    },
+    {
+      "name": "Leuschel and Butler (2003) — ProB: A Model Checker for B",
+      "identity": {
+        "doi": "10.1007/978-3-540-45236-2_46",
+        "venue": "FME 2003, LNCS Vol. 2805, pp. 855-874"
+      }
+    },
+    {
+      "name": "Heitmeyer, Jeffords, and Labaw (1996) — Automated Consistency Checking of Requirements Specifications",
+      "identity": {
+        "doi": "10.1145/234426.234431",
+        "venue": "ACM TOSEM, Vol. 5, No. 3, pp. 231-261 (1996)"
+      }
+    },
+    {
+      "name": "Yoo, Jee, and Cha (2009) — Formal Modeling and Verification of Safety-Critical Software",
+      "identity": {
+        "doi": "10.1109/MS.2009.67",
+        "venue": "IEEE Software, Vol. 26, No. 3, pp. 42-49 (2009)"
+      }
+    },
+    {
+      "name": "Hoyos, Dehus, and Brown (2012) — Exploiting the GOOSE Protocol: A Practical Attack on Cyber-Infrastructure",
+      "identity": {
+        "doi": "10.1109/GLOCOMW.2012.6477809",
+        "venue": "IEEE Globecom Workshops 2012, pp. 1508-1513"
+      }
+    },
+    {
+      "name": "Kush, Ahmed, Branagan, and Foo (2014) — Poisoned GOOSE: Exploiting the GOOSE Protocol",
+      "identity": {
+        "isbn": "978-1-921770-32-6",
+        "venue": "AISC 2014, CRPIT Vol. 149, pp. 17-22"
+      }
+    },
+    {
+      "name": "Farooq, Hussain, Kiran, and Ustun (2019) — Performance Evaluation and Analysis of IEC 62351-6 Probabilistic Signature Scheme for Securing GOOSE Messages",
+      "identity": {
+        "doi": "10.1109/ACCESS.2019.2902571",
+        "venue": "IEEE Access, Vol. 7, pp. 32343-32351 (2019)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
