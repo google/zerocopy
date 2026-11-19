@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "domains",
+    "domains/databases",
+    "verification",
+    "security",
+    "security/redos",
+    "smt"
+  ],
+  "subjects": [
+    {
+      "name": "HoTTSQL and Cosette SQL Equivalence Solver",
+      "identity": {
+        "repository": "uwdb/Cosette",
+        "revision": "7a951aa3b1a70a8b310c676e524740b7114975c3",
+        "doi": "10.1145/3062341.3062348"
+      }
+    },
+    {
+      "name": "PostgreSQL",
+      "identity": {
+        "repository": "postgres/postgres",
+        "revision": "2c077c7d602dba034e209227ea04a14b10797c42"
+      }
+    },
+    {
+      "name": "SQLite",
+      "identity": {
+        "repository": "sqlite/sqlite",
+        "revision": "ec00a487e60533fda786a9175a26549507c22500",
+        "runtime_version": "3.53.4"
+      }
+    },
+    {
+      "name": "ANSI SQL Isolation Critique and Serializable Snapshot Isolation Literature",
+      "identity": {
+        "berenson_sigmod95_doi": "10.1145/223784.223785",
+        "adya_icde00_doi": "10.1109/ICDE.2000.839388",
+        "cahill_sigmod08_doi": "10.1145/1376616.1376715"
+      }
+    },
+    {
+      "name": "ECMA-262 ECMAScript RegExp Specification",
+      "identity": {
+        "repository": "tc39/ecma262",
+        "revision": "b1eaed82fc5e8a511c5b2007f194b16c8f7e5ea6"
+      }
+    },
+    {
+      "name": "PCRE2",
+      "identity": {
+        "repository": "PCRE2Project/pcre2",
+        "revision": "0705b4a358eca084a1e6159efa29cbf6d3aea095"
+      }
+    },
+    {
+      "name": "V8 Irregexp and Experimental Linear RegExp Engine",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0",
+        "runtime_version": "Node.js v24.21.0"
+      }
+    },
+    {
+      "name": "Google RE2",
+      "identity": {
+        "repository": "google/re2",
+        "revision": "2da0056814cf180480a19f5cf811e7e1c054bf6d"
+      }
+    },
+    {
+      "name": "Rust regex and regex-automata",
+      "identity": {
+        "repository": "rust-lang/regex",
+        "revision": "fde4946d4a3cb367338a21493ec91ec7106a12b4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
