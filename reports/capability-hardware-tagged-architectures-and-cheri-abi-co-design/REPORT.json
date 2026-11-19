@@ -1,8 +1,11 @@
 {
   "topics": [
     "isa/cheri",
+    "isa/mill-sasos",
     "systems/hardware-isolation",
+    "systems/dma-iommu",
     "ffi/capability-abi",
+    "pl/existential-types",
     "systems/history"
   ],
   "subjects": [
@@ -157,6 +160,99 @@
       "identity": {
         "repository": "torvalds/linux",
         "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "David A. Moon: Symbolics Architecture",
+      "identity": {
+        "authors": "David A. Moon",
+        "publication": "IEEE Computer 20(1):43-52, January 1987",
+        "doi": "10.1109/MC.1987.1663356",
+        "url": "https://gwern.net/doc/cs/lisp/1987-moon.pdf",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Holloway et al.: Symbolic language data processing system (U.S. Patent 4,887,235)",
+      "identity": {
+        "inventors": "John T. Holloway, David A. Moon, Howard I. Cannon, Thomas F. Knight, Bruce E. Edwards, Daniel L. Weinreb",
+        "assignee": "Symbolics, Inc.",
+        "patent": "US4887235A",
+        "granted": "1989-12-12",
+        "url": "http://bitsavers.informatik.uni-stuttgart.de/pdf/symbolics/patents/4887235/patent.html"
+      }
+    },
+    {
+      "name": "Withington, McKay, Palter, Robertson: The Symbolics Virtual Lisp Machine (extended abstract)",
+      "identity": {
+        "authors": "P. T. Withington, Scott McKay, Gary Palter, Paul Robertson",
+        "publication": "Submitted to PLDI '94 (40-bit Ivory architecture emulation)",
+        "url": "https://www.chai.uni-hamburg.de/~moeller/symbolics-info/literature/VLM.html",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Mill Computing, Inc.: U.S. Patent 10,678,700 B2 (CPU security mechanisms employing thread-specific protection domains)",
+      "identity": {
+        "inventors": "Roger Rawson Godard, Arthur David Kahlich, Jan Schukat, William Edwards",
+        "assignee": "Mill Computing, Inc.",
+        "patent": "US10678700B2",
+        "application": "US15/559,858",
+        "filed": "2016-03-21",
+        "granted": "2020-06-09",
+        "url": "https://patents.google.com/patent/US10678700B2/en"
+      }
+    },
+    {
+      "name": "Mill Computing, Inc.: U.S. Patent 9,524,163 B2 (Computer processor employing hardware-based pointer processing)",
+      "identity": {
+        "inventors": "Roger Rawson Godard, Arthur David Kahlich",
+        "assignee": "Mill Computing, Inc.",
+        "patent": "US9524163B2",
+        "application": "US14/515,087",
+        "filed": "2014-10-15",
+        "granted": "2016-12-20",
+        "url": "https://patents.google.com/patent/US9524163B2/en"
+      }
+    },
+    {
+      "name": "Mill Computing, Inc.: U.S. Patent 9,652,230 B2 (Computer processor employing dedicated hardware mechanism controlling the initialization and invalidation of cache lines)",
+      "identity": {
+        "inventors": "Roger Rawson Godard, Arthur David Kahlich, Norman Hardy, Allen Jay Baum",
+        "assignee": "Mill Computing, Inc.",
+        "patent": "US9652230B2",
+        "application": "US14/515,231",
+        "filed": "2014-10-15",
+        "granted": "2017-05-16",
+        "url": "https://patents.google.com/patent/US9652230B2/en"
+      }
+    },
+    {
+      "name": "Mill Computing, Inc.: Official Patent Summaries (including U.S. Patent 9,747,218 B2) and Mill CPU Programming Model",
+      "identity": {
+        "organization": "Mill Computing, Inc.",
+        "patent_summary": "US9747218B2 (filed 2015-03-20, granted 2017-08-29)",
+        "url": "https://millcomputing.com/patents/",
+        "companion_url": "https://millcomputing.com/introduction-to-the-mill-cpu-programming-model/"
+      }
+    },
+    {
+      "name": "Markettos et al.: Thunderclap: Exploring Vulnerabilities in Operating System IOMMU Protection via DMA from Untrustworthy Peripherals",
+      "identity": {
+        "authors": "A. Theodore Markettos, Colin Rothwell, Brett F. Gutstein, Allison Pearce, Peter G. Neumann, Simon W. Moore, Robert N. M. Watson",
+        "publication": "Proceedings of the Network and Distributed System Security Symposium (NDSS '19)",
+        "doi": "10.14722/ndss.2019.23194",
+        "url": "https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/2019ndss-iommu-cameraready.pdf",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Markettos et al.: Position Paper: Defending Direct Memory Access with CHERI Capabilities",
+      "identity": {
+        "authors": "A. Theodore Markettos, John Baldwin, Ruslan Bukin, Peter G. Neumann, Simon W. Moore, Robert N. M. Watson",
+        "publication": "Proceedings of the Workshop on Hardware and Architectural Support for Security and Privacy (HASP '20), ACM, October 2020, 9 pages",
+        "url": "https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/2020hasp-cheri-dma.pdf",
+        "year": "2020"
       }
     }
   ],

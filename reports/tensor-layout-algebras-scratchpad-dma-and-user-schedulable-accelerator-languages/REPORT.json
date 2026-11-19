@@ -1,0 +1,126 @@
+{
+  "topics": [
+    "compilers/layout-algebras",
+    "compilers/schedule-languages",
+    "systems/accelerators",
+    "verification/layout-proofs"
+  ],
+  "subjects": [
+    {
+      "name": "NVIDIA CUTLASS (CuTe C++ layout/swizzle headers, SM90 TMA/GMMA traits, docs, and PyCuTe)",
+      "identity": {
+        "repository": "NVIDIA/cutlass",
+        "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+      }
+    },
+    {
+      "name": "Cecka, CuTe Layout Representation and Algebra (arXiv:2603.02298v2)",
+      "identity": {
+        "arxiv": "2603.02298v2",
+        "doi": "10.48550/arXiv.2603.02298",
+        "published": "2026-07-29"
+      }
+    },
+    {
+      "name": "Carlisle, Shah, Stern, and VanKoughnett, Categorical Foundations for CuTe Layouts (arXiv:2601.05972v1)",
+      "identity": {
+        "arxiv": "2601.05972v1",
+        "doi": "10.48550/arXiv.2601.05972",
+        "published": "2026-01-09"
+      }
+    },
+    {
+      "name": "Colfax Research Tract (categorical CuTe layout implementation)",
+      "identity": {
+        "repository": "ColfaxResearch/layout-categories",
+        "revision": "689369f8b9c61cbcf9aa81c20c83f0ad7cef9719"
+      }
+    },
+    {
+      "name": "Triton compiler (LinearLayout, TritonGPU dialect encodings, RemoveLayoutConversions, SoftwarePipeliner)",
+      "identity": {
+        "repository": "triton-lang/triton",
+        "revision": "458c1a257c026a24c6aa7937f75f186e9bdf8353"
+      }
+    },
+    {
+      "name": "Tillet, Kung, and Cox, Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations (MAPL '19)",
+      "identity": {
+        "doi": "10.1145/3315508.3329973",
+        "venue": "MAPL 2019"
+      }
+    },
+    {
+      "name": "JAX Pallas and Mosaic TPU backend (memory spaces, DMA semaphores, pipeline emitter, and TPU docs)",
+      "identity": {
+        "repository": "jax-ml/jax",
+        "revision": "bb38c58379173719d63a7e81fc09c22a37502654"
+      }
+    },
+    {
+      "name": "Jouppi et al., TPU v4: An Optically Reconfigurable Supercomputer for Machine Learning with Hardware Support for Embeddings (ISCA '23)",
+      "identity": {
+        "doi": "10.1145/3579371.3589350",
+        "arxiv": "2304.01433",
+        "venue": "ISCA 2023"
+      }
+    },
+    {
+      "name": "Futhark compiler (uniqueness/consumption alias checker and incremental flattening)",
+      "identity": {
+        "repository": "diku-dk/futhark",
+        "revision": "dc285f6698c118f2b236f65984e38104e72f7939"
+      }
+    },
+    {
+      "name": "Henriksen et al., Futhark: Purely Functional GPU-Programming with Nested Parallelism and In-Place Array Updates (PLDI '17) and Incremental Flattening (PPoPP '19)",
+      "identity": {
+        "doi_pldi17": "10.1145/3062341.3062354",
+        "doi_ppopp19": "10.1145/3293883.3295707",
+        "venue": "PLDI 2017; PPoPP 2019"
+      }
+    },
+    {
+      "name": "Exo and Exo 2 exocompiler (LoopIR, Z3 affine effect checking, modulo-config equivalence lattice, Cursors, Gemmini platform)",
+      "identity": {
+        "repository": "exo-lang/exo",
+        "revision": "defe17283d15553ca9d6ad70b2e9f4c22ff36ce2"
+      }
+    },
+    {
+      "name": "Ikarashi et al., Exocompilation for Productive Programming of Hardware Accelerators (PLDI '22) and Exo 2: Growing a Scheduling Language (ASPLOS '25)",
+      "identity": {
+        "doi_pldi22": "10.1145/3519939.3523446",
+        "doi_asplos25": "10.1145/3669940.3707218",
+        "venue": "PLDI 2022; ASPLOS 2025"
+      }
+    },
+    {
+      "name": "Halide compiler (Schedule representation, Lower pipeline, StorageFlattening)",
+      "identity": {
+        "repository": "halide/Halide",
+        "revision": "a92e31666d7272d3d7b76d0eccb95e8b2d23fa9c"
+      }
+    },
+    {
+      "name": "Ragan-Kelley et al. (PLDI '13), Clement and Cohen (OOPSLA '22), and Liu et al. ATL (POPL '22) on Halide and verified tensor scheduling",
+      "identity": {
+        "doi_halide_pldi13": "10.1145/2491956.2462176",
+        "doi_tv_oopsla22": "10.1145/3527328",
+        "doi_atl_popl22": "10.1145/3498717",
+        "venue": "PLDI 2013; OOPSLA 2022; POPL 2022"
+      }
+    },
+    {
+      "name": "Elevate rewriting strategy language and Rise/Shine compiler (Hagedorn et al., ICFP '20)",
+      "identity": {
+        "repository": "elevate-lang/elevate",
+        "revision": "0e60de5f1394d6d36e6cef94d13a3ca7d69b9ec5",
+        "shine_repository": "rise-lang/shine",
+        "shine_revision": "1bd443b1b057d4a6ce46578fb680fced5009af4a",
+        "doi": "10.1145/3408974"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

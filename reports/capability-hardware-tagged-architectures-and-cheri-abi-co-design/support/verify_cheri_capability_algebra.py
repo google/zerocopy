@@ -31,6 +31,14 @@ What is modelled, and from which public artifact each piece was transcribed:
   written for this probe.  It is not a transcription of any kernel; it exists
   to discriminate three designs (no barrier, stop-the-world re-scan, load
   barrier) on an exhaustively explored state space.
+* ``MillSasSystem`` and ``CheriotSealer`` / ``CheriotTokenRuntime`` -- abstract
+  models of Mill SASOS call-scoped transient ``PASS``/``GRANT``/``RELAY``/``PERSIST``
+  turf grants, guard-bit confused-deputy checks, and PLB ``novel``-bit lazy
+  revocation (U.S. Patents 9,747,218 & 10,678,700), paired with CHERIoT ``CSeal``/
+  ``CUnseal`` (transcribed from ``src/cheri_insts.sail`` of ``cheriot-sail`` at
+  518813ec3e595f79930d9129eaded2521831cbe2) and two-level software sealing
+  (``sdk/core/allocator/token.h`` and ``sdk/core/token_library/token_unseal.S``
+  of ``cheriot-rtos`` at e2dad05078bd25ed6f1ab993e14f332aa8c20557).
 
 ``GOLDEN_SETBOUNDS_128`` rows are copied from
 ``test/contrib/setbounds_inputs_128.cpp`` of CTSRD-CHERI/cheri-compressed-cap at
@@ -1048,6 +1056,460 @@ def check_sweep_designs() -> None:
         print(f"     design={d:9s} sound={ok!s:5s} states={states}")
 
 
+# --------------------------------------------------------------------------
+# Group 24: Mill SASOS PASS auto-revocation + CHERIoT/ISAv9 existential sealing
+# --------------------------------------------------------------------------
+
+M_READ, M_WRITE, M_EXEC, M_PORTAL, M_GRANT = 1, 2, 4, 8, 16
+
+
+@dataclass(frozen=True)
+class MillRegion:
+    base: int
+    top: int
+    perms: int
+
+    def covers(self, addr: int, size: int, req_perm: int) -> bool:
+        return (
+            size > 0
+            and addr >= self.base
+            and addr + size <= self.top
+            and (self.perms & req_perm) == req_perm
+        )
+
+
+@dataclass(frozen=True)
+class MillPortal:
+    addr: int
+    target_turf: int
+    entry_pc: int
+
+
+@dataclass
+class MillFrame:
+    turf_id: int
+    transient: list[MillRegion]
+    stacklet_range: tuple[int, int]
+
+
+class MillSasSystem:
+    """Abstract model of Mill Turfs, Portals, PLBs (with novel bit), stacklets,
+    and call-scoped PASS/GRANT/RELAY/PERSIST grants (U.S. Patents 9,747,218 & 10,678,700)."""
+
+    def __init__(self, root_turf: int = 0) -> None:
+        self.mem_tables: dict[int, list[MillRegion]] = {root_turf: []}
+        self.dplb: dict[int, list[tuple[MillRegion, bool]]] = {root_turf: []}  # (region, novel)
+        self.iplb: dict[int, list[MillRegion]] = {root_turf: []}
+        self.stacklet_tosp: dict[int, int] = {root_turf: 0x100000}
+        self.frames: list[MillFrame] = [MillFrame(root_turf, [], (0x100000, 0x100400))]
+        self.stacklet_tosp[root_turf] = 0x100400
+
+    @property
+    def current_turf(self) -> int:
+        return self.frames[-1].turf_id
+
+    def add_turf(self, turf_id: int, stacklet_base: int) -> None:
+        self.mem_tables.setdefault(turf_id, [])
+        self.dplb.setdefault(turf_id, [])
+        self.iplb.setdefault(turf_id, [])
+        self.stacklet_tosp.setdefault(turf_id, stacklet_base)
+
+    def grant_persistent_data(self, turf_id: int, reg: MillRegion) -> None:
+        """Install a persistent data grant into dPLB with novel=True (not yet lowered)."""
+        self.dplb.setdefault(turf_id, []).append((reg, True))
+
+    def grant_portal(self, turf_id: int, portal: MillPortal) -> None:
+        self.iplb.setdefault(turf_id, []).append(MillRegion(portal.addr, portal.addr + 64, M_PORTAL))
+
+    def evict_dplb(self, turf_id: int) -> None:
+        """Evict entries from dPLB to Persistent Permission Table, clearing novel bit."""
+        entries = self.dplb.get(turf_id, [])
+        for reg, novel in entries:
+            if novel and reg not in self.mem_tables[turf_id]:
+                self.mem_tables[turf_id].append(reg)
+        self.dplb[turf_id] = []
+
+    def revoke_persistent_data(self, turf_id: int, reg: MillRegion) -> bool:
+        """Lazy revocation via novel bit: returns True iff mem table had to be updated."""
+        touched_table = False
+        kept = []
+        found_novel = False
+        for r, novel in self.dplb.get(turf_id, []):
+            if r == reg:
+                if novel:
+                    found_novel = True
+                else:
+                    touched_table = True
+            else:
+                kept.append((r, novel))
+        self.dplb[turf_id] = kept
+        if not found_novel and reg in self.mem_tables.get(turf_id, []):
+            self.mem_tables[turf_id].remove(reg)
+            touched_table = True
+        return touched_table
+
+    def _persistent_regions(self, turf_id: int) -> list[MillRegion]:
+        seen = [r for r, _ in self.dplb.get(turf_id, [])]
+        for r in self.mem_tables.get(turf_id, []):
+            if r not in seen:
+                seen.append(r)
+        return seen
+
+    def access(self, addr: int, size: int, req_perm: int, guarded: bool = False) -> bool:
+        """U.S. Patent 10,678,700 Claims 19-20: guarded pointers check ONLY transient
+        grants; unguarded pointers check ONLY persistent turf regions and stacklet."""
+        frame = self.frames[-1]
+        if guarded:
+            return any(r.covers(addr, size, req_perm) for r in frame.transient)
+        s_lo, s_hi = frame.stacklet_range
+        if size > 0 and addr >= s_lo and addr + size <= s_hi and (req_perm & ~(M_READ | M_WRITE)) == 0:
+            return True
+        return any(r.covers(addr, size, req_perm) for r in self._persistent_regions(frame.turf_id))
+
+    def portal_call(
+        self,
+        portal: MillPortal,
+        pass_reqs: list[MillRegion],
+        relay_reqs: list[tuple[int, int, int, int]] = (),
+    ) -> bool:
+        """Execute a cross-turf portal CALL with monotone PASS and RELAY transient grants."""
+        caller = self.frames[-1]
+        if not any(r.covers(portal.addr, 1, M_PORTAL) for r in self.iplb.get(caller.turf_id, [])):
+            return False
+        new_transients: list[MillRegion] = []
+        # Validate every PASS grant against caller's persistent rights (monotonicity).
+        for req in pass_reqs:
+            base_perms = req.perms & ~M_GRANT
+            if req.base >= req.top or base_perms == 0:
+                return False
+            if not any(r.covers(req.base, req.top - req.base, base_perms)
+                       for r in self._persistent_regions(caller.turf_id)):
+                return False
+            new_transients.append(req)
+        # Validate every RELAY grant against caller's active transient grants (monotonicity).
+        for idx, sub_base, sub_top, sub_perms in relay_reqs:
+            if not (0 <= idx < len(caller.transient)):
+                return False
+            src = caller.transient[idx]
+            if sub_base >= sub_top or not src.covers(sub_base, sub_top - sub_base, sub_perms):
+                return False
+            new_transients.append(MillRegion(sub_base, sub_top, sub_perms))
+        # Allocate non-overlapping stacklet frame via TOSP (safe under re-entrant A->B->C->B).
+        tosp = self.stacklet_tosp[portal.target_turf]
+        frame_lo, frame_hi = tosp, tosp + 0x400
+        self.stacklet_tosp[portal.target_turf] = frame_hi
+        self.frames.append(MillFrame(portal.target_turf, new_transients, (frame_lo, frame_hi)))
+        return True
+
+    def persist_transient(self, grant_idx: int, sub_base: int, sub_top: int, sub_perms: int) -> bool:
+        """PERSIST handshake: requires M_GRANT on the transient grant and strips M_GRANT."""
+        frame = self.frames[-1]
+        if not (0 <= grant_idx < len(frame.transient)):
+            return False
+        src = frame.transient[grant_idx]
+        if not (src.perms & M_GRANT):
+            return False
+        if (sub_perms & M_GRANT) != 0 or sub_base >= sub_top:
+            return False
+        if not src.covers(sub_base, sub_top - sub_base, sub_perms):
+            return False
+        self.grant_persistent_data(frame.turf_id, MillRegion(sub_base, sub_top, sub_perms))
+        return True
+
+    def portal_return(self) -> None:
+        """Non-speculative portal RETURN: pops stacklet frame and auto-revokes all
+        call-scoped transient PASS/RELAY grants for the returning frame."""
+        require(len(self.frames) > 1, "cannot return from root frame")
+        popped = self.frames.pop()
+        self.stacklet_tosp[popped.turf_id] = popped.stacklet_range[0]
+        popped.transient.clear()
+
+
+# CHERIoT sealing & two-level software token runtime (cheriot-sail + cheriot-rtos)
+CHERIOT_OTYPE_ALLOCATOR = 11  # CheriSealTypeAllocator in sdk/core/allocator/token.h
+CHERIOT_OTYPE_STATIC = 12     # CheriSealTypeStaticToken in sdk/core/allocator/token.h
+CHERIOT_HDR_SIZE = 8          # TokenObjectHeader size (offset 0 = 32-bit type tag)
+
+
+@dataclass(frozen=True)
+class CheriotCap:
+    tag: bool
+    base: int
+    top: int
+    addr: int
+    perms: int
+    otype: int  # 0 = unsealed; 1..7 executable; 9..15 non-executable; 8 reserved
+
+    @property
+    def sealed(self) -> bool:
+        return self.otype != 0
+
+
+class CheriotSealer:
+    """Exact CSeal / CUnseal logic from CHERIoT-Platform/cheriot-sail src/cheri_insts.sail."""
+
+    @staticmethod
+    def cseal(cs1: CheriotCap, cs2: CheriotCap) -> CheriotCap:
+        otype = cs2.addr
+        if cs1.perms & P_EXEC:
+            otype_ok = 1 <= otype <= 7
+        else:
+            otype_ok = 9 <= otype <= 15
+        permitted = (
+            cs2.tag
+            and not cs2.sealed
+            and bool(cs2.perms & P_SEAL)
+            and cs2.base <= otype < cs2.top
+            and otype_ok
+        )
+        tag = cs1.tag and not cs1.sealed and permitted
+        return replace(cs1, tag=tag, otype=otype & 0xF)
+
+    @staticmethod
+    def cunseal(cs1: CheriotCap, cs2: CheriotCap) -> CheriotCap:
+        permitted = (
+            cs2.tag
+            and cs1.sealed
+            and not cs2.sealed
+            and (cs2.base <= cs1.otype < cs2.top)
+            and bool(cs2.perms & P_UNSEAL)
+        )
+        new_global = (cs1.perms & P_GLOBAL) and (cs2.perms & P_GLOBAL)
+        new_perms = cs1.perms if new_global else (cs1.perms & ~P_GLOBAL)
+        tag = cs1.tag and permitted
+        return replace(cs1, tag=tag, otype=0, perms=new_perms)
+
+
+class CheriotTokenRuntime:
+    """Two-level CHERIoT RTOS software sealing (sdk/core/token_library/token_unseal.S)."""
+
+    def __init__(self) -> None:
+        # Private architectural unsealing key for hardware otype 11 (allocator)
+        self._arch_key = CheriotCap(True, CHERIOT_OTYPE_ALLOCATOR, CHERIOT_OTYPE_ALLOCATOR + 1,
+                                    CHERIOT_OTYPE_ALLOCATOR, P_SEAL | P_UNSEAL | P_GLOBAL, 0)
+        self._next_key_addr = 0x01000000
+        self._headers: dict[int, int] = {}  # header_addr -> 32-bit software type tag
+
+    def mint_token_key(self, perms: int = P_SEAL | P_UNSEAL | P_GLOBAL) -> CheriotCap:
+        addr = self._next_key_addr
+        self._next_key_addr += 1
+        return CheriotCap(True, addr, addr + 1, addr, perms, 0)
+
+    def token_sealed_alloc(self, user_key: CheriotCap, header_addr: int, payload_len: int) -> CheriotCap:
+        """Seal [header_addr, header_addr + 8 + payload_len) with cursor at payload."""
+        if not (user_key.tag and not user_key.sealed and user_key.addr == user_key.base
+                and (user_key.top - user_key.base) == 1 and (user_key.perms & P_SEAL)):
+            return CheriotCap(False, 0, 0, 0, 0, 0)
+        self._headers[header_addr] = user_key.addr
+        payload_addr = header_addr + CHERIOT_HDR_SIZE
+        raw = CheriotCap(True, header_addr, payload_addr + payload_len, payload_addr,
+                         P_LOAD | P_STORE | P_GLOBAL, 0)
+        return CheriotSealer.cseal(raw, self._arch_key)
+
+    def token_obj_unseal(self, user_key: CheriotCap, sealed_obj: CheriotCap) -> CheriotCap:
+        """Transcribe token_unseal_internal: verify user_key, hardware-unseal, check
+        TokenObjectHeader.type == key.addr, and narrow bounds strictly to ->data."""
+        null_cap = CheriotCap(False, 0, 0, 0, 0, 0)
+        if not (user_key.tag and not user_key.sealed and user_key.addr == user_key.base
+                and (user_key.top - user_key.base) > 0 and (user_key.perms & P_UNSEAL)):
+            return null_cap
+        unsealed = CheriotSealer.cunseal(sealed_obj, self._arch_key)
+        if not unsealed.tag:
+            return null_cap
+        header_addr = unsealed.addr - CHERIOT_HDR_SIZE
+        if header_addr < unsealed.base or self._headers.get(header_addr) != user_key.addr:
+            return null_cap
+        payload_len = unsealed.top - unsealed.addr
+        exact, _ = CHERIOT.set_bounds(unsealed.addr, payload_len)
+        if not exact:
+            return null_cap
+        return replace(unsealed, base=unsealed.addr, top=unsealed.addr + payload_len)
+
+
+def check_mill_pass_and_existential_sealing() -> None:
+    rng = random.Random(0x1111C4E)
+    mill_cases = 0
+
+    # --- Part A: Mill call-scoped PASS/RELAY/PERSIST auto-revocation + guard bit + novel bit ---
+    for trial in range(400):
+        sys_m = MillSasSystem(root_turf=0)
+        sys_m.add_turf(1, 0x200000)
+        sys_m.add_turf(2, 0x300000)
+        portal_b = MillPortal(addr=0x800000, target_turf=1, entry_pc=0x801000)
+        portal_c = MillPortal(addr=0x800040, target_turf=2, entry_pc=0x802000)
+        sys_m.grant_portal(0, portal_b)
+        sys_m.grant_portal(1, portal_c)
+        sys_m.grant_portal(2, portal_b)  # enables re-entrant A -> B -> C -> B
+
+        a_buf_base = 0x10000 + rng.randrange(0, 0x4000, 16)
+        a_buf_len = rng.randrange(32, 512, 16)
+        a_buf = MillRegion(a_buf_base, a_buf_base + a_buf_len, M_READ | M_WRITE)
+        b_secret = MillRegion(0x40000, 0x40400, M_READ | M_WRITE)
+        sys_m.grant_persistent_data(0, a_buf)
+        sys_m.grant_persistent_data(1, b_secret)
+
+        # (1) PLB novel-bit lazy revocation: revoke before eviction never touches memory table.
+        temp_reg = MillRegion(0x50000 + trial * 64, 0x50000 + trial * 64 + 64, M_READ)
+        sys_m.grant_persistent_data(0, temp_reg)
+        require(sys_m.access(temp_reg.base, 8, M_READ), "novel grant must be accessible")
+        touched = sys_m.revoke_persistent_data(0, temp_reg)
+        require(not touched and not sys_m.access(temp_reg.base, 8, M_READ), "novel-bit fast revoke")
+        # Evict then revoke must clean Persistent Permission Table too.
+        sys_m.grant_persistent_data(0, temp_reg)
+        sys_m.evict_dplb(0)
+        require(sys_m.access(temp_reg.base, 8, M_READ), "evicted grant still accessible via table")
+        touched2 = sys_m.revoke_persistent_data(0, temp_reg)
+        require(touched2 and not sys_m.access(temp_reg.base, 8, M_READ), "post-eviction revoke")
+        mill_cases += 4
+
+        # (2) Monotonicity: caller A cannot PASS bounds outside a_buf or escalate to M_EXEC.
+        bad_pass = MillRegion(a_buf.base, a_buf.top + 16, M_READ)
+        require(not sys_m.portal_call(portal_b, [bad_pass]), "PASS escaped caller bounds")
+        bad_perm = MillRegion(a_buf.base, a_buf.top, M_READ | M_EXEC)
+        require(not sys_m.portal_call(portal_b, [bad_perm]), "PASS escalated permissions")
+        mill_cases += 2
+
+        # (3) Call-scoped PASS (&'call [u8] read-only vs &'call mut [u8] read-write).
+        is_mut = bool(trial & 1)
+        allow_persist = bool(trial & 2)
+        pass_perms = (M_READ | M_WRITE if is_mut else M_READ) | (M_GRANT if allow_persist else 0)
+        slice_lo = a_buf.base + rng.randrange(0, a_buf_len // 2)
+        slice_hi = slice_lo + rng.randrange(8, a_buf.top - slice_lo + 1)
+        pass_reg = MillRegion(slice_lo, slice_hi, pass_perms)
+        require(sys_m.portal_call(portal_b, [pass_reg]), "valid portal call A->B")
+        # Guarded access checks ONLY transient grants: succeeds on slice, fails on OOB & B's secret!
+        require(sys_m.access(slice_lo, 1, M_READ, guarded=True), "guarded read inside PASS slice")
+        require(sys_m.access(slice_lo, 1, M_WRITE, guarded=True) == is_mut, "mutability matches &'call")
+        require(not sys_m.access(slice_hi, 1, M_READ, guarded=True), "guarded OOB past PASS slice")
+        require(not sys_m.access(b_secret.base, 8, M_READ, guarded=True), "confused-deputy guard defense")
+        require(sys_m.access(b_secret.base, 8, M_READ, guarded=False), "B unguarded private access")
+        require(not sys_m.access(slice_lo, 1, M_READ, guarded=False), "unguarded must not use transient")
+        mill_cases += 6
+
+        # (4) Nested RELAY (B -> C) + re-entrant stacklet (C -> B) without frame overlap.
+        b_outer_stack = sys_m.frames[-1].stacklet_range
+        relay_hi = slice_lo + max(1, (slice_hi - slice_lo) // 2)
+        require(sys_m.portal_call(portal_c, [], [(0, slice_lo, relay_hi, M_READ)]), "RELAY B->C")
+        require(sys_m.access(slice_lo, 1, M_READ, guarded=True), "C reads relayed sub-slice")
+        require(not sys_m.access(slice_lo, 1, M_WRITE, guarded=True), "C denied write on RO relay")
+        require(not sys_m.access(relay_hi, 1, M_READ, guarded=True), "C denied past relayed top")
+        # Re-entrant call C -> B with empty PASS gets disjoint stacklet and zero access to A's buffer!
+        require(sys_m.portal_call(portal_b, []), "re-entrant portal call C->B")
+        b_inner_stack = sys_m.frames[-1].stacklet_range
+        require(b_inner_stack[0] >= b_outer_stack[1], "re-entrant stacklet frames must not overlap")
+        require(not sys_m.access(slice_lo, 1, M_READ, guarded=True), "re-entrant B has fresh transient table")
+        sys_m.portal_return()  # C <- B (inner)
+        require(sys_m.access(slice_lo, 1, M_READ, guarded=True), "C relay still alive before C returns")
+        sys_m.portal_return()  # B <- C (auto-revokes C's relayed grant)
+        # Re-enter C without RELAY to confirm C's relayed grant did not persist.
+        require(sys_m.portal_call(portal_c, []), "re-enter C without relay")
+        require(not sys_m.access(slice_lo, 1, M_READ, guarded=True), "C relay auto-revoked on return")
+        sys_m.portal_return()  # B <- C
+        mill_cases += 9
+
+        # (5) PERSIST handshake requires M_GRANT and strips M_GRANT.
+        require(not sys_m.persist_transient(0, slice_lo, slice_hi, M_READ | M_GRANT), "M_GRANT non-transferable")
+        persisted = sys_m.persist_transient(0, slice_lo, slice_hi, M_READ)
+        require(persisted == allow_persist, "PERSIST iff M_GRANT was set")
+        # Non-speculative RETURN from B -> A auto-revokes B's call-scoped PASS grant.
+        sys_m.portal_return()
+        require(sys_m.current_turf == 0, "returned to caller turf A")
+        # Re-enter B with NO PASS: B loses transient access; persistent access exists iff PERSIST succeeded.
+        require(sys_m.portal_call(portal_b, []), "re-enter B without PASS")
+        require(not sys_m.access(slice_lo, 1, M_READ, guarded=True), "PASS auto-revoked on portal RETURN")
+        require(sys_m.access(slice_lo, 1, M_READ, guarded=False) == allow_persist, "persistent iff PERSIST")
+        sys_m.portal_return()
+        mill_cases += 5
+
+    # --- Part B: CHERIoT & ISAv9 sealed-capability otype existential non-forgeability ---
+    existential_cases = 0
+    rt = CheriotTokenRuntime()
+    isav9_cpu = Cpu(CC128, 18)
+
+    # (1) CHERIoT format partition: executable otypes 1..7 vs non-executable 9..15; 0 and 8 reserved.
+    exec_cap = CheriotCap(True, 0x1000, 0x1100, 0x1000, P_EXEC | P_LOAD | P_GLOBAL, 0)
+    data_cap = CheriotCap(True, 0x2000, 0x2100, 0x2000, P_LOAD | P_STORE | P_GLOBAL, 0)
+    for otype in range(0, 18):
+        auth = CheriotCap(True, 0, 32, otype, P_SEAL | P_UNSEAL | P_GLOBAL, 0)
+        se = CheriotSealer.cseal(exec_cap, auth)
+        sd = CheriotSealer.cseal(data_cap, auth)
+        require(se.tag == (1 <= otype <= 7), f"CHERIoT exec seal otype={otype}")
+        require(sd.tag == (9 <= otype <= 15), f"CHERIoT data seal otype={otype}")
+        if se.tag:
+            # CUnseal accepts any authority whose bounds cover c.otype (not only addr == otype).
+            wide_auth = CheriotCap(True, otype, otype + 2, otype + 1, P_UNSEAL | P_GLOBAL, 0)
+            narrow_miss = CheriotCap(True, otype + 1, otype + 2, otype + 1, P_UNSEAL | P_GLOBAL, 0)
+            require(CheriotSealer.cunseal(se, wide_auth).tag, "CHERIoT CUnseal bounds containment")
+            require(not CheriotSealer.cunseal(se, narrow_miss).tag, "CHERIoT CUnseal disjoint bounds fail")
+            # Local authority strips Global on unseal.
+            local_auth = replace(wide_auth, perms=P_UNSEAL)
+            un = CheriotSealer.cunseal(se, local_auth)
+            require(un.tag and not (un.perms & P_GLOBAL), "CHERIoT local unseal strips Global")
+        existential_cases += 5 if se.tag else 2
+
+    # (2) Existential package (\exists \alpha. Cap(\alpha) * (Cap(\alpha) -> ...)) under adversarial FFI.
+    for i in range(500):
+        # CHERIoT two-level software sealing: compartment A mints secret key k_a, exports opaque handle.
+        k_a = rt.mint_token_key()
+        k_b = rt.mint_token_key()
+        hdr_addr = 0x40000 + i * 128
+        payload_len = rng.choice([16, 32, 64, 120])
+        handle = rt.token_sealed_alloc(k_a, hdr_addr, payload_len)
+        require(handle.tag and handle.sealed and handle.otype == CHERIOT_OTYPE_ALLOCATOR, "sealed handle")
+
+        # Adversarial FFI client attempts unsealing with wrong key, zero-len key, offset key,
+        # no Permit_Unseal, untagged key, sealed key, or forging raw otype-11 memory cap.
+        for bad_key in (
+            k_b,
+            replace(k_a, top=k_a.base),                       # zero-length token
+            replace(k_a, addr=k_a.base + 1),                  # addr != base
+            replace(k_a, perms=P_SEAL | P_GLOBAL),            # lacks Permit_Unseal
+            replace(k_a, tag=False),                          # untagged
+            CheriotSealer.cseal(k_a, CheriotCap(True, 9, 10, 9, P_SEAL, 0)),  # sealed key
+        ):
+            require(not rt.token_obj_unseal(bad_key, handle).tag, "adversary forged existential unpack")
+            existential_cases += 1
+
+        # Defining compartment A unpacks with k_a -> recovers exact payload bounds excluding header!
+        unpacked = rt.token_obj_unseal(k_a, handle)
+        require(
+            unpacked.tag
+            and not unpacked.sealed
+            and unpacked.base == hdr_addr + CHERIOT_HDR_SIZE
+            and unpacked.top == hdr_addr + CHERIOT_HDR_SIZE + payload_len,
+            "existential unpack must narrow strictly to payload (hiding TokenObjectHeader)",
+        )
+        existential_cases += 1
+
+        # ISAv9 hardware existential check: private otype key cannot be forged by CBuildCap or wrong key.
+        ot = 100 + (i % 500)
+        other_ot = ot + 1
+        key_a = isav9_cpu.candperm(isav9_cpu.csetbounds(isav9_cpu.csetaddr(isav9_cpu.root, ot), 1),
+                                   P_SEAL | P_UNSEAL | P_GLOBAL)
+        key_b = isav9_cpu.candperm(isav9_cpu.csetbounds(isav9_cpu.csetaddr(isav9_cpu.root, other_ot), 1),
+                                   P_SEAL | P_UNSEAL | P_GLOBAL)
+        payload = isav9_cpu.candperm(
+            isav9_cpu.csetbounds(isav9_cpu.csetaddr(isav9_cpu.root, 0x80000 + i * 64), 32),
+            P_LOAD | P_STORE | P_GLOBAL,
+        )
+        h_v9 = isav9_cpu.cseal(payload, key_a)
+        require(h_v9.tag and h_v9.sealed, "ISAv9 existential pack")
+        require(not isav9_cpu.cunseal(h_v9, key_b).tag, "ISAv9 wrong otype unpack fails")
+        # Attempting to forge an unsealed copy via CBuildCap under disjoint authority fails.
+        disjoint_auth = isav9_cpu.csetbounds(isav9_cpu.csetaddr(isav9_cpu.root, 0x200000), 64)
+        require(not isav9_cpu.cbuildcap(disjoint_auth, replace(h_v9, tag=False, otype=OTYPE_UNSEALED)).tag,
+                "CBuildCap cannot forge unsealed payload without ambient memory authority")
+        un_v9 = isav9_cpu.cunseal(h_v9, key_a)
+        require(un_v9.tag and not un_v9.sealed and isav9_cpu.bounds(un_v9) == isav9_cpu.bounds(payload),
+                "ISAv9 defining compartment unpack succeeds")
+        existential_cases += 4
+
+    total_g24 = mill_cases + existential_cases
+    record("Mill PASS auto-revocation + CHERIoT/ISAv9 sealed-otype existential non-forgeability", total_g24)
+    print(f"     Mill SASOS: {mill_cases} checks (400 nested/re-entrant portal trees, guard bit, PERSIST, novel bit); "
+          f"existential sealing: {existential_cases} checks (CHERIoT format partition, RTOS token unseal, ISAv9)")
+
+
 def check_upstream_file(path: str) -> None:
     """Optional: compare against every row of an upstream setbounds_inputs_128.cpp."""
     import re
@@ -1076,6 +1538,7 @@ def main() -> int:
     check_cheriot()
     check_epochs()
     check_sweep_designs()
+    check_mill_pass_and_existential_sealing()
     total = sum(c for _, c in CHECKS)
     print(f"PASS: {len(CHECKS)} check groups, {total} cases")
     return 0

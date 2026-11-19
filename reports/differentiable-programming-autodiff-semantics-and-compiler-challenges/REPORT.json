@@ -1,0 +1,176 @@
+{
+  "topics": [
+    "pl/autodiff",
+    "compilers/autodiff",
+    "pl/semantics",
+    "verification/numerical"
+  ],
+  "subjects": [
+    {
+      "name": "Enzyme LLVM IR Automatic Differentiation Compiler Plugin",
+      "identity": {
+        "repository": "EnzymeAD/Enzyme",
+        "revision": "0fa6f8401af6b8211a783213643692be20508842",
+        "url": "https://github.com/EnzymeAD/Enzyme"
+      }
+    },
+    {
+      "name": "Dex Functional Array Language Compiler",
+      "identity": {
+        "repository": "google-research/dex-lang",
+        "revision": "25e2e389b90403ae2f8d67fb6d52f47d23c439ee",
+        "url": "https://github.com/google-research/dex-lang"
+      }
+    },
+    {
+      "name": "JAX Composable Transformations and AD Interpreter",
+      "identity": {
+        "repository": "jax-ml/jax",
+        "revision": "bb38c58379173719d63a7e81fc09c22a37502654",
+        "url": "https://github.com/jax-ml/jax"
+      }
+    },
+    {
+      "name": "Zygote.jl Source-to-Source SSA Reverse-Mode AD for Julia",
+      "identity": {
+        "repository": "FluxML/Zygote.jl",
+        "revision": "78463a14bc67a66435fc5ac3797422eaf9f6d589",
+        "url": "https://github.com/FluxML/Zygote.jl"
+      }
+    },
+    {
+      "name": "Swift SIL Differentiation Pass",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "49fb0090b22cd6dcde645455e7cbf089380f88e4",
+        "url": "https://github.com/swiftlang/swift"
+      }
+    },
+    {
+      "name": "Moses & Churavy (2020) — Enzyme Post-Optimization LLVM IR AD",
+      "identity": {
+        "title": "Instead of Rewriting Foreign Code for Machine Learning, Automatically Synthesize Fast Gradients",
+        "venue": "Advances in Neural Information Processing Systems (NeurIPS 2020), Vol. 33",
+        "doi": "10.5555/3495724.3496770",
+        "arxiv": "2010.01709"
+      }
+    },
+    {
+      "name": "Moses et al. (2021) — Enzyme GPU Reverse-Mode AD",
+      "identity": {
+        "title": "Reverse-Mode Automatic Differentiation and Optimization of GPU Kernels via Enzyme",
+        "venue": "SC '21: International Conference for High Performance Computing, Networking, Storage and Analysis",
+        "doi": "10.1145/3458817.3476165"
+      }
+    },
+    {
+      "name": "Moses et al. (2022) — Enzyme Parallel Paradigms AD",
+      "identity": {
+        "title": "Scalable Automatic Differentiation of Multiple Parallel Paradigms through Compiler Augmentation",
+        "venue": "SC '22: International Conference for High Performance Computing, Networking, Storage and Analysis",
+        "doi": "10.1109/SC41404.2022.00065"
+      }
+    },
+    {
+      "name": "Paszke et al. (2021) — Dex Index Sets and Parallelism-Preserving AD",
+      "identity": {
+        "title": "Getting to the Point: Index Sets and Parallelism-Preserving Autodiff for Pointful Array Programming",
+        "venue": "Proc. ACM Program. Lang. 5 (ICFP 2021)",
+        "doi": "10.1145/3473593",
+        "arxiv": "2104.05372"
+      }
+    },
+    {
+      "name": "Radul et al. (2023) — Linearize-Then-Transpose Reverse-Mode AD",
+      "identity": {
+        "title": "You Only Linearize Once: Tangents Transpose to Gradients",
+        "venue": "Proc. ACM Program. Lang. 7 (POPL 2023)",
+        "doi": "10.1145/3571236",
+        "arxiv": "2204.10923"
+      }
+    },
+    {
+      "name": "Griewank & Walther (2000) — Algorithm 799: Revolve Binomial Checkpointing",
+      "identity": {
+        "title": "Algorithm 799: Revolve: An Implementation of Checkpointing for the Reverse or Adjoint Mode of Computational Differentiation",
+        "venue": "ACM Transactions on Mathematical Software (TOMS) 26(1)",
+        "doi": "10.1145/347837.347846"
+      }
+    },
+    {
+      "name": "Naumann (2008) — Optimal Jacobian Accumulation is NP-Complete",
+      "identity": {
+        "title": "Optimal Jacobian accumulation is NP-complete",
+        "venue": "Mathematical Programming (Series A) 112(2), pp. 427-441",
+        "doi": "10.1007/s10107-006-0042-z"
+      }
+    },
+    {
+      "name": "Naumann (2008, 2009) — Call Tree and DAG Reversal NP-Completeness",
+      "identity": {
+        "title": "DAG reversal is NP-complete",
+        "venue": "Journal of Discrete Algorithms 7(4), pp. 402-410 (extending Call tree reversal is NP-complete, LNCSE 64, DOI 10.1007/978-3-540-68936-2_2)",
+        "doi": "10.1016/j.jda.2008.12.003"
+      }
+    },
+    {
+      "name": "Siskind & Pearlmutter (2008) — Nesting Forward-Mode AD and Perturbation Confusion",
+      "identity": {
+        "title": "Nesting Forward-Mode AD in a Functional Framework",
+        "venue": "Higher-Order and Symbolic Computation 21(4), pp. 361-376",
+        "doi": "10.1007/s10990-008-9037-1"
+      }
+    },
+    {
+      "name": "Manzyuk et al. (2019) — Perturbation Confusion in Higher-Order Forward AD",
+      "identity": {
+        "title": "Perturbation Confusion in Forward Automatic Differentiation of Higher-Order Functions",
+        "venue": "Journal of Functional Programming 29, e12",
+        "doi": "10.1017/S095679681900008X"
+      }
+    },
+    {
+      "name": "Lee, Yu, Rival & Yang (2020) — Correctness of AD for Non-Differentiable Functions",
+      "identity": {
+        "title": "On Correctness of Automatic Differentiation for Non-Differentiable Functions",
+        "venue": "Advances in Neural Information Processing Systems (NeurIPS 2020), Vol. 33",
+        "url": "https://proceedings.neurips.cc/paper/2020/hash/42ef89d4aca5f11d13f9c3f309a96e95-Abstract.html"
+      }
+    },
+    {
+      "name": "Mazza & Pagani (2021) — Automatic Differentiation in PCF",
+      "identity": {
+        "title": "Automatic Differentiation in PCF",
+        "venue": "Proc. ACM Program. Lang. 5 (POPL 2021), Article 28",
+        "doi": "10.1145/3434309"
+      }
+    },
+    {
+      "name": "Huot, Staton & Vakar (2020) — Diffeologies and Categorical Gluing for AD",
+      "identity": {
+        "title": "Correctness of Automatic Differentiation via Diffeologies and Categorical Gluing",
+        "venue": "FoSSaCS 2020, LNCS 12077",
+        "doi": "10.1007/978-3-030-45231-5_17",
+        "arxiv": "2001.02209"
+      }
+    },
+    {
+      "name": "Bolte & Pauwels (2021) — Conservative Set Valued Fields for Nonsmooth AD",
+      "identity": {
+        "title": "Conservative set valued fields, automatic differentiation, stochastic gradient methods and deep learning",
+        "venue": "Mathematical Programming 188, pp. 19-51",
+        "doi": "10.1007/s10107-020-01501-5"
+      }
+    },
+    {
+      "name": "Huckelheim et al. (2023) — Understanding Automatic Differentiation Pitfalls",
+      "identity": {
+        "title": "Understanding Automatic Differentiation Pitfalls",
+        "venue": "arXiv preprint 2305.07546",
+        "doi": "10.48550/arXiv.2305.07546",
+        "arxiv": "2305.07546"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

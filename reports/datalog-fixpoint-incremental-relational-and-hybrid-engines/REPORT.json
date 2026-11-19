@@ -1,0 +1,149 @@
+{
+  "topics": [
+    "pl/datalog",
+    "compilers/relational",
+    "pl/incremental",
+    "ffi/relational-imperative"
+  ],
+  "subjects": [
+    {
+      "name": "Soufflé: On Synthesis of Program Analyzers (CAV 2016)",
+      "identity": {
+        "authors": "Herbert Jordan, Bernhard Scholz, Pavle Subotić",
+        "title": "Soufflé: On Synthesis of Program Analyzers",
+        "venue": "CAV 2016, LNCS 9780, pp. 422-430",
+        "year": "2016",
+        "doi": "10.1007/978-3-319-41540-6_23"
+      }
+    },
+    {
+      "name": "Soufflé Datalog compiler and runtime",
+      "identity": {
+        "repository": "souffle-lang/souffle",
+        "revision": "2adf8c07210fe54f235e6e2d343c49b9d131463d"
+      }
+    },
+    {
+      "name": "From Datalog to FLIX: A Declarative Language for Fixed Points on Lattices (PLDI 2016)",
+      "identity": {
+        "authors": "Magnus Madsen, Ming-Ho Yee, Ondřej Lhoták",
+        "title": "From Datalog to FLIX: A Declarative Language for Fixed Points on Lattices",
+        "venue": "PLDI 2016",
+        "year": "2016",
+        "doi": "10.1145/2908080.2908096"
+      }
+    },
+    {
+      "name": "Flix programming language compiler and Fixpoint3 Datalog engine",
+      "identity": {
+        "repository": "flix/flix",
+        "revision": "4022083acf86ab8b92308f2fb47ae615d5088de0"
+      }
+    },
+    {
+      "name": "Seamless Deductive Inference via Macros (Ascent, CC 2022)",
+      "identity": {
+        "authors": "Arash Sahebolamri, Thomas Gilray, Kristopher Micinski",
+        "title": "Seamless Deductive Inference via Macros",
+        "venue": "CC 2022",
+        "year": "2022",
+        "doi": "10.1145/3497776.3517779"
+      }
+    },
+    {
+      "name": "Ascent Rust-embedded Datalog and lattice engine",
+      "identity": {
+        "repository": "s-arash/ascent",
+        "revision": "e52c84b4419c56976413de1cbf15d56c8c136a5c",
+        "version": "0.8.1"
+      }
+    },
+    {
+      "name": "Worst-Case Optimal Join Algorithms (JACM 2018)",
+      "identity": {
+        "authors": "Hung Q. Ngo, Ely Porat, Christopher Ré, Atri Rudra",
+        "title": "Worst-Case Optimal Join Algorithms",
+        "venue": "Journal of the ACM 65(3), Article 16",
+        "year": "2018",
+        "doi": "10.1145/3180143"
+      }
+    },
+    {
+      "name": "Free Join: Unifying Worst-Case Optimal and Traditional Joins (SIGMOD 2023)",
+      "identity": {
+        "authors": "Yisu Remy Wang, Max Willsey, Dan Suciu",
+        "title": "Free Join: Unifying Worst-Case Optimal and Traditional Joins",
+        "venue": "Proc. ACM Manag. Data 1(2) (SIGMOD 2023)",
+        "year": "2023",
+        "doi": "10.1145/3589295"
+      }
+    },
+    {
+      "name": "Free Join reference implementation",
+      "identity": {
+        "repository": "SIGMOD23p561/free-join",
+        "revision": "c020bbc7964ba17594299a1910ad6b65eebdf0e0"
+      }
+    },
+    {
+      "name": "Better Together: Unifying Datalog and Equality Saturation (egglog, PLDI 2023)",
+      "identity": {
+        "authors": "Yihong Zhang, Yisu Remy Wang, Oliver Flatt, David Cao, Philip Zucker, Eli Rosenthal, Zachary Tatlock, Max Willsey",
+        "title": "Better Together: Unifying Datalog and Equality Saturation",
+        "venue": "Proc. ACM Program. Lang. 7(PLDI)",
+        "year": "2023",
+        "doi": "10.1145/3591239"
+      }
+    },
+    {
+      "name": "egglog equality saturation and Datalog engine",
+      "identity": {
+        "repository": "egraphs-good/egglog",
+        "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "name": "Differential Dataflow (CIDR 2013)",
+      "identity": {
+        "authors": "Frank McSherry, Derek G. Murray, Rebecca Isaacs, Michael Isard",
+        "title": "Differential Dataflow",
+        "venue": "CIDR 2013 (6th Biennial Conference on Innovative Data Systems Research)",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Differential Dataflow Rust library",
+      "identity": {
+        "repository": "TimelyDataflow/differential-dataflow",
+        "revision": "e7c24703f4b1935cd6c99779ed0c140b0fea8ac6",
+        "version": "0.26.0"
+      }
+    },
+    {
+      "name": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages (PVLDB 2023)",
+      "identity": {
+        "authors": "Mihai Budiu, Tej Chajed, Frank McSherry, Leonid Ryzhyk, Val Tannen",
+        "title": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages",
+        "venue": "PVLDB 16(7), pp. 1601-1614",
+        "year": "2023",
+        "doi": "10.14778/3587136.3587137"
+      }
+    },
+    {
+      "name": "Feldera DBSP Rust streaming engine",
+      "identity": {
+        "repository": "feldera/feldera",
+        "revision": "5a14ac52ae141ed188ddd8861eeaed5d1f4714a3"
+      }
+    },
+    {
+      "name": "DBSP Lean 3 mechanized theory artifact",
+      "identity": {
+        "repository": "tchajed/database-stream-processing-theory",
+        "revision": "fb6ff4416108710448ccd87473c5513c1a1179ea"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

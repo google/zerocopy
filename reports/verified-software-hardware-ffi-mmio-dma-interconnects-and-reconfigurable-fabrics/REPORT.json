@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "ffi/hardware-software",
+    "verification/mmio-dma",
+    "systems/interconnects",
+    "verification/refinement",
+    "isa/riscv64",
+    "systems/interrupts"
+  ],
+  "subjects": [
+    {
+      "name": "Bedrock2 end-to-end verified embedded system and Kami RISC-V processor bridge",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "0005c47b5eaa720bdcb9b94aceaca9f42726b861",
+        "publication": "Andres Erbsen, Samuel Gruetter, Joonwon Choi, Clark Wood, and Adam Chlipala, 'Integration Verification Across Software and Hardware for a Simple Embedded System', PLDI 2021",
+        "doi": "10.1145/3453483.3454069"
+      }
+    },
+    {
+      "name": "Kami parametric hardware specification and modular verification platform",
+      "identity": {
+        "repository": "mit-plv/kami",
+        "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da",
+        "publication": "Joonwon Choi, Muralidaran Vijayaraghavan, Benjamin Sherman, Adam Chlipala, and Arvind, 'Kami: A Platform for High-Level Parametric Hardware Specification and Its Modular Verification', ICFP 2017",
+        "doi": "10.1145/3110268"
+      }
+    },
+    {
+      "name": "Koika rule-based hardware description language (One-Rule-at-a-Time mechanization)",
+      "identity": {
+        "repository": "mit-plv/koika",
+        "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0",
+        "publication": "Thomas Bourgeat, Clement Pit-Claudel, Adam Chlipala, and Arvind, 'The Essence of Bluespec: A Core Language for Rule-Based Hardware Design', PLDI 2020",
+        "doi": "10.1145/3385412.3385965"
+      }
+    },
+    {
+      "name": "CakeML Pancake verified systems and device-driver compiler",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "publication": "Johannes Aman Pohjola et al., 'Pancake: Verified Systems Programming Made Sweeter', PLOS 2023; Junming Zhao et al., 'Verifying Device Drivers with Pancake', arXiv:2501.08249 (2025)",
+        "doi": "10.1145/3623759.3624544"
+      }
+    },
+    {
+      "name": "ARM AMBA AXI and ACE Protocol Specification",
+      "identity": {
+        "specification": "ARM IHI 0022",
+        "publisher": "Arm Limited",
+        "sections": "Section A3.3.1 (Dependencies between channel handshake signals), Section A3.4.1 (4 KiB burst boundary), Chapter A5 (Transaction ordering)"
+      }
+    },
+    {
+      "name": "TileLink Specification and Rocket Chip RoCC and TileLink RTL",
+      "identity": {
+        "repository": "chipsalliance/rocket-chip",
+        "revision": "ece7b9ad544b07df39cd13b6fd7236562a26355d",
+        "specification": "SiFive / CHIPS Alliance TileLink Specification v1.8.1 / v1.9.3 (TL-UL, TL-UH, TL-C)"
+      }
+    },
+    {
+      "name": "CIRCT Elastic Silicon Interconnects (ESI) MLIR Dialect",
+      "identity": {
+        "repository": "llvm/circt",
+        "revision": "203f159ce10d78940df4264327d5f3fc8b902112",
+        "paths": "include/circt/Dialect/ESI/ and docs/Dialects/ESI/"
+      }
+    },
+    {
+      "name": "Baker Stack Resource Policy and RTIC Embedded Rust Concurrency Framework",
+      "identity": {
+        "repository": "rtic-rs/rtic",
+        "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9",
+        "publication": "Theodore P. Baker, 'Stack-Based Scheduling of Realtime Processes', Real-Time Systems 3(1):67-99, 1991",
+        "doi": "10.1007/BF00365393"
+      }
+    },
+    {
+      "name": "Linux kernel ARM64 non-coherent DMA cache maintenance and FPGA region programming",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+        "paths": "arch/arm64/mm/cache.S, Documentation/core-api/dma-api.rst, drivers/fpga/fpga-region.c"
+      }
+    },
+    {
+      "name": "Thunderclap IOMMU vulnerability study and CHERI-DMA capability protection",
+      "identity": {
+        "publication": "A. Theodore Markettos et al., 'Thunderclap: Exploring Vulnerabilities in Operating System IOMMU Protection via DMA from Untrustworthy Peripherals', NDSS 2019; Markettos, Baldwin, Bukin, Neumann, Moore, and Watson, 'Position Paper: Defending Direct Memory Access with CHERI Capabilities', HASP 2020",
+        "doi": "10.14722/ndss.2019.23194",
+        "dblp": "conf/micro/MarkettosBBNMW20"
+      }
+    },
+    {
+      "name": "Compute Express Link (CXL) 2.0 and 3.0 Coherence Specifications",
+      "identity": {
+        "specification": "CXL 2.0 / CXL 3.0 (CXL.io, CXL.cache, CXL.mem)",
+        "publisher": "Compute Express Link Consortium"
+      }
+    },
+    {
+      "name": "AMD Xilinx Dynamic Function eXchange (DFX) Isolation and Shutdown IP Guides",
+      "identity": {
+        "specification": "PG374 (DFX Controller), PG375 (DFX Decoupler), PG377 (DFX AXI Shutdown Manager), UG909 (Dynamic Function eXchange)",
+        "publisher": "AMD / Xilinx"
+      }
+    },
+    {
+      "name": "Stuttering Bisimulation and Pipelined Machine Refinement Foundations",
+      "identity": {
+        "publication": "Kedar S. Namjoshi, 'A Simple Characterization of Stuttering Bisimulation', FSTTCS 1997; Panagiotis Manolios, 'Correctness of Pipelined Machines', FMCAD 2000",
+        "doi_namjoshi": "10.1007/BFb0058037",
+        "doi_manolios": "10.1007/3-540-40922-X_11"
+      }
+    },
+    {
+      "name": "Filament timeline-typed hardware description language",
+      "identity": {
+        "repository": "cucapra/filament",
+        "revision": "3c17db5ce85c354dd3da0af57f3adcb59bb295ac",
+        "publication": "Rachit Nigam, Pedro Henrique Azevedo de Amorim, and Adrian Sampson, 'Modular Hardware Design with Timeline Types', PLDI 2023",
+        "doi": "10.1145/3591234"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

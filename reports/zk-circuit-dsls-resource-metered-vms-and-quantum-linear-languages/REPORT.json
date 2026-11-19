@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "pl/zk-circuits",
+    "pl/quantum",
+    "pl/linear-types",
+    "runtimes/resource-metering",
+    "verification/circuits",
+    "verification/bytecode"
+  ],
+  "subjects": [
+    {
+      "name": "Circom compiler (iden3/circom)",
+      "identity": {
+        "repository": "iden3/circom",
+        "revision": "9b4b23331644e17868c90a85768826ed3bcba59f"
+      }
+    },
+    {
+      "name": "circomlib standard circuit library (iden3/circomlib)",
+      "identity": {
+        "repository": "iden3/circomlib",
+        "revision": "8852c3bc91e3ede890f2143f36457b25302abce2"
+      }
+    },
+    {
+      "name": "Halo2 PLONKish proving framework (zcash/halo2)",
+      "identity": {
+        "repository": "zcash/halo2",
+        "revision": "7465edf9110aace00b8c24b96270e1b820fd39fb"
+      }
+    },
+    {
+      "name": "Noir ACIR and Brillig intermediate representation (noir-lang/noir)",
+      "identity": {
+        "repository": "noir-lang/noir",
+        "revision": "af5d97aaa0f67fde5da9a7a790968b88cffff439"
+      }
+    },
+    {
+      "name": "Cairo CASM instruction set and hints (starkware-libs/cairo)",
+      "identity": {
+        "repository": "starkware-libs/cairo",
+        "revision": "98565f78d3bebb0e667607f549cb668edaf7bf9e"
+      }
+    },
+    {
+      "name": "Picus R1CS uniqueness verifier (Veridise/Picus)",
+      "identity": {
+        "repository": "Veridise/Picus",
+        "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+      }
+    },
+    {
+      "name": "Pailoor et al. 2023 — Automated Detection of Under-Constrained Circuits in Zero-Knowledge Proofs (PLDI '23)",
+      "identity": {
+        "doi": "10.1145/3591282",
+        "eprint": "2023/512",
+        "venue": "PACMPL Vol. 7, PLDI 2023, Article 168"
+      }
+    },
+    {
+      "name": "Ecne R1CS constraint uniqueness verifier (franklynwang/EcneProject)",
+      "identity": {
+        "repository": "franklynwang/EcneProject",
+        "revision": "25935352ca30705ad47363dcf200822635edc1c7"
+      }
+    },
+    {
+      "name": "0xPARC ZK Bug Tracker (0xPARC/zk-bug-tracker)",
+      "identity": {
+        "repository": "0xPARC/zk-bug-tracker",
+        "revision": "56a996672fb50486279126c8e12530f2bf933d0b"
+      }
+    },
+    {
+      "name": "Sui Move Bytecode Verifier and Binary Format (MystenLabs/sui)",
+      "identity": {
+        "repository": "MystenLabs/sui",
+        "revision": "6463a0de12c80520f1a6186a1109202ec4b73c7f"
+      }
+    },
+    {
+      "name": "Core Move Bytecode Verifier and Gas Meter (move-language/move)",
+      "identity": {
+        "repository": "move-language/move",
+        "revision": "c453c90994cba0af30314fe4134acee57fb20d0c"
+      }
+    },
+    {
+      "name": "Blackshear et al. 2020 — Move: A Language With Programmable Resources",
+      "identity": {
+        "document": "diem-move-a-language-with-programmable-resources",
+        "revision_date": "2020-05-26",
+        "url": "https://diem-developers-components.netlify.app/papers/diem-move-a-language-with-programmable-resources/2020-05-26.pdf"
+      }
+    },
+    {
+      "name": "Silq quantum programming language (eth-sri/silq)",
+      "identity": {
+        "repository": "eth-sri/silq",
+        "revision": "5632173e9cbc4e4accf9532effcef7274fa242c0"
+      }
+    },
+    {
+      "name": "Bichsel, Baader, Gehr & Vechev 2020 — Silq: A High-Level Quantum Language with Safe Uncomputation and Intuitive Semantics (PLDI '20)",
+      "identity": {
+        "doi": "10.1145/3385412.3386007",
+        "venue": "Proceedings of the 41st ACM SIGPLAN PLDI 2020"
+      }
+    },
+    {
+      "name": "SQIR and VOQC verified quantum circuit optimizer (inQWIRE/SQIR)",
+      "identity": {
+        "repository": "inQWIRE/SQIR",
+        "revision": "134fb942265091baa3e3972f78f72da41827351f"
+      }
+    },
+    {
+      "name": "Hietala, Rand, Hung, Wu & Hicks 2021 — A Verified Optimizer for Quantum Circuits (POPL '21)",
+      "identity": {
+        "doi": "10.1145/3434318",
+        "arxiv": "1912.02250",
+        "venue": "PACMPL Vol. 5, POPL 2021"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

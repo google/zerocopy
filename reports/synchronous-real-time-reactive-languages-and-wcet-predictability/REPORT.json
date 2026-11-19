@@ -1,0 +1,209 @@
+{
+  "topics": [
+    "pl/synchronous-realtime",
+    "compilers/realtime",
+    "verification/wcet",
+    "systems/realtime"
+  ],
+  "subjects": [
+    {
+      "name": "Berry, The Constructive Semantics of Pure Esterel",
+      "identity": {
+        "author": "Gerard Berry",
+        "title": "The Constructive Semantics of Pure Esterel",
+        "version": "Draft Book version 3.0",
+        "date": "1999-07-02",
+        "institution": "CMA, Ecole des Mines / INRIA"
+      }
+    },
+    {
+      "name": "Malik, Analysis of Cyclic Combinational Circuits (IEEE TCAD 1994)",
+      "identity": {
+        "doi": "10.1109/43.298284",
+        "venue": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 13(7), pp. 950-956",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Halbwachs et al., The Synchronous Data Flow Programming Language LUSTRE (Proc. IEEE 1991)",
+      "identity": {
+        "doi": "10.1109/5.97300",
+        "venue": "Proceedings of the IEEE 79(9), pp. 1305-1320",
+        "year": "1991"
+      }
+    },
+    {
+      "name": "Bourke et al., A Formally Verified Compiler for Lustre (Vélus, PLDI 2017)",
+      "identity": {
+        "doi": "10.1145/3062341.3062358",
+        "venue": "PLDI 2017",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Bourke, Brun & Pouzet, Verified Compilation for a Dataflow Synchronous Language with Reset (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371112",
+        "venue": "Proc. ACM Program. Lang. 4(POPL), Article 44",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Bourke, Pesin & Pouzet, Verified Compilation of Synchronous Dataflow with State Machines (EMSOFT 2023)",
+      "identity": {
+        "doi": "10.1145/3608102",
+        "venue": "ACM Transactions on Embedded Computing Systems 22(5s)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "INRIA/velus verified Lustre-to-CompCert compiler",
+      "identity": {
+        "repository": "INRIA/velus",
+        "revision": "27ba860c2624ba232816591290c6c119b9ead88a"
+      }
+    },
+    {
+      "name": "Lohstroh et al., Toward a Lingua Franca for Deterministic Concurrent Systems (ACM TECS 2021)",
+      "identity": {
+        "doi": "10.1145/3448128",
+        "venue": "ACM Transactions on Embedded Computing Systems 20(4)",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "lf-lang/lingua-franca coordination language compiler",
+      "identity": {
+        "repository": "lf-lang/lingua-franca",
+        "revision": "0df8a987e37d6bc0cc8daa1c3e6167df14eaae59"
+      }
+    },
+    {
+      "name": "lf-lang/reactor-c deterministic timed C runtime",
+      "identity": {
+        "repository": "lf-lang/reactor-c",
+        "revision": "abbf0aaf468af55f298e1ae4816156e9f7552784"
+      }
+    },
+    {
+      "name": "Elliott & Hudak, Functional Reactive Animation (ICFP 1997)",
+      "identity": {
+        "doi": "10.1145/258948.258973",
+        "venue": "ICFP 1997, pp. 263-273",
+        "year": "1997"
+      }
+    },
+    {
+      "name": "Krishnaswami, Benton & Hoffmann, Higher-Order FRP in Bounded Space (POPL 2012)",
+      "identity": {
+        "doi": "10.1145/2103656.2103665",
+        "venue": "POPL 2012",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Bahr, Graulund & Møgelberg, Simply RaTT (ICFP 2019)",
+      "identity": {
+        "doi": "10.1145/3341713",
+        "venue": "Proc. ACM Program. Lang. 3(ICFP)",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Bahr & Møgelberg, Asynchronous Modal FRP (ICFP 2023)",
+      "identity": {
+        "doi": "10.1145/3607847",
+        "venue": "Proc. ACM Program. Lang. 7(ICFP)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "pa-ba/Rattus synchronous modal FRP GHC plugin",
+      "identity": {
+        "repository": "pa-ba/Rattus",
+        "revision": "f8cfe7411ccebef78f74a73e1a6a2e57a106b256",
+        "version": "0.5.1.1"
+      }
+    },
+    {
+      "name": "pa-ba/AsyncRattus asynchronous modal FRP GHC plugin",
+      "identity": {
+        "repository": "pa-ba/AsyncRattus",
+        "revision": "8043692908bb1d1f01cd0b1ad07bca06eb9df79f",
+        "version": "0.2.2"
+      }
+    },
+    {
+      "name": "Lundqvist & Stenström, Timing Anomalies in Dynamically Scheduled Microprocessors (RTSS 1999)",
+      "identity": {
+        "doi": "10.1109/REAL.1999.818824",
+        "venue": "20th IEEE Real-Time Systems Symposium (RTSS 1999), pp. 12-21",
+        "year": "1999"
+      }
+    },
+    {
+      "name": "Reineke et al., A Definition and Classification of Timing Anomalies (WCET 2006)",
+      "identity": {
+        "doi": "10.4230/OASIcs.WCET.2006.671",
+        "venue": "6th International Workshop on Worst-Case Execution Time Analysis (WCET 2006)",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Wilhelm et al., The Worst-Case Execution-Time Problem (ACM TECS 2008)",
+      "identity": {
+        "doi": "10.1145/1347375.1347389",
+        "venue": "ACM Transactions on Embedded Computing Systems 7(3)",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Carbonneaux et al., End-to-End Verification of Stack-Space Bounds for C Programs (PLDI 2014)",
+      "identity": {
+        "doi": "10.1145/2594291.2594332",
+        "venue": "PLDI 2014",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Amadio et al., Certified Complexity (CerCo, FOPARA 2013)",
+      "identity": {
+        "doi": "10.1007/978-3-319-12466-7_1",
+        "venue": "FOPARA 2013, LNCS 8552, pp. 1-18",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Blazy, Maroneze & Pichardie, Formal Verification of Loop Bound Estimation for WCET Analysis (VSTTE 2013)",
+      "identity": {
+        "doi": "10.1007/978-3-642-54108-7_15",
+        "venue": "VSTTE 2013, LNCS 8164, pp. 281-303",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Edwards & Lee, The Case for the Precision Timed (PRET) Machine (DAC 2007)",
+      "identity": {
+        "doi": "10.1145/1278480.1278545",
+        "venue": "44th Design Automation Conference (DAC 2007)",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Schoeberl et al., Patmos: A Time-Predictable Microprocessor (Real-Time Systems 2018)",
+      "identity": {
+        "doi": "10.1007/s11241-018-9300-4",
+        "venue": "Real-Time Systems 54(2), pp. 389-423",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "t-crest/patmos time-predictable VLIW microprocessor RTL",
+      "identity": {
+        "repository": "t-crest/patmos",
+        "revision": "4c72814972c8e19d69c987e3b29d764efb6a7d8c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

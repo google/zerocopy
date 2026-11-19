@@ -1,0 +1,110 @@
+{
+  "topics": [
+    "compilers/architecture",
+    "systems/exotic-cpus",
+    "compilers/dataflow-irs",
+    "pl/execution-models"
+  ],
+  "subjects": [
+    {
+      "name": "Mill CPU Architecture U.S. Patent Portfolio (Belt, Crossbar, Scratchpad, IZM, Phased Loops, Metadata, Split-Stream, Caches)",
+      "identity": {
+        "assignee": "Mill Computing, Inc.",
+        "patents": "US 9,513,904; US 9,513,920; US 9,513,921; US 9,524,163; US 9,652,230; US 9,690,581; US 9,747,216; US 9,747,238; US 9,785,441; US 9,817,669; US 9,875,106; US 9,959,119; US 9,965,274; US 10,802,987; US 11,226,821",
+        "documentation_url": "https://millcomputing.com/patents/"
+      }
+    },
+    {
+      "name": "EDGE / TRIPS Block-Atomic Dataflow Architecture and Compiler",
+      "identity": {
+        "architecture_paper": "Burger, Keckler, McKinley et al., Scaling to the End of Silicon with EDGE Architectures, IEEE Computer 37(7), pp. 44-55, July 2004",
+        "doi": "10.1109/MC.2004.65",
+        "compiler_paper": "Smith, Burrill, Gibson, Maher, Nethercote, Yoder, Burger, McKinley, Compiling for EDGE Architectures, CGO 2006"
+      }
+    },
+    {
+      "name": "Regionalized Value State Dependence Graph (RVSDG)",
+      "identity": {
+        "paper": "Reissmann, Meyer, Bahmann, Sjalander, RVSDG: An Intermediate Representation for Optimizing Compilers, ACM TECS 19(6), 2020",
+        "doi": "10.1145/3391902",
+        "arxiv": "1912.05036"
+      }
+    },
+    {
+      "name": "Plasticine Coarse-Grained Reconfigurable Architecture (CGRA)",
+      "identity": {
+        "paper": "Prabhakar, Zhang, Koeplinger, Feldman, Zhao, Hadjis, Pedram, Kozyrakis, Olukotun, Plasticine: A Reconfigurable Architecture For Parallel Patterns, ISCA 2017",
+        "doi": "10.1145/3079856.3080256"
+      }
+    },
+    {
+      "name": "Spatial Accelerator Language and Compiler",
+      "identity": {
+        "paper": "Koeplinger, Feldman, Prabhakar, Zhang, Hadjis, Fiszel, Zhao, Nardi, Pedram, Kozyrakis, Olukotun, Spatial: A Language and Compiler for Application Accelerators, PLDI 2018",
+        "doi": "10.1145/3192366.3192379"
+      }
+    },
+    {
+      "name": "SambaNova SN40L Reconfigurable Dataflow Unit (RDU)",
+      "identity": {
+        "paper": "Prabhakar et al., SambaNova SN40L: Scaling the AI Memory Wall with Dataflow and Composition of Experts, MICRO 2024",
+        "doi": "10.1109/MICRO61859.2024.00100"
+      }
+    },
+    {
+      "name": "Cerebras Wafer-Scale Engine (WSE-2/WSE-3) and CSL Wavelet Dataflow",
+      "identity": {
+        "paper": "Sean Lie, Cerebras Architecture Deep Dive: First Look Inside the Hardware/Software Co-Design for Deep Learning, IEEE Micro 43(3), pp. 18-30, May-June 2023",
+        "doi": "10.1109/MM.2023.3256384"
+      }
+    },
+    {
+      "name": "Graphcore Colossus IPU Architecture and Poplar BSP Execution Model",
+      "identity": {
+        "report": "Jia, Tillman, Maggioni, Scarpazza, Dissecting the Graphcore IPU Architecture via Microbenchmarking, Dec 2019",
+        "arxiv": "1912.03413v1",
+        "doi": "10.48550/arXiv.1912.03413"
+      }
+    },
+    {
+      "name": "Tenstorrent TT-Metalium Tensix Hardware Headers and Kernel APIs",
+      "identity": {
+        "repository": "tenstorrent/tt-metal",
+        "revision": "11551f901bb3e2ad451a0fe5036312c4687d40c3",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Groq Tensor Streaming Processor (TSP / LPU) Deterministic Architecture",
+      "identity": {
+        "isca_2020_doi": "10.1109/ISCA45697.2020.00023",
+        "isca_2022_doi": "10.1145/3470496.3527405",
+        "papers": "Abts et al., Think Fast (ISCA 2020) and A Software-Defined Tensor Streaming Multiprocessor for Large-Scale Machine Learning (ISCA 2022)"
+      }
+    },
+    {
+      "name": "UPMEM DPU and Samsung HBM-PIM Processing-in-Memory Architectures",
+      "identity": {
+        "upmem_doi": "10.1109/ACCESS.2022.3174101",
+        "upmem_arxiv": "2105.03814",
+        "hbm_pim_doi": "10.1109/ISCA52012.2021.00013"
+      }
+    },
+    {
+      "name": "Janus Reversible Programming Language and Pendulum/PISA Reversible Architecture",
+      "identity": {
+        "pepm_2007_doi": "10.1145/1244381.1244404",
+        "cf_2008_doi": "10.1145/1366230.1366239",
+        "landauer_doi": "10.1147/rd.53.0183"
+      }
+    },
+    {
+      "name": "LLVM IR Undefined Behavior, Poison, Undef, and Freeze Semantics",
+      "identity": {
+        "paper": "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes, Taming Undefined Behavior in LLVM, PLDI 2017",
+        "doi": "10.1145/3062341.3062343"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

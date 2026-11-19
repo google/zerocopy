@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "pl/gpu-simt",
+    "compilers/gpu",
+    "systems/concurrency-weak-memory",
+    "ffi/host-device"
+  ],
+  "subjects": [
+    {
+      "name": "A Formal Analysis of the NVIDIA PTX Memory Consistency Model (ASPLOS '19)",
+      "identity": {
+        "authors": "Daniel Lustig, Sameer Sahasrabuddhe, Olivier Giroux",
+        "venue": "ASPLOS '19 (24th ACM International Conference on Architectural Support for Programming Languages and Operating Systems)",
+        "year": "2019",
+        "doi": "10.1145/3297858.3304043"
+      }
+    },
+    {
+      "name": "NVlabs/ptxmemorymodel Alloy and Coq formalization",
+      "identity": {
+        "repository": "NVlabs/ptxmemorymodel",
+        "revision": "f0dc6b7f85f34fc19fb76e7495864656276fa002"
+      }
+    },
+    {
+      "name": "NVIDIA Parallel Thread Execution (PTX) ISA Specification",
+      "identity": {
+        "specification": "NVIDIA PTX ISA",
+        "version": "9.5",
+        "url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html"
+      }
+    },
+    {
+      "name": "NVIDIA CUTLASS SM90 TMA/mbarrier and SM100 TMEM/tcgen05/setmaxnreg PTX wrappers",
+      "identity": {
+        "repository": "NVIDIA/cutlass",
+        "revision": "88d690dec7c58a291e95ae44c9e68d800602fed5"
+      }
+    },
+    {
+      "name": "Khronos Vulkan Memory Model specification",
+      "identity": {
+        "repository": "KhronosGroup/Vulkan-Docs",
+        "revision": "f7de774cace1509af0f10b8d859c973b5354ff62",
+        "path": "appendices/memorymodel.adoc"
+      }
+    },
+    {
+      "name": "Khronos SPIR-V SPV_KHR_maximal_reconvergence extension specification",
+      "identity": {
+        "repository": "KhronosGroup/SPIRV-Registry",
+        "revision": "25574da230687e0beb5d285c2746a7c0d2e17dcd",
+        "path": "extensions/KHR/SPV_KHR_maximal_reconvergence.asciidoc"
+      }
+    },
+    {
+      "name": "W3C WebGPU Shading Language (WGSL) Specification",
+      "identity": {
+        "repository": "gpuweb/gpuweb",
+        "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3",
+        "path": "wgsl/index.bs"
+      }
+    },
+    {
+      "name": "LLVM Convergent Operations and Convergence Control Specification",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1780833aa0f119a425d7f993aaac29d03cb04da6",
+        "path": "llvm/docs/ConvergentOperations.md"
+      }
+    },
+    {
+      "name": "Checking Data-Race Freedom of GPU Kernels, Compositionally (Faial, CAV '21)",
+      "identity": {
+        "authors": "Tiago Cogumbreiro, Julien Lange, Dennis Liew Zhen Rong, Hannah Zicarelli",
+        "venue": "CAV 2021 (LNCS 12759, pp. 403-426)",
+        "year": "2021",
+        "doi": "10.1007/978-3-030-81685-8_19"
+      }
+    },
+    {
+      "name": "Descend: A Safe GPU Systems Programming Language (PLDI '24)",
+      "identity": {
+        "authors": "Bastian Köpcke, Sergei Gorlatch, Michel Steuwer",
+        "venue": "Proc. ACM Program. Lang. 8(PLDI), Article 181",
+        "year": "2024",
+        "doi": "10.1145/3656411",
+        "arxiv": "2305.03448"
+      }
+    },
+    {
+      "name": "Descend compiler, type checker, and borrow checker",
+      "identity": {
+        "repository": "descend-lang/descend",
+        "revision": "e98d4c086f369496b79294b333086020ab08e0c6"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

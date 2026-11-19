@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "pl/probabilistic",
+    "compilers/probabilistic",
+    "pl/semantics",
+    "verification/probabilistic"
+  ],
+  "subjects": [
+    {
+      "name": "Borel structures for function spaces (Aumann 1961)",
+      "identity": {
+        "doi": "10.1215/ijm/1255631584",
+        "publication": "Illinois Journal of Mathematics, Vol. 5, No. 4, pp. 614-630 (1961)"
+      }
+    },
+    {
+      "name": "A Convenient Category for Higher-Order Probability Theory (Heunen, Kammar, Staton & Yang 2017)",
+      "identity": {
+        "doi": "10.1109/LICS.2017.8005137",
+        "arxiv": "arXiv:1701.02547",
+        "venue": "LICS 2017"
+      }
+    },
+    {
+      "name": "Commutative Semantics for Probabilistic Programming (Staton 2017)",
+      "identity": {
+        "doi": "10.1007/978-3-662-54434-1_32",
+        "venue": "ESOP 2017 (LNCS 10201, pp. 855-879)"
+      }
+    },
+    {
+      "name": "Exact Bayesian Inference by Symbolic Disintegration (Shan & Ramsey 2017)",
+      "identity": {
+        "doi": "10.1145/3009837.3009852",
+        "venue": "POPL 2017"
+      }
+    },
+    {
+      "name": "Hakaru probabilistic programming system (symbolic disintegrator)",
+      "identity": {
+        "repository": "hakaru-dev/hakaru",
+        "revision": "e8bebac6d344e81a429c25f2b4c29b76172ea47f"
+      }
+    },
+    {
+      "name": "Paradoxes of Probabilistic Programming: And How to Condition on Events of Measure Zero with Infinitesimal Probabilities (Jacobs 2021)",
+      "identity": {
+        "doi": "10.1145/3434339",
+        "arxiv": "arXiv:2101.03391",
+        "venue": "PACMPL Vol. 5, POPL 2021"
+      }
+    },
+    {
+      "name": "Stan: A Probabilistic Programming Language (Carpenter et al. 2017)",
+      "identity": {
+        "doi": "10.18637/jss.v076.i01",
+        "publication": "Journal of Statistical Software 76(1) (2017)"
+      }
+    },
+    {
+      "name": "Stan compiler (stanc3)",
+      "identity": {
+        "repository": "stan-dev/stanc3",
+        "revision": "456130a900c56ddb0505c4540460977106bd9938",
+        "version": "v2.40.0"
+      }
+    },
+    {
+      "name": "Towards Verified Stochastic Variational Inference for Probabilistic Programs (Lee, Yu, Rival & Yang 2020)",
+      "identity": {
+        "doi": "10.1145/3371084",
+        "arxiv": "arXiv:1907.08827",
+        "venue": "PACMPL Vol. 4, POPL 2020"
+      }
+    },
+    {
+      "name": "pyppai static analyzer for Pyro model-guide support match",
+      "identity": {
+        "repository": "wonyeol/static-analysis-for-support-match",
+        "revision": "850fb58ec5ce2f5e82262c2a9bfc067b799297c1"
+      }
+    },
+    {
+      "name": "Pyro probabilistic programming library",
+      "identity": {
+        "repository": "pyro-ppl/pyro",
+        "revision": "a31bc1784707268cd79df77ead4c7a47062f0193"
+      }
+    },
+    {
+      "name": "Gen: A General-Purpose Probabilistic Programming System with Programmable Inference (Cusumano-Towner, Saad, Lew & Mansinghka 2019)",
+      "identity": {
+        "doi": "10.1145/3314221.3314642",
+        "venue": "PLDI 2019"
+      }
+    },
+    {
+      "name": "Gen.jl probabilistic programming system",
+      "identity": {
+        "repository": "probcomp/Gen.jl",
+        "revision": "9953ceb296b56ad5cd225d811a9fdfc8470b17e5",
+        "version": "v0.4.9"
+      }
+    },
+    {
+      "name": "Trace Types and Denotational Semantics for Sound Programmable Inference in Probabilistic Languages (Lew, Cusumano-Towner, Sherman, Carbin & Mansinghka 2020)",
+      "identity": {
+        "doi": "10.1145/3371087",
+        "venue": "PACMPL Vol. 4, POPL 2020, Article 19"
+      }
+    },
+    {
+      "name": "Automating Involutive MCMC using Probabilistic and Differentiable Programming (Cusumano-Towner, Lew & Mansinghka 2020)",
+      "identity": {
+        "arxiv": "arXiv:2007.09871",
+        "date": "2020-07-21"
+      }
+    },
+    {
+      "name": "Scaling Exact Inference for Discrete Probabilistic Programs (Holtzen, Van den Broeck & Millstein 2020)",
+      "identity": {
+        "doi": "10.1145/3428208",
+        "arxiv": "arXiv:2005.09089",
+        "venue": "PACMPL Vol. 4, OOPSLA 2020, Article 140"
+      }
+    },
+    {
+      "name": "Dice exact discrete probabilistic programming compiler",
+      "identity": {
+        "repository": "SHoltzen/dice",
+        "revision": "1d8a277636a428eb46164ba4639fab12a310f30c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

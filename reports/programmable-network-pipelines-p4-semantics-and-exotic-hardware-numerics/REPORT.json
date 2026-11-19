@@ -1,0 +1,140 @@
+{
+  "topics": [
+    "systems/network-dataplanes",
+    "pl/p4-semantics",
+    "verification/floating-point",
+    "systems/exotic-numerics"
+  ],
+  "subjects": [
+    {
+      "name": "P4_16 Language Specification (p4lang/p4-spec)",
+      "identity": {
+        "repository": "p4lang/p4-spec",
+        "revision": "0370191bea5d26cd17c3ed25a6849d2df306b56b",
+        "version": "v1.2.5+head",
+        "path": "p4-16/spec/P4-16-spec.adoc"
+      }
+    },
+    {
+      "name": "Petr4 P4 Formal Semantics and Type Checker (verified-network-toolchain/petr4)",
+      "identity": {
+        "repository": "verified-network-toolchain/petr4",
+        "revision": "9508676128a00ec5b23da4139c3c74849f2a8b1c"
+      }
+    },
+    {
+      "name": "Domino Packet-Transaction Compiler (packet-transactions/domino-compiler)",
+      "identity": {
+        "repository": "packet-transactions/domino-compiler",
+        "revision": "1ed941aa40da23964f1428e17705a0b147309e68"
+      }
+    },
+    {
+      "name": "Chipmunk Program-Synthesis Switch Compiler (chipmunk-project/chipmunk)",
+      "identity": {
+        "repository": "chipmunk-project/chipmunk",
+        "revision": "a86eb9030c7accfd552dc4c899fa247193588251"
+      }
+    },
+    {
+      "name": "IEEE SA Working Group P3109 Interim Report on Arithmetic Formats for Machine Learning (P3109/Public)",
+      "identity": {
+        "repository": "P3109/Public",
+        "revision": "2d45cf2fe0314d32251f5439d9d3ed078f93fbb9",
+        "version": "4.1",
+        "date": "2026-09-14",
+        "path": "IEEE P3109 Interim Report.pdf"
+      }
+    },
+    {
+      "name": "Microsoft Microxcaling (MX) Reference Library (microsoft/microxcaling)",
+      "identity": {
+        "repository": "microsoft/microxcaling",
+        "revision": "7bc41952de394f5cc5e782baf132e7c7542eb4e4"
+      }
+    },
+    {
+      "name": "Stillwater Universal Numbers Library (stillwater-sc/universal)",
+      "identity": {
+        "repository": "stillwater-sc/universal",
+        "revision": "9f0e5da5e8e756423570bdbc3e4632d9ae588611",
+        "version": "v5.18.0"
+      }
+    },
+    {
+      "name": "Bosshart et al., Forwarding Metamorphosis: Fast Programmable Match-Action Processing in Hardware for SDN (RMT)",
+      "identity": {
+        "doi": "10.1145/2486001.2486011",
+        "venue": "ACM SIGCOMM 2013",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Doenges et al., Petr4: Formal Foundations for P4 Data Planes",
+      "identity": {
+        "doi": "10.1145/3434322",
+        "arxiv": "2011.05948",
+        "venue": "Proc. ACM Program. Lang. 5(POPL), Article 41",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Liu et al., p4v: Practical Verification for Programmable Data Planes",
+      "identity": {
+        "doi": "10.1145/3230543.3230582",
+        "venue": "ACM SIGCOMM 2018",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Sivaraman et al., Packet Transactions: High-Level Programming for Line-Rate Switches (Domino)",
+      "identity": {
+        "doi": "10.1145/2934872.2934900",
+        "venue": "ACM SIGCOMM 2016",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Gao et al., Switch Code Generation Using Program Synthesis (Chipmunk)",
+      "identity": {
+        "doi": "10.1145/3387514.3405874",
+        "venue": "ACM SIGCOMM 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Open Compute Project, OCP Microscaling Formats (MX) Specification v1.0",
+      "identity": {
+        "specification": "OCP Microscaling Formats (MX) Specification",
+        "version": "1.0",
+        "date": "2023-09",
+        "url": "https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf"
+      }
+    },
+    {
+      "name": "Micikevicius et al., FP8 Formats for Deep Learning",
+      "identity": {
+        "arxiv": "2209.05433v2",
+        "doi": "10.48550/arXiv.2209.05433",
+        "date": "2022-09-29"
+      }
+    },
+    {
+      "name": "Posit Working Group, Standard for Posit Arithmetic (2022)",
+      "identity": {
+        "specification": "Standard for Posit Arithmetic (2022)",
+        "date": "2022-03-02",
+        "url": "https://posithub.org/docs/posit_standard-2.pdf"
+      }
+    },
+    {
+      "name": "Croci, Fasi, Higham, Mary, and Mikaitis, Stochastic Rounding: Implementation, Error Analysis and Applications",
+      "identity": {
+        "doi": "10.1098/rsos.211631",
+        "venue": "Royal Society Open Science 9(3)",
+        "year": "2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -9164,12 +9164,108 @@
             "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
           },
           "name": "Linux kernel documentation for MTE, pointer authentication, GCS, CET shadow stacks, and protection keys"
+        },
+        {
+          "identity": {
+            "authors": "David A. Moon",
+            "doi": "10.1109/MC.1987.1663356",
+            "publication": "IEEE Computer 20(1):43-52, January 1987",
+            "url": "https://gwern.net/doc/cs/lisp/1987-moon.pdf",
+            "year": "1987"
+          },
+          "name": "David A. Moon: Symbolics Architecture"
+        },
+        {
+          "identity": {
+            "assignee": "Symbolics, Inc.",
+            "granted": "1989-12-12",
+            "inventors": "John T. Holloway, David A. Moon, Howard I. Cannon, Thomas F. Knight, Bruce E. Edwards, Daniel L. Weinreb",
+            "patent": "US4887235A",
+            "url": "http://bitsavers.informatik.uni-stuttgart.de/pdf/symbolics/patents/4887235/patent.html"
+          },
+          "name": "Holloway et al.: Symbolic language data processing system (U.S. Patent 4,887,235)"
+        },
+        {
+          "identity": {
+            "authors": "P. T. Withington, Scott McKay, Gary Palter, Paul Robertson",
+            "publication": "Submitted to PLDI '94 (40-bit Ivory architecture emulation)",
+            "url": "https://www.chai.uni-hamburg.de/~moeller/symbolics-info/literature/VLM.html",
+            "year": "1994"
+          },
+          "name": "Withington, McKay, Palter, Robertson: The Symbolics Virtual Lisp Machine (extended abstract)"
+        },
+        {
+          "identity": {
+            "application": "US15/559,858",
+            "assignee": "Mill Computing, Inc.",
+            "filed": "2016-03-21",
+            "granted": "2020-06-09",
+            "inventors": "Roger Rawson Godard, Arthur David Kahlich, Jan Schukat, William Edwards",
+            "patent": "US10678700B2",
+            "url": "https://patents.google.com/patent/US10678700B2/en"
+          },
+          "name": "Mill Computing, Inc.: U.S. Patent 10,678,700 B2 (CPU security mechanisms employing thread-specific protection domains)"
+        },
+        {
+          "identity": {
+            "application": "US14/515,087",
+            "assignee": "Mill Computing, Inc.",
+            "filed": "2014-10-15",
+            "granted": "2016-12-20",
+            "inventors": "Roger Rawson Godard, Arthur David Kahlich",
+            "patent": "US9524163B2",
+            "url": "https://patents.google.com/patent/US9524163B2/en"
+          },
+          "name": "Mill Computing, Inc.: U.S. Patent 9,524,163 B2 (Computer processor employing hardware-based pointer processing)"
+        },
+        {
+          "identity": {
+            "application": "US14/515,231",
+            "assignee": "Mill Computing, Inc.",
+            "filed": "2014-10-15",
+            "granted": "2017-05-16",
+            "inventors": "Roger Rawson Godard, Arthur David Kahlich, Norman Hardy, Allen Jay Baum",
+            "patent": "US9652230B2",
+            "url": "https://patents.google.com/patent/US9652230B2/en"
+          },
+          "name": "Mill Computing, Inc.: U.S. Patent 9,652,230 B2 (Computer processor employing dedicated hardware mechanism controlling the initialization and invalidation of cache lines)"
+        },
+        {
+          "identity": {
+            "companion_url": "https://millcomputing.com/introduction-to-the-mill-cpu-programming-model/",
+            "organization": "Mill Computing, Inc.",
+            "patent_summary": "US9747218B2 (filed 2015-03-20, granted 2017-08-29)",
+            "url": "https://millcomputing.com/patents/"
+          },
+          "name": "Mill Computing, Inc.: Official Patent Summaries (including U.S. Patent 9,747,218 B2) and Mill CPU Programming Model"
+        },
+        {
+          "identity": {
+            "authors": "A. Theodore Markettos, Colin Rothwell, Brett F. Gutstein, Allison Pearce, Peter G. Neumann, Simon W. Moore, Robert N. M. Watson",
+            "doi": "10.14722/ndss.2019.23194",
+            "publication": "Proceedings of the Network and Distributed System Security Symposium (NDSS '19)",
+            "url": "https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/2019ndss-iommu-cameraready.pdf",
+            "year": "2019"
+          },
+          "name": "Markettos et al.: Thunderclap: Exploring Vulnerabilities in Operating System IOMMU Protection via DMA from Untrustworthy Peripherals"
+        },
+        {
+          "identity": {
+            "authors": "A. Theodore Markettos, John Baldwin, Ruslan Bukin, Peter G. Neumann, Simon W. Moore, Robert N. M. Watson",
+            "publication": "Proceedings of the Workshop on Hardware and Architectural Support for Security and Privacy (HASP '20), ACM, October 2020, 9 pages",
+            "url": "https://www.cl.cam.ac.uk/research/security/ctsrd/pdfs/2020hasp-cheri-dma.pdf",
+            "year": "2020"
+          },
+          "name": "Markettos et al.: Position Paper: Defending Direct Memory Access with CHERI Capabilities"
         }
       ],
       "topics": [
         "isa/cheri",
+        "isa/mill-sasos",
         "systems/hardware-isolation",
+        "systems/dma-iommu",
         "ffi/capability-abi",
+        "pl/existential-types",
         "systems/history"
       ]
     },
@@ -10133,6 +10229,121 @@
         "charon/llbc",
         "rust/unsafe",
         "rustc/intrinsics"
+      ]
+    },
+    "choreographic-programming-multiparty-session-types-and-distributed-protocols": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.5586354",
+            "arxiv": "arXiv:2111.03484",
+            "doi": "10.1145/3498684",
+            "venue": "PACMPL 6(POPL), Article 23 (2022)"
+          },
+          "name": "Pirouette: Higher-Order Typed Functional Choreographies (Hirsch & Garg, POPL 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2005.09520",
+            "doi": "10.1145/3632398",
+            "venue": "ACM TOPLAS 46(1), Article 1 (2024)"
+          },
+          "name": "Choral: Object-Oriented Choreographic Programming (Giallorenzo, Montesi & Peressotti, TOPLAS 2024)"
+        },
+        {
+          "identity": {
+            "repository": "choral-lang/choral",
+            "revision": "a644dbd4429f2d609b2ca280a064bab9d73fab34"
+          },
+          "name": "Choral compiler and runtime"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2303.00924",
+            "doi": "10.1145/3607849",
+            "venue": "PACMPL 7(ICFP), Article 207 (2023)"
+          },
+          "name": "HasChor: Functional Choreographic Programming for All (Shen, Kashiwa & Kuper, ICFP 2023)"
+        },
+        {
+          "identity": {
+            "repository": "gshen42/HasChor",
+            "revision": "e6bf3d5e771e309ba8db7f2e55822f6a11c1e237"
+          },
+          "name": "HasChor Haskell choreographic library"
+        },
+        {
+          "identity": {
+            "repository": "ShapeOfMatter/MultiChor",
+            "revision": "4b83cad1b2374dbf4907ccce48a65fa403936dab"
+          },
+          "name": "MultiChor census-polymorphic Haskell choreographic library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290343",
+            "venue": "PACMPL 3(POPL), Article 30 (2019)"
+          },
+          "name": "Less is More: Multiparty Session Types Revisited (Scalas & Yoshida, POPL 2019)"
+        },
+        {
+          "identity": {
+            "repository": "alcestes/mpstk",
+            "revision": "5a056cc2193c2c588c1c7ddf130176c3aacdf38e"
+          },
+          "name": "mpstk: Multiparty Session Types toolKit"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-54458-7_26",
+            "venue": "FoSSaCS 2017, LNCS 10203, pp. 441-457"
+          },
+          "name": "On the Undecidability of Asynchronous Session Subtyping (Lange & Yoshida, FoSSaCS 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:1611.05026",
+            "venue": "Information and Computation 256, pp. 300-320 (2017)"
+          },
+          "name": "Undecidability of Asynchronous Session Subtyping (Bravetti, Carbone & Zavattaro, 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2207.02015",
+            "doi": "10.4230/LIPIcs.CONCUR.2022.35",
+            "venue": "CONCUR 2022, LIPIcs (2022)"
+          },
+          "name": "Generalised Multiparty Session Types with Crash-Stop Failures (Barwell, Scalas, Yoshida & Zhou, CONCUR 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:1901.01930",
+            "doi": "10.1145/3369736",
+            "venue": "Communications of the ACM 63(9), pp. 72-81 (2020)"
+          },
+          "name": "Keeping CALM: When Distributed Consistency is Easy (Hellerstein & Alvaro, CACM 2020)"
+        },
+        {
+          "identity": {
+            "repository": "hydro-project/hydro",
+            "revision": "fbaccddb35111327f96922259d60dc1607395545"
+          },
+          "name": "Hydro distributed dataflow and lattices Rust stack"
+        },
+        {
+          "identity": {
+            "repository": "protocolbuffers/protobuf",
+            "revision": "caaf86620a4ea6363bb1cf43c50dc430725c39dd"
+          },
+          "name": "Protocol Buffers wire format and field presence specification"
+        }
+      ],
+      "topics": [
+        "pl/choreographies",
+        "pl/session-types",
+        "systems/distributed-systems",
+        "ffi/protocols"
       ]
     },
     "clr-reified-generics-swift-value-witness-tables-and-julia-world-age": {
@@ -15366,6 +15577,155 @@
         "verification/survey"
       ]
     },
+    "datalog-fixpoint-incremental-relational-and-hybrid-engines": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Herbert Jordan, Bernhard Scholz, Pavle Suboti\u0107",
+            "doi": "10.1007/978-3-319-41540-6_23",
+            "title": "Souffl\u00e9: On Synthesis of Program Analyzers",
+            "venue": "CAV 2016, LNCS 9780, pp. 422-430",
+            "year": "2016"
+          },
+          "name": "Souffl\u00e9: On Synthesis of Program Analyzers (CAV 2016)"
+        },
+        {
+          "identity": {
+            "repository": "souffle-lang/souffle",
+            "revision": "2adf8c07210fe54f235e6e2d343c49b9d131463d"
+          },
+          "name": "Souffl\u00e9 Datalog compiler and runtime"
+        },
+        {
+          "identity": {
+            "authors": "Magnus Madsen, Ming-Ho Yee, Ond\u0159ej Lhot\u00e1k",
+            "doi": "10.1145/2908080.2908096",
+            "title": "From Datalog to FLIX: A Declarative Language for Fixed Points on Lattices",
+            "venue": "PLDI 2016",
+            "year": "2016"
+          },
+          "name": "From Datalog to FLIX: A Declarative Language for Fixed Points on Lattices (PLDI 2016)"
+        },
+        {
+          "identity": {
+            "repository": "flix/flix",
+            "revision": "4022083acf86ab8b92308f2fb47ae615d5088de0"
+          },
+          "name": "Flix programming language compiler and Fixpoint3 Datalog engine"
+        },
+        {
+          "identity": {
+            "authors": "Arash Sahebolamri, Thomas Gilray, Kristopher Micinski",
+            "doi": "10.1145/3497776.3517779",
+            "title": "Seamless Deductive Inference via Macros",
+            "venue": "CC 2022",
+            "year": "2022"
+          },
+          "name": "Seamless Deductive Inference via Macros (Ascent, CC 2022)"
+        },
+        {
+          "identity": {
+            "repository": "s-arash/ascent",
+            "revision": "e52c84b4419c56976413de1cbf15d56c8c136a5c",
+            "version": "0.8.1"
+          },
+          "name": "Ascent Rust-embedded Datalog and lattice engine"
+        },
+        {
+          "identity": {
+            "authors": "Hung Q. Ngo, Ely Porat, Christopher R\u00e9, Atri Rudra",
+            "doi": "10.1145/3180143",
+            "title": "Worst-Case Optimal Join Algorithms",
+            "venue": "Journal of the ACM 65(3), Article 16",
+            "year": "2018"
+          },
+          "name": "Worst-Case Optimal Join Algorithms (JACM 2018)"
+        },
+        {
+          "identity": {
+            "authors": "Yisu Remy Wang, Max Willsey, Dan Suciu",
+            "doi": "10.1145/3589295",
+            "title": "Free Join: Unifying Worst-Case Optimal and Traditional Joins",
+            "venue": "Proc. ACM Manag. Data 1(2) (SIGMOD 2023)",
+            "year": "2023"
+          },
+          "name": "Free Join: Unifying Worst-Case Optimal and Traditional Joins (SIGMOD 2023)"
+        },
+        {
+          "identity": {
+            "repository": "SIGMOD23p561/free-join",
+            "revision": "c020bbc7964ba17594299a1910ad6b65eebdf0e0"
+          },
+          "name": "Free Join reference implementation"
+        },
+        {
+          "identity": {
+            "authors": "Yihong Zhang, Yisu Remy Wang, Oliver Flatt, David Cao, Philip Zucker, Eli Rosenthal, Zachary Tatlock, Max Willsey",
+            "doi": "10.1145/3591239",
+            "title": "Better Together: Unifying Datalog and Equality Saturation",
+            "venue": "Proc. ACM Program. Lang. 7(PLDI)",
+            "year": "2023"
+          },
+          "name": "Better Together: Unifying Datalog and Equality Saturation (egglog, PLDI 2023)"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/egglog",
+            "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6",
+            "version": "3.0.0"
+          },
+          "name": "egglog equality saturation and Datalog engine"
+        },
+        {
+          "identity": {
+            "authors": "Frank McSherry, Derek G. Murray, Rebecca Isaacs, Michael Isard",
+            "title": "Differential Dataflow",
+            "venue": "CIDR 2013 (6th Biennial Conference on Innovative Data Systems Research)",
+            "year": "2013"
+          },
+          "name": "Differential Dataflow (CIDR 2013)"
+        },
+        {
+          "identity": {
+            "repository": "TimelyDataflow/differential-dataflow",
+            "revision": "e7c24703f4b1935cd6c99779ed0c140b0fea8ac6",
+            "version": "0.26.0"
+          },
+          "name": "Differential Dataflow Rust library"
+        },
+        {
+          "identity": {
+            "authors": "Mihai Budiu, Tej Chajed, Frank McSherry, Leonid Ryzhyk, Val Tannen",
+            "doi": "10.14778/3587136.3587137",
+            "title": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages",
+            "venue": "PVLDB 16(7), pp. 1601-1614",
+            "year": "2023"
+          },
+          "name": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages (PVLDB 2023)"
+        },
+        {
+          "identity": {
+            "repository": "feldera/feldera",
+            "revision": "5a14ac52ae141ed188ddd8861eeaed5d1f4714a3"
+          },
+          "name": "Feldera DBSP Rust streaming engine"
+        },
+        {
+          "identity": {
+            "repository": "tchajed/database-stream-processing-theory",
+            "revision": "fb6ff4416108710448ccd87473c5513c1a1179ea"
+          },
+          "name": "DBSP Lean 3 mechanized theory artifact"
+        }
+      ],
+      "topics": [
+        "pl/datalog",
+        "compilers/relational",
+        "pl/incremental",
+        "ffi/relational-imperative"
+      ]
+    },
     "de-bruijn-kernels-self-verifying-checkers-and-proof-producing-toolchains": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -15976,6 +16336,182 @@
         "systems",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "differentiable-programming-autodiff-semantics-and-compiler-challenges": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "EnzymeAD/Enzyme",
+            "revision": "0fa6f8401af6b8211a783213643692be20508842",
+            "url": "https://github.com/EnzymeAD/Enzyme"
+          },
+          "name": "Enzyme LLVM IR Automatic Differentiation Compiler Plugin"
+        },
+        {
+          "identity": {
+            "repository": "google-research/dex-lang",
+            "revision": "25e2e389b90403ae2f8d67fb6d52f47d23c439ee",
+            "url": "https://github.com/google-research/dex-lang"
+          },
+          "name": "Dex Functional Array Language Compiler"
+        },
+        {
+          "identity": {
+            "repository": "jax-ml/jax",
+            "revision": "bb38c58379173719d63a7e81fc09c22a37502654",
+            "url": "https://github.com/jax-ml/jax"
+          },
+          "name": "JAX Composable Transformations and AD Interpreter"
+        },
+        {
+          "identity": {
+            "repository": "FluxML/Zygote.jl",
+            "revision": "78463a14bc67a66435fc5ac3797422eaf9f6d589",
+            "url": "https://github.com/FluxML/Zygote.jl"
+          },
+          "name": "Zygote.jl Source-to-Source SSA Reverse-Mode AD for Julia"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "49fb0090b22cd6dcde645455e7cbf089380f88e4",
+            "url": "https://github.com/swiftlang/swift"
+          },
+          "name": "Swift SIL Differentiation Pass"
+        },
+        {
+          "identity": {
+            "arxiv": "2010.01709",
+            "doi": "10.5555/3495724.3496770",
+            "title": "Instead of Rewriting Foreign Code for Machine Learning, Automatically Synthesize Fast Gradients",
+            "venue": "Advances in Neural Information Processing Systems (NeurIPS 2020), Vol. 33"
+          },
+          "name": "Moses & Churavy (2020) \u2014 Enzyme Post-Optimization LLVM IR AD"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3458817.3476165",
+            "title": "Reverse-Mode Automatic Differentiation and Optimization of GPU Kernels via Enzyme",
+            "venue": "SC '21: International Conference for High Performance Computing, Networking, Storage and Analysis"
+          },
+          "name": "Moses et al. (2021) \u2014 Enzyme GPU Reverse-Mode AD"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SC41404.2022.00065",
+            "title": "Scalable Automatic Differentiation of Multiple Parallel Paradigms through Compiler Augmentation",
+            "venue": "SC '22: International Conference for High Performance Computing, Networking, Storage and Analysis"
+          },
+          "name": "Moses et al. (2022) \u2014 Enzyme Parallel Paradigms AD"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.05372",
+            "doi": "10.1145/3473593",
+            "title": "Getting to the Point: Index Sets and Parallelism-Preserving Autodiff for Pointful Array Programming",
+            "venue": "Proc. ACM Program. Lang. 5 (ICFP 2021)"
+          },
+          "name": "Paszke et al. (2021) \u2014 Dex Index Sets and Parallelism-Preserving AD"
+        },
+        {
+          "identity": {
+            "arxiv": "2204.10923",
+            "doi": "10.1145/3571236",
+            "title": "You Only Linearize Once: Tangents Transpose to Gradients",
+            "venue": "Proc. ACM Program. Lang. 7 (POPL 2023)"
+          },
+          "name": "Radul et al. (2023) \u2014 Linearize-Then-Transpose Reverse-Mode AD"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/347837.347846",
+            "title": "Algorithm 799: Revolve: An Implementation of Checkpointing for the Reverse or Adjoint Mode of Computational Differentiation",
+            "venue": "ACM Transactions on Mathematical Software (TOMS) 26(1)"
+          },
+          "name": "Griewank & Walther (2000) \u2014 Algorithm 799: Revolve Binomial Checkpointing"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10107-006-0042-z",
+            "title": "Optimal Jacobian accumulation is NP-complete",
+            "venue": "Mathematical Programming (Series A) 112(2), pp. 427-441"
+          },
+          "name": "Naumann (2008) \u2014 Optimal Jacobian Accumulation is NP-Complete"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jda.2008.12.003",
+            "title": "DAG reversal is NP-complete",
+            "venue": "Journal of Discrete Algorithms 7(4), pp. 402-410 (extending Call tree reversal is NP-complete, LNCSE 64, DOI 10.1007/978-3-540-68936-2_2)"
+          },
+          "name": "Naumann (2008, 2009) \u2014 Call Tree and DAG Reversal NP-Completeness"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10990-008-9037-1",
+            "title": "Nesting Forward-Mode AD in a Functional Framework",
+            "venue": "Higher-Order and Symbolic Computation 21(4), pp. 361-376"
+          },
+          "name": "Siskind & Pearlmutter (2008) \u2014 Nesting Forward-Mode AD and Perturbation Confusion"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S095679681900008X",
+            "title": "Perturbation Confusion in Forward Automatic Differentiation of Higher-Order Functions",
+            "venue": "Journal of Functional Programming 29, e12"
+          },
+          "name": "Manzyuk et al. (2019) \u2014 Perturbation Confusion in Higher-Order Forward AD"
+        },
+        {
+          "identity": {
+            "title": "On Correctness of Automatic Differentiation for Non-Differentiable Functions",
+            "url": "https://proceedings.neurips.cc/paper/2020/hash/42ef89d4aca5f11d13f9c3f309a96e95-Abstract.html",
+            "venue": "Advances in Neural Information Processing Systems (NeurIPS 2020), Vol. 33"
+          },
+          "name": "Lee, Yu, Rival & Yang (2020) \u2014 Correctness of AD for Non-Differentiable Functions"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434309",
+            "title": "Automatic Differentiation in PCF",
+            "venue": "Proc. ACM Program. Lang. 5 (POPL 2021), Article 28"
+          },
+          "name": "Mazza & Pagani (2021) \u2014 Automatic Differentiation in PCF"
+        },
+        {
+          "identity": {
+            "arxiv": "2001.02209",
+            "doi": "10.1007/978-3-030-45231-5_17",
+            "title": "Correctness of Automatic Differentiation via Diffeologies and Categorical Gluing",
+            "venue": "FoSSaCS 2020, LNCS 12077"
+          },
+          "name": "Huot, Staton & Vakar (2020) \u2014 Diffeologies and Categorical Gluing for AD"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10107-020-01501-5",
+            "title": "Conservative set valued fields, automatic differentiation, stochastic gradient methods and deep learning",
+            "venue": "Mathematical Programming 188, pp. 19-51"
+          },
+          "name": "Bolte & Pauwels (2021) \u2014 Conservative Set Valued Fields for Nonsmooth AD"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.07546",
+            "doi": "10.48550/arXiv.2305.07546",
+            "title": "Understanding Automatic Differentiation Pitfalls",
+            "venue": "arXiv preprint 2305.07546"
+          },
+          "name": "Huckelheim et al. (2023) \u2014 Understanding Automatic Differentiation Pitfalls"
+        }
+      ],
+      "topics": [
+        "pl/autodiff",
+        "compilers/autodiff",
+        "pl/semantics",
+        "verification/numerical"
       ]
     },
     "direct-verified-dwarf-v5-and-codeview-debug-section-emitter": {
@@ -18493,6 +19029,106 @@
         "systems/memory-models"
       ]
     },
+    "gpu-simt-execution-warp-divergence-and-scoped-memory-models": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Daniel Lustig, Sameer Sahasrabuddhe, Olivier Giroux",
+            "doi": "10.1145/3297858.3304043",
+            "venue": "ASPLOS '19 (24th ACM International Conference on Architectural Support for Programming Languages and Operating Systems)",
+            "year": "2019"
+          },
+          "name": "A Formal Analysis of the NVIDIA PTX Memory Consistency Model (ASPLOS '19)"
+        },
+        {
+          "identity": {
+            "repository": "NVlabs/ptxmemorymodel",
+            "revision": "f0dc6b7f85f34fc19fb76e7495864656276fa002"
+          },
+          "name": "NVlabs/ptxmemorymodel Alloy and Coq formalization"
+        },
+        {
+          "identity": {
+            "specification": "NVIDIA PTX ISA",
+            "url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html",
+            "version": "9.5"
+          },
+          "name": "NVIDIA Parallel Thread Execution (PTX) ISA Specification"
+        },
+        {
+          "identity": {
+            "repository": "NVIDIA/cutlass",
+            "revision": "88d690dec7c58a291e95ae44c9e68d800602fed5"
+          },
+          "name": "NVIDIA CUTLASS SM90 TMA/mbarrier and SM100 TMEM/tcgen05/setmaxnreg PTX wrappers"
+        },
+        {
+          "identity": {
+            "path": "appendices/memorymodel.adoc",
+            "repository": "KhronosGroup/Vulkan-Docs",
+            "revision": "f7de774cace1509af0f10b8d859c973b5354ff62"
+          },
+          "name": "Khronos Vulkan Memory Model specification"
+        },
+        {
+          "identity": {
+            "path": "extensions/KHR/SPV_KHR_maximal_reconvergence.asciidoc",
+            "repository": "KhronosGroup/SPIRV-Registry",
+            "revision": "25574da230687e0beb5d285c2746a7c0d2e17dcd"
+          },
+          "name": "Khronos SPIR-V SPV_KHR_maximal_reconvergence extension specification"
+        },
+        {
+          "identity": {
+            "path": "wgsl/index.bs",
+            "repository": "gpuweb/gpuweb",
+            "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3"
+          },
+          "name": "W3C WebGPU Shading Language (WGSL) Specification"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/ConvergentOperations.md",
+            "repository": "llvm/llvm-project",
+            "revision": "1780833aa0f119a425d7f993aaac29d03cb04da6"
+          },
+          "name": "LLVM Convergent Operations and Convergence Control Specification"
+        },
+        {
+          "identity": {
+            "authors": "Tiago Cogumbreiro, Julien Lange, Dennis Liew Zhen Rong, Hannah Zicarelli",
+            "doi": "10.1007/978-3-030-81685-8_19",
+            "venue": "CAV 2021 (LNCS 12759, pp. 403-426)",
+            "year": "2021"
+          },
+          "name": "Checking Data-Race Freedom of GPU Kernels, Compositionally (Faial, CAV '21)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.03448",
+            "authors": "Bastian K\u00f6pcke, Sergei Gorlatch, Michel Steuwer",
+            "doi": "10.1145/3656411",
+            "venue": "Proc. ACM Program. Lang. 8(PLDI), Article 181",
+            "year": "2024"
+          },
+          "name": "Descend: A Safe GPU Systems Programming Language (PLDI '24)"
+        },
+        {
+          "identity": {
+            "repository": "descend-lang/descend",
+            "revision": "e98d4c086f369496b79294b333086020ab08e0c6"
+          },
+          "name": "Descend compiler, type checker, and borrow checker"
+        }
+      ],
+      "topics": [
+        "pl/gpu-simt",
+        "compilers/gpu",
+        "systems/concurrency-weak-memory",
+        "ffi/host-device"
+      ]
+    },
     "gradual-typing-sound-interoperability-and-blame-performance-cliffs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -18756,6 +19392,149 @@
         "pl/gradual-typing",
         "ffi/contracts",
         "tooling/verification"
+      ]
+    },
+    "hardware-description-languages-timing-semantics-and-hw-sw-co-design": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2024.10458102",
+            "published": "2024-02-28",
+            "standard": "IEEE Std 1800-2023"
+          },
+          "name": "IEEE Std 1800-2023 (SystemVerilog Language Reference Manual)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3373087.3375310",
+            "repository": "ymherklotz/verismith",
+            "revision": "dd54c5f2c1b1b00696576fb70002d18fcafdc1e2"
+          },
+          "name": "Verismith (FPGA Synthesis Differential Fuzzer)"
+        },
+        {
+          "identity": {
+            "oopsla_2021_doi": "10.1145/3485494",
+            "pldi_2024_doi": "10.1145/3656455",
+            "repository": "ymherklotz/vericert",
+            "revision": "8df09a182cc3ae3859d5bd6ab881b1066d38fabe"
+          },
+          "name": "VeriCert (Coq-Verified CompCert C-to-Verilog High-Level Synthesis)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3385412.3385965",
+            "repository": "mit-plv/koika",
+            "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0"
+          },
+          "name": "K\u00f4ika (Core Rule-Based Hardware Design Language and Verified Compiler)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3110268",
+            "repository": "mit-plv/kami",
+            "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da"
+          },
+          "name": "Kami (Coq Modular Hardware Specification and Refinement Platform)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3385412.3385974",
+            "repository": "cucapra/dahlia",
+            "revision": "bd68b131ee14f46dd9d2099f86ead01f7d756a71"
+          },
+          "name": "Dahlia (Time-Sensitive Affine Types for Predictable HLS)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3445814.3446712",
+            "repository": "cucapra/calyx",
+            "revision": "e1bca4bf6779ccc98b5099f9a2284ca3b0bef637"
+          },
+          "name": "Calyx (Split Structural/Control Hardware Accelerator IR)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3591234",
+            "repository": "cucapra/filament",
+            "revision": "3c17db5ce85c354dd3da0af57f3adcb59bb295ac"
+          },
+          "name": "Filament (Timeline Interval Types for Modular Pipelined Hardware)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2304.03079",
+            "trets_2026_doi": "10.1145/3793550",
+            "upstream": "https://gitlab.com/spade-lang/spade"
+          },
+          "name": "Spade HDL (Expression-Based Pipelined HDL with Linear Backward Wires)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/circt",
+            "revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+          },
+          "name": "LLVM CIRCT (Circuit IR Compilers and Tools)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1145/3620665.3640387",
+            "repository": "gussmith23/lakeroad",
+            "revision": "c5c5a9ac4efc250374df7f9a37d59087a6cc7ba1"
+          },
+          "name": "Lakeroad (SMT Sketch-Guided FPGA Technology Mapping)"
+        },
+        {
+          "identity": {
+            "repository": "janestreet/hardcaml",
+            "revision": "d9da179ea12228a0e3f7c1358fedec2ab8971f73",
+            "version_hint": "v0.18~preview.133.03+642"
+          },
+          "name": "Hardcaml (OCaml-Embedded Structural Hardware Generator)"
+        },
+        {
+          "identity": {
+            "repository": "clash-lang/clash-compiler",
+            "revision": "920973dbb208b14f875eff730dbcf739fad22870"
+          },
+          "name": "Clash (Haskell Functional HDL with Phantom Clock Domains)"
+        },
+        {
+          "identity": {
+            "repository": "project-oak/silveroak",
+            "revision": "cccfdb4e19c5906256d2ed4487bf1a0aa2fab99e"
+          },
+          "name": "Silver Oak / Cava (Coq-Embedded OpenTitan Cryptographic Hardware Verification)"
+        },
+        {
+          "identity": {
+            "paper_doi": "10.1109/MDAT.2021.3051334",
+            "repository": "asyncvlsi/act",
+            "revision": "6071f559d2996923f067447804b2737551a54715"
+          },
+          "name": "ACT (Asynchronous Circuit Toolkit for Clockless QDI CHP/HSE/PRS Synthesis)"
+        },
+        {
+          "identity": {
+            "cummings_snug_2000": "SNUG San Jose 2000 (Nonblocking Assignments in Verilog Synthesis)",
+            "erbsen_pldi_2021_doi": "10.1145/3453483.3454065",
+            "herklotz_fccm_2021_doi": "10.1109/FCCM51124.2021.00034",
+            "loow_cpp_2021_doi": "10.1145/3437992.3439916",
+            "loow_pldi_2019_doi": "10.1145/3314221.3314622",
+            "martin_1990": "Caltech CS-TR-89-1 / Addison-Wesley 1990 (Programming in VLSI)",
+            "turpin_snug_2003": "SNUG Boston 2003 (The Dangers of Living with an X)"
+          },
+          "name": "Foundational RTL Semantics, QDI Synthesis, HLS Reliability, and HW-SW Co-Verification Literature"
+        }
+      ],
+      "topics": [
+        "pl/hdls",
+        "compilers/hardware",
+        "isa/rtl",
+        "ffi/hw-sw-boundary",
+        "verification/hardware",
+        "smt/synthesis"
       ]
     },
     "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification": {
@@ -26979,6 +27758,116 @@
         "verification/compiler-verification"
       ]
     },
+    "mill-edge-dataflow-and-tile-bsp-compiler-architectures": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "assignee": "Mill Computing, Inc.",
+            "documentation_url": "https://millcomputing.com/patents/",
+            "patents": "US 9,513,904; US 9,513,920; US 9,513,921; US 9,524,163; US 9,652,230; US 9,690,581; US 9,747,216; US 9,747,238; US 9,785,441; US 9,817,669; US 9,875,106; US 9,959,119; US 9,965,274; US 10,802,987; US 11,226,821"
+          },
+          "name": "Mill CPU Architecture U.S. Patent Portfolio (Belt, Crossbar, Scratchpad, IZM, Phased Loops, Metadata, Split-Stream, Caches)"
+        },
+        {
+          "identity": {
+            "architecture_paper": "Burger, Keckler, McKinley et al., Scaling to the End of Silicon with EDGE Architectures, IEEE Computer 37(7), pp. 44-55, July 2004",
+            "compiler_paper": "Smith, Burrill, Gibson, Maher, Nethercote, Yoder, Burger, McKinley, Compiling for EDGE Architectures, CGO 2006",
+            "doi": "10.1109/MC.2004.65"
+          },
+          "name": "EDGE / TRIPS Block-Atomic Dataflow Architecture and Compiler"
+        },
+        {
+          "identity": {
+            "arxiv": "1912.05036",
+            "doi": "10.1145/3391902",
+            "paper": "Reissmann, Meyer, Bahmann, Sjalander, RVSDG: An Intermediate Representation for Optimizing Compilers, ACM TECS 19(6), 2020"
+          },
+          "name": "Regionalized Value State Dependence Graph (RVSDG)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3079856.3080256",
+            "paper": "Prabhakar, Zhang, Koeplinger, Feldman, Zhao, Hadjis, Pedram, Kozyrakis, Olukotun, Plasticine: A Reconfigurable Architecture For Parallel Patterns, ISCA 2017"
+          },
+          "name": "Plasticine Coarse-Grained Reconfigurable Architecture (CGRA)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192379",
+            "paper": "Koeplinger, Feldman, Prabhakar, Zhang, Hadjis, Fiszel, Zhao, Nardi, Pedram, Kozyrakis, Olukotun, Spatial: A Language and Compiler for Application Accelerators, PLDI 2018"
+          },
+          "name": "Spatial Accelerator Language and Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MICRO61859.2024.00100",
+            "paper": "Prabhakar et al., SambaNova SN40L: Scaling the AI Memory Wall with Dataflow and Composition of Experts, MICRO 2024"
+          },
+          "name": "SambaNova SN40L Reconfigurable Dataflow Unit (RDU)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MM.2023.3256384",
+            "paper": "Sean Lie, Cerebras Architecture Deep Dive: First Look Inside the Hardware/Software Co-Design for Deep Learning, IEEE Micro 43(3), pp. 18-30, May-June 2023"
+          },
+          "name": "Cerebras Wafer-Scale Engine (WSE-2/WSE-3) and CSL Wavelet Dataflow"
+        },
+        {
+          "identity": {
+            "arxiv": "1912.03413v1",
+            "doi": "10.48550/arXiv.1912.03413",
+            "report": "Jia, Tillman, Maggioni, Scarpazza, Dissecting the Graphcore IPU Architecture via Microbenchmarking, Dec 2019"
+          },
+          "name": "Graphcore Colossus IPU Architecture and Poplar BSP Execution Model"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "tenstorrent/tt-metal",
+            "revision": "11551f901bb3e2ad451a0fe5036312c4687d40c3"
+          },
+          "name": "Tenstorrent TT-Metalium Tensix Hardware Headers and Kernel APIs"
+        },
+        {
+          "identity": {
+            "isca_2020_doi": "10.1109/ISCA45697.2020.00023",
+            "isca_2022_doi": "10.1145/3470496.3527405",
+            "papers": "Abts et al., Think Fast (ISCA 2020) and A Software-Defined Tensor Streaming Multiprocessor for Large-Scale Machine Learning (ISCA 2022)"
+          },
+          "name": "Groq Tensor Streaming Processor (TSP / LPU) Deterministic Architecture"
+        },
+        {
+          "identity": {
+            "hbm_pim_doi": "10.1109/ISCA52012.2021.00013",
+            "upmem_arxiv": "2105.03814",
+            "upmem_doi": "10.1109/ACCESS.2022.3174101"
+          },
+          "name": "UPMEM DPU and Samsung HBM-PIM Processing-in-Memory Architectures"
+        },
+        {
+          "identity": {
+            "cf_2008_doi": "10.1145/1366230.1366239",
+            "landauer_doi": "10.1147/rd.53.0183",
+            "pepm_2007_doi": "10.1145/1244381.1244404"
+          },
+          "name": "Janus Reversible Programming Language and Pendulum/PISA Reversible Architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343",
+            "paper": "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes, Taming Undefined Behavior in LLVM, PLDI 2017"
+          },
+          "name": "LLVM IR Undefined Behavior, Poison, Undef, and Freeze Semantics"
+        }
+      ],
+      "topics": [
+        "compilers/architecture",
+        "systems/exotic-cpus",
+        "compilers/dataflow-irs",
+        "pl/execution-models"
+      ]
+    },
     "minirust-core-calculi-basic-memory-and-nondeterminism": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -30496,6 +31385,268 @@
         "verification"
       ]
     },
+    "pl-compiler-ffi-verification-problem-landscape-and-taxonomy": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust compiler and standard library (rustc_abi, rustc_target, MIR, borrow/trait frontend)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "llvm/llvm-project",
+            "revision": "ae38cd53934bd998d40ca643ef678bd69a126aff"
+          },
+          "name": "LLVM, Clang, LLD, and MLIR compiler infrastructure (statepoints, debuginfo, dialects)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "llvm/circt",
+            "revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+          },
+          "name": "CIRCT MLIR-based hardware compiler infrastructure (hw, comb, seq, esi, verif, smt)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/master",
+            "repository": "leanprover/lean4",
+            "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05"
+          },
+          "name": "Lean 4 dependent-type proof kernel, hygienic macro elaborator, and reference-counting runtime"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model specification (WIT, Canonical ABI, resource handles)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/trunk",
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml 5 multicore runtime, segmented effect fibers, concurrent GC, and C-FFI"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 JavaScript and WebAssembly engine (TurboFan, Turboshaft CFG IR, deoptimizer)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/master",
+            "repository": "openjdk/jdk",
+            "revision": "d65bc4b262564e535c431aa8d4b58a1f7630fa64"
+          },
+          "name": "OpenJDK HotSpot VM (C2 compiler, deoptimization, ZGC/G1, JNI/Panama FFM, Loom virtual threads)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/master",
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go compiler, runtime scheduler, hybrid write-barrier GC, cgo, and Minimal Version Selection"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "CTSRD-CHERI/cheri-specification",
+            "revision": "845c973538425c833e90cc38829985cd79d79658"
+          },
+          "name": "CHERI Instruction-Set Architecture specification (capability model and compressed bounds)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "logsem/melocoton",
+            "revision": "039dae32893a33bc70d668a7abcd25d54587dc3c"
+          },
+          "name": "Melocoton Coq operational model and separation logic for OCaml-C interoperability"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "joshlf/anneal",
+            "revision": "08f1184dce262d8d3ab610d4becedc3a0ae4486c"
+          },
+          "name": "Anneal Rust-to-Lean verification framework (public main: TrustedBoundary, principles, threat model)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy public main crate (layout algebra, derive macros, safety policies)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "NVIDIA/cutlass",
+            "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+          },
+          "name": "NVIDIA CUTLASS library (CuTe hierarchical layout/swizzle algebra, Hopper TMA/mbarrier, Blackwell TMEM)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/master",
+            "repository": "mit-plv/koika",
+            "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0"
+          },
+          "name": "K\u00f4ika rule-based hardware description language (One-Rule-at-a-Time Coq semantics)"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/master",
+            "repository": "oracle/graal",
+            "revision": "b5d67b167c7a43b4debfe095d3d2d284f06fa2e3"
+          },
+          "name": "GraalVM optimizing compiler and Truffle polyglot interoperability runtime"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "cucapra/filament",
+            "revision": "3c17db5ce85c354dd3da0af57f3adcb59bb295ac"
+          },
+          "name": "Filament hardware description language with timeline interval types"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "cucapra/calyx",
+            "revision": "e1bca4bf6779ccc98b5099f9a2284ca3b0bef637"
+          },
+          "name": "Calyx split structural/control hardware accelerator intermediate representation"
+        },
+        {
+          "identity": {
+            "ref": "refs/heads/main",
+            "repository": "EnzymeAD/Enzyme",
+            "revision": "0fa6f8401af6b8211a783213643692be20508842"
+          },
+          "name": "Enzyme LLVM-level automatic differentiation compiler plugin"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2024.10555529",
+            "standard": "IEEE Std 1003.1-2024",
+            "version": "Issue 8 (2024)"
+          },
+          "name": "IEEE Std 1003.1-2024 (POSIX.1-2024 / The Open Group Base Specifications Issue 8)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2024.10458102",
+            "standard": "IEEE Std 1800-2023",
+            "version": "2023"
+          },
+          "name": "IEEE Std 1800-2023 (SystemVerilog Unified Hardware Design, Specification, and Verification Language)"
+        },
+        {
+          "identity": {
+            "authors": "Benjamin C. Pierce",
+            "doi": "10.1006/inco.1994.1055",
+            "venue": "Information and Computation 112(1)",
+            "year": "1994"
+          },
+          "name": "Pierce (1994), Bounded Quantification is Undecidable"
+        },
+        {
+          "identity": {
+            "authors": "Asumu Takikawa, Daniel Feltey, Ben Greenman, Max S. New, Jan Vitek, Matthias Felleisen",
+            "doi": "10.1145/2837614.2837630",
+            "venue": "POPL 2016",
+            "year": "2016"
+          },
+          "name": "Takikawa et al. (2016), Is Sound Gradual Typing Dead?"
+        },
+        {
+          "identity": {
+            "authors": "Michael Sammler, Simon Spies, Youngju Song, Emanuele D'Osualdo, Robbert Krebbers, Deepak Garg, Derek Dreyer",
+            "doi": "10.1145/3571220",
+            "venue": "PACMPL / POPL 2023",
+            "year": "2023"
+          },
+          "name": "Sammler et al. (2023), DimSum: A Decentralized Approach to Multi-language Semantics and Verification"
+        },
+        {
+          "identity": {
+            "authors": "Arma\u00ebl Gu\u00e9neau, Johannes Hostert, Simon Spies, Michael Sammler, Lars Birkedal, Derek Dreyer",
+            "doi": "10.1145/3622823",
+            "venue": "PACMPL / OOPSLA 2023",
+            "year": "2023"
+          },
+          "name": "Gu\u00e9neau et al. (2023), Melocoton: A Program Logic for Verified Interoperability Between OCaml and C"
+        },
+        {
+          "identity": {
+            "authors": "Yicheng Zhou, Joonas Bosamiya, Yuki Takashima, Jessica J. Li, Marijn Heule, Bryan Parno",
+            "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+            "venue": "FMCAD 2023",
+            "year": "2023"
+          },
+          "name": "Zhou et al. (2023), Mariposa: Measuring SMT Instability in Automated Program Verification"
+        },
+        {
+          "identity": {
+            "authors": "Andrew Baumann, Jonathan Appavoo, Orran Krieger, Timothy Roscoe",
+            "doi": "10.1145/3317550.3321435",
+            "venue": "HotOS 2019",
+            "year": "2019"
+          },
+          "name": "Baumann et al. (2019), A fork() in the road"
+        },
+        {
+          "identity": {
+            "authors": "Daniel Patterson, Noble Mushtak, Andrew Wagner, Amal Ahmed",
+            "doi": "10.1145/3519939.3523703",
+            "venue": "PLDI 2022",
+            "year": "2022"
+          },
+          "name": "Patterson et al. (2022), Semantic Soundness for Language Interoperability"
+        },
+        {
+          "identity": {
+            "authors": "Daniel Lustig, Sameer Sahasrabuddhe, Olivier Giroux",
+            "doi": "10.1145/3297858.3304043",
+            "venue": "ASPLOS 2019",
+            "year": "2019"
+          },
+          "name": "Lustig et al. (2019), A Formal Analysis of the NVIDIA PTX Memory Consistency Model"
+        },
+        {
+          "identity": {
+            "authors": "John L. Hennessy",
+            "doi": "10.1145/357172.357173",
+            "venue": "ACM TOPLAS 4(3)",
+            "year": "1982"
+          },
+          "name": "Hennessy (1982), Symbolic Debugging of Optimized Code"
+        }
+      ],
+      "topics": [
+        "pl/taxonomy",
+        "compilers/taxonomy",
+        "ffi/taxonomy",
+        "runtimes/taxonomy",
+        "tooling/taxonomy",
+        "verification/survey"
+      ]
+    },
     "polymorphism-compilation-layout-algebras-and-abi-resilience": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -31496,6 +32647,282 @@
         "verification/bytecode-verifiers",
         "domains",
         "domains/dsls"
+      ]
+    },
+    "probabilistic-programming-measure-semantics-and-inference-compilers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1215/ijm/1255631584",
+            "publication": "Illinois Journal of Mathematics, Vol. 5, No. 4, pp. 614-630 (1961)"
+          },
+          "name": "Borel structures for function spaces (Aumann 1961)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:1701.02547",
+            "doi": "10.1109/LICS.2017.8005137",
+            "venue": "LICS 2017"
+          },
+          "name": "A Convenient Category for Higher-Order Probability Theory (Heunen, Kammar, Staton & Yang 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-54434-1_32",
+            "venue": "ESOP 2017 (LNCS 10201, pp. 855-879)"
+          },
+          "name": "Commutative Semantics for Probabilistic Programming (Staton 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009852",
+            "venue": "POPL 2017"
+          },
+          "name": "Exact Bayesian Inference by Symbolic Disintegration (Shan & Ramsey 2017)"
+        },
+        {
+          "identity": {
+            "repository": "hakaru-dev/hakaru",
+            "revision": "e8bebac6d344e81a429c25f2b4c29b76172ea47f"
+          },
+          "name": "Hakaru probabilistic programming system (symbolic disintegrator)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2101.03391",
+            "doi": "10.1145/3434339",
+            "venue": "PACMPL Vol. 5, POPL 2021"
+          },
+          "name": "Paradoxes of Probabilistic Programming: And How to Condition on Events of Measure Zero with Infinitesimal Probabilities (Jacobs 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.18637/jss.v076.i01",
+            "publication": "Journal of Statistical Software 76(1) (2017)"
+          },
+          "name": "Stan: A Probabilistic Programming Language (Carpenter et al. 2017)"
+        },
+        {
+          "identity": {
+            "repository": "stan-dev/stanc3",
+            "revision": "456130a900c56ddb0505c4540460977106bd9938",
+            "version": "v2.40.0"
+          },
+          "name": "Stan compiler (stanc3)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:1907.08827",
+            "doi": "10.1145/3371084",
+            "venue": "PACMPL Vol. 4, POPL 2020"
+          },
+          "name": "Towards Verified Stochastic Variational Inference for Probabilistic Programs (Lee, Yu, Rival & Yang 2020)"
+        },
+        {
+          "identity": {
+            "repository": "wonyeol/static-analysis-for-support-match",
+            "revision": "850fb58ec5ce2f5e82262c2a9bfc067b799297c1"
+          },
+          "name": "pyppai static analyzer for Pyro model-guide support match"
+        },
+        {
+          "identity": {
+            "repository": "pyro-ppl/pyro",
+            "revision": "a31bc1784707268cd79df77ead4c7a47062f0193"
+          },
+          "name": "Pyro probabilistic programming library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314642",
+            "venue": "PLDI 2019"
+          },
+          "name": "Gen: A General-Purpose Probabilistic Programming System with Programmable Inference (Cusumano-Towner, Saad, Lew & Mansinghka 2019)"
+        },
+        {
+          "identity": {
+            "repository": "probcomp/Gen.jl",
+            "revision": "9953ceb296b56ad5cd225d811a9fdfc8470b17e5",
+            "version": "v0.4.9"
+          },
+          "name": "Gen.jl probabilistic programming system"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371087",
+            "venue": "PACMPL Vol. 4, POPL 2020, Article 19"
+          },
+          "name": "Trace Types and Denotational Semantics for Sound Programmable Inference in Probabilistic Languages (Lew, Cusumano-Towner, Sherman, Carbin & Mansinghka 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2007.09871",
+            "date": "2020-07-21"
+          },
+          "name": "Automating Involutive MCMC using Probabilistic and Differentiable Programming (Cusumano-Towner, Lew & Mansinghka 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2005.09089",
+            "doi": "10.1145/3428208",
+            "venue": "PACMPL Vol. 4, OOPSLA 2020, Article 140"
+          },
+          "name": "Scaling Exact Inference for Discrete Probabilistic Programs (Holtzen, Van den Broeck & Millstein 2020)"
+        },
+        {
+          "identity": {
+            "repository": "SHoltzen/dice",
+            "revision": "1d8a277636a428eb46164ba4639fab12a310f30c"
+          },
+          "name": "Dice exact discrete probabilistic programming compiler"
+        }
+      ],
+      "topics": [
+        "pl/probabilistic",
+        "compilers/probabilistic",
+        "pl/semantics",
+        "verification/probabilistic"
+      ]
+    },
+    "programmable-network-pipelines-p4-semantics-and-exotic-hardware-numerics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "path": "p4-16/spec/P4-16-spec.adoc",
+            "repository": "p4lang/p4-spec",
+            "revision": "0370191bea5d26cd17c3ed25a6849d2df306b56b",
+            "version": "v1.2.5+head"
+          },
+          "name": "P4_16 Language Specification (p4lang/p4-spec)"
+        },
+        {
+          "identity": {
+            "repository": "verified-network-toolchain/petr4",
+            "revision": "9508676128a00ec5b23da4139c3c74849f2a8b1c"
+          },
+          "name": "Petr4 P4 Formal Semantics and Type Checker (verified-network-toolchain/petr4)"
+        },
+        {
+          "identity": {
+            "repository": "packet-transactions/domino-compiler",
+            "revision": "1ed941aa40da23964f1428e17705a0b147309e68"
+          },
+          "name": "Domino Packet-Transaction Compiler (packet-transactions/domino-compiler)"
+        },
+        {
+          "identity": {
+            "repository": "chipmunk-project/chipmunk",
+            "revision": "a86eb9030c7accfd552dc4c899fa247193588251"
+          },
+          "name": "Chipmunk Program-Synthesis Switch Compiler (chipmunk-project/chipmunk)"
+        },
+        {
+          "identity": {
+            "date": "2026-09-14",
+            "path": "IEEE P3109 Interim Report.pdf",
+            "repository": "P3109/Public",
+            "revision": "2d45cf2fe0314d32251f5439d9d3ed078f93fbb9",
+            "version": "4.1"
+          },
+          "name": "IEEE SA Working Group P3109 Interim Report on Arithmetic Formats for Machine Learning (P3109/Public)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/microxcaling",
+            "revision": "7bc41952de394f5cc5e782baf132e7c7542eb4e4"
+          },
+          "name": "Microsoft Microxcaling (MX) Reference Library (microsoft/microxcaling)"
+        },
+        {
+          "identity": {
+            "repository": "stillwater-sc/universal",
+            "revision": "9f0e5da5e8e756423570bdbc3e4632d9ae588611",
+            "version": "v5.18.0"
+          },
+          "name": "Stillwater Universal Numbers Library (stillwater-sc/universal)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2486001.2486011",
+            "venue": "ACM SIGCOMM 2013",
+            "year": "2013"
+          },
+          "name": "Bosshart et al., Forwarding Metamorphosis: Fast Programmable Match-Action Processing in Hardware for SDN (RMT)"
+        },
+        {
+          "identity": {
+            "arxiv": "2011.05948",
+            "doi": "10.1145/3434322",
+            "venue": "Proc. ACM Program. Lang. 5(POPL), Article 41",
+            "year": "2021"
+          },
+          "name": "Doenges et al., Petr4: Formal Foundations for P4 Data Planes"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3230543.3230582",
+            "venue": "ACM SIGCOMM 2018",
+            "year": "2018"
+          },
+          "name": "Liu et al., p4v: Practical Verification for Programmable Data Planes"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2934872.2934900",
+            "venue": "ACM SIGCOMM 2016",
+            "year": "2016"
+          },
+          "name": "Sivaraman et al., Packet Transactions: High-Level Programming for Line-Rate Switches (Domino)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3387514.3405874",
+            "venue": "ACM SIGCOMM 2020",
+            "year": "2020"
+          },
+          "name": "Gao et al., Switch Code Generation Using Program Synthesis (Chipmunk)"
+        },
+        {
+          "identity": {
+            "date": "2023-09",
+            "specification": "OCP Microscaling Formats (MX) Specification",
+            "url": "https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf",
+            "version": "1.0"
+          },
+          "name": "Open Compute Project, OCP Microscaling Formats (MX) Specification v1.0"
+        },
+        {
+          "identity": {
+            "arxiv": "2209.05433v2",
+            "date": "2022-09-29",
+            "doi": "10.48550/arXiv.2209.05433"
+          },
+          "name": "Micikevicius et al., FP8 Formats for Deep Learning"
+        },
+        {
+          "identity": {
+            "date": "2022-03-02",
+            "specification": "Standard for Posit Arithmetic (2022)",
+            "url": "https://posithub.org/docs/posit_standard-2.pdf"
+          },
+          "name": "Posit Working Group, Standard for Posit Arithmetic (2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1098/rsos.211631",
+            "venue": "Royal Society Open Science 9(3)",
+            "year": "2022"
+          },
+          "name": "Croci, Fasi, Higham, Mary, and Mikaitis, Stochastic Rounding: Implementation, Error Analysis and Applications"
+        }
+      ],
+      "topics": [
+        "systems/network-dataplanes",
+        "pl/p4-semantics",
+        "verification/floating-point",
+        "systems/exotic-numerics"
       ]
     },
     "proof-fragility-smt-instability-and-verification-scaling-walls": {
@@ -43196,6 +44623,215 @@
         "ffi/attested-channels"
       ]
     },
+    "synchronous-real-time-reactive-languages-and-wcet-predictability": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "author": "Gerard Berry",
+            "date": "1999-07-02",
+            "institution": "CMA, Ecole des Mines / INRIA",
+            "title": "The Constructive Semantics of Pure Esterel",
+            "version": "Draft Book version 3.0"
+          },
+          "name": "Berry, The Constructive Semantics of Pure Esterel"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/43.298284",
+            "venue": "IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 13(7), pp. 950-956",
+            "year": "1994"
+          },
+          "name": "Malik, Analysis of Cyclic Combinational Circuits (IEEE TCAD 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/5.97300",
+            "venue": "Proceedings of the IEEE 79(9), pp. 1305-1320",
+            "year": "1991"
+          },
+          "name": "Halbwachs et al., The Synchronous Data Flow Programming Language LUSTRE (Proc. IEEE 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062358",
+            "venue": "PLDI 2017",
+            "year": "2017"
+          },
+          "name": "Bourke et al., A Formally Verified Compiler for Lustre (V\u00e9lus, PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371112",
+            "venue": "Proc. ACM Program. Lang. 4(POPL), Article 44",
+            "year": "2020"
+          },
+          "name": "Bourke, Brun & Pouzet, Verified Compilation for a Dataflow Synchronous Language with Reset (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3608102",
+            "venue": "ACM Transactions on Embedded Computing Systems 22(5s)",
+            "year": "2023"
+          },
+          "name": "Bourke, Pesin & Pouzet, Verified Compilation of Synchronous Dataflow with State Machines (EMSOFT 2023)"
+        },
+        {
+          "identity": {
+            "repository": "INRIA/velus",
+            "revision": "27ba860c2624ba232816591290c6c119b9ead88a"
+          },
+          "name": "INRIA/velus verified Lustre-to-CompCert compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3448128",
+            "venue": "ACM Transactions on Embedded Computing Systems 20(4)",
+            "year": "2021"
+          },
+          "name": "Lohstroh et al., Toward a Lingua Franca for Deterministic Concurrent Systems (ACM TECS 2021)"
+        },
+        {
+          "identity": {
+            "repository": "lf-lang/lingua-franca",
+            "revision": "0df8a987e37d6bc0cc8daa1c3e6167df14eaae59"
+          },
+          "name": "lf-lang/lingua-franca coordination language compiler"
+        },
+        {
+          "identity": {
+            "repository": "lf-lang/reactor-c",
+            "revision": "abbf0aaf468af55f298e1ae4816156e9f7552784"
+          },
+          "name": "lf-lang/reactor-c deterministic timed C runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/258948.258973",
+            "venue": "ICFP 1997, pp. 263-273",
+            "year": "1997"
+          },
+          "name": "Elliott & Hudak, Functional Reactive Animation (ICFP 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103656.2103665",
+            "venue": "POPL 2012",
+            "year": "2012"
+          },
+          "name": "Krishnaswami, Benton & Hoffmann, Higher-Order FRP in Bounded Space (POPL 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341713",
+            "venue": "Proc. ACM Program. Lang. 3(ICFP)",
+            "year": "2019"
+          },
+          "name": "Bahr, Graulund & M\u00f8gelberg, Simply RaTT (ICFP 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3607847",
+            "venue": "Proc. ACM Program. Lang. 7(ICFP)",
+            "year": "2023"
+          },
+          "name": "Bahr & M\u00f8gelberg, Asynchronous Modal FRP (ICFP 2023)"
+        },
+        {
+          "identity": {
+            "repository": "pa-ba/Rattus",
+            "revision": "f8cfe7411ccebef78f74a73e1a6a2e57a106b256",
+            "version": "0.5.1.1"
+          },
+          "name": "pa-ba/Rattus synchronous modal FRP GHC plugin"
+        },
+        {
+          "identity": {
+            "repository": "pa-ba/AsyncRattus",
+            "revision": "8043692908bb1d1f01cd0b1ad07bca06eb9df79f",
+            "version": "0.2.2"
+          },
+          "name": "pa-ba/AsyncRattus asynchronous modal FRP GHC plugin"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/REAL.1999.818824",
+            "venue": "20th IEEE Real-Time Systems Symposium (RTSS 1999), pp. 12-21",
+            "year": "1999"
+          },
+          "name": "Lundqvist & Stenstr\u00f6m, Timing Anomalies in Dynamically Scheduled Microprocessors (RTSS 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/OASIcs.WCET.2006.671",
+            "venue": "6th International Workshop on Worst-Case Execution Time Analysis (WCET 2006)",
+            "year": "2006"
+          },
+          "name": "Reineke et al., A Definition and Classification of Timing Anomalies (WCET 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1347375.1347389",
+            "venue": "ACM Transactions on Embedded Computing Systems 7(3)",
+            "year": "2008"
+          },
+          "name": "Wilhelm et al., The Worst-Case Execution-Time Problem (ACM TECS 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594332",
+            "venue": "PLDI 2014",
+            "year": "2014"
+          },
+          "name": "Carbonneaux et al., End-to-End Verification of Stack-Space Bounds for C Programs (PLDI 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-12466-7_1",
+            "venue": "FOPARA 2013, LNCS 8552, pp. 1-18",
+            "year": "2013"
+          },
+          "name": "Amadio et al., Certified Complexity (CerCo, FOPARA 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-54108-7_15",
+            "venue": "VSTTE 2013, LNCS 8164, pp. 281-303",
+            "year": "2013"
+          },
+          "name": "Blazy, Maroneze & Pichardie, Formal Verification of Loop Bound Estimation for WCET Analysis (VSTTE 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1278480.1278545",
+            "venue": "44th Design Automation Conference (DAC 2007)",
+            "year": "2007"
+          },
+          "name": "Edwards & Lee, The Case for the Precision Timed (PRET) Machine (DAC 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s11241-018-9300-4",
+            "venue": "Real-Time Systems 54(2), pp. 389-423",
+            "year": "2018"
+          },
+          "name": "Schoeberl et al., Patmos: A Time-Predictable Microprocessor (Real-Time Systems 2018)"
+        },
+        {
+          "identity": {
+            "repository": "t-crest/patmos",
+            "revision": "4c72814972c8e19d69c987e3b29d764efb6a7d8c"
+          },
+          "name": "t-crest/patmos time-predictable VLIW microprocessor RTL"
+        }
+      ],
+      "topics": [
+        "pl/synchronous-realtime",
+        "compilers/realtime",
+        "verification/wcet",
+        "systems/realtime"
+      ]
+    },
     "target-features-implications-detection-and-abi-effects": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -43454,6 +45090,132 @@
         "runtimes/ahead-of-time-compilation",
         "verification",
         "verification/translation-validation"
+      ]
+    },
+    "tensor-layout-algebras-scratchpad-dma-and-user-schedulable-accelerator-languages": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "NVIDIA/cutlass",
+            "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+          },
+          "name": "NVIDIA CUTLASS (CuTe C++ layout/swizzle headers, SM90 TMA/GMMA traits, docs, and PyCuTe)"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.02298v2",
+            "doi": "10.48550/arXiv.2603.02298",
+            "published": "2026-07-29"
+          },
+          "name": "Cecka, CuTe Layout Representation and Algebra (arXiv:2603.02298v2)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.05972v1",
+            "doi": "10.48550/arXiv.2601.05972",
+            "published": "2026-01-09"
+          },
+          "name": "Carlisle, Shah, Stern, and VanKoughnett, Categorical Foundations for CuTe Layouts (arXiv:2601.05972v1)"
+        },
+        {
+          "identity": {
+            "repository": "ColfaxResearch/layout-categories",
+            "revision": "689369f8b9c61cbcf9aa81c20c83f0ad7cef9719"
+          },
+          "name": "Colfax Research Tract (categorical CuTe layout implementation)"
+        },
+        {
+          "identity": {
+            "repository": "triton-lang/triton",
+            "revision": "458c1a257c026a24c6aa7937f75f186e9bdf8353"
+          },
+          "name": "Triton compiler (LinearLayout, TritonGPU dialect encodings, RemoveLayoutConversions, SoftwarePipeliner)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3315508.3329973",
+            "venue": "MAPL 2019"
+          },
+          "name": "Tillet, Kung, and Cox, Triton: An Intermediate Language and Compiler for Tiled Neural Network Computations (MAPL '19)"
+        },
+        {
+          "identity": {
+            "repository": "jax-ml/jax",
+            "revision": "bb38c58379173719d63a7e81fc09c22a37502654"
+          },
+          "name": "JAX Pallas and Mosaic TPU backend (memory spaces, DMA semaphores, pipeline emitter, and TPU docs)"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.01433",
+            "doi": "10.1145/3579371.3589350",
+            "venue": "ISCA 2023"
+          },
+          "name": "Jouppi et al., TPU v4: An Optically Reconfigurable Supercomputer for Machine Learning with Hardware Support for Embeddings (ISCA '23)"
+        },
+        {
+          "identity": {
+            "repository": "diku-dk/futhark",
+            "revision": "dc285f6698c118f2b236f65984e38104e72f7939"
+          },
+          "name": "Futhark compiler (uniqueness/consumption alias checker and incremental flattening)"
+        },
+        {
+          "identity": {
+            "doi_pldi17": "10.1145/3062341.3062354",
+            "doi_ppopp19": "10.1145/3293883.3295707",
+            "venue": "PLDI 2017; PPoPP 2019"
+          },
+          "name": "Henriksen et al., Futhark: Purely Functional GPU-Programming with Nested Parallelism and In-Place Array Updates (PLDI '17) and Incremental Flattening (PPoPP '19)"
+        },
+        {
+          "identity": {
+            "repository": "exo-lang/exo",
+            "revision": "defe17283d15553ca9d6ad70b2e9f4c22ff36ce2"
+          },
+          "name": "Exo and Exo 2 exocompiler (LoopIR, Z3 affine effect checking, modulo-config equivalence lattice, Cursors, Gemmini platform)"
+        },
+        {
+          "identity": {
+            "doi_asplos25": "10.1145/3669940.3707218",
+            "doi_pldi22": "10.1145/3519939.3523446",
+            "venue": "PLDI 2022; ASPLOS 2025"
+          },
+          "name": "Ikarashi et al., Exocompilation for Productive Programming of Hardware Accelerators (PLDI '22) and Exo 2: Growing a Scheduling Language (ASPLOS '25)"
+        },
+        {
+          "identity": {
+            "repository": "halide/Halide",
+            "revision": "a92e31666d7272d3d7b76d0eccb95e8b2d23fa9c"
+          },
+          "name": "Halide compiler (Schedule representation, Lower pipeline, StorageFlattening)"
+        },
+        {
+          "identity": {
+            "doi_atl_popl22": "10.1145/3498717",
+            "doi_halide_pldi13": "10.1145/2491956.2462176",
+            "doi_tv_oopsla22": "10.1145/3527328",
+            "venue": "PLDI 2013; OOPSLA 2022; POPL 2022"
+          },
+          "name": "Ragan-Kelley et al. (PLDI '13), Clement and Cohen (OOPSLA '22), and Liu et al. ATL (POPL '22) on Halide and verified tensor scheduling"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408974",
+            "repository": "elevate-lang/elevate",
+            "revision": "0e60de5f1394d6d36e6cef94d13a3ca7d69b9ec5",
+            "shine_repository": "rise-lang/shine",
+            "shine_revision": "1bd443b1b057d4a6ce46578fb680fced5009af4a"
+          },
+          "name": "Elevate rewriting strategy language and Rise/Shine compiler (Hagedorn et al., ICFP '20)"
+        }
+      ],
+      "topics": [
+        "compilers/layout-algebras",
+        "compilers/schedule-languages",
+        "systems/accelerators",
+        "verification/layout-proofs"
       ]
     },
     "tex-catcode-lexing-css-layout-cycles-and-nix-string-context-provenance": {
@@ -48647,6 +50409,135 @@
         "verification/compiler-verification"
       ]
     },
+    "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454069",
+            "publication": "Andres Erbsen, Samuel Gruetter, Joonwon Choi, Clark Wood, and Adam Chlipala, 'Integration Verification Across Software and Hardware for a Simple Embedded System', PLDI 2021",
+            "repository": "mit-plv/bedrock2",
+            "revision": "0005c47b5eaa720bdcb9b94aceaca9f42726b861"
+          },
+          "name": "Bedrock2 end-to-end verified embedded system and Kami RISC-V processor bridge"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3110268",
+            "publication": "Joonwon Choi, Muralidaran Vijayaraghavan, Benjamin Sherman, Adam Chlipala, and Arvind, 'Kami: A Platform for High-Level Parametric Hardware Specification and Its Modular Verification', ICFP 2017",
+            "repository": "mit-plv/kami",
+            "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da"
+          },
+          "name": "Kami parametric hardware specification and modular verification platform"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3385965",
+            "publication": "Thomas Bourgeat, Clement Pit-Claudel, Adam Chlipala, and Arvind, 'The Essence of Bluespec: A Core Language for Rule-Based Hardware Design', PLDI 2020",
+            "repository": "mit-plv/koika",
+            "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0"
+          },
+          "name": "Koika rule-based hardware description language (One-Rule-at-a-Time mechanization)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3623759.3624544",
+            "publication": "Johannes Aman Pohjola et al., 'Pancake: Verified Systems Programming Made Sweeter', PLOS 2023; Junming Zhao et al., 'Verifying Device Drivers with Pancake', arXiv:2501.08249 (2025)",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML Pancake verified systems and device-driver compiler"
+        },
+        {
+          "identity": {
+            "publisher": "Arm Limited",
+            "sections": "Section A3.3.1 (Dependencies between channel handshake signals), Section A3.4.1 (4 KiB burst boundary), Chapter A5 (Transaction ordering)",
+            "specification": "ARM IHI 0022"
+          },
+          "name": "ARM AMBA AXI and ACE Protocol Specification"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/rocket-chip",
+            "revision": "ece7b9ad544b07df39cd13b6fd7236562a26355d",
+            "specification": "SiFive / CHIPS Alliance TileLink Specification v1.8.1 / v1.9.3 (TL-UL, TL-UH, TL-C)"
+          },
+          "name": "TileLink Specification and Rocket Chip RoCC and TileLink RTL"
+        },
+        {
+          "identity": {
+            "paths": "include/circt/Dialect/ESI/ and docs/Dialects/ESI/",
+            "repository": "llvm/circt",
+            "revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+          },
+          "name": "CIRCT Elastic Silicon Interconnects (ESI) MLIR Dialect"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF00365393",
+            "publication": "Theodore P. Baker, 'Stack-Based Scheduling of Realtime Processes', Real-Time Systems 3(1):67-99, 1991",
+            "repository": "rtic-rs/rtic",
+            "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9"
+          },
+          "name": "Baker Stack Resource Policy and RTIC Embedded Rust Concurrency Framework"
+        },
+        {
+          "identity": {
+            "paths": "arch/arm64/mm/cache.S, Documentation/core-api/dma-api.rst, drivers/fpga/fpga-region.c",
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel ARM64 non-coherent DMA cache maintenance and FPGA region programming"
+        },
+        {
+          "identity": {
+            "dblp": "conf/micro/MarkettosBBNMW20",
+            "doi": "10.14722/ndss.2019.23194",
+            "publication": "A. Theodore Markettos et al., 'Thunderclap: Exploring Vulnerabilities in Operating System IOMMU Protection via DMA from Untrustworthy Peripherals', NDSS 2019; Markettos, Baldwin, Bukin, Neumann, Moore, and Watson, 'Position Paper: Defending Direct Memory Access with CHERI Capabilities', HASP 2020"
+          },
+          "name": "Thunderclap IOMMU vulnerability study and CHERI-DMA capability protection"
+        },
+        {
+          "identity": {
+            "publisher": "Compute Express Link Consortium",
+            "specification": "CXL 2.0 / CXL 3.0 (CXL.io, CXL.cache, CXL.mem)"
+          },
+          "name": "Compute Express Link (CXL) 2.0 and 3.0 Coherence Specifications"
+        },
+        {
+          "identity": {
+            "publisher": "AMD / Xilinx",
+            "specification": "PG374 (DFX Controller), PG375 (DFX Decoupler), PG377 (DFX AXI Shutdown Manager), UG909 (Dynamic Function eXchange)"
+          },
+          "name": "AMD Xilinx Dynamic Function eXchange (DFX) Isolation and Shutdown IP Guides"
+        },
+        {
+          "identity": {
+            "doi_manolios": "10.1007/3-540-40922-X_11",
+            "doi_namjoshi": "10.1007/BFb0058037",
+            "publication": "Kedar S. Namjoshi, 'A Simple Characterization of Stuttering Bisimulation', FSTTCS 1997; Panagiotis Manolios, 'Correctness of Pipelined Machines', FMCAD 2000"
+          },
+          "name": "Stuttering Bisimulation and Pipelined Machine Refinement Foundations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591234",
+            "publication": "Rachit Nigam, Pedro Henrique Azevedo de Amorim, and Adrian Sampson, 'Modular Hardware Design with Timeline Types', PLDI 2023",
+            "repository": "cucapra/filament",
+            "revision": "3c17db5ce85c354dd3da0af57f3adcb59bb295ac"
+          },
+          "name": "Filament timeline-typed hardware description language"
+        }
+      ],
+      "topics": [
+        "ffi/hardware-software",
+        "verification/mmio-dma",
+        "systems/interconnects",
+        "verification/refinement",
+        "isa/riscv64",
+        "systems/interrupts"
+      ]
+    },
     "verified-tail-duplication-hot-cold-splitting-and-branch-relaxation": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -49452,6 +51343,134 @@
         "zerocopy/intrinsics",
         "zerocopy/soundness-policy",
         "rust/calling-conventions"
+      ]
+    },
+    "zk-circuit-dsls-resource-metered-vms-and-quantum-linear-languages": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "iden3/circom",
+            "revision": "9b4b23331644e17868c90a85768826ed3bcba59f"
+          },
+          "name": "Circom compiler (iden3/circom)"
+        },
+        {
+          "identity": {
+            "repository": "iden3/circomlib",
+            "revision": "8852c3bc91e3ede890f2143f36457b25302abce2"
+          },
+          "name": "circomlib standard circuit library (iden3/circomlib)"
+        },
+        {
+          "identity": {
+            "repository": "zcash/halo2",
+            "revision": "7465edf9110aace00b8c24b96270e1b820fd39fb"
+          },
+          "name": "Halo2 PLONKish proving framework (zcash/halo2)"
+        },
+        {
+          "identity": {
+            "repository": "noir-lang/noir",
+            "revision": "af5d97aaa0f67fde5da9a7a790968b88cffff439"
+          },
+          "name": "Noir ACIR and Brillig intermediate representation (noir-lang/noir)"
+        },
+        {
+          "identity": {
+            "repository": "starkware-libs/cairo",
+            "revision": "98565f78d3bebb0e667607f549cb668edaf7bf9e"
+          },
+          "name": "Cairo CASM instruction set and hints (starkware-libs/cairo)"
+        },
+        {
+          "identity": {
+            "repository": "Veridise/Picus",
+            "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+          },
+          "name": "Picus R1CS uniqueness verifier (Veridise/Picus)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591282",
+            "eprint": "2023/512",
+            "venue": "PACMPL Vol. 7, PLDI 2023, Article 168"
+          },
+          "name": "Pailoor et al. 2023 \u2014 Automated Detection of Under-Constrained Circuits in Zero-Knowledge Proofs (PLDI '23)"
+        },
+        {
+          "identity": {
+            "repository": "franklynwang/EcneProject",
+            "revision": "25935352ca30705ad47363dcf200822635edc1c7"
+          },
+          "name": "Ecne R1CS constraint uniqueness verifier (franklynwang/EcneProject)"
+        },
+        {
+          "identity": {
+            "repository": "0xPARC/zk-bug-tracker",
+            "revision": "56a996672fb50486279126c8e12530f2bf933d0b"
+          },
+          "name": "0xPARC ZK Bug Tracker (0xPARC/zk-bug-tracker)"
+        },
+        {
+          "identity": {
+            "repository": "MystenLabs/sui",
+            "revision": "6463a0de12c80520f1a6186a1109202ec4b73c7f"
+          },
+          "name": "Sui Move Bytecode Verifier and Binary Format (MystenLabs/sui)"
+        },
+        {
+          "identity": {
+            "repository": "move-language/move",
+            "revision": "c453c90994cba0af30314fe4134acee57fb20d0c"
+          },
+          "name": "Core Move Bytecode Verifier and Gas Meter (move-language/move)"
+        },
+        {
+          "identity": {
+            "document": "diem-move-a-language-with-programmable-resources",
+            "revision_date": "2020-05-26",
+            "url": "https://diem-developers-components.netlify.app/papers/diem-move-a-language-with-programmable-resources/2020-05-26.pdf"
+          },
+          "name": "Blackshear et al. 2020 \u2014 Move: A Language With Programmable Resources"
+        },
+        {
+          "identity": {
+            "repository": "eth-sri/silq",
+            "revision": "5632173e9cbc4e4accf9532effcef7274fa242c0"
+          },
+          "name": "Silq quantum programming language (eth-sri/silq)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386007",
+            "venue": "Proceedings of the 41st ACM SIGPLAN PLDI 2020"
+          },
+          "name": "Bichsel, Baader, Gehr & Vechev 2020 \u2014 Silq: A High-Level Quantum Language with Safe Uncomputation and Intuitive Semantics (PLDI '20)"
+        },
+        {
+          "identity": {
+            "repository": "inQWIRE/SQIR",
+            "revision": "134fb942265091baa3e3972f78f72da41827351f"
+          },
+          "name": "SQIR and VOQC verified quantum circuit optimizer (inQWIRE/SQIR)"
+        },
+        {
+          "identity": {
+            "arxiv": "1912.02250",
+            "doi": "10.1145/3434318",
+            "venue": "PACMPL Vol. 5, POPL 2021"
+          },
+          "name": "Hietala, Rand, Hung, Wu & Hicks 2021 \u2014 A Verified Optimizer for Quantum Circuits (POPL '21)"
+        }
+      ],
+      "topics": [
+        "pl/zk-circuits",
+        "pl/quantum",
+        "pl/linear-types",
+        "runtimes/resource-metering",
+        "verification/circuits",
+        "verification/bytecode"
       ]
     }
   }

@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "pl/hdls",
+    "compilers/hardware",
+    "isa/rtl",
+    "ffi/hw-sw-boundary",
+    "verification/hardware",
+    "smt/synthesis"
+  ],
+  "subjects": [
+    {
+      "name": "IEEE Std 1800-2023 (SystemVerilog Language Reference Manual)",
+      "identity": {
+        "standard": "IEEE Std 1800-2023",
+        "doi": "10.1109/IEEESTD.2024.10458102",
+        "published": "2024-02-28"
+      }
+    },
+    {
+      "name": "Verismith (FPGA Synthesis Differential Fuzzer)",
+      "identity": {
+        "repository": "ymherklotz/verismith",
+        "revision": "dd54c5f2c1b1b00696576fb70002d18fcafdc1e2",
+        "paper_doi": "10.1145/3373087.3375310"
+      }
+    },
+    {
+      "name": "VeriCert (Coq-Verified CompCert C-to-Verilog High-Level Synthesis)",
+      "identity": {
+        "repository": "ymherklotz/vericert",
+        "revision": "8df09a182cc3ae3859d5bd6ab881b1066d38fabe",
+        "oopsla_2021_doi": "10.1145/3485494",
+        "pldi_2024_doi": "10.1145/3656455"
+      }
+    },
+    {
+      "name": "Kôika (Core Rule-Based Hardware Design Language and Verified Compiler)",
+      "identity": {
+        "repository": "mit-plv/koika",
+        "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0",
+        "paper_doi": "10.1145/3385412.3385965"
+      }
+    },
+    {
+      "name": "Kami (Coq Modular Hardware Specification and Refinement Platform)",
+      "identity": {
+        "repository": "mit-plv/kami",
+        "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da",
+        "paper_doi": "10.1145/3110268"
+      }
+    },
+    {
+      "name": "Dahlia (Time-Sensitive Affine Types for Predictable HLS)",
+      "identity": {
+        "repository": "cucapra/dahlia",
+        "revision": "bd68b131ee14f46dd9d2099f86ead01f7d756a71",
+        "paper_doi": "10.1145/3385412.3385974"
+      }
+    },
+    {
+      "name": "Calyx (Split Structural/Control Hardware Accelerator IR)",
+      "identity": {
+        "repository": "cucapra/calyx",
+        "revision": "e1bca4bf6779ccc98b5099f9a2284ca3b0bef637",
+        "paper_doi": "10.1145/3445814.3446712"
+      }
+    },
+    {
+      "name": "Filament (Timeline Interval Types for Modular Pipelined Hardware)",
+      "identity": {
+        "repository": "cucapra/filament",
+        "revision": "3c17db5ce85c354dd3da0af57f3adcb59bb295ac",
+        "paper_doi": "10.1145/3591234"
+      }
+    },
+    {
+      "name": "Spade HDL (Expression-Based Pipelined HDL with Linear Backward Wires)",
+      "identity": {
+        "arxiv": "arXiv:2304.03079",
+        "trets_2026_doi": "10.1145/3793550",
+        "upstream": "https://gitlab.com/spade-lang/spade"
+      }
+    },
+    {
+      "name": "LLVM CIRCT (Circuit IR Compilers and Tools)",
+      "identity": {
+        "repository": "llvm/circt",
+        "revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+      }
+    },
+    {
+      "name": "Lakeroad (SMT Sketch-Guided FPGA Technology Mapping)",
+      "identity": {
+        "repository": "gussmith23/lakeroad",
+        "revision": "c5c5a9ac4efc250374df7f9a37d59087a6cc7ba1",
+        "paper_doi": "10.1145/3620665.3640387"
+      }
+    },
+    {
+      "name": "Hardcaml (OCaml-Embedded Structural Hardware Generator)",
+      "identity": {
+        "repository": "janestreet/hardcaml",
+        "revision": "d9da179ea12228a0e3f7c1358fedec2ab8971f73",
+        "version_hint": "v0.18~preview.133.03+642"
+      }
+    },
+    {
+      "name": "Clash (Haskell Functional HDL with Phantom Clock Domains)",
+      "identity": {
+        "repository": "clash-lang/clash-compiler",
+        "revision": "920973dbb208b14f875eff730dbcf739fad22870"
+      }
+    },
+    {
+      "name": "Silver Oak / Cava (Coq-Embedded OpenTitan Cryptographic Hardware Verification)",
+      "identity": {
+        "repository": "project-oak/silveroak",
+        "revision": "cccfdb4e19c5906256d2ed4487bf1a0aa2fab99e"
+      }
+    },
+    {
+      "name": "ACT (Asynchronous Circuit Toolkit for Clockless QDI CHP/HSE/PRS Synthesis)",
+      "identity": {
+        "repository": "asyncvlsi/act",
+        "revision": "6071f559d2996923f067447804b2737551a54715",
+        "paper_doi": "10.1109/MDAT.2021.3051334"
+      }
+    },
+    {
+      "name": "Foundational RTL Semantics, QDI Synthesis, HLS Reliability, and HW-SW Co-Verification Literature",
+      "identity": {
+        "cummings_snug_2000": "SNUG San Jose 2000 (Nonblocking Assignments in Verilog Synthesis)",
+        "turpin_snug_2003": "SNUG Boston 2003 (The Dangers of Living with an X)",
+        "martin_1990": "Caltech CS-TR-89-1 / Addison-Wesley 1990 (Programming in VLSI)",
+        "herklotz_fccm_2021_doi": "10.1109/FCCM51124.2021.00034",
+        "erbsen_pldi_2021_doi": "10.1145/3453483.3454065",
+        "loow_pldi_2019_doi": "10.1145/3314221.3314622",
+        "loow_cpp_2021_doi": "10.1145/3437992.3439916"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

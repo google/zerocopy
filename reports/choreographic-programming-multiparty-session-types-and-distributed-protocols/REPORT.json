@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "pl/choreographies",
+    "pl/session-types",
+    "systems/distributed-systems",
+    "ffi/protocols"
+  ],
+  "subjects": [
+    {
+      "name": "Pirouette: Higher-Order Typed Functional Choreographies (Hirsch & Garg, POPL 2022)",
+      "identity": {
+        "doi": "10.1145/3498684",
+        "arxiv": "arXiv:2111.03484",
+        "artifact_doi": "10.5281/zenodo.5586354",
+        "venue": "PACMPL 6(POPL), Article 23 (2022)"
+      }
+    },
+    {
+      "name": "Choral: Object-Oriented Choreographic Programming (Giallorenzo, Montesi & Peressotti, TOPLAS 2024)",
+      "identity": {
+        "doi": "10.1145/3632398",
+        "arxiv": "arXiv:2005.09520",
+        "venue": "ACM TOPLAS 46(1), Article 1 (2024)"
+      }
+    },
+    {
+      "name": "Choral compiler and runtime",
+      "identity": {
+        "repository": "choral-lang/choral",
+        "revision": "a644dbd4429f2d609b2ca280a064bab9d73fab34"
+      }
+    },
+    {
+      "name": "HasChor: Functional Choreographic Programming for All (Shen, Kashiwa & Kuper, ICFP 2023)",
+      "identity": {
+        "doi": "10.1145/3607849",
+        "arxiv": "arXiv:2303.00924",
+        "venue": "PACMPL 7(ICFP), Article 207 (2023)"
+      }
+    },
+    {
+      "name": "HasChor Haskell choreographic library",
+      "identity": {
+        "repository": "gshen42/HasChor",
+        "revision": "e6bf3d5e771e309ba8db7f2e55822f6a11c1e237"
+      }
+    },
+    {
+      "name": "MultiChor census-polymorphic Haskell choreographic library",
+      "identity": {
+        "repository": "ShapeOfMatter/MultiChor",
+        "revision": "4b83cad1b2374dbf4907ccce48a65fa403936dab"
+      }
+    },
+    {
+      "name": "Less is More: Multiparty Session Types Revisited (Scalas & Yoshida, POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290343",
+        "venue": "PACMPL 3(POPL), Article 30 (2019)"
+      }
+    },
+    {
+      "name": "mpstk: Multiparty Session Types toolKit",
+      "identity": {
+        "repository": "alcestes/mpstk",
+        "revision": "5a056cc2193c2c588c1c7ddf130176c3aacdf38e"
+      }
+    },
+    {
+      "name": "On the Undecidability of Asynchronous Session Subtyping (Lange & Yoshida, FoSSaCS 2017)",
+      "identity": {
+        "doi": "10.1007/978-3-662-54458-7_26",
+        "venue": "FoSSaCS 2017, LNCS 10203, pp. 441-457"
+      }
+    },
+    {
+      "name": "Undecidability of Asynchronous Session Subtyping (Bravetti, Carbone & Zavattaro, 2017)",
+      "identity": {
+        "arxiv": "arXiv:1611.05026",
+        "venue": "Information and Computation 256, pp. 300-320 (2017)"
+      }
+    },
+    {
+      "name": "Generalised Multiparty Session Types with Crash-Stop Failures (Barwell, Scalas, Yoshida & Zhou, CONCUR 2022)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.CONCUR.2022.35",
+        "arxiv": "arXiv:2207.02015",
+        "venue": "CONCUR 2022, LIPIcs (2022)"
+      }
+    },
+    {
+      "name": "Keeping CALM: When Distributed Consistency is Easy (Hellerstein & Alvaro, CACM 2020)",
+      "identity": {
+        "doi": "10.1145/3369736",
+        "arxiv": "arXiv:1901.01930",
+        "venue": "Communications of the ACM 63(9), pp. 72-81 (2020)"
+      }
+    },
+    {
+      "name": "Hydro distributed dataflow and lattices Rust stack",
+      "identity": {
+        "repository": "hydro-project/hydro",
+        "revision": "fbaccddb35111327f96922259d60dc1607395545"
+      }
+    },
+    {
+      "name": "Protocol Buffers wire format and field presence specification",
+      "identity": {
+        "repository": "protocolbuffers/protobuf",
+        "revision": "caaf86620a4ea6363bb1cf43c50dc430725c39dd"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

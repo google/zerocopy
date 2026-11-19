@@ -1,0 +1,262 @@
+{
+  "topics": [
+    "pl/taxonomy",
+    "compilers/taxonomy",
+    "ffi/taxonomy",
+    "runtimes/taxonomy",
+    "tooling/taxonomy",
+    "verification/survey"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library (rustc_abi, rustc_target, MIR, borrow/trait frontend)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "LLVM, Clang, LLD, and MLIR compiler infrastructure (statepoints, debuginfo, dialects)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ae38cd53934bd998d40ca643ef678bd69a126aff",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "CIRCT MLIR-based hardware compiler infrastructure (hw, comb, seq, esi, verif, smt)",
+      "identity": {
+        "repository": "llvm/circt",
+        "revision": "203f159ce10d78940df4264327d5f3fc8b902112",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "Lean 4 dependent-type proof kernel, hygienic macro elaborator, and reference-counting runtime",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05",
+        "ref": "refs/heads/master"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model specification (WIT, Canonical ABI, resource handles)",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "OCaml 5 multicore runtime, segmented effect fibers, concurrent GC, and C-FFI",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5",
+        "ref": "refs/heads/trunk"
+      }
+    },
+    {
+      "name": "V8 JavaScript and WebAssembly engine (TurboFan, Turboshaft CFG IR, deoptimizer)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot VM (C2 compiler, deoptimization, ZGC/G1, JNI/Panama FFM, Loom virtual threads)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "d65bc4b262564e535c431aa8d4b58a1f7630fa64",
+        "ref": "refs/heads/master"
+      }
+    },
+    {
+      "name": "Go compiler, runtime scheduler, hybrid write-barrier GC, cgo, and Minimal Version Selection",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+        "ref": "refs/heads/master"
+      }
+    },
+    {
+      "name": "CHERI Instruction-Set Architecture specification (capability model and compressed bounds)",
+      "identity": {
+        "repository": "CTSRD-CHERI/cheri-specification",
+        "revision": "845c973538425c833e90cc38829985cd79d79658",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "Melocoton Coq operational model and separation logic for OCaml-C interoperability",
+      "identity": {
+        "repository": "logsem/melocoton",
+        "revision": "039dae32893a33bc70d668a7abcd25d54587dc3c",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean verification framework (public main: TrustedBoundary, principles, threat model)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "08f1184dce262d8d3ab610d4becedc3a0ae4486c",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "zerocopy public main crate (layout algebra, derive macros, safety policies)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "NVIDIA CUTLASS library (CuTe hierarchical layout/swizzle algebra, Hopper TMA/mbarrier, Blackwell TMEM)",
+      "identity": {
+        "repository": "NVIDIA/cutlass",
+        "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "Kôika rule-based hardware description language (One-Rule-at-a-Time Coq semantics)",
+      "identity": {
+        "repository": "mit-plv/koika",
+        "revision": "8921e30434d9e351c49df84c9aa14e72b0456ad0",
+        "ref": "refs/heads/master"
+      }
+    },
+    {
+      "name": "GraalVM optimizing compiler and Truffle polyglot interoperability runtime",
+      "identity": {
+        "repository": "oracle/graal",
+        "revision": "b5d67b167c7a43b4debfe095d3d2d284f06fa2e3",
+        "ref": "refs/heads/master"
+      }
+    },
+    {
+      "name": "Filament hardware description language with timeline interval types",
+      "identity": {
+        "repository": "cucapra/filament",
+        "revision": "3c17db5ce85c354dd3da0af57f3adcb59bb295ac",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "Calyx split structural/control hardware accelerator intermediate representation",
+      "identity": {
+        "repository": "cucapra/calyx",
+        "revision": "e1bca4bf6779ccc98b5099f9a2284ca3b0bef637",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "Enzyme LLVM-level automatic differentiation compiler plugin",
+      "identity": {
+        "repository": "EnzymeAD/Enzyme",
+        "revision": "0fa6f8401af6b8211a783213643692be20508842",
+        "ref": "refs/heads/main"
+      }
+    },
+    {
+      "name": "IEEE Std 1003.1-2024 (POSIX.1-2024 / The Open Group Base Specifications Issue 8)",
+      "identity": {
+        "standard": "IEEE Std 1003.1-2024",
+        "doi": "10.1109/IEEESTD.2024.10555529",
+        "version": "Issue 8 (2024)"
+      }
+    },
+    {
+      "name": "IEEE Std 1800-2023 (SystemVerilog Unified Hardware Design, Specification, and Verification Language)",
+      "identity": {
+        "standard": "IEEE Std 1800-2023",
+        "doi": "10.1109/IEEESTD.2024.10458102",
+        "version": "2023"
+      }
+    },
+    {
+      "name": "Pierce (1994), Bounded Quantification is Undecidable",
+      "identity": {
+        "authors": "Benjamin C. Pierce",
+        "doi": "10.1006/inco.1994.1055",
+        "venue": "Information and Computation 112(1)",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Takikawa et al. (2016), Is Sound Gradual Typing Dead?",
+      "identity": {
+        "authors": "Asumu Takikawa, Daniel Feltey, Ben Greenman, Max S. New, Jan Vitek, Matthias Felleisen",
+        "doi": "10.1145/2837614.2837630",
+        "venue": "POPL 2016",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Sammler et al. (2023), DimSum: A Decentralized Approach to Multi-language Semantics and Verification",
+      "identity": {
+        "authors": "Michael Sammler, Simon Spies, Youngju Song, Emanuele D'Osualdo, Robbert Krebbers, Deepak Garg, Derek Dreyer",
+        "doi": "10.1145/3571220",
+        "venue": "PACMPL / POPL 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Guéneau et al. (2023), Melocoton: A Program Logic for Verified Interoperability Between OCaml and C",
+      "identity": {
+        "authors": "Armaël Guéneau, Johannes Hostert, Simon Spies, Michael Sammler, Lars Birkedal, Derek Dreyer",
+        "doi": "10.1145/3622823",
+        "venue": "PACMPL / OOPSLA 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Zhou et al. (2023), Mariposa: Measuring SMT Instability in Automated Program Verification",
+      "identity": {
+        "authors": "Yicheng Zhou, Joonas Bosamiya, Yuki Takashima, Jessica J. Li, Marijn Heule, Bryan Parno",
+        "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+        "venue": "FMCAD 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Baumann et al. (2019), A fork() in the road",
+      "identity": {
+        "authors": "Andrew Baumann, Jonathan Appavoo, Orran Krieger, Timothy Roscoe",
+        "doi": "10.1145/3317550.3321435",
+        "venue": "HotOS 2019",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Patterson et al. (2022), Semantic Soundness for Language Interoperability",
+      "identity": {
+        "authors": "Daniel Patterson, Noble Mushtak, Andrew Wagner, Amal Ahmed",
+        "doi": "10.1145/3519939.3523703",
+        "venue": "PLDI 2022",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Lustig et al. (2019), A Formal Analysis of the NVIDIA PTX Memory Consistency Model",
+      "identity": {
+        "authors": "Daniel Lustig, Sameer Sahasrabuddhe, Olivier Giroux",
+        "doi": "10.1145/3297858.3304043",
+        "venue": "ASPLOS 2019",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Hennessy (1982), Symbolic Debugging of Optimized Code",
+      "identity": {
+        "authors": "John L. Hennessy",
+        "doi": "10.1145/357172.357173",
+        "venue": "ACM TOPLAS 4(3)",
+        "year": "1982"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

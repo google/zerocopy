@@ -33,4 +33,6 @@
      design=none      sound=False states=474
      design=store-stw sound=True  states=474
      design=load      sound=True  states=266
-PASS: 23 check groups, 410851 cases
+[ok] Mill PASS auto-revocation + CHERIoT/ISAv9 sealed-otype existential non-forgeability: 15957 cases
+     Mill SASOS: 10400 checks (400 nested/re-entrant portal trees, guard bit, PERSIST, novel bit); existential sealing: 5557 checks (CHERIoT format partition, RTOS token unseal, ISAv9)
+PASS: 24 check groups, 426808 cases

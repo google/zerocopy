@@ -1,0 +1,2879 @@
+{
+  "schema": "pl-compiler-ffi-verification-taxonomy/1",
+  "package_slug": "pl-compiler-ffi-verification-problem-landscape-and-taxonomy",
+  "observed_at": "2026-11-19",
+  "counts": {
+    "dimensions": 6,
+    "domain_packages": 38,
+    "cross_referenced_packages": 40,
+    "total_mapped_packages": 78,
+    "ffi_impossibility_triangles": 4,
+    "open_research_problems": 30
+  },
+  "dimensions": [
+    {
+      "id": "historical-contingencies-vs-physical-laws",
+      "number": 1,
+      "title": "Historical Contingencies vs. Irreducible Physical & Mathematical Laws",
+      "summary": "Separates 1960s-1980s core-RAM, PDP-11/Unix, C psABI, flat string-matching linker, POSIX fork()/signal, and Verilog simulator accidents from thermodynamic, VLSI, cache-coherency, and computability invariants.",
+      "primary_topics": [
+        "systems/history",
+        "pl/history",
+        "ffi/c-abi",
+        "isa/cheri",
+        "systems/os-interfaces"
+      ],
+      "irreducible_laws_and_barriers": [
+        "Register-vs-memory energy/latency hierarchy and physical wire delay (VLSI communication bounds)",
+        "Cache-coherency and TLB shootdown cost across shared mutable address spaces",
+        "Separate compilation requires a binary interface contract (though not untyped C prose or flat string namespaces)",
+        "Temporal memory safety requires either unforgeable revocation/sweeping, linear ownership, or tracing collection"
+      ],
+      "historical_contingencies_refuted": [
+        "Prose C psABIs as cross-language narrow waist (refuted by Swift witness tables, Wasm WIT, and executable ABI specs)",
+        "Textual #include headers and flat ELF symbol interposition (refuted by Multics, Oberon, Mach-O two-level namespaces, Unison)",
+        "POSIX fork() + global signal tables + flat ambient path authority (refuted by Plan 9, Capsicum, Fuchsia Zircon, WASI)",
+        "Untagged flat word pointers as hardware necessity (refuted by CHERI Concentrate 128-bit capabilities, Morello, CHERIoT, Mill Turfs/Portals)",
+        "Files-and-batch-CLI as the sole development substrate (refuted by Smalltalk Spur, Symbolics Genera, Mesa/Cedar, Unison)"
+      ],
+      "domain_packages": [
+        "c-abi-stack-conventions-and-process-interface-archaeology",
+        "object-files-linkers-loaders-and-separate-compilation-history",
+        "posix-process-signals-fork-and-flat-address-space-contingencies",
+        "image-based-and-single-language-systems-smalltalk-lisp-oberon",
+        "capability-hardware-tagged-architectures-and-cheri-abi-co-design"
+      ],
+      "cross_referenced_packages": [
+        "tier1-calling-conventions-fnabi-and-llvm-lowering",
+        "abi-cross-testing-matrix-rustc-llvm-cranelift-gcc-clang",
+        "verified-assemblers-encoders-linkers-and-object-format-models",
+        "rustc-dynamic-linking-loader-contracts-and-code-signing",
+        "os-syscall-interfaces-asynchronous-signals-and-environment-models",
+        "metal-typechain-language-isolated-kernels-1995-2026",
+        "pcc-tal-verve-foundational-certificate-kernels-1996-2016"
+      ],
+      "open_problem_ids": [
+        "OP-01",
+        "OP-02",
+        "OP-03",
+        "OP-04",
+        "OP-05"
+      ]
+    },
+    {
+      "id": "pl-types-effects-ownership-and-metaprogramming",
+      "number": 2,
+      "title": "Clean-Slate PL, Type, Module, Effect, Ownership, Gradual & Metaprogramming Hard Problems",
+      "summary": "Maps mathematical undecidability walls, global-coherence trilemmas, multi-shot effect/linearity collisions, ownership/borrow-graph ergonomics, gradual-typing blame cliffs, and macro hygiene/staging trade-offs that persist even on a clean slate.",
+      "primary_topics": [
+        "pl/types",
+        "pl/coherence",
+        "pl/effects",
+        "pl/ownership",
+        "pl/gradual-typing",
+        "pl/macros"
+      ],
+      "irreducible_laws_and_barriers": [
+        "Undecidability of subtyping in F_<: (Pierce 1994), Java wildcard subtyping (Grigore 2017), and higher-order unification",
+        "Global coherence vs. local modularity vs. open-world separate compilation trilemma",
+        "Linearity violation when multi-shot continuations duplicate affine/linear resources across effect handlers",
+        "Blame/complete-monitoring proxy overhead across 2^N gradual-typing lattices (Takikawa et al. 2016)",
+        "Phase-separation tension between syntactic macro expansion, type-resolved reflection, and IDE incrementality"
+      ],
+      "historical_contingencies_refuted": [
+        "Untyped token-stream proc-macros as inevitable for systems metaprogramming (refuted by Racket sets-of-scopes, Lean 4 elaborator macros, MetaOCaml, Zig comptime, C++26 P2996)",
+        "Single-style Rust borrow checking as the only safe mutability discipline (contrasted with Hylo MVS, Swift ~Copyable/~Escapable, Pony/Verona reference capabilities, Polonius/PCG)",
+        "Type inference requiring global Hindley-Milner unification (contrasted with bidirectional typing and algebraic subtyping MLsub)"
+      ],
+      "domain_packages": [
+        "type-system-interactions-subtyping-polymorphism-and-decidability",
+        "coherence-orphan-instances-and-module-system-compilation",
+        "algebraic-effects-handlers-coeffects-and-capability-tracking",
+        "ownership-linearity-regions-and-safe-mutability-design-space",
+        "gradual-typing-sound-interoperability-and-blame-performance-cliffs",
+        "metaprogramming-hygiene-staging-and-compile-time-execution"
+      ],
+      "cross_referenced_packages": [
+        "verified-rust-frontend-approaches-trait-solver-polonius-and-thir-lowering",
+        "rust-aliasing-models-stacked-tree-minirust-and-llvm-attributes",
+        "tree-borrows-two-stage-protector-release-and-reborrow-contracts",
+        "rust-reference-layout-guarantees-target-abi-limits-and-semver-snares",
+        "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox",
+        "lean-elaboration-hygiene-positions-and-infotree"
+      ],
+      "open_problem_ids": [
+        "OP-06",
+        "OP-07",
+        "OP-08",
+        "OP-09",
+        "OP-10"
+      ]
+    },
+    {
+      "id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "number": 3,
+      "title": "Compiler IRs, Polymorphism/Layout Algebras, Adaptive JITs, Concurrent GCs & Async Schedulers",
+      "summary": "Synthesizes structural trade-offs across mid-level compiler IRs (Sea-of-Nodes/Turboshaft/RVSDG/CPS/MLIR/aegraphs), polymorphism and layout compilation, speculative JIT deoptimization, concurrent GC barriers/safepoints, and async/green-thread cancellation and scheduling.",
+      "primary_topics": [
+        "compilers/ir-design",
+        "compilers/generics",
+        "compilers/jit",
+        "runtimes/gc",
+        "runtimes/async-schedulers"
+      ],
+      "irreducible_laws_and_barriers": [
+        "Polymorphism compilation triangle: monomorphization code bloat vs. uniform boxing indirection vs. witness-table dispatch",
+        "Non-injective affine-ceiling size-to-metadata plateaus C + round_up(r + nE, A) in aligned slice DSTs",
+        "Speculative JIT soundness requires exact FrameState reconstruction of inlined frames and scalar-replaced virtual objects at every guard",
+        "Concurrent moving GC requires weak-memory-safe tri-color/load barriers plus bounded-TTSP safepoints with precise derived-pointer stack maps",
+        "Stackless poll state machines impose synchronous drop cancellation ('cancel safety') and function coloring; stackful fibers impose stack-mobility/FFI boundaries"
+      ],
+      "historical_contingencies_refuted": [
+        "Sea-of-Nodes as strictly superior to CFG IRs (refuted by V8's migration from TurboFan Sea-of-Nodes to Turboshaft CFG IR)",
+        "LLVM IR as a universal semantic spine (refuted by MLIR dialects, RVSDG, Cranelift aegraphs, and non-Von-Neumann/GC/provenance impedance)",
+        "Garbage collection requiring stop-the-world pauses or incompatible with functional in-place reuse (contrasted with Generational ZGC, OCaml 5, Perceus/Lean 4 RC)"
+      ],
+      "domain_packages": [
+        "compiler-ir-architectures-sea-of-nodes-rvsdg-cps-and-mlir",
+        "polymorphism-compilation-layout-algebras-and-abi-resilience",
+        "jit-compilation-speculative-optimization-and-deoptimization-soundness",
+        "garbage-collection-barriers-safepoints-and-runtime-invariants",
+        "async-runtimes-coroutines-schedulers-and-cancellation-semantics"
+      ],
+      "cross_referenced_packages": [
+        "mechanized-compiler-ir-semantics-poison-provenance-and-machine-frames",
+        "verified-and-validated-compiler-optimization-precedents",
+        "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting",
+        "compiler-correctness-theorem-shapes-and-end-to-end-chains",
+        "ebpf-certificate-verifying-kernels-and-verified-jits-2014-2026",
+        "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics"
+      ],
+      "open_problem_ids": [
+        "OP-11",
+        "OP-12",
+        "OP-13",
+        "OP-14",
+        "OP-15"
+      ]
+    },
+    {
+      "id": "cross-language-ffi-and-multi-logic-composition",
+      "number": 4,
+      "title": "The Four Cross-Language & Cross-Runtime Impossibility Triangles",
+      "summary": "Formalizes the four fundamental impossibility triangles governing polyglot execution and cross-logic verification: (1) Zero-Copy Memory, (2) Stack & Control-Flow, (3) Performance vs. Full-Abstraction/Isolation, and (4) Semantic Unity vs. Verification Diversity.",
+      "primary_topics": [
+        "ffi/taxonomy",
+        "ffi/multi-runtime",
+        "ffi/linking-theory",
+        "ffi/component-model",
+        "ffi/cross-logic"
+      ],
+      "irreducible_laws_and_barriers": [
+        "Zero-Copy Memory Triangle: zero-copy raw sharing vs. moving GC/independent reclamation vs. deadlock-free handle-free isolation",
+        "Stack & Control-Flow Triangle: re-entrant FFI vs. movable/segmented/delimited stacks vs. zero-overhead C ABI unwinding and signal safety",
+        "Performance vs. Full-Abstraction/Isolation Triangle: cross-language inlining/unboxing vs. complete monitoring/blame vs. modular isolation",
+        "Semantic Unity vs. Verification Diversity Triangle: heterogeneous logics (step-indexed Iris/Melocoton, SMT, TV) vs. open decentralized linking (DimSum/CompCertO) vs. 2-safety hyperproperties and non-invertible codecs"
+      ],
+      "historical_contingencies_refuted": [
+        "O(N*M) pairwise C-bridge wrappers as the only interop topology (contrasted with O(N+M) Wasm Component Model WIT, GraalVM Truffle, ECMA-335 CLI, Cap'n Proto/FIDL)",
+        "Closed whole-program semantics as mandatory for FFI verification (refuted by DimSum decentralized modules, CompCertO, Melocoton, and paired ShardCert source+target export)"
+      ],
+      "domain_packages": [
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes",
+        "semantic-multi-language-interop-dimsum-melocoton-and-linking-types",
+        "wasm-component-model-truffle-graal-and-polyglot-interop-platforms",
+        "multi-logic-and-multi-paradigm-verification-composition"
+      ],
+      "cross_referenced_packages": [
+        "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026",
+        "compositional-correctness-linking-and-whole-program-optimization",
+        "cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts",
+        "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics",
+        "rust-ffi-abi-witnesses-c-unwind-and-machine-resource-linking",
+        "cross-prover-interoperability-verified-checkers-and-tcb-accounting",
+        "anneal-universal-algebra-institutions-and-incompleteness-bounds",
+        "iris-adequacy-transfinite-liveness-simuliris-and-lean-separation-logic"
+      ],
+      "open_problem_ids": [
+        "OP-16",
+        "OP-17",
+        "OP-18",
+        "OP-19",
+        "OP-20"
+      ]
+    },
+    {
+      "id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "number": 5,
+      "title": "Human, Specification, Diagnostic, Time-Travel Debugging, SMT Instability & Adversarial Kernel/Spec Hardening Walls",
+      "summary": "Catalogs human-facing, tooling, packaging, diagnostic, debugging, specification-continuum, SMT-instability, proof-kernel scaling, and adversarial Goodhart-resistance walls that determine whether verified toolchains scale in practice.",
+      "primary_topics": [
+        "tooling/taxonomy",
+        "tooling/diagnostics",
+        "tooling/debugging",
+        "verification/specifications",
+        "verification/scaling",
+        "verification/kernels"
+      ],
+      "irreducible_laws_and_barriers": [
+        "NP-completeness of general package dependency solving (3-SAT reduction) and semantic unsoundness of syntactic SemVer",
+        "Hennessy's optimized-code currency problem: dead/reordered/merged computations have no unique source state without explicit simulation witnesses",
+        "SMT butterfly effect (Mariposa) and E-matching quantifier matching-loop divergence in automated verifiers",
+        "Goedel-Tarski-Loeb meta-language boundary: axiom hygiene and spec intent cannot be enforced solely inside the object logic",
+        "Goodhart's Law under adversarial/agentic proof synthesis: miracle targets, observation erasure, domain collapse, and 2-safety blindness"
+      ],
+      "historical_contingencies_refuted": [
+        "Conflating proof checking with fast epistemic bug discovery (refuted by Fulminate, gradual verification, and untrusted counterexample promotion to kernel refutations)",
+        "Conflating checked interface modules with full unfoldable proof archives in unsafe binary formats (refuted by mm0-c .mmb, nanoda_lib, and opaque proof-stripped interfaces)",
+        "Unification error-site reporting as inevitable (refuted by MUS slicing, SHErrLoc, counterfactual typing, bidirectional diagnostics, and Aquascope)"
+      ],
+      "domain_packages": [
+        "package-management-version-solving-semver-and-supply-chain-boundaries",
+        "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening",
+        "type-error-localization-compiler-diagnostics-and-verification-ux",
+        "debugging-optimized-concurrent-and-cross-language-programs",
+        "specification-authoring-spec-drift-and-the-testing-verification-continuum",
+        "proof-fragility-smt-instability-and-verification-scaling-walls"
+      ],
+      "cross_referenced_packages": [
+        "incremental-computation-adapton-salsa-buck2-and-build-system-graphs",
+        "language-server-snapshots-views-and-compiler-backed-ide-architectures",
+        "nix-guix-immutable-closures-mutable-roots-and-toolchain-archive-equivalence",
+        "rustc-dwarf-codeview-debuginfo-emission-and-debugger-contracts",
+        "dafny-boogie-viper-fstar-why3-and-vc-obligation-architectures",
+        "anneal-vacuity-mutation-oracles-and-verification-scaling",
+        "lean-kernel-derivation-scale-checking-and-reflection-throughput",
+        "verified-rustc-research-map-and-open-question-ledger"
+      ],
+      "open_problem_ids": [
+        "OP-21",
+        "OP-22",
+        "OP-23",
+        "OP-24",
+        "OP-25"
+      ]
+    },
+    {
+      "id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "number": 6,
+      "title": "Exotic Compute Substrates, Accelerators, Hardware Definition & Non-Traditional Paradigms",
+      "summary": "Maps the architectural and formal-verification frontiers where flat Von Neumann / scalar IEEE-754 / imperative assumptions break: non-Von-Neumann CPUs/spatial tiles, tensor layout algebras, GPU SIMT/scoped memory, P4/post-IEEE numerics, typed HDLs and SW<->HW FFI, Datalog/DBSP, AD, PPLs, choreographies/MPST, synchronous real-time/WCET, and ZK/Move/quantum conservation laws.",
+      "primary_topics": [
+        "pl/hdls",
+        "pl/gpu-simt",
+        "compilers/architecture",
+        "compilers/layout-algebras",
+        "ffi/hardware-software",
+        "pl/datalog",
+        "pl/autodiff",
+        "pl/probabilistic",
+        "pl/choreographies",
+        "pl/synchronous-realtime",
+        "pl/zk-circuits"
+      ],
+      "irreducible_laws_and_barriers": [
+        "Asynchronous multiparty session subtyping undecidability and FLP/CAP partial-failure limits (bounded by CALM monotonicity)",
+        "Aumann's obstruction on higher-order Borel spaces and Borel-Kolmogorov measure-zero conditioning paradoxes in PPLs",
+        "NP-hardness of general optimal reverse-mode AD checkpointing/reversal and non-differentiable branch discontinuities",
+        "Microarchitectural timing anomalies and domino effects destroying compositional WCET on out-of-order hardware",
+        "Quantum no-cloning/uncomputation, polynomial under-constrained ZK witness/constraint separation, and Verilog 4-valued X-optimism",
+        "Physical scratchpad/DMA/NoC/memory-proxy non-coherence and non-transitive GPU scoped weak memory"
+      ],
+      "historical_contingencies_refuted": [
+        "General-purpose register files and coherent cache hierarchies as hardware universals (refuted by Mill Belt, Cerebras WSE, Graphcore IPU, Tensix, Groq, TPU VMEM)",
+        "IEEE 1800 event-queue Verilog and C-HLS as inevitable hardware entry points (refuted by Koika ORAAT, Filament timeline types, Dahlia affine banking, Calyx, CIRCT, ACT QDI)",
+        "Scalar IEEE-754 floats as the sole hardware numeric contract (refuted by OCP MXFP4/6/8 block scaling, FP8 E4M3FN, IEEE P3109, Posit/Quire, stochastic rounding)"
+      ],
+      "domain_packages": [
+        "hardware-description-languages-timing-semantics-and-hw-sw-co-design",
+        "gpu-simt-execution-warp-divergence-and-scoped-memory-models",
+        "datalog-fixpoint-incremental-relational-and-hybrid-engines",
+        "differentiable-programming-autodiff-semantics-and-compiler-challenges",
+        "probabilistic-programming-measure-semantics-and-inference-compilers",
+        "choreographic-programming-multiparty-session-types-and-distributed-protocols",
+        "synchronous-real-time-reactive-languages-and-wcet-predictability",
+        "zk-circuit-dsls-resource-metered-vms-and-quantum-linear-languages",
+        "mill-edge-dataflow-and-tile-bsp-compiler-architectures",
+        "tensor-layout-algebras-scratchpad-dma-and-user-schedulable-accelerator-languages",
+        "programmable-network-pipelines-p4-semantics-and-exotic-hardware-numerics",
+        "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics"
+      ],
+      "cross_referenced_packages": [
+        "weak-memory-concurrency-models-hardware-mappings-and-optimizations",
+        "sail-isa-models-lean-backend-and-rv64d-decoding-framing",
+        "anneal-cps-robotics-aerospace-eda-and-quantum-survey",
+        "anneal-databases-networking-cloud-builds-and-tensor-survey",
+        "anneal-security-crypto-zkp-wcet-parsers-and-ffi-survey"
+      ],
+      "open_problem_ids": [
+        "OP-26",
+        "OP-27",
+        "OP-28",
+        "OP-29",
+        "OP-30"
+      ]
+    }
+  ],
+  "domain_packages": [
+    {
+      "slug": "c-abi-stack-conventions-and-process-interface-archaeology",
+      "title": "The C ABI as cross-language narrow waist: psABI prose, data-representation fossils, stack conventions, and what is actually irreducible",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "ffi",
+        "ffi/c-abi",
+        "compilers/abi",
+        "systems/history",
+        "pl/history"
+      ],
+      "subject_count": 19,
+      "probes": [
+        "verify_c_abi_contingencies.py"
+      ],
+      "core_tensions": [
+        "Prose psABI classification rules vs. compiler divergence (u128, f128, HFA, bit-fields)",
+        "C null-terminated arrays and flat register/stack assumptions vs. negotiated typed ABIs",
+        "Hardware calling-convention physics (register pressure, alignment) vs. PDP-11/Unix fossils"
+      ],
+      "findings_outline": [
+        "1. Three prose conventions, side by side",
+        "2. Documented divergences among independent implementations",
+        "3. Living counterexamples: ABIs that are negotiated, versioned, or executable",
+        "4. Data-representation fossils",
+        "5. Stack and control-flow conventions",
+        "6. Contingency versus irreducible constraint",
+        "7. What the probe establishes"
+      ]
+    },
+    {
+      "slug": "object-files-linkers-loaders-and-separate-compilation-history",
+      "title": "Object Files, Linkers, Loaders, and the History of Separate Compilation",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition",
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "compilers/linking",
+        "runtimes/dynamic-linking",
+        "systems/object-formats",
+        "systems/history"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_linking_models.py"
+      ],
+      "core_tensions": [
+        "Flat ELF symbol interposition vs. Mach-O two-level namespaces and PE/COFF import tables",
+        "Textual header inclusion and string-matching linkers vs. typed module interfaces (Multics, Oberon, Swift, Wasm)",
+        "Dynamic loader init-order/TLS/dlclose hazards vs. whole-program LTO bolt-ons"
+      ],
+      "findings_outline": [
+        "Subject Relationships",
+        "Corpus Cross-References",
+        "1. Translation Units, Textual Interfaces, and Bolt-On Whole-Program Optimization",
+        "2. Dynamic Linking Semantics: ELF Flat Namespace vs. Mach-O Two-Level vs. PE/COFF",
+        "3. Loader Startup, Initialization Ordering, TLS Models, and Unloading Hazards",
+        "4. Architectural Counterexamples That Avoided String-Matching Linkers",
+        "5. Contingency vs. Irreducible Constraint Matrix",
+        "6. Summary of Executable Verification Probe Findings",
+        "Normative Specifications and Pinned Sources",
+        "Primary Literature & Documentation"
+      ]
+    },
+    {
+      "slug": "posix-process-signals-fork-and-flat-address-space-contingencies",
+      "title": "POSIX processes, signals, `fork`, and the flat address space: historical contingency versus real constraint",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition",
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "systems/os-interfaces",
+        "systems/history",
+        "runtimes/os-boundary",
+        "ffi/os-boundary"
+      ],
+      "subject_count": 25,
+      "probes": [
+        "verify_posix_runtime_hazards.py"
+      ],
+      "core_tensions": [
+        "fork() snapshotting over multi-threaded runtimes, COW overcommit, and lock-state corruption",
+        "Process-global POSIX signal disposition tables vs. multi-runtime coexistence and async-signal-safety",
+        "Ambient path/FD authority and flat address space vs. capability-unbundled OS interfaces (Plan 9, Capsicum, Zircon, WASI)"
+      ],
+      "findings_outline": [
+        "1. `fork()`: why it was cheap, and what it now copies",
+        "2. Copy-on-write, overcommit, and allocation failure",
+        "3. Signals: process-wide dispositions, per-thread masks, a small safe set",
+        "4. Several runtimes, one disposition table",
+        "5. One address space, no reservation protocol",
+        "6. Paths, descriptors, and completion-based I/O",
+        "7. Where the stable interface actually is",
+        "8. Designs that unbundle the process",
+        "9. Contingent versus still-required"
+      ]
+    },
+    {
+      "slug": "image-based-and-single-language-systems-smalltalk-lisp-oberon",
+      "title": "Image-Based, Single-Language, and Content-Addressed Programming Systems: Smalltalk, Symbolics Genera, Mesa/Cedar, Project Oberon, and Unison",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "secondary_dimensions": [
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "pl/history",
+        "runtimes/image-based",
+        "systems/history",
+        "tooling/live-environments",
+        "compilers/modules"
+      ],
+      "subject_count": 13,
+      "probes": [
+        "verify_image_and_hash_semantics.py"
+      ],
+      "core_tensions": [
+        "Live heap-image persistence and schema evolution vs. text-file batch compilation and reproducibility",
+        "Single-language tagged hardware/OS unity (Smalltalk, Genera, Mesa/Cedar, Oberon) vs. polyglot FFI survival",
+        "Content-addressed AST databases (Unison) vs. filesystem name-based build graphs"
+      ],
+      "findings_outline": [
+        "Cross-References to Adjacent Corpus Packages",
+        "1. Structural Taxonomy: Four Departures from the Unix/C Toolchain",
+        "2. Smalltalk-80 and Modern Spur/Pharo Virtual Machines",
+        "3. Symbolics Lisp Machines: 3600 Tagged Hardware and the Genera Environment",
+        "4. Statically Typed Modular Single-Language Environments: Mesa/Cedar and Project Oberon",
+        "5. Content-Addressed Code Databases: Unison",
+        "6. Historical Contingencies vs. Irreducible Constraints: Synthesis",
+        "1. Pinned Upstream Source Repositories",
+        "2. Verified Primary Publications",
+        "3. Executable Probe (`support/verify_image_and_hash_semantics.py`)"
+      ]
+    },
+    {
+      "slug": "capability-hardware-tagged-architectures-and-cheri-abi-co-design",
+      "title": "Capability Hardware and Tagged Architectures: Descriptor Machines, Symbolics Ivory, CHERI ISAv9, Morello, CheriABI, Cornucopia Reloaded, CHERIoT, Mill SASOS, and CHERI-DMA",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition",
+        "exotic-substrates-hdls-and-non-traditional-paradigms"
+      ],
+      "topics": [
+        "isa/cheri",
+        "isa/mill-sasos",
+        "systems/hardware-isolation",
+        "systems/dma-iommu",
+        "ffi/capability-abi",
+        "pl/existential-types",
+        "systems/history"
+      ],
+      "subject_count": 28,
+      "probes": [
+        "verify_cheri_capability_algebra.py"
+      ],
+      "core_tensions": [
+        "128-bit compressed capability bounds precision (CHERI Concentrate) vs. arbitrary pointer arithmetic provenance",
+        "Hardware spatial safety vs. heap temporal revocation pause/barrier overhead (Cornucopia Reloaded, CHERIoT)",
+        "Parallel-pipeline capability checks (CHERI, Mill Turfs/Portals) vs. serial microcode indirection collapse (iAPX 432)"
+      ],
+      "findings_outline": [
+        "1. Lineage, and why early capability hardware stalled",
+        "2. The CHERI ISAv9 capability model",
+        "3. CHERI Concentrate bounds compression",
+        "4. Morello: what the silicon prototype established",
+        "5. CheriABI and language/FFI co-design",
+        "6. Provenance models versus capabilities",
+        "7. Heap temporal safety by sweeping revocation",
+        "8. CHERIoT: the model re-cut for a microcontroller",
+        "9. CHERI against partial and probabilistic hardware mitigations",
+        "10. Mill SASOS protection domains: Turfs, Portals, PLBs, WKRs, Pointer Events, and IZM"
+      ]
+    },
+    {
+      "slug": "type-system-interactions-subtyping-polymorphism-and-decidability",
+      "title": "Type-System Feature Interactions: Subtyping, Polymorphism, Dependent Types, and Decidability Cliffs",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "secondary_dimensions": [
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "pl/types",
+        "pl/inference",
+        "verification/type-theory"
+      ],
+      "subject_count": 27,
+      "probes": [
+        "verify_type_interaction_witnesses.py"
+      ],
+      "core_tensions": [
+        "Subtyping x parametric polymorphism undecidability (F_<:, Java wildcards) vs. algebraic subtyping (MLsub/Simple-sub)",
+        "Higher-rank impredicativity and GADTs breaking principal-type inference (OutsideIn(X))",
+        "Dependent type erasure, universe hierarchies, and mutable refinements vs. decidable core checking"
+      ],
+      "findings_outline": [
+        "Subject Pairing, Generalization, and Cross-References",
+        "1. Subtyping × Parametric Polymorphism × Global Inference",
+        "2. Higher-Rank Polymorphism, Impredicativity, and GADTs",
+        "3. Dependent Types, Erasure, Universes, and Mutable Refinements",
+        "4. Architectural Synthesis: Decoupling Surface Elaboration from Core Checkers",
+        "1. Pinned Upstream Source Audit",
+        "2. Verified Literature & Execution Probe"
+      ]
+    },
+    {
+      "slug": "coherence-orphan-instances-and-module-system-compilation",
+      "title": "Coherence, Orphan Instances, Specialization Soundness, and Module-System Compilation",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "pl/coherence",
+        "pl/modules",
+        "compilers/generics",
+        "compilers/specialization",
+        "rust/traits"
+      ],
+      "subject_count": 21,
+      "probes": [
+        "verify_coherence_and_specialization.py"
+      ],
+      "core_tensions": [
+        "Global coherence vs. local modularity vs. open-world separate compilation trilemma",
+        "Specialization unsoundness under erased lifetimes and non-parametric dispatch",
+        "ML functor phase separation, applicative vs. generative types, and recursive-module double vision"
+      ],
+      "findings_outline": [
+        "Cross-References to Adjacent Corpus Packages",
+        "1. The Global Coherence Trilemma and Instance-Scope Design Space",
+        "2. Orphan Rules, Fundamental Annotations, and Cross-Crate Link Safety",
+        "3. Specialization Soundness, Lifetime Erasure, and Parametricity",
+        "4. Negative Trait Reasoning, Auto Traits, and Open-World SemVer Monotonicity",
+        "5. ML Modules, Phase Separation, 1ML, Functors, and Recursive Module \"Double Vision\"",
+        "6. Algebraic Diamond Coherence, Tabled Resolution, and Compilation Tradeoffs",
+        "Verified Primary Academic Literature (Crossref & arXiv, `2026-11-19`)",
+        "Pinned Upstream Repository Coordinates (`2026-11-19`)",
+        "Execution Evidence (`support/verify_coherence_and_specialization.py`)"
+      ]
+    },
+    {
+      "slug": "algebraic-effects-handlers-coeffects-and-capability-tracking",
+      "title": "Algebraic effects, handlers, coeffects and capability tracking: typing disciplines, runtime models and the linearity collision",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition",
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "pl/effects",
+        "pl/capabilities",
+        "pl/linear-types",
+        "pl/coeffects",
+        "compilers/effect-compilation",
+        "runtimes/continuations"
+      ],
+      "subject_count": 13,
+      "probes": [
+        "verify_effect_linearity_and_evidence.py"
+      ],
+      "core_tensions": [
+        "Multi-shot delimited continuations colliding with linear/affine resource destructors and foreign C stack frames",
+        "Row-polymorphic effect types (Koka) vs. lexical capabilities/capture checking (Effekt, Scala 3) vs. untyped fibers (OCaml 5)",
+        "Handler order observability and evidence-passing compilation overhead vs. zero-cost tail-resumptive dispatch"
+      ],
+      "findings_outline": [
+        "1. Vocabulary",
+        "2. What the algebraic account fixes and what it leaves open",
+        "3. Three static disciplines and one absence",
+        "4. Dispatch: stack search, evidence vectors and lexical capabilities",
+        "5. Runtime representations",
+        "6. Foreign frames",
+        "7. Linear resources against shot counts",
+        "8. A graded discipline, checked on a model",
+        "9. Handler order is observable",
+        "10. Coeffects and where grades come from"
+      ]
+    },
+    {
+      "slug": "ownership-linearity-regions-and-safe-mutability-design-space",
+      "title": "Ownership, Linearity, Regions, and Safe Mutability Design Space",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "pl/ownership",
+        "pl/memory-management",
+        "pl/types",
+        "pl/regions",
+        "pl/linearity"
+      ],
+      "subject_count": 20,
+      "probes": [
+        "verify_ownership_paradigms.py"
+      ],
+      "core_tensions": [
+        "Lexical stack regions (Tofte-Talpin, Cyclone) vs. flow-sensitive borrow graphs (Polonius, PCG) vs. mutable value semantics (Hylo, Swift)",
+        "Must-linearity (Austral, Linear Haskell) vs. panic/unwind drop paradoxes",
+        "Reference capabilities and region isolation (Pony, Verona cowns) vs. self-referential pinning and partial borrows"
+      ],
+      "findings_outline": [
+        "1. Cross-Paradigm Design-Space Matrix",
+        "2. From Explicit Stack Regions (`Tofte–Talpin`, `Cyclone`) to Borrow Graphs (`Polonius`, `PCG`) and Structural Walls (`Pin<P>`, Partial Borrows, `GhostCell`)",
+        "3. Mutable Value Semantics (`Hylo`) and Swift's Trajectory from `~Copyable` to First-Class `~Escapable` References",
+        "4. True Must-Linearity vs. Affine Drop (`Austral`, `Linear Haskell`, and the Unwind Paradox)",
+        "5. Reference Capabilities and Region Isolation (`Pony` and `Project Verona` Reggio/`cowns`)",
+        "6. Architectural Trade-Off Synthesis",
+        "Primary Peer-Reviewed Papers",
+        "Pinned Upstream Repositories Inspected (`2026-11-19`)",
+        "Execution Evidence"
+      ]
+    },
+    {
+      "slug": "gradual-typing-sound-interoperability-and-blame-performance-cliffs",
+      "title": "Gradual Typing, Sound Interoperability, and Blame Performance Cliffs",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "pl/gradual-typing",
+        "ffi/contracts",
+        "runtimes/casts",
+        "pl/soundness"
+      ],
+      "subject_count": 22,
+      "probes": [
+        "verify_gradual_semantics_and_cliffs.py"
+      ],
+      "core_tensions": [
+        "Soundness (complete monitoring + blame) vs. native speed vs. structural dynamic flexibility triangle",
+        "2^N migration lattice performance cliffs (Takikawa et al.) from higher-order wrapper proxies",
+        "Space-efficient coercions/threesomes and transient/concrete checks vs. full behavioral blame guarantees"
+      ],
+      "findings_outline": [
+        "Relationships Among Examined Subjects",
+        "Scope Boundaries & Cross-Corpus Relations",
+        "1. Formal Foundations: Type Consistency, Multi-Language Boundaries, and the Gradual Guarantee",
+        "2. Blame Polarity, Higher-Order Proxies, and Complete Monitoring",
+        "3. Space-Efficient Coercions, Threesomes, and Collapsible Contracts",
+        "4. Anatomy of the Sound Gradual Typing Performance Cliff ($2^N$ Lattice Evidence)",
+        "5. The Soundness vs. Speed vs. Structural-Flexibility Design Triangle",
+        "6. Executable Verification Probe Results: Blame, Collapse, and $2^4$ Lattice Scaling",
+        "7. Engineering Design Rules for Interoperability Boundaries",
+        "Primary Publications Examined (16 Subjects in `REPORT.json`, Observed `2026-11-19`)"
+      ]
+    },
+    {
+      "slug": "metaprogramming-hygiene-staging-and-compile-time-execution",
+      "title": "Metaprogramming Hygiene, Staging, Reflection, and Compile-Time Execution",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "secondary_dimensions": [
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "pl/macros",
+        "pl/metaprogramming",
+        "compilers/staging",
+        "tooling/ide-lsp"
+      ],
+      "subject_count": 13,
+      "probes": [
+        "verify_hygiene_and_staging.py"
+      ],
+      "core_tensions": [
+        "Untyped token-stream proc-macros (ordering, re-expansion, raw-ident drift) vs. hygienic sets-of-scopes (Racket) and typed elaborator reflection (Lean 4)",
+        "Typed multi-stage programming (MetaML, BER MetaOCaml, 2LTT) vs. phase-collapsed CTFE (Zig comptime) and post-resolution static reflection (C++26 P2996)",
+        "Macro expressiveness vs. IDE incrementality, cross-target CTFE determinism, and verification TCB scaling"
+      ],
+      "findings_outline": [
+        "1. Comparative Design Matrix Across Metaprogramming Paradigms",
+        "2. Syntactic Token-Stream Macros and Real-World Soundness Failures",
+        "3. Hygienic Binding as Sets of Scopes (Racket) and Turnstile",
+        "4. Hygienic Scoped Names and Typed Elaborator Reflection (Lean 4 and Idris)",
+        "5. Typed Multi-Stage Programming: MetaML, BER MetaOCaml, Scala 3, and 2LTT",
+        "6. Phase-Collapsed CTFE (`Zig comptime`) vs. Post-Resolution Static Reflection (`C++26 P2996R13`)",
+        "7. Cross-Cutting Engineering Trade-offs: Hermeticity, Verification Scaling, Host-Target CTFE, and IDE Incrementality",
+        "1. Pinned Repository Sources",
+        "2. Peer-Reviewed Literature and Standards",
+        "3. Preserved Executable Probe Output"
+      ]
+    },
+    {
+      "slug": "compiler-ir-architectures-sea-of-nodes-rvsdg-cps-and-mlir",
+      "title": "Compiler IR Architectures: Sea-of-Nodes, Structured Regions (RVSDG), CPS/ANF/Join Points, Multi-Level Dialects (MLIR), and Acyclic E-Graphs",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "secondary_dimensions": [
+        "exotic-substrates-hdls-and-non-traditional-paradigms"
+      ],
+      "topics": [
+        "compilers/ir-design",
+        "compilers/optimization",
+        "llvm/mlir",
+        "pl/ir"
+      ],
+      "subject_count": 17,
+      "probes": [
+        "verify_ir_transformations.py"
+      ],
+      "core_tensions": [
+        "Sea-of-Nodes unified scheduling/GVN complexity (V8 retreat to Turboshaft) vs. hybrid fixed/floating (Graal) and structured RVSDG",
+        "CPS/ANF/GHC join-point equivalence with block-argument SSA and phase-ordering collapse via acyclic e-graphs (Cranelift aegraphs)",
+        "MLIR multi-level dialect extensibility vs. semantic-erasure cliffs and unverified speculatability traits"
+      ],
+      "findings_outline": [
+        "1. Structural Taxonomy and SSA Flavors (`φ`-Nodes vs. Block Arguments)",
+        "2. Sea-of-Nodes: Unification, V8's Retreat (`Turboshaft`), and Hybrid Alternatives (`C2` vs. `Graal`)",
+        "3. Structured Region IRs (`RVSDG`): Acyclic Regions, State Edges, and Restructuring Overhead",
+        "4. Functional IRs and SSA Equivalence: CPS vs. ANF vs. GHC Core Join Points",
+        "5. Multi-Level Extensible IRs (`MLIR`): Regions, Speculatability Traits, and the Semantic-Erasure Cliff",
+        "6. Phase Ordering, Acyclic E-Graphs (`Cranelift aegraphs`), and Comparative Verification Probe Results",
+        "Pinned GitHub Source Inspections",
+        "Verified Primary Papers & Engineering Retrospectives",
+        "Preserved Support Material & Execution Transcript"
+      ]
+    },
+    {
+      "slug": "polymorphism-compilation-layout-algebras-and-abi-resilience",
+      "title": "Polymorphism Compilation, Layout Algebras, and ABI Resilience",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition",
+        "pl-types-effects-ownership-and-metaprogramming"
+      ],
+      "topics": [
+        "compilers/generics",
+        "pl/layout",
+        "ffi/abi-resilience",
+        "pl/types",
+        "rust/layout",
+        "zerocopy/layout"
+      ],
+      "subject_count": 14,
+      "probes": [
+        "verify_layout_algebra_and_witnesses.py"
+      ],
+      "core_tensions": [
+        "Monomorphization (code bloat, no separate binary evolution) vs. uniform boxing (cache/indirection tax) vs. Swift value witness tables",
+        "Levity and representation polymorphism (GHC) vs. unboxed aggregate layout polymorphism",
+        "Non-injective affine-ceiling DST layout plateaus and nondeterministic reference-admissible layout specifications"
+      ],
+      "findings_outline": [
+        "1. The Polymorphism Compilation Triangle and Six Concrete Compilation Strategies",
+        "2. Swift ABI Resilience: Unboxed Generics via Value Witness Tables and Resilience Domains",
+        "3. Representation and Levity Polymorphism in GHC",
+        "4. Polymorphic Compile-Time Layout Algebras and Non-Injective Fat-Pointer Metadata",
+        "5. Reference-Admissible Nondeterministic Layout Specifications",
+        "Primary Source Repositories (Exact 40-Char Commits)",
+        "Peer-Reviewed Literature",
+        "Preserved Executable Verification Probe"
+      ]
+    },
+    {
+      "slug": "jit-compilation-speculative-optimization-and-deoptimization-soundness",
+      "title": "Speculative JIT Compilation and Deoptimization Soundness: Guards, Global Assumptions, Frame-State Reconstruction, Virtual Objects, and the Reach of Mechanized Proofs",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "secondary_dimensions": [
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "compilers/jit",
+        "compilers/jit/deoptimization",
+        "compilers/jit/on-stack-replacement",
+        "runtimes/jit",
+        "runtimes/vm",
+        "runtimes/vm/inline-caches",
+        "verification/jit",
+        "verification/compiler-verification"
+      ],
+      "subject_count": 17,
+      "probes": [
+        "verify_speculative_deopt_simulation.py"
+      ],
+      "core_tensions": [
+        "Speculative guard/global-assumption invalidation vs. sound FrameState reconstruction of inlined and virtualized objects",
+        "On-stack-replacement (OSR) entry state alignment across interpreter, baseline, and optimizing tiers (V8, HotSpot, Graal, PyPy, LuaJIT)",
+        "Gap between mechanized small-language JIT proofs (CoreJIT, FM-JIT) and concurrent multi-tier production JITs"
+      ],
+      "findings_outline": [
+        "1. One protocol under several vocabularies",
+        "2. Local guards: inline caches, type feedback, and what a passing guard licenses",
+        "3. Global assumptions: registration, install-time validation, invalidation",
+        "4. Rebuilding reference frames: resume positions, inlined frames, frame growth",
+        "5. Virtual objects at deoptimization time",
+        "6. On-stack-replacement entry",
+        "7. Meta-tracing, partial evaluation and copy-and-patch",
+        "8. What mechanized proofs establish",
+        "9. Deopt metadata, debug information, stack maps and simulation relations",
+        "10. Executable model: checked invariants and negative controls"
+      ]
+    },
+    {
+      "slug": "garbage-collection-barriers-safepoints-and-runtime-invariants",
+      "title": "Garbage Collection Barriers, Safepoints, and Runtime Invariants",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "runtimes/gc",
+        "compilers/gc-support",
+        "verification/gc",
+        "llvm/statepoints",
+        "lean/reference-counting"
+      ],
+      "subject_count": 20,
+      "probes": [
+        "verify_gc_tricolor_and_derived_roots.py"
+      ],
+      "core_tensions": [
+        "Precise derived-pointer stack maps (LLVM gc.statepoint) and counted-loop safepoint elision vs. Time-To-Safepoint (TTSP) tail latency",
+        "Tri-color SATB/Dijkstra write barriers and colored-pointer self-healing load barriers (ZGC, G1, Go, OCaml 5) under weak memory",
+        "Compile-time Perceus/Lean reference counting with functional reuse vs. cyclic graphs and foreign FFI root corruption"
+      ],
+      "findings_outline": [
+        "1. Precise Stack Maps, Derived Interior/Exterior Pointers, and LLVM Statepoints",
+        "2. Safepoint Polling Mechanisms, Counted-Loop Elision, and Time-To-Safepoint (TTSP)",
+        "3. Tri-Color Marking Invariants, Write Barriers, and Weak-Memory Ordering",
+        "4. Colored-Pointer Load Barriers, Self-Healing References, and VM-Binding Abstractions",
+        "5. Compiler Optimizations and FFI Boundaries That Corrupt GC Invariants",
+        "6. Compile-Time Reference Counting, Functional In-Place Reuse, and Cycle Collection",
+        "7. Mechanized Verification of Garbage Collectors and Compiler–GC Interfaces",
+        "Primary Source Repositories",
+        "Peer-Reviewed Literature",
+        "Preserved Executable Verification Probe"
+      ]
+    },
+    {
+      "slug": "async-runtimes-coroutines-schedulers-and-cancellation-semantics",
+      "title": "Async Runtimes, Coroutines, Work-Stealing Schedulers, and Cancellation Semantics",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "runtimes/async-schedulers",
+        "runtimes/coroutines",
+        "pl/concurrency",
+        "ffi/async-interop",
+        "verification/concurrency"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_cancellation_and_scheduler_semantics.py"
+      ],
+      "core_tensions": [
+        "Stackless poll state machines (Rust Pin/!Unpin, function coloring) vs. stackful movable green/virtual threads (Go, Java Loom, OCaml 5, BEAM)",
+        "Synchronous drop cancellation ('cancel safety') and AsyncDrop hazards vs. structured concurrency nurseries (Trio, Kotlin, Eio)",
+        "Work-stealing LIFO-slot starvation, cooperative budgets, and FFI blocking/pinning thread exhaustion"
+      ],
+      "findings_outline": [
+        "1. Stackless Poll State Machines vs. Stackful Movable Green Threads and Virtual Threads",
+        "2. Structured Concurrency, Synchronous Drop Cancellation (\"Cancel Safety\"), and `AsyncDrop`",
+        "3. Work-Stealing Deques, LIFO-Slot Starvation, Cooperative Budgets, and Formal Progress",
+        "Pinned Upstream Source Inspections",
+        "Primary Literature and Specifications",
+        "Executable Probe Artifact"
+      ]
+    },
+    {
+      "slug": "package-management-version-solving-semver-and-supply-chain-boundaries",
+      "title": "Package Management: Version Solving, SemVer Soundness, and Supply-Chain Boundaries",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "tooling/package-managers",
+        "build/dependency-resolution",
+        "security/supply-chain",
+        "ffi/versioning",
+        "cargo/resolver",
+        "rust/semver"
+      ],
+      "subject_count": 15,
+      "probes": [
+        "verify_version_solving_and_semver.py"
+      ],
+      "core_tensions": [
+        "NP-complete dependency resolution (CDCL/PubGrub) vs. predictable Minimal Version Selection (Go MVS, Bazel Bzlmod)",
+        "Syntactic SemVer unsoundness across trait coherence, binary ABI drift, flat native links collisions, and specification evolution",
+        "Polyglot build hermeticity failures, mtime freshness traps, and unverified build-script supply-chain boundaries"
+      ],
+      "findings_outline": [
+        "1. Computational Complexity of Dependency Resolution: 3-SAT Reductions, CDCL (`PubGrub`), and Minimal Version Selection (`MVS`)",
+        "2. Multi-Version Coexistence, Public-Dependency Type Splits, and Flat-Namespace Native `links` Collisions",
+        "3. Why Syntactic SemVer Is Unsound: API Evolution, Trait Coherence, Binary ABI, and Specification SemVer",
+        "4. Polyglot Hermeticity Failures, `mtime` Freshness Traps, and Supply-Chain Trust Boundaries",
+        "5. Executable Probe Verification Results (`support/verify_version_solving_and_semver.py`)"
+      ]
+    },
+    {
+      "slug": "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes",
+      "title": "Multi-Runtime FFI, GC Interop, Handle Disciplines, and Shared-Process Resource Clashes",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes",
+        "historical-contingencies-vs-physical-laws"
+      ],
+      "topics": [
+        "ffi/multi-runtime",
+        "ffi/gc-interop",
+        "runtimes/interop",
+        "ffi/bridges"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_multiruntime_ffi_triangles.py"
+      ],
+      "core_tensions": [
+        "Zero-copy memory triangle across JNI/Panama FFM, CPython PEP 703/HPy/PyO3, Go cgo/Pinner, OCaml shadow roots, and BEAM NIFs",
+        "Unreclaimable cross-heap reference cycles across independent collectors without unified tracing",
+        "Process-global signal, allocator, TLS, and locking clashes across co-resident runtimes"
+      ],
+      "findings_outline": [
+        "1. The Zero-Copy Memory Triangle and Runtime Pinning/Handle Disciplines",
+        "2. Cross-Heap Reference Cycles: Isolated Collectors vs. Unified Cross-Component Tracing",
+        "3. Process-Global Resource Collisions: Signals, Locks, Moves, Memory Models, and Runtime Budgets",
+        "4. Multi-Language Bridge Generator Architecture Comparison (`CXX`, `Diplomat`, `UniFFI`, `PyO3`, `HPy`)",
+        "Primary Source Code Coordinates (11 Pinned Upstream Repositories)",
+        "Normative Specifications and Peer-Reviewed Literature",
+        "Execution Evidence (`support/verify_multiruntime_ffi_triangles.py`)"
+      ]
+    },
+    {
+      "slug": "semantic-multi-language-interop-dimsum-melocoton-and-linking-types",
+      "title": "Semantic multi-language interoperability: boundary terms, linking types, realizability, DimSum, Melocoton, VeriFFI, and robust property preservation",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "secondary_dimensions": [
+        "pl-types-effects-ownership-and-metaprogramming"
+      ],
+      "topics": [
+        "ffi/linking-theory",
+        "verification/multi-language",
+        "verification/separation-logic",
+        "pl/semantics",
+        "security/secure-compilation",
+        "runtimes/ocaml-ffi"
+      ],
+      "subject_count": 13,
+      "probes": [
+        "verify_dimsum_and_melocoton_wrappers.py"
+      ],
+      "core_tensions": [
+        "Syntactic boundary embeddings (Matthews-Findler) vs. semantic realizability (Linking Types, Patterson et al.) vs. decentralized wrappers (DimSum)",
+        "Dual-nondeterminism polarity mismatch between DimSum and Melocoton across angelic/demonic boundary choices",
+        "Step-indexed OCaml<->C heap/FFI verification (Melocoton) vs. closed-FFI VeriFFI without multi-language semantics"
+      ],
+      "findings_outline": [
+        "1. Coordinates of the primary sources",
+        "2. Four semantic styles compared",
+        "3. Syntactic boundaries: lump and natural embeddings",
+        "4. Linking types",
+        "5. Realizability after compilation",
+        "6. DimSum: modules, dual non-determinism, wrappers",
+        "7. Melocoton: the operational model of the OCaml FFI",
+        "8. Melocoton: program logic and theorems",
+        "9. The polarity of dual non-determinism differs between DimSum and Melocoton",
+        "10. VeriFFI: a verified FFI without a multi-language semantics"
+      ]
+    },
+    {
+      "slug": "wasm-component-model-truffle-graal-and-polyglot-interop-platforms",
+      "title": "N-to-N Polyglot Interoperability Platforms: WebAssembly Component Model, GraalVM Truffle, ECMA-335 CLI, and Zero-Copy Capability Wire Protocols",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "ffi/component-model",
+        "runtimes/polyglot",
+        "ffi/bridges",
+        "compilers/wasm"
+      ],
+      "subject_count": 11,
+      "probes": [
+        "verify_wit_canonical_abi_and_resources.py"
+      ],
+      "core_tensions": [
+        "Shared-nothing WIT Canonical ABI isolation and resource handles (Wasm Component Model) vs. shared-heap JIT specialization (GraalVM Truffle)",
+        "Common-IR runtime unification (ECMA-335 CLI) vs. zero-copy capability wire schemas (Cap'n Proto, Fuchsia FIDL)",
+        "WasmGC + shared-everything-threads tension against component encapsulation and zero-copy interop"
+      ],
+      "findings_outline": [
+        "1. Structural Taxonomy: Four Vertices of the $O(N + M)$ Interop Space",
+        "2. WebAssembly Component Model: Shared-Nothing Encapsulation, `WIT`, Canonical ABI, and Resource Handles",
+        "3. GraalVM Truffle Polyglot VM: Partial Evaluation, `InteropLibrary`, and Shared-Heap Walls",
+        "4. Common Intermediate Language Platforms (`ECMA-335` CLI / .NET CoreCLR)",
+        "5. Zero-Copy Wire Schemas and Capability IPC Bridges: Cap'n Proto and Fuchsia FIDL",
+        "6. Comparative Synthesis and Architectural Design Rules",
+        "1. Primary Specifications, Source Revisions, and Papers (Observed 2026-11-19)",
+        "2. Executable Support Probe Receipt"
+      ]
+    },
+    {
+      "slug": "multi-logic-and-multi-paradigm-verification-composition",
+      "title": "Multi-Logic and Multi-Paradigm Verification Composition: Semantic Bridges, Paired Contract Export, and Hyperproperty Limits",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "secondary_dimensions": [
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "ffi/cross-logic",
+        "verification/composition",
+        "verification/tcb",
+        "verification/program-logics",
+        "security/hyperproperties",
+        "compilers/verified-compilation"
+      ],
+      "subject_count": 19,
+      "probes": [
+        "verify_heterogeneous_composition_laws.py"
+      ],
+      "core_tensions": [
+        "Step-indexed logic boundary escape only at closed-program adequacy vs. open compositional refinement (CompCertO, ITrees, RustHornBelt)",
+        "Forgetful non-invertible compilation codecs requiring paired source+target contract export for cross-crate reuse",
+        "1-safety trace refinement violating 2-safety hyperproperties (constant-time, non-interference) and incompatible axiom bases"
+      ],
+      "findings_outline": [
+        "1. What each paradigm's theorem states",
+        "2. Step-indexed logics cross a boundary only at closed-program adequacy",
+        "3. Frames, footprints and environment assumptions",
+        "4. Proof foundations: axiom bases and what may cross",
+        "5. Partial correctness, total correctness and divergence",
+        "6. Bridge architectures compared",
+        "7. Forgetful codecs and paired contract export",
+        "8. Hyperproperties across refinement",
+        "9. Executable finite-model evidence",
+        "10. Acceptance checklist for a cross-paradigm boundary"
+      ]
+    },
+    {
+      "slug": "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening",
+      "title": "Proof Kernels, Opaque Interfaces, and Adversarial Specification Hardening",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "verification/kernels",
+        "verification/specifications",
+        "pl/dependent-types",
+        "security/trust-boundaries"
+      ],
+      "subject_count": 15,
+      "probes": [
+        "verify_goodhart_spec_defenses.py"
+      ],
+      "core_tensions": [
+        "Dependent-type kernel reduction cliffs (call-by-name WHNF spines, has_fvar GMP bypasses, accidental .thmInfo unfolding)",
+        "Memory-unsafe binary proof object loaders (.olean, .vo) vs. safe wire formats (mm0-c .mmb, nanoda_lib) and opaque proof interfaces",
+        "Goodhart's Law under adversarial/automated proof authors requiring productivity, observation-injectivity, non-vacuity, and semantic mutation defenses"
+      ],
+      "findings_outline": [
+        "Examined Subjects and Version Scope",
+        "Cross-References to Adjacent Corpus Packages",
+        "1. Dependent-Type Kernel Reduction Cliffs at Compiler Scale",
+        "2. Safe Wire Formats vs. Memory-Unsafe Object Loaders and Conflated Proof Archives",
+        "3. Adversarial Goodhart Resistance in Formal Specifications",
+        "4. Mechanized Finite-State Verification Results (`support/verify_goodhart_spec_defenses.py`)",
+        "5. Clean-Slate Architectural Synthesis for Next-Generation Proof Kernels",
+        "Primary Source Coordinates",
+        "Published Literature",
+        "Preserved Executable Support Material"
+      ]
+    },
+    {
+      "slug": "type-error-localization-compiler-diagnostics-and-verification-ux",
+      "title": "Type-Error Localization, Compiler Diagnostics, and Verification Failure UX",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "secondary_dimensions": [
+        "pl-types-effects-ownership-and-metaprogramming"
+      ],
+      "topics": [
+        "tooling/diagnostics",
+        "pl/diagnostics",
+        "verification/ux",
+        "pl/inference"
+      ],
+      "subject_count": 26,
+      "probes": [
+        "verify_error_localization_mus.py"
+      ],
+      "core_tensions": [
+        "Unification blame mislocalization (Algorithm W/M) vs. MUS slicing, SHErrLoc, MinErrLoc, counterfactual typing, and dynamic witnesses",
+        "Bidirectional context-threaded diagnostics (Elm, Rust) and permission-provenance borrow explanation (Aquascope, Argus)",
+        "Backward VCG opacity, SMT unknown/trigger silence, and resilient parsing under elaboration-dependent syntax"
+      ],
+      "findings_outline": [
+        "1. Why Unification-Based Inference Mislocalizes Blame (`Algorithm W` vs. `M`, MUS, `MinErrLoc`, `SHErrLoc`, Counterfactual Typing, Dynamic Witnesses)",
+        "2. Bidirectional Typing, Context-Threaded Diagnostics (`Elm`, `Roc`, `Rust`), and Interactive Proof Trees (`Argus`)",
+        "3. Borrow-Checker Mental Models and Permission Provenance (`Aquascope`)",
+        "4. Resilient Live Parsing Under Elaboration-Dependent Syntax (`Lean 4`, `Agda`, `Scala 3`, `rust-analyzer`)",
+        "5. Verification Failure UX: Backward VCG Opacity, SMT `unknown`/Triggers, and Giant-Step Counterexample Validation (`Dafny`, `Why3`)",
+        "6. Architectural Co-Design Synthesis",
+        "Pinned Source Repositories",
+        "Peer-Reviewed Literature & Preserved Probe"
+      ]
+    },
+    {
+      "slug": "debugging-optimized-concurrent-and-cross-language-programs",
+      "title": "Debugging Optimized, Concurrent, and Cross-Language Programs",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes",
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "tooling/debugging",
+        "tooling/time-travel",
+        "compilers/debuginfo",
+        "ffi/debugging",
+        "runtimes/async",
+        "runtimes/jit"
+      ],
+      "subject_count": 15,
+      "probes": [
+        "verify_debug_currency_and_replay.py"
+      ],
+      "core_tensions": [
+        "Hennessy currency problem under -O2/-O3 transformations vs. LLVM Assignment Tracking, Instruction Referencing, and Key Instructions",
+        "Shared machine-to-source state relation unifying DWARF debuginfo, JIT deopt FrameStates, GC stack maps, and compiler simulation proofs",
+        "Deterministic record-and-replay (rr, Pernosco, Hermit) vs. async causal task-graph reconstruction and polyglot mixed-runtime unwinding"
+      ],
+      "findings_outline": [
+        "1. The Currency Problem Under Optimization: Hennessy (1982) to Adl-Tabatabai & Gross",
+        "2. Empirical Debug-Info Failure Campaigns and Modern LLVM Mitigations",
+        "3. The Unifying Structural Insight: One Machine-to-Source State Relation Across Four Subsystems",
+        "4. Deterministic Record-and-Replay and Time-Travel Debugging (`rr`, `Pernosco`, `Hermit`)",
+        "5. Async Task Graphs and Causal Stack Reconstruction",
+        "6. Polyglot Mixed-Runtime Stack Walking (`Python` $\\leftrightarrow$ `Rust` $\\leftrightarrow$ `C++` $\\leftrightarrow$ `JVM JIT`)",
+        "7. Executable Verification Probe Results (`support/verify_debug_currency_and_replay.py`)"
+      ]
+    },
+    {
+      "slug": "specification-authoring-spec-drift-and-the-testing-verification-continuum",
+      "title": "Specification Authoring, Specification-Implementation Drift, and the Testing-to-Verification Continuum",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "verification/specifications",
+        "tooling/spec-authoring",
+        "tooling/testing-fuzzing",
+        "verification/ux",
+        "verification/gradual-verification",
+        "verification/property-based-testing"
+      ],
+      "subject_count": 21,
+      "probes": [
+        "verify_spec_continuum_and_fulminate.py"
+      ],
+      "core_tensions": [
+        "Specification wall, superlinear proof-to-code scaling, and silent spec-implementation drift",
+        "Runtime separation-logic checking via reified ownership ghost state (CN/Fulminate) and gradual verification (? * P) soundness traps",
+        "Epistemic asymmetry: promoting untrusted PBT/fuzzer/QuickChick counterexamples into zero-TCB kernel refutation theorems"
+      ],
+      "findings_outline": [
+        "Subject Relationships",
+        "Corpus Cross-References and Scope Boundaries",
+        "1. The Specification Wall, Superlinear Proof Scaling, and Spec-Implementation Drift",
+        "2. Executable Specifications and Precondition-Aware Property-Based Testing",
+        "3. Runtime Separation-Logic Checking via Reified Ownership Ghost State (`CN` & `Fulminate`)",
+        "4. Gradual Verification (`? * P`), Check Minimization, and the Iso-/Equirecursive Soundness Hazard",
+        "5. Unified Multi-Engine Harnesses Across Fuzzing, PBT, and Bounded Model Checking",
+        "6. Epistemic Asymmetry and Promoting Untrusted Counterexamples to Kernel Refutations",
+        "Primary Publications",
+        "Pinned Upstream Repository Source Inspections"
+      ]
+    },
+    {
+      "slug": "proof-fragility-smt-instability-and-verification-scaling-walls",
+      "title": "Proof Fragility, SMT Solver Instability, and Verification Scaling Walls",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "secondary_dimensions": [
+        "pl-types-effects-ownership-and-metaprogramming"
+      ],
+      "topics": [
+        "verification/scaling",
+        "smt/instability",
+        "smt/e-matching",
+        "tooling/proof-engineering",
+        "verification/maintenance",
+        "verification/functional-lifting"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_trigger_loops_and_lifting.py"
+      ],
+      "core_tensions": [
+        "SMT butterfly effect across query perturbations (Mariposa) vs. context pruning (SHAKE) and opaque fuel/reveal discipline (Verus, Dafny, F*)",
+        "E-matching quantifier matching loops and trigger-budget pathology (Z3, SMT Scope) vs. interactive proof fragility and repair (QED at Large, PUMPKIN Pi)",
+        "Trusted vs. untrusted functional lifting (Aeneas, AutoCorres, PureLift) and incremental proof-session sharding (Why3)"
+      ],
+      "findings_outline": [
+        "Cross-References to Adjacent Corpus Packages",
+        "1. The SMT \"Butterfly Effect\": Quantifying Solver Instability Across Production Corpora (Mariposa & SHAKE)",
+        "2. E-Matching Internals, Matching Loops, and Trigger-Budget Pathology (Simplify, Z3, Axiom Profiler / SMT Scope)",
+        "3. Architectural SMT Mitigations at the Verifier Layer (Verus, Dafny, IronFleet, F*)",
+        "4. Proof Fragility, Maintenance Economics, and Automated Proof Repair (QED at Large & PUMPKIN Pi)",
+        "5. Incremental Proof Sharding, Shape-Based Session Replay, and Trusted vs. Untrusted Functional Lifting (Why3, AutoCorres, Aeneas)",
+        "6. Executable Verification Probe Results (`support/verify_trigger_loops_and_lifting.py`)",
+        "Primary Publications Verified",
+        "Pinned Source Repositories Inspected (`observed_at: 2026-11-19`)",
+        "Probe Execution Record"
+      ]
+    },
+    {
+      "slug": "hardware-description-languages-timing-semantics-and-hw-sw-co-design",
+      "title": "Hardware Description Languages, Timing Semantics, and HW–SW Co-Design",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "pl/hdls",
+        "compilers/hardware",
+        "isa/rtl",
+        "ffi/hw-sw-boundary",
+        "verification/hardware",
+        "smt/synthesis"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_hdl_semantics_and_timelines.py"
+      ],
+      "core_tensions": [
+        "IEEE 1800 SystemVerilog stratified event queue, blocking/non-blocking races, and 4-valued X-optimism/synthesis mismatches (Verismith)",
+        "C-HLS pointer-aliasing and initiation-interval cliffs vs. verified HLS (VeriCert), affine banking (Dahlia), and split-control IR (Calyx)",
+        "ORAAT guarded atomic actions (Bluespec, Kami, Koika), timeline interval types (Filament), CIRCT dialects, and clockless QDI synthesis (ACT)"
+      ],
+      "findings_outline": [
+        "Cross-References to Adjacent Corpus Reports",
+        "1. Semantic Breakdown of IEEE 1800-2023 SystemVerilog for Verification and Synthesis",
+        "2. High-Level Synthesis Predictability Cliffs and Verified C-to-Verilog Compilation",
+        "3. Guarded Atomic Actions and One-Rule-at-a-Time (`ORAAT`) Hardware (`Bluespec`, `Kami`, `Kôika`)",
+        "4. Timeline Interval Types, Expression-Based Pipelining, and Split-Control IRs (`Filament`, `Spade`, `Calyx`)",
+        "5. Multi-Level Hardware Compilers, Formal Technology Mapping, and Embedded HDLs",
+        "6. Clockless Quasi-Delay-Insensitive (`QDI`) Hardware (`CHP` / Martin Synthesis / `ACT`)",
+        "7. Comparative Architecture Matrix and HW–SW Co-Design Seam Implications",
+        "1. Pinned Upstream Git Repositories and Direct Source Coordinates",
+        "2. Primary Specifications and Peer-Reviewed Literature"
+      ]
+    },
+    {
+      "slug": "gpu-simt-execution-warp-divergence-and-scoped-memory-models",
+      "title": "GPU SIMT Execution, Warp Divergence, Scoped Weak Memory Models, Asynchronous Pipelines, and Safe Ownership",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "pl/gpu-simt",
+        "compilers/gpu",
+        "systems/concurrency-weak-memory",
+        "ffi/host-device"
+      ],
+      "subject_count": 11,
+      "probes": [
+        "verify_gpu_scoped_memory_and_mbarrier.py"
+      ],
+      "core_tensions": [
+        "SIMT warp divergence under Volta+ Independent Thread Scheduling (ITS), maximal reconvergence, and WGSL static uniformity",
+        "Scoped weak memory non-transitivity and async memory proxies (PTX, Vulkan, WGSL, fence.proxy.async)",
+        "Hopper/Blackwell TMA, mbarrier phase-parity circular buffers, TMEM warp specialization, and borrow-checked GPU views (Descend, Faial)"
+      ],
+      "findings_outline": [
+        "1. SIMT Execution, Volta+ Independent Thread Scheduling (ITS), and Convergence Semantics",
+        "2. Static Uniformity Analysis (W3C WGSL) and Compositional DRF Verification (Faial)",
+        "3. Scoped Weak Memory Models, Non-Transitivity, and Memory Proxies (PTX, Vulkan, WGSL)",
+        "4. Hopper (SM90) & Blackwell (SM100) Asynchronous Engines, `mbarrier` Phase Parity, `TMEM`, and Warp Specialization",
+        "5. Execution-Hierarchy Ownership and Safe GPU Borrowing (`Descend`, PLDI '24)",
+        "6. Synthesis: Host-Device FFI and Verification Architecture Implications"
+      ]
+    },
+    {
+      "slug": "datalog-fixpoint-incremental-relational-and-hybrid-engines",
+      "title": "Datalog, Fixpoint, Incremental Relational, and Hybrid Engines",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes",
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "pl/datalog",
+        "compilers/relational",
+        "pl/incremental",
+        "ffi/relational-imperative"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_wcoj_dbsp_and_lattices.py"
+      ],
+      "core_tensions": [
+        "Stratified negation and non-monotone aggregation vs. finite-height join-semilattices (Flix, Ascent) and divergence without widening",
+        "Worst-Case Optimal Joins (AGM bounds, Free Join) and equality-saturation unification (egglog)",
+        "Incremental view maintenance over streams (Differential Dataflow, DBSP) and relational-imperative host FFI impurity/marshaling tax"
+      ],
+      "findings_outline": [
+        "Adjacent Corpus Packages & Scope Separation",
+        "1. Least-Fixpoint Semantics, Semi-Naive Differentiation, and Specialized Index Compilation",
+        "2. Stratified Negation, Aggregation, and Non-Monotone Fixpoint Semantics",
+        "3. Finite-Height Join-Semilattices, Unchecked Algebraic Laws, and Divergence Without Widening",
+        "4. Worst-Case Optimal Joins, AGM Bounds, and Free Join Unification",
+        "5. Unifying Datalog and Equality Saturation (`egglog`)",
+        "6. Incremental View Maintenance Over Streams: Differential Dataflow and DBSP",
+        "7. The Host–Relational FFI Boundary: Impurity, Non-Monotonicity, Marshaling Tax, and Snapshot Consistency",
+        "8. Cross-Engine Architecture & Trade-Off Matrix",
+        "Pinned Source Repositories (Observed `2026-11-19`)"
+      ]
+    },
+    {
+      "slug": "differentiable-programming-autodiff-semantics-and-compiler-challenges",
+      "title": "Differentiable Programming: Automatic Differentiation Semantics, Compiler Placement, Checkpointing, and Hazards",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "pl/autodiff",
+        "compilers/autodiff",
+        "pl/semantics",
+        "verification/numerical"
+      ],
+      "subject_count": 20,
+      "probes": [
+        "verify_autodiff_transposition_and_hazards.py"
+      ],
+      "core_tensions": [
+        "Compiler IR placement of reverse-mode AD (post-opt LLVM Enzyme vs. typed functional Dex vs. source-to-source Zygote/Swift/JAX)",
+        "Reverse-mode tape memory explosion, Revolve binomial checkpointing, and NP-hardness of optimal reversal",
+        "Non-differentiable branch traps (Clarke subdifferentials), perturbation confusion, IEEE float hazards, and unchecked custom-derivative FFI contracts"
+      ],
+      "findings_outline": [
+        "Subject Relationships",
+        "Adjacent Corpus Cross-References and Scope Limits",
+        "1. Compiler IR Placement and Architectural Taxonomy of Reverse-Mode AD",
+        "2. Memory/Time Complexity, Binomial Checkpointing (`Revolve`), and NP-Hardness of General Reversal",
+        "3. Semantic Foundations, Non-Differentiable Branch Traps, Perturbation Confusion, and Float Hazards",
+        "4. FFI, Custom Derivative Contracts, Parallelism, and Verification Boundaries",
+        "Pinned Repositories",
+        "Verified Primary Literature",
+        "Execution Probe Receipt (`2026-11-19`)"
+      ]
+    },
+    {
+      "slug": "probabilistic-programming-measure-semantics-and-inference-compilers",
+      "title": "Probabilistic Programming: Measure-Theoretic Semantics, Conditioning Paradoxes, and Inference Compiler Verification",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "pl-types-effects-ownership-and-metaprogramming"
+      ],
+      "topics": [
+        "pl/probabilistic",
+        "compilers/probabilistic",
+        "pl/semantics",
+        "verification/probabilistic"
+      ],
+      "subject_count": 17,
+      "probes": [
+        "verify_ppl_conditioning_and_wmc.py"
+      ],
+      "core_tensions": [
+        "Aumann obstruction on higher-order Borel spaces resolved by Quasi-Borel Spaces (QBS) and s-finite kernels",
+        "Measure-zero conditioning paradoxes (Borel-Kolmogorov) vs. symbolic disintegration (Hakaru) and exact discrete WMC compilation (Dice)",
+        "HMC/NUTS Jacobian & discontinuity hazards (Stan), silent SVI support mismatches (Pyro/pyppai), and programmable involutive MCMC contracts (Gen)"
+      ],
+      "findings_outline": [
+        "1. Higher-Order Measure Semantics: Aumann's Obstruction, Quasi-Borel Spaces, and s-Finite Kernels",
+        "2. Measure-Zero Conditioning, Borel-Kolmogorov Paradox, and Symbolic Disintegration",
+        "3. Continuous HMC/NUTS Compilers: `Stan` (`stanc3`) Constraints, Jacobians, and Discontinuity Hazards",
+        "4. Stochastic Variational Inference Verification: Support Violations and Silent Monte Carlo Masking (`Pyro` and `pyppai`)",
+        "5. Exact Discrete Inference via Knowledge Compilation and Weighted Model Counting (`Dice`)",
+        "6. Programmable Inference: `Gen` GFI Contracts, Trace Types, and Automated Involutive MCMC",
+        "7. Comparative Architecture Matrix and Finite-Machine / Host-Effect Boundaries",
+        "Primary Literature",
+        "Pinned Repository Source Evidence",
+        "Runnable Execution Evidence"
+      ]
+    },
+    {
+      "slug": "choreographic-programming-multiparty-session-types-and-distributed-protocols",
+      "title": "Choreographic Programming, Multiparty Session Types, and Monotonic Distributed Protocols",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "pl-types-effects-ownership-and-metaprogramming",
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "pl/choreographies",
+        "pl/session-types",
+        "systems/distributed-systems",
+        "ffi/protocols"
+      ],
+      "subject_count": 14,
+      "probes": [
+        "verify_epp_mpst_and_calm.py"
+      ],
+      "core_tensions": [
+        "Choreographic Endpoint Projection (EPP) Knowledge-of-Choice constraints (Choral, HasChor, Pirouette) vs. decentralized MPST soundness pitfalls (Scalas-Yoshida)",
+        "Asynchronous multiparty session subtyping undecidability vs. sound decidable fragments",
+        "FLP/CAP partial-failure boundaries vs. monotonic coordination-free dataflow (CALM theorem, CRDTs, invariant confluence, rolling wire upgrades)"
+      ],
+      "findings_outline": [
+        "1. Choreographic Programming, Endpoint Projection (EPP), and Knowledge of Choice",
+        "2. Multiparty Session Types (MPST): Published Proof Flaws, Generalized Behavioral Typing, and Liveness",
+        "3. The Decidability Wall: Synchronous vs. Asynchronous Session Subtyping",
+        "4. Partial Failure, Crash-Stop Semantics, and Distributed Impossibility Boundaries (FLP, CAP)",
+        "5. Monotonic Distributed Dataflow: CALM Theorem, CRDTs, Invariant Confluence, and Hydro",
+        "6. Rolling-Upgrade Protocol & Schema Evolution Across Open Wire Boundaries",
+        "7. Executable Probe Verification Results (`support/verify_epp_mpst_and_calm.py`)",
+        "Pinned Source Repositories",
+        "Peer-Reviewed Publications & Standards Verified",
+        "Preserved Support Artifact"
+      ]
+    },
+    {
+      "slug": "synchronous-real-time-reactive-languages-and-wcet-predictability",
+      "title": "Synchronous, Real-Time Reactive Languages, and WCET Predictability",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "pl/synchronous-realtime",
+        "compilers/realtime",
+        "verification/wcet",
+        "systems/realtime"
+      ],
+      "subject_count": 25,
+      "probes": [
+        "verify_constructive_causality_and_wcet.py"
+      ],
+      "core_tensions": [
+        "Synchronous hypothesis constructive causality (Esterel) vs. modular separate compilation and Lustre clock calculus (Velus verified compiler)",
+        "Deterministic timed concurrency across networks (Lingua Franca/Ptides) and FRP space/time leaks cured by modal types (Rattus)",
+        "Microarchitectural OoO/cache timing anomalies and domino effects breaking compositional WCET unless paired with cost-preserving compilation/hardware"
+      ],
+      "findings_outline": [
+        "Subject Relationships",
+        "Adjacent Corpus Cross-References",
+        "Scope and Qualification Rules",
+        "1. The Synchronous Hypothesis, Constructive Causality, and Separate Compilation",
+        "2. Lustre Dependent Clock Calculus and End-to-End Verified Compilation in Vélus",
+        "3. Deterministic Timed Concurrency Across Networks: Lingua Franca Reactors and Ptides STP Offsets",
+        "4. Functional Reactive Programming (FRP) Space/Time Leaks and Modal Type-Theoretic Cures",
+        "5. WCET Predictability, Microarchitectural Timing Anomalies, and Domino Effects",
+        "6. Restoring End-to-End Timing Predictability: Cost-Preserving Verified Compilation and Time-Predictable Hardware",
+        "Directly Inspected Upstream Repositories"
+      ]
+    },
+    {
+      "slug": "zk-circuit-dsls-resource-metered-vms-and-quantum-linear-languages",
+      "title": "Zero-Knowledge Proof Circuit DSLs, Linear Resource-Metered VMs, and Quantum Linear Languages",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "pl-types-effects-ownership-and-metaprogramming"
+      ],
+      "topics": [
+        "pl/zk-circuits",
+        "pl/quantum",
+        "pl/linear-types",
+        "runtimes/resource-metering",
+        "verification/circuits",
+        "verification/bytecode"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_zk_move_and_uncomputation.py"
+      ],
+      "core_tensions": [
+        "Witness-generation vs. polynomial constraint soundness chasm causing under-constrained ZK circuit exploits (Circom, Halo2, Noir, Cairo, Picus)",
+        "Linear resource conservation and deterministic gas metering in Move bytecode verification vs. EVM reentrancy/state hazards",
+        "Quantum no-cloning, entanglement-safe automatic uncomputation (Silq), and verified reversible/circuit optimization (SQIR/VOQC, Janus)"
+      ],
+      "findings_outline": [
+        "1. Cross-Paradigm Synthesis: Conservation Laws as Language-Design Drivers",
+        "2. Zero-Knowledge Proof Circuit DSLs and the Witness-Generation vs. Constraint-Soundness Chasm",
+        "3. Linear Resource-Metered Virtual Machines (`Move` Bytecode Verifier vs. `EVM`)",
+        "4. Quantum and Reversible Linear Languages (`Silq`, `Quipper`, `QWIRE`, `SQIR`/`VOQC`, `Janus`)",
+        "5. Executable Multi-Paradigm Verification Probe Summary",
+        "Primary Source Code Repositories (Pinned 40-Character Commits)",
+        "Primary Papers and Specifications",
+        "Preserved Executable Support Material"
+      ]
+    },
+    {
+      "slug": "mill-edge-dataflow-and-tile-bsp-compiler-architectures",
+      "title": "Non-Von-Neumann CPU, Dataflow, Spatial CGRA, Tile-BSP, Deterministic Streaming, PIM, and Reversible Compiler Architectures",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes",
+        "historical-contingencies-vs-physical-laws"
+      ],
+      "topics": [
+        "compilers/architecture",
+        "systems/exotic-cpus",
+        "compilers/dataflow-irs",
+        "pl/execution-models"
+      ],
+      "subject_count": 13,
+      "probes": [
+        "verify_belt_nar_and_bsp_semantics.py"
+      ],
+      "core_tensions": [
+        "Temporal SSA belts, None>NaR>Value speculative metadata, phased loops, and genAsm->conAsm specialization (Mill CPU) vs. flat-register LLVM",
+        "Block-atomic hyperblocks (EDGE/TRIPS) and spatial CGRAs (Plasticine, Spatial, SambaNova RDU) routing/placement constraints",
+        "Explicit non-coherent tile SRAM, wavelet/BSP/cycle-deterministic streaming (Cerebras WSE, Graphcore IPU, Tensix, Groq), PIM, and reversible ISA codegen"
+      ],
+      "findings_outline": [
+        "1. Historical Von Neumann Contingencies vs. Physical Hardware Realities",
+        "2. The Mill CPU Architecture: Belt Temporal SSA, `None > NaR > Value`, Phased Loops, Hardware Frame/Cache Primitives, and `genAsm -> conAsm`",
+        "3. EDGE Block-Atomic Dataflow (`TRIPS`) and Coarse-Grained Reconfigurable Arrays (`Plasticine`, `Spatial`, `SambaNova RDU`)",
+        "4. Explicit Non-Coherent Tile, Wafer-Scale, BSP, and Deterministic Streaming Engines",
+        "5. Processing-in-Memory (`UPMEM`, `HBM-PIM`) and Reversible Bijective Computing (`Janus`, `Pendulum`/`PISA`)",
+        "6. Clean-Slate Compiler IR & Verification Synthesis: Six Orthogonal Primitives"
+      ]
+    },
+    {
+      "slug": "tensor-layout-algebras-scratchpad-dma-and-user-schedulable-accelerator-languages",
+      "title": "Tensor Layout Algebras, Scratchpad DMA Pipelines, and Verified User-Schedulable Accelerator Languages",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "compiler-irs-layout-jits-gcs-and-async-runtimes"
+      ],
+      "topics": [
+        "compilers/layout-algebras",
+        "compilers/schedule-languages",
+        "systems/accelerators",
+        "verification/layout-proofs"
+      ],
+      "subject_count": 15,
+      "probes": [
+        "verify_cute_algebra_and_swizzle_banks.py"
+      ],
+      "core_tensions": [
+        "CuTe hierarchical (Shape, Stride) admissibility preconditions, categorical Tuple/Nest foundations, and F_2 XOR-swizzle bank-conflict proofs",
+        "Explicit systolic scratchpad/DMA/semaphore pipelines (TPU Pallas/Mosaic), block-SPMD (Triton), and uniqueness-typed flattening (Futhark)",
+        "Verified user-schedulable exocompilation (Halide, ATL, Exo/Exo 2, Rise/Elevate) separating algorithm semantics from hardware schedule proofs"
+      ],
+      "findings_outline": [
+        "1. CuTe Hierarchical `(Shape, Stride)` Layout Algebra and Exact Admissibility Preconditions",
+        "2. Categorical Foundations of CuTe Layouts: `Tuple`, `Nest`, Tractability, and Mutual Refinement",
+        "3. $\\mathbb{F}_2$ XOR-Swizzle Morphisms, Hybrid $(\\mathbb{Z} \\times \\mathbb{F}_2)$ Layouts, and Algebraic 32-Bank SMEM Proofs",
+        "4. Systolic Scratchpad and Asynchronous DMA Pipelines: Google TPU and JAX `Pallas`/`Mosaic`",
+        "5. Block-SPMD Compilation (`Triton`) and Uniqueness-Typed Incremental Flattening (`Futhark`)",
+        "6. Verified User-Schedulable and Exocompilation Languages: `Halide`, `ATL`, `Exo`/`Exo 2`, and `Rise`/`Elevate`",
+        "7. Cross-System Comparison Matrix and Verification Design Blueprint"
+      ]
+    },
+    {
+      "slug": "programmable-network-pipelines-p4-semantics-and-exotic-hardware-numerics",
+      "title": "Programmable Network Pipelines, P4 Semantics, and Exotic Hardware Numerics",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "human-tooling-diagnostics-smt-and-kernel-walls"
+      ],
+      "topics": [
+        "systems/network-dataplanes",
+        "pl/p4-semantics",
+        "verification/floating-point",
+        "systems/exotic-numerics"
+      ],
+      "subject_count": 16,
+      "probes": [
+        "verify_p4_salu_and_exotic_numerics.py"
+      ],
+      "core_tensions": [
+        "Feed-forward RMT/PISA switch pipeline constraints, P4_16 underspecification traps (Petr4, P4v), and single-cycle SALU synthesis (Domino, Chipmunk)",
+        "Narrow post-IEEE-754 formats (FP8 E4M3FN no-Inf, E5M2, IEEE P3109) breaking classical compiler algebraic float rewrites",
+        "Block-coupled microscaling mutability (OCP MXFP4/6/8), exact Posit/Quire accumulation, and probabilistic stochastic rounding effects"
+      ],
+      "findings_outline": [
+        "Relationship to Adjacent Reference Packages",
+        "Version and Dialect Distinctions",
+        "1. Feed-Forward Programmable Switch Pipelines (`RMT` / `PISA`)",
+        "2. `P4_16` Semantics, Underspecification Traps, and Formal Verification (`Petr4` & `P4v`)",
+        "3. Single-Cycle Stateful ALU (`SALU`) Synthesis (`Domino` & `Chipmunk`)",
+        "4. Narrow Post-IEEE-754 Formats (`FP8 E4M3FN` / `E5M2`) and `IEEE P3109 v4.1`",
+        "5. OCP Microscaling (`MXFP8`, `MXFP6`, `MXFP4`, `MXINT8`) and Block-Coupled Mutability",
+        "6. Exact `Posit`/`Quire` Accumulation, Probabilistic Stochastic Rounding, and DSP Saturation",
+        "7. Cross-Domain Compiler and Verification Design Rules",
+        "1. Pinned Git Repositories"
+      ]
+    },
+    {
+      "slug": "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics",
+      "title": "Verified Software-Hardware FFI: MMIO, DMA, Interconnects, Interrupts, and Reconfigurable Fabrics",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "secondary_dimensions": [
+        "cross-language-ffi-and-multi-logic-composition"
+      ],
+      "topics": [
+        "ffi/hardware-software",
+        "verification/mmio-dma",
+        "systems/interconnects",
+        "verification/refinement",
+        "isa/riscv64",
+        "systems/interrupts"
+      ],
+      "subject_count": 14,
+      "probes": [
+        "verify_mmio_dma_axi_and_dpr.py"
+      ],
+      "core_tensions": [
+        "Formal MMIO volatile register contracts and end-to-end SW+HW co-verification (Bedrock2+Kami, CakeML Pancake)",
+        "On-chip interconnect causality (AXI4, TileLink-C, CIRCT ESI), tightly coupled coprocessors (RISC-V RoCC), and preemptive IRQ concurrency (SRP/RTIC)",
+        "Cache-incoherent linear DMA ownership handoff (IOMMU, CHERI-DMA, CXL), cycle-accurate RTL<=TLM stuttering refinement, and typed FPGA DPR"
+      ],
+      "findings_outline": [
+        "Cross-References to Adjacent Corpus Packages",
+        "Scope Constraints",
+        "1. Memory-Mapped I/O (MMIO) Semantics and End-to-End HW+SW Verification",
+        "2. On-Chip Interconnect Causality (`AXI4`, `TileLink-C`, `CIRCT ESI`) and Tightly Coupled Coprocessors (`RISC-V RoCC`)",
+        "3. Cache-Incoherent DMA Ownership Handoff, `IOMMU`/`CHERI-DMA`, `CXL`, and Preemptive IRQ Concurrency",
+        "4. Cycle-Accurate RTL $\\sqsubseteq$ TLM Stuttering Refinement and Typed FPGA Dynamic Partial Reconfiguration (DPR)",
+        "5. Cross-Cutting Synthesis: Composition Contract for Verified SW↔HW Toolchains",
+        "Directly Examined Git Sources (Pinned 40-Character Revisions)",
+        "Verified Publications and Normative Specifications",
+        "Preserved Standalone Verification Execution"
+      ]
+    }
+  ],
+  "cross_referenced_packages": [
+    {
+      "slug": "tier1-calling-conventions-fnabi-and-llvm-lowering",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats",
+        "verification"
+      ],
+      "role": "Concrete Tier 1 C/Rust calling-convention lowering across x86-64, AArch64, and i686."
+    },
+    {
+      "slug": "abi-cross-testing-matrix-rustc-llvm-cranelift-gcc-clang",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
+        "llvm",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats"
+      ],
+      "role": "Empirical cross-compiler psABI divergence matrix across rustc, Clang, GCC, and Cranelift."
+    },
+    {
+      "slug": "verified-assemblers-encoders-linkers-and-object-format-models",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/isa-models",
+        "isa",
+        "isa/encoding",
+        "llvm",
+        "llvm/mc-layer",
+        "rustc",
+        "rustc/linker-driver",
+        "systems",
+        "systems/object-formats",
+        "verification",
+        "verification/compiler-verification",
+        "verification/isa-coverage"
+      ],
+      "role": "Formal binary object, relocation, and static-linker verification precedents (CompCertELF, CakeML, Linksem, MM0)."
+    },
+    {
+      "slug": "rustc-dynamic-linking-loader-contracts-and-code-signing",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "rustc/linker-driver",
+        "security",
+        "security/binary-hardening",
+        "systems",
+        "systems/object-formats"
+      ],
+      "role": "Dynamic loader symbol resolution, relocation, and code-signing invariants across ELF, Mach-O, and PE."
+    },
+    {
+      "slug": "os-syscall-interfaces-asynchronous-signals-and-environment-models",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/platform-conventions",
+        "isa",
+        "rust",
+        "rust/calling-conventions",
+        "rustc",
+        "rustc/abi",
+        "systems",
+        "systems/object-formats",
+        "verification",
+        "verification/cakeml",
+        "verification/compcert"
+      ],
+      "role": "User-space OS syscall boundary, async signal semantics, and formal environment models."
+    },
+    {
+      "slug": "metal-typechain-language-isolated-kernels-1995-2026",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "systems",
+        "systems/os-kernels",
+        "systems/sandboxing",
+        "rust/unsafe",
+        "verification/program-logics"
+      ],
+      "role": "Historical lineage of language-isolated single-address-space kernels (SPIN, Singularity, Metal, Typechain)."
+    },
+    {
+      "slug": "pcc-tal-verve-foundational-certificate-kernels-1996-2016",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "topics": [
+        "systems",
+        "systems/ebpf-pcc",
+        "systems/os-kernels",
+        "verification/program-logics",
+        "verification/survey"
+      ],
+      "role": "Foundational proof-carrying code, typed assembly language, and Verve OS kernel-verification lineage."
+    },
+    {
+      "slug": "verified-rust-frontend-approaches-trait-solver-polonius-and-thir-lowering",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "lean",
+        "lean/mechanization",
+        "rustc",
+        "rustc/architecture",
+        "rustc/mir",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
+      ],
+      "role": "Frontend soundness surface (trait solver, Polonius borrow checking, THIR lowering) and certificate strategies."
+    },
+    {
+      "slug": "rust-aliasing-models-stacked-tree-minirust-and-llvm-attributes",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "llvm",
+        "llvm/noalias",
+        "minirust",
+        "minirust/memory",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/separation-logic"
+      ],
+      "role": "Stacked Borrows vs. Tree Borrows operational aliasing models and LLVM noalias impedance."
+    },
+    {
+      "slug": "tree-borrows-two-stage-protector-release-and-reborrow-contracts",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "topics": [
+        "rust/tree-borrows",
+        "rust/miri",
+        "rust/unsafe",
+        "lean/mechanization",
+        "verification/program-verification",
+        "verification/separation-logic"
+      ],
+      "role": "Modularity challenges of dynamic call-frame protectors and two-stage release in reborrow-returning functions."
+    },
+    {
+      "slug": "rust-reference-layout-guarantees-target-abi-limits-and-semver-snares",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "topics": [
+        "rust/layout",
+        "rust/reference-guarantees",
+        "rust/repr-c",
+        "rust/repr-transparent",
+        "rust/niche-optimization",
+        "rust/target-data-layout",
+        "rust/calling-conventions",
+        "rust/semver-snares",
+        "zerocopy/soundness-policy",
+        "anneal/forward-compatibility"
+      ],
+      "role": "Normative layout guarantees, padding, target ABI limits, and layout-induced SemVer hazards."
+    },
+    {
+      "slug": "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "anneal/caching",
+        "build",
+        "build/reproducible-builds",
+        "cargo",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/verified-mode",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/thinlto",
+        "rust",
+        "rust/proc-macro",
+        "rustc",
+        "rustc/codegen",
+        "rustc/incremental",
+        "verification",
+        "verification/compiler-verification"
+      ],
+      "role": "Deterministic proc-macro sandboxing and fine-grained whole-program export-list invalidation."
+    },
+    {
+      "slug": "lean-elaboration-hygiene-positions-and-infotree",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "topics": [
+        "lean/elaboration",
+        "lean/infoview",
+        "lean/lsp"
+      ],
+      "role": "Lean 4 hygienic macro expansion, elaboration InfoTree provenance, and source-span tracking."
+    },
+    {
+      "slug": "mechanized-compiler-ir-semantics-poison-provenance-and-machine-frames",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "isa",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
+      ],
+      "role": "Formal imperative IR semantics across 9 frameworks: poison/freeze, byte provenance, and block-argument SSA."
+    },
+    {
+      "slug": "verified-and-validated-compiler-optimization-precedents",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/optimizer",
+        "lean",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "smt",
+        "verification",
+        "verification/compiler-verification",
+        "verification/translation-validation"
+      ],
+      "role": "Survey of verified and translation-validated AOT optimization passes (CompCert, BTL, Alive2, Lean-MLIR, VeriISLE)."
+    },
+    {
+      "slug": "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/proof-system-and-irs",
+        "isa",
+        "lean",
+        "lean/mechanization",
+        "rustc",
+        "verification",
+        "verification/certificates",
+        "verification/compiler-verification"
+      ],
+      "role": "Proof-producing e-graphs, Cranelift acyclic e-graphs, and refinement-aware rewriting."
+    },
+    {
+      "slug": "compiler-correctness-theorem-shapes-and-end-to-end-chains",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "verification/cakeml",
+        "verification/compcert",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ],
+      "role": "Canonical end-to-end compiler correctness theorem shapes across 15 verified compilers."
+    },
+    {
+      "slug": "ebpf-certificate-verifying-kernels-and-verified-jits-2014-2026",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "topics": [
+        "systems",
+        "systems/ebpf-pcc",
+        "systems/os-kernels",
+        "verification/refinement",
+        "verification/smt-certificates"
+      ],
+      "role": "In-kernel bytecode verification and formally verified eBPF JIT compilation precedents (JITTERBUG, CertrBPF)."
+    },
+    {
+      "slug": "rustc-statetransform-coroutines-async-gen-and-pin-mir-semantics",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir-and-aliasing",
+        "minirust",
+        "rust",
+        "rust/tree-borrows",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ],
+      "role": "MIR state-machine lowering for stackless async coroutines, self-referential fields, and Pin invariants."
+    },
+    {
+      "slug": "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "verification",
+        "verification/compcert",
+        "verification/cakeml",
+        "verification/refinement",
+        "rust/calling-conventions",
+        "rustc/abi"
+      ],
+      "role": "Horizontal open-module linking across Rust/C and DWARF .eh_frame / LSDA unwinding contracts."
+    },
+    {
+      "slug": "compositional-correctness-linking-and-whole-program-optimization",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rustc",
+        "rustc/monomorphization",
+        "verification",
+        "verification/compcert",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ],
+      "role": "Compositional compiler correctness frameworks (CompCertO/M/X, SepCompCert, DimSum) and WPO boundaries."
+    },
+    {
+      "slug": "cross-dso-dynamic-linking-vtable-uniqueness-and-open-world-lto-contracts",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/devirtualization",
+        "compilers/open-world-lto",
+        "compilers/symbol-visibility",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/end-to-end-theorem",
+        "compilers/vtable-uniqueness",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/cdylib",
+        "rustc/codegen",
+        "rustc/dylib",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ],
+      "role": "Open-world dynamic linking contracts, duplicate vtable identities across DSOs, and guarded devirtualization."
+    },
+    {
+      "slug": "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/noalias",
+        "rustc",
+        "rustc/codegen",
+        "verification",
+        "verification/compiler-verification",
+        "verification/refinement"
+      ],
+      "role": "Semantic mismatches when fusing Rust and C/C++ LLVM bitcode via linker-plugin LTO."
+    },
+    {
+      "slug": "rust-ffi-abi-witnesses-c-unwind-and-machine-resource-linking",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "rust/calling-conventions",
+        "rustc/abi",
+        "isa/aarch64",
+        "isa/x86-64",
+        "verification/refinement"
+      ],
+      "role": "Cross-language ABI witnesses, C-unwind exception boundaries, and machine-resource linking invariants."
+    },
+    {
+      "slug": "cross-prover-interoperability-verified-checkers-and-tcb-accounting",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "lean",
+        "lean/kernel",
+        "lean/olean",
+        "verification/smt-certificates",
+        "anneal/tcb-audit",
+        "agents/proof-engineering"
+      ],
+      "role": "Proof-term export, cross-prover translation (Dedukti/Lambdapi/Lean/Rocq), and independent TCB accounting."
+    },
+    {
+      "slug": "anneal-universal-algebra-institutions-and-incompleteness-bounds",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "anneal",
+        "anneal/behavior-codec",
+        "anneal/decidability",
+        "anneal/incompleteness",
+        "anneal/institutions",
+        "anneal/refinement",
+        "anneal/tcb-audit",
+        "anneal/universal-algebra",
+        "lean/verification"
+      ],
+      "role": "Goguen-Burstall institutions, meta-level Goedel/Tarski/Loeb boundaries, and refinement sandwiches."
+    },
+    {
+      "slug": "iris-adequacy-transfinite-liveness-simuliris-and-lean-separation-logic",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "topics": [
+        "verification",
+        "verification/iris",
+        "verification/separation-logic",
+        "minirust/semantics",
+        "lean/mechanization"
+      ],
+      "role": "Higher-order separation logic adequacy, transfinite liveness, Simuliris, and Lean separation-logic bridges."
+    },
+    {
+      "slug": "incremental-computation-adapton-salsa-buck2-and-build-system-graphs",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "build",
+        "build/incremental-computation",
+        "build/caching",
+        "rustc/incremental",
+        "anneal/architecture"
+      ],
+      "role": "Incremental query engines (Adapton, Salsa, Buck2/DICE) and Build Systems a la Carte foundations."
+    },
+    {
+      "slug": "language-server-snapshots-views-and-compiler-backed-ide-architectures",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "agents",
+        "agents/lsp-integration",
+        "build/incremental-computation",
+        "anneal/interactive-lsp",
+        "anneal/batch-live-equivalence"
+      ],
+      "role": "Snapshot/view IDE architectures across rust-analyzer, clangd, gopls, HLS, Kotlin K2, Roslyn, and TypeScript."
+    },
+    {
+      "slug": "nix-guix-immutable-closures-mutable-roots-and-toolchain-archive-equivalence",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "build",
+        "build/nix",
+        "build/guix",
+        "build/hermeticity",
+        "build/caching",
+        "lake/artifact-cache"
+      ],
+      "role": "Content-addressed immutable toolchain closures and binary-relocation invariants."
+    },
+    {
+      "slug": "rustc-dwarf-codeview-debuginfo-emission-and-debugger-contracts",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/normal-compilation",
+        "llvm",
+        "llvm/passes",
+        "rustc",
+        "rustc/codegen",
+        "systems",
+        "systems/object-formats",
+        "verification"
+      ],
+      "role": "DWARF v5 and CodeView debuginfo emission invariants and debugger contract obligations."
+    },
+    {
+      "slug": "dafny-boogie-viper-fstar-why3-and-vc-obligation-architectures",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "verification",
+        "verification/program-logics",
+        "verification/separation-logic",
+        "verification/smt-certificates",
+        "verification/survey"
+      ],
+      "role": "Comparative architecture of SMT-backed VCGen verifiers, sessions, and certificate architectures."
+    },
+    {
+      "slug": "anneal-vacuity-mutation-oracles-and-verification-scaling",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "anneal",
+        "anneal/autoformalization",
+        "anneal/canary-theorems",
+        "anneal/integration-tests",
+        "anneal/mutation-testing",
+        "anneal/negative-attribution",
+        "anneal/refinement",
+        "anneal/vacuity",
+        "lean/kernel-scaling",
+        "lean/step-result",
+        "lean/verification"
+      ],
+      "role": "Algebraic vacuity detection, semantic mutation canaries, and TCB soundness testing."
+    },
+    {
+      "slug": "lean-kernel-derivation-scale-checking-and-reflection-throughput",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/checker-substrate",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "verification"
+      ],
+      "role": "Dependent-type kernel WHNF spine cliffs, CPS strictness forcing, and million-step reflective checking."
+    },
+    {
+      "slug": "verified-rustc-research-map-and-open-question-ledger",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/program-planning",
+        "compilers/verified-rustc/roadmap",
+        "rustc",
+        "rustc/architecture",
+        "verification",
+        "verification/compiler-verification"
+      ],
+      "role": "Companion navigation map and machine-queryable ledger for verified drop-in Rust compilation."
+    },
+    {
+      "slug": "weak-memory-concurrency-models-hardware-mappings-and-optimizations",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/concurrency",
+        "isa",
+        "isa/aarch64",
+        "isa/x86-64",
+        "llvm",
+        "rust",
+        "rust/concurrency",
+        "systems",
+        "systems/concurrency-weak-memory",
+        "verification",
+        "verification/iris"
+      ],
+      "role": "CPU axiomatic (RC11/IMM) vs. operational (Promising) weak-memory models contrasting GPU scoped memory."
+    },
+    {
+      "slug": "sail-isa-models-lean-backend-and-rv64d-decoding-framing",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "topics": [
+        "isa",
+        "isa/sail",
+        "isa/riscv64",
+        "isa/aarch64",
+        "isa/x86-64",
+        "lean/mechanization"
+      ],
+      "role": "Mechanized Sail ISA specifications, Lean extraction, and instruction decoding/framing verification."
+    },
+    {
+      "slug": "anneal-cps-robotics-aerospace-eda-and-quantum-survey",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/trust-policy",
+        "domains/cps/reachability-and-cbfs",
+        "domains/robotics/kinematics-and-optimal-control",
+        "domains/aerospace/synchronous-dataflow-and-runtime-assurance",
+        "domains/industrial-control/plc-and-railway-interlocking",
+        "domains/eda/rtl-synthesis-and-formal-verification",
+        "domains/vlsi/physical-design-drc-lvs",
+        "domains/quantum-computing/zx-calculus-and-qec",
+        "domains/analog-mixed-signal/real-number-modeling-and-neuromorphic",
+        "domains/silicon-photonics/s-matrix-and-mzi-meshes",
+        "domains/metamaterials/acoustic-em-and-origami-mechanics",
+        "anneal/architecture",
+        "anneal/cps-verification",
+        "anneal/eda-hardware-verification",
+        "anneal/external-call",
+        "anneal/failure-postmortems",
+        "anneal/quantum-verification",
+        "verification/hybrid-systems",
+        "verification/soundness-failures"
+      ],
+      "role": "Verification-primitive survey across synchronous CPS, EDA/HDLs, robotics, and quantum toolchains."
+    },
+    {
+      "slug": "anneal-databases-networking-cloud-builds-and-tensor-survey",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "topics": [
+        "anneal/architecture",
+        "anneal/behavior-codec",
+        "anneal/domain-generalization",
+        "anneal/progress-refinement",
+        "anneal/trust-policy",
+        "security/authorization/cedar",
+        "security/authorization/zanzibar",
+        "build/incremental",
+        "systems/cloud/kubernetes-controllers",
+        "compilers/mlir-tensor",
+        "compilers/polyhedral",
+        "systems/databases/ivm-dbsp",
+        "systems/databases/query-equivalence",
+        "security/differential-privacy/verification",
+        "systems/distributed-systems/consensus",
+        "systems/networking/bgp-verification",
+        "systems/networking/p4-sdn",
+        "verification/parsing/verified-combinators",
+        "systems/storage/crash-consistency",
+        "systems/streaming/watermarks",
+        "anneal",
+        "anneal/refinement",
+        "anneal/external-calls",
+        "systems/databases/sql-equivalence",
+        "systems/databases/query-optimizers",
+        "systems/databases/incremental-view-maintenance",
+        "systems/storage/lsm-compaction",
+        "systems/distributed-systems/kubernetes-controllers",
+        "systems/networking/p4-compilers",
+        "systems/networking/bgp-convergence",
+        "security/authorization-policy",
+        "security/differential-privacy",
+        "build/incremental-soundness",
+        "compilers/tensor-ml",
+        "verification/historical-failures"
+      ],
+      "role": "Verification-primitive survey across relational/DBSP engines, programmable networks, and tensor compilers."
+    },
+    {
+      "slug": "anneal-security-crypto-zkp-wcet-parsers-and-ffi-survey",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "topics": [
+        "anneal/architecture",
+        "anneal/refinement-lattice",
+        "anneal/trust-policy",
+        "verification/cryptography",
+        "verification/refinement",
+        "verification/survey",
+        "isa/jasmin",
+        "anneal/trusted-boundary",
+        "anneal/refinement",
+        "anneal/behavior-codec",
+        "anneal/verification-result",
+        "security/constant-time",
+        "security/speculative-constant-time",
+        "security/information-flow-control",
+        "security/cryptography/primitives",
+        "security/cryptography/protocol-verification",
+        "security/zkp/circuit-verification",
+        "security/zkvm/verification",
+        "verification/wcet/resource-bounds",
+        "verification/wcet/stack-analysis",
+        "verification/parsers/verified-zero-copy",
+        "rust/ffi/multi-language-semantics",
+        "isa/hardware/cheri-capabilities",
+        "security/secret-zeroization",
+        "anneal",
+        "anneal/step-result",
+        "security/side-channels",
+        "security/cryptography/arithmetic",
+        "security/cryptography/protocols",
+        "security/zkp/under-constrained",
+        "security/zkp/zkvm",
+        "verification/wcet/timing-anomalies",
+        "verification/parsers/malleability",
+        "rust/ffi/boundaries"
+      ],
+      "role": "Verification-primitive survey across cryptography, ZK circuits, WCET, CHERI, and FFI isolation."
+    }
+  ],
+  "ffi_impossibility_triangles": [
+    {
+      "id": "T1-zero-copy-memory",
+      "name": "The Zero-Copy Memory Triangle",
+      "vertices": [
+        "Zero-copy direct memory sharing (raw pointers/slices across language or host/device boundaries)",
+        "Moving/compacting garbage collection or independent non-coherent reclamation",
+        "Deadlock-free, handle-free isolation without pinning stalls or cross-heap reference-cycle leaks"
+      ],
+      "incompatible_triple": "A foreign runtime cannot simultaneously dereference unpinned raw pointers into a moving/non-coherent heap without risking dangling addresses, pinning-induced GC/DMA stalls (GCLocker, runtime.Pinner), or unreclaimable cross-heap reference cycles.",
+      "formal_mechanism": "Memory-ownership and relocation invariants require either (a) copying/marshaling value ownership across disjoint heaps (Canonical ABI, FIDL), (b) capability/handle indirection with explicit epoch/scope pinning (HPy, Panama FFM, OCaml shadow roots, CHERI/IOMMU), or (c) a unified cross-component collector/heap.",
+      "system_resolutions": {
+        "Wasm Component Model (WIT Canonical ABI)": "Drops zero-copy raw sharing for shared-nothing copies + opaque resource handles.",
+        "GraalVM Truffle": "Drops independent collectors for a unified JVM heap and polyglot InteropLibrary.",
+        "Java Panama FFM / HPy / Go Pinner": "Trades zero-overhead raw pointers for scoped handles, explicit pinning, or memory segments.",
+        "CHERI / Mill Portals / Linear DMA+IOMMU": "Hardware-enforces spatial capability bounds and explicit transfer/revocation to reduce boundary cost to cycles."
+      },
+      "primary_packages": [
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes",
+        "garbage-collection-barriers-safepoints-and-runtime-invariants",
+        "wasm-component-model-truffle-graal-and-polyglot-interop-platforms",
+        "capability-hardware-tagged-architectures-and-cheri-abi-co-design",
+        "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics"
+      ]
+    },
+    {
+      "id": "T2-stack-control-flow",
+      "name": "The Stack & Control-Flow Triangle",
+      "vertices": [
+        "Arbitrary synchronous re-entrant cross-language calls (A -> B -> A)",
+        "Movable/segmented green-thread stacks, stackless async state machines, or multi-shot delimited continuations",
+        "Zero-overhead native C ABI unwinding (.eh_frame/SEH), linear RAII destructors, and async-signal safety"
+      ],
+      "incompatible_triple": "Native C frames assume contiguous pinned stacks, process-global signal tables, and linear return/unwind trajectories, conflicting directly with stack relocation (Go), fiber/continuation capture or cloning (OCaml 5, multi-shot effect handlers), and synchronous-drop async cancellation.",
+      "formal_mechanism": "Crossing non-isomorphic control-flow disciplines requires stack switching (Go cgo g0 stack), forbidding continuation capture across foreign frames (OCaml 5 C-call boundary), explicit unwind-table contracts (C-unwind + matched personality routines), or effect/signal virtualization.",
+      "system_resolutions": {
+        "Go cgo": "Switches from movable goroutine stack to pinned OS thread stack with scheduler handoff tax.",
+        "OCaml 5": "Restricts algebraic effects to single-shot fibers and forbids performing effects across C FFI frames.",
+        "Koka / Effekt": "Compiles tail-resumptive effects via evidence passing / capability passing, isolating linear resources statically.",
+        "Rust C-unwind / Swift typed throws": "Constrains unwinding at ABI boundaries or replaces DWARF table unwinding with explicit error returns."
+      },
+      "primary_packages": [
+        "c-abi-stack-conventions-and-process-interface-archaeology",
+        "posix-process-signals-fork-and-flat-address-space-contingencies",
+        "algebraic-effects-handlers-coeffects-and-capability-tracking",
+        "async-runtimes-coroutines-schedulers-and-cancellation-semantics",
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes",
+        "debugging-optimized-concurrent-and-cross-language-programs"
+      ]
+    },
+    {
+      "id": "T3-performance-vs-full-abstraction-isolation",
+      "name": "The Performance vs. Full-Abstraction & Isolation Triangle",
+      "vertices": [
+        "Native cross-boundary throughput (cross-language inlining, unboxed aggregates, register passing)",
+        "Sound gradual/contract enforcement with complete monitoring and blame (or full-abstraction/hyperproperty preservation)",
+        "Fine-grained modular isolation across untrusted or polyglot components"
+      ],
+      "incompatible_triple": "Enforcing higher-order behavioral contracts or full abstraction across untrusted/polyglot seams imposes dynamic proxy/chaperone overhead (10x-100x Takikawa cliffs) or sandbox crossing costs, whereas aggressive cross-language optimization (ThinLTO, shared-heap JIT) erases aliasing/provenance and isolation boundaries.",
+      "formal_mechanism": "Boundary enforcement trades asymptotic wrapper depth (space-efficient coercions/threesomes vs. transient checks) against optimization opacity; hardware capabilities (CHERI/Mill) shrink the isolation constant factor but cannot eliminate contract-checking work for expressive dynamic predicates.",
+      "system_resolutions": {
+        "Typed Racket / Collapsible Contracts": "Prioritizes complete monitoring + blame, mitigating (not eliminating) proxy cliffs via contract collapse.",
+        "Reticulated Python (Transient) / Nom (Concrete)": "Sacrifices higher-order blame or structural flexibility to remove proxy cliffs.",
+        "GraalVM Truffle / Cross-Language ThinLTO": "Prioritizes native peak speed by collapsing memory isolation or merging IR semantics.",
+        "CHERI / Wasm Components / Mill Portals": "Prioritizes spatial/component isolation with hardware or sandboxing bounds rather than full higher-order behavioral contracts."
+      },
+      "primary_packages": [
+        "gradual-typing-sound-interoperability-and-blame-performance-cliffs",
+        "wasm-component-model-truffle-graal-and-polyglot-interop-platforms",
+        "capability-hardware-tagged-architectures-and-cheri-abi-co-design",
+        "polymorphism-compilation-layout-algebras-and-abi-resilience",
+        "semantic-multi-language-interop-dimsum-melocoton-and-linking-types",
+        "jit-compilation-speculative-optimization-and-deoptimization-soundness"
+      ]
+    },
+    {
+      "id": "T4-semantic-unity-vs-verification-diversity",
+      "name": "The Semantic Unity vs. Verification Diversity Triangle",
+      "vertices": [
+        "Heterogeneous best-in-class verification paradigms (step-indexed separation logic, SMT/VCGen, abstract interpretation, translation validation)",
+        "Open decentralized compositional linking without whole-program re-verification (DimSum, CompCertO, Linking Types)",
+        "Preservation of 2-safety hyperproperties and cross-crate reuse across non-invertible compilation codecs under a minimal TCB"
+      ],
+      "incompatible_triple": "Step-indexed logics cross boundaries cleanly only at closed-program adequacy; forgetful compilation codecs erase source facts needed by callers; 1-safety trace refinement fails to preserve 2-safety hyperproperties (constant-time, non-interference); and heterogeneous provers differ in axiom bases and dual-nondeterminism polarity.",
+      "formal_mechanism": "Sound heterogeneous composition requires a common semantic spine (e.g., trace/ITree/event-module refinement or Goguen-Burstall institutions), explicit polarity alignment, paired source+target ShardCert export to bypass codec non-invertibility, and relational/leakage-contract extensions for 2-safety.",
+      "system_resolutions": {
+        "DimSum (POPL 2023)": "Achieves decentralized multi-language refinement via dual-nondeterminism module wrappers, focusing on 1-safety trace inclusion.",
+        "Melocoton (OOPSLA 2023)": "Achieves expressive Iris separation-logic proofs for OCaml<->C FFI, closing the step-indexed logic at adequacy.",
+        "CompCertO / CCR / ITrees": "Provides open-module operational semantics and simulation conventions for C/assembly composition.",
+        "Anneal Paired Contract + Leakage Refinement": "Combines representation-invariant BehaviorCodecs, paired source+target contracts, and relational/leakage models under a minimal kernel audit boundary."
+      },
+      "primary_packages": [
+        "semantic-multi-language-interop-dimsum-melocoton-and-linking-types",
+        "multi-logic-and-multi-paradigm-verification-composition",
+        "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening",
+        "proof-fragility-smt-instability-and-verification-scaling-walls",
+        "specification-authoring-spec-drift-and-the-testing-verification-continuum",
+        "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics"
+      ]
+    }
+  ],
+  "open_research_problems": [
+    {
+      "id": "OP-01",
+      "title": "Machine-Checkable Cross-Language ABI Specifications Replacing Prose psABIs",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "barrier_class": "semantic_chasm",
+      "statement": "Replace prose psABI manuals (SysV AMD64, AAPCS64, Win64) with an executable, formally specified, target-parameterized ABI descriptor shared across compilers and verifiers.",
+      "why_open": "Existing compilers (rustc, Clang, GCC, Cranelift) each maintain bespoke heuristic classifiers that silently disagree on u128, f128, HFAs, bit-fields, and ZSTs, while LLVM IR lacks target-independent ABI types.",
+      "relevant_packages": [
+        "c-abi-stack-conventions-and-process-interface-archaeology",
+        "polymorphism-compilation-layout-algebras-and-abi-resilience"
+      ],
+      "falsification_or_progress_trigger": "Adoption of a shared executable ABI specification (e.g., abi-cafe-verified formal spec) consumed directly by both LLVM/Clang and rustc codegen backends with zero differential mismatches."
+    },
+    {
+      "id": "OP-02",
+      "title": "Capability-Safe Typed Dynamic Linking Without Flat String Namespaces",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "barrier_class": "socio_technical_tcb",
+      "statement": "Design a verified dynamic loader and binary module format supporting separate compilation, ABI resilience, and safe unloading without ELF flat symbol interposition or untyped C constructor graphs.",
+      "why_open": "Verified static linkers exist only for narrow ELF subsets (CompCertELF, Linksem), while real ecosystems rely on unverified ld.so/dyld/PE loaders with global interposition, TLS models, and unsafe dlclose.",
+      "relevant_packages": [
+        "object-files-linkers-loaders-and-separate-compilation-history",
+        "wasm-component-model-truffle-graal-and-polyglot-interop-platforms"
+      ],
+      "falsification_or_progress_trigger": "A mechanized dynamic-loader specification and verifier covering relocations, two-level typed imports, TLS, and safe module unloading on ELF/Mach-O or Wasm Components."
+    },
+    {
+      "id": "OP-03",
+      "title": "Unbundled Capability OS Primitives Replacing fork(), Signals, and Flat Virtual Memory",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "barrier_class": "hardware_physics",
+      "statement": "Standardize an OS process/I/O boundary that unbundles process creation, asynchronous notifications, completion-based I/O, and memory reservation so multiple language runtimes can coexist safely in one address space.",
+      "why_open": "POSIX.1-2024 retains process-global signal tables and fork() assumptions that break multi-threaded GCs and async runtimes; Capsicum, Zircon, io_uring, and WASI remain fragmented across kernels.",
+      "relevant_packages": [
+        "posix-process-signals-fork-and-flat-address-space-contingencies",
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes"
+      ],
+      "falsification_or_progress_trigger": "Standardized multi-runtime-safe OS notification/reservation interfaces deployed across Linux/BSD/Windows or WASI Preview 3+."
+    },
+    {
+      "id": "OP-04",
+      "title": "Content-Addressed Live/Image Systems With Zero-Cost Native Polyglot Interop",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "barrier_class": "semantic_chasm",
+      "statement": "Combine hash-identified AST/code stores and live schema migration (Smalltalk, Unison) with deterministic AOT native compilation and verified zero-copy foreign interfaces.",
+      "why_open": "Image-based and content-addressed environments struggle to reconcile live structural identity and dynamic object migration with static native ABIs, external build reproducibility, and low-level memory layouts.",
+      "relevant_packages": [
+        "image-based-and-single-language-systems-smalltalk-lisp-oberon",
+        "package-management-version-solving-semver-and-supply-chain-boundaries"
+      ],
+      "falsification_or_progress_trigger": "A production content-addressed language compiling directly to verified native/component ABI artifacts with live schema-evolution proofs."
+    },
+    {
+      "id": "OP-05",
+      "title": "Pause-Free Hardware Temporal Safety and Cross-Domain DMA Revocation",
+      "dimension_id": "historical-contingencies-vs-physical-laws",
+      "barrier_class": "hardware_physics",
+      "statement": "Eliminate sweeping-revocation pause/barrier tails in capability architectures (CHERI Cornucopia Reloaded, CHERIoT) and extend capability revocation uniformly across IOMMU/DMA and CXL devices.",
+      "why_open": "Spatial capability bounds fit in 128-bit registers, but temporal safety requires revoking aliased copies in memory and device descriptor rings without prohibitive memory bandwidth or quarantine bloat.",
+      "relevant_packages": [
+        "capability-hardware-tagged-architectures-and-cheri-abi-co-design",
+        "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics"
+      ],
+      "falsification_or_progress_trigger": "Silicon evaluation demonstrating deterministic sub-microsecond temporal revocation across CPU + DMA/CXL endpoints with <5% memory and throughput overhead."
+    },
+    {
+      "id": "OP-06",
+      "title": "Predictable Surface Elaboration Across Subtyping, Polymorphism, and Dependent Types",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "barrier_class": "undecidability",
+      "statement": "Design decidable, principal-type-preserving elaboration boundaries that combine subtyping, higher-rank polymorphism, GADTs, and quantitative dependent erasure without hitting undecidability cliffs.",
+      "why_open": "F_<: subtyping (Pierce 1994), Java wildcard subtyping (Grigore 2017), and higher-order unification are undecidable; practical compilers rely on fragile heuristics (OutsideIn(X), Scala 3 DOT approximations) with opaque failure modes.",
+      "relevant_packages": [
+        "type-system-interactions-subtyping-polymorphism-and-decidability",
+        "type-error-localization-compiler-diagnostics-and-verification-ux"
+      ],
+      "falsification_or_progress_trigger": "A mechanized elaboration calculus unifying algebraic subtyping (MLsub) with GADTs/dependent erasure that guarantees termination, completeness over a crisp surface fragment, and small-core certificates."
+    },
+    {
+      "id": "OP-07",
+      "title": "Resolving the Global Coherence vs. Separate Modularity vs. Sound Specialization Trilemma",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "barrier_class": "impossibility_theorem",
+      "statement": "Support modular, locally scoped type-class/trait abstractions and sound performance specialization without breaking global data-structure invariants (e.g., Ord/Hash map coherence) or erasing lifetime soundness.",
+      "why_open": "Global orphan rules block modular composition; local implicits risk dictionary incoherence across merged collections; and lifetime-erased specialization enables unsound type transmutation.",
+      "relevant_packages": [
+        "coherence-orphan-instances-and-module-system-compilation",
+        "polymorphism-compilation-layout-algebras-and-abi-resilience"
+      ],
+      "falsification_or_progress_trigger": "Stabilization of a mechanized sound specialization + scoped-coherence system (such as verified min_specialization or 1ML-style coherent implicits) in a mainstream systems compiler."
+    },
+    {
+      "id": "OP-08",
+      "title": "Safe Composition of Multi-Shot Effect Handlers, Linear Resources, and Foreign Stack Frames",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "barrier_class": "semantic_chasm",
+      "statement": "Synthesize a graded effect-and-capability type system and compilation strategy that permits zero-cost tail-resumptive handlers, linear resource safety under multi-shot continuations, and sound traversal across foreign FFI frames.",
+      "why_open": "Cloning a continuation duplicates linear handles unless statically fenced by graded shot counts/coeffects, while existing runtimes (OCaml 5) drop multi-shot continuations and forbid effects across C frames.",
+      "relevant_packages": [
+        "algebraic-effects-handlers-coeffects-and-capability-tracking",
+        "ownership-linearity-regions-and-safe-mutability-design-space"
+      ],
+      "falsification_or_progress_trigger": "A native-compiled language with mechanized soundness proving graded multi-shot effects + linear resources + FFI stack-boundary safety with <10% overhead on tail-resumptive code."
+    },
+    {
+      "id": "OP-09",
+      "title": "Unifying Operational Pointer Aliasing (Tree Borrows / PCG) With Weak-Memory Concurrency and Must-Linearity",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "barrier_class": "semantic_chasm",
+      "statement": "Define a modular operational memory model unifying dynamic aliasing protectors (Tree Borrows), flow-sensitive borrow graphs (Polonius/PCG), must-linear unwind obligations, and relaxed atomic concurrency (RC11/Promising).",
+      "why_open": "Stacked Borrows and Tree Borrows have incomparable acceptance sets, dynamic FnEntry protectors complicate modular reborrow-returning contracts, and neither composes yet with relaxed weak-memory atomics.",
+      "relevant_packages": [
+        "ownership-linearity-regions-and-safe-mutability-design-space",
+        "gpu-simt-execution-warp-divergence-and-scoped-memory-models"
+      ],
+      "falsification_or_progress_trigger": "A mechanized concurrent Tree Borrows + weak-memory operational model with verified modular function-frame rules and compiler optimization adequacy."
+    },
+    {
+      "id": "OP-10",
+      "title": "Eliminating 2^N Gradual-Typing Blame Cliffs and Enabling Typed Post-Resolution Reflection",
+      "dimension_id": "pl-types-effects-ownership-and-metaprogramming",
+      "barrier_class": "algorithmic_complexity",
+      "statement": "Collapse higher-order gradual-typing proxy overhead without sacrificing complete monitoring, and replace untyped token-stream macros with hygienic, post-resolution typed reflection over canonical layouts and DefIds.",
+      "why_open": "Collapsible contracts mitigate pathological chains yet still face 2^N migration cliffs on real lattices; meanwhile systems languages lack incremental, deterministic, post-resolution reflection hooks that preserve soundness across attribute ordering.",
+      "relevant_packages": [
+        "gradual-typing-sound-interoperability-and-blame-performance-cliffs",
+        "metaprogramming-hygiene-staging-and-compile-time-execution"
+      ],
+      "falsification_or_progress_trigger": "Empirical demonstration of <2x worst-case slowdown across the full Takikawa GTP benchmark lattice with complete monitoring, and a typed post-resolution reflection system eliminating token-re-parsing derive bugs."
+    },
+    {
+      "id": "OP-11",
+      "title": "Verified Multi-Level IRs Without Semantic-Erasure Cliffs Across Regions and E-Graphs",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "barrier_class": "semantic_chasm",
+      "statement": "Construct a multi-level compiler IR combining structured regions (RVSDG/MLIR), acyclic e-graphs (aegraphs), and explicit poison/provenance/effect traits so optimizations and lowerings remain formally verifiable end to end.",
+      "why_open": "V8's retreat from Sea-of-Nodes to Turboshaft exposed scheduling fragility; MLIR dialect traits are mostly unchecked prose; and e-graphs struggle with stateful control flow and aliasing side conditions.",
+      "relevant_packages": [
+        "compiler-ir-architectures-sea-of-nodes-rvsdg-cps-and-mlir",
+        "mill-edge-dataflow-and-tile-bsp-compiler-architectures"
+      ],
+      "falsification_or_progress_trigger": "A formally verified multi-level IR compiler achieving LLVM -O2 parity while checking dialect-lowering and e-graph rewrite certificates inside a proof kernel."
+    },
+    {
+      "id": "OP-12",
+      "title": "Decidable Polymorphic Layout Algebras and Reference-Admissible ABI Resilience",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "barrier_class": "algorithmic_complexity",
+      "statement": "Formalize a decidable compile-time layout constraint algebra (size, alignment, padding, niche occupancy, affine-ceiling DST metadata inversion) usable across both monomorphized and ABI-resilient witness-table generics.",
+      "why_open": "Nested packed/aligned DSTs yield non-injective size-to-metadata plateaus; missing generic const-layout predicates force unsafe post-monomorphization errors (PMEs) and brittle const assertions.",
+      "relevant_packages": [
+        "polymorphism-compilation-layout-algebras-and-abi-resilience",
+        "c-abi-stack-conventions-and-process-interface-archaeology"
+      ],
+      "falsification_or_progress_trigger": "A statically checked polymorphic layout algebra integrated into a systems compiler typechecker eliminating PMEs and verifying metadata-inversion injectivity."
+    },
+    {
+      "id": "OP-13",
+      "title": "Mechanized Soundness for Tiered Speculative JITs, Partial Escape Analysis, and OSR",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "barrier_class": "verification_scaling",
+      "statement": "Scale mechanized JIT verification (CoreJIT, FM-JIT) to concurrent multi-tier pipelines with inline caches, global protector assumptions, partial escape analysis / virtual-object materialization, and OSR entry.",
+      "why_open": "Production JITs (V8, HotSpot C2, Graal) mutate assumptions concurrently across threads and synthesize complex heap graphs at deoptimization points, far beyond current sequential Coq JIT models.",
+      "relevant_packages": [
+        "jit-compilation-speculative-optimization-and-deoptimization-soundness",
+        "debugging-optimized-concurrent-and-cross-language-programs"
+      ],
+      "falsification_or_progress_trigger": "A mechanized simulation proof covering concurrent assumption invalidation, virtual-object rematerialization, and OSR frame migration for a bytecode-to-native JIT."
+    },
+    {
+      "id": "OP-14",
+      "title": "Mechanized Verification of Concurrent Moving GCs, Statepoints, and Weak-Memory Barriers",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "barrier_class": "verification_scaling",
+      "statement": "Verify end-to-end soundness across both compiler stack-map/safepoint insertion (including derived interior pointers and loop strip mining) and concurrent moving GC load/write barriers on weak-memory hardware.",
+      "why_open": "Existing mechanized GC proofs isolate simplified sequential or non-moving collectors, whereas real production bugs sit at the seam between LLVM optimizations, derived pointers, FFI roots, and relaxed memory ordering.",
+      "relevant_packages": [
+        "garbage-collection-barriers-safepoints-and-runtime-invariants",
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes"
+      ],
+      "falsification_or_progress_trigger": "An end-to-end verified compiler + concurrent compacting collector (MMTk/ZGC-class) mechanized under ARMv8/RC11 weak memory with verified derived-pointer relocation."
+    },
+    {
+      "id": "OP-15",
+      "title": "Sound AsyncDrop, Cancel-Safe Structured Concurrency, and Fair Work-Stealing Progress",
+      "dimension_id": "compiler-irs-layout-jits-gcs-and-async-runtimes",
+      "barrier_class": "semantic_chasm",
+      "statement": "Establish type-checked cancel safety and asynchronous resource cleanup (AsyncDrop) alongside mechanized liveness/fairness proofs for work-stealing schedulers under cooperative budgets and blocking FFI calls.",
+      "why_open": "Dropping a suspended state machine synchronously leaks in-flight I/O or invariants; adding AsyncDrop interacts deeply with unwinding, select! racing, and linear types; LIFO slots and FFI blocking threaten progress.",
+      "relevant_packages": [
+        "async-runtimes-coroutines-schedulers-and-cancellation-semantics",
+        "algebraic-effects-handlers-coeffects-and-capability-tracking"
+      ],
+      "falsification_or_progress_trigger": "A statically checked AsyncDrop/cancellation discipline with mechanized cancel-safety and starvation-freedom proofs for a work-stealing runtime."
+    },
+    {
+      "id": "OP-16",
+      "title": "Cycle-Free, Deadlock-Free Multi-Runtime Memory Interop Across Independent Collectors",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "barrier_class": "impossibility_theorem",
+      "statement": "Characterize the minimal runtime protocol (handles, epoch pinning, cross-heap weak references, or capability ownership) that prevents cross-heap memory leaks and safepoint deadlocks between co-resident managed and native runtimes.",
+      "why_open": "Independent tracing collectors cannot collect reference cycles spanning heap boundaries without either a cross-runtime tracing protocol, linear ownership restrictions, or memory-copying encapsulation.",
+      "relevant_packages": [
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes",
+        "garbage-collection-barriers-safepoints-and-runtime-invariants"
+      ],
+      "falsification_or_progress_trigger": "A formal cross-heap ownership/tracing protocol proven deadlock-free and cycle-reclaiming across two distinct moving collectors (e.g., JVM + OCaml 5 or WasmGC + Rust)."
+    },
+    {
+      "id": "OP-17",
+      "title": "Multicore, Effect-Aware Multi-Language Program Logics Unifying DimSum, Melocoton, and Linking Types",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "barrier_class": "semantic_chasm",
+      "statement": "Extend decentralized multi-language semantics (DimSum) and FFI separation logics (Melocoton) to multicore weak-memory concurrency, re-entrant callbacks with effects/exceptions, and aligned dual-nondeterminism polarities.",
+      "why_open": "Melocoton models single-domain OCaml<->C without multicore data races or algebraic effects; DimSum and Melocoton use opposite angelic/demonic boundary polarities; and Linking Types assume realizable shared targets.",
+      "relevant_packages": [
+        "semantic-multi-language-interop-dimsum-melocoton-and-linking-types",
+        "multi-logic-and-multi-paradigm-verification-composition"
+      ],
+      "falsification_or_progress_trigger": "A mechanized Coq/Lean framework combining DimSum-style decentralized horizontal composition with multicore Iris/Melocoton separation-logic FFI proofs."
+    },
+    {
+      "id": "OP-18",
+      "title": "Semantically Sound Polyglot Whole-Program Optimization Without Isolation Collapse",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "barrier_class": "impossibility_theorem",
+      "statement": "Enable cross-language inlining and unboxing across polyglot components (Rust+C ThinLTO, Wasm Components, GraalVM Truffle) while preserving distinct source provenance, aliasing, unwinding, and security isolation boundaries.",
+      "why_open": "Current linker-plugin LTO fuses incompatible Rust noalias/noundef and C TBAA attributes into unsound LLVM IR, while shared-nothing Wasm Component boundaries pay copy taxes unless WasmGC/shared-everything threads weaken isolation.",
+      "relevant_packages": [
+        "wasm-component-model-truffle-graal-and-polyglot-interop-platforms",
+        "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes"
+      ],
+      "falsification_or_progress_trigger": "A formally verified polyglot optimizer preserving multi-language provenance/aliasing tags across cross-language inlining with mechanized soundness."
+    },
+    {
+      "id": "OP-19",
+      "title": "Open-World Cross-Logic Verification Composition Under Non-Invertible Compilation Codecs",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "barrier_class": "impossibility_theorem",
+      "statement": "Compose separately verified modules proven in distinct logics (Iris, Verus/SMT, CompCertO, abstract interpretation, translation validation) across FFI seams without whole-program re-verification or trusted cross-logic axioms.",
+      "why_open": "Forgetful compilation codecs prevent inverting target theorems back to source contracts; step-indexed logics lose modularity across adequacy boundaries; and provers rely on incompatible foundational axioms.",
+      "relevant_packages": [
+        "multi-logic-and-multi-paradigm-verification-composition",
+        "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening"
+      ],
+      "falsification_or_progress_trigger": "An end-to-end machine-checked multi-language binary combining at least three distinct verification paradigms via paired source+target contracts audited by one small proof kernel."
+    },
+    {
+      "id": "OP-20",
+      "title": "Compositional Preservation of 2-Safety Hyperproperties Across Multi-Language Refinement",
+      "dimension_id": "cross-language-ffi-and-multi-logic-composition",
+      "barrier_class": "impossibility_theorem",
+      "statement": "Preserve relational 2-safety hyperproperties (cryptographic constant-time, speculative non-interference, secret erasure, probabilistic independence) across separate compilation, cross-language FFI, and heterogeneous verification bridges.",
+      "why_open": "Standard 1-safety trace refinement (Beh_tgt <= Beh_src) is strictly blind to 2-safety hyperproperties; resolving nondeterminism in a secret-dependent way or eliminating dead zeroize() stores satisfies 1-safety while leaking secrets.",
+      "relevant_packages": [
+        "multi-logic-and-multi-paradigm-verification-composition",
+        "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening"
+      ],
+      "falsification_or_progress_trigger": "A compositional multi-language refinement theorem preserving constant-time and speculative leakage contracts across mixed verified/unverified FFI boundaries."
+    },
+    {
+      "id": "OP-21",
+      "title": "Semantic SemVer, Proof-Aware Version Solving, and Hermetic Polyglot Supply Chains",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "barrier_class": "algorithmic_complexity",
+      "statement": "Replace syntactic SemVer and language-siloed package managers with automated API/ABI/specification-compatibility checking, predictable dependency resolution, and content-addressed hermetic polyglot build graphs.",
+      "why_open": "Dependency solving is NP-complete in general; syntactic SemVer fails on trait coherence, auto traits, ABI drift, and spec strengthening; and multi-language verification toolchains break under mtime and ambient-linker assumptions.",
+      "relevant_packages": [
+        "package-management-version-solving-semver-and-supply-chain-boundaries",
+        "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening"
+      ],
+      "falsification_or_progress_trigger": "A polyglot package/build manager that verifies behavioral/ABI compatibility signatures across upgrades and caches cross-language proof artifacts content-addressedly."
+    },
+    {
+      "id": "OP-22",
+      "title": "High-Precision Type, Borrow, and SMT Failure Localization Under Resilient Live Parsing",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "barrier_class": "algorithmic_complexity",
+      "statement": "Deliver human-interpretable, causally accurate blame localization across unification/trait inference, borrow-checker permission provenance, and SMT verification failures inside live incremental IDEs.",
+      "why_open": "Minimum unsatisfiable subset (MUS) / MaxSMT localization scales poorly on large constraint graphs; backward VCG obscures forward execution causes; and elaboration-dependent syntax breaks incremental parsing.",
+      "relevant_packages": [
+        "type-error-localization-compiler-diagnostics-and-verification-ux",
+        "specification-authoring-spec-drift-and-the-testing-verification-continuum"
+      ],
+      "falsification_or_progress_trigger": "Controlled empirical studies and sub-100ms IDE deployment showing combined MUS/bidirectional type localization + giant-step validated SMT counterexamples cutting debugging time >2x."
+    },
+    {
+      "id": "OP-23",
+      "title": "Unified Machine-to-Source State Relations for Verified Debuginfo, Time-Travel Replay, and Polyglot Async Stacks",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "barrier_class": "semantic_chasm",
+      "statement": "Unify DWARF debuginfo, JIT deoptimization FrameStates, GC stack maps, and compiler simulation invariants into one checked state relation supporting deterministic time-travel debugging across optimized, async, and polyglot stacks.",
+      "why_open": "Optimizations routinely drop or corrupt variable locations (Hennessy currency problem); deterministic replay (rr) requires hardware PMU support and single-core serialization; and mixed Python/Rust/JVM/async frames lack unified causal unwinding.",
+      "relevant_packages": [
+        "debugging-optimized-concurrent-and-cross-language-programs",
+        "jit-compilation-speculative-optimization-and-deoptimization-soundness"
+      ],
+      "falsification_or_progress_trigger": "A compiler pass pipeline that emits formally checked debug-location witnesses verified by simulation invariants and consumed by a cross-language async/time-travel debugger."
+    },
+    {
+      "id": "OP-24",
+      "title": "Eliminating SMT Solver Instability and Superlinear Proof Maintenance Costs",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "barrier_class": "verification_scaling",
+      "statement": "Achieve predictable, perturbation-invariant automated verification and low-cost proof maintenance across evolving codebases through context pruning, quantifier discipline, untrusted functional lifting, and automated proof repair.",
+      "why_open": "Mariposa demonstrated widespread SMT instability under trivial renamings/reseedings; E-matching loops cause timeouts; deductive proof ratios scale superlinearly (2x-40x+); and small spec/AST edits break large proof suites.",
+      "relevant_packages": [
+        "proof-fragility-smt-instability-and-verification-scaling-walls",
+        "specification-authoring-spec-drift-and-the-testing-verification-continuum"
+      ],
+      "falsification_or_progress_trigger": "Production verification benchmarks exhibiting <1% Mariposa instability under seed/order perturbations alongside automated proof-repair survival >90% across real upstream releases."
+    },
+    {
+      "id": "OP-25",
+      "title": "Adversarial Goodhart-Resistant Specifications and Memory-Safe Million-Step Proof Kernels",
+      "dimension_id": "human-tooling-diagnostics-smt-and-kernel-walls",
+      "barrier_class": "socio_technical_tcb",
+      "statement": "Design proof-assistant kernels with call-by-value/packed-array reducers, strictly opaque memory-safe interface wire formats, automated semantic mutation testing, and formal contracts hardened against adversarial/AI reward hacking.",
+      "why_open": "Current dependent-type kernels suffer call-by-name WHNF cliffs, accidental theorem unfolding, and memory-unsafe binary deserializers (.olean/.vo); positive verification suites miss nearly 100% of TCB guard-weakening mutants; and naive contracts fall to miracle targets or observation erasure.",
+      "relevant_packages": [
+        "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening",
+        "specification-authoring-spec-drift-and-the-testing-verification-continuum"
+      ],
+      "falsification_or_progress_trigger": "A memory-safe, opaque-interface proof kernel verifying million-step compiler derivations in milliseconds paired with 100%-mutant-killing TCB semantics suites and mechanized anti-Goodhart contract checks."
+    },
+    {
+      "id": "OP-26",
+      "title": "Unified Verified Compilation Across Non-Von-Neumann CPUs, Spatial CGRAs, BSP Tiles, and Reversible Substrates",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "barrier_class": "hardware_physics",
+      "statement": "Design a clean-slate multi-level IR and verified backend architecture capable of targeting temporal-SSA belts (Mill), block-atomic dataflow (EDGE), spatial CGRAs, wafer-scale/BSP/NoC tiles (Cerebras, Graphcore, Tensix, Groq), PIM, and reversible ISAs without fighting flat-register Von Neumann assumptions.",
+      "why_open": "LLVM hardcodes flat mutable registers, coherent caches, and unstructured scalar CFGs; every non-Von-Neumann engine must bypass or fight mainstream compiler middle-ends.",
+      "relevant_packages": [
+        "mill-edge-dataflow-and-tile-bsp-compiler-architectures",
+        "compiler-ir-architectures-sea-of-nodes-rvsdg-cps-and-mlir"
+      ],
+      "falsification_or_progress_trigger": "One formally verified structured-dataflow compiler targeting both a conventional CPU and at least two non-coherent spatial/BSP/belt architectures from shared algorithmic IR."
+    },
+    {
+      "id": "OP-27",
+      "title": "Verified Tensor Layout/Swizzle Algebras, Async Scratchpad Pipelines, and Safe Scoped-Memory GPU Programming",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "barrier_class": "hardware_physics",
+      "statement": "Mechanize hybrid (Z x F_2) tensor layout/XOR-swizzle algebras, asynchronous TMA/DMA/mbarrier phase-parity pipelines, and borrow-checked scoped-memory ownership (Descend) inside verified user-schedulable accelerator compilers (Exo/Halide/Triton/Mosaic).",
+      "why_open": "Hopper/Blackwell async memory proxies, TMEM warp specialization, non-transitive PTX/Vulkan scopes, and bank-conflict-free swizzles are currently verified ad hoc or only in C++ template metaprogramming.",
+      "relevant_packages": [
+        "tensor-layout-algebras-scratchpad-dma-and-user-schedulable-accelerator-languages",
+        "gpu-simt-execution-warp-divergence-and-scoped-memory-models"
+      ],
+      "falsification_or_progress_trigger": "A mechanized Lean/Coq library proving CuTe-class layout bijectivity, 32-bank conflict freedom, mbarrier deadlock freedom, and scoped-DRF for generated GPU/TPU kernels at CUTLASS/Mosaic peak throughput."
+    },
+    {
+      "id": "OP-28",
+      "title": "Sound Compilation and Verification for Post-IEEE-754 Numerics, Non-Differentiable AD, and Measure-Zero PPLs",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "barrier_class": "undecidability",
+      "statement": "Provide sound compiler semantics and verification for block-scaled/narrow ML numerics (OCP MXFP, FP8 E4M3FN, IEEE P3109, stochastic rounding), piecewise non-differentiable reverse-mode AD, and dynamic-support/measure-zero probabilistic inference.",
+      "why_open": "Block-coupled shared exponents break per-element aliasing/mutability; E4M3FN lacks infinity; AD across conditional branches fails classical chain rules at measure-zero kink sets; and general continuous symbolic disintegration is undecidable.",
+      "relevant_packages": [
+        "programmable-network-pipelines-p4-semantics-and-exotic-hardware-numerics",
+        "differentiable-programming-autodiff-semantics-and-compiler-challenges",
+        "probabilistic-programming-measure-semantics-and-inference-compilers"
+      ],
+      "falsification_or_progress_trigger": "Formally verified compiler passes for IEEE P3109/MXFP numerics, mechanized Clarke-subdifferential/diffeology AD soundness for LLVM/MLIR, and verified support-checked SVI/HMC inference compilers."
+    },
+    {
+      "id": "OP-29",
+      "title": "End-to-End Verified Software-Hardware FFI Across Typed HDLs, Interconnects, DMA, IRQs, and FPGA DPR",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "barrier_class": "semantic_chasm",
+      "statement": "Unify typed hardware languages (Koika, Filament, Calyx, CIRCT, ACT) with verified systems software across a single mechanized SW<->HW FFI covering MMIO, AXI4/TileLink/ESI interconnects, RoCC coprocessors, linear cache-incoherent DMA/IOMMU/CXL, preemptive IRQs, RTL<=TLM refinement, and FPGA DPR.",
+      "why_open": "IEEE 1800 SystemVerilog suffers X-optimism and simulation/synthesis divergence; Bedrock2+Kami and Pancake cover narrow embedded MMIO but not modern cache-incoherent DMA, CXL, out-of-order interconnects, or live partial reconfiguration.",
+      "relevant_packages": [
+        "hardware-description-languages-timing-semantics-and-hw-sw-co-design",
+        "verified-software-hardware-ffi-mmio-dma-interconnects-and-reconfigurable-fabrics"
+      ],
+      "falsification_or_progress_trigger": "A full-stack silicon-tested SW+HW proof linking a verified OS driver and typed HDL accelerator across AXI4/DMA/IRQ and DPR boundaries under one proof kernel."
+    },
+    {
+      "id": "OP-30",
+      "title": "Decidable Verification Frontiers for Fixpoints, Async MPST, WCET, Under-Constrained ZK, and Quantum Uncomputation",
+      "dimension_id": "exotic-substrates-hdls-and-non-traditional-paradigms",
+      "barrier_class": "undecidability",
+      "statement": "Bridge practical expressiveness and decidable verification across non-monotone relational/e-graph fixpoints (egglog/DBSP), asynchronous multiparty choreographies under crash failures, timing-anomaly-free WCET, deterministic ZK constraint completeness, and entanglement-safe quantum uncomputation.",
+      "why_open": "Async MPST subtyping is undecidable; unstratified lattices diverge without widening; OoO microarchitectures exhibit unbounded timing domino effects; proving R1CS/PLONK uniqueness is co-NP/undecidable in general; and quantum uncomputation fails silently when auxiliary qubits remain entangled.",
+      "relevant_packages": [
+        "datalog-fixpoint-incremental-relational-and-hybrid-engines",
+        "choreographic-programming-multiparty-session-types-and-distributed-protocols",
+        "synchronous-real-time-reactive-languages-and-wcet-predictability",
+        "zk-circuit-dsls-resource-metered-vms-and-quantum-linear-languages"
+      ],
+      "falsification_or_progress_trigger": "Verified compiler-enforced decidable fragments delivering automated uniqueness proofs for production ZK circuits, cost-preserving WCET on pipelined silicon, and fault-tolerant choreographic EPP."
+    }
+  ]
+}
