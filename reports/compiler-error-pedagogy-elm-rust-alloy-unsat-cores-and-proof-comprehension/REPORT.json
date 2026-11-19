@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "tooling/diagnostic-comprehensibility",
+    "pl/error-ergonomics",
+    "verification/counterexample-legibility",
+    "smt/unsat-explanations",
+    "rustc/borrow-diagnostics",
+    "lean/goal-comprehension"
+  ],
+  "subjects": [
+    {
+      "name": "Elm compiler diagnostic and directional type-error architecture",
+      "identity": {
+        "repository": "elm/compiler",
+        "revision": "1c278bf5ecf4136f122ce1cba436783c7f561dac"
+      }
+    },
+    {
+      "name": "ariadne multi-span source diagnostic layout library",
+      "identity": {
+        "repository": "zesterer/ariadne",
+        "revision": "5e62913d34dabf34140ad812448dc8faae5abf15"
+      }
+    },
+    {
+      "name": "Rust compiler structured diagnostics, borrow checker narratives, and trait error reporting",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+      }
+    },
+    {
+      "name": "Kodkod relational model finder and proof-recycling unsat-core extractor",
+      "identity": {
+        "repository": "emina/kodkod",
+        "revision": "6e802440a20ca6a5e6817e410b308fdcef87fade"
+      }
+    },
+    {
+      "name": "Alloy Analyzer 6 relational specification and counterexample projection suite",
+      "identity": {
+        "repository": "AlloyTools/org.alloytools.alloy",
+        "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+      }
+    },
+    {
+      "name": "Forge pedagogical relational modeling language and Sterling provenance visualizer",
+      "identity": {
+        "repository": "tnelson/Forge",
+        "revision": "326400a735540d25f697336c7efbacd215b1800e"
+      }
+    },
+    {
+      "name": "Sterling TypeScript relational counterexample graph projection engine",
+      "identity": {
+        "repository": "tnelson/sterling-ts",
+        "revision": "45d1e6b410dacf3b3f15b35998447480566ba32a"
+      }
+    },
+    {
+      "name": "Z3 theorem prover quantifier instantiation logger and assumption-core engine",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "2ad31c4f060122b14eaef7d8449a3844a3694df3"
+      }
+    },
+    {
+      "name": "Axiom Profiler 2 SMT quantifier matching-loop and equality-explanation analyzer",
+      "identity": {
+        "repository": "viperproject/axiom-profiler-2",
+        "revision": "03e43597e7ac5969e721647c894f35ffb46adb46"
+      }
+    },
+    {
+      "name": "Mariposa SMT proof-stability mutation and statistical evaluation harness",
+      "identity": {
+        "repository": "secure-foundations/mariposa",
+        "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95",
+        "doi": "10.1184/R1/23905905"
+      }
+    },
+    {
+      "name": "Lean 4 subexpression-indexed delaborator and tactic goal pretty-printer",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+      }
+    },
+    {
+      "name": "OSS Verify machine-checked binary safety specifications and Rocq proofs",
+      "identity": {
+        "repository": "theorem-labs/oss-verify-proofs",
+        "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061"
+      }
+    },
+    {
+      "name": "Marceau, Fisler, and Krishnamurthi empirical error-message rubric and vocabulary alignment studies",
+      "identity": {
+        "doi": "10.1145/2048237.2048241",
+        "companion_doi": "10.1145/1953163.1953308",
+        "year": "2011"
+      }
+    },
+    {
+      "name": "Torlak, Chang, and Jackson minimal unsatisfiable core extraction for declarative specifications",
+      "identity": {
+        "doi": "10.1007/978-3-540-68237-0_23",
+        "year": "2008"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

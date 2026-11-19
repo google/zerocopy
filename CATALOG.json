@@ -12690,6 +12690,119 @@
         "verification/empirical-evaluation"
       ]
     },
+    "compiler-error-pedagogy-elm-rust-alloy-unsat-cores-and-proof-comprehension": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "elm/compiler",
+            "revision": "1c278bf5ecf4136f122ce1cba436783c7f561dac"
+          },
+          "name": "Elm compiler diagnostic and directional type-error architecture"
+        },
+        {
+          "identity": {
+            "repository": "zesterer/ariadne",
+            "revision": "5e62913d34dabf34140ad812448dc8faae5abf15"
+          },
+          "name": "ariadne multi-span source diagnostic layout library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "Rust compiler structured diagnostics, borrow checker narratives, and trait error reporting"
+        },
+        {
+          "identity": {
+            "repository": "emina/kodkod",
+            "revision": "6e802440a20ca6a5e6817e410b308fdcef87fade"
+          },
+          "name": "Kodkod relational model finder and proof-recycling unsat-core extractor"
+        },
+        {
+          "identity": {
+            "repository": "AlloyTools/org.alloytools.alloy",
+            "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+          },
+          "name": "Alloy Analyzer 6 relational specification and counterexample projection suite"
+        },
+        {
+          "identity": {
+            "repository": "tnelson/Forge",
+            "revision": "326400a735540d25f697336c7efbacd215b1800e"
+          },
+          "name": "Forge pedagogical relational modeling language and Sterling provenance visualizer"
+        },
+        {
+          "identity": {
+            "repository": "tnelson/sterling-ts",
+            "revision": "45d1e6b410dacf3b3f15b35998447480566ba32a"
+          },
+          "name": "Sterling TypeScript relational counterexample graph projection engine"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "2ad31c4f060122b14eaef7d8449a3844a3694df3"
+          },
+          "name": "Z3 theorem prover quantifier instantiation logger and assumption-core engine"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/axiom-profiler-2",
+            "revision": "03e43597e7ac5969e721647c894f35ffb46adb46"
+          },
+          "name": "Axiom Profiler 2 SMT quantifier matching-loop and equality-explanation analyzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1184/R1/23905905",
+            "repository": "secure-foundations/mariposa",
+            "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+          },
+          "name": "Mariposa SMT proof-stability mutation and statistical evaluation harness"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+          },
+          "name": "Lean 4 subexpression-indexed delaborator and tactic goal pretty-printer"
+        },
+        {
+          "identity": {
+            "repository": "theorem-labs/oss-verify-proofs",
+            "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061"
+          },
+          "name": "OSS Verify machine-checked binary safety specifications and Rocq proofs"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1145/1953163.1953308",
+            "doi": "10.1145/2048237.2048241",
+            "year": "2011"
+          },
+          "name": "Marceau, Fisler, and Krishnamurthi empirical error-message rubric and vocabulary alignment studies"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-68237-0_23",
+            "year": "2008"
+          },
+          "name": "Torlak, Chang, and Jackson minimal unsatisfiable core extraction for declarative specifications"
+        }
+      ],
+      "topics": [
+        "tooling/diagnostic-comprehensibility",
+        "pl/error-ergonomics",
+        "verification/counterexample-legibility",
+        "smt/unsat-explanations",
+        "rustc/borrow-diagnostics",
+        "lean/goal-comprehension"
+      ]
+    },
     "compiler-ir-architectures-sea-of-nodes-rvsdg-cps-and-mlir": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -55423,6 +55536,116 @@
         "ffi/abi-codecs",
         "build",
         "build/reproducibility"
+      ]
+    },
+    "universal-substrate-abstractions-algebraic-effects-graded-coeffects-and-lenses": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3341714",
+            "repository": "granule-project/granule",
+            "revision": "85a463f18914353669ff291677c47190fff43b23"
+          },
+          "name": "Granule graded modal and linear coeffect/effect programming language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3209108.3209189",
+            "repository": "idris-lang/Idris2",
+            "revision": "cf66cb4ccb8f0df7876fd07842f056f6222b9dce"
+          },
+          "name": "Idris 2 Quantitative Type Theory core and ZeroOneOmega semiring"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473576",
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka row-typed algebraic effect compiler, evidence passing, and Perceus reuse runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454039",
+            "repository": "ocaml/ocaml",
+            "revision": "add46c97cbfda4f417a1aae9c8a9e9fa94abee5b"
+          },
+          "name": "OCaml 5 runtime stack-pooled one-shot algebraic effect fibers"
+        },
+        {
+          "identity": {
+            "repository": "effekt-lang/effekt",
+            "revision": "6976c7947eac26bc1203bcd48892702ce6d3cf21"
+          },
+          "name": "Effekt lexical capability-passing effect handler language"
+        },
+        {
+          "identity": {
+            "repository": "wasmfx/specfx",
+            "revision": "54d6657b16b7bf134808064e4f77845a2b7c4fcc"
+          },
+          "name": "WasmFX typed delimited continuation and stack-switching specification"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy safe zero-copy byte parsing, serialization, and SplitAt linear slice splitting"
+        },
+        {
+          "identity": {
+            "repository": "inkandswitch/cambria",
+            "revision": "da8961440cac7eba1c3113488f5bcbc26046620f"
+          },
+          "name": "Cambria bidirectional JSON schema-evolution lens compiler"
+        },
+        {
+          "identity": {
+            "repository": "tweag/linear-base",
+            "revision": "bb5182a76c84eedcf78536c9ce24cb900882b2f3"
+          },
+          "name": "linear-base Linear Haskell standard library and linear optics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2628136.2628160",
+            "precursor_doi": "10.1007/978-3-642-39212-2_35",
+            "year": "2014"
+          },
+          "name": "Petricek, Orchard, and Mycroft coeffect calculi for context-dependent computation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-00590-9_7",
+            "evidently_doi": "10.1145/3408981",
+            "perceus_doi": "10.1145/3453483.3454032"
+          },
+          "name": "Plotkin and Pretnar algebraic effect handlers and Xie et al. Perceus/evidence compilation"
+        },
+        {
+          "identity": {
+            "asymmetric_doi": "10.1145/1232420.1232424",
+            "symmetric_doi": "10.1145/1925844.1926428"
+          },
+          "name": "Foster et al. asymmetric tree lenses and Hofmann, Pierce, and Wagner symmetric lenses"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90224-P",
+            "year": "1991"
+          },
+          "name": "Abadi and Lamport existence of refinement mappings via history and prophecy variables"
+        }
+      ],
+      "topics": [
+        "pl/universal-calculi",
+        "pl/graded-coeffects",
+        "compilers/unified-irs",
+        "verification/compositional-contracts",
+        "zerocopy/bidirectional-lenses",
+        "runtimes/effect-handlers"
       ]
     },
     "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {

@@ -1,0 +1,110 @@
+{
+  "topics": [
+    "pl/universal-calculi",
+    "pl/graded-coeffects",
+    "compilers/unified-irs",
+    "verification/compositional-contracts",
+    "zerocopy/bidirectional-lenses",
+    "runtimes/effect-handlers"
+  ],
+  "subjects": [
+    {
+      "name": "Granule graded modal and linear coeffect/effect programming language",
+      "identity": {
+        "repository": "granule-project/granule",
+        "revision": "85a463f18914353669ff291677c47190fff43b23",
+        "doi": "10.1145/3341714"
+      }
+    },
+    {
+      "name": "Idris 2 Quantitative Type Theory core and ZeroOneOmega semiring",
+      "identity": {
+        "repository": "idris-lang/Idris2",
+        "revision": "cf66cb4ccb8f0df7876fd07842f056f6222b9dce",
+        "doi": "10.1145/3209108.3209189"
+      }
+    },
+    {
+      "name": "Koka row-typed algebraic effect compiler, evidence passing, and Perceus reuse runtime",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589",
+        "doi": "10.1145/3473576"
+      }
+    },
+    {
+      "name": "OCaml 5 runtime stack-pooled one-shot algebraic effect fibers",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "add46c97cbfda4f417a1aae9c8a9e9fa94abee5b",
+        "doi": "10.1145/3453483.3454039"
+      }
+    },
+    {
+      "name": "Effekt lexical capability-passing effect handler language",
+      "identity": {
+        "repository": "effekt-lang/effekt",
+        "revision": "6976c7947eac26bc1203bcd48892702ce6d3cf21"
+      }
+    },
+    {
+      "name": "WasmFX typed delimited continuation and stack-switching specification",
+      "identity": {
+        "repository": "wasmfx/specfx",
+        "revision": "54d6657b16b7bf134808064e4f77845a2b7c4fcc"
+      }
+    },
+    {
+      "name": "zerocopy safe zero-copy byte parsing, serialization, and SplitAt linear slice splitting",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Cambria bidirectional JSON schema-evolution lens compiler",
+      "identity": {
+        "repository": "inkandswitch/cambria",
+        "revision": "da8961440cac7eba1c3113488f5bcbc26046620f"
+      }
+    },
+    {
+      "name": "linear-base Linear Haskell standard library and linear optics",
+      "identity": {
+        "repository": "tweag/linear-base",
+        "revision": "bb5182a76c84eedcf78536c9ce24cb900882b2f3"
+      }
+    },
+    {
+      "name": "Petricek, Orchard, and Mycroft coeffect calculi for context-dependent computation",
+      "identity": {
+        "doi": "10.1145/2628136.2628160",
+        "precursor_doi": "10.1007/978-3-642-39212-2_35",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Plotkin and Pretnar algebraic effect handlers and Xie et al. Perceus/evidence compilation",
+      "identity": {
+        "doi": "10.1007/978-3-642-00590-9_7",
+        "evidently_doi": "10.1145/3408981",
+        "perceus_doi": "10.1145/3453483.3454032"
+      }
+    },
+    {
+      "name": "Foster et al. asymmetric tree lenses and Hofmann, Pierce, and Wagner symmetric lenses",
+      "identity": {
+        "asymmetric_doi": "10.1145/1232420.1232424",
+        "symmetric_doi": "10.1145/1925844.1926428"
+      }
+    },
+    {
+      "name": "Abadi and Lamport existence of refinement mappings via history and prophecy variables",
+      "identity": {
+        "doi": "10.1016/0304-3975(91)90224-P",
+        "year": "1991"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
