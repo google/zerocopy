@@ -21643,6 +21643,61 @@
         "systems/os-kernels"
       ]
     },
+    "firesim-fame-decoupling-nextpnr-bitstreams-dromajo-rvfi-and-cocotb-cosim": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "firesim/firesim",
+            "revision": "9db588176c19e7252ed3027b2028bc21095f863a"
+          },
+          "name": "FireSim and Golden Gate (MIDAS FAME-1 and FASED)"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/nextpnr",
+            "revision": "0f387c6a522a4e3aefe54b4d066e37548ccf9546"
+          },
+          "name": "nextpnr portable FPGA place-and-route tool"
+        },
+        {
+          "identity": {
+            "repository": "f4pga/prjxray",
+            "revision": "c9f02d8576042325425824647ab5555b1bc77833"
+          },
+          "name": "Project X-Ray Xilinx 7-Series bitstream database and FASM assembler"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/riscv-formal",
+            "revision": "c992aa61fdfe0846c5ed90324c596202a1c69b76"
+          },
+          "name": "RISC-V Formal Interface (RVFI) and riscv-formal verification suite"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/dromajo",
+            "revision": "8c0c1e3afd5cdea65d1b35872e395f988b0ec449"
+          },
+          "name": "Dromajo RV64GC architectural cosimulator"
+        },
+        {
+          "identity": {
+            "repository": "cocotb/cocotb",
+            "revision": "c1faa6f710c8b389a659fd5d712422ea0739136a"
+          },
+          "name": "cocotb coroutine-based HDL cosimulation framework"
+        }
+      ],
+      "topics": [
+        "domains/fpga-architecture",
+        "isa/tandem-cosimulation",
+        "verification/rtl-interfaces",
+        "tooling/hardware-simulators",
+        "security/fpga-bitstreams",
+        "ffi/hdl-cosimulation"
+      ]
+    },
     "flash-ftl-wear-leveling-zns-ssds-and-verified-storage-crash-consistency": {
       "observed_at": "2026-11-19",
       "subjects": [
