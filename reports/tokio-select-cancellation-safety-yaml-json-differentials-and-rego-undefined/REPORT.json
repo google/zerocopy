@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "rust/cancellation-safety",
+    "runtimes/async-io-completion",
+    "security/parser-differentials",
+    "pl/policy-evaluation"
+  ],
+  "subjects": [
+    {
+      "name": "Tokio Asynchronous Rust Runtime",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+      }
+    },
+    {
+      "name": "Tokio-uring Linux io_uring Completion Runtime",
+      "identity": {
+        "repository": "tokio-rs/tokio-uring",
+        "revision": "5fb1a4f65b8c471ba6fab8d12e42e129231d865f"
+      }
+    },
+    {
+      "name": "Jackson Core Streaming JSON Parser",
+      "identity": {
+        "repository": "FasterXML/jackson-core",
+        "revision": "c3831c878c9da8e00be0192f802e5921475caf79"
+      }
+    },
+    {
+      "name": "Open Policy Agent (OPA) Rego Top-Down Evaluator",
+      "identity": {
+        "repository": "open-policy-agent/opa",
+        "revision": "674d3362381e14b55069a7a5741eeb8489365c2f"
+      }
+    },
+    {
+      "name": "Apple Pkl Programmable Configuration Language",
+      "identity": {
+        "repository": "apple/pkl",
+        "revision": "069c891ac86067cd26c68d4647100e26c5ed5ba0"
+      }
+    },
+    {
+      "name": "CUE Constraint Lattice Configuration Language",
+      "identity": {
+        "repository": "cue-lang/cue",
+        "revision": "b38d73e3f13559da0ba290e7e61d21ae7230a6ae"
+      }
+    },
+    {
+      "name": "The JavaScript Object Notation (JSON) Data Interchange Format",
+      "identity": {
+        "standard": "RFC 8259",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259"
+      }
+    },
+    {
+      "name": "YAML Ain't Markup Language Version 1.1 and Version 1.2.2 Specifications",
+      "identity": {
+        "standard": "YAML 1.1 / YAML 1.2.2",
+        "url": "https://yaml.org/spec/1.2.2/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

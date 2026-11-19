@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "systems/dynamic-tracing",
+    "compilers/probe-instrumentation",
+    "security/kernel-observability",
+    "isa/shadow-stack-unwinding"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+      }
+    },
+    {
+      "name": "libbpf",
+      "identity": {
+        "repository": "libbpf/libbpf",
+        "revision": "4f05fb027a08a8a66d03916cf6a68a91e2c720ea"
+      }
+    },
+    {
+      "name": "bpftrace",
+      "identity": {
+        "repository": "bpftrace/bpftrace",
+        "revision": "c78cfd8fec80ef475401d7489eca00dc202d2ace"
+      }
+    },
+    {
+      "name": "illumos-gate",
+      "identity": {
+        "repository": "illumos/illumos-gate",
+        "revision": "e58523ce627ab8cc752f80e23fae95fc5c4a6b96"
+      }
+    },
+    {
+      "name": "Go runtime",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "32e2dcc099eba9410bc452f61ce48e50894706d9"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "isa/on-chip-interconnects",
+    "verification/coherence-protocols",
+    "domains/chiplet-fabrics",
+    "compilers/hardware-diplomacy"
+  ],
+  "subjects": [
+    {
+      "name": "ZipCPU WB2AXIP bus bridges and formal AXI4/AXI4-Lite verification IP",
+      "identity": {
+        "repository": "ZipCPU/wb2axip",
+        "revision": "2e8d3bc2d26ddc33d1881022a2a2b9d3f0c16b9b"
+      }
+    },
+    {
+      "name": "PULP Platform SystemVerilog AXI4+ATOP interconnect library",
+      "identity": {
+        "repository": "pulp-platform/axi",
+        "revision": "ee000c0eba9e1c2b6ffdab163a2957419d143461"
+      }
+    },
+    {
+      "name": "CHIPS Alliance Rocket Chip SoC and TileLink generator",
+      "identity": {
+        "repository": "chipsalliance/rocket-chip",
+        "revision": "ece7b9ad544b07df39cd13b6fd7236562a26355d"
+      }
+    },
+    {
+      "name": "CHIPS Alliance Diplomacy two-phase DAG parameter negotiation framework",
+      "identity": {
+        "repository": "chipsalliance/diplomacy",
+        "revision": "fe5e131d4fc8adec14a3ce4a4935bb5c0a269871"
+      }
+    },
+    {
+      "name": "CHIPS Alliance Chisel hardware construction language",
+      "identity": {
+        "repository": "chipsalliance/chisel",
+        "revision": "e95009474df71a0fe95e29a7c04b7cbd80fc426d"
+      }
+    },
+    {
+      "name": "ARM AMBA AXI and ACE Protocol Specification (AXI4 / AXI5)",
+      "identity": {
+        "standard": "ARM IHI 0022",
+        "version": "Issue H.c / Issue K"
+      }
+    },
+    {
+      "name": "ARM AMBA 5 CHI (Coherent Hub Interface) Architecture Specification",
+      "identity": {
+        "standard": "ARM IHI 0050",
+        "version": "Issue F / Issue G"
+      }
+    },
+    {
+      "name": "SiFive TileLink On-Chip Interconnect Specification",
+      "identity": {
+        "standard": "SiFive TileLink Specification",
+        "version": "1.8.1"
+      }
+    },
+    {
+      "name": "Universal Chiplet Interconnect Express (UCIe) Specification",
+      "identity": {
+        "standard": "UCIe Specification",
+        "version": "1.1 / 2.0"
+      }
+    },
+    {
+      "name": "Compute Express Link (CXL) Specification",
+      "identity": {
+        "standard": "CXL Specification",
+        "version": "3.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

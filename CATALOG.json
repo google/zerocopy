@@ -1124,6 +1124,87 @@
         "runtimes/continuations"
       ]
     },
+    "amba-chi-axi-coherency-deadlocks-tilelink-diplomacy-and-ucie-chiplet-flits": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ZipCPU/wb2axip",
+            "revision": "2e8d3bc2d26ddc33d1881022a2a2b9d3f0c16b9b"
+          },
+          "name": "ZipCPU WB2AXIP bus bridges and formal AXI4/AXI4-Lite verification IP"
+        },
+        {
+          "identity": {
+            "repository": "pulp-platform/axi",
+            "revision": "ee000c0eba9e1c2b6ffdab163a2957419d143461"
+          },
+          "name": "PULP Platform SystemVerilog AXI4+ATOP interconnect library"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/rocket-chip",
+            "revision": "ece7b9ad544b07df39cd13b6fd7236562a26355d"
+          },
+          "name": "CHIPS Alliance Rocket Chip SoC and TileLink generator"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/diplomacy",
+            "revision": "fe5e131d4fc8adec14a3ce4a4935bb5c0a269871"
+          },
+          "name": "CHIPS Alliance Diplomacy two-phase DAG parameter negotiation framework"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/chisel",
+            "revision": "e95009474df71a0fe95e29a7c04b7cbd80fc426d"
+          },
+          "name": "CHIPS Alliance Chisel hardware construction language"
+        },
+        {
+          "identity": {
+            "standard": "ARM IHI 0022",
+            "version": "Issue H.c / Issue K"
+          },
+          "name": "ARM AMBA AXI and ACE Protocol Specification (AXI4 / AXI5)"
+        },
+        {
+          "identity": {
+            "standard": "ARM IHI 0050",
+            "version": "Issue F / Issue G"
+          },
+          "name": "ARM AMBA 5 CHI (Coherent Hub Interface) Architecture Specification"
+        },
+        {
+          "identity": {
+            "standard": "SiFive TileLink Specification",
+            "version": "1.8.1"
+          },
+          "name": "SiFive TileLink On-Chip Interconnect Specification"
+        },
+        {
+          "identity": {
+            "standard": "UCIe Specification",
+            "version": "1.1 / 2.0"
+          },
+          "name": "Universal Chiplet Interconnect Express (UCIe) Specification"
+        },
+        {
+          "identity": {
+            "standard": "CXL Specification",
+            "version": "3.0"
+          },
+          "name": "Compute Express Link (CXL) Specification"
+        }
+      ],
+      "topics": [
+        "isa/on-chip-interconnects",
+        "verification/coherence-protocols",
+        "domains/chiplet-fabrics",
+        "compilers/hardware-diplomacy"
+      ]
+    },
     "analog-mixed-signal-spice-simulation-power-grid-ir-drop-and-clock-glitch-physics": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -31562,6 +31643,65 @@
         "verification/refinement"
       ]
     },
+    "loro-automerge-peritext-crdts-and-unicode-grapheme-splice-invariants": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "loro-dev/loro",
+            "revision": "41845694477837cb248fdf16bd1de822a421cfe4"
+          },
+          "name": "Loro Rust/Wasm Rich-Text and Fugue CRDT Engine"
+        },
+        {
+          "identity": {
+            "repository": "automerge/automerge",
+            "revision": "09b19d5080a86548c72721a82747bebe272c6c31"
+          },
+          "name": "Automerge Columnar Rust/JS CRDT Library"
+        },
+        {
+          "identity": {
+            "repository": "yjs/yjs",
+            "revision": "ee37f0a0e23a7c3e14531bae335d439e54c743e6"
+          },
+          "name": "Yjs YATA Shared-Type CRDT Framework"
+        },
+        {
+          "identity": {
+            "repository": "unicode-org/icu4x",
+            "revision": "ffe417bb7f83d097047151cd40dde184bdc9cdc4"
+          },
+          "name": "ICU4X Unicode UAX #29 Grapheme Cluster Segmenter"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.00583"
+          },
+          "name": "The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing (Weidner & Kleppmann)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3555644",
+            "venue": "PACMHCI Vol. 6, Issue CSCW2, Article 531"
+          },
+          "name": "Peritext: A CRDT for Collaborative Rich Text Editing (Litt, Lim, Kleppmann & van Hardenberg, CSCW 2022)"
+        },
+        {
+          "identity": {
+            "standard": "UAX #29",
+            "url": "https://www.unicode.org/reports/tr29/"
+          },
+          "name": "Unicode Standard Annex #29: Unicode Text Segmentation"
+        }
+      ],
+      "topics": [
+        "systems/collaborative-crdts",
+        "pl/unicode-indexing",
+        "ffi/string-representations",
+        "verification/convergence-invariants"
+      ]
+    },
     "lua-php-r-perl-and-dynamic-scripting-runtime-representations": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -34376,6 +34516,59 @@
         "systems/distributed-ml",
         "pl/dependent-shapes",
         "verification/tensor-sharding"
+      ]
+    },
+    "mls-treekem-epoch-commits-fido2-webauthn-passkeys-and-bgp-rpki-rov-leaks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "openmls/openmls",
+            "revision": "ba267737b9511e538a77a41f4480fbed28ff4e83"
+          },
+          "name": "OpenMLS Rust RFC 9420 Implementation"
+        },
+        {
+          "identity": {
+            "repository": "cisco/mlspp",
+            "revision": "fc724c3100ce3b5d8565dbd6d93648a440991a8c"
+          },
+          "name": "Cisco C++ Messaging Layer Security Library (mlspp)"
+        },
+        {
+          "identity": {
+            "repository": "Yubico/libfido2",
+            "revision": "835853ca6ec7d9b0f87bf7fe9ac6219fd78741ce"
+          },
+          "name": "Yubico libfido2 FIDO2/CTAP2 C Library"
+        },
+        {
+          "identity": {
+            "repository": "kanidm/webauthn-rs",
+            "revision": "6d8d4d13b5596c323ffad96006eac5347c247944"
+          },
+          "name": "Kanidm webauthn-rs Rust Relying Party Framework"
+        },
+        {
+          "identity": {
+            "repository": "NLnetLabs/routinator",
+            "revision": "0e929d0f1ce50b3ea50d3aaad9f1ef2cbf8dd529"
+          },
+          "name": "NLnet Labs Routinator RPKI Relying Party Software"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3576915.3623145",
+            "standard": "IETF RFC 9420 / RFC 6811 / RFC 9319"
+          },
+          "name": "IETF RFC 9420 (MLS), Comparse (CCS 2023), and RPKI RFC 6811 / RFC 9319"
+        }
+      ],
+      "topics": [
+        "security/group-key-exchange",
+        "verification/cryptographic-trees",
+        "security/phishing-resistant-auth",
+        "systems/interdomain-routing"
       ]
     },
     "modal-region-systems-oxcaml-verona-and-hardware-pinning-barriers": {
@@ -41317,6 +41510,52 @@
         "verification/compiler-verification"
       ]
     },
+    "pybamm-electrochemical-bms-lithium-plating-and-grid-forming-inverters": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "pybamm-team/PyBaMM",
+            "revision": "b949045fbbb689f47fba362e96c11d7dd851d4ad"
+          },
+          "name": "PyBaMM Python Battery Mathematical Modelling Framework"
+        },
+        {
+          "identity": {
+            "repository": "foxBMS/foxbms-2",
+            "revision": "73dbde670f7e9ec59afc33855bcf27576bd874de"
+          },
+          "name": "foxBMS 2 Embedded Battery Management System Firmware"
+        },
+        {
+          "identity": {
+            "repository": "google-deepmind/torax",
+            "revision": "19441e4173772afd4c8641ac10701fcf25e8c9c0"
+          },
+          "name": "TORAX Differentiable Tokamak Transport Simulator"
+        },
+        {
+          "identity": {
+            "repository": "OpenFUSIONToolkit/OpenFUSIONToolkit",
+            "revision": "347073387532e28627e905ef55ccaeacd4b0f7ad"
+          },
+          "name": "OpenFUSIONToolkit (TokaMaker Grad-Shafranov & Eddy-Current Suite)"
+        },
+        {
+          "identity": {
+            "arxiv": "2112.02037",
+            "doi": "10.1039/D2CP00417H"
+          },
+          "name": "Lithium-ion Battery Degradation Coupled Plating Model (O'Kane et al., PCCP 2022)"
+        }
+      ],
+      "topics": [
+        "domains/battery-electrochemistry",
+        "domains/fusion-magnetics",
+        "systems/power-electronics",
+        "verification/physical-envelopes"
+      ]
+    },
     "python-cpython-object-protocol-free-threading-jit-and-c-api-ffi": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -41399,6 +41638,59 @@
         "compilers/jit",
         "systems",
         "systems/concurrency"
+      ]
+    },
+    "quic-packet-number-spaces-bbr-fluid-models-and-rocev2-pfc-deadlock-storms": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cloudflare/quiche",
+            "revision": "d448b6b239652b09e81c8dde883b98cd5827c31f"
+          },
+          "name": "Cloudflare quiche QUIC and HTTP/3 Implementation"
+        },
+        {
+          "identity": {
+            "repository": "quinn-rs/quinn",
+            "revision": "c7b46a969cd315398b504792e9e9af6a15a7dcc6"
+          },
+          "name": "Quinn Rust QUIC Protocol State Machine (quinn-proto)"
+        },
+        {
+          "identity": {
+            "repository": "google/bbr",
+            "revision": "2c0811d64d405fc627079aaa534ef95d13d2839f"
+          },
+          "name": "Google BBR Congestion Control Reference Repository"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+          },
+          "name": "Linux Kernel TCP BBR Implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9000",
+            "standard": "IETF RFC 9000 / RFC 9001 / RFC 8470"
+          },
+          "name": "IETF QUIC Transport Protocol and Early Data Specifications"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1145/2934872.2934908",
+            "doi": "10.1145/2785956.2787484"
+          },
+          "name": "DCQCN and RoCEv2 Priority Flow Control Deadlock Analyses"
+        }
+      ],
+      "topics": [
+        "systems/transport-protocols",
+        "verification/network-liveness",
+        "security/zero-rtt-replay",
+        "domains/datacenter-networking"
       ]
     },
     "raft-reconfiguration-quorums-porcupine-linearizability-and-elle-adya-cycles": {
@@ -43295,6 +43587,67 @@
         "anneal/trusted-boundary",
         "rustc/targets",
         "llvm/riscv"
+      ]
+    },
+    "rowan-red-green-csts-tree-sitter-glr-recovery-and-hyperscan-teddy-automata": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-analyzer/rowan",
+            "revision": "d601b195d7bcb9f643c218b2ba113257880d2cdd"
+          },
+          "name": "rust-analyzer Rowan lossless Red-Green Concrete Syntax Tree library"
+        },
+        {
+          "identity": {
+            "repository": "tree-sitter/tree-sitter",
+            "revision": "f0090e112482d66653b43ca73e85668db1cde794"
+          },
+          "name": "Tree-sitter incremental GLR parsing system and C runtime"
+        },
+        {
+          "identity": {
+            "repository": "skvadrik/re2c",
+            "revision": "d40e257c87fb02355c88380441cc429f1a473bd7"
+          },
+          "name": "re2c lookahead-TDFA lexer and POSIX submatch generator"
+        },
+        {
+          "identity": {
+            "repository": "intel/hyperscan",
+            "revision": "017268f8455fd6095b7045fd85f2efd26a3c5604"
+          },
+          "name": "Intel Hyperscan multi-pattern SIMD/bit-parallel regular expression engine"
+        },
+        {
+          "identity": {
+            "repository": "VectorCamp/vectorscan",
+            "revision": "179bedf1c9b171bdb95f870c1f846831fa4d0be0"
+          },
+          "name": "VectorCamp Vectorscan portable multi-architecture Hyperscan fork"
+        },
+        {
+          "identity": {
+            "arxiv": "1907.08837v1",
+            "doi": "10.48550/arXiv.1907.08837"
+          },
+          "name": "Tagged Deterministic Finite Automata with Lookahead (Trofimovich 2019)"
+        },
+        {
+          "identity": {
+            "published_at": "2019-07-12",
+            "publisher": "Cloudflare Engineering Blog",
+            "url": "https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/"
+          },
+          "name": "Cloudflare July 2, 2019 Global WAF Regex Outage Post-Mortem"
+        }
+      ],
+      "topics": [
+        "compilers/incremental-cst",
+        "tooling/resilient-parsing",
+        "pl/automata-compilation",
+        "security/redos-immunity"
       ]
     },
     "rowhammer-rowpress-dram-disturbance-physics-and-software-fault-isolation": {
@@ -54462,6 +54815,73 @@
         "rust/unsafe"
       ]
     },
+    "tokio-select-cancellation-safety-yaml-json-differentials-and-rego-undefined": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "3f0ffc85f51c71d97bce72e0f8b80ece9b8b4892"
+          },
+          "name": "Tokio Asynchronous Rust Runtime"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio-uring",
+            "revision": "5fb1a4f65b8c471ba6fab8d12e42e129231d865f"
+          },
+          "name": "Tokio-uring Linux io_uring Completion Runtime"
+        },
+        {
+          "identity": {
+            "repository": "FasterXML/jackson-core",
+            "revision": "c3831c878c9da8e00be0192f802e5921475caf79"
+          },
+          "name": "Jackson Core Streaming JSON Parser"
+        },
+        {
+          "identity": {
+            "repository": "open-policy-agent/opa",
+            "revision": "674d3362381e14b55069a7a5741eeb8489365c2f"
+          },
+          "name": "Open Policy Agent (OPA) Rego Top-Down Evaluator"
+        },
+        {
+          "identity": {
+            "repository": "apple/pkl",
+            "revision": "069c891ac86067cd26c68d4647100e26c5ed5ba0"
+          },
+          "name": "Apple Pkl Programmable Configuration Language"
+        },
+        {
+          "identity": {
+            "repository": "cue-lang/cue",
+            "revision": "b38d73e3f13559da0ba290e7e61d21ae7230a6ae"
+          },
+          "name": "CUE Constraint Lattice Configuration Language"
+        },
+        {
+          "identity": {
+            "standard": "RFC 8259",
+            "url": "https://www.rfc-editor.org/rfc/rfc8259"
+          },
+          "name": "The JavaScript Object Notation (JSON) Data Interchange Format"
+        },
+        {
+          "identity": {
+            "standard": "YAML 1.1 / YAML 1.2.2",
+            "url": "https://yaml.org/spec/1.2.2/"
+          },
+          "name": "YAML Ain't Markup Language Version 1.1 and Version 1.2.2 Specifications"
+        }
+      ],
+      "topics": [
+        "rust/cancellation-safety",
+        "runtimes/async-io-completion",
+        "security/parser-differentials",
+        "pl/policy-evaluation"
+      ]
+    },
     "topological-brep-cad-persistent-naming-and-fabrication-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -57509,6 +57929,52 @@
         "systems",
         "systems/object-formats",
         "verification"
+      ]
+    },
+    "uprobes-uretprobe-stack-trampolines-dtrace-dof-safety-and-usdt-nop-probes": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+          },
+          "name": "Linux kernel"
+        },
+        {
+          "identity": {
+            "repository": "libbpf/libbpf",
+            "revision": "4f05fb027a08a8a66d03916cf6a68a91e2c720ea"
+          },
+          "name": "libbpf"
+        },
+        {
+          "identity": {
+            "repository": "bpftrace/bpftrace",
+            "revision": "c78cfd8fec80ef475401d7489eca00dc202d2ace"
+          },
+          "name": "bpftrace"
+        },
+        {
+          "identity": {
+            "repository": "illumos/illumos-gate",
+            "revision": "e58523ce627ab8cc752f80e23fae95fc5c4a6b96"
+          },
+          "name": "illumos-gate"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "32e2dcc099eba9410bc452f61ce48e50894706d9"
+          },
+          "name": "Go runtime"
+        }
+      ],
+      "topics": [
+        "systems/dynamic-tracing",
+        "compilers/probe-instrumentation",
+        "security/kernel-observability",
+        "isa/shadow-stack-unwinding"
       ]
     },
     "value-profile-specialization-and-hybridtrace-guard-certificates": {

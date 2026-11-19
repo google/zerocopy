@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "domains/battery-electrochemistry",
+    "domains/fusion-magnetics",
+    "systems/power-electronics",
+    "verification/physical-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "PyBaMM Python Battery Mathematical Modelling Framework",
+      "identity": {
+        "repository": "pybamm-team/PyBaMM",
+        "revision": "b949045fbbb689f47fba362e96c11d7dd851d4ad"
+      }
+    },
+    {
+      "name": "foxBMS 2 Embedded Battery Management System Firmware",
+      "identity": {
+        "repository": "foxBMS/foxbms-2",
+        "revision": "73dbde670f7e9ec59afc33855bcf27576bd874de"
+      }
+    },
+    {
+      "name": "TORAX Differentiable Tokamak Transport Simulator",
+      "identity": {
+        "repository": "google-deepmind/torax",
+        "revision": "19441e4173772afd4c8641ac10701fcf25e8c9c0"
+      }
+    },
+    {
+      "name": "OpenFUSIONToolkit (TokaMaker Grad-Shafranov & Eddy-Current Suite)",
+      "identity": {
+        "repository": "OpenFUSIONToolkit/OpenFUSIONToolkit",
+        "revision": "347073387532e28627e905ef55ccaeacd4b0f7ad"
+      }
+    },
+    {
+      "name": "Lithium-ion Battery Degradation Coupled Plating Model (O'Kane et al., PCCP 2022)",
+      "identity": {
+        "doi": "10.1039/D2CP00417H",
+        "arxiv": "2112.02037"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

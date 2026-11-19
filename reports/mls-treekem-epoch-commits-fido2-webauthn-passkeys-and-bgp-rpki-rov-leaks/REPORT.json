@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "security/group-key-exchange",
+    "verification/cryptographic-trees",
+    "security/phishing-resistant-auth",
+    "systems/interdomain-routing"
+  ],
+  "subjects": [
+    {
+      "name": "OpenMLS Rust RFC 9420 Implementation",
+      "identity": {
+        "repository": "openmls/openmls",
+        "revision": "ba267737b9511e538a77a41f4480fbed28ff4e83"
+      }
+    },
+    {
+      "name": "Cisco C++ Messaging Layer Security Library (mlspp)",
+      "identity": {
+        "repository": "cisco/mlspp",
+        "revision": "fc724c3100ce3b5d8565dbd6d93648a440991a8c"
+      }
+    },
+    {
+      "name": "Yubico libfido2 FIDO2/CTAP2 C Library",
+      "identity": {
+        "repository": "Yubico/libfido2",
+        "revision": "835853ca6ec7d9b0f87bf7fe9ac6219fd78741ce"
+      }
+    },
+    {
+      "name": "Kanidm webauthn-rs Rust Relying Party Framework",
+      "identity": {
+        "repository": "kanidm/webauthn-rs",
+        "revision": "6d8d4d13b5596c323ffad96006eac5347c247944"
+      }
+    },
+    {
+      "name": "NLnet Labs Routinator RPKI Relying Party Software",
+      "identity": {
+        "repository": "NLnetLabs/routinator",
+        "revision": "0e929d0f1ce50b3ea50d3aaad9f1ef2cbf8dd529"
+      }
+    },
+    {
+      "name": "IETF RFC 9420 (MLS), Comparse (CCS 2023), and RPKI RFC 6811 / RFC 9319",
+      "identity": {
+        "standard": "IETF RFC 9420 / RFC 6811 / RFC 9319",
+        "doi": "10.1145/3576915.3623145"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

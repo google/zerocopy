@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "systems/transport-protocols",
+    "verification/network-liveness",
+    "security/zero-rtt-replay",
+    "domains/datacenter-networking"
+  ],
+  "subjects": [
+    {
+      "name": "Cloudflare quiche QUIC and HTTP/3 Implementation",
+      "identity": {
+        "repository": "cloudflare/quiche",
+        "revision": "d448b6b239652b09e81c8dde883b98cd5827c31f"
+      }
+    },
+    {
+      "name": "Quinn Rust QUIC Protocol State Machine (quinn-proto)",
+      "identity": {
+        "repository": "quinn-rs/quinn",
+        "revision": "c7b46a969cd315398b504792e9e9af6a15a7dcc6"
+      }
+    },
+    {
+      "name": "Google BBR Congestion Control Reference Repository",
+      "identity": {
+        "repository": "google/bbr",
+        "revision": "2c0811d64d405fc627079aaa534ef95d13d2839f"
+      }
+    },
+    {
+      "name": "Linux Kernel TCP BBR Implementation",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+      }
+    },
+    {
+      "name": "IETF QUIC Transport Protocol and Early Data Specifications",
+      "identity": {
+        "standard": "IETF RFC 9000 / RFC 9001 / RFC 8470",
+        "doi": "10.17487/RFC9000"
+      }
+    },
+    {
+      "name": "DCQCN and RoCEv2 Priority Flow Control Deadlock Analyses",
+      "identity": {
+        "doi": "10.1145/2785956.2787484",
+        "companion_doi": "10.1145/2934872.2934908"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

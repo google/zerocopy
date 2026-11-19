@@ -1,0 +1,61 @@
+{
+  "topics": [
+    "compilers/incremental-cst",
+    "tooling/resilient-parsing",
+    "pl/automata-compilation",
+    "security/redos-immunity"
+  ],
+  "subjects": [
+    {
+      "name": "rust-analyzer Rowan lossless Red-Green Concrete Syntax Tree library",
+      "identity": {
+        "repository": "rust-analyzer/rowan",
+        "revision": "d601b195d7bcb9f643c218b2ba113257880d2cdd"
+      }
+    },
+    {
+      "name": "Tree-sitter incremental GLR parsing system and C runtime",
+      "identity": {
+        "repository": "tree-sitter/tree-sitter",
+        "revision": "f0090e112482d66653b43ca73e85668db1cde794"
+      }
+    },
+    {
+      "name": "re2c lookahead-TDFA lexer and POSIX submatch generator",
+      "identity": {
+        "repository": "skvadrik/re2c",
+        "revision": "d40e257c87fb02355c88380441cc429f1a473bd7"
+      }
+    },
+    {
+      "name": "Intel Hyperscan multi-pattern SIMD/bit-parallel regular expression engine",
+      "identity": {
+        "repository": "intel/hyperscan",
+        "revision": "017268f8455fd6095b7045fd85f2efd26a3c5604"
+      }
+    },
+    {
+      "name": "VectorCamp Vectorscan portable multi-architecture Hyperscan fork",
+      "identity": {
+        "repository": "VectorCamp/vectorscan",
+        "revision": "179bedf1c9b171bdb95f870c1f846831fa4d0be0"
+      }
+    },
+    {
+      "name": "Tagged Deterministic Finite Automata with Lookahead (Trofimovich 2019)",
+      "identity": {
+        "arxiv": "1907.08837v1",
+        "doi": "10.48550/arXiv.1907.08837"
+      }
+    },
+    {
+      "name": "Cloudflare July 2, 2019 Global WAF Regex Outage Post-Mortem",
+      "identity": {
+        "publisher": "Cloudflare Engineering Blog",
+        "published_at": "2019-07-12",
+        "url": "https://blog.cloudflare.com/details-of-the-cloudflare-outage-on-july-2-2019/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

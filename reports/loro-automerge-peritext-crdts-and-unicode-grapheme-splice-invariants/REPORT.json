@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "systems/collaborative-crdts",
+    "pl/unicode-indexing",
+    "ffi/string-representations",
+    "verification/convergence-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "Loro Rust/Wasm Rich-Text and Fugue CRDT Engine",
+      "identity": {
+        "repository": "loro-dev/loro",
+        "revision": "41845694477837cb248fdf16bd1de822a421cfe4"
+      }
+    },
+    {
+      "name": "Automerge Columnar Rust/JS CRDT Library",
+      "identity": {
+        "repository": "automerge/automerge",
+        "revision": "09b19d5080a86548c72721a82747bebe272c6c31"
+      }
+    },
+    {
+      "name": "Yjs YATA Shared-Type CRDT Framework",
+      "identity": {
+        "repository": "yjs/yjs",
+        "revision": "ee37f0a0e23a7c3e14531bae335d439e54c743e6"
+      }
+    },
+    {
+      "name": "ICU4X Unicode UAX #29 Grapheme Cluster Segmenter",
+      "identity": {
+        "repository": "unicode-org/icu4x",
+        "revision": "ffe417bb7f83d097047151cd40dde184bdc9cdc4"
+      }
+    },
+    {
+      "name": "The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing (Weidner & Kleppmann)",
+      "identity": {
+        "arxiv": "2305.00583"
+      }
+    },
+    {
+      "name": "Peritext: A CRDT for Collaborative Rich Text Editing (Litt, Lim, Kleppmann & van Hardenberg, CSCW 2022)",
+      "identity": {
+        "doi": "10.1145/3555644",
+        "venue": "PACMHCI Vol. 6, Issue CSCW2, Article 531"
+      }
+    },
+    {
+      "name": "Unicode Standard Annex #29: Unicode Text Segmentation",
+      "identity": {
+        "standard": "UAX #29",
+        "url": "https://www.unicode.org/reports/tr29/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
