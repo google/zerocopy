@@ -17260,6 +17260,71 @@
         "vcs/stacked-prs"
       ]
     },
+    "go-runtime-interfaces-goroutine-stacks-memory-model-and-cgo-ffi": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+            "version": "go1.28-devel"
+          },
+          "name": "Go runtime, compiler, cgo, and standard library"
+        },
+        {
+          "identity": {
+            "path": "doc/go_mem.html",
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+            "version": "2022-06-06"
+          },
+          "name": "The Go Memory Model (June 6, 2022 specification)"
+        },
+        {
+          "identity": {
+            "path": "doc/go_spec.html",
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "The Go Programming Language Specification"
+        },
+        {
+          "identity": {
+            "author": "Russ Cox",
+            "url": "https://research.swtch.com/gomm",
+            "year": "2021"
+          },
+          "name": "Updating the Go Memory Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/325164.325100",
+            "venue": "ISCA",
+            "year": "1990"
+          },
+          "name": "Weak Ordering - A New Definition"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375591",
+            "venue": "PLDI",
+            "year": "2008"
+          },
+          "name": "Foundations of the C++ Concurrency Memory Model"
+        }
+      ],
+      "topics": [
+        "pl",
+        "runtimes",
+        "ffi",
+        "systems",
+        "verification",
+        "pl/go",
+        "runtimes/go",
+        "ffi/cgo",
+        "systems/memory-models"
+      ]
+    },
     "gradual-typing-sound-interoperability-and-blame-performance-cliffs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -23687,6 +23752,131 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "lua-php-r-perl-and-dynamic-scripting-runtime-representations": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "lua/lua",
+            "revision": "c42d820bc0c3bc4f2ad536e19d2f05405af10387",
+            "version": "5.5.1"
+          },
+          "name": "Lua (PUC-Rio reference implementation)"
+        },
+        {
+          "identity": {
+            "branch": "v2.1",
+            "repository": "LuaJIT/LuaJIT",
+            "revision": "63c8f1a9b479ba5518cf6a170ff7729178bc3cfd",
+            "version": "2.1.ROLLING"
+          },
+          "name": "LuaJIT"
+        },
+        {
+          "identity": {
+            "repository": "php/php-src",
+            "revision": "e709ba4099085a5ee6a15846c32110873a15474a",
+            "version": "8.7.0-dev"
+          },
+          "name": "PHP Zend Engine (php-src)"
+        },
+        {
+          "identity": {
+            "repository": "wch/r-source",
+            "revision": "94152790dbd49be40c28c1819f92370fb7581f0a",
+            "version": "4.7.0-devel"
+          },
+          "name": "GNU R (r-source mirror)"
+        },
+        {
+          "identity": {
+            "repository": "reactorlabs/rir",
+            "revision": "affbfc2feec0263ecb9c83b181d1b06388283340"
+          },
+          "name": "RIR / PIR JIT compiler for R"
+        },
+        {
+          "identity": {
+            "repository": "Perl/perl5",
+            "revision": "40d4fc76b5f9cab20ca3914d2aa017863230719b",
+            "version": "5.45.5"
+          },
+          "name": "Perl 5 (blead source)"
+        },
+        {
+          "identity": {
+            "platform": "x86_64-linux-gnu-thread-multi",
+            "runtime": "perl",
+            "version": "5.40.1"
+          },
+          "name": "Perl 5 runtime (local execution host binary)"
+        },
+        {
+          "identity": {
+            "doi": "10.3217/jucs-011-07-1159",
+            "venue": "J.UCS",
+            "year": "2005"
+          },
+          "name": "The Implementation of Lua 5.0"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1542476.1542528",
+            "venue": "PLDI",
+            "year": "2009"
+          },
+          "name": "Trace-based Just-in-Time Type Specialization for Dynamic Languages"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-31057-7_6",
+            "venue": "ECOOP",
+            "year": "2012"
+          },
+          "name": "Evaluating the Design of the R Language"
+        },
+        {
+          "identity": {
+            "arxiv": "1907.05118",
+            "doi": "10.1145/3359619.3359744",
+            "venue": "DLS",
+            "year": "2019"
+          },
+          "name": "R Melts Brains: An IR for First-Class Environments and Lazy Effectful Arguments"
+        },
+        {
+          "identity": {
+            "arxiv": "1909.08958",
+            "doi": "10.1145/3360579",
+            "venue": "PACMPL (OOPSLA)",
+            "year": "2019"
+          },
+          "name": "On the Design, Implementation, and Use of Laziness in R"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428288",
+            "venue": "PACMPL (OOPSLA)",
+            "year": "2020"
+          },
+          "name": "Contextual Dispatch for Function Specialization"
+        }
+      ],
+      "topics": [
+        "pl",
+        "runtimes",
+        "compilers",
+        "ffi",
+        "pl/lua",
+        "pl/php",
+        "pl/r",
+        "pl/perl",
+        "runtimes/luajit",
+        "runtimes/zend-engine",
+        "runtimes/r",
+        "runtimes/perl"
       ]
     },
     "machine-code-verification-frameworks-and-assembly-contracts": {

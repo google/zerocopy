@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "pl",
+    "runtimes",
+    "ffi",
+    "systems",
+    "verification",
+    "pl/go",
+    "runtimes/go",
+    "ffi/cgo",
+    "systems/memory-models"
+  ],
+  "subjects": [
+    {
+      "name": "Go runtime, compiler, cgo, and standard library",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+        "version": "go1.28-devel"
+      }
+    },
+    {
+      "name": "The Go Memory Model (June 6, 2022 specification)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+        "path": "doc/go_mem.html",
+        "version": "2022-06-06"
+      }
+    },
+    {
+      "name": "The Go Programming Language Specification",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+        "path": "doc/go_spec.html"
+      }
+    },
+    {
+      "name": "Updating the Go Memory Model",
+      "identity": {
+        "author": "Russ Cox",
+        "url": "https://research.swtch.com/gomm",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Weak Ordering - A New Definition",
+      "identity": {
+        "doi": "10.1145/325164.325100",
+        "venue": "ISCA",
+        "year": "1990"
+      }
+    },
+    {
+      "name": "Foundations of the C++ Concurrency Memory Model",
+      "identity": {
+        "doi": "10.1145/1375581.1375591",
+        "venue": "PLDI",
+        "year": "2008"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
