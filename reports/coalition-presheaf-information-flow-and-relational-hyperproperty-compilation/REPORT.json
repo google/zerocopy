@@ -1,0 +1,154 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "arxiv": "1907.05320",
+        "doi": "10.1145/3460860",
+        "venue": "ESOP 2020 / ACM TOPLAS 43(4):14 (2021)"
+      },
+      "name": "Trace-Relating Compiler Correctness and Secure Compilation (Abate et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025",
+        "venue": "IEEE CSF 2019"
+      },
+      "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (Abate et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.3233/JCS-2009-0393",
+        "venue": "Journal of Computer Security 18(6) (2010)"
+      },
+      "name": "Hyperproperties (Clarkson and Schneider)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3371075",
+        "venue": "ACM POPL 2020"
+      },
+      "name": "Formal Verification of a Constant-Time Preserving C Compiler (Barthe et al., CompCertCT)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/CSF.2018.00031",
+        "venue": "IEEE CSF 2018"
+      },
+      "name": "Secure Compilation of Side-Channel Countermeasures: The Case of Cryptographic Constant-Time (Barthe, Gregoire, Laporte)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/s001459910002",
+        "venue": "Journal of Cryptology 13(1) (2000)"
+      },
+      "name": "Player Simulation and General Adversary Structures in Perfect Multiparty Computation (Hirt and Maurer)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3402457",
+        "venue": "Journal of the ACM 67(5) (2020)"
+      },
+      "name": "Universally Composable Security (Canetti)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/CSF.2015.48",
+        "venue": "IEEE CSF 2015"
+      },
+      "name": "Flow-Limited Authorization (Arden, Liu, Myers)"
+    },
+    {
+      "identity": {
+        "crate": "zeroize",
+        "repository": "RustCrypto/utils",
+        "revision": "77d1a3e6c2e8c28f49189258abb5d4405c0f1330",
+        "version": "1.9.2"
+      },
+      "name": "RustCrypto zeroize crate"
+    },
+    {
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "2854536f9b0cb6f72e641dd711b627c1df7fdcb3"
+      },
+      "name": "Jasmin formally verified cryptographic compiler and stack zeroization proofs"
+    },
+    {
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "8c2c5468578e037ffb3c2e00f0dfc4e1c00d21b9"
+      },
+      "name": "LLVM CodeGen PrologEpilogInserter (zero-call-used-regs)"
+    },
+    {
+      "identity": {
+        "compiler": "gcc (Debian 15.2.0-14)",
+        "target": "x86_64-linux-gnu",
+        "version": "15.2.0"
+      },
+      "name": "GCC 15.2.0 C23 x86-64 compiler"
+    },
+    {
+      "identity": {
+        "section": "7.26.6.2 (memset_explicit)",
+        "standard": "ISO/IEC 9899:2024 (C23)"
+      },
+      "name": "ISO C23 memset_explicit standard specification"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/EuroSP.2018.00009",
+        "venue": "IEEE EuroS&P 2018"
+      },
+      "name": "What You Get is What You C: Controlling Side Effects in Mainstream C Compilers (Simon, Chisnall, Anderson)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3264820.3264822",
+        "venue": "ACM PLAS 2018"
+      },
+      "name": "Securing Compilation Against Memory Probing (Besson, Dang, Jensen)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/CSFW.2005.1",
+        "venue": "IEEE CSFW 2005"
+      },
+      "name": "Language-Based Information Erasure (Chong and Myers)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-540-78791-4_18",
+        "venue": "ESOP 2008"
+      },
+      "name": "Just Forget It - The Semantics and Enforcement of Information Erasure (Hunt and Sands)"
+    },
+    {
+      "identity": {
+        "url": "https://www.usenix.org/conference/fast11/technical-sessions/presentation/wei",
+        "venue": "USENIX FAST 2011"
+      },
+      "name": "Reliably Erasing Data From Flash-Based Solid State Drives (Wei et al.)"
+    },
+    {
+      "identity": {
+        "url": "https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan",
+        "venue": "USENIX ATC 2017"
+      },
+      "name": "Engineering Record and Replay for Deployability (O'Callahan et al., rr)"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/lto",
+    "compilers/secure-compilation",
+    "pl",
+    "pl/semantics",
+    "security",
+    "security/information-flow",
+    "security/zeroization",
+    "verification",
+    "verification/hyperproperties"
+  ]
+}

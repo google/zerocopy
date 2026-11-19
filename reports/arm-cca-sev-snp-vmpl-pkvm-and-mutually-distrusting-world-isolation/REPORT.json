@@ -1,0 +1,135 @@
+{
+  "topics": [
+    "security",
+    "isa",
+    "systems",
+    "verification",
+    "security/confidential-computing",
+    "security/isolation",
+    "isa/arm-cca",
+    "isa/trustzone",
+    "isa/sev-snp",
+    "isa/tdx",
+    "isa/riscv-pmp",
+    "verification/hypervisors"
+  ],
+  "subjects": [
+    {
+      "name": "Trusted Firmware-A (TF-A) RME GPT Library",
+      "identity": {
+        "repository": "ARM-software/arm-trusted-firmware",
+        "revision": "0d2c4394f010bc91327ee1ee923bf6d70d446bb7"
+      }
+    },
+    {
+      "name": "Trusted Firmware Realm Management Monitor (TF-RMM)",
+      "identity": {
+        "repository": "TF-RMM/tf-rmm",
+        "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92"
+      }
+    },
+    {
+      "name": "Sail Armv9.4-A Architecture Specification",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1",
+        "asl_snapshot": "2023-03"
+      }
+    },
+    {
+      "name": "VIA Coq Verification of Arm CCA (Li et al., OSDI 2022)",
+      "identity": {
+        "repository": "columbia/VIA",
+        "revision": "06dcd851332e7ae33936eb00b202d51b9bf965ee",
+        "venue": "USENIX OSDI 2022"
+      }
+    },
+    {
+      "name": "A Verification Methodology for the Arm Confidential Computing Architecture (Fox et al., OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3586040",
+        "venue": "PACMPL Vol. 7, Issue OOPSLA1 (April 2023)"
+      }
+    },
+    {
+      "name": "OP-TEE OS (ARM TrustZone Trusted OS)",
+      "identity": {
+        "repository": "OP-TEE/optee_os",
+        "revision": "653d9849f767b4d5a72ea9a0f6db55d4f883483a"
+      }
+    },
+    {
+      "name": "COCONUT-SVSM (AMD SEV-SNP VMPL0 Service Module)",
+      "identity": {
+        "repository": "coconut-svsm/svsm",
+        "revision": "2a40e72a0f44d4369bb997488f2b7a77e346a634"
+      }
+    },
+    {
+      "name": "Intel TDX Module (tdx_2.0 branch)",
+      "identity": {
+        "repository": "intel/confidential-computing.tdx.tdx-module",
+        "revision": "abd4d8ab7e18a345ba33e32335577f550f7b0e83",
+        "branch": "tdx_2.0"
+      }
+    },
+    {
+      "name": "Linux Kernel (x86 TDX Guest #VE/TDVMCALL and arm64 pKVM)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Keystone RISC-V Enclave Framework",
+      "identity": {
+        "repository": "keystone-enclave/keystone",
+        "revision": "b8c2385355b2afb5b94a4e5dc503936f1502b972",
+        "doi": "10.1145/3342195.3387532"
+      }
+    },
+    {
+      "name": "Penglai RISC-V Enclave (sPMP / OpenSBI)",
+      "identity": {
+        "repository": "Penglai-Enclave/Penglai-Enclave-sPMP",
+        "revision": "14da25ae108724f639c82091b5003f8015185e13",
+        "venue": "USENIX OSDI 2021"
+      }
+    },
+    {
+      "name": "SeKVM Multiprocessor Hypervisor and Relaxed-Memory Coq Proofs",
+      "identity": {
+        "repository": "VeriGu/sosp-paper211-ae",
+        "revision": "683c36a169fae261207dba1cbeb91bc73d16af3b",
+        "kernel_repository": "VeriGu/SeKVM-4.18",
+        "kernel_revision": "75e3591e663958c370c919aa36fbd484be341043",
+        "doi": "10.1145/3477132.3483560"
+      }
+    },
+    {
+      "name": "Islaris Machine-Code Verification Framework (Sammler et al., PLDI 2022)",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "doi": "10.1145/3519939.3523434"
+      }
+    },
+    {
+      "name": "CN Separation-Logic Refinement Type Verifier for C (Pulte et al., POPL 2023)",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "d1c60d1720bed3bed0d45dab247a1959145c8cb9",
+        "doi": "10.1145/3571194"
+      }
+    },
+    {
+      "name": "WeSee and Heckler Interrupt-Injection Studies (Schlueter et al., 2024)",
+      "identity": {
+        "arxiv": "2404.03526",
+        "doi": "10.48550/arXiv.2404.03526",
+        "venues": "IEEE S&P 2024 and USENIX Security 2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

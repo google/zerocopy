@@ -1,0 +1,92 @@
+{
+  "topics": [
+    "security",
+    "systems",
+    "verification",
+    "ffi",
+    "security/tpm2",
+    "security/attestation",
+    "security/dice",
+    "security/side-channels",
+    "systems/measured-boot"
+  ],
+  "subjects": [
+    {
+      "name": "Microsoft TCG TPM 2.0 Reference Implementation",
+      "identity": {
+        "repository": "microsoft/ms-tpm-20-ref",
+        "revision": "ee21db0a941decd3cac67925ea3310873af60ab3"
+      }
+    },
+    {
+      "name": "libtpms Software TPM 2.0 Library",
+      "identity": {
+        "repository": "stefanberger/libtpms",
+        "revision": "165c303ccc4784fb3d8cadbb3d71205641ba380b"
+      }
+    },
+    {
+      "name": "TCG TPM 2.0 Software Stack (tpm2-tss)",
+      "identity": {
+        "repository": "tpm2-software/tpm2-tss",
+        "revision": "8de0ea01520718789c0e09b07480543f13969c14"
+      }
+    },
+    {
+      "name": "TPM 2.0 Command-Line Tools (tpm2-tools)",
+      "identity": {
+        "repository": "tpm2-software/tpm2-tools",
+        "revision": "915443b32e04fb4c8ddee80b653b234669395a6a"
+      }
+    },
+    {
+      "name": "Linux Kernel TPM 2.0 Bus HMAC and Parameter Encryption (tpm2-sessions.c)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "TPM Genie Serial Bus Interposer Research (Boone, CanSecWest 2018)",
+      "identity": {
+        "repository": "nccgroup/TPMGenie",
+        "revision": "dd6dd2278dd3f49b25a15aaa1f15b6a737fb32b5",
+        "venue": "CanSecWest 2018"
+      }
+    },
+    {
+      "name": "TPM-FAIL ECDSA Timing and Lattice Study (Moghimi et al., USENIX Security 2020)",
+      "identity": {
+        "repository": "VernamLab/TPM-FAIL",
+        "revision": "358f3406c1e0fc217b19a0d6000fbad3fb389aef",
+        "arxiv": "1911.05673",
+        "doi": "10.48550/arXiv.1911.05673",
+        "venue": "29th USENIX Security Symposium (August 2020)"
+      }
+    },
+    {
+      "name": "OpenDICE Reference Implementation and Open Profile for DICE v2.6",
+      "identity": {
+        "repository": "google/open-dice",
+        "revision": "607edea585175874d437fb7de8377409bb7781ee",
+        "profile_version": "Open Profile for DICE v2.6"
+      }
+    },
+    {
+      "name": "TCG TPM 2.0 Library Specification",
+      "identity": {
+        "standard": "TCG Trusted Platform Module Library",
+        "family": "2.0",
+        "revisions": "1.59 and 1.83"
+      }
+    },
+    {
+      "name": "TCG Hardware Requirements for a Device Identifier Composition Engine (DICE)",
+      "identity": {
+        "standard": "TCG Hardware Requirements for a Device Identifier Composition Engine",
+        "revision": "r78"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,119 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "intel/confidential-computing.tdx.tdx-module",
+        "revision": "abd4d8ab7e18a345ba33e32335577f550f7b0e83",
+        "version": "TDX_MODULE_2.0.20"
+      },
+      "name": "Intel TDX Module reference implementation"
+    },
+    {
+      "identity": {
+        "document": "Intel TDX Module v1.5 Base Architecture Specification (348549) and ABI Reference Specification (348551)",
+        "vendor": "Intel Corporation"
+      },
+      "name": "Intel TDX Module v1.5 architecture and ABI specifications"
+    },
+    {
+      "identity": {
+        "repository": "TF-RMM/tf-rmm",
+        "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92"
+      },
+      "name": "Arm Trusted Firmware Realm Management Monitor (TF-RMM)"
+    },
+    {
+      "identity": {
+        "document": "DEN0137",
+        "standard": "Arm Realm Management Monitor (RMM) Specification",
+        "version": "1.0 / 1.1"
+      },
+      "name": "Arm CCA RMM Specification (DEN0137)"
+    },
+    {
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      },
+      "name": "Linux kernel x86 confidential computing guest support (SEV-SNP and TDX)"
+    },
+    {
+      "identity": {
+        "repository": "coconut-svsm/svsm",
+        "revision": "2a40e72a0f44d4369bb997488f2b7a77e346a634"
+      },
+      "name": "COCONUT-SVSM (AMD SEV-SNP VMPL 0 Secure VM Service Module)"
+    },
+    {
+      "identity": {
+        "repository": "google/open-dice",
+        "revision": "607edea585175874d437fb7de8377409bb7781ee"
+      },
+      "name": "Open Profile for DICE specification and reference"
+    },
+    {
+      "identity": {
+        "repository": "tpm2-software/tpm2-tss",
+        "revision": "8de0ea01520718789c0e09b07480543f13969c14"
+      },
+      "name": "TPM 2.0 Software Stack (tpm2-tss)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/SP.2011.38",
+        "venue": "IEEE S&P 2011"
+      },
+      "name": "Memoir: Practical State Continuity for Protected Modules (Parno et al.)"
+    },
+    {
+      "identity": {
+        "eprint": "2017/048",
+        "venue": "USENIX Security 2017"
+      },
+      "name": "ROTE: Rollback Protection for Trusted Execution (Matetic et al.)"
+    },
+    {
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/strackx",
+        "venue": "USENIX Security 2016"
+      },
+      "name": "Ariadne: A Minimal Approach to State Continuity (Strackx and Piessens)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/DSN.2017.45",
+        "venue": "IEEE/IFIP DSN 2017"
+      },
+      "name": "Rollback and Forking Detection for Trusted Execution Environments using Lightweight Collective Memory (Brandenburger et al.)"
+    },
+    {
+      "identity": {
+        "arxiv": "2404.03526",
+        "cve": "CVE-2024-25743",
+        "venue": "IEEE S&P 2024"
+      },
+      "name": "WeSee: Using Malicious #VC Interrupts to Break AMD SEV-SNP (Schluter et al.)"
+    },
+    {
+      "identity": {
+        "arxiv": "2404.03387",
+        "cve": "CVE-2024-25744",
+        "venue": "USENIX Security 2024"
+      },
+      "name": "Heckler: Breaking Confidential VMs with Malicious Interrupts (Schluter et al.)"
+    }
+  ],
+  "topics": [
+    "runtimes",
+    "runtimes/live-update",
+    "security",
+    "security/attestation",
+    "security/confidential-computing",
+    "security/rollback-resistance",
+    "systems",
+    "systems/tee",
+    "verification",
+    "verification/state-machines"
+  ]
+}
