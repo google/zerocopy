@@ -18399,6 +18399,82 @@
         "verification/compiler-verification"
       ]
     },
+    "institution-comorphisms-heterogeneous-logics-and-trace-relating-compilation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "spechub/Hets",
+            "revision": "65ca27f4fcafd57f94fbb0908f2d88a16b0977ea"
+          },
+          "name": "Hets (Heterogeneous Tool Set)"
+        },
+        {
+          "identity": {
+            "repository": "secure-compilation/different_traces",
+            "revision": "e74dd632057b846d5ebca273dc218de968de3279"
+          },
+          "name": "Coq development for Trace-Relating Compiler Correctness and Secure Compilation"
+        },
+        {
+          "identity": {
+            "arxiv": "1907.05320v4",
+            "doi": "10.1007/978-3-030-44914-8_1"
+          },
+          "name": "Trace-Relating Compiler Correctness and Secure Compilation (ESOP 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.04603v6",
+            "doi": "10.1109/CSF.2019.00025"
+          },
+          "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (CSF 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-15368-1_21",
+            "url": "https://www.inf.unibz.it/~okutz/resources/DOL-Manifesto.pdf"
+          },
+          "name": "The Distributed Ontology, Modeling and Specification Language - DOL (author manuscript of the 2015 book chapter)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "rustc (linker-plugin LTO documentation and function-ABI attribute computation)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "2bee3e393405d26213834265dd4478e88ff96d30"
+          },
+          "name": "LLVM Language Reference (parameter attributes)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/institutions",
+        "verification/heterogeneous-logics",
+        "compilers",
+        "compilers/secure-compilation",
+        "compilers/trace-relating-correctness",
+        "compilers/lto",
+        "ffi",
+        "ffi/cross-logic",
+        "ffi/cross-language-linking",
+        "pl",
+        "pl/semantics",
+        "pl/hyperproperties"
+      ]
+    },
     "interactive-prover-document-processing-lsp-mcp-and-snapshot-consistency": {
       "observed_at": "2026-09-30",
       "subjects": [
