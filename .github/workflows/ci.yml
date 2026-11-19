@@ -442,6 +442,10 @@ jobs:
           --verbose
       if: matrix.target == 'x86_64-unknown-linux-gnu' || matrix.target == 'i686-unknown-linux-gnu'
 
+    - name: Test derives without the derive feature
+      if: matrix.toolchain == 'stable' && matrix.crate == 'zerocopy-derive' && matrix.target == 'x86_64-unknown-linux-gnu' && matrix.feature_profile == 'default'
+      run: ./cargo.sh +stable test --manifest-path ../tests/no-derive/Cargo.toml
+
     # Cross targets cannot execute tests on this Linux x86_64 runner, so check
     # test-only code and build library code in separate passes.
     - name: Check cross target
