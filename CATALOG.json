@@ -17354,6 +17354,135 @@
         "systems/os-kernels"
       ]
     },
+    "flash-ftl-wear-leveling-zns-ssds-and-verified-storage-crash-consistency": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "lean",
+            "repository": "mit-pdos/perennial",
+            "revision": "3afd77e35b0a727a05f1149c15308ddcc2e60357"
+          },
+          "name": "Perennial (Lean 4 branch)"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "mit-pdos/perennial",
+            "revision": "c3b7ecff27c1a6e8ed058d5aca362df1e2f63311"
+          },
+          "name": "Perennial (Coq/Iris branch)"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/fscq",
+            "revision": "2c7ef9c268fd79a81b26b44ef720f8e6a1e938a0"
+          },
+          "name": "FSCQ"
+        },
+        {
+          "identity": {
+            "repository": "uw-unsat/yggdrasil",
+            "revision": "e1de61d798acafb9ae2d8387d176c4b091773623"
+          },
+          "name": "Yggdrasil"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/veribetrkv-osdi2020",
+            "revision": "053dd16ab01939843a213e0590983fd22e2d0d4d"
+          },
+          "name": "VeriBetrKV (OSDI 2020 Artifact)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel NVMe ZNS/FDP & Zoned Block UAPI"
+        },
+        {
+          "identity": {
+            "repository": "openzfs/zfs",
+            "revision": "cde5d598eb44b5d6efe8167666d988a496346657"
+          },
+          "name": "OpenZFS Storage Pool Allocator Headers"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/utils",
+            "revision": "77d1a3e6c2e8c28f49189258abb5d4405c0f1330"
+          },
+          "name": "RustCrypto zeroize"
+        },
+        {
+          "identity": {
+            "standard": "NVM Express Zoned Namespace Command Set Specification (TP 4053)",
+            "version": "1.1c"
+          },
+          "name": "NVMe Zoned Namespace Command Set Specification"
+        },
+        {
+          "identity": {
+            "standard": "NVM Express Technical Proposal 4146 (Flexible Data Placement, NVMe Base Specification 2.1)"
+          },
+          "name": "NVMe Flexible Data Placement"
+        },
+        {
+          "identity": {
+            "publication": "Reliably Erasing Data From Flash-Based Solid State Drives",
+            "url": "https://www.usenix.org/conference/fast11/reliably-erasing-data-flash-based-solid-state-drives",
+            "venue": "USENIX FAST 2011"
+          },
+          "name": "Wei et al. (USENIX FAST 2011) SSD Sanitization Study"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2013.28",
+            "publication": "SoK: Secure Data Deletion"
+          },
+          "name": "Reardon, Basin, Capkun (IEEE S&P 2013) Secure Data Deletion SoK"
+        },
+        {
+          "identity": {
+            "publication": "ZNS: Avoiding the Block Interface Tax for Flash-based SSDs",
+            "url": "https://www.usenix.org/conference/atc21/presentation/bjorling",
+            "venue": "USENIX ATC 2021"
+          },
+          "name": "Bjorling et al. (USENIX ATC 2021) ZNS Study"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341301.3359632",
+            "publication": "Verifying Concurrent, Crash-Safe Systems with Perennial"
+          },
+          "name": "Chajed et al. (SOSP 2019) Perennial Paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2815400.2815402",
+            "publication": "Using Crash Hoare Logic for Certifying the FSCQ File System"
+          },
+          "name": "Chen et al. (SOSP 2015) FSCQ Paper"
+        },
+        {
+          "identity": {
+            "publication": "An Analysis of Data Corruption in the Storage Stack",
+            "url": "https://www.usenix.org/conference/fast-08/analysis-data-corruption-storage-stack",
+            "venue": "USENIX FAST 2008"
+          },
+          "name": "Bairavasundaram et al. (USENIX FAST 2008) Data Corruption Study"
+        }
+      ],
+      "topics": [
+        "systems/storage-flash",
+        "systems/nvme",
+        "verification/crash-consistency",
+        "verification/separation-logic",
+        "security/data-remanence",
+        "pl/typestate"
+      ]
+    },
     "formal-isa-models-x86-64-i386-and-aarch64-coverage": {
       "observed_at": "2026-11-13",
       "subjects": [
