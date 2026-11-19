@@ -25025,6 +25025,116 @@
         "verification/horn-clauses"
       ]
     },
+    "logic-synthesis-equivalence-checking-and-rtl-to-gdsii-verification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CakeML/hardware",
+            "revision": "6da9399c3b93ddcefc3a3bc46f5ffeea7faeb0e8"
+          },
+          "name": "CakeML/hardware (Lutsig verified Verilog compiler)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/hardware",
+            "revision": "dc281059bd3a19e478fb211aadda1c2ac7891fa9"
+          },
+          "name": "CakeML/hardware (Silver ag32 verified processor snapshot)"
+        },
+        {
+          "identity": {
+            "repository": "uwsampl/lakeroad",
+            "revision": "c5c5a9ac4efc250374df7f9a37d59087a6cc7ba1"
+          },
+          "name": "Lakeroad FPGA technology mapper"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/yosys",
+            "revision": "e4a169b8fea4c1e7121518937854672efa41c658"
+          },
+          "name": "Yosys Open SYnthesis Suite"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/eqy",
+            "revision": "33015166c47398dff1ac72a699f4212891bb0618"
+          },
+          "name": "EQY (Equivalence Checking with Yosys)"
+        },
+        {
+          "identity": {
+            "repository": "berkeley-abc/abc",
+            "revision": "4f928c689ff6f1eedec245efc03897f4d2098bcf"
+          },
+          "name": "Berkeley ABC logic synthesis and verification system"
+        },
+        {
+          "identity": {
+            "repository": "IAIK/coco-alma",
+            "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97"
+          },
+          "name": "CocoAlma hardware masking verifier"
+        },
+        {
+          "identity": {
+            "repository": "parallaxsw/OpenSTA",
+            "revision": "cc510896e8e097771100d7dec4f5cbfdb3d6d71a"
+          },
+          "name": "OpenSTA static timing analyzer"
+        },
+        {
+          "identity": {
+            "repository": "The-OpenROAD-Project/OpenROAD",
+            "revision": "4d08cb17e317284548659fd7040238db3206d940"
+          },
+          "name": "OpenROAD RTL-to-GDSII physical design flow"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314622",
+            "venue": "PLDI 2019"
+          },
+          "name": "Verified Compilation on a Verified Processor (L\u00f6\u00f6w et al., PLDI 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3437992.3439916",
+            "venue": "CPP 2021"
+          },
+          "name": "Lutsig: A Verified Verilog Compiler for Verified Circuit Development (L\u00f6\u00f6w, CPP 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.16526",
+            "doi": "10.1145/3620665.3640387",
+            "venue": "ASPLOS 2024"
+          },
+          "name": "FPGA Technology Mapping Using Sketch-Guided Program Synthesis (Smith et al., ASPLOS 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TIFS.2020.2971153",
+            "venue": "IEEE TIFS 2020"
+          },
+          "name": "Trivially and Efficiently Composing Masked Gadgets with Probe Isolating Non-Interference (Cassiers & Standaert, IEEE TIFS 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2016.10",
+            "venue": "IEEE S&P 2016"
+          },
+          "name": "A2: Analog Malicious Hardware (Yang et al., IEEE S&P 2016)"
+        }
+      ],
+      "topics": [
+        "compilers/hardware-synthesis",
+        "verification/equivalence-checking",
+        "isa/rtl-netlists",
+        "security/hardware-trojans"
+      ]
+    },
     "loop-invariant-and-recursive-spec-minissa-vc-transport": {
       "observed_at": "2026-11-14",
       "subjects": [
