@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "domains/quantum-fault-tolerance",
+    "compilers/stabilizer-schedules",
+    "verification/decoder-graphs",
+    "isa/pulse-calibration"
+  ],
+  "subjects": [
+    {
+      "name": "Stim Fast Stabilizer Circuit Simulator and Detector Error Model Analyzer",
+      "identity": {
+        "repository": "quantumlib/Stim",
+        "revision": "ffe0d043598ed5df0851a3e6b4920359a23fafbd",
+        "url": "https://github.com/quantumlib/Stim"
+      }
+    },
+    {
+      "name": "Stim Algorithmic Specification (Gidney, Quantum 2021)",
+      "identity": {
+        "doi": "10.22331/q-2021-07-06-497",
+        "venue": "Quantum, Vol. 5, p. 497 (2021)"
+      }
+    },
+    {
+      "name": "PyMatching Sparse Blossom Minimum-Weight Perfect Matching Decoder",
+      "identity": {
+        "repository": "oscarhiggott/PyMatching",
+        "revision": "6f63b2b9474ba0fa7e511fe52bffdce858a06984",
+        "url": "https://github.com/oscarhiggott/PyMatching"
+      }
+    },
+    {
+      "name": "Sparse Blossom MWPM Algorithm (Higgott and Gidney, Quantum 2025)",
+      "identity": {
+        "doi": "10.22331/q-2025-01-20-1600",
+        "venue": "Quantum, Vol. 9, p. 1600 (2025); arXiv:2303.15933"
+      }
+    },
+    {
+      "name": "OpenQASM 3 Language Specification and OpenPulse Calibration Grammar",
+      "identity": {
+        "repository": "openqasm/openqasm",
+        "revision": "f059a268b2372a53d99212538cfd3b9f4c373147",
+        "url": "https://github.com/openqasm/openqasm",
+        "doi": "10.1145/3505636"
+      }
+    },
+    {
+      "name": "Surface Code Quantum Computing by Lattice Surgery (Horsman et al., New J. Phys. 2012)",
+      "identity": {
+        "doi": "10.1088/1367-2630/14/12/123011",
+        "venue": "New Journal of Physics, Vol. 14, 123011 (2012)"
+      }
+    },
+    {
+      "name": "A Game of Surface Codes: Large-Scale Quantum Computing with Lattice Surgery (Litinski, Quantum 2019)",
+      "identity": {
+        "doi": "10.22331/q-2019-03-05-128",
+        "venue": "Quantum, Vol. 3, p. 128 (2019)"
+      }
+    },
+    {
+      "name": "Low-Distance Surface Codes Under Realistic Quantum Noise (Tomita and Svore, Phys. Rev. A 2014)",
+      "identity": {
+        "doi": "10.1103/PhysRevA.90.062320",
+        "venue": "Physical Review A, Vol. 90, 062320 (2014)"
+      }
+    },
+    {
+      "name": "Almost-Linear Time Union-Find Decoder for Topological Codes (Delfosse and Nickerson, Quantum 2021)",
+      "identity": {
+        "doi": "10.22331/q-2021-12-02-595",
+        "venue": "Quantum, Vol. 5, p. 595 (2021)"
+      }
+    },
+    {
+      "name": "Quantum Error Correction for Quantum Memories and Real-Time Backlog Bounds (Terhal, Rev. Mod. Phys. 2015)",
+      "identity": {
+        "doi": "10.1103/RevModPhys.87.307",
+        "venue": "Reviews of Modern Physics, Vol. 87, pp. 307-346 (2015)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

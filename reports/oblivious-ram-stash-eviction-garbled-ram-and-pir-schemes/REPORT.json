@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "security/oblivious-storage",
+    "security/private-information-retrieval",
+    "verification/trace-obliviousness",
+    "pl/oblivious-types"
+  ],
+  "subjects": [
+    {
+      "name": "Path ORAM Reference C++ Implementation (Stefanov et al.)",
+      "identity": {
+        "repository": "obliviousram/PathORAM",
+        "revision": "a4b045bd19e5ed14ca09c8822fa497879ed5bf83",
+        "url": "https://github.com/obliviousram/PathORAM"
+      }
+    },
+    {
+      "name": "Path ORAM: An Extremely Simple Oblivious RAM Protocol (Stefanov et al., JACM 2018)",
+      "identity": {
+        "doi": "10.1145/3177872",
+        "venue": "Journal of the ACM, Vol. 65, No. 4, Art. 18 (2018)"
+      }
+    },
+    {
+      "name": "ObliviousLabs Circuit ORAM and Oblivious Map Library",
+      "identity": {
+        "repository": "obliviouslabs/oram",
+        "revision": "852f3387db4e2744fc023d9cef6eacc744681ee1",
+        "url": "https://github.com/obliviouslabs/oram"
+      }
+    },
+    {
+      "name": "Circuit ORAM: On Tightness of the Goldreich-Ostrovsky Lower Bound (Wang, Chan, Shi, CCS 2015)",
+      "identity": {
+        "doi": "10.1145/2810103.2813634",
+        "venue": "Proceedings of ACM CCS 2015, pp. 850-861"
+      }
+    },
+    {
+      "name": "MobileCoin Doubly-Oblivious Enclave ORAM and Inline-Assembly CMOV Primitives",
+      "identity": {
+        "repository": "mobilecoinfoundation/mc-oblivious",
+        "revision": "2f24b1661fd94d85d607c185f1fa42afc284f4a3",
+        "url": "https://github.com/mobilecoinfoundation/mc-oblivious"
+      }
+    },
+    {
+      "name": "Lambda-Obliv: A Language for Probabilistically Oblivious Computation (Darais et al., POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371118",
+        "venue": "Proceedings of the ACM on Programming Languages (POPL 2020), Vol. 4, Art. 50"
+      }
+    },
+    {
+      "name": "How to Garble RAM Programs (Lu and Ostrovsky, EUROCRYPT 2013)",
+      "identity": {
+        "doi": "10.1007/978-3-642-38348-9_42",
+        "venue": "Advances in Cryptology - EUROCRYPT 2013, LNCS Vol. 7881, pp. 719-734"
+      }
+    },
+    {
+      "name": "SimplePIR and DoublePIR Single-Server LWE Private Information Retrieval",
+      "identity": {
+        "repository": "ahenzinger/simplepir",
+        "revision": "e9020b03bf2872c75b8954e749e32408b5db87ed",
+        "url": "https://github.com/ahenzinger/simplepir",
+        "venue": "32nd USENIX Security Symposium (2023)"
+      }
+    },
+    {
+      "name": "Spiral-RS Fast High-Rate Single-Server RLWE/RGSW PIR",
+      "identity": {
+        "repository": "menonsamir/spiral-rs",
+        "revision": "335aebf9f5a487f46a1f20ad2f4300618ad24628",
+        "url": "https://github.com/menonsamir/spiral-rs",
+        "doi": "10.1109/SP46214.2022.9833700"
+      }
+    },
+    {
+      "name": "Function Secret Sharing and Distributed Point Function PIR (Boyle, Gilboa, Ishai, CCS 2016)",
+      "identity": {
+        "doi": "10.1145/2976749.2978429",
+        "venue": "Proceedings of ACM CCS 2016, pp. 1292-1303"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

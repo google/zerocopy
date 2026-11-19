@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "runtimes/concurrent-collectors",
+    "isa/address-bit-masking",
+    "verification/gc-invariants",
+    "ffi/movable-references"
+  ],
+  "subjects": [
+    {
+      "name": "OpenJDK HotSpot Generational ZGC",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "8ef2f5dd58a42a77909639d0c04ca09ebe4cdf73"
+      }
+    },
+    {
+      "name": "MMTk Core (Immix and LXR Collectors)",
+      "identity": {
+        "repository": "mmtk/mmtk-core",
+        "revision": "d154f4f0dcca27439b920165ce5c948ca18aef24"
+      }
+    },
+    {
+      "name": "C4: The Continuously Concurrent Compacting Collector",
+      "identity": {
+        "doi": "10.1145/1993478.1993491",
+        "venue": "ISMM 2011"
+      }
+    },
+    {
+      "name": "Deep Dive into ZGC: A Modern Garbage Collector in OpenJDK",
+      "identity": {
+        "doi": "10.1145/3538532",
+        "venue": "ACM TOPLAS 2022"
+      }
+    },
+    {
+      "name": "Immix: A Mark-Region Garbage Collector with Space Efficiency, Fast Collection, and Mutator Performance",
+      "identity": {
+        "doi": "10.1145/1375581.1375586",
+        "venue": "PLDI 2008"
+      }
+    },
+    {
+      "name": "Low-Latency, High-Throughput Garbage Collection (LXR)",
+      "identity": {
+        "doi": "10.1145/3519939.3523440",
+        "venue": "PLDI 2022"
+      }
+    },
+    {
+      "name": "Relaxing Safely: Verified On-the-Fly Garbage Collection for x86-TSO",
+      "identity": {
+        "doi": "10.1145/2737924.2738006",
+        "venue": "PLDI 2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

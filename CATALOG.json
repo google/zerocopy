@@ -11510,6 +11510,66 @@
         "pl/collaborative-editing"
       ]
     },
+    "colored-pointer-load-barriers-zgc-immix-lines-and-mmtk-collectors": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "8ef2f5dd58a42a77909639d0c04ca09ebe4cdf73"
+          },
+          "name": "OpenJDK HotSpot Generational ZGC"
+        },
+        {
+          "identity": {
+            "repository": "mmtk/mmtk-core",
+            "revision": "d154f4f0dcca27439b920165ce5c948ca18aef24"
+          },
+          "name": "MMTk Core (Immix and LXR Collectors)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993478.1993491",
+            "venue": "ISMM 2011"
+          },
+          "name": "C4: The Continuously Concurrent Compacting Collector"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3538532",
+            "venue": "ACM TOPLAS 2022"
+          },
+          "name": "Deep Dive into ZGC: A Modern Garbage Collector in OpenJDK"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375586",
+            "venue": "PLDI 2008"
+          },
+          "name": "Immix: A Mark-Region Garbage Collector with Space Efficiency, Fast Collection, and Mutator Performance"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523440",
+            "venue": "PLDI 2022"
+          },
+          "name": "Low-Latency, High-Throughput Garbage Collection (LXR)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738006",
+            "venue": "PLDI 2015"
+          },
+          "name": "Relaxing Safely: Verified On-the-Fly Garbage Collection for x86-TSO"
+        }
+      ],
+      "topics": [
+        "runtimes/concurrent-collectors",
+        "isa/address-bit-masking",
+        "verification/gc-invariants",
+        "ffi/movable-references"
+      ]
+    },
     "compcert-sel4-everest-pass-composition-and-proof-maintenance": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -32044,6 +32104,94 @@
         "systems/history"
       ]
     },
+    "oblivious-ram-stash-eviction-garbled-ram-and-pir-schemes": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "obliviousram/PathORAM",
+            "revision": "a4b045bd19e5ed14ca09c8822fa497879ed5bf83",
+            "url": "https://github.com/obliviousram/PathORAM"
+          },
+          "name": "Path ORAM Reference C++ Implementation (Stefanov et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3177872",
+            "venue": "Journal of the ACM, Vol. 65, No. 4, Art. 18 (2018)"
+          },
+          "name": "Path ORAM: An Extremely Simple Oblivious RAM Protocol (Stefanov et al., JACM 2018)"
+        },
+        {
+          "identity": {
+            "repository": "obliviouslabs/oram",
+            "revision": "852f3387db4e2744fc023d9cef6eacc744681ee1",
+            "url": "https://github.com/obliviouslabs/oram"
+          },
+          "name": "ObliviousLabs Circuit ORAM and Oblivious Map Library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2810103.2813634",
+            "venue": "Proceedings of ACM CCS 2015, pp. 850-861"
+          },
+          "name": "Circuit ORAM: On Tightness of the Goldreich-Ostrovsky Lower Bound (Wang, Chan, Shi, CCS 2015)"
+        },
+        {
+          "identity": {
+            "repository": "mobilecoinfoundation/mc-oblivious",
+            "revision": "2f24b1661fd94d85d607c185f1fa42afc284f4a3",
+            "url": "https://github.com/mobilecoinfoundation/mc-oblivious"
+          },
+          "name": "MobileCoin Doubly-Oblivious Enclave ORAM and Inline-Assembly CMOV Primitives"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371118",
+            "venue": "Proceedings of the ACM on Programming Languages (POPL 2020), Vol. 4, Art. 50"
+          },
+          "name": "Lambda-Obliv: A Language for Probabilistically Oblivious Computation (Darais et al., POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-38348-9_42",
+            "venue": "Advances in Cryptology - EUROCRYPT 2013, LNCS Vol. 7881, pp. 719-734"
+          },
+          "name": "How to Garble RAM Programs (Lu and Ostrovsky, EUROCRYPT 2013)"
+        },
+        {
+          "identity": {
+            "repository": "ahenzinger/simplepir",
+            "revision": "e9020b03bf2872c75b8954e749e32408b5db87ed",
+            "url": "https://github.com/ahenzinger/simplepir",
+            "venue": "32nd USENIX Security Symposium (2023)"
+          },
+          "name": "SimplePIR and DoublePIR Single-Server LWE Private Information Retrieval"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46214.2022.9833700",
+            "repository": "menonsamir/spiral-rs",
+            "revision": "335aebf9f5a487f46a1f20ad2f4300618ad24628",
+            "url": "https://github.com/menonsamir/spiral-rs"
+          },
+          "name": "Spiral-RS Fast High-Rate Single-Server RLWE/RGSW PIR"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2976749.2978429",
+            "venue": "Proceedings of ACM CCS 2016, pp. 1292-1303"
+          },
+          "name": "Function Secret Sharing and Distributed Point Function PIR (Boyle, Gilboa, Ishai, CCS 2016)"
+        }
+      ],
+      "topics": [
+        "security/oblivious-storage",
+        "security/private-information-retrieval",
+        "verification/trace-obliviousness",
+        "pl/oblivious-types"
+      ]
+    },
     "observable-behavior-property-transfer-and-anneal-statement-forms": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -46570,6 +46718,91 @@
         "security",
         "security/redos",
         "smt"
+      ]
+    },
+    "stabilizer-tableau-pauli-frames-lattice-surgery-and-blossom-decoding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "quantumlib/Stim",
+            "revision": "ffe0d043598ed5df0851a3e6b4920359a23fafbd",
+            "url": "https://github.com/quantumlib/Stim"
+          },
+          "name": "Stim Fast Stabilizer Circuit Simulator and Detector Error Model Analyzer"
+        },
+        {
+          "identity": {
+            "doi": "10.22331/q-2021-07-06-497",
+            "venue": "Quantum, Vol. 5, p. 497 (2021)"
+          },
+          "name": "Stim Algorithmic Specification (Gidney, Quantum 2021)"
+        },
+        {
+          "identity": {
+            "repository": "oscarhiggott/PyMatching",
+            "revision": "6f63b2b9474ba0fa7e511fe52bffdce858a06984",
+            "url": "https://github.com/oscarhiggott/PyMatching"
+          },
+          "name": "PyMatching Sparse Blossom Minimum-Weight Perfect Matching Decoder"
+        },
+        {
+          "identity": {
+            "doi": "10.22331/q-2025-01-20-1600",
+            "venue": "Quantum, Vol. 9, p. 1600 (2025); arXiv:2303.15933"
+          },
+          "name": "Sparse Blossom MWPM Algorithm (Higgott and Gidney, Quantum 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3505636",
+            "repository": "openqasm/openqasm",
+            "revision": "f059a268b2372a53d99212538cfd3b9f4c373147",
+            "url": "https://github.com/openqasm/openqasm"
+          },
+          "name": "OpenQASM 3 Language Specification and OpenPulse Calibration Grammar"
+        },
+        {
+          "identity": {
+            "doi": "10.1088/1367-2630/14/12/123011",
+            "venue": "New Journal of Physics, Vol. 14, 123011 (2012)"
+          },
+          "name": "Surface Code Quantum Computing by Lattice Surgery (Horsman et al., New J. Phys. 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.22331/q-2019-03-05-128",
+            "venue": "Quantum, Vol. 3, p. 128 (2019)"
+          },
+          "name": "A Game of Surface Codes: Large-Scale Quantum Computing with Lattice Surgery (Litinski, Quantum 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1103/PhysRevA.90.062320",
+            "venue": "Physical Review A, Vol. 90, 062320 (2014)"
+          },
+          "name": "Low-Distance Surface Codes Under Realistic Quantum Noise (Tomita and Svore, Phys. Rev. A 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.22331/q-2021-12-02-595",
+            "venue": "Quantum, Vol. 5, p. 595 (2021)"
+          },
+          "name": "Almost-Linear Time Union-Find Decoder for Topological Codes (Delfosse and Nickerson, Quantum 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1103/RevModPhys.87.307",
+            "venue": "Reviews of Modern Physics, Vol. 87, pp. 307-346 (2015)"
+          },
+          "name": "Quantum Error Correction for Quantum Memories and Real-Time Backlog Bounds (Terhal, Rev. Mod. Phys. 2015)"
+        }
+      ],
+      "topics": [
+        "domains/quantum-fault-tolerance",
+        "compilers/stabilizer-schedules",
+        "verification/decoder-graphs",
+        "isa/pulse-calibration"
       ]
     },
     "starnix-ebpf-core-postcleanup-mir-and-abstract-domain-verification": {
