@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "systems/linux-futex-priority-inheritance",
+    "runtimes/parking-lot-word-sized-locks",
+    "security/pi-requeue-kernel-waiter-races",
+    "verification/robust-list-crash-ownership"
+  ],
+  "subjects": [
+    {
+      "name": "Linux Kernel Futex Subsystem (Core, PI, and Requeue)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "parking_lot Compact Rust Synchronization Primitives",
+      "identity": {
+        "repository": "Amanieu/parking_lot",
+        "revision": "85827ffa2ffb0b60d416e2e2a091f36b0e8e5a91"
+      }
+    },
+    {
+      "name": "GNU C Library NPTL Robust & Priority-Inheriting pthread_mutex",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+      }
+    },
+    {
+      "name": "Fuss, Futexes and Furwocks: Fast Userlevel Locking in Linux (Franke, Russell & Kirkwood, OLS 2002)",
+      "identity": {
+        "publication": "Proceedings of the Ottawa Linux Symposium 2002, pp. 479-495",
+        "year": "2002"
+      }
+    },
+    {
+      "name": "CVE-2014-3153 Linux Kernel futex_requeue Priority-Inheritance Waiter Corruption",
+      "identity": {
+        "cve": "CVE-2014-3153",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2014-3153"
+      }
+    },
+    {
+      "name": "Locking in WebKit: 1-Byte Adaptive Locks and ParkingLot (Filip Pizlo, 2016)",
+      "identity": {
+        "url": "https://webkit.org/blog/6161/locking-in-webkit/",
+        "year": "2016"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
