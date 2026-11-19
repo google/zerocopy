@@ -20182,6 +20182,87 @@
         "anneal/architecture"
       ]
     },
+    "galois-reed-solomon-isa-l-chipkill-ecc-and-raid-reconstruction-hazards": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "intel/isa-l",
+            "revision": "af6a939795a967fc7de4256ab40db85c7fc73ffb"
+          },
+          "name": "Intel Intelligent Storage Acceleration Library (ISA-L)"
+        },
+        {
+          "identity": {
+            "repository": "klauspost/reedsolomon",
+            "revision": "25e5c5227103dc948f3e1888a8c9d62be1bafd1e"
+          },
+          "name": "Go Reed-Solomon Erasure Coding Library"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux Kernel (MD RAID-5/6, Partial Parity Log, and AMD64 EDAC)"
+        },
+        {
+          "identity": {
+            "repository": "mchehab/rasdaemon",
+            "revision": "5e547c331d31e4f47c0fb4204e039a69a1fcf68d"
+          },
+          "name": "Linux RAS Daemon (MCE, EDAC, and DDR5 ECS Telemetry)"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/spe.631",
+            "journal": "Software: Practice and Experience 35(2):189-194"
+          },
+          "name": "Note: Correction to the 1997 Tutorial on Reed-Solomon Coding (Plank & Ding, 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/NCA.2006.43",
+            "venue": "IEEE NCA 2006"
+          },
+          "name": "Optimizing Cauchy Reed-Solomon Codes for Fault-Tolerant Network Storage Applications (Plank & Xu, 2006)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/atc12/technical-sessions/presentation/huang",
+            "venue": "USENIX ATC 2012"
+          },
+          "name": "Erasure Coding in Windows Azure Storage (Huang et al., 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/DSN.2019.00017",
+            "venue": "IEEE/IFIP DSN 2019"
+          },
+          "name": "Understanding and Modeling On-Die Error Correction in Modern DRAM (Patel et al., 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MICRO50266.2020.00034",
+            "venue": "IEEE/ACM MICRO-53 2020"
+          },
+          "name": "Bit-Exact ECC Recovery (BEER): Determining DRAM On-Die ECC Functions (Patel et al., 2020)"
+        },
+        {
+          "identity": {
+            "standard": "JEDEC JESD79-5"
+          },
+          "name": "JEDEC DDR5 SDRAM Standard (On-Die ECC and Error Check and Scrub)"
+        }
+      ],
+      "topics": [
+        "systems/erasure-coding",
+        "isa/galois-simd",
+        "domains/dram-chipkill-ecc",
+        "verification/algebraic-coding"
+      ]
+    },
     "garbage-collection-barriers-safepoints-and-runtime-invariants": {
       "observed_at": "2026-11-19",
       "subjects": [
