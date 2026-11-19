@@ -1,0 +1,132 @@
+{
+  "topics": [
+    "verification/protocol-refinement",
+    "pl/modeling-languages",
+    "systems/verified-distributed",
+    "smt/relational-models"
+  ],
+  "subjects": [
+    {
+      "name": "TLA+ tools, PlusCal translator, and TLC model checker",
+      "identity": {
+        "repository": "tlaplus/tlaplus",
+        "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c"
+      }
+    },
+    {
+      "name": "TLA+ Proof System (TLAPS)",
+      "identity": {
+        "repository": "tlaplus/tlapm",
+        "revision": "9a52fafb00245ace0877ec8d91c4a09a7caa8061"
+      }
+    },
+    {
+      "name": "Quint specification language and effect checker",
+      "identity": {
+        "repository": "informalsystems/quint",
+        "revision": "07d7a1a69c2093b5bc656caf3b5dfefa0d766cd0"
+      }
+    },
+    {
+      "name": "Apalache symbolic TLA+ model checker",
+      "identity": {
+        "repository": "apalache-mc/apalache",
+        "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e",
+        "doi": "10.1145/3360549"
+      }
+    },
+    {
+      "name": "Alloy 6 temporal relational analyzer",
+      "identity": {
+        "repository": "AlloyTools/org.alloytools.alloy",
+        "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+      }
+    },
+    {
+      "name": "Pardinus temporal relational model-finding engine",
+      "identity": {
+        "repository": "haslab/Pardinus",
+        "revision": "d3e7aeac73d052a28cff7f5946c85f745e3ad14c"
+      }
+    },
+    {
+      "name": "P asynchronous event-driven state-machine language and PChecker",
+      "identity": {
+        "repository": "p-org/P",
+        "revision": "6cbf558087c85bad94068947286a6ef4e7342eb5",
+        "doi": "10.1145/2491956.2462184"
+      }
+    },
+    {
+      "name": "IronFleet distributed protocol refinement framework in Dafny",
+      "identity": {
+        "repository": "microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691",
+        "doi": "10.1145/2815400.2815428"
+      }
+    },
+    {
+      "name": "Verdi verified distributed systems framework and network transformers",
+      "identity": {
+        "repository": "uwplse/verdi",
+        "revision": "7e1641b758d8f0032aa7de63620bc115330e0a6b",
+        "doi": "10.1145/2813885.2737958"
+      }
+    },
+    {
+      "name": "Verdi Raft verified consensus implementation",
+      "identity": {
+        "repository": "uwplse/verdi-raft",
+        "revision": "a3375e867326a82225e724cc1a7b4758b029376f",
+        "doi": "10.1145/2854065.2854081"
+      }
+    },
+    {
+      "name": "Disel distributed separation logic in Rocq",
+      "identity": {
+        "repository": "DistributedComponents/disel",
+        "revision": "4ae4c207ef1a25010d63508f2bbda2d4c197d5ab",
+        "doi": "10.1145/3158116"
+      }
+    },
+    {
+      "name": "Aneris mechanized Iris separation logic for socket-based distributed systems",
+      "identity": {
+        "repository": "logsem/aneris",
+        "revision": "59ae37946838df77fb2c573803b68462a3af9d0f",
+        "doi": "10.1007/978-3-030-44914-8_13"
+      }
+    },
+    {
+      "name": "Verus tokenized state-machine macros and linear ghost verification",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "c821149050c1269f32771a11582bee2fc58e5a8a",
+        "doi": "10.1145/3586037"
+      }
+    },
+    {
+      "name": "IronSync sharded state-machine concurrency verification",
+      "identity": {
+        "repository": "secure-foundations/ironsync-osdi2023",
+        "revision": "7c912e29fd9e770d2fb9866606d0bf2a97629252"
+      }
+    },
+    {
+      "name": "Anvil and Welder verified Kubernetes controller framework in Verus",
+      "identity": {
+        "repository": "anvil-verifier/anvil",
+        "revision": "e83ea0f5516ce2ece26740266165180018741e66",
+        "doi": "10.1145/3830418.3843868"
+      }
+    },
+    {
+      "name": "Abadi and Lamport refinement mappings with history and prophecy variables",
+      "identity": {
+        "doi": "10.1016/0304-3975(91)90222-U",
+        "publication": "Theoretical Computer Science 82(2), 1991"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

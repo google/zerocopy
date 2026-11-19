@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "verification/combinatorial-topology",
+    "systems/distributed-computability",
+    "pl/epistemic-logics",
+    "verification/io-automata"
+  ],
+  "subjects": [
+    {
+      "name": "Herlihy and Shavit Asynchronous Computability Theorem and chromatic simplicial complexes",
+      "identity": {
+        "doi": "10.1145/331524.331529",
+        "publication": "Journal of the ACM 46(6), 1999"
+      }
+    },
+    {
+      "name": "Saks and Zaharoglou topological impossibility of wait-free k-set agreement",
+      "identity": {
+        "doi": "10.1137/S0097539796307698",
+        "publication": "SIAM Journal on Computing 29(5), 2000"
+      }
+    },
+    {
+      "name": "Borowsky and Gafni generalized FLP impossibility and BG-simulation",
+      "identity": {
+        "doi": "10.1145/167088.167119",
+        "publication": "STOC 1993"
+      }
+    },
+    {
+      "name": "Castaneda and Rajsbaum combinatorial topology bounds for wait-free renaming",
+      "identity": {
+        "doi": "10.1145/1400751.1400791",
+        "publication": "PODC 2008 / JACM"
+      }
+    },
+    {
+      "name": "Lean 4 Mathlib abstract and geometric simplicial complexes",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "35f494609c32653bae53eb33f0cf2d899808909a"
+      }
+    },
+    {
+      "name": "Lean 4 mechanized Sperner's lemma and iterated barycentric subdivisions",
+      "identity": {
+        "repository": "vltanh/lean4-fixed-point",
+        "revision": "5f650f00b1db63837a452696331a98ca886b94a8"
+      }
+    },
+    {
+      "name": "Isabelle/HOL Archive of Formal Proofs (Heard-Of model and FLP impossibility)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "773174513872254f8efe1cb3a3ce64037f0b1da6",
+        "url": "https://isa-afp.org/entries/Heard_Of.html"
+      }
+    },
+    {
+      "name": "Lynch and Vaandrager forward and backward simulations for I/O automata",
+      "identity": {
+        "doi": "10.1006/inco.1995.1134",
+        "publication": "Information and Computation 121(2), 1995"
+      }
+    },
+    {
+      "name": "Charron-Bost and Schiper Heard-Of (HO) fault-tolerant round model",
+      "identity": {
+        "doi": "10.1007/s00446-009-0084-6",
+        "publication": "Distributed Computing 22(1), 2009"
+      }
+    },
+    {
+      "name": "Biely et al. Byzantine/Corrupted Heard-Of (SHO) model",
+      "identity": {
+        "doi": "10.1145/1281100.1281137",
+        "publication": "PODC 2007"
+      }
+    },
+    {
+      "name": "ByMC parameterized threshold-automata model checker",
+      "identity": {
+        "repository": "konnov/bymc",
+        "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1",
+        "doi": "10.1145/3009837.3009860"
+      }
+    },
+    {
+      "name": "Halpern and Moses epistemic logic of knowledge and common knowledge",
+      "identity": {
+        "doi": "10.1145/79147.79161",
+        "publication": "Journal of the ACM 37(3), 1990"
+      }
+    },
+    {
+      "name": "SMCDEL symbolic BDD model checker for dynamic epistemic logic",
+      "identity": {
+        "repository": "jrclogic/SMCDEL",
+        "revision": "ad484a6424b8ed8e7f064376ffc549958c03b141"
+      }
+    },
+    {
+      "name": "Velisarios epistemic logic-of-events Byzantine verification framework in Rocq",
+      "identity": {
+        "repository": "vrahli/Velisarios",
+        "revision": "6fb353b18610cd79210755fcc90123536c367aaa"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

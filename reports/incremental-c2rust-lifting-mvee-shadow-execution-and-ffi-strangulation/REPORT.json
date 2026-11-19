@@ -1,0 +1,124 @@
+{
+  "topics": [
+    "tooling/legacy-migration",
+    "ffi/abi-strangulation",
+    "systems/multi-variant-execution",
+    "rust/c-interoperability",
+    "verification/shadow-equivalence",
+    "compilers/ownership-lifting"
+  ],
+  "subjects": [
+    {
+      "name": "C2Rust C99-to-Rust transpiler and refactoring suite",
+      "identity": {
+        "repository": "immunant/c2rust",
+        "revision": "ae95fa7a268d92b23aaa687e1d6b74d9a7470312"
+      }
+    },
+    {
+      "name": "Crown ownership-guided C-to-Rust translation analyzer",
+      "identity": {
+        "repository": "KomaEc/crown",
+        "revision": "621904cd356b433215d5f55db39ffd71714f44ff",
+        "doi": "10.1007/978-3-031-37709-9_22"
+      }
+    },
+    {
+      "name": "Laertes compiler-guided C-to-Rust pointer lifter",
+      "identity": {
+        "doi": "10.1145/3485498",
+        "artifact_doi": "10.5281/zenodo.5442253",
+        "venue": "OOPSLA 2021"
+      }
+    },
+    {
+      "name": "ReMon and GHUMVEE multi-variant execution environment",
+      "identity": {
+        "repository": "ReMon-MVEE/ReMon",
+        "revision": "a29fc6320052a4acefcc8177c6cfaa07df2e61a5",
+        "doi": "10.1145/3064176.3064178"
+      }
+    },
+    {
+      "name": "VARAN asynchronous ring-buffer N-version execution framework",
+      "identity": {
+        "doi": "10.1145/2694344.2694390",
+        "venue": "ASPLOS 2015"
+      }
+    },
+    {
+      "name": "Orchestra user-space multi-variant execution monitor",
+      "identity": {
+        "doi": "10.1145/1519065.1519071",
+        "venue": "EuroSys 2009"
+      }
+    },
+    {
+      "name": "Detile fine-grained script-engine multi-execution system",
+      "identity": {
+        "doi": "10.1007/978-3-319-40667-1_16",
+        "venue": "DIMVA 2016"
+      }
+    },
+    {
+      "name": "PKRU-Safe FFI heap compartmentalization framework",
+      "identity": {
+        "doi": "10.1145/3492321.3519582",
+        "venue": "EuroSys 2022"
+      }
+    },
+    {
+      "name": "Rust RFC 2945 C-unwind ABI specification",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/2945-c-unwind-abi.md"
+      }
+    },
+    {
+      "name": "Rust core::ffi::VaList ABI implementation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745",
+        "path": "library/core/src/ffi/va_list.rs"
+      }
+    },
+    {
+      "name": "LLVM Flang ISO_Fortran_binding.h C interoperability descriptor",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "6aeca7e17f96ceedc9f2141f34d6a3b496cc4371",
+        "path": "flang/include/flang/ISO_Fortran_binding.h"
+      }
+    },
+    {
+      "name": "rav1d C2Rust-derived safe AV1 decoder",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "fish-shell incremental C++-to-Rust migration",
+      "identity": {
+        "repository": "fish-shell/fish-shell",
+        "revision": "f0d874ad924bd582a039f5a5d5a018913c7d8b6a"
+      }
+    },
+    {
+      "name": "cxx safe C++/Rust FFI bridge generator",
+      "identity": {
+        "repository": "dtolnay/cxx",
+        "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+      }
+    },
+    {
+      "name": "CRIU checkpoint/restore in userspace",
+      "identity": {
+        "repository": "checkpoint-restore/criu",
+        "revision": "3292b937138d045c12905dee89c78b9c05961f3b"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

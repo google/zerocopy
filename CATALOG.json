@@ -11965,6 +11965,117 @@
         "ffi/movable-references"
       ]
     },
+    "combinatorial-topology-simplicial-complexes-epistemic-logic-and-distributed-impossibility": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/331524.331529",
+            "publication": "Journal of the ACM 46(6), 1999"
+          },
+          "name": "Herlihy and Shavit Asynchronous Computability Theorem and chromatic simplicial complexes"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S0097539796307698",
+            "publication": "SIAM Journal on Computing 29(5), 2000"
+          },
+          "name": "Saks and Zaharoglou topological impossibility of wait-free k-set agreement"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/167088.167119",
+            "publication": "STOC 1993"
+          },
+          "name": "Borowsky and Gafni generalized FLP impossibility and BG-simulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1400751.1400791",
+            "publication": "PODC 2008 / JACM"
+          },
+          "name": "Castaneda and Rajsbaum combinatorial topology bounds for wait-free renaming"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "35f494609c32653bae53eb33f0cf2d899808909a"
+          },
+          "name": "Lean 4 Mathlib abstract and geometric simplicial complexes"
+        },
+        {
+          "identity": {
+            "repository": "vltanh/lean4-fixed-point",
+            "revision": "5f650f00b1db63837a452696331a98ca886b94a8"
+          },
+          "name": "Lean 4 mechanized Sperner's lemma and iterated barycentric subdivisions"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "773174513872254f8efe1cb3a3ce64037f0b1da6",
+            "url": "https://isa-afp.org/entries/Heard_Of.html"
+          },
+          "name": "Isabelle/HOL Archive of Formal Proofs (Heard-Of model and FLP impossibility)"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.1995.1134",
+            "publication": "Information and Computation 121(2), 1995"
+          },
+          "name": "Lynch and Vaandrager forward and backward simulations for I/O automata"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00446-009-0084-6",
+            "publication": "Distributed Computing 22(1), 2009"
+          },
+          "name": "Charron-Bost and Schiper Heard-Of (HO) fault-tolerant round model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1281100.1281137",
+            "publication": "PODC 2007"
+          },
+          "name": "Biely et al. Byzantine/Corrupted Heard-Of (SHO) model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009860",
+            "repository": "konnov/bymc",
+            "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+          },
+          "name": "ByMC parameterized threshold-automata model checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/79147.79161",
+            "publication": "Journal of the ACM 37(3), 1990"
+          },
+          "name": "Halpern and Moses epistemic logic of knowledge and common knowledge"
+        },
+        {
+          "identity": {
+            "repository": "jrclogic/SMCDEL",
+            "revision": "ad484a6424b8ed8e7f064376ffc549958c03b141"
+          },
+          "name": "SMCDEL symbolic BDD model checker for dynamic epistemic logic"
+        },
+        {
+          "identity": {
+            "repository": "vrahli/Velisarios",
+            "revision": "6fb353b18610cd79210755fcc90123536c367aaa"
+          },
+          "name": "Velisarios epistemic logic-of-events Byzantine verification framework in Rocq"
+        }
+      ],
+      "topics": [
+        "verification/combinatorial-topology",
+        "systems/distributed-computability",
+        "pl/epistemic-logics",
+        "verification/io-automata"
+      ]
+    },
     "compcert-sel4-everest-pass-composition-and-proof-maintenance": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -23793,6 +23904,130 @@
         "systems/os-kernels"
       ]
     },
+    "incremental-c2rust-lifting-mvee-shadow-execution-and-ffi-strangulation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "immunant/c2rust",
+            "revision": "ae95fa7a268d92b23aaa687e1d6b74d9a7470312"
+          },
+          "name": "C2Rust C99-to-Rust transpiler and refactoring suite"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-37709-9_22",
+            "repository": "KomaEc/crown",
+            "revision": "621904cd356b433215d5f55db39ffd71714f44ff"
+          },
+          "name": "Crown ownership-guided C-to-Rust translation analyzer"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.5442253",
+            "doi": "10.1145/3485498",
+            "venue": "OOPSLA 2021"
+          },
+          "name": "Laertes compiler-guided C-to-Rust pointer lifter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3064176.3064178",
+            "repository": "ReMon-MVEE/ReMon",
+            "revision": "a29fc6320052a4acefcc8177c6cfaa07df2e61a5"
+          },
+          "name": "ReMon and GHUMVEE multi-variant execution environment"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2694344.2694390",
+            "venue": "ASPLOS 2015"
+          },
+          "name": "VARAN asynchronous ring-buffer N-version execution framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1519065.1519071",
+            "venue": "EuroSys 2009"
+          },
+          "name": "Orchestra user-space multi-variant execution monitor"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-40667-1_16",
+            "venue": "DIMVA 2016"
+          },
+          "name": "Detile fine-grained script-engine multi-execution system"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3492321.3519582",
+            "venue": "EuroSys 2022"
+          },
+          "name": "PKRU-Safe FFI heap compartmentalization framework"
+        },
+        {
+          "identity": {
+            "path": "text/2945-c-unwind-abi.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 2945 C-unwind ABI specification"
+        },
+        {
+          "identity": {
+            "path": "library/core/src/ffi/va_list.rs",
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "Rust core::ffi::VaList ABI implementation"
+        },
+        {
+          "identity": {
+            "path": "flang/include/flang/ISO_Fortran_binding.h",
+            "repository": "llvm/llvm-project",
+            "revision": "6aeca7e17f96ceedc9f2141f34d6a3b496cc4371"
+          },
+          "name": "LLVM Flang ISO_Fortran_binding.h C interoperability descriptor"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d C2Rust-derived safe AV1 decoder"
+        },
+        {
+          "identity": {
+            "repository": "fish-shell/fish-shell",
+            "revision": "f0d874ad924bd582a039f5a5d5a018913c7d8b6a"
+          },
+          "name": "fish-shell incremental C++-to-Rust migration"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/cxx",
+            "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+          },
+          "name": "cxx safe C++/Rust FFI bridge generator"
+        },
+        {
+          "identity": {
+            "repository": "checkpoint-restore/criu",
+            "revision": "3292b937138d045c12905dee89c78b9c05961f3b"
+          },
+          "name": "CRIU checkpoint/restore in userspace"
+        }
+      ],
+      "topics": [
+        "tooling/legacy-migration",
+        "ffi/abi-strangulation",
+        "systems/multi-variant-execution",
+        "rust/c-interoperability",
+        "verification/shadow-equivalence",
+        "compilers/ownership-lifting"
+      ]
+    },
     "incremental-computation-adapton-salsa-buck2-and-build-system-graphs": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -29159,6 +29394,104 @@
         "rust/kernel-abstractions",
         "systems/ebpf-core",
         "security/kernel-isolation"
+      ]
+    },
+    "live-kernel-hot-patching-klp-quiescence-ksplice-and-rtos-state-transfer": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "path": "kernel/livepatch",
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel livepatch subsystem (klp)"
+        },
+        {
+          "identity": {
+            "repository": "dynup/kpatch",
+            "revision": "862cda5e7b6827505ec429ab0bc0ad61cd26f068"
+          },
+          "name": "kpatch ELF binary diffing and livepatch builder"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1519065.1519085",
+            "venue": "EuroSys 2009"
+          },
+          "name": "Ksplice rebootless Linux kernel update system"
+        },
+        {
+          "identity": {
+            "path": "xen/common/livepatch.c",
+            "repository": "xen-project/xen",
+            "revision": "92ddcda17fb00020c6215d51df4c6a25d5eb0b5e"
+          },
+          "name": "Xen hypervisor livepatch subsystem"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2384616.2384635",
+            "repository": "kitsune-dsu/kitsune-core",
+            "revision": "6393a0c148976c910df313bda4b578e7c240a6d2"
+          },
+          "name": "Kitsune dynamic software updating framework for C"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2660193.2660220",
+            "repository": "plum-umd/rubah",
+            "revision": "e0dcea715b074f486cc064d45e794d03f1ccd317"
+          },
+          "name": "Rubah dynamic software updating system for Java"
+        },
+        {
+          "identity": {
+            "artifact_revision": "2c4fddeb5b8ccc20226a61422448243ac065775f",
+            "repository": "IoTAccessControl/RapidPatch",
+            "revision": "43498177c61b14b70df81df141a7b8622e354995",
+            "toolchain_repository": "IoTAccessControl/RapidPatch-ToolChain",
+            "toolchain_revision": "32e35d5b9b539d8c84e07f7f149f6f7fce536f26",
+            "venue": "USENIX Security 2022"
+          },
+          "name": "RapidPatch eBPF firmware hotpatching framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3658644.3690255",
+            "repository": "DependableSystemsLab/AutoPatch",
+            "revision": "9ab6ba0a619447832e88c9f2517a7c4725df37d3"
+          },
+          "name": "AutoPatch WCET-bounded RTOS hotpatch generator"
+        },
+        {
+          "identity": {
+            "repository": "mcu-tools/mcuboot",
+            "revision": "c5983c9af5408587c31ca0302c6a0d36c6fc8741"
+          },
+          "name": "MCUboot secure microcontroller bootloader"
+        },
+        {
+          "identity": {
+            "repository": "zephyrproject-rtos/zephyr",
+            "revision": "c9e38773358dfe0b19fe920f611e288cca4bdf66"
+          },
+          "name": "Zephyr RTOS"
+        },
+        {
+          "identity": {
+            "repository": "FreeRTOS/FreeRTOS-Kernel",
+            "revision": "83a45bf290024de16ca94df1f7262bcde6c82ffe"
+          },
+          "name": "FreeRTOS kernel"
+        }
+      ],
+      "topics": [
+        "systems/live-patching",
+        "runtimes/state-migration",
+        "domains/realtime-upgrades",
+        "verification/quiescence-invariants",
+        "ffi/abi-evolution"
       ]
     },
     "live-typed-hole-calculi-fluid-structure-editors-and-spreadsheet-semantics": {
@@ -51483,6 +51816,138 @@
         "verification",
         "verification/compiler-verification",
         "verification/empirical-evaluation"
+      ]
+    },
+    "tla-alloy-quint-protocol-models-and-ironfleet-verdi-implementation-refinement": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tlaplus/tlaplus",
+            "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c"
+          },
+          "name": "TLA+ tools, PlusCal translator, and TLC model checker"
+        },
+        {
+          "identity": {
+            "repository": "tlaplus/tlapm",
+            "revision": "9a52fafb00245ace0877ec8d91c4a09a7caa8061"
+          },
+          "name": "TLA+ Proof System (TLAPS)"
+        },
+        {
+          "identity": {
+            "repository": "informalsystems/quint",
+            "revision": "07d7a1a69c2093b5bc656caf3b5dfefa0d766cd0"
+          },
+          "name": "Quint specification language and effect checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360549",
+            "repository": "apalache-mc/apalache",
+            "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+          },
+          "name": "Apalache symbolic TLA+ model checker"
+        },
+        {
+          "identity": {
+            "repository": "AlloyTools/org.alloytools.alloy",
+            "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+          },
+          "name": "Alloy 6 temporal relational analyzer"
+        },
+        {
+          "identity": {
+            "repository": "haslab/Pardinus",
+            "revision": "d3e7aeac73d052a28cff7f5946c85f745e3ad14c"
+          },
+          "name": "Pardinus temporal relational model-finding engine"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462184",
+            "repository": "p-org/P",
+            "revision": "6cbf558087c85bad94068947286a6ef4e7342eb5"
+          },
+          "name": "P asynchronous event-driven state-machine language and PChecker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2815400.2815428",
+            "repository": "microsoft/Ironclad",
+            "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+          },
+          "name": "IronFleet distributed protocol refinement framework in Dafny"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2813885.2737958",
+            "repository": "uwplse/verdi",
+            "revision": "7e1641b758d8f0032aa7de63620bc115330e0a6b"
+          },
+          "name": "Verdi verified distributed systems framework and network transformers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2854065.2854081",
+            "repository": "uwplse/verdi-raft",
+            "revision": "a3375e867326a82225e724cc1a7b4758b029376f"
+          },
+          "name": "Verdi Raft verified consensus implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158116",
+            "repository": "DistributedComponents/disel",
+            "revision": "4ae4c207ef1a25010d63508f2bbda2d4c197d5ab"
+          },
+          "name": "Disel distributed separation logic in Rocq"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-44914-8_13",
+            "repository": "logsem/aneris",
+            "revision": "59ae37946838df77fb2c573803b68462a3af9d0f"
+          },
+          "name": "Aneris mechanized Iris separation logic for socket-based distributed systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586037",
+            "repository": "verus-lang/verus",
+            "revision": "c821149050c1269f32771a11582bee2fc58e5a8a"
+          },
+          "name": "Verus tokenized state-machine macros and linear ghost verification"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/ironsync-osdi2023",
+            "revision": "7c912e29fd9e770d2fb9866606d0bf2a97629252"
+          },
+          "name": "IronSync sharded state-machine concurrency verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3830418.3843868",
+            "repository": "anvil-verifier/anvil",
+            "revision": "e83ea0f5516ce2ece26740266165180018741e66"
+          },
+          "name": "Anvil and Welder verified Kubernetes controller framework in Verus"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90222-U",
+            "publication": "Theoretical Computer Science 82(2), 1991"
+          },
+          "name": "Abadi and Lamport refinement mappings with history and prophecy variables"
+        }
+      ],
+      "topics": [
+        "verification/protocol-refinement",
+        "pl/modeling-languages",
+        "systems/verified-distributed",
+        "smt/relational-models"
       ]
     },
     "tock-asterinas-redleaf-theseus-and-rust-os-isolation-boundaries": {

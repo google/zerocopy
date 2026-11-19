@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "systems/live-patching",
+    "runtimes/state-migration",
+    "domains/realtime-upgrades",
+    "verification/quiescence-invariants",
+    "ffi/abi-evolution"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel livepatch subsystem (klp)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+        "path": "kernel/livepatch"
+      }
+    },
+    {
+      "name": "kpatch ELF binary diffing and livepatch builder",
+      "identity": {
+        "repository": "dynup/kpatch",
+        "revision": "862cda5e7b6827505ec429ab0bc0ad61cd26f068"
+      }
+    },
+    {
+      "name": "Ksplice rebootless Linux kernel update system",
+      "identity": {
+        "doi": "10.1145/1519065.1519085",
+        "venue": "EuroSys 2009"
+      }
+    },
+    {
+      "name": "Xen hypervisor livepatch subsystem",
+      "identity": {
+        "repository": "xen-project/xen",
+        "revision": "92ddcda17fb00020c6215d51df4c6a25d5eb0b5e",
+        "path": "xen/common/livepatch.c"
+      }
+    },
+    {
+      "name": "Kitsune dynamic software updating framework for C",
+      "identity": {
+        "repository": "kitsune-dsu/kitsune-core",
+        "revision": "6393a0c148976c910df313bda4b578e7c240a6d2",
+        "doi": "10.1145/2384616.2384635"
+      }
+    },
+    {
+      "name": "Rubah dynamic software updating system for Java",
+      "identity": {
+        "repository": "plum-umd/rubah",
+        "revision": "e0dcea715b074f486cc064d45e794d03f1ccd317",
+        "doi": "10.1145/2660193.2660220"
+      }
+    },
+    {
+      "name": "RapidPatch eBPF firmware hotpatching framework",
+      "identity": {
+        "repository": "IoTAccessControl/RapidPatch",
+        "revision": "43498177c61b14b70df81df141a7b8622e354995",
+        "artifact_revision": "2c4fddeb5b8ccc20226a61422448243ac065775f",
+        "toolchain_repository": "IoTAccessControl/RapidPatch-ToolChain",
+        "toolchain_revision": "32e35d5b9b539d8c84e07f7f149f6f7fce536f26",
+        "venue": "USENIX Security 2022"
+      }
+    },
+    {
+      "name": "AutoPatch WCET-bounded RTOS hotpatch generator",
+      "identity": {
+        "repository": "DependableSystemsLab/AutoPatch",
+        "revision": "9ab6ba0a619447832e88c9f2517a7c4725df37d3",
+        "doi": "10.1145/3658644.3690255"
+      }
+    },
+    {
+      "name": "MCUboot secure microcontroller bootloader",
+      "identity": {
+        "repository": "mcu-tools/mcuboot",
+        "revision": "c5983c9af5408587c31ca0302c6a0d36c6fc8741"
+      }
+    },
+    {
+      "name": "Zephyr RTOS",
+      "identity": {
+        "repository": "zephyrproject-rtos/zephyr",
+        "revision": "c9e38773358dfe0b19fe920f611e288cca4bdf66"
+      }
+    },
+    {
+      "name": "FreeRTOS kernel",
+      "identity": {
+        "repository": "FreeRTOS/FreeRTOS-Kernel",
+        "revision": "83a45bf290024de16ca94df1f7262bcde6c82ffe"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
