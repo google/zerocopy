@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "verification/industry-adoption",
+    "tooling/deterministic-simulation",
+    "systems/engineering-retrospectives",
+    "pl/ergonomics-critiques",
+    "compilers/incremental-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "AWS s2n-tls Repository",
+      "identity": {
+        "repository": "aws/s2n-tls",
+        "revision": "0e5c33658ab5c0a4e90ff1a5465c6bcc4026c613"
+      }
+    },
+    {
+      "name": "Galois Software Analysis Workbench (SAW)",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "f290af7bda474779c8e5685ddd30612a7e6f0399"
+      }
+    },
+    {
+      "name": "Cedar Policy Production Engine",
+      "identity": {
+        "repository": "cedar-policy/cedar",
+        "revision": "4ff0bb074699db8c348426ee03db933bf8ebfdd6"
+      }
+    },
+    {
+      "name": "Cedar Lean 4 Formalization and Differential Testing Suite",
+      "identity": {
+        "repository": "cedar-policy/cedar-spec",
+        "revision": "326d93c24490c90607a3e257318e9c6a049c8116"
+      }
+    },
+    {
+      "name": "AWS Shuttle Randomized Concurrency Model Checker",
+      "identity": {
+        "repository": "awslabs/shuttle",
+        "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+      }
+    },
+    {
+      "name": "TigerBeetle Distributed Financial Database and VOPR Simulator",
+      "identity": {
+        "repository": "tigerbeetle/tigerbeetle",
+        "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+      }
+    },
+    {
+      "name": "FoundationDB Distributed Database and Deterministic Simulator",
+      "identity": {
+        "repository": "apple/foundationdb",
+        "revision": "39fb2391049fe326d2c5c7c3dd8dbb8b596284b9"
+      }
+    },
+    {
+      "name": "rust-analyzer Modular IDE Frontend",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "aa198229289901e5718e7c0a8d4115638cc1900c"
+      }
+    },
+    {
+      "name": "Salsa Incremental Recomputation Framework",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+      }
+    },
+    {
+      "name": "Continuous Formal Verification of Amazon s2n (Chudnov et al., CAV 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-319-96142-2_26",
+        "published": "2018-07-18"
+      }
+    },
+    {
+      "name": "Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3 (Bornholt et al., SOSP 2021)",
+      "identity": {
+        "doi": "10.1145/3477132.3483540",
+        "published": "2021-10-26"
+      }
+    },
+    {
+      "name": "AWS Automated Reasoning Engineering Blogs (Hietala & Torlak 2024; Cook 2024)",
+      "identity": {
+        "url": "https://aws.amazon.com/blogs/opensource/lean-into-verified-software-development/",
+        "companion_url": "https://aws.amazon.com/blogs/security/an-unexpected-discovery-automated-reasoning-often-makes-systems-more-efficient-and-easier-to-maintain/",
+        "published": "2024-10-17"
+      }
+    },
+    {
+      "name": "Hillel Wayne Practitioner Essays on Formal Methods Adoption and Friction",
+      "identity": {
+        "url": "https://www.hillelwayne.com/post/why-dont-people-use-formal-methods/",
+        "companion_url": "https://www.hillelwayne.com/post/software-friction/",
+        "published": "2019-01-21"
+      }
+    },
+    {
+      "name": "TigerBeetle VOPR Engineering Blogs (Kladov 2023; Bhandari 2026)",
+      "identity": {
+        "url": "https://tigerbeetle.com/blog/2026-08-20-protocol-aware-dst",
+        "companion_url": "https://tigerbeetle.com/blog/2023-07-06-simulation-testing-for-liveness",
+        "published": "2026-08-20"
+      }
+    },
+    {
+      "name": "Graydon Hoare Retrospective: The Rust I Wanted Had No Future",
+      "identity": {
+        "url": "https://graydon2.dreamwidth.org/307291.html",
+        "published": "2023-06-05"
+      }
+    },
+    {
+      "name": "Alex Kladov Compiler Architecture and Build-Time Budget Essays",
+      "identity": {
+        "url": "https://matklad.github.io/2026/02/25/against-query-based-compilers.html",
+        "companion_url": "https://matklad.github.io/2021/09/04/fast-rust-builds.html",
+        "published": "2026-02-25"
+      }
+    },
+    {
+      "name": "Systems Postmortem and Debugging Essays (Luu, Elhage, Cantrill)",
+      "identity": {
+        "url": "https://danluu.com/postmortem-lessons/",
+        "companion_url": "https://blog.nelhage.com/post/systems-that-defy-understanding/",
+        "published": "2020-02-22"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

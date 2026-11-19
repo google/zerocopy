@@ -13936,6 +13936,82 @@
         "compilers"
       ]
     },
+    "concept-design-deep-modules-felleisen-expressiveness-and-adapter-conservation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/2814228.2814248",
+            "isbn": "978-0691225388",
+            "repository": "AlloyTools/org.alloytools.alloy",
+            "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+          },
+          "name": "Daniel Jackson Concept Design and Relational Alloy Analyzer"
+        },
+        {
+          "identity": {
+            "edition": "2nd Edition (2021)",
+            "isbn": "978-1732102224",
+            "publication": "Yaknyam Press"
+          },
+          "name": "John Ousterhout Deep Modules (A Philosophy of Software Design)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MC.1987.1663532",
+            "publication": "IEEE Computer 20(4):10-19",
+            "year": "1987"
+          },
+          "name": "Frederick P. Brooks Jr. Essential vs. Accidental Complexity and Conceptual Integrity"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0167-6423(91)90036-W",
+            "repository": "racket/redex",
+            "revision": "a9f010613e8cab58f912e922ddeb55ce2e65139d"
+          },
+          "name": "Matthias Felleisen On the Expressive Power of Programming Languages and PLT Redex"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1190315.1190324",
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC) System FC Core Intermediate Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-94-007-0954-6",
+            "publication": "TLCA 1999 / Springer Monograph (2003)",
+            "related_doi": "10.1007/3-540-48959-2_17"
+          },
+          "name": "Paul Blain Levy Call-by-Push-Value (CBPV) Subsuming Paradigm"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+          },
+          "name": "Lean 4 Dependently Typed Kernel vs. Elaborator Architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO51591.2021.9370308",
+            "repository": "llvm/llvm-project",
+            "revision": "5989210109e1f7f59ccfeb07dc76120eba5f48a5"
+          },
+          "name": "LLVM MLIR Multi-Level Dialect and Conversion Infrastructure"
+        }
+      ],
+      "topics": [
+        "pl/conceptual-refinement",
+        "verification/specification-simplicity",
+        "compilers/core-calculi",
+        "systems/module-depth",
+        "llvm/mlir-dialect-lowering"
+      ]
+    },
     "concolic-execution-compiled-symcc-path-merging-and-constraint-array-models": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -20694,6 +20770,100 @@
         "verification/isa-coverage"
       ]
     },
+    "frontier-ai-lab-binary-verification-oss-fuzz-proofs-and-agent-reward-hacking": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "theorem-labs/oss-verify-proofs",
+            "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061",
+            "version": "2026.11.2"
+          },
+          "name": "Theorem OSS Verify Proofs Repository"
+        },
+        {
+          "identity": {
+            "repository": "theorem-labs/rocq-linux-process-semantics",
+            "revision": "f1006fe8178338a499b5e5c41be83006c4edd058"
+          },
+          "name": "Rocq Linux Process Semantics (LPS)"
+        },
+        {
+          "identity": {
+            "repository": "anthropics/FlashProve",
+            "revision": "9e2bdd8ff5bf9c62f18263d7dac189b0400b260c",
+            "version": "0.16.0"
+          },
+          "name": "Anthropic FlashProve Provable Inference Prototype"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "c821149050c1269f32771a11582bee2fc58e5a8a"
+          },
+          "name": "Verus Rust Verification Tool"
+        },
+        {
+          "identity": {
+            "repository": "google/oss-fuzz",
+            "revision": "bd2ce21991a94a362b92fb1bf25f86d5a1a60842"
+          },
+          "name": "Google OSS-Fuzz Corpus Baseline"
+        },
+        {
+          "identity": {
+            "appendix_url": "https://www-cdn.anthropic.com/files/4zrzovbb/website/6867eadf760258fa8b42a504600cd3c036d16358.pdf",
+            "published": "2026-10-22",
+            "url": "https://www.anthropic.com/research/formal-verification"
+          },
+          "name": "Anthropic and Theorem Formal Software Verification Report and Technical Appendix"
+        },
+        {
+          "identity": {
+            "published": "2026-11-02",
+            "url": "https://www.anthropic.com/research/provable-inference"
+          },
+          "name": "Anthropic Progress on Provable Inference for Large Language Models"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41586-025-09833-y",
+            "journal": "Nature 651(8106):607-613",
+            "published": "2025-11-12"
+          },
+          "name": "Google DeepMind AlphaProof Nature Report"
+        },
+        {
+          "identity": {
+            "published": "2024-11-01",
+            "url": "https://projectzero.google/2024/10/from-naptime-to-big-sleep.html"
+          },
+          "name": "Google Project Zero and DeepMind Big Sleep Field Disclosures"
+        },
+        {
+          "identity": {
+            "published": "2025-12-08",
+            "url": "https://martin.kleppmann.com/2025/12/08/ai-formal-verification.html"
+          },
+          "name": "Martin Kleppmann Essay on AI and Mainstream Formal Verification"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.07666v5",
+            "doi": "10.48550/arXiv.2602.07666",
+            "published": "2026-08-02"
+          },
+          "name": "SoK: DARPA AI Cyber Challenge (AIxCC)"
+        }
+      ],
+      "topics": [
+        "agents/formal-verification",
+        "security/binary-proofs",
+        "verification/reward-hacking",
+        "isa/llm-isa-semantics",
+        "lean/provable-inference"
+      ]
+    },
     "fuel-step-indexing-clocks-and-tcb-recursion": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -21627,6 +21797,85 @@
         "runtimes/go",
         "ffi/cgo",
         "systems/memory-models"
+      ]
+    },
+    "government-memory-safety-mandates-oncd-cisa-xz-utils-and-maintainer-economics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "date": "2024-02-26",
+            "document": "Back to the Building Blocks: A Path Toward Secure and Measurable Software",
+            "publisher": "Executive Office of the President, Office of the National Cyber Director"
+          },
+          "name": "White House ONCD Secure and Measurable Software Technical Report"
+        },
+        {
+          "identity": {
+            "date": "2023-12-06",
+            "document": "The Case for Memory Safe Roadmaps: Why Both C-Suite Executives and Technical Experts Need to Take Memory Safety Seriously",
+            "publisher": "Cybersecurity and Infrastructure Security Agency (CISA)"
+          },
+          "name": "CISA, NSA, FBI, and International Partners Memory-Safe Roadmaps Guidance"
+        },
+        {
+          "identity": {
+            "date_adopted": "2024-10-23",
+            "official_journal": "OJ L, 2024/2847, 20.11.2024",
+            "regulation": "Regulation (EU) 2024/2847"
+          },
+          "name": "European Union Cyber Resilience Act (CRA)"
+        },
+        {
+          "identity": {
+            "advisory": "CVE-2024-3094 (Andres Freund, oss-security, 2024-03-29)",
+            "repository": "tukaani-project/xz",
+            "revision": "f54febc540607b3bdee0a0e6793355df2a7e9f61"
+          },
+          "name": "XZ Utils Upstream Repository and CVE-2024-3094 Remediation"
+        },
+        {
+          "identity": {
+            "historical_patch_revision": "96db9023b881d7cd9f379b0c154650d6c108e9a3",
+            "repository": "openssl/openssl",
+            "revision": "fc355e65068efe333e0764db1c32c302af8aa7fa"
+          },
+          "name": "OpenSSL TLS Library and CVE-2014-0160 Heartbleed Fix"
+        },
+        {
+          "identity": {
+            "repository": "rustls/rustls",
+            "revision": "836e411eccaf7331f4c289aabef0de32474de3b8"
+          },
+          "name": "Rustls Memory-Safe TLS Implementation"
+        },
+        {
+          "identity": {
+            "repository": "apache/logging-log4j2",
+            "revision": "140ff0af9c1b56268bf42af2e48503fe1a6ae99a"
+          },
+          "name": "Apache Log4j 2 Logging Framework (CVE-2021-44228 Remediation)"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/cxx",
+            "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+          },
+          "name": "CXX Safe C++ and Rust Interop Bridge Generator"
+        },
+        {
+          "identity": {
+            "repository": "google/crubit",
+            "revision": "45c4e15465abaf68c80dc7c11ba54281fd11a645"
+          },
+          "name": "Crubit Bidirectional C++ and Rust Binding Generator"
+        }
+      ],
+      "topics": [
+        "security/supply-chain-policy",
+        "vcs/social-backdoors",
+        "build/autotools-smuggling",
+        "domains/software-liability"
       ]
     },
     "gpu-simt-execution-warp-divergence-and-scoped-memory-models": {
@@ -24829,6 +25078,89 @@
         "agents/mcp",
         "agents/lsp-integration",
         "anneal/interactive-lsp"
+      ]
+    },
+    "investigative-journalism-boeing-mcas-toyota-ua-crowdstrike-and-knight-postmortems": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "date": "2020-09-16",
+            "document": "Final Committee Report: The Design, Development & Certification of the Boeing 737 MAX",
+            "publisher": "U.S. House Committee on Transportation and Infrastructure",
+            "related_investigation": "Dominic Gates, The Seattle Times, 2019-03-17"
+          },
+          "name": "U.S. House Committee on Transportation and Infrastructure Boeing 737 MAX Final Report and Seattle Times Investigation"
+        },
+        {
+          "identity": {
+            "date": "2011-02-08",
+            "publisher": "NASA Engineering and Safety Center",
+            "related_litigation_record": "Bookout v. Toyota Motor Corp. Expert Testimony (Barr and Koopman, 2013-10)",
+            "report_id": "NESC-RP-10-00608"
+          },
+          "name": "NASA NESC Toyota Electronic Throttle Control System-Intelligent (ETCS-i) Assessment"
+        },
+        {
+          "identity": {
+            "date": "2024-08-06",
+            "document": "External Technical Root Cause Analysis \u2014 Channel File 291",
+            "publisher": "CrowdStrike",
+            "sensor_version": "7.11"
+          },
+          "name": "CrowdStrike Falcon Sensor Channel File 291 External Technical Root Cause Analysis"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/ebpf-for-windows",
+            "revision": "9d7eaba765f2089f0780918fc169bb2fcd22708a"
+          },
+          "name": "Microsoft eBPF for Windows"
+        },
+        {
+          "identity": {
+            "repository": "vbpf/prevail",
+            "revision": "169eb5d6f48a59ffe4e902e977ae4e387f2b4e49"
+          },
+          "name": "PREVAIL Polynomial-Time eBPF Abstract-Interpretation Verifier"
+        },
+        {
+          "identity": {
+            "date": "2013-10-16",
+            "file_number": "3-15570",
+            "publisher": "U.S. Securities and Exchange Commission",
+            "release_number": "34-70694"
+          },
+          "name": "SEC Administrative Order In the Matter of Knight Capital Americas LLC"
+        },
+        {
+          "identity": {
+            "postmortems": "2019-07-02 WAF PCRE; 2022-06-21 BGP Prefix Policy; 2023-11-02 Control Plane",
+            "repository": "cloudflare/wirefilter",
+            "revision": "a101f7c0fc60012803ee23432b5514644d9fbe4f"
+          },
+          "name": "Cloudflare Wirefilter Execution Engine and Incident Post-Mortems"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/regex",
+            "revision": "fde4946d4a3cb367338a21493ec91ec7106a12b4"
+          },
+          "name": "Rust Linear-Time Regular Expression Engine"
+        },
+        {
+          "identity": {
+            "repository": "LS-Lab/KeYmaeraX-projects",
+            "revision": "b9d7cb584e8fd1c3cc4f30644e82ba12cbb1d6fe"
+          },
+          "name": "KeYmaera X Hybrid Cyber-Physical Verification Benchmark Suite"
+        }
+      ],
+      "topics": [
+        "domains/catastrophic-failures",
+        "systems/incident-postmortems",
+        "security/kernel-resiliency",
+        "verification/system-boundary-gaps"
       ]
     },
     "io-uring-async-rings-seccomp-landlock-and-container-path-toctou-isolation": {
@@ -37778,6 +38110,142 @@
         "verification/bytecode-verifiers",
         "domains",
         "domains/dsls"
+      ]
+    },
+    "practitioner-formal-methods-retrospectives-aws-arg-hillel-wayne-and-vopr-blogs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "aws/s2n-tls",
+            "revision": "0e5c33658ab5c0a4e90ff1a5465c6bcc4026c613"
+          },
+          "name": "AWS s2n-tls Repository"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/saw-script",
+            "revision": "f290af7bda474779c8e5685ddd30612a7e6f0399"
+          },
+          "name": "Galois Software Analysis Workbench (SAW)"
+        },
+        {
+          "identity": {
+            "repository": "cedar-policy/cedar",
+            "revision": "4ff0bb074699db8c348426ee03db933bf8ebfdd6"
+          },
+          "name": "Cedar Policy Production Engine"
+        },
+        {
+          "identity": {
+            "repository": "cedar-policy/cedar-spec",
+            "revision": "326d93c24490c90607a3e257318e9c6a049c8116"
+          },
+          "name": "Cedar Lean 4 Formalization and Differential Testing Suite"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/shuttle",
+            "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+          },
+          "name": "AWS Shuttle Randomized Concurrency Model Checker"
+        },
+        {
+          "identity": {
+            "repository": "tigerbeetle/tigerbeetle",
+            "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+          },
+          "name": "TigerBeetle Distributed Financial Database and VOPR Simulator"
+        },
+        {
+          "identity": {
+            "repository": "apple/foundationdb",
+            "revision": "39fb2391049fe326d2c5c7c3dd8dbb8b596284b9"
+          },
+          "name": "FoundationDB Distributed Database and Deterministic Simulator"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "aa198229289901e5718e7c0a8d4115638cc1900c"
+          },
+          "name": "rust-analyzer Modular IDE Frontend"
+        },
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+          },
+          "name": "Salsa Incremental Recomputation Framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-96142-2_26",
+            "published": "2018-07-18"
+          },
+          "name": "Continuous Formal Verification of Amazon s2n (Chudnov et al., CAV 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3477132.3483540",
+            "published": "2021-10-26"
+          },
+          "name": "Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3 (Bornholt et al., SOSP 2021)"
+        },
+        {
+          "identity": {
+            "companion_url": "https://aws.amazon.com/blogs/security/an-unexpected-discovery-automated-reasoning-often-makes-systems-more-efficient-and-easier-to-maintain/",
+            "published": "2024-10-17",
+            "url": "https://aws.amazon.com/blogs/opensource/lean-into-verified-software-development/"
+          },
+          "name": "AWS Automated Reasoning Engineering Blogs (Hietala & Torlak 2024; Cook 2024)"
+        },
+        {
+          "identity": {
+            "companion_url": "https://www.hillelwayne.com/post/software-friction/",
+            "published": "2019-01-21",
+            "url": "https://www.hillelwayne.com/post/why-dont-people-use-formal-methods/"
+          },
+          "name": "Hillel Wayne Practitioner Essays on Formal Methods Adoption and Friction"
+        },
+        {
+          "identity": {
+            "companion_url": "https://tigerbeetle.com/blog/2023-07-06-simulation-testing-for-liveness",
+            "published": "2026-08-20",
+            "url": "https://tigerbeetle.com/blog/2026-08-20-protocol-aware-dst"
+          },
+          "name": "TigerBeetle VOPR Engineering Blogs (Kladov 2023; Bhandari 2026)"
+        },
+        {
+          "identity": {
+            "published": "2023-06-05",
+            "url": "https://graydon2.dreamwidth.org/307291.html"
+          },
+          "name": "Graydon Hoare Retrospective: The Rust I Wanted Had No Future"
+        },
+        {
+          "identity": {
+            "companion_url": "https://matklad.github.io/2021/09/04/fast-rust-builds.html",
+            "published": "2026-02-25",
+            "url": "https://matklad.github.io/2026/02/25/against-query-based-compilers.html"
+          },
+          "name": "Alex Kladov Compiler Architecture and Build-Time Budget Essays"
+        },
+        {
+          "identity": {
+            "companion_url": "https://blog.nelhage.com/post/systems-that-defy-understanding/",
+            "published": "2020-02-22",
+            "url": "https://danluu.com/postmortem-lessons/"
+          },
+          "name": "Systems Postmortem and Debugging Essays (Luu, Elhage, Cantrill)"
+        }
+      ],
+      "topics": [
+        "verification/industry-adoption",
+        "tooling/deterministic-simulation",
+        "systems/engineering-retrospectives",
+        "pl/ergonomics-critiques",
+        "compilers/incremental-architecture"
       ]
     },
     "probabilistic-programming-measure-semantics-and-inference-compilers": {
@@ -57846,6 +58314,80 @@
         "verification",
         "verification/numerical",
         "systems"
+      ]
+    },
+    "wirth-oberon-plan9-namespaces-forth-lua-and-whole-system-simplicity": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Spirit-of-Oberon/ProjectOberon2013",
+            "revision": "72966ea608613dad76f5afdd57578c7e53741bd3"
+          },
+          "name": "Project Oberon (2013 Edition) Operating System, Oberon-07 Compiler, and RISC5 Hardware"
+        },
+        {
+          "identity": {
+            "repository": "pdewacht/oberon-risc-emu",
+            "revision": "26c8ac5737c71811803c87ad51f1f0d6e62e71fe"
+          },
+          "name": "Oberon RISC5 Emulator in C"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/155848.155861",
+            "repository": "plan9foundation/plan9",
+            "revision": "ed1a9c21e3297d7497a48053d33683375c75fbb4"
+          },
+          "name": "Plan 9 from Bell Labs Kernel, 9P2000 Wire Protocol, and Per-Process Namespaces"
+        },
+        {
+          "identity": {
+            "repository": "9fans/plan9port",
+            "revision": "1f1396913fb5372408f442ed26933f5ae4b399cd"
+          },
+          "name": "Plan 9 from User Space (plan9port) 9P2000 User-Space Implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.3217/jucs-011-07-1159",
+            "repository": "lua/lua",
+            "revision": "c42d820bc0c3bc4f2ad536e19d2f05405af10387"
+          },
+          "name": "Lua Virtual Machine, Hybrid Table+Metatable Runtime, and One-Pass Compiler"
+        },
+        {
+          "identity": {
+            "repository": "DeltaF1/uxn-c",
+            "revision": "cbfd2e71ca8d6e36f056ef14d7dfecec267a6a4a",
+            "url": "https://wiki.xxiivv.com/site/uxntal_opcodes.html"
+          },
+          "name": "Uxn Stack-Machine Virtual Machine and Varvara Specification"
+        },
+        {
+          "identity": {
+            "companion_repository": "cesarblum/sectorforth",
+            "companion_revision": "32031ac6e77e30817c2f65ba11b1ccda07d564f9",
+            "repository": "nornagon/jonesforth",
+            "revision": "d97a25bb0b06fb58da1975eac291f45618fd2ada"
+          },
+          "name": "JONESFORTH and sectorforth Minimal Threaded Forth Implementations"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1010051815785",
+            "repository": "ashinn/chibi-scheme",
+            "revision": "74c524d36305c151976c366339129adb19c744cf"
+          },
+          "name": "Revised^5 Report on the Algorithmic Language Scheme (R5RS) and Chibi-Scheme Runtime"
+        }
+      ],
+      "topics": [
+        "systems/minimalist-architectures",
+        "pl/language-simplicity",
+        "tooling/comprehensible-systems",
+        "ffi/universal-interfaces",
+        "runtimes/compact-vms"
       ]
     },
     "x509-pki-path-validation-asn1-frankencerts-dnssec-and-tls-state-machines": {

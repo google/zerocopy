@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "systems/minimalist-architectures",
+    "pl/language-simplicity",
+    "tooling/comprehensible-systems",
+    "ffi/universal-interfaces",
+    "runtimes/compact-vms"
+  ],
+  "subjects": [
+    {
+      "name": "Project Oberon (2013 Edition) Operating System, Oberon-07 Compiler, and RISC5 Hardware",
+      "identity": {
+        "repository": "Spirit-of-Oberon/ProjectOberon2013",
+        "revision": "72966ea608613dad76f5afdd57578c7e53741bd3"
+      }
+    },
+    {
+      "name": "Oberon RISC5 Emulator in C",
+      "identity": {
+        "repository": "pdewacht/oberon-risc-emu",
+        "revision": "26c8ac5737c71811803c87ad51f1f0d6e62e71fe"
+      }
+    },
+    {
+      "name": "Plan 9 from Bell Labs Kernel, 9P2000 Wire Protocol, and Per-Process Namespaces",
+      "identity": {
+        "repository": "plan9foundation/plan9",
+        "revision": "ed1a9c21e3297d7497a48053d33683375c75fbb4",
+        "doi": "10.1145/155848.155861"
+      }
+    },
+    {
+      "name": "Plan 9 from User Space (plan9port) 9P2000 User-Space Implementation",
+      "identity": {
+        "repository": "9fans/plan9port",
+        "revision": "1f1396913fb5372408f442ed26933f5ae4b399cd"
+      }
+    },
+    {
+      "name": "Lua Virtual Machine, Hybrid Table+Metatable Runtime, and One-Pass Compiler",
+      "identity": {
+        "repository": "lua/lua",
+        "revision": "c42d820bc0c3bc4f2ad536e19d2f05405af10387",
+        "doi": "10.3217/jucs-011-07-1159"
+      }
+    },
+    {
+      "name": "Uxn Stack-Machine Virtual Machine and Varvara Specification",
+      "identity": {
+        "repository": "DeltaF1/uxn-c",
+        "revision": "cbfd2e71ca8d6e36f056ef14d7dfecec267a6a4a",
+        "url": "https://wiki.xxiivv.com/site/uxntal_opcodes.html"
+      }
+    },
+    {
+      "name": "JONESFORTH and sectorforth Minimal Threaded Forth Implementations",
+      "identity": {
+        "repository": "nornagon/jonesforth",
+        "revision": "d97a25bb0b06fb58da1975eac291f45618fd2ada",
+        "companion_repository": "cesarblum/sectorforth",
+        "companion_revision": "32031ac6e77e30817c2f65ba11b1ccda07d564f9"
+      }
+    },
+    {
+      "name": "Revised^5 Report on the Algorithmic Language Scheme (R5RS) and Chibi-Scheme Runtime",
+      "identity": {
+        "repository": "ashinn/chibi-scheme",
+        "revision": "74c524d36305c151976c366339129adb19c744cf",
+        "doi": "10.1023/A:1010051815785"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

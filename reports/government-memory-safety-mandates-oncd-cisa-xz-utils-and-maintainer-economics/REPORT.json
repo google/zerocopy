@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "security/supply-chain-policy",
+    "vcs/social-backdoors",
+    "build/autotools-smuggling",
+    "domains/software-liability"
+  ],
+  "subjects": [
+    {
+      "name": "White House ONCD Secure and Measurable Software Technical Report",
+      "identity": {
+        "document": "Back to the Building Blocks: A Path Toward Secure and Measurable Software",
+        "publisher": "Executive Office of the President, Office of the National Cyber Director",
+        "date": "2024-02-26"
+      }
+    },
+    {
+      "name": "CISA, NSA, FBI, and International Partners Memory-Safe Roadmaps Guidance",
+      "identity": {
+        "document": "The Case for Memory Safe Roadmaps: Why Both C-Suite Executives and Technical Experts Need to Take Memory Safety Seriously",
+        "publisher": "Cybersecurity and Infrastructure Security Agency (CISA)",
+        "date": "2023-12-06"
+      }
+    },
+    {
+      "name": "European Union Cyber Resilience Act (CRA)",
+      "identity": {
+        "regulation": "Regulation (EU) 2024/2847",
+        "official_journal": "OJ L, 2024/2847, 20.11.2024",
+        "date_adopted": "2024-10-23"
+      }
+    },
+    {
+      "name": "XZ Utils Upstream Repository and CVE-2024-3094 Remediation",
+      "identity": {
+        "repository": "tukaani-project/xz",
+        "revision": "f54febc540607b3bdee0a0e6793355df2a7e9f61",
+        "advisory": "CVE-2024-3094 (Andres Freund, oss-security, 2024-03-29)"
+      }
+    },
+    {
+      "name": "OpenSSL TLS Library and CVE-2014-0160 Heartbleed Fix",
+      "identity": {
+        "repository": "openssl/openssl",
+        "revision": "fc355e65068efe333e0764db1c32c302af8aa7fa",
+        "historical_patch_revision": "96db9023b881d7cd9f379b0c154650d6c108e9a3"
+      }
+    },
+    {
+      "name": "Rustls Memory-Safe TLS Implementation",
+      "identity": {
+        "repository": "rustls/rustls",
+        "revision": "836e411eccaf7331f4c289aabef0de32474de3b8"
+      }
+    },
+    {
+      "name": "Apache Log4j 2 Logging Framework (CVE-2021-44228 Remediation)",
+      "identity": {
+        "repository": "apache/logging-log4j2",
+        "revision": "140ff0af9c1b56268bf42af2e48503fe1a6ae99a"
+      }
+    },
+    {
+      "name": "CXX Safe C++ and Rust Interop Bridge Generator",
+      "identity": {
+        "repository": "dtolnay/cxx",
+        "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+      }
+    },
+    {
+      "name": "Crubit Bidirectional C++ and Rust Binding Generator",
+      "identity": {
+        "repository": "google/crubit",
+        "revision": "45c4e15465abaf68c80dc7c11ba54281fd11a645"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

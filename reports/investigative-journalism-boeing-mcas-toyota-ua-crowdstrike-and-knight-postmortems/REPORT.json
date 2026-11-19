@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "domains/catastrophic-failures",
+    "systems/incident-postmortems",
+    "security/kernel-resiliency",
+    "verification/system-boundary-gaps"
+  ],
+  "subjects": [
+    {
+      "name": "U.S. House Committee on Transportation and Infrastructure Boeing 737 MAX Final Report and Seattle Times Investigation",
+      "identity": {
+        "document": "Final Committee Report: The Design, Development & Certification of the Boeing 737 MAX",
+        "publisher": "U.S. House Committee on Transportation and Infrastructure",
+        "date": "2020-09-16",
+        "related_investigation": "Dominic Gates, The Seattle Times, 2019-03-17"
+      }
+    },
+    {
+      "name": "NASA NESC Toyota Electronic Throttle Control System-Intelligent (ETCS-i) Assessment",
+      "identity": {
+        "report_id": "NESC-RP-10-00608",
+        "publisher": "NASA Engineering and Safety Center",
+        "date": "2011-02-08",
+        "related_litigation_record": "Bookout v. Toyota Motor Corp. Expert Testimony (Barr and Koopman, 2013-10)"
+      }
+    },
+    {
+      "name": "CrowdStrike Falcon Sensor Channel File 291 External Technical Root Cause Analysis",
+      "identity": {
+        "document": "External Technical Root Cause Analysis — Channel File 291",
+        "publisher": "CrowdStrike",
+        "date": "2024-08-06",
+        "sensor_version": "7.11"
+      }
+    },
+    {
+      "name": "Microsoft eBPF for Windows",
+      "identity": {
+        "repository": "microsoft/ebpf-for-windows",
+        "revision": "9d7eaba765f2089f0780918fc169bb2fcd22708a"
+      }
+    },
+    {
+      "name": "PREVAIL Polynomial-Time eBPF Abstract-Interpretation Verifier",
+      "identity": {
+        "repository": "vbpf/prevail",
+        "revision": "169eb5d6f48a59ffe4e902e977ae4e387f2b4e49"
+      }
+    },
+    {
+      "name": "SEC Administrative Order In the Matter of Knight Capital Americas LLC",
+      "identity": {
+        "release_number": "34-70694",
+        "file_number": "3-15570",
+        "publisher": "U.S. Securities and Exchange Commission",
+        "date": "2013-10-16"
+      }
+    },
+    {
+      "name": "Cloudflare Wirefilter Execution Engine and Incident Post-Mortems",
+      "identity": {
+        "repository": "cloudflare/wirefilter",
+        "revision": "a101f7c0fc60012803ee23432b5514644d9fbe4f",
+        "postmortems": "2019-07-02 WAF PCRE; 2022-06-21 BGP Prefix Policy; 2023-11-02 Control Plane"
+      }
+    },
+    {
+      "name": "Rust Linear-Time Regular Expression Engine",
+      "identity": {
+        "repository": "rust-lang/regex",
+        "revision": "fde4946d4a3cb367338a21493ec91ec7106a12b4"
+      }
+    },
+    {
+      "name": "KeYmaera X Hybrid Cyber-Physical Verification Benchmark Suite",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-projects",
+        "revision": "b9d7cb584e8fd1c3cc4f30644e82ba12cbb1d6fe"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

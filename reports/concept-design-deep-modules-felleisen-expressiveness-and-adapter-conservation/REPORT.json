@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "pl/conceptual-refinement",
+    "verification/specification-simplicity",
+    "compilers/core-calculi",
+    "systems/module-depth",
+    "llvm/mlir-dialect-lowering"
+  ],
+  "subjects": [
+    {
+      "name": "Daniel Jackson Concept Design and Relational Alloy Analyzer",
+      "identity": {
+        "repository": "AlloyTools/org.alloytools.alloy",
+        "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1",
+        "doi": "10.1145/2814228.2814248",
+        "isbn": "978-0691225388"
+      }
+    },
+    {
+      "name": "John Ousterhout Deep Modules (A Philosophy of Software Design)",
+      "identity": {
+        "isbn": "978-1732102224",
+        "edition": "2nd Edition (2021)",
+        "publication": "Yaknyam Press"
+      }
+    },
+    {
+      "name": "Frederick P. Brooks Jr. Essential vs. Accidental Complexity and Conceptual Integrity",
+      "identity": {
+        "doi": "10.1109/MC.1987.1663532",
+        "publication": "IEEE Computer 20(4):10-19",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Matthias Felleisen On the Expressive Power of Programming Languages and PLT Redex",
+      "identity": {
+        "repository": "racket/redex",
+        "revision": "a9f010613e8cab58f912e922ddeb55ce2e65139d",
+        "doi": "10.1016/0167-6423(91)90036-W"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler (GHC) System FC Core Intermediate Language",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d",
+        "doi": "10.1145/1190315.1190324"
+      }
+    },
+    {
+      "name": "Paul Blain Levy Call-by-Push-Value (CBPV) Subsuming Paradigm",
+      "identity": {
+        "doi": "10.1007/978-94-007-0954-6",
+        "related_doi": "10.1007/3-540-48959-2_17",
+        "publication": "TLCA 1999 / Springer Monograph (2003)"
+      }
+    },
+    {
+      "name": "Lean 4 Dependently Typed Kernel vs. Elaborator Architecture",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+      }
+    },
+    {
+      "name": "LLVM MLIR Multi-Level Dialect and Conversion Infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "5989210109e1f7f59ccfeb07dc76120eba5f48a5",
+        "doi": "10.1109/CGO51591.2021.9370308"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

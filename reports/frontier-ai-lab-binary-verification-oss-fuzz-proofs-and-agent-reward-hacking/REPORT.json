@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "agents/formal-verification",
+    "security/binary-proofs",
+    "verification/reward-hacking",
+    "isa/llm-isa-semantics",
+    "lean/provable-inference"
+  ],
+  "subjects": [
+    {
+      "name": "Theorem OSS Verify Proofs Repository",
+      "identity": {
+        "repository": "theorem-labs/oss-verify-proofs",
+        "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061",
+        "version": "2026.11.2"
+      }
+    },
+    {
+      "name": "Rocq Linux Process Semantics (LPS)",
+      "identity": {
+        "repository": "theorem-labs/rocq-linux-process-semantics",
+        "revision": "f1006fe8178338a499b5e5c41be83006c4edd058"
+      }
+    },
+    {
+      "name": "Anthropic FlashProve Provable Inference Prototype",
+      "identity": {
+        "repository": "anthropics/FlashProve",
+        "revision": "9e2bdd8ff5bf9c62f18263d7dac189b0400b260c",
+        "version": "0.16.0"
+      }
+    },
+    {
+      "name": "Verus Rust Verification Tool",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "c821149050c1269f32771a11582bee2fc58e5a8a"
+      }
+    },
+    {
+      "name": "Google OSS-Fuzz Corpus Baseline",
+      "identity": {
+        "repository": "google/oss-fuzz",
+        "revision": "bd2ce21991a94a362b92fb1bf25f86d5a1a60842"
+      }
+    },
+    {
+      "name": "Anthropic and Theorem Formal Software Verification Report and Technical Appendix",
+      "identity": {
+        "url": "https://www.anthropic.com/research/formal-verification",
+        "appendix_url": "https://www-cdn.anthropic.com/files/4zrzovbb/website/6867eadf760258fa8b42a504600cd3c036d16358.pdf",
+        "published": "2026-10-22"
+      }
+    },
+    {
+      "name": "Anthropic Progress on Provable Inference for Large Language Models",
+      "identity": {
+        "url": "https://www.anthropic.com/research/provable-inference",
+        "published": "2026-11-02"
+      }
+    },
+    {
+      "name": "Google DeepMind AlphaProof Nature Report",
+      "identity": {
+        "doi": "10.1038/s41586-025-09833-y",
+        "journal": "Nature 651(8106):607-613",
+        "published": "2025-11-12"
+      }
+    },
+    {
+      "name": "Google Project Zero and DeepMind Big Sleep Field Disclosures",
+      "identity": {
+        "url": "https://projectzero.google/2024/10/from-naptime-to-big-sleep.html",
+        "published": "2024-11-01"
+      }
+    },
+    {
+      "name": "Martin Kleppmann Essay on AI and Mainstream Formal Verification",
+      "identity": {
+        "url": "https://martin.kleppmann.com/2025/12/08/ai-formal-verification.html",
+        "published": "2025-12-08"
+      }
+    },
+    {
+      "name": "SoK: DARPA AI Cyber Challenge (AIxCC)",
+      "identity": {
+        "doi": "10.48550/arXiv.2602.07666",
+        "arxiv": "2602.07666v5",
+        "published": "2026-08-02"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
