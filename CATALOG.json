@@ -50980,6 +50980,68 @@
         "verification/survey"
       ]
     },
+    "sgp4-orekit-orbital-frames-conjunction-dilution-and-retinal-laser-mpe": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/brandon-rhodes/python-sgp4",
+            "revision": "8e234f81a93b226689a8b67d80a4f1a82be7439b"
+          },
+          "name": "python-sgp4"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/CS-SI/Orekit",
+            "revision": "bdf730121dae7f63db84bcbe6d9bf342d18d7a20"
+          },
+          "name": "Orekit"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/NanoComp/meep",
+            "revision": "84cbc56a2e94b90acfa05dee78247b565b68d04c"
+          },
+          "name": "Meep"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/gdsfactory/gdsfactory",
+            "revision": "7407836dd5d872c704fc06f38562a2ffc88049dc"
+          },
+          "name": "gdsfactory"
+        },
+        {
+          "identity": {
+            "doi": "10.2514/1.8589",
+            "journal": "Journal of Guidance, Control, and Dynamics",
+            "year": "2005"
+          },
+          "name": "Relating Position Uncertainty to Maximum Conjunction Probability (Alfano 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.2514/6.2006-6753",
+            "standard": "AIAA 2006-6753",
+            "year": "2006"
+          },
+          "name": "Revisiting Spacetrack Report #3 (Vallado, Crawford, Hujsak, Kelso 2006)"
+        },
+        {
+          "identity": {
+            "edition": "3.0",
+            "standard": "IEC 60825-1:2014"
+          },
+          "name": "IEC 60825-1 Safety of Laser Products - Part 1: Equipment Classification and Requirements"
+        }
+      ],
+      "topics": [
+        "domains/orbital-mechanics",
+        "domains/photonic-safety",
+        "pl/coordinate-frames",
+        "verification/probabilistic-envelopes"
+      ]
+    },
     "shadow-memory-asan-msan-origins-and-tsan-vector-clock-sanitizers": {
       "observed_at": "2026-11-19",
       "subjects": [

@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "domains/orbital-mechanics",
+    "domains/photonic-safety",
+    "pl/coordinate-frames",
+    "verification/probabilistic-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "python-sgp4",
+      "identity": {
+        "repository": "https://github.com/brandon-rhodes/python-sgp4",
+        "revision": "8e234f81a93b226689a8b67d80a4f1a82be7439b"
+      }
+    },
+    {
+      "name": "Orekit",
+      "identity": {
+        "repository": "https://github.com/CS-SI/Orekit",
+        "revision": "bdf730121dae7f63db84bcbe6d9bf342d18d7a20"
+      }
+    },
+    {
+      "name": "Meep",
+      "identity": {
+        "repository": "https://github.com/NanoComp/meep",
+        "revision": "84cbc56a2e94b90acfa05dee78247b565b68d04c"
+      }
+    },
+    {
+      "name": "gdsfactory",
+      "identity": {
+        "repository": "https://github.com/gdsfactory/gdsfactory",
+        "revision": "7407836dd5d872c704fc06f38562a2ffc88049dc"
+      }
+    },
+    {
+      "name": "Relating Position Uncertainty to Maximum Conjunction Probability (Alfano 2005)",
+      "identity": {
+        "doi": "10.2514/1.8589",
+        "journal": "Journal of Guidance, Control, and Dynamics",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "Revisiting Spacetrack Report #3 (Vallado, Crawford, Hujsak, Kelso 2006)",
+      "identity": {
+        "doi": "10.2514/6.2006-6753",
+        "standard": "AIAA 2006-6753",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "IEC 60825-1 Safety of Laser Products - Part 1: Equipment Classification and Requirements",
+      "identity": {
+        "standard": "IEC 60825-1:2014",
+        "edition": "3.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
