@@ -10068,6 +10068,77 @@
         "rustc/intrinsics"
       ]
     },
+    "clr-reified-generics-swift-value-witness-tables-and-julia-world-age": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "dotnet/runtime",
+            "revision": "fcb04a83f3013e65d573dc0ec240c7a5a720db3a"
+          },
+          "name": ".NET CoreCLR Runtime and Base Class Library"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "swiftlang/swift",
+            "revision": "e96891912c1fbf1174f4faf3f63a9d4deb04e39f"
+          },
+          "name": "Swift Compiler, Standard Library, and Runtime"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "JuliaLang/julia",
+            "revision": "6478933d4232a63baa7286faf5182a8521f6fb05"
+          },
+          "name": "Julia Runtime, Type System, and JIT Compiler"
+        },
+        {
+          "identity": {
+            "date": "2012-06",
+            "edition": "6th Edition",
+            "standard": "ECMA-335"
+          },
+          "name": "ECMA-335 Common Language Infrastructure (CLI)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/381694.378797",
+            "venue": "PLDI 2001"
+          },
+          "name": "Design and Implementation of Generics for the .NET Common Language Runtime (Kennedy, Syme)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276483",
+            "venue": "OOPSLA 2018"
+          },
+          "name": "Julia Subtyping: A Rational Reconstruction (Zappa Nardelli et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428275",
+            "venue": "OOPSLA 2020"
+          },
+          "name": "World Age in Julia: Optimizing Method Dispatch in the Presence of Eval (Belyakova et al.)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/clr",
+        "pl/swift",
+        "pl/julia",
+        "runtimes",
+        "runtimes/clr",
+        "runtimes/swift",
+        "runtimes/julia",
+        "compilers",
+        "compilers/jit",
+        "ffi"
+      ]
+    },
     "coherence-orphan-instances-and-module-system-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -20250,6 +20321,83 @@
         "runtimes/vm/inline-caches",
         "verification/jit",
         "verification/compiler-verification"
+      ]
+    },
+    "jvm-bytecode-verification-jmm-causality-valhalla-loom-and-panama-ffi": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "openjdk/jdk",
+            "revision": "186489b55b5df61e270174a76104a2af27cc7197"
+          },
+          "name": "OpenJDK HotSpot VM and JDK Class Libraries"
+        },
+        {
+          "identity": {
+            "branch": "lworld",
+            "repository": "openjdk/valhalla",
+            "revision": "12e87d09246d366cc74cb409e4c914351256e98b"
+          },
+          "name": "OpenJDK Project Valhalla (lworld)"
+        },
+        {
+          "identity": {
+            "platform": "Linux x86_64",
+            "release_date": "2026-11-16",
+            "version": "27.0.1",
+            "vm": "OpenJDK 64-Bit Server VM (mixed mode, sharing)"
+          },
+          "name": "OpenJDK 27.0.1 Runtime Toolchain"
+        },
+        {
+          "identity": {
+            "jeps": "JEP 193, JEP 401, JEP 444, JEP 454, JEP 491",
+            "standard": "JLS (\u00a74.6, \u00a710.5, \u00a717.4, \u00a717.7) and JVMS (\u00a74.10.1)"
+          },
+          "name": "Java Language and Virtual Machine Specifications and JEPs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040336",
+            "venue": "POPL 2005"
+          },
+          "name": "The Java Memory Model (Manson, Pugh, Adve)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-70592-5_3",
+            "venue": "ECOOP 2008"
+          },
+          "name": "On Validity of Program Transformations in the Java Memory Model (\u0160ev\u010d\u00edk, Aspinall)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-662-46669-8_12",
+            "venue": "ESOP 2015"
+          },
+          "name": "The Problem of Programming Language Concurrency Semantics (Batty et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009850",
+            "venue": "POPL 2017"
+          },
+          "name": "A Promising Semantics for Relaxed-Memory Concurrency (Kang et al.)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/java",
+        "runtimes",
+        "runtimes/jvm",
+        "ffi",
+        "ffi/panama",
+        "compilers",
+        "compilers/jit",
+        "verification",
+        "verification/bytecode"
       ]
     },
     "kraken-aarch64-x86-64-instruction-validation-and-rust-assembly-pilots": {

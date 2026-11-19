@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "pl",
+    "pl/java",
+    "runtimes",
+    "runtimes/jvm",
+    "ffi",
+    "ffi/panama",
+    "compilers",
+    "compilers/jit",
+    "verification",
+    "verification/bytecode"
+  ],
+  "subjects": [
+    {
+      "name": "OpenJDK HotSpot VM and JDK Class Libraries",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "186489b55b5df61e270174a76104a2af27cc7197",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "OpenJDK Project Valhalla (lworld)",
+      "identity": {
+        "repository": "openjdk/valhalla",
+        "revision": "12e87d09246d366cc74cb409e4c914351256e98b",
+        "branch": "lworld"
+      }
+    },
+    {
+      "name": "OpenJDK 27.0.1 Runtime Toolchain",
+      "identity": {
+        "version": "27.0.1",
+        "release_date": "2026-11-16",
+        "platform": "Linux x86_64",
+        "vm": "OpenJDK 64-Bit Server VM (mixed mode, sharing)"
+      }
+    },
+    {
+      "name": "Java Language and Virtual Machine Specifications and JEPs",
+      "identity": {
+        "standard": "JLS (§4.6, §10.5, §17.4, §17.7) and JVMS (§4.10.1)",
+        "jeps": "JEP 193, JEP 401, JEP 444, JEP 454, JEP 491"
+      }
+    },
+    {
+      "name": "The Java Memory Model (Manson, Pugh, Adve)",
+      "identity": {
+        "doi": "10.1145/1040305.1040336",
+        "venue": "POPL 2005"
+      }
+    },
+    {
+      "name": "On Validity of Program Transformations in the Java Memory Model (Ševčík, Aspinall)",
+      "identity": {
+        "doi": "10.1007/978-3-540-70592-5_3",
+        "venue": "ECOOP 2008"
+      }
+    },
+    {
+      "name": "The Problem of Programming Language Concurrency Semantics (Batty et al.)",
+      "identity": {
+        "doi": "10.1007/978-3-662-46669-8_12",
+        "venue": "ESOP 2015"
+      }
+    },
+    {
+      "name": "A Promising Semantics for Relaxed-Memory Concurrency (Kang et al.)",
+      "identity": {
+        "doi": "10.1145/3009837.3009850",
+        "venue": "POPL 2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

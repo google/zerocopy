@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "pl",
+    "pl/clr",
+    "pl/swift",
+    "pl/julia",
+    "runtimes",
+    "runtimes/clr",
+    "runtimes/swift",
+    "runtimes/julia",
+    "compilers",
+    "compilers/jit",
+    "ffi"
+  ],
+  "subjects": [
+    {
+      "name": ".NET CoreCLR Runtime and Base Class Library",
+      "identity": {
+        "repository": "dotnet/runtime",
+        "revision": "fcb04a83f3013e65d573dc0ec240c7a5a720db3a",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Swift Compiler, Standard Library, and Runtime",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "e96891912c1fbf1174f4faf3f63a9d4deb04e39f",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Julia Runtime, Type System, and JIT Compiler",
+      "identity": {
+        "repository": "JuliaLang/julia",
+        "revision": "6478933d4232a63baa7286faf5182a8521f6fb05",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "ECMA-335 Common Language Infrastructure (CLI)",
+      "identity": {
+        "standard": "ECMA-335",
+        "edition": "6th Edition",
+        "date": "2012-06"
+      }
+    },
+    {
+      "name": "Design and Implementation of Generics for the .NET Common Language Runtime (Kennedy, Syme)",
+      "identity": {
+        "doi": "10.1145/381694.378797",
+        "venue": "PLDI 2001"
+      }
+    },
+    {
+      "name": "Julia Subtyping: A Rational Reconstruction (Zappa Nardelli et al.)",
+      "identity": {
+        "doi": "10.1145/3276483",
+        "venue": "OOPSLA 2018"
+      }
+    },
+    {
+      "name": "World Age in Julia: Optimizing Method Dispatch in the Presence of Eval (Belyakova et al.)",
+      "identity": {
+        "doi": "10.1145/3428275",
+        "venue": "OOPSLA 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
