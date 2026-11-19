@@ -36800,6 +36800,131 @@
         "verification/translation-validation"
       ]
     },
+    "superdense-logical-time-hybrid-synchronous-calculi-and-preemptive-srp-verification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "lf-lang/reactor-c",
+            "revision": "abbf0aaf468af55f298e1ae4816156e9f7552784"
+          },
+          "name": "Lingua Franca C runtime (reactor-c)"
+        },
+        {
+          "identity": {
+            "repository": "lf-lang/lingua-franca",
+            "revision": "0df8a987e37d6bc0cc8daa1c3e6167df14eaae59",
+            "version": "0.14.0-SNAPSHOT"
+          },
+          "name": "Lingua Franca compiler and Uclid5 verifier generator"
+        },
+        {
+          "identity": {
+            "url": "https://www.lf-lang.org/docs/writing-reactors/",
+            "version": "0.13.0"
+          },
+          "name": "Lingua Franca handbook (Superdense Time, Actions, Deadlines)"
+        },
+        {
+          "identity": {
+            "repository": "marcusrossel/reactor-model",
+            "revision": "7a7d1f36ba5b908f2d3744f8cd08186eac325fe6"
+          },
+          "name": "Reactor model Lean 4 formalization"
+        },
+        {
+          "identity": {
+            "repository": "INRIA/zelus",
+            "revision": "5f6e4903103e136f52cdcefc13a9bdcff0f53abd"
+          },
+          "name": "Zelus compiler and runtime"
+        },
+        {
+          "identity": {
+            "repository": "INRIA/velus",
+            "revision": "27ba860c2624ba232816591290c6c119b9ead88a"
+          },
+          "name": "Velus verified Lustre compiler"
+        },
+        {
+          "identity": {
+            "repository": "rtic-rs/rtic",
+            "revision": "fed0fa5e9d74c1f1fb27f06582d4387590cbf0a9",
+            "version": "rtic 2.4.0"
+          },
+          "name": "RTIC (Real-Time Interrupt-driven Concurrency)"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/bedrock2",
+            "revision": "0005c47b5eaa720bdcb9b94aceaca9f42726b861"
+          },
+          "name": "Bedrock2 (including the end-to-end lightbulb system)"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/kami",
+            "revision": "9217329eb4e1d751f28ab175ebab230b1e8fd4da"
+          },
+          "name": "Kami hardware framework"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "Pancake language and compiler (in the CakeML tree)"
+        },
+        {
+          "identity": {
+            "repository": "au-ts/sddf",
+            "revision": "cbbcfe042d8d14d403229e1814769edde333e6bc"
+          },
+          "name": "seL4 device driver framework (sDDF)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/microkit",
+            "revision": "30e1406490d60f446db2a78fd131f3909a62699e"
+          },
+          "name": "seL4 Microkit manual"
+        },
+        {
+          "identity": {
+            "url": "https://prosa.mpi-sws.org/",
+            "version": "0.6"
+          },
+          "name": "Prosa mechanized schedulability analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF00365393"
+          },
+          "name": "Baker, Stack-based scheduling of realtime processes (Real-Time Systems 3(1), 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454065"
+          },
+          "name": "Erbsen et al., Integration Verification across Software and Hardware for a Simple Embedded System (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.08249",
+            "version": "v2"
+          },
+          "name": "Zhao et al., Verifying Device Drivers with Pancake"
+        }
+      ],
+      "topics": [
+        "pl/logical-time",
+        "pl/synchronous-realtime",
+        "verification/schedulability",
+        "verification/interrupts",
+        "systems/realtime",
+        "ffi/hw-sw-boundary"
+      ]
+    },
     "target-features-implications-detection-and-abi-effects": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -37923,6 +38048,141 @@
         "llvm/translation-validation",
         "aeneas/translation",
         "verification/survey"
+      ]
+    },
+    "translational-verifier-certification-and-cross-logic-ghost-state-interchange": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "viperproject/viper-roots",
+            "revision": "22d4e4d1bbb889851d9bf5b4a84bd09de7536df3"
+          },
+          "name": "Viper Roots (Isabelle formalization of Viper and CoreIVL)"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/carbon-proofgen",
+            "revision": "cf66d0734c429c1b693a19f19548d10a12f5d78e"
+          },
+          "name": "Proof-producing fork of the Viper-to-Boogie translation"
+        },
+        {
+          "identity": {
+            "repository": "gauravpartha/boogie_proofgen",
+            "revision": "8047e8af459e26f3a70d545f3d7f07de105c785b"
+          },
+          "name": "Proof generation for Boogie"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/silver",
+            "revision": "2131d6420e5ab38a82d9e490cb721194146382fb"
+          },
+          "name": "Viper Silver AST"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/silicon",
+            "revision": "f5ae8c6dbfd51b469290711416e8e9e30cffcad6"
+          },
+          "name": "Viper Silicon symbolic-execution back end"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/carbon",
+            "revision": "9a7c38a054273634215739130e964125c9724b9a"
+          },
+          "name": "Viper Carbon verification-condition-generation back end"
+        },
+        {
+          "identity": {
+            "repository": "boogie-org/boogie",
+            "revision": "99eebd60b8fc42c0ad3c95b6160ad88ac4f124dc"
+          },
+          "name": "Boogie verifier"
+        },
+        {
+          "identity": {
+            "repository": "joscoh/why3-semantics",
+            "revision": "9e1a9cfc9f05ccdb050160d5d56136b1cb6c08cf"
+          },
+          "name": "Foundational Why3 (why3-semantics)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "a95764f23c6876b47500beda6118e2d142a87cc3",
+            "version": "vstd 0.0.0-2026-11-15-0327"
+          },
+          "name": "Verus"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus-belt",
+            "revision": "115a618dd35ff8337112cf2081a7f5391d3973d5"
+          },
+          "name": "VerusBelt"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/leaf",
+            "revision": "68d7971acf3871d6a1eeb7372425f1b4b529fa0e"
+          },
+          "name": "Leaf"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "dc57a795e1b457ea54c3080f4663ded461db6843",
+            "version": "0.16.0-dev"
+          },
+          "name": "Creusot"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "40e6418437a794dcd0429bfbe4d6b60fdafb2ecd"
+          },
+          "name": "Iris Lean port"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.03614",
+            "version": "v2"
+          },
+          "name": "Parthasarathy et al., Formally Validating Translations into an Intermediate Verification Language (PLDI 2024, extended version)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.14381",
+            "url": "https://pm.inf.ethz.ch/publications/ParthasarathyMuellerSummers21.pdf",
+            "version": "CAV 2021 conference paper; extended version is arXiv v1"
+          },
+          "name": "Parthasarathy, Mueller, Summers, Formally Validating a Practical Verification Condition Generator (CAV 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.20002",
+            "doi": "10.1145/3704856",
+            "version": "v2"
+          },
+          "name": "Dardinier et al., Formal Foundations for Translational Separation Logic Verifiers (POPL 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2026.11"
+          },
+          "name": "Gladshtein and Leino, Formalization of a Realistic Verification-Condition Generator for an Intermediate Verification Language (ITP 2026)"
+        }
+      ],
+      "topics": [
+        "verification/auto-active",
+        "verification/separation-logic",
+        "verification/ghost-state",
+        "smt/proof-certificates",
+        "ffi/cross-logic",
+        "pl/intermediate-verification-languages"
       ]
     },
     "tree-borrows-protectors-stack-coloring-and-dead-store-elimination": {

@@ -1,0 +1,135 @@
+{
+  "topics": [
+    "verification/auto-active",
+    "verification/separation-logic",
+    "verification/ghost-state",
+    "smt/proof-certificates",
+    "ffi/cross-logic",
+    "pl/intermediate-verification-languages"
+  ],
+  "subjects": [
+    {
+      "name": "Viper Roots (Isabelle formalization of Viper and CoreIVL)",
+      "identity": {
+        "repository": "viperproject/viper-roots",
+        "revision": "22d4e4d1bbb889851d9bf5b4a84bd09de7536df3"
+      }
+    },
+    {
+      "name": "Proof-producing fork of the Viper-to-Boogie translation",
+      "identity": {
+        "repository": "viperproject/carbon-proofgen",
+        "revision": "cf66d0734c429c1b693a19f19548d10a12f5d78e"
+      }
+    },
+    {
+      "name": "Proof generation for Boogie",
+      "identity": {
+        "repository": "gauravpartha/boogie_proofgen",
+        "revision": "8047e8af459e26f3a70d545f3d7f07de105c785b"
+      }
+    },
+    {
+      "name": "Viper Silver AST",
+      "identity": {
+        "repository": "viperproject/silver",
+        "revision": "2131d6420e5ab38a82d9e490cb721194146382fb"
+      }
+    },
+    {
+      "name": "Viper Silicon symbolic-execution back end",
+      "identity": {
+        "repository": "viperproject/silicon",
+        "revision": "f5ae8c6dbfd51b469290711416e8e9e30cffcad6"
+      }
+    },
+    {
+      "name": "Viper Carbon verification-condition-generation back end",
+      "identity": {
+        "repository": "viperproject/carbon",
+        "revision": "9a7c38a054273634215739130e964125c9724b9a"
+      }
+    },
+    {
+      "name": "Boogie verifier",
+      "identity": {
+        "repository": "boogie-org/boogie",
+        "revision": "99eebd60b8fc42c0ad3c95b6160ad88ac4f124dc"
+      }
+    },
+    {
+      "name": "Foundational Why3 (why3-semantics)",
+      "identity": {
+        "repository": "joscoh/why3-semantics",
+        "revision": "9e1a9cfc9f05ccdb050160d5d56136b1cb6c08cf"
+      }
+    },
+    {
+      "name": "Verus",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "a95764f23c6876b47500beda6118e2d142a87cc3",
+        "version": "vstd 0.0.0-2026-11-15-0327"
+      }
+    },
+    {
+      "name": "VerusBelt",
+      "identity": {
+        "repository": "verus-lang/verus-belt",
+        "revision": "115a618dd35ff8337112cf2081a7f5391d3973d5"
+      }
+    },
+    {
+      "name": "Leaf",
+      "identity": {
+        "repository": "secure-foundations/leaf",
+        "revision": "68d7971acf3871d6a1eeb7372425f1b4b529fa0e"
+      }
+    },
+    {
+      "name": "Creusot",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "dc57a795e1b457ea54c3080f4663ded461db6843",
+        "version": "0.16.0-dev"
+      }
+    },
+    {
+      "name": "Iris Lean port",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "40e6418437a794dcd0429bfbe4d6b60fdafb2ecd"
+      }
+    },
+    {
+      "name": "Parthasarathy et al., Formally Validating Translations into an Intermediate Verification Language (PLDI 2024, extended version)",
+      "identity": {
+        "arxiv": "2404.03614",
+        "version": "v2"
+      }
+    },
+    {
+      "name": "Parthasarathy, Mueller, Summers, Formally Validating a Practical Verification Condition Generator (CAV 2021)",
+      "identity": {
+        "url": "https://pm.inf.ethz.ch/publications/ParthasarathyMuellerSummers21.pdf",
+        "arxiv": "2105.14381",
+        "version": "CAV 2021 conference paper; extended version is arXiv v1"
+      }
+    },
+    {
+      "name": "Dardinier et al., Formal Foundations for Translational Separation Logic Verifiers (POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704856",
+        "arxiv": "2407.20002",
+        "version": "v2"
+      }
+    },
+    {
+      "name": "Gladshtein and Leino, Formalization of a Realistic Verification-Condition Generator for an Intermediate Verification Language (ITP 2026)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2026.11"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
