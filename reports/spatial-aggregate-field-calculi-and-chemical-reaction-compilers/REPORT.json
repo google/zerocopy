@@ -1,0 +1,133 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "scafi/scafi",
+        "revision": "df8b4068d37a8fd14cc990cec090492882777bc2"
+      },
+      "name": "ScaFi Aggregate Computing Framework"
+    },
+    {
+      "identity": {
+        "repository": "fcpp/fcpp",
+        "revision": "9e78292c4b555e12d060c10b5b107a8e9027a6cc"
+      },
+      "name": "FCPP Field Calculus in C++"
+    },
+    {
+      "identity": {
+        "repository": "Protelis/Protelis",
+        "revision": "f9004127313b0bf4a03cabfd139895fa4babfc80"
+      },
+      "name": "Protelis Aggregate Programming Language"
+    },
+    {
+      "identity": {
+        "repository": "marko-vasic/crnPlusPlus",
+        "revision": "a0c4f83a716add8b58355698465ac2c4fc59acc8"
+      },
+      "name": "CRN++ Molecular Programming Language"
+    },
+    {
+      "identity": {
+        "repository": "DNA-and-Natural-Algorithms-Group/nuskell",
+        "revision": "73077a232da40de47fc61c48014c5cfd39f0e8f5"
+      },
+      "name": "Nuskell CRN-to-DSD Compiler and Verifier"
+    },
+    {
+      "identity": {
+        "repository": "DNA-and-Natural-Algorithms-Group/peppercornenumerator",
+        "revision": "488537edb75b4a6f3e911bb24d9f040e4e2483c9"
+      },
+      "name": "Peppercorn DSD Reaction Enumerator"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3285956",
+        "publication": "ACM Transactions on Computational Logic 20(1), 2019"
+      },
+      "name": "Audrito et al. Higher-Order Calculus of Computational Fields"
+    },
+    {
+      "identity": {
+        "doi": "10.1016/j.jlamp.2019.100486",
+        "publication": "Journal of Logical and Algebraic Methods in Programming 109, 2019"
+      },
+      "name": "Viroli et al. From Distributed Coordination to Field Calculus and Aggregate Computing"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3177774",
+        "publication": "ACM TOMACS 28(2), 2018"
+      },
+      "name": "Viroli et al. Engineering Resilient Collective Adaptive Systems by Self-Stabilisation"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/mc.2015.261",
+        "publication": "IEEE Computer 48(9), 2015"
+      },
+      "name": "Beal, Pianini, and Viroli Aggregate Programming for the IoT"
+    },
+    {
+      "identity": {
+        "doi": "10.1073/pnas.0909380107",
+        "publication": "PNAS 107(12), 2010"
+      },
+      "name": "Soloveichik, Seelig, and Winfree DNA as a Universal Substrate for Chemical Kinetics"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/s11047-008-9067-y",
+        "publication": "Natural Computing 7(4), 2008"
+      },
+      "name": "Soloveichik et al. Computation with Finite Stochastic Chemical Reaction Networks"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/s11047-013-9393-6",
+        "publication": "Natural Computing 13(4), 2013/2014"
+      },
+      "name": "Chen, Doty, and Soloveichik Deterministic Function Computation with CRNs"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/s11047-019-09775-1",
+        "publication": "Natural Computing 19, 2020"
+      },
+      "name": "Vasic, Soloveichik, and Khurshid CRN++"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-319-66799-7_15",
+        "publication": "DNA 23 (LNCS), 2017"
+      },
+      "name": "Badelt et al. Nuskell General-Purpose CRN-to-DSD Compiler"
+    },
+    {
+      "identity": {
+        "doi": "10.1098/rsif.2019.0866",
+        "publication": "Journal of the Royal Society Interface 17, 2020"
+      },
+      "name": "Badelt et al. Peppercorn Domain-Level DSD Enumerator"
+    },
+    {
+      "identity": {
+        "doi": "10.1093/bioinformatics/btr543",
+        "publication": "Bioinformatics 27(22), 2011"
+      },
+      "name": "Lakin et al. Visual DSD"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/emerging-substrates",
+    "domains/molecular-programming",
+    "pl",
+    "pl/spatial-computing",
+    "systems",
+    "systems/distributed-swarms"
+  ]
+}
