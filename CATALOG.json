@@ -40545,6 +40545,89 @@
         "ffi/coordinate-conventions"
       ]
     },
+    "universal-properties-observational-refinement-and-end-to-end-system-binding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "branch": "compcerto",
+            "repository": "CertiKOS/compcert",
+            "revision": "87a62d95cd24a44e3ecd5fefddc70a969a881bcb"
+          },
+          "name": "CompCertO open compositional C compiler"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified ML compiler"
+        },
+        {
+          "identity": {
+            "repository": "CCR-project/ccr",
+            "revision": "edcda8faae6580581e8e5b28050d755bcb29f55f"
+          },
+          "name": "Conditional Contextual Refinement (CCR) Coq framework"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.7306313",
+            "doi": "10.1145/3571220",
+            "url": "https://gitlab.mpi-sws.org/iris/dimsum"
+          },
+          "name": "DimSum decentralized multi-language semantics and verification framework"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2 LLVM translation validator"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "e35351676760e4c90ccad19aaf85cec75e1af8b3"
+          },
+          "name": "Cargo Rust package manager and build fingerprinter"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "6965392507e19998de706aa15e514f81e9b7ce11"
+          },
+          "name": "Nix package manager and store derivation model"
+        },
+        {
+          "identity": {
+            "repository": "in-toto/attestation",
+            "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+          },
+          "name": "in-toto Attestation Framework v1 Statement specification"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/observational-refinement",
+        "verification/contextual-refinement",
+        "compilers",
+        "pl",
+        "pl/parametricity",
+        "pl/coalgebra",
+        "ffi",
+        "ffi/abi-codecs",
+        "build",
+        "build/reproducibility"
+      ]
+    },
     "untrusted-llvm-optimization-oracle-and-certificate-replay-architecture": {
       "observed_at": "2026-11-14",
       "subjects": [
