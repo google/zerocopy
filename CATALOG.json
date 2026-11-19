@@ -28711,6 +28711,72 @@
         "verification/compiler-verification"
       ]
     },
+    "nonlinear-real-arithmetic-cad-positivstellensatz-and-delta-decidability": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-31365-3_27",
+            "repository": "Z3Prover/z3",
+            "revision": "c73b745cef365e1390408fbd7c599236941d34d1"
+          },
+          "name": "Z3 NLSAT nonlinear real arithmetic solver"
+        },
+        {
+          "identity": {
+            "doi_calc": "10.1016/j.jlamp.2020.100633",
+            "repository": "cvc5/cvc5",
+            "revision": "7507ed17e261ba2dbc5f2d0b298c23dfff9c89cc"
+          },
+          "name": "cvc5 Cylindrical Algebraic Coverings and transcendental solver"
+        },
+        {
+          "identity": {
+            "doi_cpp2017": "10.1145/3018610.3018622",
+            "doi_fmsd2018": "10.1007/s10703-017-0302-y",
+            "repository": "validsdp/validsdp",
+            "revision": "083e96683cf7087492d4d57e87c546264c2170c1"
+          },
+          "name": "ValidSDP reflexive Coq/Rocq SDP and SOS certificate verifier"
+        },
+        {
+          "identity": {
+            "doi_cade2013": "10.1007/978-3-642-38574-2_14",
+            "doi_lics2012": "10.1109/LICS.2012.41",
+            "repository": "dreal/dreal4",
+            "revision": "f93bdcc26b62abdcc30ad7de6046729bb48016b9"
+          },
+          "name": "dReal4 delta-complete nonlinear SMT solver"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9149-2",
+            "url": "https://www.cl.cam.ac.uk/~lp15/papers/MetiTarski/"
+          },
+          "name": "MetiTarski automatic theorem prover for special functions"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "4502bb0de81f5b5bd65b7b91162a0f1eb9a56b4b"
+          },
+          "name": "Mathlib4 polynomial certificate tactics"
+        },
+        {
+          "identity": {
+            "repository": "SRI-CSL/libpoly",
+            "revision": "8779171e061fdbda9708d8839e3ca8d0a250df4f"
+          },
+          "name": "libpoly polynomial arithmetic library"
+        }
+      ],
+      "topics": [
+        "smt/nonlinear-reals",
+        "verification/real-arithmetic",
+        "lean/proof-certificates",
+        "domains/cyber-physical"
+      ]
+    },
     "object-files-linkers-loaders-and-separate-compilation-history": {
       "observed_at": "2026-11-19",
       "subjects": [
