@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "pl",
+    "pl/default-logic",
+    "pl/linear-types",
+    "verification",
+    "domains/law-and-contracts"
+  ],
+  "subjects": [
+    {
+      "name": "Catala compiler and multi-target runtimes",
+      "identity": {
+        "repository": "CatalaLang/catala",
+        "revision": "7a0c93beda25b903ebcdfe64d672caf53dd41370"
+      }
+    },
+    {
+      "name": "Catala Coq default-calculus formalization",
+      "identity": {
+        "repository": "CatalaLang/catala-formalization",
+        "revision": "985eb86afb7c6bd3d020fb99ea9e391b93576d44"
+      }
+    },
+    {
+      "name": "Catala: A Programming Language for the Law (ICFP 2021)",
+      "identity": {
+        "doi": "10.1145/3473582",
+        "arxiv": "2103.03198"
+      }
+    },
+    {
+      "name": "Mlang French Tax Code compiler",
+      "identity": {
+        "repository": "MLanguage/mlang",
+        "revision": "66f6b37308c0dfeb3bb24c8af7952a522452a1af"
+      }
+    },
+    {
+      "name": "Natural L4 legal DSL and UPPAAL transpiler",
+      "identity": {
+        "repository": "smucclaw/dsl",
+        "revision": "3a679a7a2dfd935f562dd335f708e6c5a3b5bb64"
+      }
+    },
+    {
+      "name": "Baby-L4 core calculus and timed model checker",
+      "identity": {
+        "repository": "smucclaw/baby-l4",
+        "revision": "f351e4e8d435e3f5800653b558de2571ed19740c"
+      }
+    },
+    {
+      "name": "Composing Contracts: An Adventure in Financial Engineering (ICFP 2000)",
+      "identity": {
+        "doi": "10.1145/351240.351267"
+      }
+    },
+    {
+      "name": "Marlowe Isabelle/HOL formal semantics and preservation proofs",
+      "identity": {
+        "repository": "input-output-hk/marlowe",
+        "revision": "7b5b1e900ec53a8eb18747992bec73470704dfcb"
+      }
+    },
+    {
+      "name": "Move binary format and bytecode verifier",
+      "identity": {
+        "repository": "move-language/move",
+        "revision": "c453c90994cba0af30314fe4134acee57fb20d0c"
+      }
+    },
+    {
+      "name": "The Move Prover (CAV 2020)",
+      "identity": {
+        "doi": "10.1007/978-3-030-53288-8_7"
+      }
+    },
+    {
+      "name": "TigerBeetle double-entry ledger core types",
+      "identity": {
+        "repository": "tigerbeetle/tigerbeetle",
+        "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
