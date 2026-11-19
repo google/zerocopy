@@ -51111,6 +51111,62 @@
         "verification/compiler-verification"
       ]
     },
+    "seismic-eew-magnitude-saturation-p-arrival-pickers-and-tsunami-geoclaw": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/obspy/obspy",
+            "revision": "9079f60ba41869db6b497561047cf3b4530e13c1"
+          },
+          "name": "ObsPy"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/SeisComP/seiscomp",
+            "revision": "0f456a83db3435ef92b809bc47077c84b3a4883b"
+          },
+          "name": "SeisComP (including bundled libmseed)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/clawpack/geoclaw",
+            "revision": "091b28d19ecb1fb0e3b4f1881ccf4ce17d3886a8"
+          },
+          "name": "GeoClaw"
+        },
+        {
+          "identity": {
+            "doi": "10.5047/eps.2011.05.031",
+            "journal": "Earth, Planets and Space",
+            "year": "2011"
+          },
+          "name": "Outline of the 2011 off the Pacific coast of Tohoku Earthquake (Mw 9.0) - Earthquake Early Warning and Observed Seismic Intensity (Hoshiba et al. 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.1365-246X.2012.05629.x",
+            "journal": "Geophysical Journal International",
+            "year": "2012"
+          },
+          "name": "Real-time Finite Fault Rupture Detector (FinDer) for Large Earthquakes (Bose, Heaton, Hauksson 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.advwatres.2011.02.016",
+            "journal": "Advances in Water Resources",
+            "year": "2011"
+          },
+          "name": "The GeoClaw Software for Depth-Averaged Flows with Adaptive Refinement (Berger, George, LeVeque, Mandli 2011)"
+        }
+      ],
+      "topics": [
+        "domains/earthquake-early-warning-tsunami",
+        "smt/shallow-water-wetting-drying-positivity",
+        "systems/distributed-seismic-telemetry-clocks",
+        "verification/finite-fault-rupture-interlocks"
+      ]
+    },
     "sel4-riscv64-abi-fastpath-revocation-and-l4v-infoflow": {
       "observed_at": "2026-11-19",
       "subjects": [
