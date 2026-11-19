@@ -21431,6 +21431,59 @@
         "pl/type-systems/approximate-computing"
       ]
     },
+    "fbw-aoa-voter-spikes-envelope-stall-protections-and-autoland-flare-locks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "PX4/PX4-Autopilot",
+            "revision": "4e44c822c9018120508bce6d8ad349f0775586a1"
+          },
+          "name": "PX4 Autopilot Flight Control & Sensor Validation Suite"
+        },
+        {
+          "identity": {
+            "repository": "ArduPilot/ardupilot",
+            "revision": "9d7be65cd63ae0ee722b002ccc606f0e8d97cd74"
+          },
+          "name": "ArduPilot Fixed-Wing TECS & Autoland Control Stack"
+        },
+        {
+          "identity": {
+            "repository": "JSBSim-Team/jsbsim",
+            "revision": "3f153c18a2518f8472e37c89e70444b1c671b700"
+          },
+          "name": "JSBSim Open-Source 6-DoF Flight Dynamics & Flight Control System Model"
+        },
+        {
+          "identity": {
+            "publisher": "Australian Transport Safety Bureau (2011)",
+            "report_id": "AO-2008-070"
+          },
+          "name": "ATSB Transport Safety Report AO-2008-070: Qantas Flight 72 Airbus A330-303 In-Flight Upset"
+        },
+        {
+          "identity": {
+            "publisher": "Dutch Safety Board / Onderzoeksraad voor Veiligheid (2010)",
+            "report_id": "M2009LV0225_01"
+          },
+          "name": "Dutch Safety Board Final Report: Turkish Airlines Flight 1951 Boeing 737-800 Radio-Altimeter Flare Stall"
+        },
+        {
+          "identity": {
+            "standard": "RTCA DO-178C / DO-333",
+            "year": "2011"
+          },
+          "name": "RTCA DO-178C / DO-333 Formal Methods Supplement to Software Considerations in Airborne Systems"
+        }
+      ],
+      "topics": [
+        "domains/fly-by-wire-envelope-protection",
+        "systems/triplex-sensor-voter-memorization",
+        "smt/autoland-flare-control-invariants",
+        "verification/do178c-mode-transition-freedom"
+      ]
+    },
     "fiat-crypto-hacl-evercrypt-vale-libcrux-and-verified-crypto-synthesis": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -58827,6 +58880,59 @@
         "rustc/intrinsics",
         "verification",
         "verification/isa-coverage"
+      ]
+    },
+    "ventilator-peep-barotrauma-dicom-dose-transforms-and-iec60601-alarm-masking": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "RespiraWorks/Ventilator",
+            "revision": "6165c82de293d66b71f43040a2f145ab70bb49c0"
+          },
+          "name": "RespiraWorks Open-Source Intensive-Care Mechanical Ventilator"
+        },
+        {
+          "identity": {
+            "repository": "dcmtk/dcmtk",
+            "revision": "e8d3d701c285de2dacea605cf0aaa606ad6908fe"
+          },
+          "name": "DCMTK OFFIS DICOM C++ Toolkit (Modality LUT & Pixel Conversion)"
+        },
+        {
+          "identity": {
+            "repository": "OHIF/Viewers",
+            "revision": "eaa45b8db99c824ca6aa5764965dff576581d44c"
+          },
+          "name": "OHIF Open Health Imaging Foundation Medical Viewer Platform"
+        },
+        {
+          "identity": {
+            "edition": "Edition 2.2 (2020)",
+            "standard": "IEC 60601-1-8"
+          },
+          "name": "IEC 60601-1-8 Medical Electrical Equipment Collateral Standard: Alarm Systems"
+        },
+        {
+          "identity": {
+            "edition": "2020 / 2023",
+            "standard": "ISO 80601-2-12"
+          },
+          "name": "ISO 80601-2-12 Particular Requirements for Basic Safety and Essential Performance of Critical Care Ventilators"
+        },
+        {
+          "identity": {
+            "section": "C.7.6.2 Image Plane Module & C.11.1 Modality LUT Module",
+            "standard": "NEMA PS3.3 / ISO 12052"
+          },
+          "name": "NEMA PS3 / ISO 12052 Digital Imaging and Communications in Medicine (DICOM) Part 3: Information Object Definitions"
+        }
+      ],
+      "topics": [
+        "domains/closed-loop-mechanical-ventilation",
+        "pl/dicom-lps-ras-coordinate-units",
+        "systems/iec60601-1-8-acoustic-alarm-arbitration",
+        "verification/alveolar-barotrauma-pressure-envelopes"
       ]
     },
     "verified-amir-binary-wire-format-llbc-decoding-and-parser-admission": {

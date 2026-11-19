@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "domains/fly-by-wire-envelope-protection",
+    "systems/triplex-sensor-voter-memorization",
+    "smt/autoland-flare-control-invariants",
+    "verification/do178c-mode-transition-freedom"
+  ],
+  "subjects": [
+    {
+      "name": "PX4 Autopilot Flight Control & Sensor Validation Suite",
+      "identity": {
+        "repository": "PX4/PX4-Autopilot",
+        "revision": "4e44c822c9018120508bce6d8ad349f0775586a1"
+      }
+    },
+    {
+      "name": "ArduPilot Fixed-Wing TECS & Autoland Control Stack",
+      "identity": {
+        "repository": "ArduPilot/ardupilot",
+        "revision": "9d7be65cd63ae0ee722b002ccc606f0e8d97cd74"
+      }
+    },
+    {
+      "name": "JSBSim Open-Source 6-DoF Flight Dynamics & Flight Control System Model",
+      "identity": {
+        "repository": "JSBSim-Team/jsbsim",
+        "revision": "3f153c18a2518f8472e37c89e70444b1c671b700"
+      }
+    },
+    {
+      "name": "ATSB Transport Safety Report AO-2008-070: Qantas Flight 72 Airbus A330-303 In-Flight Upset",
+      "identity": {
+        "report_id": "AO-2008-070",
+        "publisher": "Australian Transport Safety Bureau (2011)"
+      }
+    },
+    {
+      "name": "Dutch Safety Board Final Report: Turkish Airlines Flight 1951 Boeing 737-800 Radio-Altimeter Flare Stall",
+      "identity": {
+        "report_id": "M2009LV0225_01",
+        "publisher": "Dutch Safety Board / Onderzoeksraad voor Veiligheid (2010)"
+      }
+    },
+    {
+      "name": "RTCA DO-178C / DO-333 Formal Methods Supplement to Software Considerations in Airborne Systems",
+      "identity": {
+        "standard": "RTCA DO-178C / DO-333",
+        "year": "2011"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "domains/closed-loop-mechanical-ventilation",
+    "pl/dicom-lps-ras-coordinate-units",
+    "systems/iec60601-1-8-acoustic-alarm-arbitration",
+    "verification/alveolar-barotrauma-pressure-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "RespiraWorks Open-Source Intensive-Care Mechanical Ventilator",
+      "identity": {
+        "repository": "RespiraWorks/Ventilator",
+        "revision": "6165c82de293d66b71f43040a2f145ab70bb49c0"
+      }
+    },
+    {
+      "name": "DCMTK OFFIS DICOM C++ Toolkit (Modality LUT & Pixel Conversion)",
+      "identity": {
+        "repository": "dcmtk/dcmtk",
+        "revision": "e8d3d701c285de2dacea605cf0aaa606ad6908fe"
+      }
+    },
+    {
+      "name": "OHIF Open Health Imaging Foundation Medical Viewer Platform",
+      "identity": {
+        "repository": "OHIF/Viewers",
+        "revision": "eaa45b8db99c824ca6aa5764965dff576581d44c"
+      }
+    },
+    {
+      "name": "IEC 60601-1-8 Medical Electrical Equipment Collateral Standard: Alarm Systems",
+      "identity": {
+        "standard": "IEC 60601-1-8",
+        "edition": "Edition 2.2 (2020)"
+      }
+    },
+    {
+      "name": "ISO 80601-2-12 Particular Requirements for Basic Safety and Essential Performance of Critical Care Ventilators",
+      "identity": {
+        "standard": "ISO 80601-2-12",
+        "edition": "2020 / 2023"
+      }
+    },
+    {
+      "name": "NEMA PS3 / ISO 12052 Digital Imaging and Communications in Medicine (DICOM) Part 3: Information Object Definitions",
+      "identity": {
+        "standard": "NEMA PS3.3 / ISO 12052",
+        "section": "C.7.6.2 Image Plane Module & C.11.1 Modality LUT Module"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
