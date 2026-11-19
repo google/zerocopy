@@ -26400,6 +26400,112 @@
         "compilers/semantic-preservation"
       ]
     },
+    "memory-allocator-architectures-hardened-heaps-and-virtual-page-quarantines": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-34175-6_13",
+            "repository": "microsoft/mimalloc",
+            "revision": "1d8fd85aa3abe719cd9c42c855f1fc27dbccf84d"
+          },
+          "name": "mimalloc general-purpose allocator"
+        },
+        {
+          "identity": {
+            "repository": "google/tcmalloc",
+            "revision": "9c3ddad744bc28174d173af47a341e76423e3659",
+            "venue": "USENIX OSDI 2021"
+          },
+          "name": "TCMalloc hugepage-aware rseq allocator"
+        },
+        {
+          "identity": {
+            "repository": "jemalloc/jemalloc",
+            "revision": "91de8ca2d405ed5ccee49172418ef68e35c954a4"
+          },
+          "name": "jemalloc concurrent arena allocator"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/xnu",
+            "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+          },
+          "name": "Apple XNU kernel kalloc_type and zalloc"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/libmalloc",
+            "revision": "c49dafa25f1efe8607701ae6014a663ad2ee437f"
+          },
+          "name": "Apple libmalloc xzone userspace allocator"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "16ee29de098406eb6491878ff70f204a06c7b998"
+          },
+          "name": "LLVM Scudo Standalone hardened allocator"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00058",
+            "repository": "SamAinsworth/MarkUs-sp2020",
+            "revision": "60690b9a1421c0792d04088f0fa173e5f6d406ca"
+          },
+          "name": "MarkUs conservative GC-swept quarantine allocator"
+        },
+        {
+          "identity": {
+            "repository": "bwickman97/ffmalloc",
+            "revision": "2f24ecf728886dc0ea29b5f2adab2df9c881befa",
+            "venue": "USENIX Security 2021"
+          },
+          "name": "FFMalloc one-time virtual-page allocator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/321832.321846",
+            "standard": "Robson JACM 1974"
+          },
+          "name": "Robson dynamic storage allocation worst-case fragmentation bounds"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151",
+            "standard": "Jung et al. JFP 2018"
+          },
+          "name": "Iris higher-order concurrent separation logic framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "standard": "Sammler et al. PLDI 2021"
+          },
+          "name": "RefinedC ownership-and-refinement C verifier on Iris"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3689773",
+            "standard": "Reitz, Fromherz, Protzenko OOPSLA 2024"
+          },
+          "name": "StarMalloc verified concurrent security-oriented allocator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3381898.3397211",
+            "standard": "Appel and Naumann ISMM 2020"
+          },
+          "name": "Verified Sequential Malloc/Free in VST"
+        }
+      ],
+      "topics": [
+        "runtimes/allocators",
+        "security/heap-hardening",
+        "systems/virtual-memory",
+        "verification/separation-logic"
+      ]
+    },
     "metal-typechain-language-isolated-kernels-1995-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -42416,6 +42522,78 @@
         "domains/law-and-contracts"
       ]
     },
+    "string-word-equation-smt-solvers-and-verified-incremental-parsing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "standard": "SMT-LIB 2.7 UnicodeStrings",
+            "url": "https://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml"
+          },
+          "name": "SMT-LIB Theory of Unicode Strings"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290362",
+            "repository": "uuverifiers/ostrich",
+            "revision": "806aa9fad141bb41b1fb111b6369b45b4a9390ed"
+          },
+          "name": "OSTRICH string SMT solver"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "c73b745cef365e1390408fbd7c599236941d34d1"
+          },
+          "name": "Z3 sequence and string solver (theory_seq)"
+        },
+        {
+          "identity": {
+            "doi_z3str3re": "10.1007/978-3-030-81688-9_14",
+            "doi_z3str4": "10.1007/978-3-030-90870-6_21",
+            "url": "https://z3str4.github.io/"
+          },
+          "name": "Z3str4 and Z3str3RE string solvers"
+        },
+        {
+          "identity": {
+            "repository": "cvc5/cvc5",
+            "revision": "7507ed17e261ba2dbc5f2d0b298c23dfff9c89cc"
+          },
+          "name": "cvc5 theory of strings"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-28869-2_20",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert MenhirLib verified LR(1) parser validator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454053",
+            "repository": "slasser/CoStar",
+            "revision": "a213d4d7ef738cc56e5e73e84ca465f0e80f4583"
+          },
+          "name": "CoStar verified ALL(*) parser"
+        },
+        {
+          "identity": {
+            "doi_wagner_graham": "10.1145/293677.293678",
+            "repository": "tree-sitter/tree-sitter",
+            "revision": "f0090e112482d66653b43ca73e85668db1cde794"
+          },
+          "name": "Tree-sitter incremental GLR parser runtime"
+        }
+      ],
+      "topics": [
+        "smt/strings-transducers",
+        "compilers/parsing",
+        "verification/parsers",
+        "tooling/incremental-grammars"
+      ]
+    },
     "sub-register-lane-aliasing-and-readonly-load-rematerialization-in-regalloccert": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -42584,6 +42762,115 @@
         "verification/interrupts",
         "systems/realtime",
         "ffi/hw-sw-boundary"
+      ]
+    },
+    "superoptimization-smt-solver-fuzzing-and-rtl-contract-testing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "StanfordPL/stoke",
+            "revision": "98d8a0f028f2daf2052bfe607dbc32ec8d55ba9e"
+          },
+          "name": "STOKE stochastic x86-64 superoptimizer"
+        },
+        {
+          "identity": {
+            "repository": "google/souper",
+            "revision": "963d4df436f3dc0b039cc0e47ada0577a26f5c4e"
+          },
+          "name": "Souper LLVM IR synthesizing superoptimizer"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.00229v3",
+            "doi": "10.1145/3689766",
+            "repository": "minotaur-toolkit/minotaur",
+            "revision": "f764ac4eb2c5b7644390c6a0c35087f4ff01427c"
+          },
+          "name": "Minotaur SIMD-oriented LLVM superoptimizer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030",
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2 bounded translation validator for LLVM"
+        },
+        {
+          "identity": {
+            "doi_semantic_fusion": "10.1145/3385412.3385985",
+            "doi_type_aware_mutation": "10.1145/3428261",
+            "repository": "testsmt/yinyang",
+            "revision": "5ce963290b682fccdb7f27464de0e5c0d02047c5"
+          },
+          "name": "YinYang and TypeFuzz SMT solver fuzzing framework"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "c73b745cef365e1390408fbd7c599236941d34d1"
+          },
+          "name": "Z3 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "cvc5/cvc5",
+            "revision": "7507ed17e261ba2dbc5f2d0b298c23dfff9c89cc"
+          },
+          "name": "cvc5 SMT solver (Alethe proof production)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-30823-9_19",
+            "repository": "ufmg-smite/carcara",
+            "revision": "193b1b015d295518b270630bf57d2e66c2d25489"
+          },
+          "name": "Carcara Alethe proof checker and elaborator"
+        },
+        {
+          "identity": {
+            "repository": "arminbiere/cadical",
+            "revision": "6b3d70b9ce00ecbce3f829bab76d185f0e92618c"
+          },
+          "name": "CaDiCaL SAT solver (LRAT proof emission)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-72013-1_12",
+            "repository": "tanyongkiam/cake_lpr",
+            "revision": "033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2"
+          },
+          "name": "cake_lpr verified LPR/LRAT proof checker"
+        },
+        {
+          "identity": {
+            "artifacts_repository": "comsec-group/cascade-artifacts",
+            "artifacts_revision": "5f6b7c62b0210a116b61b09e4fff05cb46495040",
+            "repository": "cascade-artifacts-designs/cascade-meta",
+            "revision": "3565fba7ea0c0dc08a6e428afd0a6513bede5c85",
+            "venue": "USENIX Security 2024"
+          },
+          "name": "Cascade RISC-V CPU RTL fuzzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3503222.3507729",
+            "repository": "microsoft/sca-fuzzer",
+            "revision": "cc9fa2e53d92c496586689f44d6ea1740d95bd1d"
+          },
+          "name": "Revizor black-box CPU speculation contract fuzzer"
+        }
+      ],
+      "topics": [
+        "compilers/superoptimization",
+        "llvm/superoptimization",
+        "smt/solver-soundness",
+        "verification/proof-checking",
+        "isa/rtl-fuzzing",
+        "security/microarchitectural-contracts",
+        "tooling/testing-fuzzing"
       ]
     },
     "symbolic-and-computational-protocol-verifiers-tamarin-proverif-and-squirrel": {

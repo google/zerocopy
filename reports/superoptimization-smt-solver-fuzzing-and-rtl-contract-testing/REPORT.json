@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "compilers/superoptimization",
+    "llvm/superoptimization",
+    "smt/solver-soundness",
+    "verification/proof-checking",
+    "isa/rtl-fuzzing",
+    "security/microarchitectural-contracts",
+    "tooling/testing-fuzzing"
+  ],
+  "subjects": [
+    {
+      "name": "STOKE stochastic x86-64 superoptimizer",
+      "identity": {
+        "repository": "StanfordPL/stoke",
+        "revision": "98d8a0f028f2daf2052bfe607dbc32ec8d55ba9e"
+      }
+    },
+    {
+      "name": "Souper LLVM IR synthesizing superoptimizer",
+      "identity": {
+        "repository": "google/souper",
+        "revision": "963d4df436f3dc0b039cc0e47ada0577a26f5c4e"
+      }
+    },
+    {
+      "name": "Minotaur SIMD-oriented LLVM superoptimizer",
+      "identity": {
+        "repository": "minotaur-toolkit/minotaur",
+        "revision": "f764ac4eb2c5b7644390c6a0c35087f4ff01427c",
+        "doi": "10.1145/3689766",
+        "arxiv": "2306.00229v3"
+      }
+    },
+    {
+      "name": "Alive2 bounded translation validator for LLVM",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4",
+        "doi": "10.1145/3453483.3454030"
+      }
+    },
+    {
+      "name": "YinYang and TypeFuzz SMT solver fuzzing framework",
+      "identity": {
+        "repository": "testsmt/yinyang",
+        "revision": "5ce963290b682fccdb7f27464de0e5c0d02047c5",
+        "doi_semantic_fusion": "10.1145/3385412.3385985",
+        "doi_type_aware_mutation": "10.1145/3428261"
+      }
+    },
+    {
+      "name": "Z3 theorem prover",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "c73b745cef365e1390408fbd7c599236941d34d1"
+      }
+    },
+    {
+      "name": "cvc5 SMT solver (Alethe proof production)",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "7507ed17e261ba2dbc5f2d0b298c23dfff9c89cc"
+      }
+    },
+    {
+      "name": "Carcara Alethe proof checker and elaborator",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "193b1b015d295518b270630bf57d2e66c2d25489",
+        "doi": "10.1007/978-3-031-30823-9_19"
+      }
+    },
+    {
+      "name": "CaDiCaL SAT solver (LRAT proof emission)",
+      "identity": {
+        "repository": "arminbiere/cadical",
+        "revision": "6b3d70b9ce00ecbce3f829bab76d185f0e92618c"
+      }
+    },
+    {
+      "name": "cake_lpr verified LPR/LRAT proof checker",
+      "identity": {
+        "repository": "tanyongkiam/cake_lpr",
+        "revision": "033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2",
+        "doi": "10.1007/978-3-030-72013-1_12"
+      }
+    },
+    {
+      "name": "Cascade RISC-V CPU RTL fuzzer",
+      "identity": {
+        "repository": "cascade-artifacts-designs/cascade-meta",
+        "revision": "3565fba7ea0c0dc08a6e428afd0a6513bede5c85",
+        "artifacts_repository": "comsec-group/cascade-artifacts",
+        "artifacts_revision": "5f6b7c62b0210a116b61b09e4fff05cb46495040",
+        "venue": "USENIX Security 2024"
+      }
+    },
+    {
+      "name": "Revizor black-box CPU speculation contract fuzzer",
+      "identity": {
+        "repository": "microsoft/sca-fuzzer",
+        "revision": "cc9fa2e53d92c496586689f44d6ea1740d95bd1d",
+        "doi": "10.1145/3503222.3507729"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

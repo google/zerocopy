@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "runtimes/allocators",
+    "security/heap-hardening",
+    "systems/virtual-memory",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "mimalloc general-purpose allocator",
+      "identity": {
+        "repository": "microsoft/mimalloc",
+        "revision": "1d8fd85aa3abe719cd9c42c855f1fc27dbccf84d",
+        "doi": "10.1007/978-3-030-34175-6_13"
+      }
+    },
+    {
+      "name": "TCMalloc hugepage-aware rseq allocator",
+      "identity": {
+        "repository": "google/tcmalloc",
+        "revision": "9c3ddad744bc28174d173af47a341e76423e3659",
+        "venue": "USENIX OSDI 2021"
+      }
+    },
+    {
+      "name": "jemalloc concurrent arena allocator",
+      "identity": {
+        "repository": "jemalloc/jemalloc",
+        "revision": "91de8ca2d405ed5ccee49172418ef68e35c954a4"
+      }
+    },
+    {
+      "name": "Apple XNU kernel kalloc_type and zalloc",
+      "identity": {
+        "repository": "apple-oss-distributions/xnu",
+        "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+      }
+    },
+    {
+      "name": "Apple libmalloc xzone userspace allocator",
+      "identity": {
+        "repository": "apple-oss-distributions/libmalloc",
+        "revision": "c49dafa25f1efe8607701ae6014a663ad2ee437f"
+      }
+    },
+    {
+      "name": "LLVM Scudo Standalone hardened allocator",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "16ee29de098406eb6491878ff70f204a06c7b998"
+      }
+    },
+    {
+      "name": "MarkUs conservative GC-swept quarantine allocator",
+      "identity": {
+        "repository": "SamAinsworth/MarkUs-sp2020",
+        "revision": "60690b9a1421c0792d04088f0fa173e5f6d406ca",
+        "doi": "10.1109/SP40000.2020.00058"
+      }
+    },
+    {
+      "name": "FFMalloc one-time virtual-page allocator",
+      "identity": {
+        "repository": "bwickman97/ffmalloc",
+        "revision": "2f24ecf728886dc0ea29b5f2adab2df9c881befa",
+        "venue": "USENIX Security 2021"
+      }
+    },
+    {
+      "name": "Robson dynamic storage allocation worst-case fragmentation bounds",
+      "identity": {
+        "standard": "Robson JACM 1974",
+        "doi": "10.1145/321832.321846"
+      }
+    },
+    {
+      "name": "Iris higher-order concurrent separation logic framework",
+      "identity": {
+        "standard": "Jung et al. JFP 2018",
+        "doi": "10.1017/S0956796818000151"
+      }
+    },
+    {
+      "name": "RefinedC ownership-and-refinement C verifier on Iris",
+      "identity": {
+        "standard": "Sammler et al. PLDI 2021",
+        "doi": "10.1145/3453483.3454036"
+      }
+    },
+    {
+      "name": "StarMalloc verified concurrent security-oriented allocator",
+      "identity": {
+        "standard": "Reitz, Fromherz, Protzenko OOPSLA 2024",
+        "doi": "10.1145/3689773"
+      }
+    },
+    {
+      "name": "Verified Sequential Malloc/Free in VST",
+      "identity": {
+        "standard": "Appel and Naumann ISMM 2020",
+        "doi": "10.1145/3381898.3397211"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

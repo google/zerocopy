@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "smt/strings-transducers",
+    "compilers/parsing",
+    "verification/parsers",
+    "tooling/incremental-grammars"
+  ],
+  "subjects": [
+    {
+      "name": "SMT-LIB Theory of Unicode Strings",
+      "identity": {
+        "standard": "SMT-LIB 2.7 UnicodeStrings",
+        "url": "https://smtlib.cs.uiowa.edu/theories-UnicodeStrings.shtml"
+      }
+    },
+    {
+      "name": "OSTRICH string SMT solver",
+      "identity": {
+        "repository": "uuverifiers/ostrich",
+        "revision": "806aa9fad141bb41b1fb111b6369b45b4a9390ed",
+        "doi": "10.1145/3290362"
+      }
+    },
+    {
+      "name": "Z3 sequence and string solver (theory_seq)",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "c73b745cef365e1390408fbd7c599236941d34d1"
+      }
+    },
+    {
+      "name": "Z3str4 and Z3str3RE string solvers",
+      "identity": {
+        "doi_z3str4": "10.1007/978-3-030-90870-6_21",
+        "doi_z3str3re": "10.1007/978-3-030-81688-9_14",
+        "url": "https://z3str4.github.io/"
+      }
+    },
+    {
+      "name": "cvc5 theory of strings",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "7507ed17e261ba2dbc5f2d0b298c23dfff9c89cc"
+      }
+    },
+    {
+      "name": "CompCert MenhirLib verified LR(1) parser validator",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "doi": "10.1007/978-3-642-28869-2_20"
+      }
+    },
+    {
+      "name": "CoStar verified ALL(*) parser",
+      "identity": {
+        "repository": "slasser/CoStar",
+        "revision": "a213d4d7ef738cc56e5e73e84ca465f0e80f4583",
+        "doi": "10.1145/3453483.3454053"
+      }
+    },
+    {
+      "name": "Tree-sitter incremental GLR parser runtime",
+      "identity": {
+        "repository": "tree-sitter/tree-sitter",
+        "revision": "f0090e112482d66653b43ca73e85668db1cde794",
+        "doi_wagner_graham": "10.1145/293677.293678"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
