@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "domains",
+    "domains/enterprise-batch",
+    "domains/spreadsheets",
+    "runtimes",
+    "runtimes/batch",
+    "verification",
+    "verification/state-models"
+  ],
+  "subjects": [
+    {
+      "name": "SAS 9.4 Language Reference and Macro Facility",
+      "identity": {
+        "standard": "SAS 9.4 Language Reference: Concepts & Macro Language Reference",
+        "vendor": "SAS Institute Inc.",
+        "url": "https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lecon/titlepage.htm"
+      }
+    },
+    {
+      "name": "ReadStat (SAS7BDAT binary missing-value decoder)",
+      "identity": {
+        "repository": "WizardMac/ReadStat",
+        "revision": "d8ed8fa98e9b2b77cfb9cdde6d92b2531e6e13ed"
+      }
+    },
+    {
+      "name": "GNU PSPP (SPSS statistical runtime mirror)",
+      "identity": {
+        "repository": "gnu-mirror-unofficial/pspp",
+        "revision": "bc07898bc39c984b7486dcdbd2cbb43fabb52678"
+      }
+    },
+    {
+      "name": "SAP ABAP Keyword Documentation (LUW, ROLLBACK WORK, and Internal Tables)",
+      "identity": {
+        "standard": "SAP ABAP Keyword Documentation",
+        "vendor": "SAP SE",
+        "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/index.htm"
+      }
+    },
+    {
+      "name": "abaplint",
+      "identity": {
+        "repository": "abaplint/abaplint",
+        "revision": "25443dcf676e3fae546fcf3fc95fea62823f14db"
+      }
+    },
+    {
+      "name": "IBM i ILE RPG Reference",
+      "identity": {
+        "standard": "IBM i ILE RPG Reference (SC09-2508)",
+        "vendor": "IBM",
+        "url": "https://www.ibm.com/docs/en/i/7.5?topic=reference-ile-rpg"
+      }
+    },
+    {
+      "name": "IBM z/OS MVS JCL Reference",
+      "identity": {
+        "standard": "IBM z/OS MVS JCL Reference (SA23-1385)",
+        "vendor": "IBM",
+        "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=jcl-zos-mvs-reference"
+      }
+    },
+    {
+      "name": "Open Object Rexx (ooRexx)",
+      "identity": {
+        "repository": "ooRexx/oorexx",
+        "revision": "37d734df054a230b4c0cfb61cc4ed8d981032eac"
+      }
+    },
+    {
+      "name": "ANSI REXX Standard",
+      "identity": {
+        "standard": "ANSI X3.274-1996 (Programming Language REXX)",
+        "organization": "ANSI / INCITS"
+      }
+    },
+    {
+      "name": "Microsoft Excel Formula Language (Dynamic Arrays, Comparison Order, and LAMBDA)",
+      "identity": {
+        "standard": "ISO/IEC 29500-1 & Microsoft Excel Calculation Engine",
+        "doi_icfp2003": "10.1145/944705.944721",
+        "doi_jfp2020": "10.1017/S0956796820000234"
+      }
+    },
+    {
+      "name": "DAX (Data Analysis Expressions)",
+      "identity": {
+        "standard": "Microsoft DAX Function and Evaluation Context Reference",
+        "vendor": "Microsoft",
+        "url": "https://learn.microsoft.com/en-us/dax/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

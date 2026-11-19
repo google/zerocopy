@@ -1,0 +1,175 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "runtimes",
+    "runtimes/shells",
+    "runtimes/smart-contracts",
+    "security",
+    "security/smart-contracts",
+    "verification",
+    "verification/bytecode-verifiers",
+    "domains",
+    "domains/dsls"
+  ],
+  "subjects": [
+    {
+      "name": "PowerShell",
+      "identity": {
+        "repository": "PowerShell/PowerShell",
+        "revision": "cd071c986fdb21710a629e12796ff539d06afa32"
+      }
+    },
+    {
+      "name": "Nushell",
+      "identity": {
+        "repository": "nushell/nushell",
+        "revision": "16817a88f38bb62f86c05a128188904e2f1fed0d"
+      }
+    },
+    {
+      "name": "Oils (YSH)",
+      "identity": {
+        "repository": "oils-for-unix/oils",
+        "revision": "d114978ca467143f171a835cbcbe8ab6ccc009a7"
+      }
+    },
+    {
+      "name": "jq",
+      "identity": {
+        "repository": "jqlang/jq",
+        "revision": "5c001b18d7237cce1fdba63608732163f978dd23",
+        "executed_version": "jq-1.8.2"
+      }
+    },
+    {
+      "name": "jaq",
+      "identity": {
+        "repository": "01mf02/jaq",
+        "revision": "126f17a7f3137876aeaa73dd5246811068f767bd"
+      }
+    },
+    {
+      "name": "One True AWK and POSIX awk / mawk",
+      "identity": {
+        "repository": "onetrueawk/awk",
+        "revision": "72e9b56caddb4a6f8d1405315a5183c26b8650a4",
+        "standard": "IEEE Std 1003.1 (POSIX awk)",
+        "executed_runtime": "mawk 1.3.4 20260302"
+      }
+    },
+    {
+      "name": "GNU sed",
+      "identity": {
+        "version": "GNU sed 4.9",
+        "standard": "IEEE Std 1003.1 (POSIX sed)"
+      }
+    },
+    {
+      "name": "Vim (Legacy Vimscript and Vim9script)",
+      "identity": {
+        "repository": "vim/vim",
+        "revision": "d399646c1f54e30f5288208a911c193fefb6d79c",
+        "executed_version": "VIM 9.2 (2026 Feb 14)"
+      }
+    },
+    {
+      "name": "Ghostscript (PostScript Level 3)",
+      "identity": {
+        "repository": "ArtifexSoftware/ghostpdl",
+        "revision": "5d84ee686543383cbeb7a09ed8a111e96ddcfe95",
+        "executed_version": "GPL Ghostscript 10.08.0"
+      }
+    },
+    {
+      "name": "FreeType TrueType Bytecode Interpreter",
+      "identity": {
+        "repository": "freetype/freetype",
+        "revision": "d7339729da576614cbf107d04a72924d21f7ec5a"
+      }
+    },
+    {
+      "name": "Inform 7 Compiler",
+      "identity": {
+        "repository": "ganelson/inform",
+        "revision": "5c7ba42b74db69b93b1290453c65189fa60cfc67"
+      }
+    },
+    {
+      "name": "ink Narrative Runtime",
+      "identity": {
+        "repository": "inkle/ink",
+        "revision": "4011b8c0a01828c61dd2331613c1038a3a5f294b"
+      }
+    },
+    {
+      "name": "Solidity Compiler",
+      "identity": {
+        "repository": "ethereum/solidity",
+        "revision": "ce47f2c8e97779e7df8b844648d3c14f6e4af292"
+      }
+    },
+    {
+      "name": "Vyper Compiler (v0.2.15)",
+      "identity": {
+        "repository": "vyperlang/vyper",
+        "revision": "6e7dba7a8b5f29762d3470da4f44634b819c808d",
+        "version": "v0.2.15"
+      }
+    },
+    {
+      "name": "Vyper Compiler (v0.3.0)",
+      "identity": {
+        "repository": "vyperlang/vyper",
+        "revision": "8a23febbb2d523f3701f9a7d0aaf361c104a2a37",
+        "version": "v0.3.0"
+      }
+    },
+    {
+      "name": "Vyper Compiler (v0.3.1)",
+      "identity": {
+        "repository": "vyperlang/vyper",
+        "revision": "0463ea4c304858d94494e2df229021448feaedeb",
+        "version": "v0.3.1"
+      }
+    },
+    {
+      "name": "Vyper Compiler (HEAD)",
+      "identity": {
+        "repository": "vyperlang/vyper",
+        "revision": "d3d07ad34192759ea4978cfd02250c0270161683"
+      }
+    },
+    {
+      "name": "Ethereum EIP-1153 (Transient Storage)",
+      "identity": {
+        "repository": "ethereum/EIPs",
+        "revision": "b055feec322fbc37e9d77a393a50b3ff56b31c92",
+        "eip": "EIP-1153"
+      }
+    },
+    {
+      "name": "Ethereum ERC-1967 and ERC-7201 (Proxy and Namespaced Storage)",
+      "identity": {
+        "repository": "ethereum/ERCs",
+        "revision": "10eca3cea34986aeeac0af98ad061ab8928dc15d",
+        "ercs": "ERC-1967, ERC-7201"
+      }
+    },
+    {
+      "name": "KEVM (K Framework EVM Semantics)",
+      "identity": {
+        "repository": "runtimeverification/evm-semantics",
+        "revision": "fbb2edbb8e84bb05b6ba7a255ce1f44f76051ad1"
+      }
+    },
+    {
+      "name": "Move Bytecode Verifier",
+      "identity": {
+        "repository": "move-language/move",
+        "revision": "c453c90994cba0af30314fe4134acee57fb20d0c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

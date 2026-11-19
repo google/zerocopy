@@ -1,0 +1,177 @@
+{
+  "topics": [
+    "pl",
+    "pl/concatenative",
+    "pl/concatenative/stack-effects",
+    "pl/non-standard-evaluation",
+    "pl/reflection",
+    "runtimes",
+    "runtimes/interaction-nets",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "Factor concatenative programming language",
+      "identity": {
+        "repository": "factor/factor",
+        "revision": "f05a4e9d49d17881c65f9b21e05095d0ff3adc50"
+      }
+    },
+    {
+      "name": "Kitten statically typed concatenative language",
+      "identity": {
+        "repository": "evincarofautumn/kitten",
+        "revision": "2bbc264d7f05c4a7d7b35d06773d1ab2f0623193"
+      }
+    },
+    {
+      "name": "Gforth",
+      "identity": {
+        "repository": "forthy42/gforth",
+        "revision": "15375fb0469d6590980adc2bf4cbddb241a671a6"
+      }
+    },
+    {
+      "name": "Unicon (Icon goal-directed runtime)",
+      "identity": {
+        "repository": "uniconproject/unicon",
+        "revision": "d3df4185f1e262508bd5beda1e69bfcdac251bf9"
+      }
+    },
+    {
+      "name": "klisp (Kernel programming language interpreter)",
+      "identity": {
+        "repository": "dbohdan/klisp",
+        "revision": "2b3a1cf774e0ab527a561e5d93dacbfdf0b545d1"
+      }
+    },
+    {
+      "name": "GNU R source and reference manuals",
+      "identity": {
+        "repository": "wch/r-source",
+        "revision": "94152790dbd49be40c28c1819f92370fb7581f0a"
+      }
+    },
+    {
+      "name": "Dart SDK mirrors library",
+      "identity": {
+        "repository": "dart-lang/sdk",
+        "revision": "e1671c00019972a92e16247dc254ad3eaa48c2b6"
+      }
+    },
+    {
+      "name": "Newspeak mirror-based platform",
+      "identity": {
+        "repository": "newspeaklanguage/newspeak",
+        "revision": "84cc19da84aa7d4790dae155ea8f9a64c5855f87"
+      }
+    },
+    {
+      "name": "HVM1 (Higher-order Virtual Machine 1)",
+      "identity": {
+        "repository": "HigherOrderCO/HVM",
+        "revision": "7365a56cca56a5853c979755891cb86aa343c42d"
+      }
+    },
+    {
+      "name": "HVM2 (Parallel Interaction Combinator Evaluator)",
+      "identity": {
+        "repository": "HigherOrderCO/HVM2",
+        "revision": "654276018084b8f44a22b562dd68ab18583bfb5b"
+      }
+    },
+    {
+      "name": "HVM3 (Interaction Calculus Runtime WIP)",
+      "identity": {
+        "repository": "HigherOrderCO/HVM3",
+        "revision": "fba2e9c82faf6e2f019c9ecea94c32f19a8b7820"
+      }
+    },
+    {
+      "name": "Bend1 (Legacy HVM2 frontend)",
+      "identity": {
+        "repository": "HigherOrderCO/Bend1",
+        "revision": "814453670d0e0d6777c1313c972764dba0491b7f"
+      }
+    },
+    {
+      "name": "Bend (Dependent-typed successor repository)",
+      "identity": {
+        "repository": "HigherOrderCO/Bend",
+        "revision": "0e2f38f759cc830849e489307f3d256a7d148288"
+      }
+    },
+    {
+      "name": "Vine interaction-net language",
+      "identity": {
+        "repository": "VineLang/vine",
+        "revision": "cf0c325834d5bf4c8d43aa36f7fb76faf2496988"
+      }
+    },
+    {
+      "name": "Inpla interaction-net programming language",
+      "identity": {
+        "repository": "inpla/inpla",
+        "revision": "864d529191ac83b776d301839c6b485c432e2725"
+      }
+    },
+    {
+      "name": "Factor DLS 2010 (Pestov, Ehrenberg, and Groff)",
+      "identity": {
+        "doi": "10.1145/1869631.1869637",
+        "venue": "Dynamic Languages Symposium 2010"
+      }
+    },
+    {
+      "name": "Simple Translation of Goal-Directed Evaluation (Proebsting)",
+      "identity": {
+        "doi": "10.1145/258916.258917",
+        "venue": "PLDI 1997"
+      }
+    },
+    {
+      "name": "The Theory of Fexprs is Trivial (Wand)",
+      "identity": {
+        "doi": "10.1023/A:1007743306850",
+        "venue": "Lisp and Symbolic Computation 10(3), 1998"
+      }
+    },
+    {
+      "name": "Practical Compilation of Fexprs Using Partial Evaluation (Braswell, Khan, and Pande)",
+      "identity": {
+        "arxiv": "2303.12254",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "On the Design, Implementation, and Use of Laziness in R (Goel and Vitek)",
+      "identity": {
+        "doi": "10.1145/3360579",
+        "venue": "PACMPL 3(OOPSLA), 2019"
+      }
+    },
+    {
+      "name": "Mirrors: Design Principles for Meta-level Facilities (Bracha and Ungar)",
+      "identity": {
+        "doi": "10.1145/1028976.1029004",
+        "venue": "OOPSLA 2004"
+      }
+    },
+    {
+      "name": "Interaction Nets and Interaction Combinators (Lafont)",
+      "identity": {
+        "doi": "10.1145/96709.96718",
+        "related_doi": "10.1006/inco.1997.2643"
+      }
+    },
+    {
+      "name": "Optimal Lambda Reduction and Bookkeeping Lower Bounds (Lamping; Asperti and Mairson; Guerrini and Solieri)",
+      "identity": {
+        "doi": "10.1145/96709.96736",
+        "asperti_mairson_doi": "10.1006/inco.2001.2869",
+        "fscd_2017_doi": "10.4230/LIPIcs.FSCD.2017.17"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

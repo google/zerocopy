@@ -12237,6 +12237,183 @@
         "rust"
       ]
     },
+    "concatenative-stack-calculi-interaction-nets-and-mirror-reflection": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "factor/factor",
+            "revision": "f05a4e9d49d17881c65f9b21e05095d0ff3adc50"
+          },
+          "name": "Factor concatenative programming language"
+        },
+        {
+          "identity": {
+            "repository": "evincarofautumn/kitten",
+            "revision": "2bbc264d7f05c4a7d7b35d06773d1ab2f0623193"
+          },
+          "name": "Kitten statically typed concatenative language"
+        },
+        {
+          "identity": {
+            "repository": "forthy42/gforth",
+            "revision": "15375fb0469d6590980adc2bf4cbddb241a671a6"
+          },
+          "name": "Gforth"
+        },
+        {
+          "identity": {
+            "repository": "uniconproject/unicon",
+            "revision": "d3df4185f1e262508bd5beda1e69bfcdac251bf9"
+          },
+          "name": "Unicon (Icon goal-directed runtime)"
+        },
+        {
+          "identity": {
+            "repository": "dbohdan/klisp",
+            "revision": "2b3a1cf774e0ab527a561e5d93dacbfdf0b545d1"
+          },
+          "name": "klisp (Kernel programming language interpreter)"
+        },
+        {
+          "identity": {
+            "repository": "wch/r-source",
+            "revision": "94152790dbd49be40c28c1819f92370fb7581f0a"
+          },
+          "name": "GNU R source and reference manuals"
+        },
+        {
+          "identity": {
+            "repository": "dart-lang/sdk",
+            "revision": "e1671c00019972a92e16247dc254ad3eaa48c2b6"
+          },
+          "name": "Dart SDK mirrors library"
+        },
+        {
+          "identity": {
+            "repository": "newspeaklanguage/newspeak",
+            "revision": "84cc19da84aa7d4790dae155ea8f9a64c5855f87"
+          },
+          "name": "Newspeak mirror-based platform"
+        },
+        {
+          "identity": {
+            "repository": "HigherOrderCO/HVM",
+            "revision": "7365a56cca56a5853c979755891cb86aa343c42d"
+          },
+          "name": "HVM1 (Higher-order Virtual Machine 1)"
+        },
+        {
+          "identity": {
+            "repository": "HigherOrderCO/HVM2",
+            "revision": "654276018084b8f44a22b562dd68ab18583bfb5b"
+          },
+          "name": "HVM2 (Parallel Interaction Combinator Evaluator)"
+        },
+        {
+          "identity": {
+            "repository": "HigherOrderCO/HVM3",
+            "revision": "fba2e9c82faf6e2f019c9ecea94c32f19a8b7820"
+          },
+          "name": "HVM3 (Interaction Calculus Runtime WIP)"
+        },
+        {
+          "identity": {
+            "repository": "HigherOrderCO/Bend1",
+            "revision": "814453670d0e0d6777c1313c972764dba0491b7f"
+          },
+          "name": "Bend1 (Legacy HVM2 frontend)"
+        },
+        {
+          "identity": {
+            "repository": "HigherOrderCO/Bend",
+            "revision": "0e2f38f759cc830849e489307f3d256a7d148288"
+          },
+          "name": "Bend (Dependent-typed successor repository)"
+        },
+        {
+          "identity": {
+            "repository": "VineLang/vine",
+            "revision": "cf0c325834d5bf4c8d43aa36f7fb76faf2496988"
+          },
+          "name": "Vine interaction-net language"
+        },
+        {
+          "identity": {
+            "repository": "inpla/inpla",
+            "revision": "864d529191ac83b776d301839c6b485c432e2725"
+          },
+          "name": "Inpla interaction-net programming language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1869631.1869637",
+            "venue": "Dynamic Languages Symposium 2010"
+          },
+          "name": "Factor DLS 2010 (Pestov, Ehrenberg, and Groff)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/258916.258917",
+            "venue": "PLDI 1997"
+          },
+          "name": "Simple Translation of Goal-Directed Evaluation (Proebsting)"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1007743306850",
+            "venue": "Lisp and Symbolic Computation 10(3), 1998"
+          },
+          "name": "The Theory of Fexprs is Trivial (Wand)"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.12254",
+            "year": "2023"
+          },
+          "name": "Practical Compilation of Fexprs Using Partial Evaluation (Braswell, Khan, and Pande)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360579",
+            "venue": "PACMPL 3(OOPSLA), 2019"
+          },
+          "name": "On the Design, Implementation, and Use of Laziness in R (Goel and Vitek)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1028976.1029004",
+            "venue": "OOPSLA 2004"
+          },
+          "name": "Mirrors: Design Principles for Meta-level Facilities (Bracha and Ungar)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/96709.96718",
+            "related_doi": "10.1006/inco.1997.2643"
+          },
+          "name": "Interaction Nets and Interaction Combinators (Lafont)"
+        },
+        {
+          "identity": {
+            "asperti_mairson_doi": "10.1006/inco.2001.2869",
+            "doi": "10.1145/96709.96736",
+            "fscd_2017_doi": "10.4230/LIPIcs.FSCD.2017.17"
+          },
+          "name": "Optimal Lambda Reduction and Bookkeeping Lower Bounds (Lamping; Asperti and Mairson; Guerrini and Solieri)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/concatenative",
+        "pl/concatenative/stack-effects",
+        "pl/non-standard-evaluation",
+        "pl/reflection",
+        "runtimes",
+        "runtimes/interaction-nets",
+        "compilers"
+      ]
+    },
     "concurrency-and-simd-compiler-testing-tools-and-harnesses": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -30088,6 +30265,181 @@
         "verification"
       ]
     },
+    "powershell-ets-pipelines-jq-backtracking-inform7-and-evm-vyper-storage-semantics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "PowerShell/PowerShell",
+            "revision": "cd071c986fdb21710a629e12796ff539d06afa32"
+          },
+          "name": "PowerShell"
+        },
+        {
+          "identity": {
+            "repository": "nushell/nushell",
+            "revision": "16817a88f38bb62f86c05a128188904e2f1fed0d"
+          },
+          "name": "Nushell"
+        },
+        {
+          "identity": {
+            "repository": "oils-for-unix/oils",
+            "revision": "d114978ca467143f171a835cbcbe8ab6ccc009a7"
+          },
+          "name": "Oils (YSH)"
+        },
+        {
+          "identity": {
+            "executed_version": "jq-1.8.2",
+            "repository": "jqlang/jq",
+            "revision": "5c001b18d7237cce1fdba63608732163f978dd23"
+          },
+          "name": "jq"
+        },
+        {
+          "identity": {
+            "repository": "01mf02/jaq",
+            "revision": "126f17a7f3137876aeaa73dd5246811068f767bd"
+          },
+          "name": "jaq"
+        },
+        {
+          "identity": {
+            "executed_runtime": "mawk 1.3.4 20260302",
+            "repository": "onetrueawk/awk",
+            "revision": "72e9b56caddb4a6f8d1405315a5183c26b8650a4",
+            "standard": "IEEE Std 1003.1 (POSIX awk)"
+          },
+          "name": "One True AWK and POSIX awk / mawk"
+        },
+        {
+          "identity": {
+            "standard": "IEEE Std 1003.1 (POSIX sed)",
+            "version": "GNU sed 4.9"
+          },
+          "name": "GNU sed"
+        },
+        {
+          "identity": {
+            "executed_version": "VIM 9.2 (2026 Feb 14)",
+            "repository": "vim/vim",
+            "revision": "d399646c1f54e30f5288208a911c193fefb6d79c"
+          },
+          "name": "Vim (Legacy Vimscript and Vim9script)"
+        },
+        {
+          "identity": {
+            "executed_version": "GPL Ghostscript 10.08.0",
+            "repository": "ArtifexSoftware/ghostpdl",
+            "revision": "5d84ee686543383cbeb7a09ed8a111e96ddcfe95"
+          },
+          "name": "Ghostscript (PostScript Level 3)"
+        },
+        {
+          "identity": {
+            "repository": "freetype/freetype",
+            "revision": "d7339729da576614cbf107d04a72924d21f7ec5a"
+          },
+          "name": "FreeType TrueType Bytecode Interpreter"
+        },
+        {
+          "identity": {
+            "repository": "ganelson/inform",
+            "revision": "5c7ba42b74db69b93b1290453c65189fa60cfc67"
+          },
+          "name": "Inform 7 Compiler"
+        },
+        {
+          "identity": {
+            "repository": "inkle/ink",
+            "revision": "4011b8c0a01828c61dd2331613c1038a3a5f294b"
+          },
+          "name": "ink Narrative Runtime"
+        },
+        {
+          "identity": {
+            "repository": "ethereum/solidity",
+            "revision": "ce47f2c8e97779e7df8b844648d3c14f6e4af292"
+          },
+          "name": "Solidity Compiler"
+        },
+        {
+          "identity": {
+            "repository": "vyperlang/vyper",
+            "revision": "6e7dba7a8b5f29762d3470da4f44634b819c808d",
+            "version": "v0.2.15"
+          },
+          "name": "Vyper Compiler (v0.2.15)"
+        },
+        {
+          "identity": {
+            "repository": "vyperlang/vyper",
+            "revision": "8a23febbb2d523f3701f9a7d0aaf361c104a2a37",
+            "version": "v0.3.0"
+          },
+          "name": "Vyper Compiler (v0.3.0)"
+        },
+        {
+          "identity": {
+            "repository": "vyperlang/vyper",
+            "revision": "0463ea4c304858d94494e2df229021448feaedeb",
+            "version": "v0.3.1"
+          },
+          "name": "Vyper Compiler (v0.3.1)"
+        },
+        {
+          "identity": {
+            "repository": "vyperlang/vyper",
+            "revision": "d3d07ad34192759ea4978cfd02250c0270161683"
+          },
+          "name": "Vyper Compiler (HEAD)"
+        },
+        {
+          "identity": {
+            "eip": "EIP-1153",
+            "repository": "ethereum/EIPs",
+            "revision": "b055feec322fbc37e9d77a393a50b3ff56b31c92"
+          },
+          "name": "Ethereum EIP-1153 (Transient Storage)"
+        },
+        {
+          "identity": {
+            "ercs": "ERC-1967, ERC-7201",
+            "repository": "ethereum/ERCs",
+            "revision": "10eca3cea34986aeeac0af98ad061ab8928dc15d"
+          },
+          "name": "Ethereum ERC-1967 and ERC-7201 (Proxy and Namespaced Storage)"
+        },
+        {
+          "identity": {
+            "repository": "runtimeverification/evm-semantics",
+            "revision": "fbb2edbb8e84bb05b6ba7a255ce1f44f76051ad1"
+          },
+          "name": "KEVM (K Framework EVM Semantics)"
+        },
+        {
+          "identity": {
+            "repository": "move-language/move",
+            "revision": "c453c90994cba0af30314fe4134acee57fb20d0c"
+          },
+          "name": "Move Bytecode Verifier"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/semantics",
+        "runtimes",
+        "runtimes/shells",
+        "runtimes/smart-contracts",
+        "security",
+        "security/smart-contracts",
+        "verification",
+        "verification/bytecode-verifiers",
+        "domains",
+        "domains/dsls"
+      ]
+    },
     "proof-fragility-smt-instability-and-verification-scaling-walls": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -38779,6 +39131,105 @@
         "isa/aarch64",
         "isa/x86-64",
         "lean/mechanization"
+      ]
+    },
+    "sas-pdv-retain-abap-luw-rollback-jcl-cond-and-enterprise-batch-languages": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "standard": "SAS 9.4 Language Reference: Concepts & Macro Language Reference",
+            "url": "https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lecon/titlepage.htm",
+            "vendor": "SAS Institute Inc."
+          },
+          "name": "SAS 9.4 Language Reference and Macro Facility"
+        },
+        {
+          "identity": {
+            "repository": "WizardMac/ReadStat",
+            "revision": "d8ed8fa98e9b2b77cfb9cdde6d92b2531e6e13ed"
+          },
+          "name": "ReadStat (SAS7BDAT binary missing-value decoder)"
+        },
+        {
+          "identity": {
+            "repository": "gnu-mirror-unofficial/pspp",
+            "revision": "bc07898bc39c984b7486dcdbd2cbb43fabb52678"
+          },
+          "name": "GNU PSPP (SPSS statistical runtime mirror)"
+        },
+        {
+          "identity": {
+            "standard": "SAP ABAP Keyword Documentation",
+            "url": "https://help.sap.com/doc/abapdocu_latest_index_htm/latest/en-US/index.htm",
+            "vendor": "SAP SE"
+          },
+          "name": "SAP ABAP Keyword Documentation (LUW, ROLLBACK WORK, and Internal Tables)"
+        },
+        {
+          "identity": {
+            "repository": "abaplint/abaplint",
+            "revision": "25443dcf676e3fae546fcf3fc95fea62823f14db"
+          },
+          "name": "abaplint"
+        },
+        {
+          "identity": {
+            "standard": "IBM i ILE RPG Reference (SC09-2508)",
+            "url": "https://www.ibm.com/docs/en/i/7.5?topic=reference-ile-rpg",
+            "vendor": "IBM"
+          },
+          "name": "IBM i ILE RPG Reference"
+        },
+        {
+          "identity": {
+            "standard": "IBM z/OS MVS JCL Reference (SA23-1385)",
+            "url": "https://www.ibm.com/docs/en/zos/3.1.0?topic=jcl-zos-mvs-reference",
+            "vendor": "IBM"
+          },
+          "name": "IBM z/OS MVS JCL Reference"
+        },
+        {
+          "identity": {
+            "repository": "ooRexx/oorexx",
+            "revision": "37d734df054a230b4c0cfb61cc4ed8d981032eac"
+          },
+          "name": "Open Object Rexx (ooRexx)"
+        },
+        {
+          "identity": {
+            "organization": "ANSI / INCITS",
+            "standard": "ANSI X3.274-1996 (Programming Language REXX)"
+          },
+          "name": "ANSI REXX Standard"
+        },
+        {
+          "identity": {
+            "doi_icfp2003": "10.1145/944705.944721",
+            "doi_jfp2020": "10.1017/S0956796820000234",
+            "standard": "ISO/IEC 29500-1 & Microsoft Excel Calculation Engine"
+          },
+          "name": "Microsoft Excel Formula Language (Dynamic Arrays, Comparison Order, and LAMBDA)"
+        },
+        {
+          "identity": {
+            "standard": "Microsoft DAX Function and Evaluation Context Reference",
+            "url": "https://learn.microsoft.com/en-us/dax/",
+            "vendor": "Microsoft"
+          },
+          "name": "DAX (Data Analysis Expressions)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/semantics",
+        "domains",
+        "domains/enterprise-batch",
+        "domains/spreadsheets",
+        "runtimes",
+        "runtimes/batch",
+        "verification",
+        "verification/state-models"
       ]
     },
     "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox": {
