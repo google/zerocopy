@@ -179,17 +179,74 @@ impl Ctx {
         quote!(#zerocopy_crate::util::macro_util::core_reexport)
     }
 
-    /// Choose an implementation name absent from the caller's tokens. This is
-    /// best-effort; names introduced by nested macros are not considered.
-    /// Unlike local variables, type parameters are not hidden by mixed-site
-    /// hygiene.
-    pub(crate) fn fresh_ident(&self, name: &str) -> Ident {
-        let idents = crate::invariant::idents(self.ast.to_token_stream());
-        let mut name = name.to_owned();
-        while idents.iter().any(|ident| ident.to_string().trim_start_matches("r#") == name) {
+    /// Choose an implementation name absent from the caller's tokens. Unlike
+    /// local variables, type parameters are not hidden by mixed-site hygiene.
+    ///
+    /// When `DeriveInput` contains `!` (such as an unexpanded macro invocation
+    /// in a field type or `where` bound), incorporates a deterministic 128-bit
+    /// hash of the input tokens so macro expansions naming the default stem do
+    /// not collide. Runs in linear time in the total token length.
+    pub(crate) fn fresh_ident(&self, base: &str) -> Ident {
+        let ts = self.ast.to_token_stream();
+        let scan = scan_tokens(ts.clone());
+        let stem = if scan.has_bang {
+            format!("{}_{:032x}", base, hash_tokens_128(&ts.to_string()))
+        } else {
+            base.to_owned()
+        };
+        let mut max_underscores: Option<usize> = None;
+        for ident in &scan.idents {
+            let s = ident.to_string();
+            let s = s.strip_prefix("r#").unwrap_or(&s);
+            if let Some(rest) = s.strip_prefix(&stem) {
+                if rest.bytes().all(|b| b == b'_') {
+                    max_underscores =
+                        Some(max_underscores.map_or(rest.len(), |m| m.max(rest.len())));
+                }
+            }
+        }
+        let extra = max_underscores.map_or(0, |m| m + 1);
+        let mut name = String::with_capacity(stem.len() + extra);
+        name.push_str(&stem);
+        for _ in 0..extra {
             name.push('_');
         }
         Ident::new(&name, Span::mixed_site())
+    }
+
+    /// Choose an implementation prefix absent from the caller's tokens so that
+    /// `format!("{prefix}{suffix}")` is fresh for every suffix and remains
+    /// injective across distinct suffixes.
+    ///
+    /// When `DeriveInput` contains `!` (such as an unexpanded type-position or
+    /// bound macro invocation), incorporates a deterministic 128-bit hash of
+    /// the input tokens so replayed macros expanding to the default marker name
+    /// do not bind to generated markers. Runs in a single linear pass over the
+    /// input identifiers.
+    pub(crate) fn fresh_prefix(&self, base: &str) -> String {
+        let ts = self.ast.to_token_stream();
+        let scan = scan_tokens(ts.clone());
+        let stem = if scan.has_bang {
+            format!("{}{:032x}_", base, hash_tokens_128(&ts.to_string()))
+        } else {
+            base.to_owned()
+        };
+        let mut max_underscores: Option<usize> = None;
+        for ident in &scan.idents {
+            let s = ident.to_string();
+            let s = s.strip_prefix("r#").unwrap_or(&s);
+            if let Some(rest) = s.strip_prefix(&stem) {
+                let leading = rest.bytes().take_while(|&b| b == b'_').count();
+                max_underscores = Some(max_underscores.map_or(leading, |m| m.max(leading)));
+            }
+        }
+        let extra = max_underscores.map_or(0, |m| m + 1);
+        let mut prefix = String::with_capacity(stem.len() + extra);
+        prefix.push_str(&stem);
+        for _ in 0..extra {
+            prefix.push('_');
+        }
+        prefix
     }
 
     /// Caller-authored invariant expressions must inherit the caller's lint
@@ -367,6 +424,38 @@ pub(crate) fn to_ident_str(t: &impl ToString) -> String {
     } else {
         s
     }
+}
+
+struct TokenScan {
+    idents: Vec<Ident>,
+    has_bang: bool,
+}
+
+fn scan_tokens(tokens: TokenStream) -> TokenScan {
+    fn visit(tokens: TokenStream, out: &mut TokenScan) {
+        for tt in tokens {
+            match tt {
+                proc_macro2::TokenTree::Ident(ident) => out.idents.push(ident),
+                proc_macro2::TokenTree::Punct(punct) if punct.as_char() == '!' => {
+                    out.has_bang = true;
+                }
+                proc_macro2::TokenTree::Group(group) => visit(group.stream(), out),
+                _ => {}
+            }
+        }
+    }
+    let mut out = TokenScan { idents: Vec::new(), has_bang: false };
+    visit(tokens, &mut out);
+    out
+}
+
+fn hash_tokens_128(s: &str) -> u128 {
+    const K: u128 = 0x517cc1b727220a95517cc1b727220a95;
+    let mut hash = 0xcbf29ce484222325cbf29ce484222325u128;
+    for &byte in s.as_bytes() {
+        hash = (hash.rotate_left(5) ^ u128::from(byte)).wrapping_mul(K);
+    }
+    hash
 }
 
 /// Does `path` consist solely of the identifier `expected`?
@@ -1183,5 +1272,66 @@ pub(crate) mod testutil {
         let path = &ctx.zerocopy_crate;
         assert_eq!(quote::quote!(#path).to_string(), ":: renamed");
         assert!(ctx.skip_on_error);
+    }
+
+    #[test]
+    fn test_fresh_ident_and_prefix() {
+        let plain: syn::DeriveInput = syn::parse_quote! {
+            struct Foo {
+                a: u8,
+                a_: u16,
+            }
+        };
+        let ctx = super::Ctx::try_from_derive_input(plain).unwrap();
+        assert_eq!(ctx.fresh_prefix("___ZcField_"), "___ZcField_");
+        assert_eq!(ctx.fresh_ident("___ZcAliasing").to_string(), "___ZcAliasing");
+
+        let colliding: syn::DeriveInput = syn::parse_quote! {
+            struct ___ZcField_self<___ZcField_a, r#___ZcField__b, ___ZcAliasing>
+            where
+                (): Trait<___ZcField___c>,
+            {
+                a: ___ZcField_a,
+                a_: r#___ZcField__b,
+                aliasing: ___ZcAliasing,
+            }
+        };
+        let ctx = super::Ctx::try_from_derive_input(colliding).unwrap();
+        let prefix = ctx.fresh_prefix("___ZcField_");
+        assert_eq!(prefix, "___ZcField____");
+        assert_ne!(format!("{}a", prefix), format!("{}a_", prefix));
+        assert_eq!(ctx.fresh_ident("___ZcAliasing").to_string(), "___ZcAliasing_");
+
+        // Ensure long underscore runs are handled in linear time.
+        let long_underscores = "_".repeat(20_000);
+        let long_field_ident =
+            syn::Ident::new(&format!("___ZcField_{}x", long_underscores), super::Span::call_site());
+        let long_aliasing_ident = syn::Ident::new(
+            &format!("___ZcAliasing{}", long_underscores),
+            super::Span::call_site(),
+        );
+        let long_ast: syn::DeriveInput = syn::parse_quote! {
+            struct Long<#long_field_ident, #long_aliasing_ident>(
+                #long_field_ident,
+                #long_aliasing_ident,
+            );
+        };
+        let ctx = super::Ctx::try_from_derive_input(long_ast).unwrap();
+        assert_eq!(ctx.fresh_prefix("___ZcField_"), format!("___ZcField_{}_", long_underscores));
+        assert_eq!(
+            ctx.fresh_ident("___ZcAliasing").to_string(),
+            format!("___ZcAliasing{}_", long_underscores)
+        );
+
+        // Ensure unexpanded macro invocations incorporate a 128-bit token hash.
+        let with_macro: syn::DeriveInput = syn::parse_quote! {
+            struct MacroField {
+                a: field_ty!(),
+            }
+        };
+        let ctx = super::Ctx::try_from_derive_input(with_macro).unwrap();
+        let macro_prefix = ctx.fresh_prefix("___ZcField_");
+        assert!(macro_prefix.starts_with("___ZcField_"));
+        assert_eq!(macro_prefix.len(), "___ZcField_".len() + 32 + 1);
     }
 }

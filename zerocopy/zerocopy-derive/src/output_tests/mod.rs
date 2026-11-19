@@ -179,6 +179,15 @@ fn test_project_struct() {
             }
         } expands to "expected/project_struct.expected.rs"
     }
+
+    test! {
+        Project {
+            struct Foo<___ZcField_field, ___ZcAliasing, ___ZcAlignment> {
+                field: ___ZcField_field,
+                field_: (___ZcAliasing, ___ZcAlignment),
+            }
+        } expands to "expected/project_struct_collision.expected.rs"
+    }
 }
 
 #[test]
