@@ -1,0 +1,126 @@
+{
+  "topics": [
+    "pl",
+    "pl/reversible-computing",
+    "pl/reversible-computing/janus",
+    "pl/reversible-computing/type-isomorphisms",
+    "pl/automatic-differentiation/reversible",
+    "compilers/program-inversion",
+    "compilers/reverse-code-generation",
+    "runtimes/optimistic-simulation",
+    "runtimes/time-warp"
+  ],
+  "subjects": [
+    {
+      "name": "Jana (Janus interpreter and program inverter)",
+      "identity": {
+        "repository": "mbudde/jana",
+        "revision": "5b51b57e0b6f13ec1e1c61d719a18bf58696f84b",
+        "version": "1.0"
+      }
+    },
+    {
+      "name": "NiLang.jl (reversible eDSL and reversible automatic differentiation)",
+      "identity": {
+        "repository": "GiggleLiu/NiLang.jl",
+        "revision": "4b003966d3441f9b1ff98aafff50bdeebcdc83ac",
+        "version": "0.9.4"
+      }
+    },
+    {
+      "name": "NiLangCore.jl (compiler core of NiLang)",
+      "identity": {
+        "repository": "GiggleLiu/NiLangCore.jl",
+        "revision": "3464affc5215890847a7d59dc653aabab6664758",
+        "version": "0.10.7"
+      }
+    },
+    {
+      "name": "ROSS (Rensselaer's Optimistic Simulation System)",
+      "identity": {
+        "repository": "ROSS-org/ROSS",
+        "revision": "dc3a6a056cfc7a5e68f7141f88d8833407599ef8",
+        "version": "8.1.1"
+      }
+    },
+    {
+      "name": "Backstroke (LLNL reversible C++ instrumentation tool and RTSS runtime)",
+      "identity": {
+        "repository": "LLNL/backstroke",
+        "revision": "c3d8848b5e12785e30ec87dc19d645df5c63bf89",
+        "version": "2.1.4"
+      }
+    },
+    {
+      "name": "theseus (Rust/Lean reversible-language stack in the Theseus lineage; also carries copies of the two James-Sabry papers)",
+      "identity": {
+        "repository": "chessai/theseus",
+        "revision": "4c0ec5c3d0738313ee44f603baed68b8a61d2da8"
+      }
+    },
+    {
+      "name": "James and Sabry, Theseus: A High Level Language for Reversible Computing (2014 report)",
+      "identity": {
+        "repository": "chessai/theseus",
+        "revision": "4c0ec5c3d0738313ee44f603baed68b8a61d2da8",
+        "path": "papers/theseus.pdf"
+      }
+    },
+    {
+      "name": "James and Sabry, Information Effects",
+      "identity": {
+        "doi": "10.1145/2103656.2103667",
+        "venue": "POPL 2012",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Liu and Zhao, Differentiate Everything with a Reversible Embeded Domain-Specific Language",
+      "identity": {
+        "arxiv": "2003.04617v3",
+        "doi": "10.48550/arXiv.2003.04617"
+      }
+    },
+    {
+      "name": "Bennett, Time/Space Trade-Offs for Reversible Computation",
+      "identity": {
+        "doi": "10.1137/0218053",
+        "venue": "SIAM Journal on Computing 18(4)",
+        "year": "1989"
+      }
+    },
+    {
+      "name": "Jefferson, Virtual Time",
+      "identity": {
+        "doi": "10.1145/3916.3988",
+        "venue": "ACM Transactions on Programming Languages and Systems 7(3)",
+        "year": "1985"
+      }
+    },
+    {
+      "name": "Carothers, Perumalla and Fujimoto, Efficient Optimistic Parallel Simulations Using Reverse Computation",
+      "identity": {
+        "doi": "10.1145/347823.347828",
+        "venue": "ACM Transactions on Modeling and Computer Simulation 9(3)",
+        "year": "1999"
+      }
+    },
+    {
+      "name": "Schordan, Jefferson, Barnes, Oppelstrup and Quinlan, Reverse Code Generation for Parallel Discrete Event Simulation",
+      "identity": {
+        "doi": "10.1007/978-3-319-20860-2_6",
+        "venue": "Reversible Computation (RC 2015), LNCS 9138",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Schordan, Oppelstrup, Jefferson and Barnes, Generation of Reversible C++ Code for Optimistic Parallel Discrete Event Simulation",
+      "identity": {
+        "doi": "10.1007/s00354-018-0038-2",
+        "venue": "New Generation Computing 36(3)",
+        "year": "2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

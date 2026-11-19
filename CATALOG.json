@@ -48,6 +48,182 @@
         "systems/object-formats"
       ]
     },
+    "acausal-dae-languages-structural-variability-and-operadic-composition": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "modelica/ModelicaSpecification",
+            "revision": "c1258346b941d8a67b151f1dbf3f1c6092638ba1",
+            "tag": "v3.6"
+          },
+          "name": "Modelica Language Specification 3.6"
+        },
+        {
+          "identity": {
+            "repository": "modelica/fmi-standard",
+            "revision": "913d6b6908f6e6f59457bf299e875f17c818b921",
+            "tag": "v2.0.5"
+          },
+          "name": "Functional Mock-up Interface specification 2.0.5"
+        },
+        {
+          "identity": {
+            "repository": "modelica/fmi-standard",
+            "revision": "b8778deaf5b746ba4a2f6c155d53f8a33eebbd33",
+            "tag": "v3.0.2"
+          },
+          "name": "Functional Mock-up Interface specification 3.0.2"
+        },
+        {
+          "identity": {
+            "repository": "SciML/ModelingToolkit.jl",
+            "revision": "a640aa9fdf11e8524dc2fafff6cd16eabadc3433",
+            "version": "11.48.0"
+          },
+          "name": "ModelingToolkit.jl"
+        },
+        {
+          "identity": {
+            "repository": "JuliaComputing/StateSelection.jl",
+            "revision": "0b698cfc3732c681763c3a4be1e7e367aa4d241c",
+            "version": "1.11.1"
+          },
+          "name": "StateSelection.jl (Pantelides, dummy derivatives, tearing, structural singularity removal)"
+        },
+        {
+          "identity": {
+            "repository": "giorgidze/Hydra",
+            "revision": "e5b59d0baff27f06368caeb1e9860f1395913ca5",
+            "version": "0.4.3"
+          },
+          "name": "Hydra (Functional Hybrid Modelling language embedded in Haskell)"
+        },
+        {
+          "identity": {
+            "repository": "david-broman/modelyze",
+            "revision": "e48c934283e683e268a9dfd0fed49d3c10277298",
+            "version": "1.14"
+          },
+          "name": "Modelyze toolchain"
+        },
+        {
+          "identity": {
+            "repository": "AlgebraicJulia/Catlab.jl",
+            "revision": "692bd5e9d4b792a01bc507a59a19c2311b321359",
+            "version": "0.17.6"
+          },
+          "name": "Catlab.jl"
+        },
+        {
+          "identity": {
+            "repository": "AlgebraicJulia/AlgebraicDynamics.jl",
+            "revision": "d5fc9e47165f5c1c83db79e30c43c6224a94d082",
+            "version": "0.2.2"
+          },
+          "name": "AlgebraicDynamics.jl"
+        },
+        {
+          "identity": {
+            "repository": "AlgebraicJulia/Decapodes.jl",
+            "revision": "13c6d4525d61e07c30f54fa9d954268f725280bf",
+            "version": "0.6.9"
+          },
+          "name": "Decapodes.jl"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/0909014",
+            "venue": "SIAM Journal on Scientific and Statistical Computing 9(2)",
+            "year": "1988"
+          },
+          "name": "Pantelides, The Consistent Initialization of Differential-Algebraic Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/0914043",
+            "venue": "SIAM Journal on Scientific Computing 14(3)",
+            "year": "1993"
+          },
+          "name": "Mattsson and Soderlind, Index Reduction in Differential-Algebraic Equations Using Dummy Derivatives"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S1064827599353853",
+            "venue": "SIAM Journal on Scientific Computing 21(6)",
+            "year": "2000"
+          },
+          "name": "Reissig, Martinson and Barton, Differential-Algebraic Equations of Index 1 May Have an Arbitrarily High Structural Index"
+        },
+        {
+          "identity": {
+            "arxiv": "1608.06691v1",
+            "doi": "10.48550/arXiv.1608.06691"
+          },
+          "name": "Tan, Nedialkov and Pryce, Conversion Methods for Improving Structural Analysis of Differential-Algebraic Equation Systems"
+        },
+        {
+          "identity": {
+            "arxiv": "2008.05166v2",
+            "doi": "10.48550/arXiv.2008.05166"
+          },
+          "name": "Benveniste, Caillaud and Malandain, The Mathematical Foundations of Physical Systems Modeling Languages"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3365365.3382201",
+            "venue": "HSCC 2020",
+            "year": "2020"
+          },
+          "name": "Caillaud, Malandain and Thibault, Implicit Structural Analysis of Multimode DAE Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1561/2600000002",
+            "venue": "Foundations and Trends in Systems and Control 1(2-3)",
+            "year": "2014"
+          },
+          "name": "van der Schaft and Jeltsema, Port-Hamiltonian Systems Theory: An Introductory Overview"
+        },
+        {
+          "identity": {
+            "arxiv": "1911.04630v3",
+            "venue": "Theory and Applications of Categories 35(48)",
+            "year": "2020"
+          },
+          "name": "Baez and Courser, Structured Cospans"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.12282v3",
+            "doi": "10.4204/EPTCS.372.14",
+            "year": "2022"
+          },
+          "name": "Libkind, Baas, Patterson and Fairbanks, Operadic Modeling of Dynamical Systems: Mathematics and Computation"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.17432v1",
+            "doi": "10.1016/j.jocs.2024.102345",
+            "year": "2024"
+          },
+          "name": "Morris, Baas, Arias, Gatlin, Patterson and Fairbanks, Decapodes: A Diagrammatic Tool for Representing, Composing, and Computing Spatialized Partial Differential Equations"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/acausal-modeling",
+        "pl/acausal-modeling/modelica",
+        "pl/applied-category-theory/wiring-diagrams",
+        "compilers",
+        "compilers/dae-index-reduction",
+        "compilers/structural-analysis",
+        "ffi/co-simulation",
+        "ffi/co-simulation/fmi",
+        "verification",
+        "verification/hybrid-systems"
+      ]
+    },
     "aeneas-architecture-translation-pipeline-and-pure-extraction": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -24601,6 +24777,132 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "reversible-languages-program-inversion-and-optimistic-rollback-codegen": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "mbudde/jana",
+            "revision": "5b51b57e0b6f13ec1e1c61d719a18bf58696f84b",
+            "version": "1.0"
+          },
+          "name": "Jana (Janus interpreter and program inverter)"
+        },
+        {
+          "identity": {
+            "repository": "GiggleLiu/NiLang.jl",
+            "revision": "4b003966d3441f9b1ff98aafff50bdeebcdc83ac",
+            "version": "0.9.4"
+          },
+          "name": "NiLang.jl (reversible eDSL and reversible automatic differentiation)"
+        },
+        {
+          "identity": {
+            "repository": "GiggleLiu/NiLangCore.jl",
+            "revision": "3464affc5215890847a7d59dc653aabab6664758",
+            "version": "0.10.7"
+          },
+          "name": "NiLangCore.jl (compiler core of NiLang)"
+        },
+        {
+          "identity": {
+            "repository": "ROSS-org/ROSS",
+            "revision": "dc3a6a056cfc7a5e68f7141f88d8833407599ef8",
+            "version": "8.1.1"
+          },
+          "name": "ROSS (Rensselaer's Optimistic Simulation System)"
+        },
+        {
+          "identity": {
+            "repository": "LLNL/backstroke",
+            "revision": "c3d8848b5e12785e30ec87dc19d645df5c63bf89",
+            "version": "2.1.4"
+          },
+          "name": "Backstroke (LLNL reversible C++ instrumentation tool and RTSS runtime)"
+        },
+        {
+          "identity": {
+            "repository": "chessai/theseus",
+            "revision": "4c0ec5c3d0738313ee44f603baed68b8a61d2da8"
+          },
+          "name": "theseus (Rust/Lean reversible-language stack in the Theseus lineage; also carries copies of the two James-Sabry papers)"
+        },
+        {
+          "identity": {
+            "path": "papers/theseus.pdf",
+            "repository": "chessai/theseus",
+            "revision": "4c0ec5c3d0738313ee44f603baed68b8a61d2da8"
+          },
+          "name": "James and Sabry, Theseus: A High Level Language for Reversible Computing (2014 report)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103656.2103667",
+            "venue": "POPL 2012",
+            "year": "2012"
+          },
+          "name": "James and Sabry, Information Effects"
+        },
+        {
+          "identity": {
+            "arxiv": "2003.04617v3",
+            "doi": "10.48550/arXiv.2003.04617"
+          },
+          "name": "Liu and Zhao, Differentiate Everything with a Reversible Embeded Domain-Specific Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/0218053",
+            "venue": "SIAM Journal on Computing 18(4)",
+            "year": "1989"
+          },
+          "name": "Bennett, Time/Space Trade-Offs for Reversible Computation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3916.3988",
+            "venue": "ACM Transactions on Programming Languages and Systems 7(3)",
+            "year": "1985"
+          },
+          "name": "Jefferson, Virtual Time"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/347823.347828",
+            "venue": "ACM Transactions on Modeling and Computer Simulation 9(3)",
+            "year": "1999"
+          },
+          "name": "Carothers, Perumalla and Fujimoto, Efficient Optimistic Parallel Simulations Using Reverse Computation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-20860-2_6",
+            "venue": "Reversible Computation (RC 2015), LNCS 9138",
+            "year": "2015"
+          },
+          "name": "Schordan, Jefferson, Barnes, Oppelstrup and Quinlan, Reverse Code Generation for Parallel Discrete Event Simulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00354-018-0038-2",
+            "venue": "New Generation Computing 36(3)",
+            "year": "2018"
+          },
+          "name": "Schordan, Oppelstrup, Jefferson and Barnes, Generation of Reversible C++ Code for Optimistic Parallel Discrete Event Simulation"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/reversible-computing",
+        "pl/reversible-computing/janus",
+        "pl/reversible-computing/type-isomorphisms",
+        "pl/automatic-differentiation/reversible",
+        "compilers/program-inversion",
+        "compilers/reverse-code-generation",
+        "runtimes/optimistic-simulation",
+        "runtimes/time-warp"
       ]
     },
     "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026": {
