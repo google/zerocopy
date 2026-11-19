@@ -14822,6 +14822,74 @@
         "vcs/stacked-prs"
       ]
     },
+    "gradual-verification-dynamic-contracts-and-assurance-algebras": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gradual-verification/gvc0",
+            "revision": "4276d89421d9fc17058a06cff975e9c7207ab917"
+          },
+          "name": "Gradual C0 (gvc0)"
+        },
+        {
+          "identity": {
+            "repository": "gradual-verification/silicon",
+            "revision": "99d3d27190554a5008628a083fc2329f4032565f"
+          },
+          "name": "Gradual Viper / Silicon fork"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.07559",
+            "doi": "10.1145/3632927",
+            "venue": "Proc. ACM Program. Lang. 8, POPL (2024)"
+          },
+          "name": "Sound Gradual Verification with Symbolic Execution (Zimmerman, DiVincenzo, and Aldrich, POPL 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428296",
+            "venue": "Proc. ACM Program. Lang. 4, OOPSLA (2020)"
+          },
+          "name": "Gradual Verification of Recursive Heap Data Structures (Wise et al., OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2011.10618",
+            "doi": "10.1145/3495528",
+            "repository": "pleiad/GradualizingCIC",
+            "revision": "354c65260d522a13992b268334fd7892cfb4618c"
+          },
+          "name": "Gradualizing the Calculus of Inductive Constructions (GCIC, Lennon-Bertrand et al., POPL/TOPLAS 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704879",
+            "repository": "rems-project/cn",
+            "revision": "d1c60d1720bed3bed0d45dab247a1959145c8cb9",
+            "venue": "Proc. ACM Program. Lang. 9, POPL, Article 43 (2025)"
+          },
+          "name": "Fulminate / CN Separation-Logic Testing Framework (Banerjee et al., POPL 2025)"
+        },
+        {
+          "identity": {
+            "doi_greenman_2022": "10.1145/3519939.3523430",
+            "doi_muehlboeck_2017": "10.1145/3133880",
+            "doi_patterson_2022": "10.1145/3519939.3523703",
+            "doi_takikawa_2016": "10.1145/2837614.2837630"
+          },
+          "name": "Gradual Typing Soundness, Performance Cliffs, and Interoperability Literature (Takikawa et al. POPL 2016; Muehlboeck and Tate OOPSLA 2017; Greenman PLDI 2022; Patterson et al. PLDI 2022)"
+        }
+      ],
+      "topics": [
+        "verification/gradual",
+        "verification/specifications",
+        "pl/gradual-typing",
+        "ffi/contracts",
+        "tooling/verification"
+      ]
+    },
     "hardware-errata-mitigations-linker-veneers-and-vzeroupper-verification": {
       "observed_at": "2026-11-14",
       "subjects": [
