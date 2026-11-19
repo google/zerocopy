@@ -39348,6 +39348,97 @@
         "verification/result-checking"
       ]
     },
+    "silicon-roots-of-trust-opentitan-secure-enclaves-and-shadow-management-cores": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "lowRISC/opentitan",
+            "revision": "1e061997389b1c257043b0dbd2388a19a6c2f6f1"
+          },
+          "name": "OpenTitan"
+        },
+        {
+          "identity": {
+            "repository": "lowRISC/ibex",
+            "revision": "9b91b3a1195aecb0d80cf2de5b852e0b5f68cc6c"
+          },
+          "name": "Ibex RISC-V core"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/caliptra-rtl",
+            "revision": "298ad4313ed8b4da25e98e3f1131c89363a6eb92"
+          },
+          "name": "Caliptra RTL"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/caliptra-sw",
+            "revision": "5d35f7d928afb4d190dd4619219ecd6487987f3d"
+          },
+          "name": "Caliptra firmware"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/xnu",
+            "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+          },
+          "name": "Apple XNU kernel (SPTM, PPL, PAC)"
+        },
+        {
+          "identity": {
+            "repository": "tianocore/edk2",
+            "revision": "556dcfb466e9f05affeaff881d738807f8156d3c"
+          },
+          "name": "EDK II UEFI/PI SMM implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3470496.3527429"
+          },
+          "name": "PACMAN: Attacking ARM Pointer Authentication with Speculative Execution (ISCA 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3484779"
+          },
+          "name": "One Glitch to Rule Them All: Fault Injection Attacks Against AMD's Secure Encrypted Virtualization (ACM CCS 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.14717"
+          },
+          "name": "faulTPM: Exposing AMD fTPMs' Deepest Secrets (IEEE EuroS&P 2023)"
+        },
+        {
+          "identity": {
+            "advisory": "AMD-SB-7014",
+            "cve": "CVE-2023-31315"
+          },
+          "name": "AMD SMM Lock Bypass (Sinkclose)"
+        },
+        {
+          "identity": {
+            "advisory": "INTEL-SA-00086",
+            "cve": "CVE-2017-5705"
+          },
+          "name": "Intel CSME Firmware Buffer Overflow Advisory"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/roots-of-trust",
+        "security/smm",
+        "isa",
+        "isa/riscv-smepmp",
+        "isa/arm64-pac-gxf",
+        "systems",
+        "systems/firmware",
+        "verification",
+        "verification/hardware-security"
+      ]
+    },
     "simulation-witness-debuginfo-and-verified-time-travel-observability": {
       "observed_at": "2026-11-19",
       "subjects": [
