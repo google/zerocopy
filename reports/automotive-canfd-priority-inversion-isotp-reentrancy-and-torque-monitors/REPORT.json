@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "domains/automotive-adas-torque-safety",
+    "security/isotp-uds-session-interlocks",
+    "systems/canfd-fifo-priority-inversion",
+    "verification/iso26262-egas-three-level-monitors"
+  ],
+  "subjects": [
+    {
+      "name": "openpilot",
+      "identity": {
+        "repository": "https://github.com/commaai/openpilot",
+        "revision": "929691cf6751e2de3eb102e5d7dbe7b66d6569bc"
+      }
+    },
+    {
+      "name": "Linux Kernel (SocketCAN ISO-TP & Bosch M_CAN)",
+      "identity": {
+        "repository": "https://github.com/torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "ArduPilot (ChibiOS FDCAN & AP_DroneCAN)",
+      "identity": {
+        "repository": "https://github.com/ArduPilot/ardupilot",
+        "revision": "9d7be65cd63ae0ee722b002ccc606f0e8d97cd74"
+      }
+    },
+    {
+      "name": "Calculating Controller Area Network (CAN) Message Response Times (Tindell, Burns, Wellings 1994)",
+      "identity": {
+        "doi": "10.1109/REAL.1994.342710",
+        "venue": "IEEE RTSS 1994"
+      }
+    },
+    {
+      "name": "Controller Area Network (CAN) Schedulability Analysis: Refuted, Revisited and Revised (Davis, Burns, Bril, Lukkien 2007)",
+      "identity": {
+        "doi": "10.1007/s11241-007-9012-7",
+        "venue": "Real-Time Systems 35(3)"
+      }
+    },
+    {
+      "name": "ISO 15765-2 DoCAN, ISO 14229-1 UDS, and ISO 26262 ASIL-D E-Gas Monitoring Concept",
+      "identity": {
+        "standard": "ISO 15765-2:2016 / ISO 14229-1:2020 / ISO 26262:2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
