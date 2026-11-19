@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "systems/microvm-snapshots",
+    "runtimes/serverless-pooling",
+    "security/clone-entropy",
+    "isa/memory-revocation",
+    "security/mpk-isolation",
+    "verification/typestate-entropy"
+  ],
+  "subjects": [
+    {
+      "name": "Firecracker microVM monitor",
+      "identity": {
+        "repository": "firecracker-microvm/firecracker",
+        "revision": "4e65d4309c355925872b9d3006f18eef96653645"
+      }
+    },
+    {
+      "name": "Cloud Hypervisor VMM",
+      "identity": {
+        "repository": "cloud-hypervisor/cloud-hypervisor",
+        "revision": "a42550845786ec0f504b6cbde8ab705c50e47049"
+      }
+    },
+    {
+      "name": "CRIU Checkpoint/Restore in Userspace",
+      "identity": {
+        "repository": "checkpoint-restore/criu",
+        "revision": "3292b937138d045c12905dee89c78b9c05961f3b"
+      }
+    },
+    {
+      "name": "Wasmtime WebAssembly runtime",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+      }
+    },
+    {
+      "name": "Linux kernel VMGenID, CRNG, and madvise",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "version": "v6.12"
+      }
+    },
+    {
+      "name": "Firecracker: Lightweight Virtualization for Serverless Applications (Agache et al.)",
+      "identity": {
+        "isbn": "978-1-939133-13-7",
+        "venue": "USENIX NSDI 2020",
+        "url": "https://www.usenix.org/conference/nsdi20/presentation/agache"
+      }
+    },
+    {
+      "name": "Restoring Uniqueness in MicroVM Snapshots (Brooker et al.)",
+      "identity": {
+        "arxiv": "2102.12892v1",
+        "doi": "10.48550/arXiv.2102.12892",
+        "url": "https://arxiv.org/abs/2102.12892"
+      }
+    },
+    {
+      "name": "Segue and ColorGuard: Optimizing SFI Performance and Scalability on Modern x86 (Narayan et al.)",
+      "identity": {
+        "venue": "ACM SIGPLAN PLAS 2022",
+        "url": "https://plas2022.github.io/files/pdf/SegueColorGuard.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

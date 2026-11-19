@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "compilers/spatial-accelerators",
+    "isa/fpga-shells",
+    "llvm/hardware-dialects",
+    "systems/heterogeneous-memory",
+    "verification/handshake-liveness",
+    "runtimes/sycl-jit"
+  ],
+  "subjects": [
+    {
+      "name": "Calyx intermediate language and compiler",
+      "identity": {
+        "repository": "calyxir/calyx",
+        "revision": "e1bca4bf6779ccc98b5099f9a2284ca3b0bef637"
+      }
+    },
+    {
+      "name": "CIRCT LLVM hardware compiler infrastructure",
+      "identity": {
+        "repository": "llvm/circt",
+        "revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+      }
+    },
+    {
+      "name": "Coyote virtualized FPGA OS shell",
+      "identity": {
+        "repository": "fpgasystems/Coyote",
+        "revision": "0fbc94ba60296c44fc76698396579ac719aadd3b"
+      }
+    },
+    {
+      "name": "AdaptiveCpp single-pass SYCL/stdpar compiler",
+      "identity": {
+        "repository": "AdaptiveCpp/AdaptiveCpp",
+        "revision": "96c7d17a9d029a5660ac06d7519b3763e9823ab6"
+      }
+    },
+    {
+      "name": "A Compiler Infrastructure for Accelerator Generators (Nigam et al.)",
+      "identity": {
+        "doi": "10.1145/3445814.3446712",
+        "venue": "ACM ASPLOS 2021",
+        "url": "https://doi.org/10.1145/3445814.3446712"
+      }
+    },
+    {
+      "name": "Do OS abstractions make sense on FPGAs? (Korolija et al.)",
+      "identity": {
+        "isbn": "978-1-939133-19-9",
+        "venue": "USENIX OSDI 2020",
+        "url": "https://www.usenix.org/conference/osdi20/presentation/roscoe"
+      }
+    },
+    {
+      "name": "One Pass to Bind Them: The First Single-Pass SYCL Compiler with Unified Code Representation Across Backends (Alpay & Heuveline)",
+      "identity": {
+        "doi": "10.1145/3585341.3585351",
+        "venue": "ACM IWOCL 2023",
+        "url": "https://doi.org/10.1145/3585341.3585351"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

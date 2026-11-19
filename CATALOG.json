@@ -32985,6 +32985,78 @@
         "verification/compiler-verification"
       ]
     },
+    "microvm-snapshot-clones-firecracker-uffd-wasmtime-mpk-and-vmgenid-entropy": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "firecracker-microvm/firecracker",
+            "revision": "4e65d4309c355925872b9d3006f18eef96653645"
+          },
+          "name": "Firecracker microVM monitor"
+        },
+        {
+          "identity": {
+            "repository": "cloud-hypervisor/cloud-hypervisor",
+            "revision": "a42550845786ec0f504b6cbde8ab705c50e47049"
+          },
+          "name": "Cloud Hypervisor VMM"
+        },
+        {
+          "identity": {
+            "repository": "checkpoint-restore/criu",
+            "revision": "3292b937138d045c12905dee89c78b9c05961f3b"
+          },
+          "name": "CRIU Checkpoint/Restore in Userspace"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Wasmtime WebAssembly runtime"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux kernel VMGenID, CRNG, and madvise"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-939133-13-7",
+            "url": "https://www.usenix.org/conference/nsdi20/presentation/agache",
+            "venue": "USENIX NSDI 2020"
+          },
+          "name": "Firecracker: Lightweight Virtualization for Serverless Applications (Agache et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "2102.12892v1",
+            "doi": "10.48550/arXiv.2102.12892",
+            "url": "https://arxiv.org/abs/2102.12892"
+          },
+          "name": "Restoring Uniqueness in MicroVM Snapshots (Brooker et al.)"
+        },
+        {
+          "identity": {
+            "url": "https://plas2022.github.io/files/pdf/SegueColorGuard.pdf",
+            "venue": "ACM SIGPLAN PLAS 2022"
+          },
+          "name": "Segue and ColorGuard: Optimizing SFI Performance and Scalability on Modern x86 (Narayan et al.)"
+        }
+      ],
+      "topics": [
+        "systems/microvm-snapshots",
+        "runtimes/serverless-pooling",
+        "security/clone-entropy",
+        "isa/memory-revocation",
+        "security/mpk-isolation",
+        "verification/typestate-entropy"
+      ]
+    },
     "milawa-acl2-reflective-towers-mizar-soft-types-twelf-lf-and-cubical-checkers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -51401,6 +51473,71 @@
         "pl/spatial-computing",
         "systems",
         "systems/distributed-swarms"
+      ]
+    },
+    "spatial-hls-calyx-circt-coyote-fpga-rdma-and-heterogeneous-offload": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "calyxir/calyx",
+            "revision": "e1bca4bf6779ccc98b5099f9a2284ca3b0bef637"
+          },
+          "name": "Calyx intermediate language and compiler"
+        },
+        {
+          "identity": {
+            "repository": "llvm/circt",
+            "revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+          },
+          "name": "CIRCT LLVM hardware compiler infrastructure"
+        },
+        {
+          "identity": {
+            "repository": "fpgasystems/Coyote",
+            "revision": "0fbc94ba60296c44fc76698396579ac719aadd3b"
+          },
+          "name": "Coyote virtualized FPGA OS shell"
+        },
+        {
+          "identity": {
+            "repository": "AdaptiveCpp/AdaptiveCpp",
+            "revision": "96c7d17a9d029a5660ac06d7519b3763e9823ab6"
+          },
+          "name": "AdaptiveCpp single-pass SYCL/stdpar compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3445814.3446712",
+            "url": "https://doi.org/10.1145/3445814.3446712",
+            "venue": "ACM ASPLOS 2021"
+          },
+          "name": "A Compiler Infrastructure for Accelerator Generators (Nigam et al.)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-939133-19-9",
+            "url": "https://www.usenix.org/conference/osdi20/presentation/roscoe",
+            "venue": "USENIX OSDI 2020"
+          },
+          "name": "Do OS abstractions make sense on FPGAs? (Korolija et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3585341.3585351",
+            "url": "https://doi.org/10.1145/3585341.3585351",
+            "venue": "ACM IWOCL 2023"
+          },
+          "name": "One Pass to Bind Them: The First Single-Pass SYCL Compiler with Unified Code Representation Across Backends (Alpay & Heuveline)"
+        }
+      ],
+      "topics": [
+        "compilers/spatial-accelerators",
+        "isa/fpga-shells",
+        "llvm/hardware-dialects",
+        "systems/heterogeneous-memory",
+        "verification/handshake-liveness",
+        "runtimes/sycl-jit"
       ]
     },
     "specification-adequacy-vacuity-detection-and-anti-goodhart-verification": {
