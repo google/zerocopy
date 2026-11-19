@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "verification",
+    "verification/specification-adequacy",
+    "verification/vacuity",
+    "agents",
+    "security",
+    "pl",
+    "smt"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 core arithmetic, division/modulo, autoImplicit, and native_decide semantics",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Picus (automated ZKP under-constrained circuit and witness-uniqueness verifier)",
+      "identity": {
+        "repository": "Veridise/Picus",
+        "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+      }
+    },
+    {
+      "name": "EverParse / LowParse (verified injective and non-malleable binary parser/serializer library)",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c"
+      }
+    },
+    {
+      "name": "Vest (Verus-verified Rust parsing and serialization combinator framework)",
+      "identity": {
+        "repository": "secure-foundations/vest",
+        "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+      }
+    },
+    {
+      "name": "Z3 SMT solver bitvector division-by-zero rewriter and plugin",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "437536cd64a544a1c329fc57d83e56e294fdf47c"
+      }
+    },
+    {
+      "name": "Vacuity Detection in Temporal Model Checking (Kupferman & Vardi)",
+      "identity": {
+        "doi": "10.1007/s100090100062",
+        "venue": "Software Tools for Technology Transfer (STTT), 2003"
+      }
+    },
+    {
+      "name": "Coverage Metrics for Temporal Logic Model Checking (Chockler, Kupferman, & Vardi)",
+      "identity": {
+        "doi": "10.1007/s10703-006-0013-0",
+        "venue": "Formal Methods in System Design (FMSD), 2006"
+      }
+    },
+    {
+      "name": "SMT-LIB Standard Version 2.6",
+      "identity": {
+        "standard": "SMT-LIB",
+        "version": "2.6",
+        "url": "https://smt-lib.org/language.shtml"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
