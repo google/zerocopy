@@ -1,0 +1,153 @@
+{
+  "topics": [
+    "pl",
+    "pl/type-systems/units-of-measure",
+    "pl/type-systems/geometry-types",
+    "compilers",
+    "verification",
+    "domains/graphics/shader-languages",
+    "domains/cad-cam/exact-geometric-computation",
+    "domains/cad-cam/implicit-surfaces",
+    "domains/fabrication/machine-languages",
+    "ffi/coordinate-conventions"
+  ],
+  "subjects": [
+    {
+      "name": "F# compiler (Units of Measure constraint solver)",
+      "identity": {
+        "repository": "dotnet/fsharp",
+        "revision": "57f77cbac4923aa41cf308711553232dfd608da7",
+        "url": "https://github.com/dotnet/fsharp"
+      }
+    },
+    {
+      "name": "mp-units (C++20/23/26 quantities and affine space library)",
+      "identity": {
+        "repository": "mpusz/mp-units",
+        "revision": "566b8615a74e84fba824952a5c1dddc1935d9a2e",
+        "url": "https://github.com/mpusz/mp-units"
+      }
+    },
+    {
+      "name": "uom (Rust dimensional analysis crate)",
+      "identity": {
+        "repository": "iliekturtles/uom",
+        "revision": "a465bcc2b3bf67f9f12fc0b133d371762d9d8fe4",
+        "url": "https://github.com/iliekturtles/uom"
+      }
+    },
+    {
+      "name": "Gator (Geometry Types shader compiler)",
+      "identity": {
+        "repository": "cucapra/gator",
+        "revision": "f506d64a29daac9e7f4f7d77a7b2c4cbd268fb8a",
+        "doi": "10.1145/3428241",
+        "url": "https://github.com/cucapra/gator"
+      }
+    },
+    {
+      "name": "sguaba (Rust coordinate-system rigid-body transform crate)",
+      "identity": {
+        "repository": "helsing-ai/sguaba",
+        "revision": "4a71898daac0b40fef3748491a15a2c1c16cb9c7",
+        "url": "https://github.com/helsing-ai/sguaba"
+      }
+    },
+    {
+      "name": "ROS REP 103 and REP 105",
+      "identity": {
+        "repository": "ros-infrastructure/rep",
+        "revision": "11ca24a41f31480dfb9562ba99f2a5b93d3ebda5",
+        "url": "https://github.com/ros-infrastructure/rep"
+      }
+    },
+    {
+      "name": "glTF 2.0 specification",
+      "identity": {
+        "repository": "KhronosGroup/glTF",
+        "revision": "8846b1aa225dd8430322c03150919df47e3122ae",
+        "standard": "glTF 2.0",
+        "url": "https://github.com/KhronosGroup/glTF"
+      }
+    },
+    {
+      "name": "WebGPU specification",
+      "identity": {
+        "repository": "gpuweb/gpuweb",
+        "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3",
+        "url": "https://github.com/gpuweb/gpuweb"
+      }
+    },
+    {
+      "name": "Vulkan specification",
+      "identity": {
+        "repository": "KhronosGroup/Vulkan-Docs",
+        "revision": "f7de774cace1509af0f10b8d859c973b5354ff62",
+        "url": "https://github.com/KhronosGroup/Vulkan-Docs"
+      }
+    },
+    {
+      "name": "Shewchuk Adaptive Precision Geometric Predicates and georust/robust",
+      "identity": {
+        "repository": "georust/robust",
+        "revision": "654f34cb8cdb3ae21bf59ef3472f92652942cd74",
+        "doi": "10.1007/PL00009321",
+        "url": "https://github.com/georust/robust"
+      }
+    },
+    {
+      "name": "CGAL (Computational Geometry Algorithms Library)",
+      "identity": {
+        "repository": "CGAL/cgal",
+        "revision": "7305123709c59d1ce7d2f5c17a154c8e7691f630",
+        "url": "https://github.com/CGAL/cgal"
+      }
+    },
+    {
+      "name": "Fidget (implicit surface compiler and JIT)",
+      "identity": {
+        "repository": "mkeeter/fidget",
+        "revision": "1879743ddc1d73dac14a42a8184a3c5b758dcca5",
+        "url": "https://github.com/mkeeter/fidget"
+      }
+    },
+    {
+      "name": "libfive and MPR",
+      "identity": {
+        "repository": "libfive/libfive",
+        "revision": "918387a9220dbac2f7ab32fb35e274c6794439cf",
+        "mpr_repository": "mkeeter/mpr",
+        "mpr_revision": "eb63defa00239571984e579039166ea575da0dad"
+      }
+    },
+    {
+      "name": "Szalinski and egg",
+      "identity": {
+        "repository": "uwplse/szalinski",
+        "revision": "9ce7acc3c766c8a6f5edd9c431e276502c331b6d",
+        "egg_repository": "egraphs-good/egg",
+        "egg_revision": "73975c9819efb4af2f3c6c1b44fa53f8c5742574",
+        "doi": "10.1145/3385412.3386012"
+      }
+    },
+    {
+      "name": "Penrose",
+      "identity": {
+        "repository": "penrose/penrose",
+        "revision": "d46d92b7b39c6ef6539a38e8a8f7472ebb5d0502",
+        "url": "https://github.com/penrose/penrose"
+      }
+    },
+    {
+      "name": "Knitout specification and fenced-tangle semantics",
+      "identity": {
+        "repository": "textiles-lab/knitout",
+        "revision": "17b868c5a48cf8ce2d25bbfb7d23f2ab7ba55ddf",
+        "version": "0.6",
+        "semantics_doi": "10.1145/3592449",
+        "url": "https://github.com/textiles-lab/knitout"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,173 @@
+{
+  "topics": [
+    "pl",
+    "pl/hybrid-systems",
+    "pl/synchronous-languages",
+    "pl/exact-real-arithmetic",
+    "compilers",
+    "compilers/verified-compilation/real-arithmetic",
+    "verification",
+    "verification/floating-point",
+    "verification/floating-point-accuracy",
+    "verification/hybrid-systems",
+    "domains/cps/runtime-monitoring"
+  ],
+  "subjects": [
+    {
+      "name": "Zelus compiler",
+      "identity": {
+        "repository": "INRIA/zelus",
+        "revision": "5f6e4903103e136f52cdcefc13a9bdcff0f53abd",
+        "url": "https://github.com/INRIA/zelus"
+      }
+    },
+    {
+      "name": "Sundials/ML",
+      "identity": {
+        "repository": "inria-parkas/sundialsml",
+        "revision": "27ae63cf9e6e45e4b820232d99366751e30a6b9f",
+        "url": "https://github.com/inria-parkas/sundialsml"
+      }
+    },
+    {
+      "name": "Functional Mock-up Interface (FMI) 3.0 specification",
+      "identity": {
+        "repository": "modelica/fmi-standard",
+        "revision": "fff9c88a58e61cf8d71f1992457288bb3399460c",
+        "standard": "FMI 3.0",
+        "url": "https://github.com/modelica/fmi-standard"
+      }
+    },
+    {
+      "name": "KeYmaera X",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-release",
+        "revision": "2753f99b53cea5f946386998a39faded05ede677",
+        "url": "https://github.com/LS-Lab/KeYmaeraX-release"
+      }
+    },
+    {
+      "name": "Isabelle-dL (VeriPhy Isabelle/HOL formalization)",
+      "identity": {
+        "repository": "LS-Lab/Isabelle-dL",
+        "revision": "97770ed9ca8d6a633c59d11d799247f44cc62dc2",
+        "url": "https://github.com/LS-Lab/Isabelle-dL"
+      }
+    },
+    {
+      "name": "Coq-dL",
+      "identity": {
+        "repository": "LS-Lab/Coq-dL",
+        "revision": "af7e7dc5cc44f8a3e24b2a6a154bfff7858dfb2b",
+        "url": "https://github.com/LS-Lab/Coq-dL"
+      }
+    },
+    {
+      "name": "VeriPhy (PLDI 2018)",
+      "identity": {
+        "doi": "10.1145/3192366.3192406",
+        "venue": "PLDI 2018",
+        "url": "https://symbolaris.com/pub/VeriPhy.pdf"
+      }
+    },
+    {
+      "name": "Rosa",
+      "identity": {
+        "repository": "malyzajko/rosa",
+        "revision": "68e58b8c2f334ddde0f7647dc2d9c9ecc30309af",
+        "url": "https://github.com/malyzajko/rosa"
+      }
+    },
+    {
+      "name": "Daisy",
+      "identity": {
+        "repository": "malyzajko/daisy",
+        "revision": "6a6f47abdd231d3009444e9e1b8ce9febc28c27e",
+        "url": "https://github.com/malyzajko/daisy"
+      }
+    },
+    {
+      "name": "Herbie",
+      "identity": {
+        "repository": "herbie-fp/herbie",
+        "revision": "4612b0d493cbb2013dc5afac5c099b7722166ec2",
+        "url": "https://github.com/herbie-fp/herbie"
+      }
+    },
+    {
+      "name": "FPBench",
+      "identity": {
+        "repository": "FPBench/FPBench",
+        "revision": "090d81982edc0d2a597f4c15644253d4f266a6ef",
+        "url": "https://github.com/FPBench/FPBench"
+      }
+    },
+    {
+      "name": "FPTaylor",
+      "identity": {
+        "repository": "soarlab/FPTaylor",
+        "revision": "b5a77cae348400f21f83512210d9f43c4bffb381",
+        "url": "https://github.com/soarlab/FPTaylor"
+      }
+    },
+    {
+      "name": "VCFloat2",
+      "identity": {
+        "repository": "VeriNum/vcfloat",
+        "revision": "a203b287a84b0e3c9bec136823b5622ebfde6ad6",
+        "url": "https://github.com/VeriNum/vcfloat"
+      }
+    },
+    {
+      "name": "NumFuzz and Bean",
+      "identity": {
+        "repository": "ak-2485/NumFuzz",
+        "revision": "80c54f35348c60b8a1e95f1881adda8d2e9c1dfb",
+        "bean_revision": "e100727bf2441be948e110601b1f566e1fe5815b",
+        "url": "https://github.com/ak-2485/NumFuzz"
+      }
+    },
+    {
+      "name": "RLibm-All",
+      "identity": {
+        "repository": "rutgers-apl/rlibm-all",
+        "revision": "90431a000071e415abf0f403b6125c385551e346",
+        "url": "https://github.com/rutgers-apl/rlibm-all"
+      }
+    },
+    {
+      "name": "CORE-MATH",
+      "identity": {
+        "repository": "Cactus-proj/core-math",
+        "revision": "74fcd1094a316164c94481f40f5c9658439bee63",
+        "upstream": "https://gitlab.inria.fr/core-math/core-math",
+        "paper_hal": "hal-03721525"
+      }
+    },
+    {
+      "name": "CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "url": "https://github.com/AbsInt/CompCert"
+      }
+    },
+    {
+      "name": "CakeML",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "url": "https://github.com/CakeML/cakeml"
+      }
+    },
+    {
+      "name": "Boehm Constructive Reals API (PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3386037",
+        "venue": "PLDI 2020",
+        "android_crcalc_revision": "349dbd732e48cf93b11291291e056fc5a3829f31"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
