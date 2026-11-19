@@ -25161,6 +25161,135 @@
         "ffi/os-boundary"
       ]
     },
+    "post-cmos-analog-neuromorphic-qec-and-molecular-fluidic-compilers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3373376.3378449",
+            "url": "https://people.csail.mit.edu/sachour/docs/asplos20-legno.pdf"
+          },
+          "name": "Noise-Aware Dynamical System Compilation for Analog Devices with Legno (Achour, Rinard; ASPLOS 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3173162.3173179",
+            "url": "https://people.csail.mit.edu/rinard/paper/asplos18.pdf"
+          },
+          "name": "Time Dilation and Contraction for Programmable Analog Devices with Jaunt (Achour, Rinard; ASPLOS 2018)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.08774",
+            "doi": "10.1145/3620665.3640419"
+          },
+          "name": "Design of Novel Analog Compute Paradigms with Ark (Wang, Cowan, Ruhrmair, Achour; ASPLOS 2024)"
+        },
+        {
+          "identity": {
+            "repository": "WangYuNeng/Ark",
+            "revision": "b7c92449685b4e4be2abc4f50157dd766304ccf2"
+          },
+          "name": "Ark language implementation"
+        },
+        {
+          "identity": {
+            "repository": "PicksPeng/SimuQ",
+            "revision": "eb82d67e7d4acbc5c000a6292d1a697f7f5337f9"
+          },
+          "name": "SimuQ framework (Hamiltonian programming and analog compilation; POPL 2024 artifact lineage, doi 10.1145/3632923)"
+        },
+        {
+          "identity": {
+            "repository": "openqasm/openqasm",
+            "revision": "f059a268b2372a53d99212538cfd3b9f4c373147"
+          },
+          "name": "OpenQASM live specification source"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.14722v2",
+            "doi": "10.1145/3505636"
+          },
+          "name": "OpenQASM 3: A Broader and Deeper Quantum Assembly Language (Cross et al.; ACM Transactions on Quantum Computing 3(3), 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "1302.3428",
+            "doi": "10.1103/RevModPhys.87.307"
+          },
+          "name": "Quantum error correction for quantum memories (Terhal; Reviews of Modern Physics 87, 2015)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.13687",
+            "doi": "10.1038/s41586-024-08449-y"
+          },
+          "name": "Quantum error correction below the surface code threshold (Google Quantum AI and Collaborators; Nature 638, 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.16203v1"
+          },
+          "name": "A Scalable Open-Source QEC System with Sub-Microsecond Decoding-Feedback Latency (Liu, Lee, Xu, Huang, Wu; preprint)"
+        },
+        {
+          "identity": {
+            "repository": "lava-nc/lava",
+            "revision": "646fa535764c3b0bd1bf24b956aaf64561bf97f6"
+          },
+          "name": "Lava software framework for neuromorphic computing"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/science.aac7341",
+            "pmid": "27034378"
+          },
+          "name": "Genetic circuit design automation (Cello; Nielsen, Der, Shin, Vaidyanathan, Paralanov, Strychalski, Ross, Densmore, Voigt; Science 352(6281), 2016)"
+        },
+        {
+          "identity": {
+            "repository": "CIDARLAB/Cello-v2",
+            "revision": "1b93575b8aa7e40e132381e3a9b29b1aa7f7a8e4"
+          },
+          "name": "Cello v2 genetic circuit design software"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/msb4100204",
+            "pmcid": "PMC2267736"
+          },
+          "name": "Modular cell biology: retroactivity and insulation (Del Vecchio, Ninfa, Sontag; Molecular Systems Biology 4, 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3297858.3304027",
+            "url": "https://www.mwillsey.com/assets/2019-asplos-puddle.pdf"
+          },
+          "name": "Puddle: A Dynamic, Error-Correcting, Full-Stack Microfluidics Platform (Willsey et al.; ASPLOS 2019)"
+        },
+        {
+          "identity": {
+            "repository": "uwmisl/puddle",
+            "revision": "a298abc15d8dd2215477ad171f830c04f3314e1f"
+          },
+          "name": "Puddle microfluidics runtime"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/analog-computing",
+        "compilers/quantum/hamiltonian-and-pulse",
+        "systems",
+        "systems/quantum-control/real-time-decoding",
+        "pl",
+        "pl/type-systems/linear-resources",
+        "isa",
+        "isa/neuromorphic",
+        "domains/synthetic-biology/genetic-circuits",
+        "domains/microfluidics"
+      ]
+    },
     "post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs": {
       "observed_at": "2026-11-14",
       "subjects": [
