@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "systems/realtime",
+    "verification/wcet",
+    "isa/cache-partitioning",
+    "runtimes/synchronization"
+  ],
+  "subjects": [
+    {
+      "name": "MemGuard memory bandwidth reservation system",
+      "identity": {
+        "repository": "heechul/memguard",
+        "revision": "613be205f6b2351743866852f631e664d8e4ace4",
+        "doi": "10.1109/RTAS.2013.6531079"
+      }
+    },
+    {
+      "name": "PALLOC DRAM bank-aware memory allocator",
+      "identity": {
+        "repository": "heechul/palloc",
+        "revision": "d470088a1eb21b0dca99f475404225222c956732",
+        "doi": "10.1109/RTAS.2014.6925999"
+      }
+    },
+    {
+      "name": "Linux kernel resctrl and Arm MPAM subsystem",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Intel Resource Director Technology software package (intel-cmt-cat)",
+      "identity": {
+        "repository": "intel/intel-cmt-cat",
+        "revision": "ac1a9f606eeadb447b7706d17d9fa76fa89a279b"
+      }
+    },
+    {
+      "name": "Arm Trusted Firmware-A MPAM EL3/EL2 support",
+      "identity": {
+        "repository": "ARM-software/arm-trusted-firmware",
+        "revision": "0d2c4394f010bc91327ee1ee923bf6d70d446bb7"
+      }
+    },
+    {
+      "name": "Bao static partitioning hypervisor (cache coloring)",
+      "identity": {
+        "repository": "bao-project/bao-hypervisor",
+        "revision": "c3907240d0eca92a338b20f0c43ecbf3f9cd60bd"
+      }
+    },
+    {
+      "name": "RTEMS real-time operating system (MrsP implementation)",
+      "identity": {
+        "repository": "RTEMS/rtems",
+        "revision": "17bb6e147c83309ce3bbf43e4f77600a4c64ea0b"
+      }
+    },
+    {
+      "name": "LITMUS^RT real-time testbed (MPCP, MPCP-VS, DPCP, FMLP, PCP)",
+      "identity": {
+        "repository": "LITMUS-RT/litmus-rt",
+        "revision": "7811e5b1eaef361f45659a1f6d49acb050b1f316"
+      }
+    },
+    {
+      "name": "Prosa mechanized real-time schedulability framework",
+      "identity": {
+        "repository": "gitlab.mpi-sws.org/RT-PROOFS/rt-proofs",
+        "version": "v0.6",
+        "artifact": "rt-proofs-v0.6.tar.gz",
+        "sha512": "128dd213e687653a6ad5a55f33e76d39f4301f4fb22ff2c58379bb9d727ada00da776beee213e89b6be117f4db7c7bd73e467e28f57dfbee017891a4121e6228",
+        "opam_manifest_repository": "rocq-prover/opam",
+        "opam_manifest_revision": "06733fd8dcbd7ca2e61bc38c72d6062a52f20d57",
+        "doi": "10.1109/ECRTS.2016.28"
+      }
+    },
+    {
+      "name": "Predictable Execution Model (PREM)",
+      "identity": {
+        "doi": "10.1109/RTAS.2011.33",
+        "venue": "IEEE RTAS 2011"
+      }
+    },
+    {
+      "name": "Multiprocessor Resource Sharing Protocol (MrsP) and nested resource extension",
+      "identity": {
+        "doi": "10.1109/ECRTS.2013.37",
+        "nested_doi": "10.1007/978-3-319-60588-3_5"
+      }
+    },
+    {
+      "name": "Optimal Multiprocessor Locking Protocols (OMLP) and multiprocessor locking theory",
+      "identity": {
+        "doi": "10.1109/rtss.2010.17",
+        "handbook_doi": "10.1007/978-981-287-251-7_10"
+      }
+    },
+    {
+      "name": "Shared non-blocking cache MSHR and write-back interference literature",
+      "identity": {
+        "mshr_doi": "10.1109/RTAS.2016.7461361",
+        "dos_doi": "10.1109/RTAS.2019.00037",
+        "dram_doi": "10.1109/RTAS.2014.6925998"
+      }
+    },
+    {
+      "name": "Arm MPAM Architecture Supplement and airborne multicore certification guidance",
+      "identity": {
+        "standard": "ARM DDI 0598 (Armv8.4-A+ MPAM); CAST-32A (2016); EASA AMC 20-193 (2022); FAA AC 20-193 (2024)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
