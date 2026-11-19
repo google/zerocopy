@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "security",
+    "security/side-channels",
+    "security/fault-injection",
+    "isa",
+    "systems",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "ELMO ARM Cortex-M0 Statistical Leakage Simulator",
+      "identity": {
+        "repository": "sca-research/ELMO",
+        "revision": "7c4e2930714a498d08a1b4469acc262f58952fb8",
+        "venue": "USENIX Security 2017"
+      }
+    },
+    {
+      "name": "Screaming Channels Mixed-Signal RF Side-Channel Artifacts",
+      "identity": {
+        "repository": "eurecom-s3/screaming_channels",
+        "revision": "5b04f0a89c332a2307e90ce25a85946e5ff78953",
+        "doi": "10.1145/3243734.3243802"
+      }
+    },
+    {
+      "name": "Hertzbleed DVFS Power-to-Timing Leakage Artifacts",
+      "identity": {
+        "repository": "FPSG-UIUC/hertzbleed",
+        "revision": "9cfdf955245e8e1673bb5c6cbee31f4424586ca4",
+        "url": "https://www.usenix.org/conference/usenixsecurity22/presentation/wang-yingchen"
+      }
+    },
+    {
+      "name": "ASCAD Side-Channel Deep Learning Benchmark Suite",
+      "identity": {
+        "repository": "ANSSI-FR/ASCAD",
+        "revision": "5d0086353269fe03ebf447e8a7ae85a80d071c56",
+        "doi": "10.1007/s13389-019-00220-8"
+      }
+    },
+    {
+      "name": "PLATYPUS Software-Based Power Side-Channel Study",
+      "identity": {
+        "repository": "0xhilbert/Platypus",
+        "revision": "f7326a85f27937d5a97a125ecc7b5818586c579f",
+        "doi": "10.1109/SP40001.2021.00031"
+      }
+    },
+    {
+      "name": "Differential Power Analysis (Kocher, Jaffe, Jun)",
+      "identity": {
+        "doi": "10.1007/3-540-48405-1_25",
+        "venue": "CRYPTO 1999"
+      }
+    },
+    {
+      "name": "Correlation Power Analysis with a Leakage Model (Brier, Clavier, Olivier)",
+      "identity": {
+        "doi": "10.1007/978-3-540-28632-5_2",
+        "venue": "CHES 2004"
+      }
+    },
+    {
+      "name": "Template Attacks (Chari, Rao, Rohatgi)",
+      "identity": {
+        "doi": "10.1007/3-540-36400-5_3",
+        "venue": "CHES 2002"
+      }
+    },
+    {
+      "name": "FPGA-Based Remote Power Side-Channel Attacks (Zhao, Suh)",
+      "identity": {
+        "doi": "10.1109/SP.2018.00049",
+        "venue": "IEEE S&P 2018"
+      }
+    },
+    {
+      "name": "SIFA: Exploiting Ineffective Fault Inductions on Symmetric Cryptography (Dobraunig et al.)",
+      "identity": {
+        "doi": "10.13154/tches.v2018.i3.547-572",
+        "venue": "TCHES 2018"
+      }
+    },
+    {
+      "name": "Statistical Ineffective Fault Attacks on Masked AES with Fault Countermeasures (Dobraunig et al.)",
+      "identity": {
+        "eprint": "2018/357",
+        "url": "https://eprint.iacr.org/2018/357",
+        "venue": "ASIACRYPT 2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
