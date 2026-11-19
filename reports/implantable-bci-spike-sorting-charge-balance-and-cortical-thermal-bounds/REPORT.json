@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "domains/neural-implants",
+    "verification/electrochemical-safety",
+    "systems/closed-loop-dsp",
+    "isa/ultralow-power-biomedical"
+  ],
+  "subjects": [
+    {
+      "name": "Open Ephys Plugin GUI",
+      "identity": {
+        "repository": "open-ephys/plugin-GUI",
+        "revision": "560c995500f7f1438c6c3646311ff11776da49bb"
+      }
+    },
+    {
+      "name": "SpikeInterface",
+      "identity": {
+        "repository": "SpikeInterface/spikeinterface",
+        "revision": "1d7bacaa2a934ed4547f906e637887f3f609f9b1"
+      }
+    },
+    {
+      "name": "Kilosort4",
+      "identity": {
+        "repository": "MouseLand/Kilosort",
+        "revision": "0e07514c16fc1162f6470ecbad25be9c7e256306"
+      }
+    },
+    {
+      "name": "A model of safe levels for electrical stimulation (Shannon, IEEE TBME 1992)",
+      "identity": {
+        "doi": "10.1109/10.126616",
+        "journal": "IEEE Transactions on Biomedical Engineering",
+        "year": "1992"
+      }
+    },
+    {
+      "name": "Electrical stimulation of excitable tissue (Merrill, Bikson, and Jefferys, Journal of Neuroscience Methods 2005)",
+      "identity": {
+        "doi": "10.1016/j.jneumeth.2004.10.020",
+        "journal": "Journal of Neuroscience Methods",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "Neural stimulation and recording electrodes (Cogan, Annual Review of Biomedical Engineering 2008)",
+      "identity": {
+        "doi": "10.1146/annurev.bioeng.10.061807.160518",
+        "journal": "Annual Review of Biomedical Engineering",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "ISO 14708-3 Implantable neurostimulators",
+      "identity": {
+        "organization": "ISO",
+        "standard": "ISO 14708-3:2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

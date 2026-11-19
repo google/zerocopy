@@ -11256,6 +11256,76 @@
         "systems/causal-consistency"
       ]
     },
+    "cello-genetic-repressor-synthesis-ewod-droplets-and-liquid-handling-robots": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CIDARLAB/Cello-v2",
+            "revision": "1b93575b8aa7e40e132381e3a9b29b1aa7f7a8e4"
+          },
+          "name": "CIDARLAB Cello v2"
+        },
+        {
+          "identity": {
+            "repository": "CIDARLAB/cello",
+            "revision": "11644045e5ab677965a8e5765db2fb8535484a53"
+          },
+          "name": "CIDARLAB Cello v1"
+        },
+        {
+          "identity": {
+            "repository": "GaudiLabs/OpenDrop",
+            "revision": "934a44db3ed41c24ae4dddb5b805a22e4166284b"
+          },
+          "name": "GaudiLabs OpenDrop"
+        },
+        {
+          "identity": {
+            "repository": "Opentrons/opentrons",
+            "revision": "4bae21dfd6f164dc617093bcf2b0b14e27e00edf"
+          },
+          "name": "Opentrons Protocol Engine"
+        },
+        {
+          "identity": {
+            "repository": "PyLabRobot/pylabrobot",
+            "revision": "dea2631feb592e0e7554afb1fe686eccd56688f8"
+          },
+          "name": "PyLabRobot"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/science.aac7341",
+            "journal": "Science",
+            "year": "2016"
+          },
+          "name": "Genetic circuit design automation (Nielsen et al., Science 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41596-021-00675-2",
+            "journal": "Nature Protocols",
+            "year": "2022"
+          },
+          "name": "Genetic circuit design automation with Cello 2.0 (Jones et al., Nature Protocols 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.bpj.2015.06.037",
+            "journal": "Biophysical Journal",
+            "year": "2015"
+          },
+          "name": "Isocost lines describe the cellular economy of genetic circuits (Gyorgy et al., Biophysical Journal 2015)"
+        }
+      ],
+      "topics": [
+        "domains/synthetic-biology",
+        "compilers/genetic-circuits",
+        "systems/digital-microfluidics",
+        "verification/stoichiometric-safety"
+      ]
+    },
     "cellular-5g-nas-rrc-control-plane-verifiers-and-baseband-per-decoders": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -26044,6 +26114,69 @@
         "systems/history",
         "tooling/live-environments",
         "compilers/modules"
+      ]
+    },
+    "implantable-bci-spike-sorting-charge-balance-and-cortical-thermal-bounds": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "open-ephys/plugin-GUI",
+            "revision": "560c995500f7f1438c6c3646311ff11776da49bb"
+          },
+          "name": "Open Ephys Plugin GUI"
+        },
+        {
+          "identity": {
+            "repository": "SpikeInterface/spikeinterface",
+            "revision": "1d7bacaa2a934ed4547f906e637887f3f609f9b1"
+          },
+          "name": "SpikeInterface"
+        },
+        {
+          "identity": {
+            "repository": "MouseLand/Kilosort",
+            "revision": "0e07514c16fc1162f6470ecbad25be9c7e256306"
+          },
+          "name": "Kilosort4"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/10.126616",
+            "journal": "IEEE Transactions on Biomedical Engineering",
+            "year": "1992"
+          },
+          "name": "A model of safe levels for electrical stimulation (Shannon, IEEE TBME 1992)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jneumeth.2004.10.020",
+            "journal": "Journal of Neuroscience Methods",
+            "year": "2005"
+          },
+          "name": "Electrical stimulation of excitable tissue (Merrill, Bikson, and Jefferys, Journal of Neuroscience Methods 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1146/annurev.bioeng.10.061807.160518",
+            "journal": "Annual Review of Biomedical Engineering",
+            "year": "2008"
+          },
+          "name": "Neural stimulation and recording electrodes (Cogan, Annual Review of Biomedical Engineering 2008)"
+        },
+        {
+          "identity": {
+            "organization": "ISO",
+            "standard": "ISO 14708-3:2017"
+          },
+          "name": "ISO 14708-3 Implantable neurostimulators"
+        }
+      ],
+      "topics": [
+        "domains/neural-implants",
+        "verification/electrochemical-safety",
+        "systems/closed-loop-dsp",
+        "isa/ultralow-power-biomedical"
       ]
     },
     "in-kernel-side-channel-certificates-and-speculative-ct-2018-2026": {

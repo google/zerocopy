@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "domains/synthetic-biology",
+    "compilers/genetic-circuits",
+    "systems/digital-microfluidics",
+    "verification/stoichiometric-safety"
+  ],
+  "subjects": [
+    {
+      "name": "CIDARLAB Cello v2",
+      "identity": {
+        "repository": "CIDARLAB/Cello-v2",
+        "revision": "1b93575b8aa7e40e132381e3a9b29b1aa7f7a8e4"
+      }
+    },
+    {
+      "name": "CIDARLAB Cello v1",
+      "identity": {
+        "repository": "CIDARLAB/cello",
+        "revision": "11644045e5ab677965a8e5765db2fb8535484a53"
+      }
+    },
+    {
+      "name": "GaudiLabs OpenDrop",
+      "identity": {
+        "repository": "GaudiLabs/OpenDrop",
+        "revision": "934a44db3ed41c24ae4dddb5b805a22e4166284b"
+      }
+    },
+    {
+      "name": "Opentrons Protocol Engine",
+      "identity": {
+        "repository": "Opentrons/opentrons",
+        "revision": "4bae21dfd6f164dc617093bcf2b0b14e27e00edf"
+      }
+    },
+    {
+      "name": "PyLabRobot",
+      "identity": {
+        "repository": "PyLabRobot/pylabrobot",
+        "revision": "dea2631feb592e0e7554afb1fe686eccd56688f8"
+      }
+    },
+    {
+      "name": "Genetic circuit design automation (Nielsen et al., Science 2016)",
+      "identity": {
+        "doi": "10.1126/science.aac7341",
+        "journal": "Science",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Genetic circuit design automation with Cello 2.0 (Jones et al., Nature Protocols 2022)",
+      "identity": {
+        "doi": "10.1038/s41596-021-00675-2",
+        "journal": "Nature Protocols",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Isocost lines describe the cellular economy of genetic circuits (Gyorgy et al., Biophysical Journal 2015)",
+      "identity": {
+        "doi": "10.1016/j.bpj.2015.06.037",
+        "journal": "Biophysical Journal",
+        "year": "2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
