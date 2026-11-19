@@ -25401,6 +25401,90 @@
         "verification/cryptography"
       ]
     },
+    "horner-modular-ring-reflection-and-gomory-chvatal-integer-cut-checkers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/stdlib",
+            "revision": "06f32e0a7dbb60dfc1ca1d4da94e433d76f7ee9a"
+          },
+          "name": "Rocq standard library (Ring_polynom and ZMicromega)"
+        },
+        {
+          "identity": {
+            "repository": "ambros-gleixner/VIPR",
+            "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff",
+            "version": "1.1"
+          },
+          "name": "VIPR mixed-integer linear programming certificate specification and checker (archived upstream)"
+        },
+        {
+          "identity": {
+            "repository": "scipopt/vipr",
+            "revision": "99eec197a49b2bd9ad33c1f4c7afabe93caa6511"
+          },
+          "name": "VIPR mixed-integer linear programming certificate checker (active SCIP fork)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11541868_7"
+          },
+          "name": "Proving Equalities in a Commutative Ring Done Right in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-74464-1_4"
+          },
+          "name": "Fast Reflexive Arithmetic Tactics the Linear Case and Beyond"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0012-365X(73)90167-2"
+          },
+          "name": "Edmonds polytopes and a hierarchy of combinatorial problems"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0167-5060(08)70857-9"
+          },
+          "name": "On cutting planes"
+        },
+        {
+          "identity": {
+            "arxiv": "1611.08832v2",
+            "doi": "10.1007/978-3-319-59250-3_13"
+          },
+          "name": "Verifying Integer Programming Results"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/certificates",
+        "anneal",
+        "anneal/theory",
+        "lean",
+        "lean/mechanization",
+        "lean/kernel",
+        "smt",
+        "smt/linear-arithmetic"
+      ]
+    },
     "hotspot-c2-convi2l-type-lattices-oopmap-derived-pointers-and-v8-typer-bugs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -61866,6 +61950,99 @@
         "pl/dicom-lps-ras-coordinate-units",
         "systems/iec60601-1-8-acoustic-alarm-arbitration",
         "verification/alveolar-barotrauma-pressure-envelopes"
+      ]
+    },
+    "verasco-ai-pcc-wrapped-intervals-and-agni-tnum-reduced-products": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and C++ kernel"
+        },
+        {
+          "identity": {
+            "repository": "seahorn/crab",
+            "revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c"
+          },
+          "name": "Crab abstract interpretation library (Wrapped Intervals)"
+        },
+        {
+          "identity": {
+            "repository": "bpfverif/agni",
+            "revision": "9096fbd10376d6a1610cbd18ae98408d0a7bd29b"
+          },
+          "name": "Agni eBPF range analysis verifier"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "3d7cb6b04c3f3115719235cc6866b10326de34cd",
+            "version": "v5.19"
+          },
+          "name": "Linux kernel eBPF tnum and register bounds verifier"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert Kildall dataflow fixpoint framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676726.2676966",
+            "url": "https://compcert.inria.fr/verasco/",
+            "version": "1.3"
+          },
+          "name": "Verasco formally-verified C static analyzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.tcs.2006.08.012"
+          },
+          "name": "Proof-Carrying Code from Certified Abstract Interpretation and Fixpoint Compression"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-35182-2_9"
+          },
+          "name": "Signedness-Agnostic Program Analysis: Precise Integer Bounds for Low-Level Code"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.05398v3",
+            "doi": "10.1109/CGO53902.2022.9741267"
+          },
+          "name": "Sound, Precise, and Fast Abstract Interpretation with Tristate Numbers"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-37709-9_12"
+          },
+          "name": "Verifying the Verifier: eBPF Range Analysis Verification"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/abstract-interpretation",
+        "verification/certificates",
+        "anneal",
+        "anneal/theory",
+        "compilers",
+        "compilers/bit-analysis",
+        "lean",
+        "lean/mechanization"
       ]
     },
     "verified-amir-binary-wire-format-llbc-decoding-and-parser-admission": {

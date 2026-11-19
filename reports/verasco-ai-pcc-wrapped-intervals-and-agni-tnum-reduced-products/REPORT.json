@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "verification",
+    "verification/abstract-interpretation",
+    "verification/certificates",
+    "anneal",
+    "anneal/theory",
+    "compilers",
+    "compilers/bit-analysis",
+    "lean",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Crab abstract interpretation library (Wrapped Intervals)",
+      "identity": {
+        "repository": "seahorn/crab",
+        "revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c"
+      }
+    },
+    {
+      "name": "Agni eBPF range analysis verifier",
+      "identity": {
+        "repository": "bpfverif/agni",
+        "revision": "9096fbd10376d6a1610cbd18ae98408d0a7bd29b"
+      }
+    },
+    {
+      "name": "Linux kernel eBPF tnum and register bounds verifier",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "3d7cb6b04c3f3115719235cc6866b10326de34cd",
+        "version": "v5.19"
+      }
+    },
+    {
+      "name": "CompCert Kildall dataflow fixpoint framework",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Verasco formally-verified C static analyzer",
+      "identity": {
+        "doi": "10.1145/2676726.2676966",
+        "url": "https://compcert.inria.fr/verasco/",
+        "version": "1.3"
+      }
+    },
+    {
+      "name": "Proof-Carrying Code from Certified Abstract Interpretation and Fixpoint Compression",
+      "identity": {
+        "doi": "10.1016/j.tcs.2006.08.012"
+      }
+    },
+    {
+      "name": "Signedness-Agnostic Program Analysis: Precise Integer Bounds for Low-Level Code",
+      "identity": {
+        "doi": "10.1007/978-3-642-35182-2_9"
+      }
+    },
+    {
+      "name": "Sound, Precise, and Fast Abstract Interpretation with Tristate Numbers",
+      "identity": {
+        "arxiv": "2105.05398v3",
+        "doi": "10.1109/CGO53902.2022.9741267"
+      }
+    },
+    {
+      "name": "Verifying the Verifier: eBPF Range Analysis Verification",
+      "identity": {
+        "doi": "10.1007/978-3-031-37709-9_12"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "verification",
+    "verification/certificates",
+    "anneal",
+    "anneal/theory",
+    "lean",
+    "lean/mechanization",
+    "lean/kernel",
+    "smt",
+    "smt/linear-arithmetic"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal formal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rocq standard library (Ring_polynom and ZMicromega)",
+      "identity": {
+        "repository": "rocq-prover/stdlib",
+        "revision": "06f32e0a7dbb60dfc1ca1d4da94e433d76f7ee9a"
+      }
+    },
+    {
+      "name": "VIPR mixed-integer linear programming certificate specification and checker (archived upstream)",
+      "identity": {
+        "repository": "ambros-gleixner/VIPR",
+        "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff",
+        "version": "1.1"
+      }
+    },
+    {
+      "name": "VIPR mixed-integer linear programming certificate checker (active SCIP fork)",
+      "identity": {
+        "repository": "scipopt/vipr",
+        "revision": "99eec197a49b2bd9ad33c1f4c7afabe93caa6511"
+      }
+    },
+    {
+      "name": "Proving Equalities in a Commutative Ring Done Right in Coq",
+      "identity": {
+        "doi": "10.1007/11541868_7"
+      }
+    },
+    {
+      "name": "Fast Reflexive Arithmetic Tactics the Linear Case and Beyond",
+      "identity": {
+        "doi": "10.1007/978-3-540-74464-1_4"
+      }
+    },
+    {
+      "name": "Edmonds polytopes and a hierarchy of combinatorial problems",
+      "identity": {
+        "doi": "10.1016/0012-365X(73)90167-2"
+      }
+    },
+    {
+      "name": "On cutting planes",
+      "identity": {
+        "doi": "10.1016/S0167-5060(08)70857-9"
+      }
+    },
+    {
+      "name": "Verifying Integer Programming Results",
+      "identity": {
+        "arxiv": "1611.08832v2",
+        "doi": "10.1007/978-3-319-59250-3_13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
