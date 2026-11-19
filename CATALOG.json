@@ -17664,6 +17664,80 @@
         "verification/compiler-verification"
       ]
     },
+    "deterministic-execution-trace-certificates-rr-replay-and-bisection-fault-proofs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rr-debugger/rr",
+            "revision": "608efe319bbbc4d0f5658d984e16be187801325d"
+          },
+          "name": "Linux rr Deterministic Record-and-Replay Debugger"
+        },
+        {
+          "identity": {
+            "repository": "ethereum-optimism/optimism",
+            "revision": "f0d907fd862acb2fecd354a0cfe6fbe9c7a47a2a"
+          },
+          "name": "Optimism Cannon MIPS64 FPVM and FaultDisputeGame"
+        },
+        {
+          "identity": {
+            "repository": "OffchainLabs/nitro-contracts",
+            "revision": "349a4bfbdfec8924f13cc3e2bbad31161fa76378"
+          },
+          "name": "Arbitrum Nitro WAVM OneStepProver and ChallengeV2 Contracts"
+        },
+        {
+          "identity": {
+            "repository": "OffchainLabs/bold",
+            "revision": "30e78f67f40eacaab13577e507bab6025df843d6"
+          },
+          "name": "Arbitrum BoLD Dispute Resolution Client"
+        },
+        {
+          "identity": {
+            "repository": "cartesi/machine-emulator",
+            "revision": "f9e4f82003a6f5acc9821c06f8a29025e0f895e3"
+          },
+          "name": "Cartesi RV64GC Machine Emulator"
+        },
+        {
+          "identity": {
+            "repository": "cartesi/machine-solidity-step",
+            "revision": "fb00a32c38248edc5672e689dfa8cc58c0a2c3cd"
+          },
+          "name": "Cartesi On-Chain RV64I Microarchitecture Step Verifier"
+        },
+        {
+          "identity": {
+            "arxiv": "1705.05937",
+            "isbn": "978-1-931971-38-6",
+            "url": "https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan"
+          },
+          "name": "Engineering Record and Replay for Deployability (USENIX ATC 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2046707.2046759"
+          },
+          "name": "Practical Delegation of Computation Using Multiple Servers (CCS 2011)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.10491",
+            "url": "https://arxiv.org/abs/2404.10491"
+          },
+          "name": "BoLD: Fast and Cheap Dispute Resolution"
+        }
+      ],
+      "topics": [
+        "verification/execution-certificates",
+        "tooling/deterministic-replay",
+        "systems/bisection-games",
+        "isa/step-hashing"
+      ]
+    },
     "differentiable-programming-autodiff-semantics-and-compiler-challenges": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -39383,6 +39457,105 @@
         "compilers/reverse-code-generation",
         "runtimes/optimistic-simulation",
         "runtimes/time-warp"
+      ]
+    },
+    "riscv-zkvms-risc0-sp1-jolt-lasso-lookup-arguments-and-air-underconstraint-bugs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "risc0/risc0",
+            "revision": "5e1be36a7fcadf98f341e348d9314e5f1d519046",
+            "version": "3.1.0"
+          },
+          "name": "RISC Zero zkVM (risc0)"
+        },
+        {
+          "identity": {
+            "repository": "succinctlabs/sp1",
+            "revision": "2a51f3dd370e4c5f74d04dfd89359a13a7e93f99",
+            "version": "5.2.4"
+          },
+          "name": "Succinct SP1 zkVM (v5 BabyBear STARK AIR)"
+        },
+        {
+          "identity": {
+            "repository": "succinctlabs/sp1",
+            "revision": "0cd151a8d7beaaad4ad245c8f37515d6b4f72597",
+            "version": "6.10.0"
+          },
+          "name": "Succinct SP1 zkVM (v6 Hypercube KoalaBear)"
+        },
+        {
+          "identity": {
+            "repository": "Plonky3/Plonky3",
+            "revision": "0d803737b681774186cd283b1fd2d8e493655c82"
+          },
+          "name": "Plonky3 AIR and LogUp Framework"
+        },
+        {
+          "identity": {
+            "repository": "a16z/jolt",
+            "revision": "943f60ce477cd98f4682a99d82f388468fe20e61"
+          },
+          "name": "Jolt Lookup-Singularity zkVM"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Nova",
+            "revision": "01b1e2d662a847ed7029770ecbaf6687398899dd",
+            "version": "0.76.0"
+          },
+          "name": "Microsoft Nova Folding Library (nova-snark)"
+        },
+        {
+          "identity": {
+            "repository": "0xPARC/zk-bug-tracker",
+            "revision": "56a996672fb50486279126c8e12530f2bf933d0b"
+          },
+          "name": "0xPARC ZK Bug Tracker"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-58751-1_1",
+            "eprint": "2023/1217"
+          },
+          "name": "Jolt: SNARKs for Virtual Machines via Lookups (EUROCRYPT 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-58751-1_7",
+            "eprint": "2023/1216"
+          },
+          "name": "Unlocking the Lookup Singularity with Lasso (EUROCRYPT 2024)"
+        },
+        {
+          "identity": {
+            "eprint": "2025/105",
+            "url": "https://eprint.iacr.org/2025/105"
+          },
+          "name": "Twist and Shout: Faster Memory Checking Arguments via One-Hot Addressing and Increments"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-15985-5_13",
+            "eprint": "2021/370"
+          },
+          "name": "Nova: Recursive Zero-Knowledge Arguments from Folding Schemes (CRYPTO 2022)"
+        },
+        {
+          "identity": {
+            "eprint": "2022/1758",
+            "url": "https://eprint.iacr.org/2022/1758"
+          },
+          "name": "SuperNova: Proving Universal Machine Executions Without Universal Circuits"
+        }
+      ],
+      "topics": [
+        "verification/zkvm-traces",
+        "security/zero-knowledge-vms",
+        "isa/riscv-arithmetization",
+        "compilers/precompile-chips"
       ]
     },
     "riscv64-elf64-relocations-lp64d-abi-and-linux-ecall-runtime-2026": {

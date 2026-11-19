@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "verification/zkvm-traces",
+    "security/zero-knowledge-vms",
+    "isa/riscv-arithmetization",
+    "compilers/precompile-chips"
+  ],
+  "subjects": [
+    {
+      "name": "RISC Zero zkVM (risc0)",
+      "identity": {
+        "repository": "risc0/risc0",
+        "revision": "5e1be36a7fcadf98f341e348d9314e5f1d519046",
+        "version": "3.1.0"
+      }
+    },
+    {
+      "name": "Succinct SP1 zkVM (v5 BabyBear STARK AIR)",
+      "identity": {
+        "repository": "succinctlabs/sp1",
+        "revision": "2a51f3dd370e4c5f74d04dfd89359a13a7e93f99",
+        "version": "5.2.4"
+      }
+    },
+    {
+      "name": "Succinct SP1 zkVM (v6 Hypercube KoalaBear)",
+      "identity": {
+        "repository": "succinctlabs/sp1",
+        "revision": "0cd151a8d7beaaad4ad245c8f37515d6b4f72597",
+        "version": "6.10.0"
+      }
+    },
+    {
+      "name": "Plonky3 AIR and LogUp Framework",
+      "identity": {
+        "repository": "Plonky3/Plonky3",
+        "revision": "0d803737b681774186cd283b1fd2d8e493655c82"
+      }
+    },
+    {
+      "name": "Jolt Lookup-Singularity zkVM",
+      "identity": {
+        "repository": "a16z/jolt",
+        "revision": "943f60ce477cd98f4682a99d82f388468fe20e61"
+      }
+    },
+    {
+      "name": "Microsoft Nova Folding Library (nova-snark)",
+      "identity": {
+        "repository": "microsoft/Nova",
+        "revision": "01b1e2d662a847ed7029770ecbaf6687398899dd",
+        "version": "0.76.0"
+      }
+    },
+    {
+      "name": "0xPARC ZK Bug Tracker",
+      "identity": {
+        "repository": "0xPARC/zk-bug-tracker",
+        "revision": "56a996672fb50486279126c8e12530f2bf933d0b"
+      }
+    },
+    {
+      "name": "Jolt: SNARKs for Virtual Machines via Lookups (EUROCRYPT 2024)",
+      "identity": {
+        "doi": "10.1007/978-3-031-58751-1_1",
+        "eprint": "2023/1217"
+      }
+    },
+    {
+      "name": "Unlocking the Lookup Singularity with Lasso (EUROCRYPT 2024)",
+      "identity": {
+        "doi": "10.1007/978-3-031-58751-1_7",
+        "eprint": "2023/1216"
+      }
+    },
+    {
+      "name": "Twist and Shout: Faster Memory Checking Arguments via One-Hot Addressing and Increments",
+      "identity": {
+        "eprint": "2025/105",
+        "url": "https://eprint.iacr.org/2025/105"
+      }
+    },
+    {
+      "name": "Nova: Recursive Zero-Knowledge Arguments from Folding Schemes (CRYPTO 2022)",
+      "identity": {
+        "doi": "10.1007/978-3-031-15985-5_13",
+        "eprint": "2021/370"
+      }
+    },
+    {
+      "name": "SuperNova: Proving Universal Machine Executions Without Universal Circuits",
+      "identity": {
+        "eprint": "2022/1758",
+        "url": "https://eprint.iacr.org/2022/1758"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

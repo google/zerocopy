@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "verification/execution-certificates",
+    "tooling/deterministic-replay",
+    "systems/bisection-games",
+    "isa/step-hashing"
+  ],
+  "subjects": [
+    {
+      "name": "Linux rr Deterministic Record-and-Replay Debugger",
+      "identity": {
+        "repository": "rr-debugger/rr",
+        "revision": "608efe319bbbc4d0f5658d984e16be187801325d"
+      }
+    },
+    {
+      "name": "Optimism Cannon MIPS64 FPVM and FaultDisputeGame",
+      "identity": {
+        "repository": "ethereum-optimism/optimism",
+        "revision": "f0d907fd862acb2fecd354a0cfe6fbe9c7a47a2a"
+      }
+    },
+    {
+      "name": "Arbitrum Nitro WAVM OneStepProver and ChallengeV2 Contracts",
+      "identity": {
+        "repository": "OffchainLabs/nitro-contracts",
+        "revision": "349a4bfbdfec8924f13cc3e2bbad31161fa76378"
+      }
+    },
+    {
+      "name": "Arbitrum BoLD Dispute Resolution Client",
+      "identity": {
+        "repository": "OffchainLabs/bold",
+        "revision": "30e78f67f40eacaab13577e507bab6025df843d6"
+      }
+    },
+    {
+      "name": "Cartesi RV64GC Machine Emulator",
+      "identity": {
+        "repository": "cartesi/machine-emulator",
+        "revision": "f9e4f82003a6f5acc9821c06f8a29025e0f895e3"
+      }
+    },
+    {
+      "name": "Cartesi On-Chain RV64I Microarchitecture Step Verifier",
+      "identity": {
+        "repository": "cartesi/machine-solidity-step",
+        "revision": "fb00a32c38248edc5672e689dfa8cc58c0a2c3cd"
+      }
+    },
+    {
+      "name": "Engineering Record and Replay for Deployability (USENIX ATC 2017)",
+      "identity": {
+        "arxiv": "1705.05937",
+        "isbn": "978-1-931971-38-6",
+        "url": "https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan"
+      }
+    },
+    {
+      "name": "Practical Delegation of Computation Using Multiple Servers (CCS 2011)",
+      "identity": {
+        "doi": "10.1145/2046707.2046759"
+      }
+    },
+    {
+      "name": "BoLD: Fast and Cheap Dispute Resolution",
+      "identity": {
+        "arxiv": "2404.10491",
+        "url": "https://arxiv.org/abs/2404.10491"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
