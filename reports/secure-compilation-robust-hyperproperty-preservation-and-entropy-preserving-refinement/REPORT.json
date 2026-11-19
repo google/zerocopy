@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "verification",
+    "compilers",
+    "security",
+    "pl",
+    "compilers/secure-compilation",
+    "verification/hyperproperties",
+    "security/constant-time",
+    "security/quantitative-information-flow"
+  ],
+  "subjects": [
+    {
+      "name": "Journey Beyond Full Abstraction: Coq Formalization of Robust Property Preservation (Abate et al., CSF 2019)",
+      "identity": {
+        "repository": "secure-compilation/exploring-robust-property-preservation",
+        "revision": "c68187cbaba763d88cbb3509df4ca9cf49cc6338",
+        "doi": "10.1109/CSF.2019.00025",
+        "arxiv": "1807.04603v6"
+      }
+    },
+    {
+      "name": "Trace-Relating Compiler Correctness and Secure Compilation (Abate et al., ESOP 2020 / ACM TOPLAS 2021)",
+      "identity": {
+        "doi": "10.1145/3460860",
+        "esop2020_doi": "10.1007/978-3-030-44914-8_1",
+        "arxiv": "1907.05320"
+      }
+    },
+    {
+      "name": "CompCert Verified C Compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "CompCert-CT and Verified Secret Control-Flow Linearization",
+      "identity": {
+        "repository": "knothed/CompCert-ct",
+        "revision": "2d1369a4888cff6fd5fd29f28a059e9cf72b1a08",
+        "compcert_ct_popl2020_doi": "10.1145/3371075",
+        "barthe_csf2018_doi": "10.1109/CSF.2018.00031"
+      }
+    },
+    {
+      "name": "Jasmin High-Assurance Cryptographic Compiler (Constant-Time and Speculative Constant-Time)",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724",
+        "ccs2017_doi": "10.1145/3133956.3134078",
+        "sp2023_sct_doi": "10.1109/SP46215.2023.10179418",
+        "popl2025_sct_doi": "10.1145/3704880"
+      }
+    },
+    {
+      "name": "CakeML Verified Compiler (Divergence- and FFI-Preserving Target Semantics)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "Interaction Trees (Coinductive Termination-Sensitive Stuttering Bisimulation)",
+      "identity": {
+        "repository": "DeepSpec/InteractionTrees",
+        "revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+      }
+    },
+    {
+      "name": "CertiRocq Verified Compiler Pipeline",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+      }
+    },
+    {
+      "name": "Possibilistic Security, Hyperproperties, and Ignorant Refinement (McLean 1994; Clarkson and Schneider 2010; Morgan 2006)",
+      "identity": {
+        "mclean1994_doi": "10.1109/RISP.1994.296590",
+        "clarkson_schneider2010_doi": "10.3233/JCS-2009-0393",
+        "morgan2006_doi": "10.1007/11783596_21"
+      }
+    },
+    {
+      "name": "Foundations and Science of Quantitative Information Flow (Smith 2009; Alvim et al. 2012, 2020)",
+      "identity": {
+        "smith2009_doi": "10.1007/978-3-642-00596-1_21",
+        "alvim2012_doi": "10.1109/CSF.2012.26",
+        "alvim2020_book_doi": "10.1007/978-3-319-96131-6"
+      }
+    },
+    {
+      "name": "Existence of Refinement Mappings, Stuttering, and Fairness (Abadi and Lamport 1991)",
+      "identity": {
+        "doi": "10.1016/0304-3975(91)90224-P",
+        "venue": "Theoretical Computer Science 82(2):253-284 (1991)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

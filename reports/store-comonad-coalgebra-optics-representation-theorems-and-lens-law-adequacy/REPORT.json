@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "pl",
+    "verification",
+    "lean",
+    "pl/optics",
+    "pl/parametricity",
+    "verification/specification-adequacy",
+    "lean/formalization"
+  ],
+  "subjects": [
+    {
+      "name": "Haskell lens Library (van Laarhoven Optics, Unsound Combinators, and Filtered Folds)",
+      "identity": {
+        "repository": "ekmett/lens",
+        "revision": "61eb79c3b46dc397aaa5437684d15201cfc412a6"
+      }
+    },
+    {
+      "name": "Haskell optics-core Library (Opaque Profunctor Encoding and GHC Specialization)",
+      "identity": {
+        "repository": "well-typed/optics",
+        "revision": "dd0b30e144ad92f77584dc8357c381eed2243028"
+      }
+    },
+    {
+      "name": "Scala Monocle Optics Library and Discipline Law Suite",
+      "identity": {
+        "repository": "optics-dev/Monocle",
+        "revision": "33bdd3fd63c8d30b778dfc68784e3c42bd2e9e05"
+      }
+    },
+    {
+      "name": "PureScript Profunctor Lenses",
+      "identity": {
+        "repository": "purescript-contrib/purescript-profunctor-lenses",
+        "revision": "c479df47cc386b840c5e7238b4b5b1b3e9e2c4ff"
+      }
+    },
+    {
+      "name": "Lean 4 Mathlib4 Eilenberg-Moore Comonad Coalgebras",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "dd44a18bacca0dba65ac4275af92024f400e63e3"
+      }
+    },
+    {
+      "name": "Lean 4 lean-optics Library and CSLib LawfulLens Proposal",
+      "identity": {
+        "repository": "fraware/lean-optics",
+        "revision": "bd3252ae562333b6f592b8f79dde3c91324aeb68"
+      }
+    },
+    {
+      "name": "Rocq coq-record-update Library (Settable and SetterWf)",
+      "identity": {
+        "repository": "tchajed/coq-record-update",
+        "revision": "1dd231db87451479043a3812dbdbd9658657ff7c"
+      }
+    },
+    {
+      "name": "Store-Comonad Coalgebras and Bidirectional View-Update Foundations (Bancilhon and Spyratos 1981; Foster et al. 2007; O'Connor 2011; Gibbons and Johnson 2012)",
+      "identity": {
+        "bancilhon_spyratos1981_doi": "10.1145/319628.319634",
+        "foster2007_doi": "10.1145/1232420.1232424",
+        "oconnor2011_doi": "10.48550/arXiv.1103.2841",
+        "gibbons_johnson2012_doi": "10.14279/tuj.eceasst.49.726"
+      }
+    },
+    {
+      "name": "Existential, Tambara, and Profunctor Optics Representation Theorems (Riley 2018; Boisseau and Gibbons 2018; Clarke et al. 2024)",
+      "identity": {
+        "riley2018_doi": "10.48550/arXiv.1809.00738",
+        "boisseau_gibbons2018_doi": "10.1145/3236779",
+        "clarke2024_doi": "10.32408/compositionality-6-1"
+      }
+    },
+    {
+      "name": "Relational Parametricity, Free Theorems, and Heterogeneous State-Space Independence (Reynolds 1983; Wadler 1989; Foster, Zeyda, and Woodcock 2016)",
+      "identity": {
+        "wadler1989_doi": "10.1145/99370.99404",
+        "foster_zeyda_woodcock2016_doi": "10.1007/978-3-319-46750-4_17",
+        "reynolds1983_venue": "Information Processing 83 (IFIP), pp. 513-523"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
