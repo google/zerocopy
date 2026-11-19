@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "pl",
+    "pl/desugaring-bisimulation",
+    "pl/positional-role-types",
+    "compilers/red-green-cst-elaboration",
+    "verification/state-machine-latch-totality",
+    "tooling/incremental-syntax-trees",
+    "security/integer-promotion-allocation-overflow"
+  ],
+  "subjects": [
+    {
+      "name": "rowan",
+      "identity": {
+        "repository": "rust-analyzer/rowan",
+        "revision": "d601b195d7bcb9f643c218b2ba113257880d2cdd"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "e35bfaf8dab2405124cb486c80a7c12d3cccb951"
+      }
+    },
+    {
+      "name": "DCMTK",
+      "identity": {
+        "repository": "dcmtk/dcmtk",
+        "revision": "e8d3d701c285de2dacea605cf0aaa606ad6908fe"
+      }
+    },
+    {
+      "name": "DPsim",
+      "identity": {
+        "repository": "sogno-platform/dpsim",
+        "revision": "7fcaac00758cc7f448179edf2a508021dd1374b8"
+      }
+    },
+    {
+      "name": "MOOS-IvP",
+      "identity": {
+        "repository": "moos-ivp/moos-ivp",
+        "revision": "ab1ac374a44a5c567187b4f27abce2e02e8fbefa"
+      }
+    },
+    {
+      "name": "Rust Edition 2024 Temporary Scope Specification (RFC 3606)",
+      "identity": {
+        "standard": "Rust RFC 3606 (if_let_rescope)",
+        "url": "https://rust-lang.github.io/rfcs/3606-if-let-rescope.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

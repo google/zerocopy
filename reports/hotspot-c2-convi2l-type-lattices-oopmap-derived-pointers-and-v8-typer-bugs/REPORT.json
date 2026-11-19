@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/sea-of-nodes-type-lattices",
+    "runtimes/oopmap-derived-pointers",
+    "security/jit-range-check-escapes",
+    "verification/abstract-domain-monotonicity"
+  ],
+  "subjects": [
+    {
+      "name": "OpenJDK HotSpot C2 Optimizing JIT Compiler",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "510deb132b0c5ff6fefdf7bde56d82223e927b69"
+      }
+    },
+    {
+      "name": "V8 TurboFan and Maglev JavaScript Optimizing Compilers",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e777f52c8f27cf67f782a4ef5ab41cf152d91a24"
+      }
+    },
+    {
+      "name": "Oracle GraalVM Optimizing Compiler",
+      "identity": {
+        "repository": "oracle/graal",
+        "revision": "3c458e0dd4f77ae0bdef1da68759d4b93b617cd5"
+      }
+    },
+    {
+      "name": "A Simple Graph-Based Intermediate Representation (Click & Paleczny, ACM SIGPLAN IR 1995)",
+      "identity": {
+        "doi": "10.1145/202529.202534",
+        "version": "ACM SIGPLAN Workshop on Intermediate Representations, pp. 35-49"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

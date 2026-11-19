@@ -24603,6 +24603,46 @@
         "verification/cryptography"
       ]
     },
+    "hotspot-c2-convi2l-type-lattices-oopmap-derived-pointers-and-v8-typer-bugs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "510deb132b0c5ff6fefdf7bde56d82223e927b69"
+          },
+          "name": "OpenJDK HotSpot C2 Optimizing JIT Compiler"
+        },
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e777f52c8f27cf67f782a4ef5ab41cf152d91a24"
+          },
+          "name": "V8 TurboFan and Maglev JavaScript Optimizing Compilers"
+        },
+        {
+          "identity": {
+            "repository": "oracle/graal",
+            "revision": "3c458e0dd4f77ae0bdef1da68759d4b93b617cd5"
+          },
+          "name": "Oracle GraalVM Optimizing Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/202529.202534",
+            "version": "ACM SIGPLAN Workshop on Intermediate Representations, pp. 35-49"
+          },
+          "name": "A Simple Graph-Based Intermediate Representation (Click & Paleczny, ACM SIGPLAN IR 1995)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/sea-of-nodes-type-lattices",
+        "runtimes/oopmap-derived-pointers",
+        "security/jit-range-check-escapes",
+        "verification/abstract-domain-monotonicity"
+      ]
+    },
     "http-request-smuggling-hpack-qpack-compression-and-url-parser-differentials": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -40488,6 +40528,61 @@
         "compilers/crypto-codegen"
       ]
     },
+    "postgresql-ssi-siread-locks-multixact-wraparound-and-hlc-read-restarts": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "postgres/postgres",
+            "revision": "736ecc413b38555637802ccd8dfd35f034235796"
+          },
+          "name": "PostgreSQL Backend Storage and Transaction Manager"
+        },
+        {
+          "identity": {
+            "repository": "cockroachdb/cockroach",
+            "revision": "d30c905fff79ef825adc96bcc647f1872a90f2ff"
+          },
+          "name": "CockroachDB Hybrid Logical Clock and Timestamp Cache"
+        },
+        {
+          "identity": {
+            "repository": "tikv/tikv",
+            "revision": "4d5e1a0968d72deb5aecd65dfd16176b9a01e080"
+          },
+          "name": "TiKV MVCC Pessimistic and Optimistic Prewrite Engine"
+        },
+        {
+          "identity": {
+            "repository": "jepsen-io/elle",
+            "revision": "4e359e597c52938b0afebb8bc42273914d68a424"
+          },
+          "name": "Jepsen Elle Transactional Cycle Detector"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1620585.1620587",
+            "version": "ACM TODS 34(4), Article 20"
+          },
+          "name": "Serializable Isolation for Snapshot Databases (Cahill, Rohm & Fekete, ACM TODS 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/2367502.2367523",
+            "version": "PVLDB 5(12), pp. 1850-1861"
+          },
+          "name": "Serializable Snapshot Isolation in PostgreSQL (Ports & Grittner, PVLDB 2012)"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/serializable-snapshot-isolation",
+        "systems/multixact-epoch-wraparound",
+        "systems/hlc-uncertainty-windows",
+        "verification/isolation-antidependency-graphs",
+        "smt/dependency-cycles"
+      ]
+    },
     "power-em-side-channel-physics-dpa-cpa-screaming-channels-and-sifa": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -54653,6 +54748,62 @@
         "isa/rtl-fuzzing",
         "security/microarchitectural-contracts",
         "tooling/testing-fuzzing"
+      ]
+    },
+    "surface-to-ir-desugaring-bisimulation-role-types-and-latch-totality": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-analyzer/rowan",
+            "revision": "d601b195d7bcb9f643c218b2ba113257880d2cdd"
+          },
+          "name": "rowan"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "e35bfaf8dab2405124cb486c80a7c12d3cccb951"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "dcmtk/dcmtk",
+            "revision": "e8d3d701c285de2dacea605cf0aaa606ad6908fe"
+          },
+          "name": "DCMTK"
+        },
+        {
+          "identity": {
+            "repository": "sogno-platform/dpsim",
+            "revision": "7fcaac00758cc7f448179edf2a508021dd1374b8"
+          },
+          "name": "DPsim"
+        },
+        {
+          "identity": {
+            "repository": "moos-ivp/moos-ivp",
+            "revision": "ab1ac374a44a5c567187b4f27abce2e02e8fbefa"
+          },
+          "name": "MOOS-IvP"
+        },
+        {
+          "identity": {
+            "standard": "Rust RFC 3606 (if_let_rescope)",
+            "url": "https://rust-lang.github.io/rfcs/3606-if-let-rescope.html"
+          },
+          "name": "Rust Edition 2024 Temporary Scope Specification (RFC 3606)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/desugaring-bisimulation",
+        "pl/positional-role-types",
+        "compilers/red-green-cst-elaboration",
+        "verification/state-machine-latch-totality",
+        "tooling/incremental-syntax-trees",
+        "security/integer-promotion-allocation-overflow"
       ]
     },
     "symbolic-and-computational-protocol-verifiers-tamarin-proverif-and-squirrel": {

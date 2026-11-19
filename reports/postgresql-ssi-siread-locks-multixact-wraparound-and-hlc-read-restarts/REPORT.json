@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "domains",
+    "domains/serializable-snapshot-isolation",
+    "systems/multixact-epoch-wraparound",
+    "systems/hlc-uncertainty-windows",
+    "verification/isolation-antidependency-graphs",
+    "smt/dependency-cycles"
+  ],
+  "subjects": [
+    {
+      "name": "PostgreSQL Backend Storage and Transaction Manager",
+      "identity": {
+        "repository": "postgres/postgres",
+        "revision": "736ecc413b38555637802ccd8dfd35f034235796"
+      }
+    },
+    {
+      "name": "CockroachDB Hybrid Logical Clock and Timestamp Cache",
+      "identity": {
+        "repository": "cockroachdb/cockroach",
+        "revision": "d30c905fff79ef825adc96bcc647f1872a90f2ff"
+      }
+    },
+    {
+      "name": "TiKV MVCC Pessimistic and Optimistic Prewrite Engine",
+      "identity": {
+        "repository": "tikv/tikv",
+        "revision": "4d5e1a0968d72deb5aecd65dfd16176b9a01e080"
+      }
+    },
+    {
+      "name": "Jepsen Elle Transactional Cycle Detector",
+      "identity": {
+        "repository": "jepsen-io/elle",
+        "revision": "4e359e597c52938b0afebb8bc42273914d68a424"
+      }
+    },
+    {
+      "name": "Serializable Isolation for Snapshot Databases (Cahill, Rohm & Fekete, ACM TODS 2009)",
+      "identity": {
+        "doi": "10.1145/1620585.1620587",
+        "version": "ACM TODS 34(4), Article 20"
+      }
+    },
+    {
+      "name": "Serializable Snapshot Isolation in PostgreSQL (Ports & Grittner, PVLDB 2012)",
+      "identity": {
+        "doi": "10.14778/2367502.2367523",
+        "version": "PVLDB 5(12), pp. 1850-1861"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
