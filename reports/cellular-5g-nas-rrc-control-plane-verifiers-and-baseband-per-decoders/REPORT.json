@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "domains/cellular-protocols",
+    "security/baseband-parsers",
+    "verification/protocol-automata",
+    "tooling/firmware-emulation"
+  ],
+  "subjects": [
+    {
+      "name": "5GReasoner",
+      "identity": {
+        "repository": "relentless-warrior/5GReasoner",
+        "revision": "559ec7d607d2e2233cca96edc64f6bff2b5f4656",
+        "doi": "10.1145/3319535.3354263"
+      }
+    },
+    {
+      "name": "LTEInspector",
+      "identity": {
+        "repository": "relentless-warrior/LTEInspector",
+        "revision": "033184ce35f2dee31ed1103c1289a57d48579b2a",
+        "doi": "10.14722/ndss.2018.23313"
+      }
+    },
+    {
+      "name": "Open5GS",
+      "identity": {
+        "repository": "open5gs/open5gs",
+        "revision": "39120192ce1b27dc30db2929e1b84de90275350b"
+      }
+    },
+    {
+      "name": "srsRAN Project (release_25_10)",
+      "identity": {
+        "repository": "srsran/srsRAN_Project",
+        "revision": "d2f4b70dda8e2c557d5b05a0ac5f92dbddda19bc",
+        "version": "release_25_10"
+      }
+    },
+    {
+      "name": "srsRAN Project (archived HEAD)",
+      "identity": {
+        "repository": "srsran/srsRAN_Project",
+        "revision": "6ee24f9501b15090b453b0112f92df64fe302c08"
+      }
+    },
+    {
+      "name": "asn1c",
+      "identity": {
+        "repository": "vlm/asn1c",
+        "revision": "8a274c3f99761f249b6c205e1c89be1b1cb7c669"
+      }
+    },
+    {
+      "name": "Wireshark CSN.1 dissector",
+      "identity": {
+        "repository": "wireshark/wireshark",
+        "revision": "4917321c9c7ef31c2de1639496fd632449d53214"
+      }
+    },
+    {
+      "name": "FirmWire",
+      "identity": {
+        "repository": "FirmWire/FirmWire",
+        "revision": "8b540a63bfe80850d338df15a671e5bab08214eb",
+        "doi": "10.14722/ndss.2022.23136"
+      }
+    },
+    {
+      "name": "BaseSpec",
+      "identity": {
+        "repository": "SysSec-KAIST/BaseSpec",
+        "revision": "e027413148ce79f53bfdabb3bd5e6c2ffb291dcc",
+        "doi": "10.14722/ndss.2021.24365"
+      }
+    },
+    {
+      "name": "3GPP TS 24.501 (5G NAS)",
+      "identity": {
+        "standard": "3GPP TS 24.501",
+        "version": "Release 17"
+      }
+    },
+    {
+      "name": "3GPP TS 38.331 (5G NR RRC)",
+      "identity": {
+        "standard": "3GPP TS 38.331",
+        "version": "Release 17"
+      }
+    },
+    {
+      "name": "ITU-T X.691 (ASN.1 PER)",
+      "identity": {
+        "standard": "ITU-T Rec. X.691 | ISO/IEC 8825-2",
+        "version": "2021-02"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

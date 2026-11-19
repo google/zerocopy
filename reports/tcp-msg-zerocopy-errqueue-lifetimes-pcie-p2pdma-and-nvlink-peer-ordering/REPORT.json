@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "systems/socket-zerocopy",
+    "zerocopy/dma-lifetimes",
+    "isa/peer-fabric-ordering",
+    "verification/buffer-ownership"
+  ],
+  "subjects": [
+    {
+      "name": "Linux Kernel (MSG_ZEROCOPY, Device Memory TCP, and PCIe P2PDMA)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "NVIDIA GDRCopy",
+      "identity": {
+        "repository": "NVIDIA/gdrcopy",
+        "revision": "0d85ee38d696495592c1d589ab42e021d35cda61"
+      }
+    },
+    {
+      "name": "NVIDIA Collective Communications Library (NCCL)",
+      "identity": {
+        "repository": "NVIDIA/nccl",
+        "revision": "ad2d192c1f279aefcaf340f67e07880b65a1116b"
+      }
+    },
+    {
+      "name": "Linux RDMA Core Userspace Libraries",
+      "identity": {
+        "repository": "linux-rdma/rdma-core",
+        "revision": "8634881a642407093dcef4a77a361375bfa4cb69"
+      }
+    },
+    {
+      "name": "OpenUCX (Unified Communication X)",
+      "identity": {
+        "repository": "openucx/ucx",
+        "revision": "a910af25760ef4c6c99c8491919e21efffa34657"
+      }
+    },
+    {
+      "name": "A Formal Analysis of the NVIDIA PTX Memory Consistency Model",
+      "identity": {
+        "doi": "10.1145/3297858.3304043",
+        "venue": "ASPLOS 2019"
+      }
+    },
+    {
+      "name": "Mixed-Proxy Extensions for the NVIDIA PTX Memory Consistency Model",
+      "identity": {
+        "doi": "10.1145/3470496.3533045",
+        "venue": "ISCA 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

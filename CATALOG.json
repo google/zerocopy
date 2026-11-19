@@ -10152,6 +10152,106 @@
         "isa"
       ]
     },
+    "cellular-5g-nas-rrc-control-plane-verifiers-and-baseband-per-decoders": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3319535.3354263",
+            "repository": "relentless-warrior/5GReasoner",
+            "revision": "559ec7d607d2e2233cca96edc64f6bff2b5f4656"
+          },
+          "name": "5GReasoner"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2018.23313",
+            "repository": "relentless-warrior/LTEInspector",
+            "revision": "033184ce35f2dee31ed1103c1289a57d48579b2a"
+          },
+          "name": "LTEInspector"
+        },
+        {
+          "identity": {
+            "repository": "open5gs/open5gs",
+            "revision": "39120192ce1b27dc30db2929e1b84de90275350b"
+          },
+          "name": "Open5GS"
+        },
+        {
+          "identity": {
+            "repository": "srsran/srsRAN_Project",
+            "revision": "d2f4b70dda8e2c557d5b05a0ac5f92dbddda19bc",
+            "version": "release_25_10"
+          },
+          "name": "srsRAN Project (release_25_10)"
+        },
+        {
+          "identity": {
+            "repository": "srsran/srsRAN_Project",
+            "revision": "6ee24f9501b15090b453b0112f92df64fe302c08"
+          },
+          "name": "srsRAN Project (archived HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "vlm/asn1c",
+            "revision": "8a274c3f99761f249b6c205e1c89be1b1cb7c669"
+          },
+          "name": "asn1c"
+        },
+        {
+          "identity": {
+            "repository": "wireshark/wireshark",
+            "revision": "4917321c9c7ef31c2de1639496fd632449d53214"
+          },
+          "name": "Wireshark CSN.1 dissector"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2022.23136",
+            "repository": "FirmWire/FirmWire",
+            "revision": "8b540a63bfe80850d338df15a671e5bab08214eb"
+          },
+          "name": "FirmWire"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2021.24365",
+            "repository": "SysSec-KAIST/BaseSpec",
+            "revision": "e027413148ce79f53bfdabb3bd5e6c2ffb291dcc"
+          },
+          "name": "BaseSpec"
+        },
+        {
+          "identity": {
+            "standard": "3GPP TS 24.501",
+            "version": "Release 17"
+          },
+          "name": "3GPP TS 24.501 (5G NAS)"
+        },
+        {
+          "identity": {
+            "standard": "3GPP TS 38.331",
+            "version": "Release 17"
+          },
+          "name": "3GPP TS 38.331 (5G NR RRC)"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T Rec. X.691 | ISO/IEC 8825-2",
+            "version": "2021-02"
+          },
+          "name": "ITU-T X.691 (ASN.1 PER)"
+        }
+      ],
+      "topics": [
+        "domains/cellular-protocols",
+        "security/baseband-parsers",
+        "verification/protocol-automata",
+        "tooling/firmware-emulation"
+      ]
+    },
     "charon-cargo-shared-target-incremental": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -46198,6 +46298,83 @@
         "lean/tactics"
       ]
     },
+    "spacecraft-tmr-single-event-upsets-cfs-buses-and-dtn-bundle-custody": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "byuccl/spydrnet-tmr",
+            "revision": "5833d9fa9808c8582dd8845f990359a82247ef5a"
+          },
+          "name": "SpyDrNet-TMR"
+        },
+        {
+          "identity": {
+            "repository": "nasa/cFE",
+            "revision": "3673163b7fd34d7bb69546f1cd13ddb39ac7cde6"
+          },
+          "name": "NASA Core Flight Executive (cFE)"
+        },
+        {
+          "identity": {
+            "repository": "nasa/osal",
+            "revision": "2a96a4fff5b3a3252cb33e95862a02667e509e24"
+          },
+          "name": "NASA Operating System Abstraction Layer (OSAL)"
+        },
+        {
+          "identity": {
+            "repository": "nasa/fprime",
+            "revision": "83221ba82a7765fe7226681050e971b31b64d29f"
+          },
+          "name": "JPL F Prime (F')"
+        },
+        {
+          "identity": {
+            "repository": "nasa-jpl/ION-DTN",
+            "revision": "13dae7df4784d67591590719a92d2d653da79f95"
+          },
+          "name": "NASA-JPL ION-DTN"
+        },
+        {
+          "identity": {
+            "repository": "nasa/HDTN",
+            "revision": "f92cec5cad507cb69a3a05188334ba29ffdbbf5e"
+          },
+          "name": "NASA High-Rate Delay Tolerant Network (HDTN)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9171",
+            "standard": "IETF RFC 9171",
+            "url": "https://www.rfc-editor.org/rfc/rfc9171"
+          },
+          "name": "IETF RFC 9171 (Bundle Protocol Version 7)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9172",
+            "standard": "IETF RFC 9172",
+            "url": "https://www.rfc-editor.org/rfc/rfc9172"
+          },
+          "name": "IETF RFC 9172 (Bundle Protocol Security - BPSec)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC5326",
+            "standard": "IETF RFC 5326",
+            "url": "https://www.rfc-editor.org/rfc/rfc5326"
+          },
+          "name": "IETF RFC 5326 (Licklider Transmission Protocol - LTP)"
+        }
+      ],
+      "topics": [
+        "domains/spacecraft-flight",
+        "isa/radiation-tmr",
+        "systems/delay-tolerant-networking",
+        "verification/fault-scrubbing"
+      ]
+    },
     "sparse-tensor-coiteration-looplets-and-factorized-query-shredding": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -47679,6 +47856,66 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "tcp-msg-zerocopy-errqueue-lifetimes-pcie-p2pdma-and-nvlink-peer-ordering": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel (MSG_ZEROCOPY, Device Memory TCP, and PCIe P2PDMA)"
+        },
+        {
+          "identity": {
+            "repository": "NVIDIA/gdrcopy",
+            "revision": "0d85ee38d696495592c1d589ab42e021d35cda61"
+          },
+          "name": "NVIDIA GDRCopy"
+        },
+        {
+          "identity": {
+            "repository": "NVIDIA/nccl",
+            "revision": "ad2d192c1f279aefcaf340f67e07880b65a1116b"
+          },
+          "name": "NVIDIA Collective Communications Library (NCCL)"
+        },
+        {
+          "identity": {
+            "repository": "linux-rdma/rdma-core",
+            "revision": "8634881a642407093dcef4a77a361375bfa4cb69"
+          },
+          "name": "Linux RDMA Core Userspace Libraries"
+        },
+        {
+          "identity": {
+            "repository": "openucx/ucx",
+            "revision": "a910af25760ef4c6c99c8491919e21efffa34657"
+          },
+          "name": "OpenUCX (Unified Communication X)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3297858.3304043",
+            "venue": "ASPLOS 2019"
+          },
+          "name": "A Formal Analysis of the NVIDIA PTX Memory Consistency Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3470496.3533045",
+            "venue": "ISCA 2022"
+          },
+          "name": "Mixed-Proxy Extensions for the NVIDIA PTX Memory Consistency Model"
+        }
+      ],
+      "topics": [
+        "systems/socket-zerocopy",
+        "zerocopy/dma-lifetimes",
+        "isa/peer-fabric-ordering",
+        "verification/buffer-ownership"
       ]
     },
     "technology-independent-machine-interfaces-and-install-time-specialization": {

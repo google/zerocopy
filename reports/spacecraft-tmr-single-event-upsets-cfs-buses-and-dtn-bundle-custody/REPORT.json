@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "domains/spacecraft-flight",
+    "isa/radiation-tmr",
+    "systems/delay-tolerant-networking",
+    "verification/fault-scrubbing"
+  ],
+  "subjects": [
+    {
+      "name": "SpyDrNet-TMR",
+      "identity": {
+        "repository": "byuccl/spydrnet-tmr",
+        "revision": "5833d9fa9808c8582dd8845f990359a82247ef5a"
+      }
+    },
+    {
+      "name": "NASA Core Flight Executive (cFE)",
+      "identity": {
+        "repository": "nasa/cFE",
+        "revision": "3673163b7fd34d7bb69546f1cd13ddb39ac7cde6"
+      }
+    },
+    {
+      "name": "NASA Operating System Abstraction Layer (OSAL)",
+      "identity": {
+        "repository": "nasa/osal",
+        "revision": "2a96a4fff5b3a3252cb33e95862a02667e509e24"
+      }
+    },
+    {
+      "name": "JPL F Prime (F')",
+      "identity": {
+        "repository": "nasa/fprime",
+        "revision": "83221ba82a7765fe7226681050e971b31b64d29f"
+      }
+    },
+    {
+      "name": "NASA-JPL ION-DTN",
+      "identity": {
+        "repository": "nasa-jpl/ION-DTN",
+        "revision": "13dae7df4784d67591590719a92d2d653da79f95"
+      }
+    },
+    {
+      "name": "NASA High-Rate Delay Tolerant Network (HDTN)",
+      "identity": {
+        "repository": "nasa/HDTN",
+        "revision": "f92cec5cad507cb69a3a05188334ba29ffdbbf5e"
+      }
+    },
+    {
+      "name": "IETF RFC 9171 (Bundle Protocol Version 7)",
+      "identity": {
+        "standard": "IETF RFC 9171",
+        "doi": "10.17487/RFC9171",
+        "url": "https://www.rfc-editor.org/rfc/rfc9171"
+      }
+    },
+    {
+      "name": "IETF RFC 9172 (Bundle Protocol Security - BPSec)",
+      "identity": {
+        "standard": "IETF RFC 9172",
+        "doi": "10.17487/RFC9172",
+        "url": "https://www.rfc-editor.org/rfc/rfc9172"
+      }
+    },
+    {
+      "name": "IETF RFC 5326 (Licklider Transmission Protocol - LTP)",
+      "identity": {
+        "standard": "IETF RFC 5326",
+        "doi": "10.17487/RFC5326",
+        "url": "https://www.rfc-editor.org/rfc/rfc5326"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
