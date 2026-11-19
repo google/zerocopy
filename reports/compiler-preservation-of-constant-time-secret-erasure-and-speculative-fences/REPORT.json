@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/constant-time",
+    "compilers/secret-erasure",
+    "llvm",
+    "security",
+    "security/side-channels",
+    "security/speculative-execution",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Project (SelectOptimize, CodeGenPrepare, DeadStoreElimination, SimplifyCFG, PEI ZeroCallUsedRegs, X86SpeculativeLoadHardening)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1780833aa0f119a425d7f993aaac29d03cb04da6"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "CompCert-ct (Verified Secret Control-Flow Elimination via PCFL, ITP 2025)",
+      "identity": {
+        "repository": "knothed/CompCert-ct",
+        "revision": "2d1369a4888cff6fd5fd29f28a059e9cf72b1a08",
+        "doi": "10.4230/LIPIcs.ITP.2025.31"
+      }
+    },
+    {
+      "name": "CompCert-CT: Formal Verification of a Constant-Time Preserving C Compiler (Barthe et al., POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371075",
+        "eprint": "2019/926",
+        "venue": "PACMPL Vol. 4, POPL (2020)"
+      }
+    },
+    {
+      "name": "Jasmin compiler, CT/SCT checkers, SLH lowering, and verified stack zeroization",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "5741d17e3134f5b3b110e5e53494704d6d54f7c7"
+      }
+    },
+    {
+      "name": "FaCT constant-time DSL compiler",
+      "identity": {
+        "repository": "PLSysSec/fact",
+        "revision": "b3daa03f48447285117f426129dbf539a7f32f4a",
+        "doi": "10.1145/3314221.3314605"
+      }
+    },
+    {
+      "name": "BINSEC binary analysis platform (checkct RelSE CT and secret-erasure verification)",
+      "identity": {
+        "repository": "binsec/binsec",
+        "revision": "9749bd8aed7ee0a27959158b1e53e8789cb0e5ab",
+        "doi": "10.1109/SP40000.2020.00074"
+      }
+    },
+    {
+      "name": "Rust standard library core::hint (select_unpredictable, black_box)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "RustCrypto zeroize crate",
+      "identity": {
+        "repository": "RustCrypto/utils",
+        "revision": "77d1a3e6c2e8c28f49189258abb5d4405c0f1330"
+      }
+    },
+    {
+      "name": "subtle constant-time traits crate",
+      "identity": {
+        "repository": "dalek-cryptography/subtle",
+        "revision": "369e7463e85921377a5f2df80aabcbbc6d57a930"
+      }
+    },
+    {
+      "name": "GCC local x86-64 C compiler",
+      "identity": {
+        "toolchain": "gcc (Debian 15.2.0-14)",
+        "version": "15.2.0",
+        "target": "x86_64-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler and bundled LLVM backend",
+      "identity": {
+        "toolchain": "rustc",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)",
+        "llvm_version": "22.1.6",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "ISO/IEC 9899:2024 (C23) memset_explicit",
+      "identity": {
+        "standard": "ISO/IEC 9899:2024",
+        "clause": "7.26.6.2"
+      }
+    },
+    {
+      "name": "Preservation of Speculative Constant-Time by Compilation (Arranz-Olmos et al., POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704880",
+        "eprint": "2024/1203",
+        "venue": "PACMPL Vol. 9, POPL, Art. 44 (2025)"
+      }
+    },
+    {
+      "name": "KyberSlash: Exploiting secret-dependent division timings in Kyber implementations (Bernstein et al., TCHES 2025)",
+      "identity": {
+        "doi": "10.46586/tches.v2025.i2.209-234",
+        "eprint": "2024/1049",
+        "venue": "IACR TCHES Vol. 2025, Issue 2, pp. 209-234"
+      }
+    },
+    {
+      "name": "What You Get is What You C (Simon, Chisnall, Anderson, EuroS&P 2018)",
+      "identity": {
+        "doi": "10.1109/EuroSP.2018.00009",
+        "venue": "IEEE EuroS&P (2018)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
