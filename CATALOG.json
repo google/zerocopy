@@ -12676,6 +12676,149 @@
         "aeneas/lean-backend"
       ]
     },
+    "cryptographic-protocol-synthesis-mpc-compilers-and-information-flow": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "apl-cornell/viaduct",
+            "revision": "34b7a4df04ca7230abf62ad9f3abd17092a74d5c"
+          },
+          "name": "Viaduct compiler and runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454074",
+            "url": "https://eprint.iacr.org/2021/468"
+          },
+          "name": "Viaduct: An Extensible, Optimizing Compiler for Secure Distributed Programs (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/2401.04131v1",
+            "version": "arXiv:2401.04131v1"
+          },
+          "name": "Secure Synthesis of Distributed Cryptographic Applications (Technical Report)"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/owl",
+            "revision": "1b56f8cc70a067721917b9ccb60430417ada68f0"
+          },
+          "name": "Owl verifier and OwlC extraction library"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46215.2023.10179477",
+            "url": "https://eprint.iacr.org/2023/473"
+          },
+          "name": "Owl: Compositional Verification of Security Protocols via an Information-Flow Type System (IEEE S&P 2023)"
+        },
+        {
+          "identity": {
+            "url": "https://eprint.iacr.org/2025/1092",
+            "version": "IACR ePrint 2025/1092"
+          },
+          "name": "OwlC: Compiling Security Protocols to Verified, Secure, High-Performance Libraries (USENIX Security 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2014.48"
+          },
+          "name": "Wysteria: A Programming Language for Generic, Mixed-Mode Multiparty Computations (IEEE S&P 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.22152/programming-journal.org/2023/7/14",
+            "url": "https://arxiv.org/abs/2302.10076v1"
+          },
+          "name": "Symphony: Expressive Secure Multiparty Computation with Coordination (Programming 2023)"
+        },
+        {
+          "identity": {
+            "repository": "plum-umd/symphony-lang",
+            "revision": "4396e5fb45c57bf7a045c2d00fd53108744caa5c"
+          },
+          "name": "Symphony interpreter"
+        },
+        {
+          "identity": {
+            "repository": "iden3/circom",
+            "revision": "9b4b23331644e17868c90a85768826ed3bcba59f"
+          },
+          "name": "circom compiler and documentation"
+        },
+        {
+          "identity": {
+            "repository": "iden3/circomlib",
+            "revision": "8852c3bc91e3ede890f2143f36457b25302abce2"
+          },
+          "name": "circomlib circuit templates"
+        },
+        {
+          "identity": {
+            "repository": "noir-lang/noir",
+            "revision": "af5d97aaa0f67fde5da9a7a790968b88cffff439"
+          },
+          "name": "Noir compiler and documentation"
+        },
+        {
+          "identity": {
+            "repository": "zcash/halo2",
+            "revision": "7465edf9110aace00b8c24b96270e1b820fd39fb",
+            "version": "halo2_proofs 0.4.1"
+          },
+          "name": "halo2 proving system and book"
+        },
+        {
+          "identity": {
+            "repository": "trailofbits/circomspect",
+            "revision": "50010b623ed4f3bff9d1b0363cfe952385b47af3"
+          },
+          "name": "circomspect static analyzer documentation"
+        },
+        {
+          "identity": {
+            "repository": "Veridise/Picus",
+            "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+          },
+          "name": "Picus (QED2 implementation) README"
+        },
+        {
+          "identity": {
+            "repository": "0xPARC/zk-bug-tracker",
+            "revision": "56a996672fb50486279126c8e12530f2bf933d0b"
+          },
+          "name": "ZK Bug Tracker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591282",
+            "url": "https://eprint.iacr.org/2023/512"
+          },
+          "name": "Automated Detection of Under-Constrained Circuits in Zero-Knowledge Proofs (PLDI 2023)"
+        },
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/2402.15293v4",
+            "version": "arXiv:2402.15293v4"
+          },
+          "name": "SoK: What don't we know? Understanding Security Vulnerabilities in SNARKs (USENIX Security 2024)"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/mpc-compilers",
+        "security/information-flow-control",
+        "security/zero-knowledge-circuits",
+        "compilers",
+        "compilers/protocol-synthesis",
+        "pl",
+        "pl/information-flow",
+        "verification",
+        "verification/cryptography"
+      ]
+    },
     "csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -15166,6 +15309,174 @@
         "rustc",
         "rustc/codegen",
         "verification"
+      ]
+    },
+    "homomorphic-encryption-compilers-and-differential-privacy-types": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/heir",
+            "revision": "372c088c9c4456f56ade7151058bbb900394d21b"
+          },
+          "name": "HEIR homomorphic encryption compiler toolchain"
+        },
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/2508.11095v1",
+            "version": "arXiv:2508.11095v1"
+          },
+          "name": "HEIR: A Universal Compiler for Homomorphic Encryption"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/EVA",
+            "revision": "7ea9d34b0380c25c03fe529fe9a755a6477144ce"
+          },
+          "name": "EVA compiler for Microsoft SEAL"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386023",
+            "url": "https://arxiv.org/abs/1912.11951v2"
+          },
+          "name": "EVA: An Encrypted Vector Arithmetic Language and Compiler for Efficient Homomorphic Computation (PLDI 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454050",
+            "url": "https://arxiv.org/abs/2101.07841v1"
+          },
+          "name": "Porcupine: A Synthesizing Compiler for Vectorized Homomorphic Encryption (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "repository": "raghav198/coyote",
+            "revision": "d0d6d43a39be0be91709168b86b9cee8c60b4946"
+          },
+          "name": "Coyote vectorizing compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3582016.3582057"
+          },
+          "name": "Coyote: A Compiler for Vectorizing Encrypted Arithmetic Circuits (ASPLOS 2023)"
+        },
+        {
+          "identity": {
+            "repository": "zama-ai/concrete",
+            "revision": "ecb729bb0a6d516c7742593b66e1db11122f0db9"
+          },
+          "name": "Concrete TFHE compiler"
+        },
+        {
+          "identity": {
+            "repository": "zama-ai/tfhe-rs",
+            "revision": "fbc8b20de2bbf2f0e1582451d6399dec1bc45685",
+            "version": "1.9.0"
+          },
+          "name": "TFHE-rs"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/SEAL",
+            "revision": "ce53aa40969364f79599009bc8882f71fce0c13d",
+            "version": "4.7.2"
+          },
+          "name": "Microsoft SEAL"
+        },
+        {
+          "identity": {
+            "repository": "openfheorg/openfhe-development",
+            "revision": "b59e1f291965f14fbee5172cd83a20f5b856204f"
+          },
+          "name": "OpenFHE"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1863543.1863568"
+          },
+          "name": "Distance Makes the Types Grow Stronger: A Calculus for Differential Privacy (ICFP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2429069.2429113"
+          },
+          "name": "Linear Dependent Types for Differential Privacy (POPL 2013)"
+        },
+        {
+          "identity": {
+            "repository": "ejgallego/dfuzz",
+            "revision": "09b408e4f917cdd6945bdc20b7dd325ff80e5843"
+          },
+          "name": "DFuzz type checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3589207"
+          },
+          "name": "Contextual Linear Types for Differential Privacy (ACM TOPLAS 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2382196.2382264"
+          },
+          "name": "On Significance of the Least Significant Bits for Differential Privacy (CCS 2012)"
+        },
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/2004.00010v6",
+            "version": "arXiv:2004.00010v6"
+          },
+          "name": "The Discrete Gaussian for Differential Privacy"
+        },
+        {
+          "identity": {
+            "repository": "IBM/discrete-gaussian-differential-privacy",
+            "revision": "cb190d2a990a78eff6e21159203bc888e095f01b"
+          },
+          "name": "Discrete Gaussian reference sampler"
+        },
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/2207.10635v2",
+            "version": "arXiv:2207.10635v2"
+          },
+          "name": "Widespread Underestimation of Sensitivity in Differentially Private Libraries and How to Fix It (CCS 2022)"
+        },
+        {
+          "identity": {
+            "repository": "opendp/opendp",
+            "revision": "9e5d8b039cd573ea5b8d80ce8a7dff975d5c32ad",
+            "version": "0.16.0-dev"
+          },
+          "name": "OpenDP library"
+        },
+        {
+          "identity": {
+            "repository": "google/differential-privacy",
+            "revision": "29ffc2a414b199ff62c040cf60c0f55599c7da22"
+          },
+          "name": "Google differential privacy libraries"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/SampCert",
+            "revision": "a2c53bb5ff790e729e252958060699b7eff898b9"
+          },
+          "name": "SampCert verified samplers"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/homomorphic-encryption",
+        "security/differential-privacy",
+        "compilers",
+        "compilers/fhe",
+        "pl",
+        "pl/linear-types",
+        "verification/floating-point",
+        "verification/cryptography"
       ]
     },
     "hybrid-functional-spatial-and-plan-guided-shallow-translation-in-lean4": {

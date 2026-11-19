@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "security",
+    "security/mpc-compilers",
+    "security/information-flow-control",
+    "security/zero-knowledge-circuits",
+    "compilers",
+    "compilers/protocol-synthesis",
+    "pl",
+    "pl/information-flow",
+    "verification",
+    "verification/cryptography"
+  ],
+  "subjects": [
+    {
+      "name": "Viaduct compiler and runtime",
+      "identity": {
+        "repository": "apl-cornell/viaduct",
+        "revision": "34b7a4df04ca7230abf62ad9f3abd17092a74d5c"
+      }
+    },
+    {
+      "name": "Viaduct: An Extensible, Optimizing Compiler for Secure Distributed Programs (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454074",
+        "url": "https://eprint.iacr.org/2021/468"
+      }
+    },
+    {
+      "name": "Secure Synthesis of Distributed Cryptographic Applications (Technical Report)",
+      "identity": {
+        "url": "https://arxiv.org/abs/2401.04131v1",
+        "version": "arXiv:2401.04131v1"
+      }
+    },
+    {
+      "name": "Owl verifier and OwlC extraction library",
+      "identity": {
+        "repository": "secure-foundations/owl",
+        "revision": "1b56f8cc70a067721917b9ccb60430417ada68f0"
+      }
+    },
+    {
+      "name": "Owl: Compositional Verification of Security Protocols via an Information-Flow Type System (IEEE S&P 2023)",
+      "identity": {
+        "doi": "10.1109/SP46215.2023.10179477",
+        "url": "https://eprint.iacr.org/2023/473"
+      }
+    },
+    {
+      "name": "OwlC: Compiling Security Protocols to Verified, Secure, High-Performance Libraries (USENIX Security 2025)",
+      "identity": {
+        "url": "https://eprint.iacr.org/2025/1092",
+        "version": "IACR ePrint 2025/1092"
+      }
+    },
+    {
+      "name": "Wysteria: A Programming Language for Generic, Mixed-Mode Multiparty Computations (IEEE S&P 2014)",
+      "identity": {
+        "doi": "10.1109/SP.2014.48"
+      }
+    },
+    {
+      "name": "Symphony: Expressive Secure Multiparty Computation with Coordination (Programming 2023)",
+      "identity": {
+        "doi": "10.22152/programming-journal.org/2023/7/14",
+        "url": "https://arxiv.org/abs/2302.10076v1"
+      }
+    },
+    {
+      "name": "Symphony interpreter",
+      "identity": {
+        "repository": "plum-umd/symphony-lang",
+        "revision": "4396e5fb45c57bf7a045c2d00fd53108744caa5c"
+      }
+    },
+    {
+      "name": "circom compiler and documentation",
+      "identity": {
+        "repository": "iden3/circom",
+        "revision": "9b4b23331644e17868c90a85768826ed3bcba59f"
+      }
+    },
+    {
+      "name": "circomlib circuit templates",
+      "identity": {
+        "repository": "iden3/circomlib",
+        "revision": "8852c3bc91e3ede890f2143f36457b25302abce2"
+      }
+    },
+    {
+      "name": "Noir compiler and documentation",
+      "identity": {
+        "repository": "noir-lang/noir",
+        "revision": "af5d97aaa0f67fde5da9a7a790968b88cffff439"
+      }
+    },
+    {
+      "name": "halo2 proving system and book",
+      "identity": {
+        "repository": "zcash/halo2",
+        "revision": "7465edf9110aace00b8c24b96270e1b820fd39fb",
+        "version": "halo2_proofs 0.4.1"
+      }
+    },
+    {
+      "name": "circomspect static analyzer documentation",
+      "identity": {
+        "repository": "trailofbits/circomspect",
+        "revision": "50010b623ed4f3bff9d1b0363cfe952385b47af3"
+      }
+    },
+    {
+      "name": "Picus (QED2 implementation) README",
+      "identity": {
+        "repository": "Veridise/Picus",
+        "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+      }
+    },
+    {
+      "name": "ZK Bug Tracker",
+      "identity": {
+        "repository": "0xPARC/zk-bug-tracker",
+        "revision": "56a996672fb50486279126c8e12530f2bf933d0b"
+      }
+    },
+    {
+      "name": "Automated Detection of Under-Constrained Circuits in Zero-Knowledge Proofs (PLDI 2023)",
+      "identity": {
+        "doi": "10.1145/3591282",
+        "url": "https://eprint.iacr.org/2023/512"
+      }
+    },
+    {
+      "name": "SoK: What don't we know? Understanding Security Vulnerabilities in SNARKs (USENIX Security 2024)",
+      "identity": {
+        "url": "https://arxiv.org/abs/2402.15293v4",
+        "version": "arXiv:2402.15293v4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

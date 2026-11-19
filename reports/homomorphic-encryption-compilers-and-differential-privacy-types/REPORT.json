@@ -1,0 +1,168 @@
+{
+  "topics": [
+    "security",
+    "security/homomorphic-encryption",
+    "security/differential-privacy",
+    "compilers",
+    "compilers/fhe",
+    "pl",
+    "pl/linear-types",
+    "verification/floating-point",
+    "verification/cryptography"
+  ],
+  "subjects": [
+    {
+      "name": "HEIR homomorphic encryption compiler toolchain",
+      "identity": {
+        "repository": "google/heir",
+        "revision": "372c088c9c4456f56ade7151058bbb900394d21b"
+      }
+    },
+    {
+      "name": "HEIR: A Universal Compiler for Homomorphic Encryption",
+      "identity": {
+        "url": "https://arxiv.org/abs/2508.11095v1",
+        "version": "arXiv:2508.11095v1"
+      }
+    },
+    {
+      "name": "EVA compiler for Microsoft SEAL",
+      "identity": {
+        "repository": "microsoft/EVA",
+        "revision": "7ea9d34b0380c25c03fe529fe9a755a6477144ce"
+      }
+    },
+    {
+      "name": "EVA: An Encrypted Vector Arithmetic Language and Compiler for Efficient Homomorphic Computation (PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3386023",
+        "url": "https://arxiv.org/abs/1912.11951v2"
+      }
+    },
+    {
+      "name": "Porcupine: A Synthesizing Compiler for Vectorized Homomorphic Encryption (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454050",
+        "url": "https://arxiv.org/abs/2101.07841v1"
+      }
+    },
+    {
+      "name": "Coyote vectorizing compiler",
+      "identity": {
+        "repository": "raghav198/coyote",
+        "revision": "d0d6d43a39be0be91709168b86b9cee8c60b4946"
+      }
+    },
+    {
+      "name": "Coyote: A Compiler for Vectorizing Encrypted Arithmetic Circuits (ASPLOS 2023)",
+      "identity": {
+        "doi": "10.1145/3582016.3582057"
+      }
+    },
+    {
+      "name": "Concrete TFHE compiler",
+      "identity": {
+        "repository": "zama-ai/concrete",
+        "revision": "ecb729bb0a6d516c7742593b66e1db11122f0db9"
+      }
+    },
+    {
+      "name": "TFHE-rs",
+      "identity": {
+        "repository": "zama-ai/tfhe-rs",
+        "revision": "fbc8b20de2bbf2f0e1582451d6399dec1bc45685",
+        "version": "1.9.0"
+      }
+    },
+    {
+      "name": "Microsoft SEAL",
+      "identity": {
+        "repository": "microsoft/SEAL",
+        "revision": "ce53aa40969364f79599009bc8882f71fce0c13d",
+        "version": "4.7.2"
+      }
+    },
+    {
+      "name": "OpenFHE",
+      "identity": {
+        "repository": "openfheorg/openfhe-development",
+        "revision": "b59e1f291965f14fbee5172cd83a20f5b856204f"
+      }
+    },
+    {
+      "name": "Distance Makes the Types Grow Stronger: A Calculus for Differential Privacy (ICFP 2010)",
+      "identity": {
+        "doi": "10.1145/1863543.1863568"
+      }
+    },
+    {
+      "name": "Linear Dependent Types for Differential Privacy (POPL 2013)",
+      "identity": {
+        "doi": "10.1145/2429069.2429113"
+      }
+    },
+    {
+      "name": "DFuzz type checker",
+      "identity": {
+        "repository": "ejgallego/dfuzz",
+        "revision": "09b408e4f917cdd6945bdc20b7dd325ff80e5843"
+      }
+    },
+    {
+      "name": "Contextual Linear Types for Differential Privacy (ACM TOPLAS 2023)",
+      "identity": {
+        "doi": "10.1145/3589207"
+      }
+    },
+    {
+      "name": "On Significance of the Least Significant Bits for Differential Privacy (CCS 2012)",
+      "identity": {
+        "doi": "10.1145/2382196.2382264"
+      }
+    },
+    {
+      "name": "The Discrete Gaussian for Differential Privacy",
+      "identity": {
+        "url": "https://arxiv.org/abs/2004.00010v6",
+        "version": "arXiv:2004.00010v6"
+      }
+    },
+    {
+      "name": "Discrete Gaussian reference sampler",
+      "identity": {
+        "repository": "IBM/discrete-gaussian-differential-privacy",
+        "revision": "cb190d2a990a78eff6e21159203bc888e095f01b"
+      }
+    },
+    {
+      "name": "Widespread Underestimation of Sensitivity in Differentially Private Libraries and How to Fix It (CCS 2022)",
+      "identity": {
+        "url": "https://arxiv.org/abs/2207.10635v2",
+        "version": "arXiv:2207.10635v2"
+      }
+    },
+    {
+      "name": "OpenDP library",
+      "identity": {
+        "repository": "opendp/opendp",
+        "revision": "9e5d8b039cd573ea5b8d80ce8a7dff975d5c32ad",
+        "version": "0.16.0-dev"
+      }
+    },
+    {
+      "name": "Google differential privacy libraries",
+      "identity": {
+        "repository": "google/differential-privacy",
+        "revision": "29ffc2a414b199ff62c040cf60c0f55599c7da22"
+      }
+    },
+    {
+      "name": "SampCert verified samplers",
+      "identity": {
+        "repository": "leanprover/SampCert",
+        "revision": "a2c53bb5ff790e729e252958060699b7eff898b9"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
