@@ -32418,6 +32418,80 @@
         "verification/isa-coverage"
       ]
     },
+    "maritime-colregs-velocity-obstacles-ais-spoofing-and-undervoltage-blackouts": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "moos-ivp/moos-ivp",
+            "revision": "ab1ac374a44a5c567187b4f27abce2e02e8fbefa"
+          },
+          "name": "MOOS-IvP autonomous marine vehicle Interval Programming helm and COLREGs behaviors"
+        },
+        {
+          "identity": {
+            "repository": "OpenCPN/OpenCPN",
+            "revision": "cdc797ca09640b9af9b228d7545c1930437a7065"
+          },
+          "name": "OpenCPN chartplotter AIS target decoder, temporal projection, and CPA alerting engine"
+        },
+        {
+          "identity": {
+            "repository": "ArduPilot/ardupilot",
+            "revision": "9d7be65cd63ae0ee722b002ccc606f0e8d97cd74"
+          },
+          "name": "ArduPilot Rover/Boat AIS receiver, object-avoidance database, and BendyRuler planner"
+        },
+        {
+          "identity": {
+            "publisher": "International Maritime Organization",
+            "standard": "IMO COLREGs 1972 (as amended, Part B Steering and Sailing Rules 8 and 13-17)",
+            "year": "1972"
+          },
+          "name": "IMO Convention on the International Regulations for Preventing Collisions at Sea (COLREGs)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JOE.2013.2254214",
+            "title": "Safe Maritime Autonomous Navigation With COLREGS, Using Velocity Obstacles",
+            "year": "2014"
+          },
+          "name": "Kuwata, Wolf, Zarzhitsky, and Huntsberger COLREGs Velocity Obstacles specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2664243.2664257",
+            "title": "A Security Evaluation of AIS Automated Identification System",
+            "year": "2014"
+          },
+          "name": "Balduzzi, Pasta, and Wilhoit VHF Automatic Identification System (AIS) security evaluation"
+        },
+        {
+          "identity": {
+            "docket": "DCA24MM031",
+            "incident_date": "2024-03-26",
+            "publisher": "National Transportation Safety Board",
+            "report": "MIR-25-40",
+            "url": "https://www.ntsb.gov/investigations/Pages/DCA24MM031.aspx"
+          },
+          "name": "NTSB Marine Investigation Report MIR-25-40 (DCA24MM031) Contact of Containership Dali with Francis Scott Key Bridge"
+        },
+        {
+          "identity": {
+            "incident_date": "2021-03-23",
+            "publisher": "Panama Maritime Authority Directorate General of Merchant Marine",
+            "vessel_imo": "9811000"
+          },
+          "name": "Panama Maritime Authority Marine Safety Investigation Report on MV Ever Given Grounding in Suez Canal"
+        }
+      ],
+      "topics": [
+        "domains/maritime-colregs-collision-avoidance",
+        "security/ais-gnss-kinematic-consistency",
+        "systems/marine-switchboard-undervoltage-interlocks",
+        "verification/hydrodynamic-bank-suction-margins"
+      ]
+    },
     "markov-decision-model-checking-storm-prism-and-sound-interval-iteration": {
       "observed_at": "2026-11-19",
       "subjects": [
