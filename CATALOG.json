@@ -35524,6 +35524,105 @@
         "verification/refinement"
       ]
     },
+    "octagon-closures-elina-zonotopes-astree-filters-and-widening-operators": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "antoinemine/apron",
+            "revision": "0a7ca30527c29f5fc894bf424b4d24ca638beb4e",
+            "url": "https://github.com/antoinemine/apron"
+          },
+          "name": "APRON Numerical Abstract Domain Library"
+        },
+        {
+          "identity": {
+            "repository": "eth-sri/elina",
+            "revision": "f524156d292ac3a6f3cd676e2d2e7db6629e2b6f",
+            "url": "https://github.com/eth-sri/elina"
+          },
+          "name": "ELINA ETH Library for Numerical Analysis"
+        },
+        {
+          "identity": {
+            "repository": "NASA-SW-VnV/ikos",
+            "revision": "ac7f7c1738976cabc58c6a53413df6e458995c38",
+            "url": "https://github.com/NASA-SW-VnV/ikos"
+          },
+          "name": "IKOS Inference Kernel for Open Static Analyzers"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10990-006-8609-1",
+            "publication": "Higher-Order and Symbolic Computation 19(1), pp. 31-100",
+            "title": "The octagon abstract domain"
+          },
+          "name": "The Octagon Abstract Domain (HOSC 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10703-009-0081-y",
+            "publication": "Formal Methods in System Design 35(3), pp. 279-323",
+            "title": "Weakly-relational shapes for numeric abstractions: improved algorithms and proofs of correctness"
+          },
+          "name": "Weakly-Relational Shapes for Numeric Abstractions (FMSD 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738012",
+            "publication": "ACM SIGPLAN PLDI 2015",
+            "title": "Making numerical program analysis fast"
+          },
+          "name": "Making Numerical Program Analysis Fast (PLDI 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009885",
+            "publication": "ACM SIGPLAN POPL 2017",
+            "title": "Fast polyhedra abstract domain"
+          },
+          "name": "Fast Polyhedra Abstract Domain (POPL 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-02658-4_47",
+            "publication": "CAV 2009, LNCS 5643, pp. 627-633",
+            "title": "The zonotope abstract domain Taylor1+"
+          },
+          "name": "The Zonotope Abstract Domain Taylor1+ (CAV 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-24725-8_4",
+            "publication": "ESOP 2004, LNCS 2986, pp. 33-48",
+            "title": "Static analysis of digital filters"
+          },
+          "name": "Static Analysis of Digital Filters (ESOP 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-31987-0_3",
+            "publication": "ESOP 2005, LNCS 3444, pp. 21-30",
+            "title": "The ASTREE Analyzer"
+          },
+          "name": "The ASTREE Analyzer (ESOP 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-24725-8_2",
+            "publication": "ESOP 2004, LNCS 2986, pp. 3-17",
+            "title": "Relational abstract domains for the detection of floating-point run-time errors"
+          },
+          "name": "Relational Abstract Domains for the Detection of Floating-Point Run-Time Errors (ESOP 2004)"
+        }
+      ],
+      "topics": [
+        "verification/abstract-interpretation",
+        "compilers/numerical-domains",
+        "smt/polyhedral-relaxations",
+        "domains/critical-avionics"
+      ]
+    },
     "opaque-origin-csp-sandboxes-smil-svg-and-harmonic-pareto-rendering": {
       "observed_at": "2026-11-17",
       "subjects": [
