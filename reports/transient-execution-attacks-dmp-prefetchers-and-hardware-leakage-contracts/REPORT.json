@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "security",
+    "security/side-channels",
+    "isa",
+    "isa/speculative-execution",
+    "verification",
+    "verification/leakage-contracts",
+    "compilers",
+    "compilers/constant-time"
+  ],
+  "subjects": [
+    {
+      "name": "Hardware-Software Contracts for Secure Speculation",
+      "identity": {
+        "doi": "10.48550/arXiv.2006.03841",
+        "arxiv": "2006.03841",
+        "venue": "IEEE S&P 2021"
+      }
+    },
+    {
+      "name": "Spectector",
+      "identity": {
+        "repository": "spectector/spectector",
+        "revision": "839bec7d96cd5b3387377cb42d26eb8ad55ecd4c",
+        "doi": "10.1109/SP40000.2020.00011"
+      }
+    },
+    {
+      "name": "Blade compiler mitigation framework",
+      "identity": {
+        "repository": "PLSysSec/lucet-blade",
+        "revision": "7a69d214807edb1e1a7c07ff3444ea7ac8f2aaf5",
+        "submodule_repository": "PLSysSec/wasmtime-blade",
+        "submodule_revision": "8082aeaa5f593d8f343c9e6f1cca111802732724",
+        "doi": "10.1145/3434330"
+      }
+    },
+    {
+      "name": "Jasmin compiler and Speculative Constant-Time checker",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "5741d17e3134f5b3b110e5e53494704d6d54f7c7",
+        "doi": "10.1109/SP46215.2023.10179418"
+      }
+    },
+    {
+      "name": "LeaVe RTL leakage contract verifier",
+      "identity": {
+        "repository": "zilongwang123/LeaVe",
+        "revision": "9494f0d23453cc89e974e241c32d878cdea67070",
+        "doi": "10.48550/arXiv.2305.06979"
+      }
+    },
+    {
+      "name": "Revizor model-based CPU contract fuzzer",
+      "identity": {
+        "repository": "microsoft/side-channel-fuzzer",
+        "revision": "cc9fa2e53d92c496586689f44d6ea1740d95bd1d"
+      }
+    },
+    {
+      "name": "Augury and GoFetch Data Memory-Dependent Prefetcher studies",
+      "identity": {
+        "augury_doi": "10.1109/SP46214.2022.9833570",
+        "gofetch_url": "https://www.usenix.org/conference/usenixsecurity24/presentation/chen-boru"
+      }
+    },
+    {
+      "name": "Foundational transient-execution literature",
+      "identity": {
+        "spectre_doi": "10.1109/SP.2019.00002",
+        "meltdown_doi": "10.48550/arXiv.1801.01207",
+        "ridl_doi": "10.1109/SP.2019.00087",
+        "lvi_doi": "10.1109/SP40000.2020.00089",
+        "pacman_doi": "10.1145/3470496.3527429"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
