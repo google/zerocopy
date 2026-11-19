@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "domains/hvdc-modular-multilevel-converters",
+    "systems/dc-breaker-fault-commutation",
+    "smt/subsynchronous-impedance-passivity",
+    "verification/grid-fault-ride-through-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "DPsim real-time electromagnetic transient and dynamic phasor power system simulator",
+      "identity": {
+        "repository": "sogno-platform/dpsim",
+        "revision": "7fcaac00758cc7f448179edf2a508021dd1374b8"
+      }
+    },
+    {
+      "name": "PowerSimulationsDynamics.jl converter, PLL, and grid-interfacing dynamic solver",
+      "identity": {
+        "repository": "NREL-Sienna/PowerSimulationsDynamics.jl",
+        "revision": "03acde980eaae3e6c41a71958bce1556d05c1ab9"
+      }
+    },
+    {
+      "name": "OpenModelica differential-algebraic equation and hybrid zero-crossing runtime",
+      "identity": {
+        "repository": "OpenModelica/OpenModelica",
+        "revision": "19f5c56d86ea86e8fc32d299ab88405bdcb422ed"
+      }
+    },
+    {
+      "name": "Lesnicar and Marquardt Modular Multilevel Converter (MMC) topology specification",
+      "identity": {
+        "title": "An Innovative Modular Multilevel Converter Topology Suitable for a Wide Power Range",
+        "doi": "10.1109/PTC.2003.1304403",
+        "year": "2003"
+      }
+    },
+    {
+      "name": "Tu, Xu, and Xu MMC reduced-switching sorting and circulating current suppression",
+      "identity": {
+        "title": "Reduced Switching-Frequency Modulation and Circulating Current Suppression for Modular Multilevel Converters",
+        "doi": "10.1109/TPWRD.2011.2115258",
+        "year": "2011"
+      }
+    },
+    {
+      "name": "Hafner and Jacobson Proactive Hybrid HVDC Circuit Breaker specification",
+      "identity": {
+        "title": "Proactive Hybrid HVDC Breakers - A Key Innovation for Reliable HVDC Grids",
+        "conference": "CIGRE Bologna Symposium",
+        "paper_id": "CIGRE-Bologna-2011-0264",
+        "year": "2011"
+      }
+    },
+    {
+      "name": "National Grid ESO and Ofgem 9 August 2019 Great Britain Power Outage Investigation",
+      "identity": {
+        "publisher": "Ofgem and National Grid ESO",
+        "report": "9 August 2019 Power Outage Investigation Final Report and Technical Report",
+        "published": "2020-01-03",
+        "url": "https://www.ofgem.gov.uk/publications/9-august-2019-power-outage-investigation-report"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
