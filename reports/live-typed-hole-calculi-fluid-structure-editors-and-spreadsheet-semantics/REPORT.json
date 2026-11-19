@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "pl",
+    "pl/live-programming",
+    "pl/spreadsheets",
+    "tooling",
+    "tooling/structure-editors",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Hazel programming environment",
+      "identity": {
+        "repository": "hazelgrove/hazel",
+        "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+      }
+    },
+    {
+      "name": "Marked Lambda Calculus Agda mechanization (Total Type Error Localization and Recovery with Holes)",
+      "identity": {
+        "repository": "hazelgrove/error-localization-agda",
+        "revision": "42bc0443a1d8846bb817d49e3e5c5820c0aad18d",
+        "doi": "10.1145/3632910",
+        "artifact_doi": "10.5281/zenodo.10129703"
+      }
+    },
+    {
+      "name": "Hazelnut and Hazelnut Live typed-hole calculi",
+      "identity": {
+        "paper_hazelnut_doi": "10.1145/3009837.3009900",
+        "paper_hazelnut_live_doi": "10.1145/3290327"
+      }
+    },
+    {
+      "name": "tylr tile-based gradual structure editor",
+      "identity": {
+        "repository": "hazelgrove/tylr",
+        "revision": "1543f29f87db20bdd94bc9fa82df5c8142ae73e7",
+        "paper_tyde22_doi": "10.1145/3546196.3550164",
+        "paper_vlhcc23_doi": "10.1109/VL-HCC57772.2023.00016",
+        "paper_oopsla25_doi": "10.1145/3763182"
+      }
+    },
+    {
+      "name": "Pantograph fluid typed structure editor",
+      "identity": {
+        "repository": "jeprinz/pantograph",
+        "revision": "918a9ac0d8531179fce937f7d16323a6b2cff1d2",
+        "doi": "10.1145/3704864"
+      }
+    },
+    {
+      "name": "Linda generative communication and Dynamicland Realtalk",
+      "identity": {
+        "paper_linda_doi": "10.1145/2363.2433",
+        "documentation_url": "https://dynamicland.org/"
+      }
+    },
+    {
+      "name": "Glamorous Toolkit Moldable Inspector",
+      "identity": {
+        "repository": "feenkcom/gtoolkit",
+        "revision": "1a3e471c637549bd51950f09683afdc15183b48b",
+        "inspector_repository": "feenkcom/gtoolkit-inspector",
+        "inspector_revision": "46549bc9db9045ea8c429cc37c9ce8babc5fb2fe",
+        "paper_onward15_doi": "10.1145/2814228.2814234"
+      }
+    },
+    {
+      "name": "Spreadsheet calculation, functional abstraction, and unit/structural verification literature (Calc.ts, SDFs, Elastic SDFs, UCheck, ClassSheets, ExceLint)",
+      "identity": {
+        "paper_sdf_icfp03_doi": "10.1145/944746.944721",
+        "paper_elastic_sdf_jfp20_doi": "10.1017/S0956796820000234",
+        "paper_ucheck_jvlc07_doi": "10.1016/j.jvlc.2006.06.001",
+        "paper_ucheck_vlhcc04_doi": "10.1109/VLHCC.2004.29",
+        "paper_classsheets_ase05_doi": "10.1145/1101908.1101929",
+        "paper_excelint_oopsla18_doi": "10.1145/3276518",
+        "excelint_repository": "dbarowy/ExceLint",
+        "excelint_revision": "e8a8efd252a090945be8683ed42cfd714e8bb4b1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
