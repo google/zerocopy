@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "domains/eda-analog",
+    "isa/power-signal-integrity",
+    "security/fault-injection",
+    "verification/numerical-odes"
+  ],
+  "subjects": [
+    {
+      "name": "Sandia Xyce Parallel Electronic Simulator",
+      "identity": {
+        "repository": "Xyce/Xyce",
+        "revision": "369a7be860d0d55b147d7fe5defd47c992439859",
+        "url": "https://github.com/Xyce/Xyce"
+      }
+    },
+    {
+      "name": "OpenVAF Verilog-A to OSDI Compiler",
+      "identity": {
+        "repository": "pascalkuthe/OpenVAF",
+        "revision": "a9697ae7780518f021f9f64e819b3a57033bd39f",
+        "url": "https://github.com/pascalkuthe/OpenVAF"
+      }
+    },
+    {
+      "name": "Accellera Verilog-AMS Language Reference Manual",
+      "identity": {
+        "standard": "Accellera Verilog-AMS LRM",
+        "version": "2.4.0",
+        "date": "2014-05-30",
+        "url": "https://www.accellera.org/downloads/standards/v-ams"
+      }
+    },
+    {
+      "name": "Modified Nodal Approach (Ho, Ruehli, Brennan, 1975)",
+      "identity": {
+        "doi": "10.1109/TCS.1975.1084079",
+        "venue": "IEEE Transactions on Circuits and Systems, Vol. CAS-22, No. 6, pp. 504-509"
+      }
+    },
+    {
+      "name": "Ward-Dutton Charge-Oriented MOSFET Capacitance Model (1978)",
+      "identity": {
+        "doi": "10.1109/JSSC.1978.1051123",
+        "venue": "IEEE Journal of Solid-State Circuits, Vol. SC-13, No. 5, pp. 703-708"
+      }
+    },
+    {
+      "name": "Sakurai-Newton Alpha-Power Law MOSFET Delay Model (1990)",
+      "identity": {
+        "doi": "10.1109/4.52187",
+        "venue": "IEEE Journal of Solid-State Circuits, Vol. 25, No. 2, pp. 584-594"
+      }
+    },
+    {
+      "name": "CLKSCREW Software-Exposed DVFS Fault Analysis (Tang, Sethumadhavan, Stolfo, 2017)",
+      "identity": {
+        "venue": "26th USENIX Security Symposium, pp. 1057-1074",
+        "url": "https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang"
+      }
+    },
+    {
+      "name": "Plundervolt Voltage-Scaling Fault Analysis and Reference Telemetry (Murdock et al., 2020)",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00057",
+        "repository": "KitMurdock/plundervolt",
+        "revision": "a7313c268d7c27ac3eb806d3ed99019788c5f605"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

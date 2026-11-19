@@ -1124,6 +1124,78 @@
         "runtimes/continuations"
       ]
     },
+    "analog-mixed-signal-spice-simulation-power-grid-ir-drop-and-clock-glitch-physics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Xyce/Xyce",
+            "revision": "369a7be860d0d55b147d7fe5defd47c992439859",
+            "url": "https://github.com/Xyce/Xyce"
+          },
+          "name": "Sandia Xyce Parallel Electronic Simulator"
+        },
+        {
+          "identity": {
+            "repository": "pascalkuthe/OpenVAF",
+            "revision": "a9697ae7780518f021f9f64e819b3a57033bd39f",
+            "url": "https://github.com/pascalkuthe/OpenVAF"
+          },
+          "name": "OpenVAF Verilog-A to OSDI Compiler"
+        },
+        {
+          "identity": {
+            "date": "2014-05-30",
+            "standard": "Accellera Verilog-AMS LRM",
+            "url": "https://www.accellera.org/downloads/standards/v-ams",
+            "version": "2.4.0"
+          },
+          "name": "Accellera Verilog-AMS Language Reference Manual"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TCS.1975.1084079",
+            "venue": "IEEE Transactions on Circuits and Systems, Vol. CAS-22, No. 6, pp. 504-509"
+          },
+          "name": "Modified Nodal Approach (Ho, Ruehli, Brennan, 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JSSC.1978.1051123",
+            "venue": "IEEE Journal of Solid-State Circuits, Vol. SC-13, No. 5, pp. 703-708"
+          },
+          "name": "Ward-Dutton Charge-Oriented MOSFET Capacitance Model (1978)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/4.52187",
+            "venue": "IEEE Journal of Solid-State Circuits, Vol. 25, No. 2, pp. 584-594"
+          },
+          "name": "Sakurai-Newton Alpha-Power Law MOSFET Delay Model (1990)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/tang",
+            "venue": "26th USENIX Security Symposium, pp. 1057-1074"
+          },
+          "name": "CLKSCREW Software-Exposed DVFS Fault Analysis (Tang, Sethumadhavan, Stolfo, 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00057",
+            "repository": "KitMurdock/plundervolt",
+            "revision": "a7313c268d7c27ac3eb806d3ed99019788c5f605"
+          },
+          "name": "Plundervolt Voltage-Scaling Fault Analysis and Reference Telemetry (Murdock et al., 2020)"
+        }
+      ],
+      "topics": [
+        "domains/eda-analog",
+        "isa/power-signal-integrity",
+        "security/fault-injection",
+        "verification/numerical-odes"
+      ]
+    },
     "anllvm-clean-slate-ir-semantics-and-tree-borrows-lowering": {
       "observed_at": "2026-11-01",
       "subjects": [
@@ -29000,6 +29072,90 @@
         "pl/information-flow-types",
         "compilers",
         "compilers/semantic-preservation"
+      ]
+    },
+    "medical-device-iec62304-closed-loop-safety-timed-automata-and-alarm-hazards": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "UPPAALModelChecker/UDBM",
+            "revision": "85ff047c0640577030d59d80cbe2c750b369cf26",
+            "url": "https://github.com/UPPAALModelChecker/UDBM"
+          },
+          "name": "UPPAAL Difference Bound Matrix Library (UDBM)"
+        },
+        {
+          "identity": {
+            "repository": "mlab-upenn/MedCPS",
+            "revision": "d5faf3e16dc92c8e7c54b05b25f9fd0180e75e05",
+            "url": "https://github.com/mlab-upenn/MedCPS"
+          },
+          "name": "UPenn mLab MedCPS Virtual Heart Model and UPPAAL Pacemaker Verification Suite"
+        },
+        {
+          "identity": {
+            "repository": "pvsioweb/pvsio-web",
+            "revision": "7ea915e6cb9207fa06e841eabce8c19009d67548",
+            "url": "https://github.com/pvsioweb/pvsio-web"
+          },
+          "name": "PVSio-web Medical Device HMI Formal Modeling Toolkit and GPCA/Infusion Pump Models"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(94)90010-8",
+            "venue": "Theoretical Computer Science, Vol. 126, No. 2, pp. 183-235"
+          },
+          "name": "Alur-Dill Theory of Timed Automata (1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JPROC.2011.2161241",
+            "venue": "Proceedings of the IEEE, Vol. 100, No. 1, pp. 122-137"
+          },
+          "name": "Cyber-Physical Modeling of Implantable Cardiac Medical Devices (Jiang, Pajic, Mangharam, 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-28756-5_14",
+            "venue": "TACAS 2012, LNCS Vol. 7214, pp. 188-203"
+          },
+          "name": "Modeling and Verification of a Dual Chamber Implantable Pacemaker (Jiang et al., TACAS 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MC.1993.274940",
+            "venue": "IEEE Computer, Vol. 26, No. 7, pp. 18-41"
+          },
+          "name": "An Investigation of the Therac-25 Accidents (Leveson and Turner, 1993)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-40793-2_21",
+            "venue": "SAFECOMP 2013, LNCS Vol. 8153, pp. 228-240"
+          },
+          "name": "Model-Based Development of the Generic PCA Infusion Pump UI in PVS (Masci et al., SAFECOMP 2013)"
+        },
+        {
+          "identity": {
+            "standard": "IEC 62304:2006+AMD1:2015",
+            "version": "Edition 1.1 (2015-06)"
+          },
+          "name": "IEC 62304 Medical Device Software Life Cycle Processes"
+        },
+        {
+          "identity": {
+            "standard": "IEC 60601-1-8:2006+AMD1:2012+AMD2:2020",
+            "version": "Edition 2.2 (2020-07)"
+          },
+          "name": "IEC 60601-1-8 Medical Electrical Equipment Alarm Systems"
+        }
+      ],
+      "topics": [
+        "domains/medical-devices",
+        "verification/timed-automata",
+        "systems/safety-critical",
+        "pl/statecharts"
       ]
     },
     "memory-allocator-architectures-hardened-heaps-and-virtual-page-quarantines": {
