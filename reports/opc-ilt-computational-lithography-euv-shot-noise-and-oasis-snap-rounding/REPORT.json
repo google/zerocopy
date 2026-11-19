@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "domains/computational-lithography-ilt",
+    "smt/snap-rounding-polygon-booleans",
+    "verification/process-window-aerial-envelopes",
+    "compilers/curvilinear-mask-fracturing"
+  ],
+  "subjects": [
+    {
+      "name": "OpenILT inverse lithography technology framework",
+      "identity": {
+        "repository": "OpenOPC/OpenILT",
+        "revision": "dabb97c6ca3dfd159362e48273c436444c77353b"
+      }
+    },
+    {
+      "name": "Clipper2 polygon clipping and offsetting library",
+      "identity": {
+        "repository": "AngusJohnson/Clipper2",
+        "revision": "4be4655694d7e15e76ac6bfe9024fa534eed3428"
+      }
+    },
+    {
+      "name": "KLayout layout viewer, boolean engine, and OASIS writer",
+      "identity": {
+        "repository": "KLayout/klayout",
+        "revision": "53911acd6dfaa113c188d11d20b2ae290aa60a6b"
+      }
+    },
+    {
+      "name": "Mask design for optical microlithography—an inverse imaging problem",
+      "identity": {
+        "doi": "10.1109/TIP.2006.891332",
+        "citation": "A. Poonawala and P. Milanfar, IEEE Trans. Image Process., vol. 16, no. 3, pp. 774-788, Mar. 2007"
+      }
+    },
+    {
+      "name": "OpenILT: An open-source inverse lithography technology framework",
+      "identity": {
+        "doi": "10.1109/ASICON58565.2023.10396314",
+        "citation": "S. Zheng, B. Yu, and M. D. F. Wong, Proc. IEEE 15th Int. Conf. ASIC (ASICON), Oct. 2023"
+      }
+    },
+    {
+      "name": "Line-edge roughness and the ultimate limits of lithography",
+      "identity": {
+        "doi": "10.1117/12.848236",
+        "citation": "C. A. Mack, Proc. SPIE 7639, Optical Microlithography XXIII, 763931, Mar. 2010"
+      }
+    },
+    {
+      "name": "Practical segment intersection with finite precision output",
+      "identity": {
+        "doi": "10.1016/S0925-7721(99)00021-8",
+        "citation": "J. D. Hobby, Computational Geometry: Theory and Applications, vol. 13, no. 4, pp. 199-214, Oct. 1999"
+      }
+    },
+    {
+      "name": "SEMI P39 OASIS Open Artwork System Interchange Standard",
+      "identity": {
+        "standard": "SEMI P39",
+        "url": "https://store-us.semi.org/products/p03900-semi-p39-oasis-open-artwork-system-interchange-standard"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

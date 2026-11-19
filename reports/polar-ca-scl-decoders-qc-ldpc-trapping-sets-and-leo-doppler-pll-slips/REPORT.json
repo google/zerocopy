@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "domains/polar-ldpc-channel-coding",
+    "isa/simd-fixed-point-llr-decoders",
+    "systems/leo-ntn-doppler-synchronization",
+    "verification/trapping-set-error-floors"
+  ],
+  "subjects": [
+    {
+      "name": "AFF3CT fast forward error correction toolbox",
+      "identity": {
+        "repository": "aff3ct/aff3ct",
+        "revision": "0e8ecda8191cec97a6fe86a56de0d957b63b3b04"
+      }
+    },
+    {
+      "name": "srsRAN Project 5G NR physical layer channel coding implementation",
+      "identity": {
+        "repository": "srsran/srsRAN_Project",
+        "revision": "d2f4b70dda8e2c557d5b05a0ac5f92dbddda19bc",
+        "version": "release_25_10"
+      }
+    },
+    {
+      "name": "srsRAN Project repository archive transition head",
+      "identity": {
+        "repository": "srsran/srsRAN_Project",
+        "revision": "6ee24f9501b15090b453b0112f92df64fe302c08"
+      }
+    },
+    {
+      "name": "GNU Radio software-defined radio runtime and digital synchronization blocks",
+      "identity": {
+        "repository": "gnuradio/gnuradio",
+        "revision": "3d33e04a249b31ef32106d275b927a7c4cf86425"
+      }
+    },
+    {
+      "name": "gr-satellites amateur and LEO satellite telemetry decoders and Doppler blocks",
+      "identity": {
+        "repository": "daniestevez/gr-satellites",
+        "revision": "0ff8b614c3ed57110c3497c287bced9a01bbc238"
+      }
+    },
+    {
+      "name": "List decoding of polar codes",
+      "identity": {
+        "doi": "10.1109/TIT.2015.2410251",
+        "arxiv": "1206.0050",
+        "citation": "I. Tal and A. Vardy, IEEE Trans. Inf. Theory, vol. 61, no. 5, pp. 2213-2226, May 2015"
+      }
+    },
+    {
+      "name": "AFF3CT: A fast forward error correction toolbox",
+      "identity": {
+        "doi": "10.1016/j.softx.2019.100345",
+        "citation": "A. Cassagne et al., SoftwareX, vol. 10, 100345, Jul.-Dec. 2019"
+      }
+    },
+    {
+      "name": "Error floors of LDPC codes",
+      "identity": {
+        "citation": "T. Richardson, Proc. 41st Annu. Allerton Conf. Commun., Control, and Computing, pp. 1426-1435, Oct. 2003"
+      }
+    },
+    {
+      "name": "3GPP TS 38.212 NR Multiplexing and channel coding",
+      "identity": {
+        "standard": "3GPP TS 38.212",
+        "version": "Release 17 / Release 18"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

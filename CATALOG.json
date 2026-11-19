@@ -38012,6 +38012,73 @@
         "systems/sandboxing"
       ]
     },
+    "opc-ilt-computational-lithography-euv-shot-noise-and-oasis-snap-rounding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "OpenOPC/OpenILT",
+            "revision": "dabb97c6ca3dfd159362e48273c436444c77353b"
+          },
+          "name": "OpenILT inverse lithography technology framework"
+        },
+        {
+          "identity": {
+            "repository": "AngusJohnson/Clipper2",
+            "revision": "4be4655694d7e15e76ac6bfe9024fa534eed3428"
+          },
+          "name": "Clipper2 polygon clipping and offsetting library"
+        },
+        {
+          "identity": {
+            "repository": "KLayout/klayout",
+            "revision": "53911acd6dfaa113c188d11d20b2ae290aa60a6b"
+          },
+          "name": "KLayout layout viewer, boolean engine, and OASIS writer"
+        },
+        {
+          "identity": {
+            "citation": "A. Poonawala and P. Milanfar, IEEE Trans. Image Process., vol. 16, no. 3, pp. 774-788, Mar. 2007",
+            "doi": "10.1109/TIP.2006.891332"
+          },
+          "name": "Mask design for optical microlithography\u2014an inverse imaging problem"
+        },
+        {
+          "identity": {
+            "citation": "S. Zheng, B. Yu, and M. D. F. Wong, Proc. IEEE 15th Int. Conf. ASIC (ASICON), Oct. 2023",
+            "doi": "10.1109/ASICON58565.2023.10396314"
+          },
+          "name": "OpenILT: An open-source inverse lithography technology framework"
+        },
+        {
+          "identity": {
+            "citation": "C. A. Mack, Proc. SPIE 7639, Optical Microlithography XXIII, 763931, Mar. 2010",
+            "doi": "10.1117/12.848236"
+          },
+          "name": "Line-edge roughness and the ultimate limits of lithography"
+        },
+        {
+          "identity": {
+            "citation": "J. D. Hobby, Computational Geometry: Theory and Applications, vol. 13, no. 4, pp. 199-214, Oct. 1999",
+            "doi": "10.1016/S0925-7721(99)00021-8"
+          },
+          "name": "Practical segment intersection with finite precision output"
+        },
+        {
+          "identity": {
+            "standard": "SEMI P39",
+            "url": "https://store-us.semi.org/products/p03900-semi-p39-oasis-open-artwork-system-interchange-standard"
+          },
+          "name": "SEMI P39 OASIS Open Artwork System Interchange Standard"
+        }
+      ],
+      "topics": [
+        "domains/computational-lithography-ilt",
+        "smt/snap-rounding-polygon-booleans",
+        "verification/process-window-aerial-envelopes",
+        "compilers/curvilinear-mask-fracturing"
+      ]
+    },
     "open-rust-library-certificate-closure-and-consumer-acceptance-protocols": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -39918,6 +39985,81 @@
         "runtimes/taxonomy",
         "tooling/taxonomy",
         "verification/survey"
+      ]
+    },
+    "polar-ca-scl-decoders-qc-ldpc-trapping-sets-and-leo-doppler-pll-slips": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "aff3ct/aff3ct",
+            "revision": "0e8ecda8191cec97a6fe86a56de0d957b63b3b04"
+          },
+          "name": "AFF3CT fast forward error correction toolbox"
+        },
+        {
+          "identity": {
+            "repository": "srsran/srsRAN_Project",
+            "revision": "d2f4b70dda8e2c557d5b05a0ac5f92dbddda19bc",
+            "version": "release_25_10"
+          },
+          "name": "srsRAN Project 5G NR physical layer channel coding implementation"
+        },
+        {
+          "identity": {
+            "repository": "srsran/srsRAN_Project",
+            "revision": "6ee24f9501b15090b453b0112f92df64fe302c08"
+          },
+          "name": "srsRAN Project repository archive transition head"
+        },
+        {
+          "identity": {
+            "repository": "gnuradio/gnuradio",
+            "revision": "3d33e04a249b31ef32106d275b927a7c4cf86425"
+          },
+          "name": "GNU Radio software-defined radio runtime and digital synchronization blocks"
+        },
+        {
+          "identity": {
+            "repository": "daniestevez/gr-satellites",
+            "revision": "0ff8b614c3ed57110c3497c287bced9a01bbc238"
+          },
+          "name": "gr-satellites amateur and LEO satellite telemetry decoders and Doppler blocks"
+        },
+        {
+          "identity": {
+            "arxiv": "1206.0050",
+            "citation": "I. Tal and A. Vardy, IEEE Trans. Inf. Theory, vol. 61, no. 5, pp. 2213-2226, May 2015",
+            "doi": "10.1109/TIT.2015.2410251"
+          },
+          "name": "List decoding of polar codes"
+        },
+        {
+          "identity": {
+            "citation": "A. Cassagne et al., SoftwareX, vol. 10, 100345, Jul.-Dec. 2019",
+            "doi": "10.1016/j.softx.2019.100345"
+          },
+          "name": "AFF3CT: A fast forward error correction toolbox"
+        },
+        {
+          "identity": {
+            "citation": "T. Richardson, Proc. 41st Annu. Allerton Conf. Commun., Control, and Computing, pp. 1426-1435, Oct. 2003"
+          },
+          "name": "Error floors of LDPC codes"
+        },
+        {
+          "identity": {
+            "standard": "3GPP TS 38.212",
+            "version": "Release 17 / Release 18"
+          },
+          "name": "3GPP TS 38.212 NR Multiplexing and channel coding"
+        }
+      ],
+      "topics": [
+        "domains/polar-ldpc-channel-coding",
+        "isa/simd-fixed-point-llr-decoders",
+        "systems/leo-ntn-doppler-synchronization",
+        "verification/trapping-set-error-floors"
       ]
     },
     "polyhedral-presburger-scheduling-isl-pluto-tiling-and-ppcg-mapping": {
