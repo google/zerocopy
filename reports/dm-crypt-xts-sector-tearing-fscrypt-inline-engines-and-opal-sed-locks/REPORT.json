@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "security/xts-tweakable-block-ciphers",
+    "systems/dm-integrity-journal-atomicity",
+    "isa/inline-blk-crypto-keyslots",
+    "verification/authenticated-sector-atomicity"
+  ],
+  "subjects": [
+    {
+      "name": "cryptsetup and LUKS2 reference implementation",
+      "identity": {
+        "repository": "mbroz/cryptsetup",
+        "revision": "b16f041ce122275b28e500cbafb94dedbcc9e6df"
+      }
+    },
+    {
+      "name": "Linux kernel block, dm-crypt, dm-integrity, fscrypt, and sed-opal subsystems",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "fscrypt userspace policy and keyring management tool",
+      "identity": {
+        "repository": "google/fscrypt",
+        "revision": "a3a6fd1db20d5bae6d99ad87bdc9496d99996d91"
+      }
+    },
+    {
+      "name": "Drive Trust Alliance sedutil TCG Opal 2.0 management suite",
+      "identity": {
+        "repository": "Drive-Trust-Alliance/sedutil",
+        "revision": "5af6caf6f73050dc689ade3cb63678d1bf81ea39"
+      }
+    },
+    {
+      "name": "IEEE Standard for Cryptographic Protection of Data on Block-Oriented Storage Devices (XTS-AES)",
+      "identity": {
+        "standard": "IEEE Std 1619-2018",
+        "companion_standard": "NIST SP 800-38E"
+      }
+    },
+    {
+      "name": "Self-Encrypting Deception: Weaknesses in the Encryption of Solid State Drives",
+      "identity": {
+        "doi": "10.1109/SP.2019.00088",
+        "advisories": "CVE-2018-12037, CVE-2018-12038"
+      }
+    },
+    {
+      "name": "Practical Cryptographic Data Integrity Protection with Full Disk Encryption",
+      "identity": {
+        "doi": "10.48550/arXiv.1807.00309",
+        "arxiv": "1807.00309"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

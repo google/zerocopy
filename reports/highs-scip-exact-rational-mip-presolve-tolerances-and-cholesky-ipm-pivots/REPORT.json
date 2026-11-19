@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "smt/exact-rational-simplex-vipr",
+    "domains/milp-big-m-presolve-hazards",
+    "verification/conic-ipm-farkas-duals",
+    "compilers/sparse-ldlt-regularization"
+  ],
+  "subjects": [
+    {
+      "name": "HiGHS linear, mixed-integer, and HiPO/IPX interior-point optimization suite",
+      "identity": {
+        "repository": "ERGO-Code/HiGHS",
+        "revision": "f3f113d230429a8c0014b12ab0dd1a3847e58c55"
+      }
+    },
+    {
+      "name": "SCIP Optimization Suite including exact rational MIP and VIPR certificate generation",
+      "identity": {
+        "repository": "scipopt/scip",
+        "revision": "005ef83ae586f05775aa1baed95c7a66b57ff6aa"
+      }
+    },
+    {
+      "name": "SoPlex floating-point and GMP/MPFR iterative-refinement rational simplex solver",
+      "identity": {
+        "repository": "scipopt/soplex",
+        "revision": "0d76dd34846b9b2296bdaf9eb3f215527156bfe2"
+      }
+    },
+    {
+      "name": "Clarabel.rs conic interior-point solver and quasi-definite QDLDL factorization",
+      "identity": {
+        "repository": "oxfordcontrol/Clarabel.rs",
+        "revision": "b6aa0421ec818a31c7f26ada8f6cef2558c768bf"
+      }
+    },
+    {
+      "name": "VIPR MILP certificate format specification and exact rational checker",
+      "identity": {
+        "repository": "ambros-gleixner/VIPR",
+        "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff"
+      }
+    },
+    {
+      "name": "Verifying Integer Programming Results (IPCO 2017)",
+      "identity": {
+        "doi": "10.1007/978-3-319-59250-3_13"
+      }
+    },
+    {
+      "name": "Iterative Refinement for Linear Programming (INFORMS Journal on Computing 2016)",
+      "identity": {
+        "doi": "10.1287/ijoc.2016.0692"
+      }
+    },
+    {
+      "name": "A Hybrid Branch-and-Bound Approach for Exact Rational Mixed-Integer Programming (MPC 2013)",
+      "identity": {
+        "doi": "10.1007/s12532-013-0055-6"
+      }
+    },
+    {
+      "name": "Identification, Assessment, and Correction of Ill-Conditioning and Numerical Instability in Linear and Integer Programs (INFORMS 2014)",
+      "identity": {
+        "doi": "10.1287/educ.2014.0130"
+      }
+    },
+    {
+      "name": "Clarabel: An Interior-Point Solver for Conic Programs with Quadratic Objectives",
+      "identity": {
+        "doi": "10.48550/arXiv.2405.12762",
+        "arxiv": "2405.12762"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

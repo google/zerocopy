@@ -20014,6 +20014,66 @@
         "verification/distributed-systems"
       ]
     },
+    "dm-crypt-xts-sector-tearing-fscrypt-inline-engines-and-opal-sed-locks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "mbroz/cryptsetup",
+            "revision": "b16f041ce122275b28e500cbafb94dedbcc9e6df"
+          },
+          "name": "cryptsetup and LUKS2 reference implementation"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+          },
+          "name": "Linux kernel block, dm-crypt, dm-integrity, fscrypt, and sed-opal subsystems"
+        },
+        {
+          "identity": {
+            "repository": "google/fscrypt",
+            "revision": "a3a6fd1db20d5bae6d99ad87bdc9496d99996d91"
+          },
+          "name": "fscrypt userspace policy and keyring management tool"
+        },
+        {
+          "identity": {
+            "repository": "Drive-Trust-Alliance/sedutil",
+            "revision": "5af6caf6f73050dc689ade3cb63678d1bf81ea39"
+          },
+          "name": "Drive Trust Alliance sedutil TCG Opal 2.0 management suite"
+        },
+        {
+          "identity": {
+            "companion_standard": "NIST SP 800-38E",
+            "standard": "IEEE Std 1619-2018"
+          },
+          "name": "IEEE Standard for Cryptographic Protection of Data on Block-Oriented Storage Devices (XTS-AES)"
+        },
+        {
+          "identity": {
+            "advisories": "CVE-2018-12037, CVE-2018-12038",
+            "doi": "10.1109/SP.2019.00088"
+          },
+          "name": "Self-Encrypting Deception: Weaknesses in the Encryption of Solid State Drives"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.00309",
+            "doi": "10.48550/arXiv.1807.00309"
+          },
+          "name": "Practical Cryptographic Data Integrity Protection with Full Disk Encryption"
+        }
+      ],
+      "topics": [
+        "security/xts-tweakable-block-ciphers",
+        "systems/dm-integrity-journal-atomicity",
+        "isa/inline-blk-crypto-keyslots",
+        "verification/authenticated-sector-atomicity"
+      ]
+    },
     "duckdb-datafusion-nan-grouping-out-of-core-radix-spills-and-decimal-joins": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -24578,6 +24638,83 @@
         "security/masking",
         "verification",
         "isa"
+      ]
+    },
+    "highs-scip-exact-rational-mip-presolve-tolerances-and-cholesky-ipm-pivots": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ERGO-Code/HiGHS",
+            "revision": "f3f113d230429a8c0014b12ab0dd1a3847e58c55"
+          },
+          "name": "HiGHS linear, mixed-integer, and HiPO/IPX interior-point optimization suite"
+        },
+        {
+          "identity": {
+            "repository": "scipopt/scip",
+            "revision": "005ef83ae586f05775aa1baed95c7a66b57ff6aa"
+          },
+          "name": "SCIP Optimization Suite including exact rational MIP and VIPR certificate generation"
+        },
+        {
+          "identity": {
+            "repository": "scipopt/soplex",
+            "revision": "0d76dd34846b9b2296bdaf9eb3f215527156bfe2"
+          },
+          "name": "SoPlex floating-point and GMP/MPFR iterative-refinement rational simplex solver"
+        },
+        {
+          "identity": {
+            "repository": "oxfordcontrol/Clarabel.rs",
+            "revision": "b6aa0421ec818a31c7f26ada8f6cef2558c768bf"
+          },
+          "name": "Clarabel.rs conic interior-point solver and quasi-definite QDLDL factorization"
+        },
+        {
+          "identity": {
+            "repository": "ambros-gleixner/VIPR",
+            "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff"
+          },
+          "name": "VIPR MILP certificate format specification and exact rational checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-59250-3_13"
+          },
+          "name": "Verifying Integer Programming Results (IPCO 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1287/ijoc.2016.0692"
+          },
+          "name": "Iterative Refinement for Linear Programming (INFORMS Journal on Computing 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s12532-013-0055-6"
+          },
+          "name": "A Hybrid Branch-and-Bound Approach for Exact Rational Mixed-Integer Programming (MPC 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1287/educ.2014.0130"
+          },
+          "name": "Identification, Assessment, and Correction of Ill-Conditioning and Numerical Instability in Linear and Integer Programs (INFORMS 2014)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.12762",
+            "doi": "10.48550/arXiv.2405.12762"
+          },
+          "name": "Clarabel: An Interior-Point Solver for Conic Programs with Quadratic Objectives"
+        }
+      ],
+      "topics": [
+        "smt/exact-rational-simplex-vipr",
+        "domains/milp-big-m-presolve-hazards",
+        "verification/conic-ipm-farkas-duals",
+        "compilers/sparse-ldlt-regularization"
       ]
     },
     "homomorphic-encryption-compilers-and-differential-privacy-types": {
