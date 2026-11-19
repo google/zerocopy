@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "verification/certified-lifting",
+    "anneal/theory",
+    "compilers/ir-simplification",
+    "verification/separation-logic",
+    "lean/mechanization",
+    "verification/compcert",
+    "rust/tree-borrows",
+    "zerocopy/bidirectional-lenses"
+  ],
+  "subjects": [
+    {
+      "name": "seL4 AutoCorres C abstraction framework (l4v)",
+      "identity": {
+        "path": "tools/autocorres",
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Verified Software Toolchain (VST-Floyd)",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler and Clight memory model",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "KaRaMeL Low*-to-C/Rust compiler and loop combinators",
+      "identity": {
+        "repository": "FStarLang/karamel",
+        "revision": "6bd5918c7c518adbb973f75f23cdd0900acb7526"
+      }
+    },
+    {
+      "name": "HACL* verified cryptographic library (Lib.Buffer, Lib.ByteSequence, Lib.IntTypes)",
+      "identity": {
+        "repository": "hacl-star/hacl-star",
+        "revision": "f557259007db9933442dde10aa995c1b00bd3446"
+      }
+    },
+    {
+      "name": "EverParse and LowParse verified zero-copy parser/serializer framework",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "Rupicola relational Gallina-to-Bedrock2 compiler",
+      "identity": {
+        "repository": "mit-plv/rupicola",
+        "revision": "cd89cf519551add249540db9f24aa97d8cc5d20f"
+      }
+    },
+    {
+      "name": "Bedrock2 low-level systems language and WeakestPrecondition logic",
+      "identity": {
+        "repository": "mit-plv/bedrock2",
+        "revision": "67b682a504041acd2cd678782ff2505983d7cd6f"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and Std.Do verification framework",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework (Trusted MIR semantics, MirWp, and PureLift)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR and Tree Borrows reference interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Don't Sweat the Small Stuff: Formal Verification of C Code Without the Pain (AutoCorres)",
+      "identity": {
+        "doi": "10.1145/2594291.2594296",
+        "venue": "ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2014)"
+      }
+    },
+    {
+      "name": "VST-Floyd: A Separation Logic Tool to Verify Correctness of C Programs",
+      "identity": {
+        "doi": "10.1007/s10817-018-9457-5",
+        "venue": "Journal of Automated Reasoning 61, 367-422 (2018)"
+      }
+    },
+    {
+      "name": "Verified Low-Level Programming Embedded in F* (Low*)",
+      "identity": {
+        "doi": "10.1145/3110261",
+        "venue": "Proceedings of the ACM on Programming Languages 1(ICFP), Article 17 (2017)"
+      }
+    },
+    {
+      "name": "HACL*: A Verified Modern Cryptographic Library",
+      "identity": {
+        "doi": "10.1145/3133956.3134043",
+        "venue": "ACM SIGSAC Conference on Computer and Communications Security (CCS 2017), pp. 1789-1806"
+      }
+    },
+    {
+      "name": "EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/ramananandro",
+        "venue": "28th USENIX Security Symposium (USENIX Security 2019), pp. 1465-1482"
+      }
+    },
+    {
+      "name": "Relational Compilation for Performance-Critical Applications (Rupicola)",
+      "identity": {
+        "doi": "10.1145/3519939.3523706",
+        "venue": "ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2022), pp. 1018-1033"
+      }
+    },
+    {
+      "name": "Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "venue": "Proceedings of the ACM on Programming Languages 9(PLDI), Article 188 (2025)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
