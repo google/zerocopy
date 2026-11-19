@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "isa/scalable-vectors",
+    "compilers/vla-autovectorization",
+    "ffi/tile-register-abis",
+    "rustc/target-codegen"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Vector Extension Specification (RVV 1.0)",
+      "identity": {
+        "repository": "riscvarchive/riscv-v-spec",
+        "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34",
+        "version": "v1.0"
+      }
+    },
+    {
+      "name": "Google Highway Portable VLA SIMD Library",
+      "identity": {
+        "repository": "google/highway",
+        "revision": "ab219f9ecac8bc7e97d4c2b3b8197e52b48a5b52"
+      }
+    },
+    {
+      "name": "Arm 64-Bit Architecture Procedure Call Standard (AAPCS64 + SME ABI)",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+      }
+    },
+    {
+      "name": "Linux Kernel AArch64 Scalable Matrix Extension Interface",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+      }
+    },
+    {
+      "name": "LLVM RISC-V VSETVLI Dataflow Insertion Pass",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "63b8d2fd94ba3b1a80023dae7139949dd5be6b78"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -20350,6 +20350,66 @@
         "verification/parsers"
       ]
     },
+    "enzyme-jax-autodiff-cotangent-nan-masking-and-aliasing-hazards": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "EnzymeAD/Enzyme",
+            "revision": "0fa6f8401af6b8211a783213643692be20508842"
+          },
+          "name": "Enzyme LLVM Automatic Differentiation Compiler"
+        },
+        {
+          "identity": {
+            "repository": "jax-ml/jax",
+            "revision": "88602c82ac41e48fb146c96e8a41a2914001e1a7"
+          },
+          "name": "JAX Composable Transformations Framework"
+        },
+        {
+          "identity": {
+            "repository": "zama-ai/tfhe-rs",
+            "revision": "1352efd892a86bd895645ec1b51b74604f561a6d"
+          },
+          "name": "TFHE-rs Pure-Rust Homomorphic Encryption Library"
+        },
+        {
+          "identity": {
+            "repository": "openfheorg/openfhe-development",
+            "revision": "b59e1f291965f14fbee5172cd83a20f5b856204f"
+          },
+          "name": "OpenFHE Lattice Homomorphic Encryption Library"
+        },
+        {
+          "identity": {
+            "repository": "google/heir",
+            "revision": "9be63bd788169c8f05935f09d80562a9c6f700f6"
+          },
+          "name": "HEIR Homomorphic Encryption Intermediate Representation"
+        },
+        {
+          "identity": {
+            "arxiv": "2010.01709",
+            "venue": "NeurIPS 2020"
+          },
+          "name": "Enzyme Post-Optimization AD Specification (Moses & Churavy, NeurIPS 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-77870-5_23",
+            "iacr_eprint": "2020/1533"
+          },
+          "name": "Security of Homomorphic Encryption on Approximate Numbers (Li & Micciancio, EUROCRYPT 2021)"
+        }
+      ],
+      "topics": [
+        "compilers/reverse-autodiff",
+        "llvm/adjoint-aliasing",
+        "security/homomorphic-noise",
+        "verification/nan-propagation"
+      ]
+    },
     "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -27303,6 +27363,53 @@
         "kraken/manifests",
         "isa/aarch64",
         "isa/x86-64"
+      ]
+    },
+    "kulisch-superaccumulators-ozaki-matrix-splits-and-ocp-microscaling-formats": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "enp1s0/ozIMMU",
+            "revision": "08eea9231729d54dbfd92955f2cbfc21ec236856"
+          },
+          "name": "ozIMMU (DGEMM on INT8 Tensor Cores)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/microxcaling",
+            "revision": "7bc41952de394f5cc5e782baf132e7c7542eb4e4"
+          },
+          "name": "Microsoft Microxcaling Emulation Library"
+        },
+        {
+          "identity": {
+            "repository": "pytorch/ao",
+            "revision": "a791dcb26432500f99d40271c81ee8e2753cf99a"
+          },
+          "name": "PyTorch Architecture Optimization (torchao MX Formats)"
+        },
+        {
+          "identity": {
+            "standard": "OCP Microscaling Formats (MX) Specification",
+            "url": "https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf",
+            "version": "v1.0"
+          },
+          "name": "OCP Microscaling Formats (MX) Specification"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1016/j.parco.2015.09.001",
+            "doi": "10.1145/1996068.1996070"
+          },
+          "name": "Kulisch Exact Superaccumulator Theory and GPU Reductions"
+        }
+      ],
+      "topics": [
+        "isa/microscaling-numerics",
+        "verification/reproducible-reductions",
+        "compilers/tensor-precision",
+        "domains/scientific-computing"
       ]
     },
     "lake-artifact-cache-key-publication-and-restoration": {
@@ -48687,6 +48794,53 @@
         "security",
         "security/binary-hardening",
         "verification"
+      ]
+    },
+    "rvv-lmul-vtype-hazards-arm-sme-streaming-za-tiles-and-ffload-speculation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscvarchive/riscv-v-spec",
+            "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34",
+            "version": "v1.0"
+          },
+          "name": "RISC-V Vector Extension Specification (RVV 1.0)"
+        },
+        {
+          "identity": {
+            "repository": "google/highway",
+            "revision": "ab219f9ecac8bc7e97d4c2b3b8197e52b48a5b52"
+          },
+          "name": "Google Highway Portable VLA SIMD Library"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+          },
+          "name": "Arm 64-Bit Architecture Procedure Call Standard (AAPCS64 + SME ABI)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+          },
+          "name": "Linux Kernel AArch64 Scalable Matrix Extension Interface"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "63b8d2fd94ba3b1a80023dae7139949dd5be6b78"
+          },
+          "name": "LLVM RISC-V VSETVLI Dataflow Insertion Pass"
+        }
+      ],
+      "topics": [
+        "isa/scalable-vectors",
+        "compilers/vla-autovectorization",
+        "ffi/tile-register-abis",
+        "rustc/target-codegen"
       ]
     },
     "safe-for-space-compilation-and-amortized-complexity-verification": {

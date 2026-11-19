@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "isa/microscaling-numerics",
+    "verification/reproducible-reductions",
+    "compilers/tensor-precision",
+    "domains/scientific-computing"
+  ],
+  "subjects": [
+    {
+      "name": "ozIMMU (DGEMM on INT8 Tensor Cores)",
+      "identity": {
+        "repository": "enp1s0/ozIMMU",
+        "revision": "08eea9231729d54dbfd92955f2cbfc21ec236856"
+      }
+    },
+    {
+      "name": "Microsoft Microxcaling Emulation Library",
+      "identity": {
+        "repository": "microsoft/microxcaling",
+        "revision": "7bc41952de394f5cc5e782baf132e7c7542eb4e4"
+      }
+    },
+    {
+      "name": "PyTorch Architecture Optimization (torchao MX Formats)",
+      "identity": {
+        "repository": "pytorch/ao",
+        "revision": "a791dcb26432500f99d40271c81ee8e2753cf99a"
+      }
+    },
+    {
+      "name": "OCP Microscaling Formats (MX) Specification",
+      "identity": {
+        "standard": "OCP Microscaling Formats (MX) Specification",
+        "version": "v1.0",
+        "url": "https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf"
+      }
+    },
+    {
+      "name": "Kulisch Exact Superaccumulator Theory and GPU Reductions",
+      "identity": {
+        "doi": "10.1145/1996068.1996070",
+        "companion_doi": "10.1016/j.parco.2015.09.001"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

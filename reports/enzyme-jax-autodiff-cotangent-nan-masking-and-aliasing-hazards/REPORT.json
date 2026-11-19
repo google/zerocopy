@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "compilers/reverse-autodiff",
+    "llvm/adjoint-aliasing",
+    "security/homomorphic-noise",
+    "verification/nan-propagation"
+  ],
+  "subjects": [
+    {
+      "name": "Enzyme LLVM Automatic Differentiation Compiler",
+      "identity": {
+        "repository": "EnzymeAD/Enzyme",
+        "revision": "0fa6f8401af6b8211a783213643692be20508842"
+      }
+    },
+    {
+      "name": "JAX Composable Transformations Framework",
+      "identity": {
+        "repository": "jax-ml/jax",
+        "revision": "88602c82ac41e48fb146c96e8a41a2914001e1a7"
+      }
+    },
+    {
+      "name": "TFHE-rs Pure-Rust Homomorphic Encryption Library",
+      "identity": {
+        "repository": "zama-ai/tfhe-rs",
+        "revision": "1352efd892a86bd895645ec1b51b74604f561a6d"
+      }
+    },
+    {
+      "name": "OpenFHE Lattice Homomorphic Encryption Library",
+      "identity": {
+        "repository": "openfheorg/openfhe-development",
+        "revision": "b59e1f291965f14fbee5172cd83a20f5b856204f"
+      }
+    },
+    {
+      "name": "HEIR Homomorphic Encryption Intermediate Representation",
+      "identity": {
+        "repository": "google/heir",
+        "revision": "9be63bd788169c8f05935f09d80562a9c6f700f6"
+      }
+    },
+    {
+      "name": "Enzyme Post-Optimization AD Specification (Moses & Churavy, NeurIPS 2020)",
+      "identity": {
+        "arxiv": "2010.01709",
+        "venue": "NeurIPS 2020"
+      }
+    },
+    {
+      "name": "Security of Homomorphic Encryption on Approximate Numbers (Li & Micciancio, EUROCRYPT 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-77870-5_23",
+        "iacr_eprint": "2020/1533"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
