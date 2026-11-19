@@ -1,0 +1,149 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/fault-tolerance",
+    "compilers/property-preservation",
+    "security",
+    "security/fault-injection",
+    "isa",
+    "isa/transient-faults",
+    "verification",
+    "verification/fault-tolerance",
+    "runtimes/intermittent-computing",
+    "pl/type-systems/approximate-computing"
+  ],
+  "subjects": [
+    {
+      "name": "SWIFT: Software Implemented Fault Tolerance (Reis, Chang, Vachharajani, Rangan, August; CGO 2005)",
+      "identity": {
+        "doi": "10.1109/CGO.2005.34",
+        "url": "https://liberty.princeton.edu/Publications/cgo05_swift.pdf"
+      }
+    },
+    {
+      "name": "Fault-tolerant Typed Assembly Language (Perry, Mackey, Reis, Ligatti, August, Walker; PLDI 2007)",
+      "identity": {
+        "doi": "10.1145/1250734.1250741",
+        "url": "https://www.cs.princeton.edu/~dpw/papers/tal_ft-pldi07.pdf"
+      }
+    },
+    {
+      "name": "Chamois-Arsene CompCert fork: commented Coq development for verified fault-injection hardening (companion of Pesin, Boulme, Monniaux, Potet; CPP 2025, doi 10.1145/3703595.3705880)",
+      "identity": {
+        "url": "https://certicompil.gricad-pages.univ-grenoble-alpes.fr/Chamois-Arsene/",
+        "version": "Version 3.14, Chamois-Arsene fork, 2025-12-06"
+      }
+    },
+    {
+      "name": "CompCert (mainline)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "LLVM",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ae9b54f0ebfe606123f5a0762bb9cd12cc46fa69"
+      }
+    },
+    {
+      "name": "GCC (execution subject for the redundancy-survival probe)",
+      "identity": {
+        "toolchain": "gcc",
+        "version": "15.2.0",
+        "package": "Debian 15.2.0-14",
+        "target": "x86_64-linux-gnu"
+      }
+    },
+    {
+      "name": "OpenTitan hardened-code primitives (sw/device/lib/base/hardened.h)",
+      "identity": {
+        "repository": "lowRISC/opentitan",
+        "revision": "8d89356bbab7287adffec8109732a2b59a589c09"
+      }
+    },
+    {
+      "name": "COAST (COmpiler-Assisted Software fault Tolerance) LLVM passes",
+      "identity": {
+        "repository": "byuccl/coast",
+        "revision": "397a26ecdb01e7c329884d12c9f6bb2a05c3abc9"
+      }
+    },
+    {
+      "name": "Chain runtime library (libchain)",
+      "identity": {
+        "repository": "CMUAbstract/libchain",
+        "revision": "ccf5b5e599269ba48f25684704f1956b62008ec7"
+      }
+    },
+    {
+      "name": "Chain: Tasks and Channels for Reliable Intermittent Programs (Colin, Lucia; OOPSLA 2016)",
+      "identity": {
+        "doi": "10.1145/2983990.2983995"
+      }
+    },
+    {
+      "name": "Alpaca LLVM pass (OOPSLA 2017 artifact)",
+      "identity": {
+        "repository": "CMUAbstract/alpaca-pass-oopsla",
+        "revision": "0f63ff73096df4ba98ff5275e5234a276bdb1e73"
+      }
+    },
+    {
+      "name": "Alpaca runtime library (OOPSLA 2017 artifact)",
+      "identity": {
+        "repository": "CMUAbstract/libalpaca-oopsla",
+        "revision": "1dbcc27cde661b1f7dc9916ec38c92b37859a250"
+      }
+    },
+    {
+      "name": "Alpaca: Intermittent Execution without Checkpoints (Maeng, Colin, Lucia; OOPSLA 2017)",
+      "identity": {
+        "doi": "10.1145/3133920"
+      }
+    },
+    {
+      "name": "Intermittent Computation without Hardware Support or Programmer Intervention (Ratchet; Van Der Woude, Hicks; OSDI 2016)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/osdi16/technical-sessions/presentation/vanderwoude",
+        "isbn": "978-1-931971-33-1"
+      }
+    },
+    {
+      "name": "Timely Execution on Intermittently Powered Batteryless Sensors (Mayfly; Hester, Storer, Sorber; SenSys 2017)",
+      "identity": {
+        "doi": "10.1145/3131672.3131673"
+      }
+    },
+    {
+      "name": "Ocelot artifact (fresh/consistent input annotations for Rust, atomic-region inference)",
+      "identity": {
+        "repository": "CMUAbstract/ocelot",
+        "revision": "62e0c7f1b8036a253cb4ee1ed8faf3ba2665c925"
+      }
+    },
+    {
+      "name": "A Type System for Safe Intermittent Computing (Curricle; Surbatovich, Spargo, Jia, Lucia; PLDI 2023)",
+      "identity": {
+        "doi": "10.1145/3591250"
+      }
+    },
+    {
+      "name": "EnerJ checker, runtime and simulator",
+      "identity": {
+        "repository": "sampsyo/enerj",
+        "revision": "a57bd8aad71d46b7ef35eb317ef2ace8bcf706fe"
+      }
+    },
+    {
+      "name": "EnerJ: Approximate Data Types for Safe and General Low-Power Computation (Sampson, Dietl, Fortuna, Gnanapragasam, Ceze, Grossman; PLDI 2011)",
+      "identity": {
+        "doi": "10.1145/1993498.1993518"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

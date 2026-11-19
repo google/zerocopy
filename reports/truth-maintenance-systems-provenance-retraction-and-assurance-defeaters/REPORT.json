@@ -1,0 +1,146 @@
+{
+  "topics": [
+    "verification",
+    "verification/truth-maintenance",
+    "verification/assurance-cases",
+    "pl",
+    "pl/provenance",
+    "tooling",
+    "tooling/proof-engineering"
+  ],
+  "subjects": [
+    {
+      "name": "Jon Doyle, A Truth Maintenance System (JTMS)",
+      "identity": {
+        "doi": "10.1016/0004-3702(79)90008-0",
+        "publication": "Artificial Intelligence 12(3), pp. 231-272",
+        "year": "1979"
+      }
+    },
+    {
+      "name": "Johan de Kleer, An Assumption-based TMS (ATMS)",
+      "identity": {
+        "doi": "10.1016/0004-3702(86)90080-9",
+        "publication": "Artificial Intelligence 28(2), pp. 127-162",
+        "year": "1986"
+      }
+    },
+    {
+      "name": "Forbus & de Kleer Building Problem Solvers (JTMS & ATMS reference source)",
+      "identity": {
+        "repository": "id2359/bps",
+        "revision": "3d072521dc7c759aaae7bb9d1c459c20ef6d8a01"
+      }
+    },
+    {
+      "name": "Green, Karvounarakis, and Tannen, Provenance Semirings",
+      "identity": {
+        "doi": "10.1145/1265530.1265535",
+        "publication": "ACM PODS 2007, pp. 31-40",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Gupta, Mumick, and Subrahmanian, Maintaining Views Incrementally (DRed)",
+      "identity": {
+        "doi": "10.1145/170035.170066",
+        "publication": "ACM SIGMOD 1993, pp. 157-166",
+        "year": "1993"
+      }
+    },
+    {
+      "name": "Motik, Nenov, Piro, and Horrocks, Incremental Update of Datalog Materialisation (Backward/Forward)",
+      "identity": {
+        "doi": "10.1609/aaai.v29i1.9409",
+        "publication": "AAAI 2015, Vol. 29(1)",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel Axiom Collection (CollectAxioms)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Salsa Incremental Computation Framework (Durability & Revision Invalidation)",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+      }
+    },
+    {
+      "name": "John L. Pollock, Defeasible Reasoning",
+      "identity": {
+        "doi": "10.1016/S0364-0213(87)80011-8",
+        "publication": "Cognitive Science 11(4), pp. 481-518",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Goodenough, Weinstock, and Klein, Eliminative Argumentation",
+      "identity": {
+        "doi": "10.1184/R1/6573413.v1",
+        "report": "CMU/SEI-2015-TR-005",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Graydon and Holloway, An investigation of proposed techniques for quantifying confidence in assurance arguments",
+      "identity": {
+        "doi": "10.1016/j.ssci.2016.09.004",
+        "publication": "Safety Science 92, pp. 53-65",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Bloomfield and Netkachova, Building Blocks for Assurance Cases (CAE Blocks)",
+      "identity": {
+        "doi": "10.1109/ISSREW.2014.72",
+        "publication": "IEEE ISSREW 2014, pp. 186-191",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Bloomfield and Rushby, Assurance 2.0: A Manifesto",
+      "identity": {
+        "arxiv": "2004.10474v3",
+        "doi": "10.48550/arXiv.2004.10474",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Bloomfield and Rushby, Quantifying Confidence in Assurance 2.0 Arguments",
+      "identity": {
+        "arxiv": "2604.00034v1",
+        "doi": "10.48550/arXiv.2604.00034",
+        "report": "SRI-CSL-25-01R2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "SCSC Assurance Case Working Group, Goal Structuring Notation Community Standard Version 3",
+      "identity": {
+        "standard": "SCSC-141C",
+        "version": "3",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "gsn2x GSN v3 Validator and Dialectical Extension Implementation",
+      "identity": {
+        "repository": "jonasthewolf/gsn2x",
+        "revision": "9effad837d6a11f2c9c6135f69d5b6b3164313df"
+      }
+    },
+    {
+      "name": "SRI Evidential Tool Bus (ETB)",
+      "identity": {
+        "repository": "SRI-CSL/ETB",
+        "revision": "ee4692f3a58ab8230a1795b179829b871aebe7e3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

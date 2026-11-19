@@ -9722,6 +9722,155 @@
         "rustc/intrinsics"
       ]
     },
+    "collaborative-ast-crdts-categorical-patch-theory-and-archival-vms": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3704909",
+            "publication": "Proc. ACM Program. Lang. 9(POPL), Article 73",
+            "year": "2025"
+          },
+          "name": "Adams, Griffis, Porter, Satish, Zhao, and Omar, Grove: A Bidirectionally Typed Collaborative Structure Editor Calculus"
+        },
+        {
+          "identity": {
+            "repository": "hazelgrove/hazel",
+            "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+          },
+          "name": "Hazel Live Functional Programming Environment"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TPDS.2021.3118603",
+            "publication": "IEEE Trans. Parallel Distrib. Syst. 33(7)",
+            "year": "2021"
+          },
+          "name": "Kleppmann, Mulligan, Gomes, and Beresford, A Highly-Available Move Operation for Replicated Trees"
+        },
+        {
+          "identity": {
+            "repository": "trvedata/move-op",
+            "revision": "6c23447c12a7862ff31b7fc2205f6c90fbdb9dc0"
+          },
+          "name": "Kleppmann et al. Isabelle/HOL Move-Op Tree CRDT Mechanization"
+        },
+        {
+          "identity": {
+            "arxiv": "1311.3903",
+            "doi": "10.1016/j.entcs.2013.09.018",
+            "publication": "ENTCS 298, pp. 283-307 (MFPS XXIX)",
+            "year": "2013"
+          },
+          "name": "Mimram and Di Giusto, A Categorical Theory of Patches"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2628136.2628158",
+            "publication": "ACM ICFP 2014",
+            "year": "2014"
+          },
+          "name": "Angiuli, Morehouse, Licata, and Harper, Homotopical Patch Theory"
+        },
+        {
+          "identity": {
+            "crate": "libpijul",
+            "url": "https://pijul.org/manual/theory.html",
+            "version": "1.0.0-beta.10"
+          },
+          "name": "Pijul Core Library (libpijul) and Theory Manual"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2642937.2642982",
+            "publication": "ACM/IEEE ASE 2014",
+            "year": "2014"
+          },
+          "name": "Falleri, Morandat, Blanc, Martinez, and Monperrus, Fine-grained and Accurate Source Code Differencing (GumTree)"
+        },
+        {
+          "identity": {
+            "repository": "GumTreeDiff/gumtree",
+            "revision": "4c19a646619c7741724077cfe5cb7ddbde77b8ae"
+          },
+          "name": "GumTree Structural AST Differencing Engine"
+        },
+        {
+          "identity": {
+            "repository": "Wilfred/difftastic",
+            "revision": "4b834ef576fa17920468372165f9938e2dc46596"
+          },
+          "name": "Difftastic Structural Diff Engine"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2022.3143766",
+            "repository": "KTH/spork",
+            "revision": "c1b35d81c44d61d883da7ca91ae0088b6b8f3f2f"
+          },
+          "name": "Larsen, Falleri, Baudry, and Monperrus, Spork: Structured Merge for Java With Formatting Preservation"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/stage0-posix",
+            "revision": "643598041bf7639883874fe2cdc9d9693c9b03d5"
+          },
+          "name": "stage0-posix Full-Source Bootstrap Chain"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/bootstrap-seeds",
+            "revision": "cedec6b8066d1db229b6c77d42d120a23c6980ed"
+          },
+          "name": "bootstrap-seeds Minimal hex0 Seed Binaries"
+        },
+        {
+          "identity": {
+            "repository": "guix-mirror/guix",
+            "revision": "927070a6f64da86a9c1694fe55c4316b2f9a4e11",
+            "url": "https://guix.gnu.org/en/blog/2023/the-full-source-bootstrap-building-from-source-all-the-way-down/"
+          },
+          "name": "GNU Guix Full-Source Bootstrap"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 18670",
+            "url": "https://www.softwareheritage.org/"
+          },
+          "name": "Software Heritage Persistent Intrinsic Identifiers (SWHID)"
+        },
+        {
+          "identity": {
+            "device_spec_url": "https://wiki.xxiivv.com/site/varvara.html",
+            "url": "https://wiki.xxiivv.com/site/uxntal_opcodes.html"
+          },
+          "name": "Hundred Rabbits Uxn Virtual Machine and Varvara Specification"
+        },
+        {
+          "identity": {
+            "url": "https://collapseos.org/why.html"
+          },
+          "name": "Virgil Dupras, Collapse OS"
+        },
+        {
+          "identity": {
+            "architecture": "IBM System/38, AS/400 IMPI CISC to PowerPC AS 64-bit RISC (OS/400 V3R6)",
+            "year": "1995"
+          },
+          "name": "IBM Technology Independent Machine Interface (TIMI / OS/400 V3R6 / IBM i)"
+        }
+      ],
+      "topics": [
+        "vcs",
+        "vcs/patch-theory",
+        "tooling",
+        "tooling/structure-editors",
+        "systems",
+        "systems/archival-preservation",
+        "pl",
+        "pl/collaborative-editing"
+      ]
+    },
     "compcert-sel4-everest-pass-composition-and-proof-maintenance": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -14608,6 +14757,155 @@
         "exocrate/workspaces",
         "exocrate/archive",
         "build/hermeticity"
+      ]
+    },
+    "fault-injection-resilient-intermittent-and-approximate-compilation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1109/CGO.2005.34",
+            "url": "https://liberty.princeton.edu/Publications/cgo05_swift.pdf"
+          },
+          "name": "SWIFT: Software Implemented Fault Tolerance (Reis, Chang, Vachharajani, Rangan, August; CGO 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1250734.1250741",
+            "url": "https://www.cs.princeton.edu/~dpw/papers/tal_ft-pldi07.pdf"
+          },
+          "name": "Fault-tolerant Typed Assembly Language (Perry, Mackey, Reis, Ligatti, August, Walker; PLDI 2007)"
+        },
+        {
+          "identity": {
+            "url": "https://certicompil.gricad-pages.univ-grenoble-alpes.fr/Chamois-Arsene/",
+            "version": "Version 3.14, Chamois-Arsene fork, 2025-12-06"
+          },
+          "name": "Chamois-Arsene CompCert fork: commented Coq development for verified fault-injection hardening (companion of Pesin, Boulme, Monniaux, Potet; CPP 2025, doi 10.1145/3703595.3705880)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+            "version": "3.18"
+          },
+          "name": "CompCert (mainline)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ae9b54f0ebfe606123f5a0762bb9cd12cc46fa69"
+          },
+          "name": "LLVM"
+        },
+        {
+          "identity": {
+            "package": "Debian 15.2.0-14",
+            "target": "x86_64-linux-gnu",
+            "toolchain": "gcc",
+            "version": "15.2.0"
+          },
+          "name": "GCC (execution subject for the redundancy-survival probe)"
+        },
+        {
+          "identity": {
+            "repository": "lowRISC/opentitan",
+            "revision": "8d89356bbab7287adffec8109732a2b59a589c09"
+          },
+          "name": "OpenTitan hardened-code primitives (sw/device/lib/base/hardened.h)"
+        },
+        {
+          "identity": {
+            "repository": "byuccl/coast",
+            "revision": "397a26ecdb01e7c329884d12c9f6bb2a05c3abc9"
+          },
+          "name": "COAST (COmpiler-Assisted Software fault Tolerance) LLVM passes"
+        },
+        {
+          "identity": {
+            "repository": "CMUAbstract/libchain",
+            "revision": "ccf5b5e599269ba48f25684704f1956b62008ec7"
+          },
+          "name": "Chain runtime library (libchain)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2983995"
+          },
+          "name": "Chain: Tasks and Channels for Reliable Intermittent Programs (Colin, Lucia; OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "repository": "CMUAbstract/alpaca-pass-oopsla",
+            "revision": "0f63ff73096df4ba98ff5275e5234a276bdb1e73"
+          },
+          "name": "Alpaca LLVM pass (OOPSLA 2017 artifact)"
+        },
+        {
+          "identity": {
+            "repository": "CMUAbstract/libalpaca-oopsla",
+            "revision": "1dbcc27cde661b1f7dc9916ec38c92b37859a250"
+          },
+          "name": "Alpaca runtime library (OOPSLA 2017 artifact)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133920"
+          },
+          "name": "Alpaca: Intermittent Execution without Checkpoints (Maeng, Colin, Lucia; OOPSLA 2017)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-33-1",
+            "url": "https://www.usenix.org/conference/osdi16/technical-sessions/presentation/vanderwoude"
+          },
+          "name": "Intermittent Computation without Hardware Support or Programmer Intervention (Ratchet; Van Der Woude, Hicks; OSDI 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3131672.3131673"
+          },
+          "name": "Timely Execution on Intermittently Powered Batteryless Sensors (Mayfly; Hester, Storer, Sorber; SenSys 2017)"
+        },
+        {
+          "identity": {
+            "repository": "CMUAbstract/ocelot",
+            "revision": "62e0c7f1b8036a253cb4ee1ed8faf3ba2665c925"
+          },
+          "name": "Ocelot artifact (fresh/consistent input annotations for Rust, atomic-region inference)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591250"
+          },
+          "name": "A Type System for Safe Intermittent Computing (Curricle; Surbatovich, Spargo, Jia, Lucia; PLDI 2023)"
+        },
+        {
+          "identity": {
+            "repository": "sampsyo/enerj",
+            "revision": "a57bd8aad71d46b7ef35eb317ef2ace8bcf706fe"
+          },
+          "name": "EnerJ checker, runtime and simulator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993518"
+          },
+          "name": "EnerJ: Approximate Data Types for Safe and General Low-Power Computation (Sampson, Dietl, Fortuna, Gnanapragasam, Ceze, Grossman; PLDI 2011)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/fault-tolerance",
+        "compilers/property-preservation",
+        "security",
+        "security/fault-injection",
+        "isa",
+        "isa/transient-faults",
+        "verification",
+        "verification/fault-tolerance",
+        "runtimes/intermittent-computing",
+        "pl/type-systems/approximate-computing"
       ]
     },
     "filesystem-apfs-overlayfs-snapshot-sharing": {
@@ -35345,6 +35643,152 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "truth-maintenance-systems-provenance-retraction-and-assurance-defeaters": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1016/0004-3702(79)90008-0",
+            "publication": "Artificial Intelligence 12(3), pp. 231-272",
+            "year": "1979"
+          },
+          "name": "Jon Doyle, A Truth Maintenance System (JTMS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0004-3702(86)90080-9",
+            "publication": "Artificial Intelligence 28(2), pp. 127-162",
+            "year": "1986"
+          },
+          "name": "Johan de Kleer, An Assumption-based TMS (ATMS)"
+        },
+        {
+          "identity": {
+            "repository": "id2359/bps",
+            "revision": "3d072521dc7c759aaae7bb9d1c459c20ef6d8a01"
+          },
+          "name": "Forbus & de Kleer Building Problem Solvers (JTMS & ATMS reference source)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1265530.1265535",
+            "publication": "ACM PODS 2007, pp. 31-40",
+            "year": "2007"
+          },
+          "name": "Green, Karvounarakis, and Tannen, Provenance Semirings"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/170035.170066",
+            "publication": "ACM SIGMOD 1993, pp. 157-166",
+            "year": "1993"
+          },
+          "name": "Gupta, Mumick, and Subrahmanian, Maintaining Views Incrementally (DRed)"
+        },
+        {
+          "identity": {
+            "doi": "10.1609/aaai.v29i1.9409",
+            "publication": "AAAI 2015, Vol. 29(1)",
+            "year": "2015"
+          },
+          "name": "Motik, Nenov, Piro, and Horrocks, Incremental Update of Datalog Materialisation (Backward/Forward)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 Kernel Axiom Collection (CollectAxioms)"
+        },
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+          },
+          "name": "Salsa Incremental Computation Framework (Durability & Revision Invalidation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0364-0213(87)80011-8",
+            "publication": "Cognitive Science 11(4), pp. 481-518",
+            "year": "1987"
+          },
+          "name": "John L. Pollock, Defeasible Reasoning"
+        },
+        {
+          "identity": {
+            "doi": "10.1184/R1/6573413.v1",
+            "report": "CMU/SEI-2015-TR-005",
+            "year": "2015"
+          },
+          "name": "Goodenough, Weinstock, and Klein, Eliminative Argumentation"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.ssci.2016.09.004",
+            "publication": "Safety Science 92, pp. 53-65",
+            "year": "2017"
+          },
+          "name": "Graydon and Holloway, An investigation of proposed techniques for quantifying confidence in assurance arguments"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ISSREW.2014.72",
+            "publication": "IEEE ISSREW 2014, pp. 186-191",
+            "year": "2014"
+          },
+          "name": "Bloomfield and Netkachova, Building Blocks for Assurance Cases (CAE Blocks)"
+        },
+        {
+          "identity": {
+            "arxiv": "2004.10474v3",
+            "doi": "10.48550/arXiv.2004.10474",
+            "year": "2021"
+          },
+          "name": "Bloomfield and Rushby, Assurance 2.0: A Manifesto"
+        },
+        {
+          "identity": {
+            "arxiv": "2604.00034v1",
+            "doi": "10.48550/arXiv.2604.00034",
+            "report": "SRI-CSL-25-01R2",
+            "year": "2026"
+          },
+          "name": "Bloomfield and Rushby, Quantifying Confidence in Assurance 2.0 Arguments"
+        },
+        {
+          "identity": {
+            "standard": "SCSC-141C",
+            "version": "3",
+            "year": "2021"
+          },
+          "name": "SCSC Assurance Case Working Group, Goal Structuring Notation Community Standard Version 3"
+        },
+        {
+          "identity": {
+            "repository": "jonasthewolf/gsn2x",
+            "revision": "9effad837d6a11f2c9c6135f69d5b6b3164313df"
+          },
+          "name": "gsn2x GSN v3 Validator and Dialectical Extension Implementation"
+        },
+        {
+          "identity": {
+            "repository": "SRI-CSL/ETB",
+            "revision": "ee4692f3a58ab8230a1795b179829b871aebe7e3"
+          },
+          "name": "SRI Evidential Tool Bus (ETB)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/truth-maintenance",
+        "verification/assurance-cases",
+        "pl",
+        "pl/provenance",
+        "tooling",
+        "tooling/proof-engineering"
       ]
     },
     "two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning": {
