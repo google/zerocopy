@@ -29361,6 +29361,144 @@
         "pl/execution-models"
       ]
     },
+    "minimal-tcb-verification-spines-and-statement-adequacy-architectures": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53518-6_5",
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (mm0 / mm0-c)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.3",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "Candle (CakeML Verified HOL Light Kernel)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2403.14064",
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean (Verified Lean 4 Typechecker in Lean 4)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05"
+          },
+          "name": "Lean 4 C++ Kernel"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "lean4export External Proof Stream Exporter"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+          },
+          "name": "nanoda_lib Independent Rust Lean 4 Kernel Checker"
+        },
+        {
+          "identity": {
+            "repository": "MetaCoq/metacoq",
+            "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+          },
+          "name": "MetaCoq (Verified Rocq/Coq Metatheory and Checker)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust Formal Operational Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384",
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail ISA Specification Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656440",
+            "repository": "Wasm-DSL/spectec",
+            "revision": "acc6e834ff403c82554d081237f327346190ad96"
+          },
+          "name": "SpecTec WebAssembly Specification DSL"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53291-8_12",
+            "repository": "kenmcmil/ivy",
+            "revision": "257e3da96557df04303ccb38e80b5da1cd16cbae"
+          },
+          "name": "Ivy Protocol Verification and Compositional Testing Framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591282",
+            "repository": "Veridise/Picus",
+            "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+          },
+          "name": "Picus Primal-Dual Uniqueness Verifier for Arithmetic Circuits"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c",
+            "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/ramananandro"
+          },
+          "name": "EverParse Verified Zero-Copy Binary Parsers"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/vest",
+            "revision": "026867a37d4b918153058df2c8db6c52fc62ba35",
+            "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/cai"
+          },
+          "name": "Vest Verified Rust Parsers and Serializers"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert Certified C Compiler"
+        },
+        {
+          "identity": {
+            "doi_coverage": "10.1007/3-540-45319-9_36",
+            "doi_coverage_journal": "10.1007/s10009-006-0195-2",
+            "doi_vacuity": "10.1007/s10009-002-0088-y"
+          },
+          "name": "Vacuity Detection and Coverage Metrics in Model Checking (Kupferman-Vardi / Chockler-Kupferman-Vardi)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/tcb-minimization",
+        "verification/statement-adequacy",
+        "compilers",
+        "pl",
+        "pl/operational-semantics",
+        "agents",
+        "security",
+        "lean/kernel"
+      ]
+    },
     "minirust-core-calculi-basic-memory-and-nondeterminism": {
       "observed_at": "2026-10-24",
       "subjects": [
