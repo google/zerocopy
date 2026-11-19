@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "domains",
+    "domains/flexbox-grid-intrinsic-layout",
+    "pl",
+    "pl/push-pull-reactive-signals",
+    "compilers",
+    "compilers/incremental-durability-cutoff",
+    "verification",
+    "verification/topological-glitch-freedom",
+    "systems",
+    "tooling"
+  ],
+  "subjects": [
+    {
+      "name": "Taffy Rust CSS Flexbox and Grid layout engine",
+      "identity": {
+        "repository": "DioxusLabs/taffy",
+        "revision": "1abd8eeaf6059336a7026c31e0f1b769d2f04a3a"
+      }
+    },
+    {
+      "name": "Meta Yoga cross-platform CSS Flexbox layout engine",
+      "identity": {
+        "repository": "facebook/yoga",
+        "revision": "cac7b345c06804703dc6868f740f04ad8a863f27"
+      }
+    },
+    {
+      "name": "Preact Signals doubly-linked version-epoch reactive core",
+      "identity": {
+        "repository": "preactjs/signals",
+        "revision": "0cf8da25485ab0a41287e2b9042071fc62c034b4"
+      }
+    },
+    {
+      "name": "SolidJS height-bucketed topological reactive signal runtime",
+      "identity": {
+        "repository": "solidjs/solid",
+        "revision": "a4b402561c3b003facca04fdbeaba1afbe6a9b7d"
+      }
+    },
+    {
+      "name": "TC39 ECMAScript Signals standard proposal",
+      "identity": {
+        "repository": "tc39/proposal-signals",
+        "revision": "9124ed91b24bb02ff7408b2fcf5abb6e18b095d7"
+      }
+    },
+    {
+      "name": "Salsa Rust incremental query and durability memoization framework",
+      "identity": {
+        "repository": "salsa-rs/salsa",
+        "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+      }
+    },
+    {
+      "name": "W3C CSS Flexible Box Layout Level 1 and CSS Grid Layout Level 2 Specifications",
+      "identity": {
+        "flexbox_url": "https://www.w3.org/TR/css-flexbox-1/",
+        "grid_url": "https://www.w3.org/TR/css-grid-2/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "domains",
+    "domains/synchrophasor-substation-protection",
+    "security",
+    "security/iec61850-sv-dnp3-authentication",
+    "systems",
+    "systems/plc-io-tearing-and-mho-relays",
+    "verification",
+    "verification/rocof-and-impedance-blinders",
+    "tooling"
+  ],
+  "subjects": [
+    {
+      "name": "Grid Protection Alliance openPDC and GSF IEEE C37.118 synchrophasor stack",
+      "identity": {
+        "repository": "GridProtectionAlliance/openPDC",
+        "revision": "bfc5539e7c2fddcf1973be8a651546a738173aca",
+        "gsf_repository": "GridProtectionAlliance/gsf",
+        "gsf_revision": "aefb8e4393da7a2a0171af4e5d5d8668dbbc75f1"
+      }
+    },
+    {
+      "name": "libiec61850 IEC 61850 GOOSE and Sampled Values C library",
+      "identity": {
+        "repository": "mz-automation/libiec61850",
+        "revision": "6e265c54af66ea686453b6d31c4dcce1cf7ad2bd"
+      }
+    },
+    {
+      "name": "OpenDNP3 Apache-2.0 IEEE 1815 Distributed Network Protocol C++ stack",
+      "identity": {
+        "repository": "dnp3/opendnp3",
+        "revision": "c1dc7165a79cc08edbf4b55d2ff4162efb176f92",
+        "doi": "10.1109/IEEESTD.2012.6327578"
+      }
+    },
+    {
+      "name": "Step Function Rust IEEE 1815 DNP3 outstation and master stack",
+      "identity": {
+        "repository": "stepfunc/dnp3",
+        "revision": "faf68c3e3fe1d42cf356ff85913cfcc7028dc569"
+      }
+    },
+    {
+      "name": "MatIEC IEC 61131-3 Structured Text and Instruction List compiler",
+      "identity": {
+        "repository": "beremiz/matiec",
+        "revision": "c316fe57e335381cbe91f61c7366857198580ac7"
+      }
+    },
+    {
+      "name": "OpenPLC v3 real-time IEC 61131-3 scan-cycle runtime",
+      "identity": {
+        "repository": "thiagoralves/OpenPLC_v3",
+        "revision": "b5d41356dab4aeadca0dd7ca64ba542f870b595d"
+      }
+    },
+    {
+      "name": "IEEE Std C37.118.1/C37.118.1a/C37.118.2 Synchrophasor Standards and U.S.-Canada August 14, 2003 Blackout Final Report",
+      "identity": {
+        "synchrophasor_standard": "IEEE Std C37.118.1-2011 / C37.118.1a-2014 / IEC/IEEE 60255-118-1",
+        "outage_report": "U.S.-Canada Power System Outage Task Force Final Report on the August 14, 2003 Blackout (April 2004)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

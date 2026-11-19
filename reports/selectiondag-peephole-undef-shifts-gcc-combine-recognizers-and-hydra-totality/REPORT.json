@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/instruction-selection-totality",
+    "llvm/selectiondag-undef-poison-peepholes",
+    "smt/peephole-rewrite-synthesis",
+    "verification/selector-overlap-determinism"
+  ],
+  "subjects": [
+    {
+      "name": "Wasmtime and Cranelift ISLE instruction-selection DSL compiler",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "e355dc640d047ab76dbf4402567d0c124bfdecd6"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure (InstCombine and SelectionDAG)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "24d30c217e52708d67c7692311e6455dcc708e0d"
+      }
+    },
+    {
+      "name": "GNU Compiler Collection RTL combiner and simplifier",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "2666438724c3364795e733f53115af0f7b018770"
+      }
+    },
+    {
+      "name": "Alive2 SMT translation validator for LLVM IR",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+      }
+    },
+    {
+      "name": "Hydra program-synthesis peephole generalizer",
+      "identity": {
+        "repository": "manasij7479/hydra",
+        "revision": "1813fd35db23e68cb32cb6d5b528594c49e5343c"
+      }
+    },
+    {
+      "name": "Crocus / VeriISLE modular instruction-selection verifier specification",
+      "identity": {
+        "doi": "10.1145/3617232.3624862",
+        "title": "Lightweight, Modular Verification for WebAssembly-to-Native Instruction Selection"
+      }
+    },
+    {
+      "name": "Arrival multi-rule instruction-selection verifier against authoritative ISA semantics",
+      "identity": {
+        "doi": "10.1145/3764383",
+        "title": "Scaling Instruction-Selection Verification against Authoritative ISA Semantics"
+      }
+    },
+    {
+      "name": "Hydra width-independent peephole synthesis specification",
+      "identity": {
+        "doi": "10.1145/3649837",
+        "title": "Hydra: Generalizing Peephole Optimizations with Program Synthesis"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

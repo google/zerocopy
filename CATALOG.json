@@ -10233,6 +10233,74 @@
         "pl/history"
       ]
     },
+    "c37118-synchrophasor-rocof-dnp3-select-operate-and-zone3-mho-encroachment": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "gsf_repository": "GridProtectionAlliance/gsf",
+            "gsf_revision": "aefb8e4393da7a2a0171af4e5d5d8668dbbc75f1",
+            "repository": "GridProtectionAlliance/openPDC",
+            "revision": "bfc5539e7c2fddcf1973be8a651546a738173aca"
+          },
+          "name": "Grid Protection Alliance openPDC and GSF IEEE C37.118 synchrophasor stack"
+        },
+        {
+          "identity": {
+            "repository": "mz-automation/libiec61850",
+            "revision": "6e265c54af66ea686453b6d31c4dcce1cf7ad2bd"
+          },
+          "name": "libiec61850 IEC 61850 GOOSE and Sampled Values C library"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2012.6327578",
+            "repository": "dnp3/opendnp3",
+            "revision": "c1dc7165a79cc08edbf4b55d2ff4162efb176f92"
+          },
+          "name": "OpenDNP3 Apache-2.0 IEEE 1815 Distributed Network Protocol C++ stack"
+        },
+        {
+          "identity": {
+            "repository": "stepfunc/dnp3",
+            "revision": "faf68c3e3fe1d42cf356ff85913cfcc7028dc569"
+          },
+          "name": "Step Function Rust IEEE 1815 DNP3 outstation and master stack"
+        },
+        {
+          "identity": {
+            "repository": "beremiz/matiec",
+            "revision": "c316fe57e335381cbe91f61c7366857198580ac7"
+          },
+          "name": "MatIEC IEC 61131-3 Structured Text and Instruction List compiler"
+        },
+        {
+          "identity": {
+            "repository": "thiagoralves/OpenPLC_v3",
+            "revision": "b5d41356dab4aeadca0dd7ca64ba542f870b595d"
+          },
+          "name": "OpenPLC v3 real-time IEC 61131-3 scan-cycle runtime"
+        },
+        {
+          "identity": {
+            "outage_report": "U.S.-Canada Power System Outage Task Force Final Report on the August 14, 2003 Blackout (April 2004)",
+            "synchrophasor_standard": "IEEE Std C37.118.1-2011 / C37.118.1a-2014 / IEC/IEEE 60255-118-1"
+          },
+          "name": "IEEE Std C37.118.1/C37.118.1a/C37.118.2 Synchrophasor Standards and U.S.-Canada August 14, 2003 Blackout Final Report"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/synchrophasor-substation-protection",
+        "security",
+        "security/iec61850-sv-dnp3-authentication",
+        "systems",
+        "systems/plc-io-tearing-and-mho-relays",
+        "verification",
+        "verification/rocof-and-impedance-blinders",
+        "tooling"
+      ]
+    },
     "call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -31995,6 +32063,67 @@
         "verification/civil-tzdb-epoch-injectivity"
       ]
     },
+    "libwebp-huffman-tables-dav1d-rans-cdfs-and-lcms2-icc-tetrahedral-luts": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "webmproject/libwebp",
+            "revision": "67b8deeacb096d04379607658d9e7db7497d09de"
+          },
+          "name": "libwebp lossless VP8L decoder and two-level Huffman table builder"
+        },
+        {
+          "identity": {
+            "repository": "videolan/dav1d",
+            "revision": "9af5ae4eb5204706c7f381ec62635237179f172e"
+          },
+          "name": "dav1d AV1 multi-symbol arithmetic decoder and SIMD loop-restoration engine"
+        },
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "22cbbe3daa9881c2885eedced54611c5ba6901f1"
+          },
+          "name": "FFmpeg libavcodec WebP and AV1 bitstream decoders"
+        },
+        {
+          "identity": {
+            "repository": "mm2/Little-CMS",
+            "revision": "914ab50e951debe896bd43510515cbd9be6bfff9"
+          },
+          "name": "Little CMS (lcms2) ICC multidimensional CLUT allocator and tetrahedral interpolator"
+        },
+        {
+          "identity": {
+            "repository": "google/skcms",
+            "revision": "c1248c99cbd8cdc3ed8e8314c997600724e10c70"
+          },
+          "name": "Google skcms ICC color profile parser and transform engine"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2023-4863",
+            "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-4863"
+          },
+          "name": "CVE-2023-4863 / CVE-2023-41064 libwebp BuildHuffmanTable heap buffer overflow record"
+        },
+        {
+          "identity": {
+            "standard": "ISO 15076-1 / ICC.1:2022-05",
+            "url": "https://www.color.org/specification/ICC.1-2022-05.pdf"
+          },
+          "name": "ICC.1:2022 Image technology colour management specification"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/huffman-subtable-bounds",
+        "domains/av1-rans-loop-restoration",
+        "domains/icc-tetrahedral-color-luts",
+        "verification/kraft-prefix-and-cdf-invariants"
+      ]
+    },
     "lie-group-factor-graphs-state-estimation-and-deterministic-robotics-middleware": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -39780,6 +39909,85 @@
         "rust",
         "systems",
         "verification"
+      ]
+    },
+    "picus-zk-underconstrained-fuzzing-mpfr-shadow-oracles-and-fp-validation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Veridise/Picus",
+            "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+          },
+          "name": "Veridise Picus"
+        },
+        {
+          "identity": {
+            "repository": "trailofbits/circomspect",
+            "revision": "50010b623ed4f3bff9d1b0363cfe952385b47af3"
+          },
+          "name": "Trail of Bits Circomspect"
+        },
+        {
+          "identity": {
+            "repository": "iden3/circom",
+            "revision": "9b4b23331644e17868c90a85768826ed3bcba59f"
+          },
+          "name": "Circom"
+        },
+        {
+          "identity": {
+            "repository": "franklynwang/EcneProject",
+            "revision": "25935352ca30705ad47363dcf200822635edc1c7"
+          },
+          "name": "Ecne"
+        },
+        {
+          "identity": {
+            "repository": "C2SP/wycheproof",
+            "revision": "65ca494727a52944c204441c860b039e6786b99b"
+          },
+          "name": "Project Wycheproof (C2SP)"
+        },
+        {
+          "identity": {
+            "repository": "herbie-fp/rival",
+            "revision": "4d2334a05338be8df9c6924e30534d693f83267d"
+          },
+          "name": "Rival (Herbie MPFR Interval Engine)"
+        },
+        {
+          "identity": {
+            "repository": "herbie-fp/herbie",
+            "revision": "4612b0d493cbb2013dc5afac5c099b7722166ec2"
+          },
+          "name": "Herbie"
+        },
+        {
+          "identity": {
+            "repository": "ucb-bar/berkeley-softfloat-3",
+            "revision": "07ebd29db0cfb55723a79fbbffe99103ef38e305"
+          },
+          "name": "Berkeley SoftFloat-3"
+        },
+        {
+          "identity": {
+            "repository": "ucb-bar/berkeley-testfloat-3",
+            "revision": "a9c849f1b0eb0264b626d9686ffae167d996e3be"
+          },
+          "name": "Berkeley TestFloat-3"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/zk-circuits",
+        "verification/floating-point",
+        "security",
+        "security/cryptography",
+        "compilers",
+        "smt",
+        "pl",
+        "tooling"
       ]
     },
     "pinocchio-drake-surgical-cbf-singularities-and-klipper-cnc-kinematics": {
@@ -52474,6 +52682,74 @@
         "verification/semantic-models/non-interference"
       ]
     },
+    "selectiondag-peephole-undef-shifts-gcc-combine-recognizers-and-hydra-totality": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "e355dc640d047ab76dbf4402567d0c124bfdecd6"
+          },
+          "name": "Wasmtime and Cranelift ISLE instruction-selection DSL compiler"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "24d30c217e52708d67c7692311e6455dcc708e0d"
+          },
+          "name": "LLVM compiler infrastructure (InstCombine and SelectionDAG)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "2666438724c3364795e733f53115af0f7b018770"
+          },
+          "name": "GNU Compiler Collection RTL combiner and simplifier"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2 SMT translation validator for LLVM IR"
+        },
+        {
+          "identity": {
+            "repository": "manasij7479/hydra",
+            "revision": "1813fd35db23e68cb32cb6d5b528594c49e5343c"
+          },
+          "name": "Hydra program-synthesis peephole generalizer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3617232.3624862",
+            "title": "Lightweight, Modular Verification for WebAssembly-to-Native Instruction Selection"
+          },
+          "name": "Crocus / VeriISLE modular instruction-selection verifier specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3764383",
+            "title": "Scaling Instruction-Selection Verification against Authoritative ISA Semantics"
+          },
+          "name": "Arrival multi-rule instruction-selection verifier against authoritative ISA semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3649837",
+            "title": "Hydra: Generalizing Peephole Optimizations with Program Synthesis"
+          },
+          "name": "Hydra width-independent peephole synthesis specification"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/instruction-selection-totality",
+        "llvm/selectiondag-undef-poison-peepholes",
+        "smt/peephole-rewrite-synthesis",
+        "verification/selector-overlap-determinism"
+      ]
+    },
     "self-referential-unpin-coroutine-field-slicing-and-sroa": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -56428,6 +56704,72 @@
         "compilers/comparison-feedback"
       ]
     },
+    "taffy-yoga-flexbox-intrinsic-oscillation-preact-signals-and-diamond-glitches": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "DioxusLabs/taffy",
+            "revision": "1abd8eeaf6059336a7026c31e0f1b769d2f04a3a"
+          },
+          "name": "Taffy Rust CSS Flexbox and Grid layout engine"
+        },
+        {
+          "identity": {
+            "repository": "facebook/yoga",
+            "revision": "cac7b345c06804703dc6868f740f04ad8a863f27"
+          },
+          "name": "Meta Yoga cross-platform CSS Flexbox layout engine"
+        },
+        {
+          "identity": {
+            "repository": "preactjs/signals",
+            "revision": "0cf8da25485ab0a41287e2b9042071fc62c034b4"
+          },
+          "name": "Preact Signals doubly-linked version-epoch reactive core"
+        },
+        {
+          "identity": {
+            "repository": "solidjs/solid",
+            "revision": "a4b402561c3b003facca04fdbeaba1afbe6a9b7d"
+          },
+          "name": "SolidJS height-bucketed topological reactive signal runtime"
+        },
+        {
+          "identity": {
+            "repository": "tc39/proposal-signals",
+            "revision": "9124ed91b24bb02ff7408b2fcf5abb6e18b095d7"
+          },
+          "name": "TC39 ECMAScript Signals standard proposal"
+        },
+        {
+          "identity": {
+            "repository": "salsa-rs/salsa",
+            "revision": "496752ea3879af8cf3d71d1e28d76447a0cf6482"
+          },
+          "name": "Salsa Rust incremental query and durability memoization framework"
+        },
+        {
+          "identity": {
+            "flexbox_url": "https://www.w3.org/TR/css-flexbox-1/",
+            "grid_url": "https://www.w3.org/TR/css-grid-2/"
+          },
+          "name": "W3C CSS Flexible Box Layout Level 1 and CSS Grid Layout Level 2 Specifications"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/flexbox-grid-intrinsic-layout",
+        "pl",
+        "pl/push-pull-reactive-signals",
+        "compilers",
+        "compilers/incremental-durability-cutoff",
+        "verification",
+        "verification/topological-glitch-freedom",
+        "systems",
+        "tooling"
+      ]
+    },
     "target-features-implications-detection-and-abi-effects": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -57375,6 +57717,160 @@
         "pl/modeling-languages",
         "systems/verified-distributed",
         "smt/relational-models"
+      ]
+    },
+    "tla-execution-trace-validation-packetdrill-and-parser-differential-fuzzing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/tlaplus/tlaplus",
+            "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c"
+          },
+          "name": "tlaplus/tlaplus"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/tlaplus/CommunityModules",
+            "revision": "cbf7a667423a3768aa3c87fe622faf7db1baa2e7"
+          },
+          "name": "tlaplus/CommunityModules"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/apalache-mc/apalache",
+            "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+          },
+          "name": "apalache-mc/apalache"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/etcd-io/raft",
+            "revision": "ae830f4a15a0bdb5f59bb7988e50663e92cc028f"
+          },
+          "name": "etcd-io/raft"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/etcd-io/etcd",
+            "revision": "e4cf2bb0978fc844f50f220f2c30c91b4d412f28"
+          },
+          "name": "etcd-io/etcd"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/mongodb/mongo",
+            "revision": "fec4e10e7616b50d54c3d77a0d97431cf944de03"
+          },
+          "name": "mongodb/mongo"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/google/packetdrill",
+            "revision": "15ab46aedd01a5e664ec5cfb2b1888328cdd3901"
+          },
+          "name": "google/packetdrill"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/tls-attacker/TLS-Attacker",
+            "revision": "5ab7d3d6a0a82e2fef8a298a7a59da61d0da979e"
+          },
+          "name": "tls-attacker/TLS-Attacker"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/nezha-dt/nezha",
+            "revision": "cd3b5fcc958ce4d216cee1c2f39695d7302fc8dc"
+          },
+          "name": "nezha-dt/nezha"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/C2SP/x509-limbo",
+            "revision": "b12423782a88abead01141fa6582254e3eb49e74"
+          },
+          "name": "C2SP/x509-limbo"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/nst/JSONTestSuite",
+            "revision": "1ef36fa01286573e846ac449e8683f8833c5b26a"
+          },
+          "name": "nst/JSONTestSuite"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/project-everest/everparse",
+            "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+          },
+          "name": "project-everest/everparse"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.2404.16075",
+            "url": "https://arxiv.org/abs/2404.16075",
+            "year": "2024"
+          },
+          "name": "Validating Traces of Distributed Programs Against TLA+ Specifications (2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3397230.3397233",
+            "url": "https://doi.org/10.14778/3397230.3397233",
+            "year": "2020"
+          },
+          "name": "eXtreme Modelling in Practice (PVLDB 2020)"
+        },
+        {
+          "identity": {
+            "standard": "USENIX ATC 2013",
+            "url": "https://www.usenix.org/conference/atc13/technical-sessions/presentation/cardwell",
+            "year": "2013"
+          },
+          "name": "packetdrill: Scriptable Network Stack Testing, from Sockets to Packets (USENIX ATC 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2976749.2978411",
+            "url": "https://doi.org/10.1145/2976749.2978411",
+            "year": "2016"
+          },
+          "name": "Systematic Fuzzing and Testing of TLS Libraries (ACM CCS 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2017.27",
+            "url": "https://doi.org/10.1109/SP.2017.27",
+            "year": "2017"
+          },
+          "name": "NEZHA: Efficient Domain-Independent Differential Testing (IEEE S&P 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2014.15",
+            "url": "https://doi.org/10.1109/SP.2014.15",
+            "year": "2014"
+          },
+          "name": "Using Frankencerts for Automated Adversarial Testing of Certificate Validation in SSL/TLS Implementations (IEEE S&P 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3064176.3064178",
+            "url": "https://doi.org/10.1145/3064176.3064178",
+            "year": "2017"
+          },
+          "name": "Taming Parallelism in a Multi-Variant Execution Environment (EuroSys 2017)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/trace-validation",
+        "systems",
+        "systems/networking",
+        "security",
+        "tooling",
+        "ffi"
       ]
     },
     "tock-asterinas-redleaf-theseus-and-rust-os-isolation-boundaries": {

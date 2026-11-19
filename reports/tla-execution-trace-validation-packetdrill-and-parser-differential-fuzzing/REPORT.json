@@ -1,0 +1,154 @@
+{
+  "topics": [
+    "verification",
+    "verification/trace-validation",
+    "systems",
+    "systems/networking",
+    "security",
+    "tooling",
+    "ffi"
+  ],
+  "subjects": [
+    {
+      "name": "tlaplus/tlaplus",
+      "identity": {
+        "repository": "https://github.com/tlaplus/tlaplus",
+        "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c"
+      }
+    },
+    {
+      "name": "tlaplus/CommunityModules",
+      "identity": {
+        "repository": "https://github.com/tlaplus/CommunityModules",
+        "revision": "cbf7a667423a3768aa3c87fe622faf7db1baa2e7"
+      }
+    },
+    {
+      "name": "apalache-mc/apalache",
+      "identity": {
+        "repository": "https://github.com/apalache-mc/apalache",
+        "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+      }
+    },
+    {
+      "name": "etcd-io/raft",
+      "identity": {
+        "repository": "https://github.com/etcd-io/raft",
+        "revision": "ae830f4a15a0bdb5f59bb7988e50663e92cc028f"
+      }
+    },
+    {
+      "name": "etcd-io/etcd",
+      "identity": {
+        "repository": "https://github.com/etcd-io/etcd",
+        "revision": "e4cf2bb0978fc844f50f220f2c30c91b4d412f28"
+      }
+    },
+    {
+      "name": "mongodb/mongo",
+      "identity": {
+        "repository": "https://github.com/mongodb/mongo",
+        "revision": "fec4e10e7616b50d54c3d77a0d97431cf944de03"
+      }
+    },
+    {
+      "name": "google/packetdrill",
+      "identity": {
+        "repository": "https://github.com/google/packetdrill",
+        "revision": "15ab46aedd01a5e664ec5cfb2b1888328cdd3901"
+      }
+    },
+    {
+      "name": "tls-attacker/TLS-Attacker",
+      "identity": {
+        "repository": "https://github.com/tls-attacker/TLS-Attacker",
+        "revision": "5ab7d3d6a0a82e2fef8a298a7a59da61d0da979e"
+      }
+    },
+    {
+      "name": "nezha-dt/nezha",
+      "identity": {
+        "repository": "https://github.com/nezha-dt/nezha",
+        "revision": "cd3b5fcc958ce4d216cee1c2f39695d7302fc8dc"
+      }
+    },
+    {
+      "name": "C2SP/x509-limbo",
+      "identity": {
+        "repository": "https://github.com/C2SP/x509-limbo",
+        "revision": "b12423782a88abead01141fa6582254e3eb49e74"
+      }
+    },
+    {
+      "name": "nst/JSONTestSuite",
+      "identity": {
+        "repository": "https://github.com/nst/JSONTestSuite",
+        "revision": "1ef36fa01286573e846ac449e8683f8833c5b26a"
+      }
+    },
+    {
+      "name": "project-everest/everparse",
+      "identity": {
+        "repository": "https://github.com/project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "Validating Traces of Distributed Programs Against TLA+ Specifications (2024)",
+      "identity": {
+        "doi": "10.48550/arXiv.2404.16075",
+        "url": "https://arxiv.org/abs/2404.16075",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "eXtreme Modelling in Practice (PVLDB 2020)",
+      "identity": {
+        "doi": "10.14778/3397230.3397233",
+        "url": "https://doi.org/10.14778/3397230.3397233",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "packetdrill: Scriptable Network Stack Testing, from Sockets to Packets (USENIX ATC 2013)",
+      "identity": {
+        "standard": "USENIX ATC 2013",
+        "url": "https://www.usenix.org/conference/atc13/technical-sessions/presentation/cardwell",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Systematic Fuzzing and Testing of TLS Libraries (ACM CCS 2016)",
+      "identity": {
+        "doi": "10.1145/2976749.2978411",
+        "url": "https://doi.org/10.1145/2976749.2978411",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "NEZHA: Efficient Domain-Independent Differential Testing (IEEE S&P 2017)",
+      "identity": {
+        "doi": "10.1109/SP.2017.27",
+        "url": "https://doi.org/10.1109/SP.2017.27",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Using Frankencerts for Automated Adversarial Testing of Certificate Validation in SSL/TLS Implementations (IEEE S&P 2014)",
+      "identity": {
+        "doi": "10.1109/SP.2014.15",
+        "url": "https://doi.org/10.1109/SP.2014.15",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Taming Parallelism in a Multi-Variant Execution Environment (EuroSys 2017)",
+      "identity": {
+        "doi": "10.1145/3064176.3064178",
+        "url": "https://doi.org/10.1145/3064176.3064178",
+        "year": "2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

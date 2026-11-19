@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "verification",
+    "verification/zk-circuits",
+    "verification/floating-point",
+    "security",
+    "security/cryptography",
+    "compilers",
+    "smt",
+    "pl",
+    "tooling"
+  ],
+  "subjects": [
+    {
+      "name": "Veridise Picus",
+      "identity": {
+        "repository": "Veridise/Picus",
+        "revision": "138b151d3a388e5b6c040c163e0a1db04f2ceda6"
+      }
+    },
+    {
+      "name": "Trail of Bits Circomspect",
+      "identity": {
+        "repository": "trailofbits/circomspect",
+        "revision": "50010b623ed4f3bff9d1b0363cfe952385b47af3"
+      }
+    },
+    {
+      "name": "Circom",
+      "identity": {
+        "repository": "iden3/circom",
+        "revision": "9b4b23331644e17868c90a85768826ed3bcba59f"
+      }
+    },
+    {
+      "name": "Ecne",
+      "identity": {
+        "repository": "franklynwang/EcneProject",
+        "revision": "25935352ca30705ad47363dcf200822635edc1c7"
+      }
+    },
+    {
+      "name": "Project Wycheproof (C2SP)",
+      "identity": {
+        "repository": "C2SP/wycheproof",
+        "revision": "65ca494727a52944c204441c860b039e6786b99b"
+      }
+    },
+    {
+      "name": "Rival (Herbie MPFR Interval Engine)",
+      "identity": {
+        "repository": "herbie-fp/rival",
+        "revision": "4d2334a05338be8df9c6924e30534d693f83267d"
+      }
+    },
+    {
+      "name": "Herbie",
+      "identity": {
+        "repository": "herbie-fp/herbie",
+        "revision": "4612b0d493cbb2013dc5afac5c099b7722166ec2"
+      }
+    },
+    {
+      "name": "Berkeley SoftFloat-3",
+      "identity": {
+        "repository": "ucb-bar/berkeley-softfloat-3",
+        "revision": "07ebd29db0cfb55723a79fbbffe99103ef38e305"
+      }
+    },
+    {
+      "name": "Berkeley TestFloat-3",
+      "identity": {
+        "repository": "ucb-bar/berkeley-testfloat-3",
+        "revision": "a9c849f1b0eb0264b626d9686ffae167d996e3be"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

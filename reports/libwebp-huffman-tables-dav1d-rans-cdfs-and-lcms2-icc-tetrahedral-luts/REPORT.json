@@ -1,0 +1,61 @@
+{
+  "topics": [
+    "security",
+    "security/huffman-subtable-bounds",
+    "domains/av1-rans-loop-restoration",
+    "domains/icc-tetrahedral-color-luts",
+    "verification/kraft-prefix-and-cdf-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "libwebp lossless VP8L decoder and two-level Huffman table builder",
+      "identity": {
+        "repository": "webmproject/libwebp",
+        "revision": "67b8deeacb096d04379607658d9e7db7497d09de"
+      }
+    },
+    {
+      "name": "dav1d AV1 multi-symbol arithmetic decoder and SIMD loop-restoration engine",
+      "identity": {
+        "repository": "videolan/dav1d",
+        "revision": "9af5ae4eb5204706c7f381ec62635237179f172e"
+      }
+    },
+    {
+      "name": "FFmpeg libavcodec WebP and AV1 bitstream decoders",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "22cbbe3daa9881c2885eedced54611c5ba6901f1"
+      }
+    },
+    {
+      "name": "Little CMS (lcms2) ICC multidimensional CLUT allocator and tetrahedral interpolator",
+      "identity": {
+        "repository": "mm2/Little-CMS",
+        "revision": "914ab50e951debe896bd43510515cbd9be6bfff9"
+      }
+    },
+    {
+      "name": "Google skcms ICC color profile parser and transform engine",
+      "identity": {
+        "repository": "google/skcms",
+        "revision": "c1248c99cbd8cdc3ed8e8314c997600724e10c70"
+      }
+    },
+    {
+      "name": "CVE-2023-4863 / CVE-2023-41064 libwebp BuildHuffmanTable heap buffer overflow record",
+      "identity": {
+        "cve": "CVE-2023-4863",
+        "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-4863"
+      }
+    },
+    {
+      "name": "ICC.1:2022 Image technology colour management specification",
+      "identity": {
+        "standard": "ISO 15076-1 / ICC.1:2022-05",
+        "url": "https://www.color.org/specification/ICC.1-2022-05.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
