@@ -1,0 +1,93 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "simdjson/simdjson",
+        "revision": "36c5b3cfce8125aed9e68ec4db5bbbd5c63229f5",
+        "version": "5.2.0"
+      },
+      "name": "simdjson SIMD JSON parser"
+    },
+    {
+      "identity": {
+        "repository": "simdutf/simdutf",
+        "revision": "177945073a2e44f6ef252aa2b9cf1ecb8e4d2ab0",
+        "version": "9.4.0"
+      },
+      "name": "simdutf SIMD Unicode validation and transcoding library"
+    },
+    {
+      "identity": {
+        "repository": "fastfloat/fast_float",
+        "revision": "8ec59686a1430867ba609c2777ca15143dd81003",
+        "version": "8.3.3"
+      },
+      "name": "fast_float Eisel-Lemire decimal-to-binary floating-point parser"
+    },
+    {
+      "identity": {
+        "doi": "10.17487/RFC8259",
+        "standard": "IETF RFC 8259",
+        "url": "https://www.rfc-editor.org/rfc/rfc8259"
+      },
+      "name": "The JavaScript Object Notation (JSON) Data Interchange Format"
+    },
+    {
+      "identity": {
+        "doi": "10.17487/RFC3629",
+        "standard": "IETF RFC 3629",
+        "url": "https://www.rfc-editor.org/rfc/rfc3629"
+      },
+      "name": "UTF-8, a transformation format of ISO 10646"
+    },
+    {
+      "identity": {
+        "arxiv": "1902.08318",
+        "doi": "10.1007/s00778-019-00578-5"
+      },
+      "name": "Parsing Gigabytes of JSON per Second (Langdale & Lemire, VLDB Journal 2019)"
+    },
+    {
+      "identity": {
+        "arxiv": "2010.03090",
+        "doi": "10.1002/spe.2920"
+      },
+      "name": "Validating UTF-8 In Less Than One Instruction Per Byte (Keiser & Lemire, SPE 2021)"
+    },
+    {
+      "identity": {
+        "arxiv": "2109.10433",
+        "doi": "10.1002/spe.3036"
+      },
+      "name": "Transcoding Billions of Unicode Characters per Second with SIMD Instructions (Lemire & Mula, SPE 2022)"
+    },
+    {
+      "identity": {
+        "arxiv": "2101.11408",
+        "doi": "10.1002/spe.2984"
+      },
+      "name": "Number Parsing at a Gigabyte per Second (Lemire, SPE 2021)"
+    },
+    {
+      "identity": {
+        "arxiv": "2212.06644",
+        "doi": "10.1002/spe.3198"
+      },
+      "name": "Fast Number Parsing Without Fallback (Mushtak & Lemire, SPE 2023)"
+    },
+    {
+      "identity": {
+        "arxiv": "2312.17149",
+        "doi": "10.1002/spe.3313"
+      },
+      "name": "On-Demand JSON: A Better Way to Parse Documents? (Keiser & Lemire, SPE 2024)"
+    }
+  ],
+  "topics": [
+    "compilers/simd-automata",
+    "isa/carryless-bitmasks",
+    "verification/vector-parsers",
+    "security/utf8-validation"
+  ]
+}

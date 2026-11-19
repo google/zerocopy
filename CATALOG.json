@@ -21349,6 +21349,77 @@
         "compilers"
       ]
     },
+    "herbie-accuracy-rewrites-symbolic-taylor-bounds-and-daisy-enclosures": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "herbie-fp/herbie",
+            "revision": "4612b0d493cbb2013dc5afac5c099b7722166ec2"
+          },
+          "name": "Herbie"
+        },
+        {
+          "identity": {
+            "repository": "soarlab/FPTaylor",
+            "revision": "b5a77cae348400f21f83512210d9f43c4bffb381"
+          },
+          "name": "FPTaylor"
+        },
+        {
+          "identity": {
+            "repository": "malyzajko/daisy",
+            "revision": "6a6f47abdd231d3009444e9e1b8ce9febc28c27e"
+          },
+          "name": "Daisy"
+        },
+        {
+          "identity": {
+            "repository": "FPBench/FPBench",
+            "revision": "090d81982edc0d2a597f4c15644253d4f266a6ef"
+          },
+          "name": "FPBench"
+        },
+        {
+          "identity": {
+            "repository": "alerad/leancert",
+            "revision": "44b323a0d6af00211d5013f6e021432db032087c"
+          },
+          "name": "LeanCert"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2737959"
+          },
+          "name": "Automatically Improving Accuracy for Floating Point Expressions (Panchekha et al., PLDI 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3230733"
+          },
+          "name": "Rigorous Estimation of Floating-Point Round-Off Errors with Symbolic Taylor Expansions (Solovyev et al., ACM TOPLAS 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-89960-2_15"
+          },
+          "name": "Daisy - Framework for Analysis and Optimization of Numerical Programs (Darulova et al., TACAS 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1644001.1644002"
+          },
+          "name": "Certification of Bounds on Expressions Involving Rounded Operators (Daumas & Melquiond, ACM TOMS 2010)"
+        }
+      ],
+      "topics": [
+        "compilers/floating-point-rewrites",
+        "verification/roundoff-enclosures",
+        "smt/real-intervals",
+        "lean/numerical-certificates",
+        "verification/floating-point"
+      ]
+    },
     "higher-order-masking-compilers-register-transition-leaks-and-maskverif": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -33949,6 +34020,78 @@
         "verification/survey"
       ]
     },
+    "polyhedral-presburger-scheduling-isl-pluto-tiling-and-ppcg-mapping": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "PollyLabs/isl",
+            "revision": "b822a2105dfe3c36f5d9c31071e61446bc88c0bc"
+          },
+          "name": "isl (Integer Set Library)"
+        },
+        {
+          "identity": {
+            "repository": "bondhugula/pluto",
+            "revision": "2b6fd99c976e4fec340cb227c8048bcd40864755"
+          },
+          "name": "Pluto"
+        },
+        {
+          "identity": {
+            "repository": "Meinersbur/ppcg",
+            "revision": "5e07c52e13fc8ea9fac7c1daf247d81d60822a93"
+          },
+          "name": "PPCG (Polyhedral Parallel Code Generation)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/Polygeist",
+            "revision": "77c04bb2a7a2406ca9480bcc9e729b07d2c8d077"
+          },
+          "name": "Polygeist"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "d1ee282181f8f83e7552136c344706c0e5400c9a"
+          },
+          "name": "LLVM Polly and MLIR Affine Dialect"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-15582-6_49"
+          },
+          "name": "isl: An Integer Set Library for the Polyhedral Model (Verdoolaege, ICMS 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375595"
+          },
+          "name": "A Practical Automatic Polyhedral Parallelizer and Locality Optimizer (Bondhugula et al., PLDI 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2400682.2400713"
+          },
+          "name": "Polyhedral Parallel Code Generation for CUDA (Verdoolaege et al., ACM TACO 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2362389.2362393"
+          },
+          "name": "Equivalence Checking of Static Affine Programs Using Widening to Handle Recurrences (Verdoolaege, Janssens, Bruynooghe, ACM TOPLAS 2012)"
+        }
+      ],
+      "topics": [
+        "compilers/polyhedral-scheduling",
+        "smt/presburger-polyhedra",
+        "llvm/loop-tiling",
+        "verification/schedule-equivalence",
+        "llvm/mlir-affine",
+        "compilers/gpu-mapping"
+      ]
+    },
     "polymorphism-compilation-layout-algebras-and-abi-resilience": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -45774,6 +45917,99 @@
         "systems/firmware",
         "verification",
         "verification/hardware-security"
+      ]
+    },
+    "simdjson-carryless-quote-masks-structural-tapes-and-vector-utf8": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "simdjson/simdjson",
+            "revision": "36c5b3cfce8125aed9e68ec4db5bbbd5c63229f5",
+            "version": "5.2.0"
+          },
+          "name": "simdjson SIMD JSON parser"
+        },
+        {
+          "identity": {
+            "repository": "simdutf/simdutf",
+            "revision": "177945073a2e44f6ef252aa2b9cf1ecb8e4d2ab0",
+            "version": "9.4.0"
+          },
+          "name": "simdutf SIMD Unicode validation and transcoding library"
+        },
+        {
+          "identity": {
+            "repository": "fastfloat/fast_float",
+            "revision": "8ec59686a1430867ba609c2777ca15143dd81003",
+            "version": "8.3.3"
+          },
+          "name": "fast_float Eisel-Lemire decimal-to-binary floating-point parser"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC8259",
+            "standard": "IETF RFC 8259",
+            "url": "https://www.rfc-editor.org/rfc/rfc8259"
+          },
+          "name": "The JavaScript Object Notation (JSON) Data Interchange Format"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC3629",
+            "standard": "IETF RFC 3629",
+            "url": "https://www.rfc-editor.org/rfc/rfc3629"
+          },
+          "name": "UTF-8, a transformation format of ISO 10646"
+        },
+        {
+          "identity": {
+            "arxiv": "1902.08318",
+            "doi": "10.1007/s00778-019-00578-5"
+          },
+          "name": "Parsing Gigabytes of JSON per Second (Langdale & Lemire, VLDB Journal 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2010.03090",
+            "doi": "10.1002/spe.2920"
+          },
+          "name": "Validating UTF-8 In Less Than One Instruction Per Byte (Keiser & Lemire, SPE 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2109.10433",
+            "doi": "10.1002/spe.3036"
+          },
+          "name": "Transcoding Billions of Unicode Characters per Second with SIMD Instructions (Lemire & Mula, SPE 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2101.11408",
+            "doi": "10.1002/spe.2984"
+          },
+          "name": "Number Parsing at a Gigabyte per Second (Lemire, SPE 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2212.06644",
+            "doi": "10.1002/spe.3198"
+          },
+          "name": "Fast Number Parsing Without Fallback (Mushtak & Lemire, SPE 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.17149",
+            "doi": "10.1002/spe.3313"
+          },
+          "name": "On-Demand JSON: A Better Way to Parse Documents? (Keiser & Lemire, SPE 2024)"
+        }
+      ],
+      "topics": [
+        "compilers/simd-automata",
+        "isa/carryless-bitmasks",
+        "verification/vector-parsers",
+        "security/utf8-validation"
       ]
     },
     "simulation-witness-debuginfo-and-verified-time-travel-observability": {

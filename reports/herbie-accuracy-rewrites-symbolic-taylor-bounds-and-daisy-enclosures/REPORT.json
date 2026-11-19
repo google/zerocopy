@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "compilers/floating-point-rewrites",
+    "verification/roundoff-enclosures",
+    "smt/real-intervals",
+    "lean/numerical-certificates",
+    "verification/floating-point"
+  ],
+  "subjects": [
+    {
+      "name": "Herbie",
+      "identity": {
+        "repository": "herbie-fp/herbie",
+        "revision": "4612b0d493cbb2013dc5afac5c099b7722166ec2"
+      }
+    },
+    {
+      "name": "FPTaylor",
+      "identity": {
+        "repository": "soarlab/FPTaylor",
+        "revision": "b5a77cae348400f21f83512210d9f43c4bffb381"
+      }
+    },
+    {
+      "name": "Daisy",
+      "identity": {
+        "repository": "malyzajko/daisy",
+        "revision": "6a6f47abdd231d3009444e9e1b8ce9febc28c27e"
+      }
+    },
+    {
+      "name": "FPBench",
+      "identity": {
+        "repository": "FPBench/FPBench",
+        "revision": "090d81982edc0d2a597f4c15644253d4f266a6ef"
+      }
+    },
+    {
+      "name": "LeanCert",
+      "identity": {
+        "repository": "alerad/leancert",
+        "revision": "44b323a0d6af00211d5013f6e021432db032087c"
+      }
+    },
+    {
+      "name": "Automatically Improving Accuracy for Floating Point Expressions (Panchekha et al., PLDI 2015)",
+      "identity": {
+        "doi": "10.1145/2737924.2737959"
+      }
+    },
+    {
+      "name": "Rigorous Estimation of Floating-Point Round-Off Errors with Symbolic Taylor Expansions (Solovyev et al., ACM TOPLAS 2018)",
+      "identity": {
+        "doi": "10.1145/3230733"
+      }
+    },
+    {
+      "name": "Daisy - Framework for Analysis and Optimization of Numerical Programs (Darulova et al., TACAS 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-319-89960-2_15"
+      }
+    },
+    {
+      "name": "Certification of Bounds on Expressions Involving Rounded Operators (Daumas & Melquiond, ACM TOMS 2010)",
+      "identity": {
+        "doi": "10.1145/1644001.1644002"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

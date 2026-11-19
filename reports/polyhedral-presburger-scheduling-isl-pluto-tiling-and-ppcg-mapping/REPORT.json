@@ -1,0 +1,72 @@
+{
+  "topics": [
+    "compilers/polyhedral-scheduling",
+    "smt/presburger-polyhedra",
+    "llvm/loop-tiling",
+    "verification/schedule-equivalence",
+    "llvm/mlir-affine",
+    "compilers/gpu-mapping"
+  ],
+  "subjects": [
+    {
+      "name": "isl (Integer Set Library)",
+      "identity": {
+        "repository": "PollyLabs/isl",
+        "revision": "b822a2105dfe3c36f5d9c31071e61446bc88c0bc"
+      }
+    },
+    {
+      "name": "Pluto",
+      "identity": {
+        "repository": "bondhugula/pluto",
+        "revision": "2b6fd99c976e4fec340cb227c8048bcd40864755"
+      }
+    },
+    {
+      "name": "PPCG (Polyhedral Parallel Code Generation)",
+      "identity": {
+        "repository": "Meinersbur/ppcg",
+        "revision": "5e07c52e13fc8ea9fac7c1daf247d81d60822a93"
+      }
+    },
+    {
+      "name": "Polygeist",
+      "identity": {
+        "repository": "llvm/Polygeist",
+        "revision": "77c04bb2a7a2406ca9480bcc9e729b07d2c8d077"
+      }
+    },
+    {
+      "name": "LLVM Polly and MLIR Affine Dialect",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "d1ee282181f8f83e7552136c344706c0e5400c9a"
+      }
+    },
+    {
+      "name": "isl: An Integer Set Library for the Polyhedral Model (Verdoolaege, ICMS 2010)",
+      "identity": {
+        "doi": "10.1007/978-3-642-15582-6_49"
+      }
+    },
+    {
+      "name": "A Practical Automatic Polyhedral Parallelizer and Locality Optimizer (Bondhugula et al., PLDI 2008)",
+      "identity": {
+        "doi": "10.1145/1375581.1375595"
+      }
+    },
+    {
+      "name": "Polyhedral Parallel Code Generation for CUDA (Verdoolaege et al., ACM TACO 2013)",
+      "identity": {
+        "doi": "10.1145/2400682.2400713"
+      }
+    },
+    {
+      "name": "Equivalence Checking of Static Affine Programs Using Widening to Handle Recurrences (Verdoolaege, Janssens, Bruynooghe, ACM TOPLAS 2012)",
+      "identity": {
+        "doi": "10.1145/2362389.2362393"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
