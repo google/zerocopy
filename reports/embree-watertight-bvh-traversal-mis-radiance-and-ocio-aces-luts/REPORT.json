@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "domains/physically-based-rendering",
+    "compilers/spatial-acceleration",
+    "verification/floating-point-geometry",
+    "security/image-codecs"
+  ],
+  "subjects": [
+    {
+      "name": "Intel Embree",
+      "identity": {
+        "repository": "RenderKit/embree",
+        "revision": "304b5b7443dc0d9b5dd480a9e1f050db2c7b9449"
+      }
+    },
+    {
+      "name": "pbrt-v4",
+      "identity": {
+        "repository": "mmp/pbrt-v4",
+        "revision": "20e41fd83789f12550e2c31b2047898c9e20e46c"
+      }
+    },
+    {
+      "name": "Mitsuba 3",
+      "identity": {
+        "repository": "mitsuba-renderer/mitsuba3",
+        "revision": "aa01500f57770a4ef0b067693cae08b3e8a2ac73"
+      }
+    },
+    {
+      "name": "OpenColorIO",
+      "identity": {
+        "repository": "AcademySoftwareFoundation/OpenColorIO",
+        "revision": "22dd9c4faa0d1b7cfb3d64d1a6e9cb454acc6cfd"
+      }
+    },
+    {
+      "name": "OpenEXR",
+      "identity": {
+        "repository": "AcademySoftwareFoundation/openexr",
+        "revision": "51e3f9618a3c968f1dc566feeacf082ed3e80194"
+      }
+    },
+    {
+      "name": "Watertight Ray/Triangle Intersection",
+      "identity": {
+        "journal": "Journal of Computer Graphics Techniques",
+        "url": "https://jcgt.org/published/0002/01/05/",
+        "volume_pages": "2(1):65-82",
+        "year": "2013"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

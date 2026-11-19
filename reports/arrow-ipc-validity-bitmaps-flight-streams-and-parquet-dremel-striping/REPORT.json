@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "zerocopy/columnar-interchange",
+    "ffi/arrow-c-data",
+    "domains/analytical-storage",
+    "security/ipc-deserialization",
+    "systems/vectorized-execution"
+  ],
+  "subjects": [
+    {
+      "name": "Apache Arrow Format Specifications and C++ Implementation",
+      "identity": {
+        "repository": "apache/arrow",
+        "revision": "931b9cccda5de68d48201dc2db50b6b6a9a72741"
+      }
+    },
+    {
+      "name": "Apache Arrow Rust Implementation (arrow-rs, parquet, arrow-flight)",
+      "identity": {
+        "repository": "apache/arrow-rs",
+        "revision": "9951b625879a19844ecd0b2dd352347a87ea26dd"
+      }
+    },
+    {
+      "name": "Apache Parquet Format Specification",
+      "identity": {
+        "repository": "apache/parquet-format",
+        "revision": "5cc18cae643835b19f869d3cffb085cd3c04eb15"
+      }
+    },
+    {
+      "name": "Velox Unified Execution Engine",
+      "identity": {
+        "repository": "facebookincubator/velox",
+        "revision": "a3746eb2647ba575751ebffa603c0012a5f518e2",
+        "doi": "10.14778/3554821.3554829"
+      }
+    },
+    {
+      "name": "DuckDB Embeddable Analytical Database",
+      "identity": {
+        "repository": "duckdb/duckdb",
+        "revision": "87440222ab4ca5a8042154886c6af819e7266a52",
+        "doi": "10.1145/3299869.3320212"
+      }
+    },
+    {
+      "name": "Dremel: Interactive Analysis of Web-Scale Datasets",
+      "identity": {
+        "doi": "10.1145/1953122.1953148",
+        "citation": "Melnik, Gubarev, Long, Romer, Shivakumar, Tolton, and Vassilakis, PVLDB 3(1) (2010) / CACM 54(6) (2011)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

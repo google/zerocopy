@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "domains/finite-element-pdes",
+    "compilers/variational-forms",
+    "verification/structure-preserving-numerics",
+    "pl/tensor-dsls",
+    "isa/sum-factorization"
+  ],
+  "subjects": [
+    {
+      "name": "FEniCS Unified Form Language (UFL)",
+      "identity": {
+        "repository": "FEniCS/ufl",
+        "revision": "37b9b02e0e988f4d1f19c107f7addef397e69e11"
+      }
+    },
+    {
+      "name": "FEniCS Basix Runtime Finite Element Basis Library",
+      "identity": {
+        "repository": "FEniCS/basix",
+        "revision": "4a7990166ffc10a563be5b5e42303df8b92272e0"
+      }
+    },
+    {
+      "name": "FEniCS Form Compiler (FFCx)",
+      "identity": {
+        "repository": "FEniCS/ffcx",
+        "revision": "ea66226b59db9cd5948ecb3e0e8a8bdb8b16584a"
+      }
+    },
+    {
+      "name": "deal.II Finite Element Library",
+      "identity": {
+        "repository": "dealii/dealii",
+        "revision": "3f72f32f53e7dec92d238496185e4f5f6a921cee"
+      }
+    },
+    {
+      "name": "Finite Element Exterior Calculus (FEEC) Homological Framework",
+      "identity": {
+        "doi": "10.1017/S0962492906210018",
+        "citation": "Arnold, Falk, and Winther, Acta Numerica 15 (2006), 1-155"
+      }
+    },
+    {
+      "name": "Construction of Arbitrary Order Finite Element Degree-of-Freedom Maps on Polygonal and Polyhedral Cell Meshes",
+      "identity": {
+        "doi": "10.1145/3524456",
+        "citation": "Scroggs, Dokken, Richardson, and Wells, ACM TOMS 48(2), Article 18 (2022)"
+      }
+    },
+    {
+      "name": "A Generic Interface for Parallel Cell-Based Finite Element Operator Application",
+      "identity": {
+        "doi": "10.1016/j.compfluid.2012.04.012",
+        "citation": "Kronbichler and Kormann, Computers & Fluids 63 (2012), 135-147"
+      }
+    },
+    {
+      "name": "Geometrical Validity of Curvilinear Finite Elements",
+      "identity": {
+        "doi": "10.1016/j.jcp.2012.08.051",
+        "citation": "Johnen, Remacle, and Geuzaine, Journal of Computational Physics 233 (2013), 359-372"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

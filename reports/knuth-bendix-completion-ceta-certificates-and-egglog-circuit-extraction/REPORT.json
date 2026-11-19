@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "smt/equational-completion",
+    "verification/rewriting-certificates",
+    "compilers/circuit-extraction",
+    "pl/congruence-relations",
+    "smt/equality-saturation"
+  ],
+  "subjects": [
+    {
+      "name": "Twee equational theorem prover",
+      "identity": {
+        "repository": "nick8325/twee",
+        "revision": "9f56b26a9b09ea508ff944702b88d60db48c4cb9",
+        "doi": "10.1007/978-3-030-79876-5_35"
+      }
+    },
+    {
+      "name": "IsaFoR / CeTA certified rewriting verifier and CPF",
+      "identity": {
+        "version": "3.9",
+        "url": "https://cl-informatik.uibk.ac.at/software/ceta/",
+        "ceta_doi": "10.1007/978-3-642-03359-9_31",
+        "cpf_doi": "10.4204/EPTCS.167.8"
+      }
+    },
+    {
+      "name": "egglog equality saturation and Datalog engine",
+      "identity": {
+        "repository": "egraphs-good/egglog",
+        "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6",
+        "doi": "10.1145/3591239"
+      }
+    },
+    {
+      "name": "extraction-gym e-graph DAG extraction suite",
+      "identity": {
+        "repository": "egraphs-good/extraction-gym",
+        "revision": "903ba0f818b50608fe20ae9e0f03c35cb27bc50a"
+      }
+    },
+    {
+      "name": "Cyclic monotone Boolean circuit treewidth extractor",
+      "identity": {
+        "repository": "glenn-sun/egg-extraction-gym",
+        "revision": "8be08032d5cbea021ca1d841c103be0afe02644a",
+        "arxiv": "2408.17042",
+        "url": "https://arxiv.org/abs/2408.17042"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

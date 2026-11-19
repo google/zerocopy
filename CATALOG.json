@@ -7468,6 +7468,62 @@
         "verification/hypervisors"
       ]
     },
+    "arrow-ipc-validity-bitmaps-flight-streams-and-parquet-dremel-striping": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "apache/arrow",
+            "revision": "931b9cccda5de68d48201dc2db50b6b6a9a72741"
+          },
+          "name": "Apache Arrow Format Specifications and C++ Implementation"
+        },
+        {
+          "identity": {
+            "repository": "apache/arrow-rs",
+            "revision": "9951b625879a19844ecd0b2dd352347a87ea26dd"
+          },
+          "name": "Apache Arrow Rust Implementation (arrow-rs, parquet, arrow-flight)"
+        },
+        {
+          "identity": {
+            "repository": "apache/parquet-format",
+            "revision": "5cc18cae643835b19f869d3cffb085cd3c04eb15"
+          },
+          "name": "Apache Parquet Format Specification"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3554821.3554829",
+            "repository": "facebookincubator/velox",
+            "revision": "a3746eb2647ba575751ebffa603c0012a5f518e2"
+          },
+          "name": "Velox Unified Execution Engine"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3299869.3320212",
+            "repository": "duckdb/duckdb",
+            "revision": "87440222ab4ca5a8042154886c6af819e7266a52"
+          },
+          "name": "DuckDB Embeddable Analytical Database"
+        },
+        {
+          "identity": {
+            "citation": "Melnik, Gubarev, Long, Romer, Shivakumar, Tolton, and Vassilakis, PVLDB 3(1) (2010) / CACM 54(6) (2011)",
+            "doi": "10.1145/1953122.1953148"
+          },
+          "name": "Dremel: Interactive Analysis of Web-Scale Datasets"
+        }
+      ],
+      "topics": [
+        "zerocopy/columnar-interchange",
+        "ffi/arrow-c-data",
+        "domains/analytical-storage",
+        "security/ipc-deserialization",
+        "systems/vectorized-execution"
+      ]
+    },
     "asl-l3-lnsym-and-isa-verification-frameworks-lean-adaptation": {
       "observed_at": "2026-10-29",
       "subjects": [
@@ -9160,6 +9216,71 @@
         "systems/object-formats",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "biunification-mlsub-polar-automata-and-dot-path-dependent-soundness": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "stedolan/mlsub",
+            "revision": "b425c8da91f45ea59780756950871b80a18ddfc2"
+          },
+          "name": "MLsub reference implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009882",
+            "url": "https://doi.org/10.1145/3009837.3009882"
+          },
+          "name": "MLsub specification (POPL 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3409006",
+            "repository": "LPTK/simple-sub",
+            "revision": "ace6a33abb3563f56938c4987cd52145d5b99ba1"
+          },
+          "name": "Simple-sub reference implementation and specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3563304",
+            "repository": "hkust-taco/mlscript",
+            "revision": "a44346127da2c608bfe4503d630e99c4ba9aa31c"
+          },
+          "name": "MLscript / MLstruct compiler and Boolean-algebraic type inference"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3022671.2984008",
+            "url": "https://doi.org/10.1145/3022671.2984008"
+          },
+          "name": "Dependent Object Types (DOT) soundness specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408996",
+            "repository": "Blaisorblade/dot-iris",
+            "revision": "203d45ea4be590e9dfca84ed83374494af0a3db4"
+          },
+          "name": "Guarded DOT (gDOT) in Iris Coq mechanization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428243",
+            "repository": "scala/scala3",
+            "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+          },
+          "name": "Scala 3 compiler and safe object initialization checker"
+        }
+      ],
+      "topics": [
+        "pl/algebraic-subtyping",
+        "pl/path-dependent-types",
+        "compilers/type-inference",
+        "verification/type-soundness",
+        "pl/object-initialization"
       ]
     },
     "black-box-translation-validation-alive2-and-mir-to-llvm-on-rust": {
@@ -19341,6 +19462,61 @@
         "verification/empirical-evaluation"
       ]
     },
+    "embree-watertight-bvh-traversal-mis-radiance-and-ocio-aces-luts": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "RenderKit/embree",
+            "revision": "304b5b7443dc0d9b5dd480a9e1f050db2c7b9449"
+          },
+          "name": "Intel Embree"
+        },
+        {
+          "identity": {
+            "repository": "mmp/pbrt-v4",
+            "revision": "20e41fd83789f12550e2c31b2047898c9e20e46c"
+          },
+          "name": "pbrt-v4"
+        },
+        {
+          "identity": {
+            "repository": "mitsuba-renderer/mitsuba3",
+            "revision": "aa01500f57770a4ef0b067693cae08b3e8a2ac73"
+          },
+          "name": "Mitsuba 3"
+        },
+        {
+          "identity": {
+            "repository": "AcademySoftwareFoundation/OpenColorIO",
+            "revision": "22dd9c4faa0d1b7cfb3d64d1a6e9cb454acc6cfd"
+          },
+          "name": "OpenColorIO"
+        },
+        {
+          "identity": {
+            "repository": "AcademySoftwareFoundation/openexr",
+            "revision": "51e3f9618a3c968f1dc566feeacf082ed3e80194"
+          },
+          "name": "OpenEXR"
+        },
+        {
+          "identity": {
+            "journal": "Journal of Computer Graphics Techniques",
+            "url": "https://jcgt.org/published/0002/01/05/",
+            "volume_pages": "2(1):65-82",
+            "year": "2013"
+          },
+          "name": "Watertight Ray/Triangle Intersection"
+        }
+      ],
+      "topics": [
+        "domains/physically-based-rendering",
+        "compilers/spatial-acceleration",
+        "verification/floating-point-geometry",
+        "security/image-codecs"
+      ]
+    },
     "empirical-pl-human-factors-cognitive-dimensions-and-prover-usability": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -26505,6 +26681,59 @@
         "compilers/jit",
         "verification",
         "verification/bytecode"
+      ]
+    },
+    "knuth-bendix-completion-ceta-certificates-and-egglog-circuit-extraction": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-79876-5_35",
+            "repository": "nick8325/twee",
+            "revision": "9f56b26a9b09ea508ff944702b88d60db48c4cb9"
+          },
+          "name": "Twee equational theorem prover"
+        },
+        {
+          "identity": {
+            "ceta_doi": "10.1007/978-3-642-03359-9_31",
+            "cpf_doi": "10.4204/EPTCS.167.8",
+            "url": "https://cl-informatik.uibk.ac.at/software/ceta/",
+            "version": "3.9"
+          },
+          "name": "IsaFoR / CeTA certified rewriting verifier and CPF"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591239",
+            "repository": "egraphs-good/egglog",
+            "revision": "d89bc58adc9b9a87a8f571c5b9ad75d686d226e6"
+          },
+          "name": "egglog equality saturation and Datalog engine"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/extraction-gym",
+            "revision": "903ba0f818b50608fe20ae9e0f03c35cb27bc50a"
+          },
+          "name": "extraction-gym e-graph DAG extraction suite"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.17042",
+            "repository": "glenn-sun/egg-extraction-gym",
+            "revision": "8be08032d5cbea021ca1d841c103be0afe02644a",
+            "url": "https://arxiv.org/abs/2408.17042"
+          },
+          "name": "Cyclic monotone Boolean circuit treewidth extractor"
+        }
+      ],
+      "topics": [
+        "smt/equational-completion",
+        "verification/rewriting-certificates",
+        "compilers/circuit-extraction",
+        "pl/congruence-relations",
+        "smt/equality-saturation"
       ]
     },
     "kraken-aarch64-x86-64-instruction-validation-and-rust-assembly-pilots": {
@@ -35580,6 +35809,60 @@
         "isa/elf-relocations",
         "lean/mechanization",
         "verification/refinement"
+      ]
+    },
+    "openroad-electrostatic-placement-opensta-ocv-crpr-and-klayout-drc-lvs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "The-OpenROAD-Project/OpenROAD",
+            "revision": "0c210b22ed42ed677ff28ff539a11bc37a7453f9"
+          },
+          "name": "OpenROAD"
+        },
+        {
+          "identity": {
+            "repository": "parallaxsw/OpenSTA",
+            "revision": "cc510896e8e097771100d7dec4f5cbfdb3d6d71a"
+          },
+          "name": "OpenSTA"
+        },
+        {
+          "identity": {
+            "repository": "KLayout/klayout",
+            "revision": "53911acd6dfaa113c188d11d20b2ae290aa60a6b"
+          },
+          "name": "KLayout"
+        },
+        {
+          "identity": {
+            "repository": "RTimothyEdwards/magic",
+            "revision": "cc0360b3a4c3ca4b3c81ab69379be630c5d6df87"
+          },
+          "name": "Magic VLSI"
+        },
+        {
+          "identity": {
+            "repository": "RTimothyEdwards/netgen",
+            "revision": "e2a49567d5e3e451d51130de0227678be31f32e0"
+          },
+          "name": "Netgen LVS"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TCAD.2018.2859220",
+            "title": "RePlAce: Advancing Solution Quality and Routability Validation in Global Placement",
+            "year": "2019"
+          },
+          "name": "RePlAce Global Placement Formulation"
+        }
+      ],
+      "topics": [
+        "domains/physical-eda",
+        "isa/static-timing-closure",
+        "verification/layout-signoff",
+        "compilers/hardware-physical"
       ]
     },
     "opentype-text-shaping-gpu-vector-pipelines-and-reactive-gui-trees": {
@@ -55048,6 +55331,74 @@
         "systems/verified-boot",
         "build/executable-formats",
         "isa/wx-jit-enforcement"
+      ]
+    },
+    "ufl-variational-forms-feec-de-rham-complexes-and-dealii-mesh-assembly": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FEniCS/ufl",
+            "revision": "37b9b02e0e988f4d1f19c107f7addef397e69e11"
+          },
+          "name": "FEniCS Unified Form Language (UFL)"
+        },
+        {
+          "identity": {
+            "repository": "FEniCS/basix",
+            "revision": "4a7990166ffc10a563be5b5e42303df8b92272e0"
+          },
+          "name": "FEniCS Basix Runtime Finite Element Basis Library"
+        },
+        {
+          "identity": {
+            "repository": "FEniCS/ffcx",
+            "revision": "ea66226b59db9cd5948ecb3e0e8a8bdb8b16584a"
+          },
+          "name": "FEniCS Form Compiler (FFCx)"
+        },
+        {
+          "identity": {
+            "repository": "dealii/dealii",
+            "revision": "3f72f32f53e7dec92d238496185e4f5f6a921cee"
+          },
+          "name": "deal.II Finite Element Library"
+        },
+        {
+          "identity": {
+            "citation": "Arnold, Falk, and Winther, Acta Numerica 15 (2006), 1-155",
+            "doi": "10.1017/S0962492906210018"
+          },
+          "name": "Finite Element Exterior Calculus (FEEC) Homological Framework"
+        },
+        {
+          "identity": {
+            "citation": "Scroggs, Dokken, Richardson, and Wells, ACM TOMS 48(2), Article 18 (2022)",
+            "doi": "10.1145/3524456"
+          },
+          "name": "Construction of Arbitrary Order Finite Element Degree-of-Freedom Maps on Polygonal and Polyhedral Cell Meshes"
+        },
+        {
+          "identity": {
+            "citation": "Kronbichler and Kormann, Computers & Fluids 63 (2012), 135-147",
+            "doi": "10.1016/j.compfluid.2012.04.012"
+          },
+          "name": "A Generic Interface for Parallel Cell-Based Finite Element Operator Application"
+        },
+        {
+          "identity": {
+            "citation": "Johnen, Remacle, and Geuzaine, Journal of Computational Physics 233 (2013), 359-372",
+            "doi": "10.1016/j.jcp.2012.08.051"
+          },
+          "name": "Geometrical Validity of Curvilinear Finite Elements"
+        }
+      ],
+      "topics": [
+        "domains/finite-element-pdes",
+        "compilers/variational-forms",
+        "verification/structure-preserving-numerics",
+        "pl/tensor-dsls",
+        "isa/sum-factorization"
       ]
     },
     "unicode-encoding-transducers-and-verified-ui-accessibility-layouts": {

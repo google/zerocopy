@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "pl/algebraic-subtyping",
+    "pl/path-dependent-types",
+    "compilers/type-inference",
+    "verification/type-soundness",
+    "pl/object-initialization"
+  ],
+  "subjects": [
+    {
+      "name": "MLsub reference implementation",
+      "identity": {
+        "repository": "stedolan/mlsub",
+        "revision": "b425c8da91f45ea59780756950871b80a18ddfc2"
+      }
+    },
+    {
+      "name": "MLsub specification (POPL 2017)",
+      "identity": {
+        "doi": "10.1145/3009837.3009882",
+        "url": "https://doi.org/10.1145/3009837.3009882"
+      }
+    },
+    {
+      "name": "Simple-sub reference implementation and specification",
+      "identity": {
+        "repository": "LPTK/simple-sub",
+        "revision": "ace6a33abb3563f56938c4987cd52145d5b99ba1",
+        "doi": "10.1145/3409006"
+      }
+    },
+    {
+      "name": "MLscript / MLstruct compiler and Boolean-algebraic type inference",
+      "identity": {
+        "repository": "hkust-taco/mlscript",
+        "revision": "a44346127da2c608bfe4503d630e99c4ba9aa31c",
+        "doi": "10.1145/3563304"
+      }
+    },
+    {
+      "name": "Dependent Object Types (DOT) soundness specification",
+      "identity": {
+        "doi": "10.1145/3022671.2984008",
+        "url": "https://doi.org/10.1145/3022671.2984008"
+      }
+    },
+    {
+      "name": "Guarded DOT (gDOT) in Iris Coq mechanization",
+      "identity": {
+        "repository": "Blaisorblade/dot-iris",
+        "revision": "203d45ea4be590e9dfca84ed83374494af0a3db4",
+        "doi": "10.1145/3408996"
+      }
+    },
+    {
+      "name": "Scala 3 compiler and safe object initialization checker",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2",
+        "doi": "10.1145/3428243"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

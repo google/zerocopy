@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "domains/physical-eda",
+    "isa/static-timing-closure",
+    "verification/layout-signoff",
+    "compilers/hardware-physical"
+  ],
+  "subjects": [
+    {
+      "name": "OpenROAD",
+      "identity": {
+        "repository": "The-OpenROAD-Project/OpenROAD",
+        "revision": "0c210b22ed42ed677ff28ff539a11bc37a7453f9"
+      }
+    },
+    {
+      "name": "OpenSTA",
+      "identity": {
+        "repository": "parallaxsw/OpenSTA",
+        "revision": "cc510896e8e097771100d7dec4f5cbfdb3d6d71a"
+      }
+    },
+    {
+      "name": "KLayout",
+      "identity": {
+        "repository": "KLayout/klayout",
+        "revision": "53911acd6dfaa113c188d11d20b2ae290aa60a6b"
+      }
+    },
+    {
+      "name": "Magic VLSI",
+      "identity": {
+        "repository": "RTimothyEdwards/magic",
+        "revision": "cc0360b3a4c3ca4b3c81ab69379be630c5d6df87"
+      }
+    },
+    {
+      "name": "Netgen LVS",
+      "identity": {
+        "repository": "RTimothyEdwards/netgen",
+        "revision": "e2a49567d5e3e451d51130de0227678be31f32e0"
+      }
+    },
+    {
+      "name": "RePlAce Global Placement Formulation",
+      "identity": {
+        "doi": "10.1109/TCAD.2018.2859220",
+        "title": "RePlAce: Advancing Solution Quality and Routability Validation in Global Placement",
+        "year": "2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
