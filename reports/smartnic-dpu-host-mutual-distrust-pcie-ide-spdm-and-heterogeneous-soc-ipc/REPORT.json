@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "systems",
+    "systems/pcie-iommu",
+    "systems/smartnic-dpu",
+    "security",
+    "security/device-attestation",
+    "security/dma-isolation",
+    "ffi",
+    "ffi/shared-memory-ipc",
+    "isa",
+    "verification",
+    "verification/protocol-security"
+  ],
+  "subjects": [
+    {
+      "name": "DMTF libspdm (SPDM, Secured Messages, PCIe DOE, IDE_KM, TDISP)",
+      "identity": {
+        "repository": "DMTF/libspdm",
+        "revision": "3f1253df61ef1af917f1f18ce40db065e93ff82c"
+      }
+    },
+    {
+      "name": "DMTF spdm-emu",
+      "identity": {
+        "repository": "DMTF/spdm-emu",
+        "revision": "6c222618c109d29bdd7e363540089d6713cbb8ff"
+      }
+    },
+    {
+      "name": "Linux kernel (PCIe TSM, IDE, ATS/PRI, IOMMU, mlx5 ECPF, Aspeed P2A, Qualcomm SMEM/GLINK)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "NVIDIA BlueField rshim user-space driver",
+      "identity": {
+        "repository": "Mellanox/rshim-user-space",
+        "revision": "67b5a7a66bd1ef3665eb79c055f0a3088d1d895c"
+      }
+    },
+    {
+      "name": "CodeConstruct MCTP userspace utilities",
+      "identity": {
+        "repository": "CodeConstruct/mctp",
+        "revision": "82540d8f0a6b0cb612c73f54e8a1fa962e1a09d1"
+      }
+    },
+    {
+      "name": "OpenBMC phosphor-host-ipmid",
+      "identity": {
+        "repository": "openbmc/phosphor-host-ipmid",
+        "revision": "825c7b0485057bd74f1e59ee0604fe7a9d54304d"
+      }
+    },
+    {
+      "name": "Thunderclap: Exploring Vulnerabilities in Operating System IOMMU Protection via DMA from Untrustworthy Peripherals (NDSS 2019)",
+      "identity": {
+        "doi": "10.14722/ndss.2019.23194"
+      }
+    },
+    {
+      "name": "Breaking and Provably Restoring Authentication: A Formal Analysis of SPDM 1.2 including Cross-Protocol Attacks",
+      "identity": {
+        "eprint": "2024/2047",
+        "url": "https://eprint.iacr.org/2024/2047"
+      }
+    },
+    {
+      "name": "FirmWire: Transparent Dynamic Analysis for Cellular Baseband Firmware (NDSS 2022)",
+      "identity": {
+        "doi": "10.14722/ndss.2022.23136"
+      }
+    },
+    {
+      "name": "ASPEED AST2400/AST2500 P2A and iLPC2AHB Bridge Vulnerability (Pantsdown)",
+      "identity": {
+        "cve": "CVE-2019-6260"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
