@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "verification",
+    "verification/zk-proofs",
+    "verification/runtime-assurance",
+    "verification/conformal-prediction",
+    "security",
+    "security/zero-knowledge",
+    "security/verifiable-computation",
+    "pl",
+    "pl/proof-checking",
+    "lean/zero-knowledge-proof-checking",
+    "smt/zero-knowledge-proof-checking",
+    "domains/machine-learning"
+  ],
+  "subjects": [
+    {
+      "name": "zkPi implementation (zero-knowledge checking of Lean proofs)",
+      "identity": {
+        "repository": "emlaufer/zkpi",
+        "revision": "c65fc44373306106b741069f7d3cbc8224b21a74"
+      }
+    },
+    {
+      "name": "ZKUNSAT implementation (zero-knowledge checking of resolution refutations)",
+      "identity": {
+        "repository": "PP-FM/ZKUNSAT",
+        "revision": "9970d3d3f838425e04d0266b0ce84a55202d9c5b"
+      }
+    },
+    {
+      "name": "ZKSMT: A VM for Proving SMT Theorems in Zero Knowledge (USENIX Security 2024)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity24/presentation/luick",
+        "isbn": "978-1-939133-44-1"
+      }
+    },
+    {
+      "name": "EZKL (ONNX to Halo2 zkML compiler)",
+      "identity": {
+        "repository": "zkonduit/ezkl",
+        "revision": "e196b111c1bafaa61b92ae431cd3c3fe9371da05"
+      }
+    },
+    {
+      "name": "Scaling up Trustless DNN Inference with Zero-Knowledge Proofs",
+      "identity": {
+        "arxiv": "2210.08674v1"
+      }
+    },
+    {
+      "name": "Conformal Prediction Under Covariate Shift",
+      "identity": {
+        "arxiv": "1904.06019v3"
+      }
+    },
+    {
+      "name": "Adaptive Conformal Inference Under Distribution Shift",
+      "identity": {
+        "arxiv": "2106.00170v3"
+      }
+    },
+    {
+      "name": "Conformal Risk Control",
+      "identity": {
+        "arxiv": "2208.02814v4"
+      }
+    },
+    {
+      "name": "Conditional validity of inductive conformal predictors (ACML 2012)",
+      "identity": {
+        "arxiv": "1209.2673v2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
