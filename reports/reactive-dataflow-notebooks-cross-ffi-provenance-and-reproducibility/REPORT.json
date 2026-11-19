@@ -1,0 +1,92 @@
+{
+  "topics": [
+    "tooling/notebooks",
+    "pl/dataflow",
+    "ffi/mutation-tracking",
+    "build/reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "Marimo reactive Python notebook engine",
+      "identity": {
+        "repository": "marimo-team/marimo",
+        "revision": "24459dbf2a6b630c135dcb3d9c616543874e0f88"
+      }
+    },
+    {
+      "name": "Pluto.jl reactive Julia notebook runtime",
+      "identity": {
+        "repository": "JuliaPluto/Pluto.jl",
+        "revision": "db2a5cdf1df2c39acec058f09d7e87aaab9ed728"
+      }
+    },
+    {
+      "name": "ExpressionExplorer.jl static AST analyzer for Pluto.jl",
+      "identity": {
+        "repository": "JuliaPluto/ExpressionExplorer.jl",
+        "revision": "e5a967288ab5d640f7def7408e16ddcb8bd6a462"
+      }
+    },
+    {
+      "name": "Observable reactive JavaScript dataflow runtime",
+      "identity": {
+        "repository": "observablehq/runtime",
+        "revision": "d52584db5b76d7ab0fd5a47189dddb85893ec45f"
+      }
+    },
+    {
+      "name": "IPyflow dynamic fine-grained lineage notebook kernel (formerly NBSafety)",
+      "identity": {
+        "repository": "ipyflow/ipyflow",
+        "revision": "7eb0251739ee27725d92cc26f22b8906029e8cf1"
+      }
+    },
+    {
+      "name": "noWorkflow Python execution provenance collector",
+      "identity": {
+        "repository": "gems-uff/noworkflow",
+        "revision": "5bfa13ac7e97b22b341c97a03b47d6c861b0f62e"
+      }
+    },
+    {
+      "name": "ReproZip OS-level ptrace reproducibility packager",
+      "identity": {
+        "repository": "VIDA-NYU/reprozip",
+        "revision": "44687ce73efe7a889bf7a1ea982258e2d965c766"
+      }
+    },
+    {
+      "name": "Understanding and improving the quality and reproducibility of Jupyter notebooks (Pimentel et al., EMSE 2021 / MSR 2019)",
+      "identity": {
+        "doi": "10.1007/s10664-021-09961-9",
+        "conference_doi": "10.1109/MSR.2019.00077",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Fine-Grained Lineage for Safer Notebook Interactions (Macke et al., PVLDB 2021)",
+      "identity": {
+        "doi": "10.14778/3447689.3447712",
+        "venue": "PVLDB",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "ReproZip: Computational Reproducibility With Ease (Chirigati et al., SIGMOD 2016)",
+      "identity": {
+        "doi": "10.1145/2882903.2899401",
+        "venue": "ACM SIGMOD",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "noWorkflow: a Tool for Collecting, Analyzing, and Managing Provenance from Python Scripts (Pimentel et al., PVLDB 2017)",
+      "identity": {
+        "doi": "10.14778/3137765.3137789",
+        "venue": "PVLDB",
+        "year": "2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
