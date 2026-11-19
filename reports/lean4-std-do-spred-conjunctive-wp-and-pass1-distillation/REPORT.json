@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "anneal/theory",
+    "verification/program-logics",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 (Std.Do, Std.Internal.Do, and Lean.Elab.Tactic.Do)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "mpl (Monadic Program Logic prototype for Lean 4)",
+      "identity": {
+        "repository": "sgraf812/mpl",
+        "revision": "1dbf6bc75ff5398f59b77ae320f1f0a0781b721e"
+      }
+    },
+    {
+      "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Anneal.MirWp)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

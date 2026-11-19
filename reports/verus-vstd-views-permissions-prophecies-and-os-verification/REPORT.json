@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "verification/rust",
+    "anneal/theory",
+    "verification/program-logics",
+    "systems/os-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Verus and vstd standard library",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "2518fd9cd8410dfee5115e6b5dbf30c75898cfc5"
+      }
+    },
+    {
+      "name": "Verus: A Practical Foundation for Systems Verification (SOSP 2024)",
+      "identity": {
+        "doi": "10.1145/3694715.3695952"
+      }
+    },
+    {
+      "name": "VerusBelt: A Semantic Foundation for Verus's Proof-Oriented Extensions to the Rust Type System (PLDI 2026)",
+      "identity": {
+        "doi": "10.1145/3808325"
+      }
+    },
+    {
+      "name": "VeriSMo confidential VM security module",
+      "identity": {
+        "repository": "microsoft/verismo",
+        "revision": "5e1c159aec20491653550e39b00bd0855f543a7e",
+        "url": "https://www.usenix.org/conference/osdi24/presentation/zhou"
+      }
+    },
+    {
+      "name": "Atmosphere verified Rust microkernel",
+      "identity": {
+        "repository": "mars-research/atmosphere",
+        "revision": "c7cece4b091363d9cb8d7b4e473b7d0daf111620",
+        "doi": "10.1145/3625275.3625401"
+      }
+    },
+    {
+      "name": "Asterinas OS framework and CortenMM (SOSP 2025)",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "7fecb4ffabc72d0767277a9ffb66168bc512034c",
+        "doi": "10.1145/3731569.3764836"
+      }
+    },
+    {
+      "name": "Asterinas Vostd verified OSTD repository and ASE 2026 empirical study",
+      "identity": {
+        "repository": "asterinas/vostd",
+        "revision": "eb1a9d044617c2abff58f959ccc50f9571d561e9",
+        "doi": "10.1145/3832783.3834504"
+      }
+    },
+    {
+      "name": "Verified-Storage (pmemlog, multilog, CapybaraKV; PoWER OSDI 2025)",
+      "identity": {
+        "repository": "microsoft/verified-storage",
+        "revision": "4d9ac568c91fe6fe5136c7624d2b4b4f49752932",
+        "url": "https://www.usenix.org/conference/osdi25/presentation/leblanc"
+      }
+    },
+    {
+      "name": "Verified-IronKV sharded key-value store",
+      "identity": {
+        "repository": "verus-lang/verified-ironkv",
+        "revision": "7e35ed097c4089b9fbda483ea2629a0033f4d874"
+      }
+    },
+    {
+      "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Anneal.PureLift)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

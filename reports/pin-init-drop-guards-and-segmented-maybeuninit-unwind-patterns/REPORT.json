@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "rust/unsafe",
+    "rust/pin-init",
+    "anneal/theory",
+    "verification/unwinding",
+    "rustc/drop-elaboration",
+    "rustc/mir",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "pin-init safe pinned and in-place initialization library (Rust-for-Linux)",
+      "identity": {
+        "repository": "Rust-for-Linux/pin-init",
+        "revision": "578ad6b8f9d136aeb365f2175f6ef9f0e3dab288"
+      }
+    },
+    {
+      "name": "scopeguard RAII scope-exit and unwind guard library",
+      "identity": {
+        "repository": "bluss/scopeguard",
+        "revision": "bb988222848d39b0b9037b29da3a3a1eb05ebf4b"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library (Vec::retain_mut, Vec::splice, Drain, slice::sort, MaybeUninit, and MIR elaborate_drops)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Tock embedded operating system kernel (RingBuffer segmented MaybeUninit queue)",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+      }
+    },
+    {
+      "name": "Anneal verification framework (Trusted MIR AST/semantics, Pass 1 boundary auditor, MirWp, and SpatialPin)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR and unwinding reference interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "venue": "Proceedings of the ACM on Programming Languages 2(POPL), Article 66 (2018)"
+      }
+    },
+    {
+      "name": "Weakest-Precondition of Unstructured Programs",
+      "identity": {
+        "doi": "10.1145/1108792.1108813",
+        "venue": "ACM SIGPLAN-SIGSOFT Workshop on Program Analysis for Software Tools and Engineering (PASTE 2005), pp. 82-87"
+      }
+    },
+    {
+      "name": "Characteristic Formulae for the Verification of Imperative Programs",
+      "identity": {
+        "doi": "10.1145/2034773.2034828",
+        "venue": "16th ACM SIGPLAN International Conference on Functional Programming (ICFP 2011), pp. 418-430"
+      }
+    },
+    {
+      "name": "Rudra: Finding Memory Safety Bugs in Rust at the Ecosystem Scale",
+      "identity": {
+        "doi": "10.1145/3477132.3483570",
+        "venue": "ACM SIGOPS 28th Symposium on Operating Systems Principles (SOSP 2021), pp. 84-99"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "venue": "Proceedings of the ACM on Programming Languages 8(PLDI), Article 195 (2024)"
+      }
+    },
+    {
+      "name": "An Empirical Study of Rust-for-Linux: The Success, Dissatisfaction, and Compromise",
+      "identity": {
+        "url": "https://www.usenix.org/conference/atc24/presentation/li-hongyu",
+        "venue": "2024 USENIX Annual Technical Conference (USENIX ATC 24), pp. 425-443"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

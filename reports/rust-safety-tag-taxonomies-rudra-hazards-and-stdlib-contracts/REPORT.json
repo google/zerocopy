@@ -1,0 +1,163 @@
+{
+  "topics": [
+    "rust/unsafe",
+    "anneal/theory",
+    "verification/safety-contracts",
+    "rustc/mir",
+    "zerocopy/soundness-policy",
+    "lean/mechanization",
+    "security/memory-safety"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework (Trusted MIR semantics, Pass 1 boundary auditor, MirWp, and PureLift)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR and Tree Borrows reference interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library (core::ub_checks, core::contracts, core::ptr, core::slice, alloc::vec)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "safety-tags and safety-tool static safety-tag linter (tag-std)",
+      "identity": {
+        "repository": "safer-rust/safety-tags",
+        "revision": "52077ed142e618ddf2e694c9f552fc2c860644f8",
+        "version": "0.4.1"
+      }
+    },
+    {
+      "name": "Rudra ecosystem-scale Rust memory-safety bug analyzer",
+      "identity": {
+        "repository": "sslab-gatech/Rudra",
+        "revision": "fc9add2c4721c77490680462c7f0ad791af7cec7"
+      }
+    },
+    {
+      "name": "verify-rust-std Rust standard library verification repository",
+      "identity": {
+        "repository": "model-checking/verify-rust-std",
+        "revision": "a43ef3d40d9ff54b0c65c9f69005cb9d8c833c86"
+      }
+    },
+    {
+      "name": "Rust RFCs repository (RFC 3128 IO Safety, PR 3458 Unsafe Fields, PR 3842 Safety Tags)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "zerocopy zero-cost memory manipulation library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "hashbrown SwissTable hash map implementation",
+      "identity": {
+        "repository": "rust-lang/hashbrown",
+        "revision": "f3e9f0fc110f55ca55d73d6eddc0bdf5e85eb223"
+      }
+    },
+    {
+      "name": "bytes zero-copy network buffer library",
+      "identity": {
+        "repository": "tokio-rs/bytes",
+        "revision": "67edc2b999d669eb4f471aff576e213dbcb58871"
+      }
+    },
+    {
+      "name": "crossbeam concurrent programming primitives",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "Tock embedded operating system kernel",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "ba6aa7edc014505d2e6f0123b2b6059ba6ee7dec"
+      }
+    },
+    {
+      "name": "Asterinas framekernel operating system (OSTD)",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "7fecb4ffabc72d0767277a9ffb66168bc512034c"
+      }
+    },
+    {
+      "name": "Fuchsia operating system (Starnix usercopy subsystem)",
+      "identity": {
+        "url": "https://fuchsia.googlesource.com/fuchsia",
+        "revision": "fa0843ce71880308fd4d114f7bf0e7d878faad24"
+      }
+    },
+    {
+      "name": "Annotating and Auditing the Safety Properties of Unsafe Rust",
+      "identity": {
+        "arxiv": "2504.21312v2",
+        "doi": "10.48550/arXiv.2504.21312"
+      }
+    },
+    {
+      "name": "Rudra: Finding Memory Safety Bugs in Rust at the Ecosystem Scale",
+      "identity": {
+        "doi": "10.1145/3477132.3483570",
+        "venue": "ACM SIGOPS 28th Symposium on Operating Systems Principles (SOSP 2021), pp. 84-99"
+      }
+    },
+    {
+      "name": "SafeDrop: Detecting Memory Deallocation Bugs of Rust Programs via Static Data-Flow Analysis",
+      "identity": {
+        "doi": "10.1145/3542948",
+        "venue": "ACM Transactions on Software Engineering and Methodology 32(4), Article 82 (2023)"
+      }
+    },
+    {
+      "name": "Is Rust Used Safely by Software Developers?",
+      "identity": {
+        "doi": "10.1145/3377811.3380413",
+        "venue": "ACM/IEEE 42nd International Conference on Software Engineering (ICSE 2020), pp. 246-257"
+      }
+    },
+    {
+      "name": "How Do Programmers Use Unsafe Rust?",
+      "identity": {
+        "doi": "10.1145/3428204",
+        "venue": "Proceedings of the ACM on Programming Languages 4(OOPSLA), Article 136 (2020)"
+      }
+    },
+    {
+      "name": "Understanding Memory and Thread Safety Practices and Issues in Real-World Rust Programs",
+      "identity": {
+        "doi": "10.1145/3385412.3386036",
+        "venue": "41st ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI 2020), pp. 763-779"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
