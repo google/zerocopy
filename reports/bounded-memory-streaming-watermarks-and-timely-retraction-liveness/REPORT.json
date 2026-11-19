@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "systems",
+    "systems/stream-processing",
+    "pl",
+    "pl/streaming",
+    "verification",
+    "verification/resource-bounds",
+    "verification/liveness"
+  ],
+  "subjects": [
+    {
+      "name": "Timely Dataflow progress-tracking engine",
+      "identity": {
+        "repository": "TimelyDataflow/timely-dataflow",
+        "revision": "5d82cb0bd4e43a6a47c59383fb2475e6842c0a57"
+      }
+    },
+    {
+      "name": "Differential Dataflow incremental trace and spine engine",
+      "identity": {
+        "repository": "TimelyDataflow/differential-dataflow",
+        "revision": "e7c24703f4b1935cd6c99779ed0c140b0fea8ac6"
+      }
+    },
+    {
+      "name": "Feldera DBSP runtime and SQL monotonicity compiler",
+      "identity": {
+        "repository": "feldera/feldera",
+        "revision": "42a79b1cf0ee86b94335ec87138fb331ed0a8239"
+      }
+    },
+    {
+      "name": "DBSP Lean 3 algebraic formalization",
+      "identity": {
+        "repository": "tchajed/database-stream-processing-theory",
+        "revision": "fb6ff4416108710448ccd87473c5513c1a1179ea"
+      }
+    },
+    {
+      "name": "Delta / Stream Types ordered streaming compiler",
+      "identity": {
+        "repository": "alpha-convert/delta",
+        "revision": "20db7e6fd4c0970b04e60abeea2213aaaaba8c31"
+      }
+    },
+    {
+      "name": "Hydro live-collections boundedness compiler",
+      "identity": {
+        "repository": "hydro-project/hydro",
+        "revision": "fbaccddb35111327f96922259d60dc1607395545"
+      }
+    },
+    {
+      "name": "Characterizing Memory Requirements for Queries over Continuous Data Streams (Arasu et al.)",
+      "identity": {
+        "doi": "10.1145/974750.974756",
+        "venue": "ACM TODS 29(1), 2004"
+      }
+    },
+    {
+      "name": "StreamQRE: Modular Specification and Efficient Evaluation of Quantitative Queries over Streaming Data (Mamouras et al.)",
+      "identity": {
+        "doi": "10.1145/3062341.3062369",
+        "venue": "ACM PLDI 2017"
+      }
+    },
+    {
+      "name": "Stream Types (Cutler et al.)",
+      "identity": {
+        "doi": "10.1145/3656434",
+        "venue": "PACMPL 8(PLDI), 2024"
+      }
+    },
+    {
+      "name": "Flo: A Semantic Foundation for Progressive Stream Processing (Laddad et al.)",
+      "identity": {
+        "doi": "10.48550/arXiv.2411.08274",
+        "arxiv": "arXiv:2411.08274"
+      }
+    },
+    {
+      "name": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages (Budiu et al.)",
+      "identity": {
+        "doi": "10.14778/3587136.3587137",
+        "arxiv": "arXiv:2203.16684"
+      }
+    },
+    {
+      "name": "Verified Progress Tracking for Timely Dataflow (Brun, Decova, Lattuada, Traytel)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2021.10",
+        "afp": "Progress_Tracking (2021)"
+      }
+    },
+    {
+      "name": "Timely Dataflow: A Model (Abadi & Isard)",
+      "identity": {
+        "doi": "10.1007/978-3-319-19195-9_1",
+        "venue": "IFIP FORTE 2015"
+      }
+    },
+    {
+      "name": "The Dataflow Model (Akidau et al.)",
+      "identity": {
+        "doi": "10.14778/2824032.2824076",
+        "venue": "PVLDB 8(12), 2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

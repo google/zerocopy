@@ -8362,6 +8362,118 @@
         "verification/translation-validation"
       ]
     },
+    "bounded-memory-streaming-watermarks-and-timely-retraction-liveness": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "TimelyDataflow/timely-dataflow",
+            "revision": "5d82cb0bd4e43a6a47c59383fb2475e6842c0a57"
+          },
+          "name": "Timely Dataflow progress-tracking engine"
+        },
+        {
+          "identity": {
+            "repository": "TimelyDataflow/differential-dataflow",
+            "revision": "e7c24703f4b1935cd6c99779ed0c140b0fea8ac6"
+          },
+          "name": "Differential Dataflow incremental trace and spine engine"
+        },
+        {
+          "identity": {
+            "repository": "feldera/feldera",
+            "revision": "42a79b1cf0ee86b94335ec87138fb331ed0a8239"
+          },
+          "name": "Feldera DBSP runtime and SQL monotonicity compiler"
+        },
+        {
+          "identity": {
+            "repository": "tchajed/database-stream-processing-theory",
+            "revision": "fb6ff4416108710448ccd87473c5513c1a1179ea"
+          },
+          "name": "DBSP Lean 3 algebraic formalization"
+        },
+        {
+          "identity": {
+            "repository": "alpha-convert/delta",
+            "revision": "20db7e6fd4c0970b04e60abeea2213aaaaba8c31"
+          },
+          "name": "Delta / Stream Types ordered streaming compiler"
+        },
+        {
+          "identity": {
+            "repository": "hydro-project/hydro",
+            "revision": "fbaccddb35111327f96922259d60dc1607395545"
+          },
+          "name": "Hydro live-collections boundedness compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/974750.974756",
+            "venue": "ACM TODS 29(1), 2004"
+          },
+          "name": "Characterizing Memory Requirements for Queries over Continuous Data Streams (Arasu et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062369",
+            "venue": "ACM PLDI 2017"
+          },
+          "name": "StreamQRE: Modular Specification and Efficient Evaluation of Quantitative Queries over Streaming Data (Mamouras et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656434",
+            "venue": "PACMPL 8(PLDI), 2024"
+          },
+          "name": "Stream Types (Cutler et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2411.08274",
+            "doi": "10.48550/arXiv.2411.08274"
+          },
+          "name": "Flo: A Semantic Foundation for Progressive Stream Processing (Laddad et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2203.16684",
+            "doi": "10.14778/3587136.3587137"
+          },
+          "name": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages (Budiu et al.)"
+        },
+        {
+          "identity": {
+            "afp": "Progress_Tracking (2021)",
+            "doi": "10.4230/LIPIcs.ITP.2021.10"
+          },
+          "name": "Verified Progress Tracking for Timely Dataflow (Brun, Decova, Lattuada, Traytel)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-19195-9_1",
+            "venue": "IFIP FORTE 2015"
+          },
+          "name": "Timely Dataflow: A Model (Abadi & Isard)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/2824032.2824076",
+            "venue": "PVLDB 8(12), 2015"
+          },
+          "name": "The Dataflow Model (Akidau et al.)"
+        }
+      ],
+      "topics": [
+        "systems",
+        "systems/stream-processing",
+        "pl",
+        "pl/streaming",
+        "verification",
+        "verification/resource-bounds",
+        "verification/liveness"
+      ]
+    },
     "c-abi-stack-conventions-and-process-interface-archaeology": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -13954,6 +14066,119 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "decidable-distributed-protocol-verification-and-live-consensus-migration": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "kenmcmil/ivy",
+            "revision": "257e3da96557df04303ccb38e80b5da1cd16cbae"
+          },
+          "name": "Ivy verification system"
+        },
+        {
+          "identity": {
+            "repository": "aman-goel/ivybench",
+            "revision": "d2c9298fdd099001c71a34bc2e118db6f07d8404"
+          },
+          "name": "IvyBench Paxos EPR benchmarks"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Ironclad",
+            "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+          },
+          "name": "IronFleet / IronRSL verified distributed state machine"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/verdi",
+            "revision": "7e1641b758d8f0032aa7de63620bc115330e0a6b"
+          },
+          "name": "Verdi distributed systems verification framework"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/verdi-raft",
+            "revision": "a3375e867326a82225e724cc1a7b4758b029376f"
+          },
+          "name": "Verdi Raft verified consensus implementation"
+        },
+        {
+          "identity": {
+            "repository": "konnov/bymc",
+            "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+          },
+          "name": "ByMC Byzantine Model Checker (threshold automata)"
+        },
+        {
+          "identity": {
+            "repository": "etcd-io/raft",
+            "revision": "99f9ffb3d19c2dee73cc802737cd7e1e5f008986"
+          },
+          "name": "etcd/raft Go consensus library"
+        },
+        {
+          "identity": {
+            "repository": "will62794/logless-reconfig",
+            "revision": "05178a700a05e3a3e7f1808c39a5f61f2e6cece0"
+          },
+          "name": "MongoRaftReconfig logless dynamic reconfiguration TLA+ specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3140568",
+            "venue": "PACMPL 1(OOPSLA), 2017"
+          },
+          "name": "Paxos Made EPR: Decidable Reasoning About Distributed Protocols (Padon et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1582716.1582783",
+            "venue": "ACM PODC 2009"
+          },
+          "name": "Vertical Paxos and Primary-Backup Replication (Lamport, Malkhi, Zhou)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009860",
+            "venue": "ACM POPL 2017"
+          },
+          "name": "A Short Counterexample Property for Safety and Liveness Verification of Fault-Tolerant Distributed Algorithms (Konnov, Lazic, Veith, Widder)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2102.11960",
+            "doi": "10.1145/3497775.3503688"
+          },
+          "name": "Formal Verification of a Distributed Dynamic Reconfiguration Protocol (Schultz, Dardik, Tripakis)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2007.09468v2",
+            "doi": "10.48550/arXiv.2007.09468"
+          },
+          "name": "Matchmaker Paxos: A Reconfigurable Consensus Protocol (Whittaker et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2658994",
+            "venue": "ACM TOCS 32(4), 2015"
+          },
+          "name": "The Next 700 BFT Protocols / Abstract (Aublin et al.)"
+        }
+      ],
+      "topics": [
+        "systems",
+        "systems/consensus",
+        "verification",
+        "verification/distributed-protocols",
+        "smt",
+        "smt/decidable-fragments",
+        "runtimes",
+        "runtimes/reconfiguration"
       ]
     },
     "decidable-machine-code-well-formedness-and-errata-byte-validator": {

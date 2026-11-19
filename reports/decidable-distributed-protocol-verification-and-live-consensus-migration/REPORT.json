@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "systems",
+    "systems/consensus",
+    "verification",
+    "verification/distributed-protocols",
+    "smt",
+    "smt/decidable-fragments",
+    "runtimes",
+    "runtimes/reconfiguration"
+  ],
+  "subjects": [
+    {
+      "name": "Ivy verification system",
+      "identity": {
+        "repository": "kenmcmil/ivy",
+        "revision": "257e3da96557df04303ccb38e80b5da1cd16cbae"
+      }
+    },
+    {
+      "name": "IvyBench Paxos EPR benchmarks",
+      "identity": {
+        "repository": "aman-goel/ivybench",
+        "revision": "d2c9298fdd099001c71a34bc2e118db6f07d8404"
+      }
+    },
+    {
+      "name": "IronFleet / IronRSL verified distributed state machine",
+      "identity": {
+        "repository": "microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+      }
+    },
+    {
+      "name": "Verdi distributed systems verification framework",
+      "identity": {
+        "repository": "uwplse/verdi",
+        "revision": "7e1641b758d8f0032aa7de63620bc115330e0a6b"
+      }
+    },
+    {
+      "name": "Verdi Raft verified consensus implementation",
+      "identity": {
+        "repository": "uwplse/verdi-raft",
+        "revision": "a3375e867326a82225e724cc1a7b4758b029376f"
+      }
+    },
+    {
+      "name": "ByMC Byzantine Model Checker (threshold automata)",
+      "identity": {
+        "repository": "konnov/bymc",
+        "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+      }
+    },
+    {
+      "name": "etcd/raft Go consensus library",
+      "identity": {
+        "repository": "etcd-io/raft",
+        "revision": "99f9ffb3d19c2dee73cc802737cd7e1e5f008986"
+      }
+    },
+    {
+      "name": "MongoRaftReconfig logless dynamic reconfiguration TLA+ specification",
+      "identity": {
+        "repository": "will62794/logless-reconfig",
+        "revision": "05178a700a05e3a3e7f1808c39a5f61f2e6cece0"
+      }
+    },
+    {
+      "name": "Paxos Made EPR: Decidable Reasoning About Distributed Protocols (Padon et al.)",
+      "identity": {
+        "doi": "10.1145/3140568",
+        "venue": "PACMPL 1(OOPSLA), 2017"
+      }
+    },
+    {
+      "name": "Vertical Paxos and Primary-Backup Replication (Lamport, Malkhi, Zhou)",
+      "identity": {
+        "doi": "10.1145/1582716.1582783",
+        "venue": "ACM PODC 2009"
+      }
+    },
+    {
+      "name": "A Short Counterexample Property for Safety and Liveness Verification of Fault-Tolerant Distributed Algorithms (Konnov, Lazic, Veith, Widder)",
+      "identity": {
+        "doi": "10.1145/3009837.3009860",
+        "venue": "ACM POPL 2017"
+      }
+    },
+    {
+      "name": "Formal Verification of a Distributed Dynamic Reconfiguration Protocol (Schultz, Dardik, Tripakis)",
+      "identity": {
+        "doi": "10.1145/3497775.3503688",
+        "arxiv": "arXiv:2102.11960"
+      }
+    },
+    {
+      "name": "Matchmaker Paxos: A Reconfigurable Consensus Protocol (Whittaker et al.)",
+      "identity": {
+        "doi": "10.48550/arXiv.2007.09468",
+        "arxiv": "arXiv:2007.09468v2"
+      }
+    },
+    {
+      "name": "The Next 700 BFT Protocols / Abstract (Aublin et al.)",
+      "identity": {
+        "doi": "10.1145/2658994",
+        "venue": "ACM TOCS 32(4), 2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
