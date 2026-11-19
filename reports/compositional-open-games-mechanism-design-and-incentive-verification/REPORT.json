@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "domains/mechanism-design",
+    "verification/relational",
+    "pl/categorical-cybernetics",
+    "agents/incentives"
+  ],
+  "subjects": [
+    {
+      "name": "Open Games Engine (Haskell categorical compositional game theory DSL)",
+      "identity": {
+        "repository": "CyberCat-Institute/open-games-hs",
+        "revision": "e14be50f7f4cb250ac9a03d907996ee97ec48908"
+      }
+    },
+    {
+      "name": "Isabelle/HOL Archive of Formal Proofs: Vickrey-Clarke-Groves Auctions",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "773174513872254f8efe1cb3a3ce64037f0b1da6",
+        "path": "thys/Vickrey_Clarke_Groves"
+      }
+    },
+    {
+      "name": "EasyCrypt probabilistic relational Hoare logic proof assistant",
+      "identity": {
+        "repository": "EasyCrypt/easycrypt",
+        "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+      }
+    },
+    {
+      "name": "Ethereum EIP-1559 Fee Market Change specification",
+      "identity": {
+        "repository": "ethereum/EIPs",
+        "revision": "b055feec322fbc37e9d77a393a50b3ff56b31c92",
+        "path": "EIPS/eip-1559.md"
+      }
+    },
+    {
+      "name": "Compositional Game Theory (Ghani, Hedges, Winschel, and Zahn, LICS 2018)",
+      "identity": {
+        "doi": "10.1145/3209108.3209165",
+        "arxiv": "1603.04641",
+        "venue": "ACM/IEEE LICS",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Towards Foundations of Categorical Cybernetics (Capucci, Gavranovic, Hedges, and Rischel, ACT 2021 / EPTCS 372)",
+      "identity": {
+        "doi": "10.4204/EPTCS.372.17",
+        "arxiv": "2105.06332",
+        "venue": "EPTCS",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Computer-Aided Verification in Mechanism Design (Barthe et al., WINE 2016)",
+      "identity": {
+        "arxiv": "1502.04052",
+        "venue": "WINE",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "Sound Auction Specification and Implementation (Caminati, Kerber, Lange, and Rowat, ACM EC 2015)",
+      "identity": {
+        "doi": "10.1145/2764468.2764511",
+        "venue": "ACM EC",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Transaction Fee Mechanism Design (Roughgarden, EC 2021 / JACM 2024)",
+      "identity": {
+        "doi": "10.1145/3651158",
+        "conference_doi": "10.1145/3465456.3467591",
+        "arxiv": "2106.01340",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Foundations of Transaction Fee Mechanism Design (Chung and Shi, SODA 2023)",
+      "identity": {
+        "doi": "10.1137/1.9781611977554.ch150",
+        "arxiv": "2111.03151",
+        "venue": "ACM-SIAM SODA",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

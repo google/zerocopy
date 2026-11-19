@@ -11621,6 +11621,99 @@
         "verification/refinement"
       ]
     },
+    "compositional-open-games-mechanism-design-and-incentive-verification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CyberCat-Institute/open-games-hs",
+            "revision": "e14be50f7f4cb250ac9a03d907996ee97ec48908"
+          },
+          "name": "Open Games Engine (Haskell categorical compositional game theory DSL)"
+        },
+        {
+          "identity": {
+            "path": "thys/Vickrey_Clarke_Groves",
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "773174513872254f8efe1cb3a3ce64037f0b1da6"
+          },
+          "name": "Isabelle/HOL Archive of Formal Proofs: Vickrey-Clarke-Groves Auctions"
+        },
+        {
+          "identity": {
+            "repository": "EasyCrypt/easycrypt",
+            "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+          },
+          "name": "EasyCrypt probabilistic relational Hoare logic proof assistant"
+        },
+        {
+          "identity": {
+            "path": "EIPS/eip-1559.md",
+            "repository": "ethereum/EIPs",
+            "revision": "b055feec322fbc37e9d77a393a50b3ff56b31c92"
+          },
+          "name": "Ethereum EIP-1559 Fee Market Change specification"
+        },
+        {
+          "identity": {
+            "arxiv": "1603.04641",
+            "doi": "10.1145/3209108.3209165",
+            "venue": "ACM/IEEE LICS",
+            "year": "2018"
+          },
+          "name": "Compositional Game Theory (Ghani, Hedges, Winschel, and Zahn, LICS 2018)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.06332",
+            "doi": "10.4204/EPTCS.372.17",
+            "venue": "EPTCS",
+            "year": "2022"
+          },
+          "name": "Towards Foundations of Categorical Cybernetics (Capucci, Gavranovic, Hedges, and Rischel, ACT 2021 / EPTCS 372)"
+        },
+        {
+          "identity": {
+            "arxiv": "1502.04052",
+            "venue": "WINE",
+            "year": "2016"
+          },
+          "name": "Computer-Aided Verification in Mechanism Design (Barthe et al., WINE 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2764468.2764511",
+            "venue": "ACM EC",
+            "year": "2015"
+          },
+          "name": "Sound Auction Specification and Implementation (Caminati, Kerber, Lange, and Rowat, ACM EC 2015)"
+        },
+        {
+          "identity": {
+            "arxiv": "2106.01340",
+            "conference_doi": "10.1145/3465456.3467591",
+            "doi": "10.1145/3651158",
+            "year": "2024"
+          },
+          "name": "Transaction Fee Mechanism Design (Roughgarden, EC 2021 / JACM 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2111.03151",
+            "doi": "10.1137/1.9781611977554.ch150",
+            "venue": "ACM-SIAM SODA",
+            "year": "2023"
+          },
+          "name": "Foundations of Transaction Fee Mechanism Design (Chung and Shi, SODA 2023)"
+        }
+      ],
+      "topics": [
+        "domains/mechanism-design",
+        "verification/relational",
+        "pl/categorical-cybernetics",
+        "agents/incentives"
+      ]
+    },
     "compositional-separate-compilation-ffi-linking-and-dwarf-unwind-cfi-2026": {
       "observed_at": "2026-10-30",
       "subjects": [
