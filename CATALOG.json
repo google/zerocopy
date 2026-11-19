@@ -44182,6 +44182,82 @@
         "rustc/mir"
       ]
     },
+    "rust-hir-thir-temporary-drop-scopes-coercions-and-desugaring-surprises": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "rust-lang/rust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "4f5982e315272d89e2d2113d7ae0d8c9480f15db"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq Prover"
+        },
+        {
+          "identity": {
+            "commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "host": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc compiler toolchain"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "host": "x86_64-unknown-linux-gnu",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.entcs.2012.06.008",
+            "venue": "ENTCS 285"
+          },
+          "name": "Pollack-inconsistency (ENTCS 2012)"
+        },
+        {
+          "identity": {
+            "clauses": "[over.match.list], [dcl.init.list], [conv.prom], [basic.lookup.argdep]",
+            "standard": "ISO/IEC 14882 (C++20/C++23)"
+          },
+          "name": "ISO/IEC 14882 C++ List-Init, ADL & Integral Promotion Rules"
+        }
+      ],
+      "topics": [
+        "rustc/frontend-lowering",
+        "rust/drop-semantics",
+        "pl/desugaring-hazards",
+        "lean/elaboration-trust"
+      ]
+    },
     "rust-inline-assembly-contracts-relocations-and-simd-correspondence": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -57644,6 +57720,115 @@
         "verification/cakeml",
         "verification/compcert",
         "verification/compiler-verification"
+      ]
+    },
+    "verified-lexing-cst-parsing-compcert-menhir-cakeml-and-frontend-gaps": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML"
+        },
+        {
+          "identity": {
+            "repository": "rust-analyzer/rowan",
+            "revision": "d601b195d7bcb9f643c218b2ba113257880d2cdd"
+          },
+          "name": "rowan"
+        },
+        {
+          "identity": {
+            "repository": "tree-sitter/tree-sitter",
+            "revision": "f0090e112482d66653b43ca73e85668db1cde794"
+          },
+          "name": "tree-sitter"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/vest",
+            "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+          },
+          "name": "Vest"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c"
+          },
+          "name": "EverParse"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-28869-2_20",
+            "venue": "ESOP 2012"
+          },
+          "name": "Validating LR(1) Parsers (ESOP 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3064848",
+            "venue": "ACM TOPLAS 39(4)"
+          },
+          "name": "A Simple, Possibly Correct LR Parser for C11 (TOPLAS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2535838.2535841",
+            "venue": "POPL 2014"
+          },
+          "name": "CakeML: A Verified Implementation of ML (POPL 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2088456.1863525",
+            "venue": "Haskell Symposium 2010"
+          },
+          "name": "Invertible Syntax Descriptions: Unifying Parsing and Pretty Printing (Haskell 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454053",
+            "venue": "PLDI 2021"
+          },
+          "name": "CoStar: A Verified ALL(*) Parser (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SPW53761.2021.00022",
+            "venue": "IEEE SPW 2021"
+          },
+          "name": "Verbatim: A Verified Lexer Generator (IEEE SPW 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993532",
+            "venue": "PLDI 2011"
+          },
+          "name": "Finding and Understanding Bugs in C Compilers (PLDI 2011)"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2021-42574, CVE-2021-42694",
+            "doi": "10.48550/arXiv.2111.00169"
+          },
+          "name": "Trojan Source: Invisible Vulnerabilities (USENIX Security 2023)"
+        }
+      ],
+      "topics": [
+        "compilers/verified-frontends",
+        "pl/concrete-syntax",
+        "verification/parser-soundness",
+        "tooling/syntax-roundtripping"
       ]
     },
     "verified-minimach-ext-tsp-layout-and-loop-jcc-alignment": {

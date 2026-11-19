@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "rustc/frontend-lowering",
+    "rust/drop-semantics",
+    "pl/desugaring-hazards",
+    "lean/elaboration-trust"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Rust RFCs",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "4f5982e315272d89e2d2113d7ae0d8c9480f15db"
+      }
+    },
+    {
+      "name": "Rocq Prover",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "rustc compiler toolchain",
+      "identity": {
+        "version": "1.98.0-nightly",
+        "commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "version": "4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Pollack-inconsistency (ENTCS 2012)",
+      "identity": {
+        "doi": "10.1016/j.entcs.2012.06.008",
+        "venue": "ENTCS 285"
+      }
+    },
+    {
+      "name": "ISO/IEC 14882 C++ List-Init, ADL & Integral Promotion Rules",
+      "identity": {
+        "standard": "ISO/IEC 14882 (C++20/C++23)",
+        "clauses": "[over.match.list], [dcl.init.list], [conv.prom], [basic.lookup.argdep]"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

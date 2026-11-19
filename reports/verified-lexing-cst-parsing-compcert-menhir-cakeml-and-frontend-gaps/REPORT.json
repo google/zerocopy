@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "compilers/verified-frontends",
+    "pl/concrete-syntax",
+    "verification/parser-soundness",
+    "tooling/syntax-roundtripping"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "CakeML",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "rowan",
+      "identity": {
+        "repository": "rust-analyzer/rowan",
+        "revision": "d601b195d7bcb9f643c218b2ba113257880d2cdd"
+      }
+    },
+    {
+      "name": "tree-sitter",
+      "identity": {
+        "repository": "tree-sitter/tree-sitter",
+        "revision": "f0090e112482d66653b43ca73e85668db1cde794"
+      }
+    },
+    {
+      "name": "Vest",
+      "identity": {
+        "repository": "secure-foundations/vest",
+        "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+      }
+    },
+    {
+      "name": "EverParse",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c"
+      }
+    },
+    {
+      "name": "Validating LR(1) Parsers (ESOP 2012)",
+      "identity": {
+        "doi": "10.1007/978-3-642-28869-2_20",
+        "venue": "ESOP 2012"
+      }
+    },
+    {
+      "name": "A Simple, Possibly Correct LR Parser for C11 (TOPLAS 2017)",
+      "identity": {
+        "doi": "10.1145/3064848",
+        "venue": "ACM TOPLAS 39(4)"
+      }
+    },
+    {
+      "name": "CakeML: A Verified Implementation of ML (POPL 2014)",
+      "identity": {
+        "doi": "10.1145/2535838.2535841",
+        "venue": "POPL 2014"
+      }
+    },
+    {
+      "name": "Invertible Syntax Descriptions: Unifying Parsing and Pretty Printing (Haskell 2010)",
+      "identity": {
+        "doi": "10.1145/2088456.1863525",
+        "venue": "Haskell Symposium 2010"
+      }
+    },
+    {
+      "name": "CoStar: A Verified ALL(*) Parser (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454053",
+        "venue": "PLDI 2021"
+      }
+    },
+    {
+      "name": "Verbatim: A Verified Lexer Generator (IEEE SPW 2021)",
+      "identity": {
+        "doi": "10.1109/SPW53761.2021.00022",
+        "venue": "IEEE SPW 2021"
+      }
+    },
+    {
+      "name": "Finding and Understanding Bugs in C Compilers (PLDI 2011)",
+      "identity": {
+        "doi": "10.1145/1993498.1993532",
+        "venue": "PLDI 2011"
+      }
+    },
+    {
+      "name": "Trojan Source: Invisible Vulnerabilities (USENIX Security 2023)",
+      "identity": {
+        "doi": "10.48550/arXiv.2111.00169",
+        "cve": "CVE-2021-42574, CVE-2021-42694"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
