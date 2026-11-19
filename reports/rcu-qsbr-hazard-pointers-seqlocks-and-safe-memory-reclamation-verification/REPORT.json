@@ -1,0 +1,97 @@
+{
+  "topics": [
+    "runtimes/memory-reclamation",
+    "systems/concurrency-weak-memory",
+    "verification/separation-logic",
+    "minirust/atomic-provenance"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel (LKMM, RCU, SeqLock, membarrier)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+        "version": "7.4.0-rc3"
+      }
+    },
+    {
+      "name": "crossbeam-epoch",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea",
+        "crate": "crossbeam-epoch"
+      }
+    },
+    {
+      "name": "Folly (Hazptr, AsymmetricThreadFence, RCU)",
+      "identity": {
+        "repository": "facebook/folly",
+        "revision": "4b2dd6e1f1dda89dd1b5b71f88ce0ce91ec5c39e"
+      }
+    },
+    {
+      "name": "MiniRust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Alglave et al. ASPLOS 2018 (Linux Kernel Memory Model)",
+      "identity": {
+        "doi": "10.1145/3173162.3177156",
+        "venue": "ASPLOS 2018"
+      }
+    },
+    {
+      "name": "Michael IEEE TPDS 2004 (Hazard Pointers)",
+      "identity": {
+        "doi": "10.1109/TPDS.2004.8",
+        "venue": "IEEE TPDS 2004"
+      }
+    },
+    {
+      "name": "Boehm MSPC 2012 (Seqlocks and Programming Language Memory Models)",
+      "identity": {
+        "doi": "10.1145/2247684.2247688",
+        "venue": "MSPC 2012"
+      }
+    },
+    {
+      "name": "Tassarotti, Dreyer, Vafeiadis PLDI 2015 (Verifying RCU in GPS)",
+      "identity": {
+        "doi": "10.1145/2737924.2737992",
+        "venue": "PLDI 2015"
+      }
+    },
+    {
+      "name": "Jung et al. OOPSLA 2023 (Modular Verification of SMR in Iris)",
+      "identity": {
+        "doi": "10.1145/3622827",
+        "venue": "OOPSLA 2023"
+      }
+    },
+    {
+      "name": "Jung et al. PLDI 2025 (Verifying General-Purpose RCU in iRC11)",
+      "identity": {
+        "doi": "10.1145/3729246",
+        "venue": "PLDI 2025"
+      }
+    },
+    {
+      "name": "ISO C++26 Hazard Pointers and RCU (WG21 P2530R3, P2545R4)",
+      "identity": {
+        "standard": "ISO/IEC 14882 (C++26)",
+        "papers": "WG21 P2530R3, WG21 P2545R4"
+      }
+    },
+    {
+      "name": "ISO C/C++ Pointer Lifetime-End Zap and Provenance (WG14 N2369, WG21 P1726, P2188)",
+      "identity": {
+        "authority": "ISO/IEC JTC1/SC22 WG14 and WG21",
+        "papers": "WG14 N2369, WG21 P1726, WG21 P2188"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

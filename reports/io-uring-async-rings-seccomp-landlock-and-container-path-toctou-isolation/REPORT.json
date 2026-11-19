@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "systems/async-io-rings",
+    "security/container-sandboxing",
+    "security/toctou-double-fetch",
+    "verification/os-kernels"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+        "version": "7.4.0-rc3"
+      }
+    },
+    {
+      "name": "liburing",
+      "identity": {
+        "repository": "axboe/liburing",
+        "revision": "a10946dc51eeababc48ee10baf0d17489f647a80"
+      }
+    },
+    {
+      "name": "libseccomp",
+      "identity": {
+        "repository": "seccomp/libseccomp",
+        "revision": "2814474a2bc105f5ffabf4bbc7ae9fb100997028"
+      }
+    },
+    {
+      "name": "rust-landlock",
+      "identity": {
+        "repository": "landlock-lsm/rust-landlock",
+        "revision": "5991c08320d2ade23db0ae3870709693fd5a213d",
+        "version": "0.4.7"
+      }
+    },
+    {
+      "name": "runc",
+      "identity": {
+        "repository": "opencontainers/runc",
+        "revision": "b7dc1304ed9e18f14e626dc06374043b12cf355f"
+      }
+    },
+    {
+      "name": "libpathrs",
+      "identity": {
+        "repository": "cyphar/libpathrs",
+        "revision": "05a4b54f9843ea1fb0ae86dc2f40550bde244589"
+      }
+    },
+    {
+      "name": "CVE-2019-5736 (runc /proc/self/exe container breakout)",
+      "identity": {
+        "cve": "CVE-2019-5736",
+        "authority": "MITRE CVE"
+      }
+    },
+    {
+      "name": "CVE-2022-2602 (Linux io_uring / unix_gc fixed-file reference-cycle UAF)",
+      "identity": {
+        "cve": "CVE-2022-2602",
+        "authority": "MITRE CVE"
+      }
+    },
+    {
+      "name": "CVE-2024-21626 (runc /proc/self/fd leaked-descriptor container breakout)",
+      "identity": {
+        "cve": "CVE-2024-21626",
+        "authority": "MITRE CVE"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

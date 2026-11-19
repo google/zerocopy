@@ -22785,6 +22785,82 @@
         "anneal/interactive-lsp"
       ]
     },
+    "io-uring-async-rings-seccomp-landlock-and-container-path-toctou-isolation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+            "version": "7.4.0-rc3"
+          },
+          "name": "Linux kernel"
+        },
+        {
+          "identity": {
+            "repository": "axboe/liburing",
+            "revision": "a10946dc51eeababc48ee10baf0d17489f647a80"
+          },
+          "name": "liburing"
+        },
+        {
+          "identity": {
+            "repository": "seccomp/libseccomp",
+            "revision": "2814474a2bc105f5ffabf4bbc7ae9fb100997028"
+          },
+          "name": "libseccomp"
+        },
+        {
+          "identity": {
+            "repository": "landlock-lsm/rust-landlock",
+            "revision": "5991c08320d2ade23db0ae3870709693fd5a213d",
+            "version": "0.4.7"
+          },
+          "name": "rust-landlock"
+        },
+        {
+          "identity": {
+            "repository": "opencontainers/runc",
+            "revision": "b7dc1304ed9e18f14e626dc06374043b12cf355f"
+          },
+          "name": "runc"
+        },
+        {
+          "identity": {
+            "repository": "cyphar/libpathrs",
+            "revision": "05a4b54f9843ea1fb0ae86dc2f40550bde244589"
+          },
+          "name": "libpathrs"
+        },
+        {
+          "identity": {
+            "authority": "MITRE CVE",
+            "cve": "CVE-2019-5736"
+          },
+          "name": "CVE-2019-5736 (runc /proc/self/exe container breakout)"
+        },
+        {
+          "identity": {
+            "authority": "MITRE CVE",
+            "cve": "CVE-2022-2602"
+          },
+          "name": "CVE-2022-2602 (Linux io_uring / unix_gc fixed-file reference-cycle UAF)"
+        },
+        {
+          "identity": {
+            "authority": "MITRE CVE",
+            "cve": "CVE-2024-21626"
+          },
+          "name": "CVE-2024-21626 (runc /proc/self/fd leaked-descriptor container breakout)"
+        }
+      ],
+      "topics": [
+        "systems/async-io-rings",
+        "security/container-sandboxing",
+        "security/toctou-double-fetch",
+        "verification/os-kernels"
+      ]
+    },
     "iris-adequacy-transfinite-liveness-simuliris-and-lean-separation-logic": {
       "observed_at": "2026-10-24",
       "subjects": [
@@ -35798,6 +35874,103 @@
         "ffi/array-descriptors",
         "verification",
         "verification/representation-relations"
+      ]
+    },
+    "rcu-qsbr-hazard-pointers-seqlocks-and-safe-memory-reclamation-verification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+            "version": "7.4.0-rc3"
+          },
+          "name": "Linux kernel (LKMM, RCU, SeqLock, membarrier)"
+        },
+        {
+          "identity": {
+            "crate": "crossbeam-epoch",
+            "repository": "crossbeam-rs/crossbeam",
+            "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+          },
+          "name": "crossbeam-epoch"
+        },
+        {
+          "identity": {
+            "repository": "facebook/folly",
+            "revision": "4b2dd6e1f1dda89dd1b5b71f88ce0ce91ec5c39e"
+          },
+          "name": "Folly (Hazptr, AsymmetricThreadFence, RCU)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3173162.3177156",
+            "venue": "ASPLOS 2018"
+          },
+          "name": "Alglave et al. ASPLOS 2018 (Linux Kernel Memory Model)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TPDS.2004.8",
+            "venue": "IEEE TPDS 2004"
+          },
+          "name": "Michael IEEE TPDS 2004 (Hazard Pointers)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2247684.2247688",
+            "venue": "MSPC 2012"
+          },
+          "name": "Boehm MSPC 2012 (Seqlocks and Programming Language Memory Models)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2737992",
+            "venue": "PLDI 2015"
+          },
+          "name": "Tassarotti, Dreyer, Vafeiadis PLDI 2015 (Verifying RCU in GPS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622827",
+            "venue": "OOPSLA 2023"
+          },
+          "name": "Jung et al. OOPSLA 2023 (Modular Verification of SMR in Iris)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3729246",
+            "venue": "PLDI 2025"
+          },
+          "name": "Jung et al. PLDI 2025 (Verifying General-Purpose RCU in iRC11)"
+        },
+        {
+          "identity": {
+            "papers": "WG21 P2530R3, WG21 P2545R4",
+            "standard": "ISO/IEC 14882 (C++26)"
+          },
+          "name": "ISO C++26 Hazard Pointers and RCU (WG21 P2530R3, P2545R4)"
+        },
+        {
+          "identity": {
+            "authority": "ISO/IEC JTC1/SC22 WG14 and WG21",
+            "papers": "WG14 N2369, WG21 P1726, WG21 P2188"
+          },
+          "name": "ISO C/C++ Pointer Lifetime-End Zap and Provenance (WG14 N2369, WG21 P1726, P2188)"
+        }
+      ],
+      "topics": [
+        "runtimes/memory-reclamation",
+        "systems/concurrency-weak-memory",
+        "verification/separation-logic",
+        "minirust/atomic-provenance"
       ]
     },
     "rdma-weak-memory-iommu-ats-and-byzantine-peripheral-verification": {
