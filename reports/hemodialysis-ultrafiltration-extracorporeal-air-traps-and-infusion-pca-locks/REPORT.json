@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "domains",
+    "domains/hemodialysis-pca-infusion-safety",
+    "systems/iec60601-2-24-occlusion-siphons",
+    "pl/drug-concentration-dose-units",
+    "verification/venous-pressure-dropout-detectors"
+  ],
+  "subjects": [
+    {
+      "name": "BioGears Whole-Body Cardiovascular, Renal, and Drug Physiology Engine",
+      "identity": {
+        "repository": "BioGearsEngine/core",
+        "revision": "3f16a5fa1dade9c511b88d923606fa51cc35e95d"
+      }
+    },
+    {
+      "name": "PVSio-web Formal Medical Device HMI and Alaris/PCA Infusion Pump Models",
+      "identity": {
+        "repository": "pvsioweb/pvsio-web",
+        "revision": "7ea915e6cb9207fa06e841eabce8c19009d67548"
+      }
+    },
+    {
+      "name": "OSATE2 SAE AADL Safety-Critical Medical Architecture Environment",
+      "identity": {
+        "repository": "osate/osate2",
+        "revision": "e251d12d5c2aba2c22f155c11443a73a8a380ba9"
+      }
+    },
+    {
+      "name": "Rapid Fluid Removal During Dialysis and Cardiovascular Mortality (Flythe et al., Kidney International 2011)",
+      "identity": {
+        "doi": "10.1038/ki.2010.383",
+        "version": "Kidney International 79(2), pp. 250-257"
+      }
+    },
+    {
+      "name": "Illustrating the AADL Error Modeling Annex Using OpenPCA (Larson, Hatcliff & Chalin, ACM HILT 2013)",
+      "identity": {
+        "doi": "10.1145/2527269.2527271",
+        "version": "Proceedings of ACM SIGAda HILT 2013, pp. 65-84"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

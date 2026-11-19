@@ -24248,6 +24248,53 @@
         "verification/glyph-contour-winding-coverage"
       ]
     },
+    "hemodialysis-ultrafiltration-extracorporeal-air-traps-and-infusion-pca-locks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "BioGearsEngine/core",
+            "revision": "3f16a5fa1dade9c511b88d923606fa51cc35e95d"
+          },
+          "name": "BioGears Whole-Body Cardiovascular, Renal, and Drug Physiology Engine"
+        },
+        {
+          "identity": {
+            "repository": "pvsioweb/pvsio-web",
+            "revision": "7ea915e6cb9207fa06e841eabce8c19009d67548"
+          },
+          "name": "PVSio-web Formal Medical Device HMI and Alaris/PCA Infusion Pump Models"
+        },
+        {
+          "identity": {
+            "repository": "osate/osate2",
+            "revision": "e251d12d5c2aba2c22f155c11443a73a8a380ba9"
+          },
+          "name": "OSATE2 SAE AADL Safety-Critical Medical Architecture Environment"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/ki.2010.383",
+            "version": "Kidney International 79(2), pp. 250-257"
+          },
+          "name": "Rapid Fluid Removal During Dialysis and Cardiovascular Mortality (Flythe et al., Kidney International 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2527269.2527271",
+            "version": "Proceedings of ACM SIGAda HILT 2013, pp. 65-84"
+          },
+          "name": "Illustrating the AADL Error Modeling Annex Using OpenPCA (Larson, Hatcliff & Chalin, ACM HILT 2013)"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/hemodialysis-pca-infusion-safety",
+        "systems/iec60601-2-24-occlusion-siphons",
+        "pl/drug-concentration-dose-units",
+        "verification/venous-pressure-dropout-detectors"
+      ]
+    },
     "herbie-accuracy-rewrites-symbolic-taylor-bounds-and-daisy-enclosures": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -31566,6 +31613,65 @@
         "pl/manifold-types",
         "systems/realtime-middleware",
         "compilers/symbolic-codegen"
+      ]
+    },
+    "linac-mlc-radiotherapy-bragg-peak-stopping-power-and-ion-chamber-interlocks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/OpenTOPAS/OpenTOPAS",
+            "revision": "8be924480441884069a03efc9270095b199933f0"
+          },
+          "name": "OpenTOPAS (Geant4 Proton/Photon Monte Carlo & MLC Geometry Toolkit)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/e0404/matRad",
+            "revision": "008bfd7c2e8d5101912262a33adea5ef867d7f25"
+          },
+          "name": "matRad (DKFZ Multi-Modality Photon/Proton/Ion Minimax Treatment Planning System)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/pymedphys/pymedphys",
+            "revision": "6d02df7f6827caf9565c13da3e32d553e92ad8d6"
+          },
+          "name": "PyMedPhys (DICOM RT, MU Density, and LINAC Delivery Verification Library)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/jrkerns/pylinac",
+            "revision": "5c6a17c0df418804d7e419c12f330ba7a667a0b5"
+          },
+          "name": "Pylinac (MLC Trajectory Log QA & AAPM TG-51 / IAEA TRS-398 Ion-Chamber Dosimetry)"
+        },
+        {
+          "identity": {
+            "doi": "10.1088/0031-9155/57/11/R99",
+            "journal": "Physics in Medicine and Biology"
+          },
+          "name": "Range Uncertainties in Proton Therapy and the Role of Monte Carlo Simulations (Paganetti 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1118/1.3556559",
+            "related_doi": "10.1118/1.598381"
+          },
+          "name": "Minimax Optimization for Handling Range and Setup Uncertainties in Proton Therapy (Fredriksson, Forsgren, Hardemark 2011) & Dynamic MLC Dosimetry (LoSasso et al. 1998)"
+        },
+        {
+          "identity": {
+            "standard": "IEC 60601-2-1:2020 / IAEA STI/PUB/1114 (2001) / ASN-IRSN Epinal Inquiry (2007)"
+          },
+          "name": "IEC 60601-2-1 Medical Electron Accelerators, IAEA STI/PUB/1114 Panama Accident Report (2001), and ASN/IRSN Epinal Report (2007)"
+        }
+      ],
+      "topics": [
+        "domains/radiotherapy-mlc-proton-bragg",
+        "smt/robust-stopping-power-optimization",
+        "systems/iec60601-2-1-beam-interlocks",
+        "verification/polygon-winding-dose-integrals"
       ]
     },
     "linux-driver-abi-instability-btf-core-kmdf-and-fuchsia-fidl-contracts": {
@@ -53543,6 +53649,65 @@
         "lean/tactics"
       ]
     },
+    "spacecraft-quest-mekf-attitude-unwinding-thruster-deadbands-and-schiaparelli": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/AVSLab/basilisk",
+            "revision": "514adef66b57da4d1f06414b491b898c320c6c82"
+          },
+          "name": "Basilisk Astrodynamics & Flight Software Framework"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/nasa/cFS",
+            "revision": "a4d305dc06fb7d468f5b45214d9f730b97d4bd77"
+          },
+          "name": "NASA Core Flight System (cFS)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/nasa/nos3",
+            "revision": "1dadc685effc26730603c36c7864afce3c546406"
+          },
+          "name": "NASA Operational Simulator for Space Systems (NOS3)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0167-6911(99)00138-3",
+            "journal": "Systems & Control Letters"
+          },
+          "name": "A Topological Obstruction to Continuous Global Stabilization of Rotational Motion and the Unwinding Phenomenon (Bhat & Bernstein 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.2514/2.5048",
+            "related_doi": "10.2514/3.19717"
+          },
+          "name": "Attitude Error Representations for Kalman Filtering (Markley 2003) & QUEST (Shuster & Oh 1981)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TAC.2011.2108490",
+            "journal": "IEEE Transactions on Automatic Control"
+          },
+          "name": "Quaternion-Based Hybrid Control for Robust Global Attitude Tracking (Mayhew, Sanfelice, Teel 2011)"
+        },
+        {
+          "identity": {
+            "report": "ESA DG-I/2017/546/TTN (18 May 2017) / ESA-CNES Ariane 501 Inquiry (19 July 1996)"
+          },
+          "name": "ESA ExoMars 2016 Schiaparelli Anomaly Inquiry (2017) & Ariane 5 Flight 501 Inquiry Board Report (1996)"
+        }
+      ],
+      "topics": [
+        "domains/spacecraft-attitude-mekf",
+        "smt/joseph-covariance-positivity",
+        "systems/rcs-pwm-deadband-limit-cycles",
+        "verification/so3-quaternion-unwinding-topology"
+      ]
+    },
     "spacecraft-tmr-single-event-upsets-cfs-buses-and-dtn-bundle-custody": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -54599,6 +54764,60 @@
         "verification/certificates",
         "verification/compiler-verification",
         "verification/translation-validation"
+      ]
+    },
+    "subsea-blowout-preventer-deadman-shear-waterhammer-transients-and-sis-voting": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "OpenWaterAnalytics/EPANET",
+            "revision": "57d8bd8ad60e89b57f2a1ac591f05c8e13589866"
+          },
+          "name": "OWA EPANET Hydraulic Network Solver and Flow-Balance Engine"
+        },
+        {
+          "identity": {
+            "repository": "glorialulu/TSNet",
+            "revision": "27e616a8e2048a431eed27b00a08322d49035a52"
+          },
+          "name": "TSNet Method-of-Characteristics Fluid Transient Simulator"
+        },
+        {
+          "identity": {
+            "repository": "USEPA/WNTR",
+            "revision": "39e6b34f37d4b2d074f107d822752c989bf108aa"
+          },
+          "name": "US EPA Water Network Tool for Resilience (WNTR)"
+        },
+        {
+          "identity": {
+            "repository": "Modelica/ModelicaStandardLibrary",
+            "revision": "bd02ed995238400c0dc1ca598cf544aeac4312e2"
+          },
+          "name": "Modelica Standard Library Compressible DynamicPipe and Valve Models"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jfluidstructs.2005.08.018",
+            "version": "Journal of Fluids and Structures 22(2), pp. 135-171"
+          },
+          "name": "Water Hammer with Column Separation: A Historical Review (Bergant, Simpson & Tijsseling, JFS 2006)"
+        },
+        {
+          "identity": {
+            "report_number": "2014-06-I-LA",
+            "version": "Volume 2, June 2014"
+          },
+          "name": "US Chemical Safety Board Macondo Blowout and Explosion Technical Report Volume 2"
+        }
+      ],
+      "topics": [
+        "domains",
+        "domains/process-sis-blowout-preventers",
+        "smt/joukowsky-waterhammer-cavitation",
+        "systems/iec61511-2oo3-solenoid-voting",
+        "verification/column-separation-valve-slews"
       ]
     },
     "superdense-logical-time-hybrid-synchronous-calculi-and-preemptive-srp-verification": {

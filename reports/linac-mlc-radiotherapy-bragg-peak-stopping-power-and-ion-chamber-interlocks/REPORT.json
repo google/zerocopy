@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "domains/radiotherapy-mlc-proton-bragg",
+    "smt/robust-stopping-power-optimization",
+    "systems/iec60601-2-1-beam-interlocks",
+    "verification/polygon-winding-dose-integrals"
+  ],
+  "subjects": [
+    {
+      "name": "OpenTOPAS (Geant4 Proton/Photon Monte Carlo & MLC Geometry Toolkit)",
+      "identity": {
+        "repository": "https://github.com/OpenTOPAS/OpenTOPAS",
+        "revision": "8be924480441884069a03efc9270095b199933f0"
+      }
+    },
+    {
+      "name": "matRad (DKFZ Multi-Modality Photon/Proton/Ion Minimax Treatment Planning System)",
+      "identity": {
+        "repository": "https://github.com/e0404/matRad",
+        "revision": "008bfd7c2e8d5101912262a33adea5ef867d7f25"
+      }
+    },
+    {
+      "name": "PyMedPhys (DICOM RT, MU Density, and LINAC Delivery Verification Library)",
+      "identity": {
+        "repository": "https://github.com/pymedphys/pymedphys",
+        "revision": "6d02df7f6827caf9565c13da3e32d553e92ad8d6"
+      }
+    },
+    {
+      "name": "Pylinac (MLC Trajectory Log QA & AAPM TG-51 / IAEA TRS-398 Ion-Chamber Dosimetry)",
+      "identity": {
+        "repository": "https://github.com/jrkerns/pylinac",
+        "revision": "5c6a17c0df418804d7e419c12f330ba7a667a0b5"
+      }
+    },
+    {
+      "name": "Range Uncertainties in Proton Therapy and the Role of Monte Carlo Simulations (Paganetti 2012)",
+      "identity": {
+        "doi": "10.1088/0031-9155/57/11/R99",
+        "journal": "Physics in Medicine and Biology"
+      }
+    },
+    {
+      "name": "Minimax Optimization for Handling Range and Setup Uncertainties in Proton Therapy (Fredriksson, Forsgren, Hardemark 2011) & Dynamic MLC Dosimetry (LoSasso et al. 1998)",
+      "identity": {
+        "doi": "10.1118/1.3556559",
+        "related_doi": "10.1118/1.598381"
+      }
+    },
+    {
+      "name": "IEC 60601-2-1 Medical Electron Accelerators, IAEA STI/PUB/1114 Panama Accident Report (2001), and ASN/IRSN Epinal Report (2007)",
+      "identity": {
+        "standard": "IEC 60601-2-1:2020 / IAEA STI/PUB/1114 (2001) / ASN-IRSN Epinal Inquiry (2007)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "domains",
+    "domains/process-sis-blowout-preventers",
+    "smt/joukowsky-waterhammer-cavitation",
+    "systems/iec61511-2oo3-solenoid-voting",
+    "verification/column-separation-valve-slews"
+  ],
+  "subjects": [
+    {
+      "name": "OWA EPANET Hydraulic Network Solver and Flow-Balance Engine",
+      "identity": {
+        "repository": "OpenWaterAnalytics/EPANET",
+        "revision": "57d8bd8ad60e89b57f2a1ac591f05c8e13589866"
+      }
+    },
+    {
+      "name": "TSNet Method-of-Characteristics Fluid Transient Simulator",
+      "identity": {
+        "repository": "glorialulu/TSNet",
+        "revision": "27e616a8e2048a431eed27b00a08322d49035a52"
+      }
+    },
+    {
+      "name": "US EPA Water Network Tool for Resilience (WNTR)",
+      "identity": {
+        "repository": "USEPA/WNTR",
+        "revision": "39e6b34f37d4b2d074f107d822752c989bf108aa"
+      }
+    },
+    {
+      "name": "Modelica Standard Library Compressible DynamicPipe and Valve Models",
+      "identity": {
+        "repository": "Modelica/ModelicaStandardLibrary",
+        "revision": "bd02ed995238400c0dc1ca598cf544aeac4312e2"
+      }
+    },
+    {
+      "name": "Water Hammer with Column Separation: A Historical Review (Bergant, Simpson & Tijsseling, JFS 2006)",
+      "identity": {
+        "doi": "10.1016/j.jfluidstructs.2005.08.018",
+        "version": "Journal of Fluids and Structures 22(2), pp. 135-171"
+      }
+    },
+    {
+      "name": "US Chemical Safety Board Macondo Blowout and Explosion Technical Report Volume 2",
+      "identity": {
+        "report_number": "2014-06-I-LA",
+        "version": "Volume 2, June 2014"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

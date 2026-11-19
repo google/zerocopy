@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "domains/spacecraft-attitude-mekf",
+    "smt/joseph-covariance-positivity",
+    "systems/rcs-pwm-deadband-limit-cycles",
+    "verification/so3-quaternion-unwinding-topology"
+  ],
+  "subjects": [
+    {
+      "name": "Basilisk Astrodynamics & Flight Software Framework",
+      "identity": {
+        "repository": "https://github.com/AVSLab/basilisk",
+        "revision": "514adef66b57da4d1f06414b491b898c320c6c82"
+      }
+    },
+    {
+      "name": "NASA Core Flight System (cFS)",
+      "identity": {
+        "repository": "https://github.com/nasa/cFS",
+        "revision": "a4d305dc06fb7d468f5b45214d9f730b97d4bd77"
+      }
+    },
+    {
+      "name": "NASA Operational Simulator for Space Systems (NOS3)",
+      "identity": {
+        "repository": "https://github.com/nasa/nos3",
+        "revision": "1dadc685effc26730603c36c7864afce3c546406"
+      }
+    },
+    {
+      "name": "A Topological Obstruction to Continuous Global Stabilization of Rotational Motion and the Unwinding Phenomenon (Bhat & Bernstein 2000)",
+      "identity": {
+        "doi": "10.1016/S0167-6911(99)00138-3",
+        "journal": "Systems & Control Letters"
+      }
+    },
+    {
+      "name": "Attitude Error Representations for Kalman Filtering (Markley 2003) & QUEST (Shuster & Oh 1981)",
+      "identity": {
+        "doi": "10.2514/2.5048",
+        "related_doi": "10.2514/3.19717"
+      }
+    },
+    {
+      "name": "Quaternion-Based Hybrid Control for Robust Global Attitude Tracking (Mayhew, Sanfelice, Teel 2011)",
+      "identity": {
+        "doi": "10.1109/TAC.2011.2108490",
+        "journal": "IEEE Transactions on Automatic Control"
+      }
+    },
+    {
+      "name": "ESA ExoMars 2016 Schiaparelli Anomaly Inquiry (2017) & Ariane 5 Flight 501 Inquiry Board Report (1996)",
+      "identity": {
+        "report": "ESA DG-I/2017/546/TTN (18 May 2017) / ESA-CNES Ariane 501 Inquiry (19 July 1996)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
