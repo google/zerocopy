@@ -24727,6 +24727,127 @@
         "verification/compiler-verification"
       ]
     },
+    "logic-functional-logic-moded-predicates-and-relational-ffi": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "SWI-Prolog/swipl-devel",
+            "revision": "3992b97ba46231c1a27ef39d06f52f7c92a52e49"
+          },
+          "name": "SWI-Prolog"
+        },
+        {
+          "identity": {
+            "repository": "mthom/scryer-prolog",
+            "revision": "47f2c4e7cf9232137e2d43c7190c5504eb1a0045"
+          },
+          "name": "Scryer Prolog"
+        },
+        {
+          "identity": {
+            "repository": "Mercury-Language/mercury",
+            "revision": "ec2bc5ccbf9aa77641ae09380ee46bbc731079cc"
+          },
+          "name": "Mercury compiler and reference manual"
+        },
+        {
+          "identity": {
+            "repository": "potassco/clingo",
+            "revision": "f1d4b8e63a665898fddf4a620333eb0a1bfdebd9"
+          },
+          "name": "Clingo ASP system"
+        },
+        {
+          "identity": {
+            "repository": "michaelballantyne/faster-miniKanren",
+            "revision": "a25c70209800ab781983ace5c6840784bb32b4da"
+          },
+          "name": "faster-miniKanren"
+        },
+        {
+          "identity": {
+            "repository": "SWI-Prolog/packages-chr",
+            "revision": "3f81d6be337cd547b218922e1f4fd36121472bf1"
+          },
+          "name": "SWI-Prolog CHR package"
+        },
+        {
+          "identity": {
+            "repository": "LPCIC/elpi",
+            "revision": "631d14a63489ed0e8359ad036f7a8580bb373f33"
+          },
+          "name": "ELPI embeddable lambdaProlog interpreter"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 13211-1:1995"
+          },
+          "name": "ISO Prolog Core Standard"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3607845",
+            "venue": "PACMPL 7(ICFP), Article 203, 2023"
+          },
+          "name": "The Verse Calculus (Augustsson et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/227595.227597",
+            "venue": "Journal of the ACM 43(1), 1996"
+          },
+          "name": "SLG Tabled Evaluation with Delaying (Chen and Warren)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0743-1066(96)00068-4",
+            "venue": "Journal of Logic Programming 29(1-3), 1996"
+          },
+          "name": "The Execution Algorithm of Mercury (Somogyi, Henderson, and Conway)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1086365.1086390",
+            "venue": "ICFP 2005"
+          },
+          "name": "Backtracking, Interleaving, and Terminating Monad Transformers (Kiselyov et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S147406841800018X",
+            "venue": "Theory and Practice of Logic Programming 19(1), 2019"
+          },
+          "name": "Multi-shot ASP Solving with Clingo (Gebser et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0743-1066(98)10005-5",
+            "related_doi": "10.1023/A:1009809016172"
+          },
+          "name": "Constraint Handling Rules and Confluence (Fruhwirth; Abdennadher, Fruhwirth, and Meuss)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3632896",
+            "venue": "PACMPL 8(POPL), 2024"
+          },
+          "name": "Soundly Handling Linearity (Tang et al.)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/logic-programming",
+        "pl/functional-logic",
+        "compilers",
+        "compilers/modes-and-determinism",
+        "ffi",
+        "ffi/nondeterminism",
+        "runtimes/backtracking",
+        "verification",
+        "verification/horn-clauses"
+      ]
+    },
     "loop-invariant-and-recursive-spec-minissa-vc-transport": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -31267,6 +31388,176 @@
         "compilers/jit",
         "systems",
         "systems/concurrency"
+      ]
+    },
+    "rank-polymorphic-array-languages-and-sparse-structured-tensor-compilers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "mlochbaum/BQN",
+            "revision": "0ae87a3763c2023b159410cc2ae1048a1768c184"
+          },
+          "name": "BQN specification and documentation"
+        },
+        {
+          "identity": {
+            "repository": "uiua-lang/uiua",
+            "revision": "951a6a02a509d127a42de5396e0e67683027438c"
+          },
+          "name": "Uiua tacit array language"
+        },
+        {
+          "identity": {
+            "repository": "jsoftware/jsource",
+            "revision": "19e16a988f3cf6ed48f73c28bb6dc06ca93d86e2"
+          },
+          "name": "J language source (jsource)"
+        },
+        {
+          "identity": {
+            "repository": "google-research/dex-lang",
+            "revision": "25e2e389b90403ae2f8d67fb6d52f47d23c439ee"
+          },
+          "name": "Dex array language"
+        },
+        {
+          "identity": {
+            "repository": "jrslepak/Remora",
+            "revision": "1a831dec554df9a7ef3eeb10f0d22036f1f86dbd"
+          },
+          "name": "Remora rank-polymorphic language"
+        },
+        {
+          "identity": {
+            "repository": "diku-dk/futhark",
+            "revision": "dc285f6698c118f2b236f65984e38104e72f7939"
+          },
+          "name": "Futhark functional array compiler"
+        },
+        {
+          "identity": {
+            "repository": "dmlc/dlpack",
+            "revision": "6eca9e643fcf7e870b7a1c99ee7fb166c5c2c459"
+          },
+          "name": "DLPack tensor exchange ABI"
+        },
+        {
+          "identity": {
+            "repository": "apache/arrow",
+            "revision": "931b9cccda5de68d48201dc2db50b6b6a9a72741"
+          },
+          "name": "Apache Arrow C Data Interface"
+        },
+        {
+          "identity": {
+            "repository": "tensor-compiler/taco",
+            "revision": "0e79acb56cb5f3d1785179536256e206790b2a9e"
+          },
+          "name": "TACO (The Tensor Algebra Compiler)"
+        },
+        {
+          "identity": {
+            "repository": "finch-tensor/Finch.jl",
+            "revision": "7aa1ca1609054b94f3a1b56bb2221ae872513a10"
+          },
+          "name": "Finch.jl structured sparse tensor compiler"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "0782b426c676c774d60a7825095768f682e9fd6d"
+          },
+          "name": "MLIR SparseTensor dialect (LLVM)"
+        },
+        {
+          "identity": {
+            "repository": "scipy/scipy",
+            "revision": "cb78cffebeda622447bf19776883b9d5454b31da"
+          },
+          "name": "SciPy sparse compressed matrices"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.19175",
+            "repository": "GraphBLAS/binsparse-specification",
+            "revision": "28577ecb0eb72932e2887b18fa63019d73534106"
+          },
+          "name": "Binsparse binary sparse tensor specification"
+        },
+        {
+          "identity": {
+            "repository": "taichi-dev/taichi",
+            "revision": "ba0e81dce559fb63a5958bf82feb1d00c55c02fe"
+          },
+          "name": "Taichi spatially sparse compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-54833-8_3",
+            "venue": "ESOP 2014"
+          },
+          "name": "Remora: An Array-Oriented Language with Static Rank Polymorphism (Slepak, Shivers, and Manolios)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473578",
+            "venue": "PACMPL 5(ICFP), 2021"
+          },
+          "name": "Dex: Getting to the Point (Paszke et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133901",
+            "venue": "PACMPL 1(OOPSLA), Article 77, 2017"
+          },
+          "name": "The Tensor Algebra Compiler (Kjolstad et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.16730",
+            "doi": "10.1145/3579990.3580020"
+          },
+          "name": "Looplets and Finch (Ahrens et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591268",
+            "venue": "PACMPL 7(PLDI), 2023"
+          },
+          "name": "Indexed Streams (Kovach et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3355089.3356506",
+            "venue": "ACM Transactions on Graphics 38(6), 2019"
+          },
+          "name": "Taichi SIGGRAPH Asia 2019 (Hu et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.15028",
+            "venue": "PACMPL 10(PLDI), 2026"
+          },
+          "name": "Scion: Decoupling Data Layouts from Bounding Volume Hierarchies (Gyurgyik, Root, and Kjolstad)"
+        },
+        {
+          "identity": {
+            "standard": "IEEE 754-2019"
+          },
+          "name": "IEEE Standard for Floating-Point Arithmetic"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/array-languages",
+        "pl/array-languages/rank-polymorphism",
+        "compilers",
+        "compilers/optimization",
+        "compilers/sparse-tensor",
+        "ffi/array-descriptors",
+        "verification",
+        "verification/representation-relations"
       ]
     },
     "rdma-weak-memory-iommu-ats-and-byzantine-peripheral-verification": {

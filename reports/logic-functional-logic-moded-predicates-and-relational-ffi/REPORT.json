@@ -1,0 +1,121 @@
+{
+  "topics": [
+    "pl",
+    "pl/logic-programming",
+    "pl/functional-logic",
+    "compilers",
+    "compilers/modes-and-determinism",
+    "ffi",
+    "ffi/nondeterminism",
+    "runtimes/backtracking",
+    "verification",
+    "verification/horn-clauses"
+  ],
+  "subjects": [
+    {
+      "name": "SWI-Prolog",
+      "identity": {
+        "repository": "SWI-Prolog/swipl-devel",
+        "revision": "3992b97ba46231c1a27ef39d06f52f7c92a52e49"
+      }
+    },
+    {
+      "name": "Scryer Prolog",
+      "identity": {
+        "repository": "mthom/scryer-prolog",
+        "revision": "47f2c4e7cf9232137e2d43c7190c5504eb1a0045"
+      }
+    },
+    {
+      "name": "Mercury compiler and reference manual",
+      "identity": {
+        "repository": "Mercury-Language/mercury",
+        "revision": "ec2bc5ccbf9aa77641ae09380ee46bbc731079cc"
+      }
+    },
+    {
+      "name": "Clingo ASP system",
+      "identity": {
+        "repository": "potassco/clingo",
+        "revision": "f1d4b8e63a665898fddf4a620333eb0a1bfdebd9"
+      }
+    },
+    {
+      "name": "faster-miniKanren",
+      "identity": {
+        "repository": "michaelballantyne/faster-miniKanren",
+        "revision": "a25c70209800ab781983ace5c6840784bb32b4da"
+      }
+    },
+    {
+      "name": "SWI-Prolog CHR package",
+      "identity": {
+        "repository": "SWI-Prolog/packages-chr",
+        "revision": "3f81d6be337cd547b218922e1f4fd36121472bf1"
+      }
+    },
+    {
+      "name": "ELPI embeddable lambdaProlog interpreter",
+      "identity": {
+        "repository": "LPCIC/elpi",
+        "revision": "631d14a63489ed0e8359ad036f7a8580bb373f33"
+      }
+    },
+    {
+      "name": "ISO Prolog Core Standard",
+      "identity": {
+        "standard": "ISO/IEC 13211-1:1995"
+      }
+    },
+    {
+      "name": "The Verse Calculus (Augustsson et al.)",
+      "identity": {
+        "doi": "10.1145/3607845",
+        "venue": "PACMPL 7(ICFP), Article 203, 2023"
+      }
+    },
+    {
+      "name": "SLG Tabled Evaluation with Delaying (Chen and Warren)",
+      "identity": {
+        "doi": "10.1145/227595.227597",
+        "venue": "Journal of the ACM 43(1), 1996"
+      }
+    },
+    {
+      "name": "The Execution Algorithm of Mercury (Somogyi, Henderson, and Conway)",
+      "identity": {
+        "doi": "10.1016/S0743-1066(96)00068-4",
+        "venue": "Journal of Logic Programming 29(1-3), 1996"
+      }
+    },
+    {
+      "name": "Backtracking, Interleaving, and Terminating Monad Transformers (Kiselyov et al.)",
+      "identity": {
+        "doi": "10.1145/1086365.1086390",
+        "venue": "ICFP 2005"
+      }
+    },
+    {
+      "name": "Multi-shot ASP Solving with Clingo (Gebser et al.)",
+      "identity": {
+        "doi": "10.1017/S147406841800018X",
+        "venue": "Theory and Practice of Logic Programming 19(1), 2019"
+      }
+    },
+    {
+      "name": "Constraint Handling Rules and Confluence (Fruhwirth; Abdennadher, Fruhwirth, and Meuss)",
+      "identity": {
+        "doi": "10.1016/S0743-1066(98)10005-5",
+        "related_doi": "10.1023/A:1009809016172"
+      }
+    },
+    {
+      "name": "Soundly Handling Linearity (Tang et al.)",
+      "identity": {
+        "doi": "10.1145/3632896",
+        "venue": "PACMPL 8(POPL), 2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

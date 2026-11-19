@@ -1,0 +1,170 @@
+{
+  "topics": [
+    "pl",
+    "pl/array-languages",
+    "pl/array-languages/rank-polymorphism",
+    "compilers",
+    "compilers/optimization",
+    "compilers/sparse-tensor",
+    "ffi/array-descriptors",
+    "verification",
+    "verification/representation-relations"
+  ],
+  "subjects": [
+    {
+      "name": "BQN specification and documentation",
+      "identity": {
+        "repository": "mlochbaum/BQN",
+        "revision": "0ae87a3763c2023b159410cc2ae1048a1768c184"
+      }
+    },
+    {
+      "name": "Uiua tacit array language",
+      "identity": {
+        "repository": "uiua-lang/uiua",
+        "revision": "951a6a02a509d127a42de5396e0e67683027438c"
+      }
+    },
+    {
+      "name": "J language source (jsource)",
+      "identity": {
+        "repository": "jsoftware/jsource",
+        "revision": "19e16a988f3cf6ed48f73c28bb6dc06ca93d86e2"
+      }
+    },
+    {
+      "name": "Dex array language",
+      "identity": {
+        "repository": "google-research/dex-lang",
+        "revision": "25e2e389b90403ae2f8d67fb6d52f47d23c439ee"
+      }
+    },
+    {
+      "name": "Remora rank-polymorphic language",
+      "identity": {
+        "repository": "jrslepak/Remora",
+        "revision": "1a831dec554df9a7ef3eeb10f0d22036f1f86dbd"
+      }
+    },
+    {
+      "name": "Futhark functional array compiler",
+      "identity": {
+        "repository": "diku-dk/futhark",
+        "revision": "dc285f6698c118f2b236f65984e38104e72f7939"
+      }
+    },
+    {
+      "name": "DLPack tensor exchange ABI",
+      "identity": {
+        "repository": "dmlc/dlpack",
+        "revision": "6eca9e643fcf7e870b7a1c99ee7fb166c5c2c459"
+      }
+    },
+    {
+      "name": "Apache Arrow C Data Interface",
+      "identity": {
+        "repository": "apache/arrow",
+        "revision": "931b9cccda5de68d48201dc2db50b6b6a9a72741"
+      }
+    },
+    {
+      "name": "TACO (The Tensor Algebra Compiler)",
+      "identity": {
+        "repository": "tensor-compiler/taco",
+        "revision": "0e79acb56cb5f3d1785179536256e206790b2a9e"
+      }
+    },
+    {
+      "name": "Finch.jl structured sparse tensor compiler",
+      "identity": {
+        "repository": "finch-tensor/Finch.jl",
+        "revision": "7aa1ca1609054b94f3a1b56bb2221ae872513a10"
+      }
+    },
+    {
+      "name": "MLIR SparseTensor dialect (LLVM)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "0782b426c676c774d60a7825095768f682e9fd6d"
+      }
+    },
+    {
+      "name": "SciPy sparse compressed matrices",
+      "identity": {
+        "repository": "scipy/scipy",
+        "revision": "cb78cffebeda622447bf19776883b9d5454b31da"
+      }
+    },
+    {
+      "name": "Binsparse binary sparse tensor specification",
+      "identity": {
+        "repository": "GraphBLAS/binsparse-specification",
+        "revision": "28577ecb0eb72932e2887b18fa63019d73534106",
+        "arxiv": "2506.19175"
+      }
+    },
+    {
+      "name": "Taichi spatially sparse compiler",
+      "identity": {
+        "repository": "taichi-dev/taichi",
+        "revision": "ba0e81dce559fb63a5958bf82feb1d00c55c02fe"
+      }
+    },
+    {
+      "name": "Remora: An Array-Oriented Language with Static Rank Polymorphism (Slepak, Shivers, and Manolios)",
+      "identity": {
+        "doi": "10.1007/978-3-642-54833-8_3",
+        "venue": "ESOP 2014"
+      }
+    },
+    {
+      "name": "Dex: Getting to the Point (Paszke et al.)",
+      "identity": {
+        "doi": "10.1145/3473578",
+        "venue": "PACMPL 5(ICFP), 2021"
+      }
+    },
+    {
+      "name": "The Tensor Algebra Compiler (Kjolstad et al.)",
+      "identity": {
+        "doi": "10.1145/3133901",
+        "venue": "PACMPL 1(OOPSLA), Article 77, 2017"
+      }
+    },
+    {
+      "name": "Looplets and Finch (Ahrens et al.)",
+      "identity": {
+        "doi": "10.1145/3579990.3580020",
+        "arxiv": "2404.16730"
+      }
+    },
+    {
+      "name": "Indexed Streams (Kovach et al.)",
+      "identity": {
+        "doi": "10.1145/3591268",
+        "venue": "PACMPL 7(PLDI), 2023"
+      }
+    },
+    {
+      "name": "Taichi SIGGRAPH Asia 2019 (Hu et al.)",
+      "identity": {
+        "doi": "10.1145/3355089.3356506",
+        "venue": "ACM Transactions on Graphics 38(6), 2019"
+      }
+    },
+    {
+      "name": "Scion: Decoupling Data Layouts from Bounding Volume Hierarchies (Gyurgyik, Root, and Kjolstad)",
+      "identity": {
+        "arxiv": "2511.15028",
+        "venue": "PACMPL 10(PLDI), 2026"
+      }
+    },
+    {
+      "name": "IEEE Standard for Floating-Point Arithmetic",
+      "identity": {
+        "standard": "IEEE 754-2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
