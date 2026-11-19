@@ -30890,6 +30890,69 @@
         "llvm/riscv"
       ]
     },
+    "rowhammer-rowpress-dram-disturbance-physics-and-software-fault-isolation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.2306.17061",
+            "repository": "CMU-SAFARI/RowPress",
+            "revision": "5b6f1502594e9ea7a1557b98b5544c096a30eec5",
+            "venue": "ISCA 2023"
+          },
+          "name": "RowPress artifact and mitigation study"
+        },
+        {
+          "identity": {
+            "repository": "CMU-SAFARI/ramulator2",
+            "revision": "7bead6cb7c4b03e095c6d4769ae3181a8e0bf6da"
+          },
+          "name": "Ramulator 2.0 DRAM controller mitigation suite"
+        },
+        {
+          "identity": {
+            "repository": "vusec/zebram",
+            "revision": "05d5427e069b35afc1117ef00450b36f2634f063",
+            "venue": "USENIX OSDI 2018"
+          },
+          "name": "ZebRAM software fault-isolation prototype"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00090",
+            "repository": "vusec/trrespass",
+            "revision": "7ea523a4149daf1f1c4d8b099c2b3584f973d086"
+          },
+          "name": "TRRespass Target Row Refresh characterization"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46214.2022.9833772",
+            "repository": "comsec-group/blacksmith",
+            "revision": "60bae8e591e39859252dbe6049d536bcb2fb5656"
+          },
+          "name": "Blacksmith non-uniform disturbance characterization"
+        },
+        {
+          "identity": {
+            "csi_rowhammer_doi": "10.1109/SP46215.2023.10179390",
+            "eccploit_doi": "10.1109/SP.2019.00089",
+            "rambleed_doi": "10.1109/SP40000.2020.00020",
+            "rowhammer_doi": "10.1145/2678373.2665726"
+          },
+          "name": "Foundational DRAM disturbance and integrity literature"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/fault-isolation",
+        "systems",
+        "systems/dram",
+        "isa",
+        "verification",
+        "verification/error-correcting-codes"
+      ]
+    },
     "ruby-yjit-open-classes-javascript-proxies-and-speculative-deoptimization": {
       "observed_at": "2026-11-19",
       "subjects": [
