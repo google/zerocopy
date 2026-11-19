@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "security",
+    "security/computational-soundness",
+    "security/universal-composability",
+    "verification",
+    "verification/cryptographic-proofs",
+    "pl",
+    "pl/information-flow-types",
+    "compilers",
+    "compilers/semantic-preservation"
+  ],
+  "subjects": [
+    {
+      "name": "EasyCrypt proof assistant",
+      "identity": {
+        "repository": "EasyCrypt/easycrypt",
+        "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+      }
+    },
+    {
+      "name": "EasyUC (universal composability in EasyCrypt)",
+      "identity": {
+        "repository": "easyuc/EasyUC",
+        "revision": "3a39ffef812c5ef6a57a2bf6148488a0facd4f03"
+      }
+    },
+    {
+      "name": "SSProve (state-separating proofs in Rocq)",
+      "identity": {
+        "repository": "SSProve/ssprove",
+        "revision": "9a37fe0ab79d041f8d835e6cf18e37614b16a791"
+      }
+    },
+    {
+      "name": "CryptHOL and Constructive Cryptography (Isabelle AFP development mirror)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "773174513872254f8efe1cb3a3ce64037f0b1da6"
+      }
+    },
+    {
+      "name": "Owl protocol verifier and OwlC extraction",
+      "identity": {
+        "repository": "secure-foundations/owl",
+        "revision": "1b56f8cc70a067721917b9ccb60430417ada68f0"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Jasmin language and verified compiler",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "5741d17e3134f5b3b110e5e53494704d6d54f7c7"
+      }
+    },
+    {
+      "name": "Clutch probabilistic separation logics on Iris",
+      "identity": {
+        "repository": "logsem/clutch",
+        "revision": "cc81450edd699bfcd9fa806d628a57d16c48f75d"
+      }
+    },
+    {
+      "name": "Abadi and Rogaway, Reconciling Two Views of Cryptography (The Computational Soundness of Formal Encryption)",
+      "identity": {
+        "doi": "10.1007/s00145-001-0014-7",
+        "venue": "Journal of Cryptology 15(2):103-127, 2002"
+      }
+    },
+    {
+      "name": "Canetti, Universally Composable Security",
+      "identity": {
+        "doi": "10.1145/3402457",
+        "venue": "Journal of the ACM 67(5), 2020"
+      }
+    },
+    {
+      "name": "Barbosa, Barthe, Gregoire, Koutsos, Strub, Mechanized Proofs of Adversarial Complexity and Application to Universal Composability",
+      "identity": {
+        "doi": "10.1145/3460120.3484548",
+        "venue": "ACM CCS 2021"
+      }
+    },
+    {
+      "name": "Gancher, Gibson, Singh, Dharanikota, Parno, Owl: Compositional Verification of Security Protocols via an Information-Flow Type System",
+      "identity": {
+        "doi": "10.1109/SP46215.2023.10179477",
+        "venue": "IEEE S&P 2023"
+      }
+    },
+    {
+      "name": "Singh, Gancher, Parno, OwlC: Compiling Security Protocols to Verified, Secure, High-Performance Libraries",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/singh",
+        "venue": "USENIX Security 2025"
+      }
+    },
+    {
+      "name": "Haselwarter et al., SSProve: A Foundational Framework for Modular Cryptographic Proofs in Coq",
+      "identity": {
+        "doi": "10.1145/3594735",
+        "venue": "ACM TOPLAS 45(3), 2023"
+      }
+    },
+    {
+      "name": "Patrignani, Kunnemann, Wahby, Universal Composability is Robust Compilation",
+      "identity": {
+        "arxiv": "1910.08634",
+        "version": "v3"
+      }
+    },
+    {
+      "name": "Clarkson and Schneider, Hyperproperties",
+      "identity": {
+        "doi": "10.3233/JCS-2009-0393",
+        "venue": "Journal of Computer Security 18(6):1157-1210, 2010"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

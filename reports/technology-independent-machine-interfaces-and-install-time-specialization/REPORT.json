@@ -1,0 +1,168 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/install-time-specialization",
+    "systems",
+    "systems/machine-interfaces",
+    "isa",
+    "isa/target-neutral-ir",
+    "runtimes",
+    "runtimes/ahead-of-time-compilation",
+    "verification",
+    "verification/translation-validation"
+  ],
+  "subjects": [
+    {
+      "name": "IBM System/38 Technical Developments (1978 collection of articles)",
+      "identity": {
+        "publisher": "International Business Machines Corporation",
+        "isbn": "0-933186-00-2",
+        "year": "1978",
+        "url": "http://bitsavers.informatik.uni-stuttgart.de/pdf/ibm/system38/IBM_System_38_Technical_Developments_Dec1978.pdf"
+      }
+    },
+    {
+      "name": "IBM i Security reference",
+      "identity": {
+        "document": "SC41-5302-13",
+        "edition": "IBM i 7.3 and subsequent releases",
+        "url": "https://www.ibm.com/docs/ssw_ibm_i_74/rzarl/sc415302.pdf"
+      }
+    },
+    {
+      "name": "IBM i ILE Concepts",
+      "identity": {
+        "document": "SC41-5606-12",
+        "url": "https://www.ibm.com/docs/en/ssw_ibm_i_75/ilec/sc415606.pdf"
+      }
+    },
+    {
+      "name": "IBM i Program Conversion: Getting Ready for 6.1 and Beyond (IBM Redpaper, abstract page)",
+      "identity": {
+        "document": "REDP-4293-01",
+        "isbn": "9780738451251",
+        "url": "https://www.redbooks.ibm.com/abstracts/redp4293.html"
+      }
+    },
+    {
+      "name": "Security Guide for IBM i V6.1 (IBM Redbook)",
+      "identity": {
+        "document": "SG24-7680",
+        "url": "https://www.redbooks.ibm.com/redbooks/pdfs/sg247680.pdf"
+      }
+    },
+    {
+      "name": "TenDRA (TDF Specification Issue 4.0, TDF guide, token register, build notes)",
+      "identity": {
+        "repository": "tendra/tendra",
+        "revision": "1eadfd8b7de313b3bcb4cd9416ecb477f70d18fe"
+      }
+    },
+    {
+      "name": "LLVM documentation (FAQ, Developer Policy, Language Reference)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "70d1fc87689a919f1e0be645cf1c6755009356c8"
+      }
+    },
+    {
+      "name": "Xcode 14 Release Notes",
+      "identity": {
+        "publisher": "Apple Inc.",
+        "url": "https://developer.apple.com/documentation/xcode-release-notes/xcode-14-release-notes"
+      }
+    },
+    {
+      "name": "Android Open Source Project documentation: Configure ART",
+      "identity": {
+        "url": "https://source.android.com/docs/core/runtime/configure",
+        "last_updated": "2026-10-09"
+      }
+    },
+    {
+      "name": "Android Open Source Project documentation: Implement ART just-in-time compiler",
+      "identity": {
+        "url": "https://source.android.com/docs/core/runtime/jit-compiler",
+        "last_updated": "2026-10-09"
+      }
+    },
+    {
+      "name": ".NET runtime (ReadyToRun overview and format, crossgen2 instruction-set model)",
+      "identity": {
+        "repository": "dotnet/runtime",
+        "revision": "db341b0b461356d954079d27e86cb47c929e7e8a"
+      }
+    },
+    {
+      "name": "Wasmtime",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "f9a93b049a23bef9a33cfa3888f32af33a178749",
+        "version": "v50.0.2"
+      }
+    },
+    {
+      "name": "Wasmtime release archive used for execution",
+      "identity": {
+        "artifact": "wasmtime-v50.0.2-x86_64-linux.tar.xz",
+        "sha256": "5db0ca8e838ab95a51ba9acdf11f42888bcd0092dda45a86129ae540c4fa952c"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model (binary format explainer)",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "Mill Computing talk page: The Compiler (2015-06-10)",
+      "identity": {
+        "url": "https://millcomputing.com/docs/compiler/",
+        "date": "2015-06-10"
+      }
+    },
+    {
+      "name": "Mill Computing talk page: Specification (2014-05-14)",
+      "identity": {
+        "url": "https://millcomputing.com/docs/specification/",
+        "date": "2014-05-14"
+      }
+    },
+    {
+      "name": "regalloc2 (symbolic checker)",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+      }
+    },
+    {
+      "name": "VeriWasm",
+      "identity": {
+        "repository": "PLSysSec/veriwasm",
+        "revision": "60a64d279ecb676549aab51838d52b41ec6d1360"
+      }
+    },
+    {
+      "name": "Crocus artifact (Lightweight, Modular Verification for WebAssembly-to-Native Instruction Selection, ASPLOS 2024)",
+      "identity": {
+        "repository": "avanhatt/asplos24-ae-crocus",
+        "revision": "762320d87b288ac06d67e790935f3a7d7cd7ea92",
+        "doi": "10.5281/zenodo.10433722"
+      }
+    },
+    {
+      "name": "Proof-Carrying Code (Necula, POPL 1997)",
+      "identity": {
+        "doi": "10.1145/263699.263712"
+      }
+    },
+    {
+      "name": "Translation Validation for an Optimizing Compiler (Necula, PLDI 2000)",
+      "identity": {
+        "doi": "10.1145/349299.349314"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,124 @@
+{
+  "topics": [
+    "tooling",
+    "tooling/content-addressing",
+    "compilers",
+    "compilers/program-identity",
+    "build",
+    "build/interface-hashes",
+    "pl",
+    "pl/alpha-equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "Unison (unison-hashing-v2, parser-typechecker, codebase-sqlite, unison-merge)",
+      "identity": {
+        "repository": "unisonweb/unison",
+        "revision": "b5c5188d99f31820d0cc012f194948d2876c14e7"
+      }
+    },
+    {
+      "name": "Hashing Modulo Alpha-Equivalence (Maziarz, Ellis, Lawrence, Fitzgibbon, Peyton Jones; PLDI 2021)",
+      "identity": {
+        "arxiv": "2105.02856v1",
+        "doi": "10.48550/arXiv.2105.02856"
+      }
+    },
+    {
+      "name": "hash-modulo-alpha (supporting code for Hashing Modulo Alpha-Equivalence)",
+      "identity": {
+        "repository": "microsoft/hash-modulo-alpha",
+        "revision": "9deb049bce534c8b630c85102cf24da78619441a"
+      }
+    },
+    {
+      "name": "Hashing Modulo Context-Sensitive Alpha-Equivalence (Blaauwbroek, Olsak, Geuvers; PLDI 2024)",
+      "identity": {
+        "arxiv": "2401.02948v3",
+        "doi": "10.1145/3656459"
+      }
+    },
+    {
+      "name": "egg: Fast and Extensible Equality Saturation (POPL 2021)",
+      "identity": {
+        "arxiv": "2004.03082v3",
+        "doi": "10.1145/3434304"
+      }
+    },
+    {
+      "name": "egg e-graph library",
+      "identity": {
+        "repository": "egraphs-good/egg",
+        "revision": "73975c9819efb4af2f3c6c1b44fa53f8c5742574",
+        "version": "0.11.0"
+      }
+    },
+    {
+      "name": "rustc (Strict Version Hash, StableCrateId, crate metadata encoder)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "GHC (interface fingerprints and recompilation check)",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "OCaml compiler (cmi and cmx digests)",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+      }
+    },
+    {
+      "name": "C++ working draft (one-definition rule, [basic.def.odr])",
+      "identity": {
+        "repository": "cplusplus/draft",
+        "revision": "0ab325d274a1ad610cef1099ec528fb0bed6ee18"
+      }
+    },
+    {
+      "name": "Dhall language standard (semantic integrity checks, changelog)",
+      "identity": {
+        "repository": "dhall-lang/dhall-lang",
+        "revision": "56b0997a4800bfc815ea221529a6bb2bfd6723dc",
+        "version": "23.1.0"
+      }
+    },
+    {
+      "name": "Git (hash function transition design, gc, replace)",
+      "identity": {
+        "repository": "git/git",
+        "revision": "e1ec09b23c8e0deb21a0b95ac5996422277395d4"
+      }
+    },
+    {
+      "name": "Nix (content-addressed store objects, garbage collector roots)",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "6965392507e19998de706aa15e514f81e9b7ce11"
+      }
+    },
+    {
+      "name": "multihash (self-identifying hash format)",
+      "identity": {
+        "repository": "multiformats/multihash",
+        "revision": "b43ec1026a610fa87878e53b3daecf3a14b3ef6f"
+      }
+    },
+    {
+      "name": "General Data Protection Regulation, Article 17",
+      "identity": {
+        "standard": "Regulation (EU) 2016/679",
+        "celex": "32016R0679",
+        "article": "17",
+        "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

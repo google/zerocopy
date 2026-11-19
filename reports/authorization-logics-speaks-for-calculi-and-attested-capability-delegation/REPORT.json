@@ -1,0 +1,171 @@
+{
+  "topics": [
+    "security",
+    "security/authorization-logic",
+    "security/remote-attestation",
+    "security/transparency-logs",
+    "verification",
+    "verification/proof-carrying-authorization",
+    "systems",
+    "systems/capability-protocols",
+    "ffi",
+    "ffi/remote-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Abadi, Burrows, Lampson, Plotkin, A Calculus for Access Control in Distributed Systems",
+      "identity": {
+        "doi": "10.1145/155183.155225",
+        "venue": "ACM TOPLAS 15(4):706-734, 1993"
+      }
+    },
+    {
+      "name": "Abadi, Variations in Access Control Logic",
+      "identity": {
+        "doi": "10.1007/978-3-540-70525-3_9",
+        "venue": "DEON 2008, LNCS 5076"
+      }
+    },
+    {
+      "name": "Garg and Abadi, A Modal Deconstruction of Access Control Logics",
+      "identity": {
+        "doi": "10.1007/978-3-540-78499-9_16",
+        "venue": "FoSSaCS 2008, LNCS 4962"
+      }
+    },
+    {
+      "name": "Garg and Pfenning, Non-Interference in Constructive Authorization Logic",
+      "identity": {
+        "doi": "10.1109/CSFW.2006.18",
+        "venue": "IEEE CSFW 2006"
+      }
+    },
+    {
+      "name": "Garg and Pfenning, A Proof-Carrying File System (logic BL)",
+      "identity": {
+        "doi": "10.1109/SP.2010.28",
+        "venue": "IEEE S&P 2010"
+      }
+    },
+    {
+      "name": "Schneider, Walsh, Sirer, Nexus Authorization Logic (NAL)",
+      "identity": {
+        "doi": "10.1145/1952982.1952990",
+        "venue": "ACM TISSEC 14(1), 2011"
+      }
+    },
+    {
+      "name": "Sirer et al., Logical Attestation: An Authorization Architecture for Trustworthy Computing",
+      "identity": {
+        "doi": "10.1145/2043556.2043580",
+        "venue": "ACM SOSP 2011"
+      }
+    },
+    {
+      "name": "Hawblitzel et al., Ironclad Apps: End-to-End Security via Automated Full-System Verification",
+      "identity": {
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-hawblitzel.pdf",
+        "venue": "USENIX OSDI 2014"
+      }
+    },
+    {
+      "name": "Ironclad Apps source tree",
+      "identity": {
+        "repository": "microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+      }
+    },
+    {
+      "name": "Remote ATtestation procedureS (RATS) Architecture",
+      "identity": {
+        "standard": "RFC 9334",
+        "doi": "10.17487/RFC9334"
+      }
+    },
+    {
+      "name": "The Entity Attestation Token (EAT)",
+      "identity": {
+        "standard": "RFC 9711",
+        "doi": "10.17487/RFC9711"
+      }
+    },
+    {
+      "name": "Certificate Transparency",
+      "identity": {
+        "standard": "RFC 6962",
+        "doi": "10.17487/RFC6962"
+      }
+    },
+    {
+      "name": "Certificate Transparency Version 2.0",
+      "identity": {
+        "standard": "RFC 9162",
+        "doi": "10.17487/RFC9162"
+      }
+    },
+    {
+      "name": "SPKI Certificate Theory",
+      "identity": {
+        "standard": "RFC 2693",
+        "doi": "10.17487/RFC2693"
+      }
+    },
+    {
+      "name": "Sigstore Rekor v1 transparency log",
+      "identity": {
+        "repository": "sigstore/rekor",
+        "revision": "0baa39712ffa627b70756ea555193ec84bea4507"
+      }
+    },
+    {
+      "name": "Sigstore Rekor v2 (rekor-tiles)",
+      "identity": {
+        "repository": "sigstore/rekor-tiles",
+        "revision": "accb9fd3dc86abb0dde10cb04bca36a99fe0b9e2"
+      }
+    },
+    {
+      "name": "Sigstore Fulcio certificate authority",
+      "identity": {
+        "repository": "sigstore/fulcio",
+        "revision": "b01d056a925d1f15d1315676d454adf46b6b6629"
+      }
+    },
+    {
+      "name": "transparency-dev Merkle library (RFC 6962 hashing and proof verification, test vectors)",
+      "identity": {
+        "repository": "transparency-dev/merkle",
+        "revision": "c39fbf350a405f68571bf4c42a6a518eb0a46a4b"
+      }
+    },
+    {
+      "name": "in-toto Attestation Framework specification",
+      "identity": {
+        "repository": "in-toto/attestation",
+        "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+      }
+    },
+    {
+      "name": "OCapN draft specifications (CapTP, Locators)",
+      "identity": {
+        "repository": "ocapn/ocapn",
+        "revision": "ebf68742a40a89fff4730886a8788c5fe1bc9b96"
+      }
+    },
+    {
+      "name": "Endo OCapN package",
+      "identity": {
+        "repository": "endojs/endo",
+        "revision": "679d9afaa4acd089f578055118b6711a22537f05"
+      }
+    },
+    {
+      "name": "Cap'n Proto RPC protocol definition (rpc.capnp)",
+      "identity": {
+        "repository": "capnproto/capnproto",
+        "revision": "20fe8fd325bf3825d6cdc3cf16bb263a4c142326"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

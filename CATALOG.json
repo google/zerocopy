@@ -7754,6 +7754,177 @@
         "verification/iris"
       ]
     },
+    "authorization-logics-speaks-for-calculi-and-attested-capability-delegation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/155183.155225",
+            "venue": "ACM TOPLAS 15(4):706-734, 1993"
+          },
+          "name": "Abadi, Burrows, Lampson, Plotkin, A Calculus for Access Control in Distributed Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-70525-3_9",
+            "venue": "DEON 2008, LNCS 5076"
+          },
+          "name": "Abadi, Variations in Access Control Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-78499-9_16",
+            "venue": "FoSSaCS 2008, LNCS 4962"
+          },
+          "name": "Garg and Abadi, A Modal Deconstruction of Access Control Logics"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSFW.2006.18",
+            "venue": "IEEE CSFW 2006"
+          },
+          "name": "Garg and Pfenning, Non-Interference in Constructive Authorization Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2010.28",
+            "venue": "IEEE S&P 2010"
+          },
+          "name": "Garg and Pfenning, A Proof-Carrying File System (logic BL)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1952982.1952990",
+            "venue": "ACM TISSEC 14(1), 2011"
+          },
+          "name": "Schneider, Walsh, Sirer, Nexus Authorization Logic (NAL)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2043556.2043580",
+            "venue": "ACM SOSP 2011"
+          },
+          "name": "Sirer et al., Logical Attestation: An Authorization Architecture for Trustworthy Computing"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-hawblitzel.pdf",
+            "venue": "USENIX OSDI 2014"
+          },
+          "name": "Hawblitzel et al., Ironclad Apps: End-to-End Security via Automated Full-System Verification"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Ironclad",
+            "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+          },
+          "name": "Ironclad Apps source tree"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9334",
+            "standard": "RFC 9334"
+          },
+          "name": "Remote ATtestation procedureS (RATS) Architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9711",
+            "standard": "RFC 9711"
+          },
+          "name": "The Entity Attestation Token (EAT)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC6962",
+            "standard": "RFC 6962"
+          },
+          "name": "Certificate Transparency"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9162",
+            "standard": "RFC 9162"
+          },
+          "name": "Certificate Transparency Version 2.0"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC2693",
+            "standard": "RFC 2693"
+          },
+          "name": "SPKI Certificate Theory"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/rekor",
+            "revision": "0baa39712ffa627b70756ea555193ec84bea4507"
+          },
+          "name": "Sigstore Rekor v1 transparency log"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/rekor-tiles",
+            "revision": "accb9fd3dc86abb0dde10cb04bca36a99fe0b9e2"
+          },
+          "name": "Sigstore Rekor v2 (rekor-tiles)"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/fulcio",
+            "revision": "b01d056a925d1f15d1315676d454adf46b6b6629"
+          },
+          "name": "Sigstore Fulcio certificate authority"
+        },
+        {
+          "identity": {
+            "repository": "transparency-dev/merkle",
+            "revision": "c39fbf350a405f68571bf4c42a6a518eb0a46a4b"
+          },
+          "name": "transparency-dev Merkle library (RFC 6962 hashing and proof verification, test vectors)"
+        },
+        {
+          "identity": {
+            "repository": "in-toto/attestation",
+            "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+          },
+          "name": "in-toto Attestation Framework specification"
+        },
+        {
+          "identity": {
+            "repository": "ocapn/ocapn",
+            "revision": "ebf68742a40a89fff4730886a8788c5fe1bc9b96"
+          },
+          "name": "OCapN draft specifications (CapTP, Locators)"
+        },
+        {
+          "identity": {
+            "repository": "endojs/endo",
+            "revision": "679d9afaa4acd089f578055118b6711a22537f05"
+          },
+          "name": "Endo OCapN package"
+        },
+        {
+          "identity": {
+            "repository": "capnproto/capnproto",
+            "revision": "20fe8fd325bf3825d6cdc3cf16bb263a4c142326"
+          },
+          "name": "Cap'n Proto RPC protocol definition (rpc.capnp)"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/authorization-logic",
+        "security/remote-attestation",
+        "security/transparency-logs",
+        "verification",
+        "verification/proof-carrying-authorization",
+        "systems",
+        "systems/capability-protocols",
+        "ffi",
+        "ffi/remote-boundaries"
+      ]
+    },
     "automated-toolchain-table-regeneration-and-mir-minissa-upgrade-validator": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -11028,6 +11199,130 @@
         "rust/calling-conventions",
         "minirust/semantics",
         "anneal/rustc-capture"
+      ]
+    },
+    "content-addressed-typed-ir-stores-alpha-hashing-and-definition-identity": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "unisonweb/unison",
+            "revision": "b5c5188d99f31820d0cc012f194948d2876c14e7"
+          },
+          "name": "Unison (unison-hashing-v2, parser-typechecker, codebase-sqlite, unison-merge)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.02856v1",
+            "doi": "10.48550/arXiv.2105.02856"
+          },
+          "name": "Hashing Modulo Alpha-Equivalence (Maziarz, Ellis, Lawrence, Fitzgibbon, Peyton Jones; PLDI 2021)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/hash-modulo-alpha",
+            "revision": "9deb049bce534c8b630c85102cf24da78619441a"
+          },
+          "name": "hash-modulo-alpha (supporting code for Hashing Modulo Alpha-Equivalence)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.02948v3",
+            "doi": "10.1145/3656459"
+          },
+          "name": "Hashing Modulo Context-Sensitive Alpha-Equivalence (Blaauwbroek, Olsak, Geuvers; PLDI 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2004.03082v3",
+            "doi": "10.1145/3434304"
+          },
+          "name": "egg: Fast and Extensible Equality Saturation (POPL 2021)"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/egg",
+            "revision": "73975c9819efb4af2f3c6c1b44fa53f8c5742574",
+            "version": "0.11.0"
+          },
+          "name": "egg e-graph library"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "rustc (Strict Version Hash, StableCrateId, crate metadata encoder)"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "GHC (interface fingerprints and recompilation check)"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml compiler (cmi and cmx digests)"
+        },
+        {
+          "identity": {
+            "repository": "cplusplus/draft",
+            "revision": "0ab325d274a1ad610cef1099ec528fb0bed6ee18"
+          },
+          "name": "C++ working draft (one-definition rule, [basic.def.odr])"
+        },
+        {
+          "identity": {
+            "repository": "dhall-lang/dhall-lang",
+            "revision": "56b0997a4800bfc815ea221529a6bb2bfd6723dc",
+            "version": "23.1.0"
+          },
+          "name": "Dhall language standard (semantic integrity checks, changelog)"
+        },
+        {
+          "identity": {
+            "repository": "git/git",
+            "revision": "e1ec09b23c8e0deb21a0b95ac5996422277395d4"
+          },
+          "name": "Git (hash function transition design, gc, replace)"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "6965392507e19998de706aa15e514f81e9b7ce11"
+          },
+          "name": "Nix (content-addressed store objects, garbage collector roots)"
+        },
+        {
+          "identity": {
+            "repository": "multiformats/multihash",
+            "revision": "b43ec1026a610fa87878e53b3daecf3a14b3ef6f"
+          },
+          "name": "multihash (self-identifying hash format)"
+        },
+        {
+          "identity": {
+            "article": "17",
+            "celex": "32016R0679",
+            "standard": "Regulation (EU) 2016/679",
+            "url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679"
+          },
+          "name": "General Data Protection Regulation, Article 17"
+        }
+      ],
+      "topics": [
+        "tooling",
+        "tooling/content-addressing",
+        "compilers",
+        "compilers/program-identity",
+        "build",
+        "build/interface-hashes",
+        "pl",
+        "pl/alpha-equivalence"
       ]
     },
     "coroutine-state-machine-optimization-and-hybridtrace-scaling": {
@@ -20782,6 +21077,135 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "mechanized-computational-soundness-uc-composability-and-refinement-bridges": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "EasyCrypt/easycrypt",
+            "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+          },
+          "name": "EasyCrypt proof assistant"
+        },
+        {
+          "identity": {
+            "repository": "easyuc/EasyUC",
+            "revision": "3a39ffef812c5ef6a57a2bf6148488a0facd4f03"
+          },
+          "name": "EasyUC (universal composability in EasyCrypt)"
+        },
+        {
+          "identity": {
+            "repository": "SSProve/ssprove",
+            "revision": "9a37fe0ab79d041f8d835e6cf18e37614b16a791"
+          },
+          "name": "SSProve (state-separating proofs in Rocq)"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "773174513872254f8efe1cb3a3ce64037f0b1da6"
+          },
+          "name": "CryptHOL and Constructive Cryptography (Isabelle AFP development mirror)"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/owl",
+            "revision": "1b56f8cc70a067721917b9ccb60430417ada68f0"
+          },
+          "name": "Owl protocol verifier and OwlC extraction"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+            "version": "3.18"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "5741d17e3134f5b3b110e5e53494704d6d54f7c7"
+          },
+          "name": "Jasmin language and verified compiler"
+        },
+        {
+          "identity": {
+            "repository": "logsem/clutch",
+            "revision": "cc81450edd699bfcd9fa806d628a57d16c48f75d"
+          },
+          "name": "Clutch probabilistic separation logics on Iris"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00145-001-0014-7",
+            "venue": "Journal of Cryptology 15(2):103-127, 2002"
+          },
+          "name": "Abadi and Rogaway, Reconciling Two Views of Cryptography (The Computational Soundness of Formal Encryption)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3402457",
+            "venue": "Journal of the ACM 67(5), 2020"
+          },
+          "name": "Canetti, Universally Composable Security"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3484548",
+            "venue": "ACM CCS 2021"
+          },
+          "name": "Barbosa, Barthe, Gregoire, Koutsos, Strub, Mechanized Proofs of Adversarial Complexity and Application to Universal Composability"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46215.2023.10179477",
+            "venue": "IEEE S&P 2023"
+          },
+          "name": "Gancher, Gibson, Singh, Dharanikota, Parno, Owl: Compositional Verification of Security Protocols via an Information-Flow Type System"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/singh",
+            "venue": "USENIX Security 2025"
+          },
+          "name": "Singh, Gancher, Parno, OwlC: Compiling Security Protocols to Verified, Secure, High-Performance Libraries"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3594735",
+            "venue": "ACM TOPLAS 45(3), 2023"
+          },
+          "name": "Haselwarter et al., SSProve: A Foundational Framework for Modular Cryptographic Proofs in Coq"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.08634",
+            "version": "v3"
+          },
+          "name": "Patrignani, Kunnemann, Wahby, Universal Composability is Robust Compilation"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/JCS-2009-0393",
+            "venue": "Journal of Computer Security 18(6):1157-1210, 2010"
+          },
+          "name": "Clarkson and Schneider, Hyperproperties"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/computational-soundness",
+        "security/universal-composability",
+        "verification",
+        "verification/cryptographic-proofs",
+        "pl",
+        "pl/information-flow-types",
+        "compilers",
+        "compilers/semantic-preservation"
       ]
     },
     "metal-typechain-language-isolated-kernels-1995-2026": {
@@ -32700,6 +33124,174 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "technology-independent-machine-interfaces-and-install-time-specialization": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "isbn": "0-933186-00-2",
+            "publisher": "International Business Machines Corporation",
+            "url": "http://bitsavers.informatik.uni-stuttgart.de/pdf/ibm/system38/IBM_System_38_Technical_Developments_Dec1978.pdf",
+            "year": "1978"
+          },
+          "name": "IBM System/38 Technical Developments (1978 collection of articles)"
+        },
+        {
+          "identity": {
+            "document": "SC41-5302-13",
+            "edition": "IBM i 7.3 and subsequent releases",
+            "url": "https://www.ibm.com/docs/ssw_ibm_i_74/rzarl/sc415302.pdf"
+          },
+          "name": "IBM i Security reference"
+        },
+        {
+          "identity": {
+            "document": "SC41-5606-12",
+            "url": "https://www.ibm.com/docs/en/ssw_ibm_i_75/ilec/sc415606.pdf"
+          },
+          "name": "IBM i ILE Concepts"
+        },
+        {
+          "identity": {
+            "document": "REDP-4293-01",
+            "isbn": "9780738451251",
+            "url": "https://www.redbooks.ibm.com/abstracts/redp4293.html"
+          },
+          "name": "IBM i Program Conversion: Getting Ready for 6.1 and Beyond (IBM Redpaper, abstract page)"
+        },
+        {
+          "identity": {
+            "document": "SG24-7680",
+            "url": "https://www.redbooks.ibm.com/redbooks/pdfs/sg247680.pdf"
+          },
+          "name": "Security Guide for IBM i V6.1 (IBM Redbook)"
+        },
+        {
+          "identity": {
+            "repository": "tendra/tendra",
+            "revision": "1eadfd8b7de313b3bcb4cd9416ecb477f70d18fe"
+          },
+          "name": "TenDRA (TDF Specification Issue 4.0, TDF guide, token register, build notes)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "70d1fc87689a919f1e0be645cf1c6755009356c8"
+          },
+          "name": "LLVM documentation (FAQ, Developer Policy, Language Reference)"
+        },
+        {
+          "identity": {
+            "publisher": "Apple Inc.",
+            "url": "https://developer.apple.com/documentation/xcode-release-notes/xcode-14-release-notes"
+          },
+          "name": "Xcode 14 Release Notes"
+        },
+        {
+          "identity": {
+            "last_updated": "2026-10-09",
+            "url": "https://source.android.com/docs/core/runtime/configure"
+          },
+          "name": "Android Open Source Project documentation: Configure ART"
+        },
+        {
+          "identity": {
+            "last_updated": "2026-10-09",
+            "url": "https://source.android.com/docs/core/runtime/jit-compiler"
+          },
+          "name": "Android Open Source Project documentation: Implement ART just-in-time compiler"
+        },
+        {
+          "identity": {
+            "repository": "dotnet/runtime",
+            "revision": "db341b0b461356d954079d27e86cb47c929e7e8a"
+          },
+          "name": ".NET runtime (ReadyToRun overview and format, crossgen2 instruction-set model)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "f9a93b049a23bef9a33cfa3888f32af33a178749",
+            "version": "v50.0.2"
+          },
+          "name": "Wasmtime"
+        },
+        {
+          "identity": {
+            "artifact": "wasmtime-v50.0.2-x86_64-linux.tar.xz",
+            "sha256": "5db0ca8e838ab95a51ba9acdf11f42888bcd0092dda45a86129ae540c4fa952c"
+          },
+          "name": "Wasmtime release archive used for execution"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model (binary format explainer)"
+        },
+        {
+          "identity": {
+            "date": "2015-06-10",
+            "url": "https://millcomputing.com/docs/compiler/"
+          },
+          "name": "Mill Computing talk page: The Compiler (2015-06-10)"
+        },
+        {
+          "identity": {
+            "date": "2014-05-14",
+            "url": "https://millcomputing.com/docs/specification/"
+          },
+          "name": "Mill Computing talk page: Specification (2014-05-14)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+          },
+          "name": "regalloc2 (symbolic checker)"
+        },
+        {
+          "identity": {
+            "repository": "PLSysSec/veriwasm",
+            "revision": "60a64d279ecb676549aab51838d52b41ec6d1360"
+          },
+          "name": "VeriWasm"
+        },
+        {
+          "identity": {
+            "doi": "10.5281/zenodo.10433722",
+            "repository": "avanhatt/asplos24-ae-crocus",
+            "revision": "762320d87b288ac06d67e790935f3a7d7cd7ea92"
+          },
+          "name": "Crocus artifact (Lightweight, Modular Verification for WebAssembly-to-Native Instruction Selection, ASPLOS 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/263699.263712"
+          },
+          "name": "Proof-Carrying Code (Necula, POPL 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/349299.349314"
+          },
+          "name": "Translation Validation for an Optimizing Compiler (Necula, PLDI 2000)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/install-time-specialization",
+        "systems",
+        "systems/machine-interfaces",
+        "isa",
+        "isa/target-neutral-ir",
+        "runtimes",
+        "runtimes/ahead-of-time-compilation",
+        "verification",
+        "verification/translation-validation"
       ]
     },
     "tier1-atomics-and-fences-instruction-lowering": {
