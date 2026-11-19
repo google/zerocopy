@@ -1,0 +1,120 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "compilers",
+    "compilers/lexing",
+    "domains",
+    "domains/layout",
+    "domains/config",
+    "build",
+    "build/provenance",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "TeX (Knuth tex.web in TeX Live)",
+      "identity": {
+        "repository": "TeX-Live/texlive-source",
+        "revision": "b4e37b58bfc6352cc3223ed26384cae01a28b234",
+        "path": "texk/web2c/tex.web"
+      }
+    },
+    {
+      "name": "Tectonic (XeTeX-derived TeX engine)",
+      "identity": {
+        "repository": "tectonic-typesetting/tectonic",
+        "revision": "d2224d9ba4185f952fd3d982eccd1f444dbdf895",
+        "path": "crates/engine_xetex/xetex/xetex-constants.h"
+      }
+    },
+    {
+      "name": "W3C CSS Working Group Drafts (CSS Flexbox 1, CSS Grid 1, CSS Containment 3, CSS Conditional 5)",
+      "identity": {
+        "repository": "w3c/csswg-drafts",
+        "revision": "5e83e63e7561e02f24fdccf30b08ebd222eb794c"
+      }
+    },
+    {
+      "name": "Chromium Blink LayoutNG and Container Query Evaluator",
+      "identity": {
+        "repository": "chromium/chromium",
+        "revision": "a96bb3157067818fef60e0c0635a8dee3d87893a",
+        "path": "third_party/blink/renderer/core"
+      }
+    },
+    {
+      "name": "Cassius (SMT-based CSS 2.1 layout formalization)",
+      "identity": {
+        "repository": "uwplse/cassius",
+        "revision": "60dad9e9b2b4de3b13451ce54cdc1bd55ca64824",
+        "doi": "10.1145/2983990.2984010"
+      }
+    },
+    {
+      "name": "W3C XSL Transformations (XSLT) Version 3.0",
+      "identity": {
+        "standard": "W3C Recommendation",
+        "version": "3.0 (2017-06-08)",
+        "url": "https://www.w3.org/TR/xslt-30/"
+      }
+    },
+    {
+      "name": "Nix Expression Evaluator",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "6965392507e19998de706aa15e514f81e9b7ce11",
+        "path": "src/libexpr"
+      }
+    },
+    {
+      "name": "Tvix Nix Evaluator",
+      "identity": {
+        "repository": "tvlfyi/tvix",
+        "revision": "745668238b829ef56131d198560c2c7471b94458",
+        "path": "eval/src/value/string"
+      }
+    },
+    {
+      "name": "GNU Guix G-Expressions",
+      "identity": {
+        "repository": "https://codeberg.org/guix/guix",
+        "revision": "d19bb5cf43f2fb41793813c6a43c7f77856ae0bd",
+        "path": "guix/gexp.scm"
+      }
+    },
+    {
+      "name": "Helm Template Engine and Manifest Splitter",
+      "identity": {
+        "repository": "helm/helm",
+        "revision": "01b541c8e4e15ac2f1fa4616234d1cb9883fc381"
+      }
+    },
+    {
+      "name": "HashiCorp HCL2 and go-cty Type/Value System",
+      "identity": {
+        "repository": "hashicorp/hcl",
+        "revision": "94e232b58b12531a80299e3aa7566f345e17c21b",
+        "companion_repository": "zclconf/go-cty",
+        "companion_revision": "5203df261916a8da241b127bf8c7b13f6f684854"
+      }
+    },
+    {
+      "name": "Terraform for_each Plan-Time Graph Evaluator",
+      "identity": {
+        "repository": "hashicorp/terraform",
+        "revision": "a1246154d166f0647e398b823f0d9a3b9b64e920",
+        "path": "internal/terraform/eval_for_each.go"
+      }
+    },
+    {
+      "name": "CUE Language Specification",
+      "identity": {
+        "repository": "cue-lang/cue",
+        "revision": "b38d73e3f13559da0ba290e7e61d21ae7230a6ae",
+        "path": "doc/ref/spec.md"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

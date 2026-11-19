@@ -1,0 +1,126 @@
+{
+  "topics": [
+    "pl",
+    "pl/semantics",
+    "domains",
+    "domains/hardware",
+    "domains/plc",
+    "domains/shaders",
+    "systems",
+    "isa",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "IEC 61131-3 Programmable Controllers — Programming Languages",
+      "identity": {
+        "standard": "IEC 61131-3",
+        "version": "Edition 3.0 (2013)"
+      }
+    },
+    {
+      "name": "MATIEC IEC 61131-3 Compiler",
+      "identity": {
+        "repository": "beremiz/matiec",
+        "revision": "c316fe57e335381cbe91f61c7366857198580ac7"
+      }
+    },
+    {
+      "name": "OpenPLC Runtime v3",
+      "identity": {
+        "repository": "thiagoralves/OpenPLC_v3",
+        "revision": "b5d41356dab4aeadca0dd7ca64ba542f870b595d",
+        "path": "webserver/core/main.cpp"
+      }
+    },
+    {
+      "name": "K-ST Formal Executable Semantics of IEC 61131-3 Structured Text",
+      "identity": {
+        "doi": "10.1109/TSE.2023.3315292",
+        "arxiv": "2202.04076v2",
+        "companion_repository": "runtimeverification/k",
+        "companion_revision": "4a46d1231473b599c699160132fd6e76a5c46406"
+      }
+    },
+    {
+      "name": "CERN PLCverif Formal Verification Platform",
+      "identity": {
+        "doi": "10.18429/JACoW-ICALEPCS2021-MOPV042",
+        "arxiv": "2203.17253v1",
+        "prior_doi": "10.18429/JACoW-ICALEPCS2015-WEPGF092"
+      }
+    },
+    {
+      "name": "IEEE Std 1800 SystemVerilog Standard",
+      "identity": {
+        "standard": "IEEE Std 1800",
+        "version": "2017 / 2023"
+      }
+    },
+    {
+      "name": "Verilator Verilog/SystemVerilog Simulator",
+      "identity": {
+        "repository": "verilator/verilator",
+        "revision": "f84382c2b0b113d4cc3e4b6fb5f749c6491866ba",
+        "path": "src"
+      }
+    },
+    {
+      "name": "Yosys Open SYnthesis Suite",
+      "identity": {
+        "repository": "YosysHQ/yosys",
+        "revision": "e4a169b8fea4c1e7121518937854672efa41c658",
+        "path": "passes/opt/opt_expr.cc"
+      }
+    },
+    {
+      "name": "FIRRTL Specification and CIRCT Compiler Infrastructure",
+      "identity": {
+        "repository": "chipsalliance/firrtl-spec",
+        "revision": "0bbb9d4b83e1d9c4f5b52d7e5527574ee4b11390",
+        "companion_repository": "llvm/circt",
+        "companion_revision": "203f159ce10d78940df4264327d5f3fc8b902112"
+      }
+    },
+    {
+      "name": "W3C WebGPU Shading Language (WGSL) Specification",
+      "identity": {
+        "repository": "gpuweb/gpuweb",
+        "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3",
+        "path": "wgsl/index.bs"
+      }
+    },
+    {
+      "name": "Chromium Dawn/Tint WGSL Uniformity Resolver",
+      "identity": {
+        "repository": "google/dawn",
+        "revision": "0a5ab78416b90f79e8a7a0cf976dd24ab78b7ae6",
+        "path": "src/tint/lang/wgsl/resolver/uniformity.cc"
+      }
+    },
+    {
+      "name": "TinyWGSL Formalization of WGSL Uniformity Analysis",
+      "identity": {
+        "doi": "10.1145/3808331",
+        "venue": "PACMPL Vol. 10, PLDI 2026, Article 253"
+      }
+    },
+    {
+      "name": "GraphicsFuzz Shader Compiler Testing Framework",
+      "identity": {
+        "repository": "google/graphicsfuzz",
+        "revision": "aa32d4cb556647ddaaf2048815bd6bca07d1bdab",
+        "doi": "10.1145/3133917"
+      }
+    },
+    {
+      "name": "Pure Data (Pd) Visual Dataflow Engine",
+      "identity": {
+        "repository": "pure-data/pure-data",
+        "revision": "5182c4f90c4d79fc78e2c58048fe78f155631167",
+        "path": "src"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -19153,6 +19153,132 @@
         "verification/compiler-verification"
       ]
     },
+    "iec61131-plc-scan-cycles-verilog-x-optimism-and-visual-dataflow-languages": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "standard": "IEC 61131-3",
+            "version": "Edition 3.0 (2013)"
+          },
+          "name": "IEC 61131-3 Programmable Controllers \u2014 Programming Languages"
+        },
+        {
+          "identity": {
+            "repository": "beremiz/matiec",
+            "revision": "c316fe57e335381cbe91f61c7366857198580ac7"
+          },
+          "name": "MATIEC IEC 61131-3 Compiler"
+        },
+        {
+          "identity": {
+            "path": "webserver/core/main.cpp",
+            "repository": "thiagoralves/OpenPLC_v3",
+            "revision": "b5d41356dab4aeadca0dd7ca64ba542f870b595d"
+          },
+          "name": "OpenPLC Runtime v3"
+        },
+        {
+          "identity": {
+            "arxiv": "2202.04076v2",
+            "companion_repository": "runtimeverification/k",
+            "companion_revision": "4a46d1231473b599c699160132fd6e76a5c46406",
+            "doi": "10.1109/TSE.2023.3315292"
+          },
+          "name": "K-ST Formal Executable Semantics of IEC 61131-3 Structured Text"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.17253v1",
+            "doi": "10.18429/JACoW-ICALEPCS2021-MOPV042",
+            "prior_doi": "10.18429/JACoW-ICALEPCS2015-WEPGF092"
+          },
+          "name": "CERN PLCverif Formal Verification Platform"
+        },
+        {
+          "identity": {
+            "standard": "IEEE Std 1800",
+            "version": "2017 / 2023"
+          },
+          "name": "IEEE Std 1800 SystemVerilog Standard"
+        },
+        {
+          "identity": {
+            "path": "src",
+            "repository": "verilator/verilator",
+            "revision": "f84382c2b0b113d4cc3e4b6fb5f749c6491866ba"
+          },
+          "name": "Verilator Verilog/SystemVerilog Simulator"
+        },
+        {
+          "identity": {
+            "path": "passes/opt/opt_expr.cc",
+            "repository": "YosysHQ/yosys",
+            "revision": "e4a169b8fea4c1e7121518937854672efa41c658"
+          },
+          "name": "Yosys Open SYnthesis Suite"
+        },
+        {
+          "identity": {
+            "companion_repository": "llvm/circt",
+            "companion_revision": "203f159ce10d78940df4264327d5f3fc8b902112",
+            "repository": "chipsalliance/firrtl-spec",
+            "revision": "0bbb9d4b83e1d9c4f5b52d7e5527574ee4b11390"
+          },
+          "name": "FIRRTL Specification and CIRCT Compiler Infrastructure"
+        },
+        {
+          "identity": {
+            "path": "wgsl/index.bs",
+            "repository": "gpuweb/gpuweb",
+            "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3"
+          },
+          "name": "W3C WebGPU Shading Language (WGSL) Specification"
+        },
+        {
+          "identity": {
+            "path": "src/tint/lang/wgsl/resolver/uniformity.cc",
+            "repository": "google/dawn",
+            "revision": "0a5ab78416b90f79e8a7a0cf976dd24ab78b7ae6"
+          },
+          "name": "Chromium Dawn/Tint WGSL Uniformity Resolver"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3808331",
+            "venue": "PACMPL Vol. 10, PLDI 2026, Article 253"
+          },
+          "name": "TinyWGSL Formalization of WGSL Uniformity Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133917",
+            "repository": "google/graphicsfuzz",
+            "revision": "aa32d4cb556647ddaaf2048815bd6bca07d1bdab"
+          },
+          "name": "GraphicsFuzz Shader Compiler Testing Framework"
+        },
+        {
+          "identity": {
+            "path": "src",
+            "repository": "pure-data/pure-data",
+            "revision": "5182c4f90c4d79fc78e2c58048fe78f155631167"
+          },
+          "name": "Pure Data (Pd) Visual Dataflow Engine"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/semantics",
+        "domains",
+        "domains/hardware",
+        "domains/plc",
+        "domains/shaders",
+        "systems",
+        "isa",
+        "verification"
+      ]
+    },
     "image-based-and-single-language-systems-smalltalk-lisp-oberon": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -41262,6 +41388,126 @@
         "runtimes/ahead-of-time-compilation",
         "verification",
         "verification/translation-validation"
+      ]
+    },
+    "tex-catcode-lexing-css-layout-cycles-and-nix-string-context-provenance": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "path": "texk/web2c/tex.web",
+            "repository": "TeX-Live/texlive-source",
+            "revision": "b4e37b58bfc6352cc3223ed26384cae01a28b234"
+          },
+          "name": "TeX (Knuth tex.web in TeX Live)"
+        },
+        {
+          "identity": {
+            "path": "crates/engine_xetex/xetex/xetex-constants.h",
+            "repository": "tectonic-typesetting/tectonic",
+            "revision": "d2224d9ba4185f952fd3d982eccd1f444dbdf895"
+          },
+          "name": "Tectonic (XeTeX-derived TeX engine)"
+        },
+        {
+          "identity": {
+            "repository": "w3c/csswg-drafts",
+            "revision": "5e83e63e7561e02f24fdccf30b08ebd222eb794c"
+          },
+          "name": "W3C CSS Working Group Drafts (CSS Flexbox 1, CSS Grid 1, CSS Containment 3, CSS Conditional 5)"
+        },
+        {
+          "identity": {
+            "path": "third_party/blink/renderer/core",
+            "repository": "chromium/chromium",
+            "revision": "a96bb3157067818fef60e0c0635a8dee3d87893a"
+          },
+          "name": "Chromium Blink LayoutNG and Container Query Evaluator"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2984010",
+            "repository": "uwplse/cassius",
+            "revision": "60dad9e9b2b4de3b13451ce54cdc1bd55ca64824"
+          },
+          "name": "Cassius (SMT-based CSS 2.1 layout formalization)"
+        },
+        {
+          "identity": {
+            "standard": "W3C Recommendation",
+            "url": "https://www.w3.org/TR/xslt-30/",
+            "version": "3.0 (2017-06-08)"
+          },
+          "name": "W3C XSL Transformations (XSLT) Version 3.0"
+        },
+        {
+          "identity": {
+            "path": "src/libexpr",
+            "repository": "NixOS/nix",
+            "revision": "6965392507e19998de706aa15e514f81e9b7ce11"
+          },
+          "name": "Nix Expression Evaluator"
+        },
+        {
+          "identity": {
+            "path": "eval/src/value/string",
+            "repository": "tvlfyi/tvix",
+            "revision": "745668238b829ef56131d198560c2c7471b94458"
+          },
+          "name": "Tvix Nix Evaluator"
+        },
+        {
+          "identity": {
+            "path": "guix/gexp.scm",
+            "repository": "https://codeberg.org/guix/guix",
+            "revision": "d19bb5cf43f2fb41793813c6a43c7f77856ae0bd"
+          },
+          "name": "GNU Guix G-Expressions"
+        },
+        {
+          "identity": {
+            "repository": "helm/helm",
+            "revision": "01b541c8e4e15ac2f1fa4616234d1cb9883fc381"
+          },
+          "name": "Helm Template Engine and Manifest Splitter"
+        },
+        {
+          "identity": {
+            "companion_repository": "zclconf/go-cty",
+            "companion_revision": "5203df261916a8da241b127bf8c7b13f6f684854",
+            "repository": "hashicorp/hcl",
+            "revision": "94e232b58b12531a80299e3aa7566f345e17c21b"
+          },
+          "name": "HashiCorp HCL2 and go-cty Type/Value System"
+        },
+        {
+          "identity": {
+            "path": "internal/terraform/eval_for_each.go",
+            "repository": "hashicorp/terraform",
+            "revision": "a1246154d166f0647e398b823f0d9a3b9b64e920"
+          },
+          "name": "Terraform for_each Plan-Time Graph Evaluator"
+        },
+        {
+          "identity": {
+            "path": "doc/ref/spec.md",
+            "repository": "cue-lang/cue",
+            "revision": "b38d73e3f13559da0ba290e7e61d21ae7230a6ae"
+          },
+          "name": "CUE Language Specification"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/semantics",
+        "compilers",
+        "compilers/lexing",
+        "domains",
+        "domains/layout",
+        "domains/config",
+        "build",
+        "build/provenance",
+        "verification"
       ]
     },
     "tier1-atomics-and-fences-instruction-lowering": {
