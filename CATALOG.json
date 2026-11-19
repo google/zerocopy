@@ -19522,6 +19522,119 @@
         "build/hermeticity"
       ]
     },
+    "exokernel-libos-multiplexing-mpk-pku-domains-and-vtx-user-rings": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/224056.224076",
+            "pages": "251-266",
+            "venue": "SOSP 1995"
+          },
+          "name": "MIT Exokernel Architecture (Aegis / ExOS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/268998.266644",
+            "pages": "52-65",
+            "venue": "SOSP 1997"
+          },
+          "name": "MIT Xok Exokernel and XN Disk System"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2812806",
+            "venue": "OSDI 2014 / ACM TOCS 33(4)"
+          },
+          "name": "Arrakis Control-Plane / Data-Plane Split OS"
+        },
+        {
+          "identity": {
+            "repository": "ix-project/ix",
+            "revision": "550bf28a4ddd5fafcec707a14acd502712a10dae",
+            "url": "https://www.usenix.org/conference/osdi14/technical-sessions/presentation/belay"
+          },
+          "name": "IX Protected Dataplane Operating System"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3477132.3483569",
+            "repository": "microsoft/demikernel",
+            "revision": "42655abdffbdfc7283e30f913b153c7b39c9ee90"
+          },
+          "name": "Microsoft Demikernel Datapath OS Architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3447786.3456248",
+            "repository": "unikraft/unikraft",
+            "revision": "7814c9dc529092edc4cfd52f4fffe54205eaca70"
+          },
+          "name": "Unikraft Modular Unikernel / LibOS"
+        },
+        {
+          "identity": {
+            "repository": "project-dune/dune",
+            "revision": "af3e3bdddb81d80e900ef1e1fa9df6b54cdfcae9",
+            "url": "https://www.usenix.org/conference/osdi12/technical-sessions/presentation/belay"
+          },
+          "name": "Dune VT-x User-Level Ring-0 Sandbox"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.1801.06822",
+            "repository": "vahldiek/erim",
+            "revision": "7232f4762c5ff51035116f9664ec6e7af3b236af"
+          },
+          "name": "ERIM MPK/PKU In-Process Isolation"
+        },
+        {
+          "identity": {
+            "repository": "isec-tugraz/Jenny",
+            "revision": "39bb0c696ce3c178e9593b7dbc034b2447ba2d00",
+            "url": "https://www.usenix.org/conference/usenixsecurity22/presentation/schrammel"
+          },
+          "name": "Jenny PKU Syscall Filtering and Signal Isolation"
+        },
+        {
+          "identity": {
+            "pages": "489-504",
+            "url": "https://www.usenix.org/conference/atc19/presentation/hedayati-hodor",
+            "venue": "USENIX ATC 2019"
+          },
+          "name": "Hodor Protected Data-Plane Libraries"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3492321.3519560",
+            "pages": "266-282",
+            "venue": "EuroSys 2022"
+          },
+          "name": "Cerberus PKU Sandboxing Monitor"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel ARM64 FEAT_S1POE Permission Overlay Support"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1629575.1629579",
+            "repository": "BarrelfishOS/barrelfish",
+            "revision": "06a9f54721a8d96874a8939d8973178a562c342f"
+          },
+          "name": "Barrelfish Multikernel Operating System"
+        }
+      ],
+      "topics": [
+        "systems/exokernels",
+        "security/fault-isolation",
+        "isa/protection-keys",
+        "runtimes/libos-dataplanes"
+      ]
+    },
     "fault-injection-resilient-intermittent-and-approximate-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -36376,6 +36489,102 @@
         "pl/p4-semantics",
         "verification/floating-point",
         "systems/exotic-numerics"
+      ]
+    },
+    "proof-carrying-syscall-admission-kernel-resident-checkers-and-ring-policies": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.1910.10703",
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (mm0-c C Proof Verifier)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-63046-5_14",
+            "repository": "marijnheule/drat-trim",
+            "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+          },
+          "name": "DRAT-trim / LRAT Linear-Time C Checker"
+        },
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "6dbb775efdff7f75aa20006532bf6336bc645861"
+          },
+          "name": "HOL Light LCF Kernel (fusion.ml)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314590",
+            "repository": "vbpf/prevail",
+            "revision": "169eb5d6f48a59ffe4e902e977ae4e387f2b4e49"
+          },
+          "name": "PREVAIL Zone-Domain eBPF Verifier"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel eBPF Verifier and io_uring Subsystem"
+        },
+        {
+          "identity": {
+            "repository": "axboe/liburing",
+            "revision": "a10946dc51eeababc48ee10baf0d17489f647a80"
+          },
+          "name": "liburing Userspace io_uring Library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1629575.1629596",
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel Capability Derivation Tree"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/224056.224077",
+            "pages": "267-284",
+            "venue": "SOSP 1995"
+          },
+          "name": "SPIN Extensible Operating System"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1217935.1217953",
+            "pages": "177-190",
+            "venue": "EuroSys 2006"
+          },
+          "name": "Microsoft Singularity OS SIPs and Channel Contracts"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/504709.504712",
+            "venue": "ACM TOPLAS 23(5)",
+            "year": "2001"
+          },
+          "name": "Foundational Proof-Carrying Code Step-Indexed Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/263699.263712",
+            "pages": "106-119",
+            "venue": "POPL 1997"
+          },
+          "name": "Proof-Carrying Code"
+        }
+      ],
+      "topics": [
+        "systems/certificate-kernels",
+        "verification/proof-carrying-code",
+        "security/kernel-admission",
+        "zerocopy/ring-policies"
       ]
     },
     "proof-fragility-smt-instability-and-verification-scaling-walls": {

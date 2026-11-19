@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "systems/exokernels",
+    "security/fault-isolation",
+    "isa/protection-keys",
+    "runtimes/libos-dataplanes"
+  ],
+  "subjects": [
+    {
+      "name": "MIT Exokernel Architecture (Aegis / ExOS)",
+      "identity": {
+        "doi": "10.1145/224056.224076",
+        "venue": "SOSP 1995",
+        "pages": "251-266"
+      }
+    },
+    {
+      "name": "MIT Xok Exokernel and XN Disk System",
+      "identity": {
+        "doi": "10.1145/268998.266644",
+        "venue": "SOSP 1997",
+        "pages": "52-65"
+      }
+    },
+    {
+      "name": "Arrakis Control-Plane / Data-Plane Split OS",
+      "identity": {
+        "doi": "10.1145/2812806",
+        "venue": "OSDI 2014 / ACM TOCS 33(4)"
+      }
+    },
+    {
+      "name": "IX Protected Dataplane Operating System",
+      "identity": {
+        "repository": "ix-project/ix",
+        "revision": "550bf28a4ddd5fafcec707a14acd502712a10dae",
+        "url": "https://www.usenix.org/conference/osdi14/technical-sessions/presentation/belay"
+      }
+    },
+    {
+      "name": "Microsoft Demikernel Datapath OS Architecture",
+      "identity": {
+        "repository": "microsoft/demikernel",
+        "revision": "42655abdffbdfc7283e30f913b153c7b39c9ee90",
+        "doi": "10.1145/3477132.3483569"
+      }
+    },
+    {
+      "name": "Unikraft Modular Unikernel / LibOS",
+      "identity": {
+        "repository": "unikraft/unikraft",
+        "revision": "7814c9dc529092edc4cfd52f4fffe54205eaca70",
+        "doi": "10.1145/3447786.3456248"
+      }
+    },
+    {
+      "name": "Dune VT-x User-Level Ring-0 Sandbox",
+      "identity": {
+        "repository": "project-dune/dune",
+        "revision": "af3e3bdddb81d80e900ef1e1fa9df6b54cdfcae9",
+        "url": "https://www.usenix.org/conference/osdi12/technical-sessions/presentation/belay"
+      }
+    },
+    {
+      "name": "ERIM MPK/PKU In-Process Isolation",
+      "identity": {
+        "repository": "vahldiek/erim",
+        "revision": "7232f4762c5ff51035116f9664ec6e7af3b236af",
+        "doi": "10.48550/arXiv.1801.06822"
+      }
+    },
+    {
+      "name": "Jenny PKU Syscall Filtering and Signal Isolation",
+      "identity": {
+        "repository": "isec-tugraz/Jenny",
+        "revision": "39bb0c696ce3c178e9593b7dbc034b2447ba2d00",
+        "url": "https://www.usenix.org/conference/usenixsecurity22/presentation/schrammel"
+      }
+    },
+    {
+      "name": "Hodor Protected Data-Plane Libraries",
+      "identity": {
+        "url": "https://www.usenix.org/conference/atc19/presentation/hedayati-hodor",
+        "venue": "USENIX ATC 2019",
+        "pages": "489-504"
+      }
+    },
+    {
+      "name": "Cerberus PKU Sandboxing Monitor",
+      "identity": {
+        "doi": "10.1145/3492321.3519560",
+        "venue": "EuroSys 2022",
+        "pages": "266-282"
+      }
+    },
+    {
+      "name": "Linux Kernel ARM64 FEAT_S1POE Permission Overlay Support",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Barrelfish Multikernel Operating System",
+      "identity": {
+        "repository": "BarrelfishOS/barrelfish",
+        "revision": "06a9f54721a8d96874a8939d8973178a562c342f",
+        "doi": "10.1145/1629575.1629579"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

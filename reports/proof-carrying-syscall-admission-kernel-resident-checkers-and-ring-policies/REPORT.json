@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "systems/certificate-kernels",
+    "verification/proof-carrying-code",
+    "security/kernel-admission",
+    "zerocopy/ring-policies"
+  ],
+  "subjects": [
+    {
+      "name": "Metamath Zero (mm0-c C Proof Verifier)",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+        "doi": "10.48550/arXiv.1910.10703"
+      }
+    },
+    {
+      "name": "DRAT-trim / LRAT Linear-Time C Checker",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+        "doi": "10.1007/978-3-319-63046-5_14"
+      }
+    },
+    {
+      "name": "HOL Light LCF Kernel (fusion.ml)",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "6dbb775efdff7f75aa20006532bf6336bc645861"
+      }
+    },
+    {
+      "name": "PREVAIL Zone-Domain eBPF Verifier",
+      "identity": {
+        "repository": "vbpf/prevail",
+        "revision": "169eb5d6f48a59ffe4e902e977ae4e387f2b4e49",
+        "doi": "10.1145/3314221.3314590"
+      }
+    },
+    {
+      "name": "Linux Kernel eBPF Verifier and io_uring Subsystem",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "liburing Userspace io_uring Library",
+      "identity": {
+        "repository": "axboe/liburing",
+        "revision": "a10946dc51eeababc48ee10baf0d17489f647a80"
+      }
+    },
+    {
+      "name": "seL4 Microkernel Capability Derivation Tree",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+        "doi": "10.1145/1629575.1629596"
+      }
+    },
+    {
+      "name": "SPIN Extensible Operating System",
+      "identity": {
+        "doi": "10.1145/224056.224077",
+        "venue": "SOSP 1995",
+        "pages": "267-284"
+      }
+    },
+    {
+      "name": "Microsoft Singularity OS SIPs and Channel Contracts",
+      "identity": {
+        "doi": "10.1145/1217935.1217953",
+        "venue": "EuroSys 2006",
+        "pages": "177-190"
+      }
+    },
+    {
+      "name": "Foundational Proof-Carrying Code Step-Indexed Model",
+      "identity": {
+        "doi": "10.1145/504709.504712",
+        "venue": "ACM TOPLAS 23(5)",
+        "year": "2001"
+      }
+    },
+    {
+      "name": "Proof-Carrying Code",
+      "identity": {
+        "doi": "10.1145/263699.263712",
+        "venue": "POPL 1997",
+        "pages": "106-119"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
