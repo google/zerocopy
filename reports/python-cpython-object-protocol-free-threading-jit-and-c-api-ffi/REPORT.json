@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "pl",
+    "pl/python",
+    "runtimes",
+    "runtimes/cpython",
+    "ffi",
+    "ffi/c-api",
+    "compilers",
+    "compilers/jit",
+    "systems",
+    "systems/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "CPython runtime",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75",
+        "version": "3.16.0a2+dev"
+      }
+    },
+    {
+      "name": "Python Enhancement Proposals (PEPs 659, 667, 683, 703, 744)",
+      "identity": {
+        "repository": "python/peps",
+        "revision": "9334b80ee9d25f08574c12f3925838b85fe36863"
+      }
+    },
+    {
+      "name": "HPy handle-based Python C API",
+      "identity": {
+        "repository": "hpyproject/hpy",
+        "revision": "0a1d8791dfb28ea7d928bd1aabe37cc40dfb8146",
+        "abi_tag": "hpy0"
+      }
+    },
+    {
+      "name": "PyO3 Rust bindings for Python",
+      "identity": {
+        "repository": "PyO3/pyo3",
+        "revision": "a6addae8948adedafd09b2832edf3fa23d282b16",
+        "version": "0.30.0"
+      }
+    },
+    {
+      "name": "CPython 3.13.15 Linux x86_64 execution host",
+      "identity": {
+        "runtime": "CPython",
+        "version": "3.13.15",
+        "build": "GCC 15.2.0, x86_64-linux-gnu, GIL enabled"
+      }
+    },
+    {
+      "name": "Politz et al., Python: The Full Monty (OOPSLA 2013)",
+      "identity": {
+        "doi": "10.1145/2509136.2509536",
+        "venue": "OOPSLA 2013"
+      }
+    },
+    {
+      "name": "Choi, Shull, Torrellas, Biased Reference Counting (PACT 2018)",
+      "identity": {
+        "doi": "10.1145/3243176.3243195",
+        "venue": "PACT 2018"
+      }
+    },
+    {
+      "name": "Leijen, Zorn, de Moura, Mimalloc: Free List Sharding in Action (APLAS 2019)",
+      "identity": {
+        "doi": "10.1007/978-3-030-34175-6_13",
+        "venue": "APLAS 2019"
+      }
+    },
+    {
+      "name": "Xu, Kjolstad, Copy-and-Patch Compilation (OOPSLA 2021)",
+      "identity": {
+        "doi": "10.1145/3485513",
+        "venue": "OOPSLA 2021"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
