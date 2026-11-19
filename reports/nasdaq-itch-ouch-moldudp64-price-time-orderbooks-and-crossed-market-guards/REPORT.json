@@ -1,0 +1,61 @@
+{
+  "topics": [
+    "domains/financial-exchanges",
+    "zerocopy/sbe-wire-codecs",
+    "systems/mechanical-sympathy",
+    "verification/conservation-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "Real Logic FIX Simple Binary Encoding (SBE) code generator and codecs",
+      "identity": {
+        "repository": "real-logic/simple-binary-encoding",
+        "revision": "6c20e6242e63ac67854707470dcee931eabf68fe"
+      }
+    },
+    {
+      "name": "LMAX Exchange Disruptor mechanical-sympathy ring buffer",
+      "identity": {
+        "repository": "LMAX-Exchange/disruptor",
+        "revision": "c871ca49826a6be7ada6957f6fbafcfecf7b1f87"
+      }
+    },
+    {
+      "name": "TigerBeetle deterministic financial accounting database",
+      "identity": {
+        "repository": "tigerbeetle/tigerbeetle",
+        "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+      }
+    },
+    {
+      "name": "NASDAQ TotalView-ITCH 5.0, OUCH 5.0, SoupBinTCP, and MoldUDP64 Specifications",
+      "identity": {
+        "standard": "NASDAQ Market Technology Specifications",
+        "version": "TotalView-ITCH 5.0 / OUCH 5.0 / MoldUDP64 1.0"
+      }
+    },
+    {
+      "name": "FIX Simple Binary Encoding (SBE) Technical Standard",
+      "identity": {
+        "standard": "FIX Simple Binary Encoding",
+        "version": "2.0"
+      }
+    },
+    {
+      "name": "SEC & CFTC Joint Report on the Market Events of May 6, 2010 (Flash Crash)",
+      "identity": {
+        "publisher": "U.S. SEC and CFTC",
+        "published_at": "2010-09-30",
+        "standard": "Findings Regarding the Market Events of May 6, 2010"
+      }
+    },
+    {
+      "name": "SEC Regulation SCI Order on the January 24, 2023 NYSE Opening Auction Outage",
+      "identity": {
+        "publisher": "U.S. Securities and Exchange Commission",
+        "standard": "Regulation SCI Rule 1001(a) Enforcement Order (NYSE Jan 24, 2023)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "tooling/kernel-fuzzing",
+    "security/os-hypervisor-bugs",
+    "systems/coverage-telemetry",
+    "compilers/comparison-feedback"
+  ],
+  "subjects": [
+    {
+      "name": "syzkaller kernel fuzzer",
+      "identity": {
+        "repository": "google/syzkaller",
+        "revision": "f836d1190fca3bb4b2827b9f2081318a0edcc13a"
+      }
+    },
+    {
+      "name": "AFL++ fuzzer and RedQueen CmpLog instrumentation",
+      "identity": {
+        "repository": "AFLplusplus/AFLplusplus",
+        "revision": "d798677805de81b50aa8f45beb0342ae1617b9d8"
+      }
+    },
+    {
+      "name": "kAFL hypervisor fuzzing suite",
+      "identity": {
+        "repository": "IntelLabs/kAFL",
+        "revision": "b939b03ddd5734216c23de406f13fe6a35bf0a35"
+      }
+    },
+    {
+      "name": "kafl.libxdc Intel PT trace decoder",
+      "identity": {
+        "repository": "IntelLabs/kafl.libxdc",
+        "revision": "a4f6dcfe3c03c8e1fa1ddd56f8d8c58b91952543",
+        "version": "v0.2"
+      }
+    },
+    {
+      "name": "kafl.qemu Nyx fast-snapshot VMM",
+      "identity": {
+        "repository": "IntelLabs/kafl.qemu",
+        "revision": "61ac92576db3573ddda9c0d0e3b55ac2a28ae403",
+        "version": "v0.8"
+      }
+    },
+    {
+      "name": "Linux kernel KCOV, KFENCE, and USB/Bluetooth subsystems",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "version": "v6.12"
+      }
+    },
+    {
+      "name": "REDQUEEN: Fuzzing with Input-to-State Correspondence",
+      "identity": {
+        "doi": "10.14722/ndss.2019.23371",
+        "venue": "NDSS 2019"
+      }
+    },
+    {
+      "name": "kAFL and Nyx Hardware-Assisted Hypervisor Fuzzing",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity21/presentation/schumilo",
+        "venue": "USENIX Security 2017 / 2021"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

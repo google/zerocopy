@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "domains/surgical-robotics",
+    "domains/cnc-kinematics",
+    "systems/ethercat-control",
+    "verification/barrier-certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Pinocchio Spatial Rigid-Body Dynamics Library",
+      "identity": {
+        "repository": "stack-of-tasks/pinocchio",
+        "revision": "a258911f8617d26ae0e9545d70acc6806d4a8e0d"
+      }
+    },
+    {
+      "name": "Drake Model-Based Robotics Design and Optimization Toolbox",
+      "identity": {
+        "repository": "RobotLocomotion/drake",
+        "revision": "60e7933dc8c8293f01912a10bbe489cdbf518759"
+      }
+    },
+    {
+      "name": "Klipper Input-Shaping and MCU Motion-Planning Firmware",
+      "identity": {
+        "repository": "Klipper3d/klipper",
+        "revision": "a86759335197374d2787c87477b21e2af6fa07e1"
+      }
+    },
+    {
+      "name": "LinuxCNC Real-Time CNC Control and RS274NGC Interpreter",
+      "identity": {
+        "repository": "LinuxCNC/linuxcnc",
+        "revision": "76ee5a1b63fa595040d398b615702c83dadf8f05"
+      }
+    },
+    {
+      "name": "Control Barrier Function Based Quadratic Programs for Safety Critical Systems (Ames et al., IEEE TAC 2017)",
+      "identity": {
+        "doi": "10.1109/TAC.2016.2638961"
+      }
+    },
+    {
+      "name": "The NIST RS274NGC Interpreter - Version 3",
+      "identity": {
+        "standard": "NISTIR 6556 (RS274NGC_3)",
+        "url": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=823374"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

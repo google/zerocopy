@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "domains/multimedia-codecs",
+    "systems/realtime-streaming",
+    "verification/fixed-point-dsp",
+    "security/bitstream-parsers"
+  ],
+  "subjects": [
+    {
+      "name": "libopus",
+      "identity": {
+        "repository": "xiph/opus",
+        "revision": "31b4b36284394b66a4c9d7352991aa977dfc8bc1"
+      }
+    },
+    {
+      "name": "libFLAC",
+      "identity": {
+        "repository": "xiph/flac",
+        "revision": "59fa3402cb19b6b7c85b916f138cfb03c7b27504"
+      }
+    },
+    {
+      "name": "webrtc-rs",
+      "identity": {
+        "repository": "webrtc-rs/webrtc",
+        "revision": "3c4584ae984a004def73168782fa86d59f12263a"
+      }
+    },
+    {
+      "name": "webrtc-rs rtc core",
+      "identity": {
+        "repository": "webrtc-rs/rtc",
+        "revision": "0fbcaa74d41c90c00bf89f6389484205be467a17"
+      }
+    },
+    {
+      "name": "WebRTC native C++ media engine",
+      "identity": {
+        "repository": "webrtc-sdk/webrtc",
+        "revision": "7c1a802ab4e0d74f28ee997678346b3e753ef42a"
+      }
+    },
+    {
+      "name": "IETF RFC 6716 (Definition of the Opus Audio Codec)",
+      "identity": {
+        "standard": "RFC 6716",
+        "url": "https://www.rfc-editor.org/rfc/rfc6716"
+      }
+    },
+    {
+      "name": "IETF RFC 9639 (Free Lossless Audio Codec)",
+      "identity": {
+        "standard": "RFC 9639",
+        "url": "https://www.rfc-editor.org/rfc/rfc9639"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

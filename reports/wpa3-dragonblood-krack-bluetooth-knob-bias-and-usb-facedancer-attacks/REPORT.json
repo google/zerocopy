@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "security/short-range-wireless",
+    "security/peripheral-bus-dma",
+    "verification/handshake-automata",
+    "isa/constant-time-curves"
+  ],
+  "subjects": [
+    {
+      "name": "krackattacks-scripts IEEE 802.11 handshake test suite",
+      "identity": {
+        "repository": "vanhoefm/krackattacks-scripts",
+        "revision": "2dc8012adc18ee1c567b428e095837d0bc0793fd"
+      }
+    },
+    {
+      "name": "dragonblood WPA3-SAE Dragonfly side-channel analysis",
+      "identity": {
+        "repository": "vanhoefm/dragonblood",
+        "revision": "fb7a2394afae8db6f69a27cc92fc8b9a63e332e2"
+      }
+    },
+    {
+      "name": "Facedancer programmable USB device emulation framework",
+      "identity": {
+        "repository": "greatscottgadgets/Facedancer",
+        "revision": "98790aa1b70785b235bfb2a39344c128a7c24ba9"
+      }
+    },
+    {
+      "name": "Linux kernel USB core and Bluetooth HCI event handlers",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "version": "v6.12"
+      }
+    },
+    {
+      "name": "Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2",
+      "identity": {
+        "doi": "10.1145/3133956.3134027",
+        "venue": "ACM CCS 2017"
+      }
+    },
+    {
+      "name": "Dragonblood: Analyzing the Dragonfly Handshake of WPA3 and EAP-pwd",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00031",
+        "venue": "IEEE S&P 2020"
+      }
+    },
+    {
+      "name": "RFC 9380: Hashing to Elliptic Curves",
+      "identity": {
+        "standard": "RFC 9380",
+        "doi": "10.17487/RFC9380",
+        "version": "2023-08"
+      }
+    },
+    {
+      "name": "BIAS: Bluetooth Impersonation AttackS",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00093",
+        "venue": "IEEE S&P 2020"
+      }
+    },
+    {
+      "name": "KNOB and BLESA Bluetooth Protocol Security Analyses",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/antonioli",
+        "venue": "USENIX Security 2019 / USENIX WOOT 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

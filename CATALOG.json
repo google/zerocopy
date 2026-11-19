@@ -8843,6 +8843,75 @@
         "verification/graph-reduction-invariants"
       ]
     },
+    "bainbridge-automation-ironies-therac25-af447-mode-confusion-and-stpa-hazards": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "SRI-CSL/PVS",
+            "revision": "d9ff4311fa1933c86aad6a5edf9686423a2e7f4c"
+          },
+          "name": "SRI Prototype Verification System (PVS) and PVSio ground evaluator"
+        },
+        {
+          "identity": {
+            "repository": "pvsioweb/pvsio-web",
+            "revision": "7ea915e6cb9207fa06e841eabce8c19009d67548"
+          },
+          "name": "PVSio-web formal safety-critical user-interface prototyping toolkit"
+        },
+        {
+          "identity": {
+            "repository": "AlloyTools/org.alloytools.alloy",
+            "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+          },
+          "name": "Alloy 6 (Electrum) relational and linear-temporal-logic model finder"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0005-1098(83)90046-8",
+            "published_at": "1983-11"
+          },
+          "name": "Ironies of Automation (Lisanne Bainbridge, Automatica 1983)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MC.1993.274940",
+            "published_at": "1993-07"
+          },
+          "name": "An Investigation of the Therac-25 Accidents (Leveson & Turner, IEEE Computer 1993)"
+        },
+        {
+          "identity": {
+            "published_at": "2012-07",
+            "publisher": "Bureau d'Enquetes et d'Analyses (BEA)",
+            "standard": "BEA f-cp090601.en"
+          },
+          "name": "BEA Final Report on Air France Flight AF 447 (Airbus A330-203 F-GZCP)"
+        },
+        {
+          "identity": {
+            "published_at": "2019-08",
+            "publisher": "U.S. National Transportation Safety Board",
+            "standard": "NTSB/MAR-19/01"
+          },
+          "name": "NTSB Marine Accident Report: Collision of USS John S. McCain and Alnic MC"
+        },
+        {
+          "identity": {
+            "isbn": "978-0-262-01662-9",
+            "published_at": "2011"
+          },
+          "name": "STAMP / STPA Systems-Theoretic Process Analysis (Nancy G. Leveson, MIT Press)"
+        }
+      ],
+      "topics": [
+        "verification/human-automation-interaction",
+        "pl/mode-confusion-freedom",
+        "domains/safety-critical-hmi",
+        "tooling/stpa-hazard-analysis"
+      ]
+    },
     "beam-procbin-heaps-pony-orca-capabilities-and-mlkit-region-resetting": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -35401,6 +35470,67 @@
         "systems/concurrency-weak-memory"
       ]
     },
+    "nasdaq-itch-ouch-moldudp64-price-time-orderbooks-and-crossed-market-guards": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "real-logic/simple-binary-encoding",
+            "revision": "6c20e6242e63ac67854707470dcee931eabf68fe"
+          },
+          "name": "Real Logic FIX Simple Binary Encoding (SBE) code generator and codecs"
+        },
+        {
+          "identity": {
+            "repository": "LMAX-Exchange/disruptor",
+            "revision": "c871ca49826a6be7ada6957f6fbafcfecf7b1f87"
+          },
+          "name": "LMAX Exchange Disruptor mechanical-sympathy ring buffer"
+        },
+        {
+          "identity": {
+            "repository": "tigerbeetle/tigerbeetle",
+            "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+          },
+          "name": "TigerBeetle deterministic financial accounting database"
+        },
+        {
+          "identity": {
+            "standard": "NASDAQ Market Technology Specifications",
+            "version": "TotalView-ITCH 5.0 / OUCH 5.0 / MoldUDP64 1.0"
+          },
+          "name": "NASDAQ TotalView-ITCH 5.0, OUCH 5.0, SoupBinTCP, and MoldUDP64 Specifications"
+        },
+        {
+          "identity": {
+            "standard": "FIX Simple Binary Encoding",
+            "version": "2.0"
+          },
+          "name": "FIX Simple Binary Encoding (SBE) Technical Standard"
+        },
+        {
+          "identity": {
+            "published_at": "2010-09-30",
+            "publisher": "U.S. SEC and CFTC",
+            "standard": "Findings Regarding the Market Events of May 6, 2010"
+          },
+          "name": "SEC & CFTC Joint Report on the Market Events of May 6, 2010 (Flash Crash)"
+        },
+        {
+          "identity": {
+            "publisher": "U.S. Securities and Exchange Commission",
+            "standard": "Regulation SCI Rule 1001(a) Enforcement Order (NYSE Jan 24, 2023)"
+          },
+          "name": "SEC Regulation SCI Order on the January 24, 2023 NYSE Opening Auction Outage"
+        }
+      ],
+      "topics": [
+        "domains/financial-exchanges",
+        "zerocopy/sbe-wire-codecs",
+        "systems/mechanical-sympathy",
+        "verification/conservation-invariants"
+      ]
+    },
     "network-control-plane-verification-routing-algebras-and-transport-specs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -37975,6 +38105,58 @@
         "rust",
         "systems",
         "verification"
+      ]
+    },
+    "pinocchio-drake-surgical-cbf-singularities-and-klipper-cnc-kinematics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "stack-of-tasks/pinocchio",
+            "revision": "a258911f8617d26ae0e9545d70acc6806d4a8e0d"
+          },
+          "name": "Pinocchio Spatial Rigid-Body Dynamics Library"
+        },
+        {
+          "identity": {
+            "repository": "RobotLocomotion/drake",
+            "revision": "60e7933dc8c8293f01912a10bbe489cdbf518759"
+          },
+          "name": "Drake Model-Based Robotics Design and Optimization Toolbox"
+        },
+        {
+          "identity": {
+            "repository": "Klipper3d/klipper",
+            "revision": "a86759335197374d2787c87477b21e2af6fa07e1"
+          },
+          "name": "Klipper Input-Shaping and MCU Motion-Planning Firmware"
+        },
+        {
+          "identity": {
+            "repository": "LinuxCNC/linuxcnc",
+            "revision": "76ee5a1b63fa595040d398b615702c83dadf8f05"
+          },
+          "name": "LinuxCNC Real-Time CNC Control and RS274NGC Interpreter"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TAC.2016.2638961"
+          },
+          "name": "Control Barrier Function Based Quadratic Programs for Safety Critical Systems (Ames et al., IEEE TAC 2017)"
+        },
+        {
+          "identity": {
+            "standard": "NISTIR 6556 (RS274NGC_3)",
+            "url": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=823374"
+          },
+          "name": "The NIST RS274NGC Interpreter - Version 3"
+        }
+      ],
+      "topics": [
+        "domains/surgical-robotics",
+        "domains/cnc-kinematics",
+        "systems/ethercat-control",
+        "verification/barrier-certificates"
       ]
     },
     "pipelined-dag-bft-hotstuff-bullshark-threshold-quorums-and-bymc": {
@@ -53370,6 +53552,52 @@
         "ffi/attested-channels"
       ]
     },
+    "symplectic-verlet-pme-electrostatics-lammps-halos-and-mujoco-contact-solvers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gromacs/gromacs",
+            "revision": "bc88adaf4e6c918646aba6d3495d3383c6aca6b4"
+          },
+          "name": "GROMACS"
+        },
+        {
+          "identity": {
+            "repository": "lammps/lammps",
+            "revision": "582a54bcaaec568889b5960793d318c1b863ffbc"
+          },
+          "name": "LAMMPS"
+        },
+        {
+          "identity": {
+            "repository": "stack-of-tasks/pinocchio",
+            "revision": "a258911f8617d26ae0e9545d70acc6806d4a8e0d"
+          },
+          "name": "Pinocchio"
+        },
+        {
+          "identity": {
+            "repository": "google-deepmind/mujoco",
+            "revision": "05172694c8d78cc18106ae580fcacdf9a1ebd5db"
+          },
+          "name": "MuJoCo"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IROS.2012.6386109",
+            "url": "https://doi.org/10.1109/IROS.2012.6386109"
+          },
+          "name": "MuJoCo IROS 2012 Contact Model Specification"
+        }
+      ],
+      "topics": [
+        "domains/molecular-multibody-sim",
+        "verification/symplectic-integrators",
+        "compilers/spatial-halo-exchange",
+        "pl/spatial-featherstone-algebras"
+      ]
+    },
     "synchronous-real-time-reactive-languages-and-wcet-predictability": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -53577,6 +53805,76 @@
         "compilers/realtime",
         "verification/wcet",
         "systems/realtime"
+      ]
+    },
+    "syzkaller-stateful-syzlang-kcov-kfence-and-redqueen-hypervisor-fuzzing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/syzkaller",
+            "revision": "f836d1190fca3bb4b2827b9f2081318a0edcc13a"
+          },
+          "name": "syzkaller kernel fuzzer"
+        },
+        {
+          "identity": {
+            "repository": "AFLplusplus/AFLplusplus",
+            "revision": "d798677805de81b50aa8f45beb0342ae1617b9d8"
+          },
+          "name": "AFL++ fuzzer and RedQueen CmpLog instrumentation"
+        },
+        {
+          "identity": {
+            "repository": "IntelLabs/kAFL",
+            "revision": "b939b03ddd5734216c23de406f13fe6a35bf0a35"
+          },
+          "name": "kAFL hypervisor fuzzing suite"
+        },
+        {
+          "identity": {
+            "repository": "IntelLabs/kafl.libxdc",
+            "revision": "a4f6dcfe3c03c8e1fa1ddd56f8d8c58b91952543",
+            "version": "v0.2"
+          },
+          "name": "kafl.libxdc Intel PT trace decoder"
+        },
+        {
+          "identity": {
+            "repository": "IntelLabs/kafl.qemu",
+            "revision": "61ac92576db3573ddda9c0d0e3b55ac2a28ae403",
+            "version": "v0.8"
+          },
+          "name": "kafl.qemu Nyx fast-snapshot VMM"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux kernel KCOV, KFENCE, and USB/Bluetooth subsystems"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2019.23371",
+            "venue": "NDSS 2019"
+          },
+          "name": "REDQUEEN: Fuzzing with Input-to-State Correspondence"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity21/presentation/schumilo",
+            "venue": "USENIX Security 2017 / 2021"
+          },
+          "name": "kAFL and Nyx Hardware-Assisted Hypervisor Fuzzing"
+        }
+      ],
+      "topics": [
+        "tooling/kernel-fuzzing",
+        "security/os-hypervisor-bugs",
+        "systems/coverage-telemetry",
+        "compilers/comparison-feedback"
       ]
     },
     "target-features-implications-detection-and-abi-effects": {
@@ -60666,6 +60964,66 @@
         "verification"
       ]
     },
+    "webrtc-neteq-jitter-buffers-opus-silk-celt-hybrids-and-flac-lpc-overflows": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "xiph/opus",
+            "revision": "31b4b36284394b66a4c9d7352991aa977dfc8bc1"
+          },
+          "name": "libopus"
+        },
+        {
+          "identity": {
+            "repository": "xiph/flac",
+            "revision": "59fa3402cb19b6b7c85b916f138cfb03c7b27504"
+          },
+          "name": "libFLAC"
+        },
+        {
+          "identity": {
+            "repository": "webrtc-rs/webrtc",
+            "revision": "3c4584ae984a004def73168782fa86d59f12263a"
+          },
+          "name": "webrtc-rs"
+        },
+        {
+          "identity": {
+            "repository": "webrtc-rs/rtc",
+            "revision": "0fbcaa74d41c90c00bf89f6389484205be467a17"
+          },
+          "name": "webrtc-rs rtc core"
+        },
+        {
+          "identity": {
+            "repository": "webrtc-sdk/webrtc",
+            "revision": "7c1a802ab4e0d74f28ee997678346b3e753ef42a"
+          },
+          "name": "WebRTC native C++ media engine"
+        },
+        {
+          "identity": {
+            "standard": "RFC 6716",
+            "url": "https://www.rfc-editor.org/rfc/rfc6716"
+          },
+          "name": "IETF RFC 6716 (Definition of the Opus Audio Codec)"
+        },
+        {
+          "identity": {
+            "standard": "RFC 9639",
+            "url": "https://www.rfc-editor.org/rfc/rfc9639"
+          },
+          "name": "IETF RFC 9639 (Free Lossless Audio Codec)"
+        }
+      ],
+      "topics": [
+        "domains/multimedia-codecs",
+        "systems/realtime-streaming",
+        "verification/fixed-point-dsp",
+        "security/bitstream-parsers"
+      ]
+    },
     "where-time-goes-in-rust-programs-hot-patterns-and-instruction-mix": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -60898,6 +61256,82 @@
         "tooling/comprehensible-systems",
         "ffi/universal-interfaces",
         "runtimes/compact-vms"
+      ]
+    },
+    "wpa3-dragonblood-krack-bluetooth-knob-bias-and-usb-facedancer-attacks": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "vanhoefm/krackattacks-scripts",
+            "revision": "2dc8012adc18ee1c567b428e095837d0bc0793fd"
+          },
+          "name": "krackattacks-scripts IEEE 802.11 handshake test suite"
+        },
+        {
+          "identity": {
+            "repository": "vanhoefm/dragonblood",
+            "revision": "fb7a2394afae8db6f69a27cc92fc8b9a63e332e2"
+          },
+          "name": "dragonblood WPA3-SAE Dragonfly side-channel analysis"
+        },
+        {
+          "identity": {
+            "repository": "greatscottgadgets/Facedancer",
+            "revision": "98790aa1b70785b235bfb2a39344c128a7c24ba9"
+          },
+          "name": "Facedancer programmable USB device emulation framework"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux kernel USB core and Bluetooth HCI event handlers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133956.3134027",
+            "venue": "ACM CCS 2017"
+          },
+          "name": "Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00031",
+            "venue": "IEEE S&P 2020"
+          },
+          "name": "Dragonblood: Analyzing the Dragonfly Handshake of WPA3 and EAP-pwd"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9380",
+            "standard": "RFC 9380",
+            "version": "2023-08"
+          },
+          "name": "RFC 9380: Hashing to Elliptic Curves"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00093",
+            "venue": "IEEE S&P 2020"
+          },
+          "name": "BIAS: Bluetooth Impersonation AttackS"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/antonioli",
+            "venue": "USENIX Security 2019 / USENIX WOOT 2020"
+          },
+          "name": "KNOB and BLESA Bluetooth Protocol Security Analyses"
+        }
+      ],
+      "topics": [
+        "security/short-range-wireless",
+        "security/peripheral-bus-dma",
+        "verification/handshake-automata",
+        "isa/constant-time-curves"
       ]
     },
     "x509-pki-path-validation-asn1-frankencerts-dnssec-and-tls-state-machines": {

@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "verification/human-automation-interaction",
+    "pl/mode-confusion-freedom",
+    "domains/safety-critical-hmi",
+    "tooling/stpa-hazard-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "SRI Prototype Verification System (PVS) and PVSio ground evaluator",
+      "identity": {
+        "repository": "SRI-CSL/PVS",
+        "revision": "d9ff4311fa1933c86aad6a5edf9686423a2e7f4c"
+      }
+    },
+    {
+      "name": "PVSio-web formal safety-critical user-interface prototyping toolkit",
+      "identity": {
+        "repository": "pvsioweb/pvsio-web",
+        "revision": "7ea915e6cb9207fa06e841eabce8c19009d67548"
+      }
+    },
+    {
+      "name": "Alloy 6 (Electrum) relational and linear-temporal-logic model finder",
+      "identity": {
+        "repository": "AlloyTools/org.alloytools.alloy",
+        "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+      }
+    },
+    {
+      "name": "Ironies of Automation (Lisanne Bainbridge, Automatica 1983)",
+      "identity": {
+        "doi": "10.1016/0005-1098(83)90046-8",
+        "published_at": "1983-11"
+      }
+    },
+    {
+      "name": "An Investigation of the Therac-25 Accidents (Leveson & Turner, IEEE Computer 1993)",
+      "identity": {
+        "doi": "10.1109/MC.1993.274940",
+        "published_at": "1993-07"
+      }
+    },
+    {
+      "name": "BEA Final Report on Air France Flight AF 447 (Airbus A330-203 F-GZCP)",
+      "identity": {
+        "publisher": "Bureau d'Enquetes et d'Analyses (BEA)",
+        "published_at": "2012-07",
+        "standard": "BEA f-cp090601.en"
+      }
+    },
+    {
+      "name": "NTSB Marine Accident Report: Collision of USS John S. McCain and Alnic MC",
+      "identity": {
+        "publisher": "U.S. National Transportation Safety Board",
+        "published_at": "2019-08",
+        "standard": "NTSB/MAR-19/01"
+      }
+    },
+    {
+      "name": "STAMP / STPA Systems-Theoretic Process Analysis (Nancy G. Leveson, MIT Press)",
+      "identity": {
+        "isbn": "978-0-262-01662-9",
+        "published_at": "2011"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

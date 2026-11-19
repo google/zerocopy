@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "domains/molecular-multibody-sim",
+    "verification/symplectic-integrators",
+    "compilers/spatial-halo-exchange",
+    "pl/spatial-featherstone-algebras"
+  ],
+  "subjects": [
+    {
+      "name": "GROMACS",
+      "identity": {
+        "repository": "gromacs/gromacs",
+        "revision": "bc88adaf4e6c918646aba6d3495d3383c6aca6b4"
+      }
+    },
+    {
+      "name": "LAMMPS",
+      "identity": {
+        "repository": "lammps/lammps",
+        "revision": "582a54bcaaec568889b5960793d318c1b863ffbc"
+      }
+    },
+    {
+      "name": "Pinocchio",
+      "identity": {
+        "repository": "stack-of-tasks/pinocchio",
+        "revision": "a258911f8617d26ae0e9545d70acc6806d4a8e0d"
+      }
+    },
+    {
+      "name": "MuJoCo",
+      "identity": {
+        "repository": "google-deepmind/mujoco",
+        "revision": "05172694c8d78cc18106ae580fcacdf9a1ebd5db"
+      }
+    },
+    {
+      "name": "MuJoCo IROS 2012 Contact Model Specification",
+      "identity": {
+        "doi": "10.1109/IROS.2012.6386109",
+        "url": "https://doi.org/10.1109/IROS.2012.6386109"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
