@@ -1,0 +1,156 @@
+{
+  "topics": [
+    "pl",
+    "pl/neurosymbolic",
+    "tooling/constrained-decoding",
+    "verification/runtime-assurance",
+    "security"
+  ],
+  "subjects": [
+    {
+      "name": "Scallop neurosymbolic language and runtime",
+      "identity": {
+        "repository": "scallop-lang/scallop",
+        "revision": "668bfb6d45ce302fd4ffa7f29916baf3c7ce36ef",
+        "doi": "10.1145/3591280",
+        "arxiv": "2304.04812"
+      }
+    },
+    {
+      "name": "Type-Constrained Code Generation with Language Models (PLDI 2025)",
+      "identity": {
+        "repository": "eth-sri/type-constrained-code-generation",
+        "revision": "3486122b3e980006d0f848cde1ea3d424e19dd42",
+        "doi": "10.1145/3729274",
+        "arxiv": "2504.09246"
+      }
+    },
+    {
+      "name": "Hazel live functional programming environment and typed-hole contextualization",
+      "identity": {
+        "repository": "hazelgrove/hazel",
+        "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac",
+        "doi": "10.1145/3689728",
+        "arxiv": "2409.00921"
+      }
+    },
+    {
+      "name": "llguidance structured generation engine",
+      "identity": {
+        "repository": "guidance-ai/llguidance",
+        "revision": "4b1bdd7eaab212dacdbcebcd71ad84d194dfc629"
+      }
+    },
+    {
+      "name": "Outlines structured generation library",
+      "identity": {
+        "repository": "dottxt-ai/outlines",
+        "revision": "c52af8472c6fe8a607a733ec11b709476af77a96"
+      }
+    },
+    {
+      "name": "XGrammar structured generation engine",
+      "identity": {
+        "repository": "mlc-ai/xgrammar",
+        "revision": "3fe39321a6f24c90c2cc4fa4519b87e22367bcfc",
+        "arxiv": "2411.15100"
+      }
+    },
+    {
+      "name": "Grammar-Aligned Decoding (NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2405.21047",
+        "venue": "NeurIPS 2024"
+      }
+    },
+    {
+      "name": "Syntactic and Semantic Control of LLMs via Sequential Monte Carlo (ICLR 2025)",
+      "identity": {
+        "arxiv": "2504.13139",
+        "venue": "ICLR 2025"
+      }
+    },
+    {
+      "name": "Format Restrictions Impact Study (EMNLP 2024)",
+      "identity": {
+        "arxiv": "2408.02442",
+        "venue": "EMNLP 2024"
+      }
+    },
+    {
+      "name": "Rosette solver-aided programming language",
+      "identity": {
+        "repository": "emina/rosette",
+        "revision": "373c8c35e4a7667f38fce10cf0b74ae17de07f1d"
+      }
+    },
+    {
+      "name": "Synquid polymorphic refinement-type synthesizer",
+      "identity": {
+        "repository": "nadia-polikarpova/synquid",
+        "revision": "9bceb4cc775e07ab279fff8c51fdd86ae0b2878c"
+      }
+    },
+    {
+      "name": "LLM-Modulo Frameworks Position Paper (ICML 2024)",
+      "identity": {
+        "arxiv": "2402.01817",
+        "venue": "ICML 2024"
+      }
+    },
+    {
+      "name": "CaMeL capability-based prompt-injection defense",
+      "identity": {
+        "repository": "google-research/camel-prompt-injection",
+        "revision": "f083b6b396399d3b3c7f2ddaf613a5945eaf32d8",
+        "arxiv": "2503.18813"
+      }
+    },
+    {
+      "name": "Simplex Architecture (IEEE Software 2001)",
+      "identity": {
+        "doi": "10.1109/MS.2001.936213",
+        "venue": "IEEE Software"
+      }
+    },
+    {
+      "name": "Control Barrier Functions for Safety-Critical Systems (IEEE TAC 2017 / ECC 2019)",
+      "identity": {
+        "doi": "10.1109/TAC.2016.2638961",
+        "secondary_doi": "10.23919/ECC.2019.8796030"
+      }
+    },
+    {
+      "name": "Reactive LTL Shielding for Safe Reinforcement Learning (AAAI 2018)",
+      "identity": {
+        "doi": "10.1609/aaai.v32i1.11797",
+        "venue": "AAAI 2018"
+      }
+    },
+    {
+      "name": "KeYmaera X, ModelPlex, and VeriPhy verified cyber-physical monitoring pipeline",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-release",
+        "revision": "2753f99b53cea5f946386998a39faded05ede677",
+        "doi": "10.1007/s10703-016-0241-z",
+        "secondary_doi": "10.1145/3192366.3192400"
+      }
+    },
+    {
+      "name": "Floating-Point Unsoundness in Verified Neural Networks (SAS 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-88806-0_9",
+        "arxiv": "2003.03021"
+      }
+    },
+    {
+      "name": "Python 3.13.15 probe execution runtime",
+      "identity": {
+        "runtime": "CPython",
+        "version": "3.13.15",
+        "architecture": "x86_64-linux"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

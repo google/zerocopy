@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/optimization",
+    "verification/resource-bounds",
+    "pl/cost-semantics",
+    "security"
+  ],
+  "subjects": [
+    {
+      "name": "Clinger Proper Tail Recursion and Space Efficiency (PLDI 1998)",
+      "identity": {
+        "doi": "10.1145/277650.277719",
+        "venue": "PLDI 1998"
+      }
+    },
+    {
+      "name": "Shao and Appel Space-Efficient Closure Conversion (TOPLAS 2000)",
+      "identity": {
+        "doi": "10.1145/345099.345125",
+        "venue": "ACM TOPLAS 2000"
+      }
+    },
+    {
+      "name": "CertiCoq verified compiler and safe-for-space closure conversion (ICFP 2019)",
+      "identity": {
+        "repository": "CertiCoq/certicoq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2",
+        "doi": "10.1145/3341687"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "CakeML verified compiler and space cost semantics (OOPSLA 2020)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "doi": "10.1145/3428272"
+      }
+    },
+    {
+      "name": "Gustavsson and Sands Space-Safe Call-by-Need Transformations (HOOTS 1999)",
+      "identity": {
+        "doi": "10.1016/S1571-0661(05)80284-1",
+        "venue": "HOOTS 1999 / ENTCS"
+      }
+    },
+    {
+      "name": "LLVM CoroFrame and middle-end optimization passes",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "507de0cc365e4c6317d21fb08e298f742256a51f"
+      }
+    },
+    {
+      "name": "Rust compiler coroutine lowering and standard library HashMap",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "Automatic Amortized Resource Analysis and RAML (POPL 2003 / TOPLAS 2012 / POPL 2017 / FoSSaCS 2020)",
+      "identity": {
+        "doi": "10.1145/3009837.3009842",
+        "foundational_doi": "10.1145/604131.604151",
+        "multivariate_doi": "10.1145/2362389.2362393",
+        "exponential_doi": "10.1007/978-3-030-44914-8_19"
+      }
+    },
+    {
+      "name": "Calf and Decalf Cost-Aware Logical Frameworks (POPL 2022 / POPL 2024)",
+      "identity": {
+        "repository": "calfproject/agda-calf",
+        "revision": "10f1ba616e1ade017e4048324ae894281379ce08",
+        "doi": "10.1145/3498670",
+        "arxiv": "2107.04663",
+        "decalf_doi": "10.1145/3632852"
+      }
+    },
+    {
+      "name": "Separation Logic with Time Credits, Receipts, GC Space Credits, and Thunk Debits (JAR 2019 / ESOP 2019 / POPL 2022–2024)",
+      "identity": {
+        "thunks_debits_doi": "10.1145/3632892",
+        "iris_credits_doi": "10.1007/978-3-030-17184-1_1",
+        "union_find_doi": "10.1007/s10817-017-9435-6",
+        "gc_low_level_doi": "10.1145/3498672",
+        "gc_high_level_doi": "10.1145/3571218"
+      }
+    },
+    {
+      "name": "End-to-End Stack-Space Verified CompCert Extensions (PLDI 2014 / POPL 2019)",
+      "identity": {
+        "pldi2014_doi": "10.1145/2594291.2594301",
+        "popl2019_doi": "10.1145/3290375"
+      }
+    },
+    {
+      "name": "Liquid Haskell Tick Resource Verification (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371092",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Constant-Time Preserving CompCert (POPL 2020) and SipHash HashDoS Defense (INDOCRYPT 2012)",
+      "identity": {
+        "ct_compcert_doi": "10.1145/3371075",
+        "siphash_eprint": "https://eprint.iacr.org/2012/351"
+      }
+    },
+    {
+      "name": "Local probe toolchains (rustc 1.98.0-nightly, GCC 15.2.0, CPython 3.13.15)",
+      "identity": {
+        "rustc": "1.98.0-nightly (14210df0e 2026-05-31)",
+        "gcc": "15.2.0 (Debian 15.2.0-14)",
+        "python": "3.13.15",
+        "architecture": "x86_64-linux"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

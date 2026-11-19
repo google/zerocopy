@@ -1,0 +1,123 @@
+{
+  "topics": [
+    "pl",
+    "pl/configuration-languages",
+    "systems",
+    "verification",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "CUE data constraint and configuration language",
+      "identity": {
+        "repository": "cue-lang/cue",
+        "revision": "b38d73e3f13559da0ba290e7e61d21ae7230a6ae"
+      }
+    },
+    {
+      "name": "Nickel gradual contract configuration language",
+      "identity": {
+        "repository": "tweag/nickel",
+        "revision": "46ffe62b1cf54e97cf95bad6337570486008c89b"
+      }
+    },
+    {
+      "name": "Dhall total configuration language specification",
+      "identity": {
+        "repository": "dhall-lang/dhall-lang",
+        "revision": "56b0997a4800bfc815ea221529a6bb2bfd6723dc"
+      }
+    },
+    {
+      "name": "Apple Pkl configuration language",
+      "identity": {
+        "repository": "apple/pkl",
+        "revision": "069c891ac86067cd26c68d4647100e26c5ed5ba0"
+      }
+    },
+    {
+      "name": "Cedar authorization language engine and Lean 4 formal specification (OOPSLA 2024)",
+      "identity": {
+        "repository": "cedar-policy/cedar",
+        "revision": "4ff0bb074699db8c348426ee03db933bf8ebfdd6",
+        "spec_repository": "cedar-policy/cedar-spec",
+        "spec_revision": "326d93c24490c90607a3e257318e9c6a049c8116",
+        "doi": "10.1145/3649835",
+        "arxiv": "2403.04651"
+      }
+    },
+    {
+      "name": "Open Policy Agent (Rego)",
+      "identity": {
+        "repository": "open-policy-agent/opa",
+        "revision": "674d3362381e14b55069a7a5741eeb8489365c2f"
+      }
+    },
+    {
+      "name": "Validation of Modern JSON Schema: Formalization and Complexity (POPL 2024)",
+      "identity": {
+        "doi": "10.1145/3632891",
+        "venue": "POPL 2024"
+      }
+    },
+    {
+      "name": "Anvil and Welder verified Kubernetes controller framework (OSDI 2024 / SOSP 2026)",
+      "identity": {
+        "repository": "anvil-verifier/anvil",
+        "revision": "e83ea0f5516ce2ece26740266165180018741e66",
+        "welder_doi": "10.1145/3830418.3843868",
+        "verus_repository": "verus-lang/verus",
+        "verus_revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+      }
+    },
+    {
+      "name": "LLVM source-based MC/DC coverage mapping",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "507de0cc365e4c6317d21fb08e298f742256a51f"
+      }
+    },
+    {
+      "name": "GCC condition coverage (MC/DC) instrumentation",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "78c5290e696d76fdbe7f3b006df9145d1ed7927c"
+      }
+    },
+    {
+      "name": "AdaCore GNATcoverage and Couverture SCO framework",
+      "identity": {
+        "repository": "AdaCore/gnatcoverage",
+        "revision": "8b3ccf5be798827c7a7ae0245e13e1cb5ba89a56"
+      }
+    },
+    {
+      "name": "CompCert formally verified C compiler and Ferrocene Rust toolchain",
+      "identity": {
+        "compcert_repository": "AbsInt/CompCert",
+        "compcert_revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "ferrocene_repository": "ferrocene/ferrocene",
+        "ferrocene_revision": "85d04a5bfcd57edb4e22df89d8d0eeb13a8ddc1d"
+      }
+    },
+    {
+      "name": "DO-178C / DO-330 / DO-333 MC/DC standards and structural coverage preservation literature",
+      "identity": {
+        "standard": "RTCA DO-178C / EUROCAE ED-12C, DO-330, DO-333",
+        "chilenski_miller_doi": "10.1049/sej.1994.0025",
+        "nasa_report": "NASA/TM-2001-210876",
+        "kirner_doi": "10.1155/2009/127945"
+      }
+    },
+    {
+      "name": "Local probe toolchains (GCC 15.2.0 / gcov 15.2.0, CPython 3.13.15)",
+      "identity": {
+        "gcc": "15.2.0 (Debian 15.2.0-14)",
+        "gcov": "15.2.0 (Debian 15.2.0-14)",
+        "python": "3.13.15",
+        "architecture": "x86_64-linux"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

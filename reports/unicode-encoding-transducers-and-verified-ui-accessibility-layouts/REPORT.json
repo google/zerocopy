@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "pl",
+    "ffi",
+    "ffi/strings-unicode",
+    "security",
+    "verification",
+    "smt/transducers"
+  ],
+  "subjects": [
+    {
+      "name": "Rust core and alloc WTF-8 implementation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "The WTF-8 Encoding specification",
+      "identity": {
+        "repository": "SimonSapin/wtf-8",
+        "revision": "e27dc7c6e0d25e9276274ad42eb25dc30aba8c1f"
+      }
+    },
+    {
+      "name": "Swift UTF-8 String and UAX #29 grapheme breaking",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "3be0cf4b450b5366cff4b1a7e5bf7e5b4633224f"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model Canonical ABI string transcoding",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "Trojan Source: Invisible Vulnerabilities (USENIX Security 2023)",
+      "identity": {
+        "repository": "nickboucher/trojan-source",
+        "revision": "e3dc153fcf465f4a84424ea874ff39be29adb1f7",
+        "doi": "10.48550/arXiv.2111.00169"
+      }
+    },
+    {
+      "name": "Microsoft Automata and Bek symbolic finite transducer framework",
+      "identity": {
+        "repository": "AutomataDotNet/Automata",
+        "revision": "0242132fdbe9687bea22b7144afa0784d7cd927b"
+      }
+    },
+    {
+      "name": "Symbolic Finite State Transducers: Algorithms and Applications (POPL 2012)",
+      "identity": {
+        "doi": "10.1145/2103656.2103674"
+      }
+    },
+    {
+      "name": "The Power of Symbolic Automata and Transducers (CAV 2017)",
+      "identity": {
+        "doi": "10.1007/978-3-319-63387-9_3"
+      }
+    },
+    {
+      "name": "Cassius and VizAssert SMT CSS layout verifier",
+      "identity": {
+        "repository": "uwplse/cassius",
+        "revision": "60dad9e9b2b4de3b13451ce54cdc1bd55ca64824"
+      }
+    },
+    {
+      "name": "Automated Reasoning for Web Page Layout (OOPSLA 2016)",
+      "identity": {
+        "doi": "10.1145/2983990.2984010"
+      }
+    },
+    {
+      "name": "Verifying That Web Pages Have Accessible Layout (PLDI 2018)",
+      "identity": {
+        "doi": "10.1145/3192366.3192407"
+      }
+    },
+    {
+      "name": "Modular Verification of Web Page Layout (OOPSLA 2019)",
+      "identity": {
+        "doi": "10.1145/3360577"
+      }
+    },
+    {
+      "name": "The Cassowary Linear Arithmetic Constraint Solving Algorithm (TOCHI 2001)",
+      "identity": {
+        "doi": "10.1145/504704.504705"
+      }
+    },
+    {
+      "name": "Taffy Rust Flexbox, Grid, and Block layout engine",
+      "identity": {
+        "repository": "DioxusLabs/taffy",
+        "revision": "1abd8eeaf6059336a7026c31e0f1b769d2f04a3a"
+      }
+    },
+    {
+      "name": "AccessKit cross-platform accessibility tree bridge",
+      "identity": {
+        "repository": "AccessKit/accesskit",
+        "revision": "432d06659e0a6708fb206e266d65752dd372deeb"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

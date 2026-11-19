@@ -17244,6 +17244,88 @@
         "lake/server-launch"
       ]
     },
+    "language-integrated-query-shredding-and-multi-tier-compilation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "links-lang/links",
+            "revision": "7100e2891346b5bae483fe9a02791c900047388a"
+          },
+          "name": "Links language-integrated query and shredding compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2500365.2500586"
+          },
+          "name": "A Practical Theory of Language-Integrated Query (ICFP 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2588555.2612186"
+          },
+          "name": "Query Shredding: Efficient Relational Evaluation of Queries over Nested Multisets (SIGMOD 2014)"
+        },
+        {
+          "identity": {
+            "repository": "urweb/urweb",
+            "revision": "55a881ff9b50d9e5c3b2fd564f5cd44a5cc5e6bc"
+          },
+          "name": "Ur/Web multi-tier compiler and C transactional runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1806596.1806612"
+          },
+          "name": "Ur: Statically-Typed Metaprogramming with Type-Level Record Computation (PLDI 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676726.2677004"
+          },
+          "name": "Ur/Web: A Simple Model for Programming the Web (POPL 2015)"
+        },
+        {
+          "identity": {
+            "repository": "uwdb/Cosette",
+            "revision": "7a951aa3b1a70a8b310c676e524740b7114975c3"
+          },
+          "name": "Cosette SQL equivalence prover and HoTTSQL Coq formalization"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.1607.04822"
+          },
+          "name": "HoTTSQL: Proving Query Rewrites with Univalent SQL Semantics (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276499"
+          },
+          "name": "Distributed System Development with ScalaLoci (OOPSLA 2018)"
+        },
+        {
+          "identity": {
+            "repository": "inkandswitch/cambria",
+            "revision": "da8961440cac7eba1c3113488f5bcbc26046620f"
+          },
+          "name": "Cambria bidirectional schema edit lenses"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3587136.3587137"
+          },
+          "name": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages (VLDB 2023)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/language-integrated-query",
+        "compilers",
+        "ffi",
+        "systems"
+      ]
+    },
     "language-server-snapshots-views-and-compiler-backed-ide-architectures": {
       "observed_at": "2026-09-30",
       "subjects": [
@@ -17657,6 +17739,129 @@
         "build/incremental-computation",
         "anneal/interactive-lsp",
         "anneal/batch-live-equivalence"
+      ]
+    },
+    "lattice-config-languages-verified-reconcilers-and-mcdc-traceability": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cue-lang/cue",
+            "revision": "b38d73e3f13559da0ba290e7e61d21ae7230a6ae"
+          },
+          "name": "CUE data constraint and configuration language"
+        },
+        {
+          "identity": {
+            "repository": "tweag/nickel",
+            "revision": "46ffe62b1cf54e97cf95bad6337570486008c89b"
+          },
+          "name": "Nickel gradual contract configuration language"
+        },
+        {
+          "identity": {
+            "repository": "dhall-lang/dhall-lang",
+            "revision": "56b0997a4800bfc815ea221529a6bb2bfd6723dc"
+          },
+          "name": "Dhall total configuration language specification"
+        },
+        {
+          "identity": {
+            "repository": "apple/pkl",
+            "revision": "069c891ac86067cd26c68d4647100e26c5ed5ba0"
+          },
+          "name": "Apple Pkl configuration language"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.04651",
+            "doi": "10.1145/3649835",
+            "repository": "cedar-policy/cedar",
+            "revision": "4ff0bb074699db8c348426ee03db933bf8ebfdd6",
+            "spec_repository": "cedar-policy/cedar-spec",
+            "spec_revision": "326d93c24490c90607a3e257318e9c6a049c8116"
+          },
+          "name": "Cedar authorization language engine and Lean 4 formal specification (OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "repository": "open-policy-agent/opa",
+            "revision": "674d3362381e14b55069a7a5741eeb8489365c2f"
+          },
+          "name": "Open Policy Agent (Rego)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3632891",
+            "venue": "POPL 2024"
+          },
+          "name": "Validation of Modern JSON Schema: Formalization and Complexity (POPL 2024)"
+        },
+        {
+          "identity": {
+            "repository": "anvil-verifier/anvil",
+            "revision": "e83ea0f5516ce2ece26740266165180018741e66",
+            "verus_repository": "verus-lang/verus",
+            "verus_revision": "a95764f23c6876b47500beda6118e2d142a87cc3",
+            "welder_doi": "10.1145/3830418.3843868"
+          },
+          "name": "Anvil and Welder verified Kubernetes controller framework (OSDI 2024 / SOSP 2026)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "507de0cc365e4c6317d21fb08e298f742256a51f"
+          },
+          "name": "LLVM source-based MC/DC coverage mapping"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "78c5290e696d76fdbe7f3b006df9145d1ed7927c"
+          },
+          "name": "GCC condition coverage (MC/DC) instrumentation"
+        },
+        {
+          "identity": {
+            "repository": "AdaCore/gnatcoverage",
+            "revision": "8b3ccf5be798827c7a7ae0245e13e1cb5ba89a56"
+          },
+          "name": "AdaCore GNATcoverage and Couverture SCO framework"
+        },
+        {
+          "identity": {
+            "compcert_repository": "AbsInt/CompCert",
+            "compcert_revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+            "ferrocene_repository": "ferrocene/ferrocene",
+            "ferrocene_revision": "85d04a5bfcd57edb4e22df89d8d0eeb13a8ddc1d"
+          },
+          "name": "CompCert formally verified C compiler and Ferrocene Rust toolchain"
+        },
+        {
+          "identity": {
+            "chilenski_miller_doi": "10.1049/sej.1994.0025",
+            "kirner_doi": "10.1155/2009/127945",
+            "nasa_report": "NASA/TM-2001-210876",
+            "standard": "RTCA DO-178C / EUROCAE ED-12C, DO-330, DO-333"
+          },
+          "name": "DO-178C / DO-330 / DO-333 MC/DC standards and structural coverage preservation literature"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64-linux",
+            "gcc": "15.2.0 (Debian 15.2.0-14)",
+            "gcov": "15.2.0 (Debian 15.2.0-14)",
+            "python": "3.13.15"
+          },
+          "name": "Local probe toolchains (GCC 15.2.0 / gcov 15.2.0, CPython 3.13.15)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/configuration-languages",
+        "systems",
+        "verification",
+        "compilers"
       ]
     },
     "lean-absbyte-typedat-lenses-and-nondeterministic-alloc-scaling": {
@@ -21539,6 +21744,162 @@
         "rustc",
         "rustc/codegen",
         "rustc/mir"
+      ]
+    },
+    "neurosymbolic-languages-type-constrained-decoding-and-runtime-shields": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2304.04812",
+            "doi": "10.1145/3591280",
+            "repository": "scallop-lang/scallop",
+            "revision": "668bfb6d45ce302fd4ffa7f29916baf3c7ce36ef"
+          },
+          "name": "Scallop neurosymbolic language and runtime"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.09246",
+            "doi": "10.1145/3729274",
+            "repository": "eth-sri/type-constrained-code-generation",
+            "revision": "3486122b3e980006d0f848cde1ea3d424e19dd42"
+          },
+          "name": "Type-Constrained Code Generation with Language Models (PLDI 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.00921",
+            "doi": "10.1145/3689728",
+            "repository": "hazelgrove/hazel",
+            "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+          },
+          "name": "Hazel live functional programming environment and typed-hole contextualization"
+        },
+        {
+          "identity": {
+            "repository": "guidance-ai/llguidance",
+            "revision": "4b1bdd7eaab212dacdbcebcd71ad84d194dfc629"
+          },
+          "name": "llguidance structured generation engine"
+        },
+        {
+          "identity": {
+            "repository": "dottxt-ai/outlines",
+            "revision": "c52af8472c6fe8a607a733ec11b709476af77a96"
+          },
+          "name": "Outlines structured generation library"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.15100",
+            "repository": "mlc-ai/xgrammar",
+            "revision": "3fe39321a6f24c90c2cc4fa4519b87e22367bcfc"
+          },
+          "name": "XGrammar structured generation engine"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.21047",
+            "venue": "NeurIPS 2024"
+          },
+          "name": "Grammar-Aligned Decoding (NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.13139",
+            "venue": "ICLR 2025"
+          },
+          "name": "Syntactic and Semantic Control of LLMs via Sequential Monte Carlo (ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.02442",
+            "venue": "EMNLP 2024"
+          },
+          "name": "Format Restrictions Impact Study (EMNLP 2024)"
+        },
+        {
+          "identity": {
+            "repository": "emina/rosette",
+            "revision": "373c8c35e4a7667f38fce10cf0b74ae17de07f1d"
+          },
+          "name": "Rosette solver-aided programming language"
+        },
+        {
+          "identity": {
+            "repository": "nadia-polikarpova/synquid",
+            "revision": "9bceb4cc775e07ab279fff8c51fdd86ae0b2878c"
+          },
+          "name": "Synquid polymorphic refinement-type synthesizer"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.01817",
+            "venue": "ICML 2024"
+          },
+          "name": "LLM-Modulo Frameworks Position Paper (ICML 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.18813",
+            "repository": "google-research/camel-prompt-injection",
+            "revision": "f083b6b396399d3b3c7f2ddaf613a5945eaf32d8"
+          },
+          "name": "CaMeL capability-based prompt-injection defense"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MS.2001.936213",
+            "venue": "IEEE Software"
+          },
+          "name": "Simplex Architecture (IEEE Software 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TAC.2016.2638961",
+            "secondary_doi": "10.23919/ECC.2019.8796030"
+          },
+          "name": "Control Barrier Functions for Safety-Critical Systems (IEEE TAC 2017 / ECC 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1609/aaai.v32i1.11797",
+            "venue": "AAAI 2018"
+          },
+          "name": "Reactive LTL Shielding for Safe Reinforcement Learning (AAAI 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10703-016-0241-z",
+            "repository": "LS-Lab/KeYmaeraX-release",
+            "revision": "2753f99b53cea5f946386998a39faded05ede677",
+            "secondary_doi": "10.1145/3192366.3192400"
+          },
+          "name": "KeYmaera X, ModelPlex, and VeriPhy verified cyber-physical monitoring pipeline"
+        },
+        {
+          "identity": {
+            "arxiv": "2003.03021",
+            "doi": "10.1007/978-3-030-88806-0_9"
+          },
+          "name": "Floating-Point Unsoundness in Verified Neural Networks (SAS 2021)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64-linux",
+            "runtime": "CPython",
+            "version": "3.13.15"
+          },
+          "name": "Python 3.13.15 probe execution runtime"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/neurosymbolic",
+        "tooling/constrained-decoding",
+        "verification/runtime-assurance",
+        "security"
       ]
     },
     "nix-guix-immutable-closures-mutable-roots-and-toolchain-archive-equivalence": {
@@ -30286,6 +30647,135 @@
         "verification"
       ]
     },
+    "safe-for-space-compilation-and-amortized-complexity-verification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/277650.277719",
+            "venue": "PLDI 1998"
+          },
+          "name": "Clinger Proper Tail Recursion and Space Efficiency (PLDI 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/345099.345125",
+            "venue": "ACM TOPLAS 2000"
+          },
+          "name": "Shao and Appel Space-Efficient Closure Conversion (TOPLAS 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341687",
+            "repository": "CertiCoq/certicoq",
+            "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+          },
+          "name": "CertiCoq verified compiler and safe-for-space closure conversion (ICFP 2019)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428272",
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified compiler and space cost semantics (OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S1571-0661(05)80284-1",
+            "venue": "HOOTS 1999 / ENTCS"
+          },
+          "name": "Gustavsson and Sands Space-Safe Call-by-Need Transformations (HOOTS 1999)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "507de0cc365e4c6317d21fb08e298f742256a51f"
+          },
+          "name": "LLVM CoroFrame and middle-end optimization passes"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust compiler coroutine lowering and standard library HashMap"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009842",
+            "exponential_doi": "10.1007/978-3-030-44914-8_19",
+            "foundational_doi": "10.1145/604131.604151",
+            "multivariate_doi": "10.1145/2362389.2362393"
+          },
+          "name": "Automatic Amortized Resource Analysis and RAML (POPL 2003 / TOPLAS 2012 / POPL 2017 / FoSSaCS 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2107.04663",
+            "decalf_doi": "10.1145/3632852",
+            "doi": "10.1145/3498670",
+            "repository": "calfproject/agda-calf",
+            "revision": "10f1ba616e1ade017e4048324ae894281379ce08"
+          },
+          "name": "Calf and Decalf Cost-Aware Logical Frameworks (POPL 2022 / POPL 2024)"
+        },
+        {
+          "identity": {
+            "gc_high_level_doi": "10.1145/3571218",
+            "gc_low_level_doi": "10.1145/3498672",
+            "iris_credits_doi": "10.1007/978-3-030-17184-1_1",
+            "thunks_debits_doi": "10.1145/3632892",
+            "union_find_doi": "10.1007/s10817-017-9435-6"
+          },
+          "name": "Separation Logic with Time Credits, Receipts, GC Space Credits, and Thunk Debits (JAR 2019 / ESOP 2019 / POPL 2022\u20132024)"
+        },
+        {
+          "identity": {
+            "pldi2014_doi": "10.1145/2594291.2594301",
+            "popl2019_doi": "10.1145/3290375"
+          },
+          "name": "End-to-End Stack-Space Verified CompCert Extensions (PLDI 2014 / POPL 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371092",
+            "venue": "POPL 2020"
+          },
+          "name": "Liquid Haskell Tick Resource Verification (POPL 2020)"
+        },
+        {
+          "identity": {
+            "ct_compcert_doi": "10.1145/3371075",
+            "siphash_eprint": "https://eprint.iacr.org/2012/351"
+          },
+          "name": "Constant-Time Preserving CompCert (POPL 2020) and SipHash HashDoS Defense (INDOCRYPT 2012)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64-linux",
+            "gcc": "15.2.0 (Debian 15.2.0-14)",
+            "python": "3.13.15",
+            "rustc": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Local probe toolchains (rustc 1.98.0-nightly, GCC 15.2.0, CPython 3.13.15)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/optimization",
+        "verification/resource-bounds",
+        "pl/cost-semantics",
+        "security"
+      ]
+    },
     "safe-rust-ub-freedom-soundness-and-standard-library-verification": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -33431,6 +33921,119 @@
         "verification",
         "verification/compiler-verification",
         "verification/proof-maintenance"
+      ]
+    },
+    "unicode-encoding-transducers-and-verified-ui-accessibility-layouts": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust core and alloc WTF-8 implementation"
+        },
+        {
+          "identity": {
+            "repository": "SimonSapin/wtf-8",
+            "revision": "e27dc7c6e0d25e9276274ad42eb25dc30aba8c1f"
+          },
+          "name": "The WTF-8 Encoding specification"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "3be0cf4b450b5366cff4b1a7e5bf7e5b4633224f"
+          },
+          "name": "Swift UTF-8 String and UAX #29 grapheme breaking"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model Canonical ABI string transcoding"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.2111.00169",
+            "repository": "nickboucher/trojan-source",
+            "revision": "e3dc153fcf465f4a84424ea874ff39be29adb1f7"
+          },
+          "name": "Trojan Source: Invisible Vulnerabilities (USENIX Security 2023)"
+        },
+        {
+          "identity": {
+            "repository": "AutomataDotNet/Automata",
+            "revision": "0242132fdbe9687bea22b7144afa0784d7cd927b"
+          },
+          "name": "Microsoft Automata and Bek symbolic finite transducer framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103656.2103674"
+          },
+          "name": "Symbolic Finite State Transducers: Algorithms and Applications (POPL 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-63387-9_3"
+          },
+          "name": "The Power of Symbolic Automata and Transducers (CAV 2017)"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/cassius",
+            "revision": "60dad9e9b2b4de3b13451ce54cdc1bd55ca64824"
+          },
+          "name": "Cassius and VizAssert SMT CSS layout verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2984010"
+          },
+          "name": "Automated Reasoning for Web Page Layout (OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192407"
+          },
+          "name": "Verifying That Web Pages Have Accessible Layout (PLDI 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360577"
+          },
+          "name": "Modular Verification of Web Page Layout (OOPSLA 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/504704.504705"
+          },
+          "name": "The Cassowary Linear Arithmetic Constraint Solving Algorithm (TOCHI 2001)"
+        },
+        {
+          "identity": {
+            "repository": "DioxusLabs/taffy",
+            "revision": "1abd8eeaf6059336a7026c31e0f1b769d2f04a3a"
+          },
+          "name": "Taffy Rust Flexbox, Grid, and Block layout engine"
+        },
+        {
+          "identity": {
+            "repository": "AccessKit/accesskit",
+            "revision": "432d06659e0a6708fb206e266d65752dd372deeb"
+          },
+          "name": "AccessKit cross-platform accessibility tree bridge"
+        }
+      ],
+      "topics": [
+        "pl",
+        "ffi",
+        "ffi/strings-unicode",
+        "security",
+        "verification",
+        "smt/transducers"
       ]
     },
     "unified-cargo-anneal-and-verified-rustc-diagnostic-mapping-and-ux": {

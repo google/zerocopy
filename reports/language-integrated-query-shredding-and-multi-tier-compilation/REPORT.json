@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "pl",
+    "pl/language-integrated-query",
+    "compilers",
+    "ffi",
+    "systems"
+  ],
+  "subjects": [
+    {
+      "name": "Links language-integrated query and shredding compiler",
+      "identity": {
+        "repository": "links-lang/links",
+        "revision": "7100e2891346b5bae483fe9a02791c900047388a"
+      }
+    },
+    {
+      "name": "A Practical Theory of Language-Integrated Query (ICFP 2013)",
+      "identity": {
+        "doi": "10.1145/2500365.2500586"
+      }
+    },
+    {
+      "name": "Query Shredding: Efficient Relational Evaluation of Queries over Nested Multisets (SIGMOD 2014)",
+      "identity": {
+        "doi": "10.1145/2588555.2612186"
+      }
+    },
+    {
+      "name": "Ur/Web multi-tier compiler and C transactional runtime",
+      "identity": {
+        "repository": "urweb/urweb",
+        "revision": "55a881ff9b50d9e5c3b2fd564f5cd44a5cc5e6bc"
+      }
+    },
+    {
+      "name": "Ur: Statically-Typed Metaprogramming with Type-Level Record Computation (PLDI 2010)",
+      "identity": {
+        "doi": "10.1145/1806596.1806612"
+      }
+    },
+    {
+      "name": "Ur/Web: A Simple Model for Programming the Web (POPL 2015)",
+      "identity": {
+        "doi": "10.1145/2676726.2677004"
+      }
+    },
+    {
+      "name": "Cosette SQL equivalence prover and HoTTSQL Coq formalization",
+      "identity": {
+        "repository": "uwdb/Cosette",
+        "revision": "7a951aa3b1a70a8b310c676e524740b7114975c3"
+      }
+    },
+    {
+      "name": "HoTTSQL: Proving Query Rewrites with Univalent SQL Semantics (PLDI 2017)",
+      "identity": {
+        "doi": "10.48550/arXiv.1607.04822"
+      }
+    },
+    {
+      "name": "Distributed System Development with ScalaLoci (OOPSLA 2018)",
+      "identity": {
+        "doi": "10.1145/3276499"
+      }
+    },
+    {
+      "name": "Cambria bidirectional schema edit lenses",
+      "identity": {
+        "repository": "inkandswitch/cambria",
+        "revision": "da8961440cac7eba1c3113488f5bcbc26046620f"
+      }
+    },
+    {
+      "name": "DBSP: Automatic Incremental View Maintenance for Rich Query Languages (VLDB 2023)",
+      "identity": {
+        "doi": "10.14778/3587136.3587137"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
