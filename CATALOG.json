@@ -23154,6 +23154,105 @@
         "lean/reference-counting"
       ]
     },
+    "genmc-stateless-model-checking-crashmonkey-torn-io-and-madsim-determinism": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "MPI-SWS/genmc",
+            "revision": "fab5bba7d9efaf76990227c2f59d62c11c7ea2a3"
+          },
+          "name": "GenMC"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/loom",
+            "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+          },
+          "name": "Tokio Loom"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/shuttle",
+            "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+          },
+          "name": "AWS Shuttle"
+        },
+        {
+          "identity": {
+            "repository": "nidhugg/nidhugg",
+            "revision": "0f572e013e32764cbf057608ca7ab11f97815790"
+          },
+          "name": "Nidhugg"
+        },
+        {
+          "identity": {
+            "repository": "utsaslab/crashmonkey",
+            "revision": "27ca57f8cf2760d5d4855e03b8d01f8e5de1628c"
+          },
+          "name": "CrashMonkey and ACE"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+          },
+          "name": "Linux Kernel (dm-log-writes and dm-flakey)"
+        },
+        {
+          "identity": {
+            "repository": "apple/foundationdb",
+            "revision": "4e8043caa5761d5a41886dba3de47ecfaf2f7cbf"
+          },
+          "name": "FoundationDB Simulation (Flow / Sim2)"
+        },
+        {
+          "identity": {
+            "repository": "tigerbeetle/tigerbeetle",
+            "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+          },
+          "name": "TigerBeetle VOPR"
+        },
+        {
+          "identity": {
+            "repository": "madsim-rs/madsim",
+            "revision": "519950efb4711464f300ed7edf2967ed62d5f502"
+          },
+          "name": "MadSim"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/turmoil",
+            "revision": "bf54cec46c132fb26e24cabfe503d6abfe286482"
+          },
+          "name": "Tokio Turmoil"
+        },
+        {
+          "identity": {
+            "repository": "anishathalye/porcupine",
+            "revision": "97cd067defd99df172053ba7f4ca5bbae57fe446"
+          },
+          "name": "Porcupine"
+        },
+        {
+          "identity": {
+            "repository": "jepsen-io/elle",
+            "revision": "4e359e597c52938b0afebb8bc42273914d68a424"
+          },
+          "name": "Jepsen Elle"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/model-checking",
+        "systems",
+        "systems/crash-consistency",
+        "systems/deterministic-simulation",
+        "runtimes",
+        "tooling",
+        "compilers"
+      ]
+    },
     "gherrit-multi-remote-ancestry-and-graphql-batch-idempotency-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -43656,6 +43755,143 @@
         "domains/datacenter-networking"
       ]
     },
+    "quickchick-spec-mutation-metamorphic-testing-and-verifier-soundness-fuzzing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "QuickChick/QuickChick",
+            "revision": "6b98c9beca3ff5cfb645f6aa4e35a8146081f128"
+          },
+          "name": "QuickChick"
+        },
+        {
+          "identity": {
+            "repository": "proper-testing/proper",
+            "revision": "9b0da8778206b0f264c942fabca45d0f9bda2e7b"
+          },
+          "name": "PropEr"
+        },
+        {
+          "identity": {
+            "repository": "HypothesisWorks/hypothesis",
+            "revision": "9ea72564ee553a3aa603ad9f2997fbbdcd096d50"
+          },
+          "name": "Hypothesis"
+        },
+        {
+          "identity": {
+            "repository": "proptest-rs/proptest",
+            "revision": "70cf37d46b7d83393b6ed94c611f8c52209f585d"
+          },
+          "name": "Proptest"
+        },
+        {
+          "identity": {
+            "repository": "sourcefrog/cargo-mutants",
+            "revision": "6c720ae82a1784b84cfa06066f7b0d59ed1798d0"
+          },
+          "name": "cargo-mutants"
+        },
+        {
+          "identity": {
+            "repository": "csmith-project/csmith",
+            "revision": "0cdc710315cfee9035e22ef4363ca479270d1934"
+          },
+          "name": "Csmith"
+        },
+        {
+          "identity": {
+            "repository": "intel/yarpgen",
+            "revision": "1adb290f453505838f3aa33dc571f292b0c1810f"
+          },
+          "name": "YARPGen"
+        },
+        {
+          "identity": {
+            "repository": "AliveToolkit/alive2",
+            "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+          },
+          "name": "Alive2"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert"
+        },
+        {
+          "identity": {
+            "repository": "Wasm-DSL/spectec",
+            "revision": "acc6e834ff403c82554d081237f327346190ad96"
+          },
+          "name": "SpecTec"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail"
+        },
+        {
+          "identity": {
+            "repository": "testsmt/yinyang",
+            "revision": "5ce963290b682fccdb7f27464de0e5c0d02047c5"
+          },
+          "name": "yinyang (Semantic Fusion, OpFuzz, TypeFuzz)"
+        },
+        {
+          "identity": {
+            "repository": "murxla/murxla",
+            "revision": "d32047c4c00a9c93ff9e564eeed5196f517e5cff"
+          },
+          "name": "Murxla"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "bcad05a7bf7dd9b82bd7a665018e0480e737264b"
+          },
+          "name": "Z3"
+        },
+        {
+          "identity": {
+            "repository": "cvc5/cvc5",
+            "revision": "eb203989c35e47030d0aa37afafb8458cb54e5e9"
+          },
+          "name": "cvc5"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+          },
+          "name": "nanoda_lib"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/property-based-testing",
+        "verification/mutation-testing",
+        "compilers",
+        "compilers/differential-testing",
+        "smt",
+        "smt/fuzzing",
+        "lean",
+        "pl",
+        "tooling",
+        "security"
+      ]
+    },
     "raft-reconfiguration-quorums-porcupine-linearizability-and-elle-adya-cycles": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -45205,6 +45441,93 @@
         "compilers/reverse-code-generation",
         "runtimes/optimistic-simulation",
         "runtimes/time-warp"
+      ]
+    },
+    "revizor-microarchitectural-leakage-fuzzing-tvla-power-traces-and-alma": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3503222.3507729",
+            "repository": "microsoft/sca-fuzzer",
+            "revision": "7dec7b81d4562cdd2a6026ef0830a3dac2b20cbc"
+          },
+          "name": "Microsoft Revizor microarchitectural leakage fuzzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53288-8_12",
+            "repository": "kth-step/HolBA",
+            "revision": "a39e4332dcee3c8243ac6f1bc3f8b4691eb5a4e7"
+          },
+          "name": "HolBA Scam-V abstract side-channel model validator"
+        },
+        {
+          "identity": {
+            "repository": "newaetech/chipwhisperer",
+            "revision": "884412281b1c1749b871e16e563d3ff310affd68"
+          },
+          "name": "NewAE ChipWhisperer side-channel capture and analysis toolchain"
+        },
+        {
+          "identity": {
+            "critique_doi": "10.1007/978-3-030-15462-2_5",
+            "higher_order_doi": "10.1007/978-3-662-48324-4_25",
+            "prior_edition": "ISO/IEC 17825:2016",
+            "standard": "ISO/IEC 17825:2024"
+          },
+          "name": "ISO/IEC 17825 and Test Vector Leakage Assessment (TVLA) statistical methodology"
+        },
+        {
+          "identity": {
+            "doi": "10.34727/2021/isbn.978-3-85448-046-4_9",
+            "repository": "isec-tugraz/coco-alma",
+            "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97"
+          },
+          "name": "CocoAlma execution-aware gate-level masking verifier"
+        },
+        {
+          "identity": {
+            "repository": "IAIK/coco-ibex",
+            "revision": "1ac262929d900d63d5ed702cd40edca1602a79c9"
+          },
+          "name": "Coco masked-software co-verified Ibex RISC-V core"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-64837-4_26",
+            "repository": "Chair-for-Security-Engineering/SILVER",
+            "revision": "0a3c85fc5a60d76eedb84d996473df28fc18ef42"
+          },
+          "name": "SILVER ROBDD statistical independence and masking verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.46586/tches.v2021.i4.447-473",
+            "repository": "Chair-for-Security-Engineering/FIVER",
+            "revision": "176a1db7f80764543324db5378b6f82d4adebcbe"
+          },
+          "name": "FIVER symbolic ROBDD fault-injection countermeasure verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/HST45670.2020.9300276",
+            "repository": "emsec/VerFI",
+            "revision": "e7a16f93a43e814272322349df698d4408fc45a6"
+          },
+          "name": "VerFI netlist fault-injection diagnosis framework"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/side-channels",
+        "security/fault-injection",
+        "verification",
+        "verification/hardware",
+        "isa",
+        "isa/microarchitecture",
+        "systems",
+        "tooling"
       ]
     },
     "riscv-zkvms-risc0-sp1-jolt-lasso-lookup-arguments-and-air-underconstraint-bugs": {
@@ -55018,6 +55341,81 @@
         "compilers/stabilizer-schedules",
         "verification/decoder-graphs",
         "isa/pulse-calibration"
+      ]
+    },
+    "staliro-stl-falsification-hardware-in-the-loop-and-reality-gap-replay": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-85248-1_15",
+            "repository": "cpslab-asu/psy-taliro",
+            "revision": "887f2dc321e83688796307f8b0abcf22b3a57b4c",
+            "robustness_doi": "10.1016/j.tcs.2009.06.021",
+            "staliro_doi": "10.1007/978-3-642-20398-5_22"
+          },
+          "name": "PSY-TaLiRo and S-TaLiRo temporal-logic robustness falsification framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-14295-6_17",
+            "repository": "decyphir/breach",
+            "revision": "1f8a495727eb04bf849175d33963be5e26a8bfdd",
+            "stl_doi": "10.1007/978-3-540-30206-3_12"
+          },
+          "name": "Breach Signal Temporal Logic monitoring and parameter synthesis toolbox"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-25540-4_25",
+            "repository": "BerkeleyLearnVerify/VerifAI",
+            "revision": "7ef383f191cac0cb2d0174829ac2ec75ab7a0f3c"
+          },
+          "name": "VerifAI formal falsification and error-table toolkit for AI/CPS systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314633",
+            "repository": "BerkeleyLearnVerify/Scenic",
+            "revision": "979b09e10c2d119cd47f75115740b65f4f7e9999"
+          },
+          "name": "Scenic probabilistic scenario specification and scene generation language"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10703-016-0241-z",
+            "repository": "LS-Lab/KeYmaeraX-release",
+            "revision": "2753f99b53cea5f946386998a39faded05ede677"
+          },
+          "name": "KeYmaera X ModelPlex verified runtime controller and plant-validity monitor synthesis"
+        },
+        {
+          "identity": {
+            "doi": "10.1161/01.cir.101.23.e215",
+            "repository": "MIT-LCP/wfdb-python",
+            "revision": "cc9f94fcc8bc938c6fb6cb40fb61c85b33e9404e"
+          },
+          "name": "PhysioNet WFDB clinical physiologic signal and ADC archive library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3649823",
+            "repository": "shriram/smol",
+            "revision": "858d1b461924a7a9a37e9119faf191304dda5835"
+          },
+          "name": "SMoL (Standard Model of Languages) and Behavioral Misconception Instrument"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/falsification",
+        "verification/runtime-monitoring",
+        "systems",
+        "systems/cyber-physical",
+        "pl",
+        "pl/mental-models",
+        "tooling",
+        "security"
       ]
     },
     "starnix-ebpf-core-postcleanup-mir-and-abstract-domain-verification": {

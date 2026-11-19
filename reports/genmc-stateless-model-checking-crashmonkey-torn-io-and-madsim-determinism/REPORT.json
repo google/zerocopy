@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "verification",
+    "verification/model-checking",
+    "systems",
+    "systems/crash-consistency",
+    "systems/deterministic-simulation",
+    "runtimes",
+    "tooling",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "GenMC",
+      "identity": {
+        "repository": "MPI-SWS/genmc",
+        "revision": "fab5bba7d9efaf76990227c2f59d62c11c7ea2a3"
+      }
+    },
+    {
+      "name": "Tokio Loom",
+      "identity": {
+        "repository": "tokio-rs/loom",
+        "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+      }
+    },
+    {
+      "name": "AWS Shuttle",
+      "identity": {
+        "repository": "awslabs/shuttle",
+        "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+      }
+    },
+    {
+      "name": "Nidhugg",
+      "identity": {
+        "repository": "nidhugg/nidhugg",
+        "revision": "0f572e013e32764cbf057608ca7ab11f97815790"
+      }
+    },
+    {
+      "name": "CrashMonkey and ACE",
+      "identity": {
+        "repository": "utsaslab/crashmonkey",
+        "revision": "27ca57f8cf2760d5d4855e03b8d01f8e5de1628c"
+      }
+    },
+    {
+      "name": "Linux Kernel (dm-log-writes and dm-flakey)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "FoundationDB Simulation (Flow / Sim2)",
+      "identity": {
+        "repository": "apple/foundationdb",
+        "revision": "4e8043caa5761d5a41886dba3de47ecfaf2f7cbf"
+      }
+    },
+    {
+      "name": "TigerBeetle VOPR",
+      "identity": {
+        "repository": "tigerbeetle/tigerbeetle",
+        "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+      }
+    },
+    {
+      "name": "MadSim",
+      "identity": {
+        "repository": "madsim-rs/madsim",
+        "revision": "519950efb4711464f300ed7edf2967ed62d5f502"
+      }
+    },
+    {
+      "name": "Tokio Turmoil",
+      "identity": {
+        "repository": "tokio-rs/turmoil",
+        "revision": "bf54cec46c132fb26e24cabfe503d6abfe286482"
+      }
+    },
+    {
+      "name": "Porcupine",
+      "identity": {
+        "repository": "anishathalye/porcupine",
+        "revision": "97cd067defd99df172053ba7f4ca5bbae57fe446"
+      }
+    },
+    {
+      "name": "Jepsen Elle",
+      "identity": {
+        "repository": "jepsen-io/elle",
+        "revision": "4e359e597c52938b0afebb8bc42273914d68a424"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

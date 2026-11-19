@@ -1,0 +1,137 @@
+{
+  "topics": [
+    "verification",
+    "verification/property-based-testing",
+    "verification/mutation-testing",
+    "compilers",
+    "compilers/differential-testing",
+    "smt",
+    "smt/fuzzing",
+    "lean",
+    "pl",
+    "tooling",
+    "security"
+  ],
+  "subjects": [
+    {
+      "name": "QuickChick",
+      "identity": {
+        "repository": "QuickChick/QuickChick",
+        "revision": "6b98c9beca3ff5cfb645f6aa4e35a8146081f128"
+      }
+    },
+    {
+      "name": "PropEr",
+      "identity": {
+        "repository": "proper-testing/proper",
+        "revision": "9b0da8778206b0f264c942fabca45d0f9bda2e7b"
+      }
+    },
+    {
+      "name": "Hypothesis",
+      "identity": {
+        "repository": "HypothesisWorks/hypothesis",
+        "revision": "9ea72564ee553a3aa603ad9f2997fbbdcd096d50"
+      }
+    },
+    {
+      "name": "Proptest",
+      "identity": {
+        "repository": "proptest-rs/proptest",
+        "revision": "70cf37d46b7d83393b6ed94c611f8c52209f585d"
+      }
+    },
+    {
+      "name": "cargo-mutants",
+      "identity": {
+        "repository": "sourcefrog/cargo-mutants",
+        "revision": "6c720ae82a1784b84cfa06066f7b0d59ed1798d0"
+      }
+    },
+    {
+      "name": "Csmith",
+      "identity": {
+        "repository": "csmith-project/csmith",
+        "revision": "0cdc710315cfee9035e22ef4363ca479270d1934"
+      }
+    },
+    {
+      "name": "YARPGen",
+      "identity": {
+        "repository": "intel/yarpgen",
+        "revision": "1adb290f453505838f3aa33dc571f292b0c1810f"
+      }
+    },
+    {
+      "name": "Alive2",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+      }
+    },
+    {
+      "name": "CompCert",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "SpecTec",
+      "identity": {
+        "repository": "Wasm-DSL/spectec",
+        "revision": "acc6e834ff403c82554d081237f327346190ad96"
+      }
+    },
+    {
+      "name": "Sail",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "yinyang (Semantic Fusion, OpFuzz, TypeFuzz)",
+      "identity": {
+        "repository": "testsmt/yinyang",
+        "revision": "5ce963290b682fccdb7f27464de0e5c0d02047c5"
+      }
+    },
+    {
+      "name": "Murxla",
+      "identity": {
+        "repository": "murxla/murxla",
+        "revision": "d32047c4c00a9c93ff9e564eeed5196f517e5cff"
+      }
+    },
+    {
+      "name": "Z3",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "bcad05a7bf7dd9b82bd7a665018e0480e737264b"
+      }
+    },
+    {
+      "name": "cvc5",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "eb203989c35e47030d0aa37afafb8458cb54e5e9"
+      }
+    },
+    {
+      "name": "lean4checker",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "nanoda_lib",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

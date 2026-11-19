@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "verification",
+    "verification/falsification",
+    "verification/runtime-monitoring",
+    "systems",
+    "systems/cyber-physical",
+    "pl",
+    "pl/mental-models",
+    "tooling",
+    "security"
+  ],
+  "subjects": [
+    {
+      "name": "PSY-TaLiRo and S-TaLiRo temporal-logic robustness falsification framework",
+      "identity": {
+        "repository": "cpslab-asu/psy-taliro",
+        "revision": "887f2dc321e83688796307f8b0abcf22b3a57b4c",
+        "doi": "10.1007/978-3-030-85248-1_15",
+        "staliro_doi": "10.1007/978-3-642-20398-5_22",
+        "robustness_doi": "10.1016/j.tcs.2009.06.021"
+      }
+    },
+    {
+      "name": "Breach Signal Temporal Logic monitoring and parameter synthesis toolbox",
+      "identity": {
+        "repository": "decyphir/breach",
+        "revision": "1f8a495727eb04bf849175d33963be5e26a8bfdd",
+        "doi": "10.1007/978-3-642-14295-6_17",
+        "stl_doi": "10.1007/978-3-540-30206-3_12"
+      }
+    },
+    {
+      "name": "VerifAI formal falsification and error-table toolkit for AI/CPS systems",
+      "identity": {
+        "repository": "BerkeleyLearnVerify/VerifAI",
+        "revision": "7ef383f191cac0cb2d0174829ac2ec75ab7a0f3c",
+        "doi": "10.1007/978-3-030-25540-4_25"
+      }
+    },
+    {
+      "name": "Scenic probabilistic scenario specification and scene generation language",
+      "identity": {
+        "repository": "BerkeleyLearnVerify/Scenic",
+        "revision": "979b09e10c2d119cd47f75115740b65f4f7e9999",
+        "doi": "10.1145/3314221.3314633"
+      }
+    },
+    {
+      "name": "KeYmaera X ModelPlex verified runtime controller and plant-validity monitor synthesis",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-release",
+        "revision": "2753f99b53cea5f946386998a39faded05ede677",
+        "doi": "10.1007/s10703-016-0241-z"
+      }
+    },
+    {
+      "name": "PhysioNet WFDB clinical physiologic signal and ADC archive library",
+      "identity": {
+        "repository": "MIT-LCP/wfdb-python",
+        "revision": "cc9f94fcc8bc938c6fb6cb40fb61c85b33e9404e",
+        "doi": "10.1161/01.cir.101.23.e215"
+      }
+    },
+    {
+      "name": "SMoL (Standard Model of Languages) and Behavioral Misconception Instrument",
+      "identity": {
+        "repository": "shriram/smol",
+        "revision": "858d1b461924a7a9a37e9119faf191304dda5835",
+        "doi": "10.1145/3649823"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

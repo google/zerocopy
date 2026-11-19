@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "security",
+    "security/side-channels",
+    "security/fault-injection",
+    "verification",
+    "verification/hardware",
+    "isa",
+    "isa/microarchitecture",
+    "systems",
+    "tooling"
+  ],
+  "subjects": [
+    {
+      "name": "Microsoft Revizor microarchitectural leakage fuzzer",
+      "identity": {
+        "repository": "microsoft/sca-fuzzer",
+        "revision": "7dec7b81d4562cdd2a6026ef0830a3dac2b20cbc",
+        "doi": "10.1145/3503222.3507729"
+      }
+    },
+    {
+      "name": "HolBA Scam-V abstract side-channel model validator",
+      "identity": {
+        "repository": "kth-step/HolBA",
+        "revision": "a39e4332dcee3c8243ac6f1bc3f8b4691eb5a4e7",
+        "doi": "10.1007/978-3-030-53288-8_12"
+      }
+    },
+    {
+      "name": "NewAE ChipWhisperer side-channel capture and analysis toolchain",
+      "identity": {
+        "repository": "newaetech/chipwhisperer",
+        "revision": "884412281b1c1749b871e16e563d3ff310affd68"
+      }
+    },
+    {
+      "name": "ISO/IEC 17825 and Test Vector Leakage Assessment (TVLA) statistical methodology",
+      "identity": {
+        "standard": "ISO/IEC 17825:2024",
+        "prior_edition": "ISO/IEC 17825:2016",
+        "higher_order_doi": "10.1007/978-3-662-48324-4_25",
+        "critique_doi": "10.1007/978-3-030-15462-2_5"
+      }
+    },
+    {
+      "name": "CocoAlma execution-aware gate-level masking verifier",
+      "identity": {
+        "repository": "isec-tugraz/coco-alma",
+        "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97",
+        "doi": "10.34727/2021/isbn.978-3-85448-046-4_9"
+      }
+    },
+    {
+      "name": "Coco masked-software co-verified Ibex RISC-V core",
+      "identity": {
+        "repository": "IAIK/coco-ibex",
+        "revision": "1ac262929d900d63d5ed702cd40edca1602a79c9"
+      }
+    },
+    {
+      "name": "SILVER ROBDD statistical independence and masking verifier",
+      "identity": {
+        "repository": "Chair-for-Security-Engineering/SILVER",
+        "revision": "0a3c85fc5a60d76eedb84d996473df28fc18ef42",
+        "doi": "10.1007/978-3-030-64837-4_26"
+      }
+    },
+    {
+      "name": "FIVER symbolic ROBDD fault-injection countermeasure verifier",
+      "identity": {
+        "repository": "Chair-for-Security-Engineering/FIVER",
+        "revision": "176a1db7f80764543324db5378b6f82d4adebcbe",
+        "doi": "10.46586/tches.v2021.i4.447-473"
+      }
+    },
+    {
+      "name": "VerFI netlist fault-injection diagnosis framework",
+      "identity": {
+        "repository": "emsec/VerFI",
+        "revision": "e7a16f93a43e814272322349df698d4408fc45a6",
+        "doi": "10.1109/HST45670.2020.9300276"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
