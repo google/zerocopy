@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "verification/rust-borrows",
+    "anneal/theory",
+    "aeneas/borrows-regions",
+    "pl/bidirectional-lenses",
+    "lean/mechanization",
+    "charon/llbc",
+    "rust/tree-borrows",
+    "rust/unsafe"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification framework (PureLift, MirWp, and Trusted MIR semantics)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Creusot deductive verifier and Pearlite specification library",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8",
+        "version": "0.16.0-dev"
+      }
+    },
+    {
+      "name": "Aeneas functional Rust translator and Lean 4 backend",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "d86aa34c75fd036ac139eb6e65da1cacc5492d0f"
+      }
+    },
+    {
+      "name": "Charon LLBC extractor",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "9e193f0317dacc822cc864c1798b117c70dcf7df"
+      }
+    },
+    {
+      "name": "Rust compiler and core::slice::IterMut standard library implementation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR and Tree Borrows reference interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "RustHorn: CHC-based Verification for Rust Programs",
+      "identity": {
+        "doi": "10.1145/3462205",
+        "venue": "ACM Transactions on Programming Languages and Systems 43(4), Article 14 (2021)"
+      }
+    },
+    {
+      "name": "The Future is Ours: Prophecy Variables in Separation Logic",
+      "identity": {
+        "doi": "10.1145/3371113",
+        "venue": "Proceedings of the ACM on Programming Languages 4(POPL), Article 45 (2020)"
+      }
+    },
+    {
+      "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1007/978-3-031-17244-1_6",
+        "venue": "International Conference on Formal Engineering Methods (ICFEM 2022)"
+      }
+    },
+    {
+      "name": "Specifying and Verifying Higher-Order Rust Iterators",
+      "identity": {
+        "doi": "10.1007/978-3-031-30820-8_9",
+        "venue": "Tools and Algorithms for the Construction and Analysis of Systems (TACAS 2023)"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "venue": "Proceedings of the ACM on Programming Languages 8(PLDI), Article 195 (2024)"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "venue": "Proceedings of the ACM on Programming Languages 6(ICFP), Article 116 (2022)"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "venue": "Proceedings of the ACM on Programming Languages 8(ICFP), Article 258 (2024)"
+      }
+    },
+    {
+      "name": "Combinators for Bi-Directional Tree Transformations: A Linguistic Approach to the View-Update Problem",
+      "identity": {
+        "doi": "10.1145/1232420.1232424",
+        "venue": "ACM Transactions on Programming Languages and Systems 29(3), Article 17 (2007)"
+      }
+    },
+    {
+      "name": "Boomerang: Resourceful Lenses for String Data",
+      "identity": {
+        "doi": "10.1145/1328438.1328487",
+        "venue": "ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages (POPL 2008)"
+      }
+    },
+    {
+      "name": "Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "venue": "Proceedings of the ACM on Programming Languages 9(PLDI), Article 188 (2025)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
