@@ -26784,6 +26784,165 @@
         "compilers"
       ]
     },
+    "lcf-abstract-kernels-dedukti-lambdapi-modulo-rewriting-and-fpc-certificates": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "6dbb775efdff7f75aa20006532bf6336bc645861"
+          },
+          "name": "HOL Light (OCaml LCF kernel)"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "c45cdab77eec0ac889f9717ca229a5e9064a24b1"
+          },
+          "name": "Isabelle/Pure kernel"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/candle",
+            "revision": "a9aeaa1dffd50f7cfeed811db6ee61f98e2234da"
+          },
+          "name": "Candle (verified HOL Light on CakeML)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML Candle verified ML kernel proofs"
+        },
+        {
+          "identity": {
+            "repository": "gilith/opentheory",
+            "revision": "7a51b621eacd1bfa75600dac3827f1a1f6a89978"
+          },
+          "name": "OpenTheory HOL package manager and article VM"
+        },
+        {
+          "identity": {
+            "repository": "Deducteam/Dedukti",
+            "revision": "b828866d2163bb1caa77ef53881f1566da51d2e6"
+          },
+          "name": "Dedukti (lambda-Pi-calculus modulo rewriting checker)"
+        },
+        {
+          "identity": {
+            "repository": "Deducteam/lambdapi",
+            "revision": "b7e9e0a0ae09b16a8841bbce1c7bfceb013ff3e3"
+          },
+          "name": "Lambdapi (interactive lambda-Pi modulo rewriting prover)"
+        },
+        {
+          "identity": {
+            "repository": "01mf02/kontroli-rs",
+            "revision": "22bfbdfc6d20502589c4c53369cf76ebcb1b8178"
+          },
+          "name": "Kontroli (memory-safe concurrent Rust lambda-Pi modulo checker)"
+        },
+        {
+          "identity": {
+            "repository": "Deducteam/hol2dk",
+            "revision": "7f0da9630ea948628f9c5f49829d18df6a7073ee"
+          },
+          "name": "hol2dk (HOL Light to Dedukti/Lambdapi/Rocq exporter)"
+        },
+        {
+          "identity": {
+            "repository": "Deducteam/isabelle_dedukti",
+            "revision": "925d138fd433b1d04c270e166133ae7a673b18a9"
+          },
+          "name": "isabelle_dedukti (Isabelle to Dedukti proof exporter)"
+        },
+        {
+          "identity": {
+            "repository": "ProofCert/checkers",
+            "revision": "241b3c8d1cd543e2e3a8421e185eaf8639c0e39b"
+          },
+          "name": "ProofCert/checkers (Foundational Proof Certificates in LKF/LJF)"
+        },
+        {
+          "identity": {
+            "repository": "LPCIC/elpi",
+            "revision": "631d14a63489ed0e8359ad036f7a8580bb373f33"
+          },
+          "name": "ELPI (Embeddable lambda-Prolog Interpreter)"
+        },
+        {
+          "identity": {
+            "repository": "teyjus/teyjus",
+            "revision": "5cb51538beee8b1ad6dbc47ee14d7491fefa6021"
+          },
+          "name": "Teyjus (lambda-Prolog implementation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512760.512773",
+            "publication": "POPL 1978",
+            "year": "1978"
+          },
+          "name": "Gordon, Milner, Wadsworth (1978): A Metalanguage for Interactive Proof in LCF"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0031814",
+            "publication": "FMCAD 1996",
+            "year": "1996"
+          },
+          "name": "Harrison (1996): HOL Light: A Tutorial Introduction"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.3",
+            "extended_doi": "10.1007/s10817-025-09743-8",
+            "year": "2022"
+          },
+          "name": "Abrahamsson, Myreen, Kumar, Sewell (2022/2025): Candle: A Verified Implementation of HOL Light"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-20398-5_14",
+            "extended_doi": "10.29007/7gg3",
+            "year": "2011"
+          },
+          "name": "Hurd (2011): The OpenTheory Standard Theory Library"
+        },
+        {
+          "identity": {
+            "arxiv": "2102.08766",
+            "doi": "10.1145/3497775.3503683",
+            "publication": "CPP 2022",
+            "year": "2022"
+          },
+          "name": "Farber (2022): Safe, Fast, Concurrent Proof Checking for the lambda-Pi Calculus Modulo Rewriting"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-016-9380-6",
+            "publication": "Journal of Automated Reasoning 59(3)",
+            "year": "2017"
+          },
+          "name": "Chihani, Miller, Renaud (2017): A Semantic Framework for Proof Evidence"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.tcs.2009.07.041",
+            "publication": "Theoretical Computer Science 410(46)",
+            "year": "2009"
+          },
+          "name": "Liang, Miller (2009): Focusing and Polarization in Linear, Intuitionistic, and Classical Logics"
+        }
+      ],
+      "topics": [
+        "verification/lcf-kernels",
+        "pl/lambda-pi-modulo",
+        "verification/proof-certificates",
+        "tooling/cross-logic-hubs"
+      ]
+    },
     "lean-absbyte-typedat-lenses-and-nondeterministic-alloc-scaling": {
       "observed_at": "2026-11-12",
       "subjects": [
