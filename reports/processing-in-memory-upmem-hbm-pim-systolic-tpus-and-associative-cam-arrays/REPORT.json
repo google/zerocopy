@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "isa/processing-in-memory",
+    "isa/systolic-arrays",
+    "compilers/data-stationary-lowering",
+    "verification/disjoint-memory-coherence",
+    "isa/associative-cam-processors",
+    "systems/accelerator-memory-fences"
+  ],
+  "subjects": [
+    {
+      "name": "PrIM Processing-in-Memory Benchmark Suite and UPMEM DPU Characterization",
+      "identity": {
+        "repository": "CMU-SAFARI/prim-benchmarks",
+        "revision": "67179099730cdccc650d52d25f458cb2e4f8a675",
+        "doi": "10.1109/ACCESS.2022.3174101",
+        "arxiv": "2105.03814"
+      }
+    },
+    {
+      "name": "uPIMulator Cycle-Level UPMEM DPU Architecture Simulator",
+      "identity": {
+        "repository": "VIA-Research/uPIMulator",
+        "revision": "870d916334e9ff0b190f555f951a9ec3c4257781",
+        "doi": "10.1109/HPCA57654.2024.00029",
+        "arxiv": "2308.00846"
+      }
+    },
+    {
+      "name": "Samsung HBM-PIM (Aquabolt-XL) Cycle-Accurate Simulator and Software Stack",
+      "identity": {
+        "repository": "SAITPublic/PIMSimulator",
+        "revision": "3703d1f19c8f027360cc33a3243eb271e3bb6898",
+        "doi": "10.1109/ISCA52012.2021.00013"
+      }
+    },
+    {
+      "name": "SK Hynix GDDR6-AiM Bank-Level Accelerator-in-Memory",
+      "identity": {
+        "doi": "10.1109/ISSCC42614.2022.9731681",
+        "publication": "IEEE ISSCC 2022"
+      }
+    },
+    {
+      "name": "UC Berkeley Gemmini Parameterized Systolic Array Generator",
+      "identity": {
+        "repository": "ucb-bar/gemmini",
+        "revision": "b82d49cca798a59f010488a6f6de7243f0616536",
+        "doi": "10.1109/DAC18074.2021.9586216"
+      }
+    },
+    {
+      "name": "Google Tensor Processing Unit (TPU) Systolic Matrix Multiply Unit and OpenXLA Compiler",
+      "identity": {
+        "repository": "openxla/xla",
+        "revision": "bd6a27091b16c0719e5a2ed6a7334899ea99aa4f",
+        "doi": "10.1145/3079856.3080246",
+        "arxiv": "1704.04760"
+      }
+    },
+    {
+      "name": "JAX and Cloud TPU Scaling Guide (MXU Tiling, VMEM, and HBM Roofline)",
+      "identity": {
+        "repository": "jax-ml/scaling-book",
+        "revision": "173fb0851d7e654872f0327aff2e17607cf24106"
+      }
+    },
+    {
+      "name": "CAPE Bit-Serial 6T-SRAM Content-Addressable Processing Engine",
+      "identity": {
+        "doi": "10.1109/HPCA51647.2021.00054",
+        "publication": "IEEE HPCA 2021:557-569"
+      }
+    },
+    {
+      "name": "SIMDRAM Bit-Serial In-DRAM SIMD Framework and CMOS TCAM Circuits",
+      "identity": {
+        "doi": "10.1145/3445814.3446749",
+        "related_doi": "10.1109/JSSC.2005.864128",
+        "publication": "ACM ASPLOS 2021 / IEEE JSSC 41(3):712-727 (2006)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
