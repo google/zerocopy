@@ -1,0 +1,92 @@
+{
+  "topics": [
+    "isa",
+    "isa/errata",
+    "isa/microcode",
+    "compilers",
+    "compilers/assembler",
+    "compilers/linker",
+    "llvm",
+    "verification",
+    "security"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Project (X86AsmBackend, AArch64A53Fix835769, LLD AArch64ErrataFix)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1780833aa0f119a425d7f993aaac29d03cb04da6"
+      }
+    },
+    {
+      "name": "GNU Binutils-GDB (GAS x86 branch alignment, BFD AArch64 Cortex-A53 errata)",
+      "identity": {
+        "repository": "riscv-collab/riscv-binutils-gdb",
+        "revision": "20756b0fbe065a84710aa38f2457563b57546440",
+        "bfd_version": "2.38"
+      }
+    },
+    {
+      "name": "GNU Binutils local assembler and disassembler",
+      "identity": {
+        "toolchain": "GNU Binutils for Debian (as, ld, objdump)",
+        "version": "2.47",
+        "target": "x86_64-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust compiler and bundled LLVM MC backend",
+      "identity": {
+        "toolchain": "rustc",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)",
+        "llvm_version": "22.1.6",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Linux kernel x86 TSX and Intel/AMD microcode loader",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Intel Linux Processor Microcode Data Files",
+      "identity": {
+        "repository": "intel/Intel-Linux-Processor-Microcode-Data-Files",
+        "revision": "d71fe4e2f0f70a49ebbac7f2c7e915f181361974"
+      }
+    },
+    {
+      "name": "Google Security Research AMD EntrySign PoC",
+      "identity": {
+        "repository": "google/security-research",
+        "revision": "dd9c753bdb2ae51e8214e50be313283daa400713",
+        "cve": "CVE-2024-56161"
+      }
+    },
+    {
+      "name": "Intel Mitigations for Jump Conditional Code Erratum White Paper",
+      "identity": {
+        "document_number": "341810-001",
+        "published": "2019-11",
+        "erratum_codes": "SKX102, SKL167, KBL129"
+      }
+    },
+    {
+      "name": "ARM Cortex-A53 MPCore Software Developers Errata Notice",
+      "identity": {
+        "document_number": "ARM-EPM-048406",
+        "erratum_codes": "843419, 835769"
+      }
+    },
+    {
+      "name": "The Mathematics of the Pentium Division Bug (Edelman, SIAM Review 1997)",
+      "identity": {
+        "doi": "10.1137/S0036144595293959",
+        "venue": "SIAM Review, Vol. 39, No. 1, pp. 54-67 (1997)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
