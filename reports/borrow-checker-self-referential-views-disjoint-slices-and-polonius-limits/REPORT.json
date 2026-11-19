@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "rust/borrow-checking",
+    "pl/view-types",
+    "compilers/vectorization-hazards",
+    "verification/disjointness-witnesses",
+    "rustc/polonius",
+    "llvm/autovectorization"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Compiler, Core Pin/Slice, and Polonius Next (rustc_borrowck)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+      }
+    },
+    {
+      "name": "Polonius Datalog Borrow-Checker Engine",
+      "identity": {
+        "repository": "rust-lang/polonius",
+        "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+      }
+    },
+    {
+      "name": "ICU4X Yoke (CartableOptionPointer and KindaSortaDangling)",
+      "identity": {
+        "repository": "unicode-org/icu4x",
+        "revision": "ffe417bb7f83d097047151cd40dde184bdc9cdc4"
+      }
+    },
+    {
+      "name": "Ouroboros Self-Referential Macro Crate",
+      "identity": {
+        "repository": "someguynamedjosh/ouroboros",
+        "revision": "b75b9c16e6d79b6b8a678ac5bca602134473951d"
+      }
+    },
+    {
+      "name": "self_cell Self-Referential Cell Macro Crate",
+      "identity": {
+        "repository": "Voultapher/self_cell",
+        "revision": "93cb06e430e7516ac9b436029a15127782b6c2b6"
+      }
+    },
+    {
+      "name": "pin-project Proc-Macro Pin Projection Crate",
+      "identity": {
+        "repository": "taiki-e/pin-project",
+        "revision": "a0191954d8bdb1c125eb9f53980760c0df743eeb"
+      }
+    },
+    {
+      "name": "LLVM LoopVectorizationLegality Pass",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "de85491c7e327289d654790197b3432003723b4a"
+      }
+    },
+    {
+      "name": "WebGPU Shading Language (WGSL) Specification",
+      "identity": {
+        "repository": "gpuweb/gpuweb",
+        "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3"
+      }
+    },
+    {
+      "name": "Ariadne Multi-Span Diagnostic Renderer",
+      "identity": {
+        "repository": "zesterer/ariadne",
+        "revision": "5e62913d34dabf34140ad812448dc8faae5abf15"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust",
+      "identity": {
+        "doi": "10.1145/3371109",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592",
+        "venue": "PLDI 2025"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "doi": "10.48550/arXiv.1903.00982",
+        "identifier": "arXiv:1903.00982"
+      }
+    },
+    {
+      "name": "Place Capability Graphs: A General-Purpose Model of Rust's Ownership and Borrowing Guarantees",
+      "identity": {
+        "doi": "10.1145/3763122",
+        "venue": "OOPSLA 2025"
+      }
+    },
+    {
+      "name": "RUSTSEC-2023-0042 (Ouroboros Aliasing Soundness Advisory)",
+      "identity": {
+        "advisory": "RUSTSEC-2023-0042",
+        "alias": "GHSA-87mf-9wg6-ppf8",
+        "url": "https://rustsec.org/advisories/RUSTSEC-2023-0042.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

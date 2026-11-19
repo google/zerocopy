@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "isa/non-von-neumann",
+    "pl/combinator-reduction",
+    "compilers/dataflow-execution",
+    "isa/harvard-split-memory",
+    "llvm/execute-only-codegen",
+    "verification/graph-reduction-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "Backus FP and FFP Algebra of Programs (1977 ACM Turing Award Lecture)",
+      "identity": {
+        "doi": "10.1145/359576.359579",
+        "publication": "Communications of the ACM 21(8):613-641",
+        "year": "1978"
+      }
+    },
+    {
+      "name": "Reduceron FPGA Graph-Reduction Softcore, F-lite Compiler, and Cycle-Accurate Emulator",
+      "identity": {
+        "repository": "tommythorn/Reduceron",
+        "revision": "e9b051238698040afe1d484b1ebd57f6b58f5036"
+      }
+    },
+    {
+      "name": "Reduceron Project Archive and Reconfigured JFP Specification",
+      "identity": {
+        "repository": "mn416/reduceron-project",
+        "revision": "9dba5d9500e131f2bce31b6258bfc39e69c6bf3d",
+        "doi": "10.1017/S0956796812000214"
+      }
+    },
+    {
+      "name": "LLVM ARM and AArch64 Execute-Only Memory (-mexecute-only) Backend",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "4520919d72d4fbcaa8416c9de404a0d37161b410"
+      }
+    },
+    {
+      "name": "Linux Kernel ARM64 Execute-Only Page Permissions (PAGE_EXECONLY, EPAN, and PIE)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler (GHC) Spineless Tagless G-Machine Runtime",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d",
+        "doi": "10.1017/S0956796800000319"
+      }
+    },
+    {
+      "name": "Higher-Order Virtual Machine (HVM) Parallel Interaction-Combinator Runtime",
+      "identity": {
+        "repository": "HigherOrderCO/HVM",
+        "revision": "7365a56cca56a5853c979755891cb86aa343c42d"
+      }
+    },
+    {
+      "name": "MIT Monsoon Explicit Token-Store Architecture and Id I-Structures",
+      "identity": {
+        "doi": "10.1145/285930.285999",
+        "related_doi": "10.1145/69558.69562",
+        "publication": "ISCA 1990 / ACM TOPLAS 11(4):599-632 (1989)"
+      }
+    },
+    {
+      "name": "WaveScalar Wave-Ordered Memory and Spatial Triggered Instructions",
+      "identity": {
+        "doi": "10.1109/MICRO.2003.1253203",
+        "related_doi": "10.1145/2485922.2485935",
+        "publication": "MICRO-36 (2003) / ISCA 2013"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

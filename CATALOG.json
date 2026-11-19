@@ -8625,6 +8625,87 @@
         "verification/safety-standards"
       ]
     },
+    "backus-fp-von-neumann-bottleneck-tagged-token-dataflow-and-reduceron-machines": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/359576.359579",
+            "publication": "Communications of the ACM 21(8):613-641",
+            "year": "1978"
+          },
+          "name": "Backus FP and FFP Algebra of Programs (1977 ACM Turing Award Lecture)"
+        },
+        {
+          "identity": {
+            "repository": "tommythorn/Reduceron",
+            "revision": "e9b051238698040afe1d484b1ebd57f6b58f5036"
+          },
+          "name": "Reduceron FPGA Graph-Reduction Softcore, F-lite Compiler, and Cycle-Accurate Emulator"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796812000214",
+            "repository": "mn416/reduceron-project",
+            "revision": "9dba5d9500e131f2bce31b6258bfc39e69c6bf3d"
+          },
+          "name": "Reduceron Project Archive and Reconfigured JFP Specification"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "4520919d72d4fbcaa8416c9de404a0d37161b410"
+          },
+          "name": "LLVM ARM and AArch64 Execute-Only Memory (-mexecute-only) Backend"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel ARM64 Execute-Only Page Permissions (PAGE_EXECONLY, EPAN, and PIE)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796800000319",
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC) Spineless Tagless G-Machine Runtime"
+        },
+        {
+          "identity": {
+            "repository": "HigherOrderCO/HVM",
+            "revision": "7365a56cca56a5853c979755891cb86aa343c42d"
+          },
+          "name": "Higher-Order Virtual Machine (HVM) Parallel Interaction-Combinator Runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/285930.285999",
+            "publication": "ISCA 1990 / ACM TOPLAS 11(4):599-632 (1989)",
+            "related_doi": "10.1145/69558.69562"
+          },
+          "name": "MIT Monsoon Explicit Token-Store Architecture and Id I-Structures"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MICRO.2003.1253203",
+            "publication": "MICRO-36 (2003) / ISCA 2013",
+            "related_doi": "10.1145/2485922.2485935"
+          },
+          "name": "WaveScalar Wave-Ordered Memory and Spatial Triggered Instructions"
+        }
+      ],
+      "topics": [
+        "isa/non-von-neumann",
+        "pl/combinator-reduction",
+        "compilers/dataflow-execution",
+        "isa/harvard-split-memory",
+        "llvm/execute-only-codegen",
+        "verification/graph-reduction-invariants"
+      ]
+    },
     "bidirectional-lenses-resugaring-and-non-malleable-format-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -9111,6 +9192,118 @@
         "smt",
         "verification",
         "verification/translation-validation"
+      ]
+    },
+    "borrow-checker-self-referential-views-disjoint-slices-and-polonius-limits": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "Rust Compiler, Core Pin/Slice, and Polonius Next (rustc_borrowck)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/polonius",
+            "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+          },
+          "name": "Polonius Datalog Borrow-Checker Engine"
+        },
+        {
+          "identity": {
+            "repository": "unicode-org/icu4x",
+            "revision": "ffe417bb7f83d097047151cd40dde184bdc9cdc4"
+          },
+          "name": "ICU4X Yoke (CartableOptionPointer and KindaSortaDangling)"
+        },
+        {
+          "identity": {
+            "repository": "someguynamedjosh/ouroboros",
+            "revision": "b75b9c16e6d79b6b8a678ac5bca602134473951d"
+          },
+          "name": "Ouroboros Self-Referential Macro Crate"
+        },
+        {
+          "identity": {
+            "repository": "Voultapher/self_cell",
+            "revision": "93cb06e430e7516ac9b436029a15127782b6c2b6"
+          },
+          "name": "self_cell Self-Referential Cell Macro Crate"
+        },
+        {
+          "identity": {
+            "repository": "taiki-e/pin-project",
+            "revision": "a0191954d8bdb1c125eb9f53980760c0df743eeb"
+          },
+          "name": "pin-project Proc-Macro Pin Projection Crate"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "de85491c7e327289d654790197b3432003723b4a"
+          },
+          "name": "LLVM LoopVectorizationLegality Pass"
+        },
+        {
+          "identity": {
+            "repository": "gpuweb/gpuweb",
+            "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3"
+          },
+          "name": "WebGPU Shading Language (WGSL) Specification"
+        },
+        {
+          "identity": {
+            "repository": "zesterer/ariadne",
+            "revision": "5e62913d34dabf34140ad812448dc8faae5abf15"
+          },
+          "name": "Ariadne Multi-Span Diagnostic Renderer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109",
+            "venue": "POPL 2020"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592",
+            "venue": "PLDI 2025"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.1903.00982",
+            "identifier": "arXiv:1903.00982"
+          },
+          "name": "Oxide: The Essence of Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3763122",
+            "venue": "OOPSLA 2025"
+          },
+          "name": "Place Capability Graphs: A General-Purpose Model of Rust's Ownership and Borrowing Guarantees"
+        },
+        {
+          "identity": {
+            "advisory": "RUSTSEC-2023-0042",
+            "alias": "GHSA-87mf-9wg6-ppf8",
+            "url": "https://rustsec.org/advisories/RUSTSEC-2023-0042.html"
+          },
+          "name": "RUSTSEC-2023-0042 (Ouroboros Aliasing Soundness Advisory)"
+        }
+      ],
+      "topics": [
+        "rust/borrow-checking",
+        "pl/view-types",
+        "compilers/vectorization-hazards",
+        "verification/disjointness-witnesses",
+        "rustc/polonius",
+        "llvm/autovectorization"
       ]
     },
     "bounded-memory-streaming-watermarks-and-timely-retraction-liveness": {
@@ -28876,6 +29069,96 @@
         "pl/manifold-types",
         "systems/realtime-middleware",
         "compilers/symbolic-codegen"
+      ]
+    },
+    "linux-driver-abi-instability-btf-core-kmdf-and-fuchsia-fidl-contracts": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel (modversions, genksyms, gendwarfksyms, RANDSTRUCT, Rust-for-Linux)"
+        },
+        {
+          "identity": {
+            "repository": "Rust-for-Linux/linux",
+            "revision": "aebb7274476403040d582c61478df8f4a7bf9cd3"
+          },
+          "name": "Rust-for-Linux Kernel Tree (sync::Lock)"
+        },
+        {
+          "identity": {
+            "repository": "Rust-for-Linux/pin-init",
+            "revision": "578ad6b8f9d136aeb365f2175f6ef9f0e3dab288"
+          },
+          "name": "Rust-for-Linux pin-init Crate"
+        },
+        {
+          "identity": {
+            "repository": "libbpf/libbpf",
+            "revision": "4f05fb027a08a8a66d03916cf6a68a91e2c720ea"
+          },
+          "name": "libbpf (eBPF CO-RE BTF Relocations)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Windows-Driver-Frameworks",
+            "revision": "b6191d9543441329154da32f7ab9bdd97228dd3c"
+          },
+          "name": "Microsoft Windows Driver Frameworks (KMDF / UMDF)"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/xnu",
+            "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+          },
+          "name": "Apple XNU Kernel (IOUserServer / DriverKit DMA & Mach RPC)"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
+            "revision": "15f8bdfdea9a506c78363f84b842dae3b61e120f"
+          },
+          "name": "Google Fuchsia (DFv2 Driver Runtime RFC-0126, fdf_arena, FIDL Wire Format v2)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314590",
+            "venue": "PLDI 2019"
+          },
+          "name": "Simple and Precise Static Analysis of Untrusted Linux Kernel Extensions (PREVAIL)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3593856.3595892",
+            "venue": "HotOS 2023"
+          },
+          "name": "Kernel Extension Verification is Untenable"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3627703.3629562",
+            "venue": "EuroSys 2024"
+          },
+          "name": "Finding Correctness Bugs in eBPF Verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ACSAC63791.2024.00054",
+            "venue": "ACSAC 2024"
+          },
+          "name": "Rust for Linux: Understanding the Security Impact of Rust in the Linux Kernel"
+        }
+      ],
+      "topics": [
+        "systems/driver-abis",
+        "ffi/abi-evolution",
+        "verification/interface-adaptation",
+        "rust/kernel-abstractions",
+        "systems/ebpf-core",
+        "security/kernel-isolation"
       ]
     },
     "live-typed-hole-calculi-fluid-structure-editors-and-spreadsheet-semantics": {
