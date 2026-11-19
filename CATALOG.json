@@ -9342,6 +9342,82 @@
         "runtimes/garbage-collection"
       ]
     },
+    "beyond-relooper-sese-cfg-decompilation-and-postcleanup-idiom-resugaring": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR syntax, small-step operational semantics, boundary auditor, and PureLift theory"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and Init prelude foundation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler (rustc) Runtime(PostCleanup) MIR pass pipeline, AST lowering, drop elaboration, and core Try/Iterator library (lean-miri upstream reference pin)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (2026-05-30)"
+          },
+          "name": "Rust compiler (rustc) 1.98.0-nightly Runtime(PostCleanup) MIR pass pipeline and drop elaboration (anneal-rustc-capture toolchain pin)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+          },
+          "name": "The Rust Reference (enumerations, destructors, and undefined behavior)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547621"
+          },
+          "name": "Beyond Relooper: Recursive Translation of Unstructured Control Flow to Structured Control Flow (Norman Ramsey, PACMPL Vol. 6 Issue ICFP, Article 121, 2022)"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC) WebAssembly backend Beyond Relooper implementation (GHC.Wasm.ControlFlow.FromCmm)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/178243.178258"
+          },
+          "name": "The Program Structure Tree: Computing Control Regions in Linear Time (Richard Johnson, David Pearson, and Keshav Pingali, PLDI 1994)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/mir-semantics",
+        "anneal/refinement",
+        "anneal/theory",
+        "compilers",
+        "compilers/cfg-structuring",
+        "lean",
+        "lean/mechanization",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/program-logics"
+      ]
+    },
     "bidirectional-lenses-resugaring-and-non-malleable-format-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -10608,6 +10684,66 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "canonical-extensional-binary-tries-lithium-framing-and-cutpoint-firewalls": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted boundary auditor, MIR operational semantics, and PureLift permission tries"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 C++ kernel typechecker, reducibility attributes, declaration elaborator, and MetaM WHNF evaluator"
+        },
+        {
+          "identity": {
+            "arxiv": "2110.05063v4",
+            "doi": "10.1007/s10817-022-09655-x"
+          },
+          "name": "Efficient Extensional Binary Tries (Andrew W. Appel and Xavier Leroy, Journal of Automated Reasoning Vol. 67 Article 8, 2023)"
+        },
+        {
+          "identity": {
+            "repository": "xavierleroy/canonical-binary-tries",
+            "revision": "0dffeda1846d4bad47c39aa72611ab523bb8bfd5"
+          },
+          "name": "Canonical Binary Tries Coq formalization and six-representation comparison suite"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler canonical PTree finite-map library (lib/Maps.v)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "url": "https://gitlab.mpi-sws.org/iris/refinedc"
+          },
+          "name": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types and the Lithium separation-logic engine (Michael Sammler, Rodolphe Lepigre, Robbert Krebbers, Kayvan Memarian, Derek Dreyer, and Deepak Garg, PLDI 2021)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/proof-scaling",
+        "anneal/theory",
+        "lean",
+        "lean/kernel",
+        "lean/mechanization",
+        "verification",
+        "verification/compcert",
+        "verification/separation-logic"
       ]
     },
     "capability-hardware-tagged-architectures-and-cheri-abi-co-design": {

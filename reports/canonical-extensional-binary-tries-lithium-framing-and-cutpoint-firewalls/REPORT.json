@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/proof-scaling",
+    "anneal/theory",
+    "lean",
+    "lean/kernel",
+    "lean/mechanization",
+    "verification",
+    "verification/compcert",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal trusted boundary auditor, MIR operational semantics, and PureLift permission tries",
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 C++ kernel typechecker, reducibility attributes, declaration elaborator, and MetaM WHNF evaluator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Efficient Extensional Binary Tries (Andrew W. Appel and Xavier Leroy, Journal of Automated Reasoning Vol. 67 Article 8, 2023)",
+      "identity": {
+        "arxiv": "2110.05063v4",
+        "doi": "10.1007/s10817-022-09655-x"
+      }
+    },
+    {
+      "name": "Canonical Binary Tries Coq formalization and six-representation comparison suite",
+      "identity": {
+        "repository": "xavierleroy/canonical-binary-tries",
+        "revision": "0dffeda1846d4bad47c39aa72611ab523bb8bfd5"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler canonical PTree finite-map library (lib/Maps.v)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types and the Lithium separation-logic engine (Michael Sammler, Rodolphe Lepigre, Robbert Krebbers, Kayvan Memarian, Derek Dreyer, and Deepak Garg, PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454036",
+        "url": "https://gitlab.mpi-sws.org/iris/refinedc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
