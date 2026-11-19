@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "security",
+    "security/saml-xml-signature-wrapping",
+    "security/oauth-pkce-and-mixup",
+    "security/jwt-algorithm-confusion",
+    "verification",
+    "systems",
+    "pl",
+    "ffi"
+  ],
+  "subjects": [
+    {
+      "name": "goxmldsig",
+      "identity": {
+        "repository": "russellhaering/goxmldsig",
+        "revision": "10e2e6555035897cd38d90631553af153d2ffde6"
+      }
+    },
+    {
+      "name": "xml-roundtrip-validator",
+      "identity": {
+        "repository": "mattermost/xml-roundtrip-validator",
+        "revision": "3079e7b80fcab1eae8b64108e9157061b0cb4f35"
+      }
+    },
+    {
+      "name": "xmlsec",
+      "identity": {
+        "repository": "lsh123/xmlsec",
+        "revision": "7469c2258e100afe7b42fcb8241d527fbf5898df"
+      }
+    },
+    {
+      "name": "golang-jwt",
+      "identity": {
+        "repository": "golang-jwt/jwt",
+        "revision": "f411663679b83c5b1005f8c54da427281de64680"
+      }
+    },
+    {
+      "name": "jose",
+      "identity": {
+        "repository": "panva/jose",
+        "revision": "d1e200f22d2bc66cd2ed6cc48fc622b6f1765cc5"
+      }
+    },
+    {
+      "name": "AppAuth-JS",
+      "identity": {
+        "repository": "openid/AppAuth-JS",
+        "revision": "cbabdaf2747563cfac178e1aa89aa34c1c191d18"
+      }
+    },
+    {
+      "name": "OpenJDK ECDSA Implementation",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "510deb132b0c5ff6fefdf7bde56d82223e927b69"
+      }
+    },
+    {
+      "name": "A Comprehensive Formal Security Analysis of OAuth 2.0 (Fett, Kusters, Schmitz)",
+      "identity": {
+        "doi": "10.1145/2976749.2978385",
+        "arxiv": "1601.01229"
+      }
+    },
+    {
+      "name": "IETF OAuth 2.0 Security Best Current Practice",
+      "identity": {
+        "standard": "RFC 9700 (BCP 240)",
+        "url": "https://www.rfc-editor.org/rfc/rfc9700"
+      }
+    },
+    {
+      "name": "IETF JSON Web Token Best Current Practices",
+      "identity": {
+        "standard": "RFC 8725 (BCP 225)",
+        "url": "https://www.rfc-editor.org/rfc/rfc8725"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
