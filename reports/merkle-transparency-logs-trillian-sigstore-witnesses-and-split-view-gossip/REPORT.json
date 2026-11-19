@@ -1,0 +1,122 @@
+{
+  "topics": [
+    "security",
+    "security/transparency-logs",
+    "security/key-transparency",
+    "systems",
+    "systems/authenticated-dictionaries",
+    "verification",
+    "verification/merkle-consistency",
+    "vcs",
+    "vcs/artifact-provenance"
+  ],
+  "subjects": [
+    {
+      "name": "Certificate Transparency Version 2.0 (Laurie, Messeri, Stradling)",
+      "identity": {
+        "standard": "RFC 9162",
+        "doi": "10.17487/RFC9162"
+      }
+    },
+    {
+      "name": "Certificate Transparency Version 1.0 (Laurie, Langley, Kasper)",
+      "identity": {
+        "standard": "RFC 6962",
+        "doi": "10.17487/RFC6962"
+      }
+    },
+    {
+      "name": "transparency-dev Merkle compact range and RFC 6962/9162 proof verifier",
+      "identity": {
+        "repository": "transparency-dev/merkle",
+        "revision": "75a6539d7b48af0d529236f24487d2814fd1dca7"
+      }
+    },
+    {
+      "name": "Google Trillian verifiable transparency log and sparse Merkle map",
+      "identity": {
+        "repository": "google/trillian",
+        "revision": "07016bd85eba94134d3e423a1b16f13e19ef366e"
+      }
+    },
+    {
+      "name": "Sigstore Rekor v1 artifact transparency log",
+      "identity": {
+        "repository": "sigstore/rekor",
+        "revision": "0baa39712ffa627b70756ea555193ec84bea4507"
+      }
+    },
+    {
+      "name": "transparency-dev OmniWitness checkpoint cosigning service",
+      "identity": {
+        "repository": "transparency-dev/witness",
+        "revision": "bd0f4ab93e8ee9cf3b382d7c903e864c3701a5c5"
+      }
+    },
+    {
+      "name": "C2SP transparency log checkpoint, cosignature, witness, and tile specifications",
+      "identity": {
+        "repository": "C2SP/C2SP",
+        "revision": "d35150e795e178b7ad26cdff0ec1877bcc9e9723"
+      }
+    },
+    {
+      "name": "Meta Auditable Key Directory (AKD) Rust implementation",
+      "identity": {
+        "repository": "facebook/akd",
+        "revision": "43a60ccf7dfdd8f4b628186410e871192adaf65b"
+      }
+    },
+    {
+      "name": "CONIKS reference Go key-transparency implementation",
+      "identity": {
+        "repository": "coniks-sys/coniks-go",
+        "revision": "11acf4819b71d23bb135a597950e59d74fe75b6c"
+      }
+    },
+    {
+      "name": "Sigstore: Software Signing for Everybody (Newman, Meyers, Torres-Arias)",
+      "identity": {
+        "doi": "10.1145/3548606.3560596",
+        "venue": "ACM CCS 2022"
+      }
+    },
+    {
+      "name": "Efficient Gossip Protocols for Verifying the Consistency of Certificate Logs (Chuat, Szalachowski, Perrig, Laurie, Messeri)",
+      "identity": {
+        "doi": "10.1109/CNS.2015.7346853",
+        "arxiv": "arXiv:1511.01514",
+        "venue": "IEEE CNS 2015"
+      }
+    },
+    {
+      "name": "Keeping Authorities Honest or Bust with Decentralized Witness Cosigning / CoSi (Syta et al.)",
+      "identity": {
+        "doi": "10.1109/SP.2016.38",
+        "venue": "IEEE S&P 2016"
+      }
+    },
+    {
+      "name": "CONIKS: Bringing Key Transparency to End Users (Melara, Blankstein, Bonneau, Felten, Freedman)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/melara",
+        "venue": "USENIX Security 2015"
+      }
+    },
+    {
+      "name": "SEEMless: Secure End-to-End Encrypted Messaging with less Trust (Chase, Deshpande, Ghosh, Malvai)",
+      "identity": {
+        "doi": "10.1145/3319535.3363202",
+        "venue": "ACM CCS 2019"
+      }
+    },
+    {
+      "name": "Parakeet: Practical Key Transparency for End-to-End Encrypted Messaging (Malvai et al.)",
+      "identity": {
+        "doi": "10.14722/ndss.2023.24545",
+        "venue": "NDSS 2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

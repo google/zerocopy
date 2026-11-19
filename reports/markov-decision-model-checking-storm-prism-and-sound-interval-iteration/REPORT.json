@@ -1,0 +1,77 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "moves-rwth/storm",
+        "revision": "926b19c62afe6eac917e87ecf1058f5ee116fbc2",
+        "version": "2.0.0.3"
+      },
+      "name": "Storm probabilistic model checker"
+    },
+    {
+      "identity": {
+        "repository": "prismmodelchecker/prism",
+        "revision": "5a534b02fd1f17c6b30affc6231e280b40ae0860",
+        "version": "4.12.1-dev"
+      },
+      "name": "PRISM probabilistic model checker"
+    },
+    {
+      "identity": {
+        "arxiv": "2002.07080",
+        "doi": "10.1007/s10009-021-00633-z"
+      },
+      "name": "The Probabilistic Model Checker Storm (Hensel, Junges, Katoen, Quatmann, Volk, STTT 2022)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-642-22110-1_47"
+      },
+      "name": "PRISM 4.0: Verification of Probabilistic Real-Time Systems (Kwiatkowska, Norman, Parker, CAV 2011)"
+    },
+    {
+      "identity": {
+        "doi": "10.1016/j.tcs.2016.12.003"
+      },
+      "name": "Interval iteration algorithm for MDPs and IMDPs (Haddad & Monmege, TCS 2018)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-319-63387-9_8"
+      },
+      "name": "Ensuring the Reliability of Your Model Checker: Interval Iteration for Markov Decision Processes (Baier, Klein, Leuschner, Parker, Wunderlich, CAV 2017)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-319-96145-3_37"
+      },
+      "name": "Sound Value Iteration (Quatmann & Katoen, CAV 2018)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-030-53291-8_26"
+      },
+      "name": "Optimistic Value Iteration (Hartmanns & Kaminski, CAV 2020)"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/s10703-020-00348-y"
+      },
+      "name": "Exact Quantitative Probabilistic Model Checking Through Rational Search (Bauer, Mathur, Chadha, Sistla, Viswanathan, FMSD 2020)"
+    },
+    {
+      "identity": {
+        "arxiv": "1910.10636",
+        "doi": "10.1007/978-3-030-45190-5_18"
+      },
+      "name": "Farkas Certificates and Minimal Witnesses for Probabilistic Reachability Constraints (Funke, Jantsch, Baier, TACAS 2020)"
+    }
+  ],
+  "topics": [
+    "verification/probabilistic-checking",
+    "smt/markov-decision-processes",
+    "domains/quantitative-dependability",
+    "pl/stochastic-logics"
+  ]
+}

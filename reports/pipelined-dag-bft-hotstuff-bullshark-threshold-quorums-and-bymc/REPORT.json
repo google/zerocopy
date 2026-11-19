@@ -1,0 +1,123 @@
+{
+  "topics": [
+    "systems",
+    "systems/byzantine-consensus",
+    "systems/dag-consensus",
+    "security",
+    "security/threshold-signatures",
+    "security/accountable-safety",
+    "verification",
+    "verification/threshold-automata",
+    "smt",
+    "smt/parameterized-consensus"
+  ],
+  "subjects": [
+    {
+      "name": "HotStuff reference C++ consensus engine (libhotstuff)",
+      "identity": {
+        "repository": "hot-stuff/libhotstuff",
+        "revision": "34aa50796f201aaab91c4db5aae9d3b7aceddb5c"
+      }
+    },
+    {
+      "name": "Two-chain HotStuff / Jolteon-style Rust consensus engine",
+      "identity": {
+        "repository": "asonnino/hotstuff",
+        "revision": "082d36d637cd90c710a1409f9a72ab27c679809f"
+      }
+    },
+    {
+      "name": "Narwhal, Tusk, and Bullshark causal-DAG BFT consensus",
+      "identity": {
+        "repository": "MystenLabs/narwhal",
+        "revision": "e67f91530e6bd4ef7808e42f548f07e58764ec5b"
+      }
+    },
+    {
+      "name": "Zcash Foundation FROST two-round Schnorr threshold signatures",
+      "identity": {
+        "repository": "ZcashFoundation/frost",
+        "revision": "0966bd1529aa062ad3b621af99e277f976b1c0f0"
+      }
+    },
+    {
+      "name": "Supranational blst BLS12-381 signature library",
+      "identity": {
+        "repository": "supranational/blst",
+        "revision": "80e8ff504a17fee5b45a798ff97eaadd0c37244d"
+      }
+    },
+    {
+      "name": "ByMC Byzantine Model Checker for threshold automata",
+      "identity": {
+        "repository": "konnov/bymc",
+        "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+      }
+    },
+    {
+      "name": "Apalache symbolic SMT model checker for TLA+",
+      "identity": {
+        "repository": "apalache-mc/apalache",
+        "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+      }
+    },
+    {
+      "name": "HotStuff: BFT Consensus with Linearity and Responsiveness (Yin, Malkhi, Reiter, Gueta, Abraham)",
+      "identity": {
+        "doi": "10.1145/3293611.3331591",
+        "venue": "ACM PODC 2019"
+      }
+    },
+    {
+      "name": "Narwhal and Tusk: A DAG-based Mempool and Efficient BFT Consensus (Danezis, Kokoris-Kogias, Sonnino, Spiegelman)",
+      "identity": {
+        "doi": "10.1145/3492321.3519594",
+        "venue": "ACM EuroSys 2022"
+      }
+    },
+    {
+      "name": "Bullshark: DAG BFT Protocols Made Practical (Spiegelman, Giridharan, Sonnino, Kokoris-Kogias)",
+      "identity": {
+        "doi": "10.1145/3548606.3559361",
+        "venue": "ACM CCS 2022"
+      }
+    },
+    {
+      "name": "The Flexible Round-Optimized Schnorr Threshold (FROST) Protocol for Two-Round Schnorr Signatures (Komlo, Goldberg, Wood)",
+      "identity": {
+        "standard": "RFC 9591",
+        "doi": "10.17487/RFC9591"
+      }
+    },
+    {
+      "name": "FROST: Flexible Round-Optimized Schnorr Threshold Signatures (Komlo, Goldberg)",
+      "identity": {
+        "doi": "10.1007/978-3-030-81652-0_2",
+        "venue": "SAC 2020, LNCS 12804"
+      }
+    },
+    {
+      "name": "BFT Protocol Forensics (Sheng, Wang, Nayak, Kannan, Viswanath)",
+      "identity": {
+        "doi": "10.1145/3460120.3484566",
+        "arxiv": "arXiv:2010.06785",
+        "venue": "ACM CCS 2021"
+      }
+    },
+    {
+      "name": "A Short Counterexample Property for Safety and Liveness Verification of Fault-Tolerant Distributed Algorithms (Konnov, Lazic, Veith, Widder)",
+      "identity": {
+        "doi": "10.1145/3009837.3009860",
+        "venue": "ACM POPL 2017"
+      }
+    },
+    {
+      "name": "TLA+ Model Checking Made Symbolic (Konnov, Kukovec, Tran)",
+      "identity": {
+        "doi": "10.1145/3360549",
+        "venue": "PACMPL 3(OOPSLA), 2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

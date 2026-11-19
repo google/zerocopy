@@ -28641,6 +28641,83 @@
         "verification/isa-coverage"
       ]
     },
+    "markov-decision-model-checking-storm-prism-and-sound-interval-iteration": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "moves-rwth/storm",
+            "revision": "926b19c62afe6eac917e87ecf1058f5ee116fbc2",
+            "version": "2.0.0.3"
+          },
+          "name": "Storm probabilistic model checker"
+        },
+        {
+          "identity": {
+            "repository": "prismmodelchecker/prism",
+            "revision": "5a534b02fd1f17c6b30affc6231e280b40ae0860",
+            "version": "4.12.1-dev"
+          },
+          "name": "PRISM probabilistic model checker"
+        },
+        {
+          "identity": {
+            "arxiv": "2002.07080",
+            "doi": "10.1007/s10009-021-00633-z"
+          },
+          "name": "The Probabilistic Model Checker Storm (Hensel, Junges, Katoen, Quatmann, Volk, STTT 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-22110-1_47"
+          },
+          "name": "PRISM 4.0: Verification of Probabilistic Real-Time Systems (Kwiatkowska, Norman, Parker, CAV 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.tcs.2016.12.003"
+          },
+          "name": "Interval iteration algorithm for MDPs and IMDPs (Haddad & Monmege, TCS 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-63387-9_8"
+          },
+          "name": "Ensuring the Reliability of Your Model Checker: Interval Iteration for Markov Decision Processes (Baier, Klein, Leuschner, Parker, Wunderlich, CAV 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-96145-3_37"
+          },
+          "name": "Sound Value Iteration (Quatmann & Katoen, CAV 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53291-8_26"
+          },
+          "name": "Optimistic Value Iteration (Hartmanns & Kaminski, CAV 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10703-020-00348-y"
+          },
+          "name": "Exact Quantitative Probabilistic Model Checking Through Rational Search (Bauer, Mathur, Chadha, Sistla, Viswanathan, FMSD 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.10636",
+            "doi": "10.1007/978-3-030-45190-5_18"
+          },
+          "name": "Farkas Certificates and Minimal Witnesses for Probabilistic Reachability Constraints (Funke, Jantsch, Baier, TACAS 2020)"
+        }
+      ],
+      "topics": [
+        "verification/probabilistic-checking",
+        "smt/markov-decision-processes",
+        "domains/quantitative-dependability",
+        "pl/stochastic-logics"
+      ]
+    },
     "mathlib-cache-protocol-artifact-format-and-pruning": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -29493,6 +29570,128 @@
         "security/heap-hardening",
         "systems/virtual-memory",
         "verification/separation-logic"
+      ]
+    },
+    "merkle-transparency-logs-trillian-sigstore-witnesses-and-split-view-gossip": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.17487/RFC9162",
+            "standard": "RFC 9162"
+          },
+          "name": "Certificate Transparency Version 2.0 (Laurie, Messeri, Stradling)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC6962",
+            "standard": "RFC 6962"
+          },
+          "name": "Certificate Transparency Version 1.0 (Laurie, Langley, Kasper)"
+        },
+        {
+          "identity": {
+            "repository": "transparency-dev/merkle",
+            "revision": "75a6539d7b48af0d529236f24487d2814fd1dca7"
+          },
+          "name": "transparency-dev Merkle compact range and RFC 6962/9162 proof verifier"
+        },
+        {
+          "identity": {
+            "repository": "google/trillian",
+            "revision": "07016bd85eba94134d3e423a1b16f13e19ef366e"
+          },
+          "name": "Google Trillian verifiable transparency log and sparse Merkle map"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/rekor",
+            "revision": "0baa39712ffa627b70756ea555193ec84bea4507"
+          },
+          "name": "Sigstore Rekor v1 artifact transparency log"
+        },
+        {
+          "identity": {
+            "repository": "transparency-dev/witness",
+            "revision": "bd0f4ab93e8ee9cf3b382d7c903e864c3701a5c5"
+          },
+          "name": "transparency-dev OmniWitness checkpoint cosigning service"
+        },
+        {
+          "identity": {
+            "repository": "C2SP/C2SP",
+            "revision": "d35150e795e178b7ad26cdff0ec1877bcc9e9723"
+          },
+          "name": "C2SP transparency log checkpoint, cosignature, witness, and tile specifications"
+        },
+        {
+          "identity": {
+            "repository": "facebook/akd",
+            "revision": "43a60ccf7dfdd8f4b628186410e871192adaf65b"
+          },
+          "name": "Meta Auditable Key Directory (AKD) Rust implementation"
+        },
+        {
+          "identity": {
+            "repository": "coniks-sys/coniks-go",
+            "revision": "11acf4819b71d23bb135a597950e59d74fe75b6c"
+          },
+          "name": "CONIKS reference Go key-transparency implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3548606.3560596",
+            "venue": "ACM CCS 2022"
+          },
+          "name": "Sigstore: Software Signing for Everybody (Newman, Meyers, Torres-Arias)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:1511.01514",
+            "doi": "10.1109/CNS.2015.7346853",
+            "venue": "IEEE CNS 2015"
+          },
+          "name": "Efficient Gossip Protocols for Verifying the Consistency of Certificate Logs (Chuat, Szalachowski, Perrig, Laurie, Messeri)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2016.38",
+            "venue": "IEEE S&P 2016"
+          },
+          "name": "Keeping Authorities Honest or Bust with Decentralized Witness Cosigning / CoSi (Syta et al.)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/melara",
+            "venue": "USENIX Security 2015"
+          },
+          "name": "CONIKS: Bringing Key Transparency to End Users (Melara, Blankstein, Bonneau, Felten, Freedman)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3319535.3363202",
+            "venue": "ACM CCS 2019"
+          },
+          "name": "SEEMless: Secure End-to-End Encrypted Messaging with less Trust (Chase, Deshpande, Ghosh, Malvai)"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2023.24545",
+            "venue": "NDSS 2023"
+          },
+          "name": "Parakeet: Practical Key Transparency for End-to-End Encrypted Messaging (Malvai et al.)"
+        }
+      ],
+      "topics": [
+        "security",
+        "security/transparency-logs",
+        "security/key-transparency",
+        "systems",
+        "systems/authenticated-dictionaries",
+        "verification",
+        "verification/merkle-consistency",
+        "vcs",
+        "vcs/artifact-provenance"
       ]
     },
     "metal-typechain-language-isolated-kernels-1995-2026": {
@@ -33756,6 +33955,129 @@
         "rust",
         "systems",
         "verification"
+      ]
+    },
+    "pipelined-dag-bft-hotstuff-bullshark-threshold-quorums-and-bymc": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "hot-stuff/libhotstuff",
+            "revision": "34aa50796f201aaab91c4db5aae9d3b7aceddb5c"
+          },
+          "name": "HotStuff reference C++ consensus engine (libhotstuff)"
+        },
+        {
+          "identity": {
+            "repository": "asonnino/hotstuff",
+            "revision": "082d36d637cd90c710a1409f9a72ab27c679809f"
+          },
+          "name": "Two-chain HotStuff / Jolteon-style Rust consensus engine"
+        },
+        {
+          "identity": {
+            "repository": "MystenLabs/narwhal",
+            "revision": "e67f91530e6bd4ef7808e42f548f07e58764ec5b"
+          },
+          "name": "Narwhal, Tusk, and Bullshark causal-DAG BFT consensus"
+        },
+        {
+          "identity": {
+            "repository": "ZcashFoundation/frost",
+            "revision": "0966bd1529aa062ad3b621af99e277f976b1c0f0"
+          },
+          "name": "Zcash Foundation FROST two-round Schnorr threshold signatures"
+        },
+        {
+          "identity": {
+            "repository": "supranational/blst",
+            "revision": "80e8ff504a17fee5b45a798ff97eaadd0c37244d"
+          },
+          "name": "Supranational blst BLS12-381 signature library"
+        },
+        {
+          "identity": {
+            "repository": "konnov/bymc",
+            "revision": "266366f738bce9dbd5d04336fd9123d85ae2bca1"
+          },
+          "name": "ByMC Byzantine Model Checker for threshold automata"
+        },
+        {
+          "identity": {
+            "repository": "apalache-mc/apalache",
+            "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+          },
+          "name": "Apalache symbolic SMT model checker for TLA+"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3293611.3331591",
+            "venue": "ACM PODC 2019"
+          },
+          "name": "HotStuff: BFT Consensus with Linearity and Responsiveness (Yin, Malkhi, Reiter, Gueta, Abraham)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3492321.3519594",
+            "venue": "ACM EuroSys 2022"
+          },
+          "name": "Narwhal and Tusk: A DAG-based Mempool and Efficient BFT Consensus (Danezis, Kokoris-Kogias, Sonnino, Spiegelman)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3548606.3559361",
+            "venue": "ACM CCS 2022"
+          },
+          "name": "Bullshark: DAG BFT Protocols Made Practical (Spiegelman, Giridharan, Sonnino, Kokoris-Kogias)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9591",
+            "standard": "RFC 9591"
+          },
+          "name": "The Flexible Round-Optimized Schnorr Threshold (FROST) Protocol for Two-Round Schnorr Signatures (Komlo, Goldberg, Wood)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-81652-0_2",
+            "venue": "SAC 2020, LNCS 12804"
+          },
+          "name": "FROST: Flexible Round-Optimized Schnorr Threshold Signatures (Komlo, Goldberg)"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2010.06785",
+            "doi": "10.1145/3460120.3484566",
+            "venue": "ACM CCS 2021"
+          },
+          "name": "BFT Protocol Forensics (Sheng, Wang, Nayak, Kannan, Viswanath)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009860",
+            "venue": "ACM POPL 2017"
+          },
+          "name": "A Short Counterexample Property for Safety and Liveness Verification of Fault-Tolerant Distributed Algorithms (Konnov, Lazic, Veith, Widder)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360549",
+            "venue": "PACMPL 3(OOPSLA), 2019"
+          },
+          "name": "TLA+ Model Checking Made Symbolic (Konnov, Kukovec, Tran)"
+        }
+      ],
+      "topics": [
+        "systems",
+        "systems/byzantine-consensus",
+        "systems/dag-consensus",
+        "security",
+        "security/threshold-signatures",
+        "security/accountable-safety",
+        "verification",
+        "verification/threshold-automata",
+        "smt",
+        "smt/parameterized-consensus"
       ]
     },
     "pl-compiler-ffi-verification-problem-landscape-and-taxonomy": {
