@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "security/authorization-engines",
+    "lean/policy-verification",
+    "systems/relationship-tuples",
+    "smt/policy-equivalence",
+    "verification/differential-testing",
+    "systems/causal-consistency"
+  ],
+  "subjects": [
+    {
+      "name": "Cedar formal specification, Lean 4 proofs, and SymCC symbolic compiler",
+      "identity": {
+        "repository": "cedar-policy/cedar-spec",
+        "revision": "326d93c24490c90607a3e257318e9c6a049c8116",
+        "lean_toolchain": "leanprover/lean4:v4.36.0"
+      }
+    },
+    {
+      "name": "Cedar production Rust authorization engine and SymCC library",
+      "identity": {
+        "repository": "cedar-policy/cedar",
+        "revision": "4ff0bb074699db8c348426ee03db933bf8ebfdd6",
+        "version": "4.15.0"
+      }
+    },
+    {
+      "name": "SpiceDB Zanzibar-inspired relationship-based authorization system",
+      "identity": {
+        "repository": "authzed/spicedb",
+        "revision": "c9e95eba0a82dbe1ae9d5cdd27df842025ae200d"
+      }
+    },
+    {
+      "name": "OpenFGA relationship-based access control engine",
+      "identity": {
+        "repository": "openfga/openfga",
+        "revision": "798149843737e264e64b8660baadb946528c02f0"
+      }
+    },
+    {
+      "name": "Cedar: A New Language for Expressive, Fast, Safe, and Analyzable Authorization (OOPSLA 2024)",
+      "identity": {
+        "doi": "10.1145/3689780",
+        "arxiv": "2403.04651",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "How We Built Cedar: A Verification-Guided Approach (2024)",
+      "identity": {
+        "arxiv": "2407.01688",
+        "doi": "10.48550/arXiv.2407.01688",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "SymCert: Verifying SMT-Based Policy Analyses (FMCAD 2026)",
+      "identity": {
+        "doi": "10.34727/2026/isbn.978-3-85448-093-8_30",
+        "authors": "Emina Torlak",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Zanzibar: Google's Consistent, Global Authorization System (USENIX ATC 2019)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/atc19/presentation/pang",
+        "authors": "Ruoming Pang, Ramon Caceres, Mike Burrows, Zhifeng Chen, Pratik Dave, Nathan Germer, Alexander Golynski, Kevin Graney, Nina Kang, Lea Kissner, Jeffrey L. Korn, Abhishek Parmar, Christopher D. Richards, Mengzhi Wang",
+        "year": "2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "runtimes/actor-heaps",
+    "pl/reference-capabilities",
+    "compilers/region-inference",
+    "verification/distributed-rc",
+    "zerocopy/binary-slicing",
+    "runtimes/garbage-collection"
+  ],
+  "subjects": [
+    {
+      "name": "Erlang/OTP BEAM runtime and unified bitstring subsystem",
+      "identity": {
+        "repository": "erlang/otp",
+        "revision": "d70e1618bdf5034d979e4fa110a6cd3fe182411a",
+        "version": "30.0-rc0"
+      }
+    },
+    {
+      "name": "Pony compiler reference-capability typechecker and libponyrt Orca runtime",
+      "identity": {
+        "repository": "ponylang/ponyc",
+        "revision": "b2d900f3287e40e8e048b6f715a9f461932e14c1",
+        "version": "0.78.2"
+      }
+    },
+    {
+      "name": "MLKit Standard ML region-inference compiler and hybrid region-GC runtime",
+      "identity": {
+        "repository": "melsman/mlkit",
+        "revision": "4d85e412f5d48dc4442df5599557131e2ab3f336",
+        "version": "4.7.23-post"
+      }
+    },
+    {
+      "name": "Deny Capabilities for Safe, Fast Actors (AGERE! 2015)",
+      "identity": {
+        "doi": "10.1145/2824815.2824816",
+        "authors": "Sylvan Clebsch, Sophia Drossopoulou, Sebastian Blessing, Andy McNeil",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Orca: GC and Type System Co-Design for Actor Languages (OOPSLA 2017)",
+      "identity": {
+        "doi": "10.1145/3133896",
+        "authors": "Sylvan Clebsch, Juliana Franco, Sophia Drossopoulou, Albert Mingkun Yang, Tobias Wrigstad, Jan Vitek",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Region-Based Memory Management (Information and Computation 1997)",
+      "identity": {
+        "doi": "10.1006/inco.1996.2613",
+        "authors": "Mads Tofte, Jean-Pierre Talpin",
+        "year": "1997"
+      }
+    },
+    {
+      "name": "From Region Inference to von Neumann Machines via Region Representation Inference (POPL 1996)",
+      "identity": {
+        "doi": "10.1145/237721.237771",
+        "authors": "Lars Birkedal, Mads Tofte, Magnus Vejlstrup",
+        "year": "1996"
+      }
+    },
+    {
+      "name": "Combining Region Inference and Garbage Collection (PLDI 2002)",
+      "identity": {
+        "doi": "10.1145/512529.512547",
+        "authors": "Niels Hallenberg, Martin Elsman, Mads Tofte",
+        "year": "2002"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

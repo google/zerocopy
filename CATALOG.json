@@ -8762,6 +8762,83 @@
         "verification/graph-reduction-invariants"
       ]
     },
+    "beam-procbin-heaps-pony-orca-capabilities-and-mlkit-region-resetting": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "erlang/otp",
+            "revision": "d70e1618bdf5034d979e4fa110a6cd3fe182411a",
+            "version": "30.0-rc0"
+          },
+          "name": "Erlang/OTP BEAM runtime and unified bitstring subsystem"
+        },
+        {
+          "identity": {
+            "repository": "ponylang/ponyc",
+            "revision": "b2d900f3287e40e8e048b6f715a9f461932e14c1",
+            "version": "0.78.2"
+          },
+          "name": "Pony compiler reference-capability typechecker and libponyrt Orca runtime"
+        },
+        {
+          "identity": {
+            "repository": "melsman/mlkit",
+            "revision": "4d85e412f5d48dc4442df5599557131e2ab3f336",
+            "version": "4.7.23-post"
+          },
+          "name": "MLKit Standard ML region-inference compiler and hybrid region-GC runtime"
+        },
+        {
+          "identity": {
+            "authors": "Sylvan Clebsch, Sophia Drossopoulou, Sebastian Blessing, Andy McNeil",
+            "doi": "10.1145/2824815.2824816",
+            "year": "2015"
+          },
+          "name": "Deny Capabilities for Safe, Fast Actors (AGERE! 2015)"
+        },
+        {
+          "identity": {
+            "authors": "Sylvan Clebsch, Juliana Franco, Sophia Drossopoulou, Albert Mingkun Yang, Tobias Wrigstad, Jan Vitek",
+            "doi": "10.1145/3133896",
+            "year": "2017"
+          },
+          "name": "Orca: GC and Type System Co-Design for Actor Languages (OOPSLA 2017)"
+        },
+        {
+          "identity": {
+            "authors": "Mads Tofte, Jean-Pierre Talpin",
+            "doi": "10.1006/inco.1996.2613",
+            "year": "1997"
+          },
+          "name": "Region-Based Memory Management (Information and Computation 1997)"
+        },
+        {
+          "identity": {
+            "authors": "Lars Birkedal, Mads Tofte, Magnus Vejlstrup",
+            "doi": "10.1145/237721.237771",
+            "year": "1996"
+          },
+          "name": "From Region Inference to von Neumann Machines via Region Representation Inference (POPL 1996)"
+        },
+        {
+          "identity": {
+            "authors": "Niels Hallenberg, Martin Elsman, Mads Tofte",
+            "doi": "10.1145/512529.512547",
+            "year": "2002"
+          },
+          "name": "Combining Region Inference and Garbage Collection (PLDI 2002)"
+        }
+      ],
+      "topics": [
+        "runtimes/actor-heaps",
+        "pl/reference-capabilities",
+        "compilers/region-inference",
+        "verification/distributed-rc",
+        "zerocopy/binary-slicing",
+        "runtimes/garbage-collection"
+      ]
+    },
     "bidirectional-lenses-resugaring-and-non-malleable-format-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -10566,6 +10643,81 @@
         "verification",
         "verification/floating-point",
         "isa"
+      ]
+    },
+    "cedar-lean-policy-slicing-zanzibar-rebac-tuples-and-zookie-consistency": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "lean_toolchain": "leanprover/lean4:v4.36.0",
+            "repository": "cedar-policy/cedar-spec",
+            "revision": "326d93c24490c90607a3e257318e9c6a049c8116"
+          },
+          "name": "Cedar formal specification, Lean 4 proofs, and SymCC symbolic compiler"
+        },
+        {
+          "identity": {
+            "repository": "cedar-policy/cedar",
+            "revision": "4ff0bb074699db8c348426ee03db933bf8ebfdd6",
+            "version": "4.15.0"
+          },
+          "name": "Cedar production Rust authorization engine and SymCC library"
+        },
+        {
+          "identity": {
+            "repository": "authzed/spicedb",
+            "revision": "c9e95eba0a82dbe1ae9d5cdd27df842025ae200d"
+          },
+          "name": "SpiceDB Zanzibar-inspired relationship-based authorization system"
+        },
+        {
+          "identity": {
+            "repository": "openfga/openfga",
+            "revision": "798149843737e264e64b8660baadb946528c02f0"
+          },
+          "name": "OpenFGA relationship-based access control engine"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.04651",
+            "doi": "10.1145/3689780",
+            "year": "2024"
+          },
+          "name": "Cedar: A New Language for Expressive, Fast, Safe, and Analyzable Authorization (OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.01688",
+            "doi": "10.48550/arXiv.2407.01688",
+            "year": "2024"
+          },
+          "name": "How We Built Cedar: A Verification-Guided Approach (2024)"
+        },
+        {
+          "identity": {
+            "authors": "Emina Torlak",
+            "doi": "10.34727/2026/isbn.978-3-85448-093-8_30",
+            "year": "2026"
+          },
+          "name": "SymCert: Verifying SMT-Based Policy Analyses (FMCAD 2026)"
+        },
+        {
+          "identity": {
+            "authors": "Ruoming Pang, Ramon Caceres, Mike Burrows, Zhifeng Chen, Pratik Dave, Nathan Germer, Alexander Golynski, Kevin Graney, Nina Kang, Lea Kissner, Jeffrey L. Korn, Abhishek Parmar, Christopher D. Richards, Mengzhi Wang",
+            "url": "https://www.usenix.org/conference/atc19/presentation/pang",
+            "year": "2019"
+          },
+          "name": "Zanzibar: Google's Consistent, Global Authorization System (USENIX ATC 2019)"
+        }
+      ],
+      "topics": [
+        "security/authorization-engines",
+        "lean/policy-verification",
+        "systems/relationship-tuples",
+        "smt/policy-equivalence",
+        "verification/differential-testing",
+        "systems/causal-consistency"
       ]
     },
     "cellular-5g-nas-rrc-control-plane-verifiers-and-baseband-per-decoders": {
