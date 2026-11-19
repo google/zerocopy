@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "lean/specification-adequacy",
+    "compilers/hdl-width-semantics",
+    "domains/defi-rounding",
+    "pl/desugaring-soundness"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 Theorem Prover and Elaborator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "4f5982e315272d89e2d2113d7ae0d8c9480f15db"
+      }
+    },
+    {
+      "name": "Lean4Lean Verified External Kernel Typechecker",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3",
+        "arxiv": "2403.14064",
+        "doi": "10.4230/LIPIcs.TYPES.2025.2"
+      }
+    },
+    {
+      "name": "Verilator SystemVerilog Simulator and Width Linter",
+      "identity": {
+        "repository": "verilator/verilator",
+        "revision": "464643f7c2abe27db4b9d10b22040bfb01b9c03d"
+      }
+    },
+    {
+      "name": "Yosys Open Synthesis Suite",
+      "identity": {
+        "repository": "YosysHQ/yosys",
+        "revision": "d1338f823b24fc0828d6b55438f3e9c2c13facbc"
+      }
+    },
+    {
+      "name": "Chisel Hardware Construction Language",
+      "identity": {
+        "repository": "chipsalliance/chisel",
+        "revision": "e95009474df71a0fe95e29a7c04b7cbd80fc426d"
+      }
+    },
+    {
+      "name": "OpenZeppelin Solidity Contracts (ERC-4626 & Math)",
+      "identity": {
+        "repository": "OpenZeppelin/openzeppelin-contracts",
+        "revision": "d98b8f438d6c2b9d368d1220448b8519f733d371"
+      }
+    },
+    {
+      "name": "Uniswap v4 Core Singleton & FullMath Libraries",
+      "identity": {
+        "repository": "Uniswap/v4-core",
+        "revision": "bea7f6d1c11cd5dc4f0d5151ffa37a1c239feee6"
+      }
+    },
+    {
+      "name": "Aptos Core & Move Prover Specification Language",
+      "identity": {
+        "repository": "aptos-labs/aptos-core",
+        "revision": "6137e8f7ee8e8b944568a3faf86c2064440edf17"
+      }
+    },
+    {
+      "name": "IEEE Standard for SystemVerilog—Unified Hardware Design, Specification, and Verification Language",
+      "identity": {
+        "standard": "IEEE Std 1800-2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

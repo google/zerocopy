@@ -30388,6 +30388,81 @@
         "verification"
       ]
     },
+    "lean4-elaboration-vacuity-systemverilog-widths-and-defi-rounding-traps": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "4f5982e315272d89e2d2113d7ae0d8c9480f15db"
+          },
+          "name": "Lean 4 Theorem Prover and Elaborator"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.14064",
+            "doi": "10.4230/LIPIcs.TYPES.2025.2",
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean Verified External Kernel Typechecker"
+        },
+        {
+          "identity": {
+            "repository": "verilator/verilator",
+            "revision": "464643f7c2abe27db4b9d10b22040bfb01b9c03d"
+          },
+          "name": "Verilator SystemVerilog Simulator and Width Linter"
+        },
+        {
+          "identity": {
+            "repository": "YosysHQ/yosys",
+            "revision": "d1338f823b24fc0828d6b55438f3e9c2c13facbc"
+          },
+          "name": "Yosys Open Synthesis Suite"
+        },
+        {
+          "identity": {
+            "repository": "chipsalliance/chisel",
+            "revision": "e95009474df71a0fe95e29a7c04b7cbd80fc426d"
+          },
+          "name": "Chisel Hardware Construction Language"
+        },
+        {
+          "identity": {
+            "repository": "OpenZeppelin/openzeppelin-contracts",
+            "revision": "d98b8f438d6c2b9d368d1220448b8519f733d371"
+          },
+          "name": "OpenZeppelin Solidity Contracts (ERC-4626 & Math)"
+        },
+        {
+          "identity": {
+            "repository": "Uniswap/v4-core",
+            "revision": "bea7f6d1c11cd5dc4f0d5151ffa37a1c239feee6"
+          },
+          "name": "Uniswap v4 Core Singleton & FullMath Libraries"
+        },
+        {
+          "identity": {
+            "repository": "aptos-labs/aptos-core",
+            "revision": "6137e8f7ee8e8b944568a3faf86c2064440edf17"
+          },
+          "name": "Aptos Core & Move Prover Specification Language"
+        },
+        {
+          "identity": {
+            "standard": "IEEE Std 1800-2023"
+          },
+          "name": "IEEE Standard for SystemVerilog\u2014Unified Hardware Design, Specification, and Verification Language"
+        }
+      ],
+      "topics": [
+        "lean/specification-adequacy",
+        "compilers/hdl-width-semantics",
+        "domains/defi-rounding",
+        "pl/desugaring-soundness"
+      ]
+    },
     "lean4-kernel-soundness-criticisms-defeq-pathologies-and-lean4lean-checkers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -52227,6 +52302,59 @@
         "security",
         "security/redos",
         "smt"
+      ]
+    },
+    "sqlite-wal-checksum-chains-lmdb-cow-btrees-and-btrfs-zfs-raid-write-holes": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "sqlite/sqlite",
+            "revision": "0361a3b31cc719e4ff3af8a064f33d0925c78376"
+          },
+          "name": "SQLite"
+        },
+        {
+          "identity": {
+            "repository": "LMDB/lmdb",
+            "revision": "ba47717cc87753f86f24135c17bfaaa82d5daf53"
+          },
+          "name": "Symas LMDB"
+        },
+        {
+          "identity": {
+            "repository": "openzfs/zfs",
+            "revision": "85137823cff272e2868e3bcc4670362fbd5a1e10"
+          },
+          "name": "OpenZFS"
+        },
+        {
+          "identity": {
+            "repository": "kdave/btrfs-progs",
+            "revision": "869058445ace952215741ef692e9c419cff28385"
+          },
+          "name": "btrfs-progs"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+          },
+          "name": "Linux kernel"
+        },
+        {
+          "identity": {
+            "repository": "postgres/postgres",
+            "revision": "b443bc7406fd92f1f869cc700810ef9a17a01d82"
+          },
+          "name": "PostgreSQL"
+        }
+      ],
+      "topics": [
+        "systems/embedded-storage",
+        "verification/crash-atomicity",
+        "zerocopy/mmap-btrees",
+        "domains/storage-engines"
       ]
     },
     "stabilizer-tableau-pauli-frames-lattice-surgery-and-blossom-decoding": {

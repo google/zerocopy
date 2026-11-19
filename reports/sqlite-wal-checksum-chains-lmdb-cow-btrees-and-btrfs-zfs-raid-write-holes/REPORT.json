@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "systems/embedded-storage",
+    "verification/crash-atomicity",
+    "zerocopy/mmap-btrees",
+    "domains/storage-engines"
+  ],
+  "subjects": [
+    {
+      "name": "SQLite",
+      "identity": {
+        "repository": "sqlite/sqlite",
+        "revision": "0361a3b31cc719e4ff3af8a064f33d0925c78376"
+      }
+    },
+    {
+      "name": "Symas LMDB",
+      "identity": {
+        "repository": "LMDB/lmdb",
+        "revision": "ba47717cc87753f86f24135c17bfaaa82d5daf53"
+      }
+    },
+    {
+      "name": "OpenZFS",
+      "identity": {
+        "repository": "openzfs/zfs",
+        "revision": "85137823cff272e2868e3bcc4670362fbd5a1e10"
+      }
+    },
+    {
+      "name": "btrfs-progs",
+      "identity": {
+        "repository": "kdave/btrfs-progs",
+        "revision": "869058445ace952215741ef692e9c419cff28385"
+      }
+    },
+    {
+      "name": "Linux kernel",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "f1715c0c04606ebbe832cc760abf49dfd6f2ae1f"
+      }
+    },
+    {
+      "name": "PostgreSQL",
+      "identity": {
+        "repository": "postgres/postgres",
+        "revision": "b443bc7406fd92f1f869cc700810ef9a17a01d82"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
