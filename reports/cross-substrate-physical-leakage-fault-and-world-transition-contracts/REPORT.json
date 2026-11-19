@@ -1,0 +1,158 @@
+{
+  "topics": [
+    "security",
+    "security/side-channels",
+    "security/fault-injection",
+    "security/confidential-computing",
+    "isa",
+    "isa/errata",
+    "compilers",
+    "verification",
+    "ffi"
+  ],
+  "subjects": [
+    {
+      "name": "Coco-Alma Netlist Co-Verification for Masked Software on CPUs",
+      "identity": {
+        "repository": "IAIK/coco-alma",
+        "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97",
+        "eprint": "2020/1294"
+      }
+    },
+    {
+      "name": "PROLEAD / FIESTA Probing-Based Hardware and Software Leakage Detection",
+      "identity": {
+        "repository": "ChairImpSec/PROLEAD",
+        "revision": "2c8c8486d84f58b121b7198fc267ce520d29d39a",
+        "doi": "10.46586/tches.v2022.i4.311-348"
+      }
+    },
+    {
+      "name": "Yosys Open Synthesis Suite",
+      "identity": {
+        "repository": "YosysHQ/yosys",
+        "revision": "d1338f823b24fc0828d6b55438f3e9c2c13facbc"
+      }
+    },
+    {
+      "name": "Revizor Black-Box CPU Speculation Contract Fuzzer",
+      "identity": {
+        "repository": "microsoft/sca-fuzzer",
+        "revision": "cc9fa2e53d92c496586689f44d6ea1740d95bd1d",
+        "doi": "10.1145/3503222.3507729"
+      }
+    },
+    {
+      "name": "LLVM / LLD Post-Compile Errata Relaxation (X86 SKX102 & AArch64 Cortex-A53 843419)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "8ffaed7c45bcbfa52a44a1f6758aee860905b8b2"
+      }
+    },
+    {
+      "name": "RowPress DRAM Read-Disturbance Artifact",
+      "identity": {
+        "repository": "CMU-SAFARI/RowPress",
+        "revision": "5b6f1502594e9ea7a1557b98b5544c096a30eec5",
+        "doi": "10.48550/arXiv.2306.17061"
+      }
+    },
+    {
+      "name": "Blacksmith Frequency-Domain Rowhammer Fuzzer",
+      "identity": {
+        "repository": "comsec-group/blacksmith",
+        "revision": "60bae8e591e39859252dbe6049d536bcb2fb5656",
+        "doi": "10.1109/SP46214.2022.9833772"
+      }
+    },
+    {
+      "name": "Isla Symbolic Architecture Evaluator (ARMv8-A Relaxed ifetch)",
+      "identity": {
+        "repository": "rems-project/isla",
+        "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3",
+        "doi": "10.1007/978-3-030-44914-8_23"
+      }
+    },
+    {
+      "name": "Trusted Firmware Realm Management Monitor (ARM CCA TF-RMM)",
+      "identity": {
+        "repository": "TF-RMM/tf-rmm",
+        "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92",
+        "standard": "Arm DEN0137"
+      }
+    },
+    {
+      "name": "Linux Kernel pKVM nVHE Hypervisor and AMD SEV-SNP Guest Support",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "AMD SEV / SEV-SNP Reference Stack and ABI Specification",
+      "identity": {
+        "repository": "AMDESE/AMDSEV",
+        "revision": "6e0ef356e2d21513882abe4379a3fbadf8e51d62",
+        "standard": "AMD Publication 56860"
+      }
+    },
+    {
+      "name": "COCONUT-SVSM Secure VM Service Module for SEV-SNP",
+      "identity": {
+        "repository": "coconut-svsm/svsm",
+        "revision": "2a40e72a0f44d4369bb997488f2b7a77e346a634"
+      }
+    },
+    {
+      "name": "DMTF libspdm (SPDM DSP0274, PCIe DOE, IDE-KM, and PCIe TDISP)",
+      "identity": {
+        "repository": "DMTF/libspdm",
+        "revision": "3f1253df61ef1af917f1f18ce40db065e93ff82c",
+        "standard": "DMTF DSP0274 / PCI-SIG TDISP ECN"
+      }
+    },
+    {
+      "name": "OpenTitan Open-Source Silicon Root of Trust",
+      "identity": {
+        "repository": "lowRISC/opentitan",
+        "revision": "237c821678614c83b92d0eb2682a1a2090103c01"
+      }
+    },
+    {
+      "name": "Tamarin Symbolic Security Protocol Verifier",
+      "identity": {
+        "repository": "tamarin-prover/tamarin-prover",
+        "revision": "0e533bd4c36ab0cf935acf05c5ca157c304dc996"
+      }
+    },
+    {
+      "name": "Squirrel Computational Cryptographic Protocol Prover",
+      "identity": {
+        "repository": "squirrel-prover/squirrel-prover",
+        "revision": "ebef0aca4f668b3b6c8e8e2796e59a16e7e50c9c"
+      }
+    },
+    {
+      "name": "Hardware Masking and SIFA Cryptographic Literature (PINI, O-PINI, TI, DOM, SIFA, ECM)",
+      "identity": {
+        "doi_pini": "10.1109/TIFS.2020.2971153",
+        "doi_hpc_opini": "10.1109/TC.2020.3022979",
+        "doi_ti": "10.1007/11935308_38",
+        "doi_dom": "10.1145/2996366.2996426",
+        "doi_sifa": "10.13154/tches.v2018.i3.547-572",
+        "doi_sifa_protect": "10.13154/tches.v2020.i3.508-543"
+      }
+    },
+    {
+      "name": "Microarchitectural Speculation, DMP, DVFS, and TCG TPM 2.0 Standards",
+      "identity": {
+        "doi_hw_sw_contracts": "10.1109/SP40001.2021.00036",
+        "doi_augury": "10.1109/SP46214.2022.9833570",
+        "url_gofetch": "https://www.usenix.org/conference/usenixsecurity24/presentation/chen-borui",
+        "url_hertzbleed": "https://www.usenix.org/conference/usenixsecurity22/presentation/wang-yingchen",
+        "standard_tpm2": "TCG TPM 2.0 Library Specification Family 2.0 Rev 01.59 / 01.83"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
