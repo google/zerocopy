@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "pl/temporal-scale-types",
+    "runtimes/monotonic-and-wall-clocks",
+    "security/timestamp-smearing-divergence",
+    "systems/ntp-ptp-leap-second-smearing",
+    "verification/civil-tzdb-epoch-injectivity"
+  ],
+  "subjects": [
+    {
+      "name": "Linux Kernel (NTP Leap-Second State Machine & CLOCK_TAI)",
+      "identity": {
+        "repository": "https://github.com/torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "Go Standard Library (time.Time Dual Wall/Monotonic Representation)",
+      "identity": {
+        "repository": "https://github.com/golang/go",
+        "revision": "9535db20eb78901d6a15a880e6700d428c1b7077"
+      }
+    },
+    {
+      "name": "chrony (NTP Leap-Slew & 3-Stage Quadratic Time Smoothing)",
+      "identity": {
+        "repository": "https://github.com/mlichvar/chrony",
+        "revision": "372462ca6c1a822245544003199a24ebfad1fc0e"
+      }
+    },
+    {
+      "name": "Jiff (Rust RFC 9557 Temporal & TZif Disambiguation Library)",
+      "identity": {
+        "repository": "https://github.com/BurntSushi/jiff",
+        "revision": "623ea08d41d4ad0c647585eed9405e6b76d2d27e"
+      }
+    },
+    {
+      "name": "Chrono (Rust NaiveTime >1e9 Nanosecond Leap Encoding & MappedLocalTime)",
+      "identity": {
+        "repository": "https://github.com/chronotope/chrono",
+        "revision": "6adaa5240c26fecb7bd9077334a91f8f67f4f3fe"
+      }
+    },
+    {
+      "name": "Howard Hinnant date (C++20 chrono utc_clock, tai_clock, gps_clock, zoned_time)",
+      "identity": {
+        "repository": "https://github.com/HowardHinnant/date",
+        "revision": "2390d3da331bc44b89940d9b3397ab438ebb6a41"
+      }
+    },
+    {
+      "name": "IANA Time Zone Database & Reference Implementation (tzcode / tzdb)",
+      "identity": {
+        "repository": "https://github.com/eggert/tz",
+        "revision": "84585da3a2db8cb439e1674f84cf637ac9df6aaa"
+      }
+    },
+    {
+      "name": "SeisComP / EarthScope libmseed (miniSEED UTC Leap-Second Epoch Decoder)",
+      "identity": {
+        "repository": "https://github.com/SeisComP/seiscomp",
+        "revision": "0f456a83db3435ef92b809bc47077c84b3a4883b"
+      }
+    },
+    {
+      "name": "Cloudflare 2017-01-01 RRDNS Leap-Second Post-Mortem, IEEE 1588-2019 PTPv2, and EU MiFID II RTS 25",
+      "identity": {
+        "standard": "IEEE 1588-2019 / EU Commission Delegated Regulation 2017/574 (MiFID II RTS 25) / RFC 9557",
+        "url": "https://blog.cloudflare.com/how-and-why-the-leap-second-affected-cloudflare-dns/"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

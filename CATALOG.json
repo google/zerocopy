@@ -10180,6 +10180,88 @@
         "verification/compiler-verification"
       ]
     },
+    "camera-isp-hdr-companding-rolling-shutter-imu-sync-and-lidar-blooming": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/raspberrypi/libpisp",
+            "revision": "c77865739bbde5be918d5a7692c8a8050e0abc25"
+          },
+          "name": "Raspberry Pi PiSP Hardware ISP Configuration Library (libpisp)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/kbingham/libcamera",
+            "revision": "5efdc682e5b54f7b9f793b1fbf99884d522fd9f9"
+          },
+          "name": "libcamera (IPA PWL Curves, Decompand, BlackLevel, and AGC Flicker Avoidance)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/halide/Halide",
+            "revision": "a409a44f3529e2362f99e72de0089f99064fc6b3"
+          },
+          "name": "Halide (Camera Pipe Bayer ISP & HVX/GPU LUT Schedule)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/opencv/opencv",
+            "revision": "0739a74edc6f5ded745f01cbcfe620062b73f9d6"
+          },
+          "name": "OpenCV (HDR Exposure Merge & Radiometric Calibration)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/rpng/open_vins",
+            "revision": "69488123ed9362dd44b6f28e7f4680abbff1442b"
+          },
+          "name": "OpenVINS (On-Manifold CPI IMU Preintegration & Camera-IMU Time Offset)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/ethz-asl/kalibr",
+            "revision": "1f60227442d25e36365ef5f72cd80b9666d73467"
+          },
+          "name": "Kalibr (Continuous-Time B-Spline Camera-IMU & Rolling-Shutter Line-Delay Calibration)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/autowarefoundation/autoware_universe",
+            "revision": "0b462bcda0705fbf48d675a34fcb7df96e2f770b"
+          },
+          "name": "Autoware Universe (LiDAR Ring Outlier Filter & IMU Twist Distortion Corrector)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TRO.2016.2597321",
+            "journal": "IEEE Transactions on Robotics"
+          },
+          "name": "On-Manifold Preintegration for Real-Time Visual-Inertial Odometry (Forster, Carlone, Dellaert, Scaramuzza 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IROS.2013.6696514",
+            "related_doi": "10.1109/CVPR.2013.310"
+          },
+          "name": "Unified Temporal and Spatial Calibration & Rolling Shutter Camera Calibration (Furgale, Oth, Kneip, Rehder, Siegwart 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3319535.3339815",
+            "venue": "ACM CCS 2019"
+          },
+          "name": "Adversarial Sensor Attack on LiDAR-based Perception in Autonomous Driving (Cao et al. 2019)"
+        }
+      ],
+      "topics": [
+        "compilers/halide-isp-lut-pipelines",
+        "domains/camera-isp-rolling-shutter-vio-lidar",
+        "security/lidar-retroreflective-blooming-spoofing",
+        "systems/sensor-fusion-hardware-timestamp-sync",
+        "verification/hdr-companding-and-se3-preintegration"
+      ]
+    },
     "candidate-optimizers-llvm-cranelift-and-gcc-backend-comparison": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -31282,6 +31364,81 @@
         "verification/type-checker-trust",
         "lean/external-checkers",
         "security/tcb-hazards"
+      ]
+    },
+    "leap-second-smearing-utc-tai-epoch-folds-and-civil-tzdb-ambiguity-bugs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/torvalds/linux",
+            "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+          },
+          "name": "Linux Kernel (NTP Leap-Second State Machine & CLOCK_TAI)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/golang/go",
+            "revision": "9535db20eb78901d6a15a880e6700d428c1b7077"
+          },
+          "name": "Go Standard Library (time.Time Dual Wall/Monotonic Representation)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/mlichvar/chrony",
+            "revision": "372462ca6c1a822245544003199a24ebfad1fc0e"
+          },
+          "name": "chrony (NTP Leap-Slew & 3-Stage Quadratic Time Smoothing)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/BurntSushi/jiff",
+            "revision": "623ea08d41d4ad0c647585eed9405e6b76d2d27e"
+          },
+          "name": "Jiff (Rust RFC 9557 Temporal & TZif Disambiguation Library)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/chronotope/chrono",
+            "revision": "6adaa5240c26fecb7bd9077334a91f8f67f4f3fe"
+          },
+          "name": "Chrono (Rust NaiveTime >1e9 Nanosecond Leap Encoding & MappedLocalTime)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/HowardHinnant/date",
+            "revision": "2390d3da331bc44b89940d9b3397ab438ebb6a41"
+          },
+          "name": "Howard Hinnant date (C++20 chrono utc_clock, tai_clock, gps_clock, zoned_time)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/eggert/tz",
+            "revision": "84585da3a2db8cb439e1674f84cf637ac9df6aaa"
+          },
+          "name": "IANA Time Zone Database & Reference Implementation (tzcode / tzdb)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/SeisComP/seiscomp",
+            "revision": "0f456a83db3435ef92b809bc47077c84b3a4883b"
+          },
+          "name": "SeisComP / EarthScope libmseed (miniSEED UTC Leap-Second Epoch Decoder)"
+        },
+        {
+          "identity": {
+            "standard": "IEEE 1588-2019 / EU Commission Delegated Regulation 2017/574 (MiFID II RTS 25) / RFC 9557",
+            "url": "https://blog.cloudflare.com/how-and-why-the-leap-second-affected-cloudflare-dns/"
+          },
+          "name": "Cloudflare 2017-01-01 RRDNS Leap-Second Post-Mortem, IEEE 1588-2019 PTPv2, and EU MiFID II RTS 25"
+        }
+      ],
+      "topics": [
+        "pl/temporal-scale-types",
+        "runtimes/monotonic-and-wall-clocks",
+        "security/timestamp-smearing-divergence",
+        "systems/ntp-ptp-leap-second-smearing",
+        "verification/civil-tzdb-epoch-injectivity"
       ]
     },
     "lie-group-factor-graphs-state-estimation-and-deterministic-robotics-middleware": {

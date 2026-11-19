@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "compilers/halide-isp-lut-pipelines",
+    "domains/camera-isp-rolling-shutter-vio-lidar",
+    "security/lidar-retroreflective-blooming-spoofing",
+    "systems/sensor-fusion-hardware-timestamp-sync",
+    "verification/hdr-companding-and-se3-preintegration"
+  ],
+  "subjects": [
+    {
+      "name": "Raspberry Pi PiSP Hardware ISP Configuration Library (libpisp)",
+      "identity": {
+        "repository": "https://github.com/raspberrypi/libpisp",
+        "revision": "c77865739bbde5be918d5a7692c8a8050e0abc25"
+      }
+    },
+    {
+      "name": "libcamera (IPA PWL Curves, Decompand, BlackLevel, and AGC Flicker Avoidance)",
+      "identity": {
+        "repository": "https://github.com/kbingham/libcamera",
+        "revision": "5efdc682e5b54f7b9f793b1fbf99884d522fd9f9"
+      }
+    },
+    {
+      "name": "Halide (Camera Pipe Bayer ISP & HVX/GPU LUT Schedule)",
+      "identity": {
+        "repository": "https://github.com/halide/Halide",
+        "revision": "a409a44f3529e2362f99e72de0089f99064fc6b3"
+      }
+    },
+    {
+      "name": "OpenCV (HDR Exposure Merge & Radiometric Calibration)",
+      "identity": {
+        "repository": "https://github.com/opencv/opencv",
+        "revision": "0739a74edc6f5ded745f01cbcfe620062b73f9d6"
+      }
+    },
+    {
+      "name": "OpenVINS (On-Manifold CPI IMU Preintegration & Camera-IMU Time Offset)",
+      "identity": {
+        "repository": "https://github.com/rpng/open_vins",
+        "revision": "69488123ed9362dd44b6f28e7f4680abbff1442b"
+      }
+    },
+    {
+      "name": "Kalibr (Continuous-Time B-Spline Camera-IMU & Rolling-Shutter Line-Delay Calibration)",
+      "identity": {
+        "repository": "https://github.com/ethz-asl/kalibr",
+        "revision": "1f60227442d25e36365ef5f72cd80b9666d73467"
+      }
+    },
+    {
+      "name": "Autoware Universe (LiDAR Ring Outlier Filter & IMU Twist Distortion Corrector)",
+      "identity": {
+        "repository": "https://github.com/autowarefoundation/autoware_universe",
+        "revision": "0b462bcda0705fbf48d675a34fcb7df96e2f770b"
+      }
+    },
+    {
+      "name": "On-Manifold Preintegration for Real-Time Visual-Inertial Odometry (Forster, Carlone, Dellaert, Scaramuzza 2017)",
+      "identity": {
+        "doi": "10.1109/TRO.2016.2597321",
+        "journal": "IEEE Transactions on Robotics"
+      }
+    },
+    {
+      "name": "Unified Temporal and Spatial Calibration & Rolling Shutter Camera Calibration (Furgale, Oth, Kneip, Rehder, Siegwart 2013)",
+      "identity": {
+        "doi": "10.1109/IROS.2013.6696514",
+        "related_doi": "10.1109/CVPR.2013.310"
+      }
+    },
+    {
+      "name": "Adversarial Sensor Attack on LiDAR-based Perception in Autonomous Driving (Cao et al. 2019)",
+      "identity": {
+        "doi": "10.1145/3319535.3339815",
+        "venue": "ACM CCS 2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
