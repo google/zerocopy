@@ -17440,6 +17440,87 @@
         "verification/survey"
       ]
     },
+    "data-oriented-subsecond-compilers-zig-soa-mold-and-compiler-rss-footprints": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ziglang/zig",
+            "revision": "738d2be9d6b6ef3ff3559130c05159ef53336224"
+          },
+          "name": "Zig compiler, MultiArrayList SoA arenas, and incremental ELF linker"
+        },
+        {
+          "identity": {
+            "repository": "carbon-language/carbon-lang",
+            "revision": "5c46874719719d882d092394b951abdeda854cf1"
+          },
+          "name": "Carbon Language toolchain (lex, parse, and SemIR index pipelines)"
+        },
+        {
+          "identity": {
+            "repository": "rui314/mold",
+            "revision": "331ac663668dc0b1f4949403854613b9b1913025"
+          },
+          "name": "mold high-performance concurrent Unix linker"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "32e2dcc099eba9410bc452f61ce48e50894706d9"
+          },
+          "name": "Go gc compiler and Unified IR package export pipeline"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+          },
+          "name": "regalloc2 Ion backtracking and fastalloc register allocator"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Wasmtime and Cranelift code generator"
+        },
+        {
+          "identity": {
+            "repository": "TinyCC/tinycc",
+            "revision": "0f004a0883c640528d69a006706f867d56c809e5"
+          },
+          "name": "Tiny C Compiler (TCC) single-pass compiler"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "Rust compiler (rustc)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "5989210109e1f7f59ccfeb07dc76120eba5f48a5"
+          },
+          "name": "LLVM, Clang, and lld compiler infrastructure"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+          },
+          "name": "Lean 4 compiler and compacted object runtime"
+        }
+      ],
+      "topics": [
+        "compilers/throughput-engineering",
+        "build/parallel-linkers",
+        "tooling/memory-footprints",
+        "pl/compiler-architecture"
+      ]
+    },
     "datalog-fixpoint-incremental-relational-and-hybrid-engines": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -38844,6 +38925,123 @@
         "tooling/proof-engineering",
         "verification/maintenance",
         "verification/functional-lifting"
+      ]
+    },
+    "proof-generation-token-budgets-vo-olean-mmb-footprints-and-checker-throughput": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "theorem-labs/oss-verify-proofs",
+            "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061"
+          },
+          "name": "OSS Verify Rocq binary proofs for OSS-Fuzz targets"
+        },
+        {
+          "identity": {
+            "published": "2026-10-22",
+            "title": "LLMs are making formal software verification feasible at a much larger scale",
+            "url": "https://www.anthropic.com/research/formal-verification"
+          },
+          "name": "Anthropic Frontier Red Team and Theorem formal verification engineering report"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.10703",
+            "doi": "10.48550/arXiv.1910.10703",
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (mm0) specification, .mmb format, and mm0-c bare-metal verifier"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.32"
+          },
+          "name": "nanoda_lib parallel Rust external kernel type checker for Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+          },
+          "name": "Lean 4 compacted object runtime (.olean v4)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 release compacted object runtime (.olean v2)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "The Rocq Prover (.vo marshaling and rocqchk kernel checker)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "c821149050c1269f32771a11582bee2fc58e5a8a"
+          },
+          "name": "Verus SMT-backed Rust verification framework"
+        },
+        {
+          "identity": {
+            "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+            "repository": "secure-foundations/mariposa",
+            "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+          },
+          "name": "Mariposa SMT quantifier instability analyzer and FMCAD 2023 benchmark"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1629575.1629596",
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Isabelle/HOL formal verification repository (l4v)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1538788.1538814",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert formally verified C compiler"
+        },
+        {
+          "identity": {
+            "repository": "marijnheule/drat-trim",
+            "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+          },
+          "name": "drat-trim DRAT and LRAT propositional proof trimmer and generator"
+        },
+        {
+          "identity": {
+            "repository": "risc0/risc0",
+            "revision": "5e1be36a7fcadf98f341e348d9314e5f1d519046"
+          },
+          "name": "RISC Zero RV32IM STARK/Groth16 zkVM"
+        },
+        {
+          "identity": {
+            "repository": "succinctlabs/sp1",
+            "revision": "0cd151a8d7beaaad4ad245c8f37515d6b4f72597"
+          },
+          "name": "Succinct SP1 RV32IM Plonky3 zkVM"
+        }
+      ],
+      "topics": [
+        "verification/checker-performance",
+        "lean/memory-footprints",
+        "agents/token-efficiency",
+        "tooling/certificate-compression"
       ]
     },
     "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening": {

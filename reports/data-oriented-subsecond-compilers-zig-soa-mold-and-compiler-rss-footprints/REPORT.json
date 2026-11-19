@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "compilers/throughput-engineering",
+    "build/parallel-linkers",
+    "tooling/memory-footprints",
+    "pl/compiler-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Zig compiler, MultiArrayList SoA arenas, and incremental ELF linker",
+      "identity": {
+        "repository": "ziglang/zig",
+        "revision": "738d2be9d6b6ef3ff3559130c05159ef53336224"
+      }
+    },
+    {
+      "name": "Carbon Language toolchain (lex, parse, and SemIR index pipelines)",
+      "identity": {
+        "repository": "carbon-language/carbon-lang",
+        "revision": "5c46874719719d882d092394b951abdeda854cf1"
+      }
+    },
+    {
+      "name": "mold high-performance concurrent Unix linker",
+      "identity": {
+        "repository": "rui314/mold",
+        "revision": "331ac663668dc0b1f4949403854613b9b1913025"
+      }
+    },
+    {
+      "name": "Go gc compiler and Unified IR package export pipeline",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "32e2dcc099eba9410bc452f61ce48e50894706d9"
+      }
+    },
+    {
+      "name": "regalloc2 Ion backtracking and fastalloc register allocator",
+      "identity": {
+        "repository": "bytecodealliance/regalloc2",
+        "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+      }
+    },
+    {
+      "name": "Wasmtime and Cranelift code generator",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+      }
+    },
+    {
+      "name": "Tiny C Compiler (TCC) single-pass compiler",
+      "identity": {
+        "repository": "TinyCC/tinycc",
+        "revision": "0f004a0883c640528d69a006706f867d56c809e5"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+      }
+    },
+    {
+      "name": "LLVM, Clang, and lld compiler infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "5989210109e1f7f59ccfeb07dc76120eba5f48a5"
+      }
+    },
+    {
+      "name": "Lean 4 compiler and compacted object runtime",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

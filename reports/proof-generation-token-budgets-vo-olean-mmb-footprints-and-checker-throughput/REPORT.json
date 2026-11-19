@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "verification/checker-performance",
+    "lean/memory-footprints",
+    "agents/token-efficiency",
+    "tooling/certificate-compression"
+  ],
+  "subjects": [
+    {
+      "name": "OSS Verify Rocq binary proofs for OSS-Fuzz targets",
+      "identity": {
+        "repository": "theorem-labs/oss-verify-proofs",
+        "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061"
+      }
+    },
+    {
+      "name": "Anthropic Frontier Red Team and Theorem formal verification engineering report",
+      "identity": {
+        "published": "2026-10-22",
+        "title": "LLMs are making formal software verification feasible at a much larger scale",
+        "url": "https://www.anthropic.com/research/formal-verification"
+      }
+    },
+    {
+      "name": "Metamath Zero (mm0) specification, .mmb format, and mm0-c bare-metal verifier",
+      "identity": {
+        "arxiv": "1910.10703",
+        "doi": "10.48550/arXiv.1910.10703",
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "nanoda_lib parallel Rust external kernel type checker for Lean 4",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.32"
+      }
+    },
+    {
+      "name": "Lean 4 compacted object runtime (.olean v4)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "86b17eabcd56925809598be76a87d3f9b717bdbb"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 release compacted object runtime (.olean v2)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "The Rocq Prover (.vo marshaling and rocqchk kernel checker)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Verus SMT-backed Rust verification framework",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "c821149050c1269f32771a11582bee2fc58e5a8a"
+      }
+    },
+    {
+      "name": "Mariposa SMT quantifier instability analyzer and FMCAD 2023 benchmark",
+      "identity": {
+        "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+        "repository": "secure-foundations/mariposa",
+        "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL formal verification repository (l4v)",
+      "identity": {
+        "doi": "10.1145/1629575.1629596",
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "CompCert formally verified C compiler",
+      "identity": {
+        "doi": "10.1145/1538788.1538814",
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "drat-trim DRAT and LRAT propositional proof trimmer and generator",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "RISC Zero RV32IM STARK/Groth16 zkVM",
+      "identity": {
+        "repository": "risc0/risc0",
+        "revision": "5e1be36a7fcadf98f341e348d9314e5f1d519046"
+      }
+    },
+    {
+      "name": "Succinct SP1 RV32IM Plonky3 zkVM",
+      "identity": {
+        "repository": "succinctlabs/sp1",
+        "revision": "0cd151a8d7beaaad4ad245c8f37515d6b4f72597"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
