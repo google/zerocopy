@@ -1,0 +1,141 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "Open-Cascade-SAS/OCCT",
+        "revision": "4dbfdcc448c0b3e565488afcd626c84483172db9"
+      },
+      "name": "Open CASCADE Technology (OCCT)"
+    },
+    {
+      "identity": {
+        "repository": "FreeCAD/FreeCAD",
+        "revision": "1e7f16061ac499c1adc67bc39f597b6e5088e8d7"
+      },
+      "name": "FreeCAD ElementMap Topological Naming"
+    },
+    {
+      "identity": {
+        "repository": "KittyCAD/modeling-app",
+        "revision": "10ae8aa9cdf6cbc8e6eaf188b37a3d6ec0afec34"
+      },
+      "name": "Zoo Modeling App (KCL)"
+    },
+    {
+      "identity": {
+        "repository": "mkeeter/fidget",
+        "revision": "1879743ddc1d73dac14a42a8184a3c5b758dcca5"
+      },
+      "name": "Fidget Implicit SDF Compiler"
+    },
+    {
+      "identity": {
+        "repository": "textiles-lab/knitout",
+        "revision": "17b868c5a48cf8ce2d25bbfb7d23f2ab7ba55ddf"
+      },
+      "name": "Knitout File Format Specification (v0.6)"
+    },
+    {
+      "identity": {
+        "repository": "textiles-lab/autoknit",
+        "revision": "a711d2096e378547cedce943c25c16c0ecd25731"
+      },
+      "name": "AutoKnit 3D Mesh Knitting Compiler"
+    },
+    {
+      "identity": {
+        "repository": "textiles-lab/transfer-plan-supplement",
+        "revision": "9060dcc0b6e003dc62e645e2921055261918e218"
+      },
+      "name": "Flat Knitting Transfer Planning Reference Algorithms"
+    },
+    {
+      "identity": {
+        "repository": "xionluhnis/knitskel",
+        "revision": "aebb0f05b05ce300381eb6d84bbf938f208d0b6d"
+      },
+      "name": "Knitting Skeletons (knitskel)"
+    },
+    {
+      "identity": {
+        "repository": "LinuxCNC/linuxcnc",
+        "revision": "76ee5a1b63fa595040d398b615702c83dadf8f05"
+      },
+      "name": "LinuxCNC Trajectory Planner"
+    },
+    {
+      "identity": {
+        "doi": "10.1016/0010-4485(95)00014-3",
+        "publication": "Computer-Aided Design 28(1), 1996"
+      },
+      "name": "Capoyleas, Chen, and Hoffmann Generic Naming"
+    },
+    {
+      "identity": {
+        "doi": "10.1016/s0010-4485(96)00040-1",
+        "publication": "Computer-Aided Design 29(2), 1997"
+      },
+      "name": "Kripac Persistent Naming Mechanism"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/566282.566288",
+        "publication": "ACM SMA 2002"
+      },
+      "name": "Marcheix and Pierra Persistent Naming Survey"
+    },
+    {
+      "identity": {
+        "doi": "10.1111/cgf.14476",
+        "publication": "Computer Graphics Forum 41(2), 2022"
+      },
+      "name": "Cascaval et al. Differentiable 3D CAD Programs"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2897824.2925940",
+        "publication": "ACM Transactions on Graphics 35(4), 2016"
+      },
+      "name": "McCann et al. Compiler for 3D Machine Knitting"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3186265",
+        "publication": "ACM Transactions on Graphics 37(3), 2018"
+      },
+      "name": "Narayanan et al. Automatic Machine Knitting of 3D Meshes"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3213512.3213515",
+        "publication": "ACM SCF 2018"
+      },
+      "name": "Lin, Narayanan, and McCann Efficient Transfer Planning for Flat Knitting"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3332165.3347879",
+        "publication": "ACM UIST 2019"
+      },
+      "name": "Kaspar, Makatura, and Matusik Knitting Skeletons"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3386569.3392429",
+        "publication": "ACM Transactions on Graphics 39(4), 2020"
+      },
+      "name": "Keeter Massively Parallel Rendering of Closed-Form Implicit Surfaces"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/fabrication",
+    "compilers/geometry-cad",
+    "domains/cad-fabrication",
+    "pl",
+    "pl/topological-modeling",
+    "verification",
+    "verification/physical-constraints"
+  ]
+}

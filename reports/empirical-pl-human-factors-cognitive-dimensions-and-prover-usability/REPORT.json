@@ -1,0 +1,168 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "qorf/quorum-language",
+        "revision": "1d907c10b24a4e98f62833ce990320b19c075243"
+      },
+      "name": "Quorum Evidence-Oriented Programming Language"
+    },
+    {
+      "identity": {
+        "repository": "mcoblenz/Glacier",
+        "revision": "4f2b3d9486d441483f3f8997feb03e134953a201"
+      },
+      "name": "Glacier Transitive Immutability Checker for Java"
+    },
+    {
+      "identity": {
+        "repository": "mcoblenz/Obsidian",
+        "revision": "a32efc07b0a3c3128413999324f55f16fb349c1b"
+      },
+      "name": "Obsidian Typestate and Linear Asset Language"
+    },
+    {
+      "identity": {
+        "repository": "mcoblenz/bronze",
+        "revision": "529a3e4ff83745265053441dbe2f131622d1c18b"
+      },
+      "name": "Bronze Optional Garbage Collector for Rust"
+    },
+    {
+      "identity": {
+        "repository": "cognitive-engineering-lab/aquascope",
+        "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+      },
+      "name": "Aquascope Rust Ownership Permissions Visualizer"
+    },
+    {
+      "identity": {
+        "repository": "hazelgrove/hazel",
+        "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+      },
+      "name": "Hazel Live Structure Editor"
+    },
+    {
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "8c137ba351c60a521cfb122011770fdbea9a0453"
+      },
+      "name": "Dafny Auto-Active Program Verifier"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      },
+      "name": "Lean 4 Interactive Theorem Prover"
+    },
+    {
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      },
+      "name": "Rocq (formerly Coq) Interactive Proof Assistant"
+    },
+    {
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+      },
+      "name": "Verus Rust SMT Verifier"
+    },
+    {
+      "identity": {
+        "doi": "10.1006/jvlc.1996.0009",
+        "publication": "Journal of Visual Languages and Computing 7(2), 1996"
+      },
+      "name": "Green and Petre Cognitive Dimensions of Notations"
+    },
+    {
+      "identity": {
+        "doi": "10.1006/ijhc.2000.0410",
+        "publication": "International Journal of Human-Computer Studies 54(2), 2001"
+      },
+      "name": "Pane, Ratanamahatana, and Myers Natural Programming Study"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2534973",
+        "publication": "ACM Transactions on Computing Education 13(4), 2013"
+      },
+      "name": "Stefik and Siebert Empirical Investigation into PL Syntax"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/ICSE.2017.52",
+        "publication": "ICSE 2017"
+      },
+      "name": "Coblenz et al. Glacier Transitive Class Immutability"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3417516",
+        "publication": "ACM TOPLAS 42(3), 2020"
+      },
+      "name": "Coblenz et al. Obsidian Typestate and Assets"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3452379",
+        "publication": "ACM TOCHI 28(4), 2021"
+      },
+      "name": "Coblenz et al. PLIERS User-Centered PL Design"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3510003.3510107",
+        "publication": "ICSE 2022 (arXiv:2110.01098v2)"
+      },
+      "name": "Coblenz, Mazurek, and Hicks Bronze Rust GC RCT"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3469279",
+        "publication": "Communications of the ACM 64(8), 2021"
+      },
+      "name": "Chasins, Glassman, and Sunshine PL and HCI"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3622841",
+        "publication": "PACMPL (OOPSLA) 2023; CACM 2026 (10.1145/3796537)"
+      },
+      "name": "Crichton, Gray, and Krishnamurthi Grounded Conceptual Model for Rust Ownership"
+    },
+    {
+      "identity": {
+        "doi": "10.1561/2500000045",
+        "publication": "Foundations and Trends in Programming Languages, 2019"
+      },
+      "name": "Ringer et al. QED at Large"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3720426",
+        "publication": "PACMPL (OOPSLA) 2025"
+      },
+      "name": "Shi et al. QED in Context Observation Study"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/978-3-031-99984-0_5",
+        "publication": "LNCS 2025 (following Mariposa FMCAD 2023)"
+      },
+      "name": "Zhou, Shah, and Lin Cazamariposas and Mariposa SMT Instability"
+    }
+  ],
+  "topics": [
+    "pl",
+    "pl/design",
+    "pl/human-factors",
+    "tooling",
+    "tooling/usability",
+    "verification",
+    "verification/ux"
+  ]
+}

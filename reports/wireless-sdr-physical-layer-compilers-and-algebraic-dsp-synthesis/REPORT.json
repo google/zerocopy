@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/signal-processing",
+    "domains/wireless-phy",
+    "pl",
+    "pl/streaming",
+    "verification",
+    "verification/numerical",
+    "systems"
+  ],
+  "subjects": [
+    {
+      "name": "Ziria (Blink/wplc) two-level wireless physical-layer DSL and compiler",
+      "identity": {
+        "repository": "dimitriv/Ziria",
+        "revision": "ccbb0960737fb86bf51a1d33af8e614ee9700ffe"
+      }
+    },
+    {
+      "name": "Ziria: A DSL for Wireless Systems Programming (ASPLOS 2015)",
+      "identity": {
+        "doi": "10.1145/2694344.2694368",
+        "venue": "ASPLOS 2015"
+      }
+    },
+    {
+      "name": "SPIRAL algebraic signal-processing code generation system",
+      "identity": {
+        "repository": "spiral-software/spiral-software",
+        "revision": "577b2c1268476c885fbb9984b9e06174f71b5386"
+      }
+    },
+    {
+      "name": "SPIRAL HCOL/Sigma-SPL formal synthesis package",
+      "identity": {
+        "repository": "spiral-software/spiral-package-hcol",
+        "revision": "b4a0118382e3bba91ecd82a6c667f2cdb6389ceb"
+      }
+    },
+    {
+      "name": "SPIRAL: Code Generation for DSP Transforms (Proc. IEEE 2005)",
+      "identity": {
+        "doi": "10.1109/JPROC.2004.840306",
+        "venue": "Proceedings of the IEEE, Vol. 93, No. 2, 2005"
+      }
+    },
+    {
+      "name": "SPIRAL: Extreme Performance Portability (Proc. IEEE 2018)",
+      "identity": {
+        "doi": "10.1109/JPROC.2018.2873289",
+        "venue": "Proceedings of the IEEE, Vol. 106, No. 11, 2018"
+      }
+    },
+    {
+      "name": "SPIRAL Computer Generation of Hardware for Linear DSP Transforms (ACM TODAES 2012)",
+      "identity": {
+        "doi": "10.1145/2159542.2159547",
+        "venue": "ACM TODAES, Vol. 17, No. 2, 2012"
+      }
+    },
+    {
+      "name": "HELIX formally verified numerical compiler from HCOL to Vellvm LLVM IR",
+      "identity": {
+        "repository": "vzaliva/helix",
+        "revision": "f2373ef4c7b25745d2f85cd89dd58d68d4ce0765"
+      }
+    },
+    {
+      "name": "HELIX: Verified Compilation of Cyber-Physical Control Systems to LLVM IR (arXiv:2604.18593, 2026) and VSTTE 2020",
+      "identity": {
+        "arxiv": "2604.18593",
+        "doi": "10.1007/978-3-030-63618-0_3"
+      }
+    },
+    {
+      "name": "AFF3CT Fast Forward Error Correction Toolbox (SoftwareX 2019)",
+      "identity": {
+        "repository": "aff3ct/aff3ct",
+        "revision": "0e8ecda8191cec97a6fe86a56de0d957b63b3b04",
+        "doi": "10.1016/j.softx.2019.100345"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

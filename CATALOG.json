@@ -15278,6 +15278,84 @@
         "verification"
       ]
     },
+    "dynamic-binary-translation-cross-isa-tso-emulation-and-smc-jits": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "qemu/qemu",
+            "revision": "08c9bbb825148dec9669f5184ecf18823bb6d631"
+          },
+          "name": "QEMU Tiny Code Generator (TCG) x86 frontend and AArch64/RV64 backends"
+        },
+        {
+          "identity": {
+            "repository": "FEX-Emu/FEX",
+            "revision": "be66e03d65217f53a7a2e5af46473cc9a79ce3f8"
+          },
+          "name": "FEX-Emu x86/x86-64 to AArch64 dynamic binary translator"
+        },
+        {
+          "identity": {
+            "repository": "ptitSeb/box64",
+            "revision": "6f0df3efe29aedae73e516277ce9cb2378779960"
+          },
+          "name": "Box64 x86-64 DynaRec for ARM64 and RISC-V RV64"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/xnu",
+            "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+          },
+          "name": "Apple XNU ARM64 kernel register definitions (ACTLR_EL1 TSO/APFLG/AFP)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO.2003.1191529",
+            "venue": "CGO 2003"
+          },
+          "name": "The Transmeta Code Morphing Software (CGO 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2749469.2750378",
+            "venue": "ISCA 2015"
+          },
+          "name": "ArMOR: Defending Against Memory Consistency Model Mismatches in Heterogeneous Architectures (ISCA 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1785414.1785443",
+            "venue": "Communications of the ACM, Vol. 53, No. 7, 2010"
+          },
+          "name": "x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors (CACM 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158107",
+            "venue": "POPL 2018"
+          },
+          "name": "Simplifying ARM Concurrency: Multicopy-Atomic Axiomatic and Operational Models for ARMv8 (POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-44914-8_23",
+            "venue": "ESOP 2020"
+          },
+          "name": "ARMv8-A System Semantics: Instruction Fetch in Relaxed Architectures (ESOP 2020)"
+        }
+      ],
+      "topics": [
+        "isa",
+        "isa/binary-translation",
+        "compilers",
+        "compilers/dbt",
+        "systems",
+        "systems/concurrency-weak-memory",
+        "runtimes",
+        "runtimes/emulation"
+      ]
+    },
     "dynamic-software-updating-hot-code-upgrade-and-schema-lenses": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -15548,6 +15626,174 @@
         "verification",
         "verification/compiler-verification",
         "verification/empirical-evaluation"
+      ]
+    },
+    "empirical-pl-human-factors-cognitive-dimensions-and-prover-usability": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "qorf/quorum-language",
+            "revision": "1d907c10b24a4e98f62833ce990320b19c075243"
+          },
+          "name": "Quorum Evidence-Oriented Programming Language"
+        },
+        {
+          "identity": {
+            "repository": "mcoblenz/Glacier",
+            "revision": "4f2b3d9486d441483f3f8997feb03e134953a201"
+          },
+          "name": "Glacier Transitive Immutability Checker for Java"
+        },
+        {
+          "identity": {
+            "repository": "mcoblenz/Obsidian",
+            "revision": "a32efc07b0a3c3128413999324f55f16fb349c1b"
+          },
+          "name": "Obsidian Typestate and Linear Asset Language"
+        },
+        {
+          "identity": {
+            "repository": "mcoblenz/bronze",
+            "revision": "529a3e4ff83745265053441dbe2f131622d1c18b"
+          },
+          "name": "Bronze Optional Garbage Collector for Rust"
+        },
+        {
+          "identity": {
+            "repository": "cognitive-engineering-lab/aquascope",
+            "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+          },
+          "name": "Aquascope Rust Ownership Permissions Visualizer"
+        },
+        {
+          "identity": {
+            "repository": "hazelgrove/hazel",
+            "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+          },
+          "name": "Hazel Live Structure Editor"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "8c137ba351c60a521cfb122011770fdbea9a0453"
+          },
+          "name": "Dafny Auto-Active Program Verifier"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 Interactive Theorem Prover"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq (formerly Coq) Interactive Proof Assistant"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+          },
+          "name": "Verus Rust SMT Verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/jvlc.1996.0009",
+            "publication": "Journal of Visual Languages and Computing 7(2), 1996"
+          },
+          "name": "Green and Petre Cognitive Dimensions of Notations"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/ijhc.2000.0410",
+            "publication": "International Journal of Human-Computer Studies 54(2), 2001"
+          },
+          "name": "Pane, Ratanamahatana, and Myers Natural Programming Study"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2534973",
+            "publication": "ACM Transactions on Computing Education 13(4), 2013"
+          },
+          "name": "Stefik and Siebert Empirical Investigation into PL Syntax"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2017.52",
+            "publication": "ICSE 2017"
+          },
+          "name": "Coblenz et al. Glacier Transitive Class Immutability"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3417516",
+            "publication": "ACM TOPLAS 42(3), 2020"
+          },
+          "name": "Coblenz et al. Obsidian Typestate and Assets"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3452379",
+            "publication": "ACM TOCHI 28(4), 2021"
+          },
+          "name": "Coblenz et al. PLIERS User-Centered PL Design"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3510003.3510107",
+            "publication": "ICSE 2022 (arXiv:2110.01098v2)"
+          },
+          "name": "Coblenz, Mazurek, and Hicks Bronze Rust GC RCT"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3469279",
+            "publication": "Communications of the ACM 64(8), 2021"
+          },
+          "name": "Chasins, Glassman, and Sunshine PL and HCI"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622841",
+            "publication": "PACMPL (OOPSLA) 2023; CACM 2026 (10.1145/3796537)"
+          },
+          "name": "Crichton, Gray, and Krishnamurthi Grounded Conceptual Model for Rust Ownership"
+        },
+        {
+          "identity": {
+            "doi": "10.1561/2500000045",
+            "publication": "Foundations and Trends in Programming Languages, 2019"
+          },
+          "name": "Ringer et al. QED at Large"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3720426",
+            "publication": "PACMPL (OOPSLA) 2025"
+          },
+          "name": "Shi et al. QED in Context Observation Study"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-99984-0_5",
+            "publication": "LNCS 2025 (following Mariposa FMCAD 2023)"
+          },
+          "name": "Zhou, Shah, and Lin Cazamariposas and Mariposa SMT Instability"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/design",
+        "pl/human-factors",
+        "tooling",
+        "tooling/usability",
+        "verification",
+        "verification/ux"
       ]
     },
     "end-to-end-verified-mir-to-isa-refinement-chain-and-seams": {
@@ -38295,6 +38541,147 @@
         "rust/unsafe"
       ]
     },
+    "topological-brep-cad-persistent-naming-and-fabrication-compilers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Open-Cascade-SAS/OCCT",
+            "revision": "4dbfdcc448c0b3e565488afcd626c84483172db9"
+          },
+          "name": "Open CASCADE Technology (OCCT)"
+        },
+        {
+          "identity": {
+            "repository": "FreeCAD/FreeCAD",
+            "revision": "1e7f16061ac499c1adc67bc39f597b6e5088e8d7"
+          },
+          "name": "FreeCAD ElementMap Topological Naming"
+        },
+        {
+          "identity": {
+            "repository": "KittyCAD/modeling-app",
+            "revision": "10ae8aa9cdf6cbc8e6eaf188b37a3d6ec0afec34"
+          },
+          "name": "Zoo Modeling App (KCL)"
+        },
+        {
+          "identity": {
+            "repository": "mkeeter/fidget",
+            "revision": "1879743ddc1d73dac14a42a8184a3c5b758dcca5"
+          },
+          "name": "Fidget Implicit SDF Compiler"
+        },
+        {
+          "identity": {
+            "repository": "textiles-lab/knitout",
+            "revision": "17b868c5a48cf8ce2d25bbfb7d23f2ab7ba55ddf"
+          },
+          "name": "Knitout File Format Specification (v0.6)"
+        },
+        {
+          "identity": {
+            "repository": "textiles-lab/autoknit",
+            "revision": "a711d2096e378547cedce943c25c16c0ecd25731"
+          },
+          "name": "AutoKnit 3D Mesh Knitting Compiler"
+        },
+        {
+          "identity": {
+            "repository": "textiles-lab/transfer-plan-supplement",
+            "revision": "9060dcc0b6e003dc62e645e2921055261918e218"
+          },
+          "name": "Flat Knitting Transfer Planning Reference Algorithms"
+        },
+        {
+          "identity": {
+            "repository": "xionluhnis/knitskel",
+            "revision": "aebb0f05b05ce300381eb6d84bbf938f208d0b6d"
+          },
+          "name": "Knitting Skeletons (knitskel)"
+        },
+        {
+          "identity": {
+            "repository": "LinuxCNC/linuxcnc",
+            "revision": "76ee5a1b63fa595040d398b615702c83dadf8f05"
+          },
+          "name": "LinuxCNC Trajectory Planner"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0010-4485(95)00014-3",
+            "publication": "Computer-Aided Design 28(1), 1996"
+          },
+          "name": "Capoyleas, Chen, and Hoffmann Generic Naming"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/s0010-4485(96)00040-1",
+            "publication": "Computer-Aided Design 29(2), 1997"
+          },
+          "name": "Kripac Persistent Naming Mechanism"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/566282.566288",
+            "publication": "ACM SMA 2002"
+          },
+          "name": "Marcheix and Pierra Persistent Naming Survey"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/cgf.14476",
+            "publication": "Computer Graphics Forum 41(2), 2022"
+          },
+          "name": "Cascaval et al. Differentiable 3D CAD Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2897824.2925940",
+            "publication": "ACM Transactions on Graphics 35(4), 2016"
+          },
+          "name": "McCann et al. Compiler for 3D Machine Knitting"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3186265",
+            "publication": "ACM Transactions on Graphics 37(3), 2018"
+          },
+          "name": "Narayanan et al. Automatic Machine Knitting of 3D Meshes"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3213512.3213515",
+            "publication": "ACM SCF 2018"
+          },
+          "name": "Lin, Narayanan, and McCann Efficient Transfer Planning for Flat Knitting"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3332165.3347879",
+            "publication": "ACM UIST 2019"
+          },
+          "name": "Kaspar, Makatura, and Matusik Knitting Skeletons"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3386569.3392429",
+            "publication": "ACM Transactions on Graphics 39(4), 2020"
+          },
+          "name": "Keeter Massively Parallel Rendering of Closed-Form Implicit Surfaces"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/fabrication",
+        "compilers/geometry-cad",
+        "domains/cad-fabrication",
+        "pl",
+        "pl/topological-modeling",
+        "verification",
+        "verification/physical-constraints"
+      ]
+    },
     "translation-validation-certifying-compilation-and-pass-refinement-certificates": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -42531,6 +42918,92 @@
         "rustc",
         "rustc/codegen",
         "verification"
+      ]
+    },
+    "wireless-sdr-physical-layer-compilers-and-algebraic-dsp-synthesis": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "dimitriv/Ziria",
+            "revision": "ccbb0960737fb86bf51a1d33af8e614ee9700ffe"
+          },
+          "name": "Ziria (Blink/wplc) two-level wireless physical-layer DSL and compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2694344.2694368",
+            "venue": "ASPLOS 2015"
+          },
+          "name": "Ziria: A DSL for Wireless Systems Programming (ASPLOS 2015)"
+        },
+        {
+          "identity": {
+            "repository": "spiral-software/spiral-software",
+            "revision": "577b2c1268476c885fbb9984b9e06174f71b5386"
+          },
+          "name": "SPIRAL algebraic signal-processing code generation system"
+        },
+        {
+          "identity": {
+            "repository": "spiral-software/spiral-package-hcol",
+            "revision": "b4a0118382e3bba91ecd82a6c667f2cdb6389ceb"
+          },
+          "name": "SPIRAL HCOL/Sigma-SPL formal synthesis package"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JPROC.2004.840306",
+            "venue": "Proceedings of the IEEE, Vol. 93, No. 2, 2005"
+          },
+          "name": "SPIRAL: Code Generation for DSP Transforms (Proc. IEEE 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JPROC.2018.2873289",
+            "venue": "Proceedings of the IEEE, Vol. 106, No. 11, 2018"
+          },
+          "name": "SPIRAL: Extreme Performance Portability (Proc. IEEE 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2159542.2159547",
+            "venue": "ACM TODAES, Vol. 17, No. 2, 2012"
+          },
+          "name": "SPIRAL Computer Generation of Hardware for Linear DSP Transforms (ACM TODAES 2012)"
+        },
+        {
+          "identity": {
+            "repository": "vzaliva/helix",
+            "revision": "f2373ef4c7b25745d2f85cd89dd58d68d4ce0765"
+          },
+          "name": "HELIX formally verified numerical compiler from HCOL to Vellvm LLVM IR"
+        },
+        {
+          "identity": {
+            "arxiv": "2604.18593",
+            "doi": "10.1007/978-3-030-63618-0_3"
+          },
+          "name": "HELIX: Verified Compilation of Cyber-Physical Control Systems to LLVM IR (arXiv:2604.18593, 2026) and VSTTE 2020"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.softx.2019.100345",
+            "repository": "aff3ct/aff3ct",
+            "revision": "0e8ecda8191cec97a6fe86a56de0d957b63b3b04"
+          },
+          "name": "AFF3CT Fast Forward Error Correction Toolbox (SoftwareX 2019)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/signal-processing",
+        "domains/wireless-phy",
+        "pl",
+        "pl/streaming",
+        "verification",
+        "verification/numerical",
+        "systems"
       ]
     },
     "x86-64-adler32-simd-lane-overflow-bounds-and-avx512-codegen-width": {

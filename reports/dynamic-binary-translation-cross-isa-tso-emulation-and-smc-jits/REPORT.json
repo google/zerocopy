@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "isa",
+    "isa/binary-translation",
+    "compilers",
+    "compilers/dbt",
+    "systems",
+    "systems/concurrency-weak-memory",
+    "runtimes",
+    "runtimes/emulation"
+  ],
+  "subjects": [
+    {
+      "name": "QEMU Tiny Code Generator (TCG) x86 frontend and AArch64/RV64 backends",
+      "identity": {
+        "repository": "qemu/qemu",
+        "revision": "08c9bbb825148dec9669f5184ecf18823bb6d631"
+      }
+    },
+    {
+      "name": "FEX-Emu x86/x86-64 to AArch64 dynamic binary translator",
+      "identity": {
+        "repository": "FEX-Emu/FEX",
+        "revision": "be66e03d65217f53a7a2e5af46473cc9a79ce3f8"
+      }
+    },
+    {
+      "name": "Box64 x86-64 DynaRec for ARM64 and RISC-V RV64",
+      "identity": {
+        "repository": "ptitSeb/box64",
+        "revision": "6f0df3efe29aedae73e516277ce9cb2378779960"
+      }
+    },
+    {
+      "name": "Apple XNU ARM64 kernel register definitions (ACTLR_EL1 TSO/APFLG/AFP)",
+      "identity": {
+        "repository": "apple-oss-distributions/xnu",
+        "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+      }
+    },
+    {
+      "name": "The Transmeta Code Morphing Software (CGO 2003)",
+      "identity": {
+        "doi": "10.1109/CGO.2003.1191529",
+        "venue": "CGO 2003"
+      }
+    },
+    {
+      "name": "ArMOR: Defending Against Memory Consistency Model Mismatches in Heterogeneous Architectures (ISCA 2015)",
+      "identity": {
+        "doi": "10.1145/2749469.2750378",
+        "venue": "ISCA 2015"
+      }
+    },
+    {
+      "name": "x86-TSO: A Rigorous and Usable Programmer's Model for x86 Multiprocessors (CACM 2010)",
+      "identity": {
+        "doi": "10.1145/1785414.1785443",
+        "venue": "Communications of the ACM, Vol. 53, No. 7, 2010"
+      }
+    },
+    {
+      "name": "Simplifying ARM Concurrency: Multicopy-Atomic Axiomatic and Operational Models for ARMv8 (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158107",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "ARMv8-A System Semantics: Instruction Fetch in Relaxed Architectures (ESOP 2020)",
+      "identity": {
+        "doi": "10.1007/978-3-030-44914-8_23",
+        "venue": "ESOP 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
