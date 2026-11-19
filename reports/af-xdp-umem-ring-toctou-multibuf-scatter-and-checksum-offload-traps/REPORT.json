@@ -1,0 +1,60 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repo": "https://github.com/torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      },
+      "name": "linux"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/xdp-project/xdp-tools",
+        "revision": "db6858ff0b18c2b73e5c8c71cad2f92abaaf32ff"
+      },
+      "name": "xdp-tools"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/cilium/cilium",
+        "revision": "71947297d7c3a2b5659e06d7e86c434e4af3c951"
+      },
+      "name": "cilium"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/aya-rs/aya",
+        "revision": "44a6709164d2ac0c19c7845101e7b033e25b3f3f"
+      },
+      "name": "aya"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/libbpf/libbpf",
+        "revision": "4f05fb027a08a8a66d03916cf6a68a91e2c720ea"
+      },
+      "name": "libbpf"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3281411.3281443",
+        "venue": "ACM CoNEXT 2018"
+      },
+      "name": "the-express-data-path"
+    },
+    {
+      "identity": {
+        "rfc": "RFC 1624",
+        "supersedes": "RFC 1141"
+      },
+      "name": "rfc-1624-incremental-internet-checksum"
+    }
+  ],
+  "topics": [
+    "systems/af-xdp-umem-descriptor-rings",
+    "security/shared-dma-double-fetch-toctou",
+    "zerocopy/xdp-multibuffer-packet-slicing",
+    "verification/rfc1624-ones-complement-checksum"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repo": "https://github.com/duckdb/duckdb",
+        "revision": "05de6cb973b60b102849d155bf1665e208bad7fa"
+      },
+      "name": "duckdb"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/apache/datafusion",
+        "revision": "657d2cab48a5c3586fcfcb1bec416c333de9e966"
+      },
+      "name": "datafusion"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/pola-rs/polars",
+        "revision": "e02c237a6b9055f23f33ae632b0490286a579e2e"
+      },
+      "name": "polars"
+    },
+    {
+      "identity": {
+        "repo": "https://github.com/apache/arrow-rs",
+        "revision": "9f87453338091a0cf078300f01b8eb0a84a99f10"
+      },
+      "name": "arrow-rs"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3299869.3320212",
+        "venue": "ACM SIGMOD 2019"
+      },
+      "name": "duckdb-embeddable-analytical-database"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2588555.2593666",
+        "venue": "ACM SIGMOD 2014"
+      },
+      "name": "morsel-driven-parallelism"
+    },
+    {
+      "identity": {
+        "standard": "IEEE Std 754-2019",
+        "title": "IEEE Standard for Floating-Point Arithmetic"
+      },
+      "name": "ieee-754-2019"
+    }
+  ],
+  "topics": [
+    "domains/vectorized-olap-hash-joins",
+    "pl/ieee754-totalorder-grouping-keys",
+    "systems/out-of-core-radix-spill-encryption",
+    "verification/decimal128-scale-widening-joins"
+  ]
+}
