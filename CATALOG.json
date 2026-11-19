@@ -9024,6 +9024,104 @@
         "tooling/stpa-hazard-analysis"
       ]
     },
+    "bazel-reapi-merkle-action-caches-symlink-sandboxes-and-content-defined-cas": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "bazelbuild/bazel",
+            "revision": "2e2d4e48fb55195e6ddd3e97af50e4aae47544c6"
+          },
+          "name": "Bazel build system and Linux PID-1 namespace sandbox"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/remote-apis",
+            "revision": "e0c0554bfc8a37abf336c3e78070684367738e1d"
+          },
+          "name": "Remote Execution API (REAPI v2) Protocol Buffer specification"
+        },
+        {
+          "identity": {
+            "repository": "buildbarn/bb-remote-execution",
+            "revision": "f22e022dfa042a91c6cd4b57efd537d2fbb75ffb"
+          },
+          "name": "Buildbarn Remote Execution worker and virtual filesystem"
+        },
+        {
+          "identity": {
+            "repository": "containers/bubblewrap",
+            "revision": "1fb0aa26d3eb66254f7742e704add7f82f41a582"
+          },
+          "name": "Bubblewrap unprivileged user-namespace sandboxing tool"
+        },
+        {
+          "identity": {
+            "repository": "opencontainers/runc",
+            "revision": "b7dc1304ed9e18f14e626dc06374043b12cf355f"
+          },
+          "name": "OCI runc container runtime"
+        },
+        {
+          "identity": {
+            "repository": "git/git",
+            "revision": "94f6e3e283f2adfc518b39cfc39291f1c2832ad0",
+            "tag": "v2.30.2"
+          },
+          "name": "Git v2.30.2 delayed-checkout case-folding symlink fix"
+        },
+        {
+          "identity": {
+            "header": "linux/openat2.h",
+            "kernel_introduced": "5.6",
+            "observed_kernel": "7.1.6-1rodete1-amd64"
+          },
+          "name": "Linux openat2(2) scoped path-resolution system call"
+        },
+        {
+          "identity": {
+            "advisory": "CVE-2024-21626",
+            "component": "opencontainers/runc <= 1.1.11"
+          },
+          "name": "Leaky Vessels runc leaked file-descriptor working-directory escape"
+        },
+        {
+          "identity": {
+            "advisory": "CVE-2017-5226",
+            "component": "containers/bubblewrap < 0.1.8"
+          },
+          "name": "Bubblewrap TIOCSTI controlling-terminal pushback injection"
+        },
+        {
+          "identity": {
+            "advisory": "CVE-2021-21300",
+            "component": "git/git 2.14.2 .. 2.30.0"
+          },
+          "name": "Git case-insensitive symlink delayed-checkout RCE"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-30-0",
+            "title": "FastCDC: a Fast and Efficient Content-Defined Chunking Approach for Data Deduplication",
+            "venue": "USENIX ATC 2016"
+          },
+          "name": "FastCDC content-defined chunking (2016 USENIX ATC)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TPDS.2020.2984632",
+            "title": "The Design of Fast Content-Defined Chunking for Data Deduplication Based Storage Systems"
+          },
+          "name": "FastCDC 2020 normalized chunking specification"
+        }
+      ],
+      "topics": [
+        "build/reapi-merkle-action-caches",
+        "security/openat2-resolve-in-root-toctou",
+        "vcs/case-folding-symlink-collisions",
+        "verification/hermetic-sandbox-isolation"
+      ]
+    },
     "beam-procbin-heaps-pony-orca-capabilities-and-mlkit-region-resetting": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -62792,6 +62890,122 @@
         "rustc",
         "rustc/codegen",
         "verification"
+      ]
+    },
+    "wireguard-cookie-ratchets-ipsec-xfrm-pmtu-blackholes-and-tor-cell-padding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "WireGuard/wireguard-go",
+            "revision": "b3bc704ef0ee21a36298601a9e1e5ff90377ac52"
+          },
+          "name": "WireGuard Go userspace implementation"
+        },
+        {
+          "identity": {
+            "repository": "WireGuard/wireguard-tools",
+            "revision": "ba8556ce45c230906041a1a04450b7b638057917"
+          },
+          "name": "WireGuard configuration and wg-quick routing utilities"
+        },
+        {
+          "identity": {
+            "repository": "cloudflare/boringtun",
+            "revision": "6dcc889a95ad82400932f785d874421d70308195"
+          },
+          "name": "Cloudflare BoringTun Rust WireGuard implementation"
+        },
+        {
+          "identity": {
+            "repository": "strongswan/strongswan",
+            "revision": "eb7fa250749b3979055e09312cd603f1a61d9aee"
+          },
+          "name": "strongSwan IKEv2 daemon and Linux XFRM netlink plugin"
+        },
+        {
+          "identity": {
+            "repository": "torproject/tor",
+            "revision": "27d4ba90f6dbf0c80d518a358b9600ae789509e4"
+          },
+          "name": "Tor GitHub mirror head redirect commit"
+        },
+        {
+          "identity": {
+            "repository": "torproject/tor",
+            "revision": "3cb6a690be60fcdab60130402ff88dcfc0657596"
+          },
+          "name": "Tor circuit-padding C implementation prior to mirror sunset"
+        },
+        {
+          "identity": {
+            "repository": "maybenot-io/maybenot",
+            "revision": "539f6457830b8d720af2a0c5b68010fe350e4012"
+          },
+          "name": "Maybenot probabilistic traffic-analysis defense framework"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2017.23160",
+            "title": "WireGuard: Next Generation Kernel Network Tunnel"
+          },
+          "name": "WireGuard protocol specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/EuroSP.2019.00026",
+            "title": "A Mechanised Cryptographic Proof of the WireGuard Virtual Private Network Protocol"
+          },
+          "name": "CryptoVerif mechanized proof of WireGuard"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 7296",
+            "url": "https://www.rfc-editor.org/rfc/rfc7296"
+          },
+          "name": "IKEv2 protocol specification"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 8899",
+            "url": "https://www.rfc-editor.org/rfc/rfc8899"
+          },
+          "name": "Datagram Packetization Layer Path MTU Discovery (DPLPMTUD)"
+        },
+        {
+          "identity": {
+            "standard": "IETF RFC 6479",
+            "url": "https://www.rfc-editor.org/rfc/rfc6479"
+          },
+          "name": "IPsec Anti-Replay Algorithm without Bit Shifting"
+        },
+        {
+          "identity": {
+            "advisory": "CVE-2024-3661",
+            "standard": "IETF RFC 3442"
+          },
+          "name": "TunnelVision DHCP Option 121 VPN routing bypass"
+        },
+        {
+          "identity": {
+            "title": "TunnelCrack: Widespread Design Flaws in VPN Clients",
+            "venue": "USENIX Security 2023"
+          },
+          "name": "TunnelCrack VPN routing-table leak study"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.09510",
+            "doi": "10.1145/3603216.3624953"
+          },
+          "name": "Maybenot framework specification"
+        }
+      ],
+      "topics": [
+        "security/noise-ik-cryptokey-routing",
+        "systems/ipsec-xfrm-pmtu-discovery",
+        "security/vpn-routing-table-leaks",
+        "verification/anti-replay-sliding-bitmaps"
       ]
     },
     "wireless-sdr-physical-layer-compilers-and-algebraic-dsp-synthesis": {

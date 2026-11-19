@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "security/noise-ik-cryptokey-routing",
+    "systems/ipsec-xfrm-pmtu-discovery",
+    "security/vpn-routing-table-leaks",
+    "verification/anti-replay-sliding-bitmaps"
+  ],
+  "subjects": [
+    {
+      "name": "WireGuard Go userspace implementation",
+      "identity": {
+        "repository": "WireGuard/wireguard-go",
+        "revision": "b3bc704ef0ee21a36298601a9e1e5ff90377ac52"
+      }
+    },
+    {
+      "name": "WireGuard configuration and wg-quick routing utilities",
+      "identity": {
+        "repository": "WireGuard/wireguard-tools",
+        "revision": "ba8556ce45c230906041a1a04450b7b638057917"
+      }
+    },
+    {
+      "name": "Cloudflare BoringTun Rust WireGuard implementation",
+      "identity": {
+        "repository": "cloudflare/boringtun",
+        "revision": "6dcc889a95ad82400932f785d874421d70308195"
+      }
+    },
+    {
+      "name": "strongSwan IKEv2 daemon and Linux XFRM netlink plugin",
+      "identity": {
+        "repository": "strongswan/strongswan",
+        "revision": "eb7fa250749b3979055e09312cd603f1a61d9aee"
+      }
+    },
+    {
+      "name": "Tor GitHub mirror head redirect commit",
+      "identity": {
+        "repository": "torproject/tor",
+        "revision": "27d4ba90f6dbf0c80d518a358b9600ae789509e4"
+      }
+    },
+    {
+      "name": "Tor circuit-padding C implementation prior to mirror sunset",
+      "identity": {
+        "repository": "torproject/tor",
+        "revision": "3cb6a690be60fcdab60130402ff88dcfc0657596"
+      }
+    },
+    {
+      "name": "Maybenot probabilistic traffic-analysis defense framework",
+      "identity": {
+        "repository": "maybenot-io/maybenot",
+        "revision": "539f6457830b8d720af2a0c5b68010fe350e4012"
+      }
+    },
+    {
+      "name": "WireGuard protocol specification",
+      "identity": {
+        "doi": "10.14722/ndss.2017.23160",
+        "title": "WireGuard: Next Generation Kernel Network Tunnel"
+      }
+    },
+    {
+      "name": "CryptoVerif mechanized proof of WireGuard",
+      "identity": {
+        "doi": "10.1109/EuroSP.2019.00026",
+        "title": "A Mechanised Cryptographic Proof of the WireGuard Virtual Private Network Protocol"
+      }
+    },
+    {
+      "name": "IKEv2 protocol specification",
+      "identity": {
+        "standard": "IETF RFC 7296",
+        "url": "https://www.rfc-editor.org/rfc/rfc7296"
+      }
+    },
+    {
+      "name": "Datagram Packetization Layer Path MTU Discovery (DPLPMTUD)",
+      "identity": {
+        "standard": "IETF RFC 8899",
+        "url": "https://www.rfc-editor.org/rfc/rfc8899"
+      }
+    },
+    {
+      "name": "IPsec Anti-Replay Algorithm without Bit Shifting",
+      "identity": {
+        "standard": "IETF RFC 6479",
+        "url": "https://www.rfc-editor.org/rfc/rfc6479"
+      }
+    },
+    {
+      "name": "TunnelVision DHCP Option 121 VPN routing bypass",
+      "identity": {
+        "advisory": "CVE-2024-3661",
+        "standard": "IETF RFC 3442"
+      }
+    },
+    {
+      "name": "TunnelCrack VPN routing-table leak study",
+      "identity": {
+        "title": "TunnelCrack: Widespread Design Flaws in VPN Clients",
+        "venue": "USENIX Security 2023"
+      }
+    },
+    {
+      "name": "Maybenot framework specification",
+      "identity": {
+        "arxiv": "2304.09510",
+        "doi": "10.1145/3603216.3624953"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,98 @@
+{
+  "topics": [
+    "build/reapi-merkle-action-caches",
+    "security/openat2-resolve-in-root-toctou",
+    "vcs/case-folding-symlink-collisions",
+    "verification/hermetic-sandbox-isolation"
+  ],
+  "subjects": [
+    {
+      "name": "Bazel build system and Linux PID-1 namespace sandbox",
+      "identity": {
+        "repository": "bazelbuild/bazel",
+        "revision": "2e2d4e48fb55195e6ddd3e97af50e4aae47544c6"
+      }
+    },
+    {
+      "name": "Remote Execution API (REAPI v2) Protocol Buffer specification",
+      "identity": {
+        "repository": "bazelbuild/remote-apis",
+        "revision": "e0c0554bfc8a37abf336c3e78070684367738e1d"
+      }
+    },
+    {
+      "name": "Buildbarn Remote Execution worker and virtual filesystem",
+      "identity": {
+        "repository": "buildbarn/bb-remote-execution",
+        "revision": "f22e022dfa042a91c6cd4b57efd537d2fbb75ffb"
+      }
+    },
+    {
+      "name": "Bubblewrap unprivileged user-namespace sandboxing tool",
+      "identity": {
+        "repository": "containers/bubblewrap",
+        "revision": "1fb0aa26d3eb66254f7742e704add7f82f41a582"
+      }
+    },
+    {
+      "name": "OCI runc container runtime",
+      "identity": {
+        "repository": "opencontainers/runc",
+        "revision": "b7dc1304ed9e18f14e626dc06374043b12cf355f"
+      }
+    },
+    {
+      "name": "Git v2.30.2 delayed-checkout case-folding symlink fix",
+      "identity": {
+        "repository": "git/git",
+        "revision": "94f6e3e283f2adfc518b39cfc39291f1c2832ad0",
+        "tag": "v2.30.2"
+      }
+    },
+    {
+      "name": "Linux openat2(2) scoped path-resolution system call",
+      "identity": {
+        "header": "linux/openat2.h",
+        "kernel_introduced": "5.6",
+        "observed_kernel": "7.1.6-1rodete1-amd64"
+      }
+    },
+    {
+      "name": "Leaky Vessels runc leaked file-descriptor working-directory escape",
+      "identity": {
+        "advisory": "CVE-2024-21626",
+        "component": "opencontainers/runc <= 1.1.11"
+      }
+    },
+    {
+      "name": "Bubblewrap TIOCSTI controlling-terminal pushback injection",
+      "identity": {
+        "advisory": "CVE-2017-5226",
+        "component": "containers/bubblewrap < 0.1.8"
+      }
+    },
+    {
+      "name": "Git case-insensitive symlink delayed-checkout RCE",
+      "identity": {
+        "advisory": "CVE-2021-21300",
+        "component": "git/git 2.14.2 .. 2.30.0"
+      }
+    },
+    {
+      "name": "FastCDC content-defined chunking (2016 USENIX ATC)",
+      "identity": {
+        "isbn": "978-1-931971-30-0",
+        "title": "FastCDC: a Fast and Efficient Content-Defined Chunking Approach for Data Deduplication",
+        "venue": "USENIX ATC 2016"
+      }
+    },
+    {
+      "name": "FastCDC 2020 normalized chunking specification",
+      "identity": {
+        "doi": "10.1109/TPDS.2020.2984632",
+        "title": "The Design of Fast Content-Defined Chunking for Data Deduplication Based Storage Systems"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
