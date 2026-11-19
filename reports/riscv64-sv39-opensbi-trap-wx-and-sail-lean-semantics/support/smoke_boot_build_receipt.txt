@@ -1,0 +1,168 @@
+# Bare-Metal RV64IM_Zicsr_Zifencei Build, Binary Audit, and QEMU Execution Receipt
+Date: 2026-11-19
+Host architecture: x86_64-unknown-linux-gnu
+Build/disassembly compiler: rustc 1.98.0-nightly (14210df0e 2026-05-31), LLVM 22.1.6
+Cross-checked compiler (RVC/medlow probes): rustc 1.98.0-nightly (f8a08b688 2026-05-30) [nightly-2026-05-31]
+Lean toolchain: Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+QEMU / OpenSBI runtime: qemu-system-riscv64 11.0.2 + OpenSBI v1.7 (Runtime SBI 3.0)
+
+## Preserved Support Source SHA-256
+4e39ce864e42210b78a19d1a4dfd383c3c46ef0feaa8bee4d8fe5102c92efda9  support/link.ld
+e9bfa346b9b4b575cda769e2b7b7e2df9b4d3a4118965882938983c611134a58  support/smoke_boot.rs
+419416e0b95f43ece6c22d40554c7e2c399251cf03b48a915173563123647a47  support/traps_minimal.S
+
+Note on receipt provenance: The `llvm-readobj` and `llvm-objdump` receipts below
+were captured from the identical assembly instruction sequence prior to
+standalone comment/banner scrubbing (replacing one ASCII immediate byte in the
+`_start` bare-mode UART marker without altering section sizes, program headers,
+ELF flags, or instruction-width counts).
+
+## smoke_boot.elf ELF Header & Program Headers
+
+File: /tmp/rv64_smoke_boot/smoke_boot.elf
+Format: elf64-littleriscv
+Arch: riscv64
+AddressSize: 64bit
+LoadName: <Not found>
+ElfHeader {
+  Ident {
+    Magic: (7F 45 4C 46)
+    Class: 64-bit (0x2)
+    DataEncoding: LittleEndian (0x1)
+    FileVersion: 1
+    OS/ABI: SystemV (0x0)
+    ABIVersion: 0
+    Unused: (00 00 00 00 00 00 00)
+  }
+  Type: Executable (0x2)
+  Machine: EM_RISCV (0xF3)
+  Version: 1
+  Entry: 0xFFFFFFC080200000
+  ProgramHeaderOffset: 0x40
+  SectionHeaderOffset: 0x4A40
+  Flags [ (0x0)
+  ]
+  HeaderSize: 64
+  ProgramHeaderEntrySize: 56
+  ProgramHeaderCount: 4
+  SectionHeaderEntrySize: 64
+  SectionHeaderCount: 10
+  StringTableSectionIndex: 8
+}
+ProgramHeaders [
+  ProgramHeader {
+    Type: PT_LOAD (0x1)
+    Offset: 0x1000
+    VirtualAddress: 0xFFFFFFC080200000
+    PhysicalAddress: 0x80200000
+    FileSize: 4096
+    MemSize: 4096
+    Flags [ (0x5)
+      PF_R (0x4)
+      PF_X (0x1)
+    ]
+    Alignment: 4096
+  }
+  ProgramHeader {
+    Type: PT_LOAD (0x1)
+    Offset: 0x2000
+    VirtualAddress: 0xFFFFFFC080201000
+    PhysicalAddress: 0x80201000
+    FileSize: 4096
+    MemSize: 4096
+    Flags [ (0x5)
+      PF_R (0x4)
+      PF_X (0x1)
+    ]
+    Alignment: 4096
+  }
+  ProgramHeader {
+    Type: PT_LOAD (0x1)
+    Offset: 0x3000
+    VirtualAddress: 0xFFFFFFC080202000
+    PhysicalAddress: 0x80202000
+    FileSize: 4096
+    MemSize: 4096
+    Flags [ (0x5)
+      PF_R (0x4)
+      PF_X (0x1)
+    ]
+    Alignment: 4096
+  }
+  ProgramHeader {
+    Type: PT_LOAD (0x1)
+    Offset: 0x4000
+    VirtualAddress: 0xFFFFFFC080203000
+    PhysicalAddress: 0x80203000
+    FileSize: 0
+    MemSize: 32768
+    Flags [ (0x6)
+      PF_R (0x4)
+      PF_W (0x2)
+    ]
+    Alignment: 4096
+  }
+]
+
+## smoke_boot.elf Sections
+
+/tmp/rv64_smoke_boot/smoke_boot.elf:	file format elf64-littleriscv
+
+Sections:
+Idx Name          Size     VMA              LMA              Type
+  0               00000000 0000000000000000 0000000000000000 
+  1 .text.boot    00001000 ffffffc080200000 0000000080200000 TEXT
+  2 .text         00001000 ffffffc080201000 0000000080201000 TEXT
+  3 .rodata       00000000 ffffffc080202000 0000000080202000 DATA
+  4 .user_text    00001000 ffffffc080202000 0000000080202000 TEXT
+  5 .data         00000000 ffffffc080203000 ffffffc080203000 DATA
+  6 .bss          00008000 ffffffc080203000 0000000080203000 BSS
+  7 .symtab       00000690 0000000000000000 0000000000000000 
+  8 .shstrtab     0000004a 0000000000000000 0000000000000000 
+  9 .strtab       00000364 0000000000000000 0000000000000000 
+
+## smoke_boot.elf Instruction Width Audit
+16-bit (RVC) instructions: 0
+32-bit instructions: 250
+
+## traps_minimal.S Assembly & Encoding Audit
+Format: elf64-littleriscv
+Arch: riscv64
+  Flags [ (0x0)
+16-bit (RVC) instructions: 0
+32-bit instructions: 99
+
+### wx_activate_and_call disassembly
+0000000000000164 <wx_activate_and_call>:
+     164: ff010113     	addi	sp, sp, -0x10
+     168: 00113423     	sd	ra, 0x8(sp)
+     16c: 00b53023     	sd	a1, 0x0(a0)
+     170: 12060073     	sfence.vma	a2
+     174: 0000100f     	fence.i
+     178: 00068513     	mv	a0, a3
+     17c: 000600e7     	jalr	a2
+     180: 00813083     	ld	ra, 0x8(sp)
+     184: 01010113     	addi	sp, sp, 0x10
+     188: 00008067     	ret
+
+## QEMU 11.0.2 + OpenSBI v1.7 Execution Verification Receipt
+Runtime: qemu-system-riscv64 11.0.2 + OpenSBI v1.7 (Runtime SBI 3.0)
+Headless non-TTY invocation:
+  qemu-system-riscv64 -L <qemu_share> -M virt -m 128M -smp 1 \
+    -display none -serial stdio -bios default -kernel <elf> </dev/null
+
+Observed outcomes:
+  1. Strict Svade mode (`-cpu rv64,svade=true,svadu=false`):
+     - High-half Sv39 transition marker: `SV`
+     - U-mode `ecall` trap-roundtrip + `fence.i` completion marker: `OK`
+     - OpenSBI SRST (`a7=0x53525354, a6=0, a0=0, a1=0`) exit status: `EXIT=0` (~0.3 s)
+  2. Default CPU mode (`-cpu rv64`, OpenSBI enables `menvcfg.ADUE=1` / `Svadu`):
+     - High-half Sv39 transition marker: `SV`
+     - U-mode `ecall` trap-roundtrip + `fence.i` completion marker: `OK`
+     - OpenSBI SRST exit status: `EXIT=0` (~0.3 s)
+  3. Live S-mode W^X binary-module activation probe (QEMU 11.0.2 + OpenSBI v1.7):
+     - Wrote 32-bit RV64I machine words to an S-mode `RW` (`X=0`) page,
+       flipped leaf PTE to `RX` (`W=0, X=1`, `A=1, D=0`), executed
+       `sfence.vma vaddr, zero` followed by `fence.i`, invoked via `jalr`
+       in S-mode, returned cleanly, then executed `sret` to U-mode with
+       `SPP=0, SUM=0, scounteren=0`; terminated cleanly (`EXIT=0`).

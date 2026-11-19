@@ -1,0 +1,31 @@
+{
+  "topics": [
+    "systems/sel4",
+    "systems/os-kernels",
+    "isa/riscv64",
+    "security/authorization-policy",
+    "security/capability-sandboxing",
+    "security/information-flow-control",
+    "verification/os-kernels",
+    "verification/refinement",
+    "verification/semantic-models/non-interference"
+  ],
+  "subjects": [
+    {
+      "name": "seL4 microkernel and libsel4",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+        "version": "17.0.0-dev"
+      }
+    },
+    {
+      "name": "seL4 L4.verified (l4v) specifications and proofs",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

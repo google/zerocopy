@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "isa/riscv64",
+    "systems/os-kernels",
+    "systems/sandboxing",
+    "systems/sel4",
+    "systems/sfi-lfi",
+    "security/information-flow-control",
+    "security/toctou",
+    "verification/os-kernels",
+    "verification/semantic-models/non-interference",
+    "verification/soundness",
+    "lean/mechanized-models",
+    "lean/std-library"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V ISA Manual",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "5f1104a0613af80219232b1e4bc108f9ec2bd6b2"
+      }
+    },
+    {
+      "name": "QEMU",
+      "identity": {
+        "repository": "qemu/qemu",
+        "revision": "7c949c53e936aa3a658d84ab53bae5cadaa5d59c",
+        "version": "v10.0.0"
+      }
+    },
+    {
+      "name": "OpenSBI",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "ed70256dd22c09962d146e433834239825ef0616"
+      }
+    },
+    {
+      "name": "seL4 Microkernel",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "seL4 Verification (l4v)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

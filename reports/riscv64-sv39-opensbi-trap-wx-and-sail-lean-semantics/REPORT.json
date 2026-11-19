@@ -1,0 +1,121 @@
+{
+  "topics": [
+    "isa",
+    "isa/riscv64",
+    "isa/sail",
+    "systems/virtual-memory",
+    "systems/firmware",
+    "systems/bare-metal",
+    "lean/mechanization",
+    "anneal/trusted-boundary",
+    "rustc/targets",
+    "llvm/riscv"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V ISA Manual (Privileged and Unprivileged)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "5f1104a0613af80219232b1e4bc108f9ec2bd6b2"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 extraction",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Sail RISC-V specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "dda378c60fa0ad1bf13af5929bebee344a2e0a75"
+      }
+    },
+    {
+      "name": "lean-sail (v5, ConcurrencyInterfaceV1)",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "079463134b9c50450b8393e1566a09fc492a34d9",
+        "tag": "v5"
+      }
+    },
+    {
+      "name": "lean-sail (v8, ArchSemSequential)",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+        "tag": "v8"
+      }
+    },
+    {
+      "name": "OpenSBI (source)",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "ed70256dd22c09962d146e433834239825ef0616"
+      }
+    },
+    {
+      "name": "OpenSBI (QEMU-bundled runtime firmware)",
+      "identity": {
+        "project": "riscv-software-src/opensbi",
+        "version": "v1.7",
+        "sbi_spec": "3.0"
+      }
+    },
+    {
+      "name": "QEMU (source)",
+      "identity": {
+        "repository": "qemu/qemu",
+        "revision": "08c9bbb825148dec9669f5184ecf18823bb6d631"
+      }
+    },
+    {
+      "name": "QEMU (qemu-system-riscv64)",
+      "identity": {
+        "project": "qemu/qemu",
+        "version": "11.0.2"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "5c960dd3f1b94321307d4500a4e180c753bfaad0"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust nightly toolchain (nightly-2026-05-31)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"
+      }
+    },
+    {
+      "name": "Rust nightly toolchain (nightly-2026-06-01)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "Nixpkgs",
+      "identity": {
+        "repository": "nixos/nixpkgs",
+        "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

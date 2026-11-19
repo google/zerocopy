@@ -1,0 +1,58 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+#
+# Citation table for section 4 of REPORT.md.
+# Columns: repo, path, start_line, end_line, needle (see check_citations.py).
+# seL4 = seL4/seL4 @ 08c7e5fddb3111ff377745c8eefb07feb5c4cfb7
+# l4v  = seL4/l4v  @ b0fe7693ca5943e08c49e038d33fd64dc7dfa72e
+l4v	proof/infoflow/Noninterference.thy	16	32	The Noninterference property does not hold on the kernel and is not
+l4v	proof/infoflow/Noninterference.thy	4179	4190	lemma xnonleakage:
+l4v	proof/infoflow/Noninterference.thy	36	36	datatype 'a partition = Partition 'a | PSched
+l4v	proof/infoflow/Noninterference.thy	252	273	policy_scheduler: "(PSched,d) \<in> policyFlows g"
+l4v	proof/infoflow/refine/Noninterference_Refinement.thy	384	414	lemma xnonleakage_C:
+l4v	proof/infoflow/refine/Noninterference_Refinement.thy	12	16	fp is currently ignored by ADT_C_if
+l4v	proof/infoflow/RISCV64/ArchInfoFlow.thy	59	71	"equiv_fpu P s s' \<equiv> True"
+l4v	proof/access-control/Types.thy	100	109	pasMaySendIrqs :: "bool"
+l4v	proof/access-control/Types.thy	51	52	| Reply | Write | Read | DeleteDerived | AAuth arch_auth
+l4v	proof/access-control/Access.thy	107	132	| UntypedCap isdev oref bits freeIndex \<Rightarrow> {Control}
+l4v	proof/access-control/RISCV64/ArchAccess.thy	15	25	else {Control})"
+l4v	proof/access-control/Access.thy	312	319	\<and> tcb_domain_map_wellformed aag s
+l4v	proof/access-control/Access.thy	268	280	\<forall>(ptr, d) \<in> tcbs_doms. pasObjectAbs aag ptr \<in> pasDomainAbs aag d"
+l4v	proof/access-control/Access.thy	63	77	(\<forall>agent'. (agent, Control, agent') \<in> aag \<longrightarrow> agent = agent')
+l4v	proof/access-control/Access.thy	898	919	abbreviation "integrity aag \<equiv> integrity_subjects {pasSubject aag} aag (pasMayActivate aag)"
+l4v	proof/access-control/Access.thy	418	531	| troa_tcb_empty_caller:
+l4v	proof/access-control/RISCV64/ArchAccess.thy	131	150	arch_troa_asidpool_clear:
+l4v	proof/infoflow/InfoFlow.thy	24	37	"pas_domains_distinct aag \<equiv> \<forall>d. \<exists>l. pasDomainAbs aag d = {l}"
+l4v	proof/infoflow/PasUpdates.thy	22	26	pas_domains_distinct aag"
+l4v	proof/infoflow/InfoFlow.thy	55	139	| read_sync_ep_read_receivers:
+l4v	proof/infoflow/InfoFlow.thy	306	350	synchronous sends provide a back-channel from receiver to sender
+l4v	proof/infoflow/InfoFlow.thy	275	283	work_units_completed s = work_units_completed s' \<and>
+l4v	proof/infoflow/InfoFlow.thy	216	230	equiv_for S ready_queues s s' \<and>
+l4v	proof/infoflow/InfoFlow.thy	355	366	if aag_can_affect_label aag l
+l4v	proof/infoflow/InfoFlow.thy	250	267	idle_equiv s s' \<and> cur_thread s = cur_thread s' \<and>
+l4v	proof/infoflow/Scheduler_IF.thy	71	76	\<and> domain_start_index s = domain_start_index s'
+l4v	proof/infoflow/Scheduler_IF.thy	185	188	\<and> irq_state_of_state s = irq_state_of_state s'"
+l4v	proof/infoflow/ADT_IF.thy	1664	1671	domain_sep_inv False s0_internal s \<and>
+l4v	proof/infoflow/ADT_IF.thy	1660	1685	assumes pasMaySendIrqs_initial_aag[simp]: "pasMaySendIrqs initial_aag = False"
+l4v	proof/access-control/DomainSepInv.thy	26	35	(\<forall>slot. \<not> cte_wp_at ((=) DomainCap) slot s) \<and>
+l4v	proof/infoflow/ADT_IF.thy	1739	1748	lemma invoke_domain_false:
+l4v	spec/abstract/Schedule_A.thy	52	69	do_extended_op $ modify (\<lambda>s. s \<lparr>work_units_completed := 0\<rparr>)
+l4v	proof/infoflow/CNode_IF.thy	359	375	"only_timer_irq irq s \<equiv> (\<forall>x. interrupt_states s x = IRQTimer \<longrightarrow> x = irq) \<and> irq_is_recurring irq s"
+l4v	proof/infoflow/CNode_IF.thy	436	439	domain_sep_inv False st and only_timer_irq irq and non_kernel_IRQs_masked"
+l4v	spec/design/m-skel/RISCV64/MachineTypes.thy	39	62	irq_oracle :: "nat \<Rightarrow> RISCV64.irq"
+l4v	proof/infoflow/FinalCaps.thy	7	12	The InfoFlow theorem needs that caps shared between labels cannot be deleted.
+l4v	proof/infoflow/FinalCaps.thy	83	98	(pasObjectAbs aag (fst lslot) = SilcLabel))) \<and>
+l4v	proof/access-control/Syscall_AC.thy	229	232	\<longrightarrow> pasObjectAbs aag (cur_thread s) \<in> pasDomainAbs aag (cur_domain s)"
+l4v	spec/abstract/Exceptions_A.thy	60	69	irq_opt \<leftarrow> liftE $ do_machine_op (getActiveIRQ True);
+l4v	spec/machine/RISCV64/MachineOps.thy	197	223	"hwASIDFlush asid \<equiv> machine_op_lift (hwASIDFlush_impl asid)"
+l4v	proof/infoflow/RISCV64/ArchArch_IF.thy	1246	1252	dmo_read_stval_reads_respects: "reads_respects aag l \<top> (do_machine_op read_stval)"
+l4v	proof/infoflow/ADT_IF.thy	754	766	thread_set (\<lambda>tcb. tcb \<lparr>tcb_arch := arch_tcb_context_set tc (tcb_arch tcb)\<rparr>) t;
+l4v	proof/infoflow/ADT_IF.thy	1438	1446	thread_get (arch_tcb_context_get o tcb_arch) t'
+seL4	src/arch/riscv/kernel/thread.c	59	62	void Arch_prepareNextDomain(void)
+l4v	proof/infoflow/refine/Noninterference_Refinement.thy	190	193	locale valid_initial_state_C = valid_initial_state + kernel_m +
+l4v	proof/infoflow/RISCV64/Example_Valid_State.thy	1890	1900	lemma Sys1_valid_initial_state_noenabled:

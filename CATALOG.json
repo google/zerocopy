@@ -30474,6 +30474,190 @@
         "lean/mechanization"
       ]
     },
+    "riscv64-smode-sfi-checker-and-frame-loan-invariants": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "5f1104a0613af80219232b1e4bc108f9ec2bd6b2"
+          },
+          "name": "RISC-V ISA Manual"
+        },
+        {
+          "identity": {
+            "repository": "qemu/qemu",
+            "revision": "7c949c53e936aa3a658d84ab53bae5cadaa5d59c",
+            "version": "v10.0.0"
+          },
+          "name": "QEMU"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "ed70256dd22c09962d146e433834239825ef0616"
+          },
+          "name": "OpenSBI"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Verification (l4v)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "isa/riscv64",
+        "systems/os-kernels",
+        "systems/sandboxing",
+        "systems/sel4",
+        "systems/sfi-lfi",
+        "security/information-flow-control",
+        "security/toctou",
+        "verification/os-kernels",
+        "verification/semantic-models/non-interference",
+        "verification/soundness",
+        "lean/mechanized-models",
+        "lean/std-library"
+      ]
+    },
+    "riscv64-sv39-opensbi-trap-wx-and-sail-lean-semantics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "5f1104a0613af80219232b1e4bc108f9ec2bd6b2"
+          },
+          "name": "RISC-V ISA Manual (Privileged and Unprivileged)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Sail RISC-V Lean 4 extraction"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "dda378c60fa0ad1bf13af5929bebee344a2e0a75"
+          },
+          "name": "Sail RISC-V specification"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "079463134b9c50450b8393e1566a09fc492a34d9",
+            "tag": "v5"
+          },
+          "name": "lean-sail (v5, ConcurrencyInterfaceV1)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "1e5b216bf881ef08da160db63b44ecda430802d6",
+            "tag": "v8"
+          },
+          "name": "lean-sail (v8, ArchSemSequential)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "ed70256dd22c09962d146e433834239825ef0616"
+          },
+          "name": "OpenSBI (source)"
+        },
+        {
+          "identity": {
+            "project": "riscv-software-src/opensbi",
+            "sbi_spec": "3.0",
+            "version": "v1.7"
+          },
+          "name": "OpenSBI (QEMU-bundled runtime firmware)"
+        },
+        {
+          "identity": {
+            "repository": "qemu/qemu",
+            "revision": "08c9bbb825148dec9669f5184ecf18823bb6d631"
+          },
+          "name": "QEMU (source)"
+        },
+        {
+          "identity": {
+            "project": "qemu/qemu",
+            "version": "11.0.2"
+          },
+          "name": "QEMU (qemu-system-riscv64)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "5c960dd3f1b94321307d4500a4e180c753bfaad0"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"
+          },
+          "name": "Rust nightly toolchain (nightly-2026-05-31)"
+        },
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Rust nightly toolchain (nightly-2026-06-01)"
+        },
+        {
+          "identity": {
+            "repository": "nixos/nixpkgs",
+            "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1"
+          },
+          "name": "Nixpkgs"
+        }
+      ],
+      "topics": [
+        "isa",
+        "isa/riscv64",
+        "isa/sail",
+        "systems/virtual-memory",
+        "systems/firmware",
+        "systems/bare-metal",
+        "lean/mechanization",
+        "anneal/trusted-boundary",
+        "rustc/targets",
+        "llvm/riscv"
+      ]
+    },
     "rust-aggregate-dst-and-target-layout-guarantees": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -36337,6 +36521,37 @@
         "rustc/incremental",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "sel4-riscv64-abi-fastpath-revocation-and-l4v-infoflow": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+            "version": "17.0.0-dev"
+          },
+          "name": "seL4 microkernel and libsel4"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 L4.verified (l4v) specifications and proofs"
+        }
+      ],
+      "topics": [
+        "systems/sel4",
+        "systems/os-kernels",
+        "isa/riscv64",
+        "security/authorization-policy",
+        "security/capability-sandboxing",
+        "security/information-flow-control",
+        "verification/os-kernels",
+        "verification/refinement",
+        "verification/semantic-models/non-interference"
       ]
     },
     "self-referential-unpin-coroutine-field-slicing-and-sroa": {

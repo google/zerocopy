@@ -1,0 +1,163 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+#
+# Citation table for sections 1-3 and 4.5 of REPORT.md.
+# Columns: repo, path, start_line, end_line, needle (see check_citations.py).
+# seL4 = seL4/seL4 @ 08c7e5fddb3111ff377745c8eefb07feb5c4cfb7
+# l4v  = seL4/l4v  @ b0fe7693ca5943e08c49e038d33fd64dc7dfa72e
+l4v	proof/crefine/AARCH64/Fastpath_C.thy	1824	1833	(fastpaths SysCall) (Call fastpath_call_'proc)
+l4v	proof/crefine/AARCH64/Fastpath_C.thy	2709	2718	(fastpaths SysReplyRecv) (Call fastpath_reply_recv_'proc)
+l4v	proof/crefine/AARCH64/Fastpath_Defs.thy	119	125	does not check whether the caller cap is a ReplyMaster cap
+l4v	proof/crefine/AARCH64/Fastpath_Defs.thy	20	176	(\<lambda>_. callKernel (SyscallEvent sysc))
+l4v	proof/crefine/AARCH64/Fastpath_Defs.thy	27	31	pickFastpath \<leftarrow> liftE $ alternative (return True) (return False);
+l4v	proof/crefine/AARCH64/Fastpath_Defs.thy	53	61	unlessE (destDom = curDom) $ throwError ();
+l4v	proof/crefine/AARCH64/Fastpath_Equiv.thy	1499	1503	(callKernel (SyscallEvent SysReplyRecv)) (fastpaths SysReplyRecv)
+l4v	proof/crefine/AARCH64/Fastpath_Equiv.thy	593	599	and (\<lambda>s. ksDomainTime s \<noteq> 0)
+l4v	proof/crefine/RISCV64/ADT_C.thy	159	166	if fp then callKernel_withFastpath_C e else callKernel_C e;
+l4v	proof/crefine/RISCV64/Machine_C.thy	90	126	assumes fastpath_restore_ccorres:
+l4v	proof/crefine/RISCV64/Refine_C.thy	11	14	Fastpath_C left out, imports lifted here
+l4v	proof/crefine/RISCV64/Refine_C.thy	547	552	lemma callKernel_withFastpath_corres_C:
+l4v	proof/crefine/RISCV64/Refine_C.thy	633	638	"fp = False \<Longrightarrow>
+l4v	proof/crefine/RISCV64/Refine_C.thy	907	911	"fp = False \<Longrightarrow>
+l4v	proof/invariant-abstract/DetSchedSchedule_AI.thy	1763	1764	\<lbrace>valid_sched and simple_sched_action\<rbrace> suspend t
+l4v	spec/machine/RISCV64/MachineOps.thy	197	223	"sfence \<equiv> machine_op_lift sfence_impl"
+seL4	config.cmake	177	177	config_option(KernelFastpath FASTPATH "Enable IPC fastpath" DEFAULT ON)
+seL4	configs/include/RISCV64_verified_include.cmake	11	29	set(KernelNumDomains 16 CACHE STRING "")
+seL4	configs/include/RISCV64_verified_include.cmake	21	21	set(KernelFastpath ON CACHE BOOL "")
+seL4	include/api/types.h	83	96	mi = seL4_MessageInfo_set_length(mi, seL4_MsgMaxLength);
+seL4	include/arch/riscv/arch/64/mode/object/structures.bf	10	15	base 64(39,1)
+seL4	include/arch/riscv/arch/64/mode/object/structures.bf	22	64	field capFMappedASID 16
+seL4	include/arch/riscv/arch/64/mode/object/structures.bf	66	90	tag asid_pool_cap 13
+seL4	include/arch/riscv/arch/fastpath/fastpath.h	110	113	return cap_capType_equals(cap, cap_reply_cap);
+seL4	include/arch/riscv/arch/fastpath/fastpath.h	116	190	static inline void NORETURN FORCE_INLINE fastpath_restore(word_t badge, word_t msgInfo, tcb_t *cur_thread)
+seL4	include/arch/riscv/arch/fastpath/fastpath.h	40	55	setVSpaceRoot(addrFromPPtr(vroot), asid);
+seL4	include/arch/riscv/arch/fastpath/fastpath.h	57	67	node_ptr->words[1] = mdbNext | (mdbRevocable << 1) | mdbFirstBadged;
+seL4	include/arch/riscv/arch/fastpath/fastpath.h	75	83	return poolPtr->array[ASID_LOW(asid)];
+seL4	include/arch/riscv/arch/fastpath/fastpath.h	85	95	return (msgInfo & MASK(seL4_MsgLengthBits + seL4_MsgExtraCapBits)) > 4;
+seL4	include/arch/riscv/arch/machine.h	139	142	asm volatile("sfence.vma" ::: "memory");
+seL4	include/arch/riscv/arch/machine.h	259	273	write_satp(satp.words[0]);
+seL4	include/arch/riscv/arch/machine/registerset.h	18	73	a0 = 9, capRegister = 9, badgeRegister = 9,
+seL4	include/arch/riscv/arch/machine/registerset.h	64	73	add other user-level CSRs if needed (i.e. to avoid channels)
+seL4	include/arch/riscv/arch/machine/registerset.h	77	82	n_msgRegisters = 4,
+seL4	include/fastpath/fastpath.h	123	146	cap_ptr->words[0] = (capReplyMaster) | (capReplyCanGrant << 1) |
+seL4	include/fastpath/fastpath.h	64	108	if (likely(guardBits) && unlikely(cptr2 >> (wordBits - guardBits) != capGuard)) {
+seL4	include/object/objecttype.h	53	61	deletedIRQHandler(irq);
+seL4	include/object/structures_64.bf	319	346	field blockingIPCBadge 64
+seL4	include/object/structures_64.bf	7	120	block zombie_cap {
+seL4	include/object/structures.h	173	202	tcbCaller = 3,
+seL4	include/object/structures.h	430	434	return (cap_get_capType(cap) % 2);
+seL4	libsel4/arch_include/riscv/sel4/arch/objecttype.h	12	17	seL4_RISCV_4K_Page = seL4_ModeObjectTypeCount,
+seL4	libsel4/arch_include/riscv/sel4/arch/syscalls.h	25	45	register seL4_Word scno asm("a7") = sys;
+seL4	libsel4/arch_include/riscv/sel4/arch/syscalls.h	84	112	register seL4_Word src_and_badge asm("a0") = src;
+seL4	libsel4/include/api/syscall.xml	11	37	<syscall name="NBSendRecv" />
+seL4	libsel4/include/sel4/constants.h	52	58	seL4_MsgMaxLength = 120
+seL4	libsel4/include/sel4/errors.h	9	27	seL4_NotEnoughMemory,
+seL4	libsel4/include/sel4/objecttype.h	8	19	seL4_CapTableObject,
+seL4	libsel4/include/sel4/shared_types.h	11	19	seL4_Word caps_or_badges[seL4_MsgMaxExtraCaps];
+seL4	libsel4/mode_include/64/sel4/shared_types.bf	11	16	field capsUnwrapped 3
+seL4	libsel4/mode_include/64/sel4/shared_types.bf	18	26	field capAllowGrantReply 1
+seL4	libsel4/mode_include/64/sel4/shared_types.bf	28	32	field guardSize 6
+seL4	libsel4/sel4_arch_include/riscv64/sel4/sel4_arch/objecttype.h	12	18	seL4_RISCV_Giga_Page = seL4_NonArchObjectTypeCount,
+seL4	libsel4/tools/invocation_header_gen.py	36	117	{{label}} = nSeL4ArchInvocationLabels,
+seL4	libsel4/tools/syscall_header_gen.py	194	201	r = itertools.count(start=-1, step=-1)
+seL4	libsel4/tools/syscall_header_gen.py	216	219	'enum': map_syscalls_neg(api + debug),
+seL4	src/api/syscall.c	260	261	current_fault = seL4_Fault_UnknownSyscall_new(w);
+seL4	src/api/syscall.c	302	386	if (isBlocking) {
+seL4	src/api/syscall.c	345	354	length = n_msgRegisters;
+seL4	src/api/syscall.c	377	383	replyFromKernel_success_empty(thread);
+seL4	src/api/syscall.c	411	444	if (cap_reply_cap_get_capReplyMaster(callerCap)) {
+seL4	src/arch/riscv/c_traps.c	144	163	if (unlikely(syscall < SYSCALL_MIN || syscall > SYSCALL_MAX)) {
+seL4	src/arch/riscv/c_traps.c	165	203	fastpath_call(cptr, msgInfo);
+seL4	src/arch/riscv/c_traps.c	45	48	sc.w zero, zero, (t0)
+seL4	src/arch/riscv/kernel/vspace.c	1100	1106	clearMemory((void *)pt, seL4_PageTableBits);
+seL4	src/arch/riscv/kernel/vspace.c	358	385	bufferCap = TCB_PTR_CTE_PTR(thread, tcbBuffer)->cap;
+seL4	src/arch/riscv/kernel/vspace.c	442	451	setVMRoot(NODE_STATE(ksCurThread));
+seL4	src/arch/riscv/kernel/vspace.c	494	504	hwASIDFlush(asid);
+seL4	src/arch/riscv/kernel/vspace.c	506	546	sfence();
+seL4	src/arch/riscv/kernel/vspace.c	555	576	|| (pte_ptr_get_ppn(lu_ret.ptSlot) << seL4_PageBits) != pptr_to_paddr((void *)pptr)) {
+seL4	src/arch/riscv/kernel/vspace.c	578	602	if (unlikely(find_ret.status != EXCEPTION_NONE || find_ret.vspace_root != lvl1pt)) {
+seL4	src/arch/riscv/machine/registerset.c	11	17	a2, a3, a4, a5
+seL4	src/arch/riscv/object/objecttype.c	104	111	deleteASIDPool(
+seL4	src/arch/riscv/object/objecttype.c	22	38	ret.cap = cap_frame_cap_set_capFMappedASID(cap, asidInvalid);
+seL4	src/arch/riscv/object/objecttype.c	304	309	fpuRelease(thread);
+seL4	src/arch/riscv/object/objecttype.c	58	69	vm_rights = maskVMRights(vm_rights, cap_rights_mask);
+seL4	src/arch/riscv/object/objecttype.c	75	84	if (cap_frame_cap_get_capFMappedASID(cap)) {
+seL4	src/arch/riscv/object/objecttype.c	85	103	deleteASID(asid, pte);
+seL4	src/arch/riscv/traps.S	114	134	j c_handle_fastpath_reply_recv
+seL4	src/arch/riscv/traps.S	24	134	csrrw t0, sscratch, t0
+seL4	src/fastpath/fastpath.c	122	130	if (unlikely(findVSpaceForASID_fp(asid) != cap_pd)) {
+seL4	src/fastpath/fastpath.c	132	138	!isHighestPrio(dom, dest->tcbPriority))) {
+seL4	src/fastpath/fastpath.c	140	145	!cap_endpoint_cap_get_capCanGrantReply(ep_cap))) {
+seL4	src/fastpath/fastpath.c	153	156	if (unlikely(dest->tcbDomain != ksCurDomain && 0 < maxDom)) {
+seL4	src/fastpath/fastpath.c	176	245	--- POINT OF NO RETURN ---
+seL4	src/fastpath/fastpath.c	19	245	void NORETURN fastpath_call(word_t cptr, word_t msgInfo)
+seL4	src/fastpath/fastpath.c	242	244	msgInfo = wordFromMessageInfo(seL4_MessageInfo_set_capsUnwrapped(info, 0));
+seL4	src/fastpath/fastpath.c	254	575	void NORETURN fastpath_reply_recv(word_t cptr, word_t msgInfo)
+seL4	src/fastpath/fastpath.c	276	281	if (unlikely(fastpath_mi_check(msgInfo) ||
+seL4	src/fastpath/fastpath.c	283	291	!cap_endpoint_cap_get_capCanReceive(ep_cap))) {
+seL4	src/fastpath/fastpath.c	303	307	notification_ptr_get_state(NODE_STATE(ksCurThread)->tcbBoundNotification) == NtfnState_Active)) {
+seL4	src/fastpath/fastpath.c	312	315	if (unlikely(endpoint_ptr_get_state(ep_ptr) == EPState_Send)) {
+seL4	src/fastpath/fastpath.c	331	336	if (unlikely(!fastpath_reply_cap_check(callerCap))) {
+seL4	src/fastpath/fastpath.c	349	357	fault_type = seL4_Fault_get_seL4_FaultType(caller->tcbFault);
+seL4	src/fastpath/fastpath.c	364	373	if (unlikely(! isValidVTableRoot_fp(newVTable))) {
+seL4	src/fastpath/fastpath.c	38	43	fault_type != seL4_Fault_NullFault)) {
+seL4	src/fastpath/fastpath.c	414	422	if (unlikely(findVSpaceForASID_fp(asid) != cap_pd)) {
+seL4	src/fastpath/fastpath.c	424	428	if (unlikely(!isHighestPrio(dom, caller->tcbPriority))) {
+seL4	src/fastpath/fastpath.c	437	440	if (unlikely(caller->tcbDomain != ksCurDomain && 0 < maxDom)) {
+seL4	src/fastpath/fastpath.c	455	575	callerSlot->cap = cap_null_cap_new();
+seL4	src/fastpath/fastpath.c	45	52	!cap_endpoint_cap_get_capCanSend(ep_cap))) {
+seL4	src/fastpath/fastpath.c	61	64	if (unlikely(endpoint_ptr_get_state(ep_ptr) != EPState_Recv)) {
+seL4	src/fastpath/fastpath.c	73	82	if (unlikely(! isValidVTableRoot_fp(newVTable))) {
+seL4	src/kernel/cspace.c	126	193	guard = (capptr >> ((n_bits - guardBits) & MASK(wordRadix))) & MASK(guardBits);
+seL4	src/kernel/cspace.c	51	63	res_ret = resolveAddressBits(threadRoot, capptr, wordBits);
+seL4	src/kernel/cspace.c	65	109	if (unlikely(res_ret.bitsRemaining != 0)) {
+seL4	src/kernel/thread.c	114	128	doFaultTransfer(badge, sender, receiver, receiveBuffer);
+seL4	src/kernel/thread.c	245	298	only transfer the badge, not the cap.
+seL4	src/kernel/thread.c	326	338	ksWorkUnitsCompleted = 0;
+seL4	src/kernel/thread.c	372	433	!isHighestPrio(ksCurDomain, candidate->tcbPriority)) {
+seL4	src/kernel/thread.c	393	399	information flow in non-fastpath cases.
+seL4	src/kernel/thread.c	557	576	if (ksCurDomain != target->tcbDomain
+seL4	src/kernel/thread.c	578	592	NODE_STATE(ksSchedulerAction) = SchedulerAction_ChooseNewThread;
+seL4	src/kernel/thread.c	72	89	tcbSchedDequeue(target);
+seL4	src/model/preemption.c	16	40	if (ksWorkUnitsCompleted >= CONFIG_MAX_NUM_WORK_UNITS_PER_PREEMPTION) {
+seL4	src/object/cnode.c	325	334	cancelBadgedSends(ep, badge);
+seL4	src/object/cnode.c	528	550	status = preemptionPoint();
+seL4	src/object/cnode.c	53	57	if (invLabel < CNodeRevoke || invLabel > CNODE_LAST_INVOCATION) {
+seL4	src/object/cnode.c	552	565	fs_ret = finaliseSlot(slot, exposed);
+seL4	src/object/cnode.c	615	662	fc_ret = finaliseCap(slot->cap, final, false);
+seL4	src/object/cnode.c	664	724	status = cteDelete(endSlot, false);
+seL4	src/object/cnode.c	74	74	if (invLabel >= CNodeCopy && invLabel <= CNodeMutate) {
+seL4	src/object/cnode.c	846	874	prevIsSameObject = sameObjectAs(prev->cap, cte->cap);
+seL4	src/object/endpoint.c	115	126	setThreadState(thread, ThreadState_Inactive);
+seL4	src/object/endpoint.c	159	163	completeSignal(ntfnPtr, thread);
+seL4	src/object/endpoint.c	299	318	seL4_MessageInfo_new(current_syscall_error.type, 0, 0, len)));
+seL4	src/object/endpoint.c	327	401	cteDeleteOne(callerCap);
+seL4	src/object/endpoint.c	437	473	setThreadState(thread, ThreadState_Restart);
+seL4	src/object/endpoint.c	489	540	void cancelBadgedSends(endpoint_t *epptr, word_t badge)
+seL4	src/object/interrupt.c	167	175	cteInsert(cap, slot, irqSlot);
+seL4	src/object/interrupt.c	186	198	setIRQState(IRQInactive, irq);
+seL4	src/object/interrupt.c	215	226	cap = intStateIRQNode[IRQT_TO_IDX(irq)].cap;
+seL4	src/object/notification.c	270	298	notification_ptr_set_state(ntfnPtr, NtfnState_Idle);
+seL4	src/object/notification.c	354	368	tcbptr->tcbBoundNotification = NULL;
+seL4	src/object/objecttype.c	113	120	cancelAllIPC(EP_PTR(cap_endpoint_cap_get_capEPPtr(cap)));
+seL4	src/object/objecttype.c	122	133	unbindMaybeNotification(ntfn);
+seL4	src/object/objecttype.c	169	181	1ul << cap_cnode_cap_get_capCNodeRadix(cap),
+seL4	src/object/objecttype.c	183	216	suspend(tcb);
+seL4	src/object/objecttype.c	243	253	deletingIRQHandler(irq);
+seL4	src/object/objecttype.c	401	414	if (!preserve && cap_endpoint_cap_get_capEPBadge(cap) == 0) {
+seL4	src/object/objecttype.c	416	434	if (guardSize + cap_cnode_cap_get_capCNodeRadix(cap) > wordBits) {
+seL4	src/object/objecttype.c	441	506	seL4_CapRights_get_capAllowGrantReply(cap_rights));
+seL4	src/object/objecttype.c	524	530	tcb->tcbDomain = ksCurDomain;
+seL4	src/object/objecttype.c	630	783	return decodeCNodeInvocation(invLabel, length, cap, buffer);
+seL4	src/object/tcb.c	1028	1033	Attempted to read our own registers.
+seL4	src/object/tcb.c	1070	1075	Attempted to write our own registers.
+seL4	src/object/tcb.c	1808	1854	if (sameObjectAs(vRoot_newCap, vRoot_srcSlot->cap) &&
+seL4	src/object/untyped.c	171	189	status = ensureNoChildren(slot);
+seL4	src/object/untyped.c	234	271	clearMemory(GET_OFFSET_FREE_PTR(regionBase, offset), chunk);
+seL4	src/object/untyped.c	273	306	status = resetUntypedCap(srcSlot);
+seL4	tools/bitfield_gen.py	2450	2476	offset -= _size
