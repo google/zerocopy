@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "systems/clock-synchronization",
+    "systems/realtime",
+    "systems/virtualization",
+    "pl/temporal-types",
+    "verification/distributed-systems"
+  ],
+  "subjects": [
+    {
+      "name": "CockroachDB Hybrid Logical Clock (HLC) & KV Concurrency Errors",
+      "identity": {
+        "repository": "cockroachdb/cockroach",
+        "revision": "d30c905fff79ef825adc96bcc647f1872a90f2ff"
+      }
+    },
+    {
+      "name": "Meta fbclock & Time Library",
+      "identity": {
+        "repository": "facebook/time",
+        "revision": "62fc415c683e157653af71e4ac34216eedaf5879"
+      }
+    },
+    {
+      "name": "linuxptp",
+      "identity": {
+        "repository": "richardcochran/linuxptp",
+        "revision": "227bbd4715bf4cb735be4947e987032f41457585"
+      }
+    },
+    {
+      "name": "Linux Kernel Timekeeping, Timex, and KVM Paravirt Clock",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Rust Standard Library Time Module",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "Hifitime Multi-Timescale Library",
+      "identity": {
+        "repository": "nyx-space/hifitime",
+        "revision": "e258220164f6f6a488e2e1d7083587a540990567"
+      }
+    },
+    {
+      "name": "IEEE 1588-2019 Precision Time Protocol (PTPv2.1)",
+      "identity": {
+        "standard": "IEEE Std 1588-2019",
+        "title": "IEEE Standard for a Precision Clock Synchronization Protocol for Networked Measurement and Control Systems"
+      }
+    },
+    {
+      "name": "IEEE 802.1Qbv / 802.1Q Time-Aware Shaper (TSN)",
+      "identity": {
+        "standard": "IEEE Std 802.1Qbv-2015 (integrated in IEEE Std 802.1Q-2022)",
+        "title": "Enhancements for Scheduled Traffic"
+      }
+    },
+    {
+      "name": "BIPM CGPM Continuous UTC Resolutions & POSIX Time Standards",
+      "identity": {
+        "standard": "IEEE Std 1003.1 (POSIX); 27th CGPM Resolution 4 (2022); 28th CGPM Resolution 5 (2026)"
+      }
+    },
+    {
+      "name": "Corbett et al. (OSDI 2012 / ACM TOCS 2013) Spanner & TrueTime",
+      "identity": {
+        "publication": "Spanner: Google's Globally-Distributed Database",
+        "doi": "10.1145/2491245"
+      }
+    },
+    {
+      "name": "Kulkarni et al. (OPODIS 2014) Hybrid Logical Clocks",
+      "identity": {
+        "publication": "Logical Physical Clocks",
+        "doi": "10.1007/978-3-319-14472-6_2"
+      }
+    },
+    {
+      "name": "Geng et al. (USENIX NSDI 2018) Huygens",
+      "identity": {
+        "publication": "Exploiting a Natural Network Effect for Scalable, Fine-grained Clock Synchronization",
+        "venue": "USENIX NSDI 2018",
+        "url": "https://www.usenix.org/conference/nsdi18/presentation/geng"
+      }
+    },
+    {
+      "name": "Lamport & Melliar-Smith (JACM 1985) Fault-Tolerant Clock Sync",
+      "identity": {
+        "publication": "Synchronizing Clocks in the Presence of Faults",
+        "doi": "10.1145/2455.2457"
+      }
+    },
+    {
+      "name": "Dolev, Halpern, Strong (JCSS 1986) Byzantine Clock Sync Impossibility",
+      "identity": {
+        "publication": "On the Possibility and Impossibility of Achieving Clock Synchronization",
+        "doi": "10.1016/0022-0000(86)90028-0"
+      }
+    },
+    {
+      "name": "Lundelius & Lynch (1984) Clock Synchronization Precision Lower Bound",
+      "identity": {
+        "publication": "An Upper and Lower Bound for Clock Synchronization",
+        "doi": "10.1016/s0019-9958(84)80033-9"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
