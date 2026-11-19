@@ -11718,6 +11718,81 @@
         "ffi"
       ]
     },
+    "cluster-gpu-deterministic-replay-foundationdb-madsim-hermit-and-nvbit": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "apple/foundationdb",
+            "revision": "39fb2391049fe326d2c5c7c3dd8dbb8b596284b9"
+          },
+          "name": "apple/foundationdb"
+        },
+        {
+          "identity": {
+            "repository": "tigerbeetle/tigerbeetle",
+            "revision": "a2a3c7064519e08233abe26c54a43fca2f9ad9bc"
+          },
+          "name": "tigerbeetle/tigerbeetle"
+        },
+        {
+          "identity": {
+            "repository": "madsim-rs/madsim",
+            "revision": "519950efb4711464f300ed7edf2967ed62d5f502"
+          },
+          "name": "madsim-rs/madsim"
+        },
+        {
+          "identity": {
+            "repository": "facebookexperimental/hermit",
+            "revision": "2994b6f8e7ae4ba8a093b4e1555cd1483ada6bb8"
+          },
+          "name": "facebookexperimental/hermit"
+        },
+        {
+          "identity": {
+            "repository": "NVlabs/NVBit",
+            "revision": "cda43eb3720c69c051385e70791e0f948028a02c"
+          },
+          "name": "NVlabs/NVBit"
+        },
+        {
+          "identity": {
+            "artifact": "nvbit-Linux-x86_64-1.8.2.tar.bz2",
+            "sha256": "fa2728c8921fdcb8e761fd62b2173a2492b47da3605f9ab9510e006772e48eee",
+            "version": "1.8.2"
+          },
+          "name": "NVBit release archive (nvbit-Linux-x86_64-1.8.2.tar.bz2)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3448016.3457559",
+            "url": "https://doi.org/10.1145/3448016.3457559"
+          },
+          "name": "FoundationDB: A Distributed Unbundled Transactional Key Value Store (Zhou et al., SIGMOD 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3373376.3378519",
+            "url": "https://doi.org/10.1145/3373376.3378519"
+          },
+          "name": "Reproducible Containers / DetTrace (Navarro Leija et al., ASPLOS 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3352460.3358307",
+            "url": "https://doi.org/10.1145/3352460.3358307"
+          },
+          "name": "NVBit: A Dynamic Binary Instrumentation Framework for NVIDIA GPUs (Villa, Stephenson, Nellans, Keckler, MICRO 2019)"
+        }
+      ],
+      "topics": [
+        "systems/cluster-simulation",
+        "tooling/gpu-replay",
+        "runtimes/deterministic-containers",
+        "verification/causal-schedules"
+      ]
+    },
     "coalition-presheaf-information-flow-and-relational-hyperproperty-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -36010,6 +36085,61 @@
         "compilers/numerical-domains",
         "smt/polyhedral-relaxations",
         "domains/critical-avionics"
+      ]
+    },
+    "online-schema-migration-gh-ost-vreplication-and-projective-lenses": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "github/gh-ost",
+            "revision": "dfb342a4b391b7593a71927976f8841c2ac33219"
+          },
+          "name": "github/gh-ost"
+        },
+        {
+          "identity": {
+            "repository": "vitessio/vitess",
+            "revision": "96ae128bc631b5a103defc6bc4c54c255ec8dff5"
+          },
+          "name": "vitessio/vitess"
+        },
+        {
+          "identity": {
+            "repository": "fabianlindfors/reshape",
+            "revision": "1c52737b3213bede6997815d4b1f59c6b9174eba",
+            "version": "0.11.2"
+          },
+          "name": "fabianlindfors/reshape"
+        },
+        {
+          "identity": {
+            "repository": "inkandswitch/cambria",
+            "revision": "da8961440cac7eba1c3113488f5bcbc26046620f",
+            "version": "0.1.2"
+          },
+          "name": "inkandswitch/cambria"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3447865.3457963",
+            "url": "https://doi.org/10.1145/3447865.3457963"
+          },
+          "name": "Cambria: Schema Evolution in Distributed Systems with Edit Lenses (Litt, van Hardenberg, Henry, PaPoC 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00778-012-0302-x",
+            "url": "https://doi.org/10.1007/s00778-012-0302-x"
+          },
+          "name": "Automating the database schema evolution process / PRISM++ (Curino, Moon, Deutsch, Zaniolo, VLDBJ 2013)"
+        }
+      ],
+      "topics": [
+        "systems/schema-evolution",
+        "domains/online-ddl",
+        "verification/bijective-lenses",
+        "runtimes/rolling-upgrades"
       ]
     },
     "opaque-origin-csp-sandboxes-smil-svg-and-harmonic-pareto-rendering": {
