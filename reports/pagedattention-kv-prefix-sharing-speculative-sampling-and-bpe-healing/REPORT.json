@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "domains/speculative-rejection-sampling",
+    "pl/bpe-token-boundary-healing",
+    "runtimes/pagedattention-kv-block-tables",
+    "security/prefix-cache-cross-tenant-isolation"
+  ],
+  "subjects": [
+    {
+      "name": "vLLM",
+      "identity": {
+        "repository": "https://github.com/vllm-project/vllm",
+        "revision": "2359b442c6872ea54f3fe78200033eb55abf81de"
+      }
+    },
+    {
+      "name": "SGLang",
+      "identity": {
+        "repository": "https://github.com/sgl-project/sglang",
+        "revision": "54d68123dcc672bc6920371ee6d90ee4ab73edaf"
+      }
+    },
+    {
+      "name": "tiktoken",
+      "identity": {
+        "repository": "https://github.com/openai/tiktoken",
+        "revision": "79dc2c0533685b893616c78160b5d9e40876e724"
+      }
+    },
+    {
+      "name": "llama.cpp",
+      "identity": {
+        "repository": "https://github.com/ggml-org/llama.cpp",
+        "revision": "9a080f44b503c64f66c84a6274b9d9ee5d5b09d5"
+      }
+    },
+    {
+      "name": "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al. SOSP 2023)",
+      "identity": {
+        "arxiv": "2309.06180",
+        "doi": "10.1145/3600006.3613165",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Fast Inference from Transformers via Speculative Decoding (Leviathan, Kalman, Matias 2022)",
+      "identity": {
+        "arxiv": "2211.17192",
+        "url": "https://arxiv.org/abs/2211.17192",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Accelerating Large Language Model Decoding with Speculative Sampling (Chen et al. 2023)",
+      "identity": {
+        "arxiv": "2302.01318",
+        "url": "https://arxiv.org/abs/2302.01318",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

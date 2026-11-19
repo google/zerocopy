@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "compilers/triton-shared-memory-swizzling",
+    "domains/online-softmax-fp8-rescaling",
+    "isa/gpu-wgmma-tma-async-barriers",
+    "verification/warp-specialized-tile-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "FlashAttention",
+      "identity": {
+        "repository": "https://github.com/Dao-AILab/flash-attention",
+        "revision": "68bd095cdd338c5171bccb9c200529f3620b85c9"
+      }
+    },
+    {
+      "name": "Triton",
+      "identity": {
+        "repository": "https://github.com/triton-lang/triton",
+        "revision": "94efac2feff0907be550bcc1925142b09506fd53"
+      }
+    },
+    {
+      "name": "CUTLASS",
+      "identity": {
+        "repository": "https://github.com/NVIDIA/cutlass",
+        "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+      }
+    },
+    {
+      "name": "Online normalizer calculation for softmax (Milakov & Gimelshein 2018)",
+      "identity": {
+        "arxiv": "1805.02867",
+        "url": "https://arxiv.org/abs/1805.02867",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning (Dao 2023)",
+      "identity": {
+        "arxiv": "2307.08691",
+        "url": "https://arxiv.org/abs/2307.08691",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision (Shah, Bikshandi, Zhang, Thakkar, Ramani, Dao 2024)",
+      "identity": {
+        "arxiv": "2407.08608",
+        "url": "https://arxiv.org/abs/2407.08608",
+        "year": "2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

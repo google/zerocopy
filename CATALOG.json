@@ -21599,6 +21599,62 @@
         "pl/typestate"
       ]
     },
+    "flashattention-wgmma-tma-barriers-online-softmax-and-triton-swizzles": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/Dao-AILab/flash-attention",
+            "revision": "68bd095cdd338c5171bccb9c200529f3620b85c9"
+          },
+          "name": "FlashAttention"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/triton-lang/triton",
+            "revision": "94efac2feff0907be550bcc1925142b09506fd53"
+          },
+          "name": "Triton"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/NVIDIA/cutlass",
+            "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+          },
+          "name": "CUTLASS"
+        },
+        {
+          "identity": {
+            "arxiv": "1805.02867",
+            "url": "https://arxiv.org/abs/1805.02867",
+            "year": "2018"
+          },
+          "name": "Online normalizer calculation for softmax (Milakov & Gimelshein 2018)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.08691",
+            "url": "https://arxiv.org/abs/2307.08691",
+            "year": "2023"
+          },
+          "name": "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning (Dao 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.08608",
+            "url": "https://arxiv.org/abs/2407.08608",
+            "year": "2024"
+          },
+          "name": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision (Shah, Bikshandi, Zhang, Thakkar, Ramani, Dao 2024)"
+        }
+      ],
+      "topics": [
+        "compilers/triton-shared-memory-swizzling",
+        "domains/online-softmax-fp8-rescaling",
+        "isa/gpu-wgmma-tma-async-barriers",
+        "verification/warp-specialized-tile-invariants"
+      ]
+    },
     "formal-isa-models-x86-64-i386-and-aarch64-coverage": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -23644,6 +23700,66 @@
         "verification",
         "verification/hw-sw-co-verification",
         "compilers"
+      ]
+    },
+    "harfbuzz-opentype-gsub-shaping-truetype-hinting-vms-and-font-winding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "harfbuzz/harfbuzz",
+            "revision": "b7deda957a230cc1cdf9c1d34630160d0af0ab54"
+          },
+          "name": "HarfBuzz OpenType Text Shaping Engine"
+        },
+        {
+          "identity": {
+            "repository": "freetype/freetype",
+            "revision": "d7339729da576614cbf107d04a72924d21f7ec5a"
+          },
+          "name": "FreeType Font Rasterization & TrueType Bytecode Interpreter"
+        },
+        {
+          "identity": {
+            "repository": "googlefonts/fontations",
+            "revision": "7eec1e18b6dcb2cbb77a805f280825c075a388c6"
+          },
+          "name": "Google Fonts Fontations (read-fonts & skrifa Safe Rust Font Stack)"
+        },
+        {
+          "identity": {
+            "repository": "linebender/vello",
+            "revision": "84ffc24a117708a45de069a598538e4bcc35a243"
+          },
+          "name": "Linebender Vello GPU Compute 2D Vector & Glyph Renderer"
+        },
+        {
+          "identity": {
+            "edition": "4th edition (2019)",
+            "standard": "ISO/IEC 14496-22"
+          },
+          "name": "ISO/IEC 14496-22 Open Font Format (OpenType GSUB/GPOS & TrueType Instruction Set)"
+        },
+        {
+          "identity": {
+            "upstream_fix": "1803559c4ee407d0bcbf2a67dbe96690cee869d2",
+            "url": "https://project-zero.issues.chromium.org/issues/505355061"
+          },
+          "name": "Google Project Zero Issue 505355061: FreeType Ins_SHZ Composite Twilight Heap Overflow (Mateusz Jurczyk)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.00127",
+            "year": "2024"
+          },
+          "name": "GPU-friendly Stroke Expansion (Raph Levien & Arman Uguray, ACM HPG 2024)"
+        }
+      ],
+      "topics": [
+        "domains/opentype-gsub-gpos-shaping",
+        "security/truetype-bytecode-twilight-bounds",
+        "zerocopy/fontations-font-table-parsing",
+        "verification/glyph-contour-winding-coverage"
       ]
     },
     "herbie-accuracy-rewrites-symbolic-taylor-bounds-and-daisy-enclosures": {
@@ -37780,6 +37896,69 @@
         "ffi/versioning",
         "cargo/resolver",
         "rust/semver"
+      ]
+    },
+    "pagedattention-kv-prefix-sharing-speculative-sampling-and-bpe-healing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/vllm-project/vllm",
+            "revision": "2359b442c6872ea54f3fe78200033eb55abf81de"
+          },
+          "name": "vLLM"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/sgl-project/sglang",
+            "revision": "54d68123dcc672bc6920371ee6d90ee4ab73edaf"
+          },
+          "name": "SGLang"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/openai/tiktoken",
+            "revision": "79dc2c0533685b893616c78160b5d9e40876e724"
+          },
+          "name": "tiktoken"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/ggml-org/llama.cpp",
+            "revision": "9a080f44b503c64f66c84a6274b9d9ee5d5b09d5"
+          },
+          "name": "llama.cpp"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.06180",
+            "doi": "10.1145/3600006.3613165",
+            "year": "2023"
+          },
+          "name": "Efficient Memory Management for Large Language Model Serving with PagedAttention (Kwon et al. SOSP 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2211.17192",
+            "url": "https://arxiv.org/abs/2211.17192",
+            "year": "2022"
+          },
+          "name": "Fast Inference from Transformers via Speculative Decoding (Leviathan, Kalman, Matias 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.01318",
+            "url": "https://arxiv.org/abs/2302.01318",
+            "year": "2023"
+          },
+          "name": "Accelerating Large Language Model Decoding with Speculative Sampling (Chen et al. 2023)"
+        }
+      ],
+      "topics": [
+        "domains/speculative-rejection-sampling",
+        "pl/bpe-token-boundary-healing",
+        "runtimes/pagedattention-kv-block-tables",
+        "security/prefix-cache-cross-tenant-isolation"
       ]
     },
     "parsing-expression-grammars-packrat-left-recursion-and-unicode-trojan-source": {

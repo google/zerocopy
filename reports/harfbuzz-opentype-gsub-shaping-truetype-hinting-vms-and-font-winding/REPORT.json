@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "domains/opentype-gsub-gpos-shaping",
+    "security/truetype-bytecode-twilight-bounds",
+    "zerocopy/fontations-font-table-parsing",
+    "verification/glyph-contour-winding-coverage"
+  ],
+  "subjects": [
+    {
+      "name": "HarfBuzz OpenType Text Shaping Engine",
+      "identity": {
+        "repository": "harfbuzz/harfbuzz",
+        "revision": "b7deda957a230cc1cdf9c1d34630160d0af0ab54"
+      }
+    },
+    {
+      "name": "FreeType Font Rasterization & TrueType Bytecode Interpreter",
+      "identity": {
+        "repository": "freetype/freetype",
+        "revision": "d7339729da576614cbf107d04a72924d21f7ec5a"
+      }
+    },
+    {
+      "name": "Google Fonts Fontations (read-fonts & skrifa Safe Rust Font Stack)",
+      "identity": {
+        "repository": "googlefonts/fontations",
+        "revision": "7eec1e18b6dcb2cbb77a805f280825c075a388c6"
+      }
+    },
+    {
+      "name": "Linebender Vello GPU Compute 2D Vector & Glyph Renderer",
+      "identity": {
+        "repository": "linebender/vello",
+        "revision": "84ffc24a117708a45de069a598538e4bcc35a243"
+      }
+    },
+    {
+      "name": "ISO/IEC 14496-22 Open Font Format (OpenType GSUB/GPOS & TrueType Instruction Set)",
+      "identity": {
+        "standard": "ISO/IEC 14496-22",
+        "edition": "4th edition (2019)"
+      }
+    },
+    {
+      "name": "Google Project Zero Issue 505355061: FreeType Ins_SHZ Composite Twilight Heap Overflow (Mateusz Jurczyk)",
+      "identity": {
+        "url": "https://project-zero.issues.chromium.org/issues/505355061",
+        "upstream_fix": "1803559c4ee407d0bcbf2a67dbe96690cee869d2"
+      }
+    },
+    {
+      "name": "GPU-friendly Stroke Expansion (Raph Levien & Arman Uguray, ACM HPG 2024)",
+      "identity": {
+        "arxiv": "2405.00127",
+        "year": "2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
