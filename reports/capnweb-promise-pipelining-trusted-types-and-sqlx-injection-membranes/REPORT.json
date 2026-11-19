@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "security/capability-rpc",
+    "ffi/web-membranes",
+    "compilers/typed-queries",
+    "systems/edge-isolates"
+  ],
+  "subjects": [
+    {
+      "name": "capnproto/capnproto",
+      "identity": {
+        "repository": "capnproto/capnproto",
+        "revision": "20fe8fd325bf3825d6cdc3cf16bb263a4c142326"
+      }
+    },
+    {
+      "name": "cloudflare/workerd",
+      "identity": {
+        "repository": "cloudflare/workerd",
+        "revision": "09508388a7fd9068eb2c838455191c0732733b50"
+      }
+    },
+    {
+      "name": "cloudflare/capnweb",
+      "identity": {
+        "repository": "cloudflare/capnweb",
+        "revision": "66ed2fd21307e524165703e0ad7db5839cfd9a19"
+      }
+    },
+    {
+      "name": "trpc/trpc",
+      "identity": {
+        "repository": "trpc/trpc",
+        "revision": "596d03d93295f8b4876909cfce86f94a1e6afe51"
+      }
+    },
+    {
+      "name": "w3c/trusted-types",
+      "identity": {
+        "repository": "w3c/trusted-types",
+        "revision": "afcdd4634f6c85056e9c5f39fc1fe75486ea2bc5",
+        "standard": "https://www.w3.org/TR/trusted-types/"
+      }
+    },
+    {
+      "name": "launchbadge/sqlx",
+      "identity": {
+        "repository": "launchbadge/sqlx",
+        "revision": "e1a6a2d5053496e1db8cc60cb8da41e3f1c7f18e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

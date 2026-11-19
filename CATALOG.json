@@ -10177,6 +10177,60 @@
         "systems/history"
       ]
     },
+    "capnweb-promise-pipelining-trusted-types-and-sqlx-injection-membranes": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "capnproto/capnproto",
+            "revision": "20fe8fd325bf3825d6cdc3cf16bb263a4c142326"
+          },
+          "name": "capnproto/capnproto"
+        },
+        {
+          "identity": {
+            "repository": "cloudflare/workerd",
+            "revision": "09508388a7fd9068eb2c838455191c0732733b50"
+          },
+          "name": "cloudflare/workerd"
+        },
+        {
+          "identity": {
+            "repository": "cloudflare/capnweb",
+            "revision": "66ed2fd21307e524165703e0ad7db5839cfd9a19"
+          },
+          "name": "cloudflare/capnweb"
+        },
+        {
+          "identity": {
+            "repository": "trpc/trpc",
+            "revision": "596d03d93295f8b4876909cfce86f94a1e6afe51"
+          },
+          "name": "trpc/trpc"
+        },
+        {
+          "identity": {
+            "repository": "w3c/trusted-types",
+            "revision": "afcdd4634f6c85056e9c5f39fc1fe75486ea2bc5",
+            "standard": "https://www.w3.org/TR/trusted-types/"
+          },
+          "name": "w3c/trusted-types"
+        },
+        {
+          "identity": {
+            "repository": "launchbadge/sqlx",
+            "revision": "e1a6a2d5053496e1db8cc60cb8da41e3f1c7f18e"
+          },
+          "name": "launchbadge/sqlx"
+        }
+      ],
+      "topics": [
+        "security/capability-rpc",
+        "ffi/web-membranes",
+        "compilers/typed-queries",
+        "systems/edge-isolates"
+      ]
+    },
     "cargo-profile-and-compiler-flag-census-in-the-wild": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -10818,6 +10872,61 @@
         "security/baseband-parsers",
         "verification/protocol-automata",
         "tooling/firmware-emulation"
+      ]
+    },
+    "cgroups-v2-psi-priority-inversion-user-namespaces-and-certikos-layers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux kernel cgroups v2, PSI, writeback, JBD2, user_ns, and io_uring"
+        },
+        {
+          "identity": {
+            "repository": "facebookincubator/oomd",
+            "revision": "c0e7efcf04effaf50da84044992a38ecaecd7454"
+          },
+          "name": "Meta oomd userspace OOM killer and Senpai memory-sizing agent"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3503222.3507731",
+            "title": "TMO: Transparent Memory Offloading in Datacenters"
+          },
+          "name": "Transparent Memory Offloading (TMO) and PSI-driven fleet memory sizing"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-931971-33-1",
+            "title": "CertiKOS: An Extensible Architecture for Building Certified Concurrent OS Kernels",
+            "url": "https://www.usenix.org/conference/osdi16/technical-sessions/presentation/gu"
+          },
+          "name": "CertiKOS mC2 concurrent certified OS kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192381",
+            "title": "Certified Concurrent Abstraction Layers"
+          },
+          "name": "Certified Concurrent Abstraction Layers (CCAL)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2908080.2908100",
+            "title": "End-to-End Verification of Information-Flow Security for C and Assembly Programs"
+          },
+          "name": "CertiKOS end-to-end C and assembly information-flow noninterference"
+        }
+      ],
+      "topics": [
+        "systems/resource-isolation",
+        "security/user-namespaces",
+        "verification/certified-os-layers",
+        "systems/pressure-telemetry"
       ]
     },
     "charon-cargo-shared-target-incremental": {
@@ -22040,6 +22149,62 @@
         "vcs/gherrit",
         "vcs/git",
         "vcs/stacked-prs"
+      ]
+    },
+    "ghostcell-branded-tokens-intrusive-containers-and-generational-arenas": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "matthieu-m/ghost-cell",
+            "revision": "956df44625bda13793defc4a826431ad9ab7789c"
+          },
+          "name": "matthieu-m/ghost-cell"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473597",
+            "published": "2021-08",
+            "url": "https://plv.mpi-sws.org/rustbelt/ghostcell/"
+          },
+          "name": "GhostCell: Separating Permissions from Data in Rust (ICFP 2021)"
+        },
+        {
+          "identity": {
+            "repository": "Amanieu/intrusive-rs",
+            "revision": "0a895642801c9a75521f93f6605c7cc707e61f73"
+          },
+          "name": "Amanieu/intrusive-rs"
+        },
+        {
+          "identity": {
+            "repository": "orlp/slotmap",
+            "revision": "eccedefc5e09746944678ddcb854d1d709abb444"
+          },
+          "name": "orlp/slotmap"
+        },
+        {
+          "identity": {
+            "repository": "petgraph/petgraph",
+            "revision": "926546ca7a02c4c9d4cc8608ca9fa708816f5db7",
+            "version": "0.9.0"
+          },
+          "name": "petgraph/petgraph (0.9.0-dev core redesign)"
+        },
+        {
+          "identity": {
+            "repository": "petgraph/petgraph",
+            "revision": "b5b8573cd1a70671f8344be38dd1f4911e2bc104",
+            "version": "0.8"
+          },
+          "name": "petgraph/petgraph (0.8 release line)"
+        }
+      ],
+      "topics": [
+        "rust/branded-permissions",
+        "pl/phantom-brands",
+        "systems/intrusive-containers",
+        "verification/aliasing-tokens"
       ]
     },
     "glitch-resistant-hardware-masking-ti-dom-pini-and-dual-rail-logic": {
@@ -40850,6 +41015,61 @@
         "compilers/jit",
         "systems",
         "systems/concurrency"
+      ]
+    },
+    "raft-reconfiguration-quorums-porcupine-linearizability-and-elle-adya-cycles": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "etcd-io/raft",
+            "revision": "b4329be1d376662f487d8cf76addaefe503ed65d"
+          },
+          "name": "etcd-io/raft consensus library and TLA+ model"
+        },
+        {
+          "identity": {
+            "repository": "ongardie/raft.tla",
+            "revision": "6ecbdbcf1bcde2910367cdfd67f31b0bae447ddd"
+          },
+          "name": "Ongaro canonical Raft TLA+ specification"
+        },
+        {
+          "identity": {
+            "arxiv": "1608.06696",
+            "doi": "10.4230/LIPIcs.OPODIS.2016.25",
+            "title": "Flexible Paxos: Quorum Intersection Revisited"
+          },
+          "name": "Flexible Paxos quorum-intersection specification"
+        },
+        {
+          "identity": {
+            "repository": "anishathalye/porcupine",
+            "revision": "97cd067defd99df172053ba7f4ca5bbae57fe446"
+          },
+          "name": "Porcupine linearizability checker"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3430915.3430918",
+            "repository": "jepsen-io/elle",
+            "revision": "4e359e597c52938b0afebb8bc42273914d68a424"
+          },
+          "name": "Elle black-box transactional cycle checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICDE.2000.839388",
+            "title": "Generalized Isolation Level Definitions"
+          },
+          "name": "Adya generalized transactional isolation formalism"
+        }
+      ],
+      "topics": [
+        "systems/consensus-reconfiguration",
+        "verification/history-checkers",
+        "domains/transactional-isolation",
+        "smt/dependency-cycles"
       ]
     },
     "railway-ertms-interlocking-nuclear-nuscr-tables-and-iec61850-goose": {

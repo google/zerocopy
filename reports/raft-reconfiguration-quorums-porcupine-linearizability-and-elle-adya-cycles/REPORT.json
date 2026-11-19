@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "systems/consensus-reconfiguration",
+    "verification/history-checkers",
+    "domains/transactional-isolation",
+    "smt/dependency-cycles"
+  ],
+  "subjects": [
+    {
+      "name": "etcd-io/raft consensus library and TLA+ model",
+      "identity": {
+        "repository": "etcd-io/raft",
+        "revision": "b4329be1d376662f487d8cf76addaefe503ed65d"
+      }
+    },
+    {
+      "name": "Ongaro canonical Raft TLA+ specification",
+      "identity": {
+        "repository": "ongardie/raft.tla",
+        "revision": "6ecbdbcf1bcde2910367cdfd67f31b0bae447ddd"
+      }
+    },
+    {
+      "name": "Flexible Paxos quorum-intersection specification",
+      "identity": {
+        "title": "Flexible Paxos: Quorum Intersection Revisited",
+        "doi": "10.4230/LIPIcs.OPODIS.2016.25",
+        "arxiv": "1608.06696"
+      }
+    },
+    {
+      "name": "Porcupine linearizability checker",
+      "identity": {
+        "repository": "anishathalye/porcupine",
+        "revision": "97cd067defd99df172053ba7f4ca5bbae57fe446"
+      }
+    },
+    {
+      "name": "Elle black-box transactional cycle checker",
+      "identity": {
+        "repository": "jepsen-io/elle",
+        "revision": "4e359e597c52938b0afebb8bc42273914d68a424",
+        "doi": "10.14778/3430915.3430918"
+      }
+    },
+    {
+      "name": "Adya generalized transactional isolation formalism",
+      "identity": {
+        "title": "Generalized Isolation Level Definitions",
+        "doi": "10.1109/ICDE.2000.839388"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "systems/resource-isolation",
+    "security/user-namespaces",
+    "verification/certified-os-layers",
+    "systems/pressure-telemetry"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel cgroups v2, PSI, writeback, JBD2, user_ns, and io_uring",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "version": "v6.12"
+      }
+    },
+    {
+      "name": "Meta oomd userspace OOM killer and Senpai memory-sizing agent",
+      "identity": {
+        "repository": "facebookincubator/oomd",
+        "revision": "c0e7efcf04effaf50da84044992a38ecaecd7454"
+      }
+    },
+    {
+      "name": "Transparent Memory Offloading (TMO) and PSI-driven fleet memory sizing",
+      "identity": {
+        "title": "TMO: Transparent Memory Offloading in Datacenters",
+        "doi": "10.1145/3503222.3507731"
+      }
+    },
+    {
+      "name": "CertiKOS mC2 concurrent certified OS kernel",
+      "identity": {
+        "title": "CertiKOS: An Extensible Architecture for Building Certified Concurrent OS Kernels",
+        "isbn": "978-1-931971-33-1",
+        "url": "https://www.usenix.org/conference/osdi16/technical-sessions/presentation/gu"
+      }
+    },
+    {
+      "name": "Certified Concurrent Abstraction Layers (CCAL)",
+      "identity": {
+        "title": "Certified Concurrent Abstraction Layers",
+        "doi": "10.1145/3192366.3192381"
+      }
+    },
+    {
+      "name": "CertiKOS end-to-end C and assembly information-flow noninterference",
+      "identity": {
+        "title": "End-to-End Verification of Information-Flow Security for C and Assembly Programs",
+        "doi": "10.1145/2908080.2908100"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

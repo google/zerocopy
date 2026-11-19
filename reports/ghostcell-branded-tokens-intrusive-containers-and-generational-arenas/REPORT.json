@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "rust/branded-permissions",
+    "pl/phantom-brands",
+    "systems/intrusive-containers",
+    "verification/aliasing-tokens"
+  ],
+  "subjects": [
+    {
+      "name": "matthieu-m/ghost-cell",
+      "identity": {
+        "repository": "matthieu-m/ghost-cell",
+        "revision": "956df44625bda13793defc4a826431ad9ab7789c"
+      }
+    },
+    {
+      "name": "GhostCell: Separating Permissions from Data in Rust (ICFP 2021)",
+      "identity": {
+        "doi": "10.1145/3473597",
+        "published": "2021-08",
+        "url": "https://plv.mpi-sws.org/rustbelt/ghostcell/"
+      }
+    },
+    {
+      "name": "Amanieu/intrusive-rs",
+      "identity": {
+        "repository": "Amanieu/intrusive-rs",
+        "revision": "0a895642801c9a75521f93f6605c7cc707e61f73"
+      }
+    },
+    {
+      "name": "orlp/slotmap",
+      "identity": {
+        "repository": "orlp/slotmap",
+        "revision": "eccedefc5e09746944678ddcb854d1d709abb444"
+      }
+    },
+    {
+      "name": "petgraph/petgraph (0.9.0-dev core redesign)",
+      "identity": {
+        "repository": "petgraph/petgraph",
+        "revision": "926546ca7a02c4c9d4cc8608ca9fa708816f5db7",
+        "version": "0.9.0"
+      }
+    },
+    {
+      "name": "petgraph/petgraph (0.8 release line)",
+      "identity": {
+        "repository": "petgraph/petgraph",
+        "revision": "b5b8573cd1a70671f8344be38dd1f4911e2bc104",
+        "version": "0.8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
