@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "security/intel-sgx",
+    "security/remote-attestation",
+    "isa/enclave-memory-encryption",
+    "systems/confidential-endorsement"
+  ],
+  "subjects": [
+    {
+      "name": "Intel SGX Data Center Attestation Primitives (DCAP)",
+      "identity": {
+        "repository": "intel/SGXDataCenterAttestationPrimitives",
+        "revision": "72f800e9696f382464bc8ef243311edf8bd7dc13"
+      }
+    },
+    {
+      "name": "Intel Linux SGX SDK",
+      "identity": {
+        "repository": "intel/linux-sgx",
+        "revision": "3ab6a6bdb97adc76f690c0083c618bb98992fde7"
+      }
+    },
+    {
+      "name": "Keylime",
+      "identity": {
+        "repository": "keylime/keylime",
+        "revision": "8df08745bf81884af841c5235d8194db98d5e22e"
+      }
+    },
+    {
+      "name": "Project Oak",
+      "identity": {
+        "repository": "project-oak/oak",
+        "revision": "29129bbe07fcf3da96de399d4d49192bb24f3c31"
+      }
+    },
+    {
+      "name": "IETF RATS Architecture (RFC 9334)",
+      "identity": {
+        "standard": "RFC 9334",
+        "doi": "10.17487/RFC9334"
+      }
+    },
+    {
+      "name": "IETF Entity Attestation Token (RFC 9711)",
+      "identity": {
+        "standard": "RFC 9711",
+        "doi": "10.17487/RFC9711"
+      }
+    },
+    {
+      "name": "Intel SGX Explained",
+      "identity": {
+        "url": "https://eprint.iacr.org/2016/086"
+      }
+    },
+    {
+      "name": "A Memory Encryption Engine Suitable for General Purpose Processors",
+      "identity": {
+        "url": "https://eprint.iacr.org/2016/204"
+      }
+    },
+    {
+      "name": "Plundervolt: Software-based Fault Injection Attacks against Intel SGX (IEEE S&P 2020)",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00057"
+      }
+    },
+    {
+      "name": "SGX-Step: A Practical Attack Framework for Precise Enclave Execution Control (SysTEX 2017)",
+      "identity": {
+        "doi": "10.1145/3152701.3152706"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

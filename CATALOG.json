@@ -16298,6 +16298,163 @@
         "verification/cryptography"
       ]
     },
+    "cryptol-saw-symbolic-equivalence-easycrypt-game-hopping-and-cryptoline": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "GaloisInc/cryptol",
+            "revision": "13adfaad9287c4af98ee43c5c2b70d168c530872"
+          },
+          "name": "Cryptol (domain-specific cryptographic specification language)"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/saw-script",
+            "revision": "f290af7bda474779c8e5685ddd30612a7e6f0399"
+          },
+          "name": "SAW (Software Analysis Workbench: Crucible LLVM/X86/MIR symbolic equivalence and CHC fixpoints)"
+        },
+        {
+          "identity": {
+            "repository": "aws/aws-lc",
+            "revision": "784feabf5fe33678bfbd4badcd6e795092a37b7e"
+          },
+          "name": "AWS-LC (AWS Libcrypto with continuous formal verification CI triggers)"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/aws-lc-verification",
+            "revision": "797302470c1703cbb1a3a6fa98daffef0bfd3d80"
+          },
+          "name": "AWS-LC Verification (SAW, Cryptol, Coq, and NSym proof suite for AWS-LC)"
+        },
+        {
+          "identity": {
+            "repository": "EasyCrypt/easycrypt",
+            "revision": "ce19cb6cbab4951e58553c36128e8a19f2f90c6a"
+          },
+          "name": "EasyCrypt (Probabilistic Relational Hoare Logic and game-hopping proof assistant)"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "91ffd004fc1e84f29625c124383797ab91ddf3a9"
+          },
+          "name": "Jasmin (verified cryptographic compiler and EasyCrypt jasmin2ec extraction)"
+        },
+        {
+          "identity": {
+            "repository": "formosa-crypto/libjade",
+            "revision": "89c38602783d9c90dda11a9b8053295a8a088597"
+          },
+          "name": "Libjade legacy redirect stub"
+        },
+        {
+          "identity": {
+            "repository": "formosa-crypto/formosa-libjade",
+            "revision": "74098e710a5204e031651d808ff031b58db2c186"
+          },
+          "name": "Formosa Libjade (Jasmin implementations and EasyCrypt proofs for ML-KEM and ML-DSA)"
+        },
+        {
+          "identity": {
+            "repository": "fmlab-iis/cryptoline",
+            "revision": "c992f0c41b5f34fb1a07bf3f84568c732a935272"
+          },
+          "name": "CryptoLine (Singular Groebner-basis algebraic + SMT QF_BV bitvector verifier)"
+        },
+        {
+          "identity": {
+            "repository": "owl-lang/owl",
+            "revision": "d511c31aa10a382c9386e34283707fd7476ac48d"
+          },
+          "name": "Owl stub repository"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/owl",
+            "revision": "1b56f8cc70a067721917b9ccb60430417ada68f0"
+          },
+          "name": "Owl and OwlC (compositional information-flow protocol verifier and Verus Rust extractor)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-96142-2_26"
+          },
+          "name": "Continuous Formal Verification of Amazon s2n (Chudnov et al., CAV 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-81685-8_31"
+          },
+          "name": "Verified Cryptographic Code for Everybody (Boston et al., CAV 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-22792-9_5"
+          },
+          "name": "Computer-Aided Security Proofs for the Working Cryptographer (Barthe et al., CRYPTO 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40001.2021.00008"
+          },
+          "name": "SoK: Computer-Aided Cryptography (Barbosa et al., IEEE S&P 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3484548"
+          },
+          "name": "Mechanized Proofs of Adversarial Complexity and Application to Universal Composability (Barbosa et al., ACM CCS 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133956.3134078"
+          },
+          "name": "Jasmin: High-Assurance and High-Speed Cryptography (Almeida et al., ACM CCS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133956.3134076"
+          },
+          "name": "Certified Verification of Algebraic Properties on Low-Level Mathematical Constructs in Cryptographic Programs (Tsai et al., ACM CCS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3319535.3354199"
+          },
+          "name": "Signed Cryptographic Program Verification with Typed CryptoLine (Fu et al., ACM CCS 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP46215.2023.10179477"
+          },
+          "name": "Owl: Compositional Verification of Security Protocols via an Information-Flow Type System (Gancher et al., IEEE S&P 2023)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64",
+            "interpreter": "CPython 3.13.15"
+          },
+          "name": "Python 3.13 verification micro-probe environment (Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "llvm",
+        "llvm/symbolic-lifters",
+        "pl",
+        "pl/information-flow-types",
+        "security",
+        "security/protocol-verification",
+        "security/provable-security",
+        "smt",
+        "smt/algebraic-range-entailment",
+        "verification",
+        "verification/cryptographic-equivalence",
+        "verification/relational"
+      ]
+    },
     "csr-bytearray-arena-graphs-and-extern-primitives-for-1x-lean-rust-parity": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -23897,6 +24054,83 @@
         "pl",
         "pl/semantics",
         "pl/hyperproperties"
+      ]
+    },
+    "intel-sgx-epc-integrity-trees-dcap-tcb-recovery-rats-eat-and-project-oak": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "intel/SGXDataCenterAttestationPrimitives",
+            "revision": "72f800e9696f382464bc8ef243311edf8bd7dc13"
+          },
+          "name": "Intel SGX Data Center Attestation Primitives (DCAP)"
+        },
+        {
+          "identity": {
+            "repository": "intel/linux-sgx",
+            "revision": "3ab6a6bdb97adc76f690c0083c618bb98992fde7"
+          },
+          "name": "Intel Linux SGX SDK"
+        },
+        {
+          "identity": {
+            "repository": "keylime/keylime",
+            "revision": "8df08745bf81884af841c5235d8194db98d5e22e"
+          },
+          "name": "Keylime"
+        },
+        {
+          "identity": {
+            "repository": "project-oak/oak",
+            "revision": "29129bbe07fcf3da96de399d4d49192bb24f3c31"
+          },
+          "name": "Project Oak"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9334",
+            "standard": "RFC 9334"
+          },
+          "name": "IETF RATS Architecture (RFC 9334)"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9711",
+            "standard": "RFC 9711"
+          },
+          "name": "IETF Entity Attestation Token (RFC 9711)"
+        },
+        {
+          "identity": {
+            "url": "https://eprint.iacr.org/2016/086"
+          },
+          "name": "Intel SGX Explained"
+        },
+        {
+          "identity": {
+            "url": "https://eprint.iacr.org/2016/204"
+          },
+          "name": "A Memory Encryption Engine Suitable for General Purpose Processors"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00057"
+          },
+          "name": "Plundervolt: Software-based Fault Injection Attacks against Intel SGX (IEEE S&P 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3152701.3152706"
+          },
+          "name": "SGX-Step: A Practical Attack Framework for Precise Enclave Execution Control (SysTEX 2017)"
+        }
+      ],
+      "topics": [
+        "security/intel-sgx",
+        "security/remote-attestation",
+        "isa/enclave-memory-encryption",
+        "systems/confidential-endorsement"
       ]
     },
     "interactive-prover-document-processing-lsp-mcp-and-snapshot-consistency": {
