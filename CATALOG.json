@@ -49566,6 +49566,73 @@
         "verification/survey"
       ]
     },
+    "shadow-memory-asan-msan-origins-and-tsan-vector-clock-sanitizers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "63b8d2fd94ba3b1a80023dae7139949dd5be6b78",
+            "url": "https://github.com/llvm/llvm-project"
+          },
+          "name": "LLVM Project Compiler Passes and compiler-rt Sanitizers"
+        },
+        {
+          "identity": {
+            "repository": "google/sanitizers",
+            "revision": "aa054ab16a697f206f1888aedbb94407df3e480c",
+            "url": "https://github.com/google/sanitizers"
+          },
+          "name": "Google Sanitizers Documentation and Formal Helper Archive"
+        },
+        {
+          "identity": {
+            "authors": "Konstantin Serebryany, Derek Bruening, Alexander Potapenko, Dmitry Vyukov",
+            "publication": "USENIX Annual Technical Conference (ATC 2012), pp. 309-318",
+            "title": "AddressSanitizer: A Fast Address Sanity Checker"
+          },
+          "name": "AddressSanitizer: A Fast Address Sanity Checker (USENIX ATC 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO.2015.7054186",
+            "publication": "IEEE/ACM International Symposium on Code Generation and Optimization (CGO 2015), pp. 46-55",
+            "title": "MemorySanitizer: fast detector of uninitialized memory use in C++"
+          },
+          "name": "MemorySanitizer: Fast Detector of Uninitialized Memory Use in C++ (CGO 2015)"
+        },
+        {
+          "identity": {
+            "arxiv": "1802.09517",
+            "title": "Memory Tagging and how it improves C/C++ memory safety",
+            "url": "https://arxiv.org/abs/1802.09517"
+          },
+          "name": "Memory Tagging and How It Improves C/C++ Memory Safety (2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3639477.3640328",
+            "publication": "ICSE-SEIP 2024",
+            "title": "GWP-ASan: Sampling-Based Detection of Memory-Safety Bugs in Production"
+          },
+          "name": "GWP-ASan: Sampling-Based Detection of Memory-Safety Bugs in Production (ICSE-SEIP 2024)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64-linux-gnu",
+            "compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+            "runtimes": "libasan.so.8 / libtsan.so.2"
+          },
+          "name": "GCC 15.2.0 Runtime Sanitizer Probe Target (libasan.so.8, libtsan.so.2)"
+        }
+      ],
+      "topics": [
+        "compilers/sanitizer-instrumentation",
+        "runtimes/shadow-memory",
+        "security/memory-safety-detectors",
+        "systems/race-detection"
+      ]
+    },
     "side-channel-freedom-foundations-and-leakage-contracts-1996-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
