@@ -13449,6 +13449,80 @@
         "verification/refinement"
       ]
     },
+    "entity-component-systems-modular-shaders-and-cross-isa-float-determinism": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "bevyengine/bevy",
+            "revision": "779770720e6ad916c1de38cf66a67d0e079ed1e3"
+          },
+          "name": "Bevy ECS (bevy_ecs archetype tables, UnsafeWorldCell, DNF FilteredAccess)"
+        },
+        {
+          "identity": {
+            "repository": "SanderMertens/flecs",
+            "revision": "cf0e60d0d0e4be4728c4a4e7fda664c0d1f4b96b"
+          },
+          "name": "Flecs relational archetype ECS and non-fragmenting hierarchy storage"
+        },
+        {
+          "identity": {
+            "repository": "skypjack/entt",
+            "revision": "1dcd7aab6548786f7672ff578639188bd2f0d837"
+          },
+          "name": "EnTT sparse-set ECS storage"
+        },
+        {
+          "identity": {
+            "paper_slang_siggraph18_doi": "10.1145/3214756.3214798",
+            "paper_slangd_siggraphasia23_doi": "10.1145/3618353",
+            "repository": "shader-slang/slang",
+            "revision": "a22c14207d52406edeaa82199df26db209625705",
+            "slangpy_repository": "shader-slang/slangpy",
+            "slangpy_revision": "8dd7384b3114b48c04047fb01e3bb11cda8d263f"
+          },
+          "name": "Slang shading language, checked interfaces, and SLANG.D automatic differentiation"
+        },
+        {
+          "identity": {
+            "relaxed_simd_repository": "WebAssembly/relaxed-simd",
+            "relaxed_simd_revision": "c3f9359af2cd607cc46b0a3274f90ea52543a2f2",
+            "spec_repository": "WebAssembly/spec",
+            "spec_revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe"
+          },
+          "name": "WebAssembly Core Specification (NaN propagation and deterministic profile) and Relaxed SIMD proposal"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Wasmtime Cranelift NaN canonicalization configuration"
+        },
+        {
+          "identity": {
+            "ggrs_repository": "gschup/ggrs",
+            "ggrs_revision": "25bd9983dee3ecb0677be03b9e2e23d2bd6d29cb",
+            "libm_repository": "rust-lang/libm",
+            "libm_revision": "8f7436d260f000f054042545bb6e4c0d99fe35b2",
+            "paper_core_math_arith22_doi": "10.1109/ARITH54963.2022.00014",
+            "rapier_repository": "dimforge/rapier",
+            "rapier_revision": "475caa3ff4646fd9a796b67d14116256f4962bc7"
+          },
+          "name": "Rapier physics enhanced-determinism, rust-lang/libm, GGRS rollback netcode, and CORE-MATH"
+        }
+      ],
+      "topics": [
+        "pl",
+        "runtimes",
+        "compilers",
+        "isa",
+        "verification/floating-point",
+        "systems/ecs",
+        "ffi/host-device"
+      ]
+    },
     "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -23879,6 +23953,72 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "realtime-audio-dsp-algebras-strongly-timed-concurrency-and-live-codegen": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "paper_doi": "10.1007/s00500-004-0388-1",
+            "repository": "grame-cncm/faust",
+            "revision": "f0892262859f638751bde203eaae52713c706c19"
+          },
+          "name": "FAUST functional audio DSP compiler"
+        },
+        {
+          "identity": {
+            "book": "Vadim Zavalishin, The Art of VA Filter Design, rev. 2.1.2 (Native Instruments)",
+            "kronos_paper_doi": "10.1162/COMJ_a_00330"
+          },
+          "name": "Zavalishin Topology-Preserving Transform (TPT) / Zero-Delay Feedback (ZDF) VA filter theory and Kronos DSP language"
+        },
+        {
+          "identity": {
+            "paper_cmj15_doi": "10.1162/COMJ_a_00324",
+            "repository": "ccrma/chuck",
+            "revision": "401bbda10dc0b45ae5a16d408e8d34b8f0ed2e03"
+          },
+          "name": "ChucK strongly-timed audio virtual machine and shreduler"
+        },
+        {
+          "identity": {
+            "paper_onward17_doi": "10.1145/3133850.3133858",
+            "paper_oopsla10_doi": "10.1145/1932682.1869526",
+            "repository": "digego/extempore",
+            "revision": "38bf1d2444a6166371c17abfa40dfa58f6ab962e"
+          },
+          "name": "Extempore and xtlang live LLVM ORC JIT and zone memory runtime"
+        },
+        {
+          "identity": {
+            "repository": "free-audio/clap",
+            "revision": "a47f6badb49d948fd009998f28309cdab78979c9"
+          },
+          "name": "CLAP (Clever Audio Plugin) C ABI specification"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "4d369315c397296c4e3fdaff15b7e6500b533d16"
+          },
+          "name": "Clang Function Effect Analysis (nonblocking/nonallocating) and RealtimeSanitizer (RTSan)"
+        },
+        {
+          "identity": {
+            "article": "Ross Bencina, Real-time audio programming 101: time waits for nothing (2011)",
+            "url": "http://www.rossbencina.com/code/real-time-audio-programming-101-time-waits-for-nothing"
+          },
+          "name": "Real-time audio callback wait-freedom guidelines"
+        }
+      ],
+      "topics": [
+        "pl",
+        "runtimes",
+        "compilers",
+        "domains/audio-dsp",
+        "ffi/audio-abi",
+        "systems/realtime"
       ]
     },
     "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {

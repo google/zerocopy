@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "pl",
+    "runtimes",
+    "compilers",
+    "domains/audio-dsp",
+    "ffi/audio-abi",
+    "systems/realtime"
+  ],
+  "subjects": [
+    {
+      "name": "FAUST functional audio DSP compiler",
+      "identity": {
+        "repository": "grame-cncm/faust",
+        "revision": "f0892262859f638751bde203eaae52713c706c19",
+        "paper_doi": "10.1007/s00500-004-0388-1"
+      }
+    },
+    {
+      "name": "Zavalishin Topology-Preserving Transform (TPT) / Zero-Delay Feedback (ZDF) VA filter theory and Kronos DSP language",
+      "identity": {
+        "book": "Vadim Zavalishin, The Art of VA Filter Design, rev. 2.1.2 (Native Instruments)",
+        "kronos_paper_doi": "10.1162/COMJ_a_00330"
+      }
+    },
+    {
+      "name": "ChucK strongly-timed audio virtual machine and shreduler",
+      "identity": {
+        "repository": "ccrma/chuck",
+        "revision": "401bbda10dc0b45ae5a16d408e8d34b8f0ed2e03",
+        "paper_cmj15_doi": "10.1162/COMJ_a_00324"
+      }
+    },
+    {
+      "name": "Extempore and xtlang live LLVM ORC JIT and zone memory runtime",
+      "identity": {
+        "repository": "digego/extempore",
+        "revision": "38bf1d2444a6166371c17abfa40dfa58f6ab962e",
+        "paper_onward17_doi": "10.1145/3133850.3133858",
+        "paper_oopsla10_doi": "10.1145/1932682.1869526"
+      }
+    },
+    {
+      "name": "CLAP (Clever Audio Plugin) C ABI specification",
+      "identity": {
+        "repository": "free-audio/clap",
+        "revision": "a47f6badb49d948fd009998f28309cdab78979c9"
+      }
+    },
+    {
+      "name": "Clang Function Effect Analysis (nonblocking/nonallocating) and RealtimeSanitizer (RTSan)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "4d369315c397296c4e3fdaff15b7e6500b533d16"
+      }
+    },
+    {
+      "name": "Real-time audio callback wait-freedom guidelines",
+      "identity": {
+        "article": "Ross Bencina, Real-time audio programming 101: time waits for nothing (2011)",
+        "url": "http://www.rossbencina.com/code/real-time-audio-programming-101-time-waits-for-nothing"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
