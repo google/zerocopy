@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "smt/sat-qbf-proofs",
+    "verification/proof-certificates",
+    "lean/sat-tactics",
+    "compilers/boolean-synthesis"
+  ],
+  "subjects": [
+    {
+      "name": "CaDiCaL CDCL SAT solver",
+      "identity": {
+        "repository": "arminbiere/cadical",
+        "revision": "6b3d70b9ce00ecbce3f829bab76d185f0e92618c",
+        "version": "3.1.0"
+      }
+    },
+    {
+      "name": "SBVA (Structured Bounded Variable Addition)",
+      "identity": {
+        "repository": "hgarrereyn/SBVA",
+        "revision": "35e74d02aa1b0970d53fef1c86171e596d0da453"
+      }
+    },
+    {
+      "name": "cake_lpr verified LPR proof checker",
+      "identity": {
+        "repository": "tanyongkiam/cake_lpr",
+        "revision": "033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2"
+      }
+    },
+    {
+      "name": "CakeML HOL4 LPR checker formalization",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "665f9b21712ad093e10a404ccc2f78e64a34aeef",
+        "path": "examples/lpr_checker"
+      }
+    },
+    {
+      "name": "Lean 4 bv_decide and verified LRAT checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05",
+        "path": "src/Std/Tactic/BVDecide"
+      }
+    },
+    {
+      "name": "FRAT-rs flexible SAT proof elaborator",
+      "identity": {
+        "repository": "digama0/frat",
+        "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5"
+      }
+    },
+    {
+      "name": "drat-trim and lrat-check reference proof tools",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "VeriPB pseudo-Boolean proof checker",
+      "identity": {
+        "repository": "StephanGocht/VeriPB",
+        "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+      }
+    },
+    {
+      "name": "PySAT RC2 core-guided MaxSAT solver",
+      "identity": {
+        "repository": "pysathq/pysat",
+        "revision": "ff051b57496492822a52c510bbd082f840bd792f",
+        "path": "examples/rc2.py"
+      }
+    },
+    {
+      "name": "CADET 2QBF incremental determinization solver",
+      "identity": {
+        "repository": "markusrabe/cadet",
+        "revision": "40f9683261013780b5c6cddf9cb3112d0f71d187"
+      }
+    },
+    {
+      "name": "DepQBF QCDCL QBF solver",
+      "identity": {
+        "repository": "lonsing/depqbf",
+        "revision": "2ad3995a21b8ca2831be2534b1cb80df342b3bdf",
+        "version": "6.03"
+      }
+    },
+    {
+      "name": "qrat-trim and cheskol QBF proof and Skolem tools",
+      "identity": {
+        "repository": "marijnheule/qrat-trim",
+        "revision": "5d6a1b60c1108755975b47b15d3676afeb3dbb65"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

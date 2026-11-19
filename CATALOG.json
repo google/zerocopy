@@ -13209,6 +13209,68 @@
         "compilers"
       ]
     },
+    "concolic-execution-compiled-symcc-path-merging-and-constraint-array-models": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "klee/klee",
+            "revision": "424bd9be2229dc0f3ee0fe55cc6ea4a649fc88e3"
+          },
+          "name": "KLEE LLVM symbolic virtual machine"
+        },
+        {
+          "identity": {
+            "repository": "eurecom-s3/symcc",
+            "revision": "522c48070bc312aeb621a631ff130ded71507d6d"
+          },
+          "name": "SymCC compiler-based symbolic execution pass"
+        },
+        {
+          "identity": {
+            "repository": "eurecom-s3/symcc-rt",
+            "revision": "e28fe412de2f190103037b0ea4d0f33a5cfb93b1"
+          },
+          "name": "SymCC Runtime (libsymcc-rt)"
+        },
+        {
+          "identity": {
+            "repository": "eurecom-s3/symqemu",
+            "revision": "6e37dd2c3bace02997f358a7fb5d2b23bf4a5b59"
+          },
+          "name": "SymQEMU binary-only compilation-based symbolic executor"
+        },
+        {
+          "identity": {
+            "repository": "eurecom-s3/qsym",
+            "revision": "7add95b08f67dcc66400dc1297ecc30282322451"
+          },
+          "name": "QSYM concolic execution engine"
+        },
+        {
+          "identity": {
+            "path": "angr/analyses/veritesting.py",
+            "repository": "angr/angr",
+            "revision": "80c962c99a8d487e75acdfba7a2bcf01a5abfb93"
+          },
+          "name": "angr binary analysis framework (Veritesting and concretization strategies)"
+        },
+        {
+          "identity": {
+            "path": "src/smt/theory_array_base.cpp",
+            "repository": "Z3Prover/z3",
+            "revision": "c73b745cef365e1390408fbd7c599236941d34d1"
+          },
+          "name": "Z3 SMT solver (QF_ABV / McCarthy array theory)"
+        }
+      ],
+      "topics": [
+        "tooling/symbolic-execution",
+        "compilers/instrumentation",
+        "smt/bitvector-arrays",
+        "security/vulnerability-discovery"
+      ]
+    },
     "concurrency-and-simd-compiler-testing-tools-and-harnesses": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -33379,6 +33441,69 @@
         "tooling"
       ]
     },
+    "posix-vfs-dcache-rcu-walk-fuse-upcalls-and-cow-checksummed-filesystems": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel (VFS dcache/namei, FUSE, Btrfs, jbd2)"
+        },
+        {
+          "identity": {
+            "repository": "sibylfs/sibylfs_src",
+            "revision": "30675bc3b91e73f7133d0c30f18857bb1f4df8fa"
+          },
+          "name": "SibylFS Executable POSIX Filesystem Specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2815400.2815411",
+            "venue": "SOSP 2015",
+            "year": "2015"
+          },
+          "name": "Ridge, Sheets, Tuerk, Giugliano, Madhavapeddy, Sewell \u2014 SibylFS: formal specification and oracle-based testing for POSIX and real-world file systems (SOSP 2015)"
+        },
+        {
+          "identity": {
+            "edition": "Issue 8",
+            "standard": "IEEE Std 1003.1-2024",
+            "year": "2024"
+          },
+          "name": "IEEE Std 1003.1-2024 (POSIX.1-2024 / Open Group Base Specifications Issue 8)"
+        },
+        {
+          "identity": {
+            "repository": "libfuse/libfuse",
+            "revision": "6a484ac67fba410d722473e5e107da9b804fc40d"
+          },
+          "name": "libfuse (Filesystem in Userspace Library & Kernel ABI Header)"
+        },
+        {
+          "identity": {
+            "repository": "openzfs/zfs",
+            "revision": "cde5d598eb44b5d6efe8167666d988a496346657"
+          },
+          "name": "OpenZFS"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2501620.2501623",
+            "venue": "ACM TOS",
+            "year": "2013"
+          },
+          "name": "Rodeh, Bacik, Mason \u2014 BTRFS: The Linux B-Tree Filesystem (ACM TOS 2013)"
+        }
+      ],
+      "topics": [
+        "systems/filesystems",
+        "verification/crash-consistency",
+        "systems/os-vfs",
+        "security/symlink-races"
+      ]
+    },
     "post-cmos-analog-neuromorphic-qec-and-molecular-fluidic-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -42993,6 +43118,106 @@
         "runtimes/batch",
         "verification",
         "verification/state-models"
+      ]
+    },
+    "sat-inprocessing-drat-lrat-frat-checkers-maxsat-and-qbf-skolem-certificates": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "arminbiere/cadical",
+            "revision": "6b3d70b9ce00ecbce3f829bab76d185f0e92618c",
+            "version": "3.1.0"
+          },
+          "name": "CaDiCaL CDCL SAT solver"
+        },
+        {
+          "identity": {
+            "repository": "hgarrereyn/SBVA",
+            "revision": "35e74d02aa1b0970d53fef1c86171e596d0da453"
+          },
+          "name": "SBVA (Structured Bounded Variable Addition)"
+        },
+        {
+          "identity": {
+            "repository": "tanyongkiam/cake_lpr",
+            "revision": "033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2"
+          },
+          "name": "cake_lpr verified LPR proof checker"
+        },
+        {
+          "identity": {
+            "path": "examples/lpr_checker",
+            "repository": "CakeML/cakeml",
+            "revision": "665f9b21712ad093e10a404ccc2f78e64a34aeef"
+          },
+          "name": "CakeML HOL4 LPR checker formalization"
+        },
+        {
+          "identity": {
+            "path": "src/Std/Tactic/BVDecide",
+            "repository": "leanprover/lean4",
+            "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05"
+          },
+          "name": "Lean 4 bv_decide and verified LRAT checker"
+        },
+        {
+          "identity": {
+            "repository": "digama0/frat",
+            "revision": "aa18581497830b49a6ab6cbc9e0dc778c14885b5"
+          },
+          "name": "FRAT-rs flexible SAT proof elaborator"
+        },
+        {
+          "identity": {
+            "repository": "marijnheule/drat-trim",
+            "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+          },
+          "name": "drat-trim and lrat-check reference proof tools"
+        },
+        {
+          "identity": {
+            "repository": "StephanGocht/VeriPB",
+            "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+          },
+          "name": "VeriPB pseudo-Boolean proof checker"
+        },
+        {
+          "identity": {
+            "path": "examples/rc2.py",
+            "repository": "pysathq/pysat",
+            "revision": "ff051b57496492822a52c510bbd082f840bd792f"
+          },
+          "name": "PySAT RC2 core-guided MaxSAT solver"
+        },
+        {
+          "identity": {
+            "repository": "markusrabe/cadet",
+            "revision": "40f9683261013780b5c6cddf9cb3112d0f71d187"
+          },
+          "name": "CADET 2QBF incremental determinization solver"
+        },
+        {
+          "identity": {
+            "repository": "lonsing/depqbf",
+            "revision": "2ad3995a21b8ca2831be2534b1cb80df342b3bdf",
+            "version": "6.03"
+          },
+          "name": "DepQBF QCDCL QBF solver"
+        },
+        {
+          "identity": {
+            "repository": "marijnheule/qrat-trim",
+            "revision": "5d6a1b60c1108755975b47b15d3676afeb3dbb65"
+          },
+          "name": "qrat-trim and cheskol QBF proof and Skolem tools"
+        }
+      ],
+      "topics": [
+        "smt/sat-qbf-proofs",
+        "verification/proof-certificates",
+        "lean/sat-tactics",
+        "compilers/boolean-synthesis"
       ]
     },
     "scoped-exportlist-invalidation-slicing-and-proc-macro-determinism-sandbox": {

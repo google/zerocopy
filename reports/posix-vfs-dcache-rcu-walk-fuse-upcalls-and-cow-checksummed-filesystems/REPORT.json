@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "systems/filesystems",
+    "verification/crash-consistency",
+    "systems/os-vfs",
+    "security/symlink-races"
+  ],
+  "subjects": [
+    {
+      "name": "Linux Kernel (VFS dcache/namei, FUSE, Btrfs, jbd2)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "SibylFS Executable POSIX Filesystem Specification",
+      "identity": {
+        "repository": "sibylfs/sibylfs_src",
+        "revision": "30675bc3b91e73f7133d0c30f18857bb1f4df8fa"
+      }
+    },
+    {
+      "name": "Ridge, Sheets, Tuerk, Giugliano, Madhavapeddy, Sewell — SibylFS: formal specification and oracle-based testing for POSIX and real-world file systems (SOSP 2015)",
+      "identity": {
+        "doi": "10.1145/2815400.2815411",
+        "venue": "SOSP 2015",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "IEEE Std 1003.1-2024 (POSIX.1-2024 / Open Group Base Specifications Issue 8)",
+      "identity": {
+        "standard": "IEEE Std 1003.1-2024",
+        "edition": "Issue 8",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "libfuse (Filesystem in Userspace Library & Kernel ABI Header)",
+      "identity": {
+        "repository": "libfuse/libfuse",
+        "revision": "6a484ac67fba410d722473e5e107da9b804fc40d"
+      }
+    },
+    {
+      "name": "OpenZFS",
+      "identity": {
+        "repository": "openzfs/zfs",
+        "revision": "cde5d598eb44b5d6efe8167666d988a496346657"
+      }
+    },
+    {
+      "name": "Rodeh, Bacik, Mason — BTRFS: The Linux B-Tree Filesystem (ACM TOS 2013)",
+      "identity": {
+        "doi": "10.1145/2501620.2501623",
+        "venue": "ACM TOS",
+        "year": "2013"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
