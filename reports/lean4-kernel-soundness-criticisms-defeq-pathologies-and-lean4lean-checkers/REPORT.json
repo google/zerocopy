@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "lean/kernel-soundness",
+    "verification/type-checker-trust",
+    "lean/external-checkers",
+    "security/tcb-hazards"
+  ],
+  "subjects": [
+    {
+      "name": "leanprover/lean4 C++ kernel, runtime, and compiler attributes",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "dfc7769c1ae95567ff59d40564a9334d3b770fad",
+        "version": "4.38.0-pre"
+      }
+    },
+    {
+      "name": "digama0/lean4lean Lean-in-Lean kernel and metatheory",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "digama0/lean-type-theory (The Type Theory of Lean)",
+      "identity": {
+        "repository": "digama0/lean-type-theory",
+        "revision": "0ba178704380d2fad751f020d461b293f47e36d5"
+      }
+    },
+    {
+      "name": "Lean4Lean: Verifying a Typechecker for Lean, in Lean (Carneiro, arXiv:2403.14064v3)",
+      "identity": {
+        "arxiv": "2403.14064v3",
+        "doi": "10.48550/arXiv.2403.14064"
+      }
+    },
+    {
+      "name": "ammkrn/nanoda_lib independent Rust Lean 4 external checker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.32"
+      }
+    },
+    {
+      "name": "leanprover/lean4export NDJSON declaration exporter",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab",
+        "format_version": "3.1.0"
+      }
+    },
+    {
+      "name": "leanprover/lean4checker .olean environment replayer",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "gasstationmanager/Safeverify specification-fidelity and axiom auditor",
+      "identity": {
+        "repository": "gasstationmanager/Safeverify",
+        "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+      }
+    },
+    {
+      "name": "leanprover/lean-kernel-arena multi-checker benchmarking harness",
+      "identity": {
+        "repository": "leanprover/lean-kernel-arena",
+        "revision": "c3bc9f52bdccc7e16bcd5892574b0dc4f6aa815c",
+        "url": "https://arena.lean-lang.org"
+      }
+    },
+    {
+      "name": "CVE-2026-72844 nested-inductive projection soundness advisory",
+      "identity": {
+        "cve": "CVE-2026-72844",
+        "url": "https://www.openwall.com/lists/oss-security/2026/10/26/2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

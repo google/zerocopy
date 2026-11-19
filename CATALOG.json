@@ -28706,6 +28706,91 @@
         "verification"
       ]
     },
+    "lean4-kernel-soundness-criticisms-defeq-pathologies-and-lean4lean-checkers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "dfc7769c1ae95567ff59d40564a9334d3b770fad",
+            "version": "4.38.0-pre"
+          },
+          "name": "leanprover/lean4 C++ kernel, runtime, and compiler attributes"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "digama0/lean4lean Lean-in-Lean kernel and metatheory"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean-type-theory",
+            "revision": "0ba178704380d2fad751f020d461b293f47e36d5"
+          },
+          "name": "digama0/lean-type-theory (The Type Theory of Lean)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.14064v3",
+            "doi": "10.48550/arXiv.2403.14064"
+          },
+          "name": "Lean4Lean: Verifying a Typechecker for Lean, in Lean (Carneiro, arXiv:2403.14064v3)"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.32"
+          },
+          "name": "ammkrn/nanoda_lib independent Rust Lean 4 external checker"
+        },
+        {
+          "identity": {
+            "format_version": "3.1.0",
+            "repository": "leanprover/lean4export",
+            "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+          },
+          "name": "leanprover/lean4export NDJSON declaration exporter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "leanprover/lean4checker .olean environment replayer"
+        },
+        {
+          "identity": {
+            "repository": "gasstationmanager/Safeverify",
+            "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+          },
+          "name": "gasstationmanager/Safeverify specification-fidelity and axiom auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean-kernel-arena",
+            "revision": "c3bc9f52bdccc7e16bcd5892574b0dc4f6aa815c",
+            "url": "https://arena.lean-lang.org"
+          },
+          "name": "leanprover/lean-kernel-arena multi-checker benchmarking harness"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2026-72844",
+            "url": "https://www.openwall.com/lists/oss-security/2026/10/26/2"
+          },
+          "name": "CVE-2026-72844 nested-inductive projection soundness advisory"
+        }
+      ],
+      "topics": [
+        "lean/kernel-soundness",
+        "verification/type-checker-trust",
+        "lean/external-checkers",
+        "security/tcb-hazards"
+      ]
+    },
     "lie-group-factor-graphs-state-estimation-and-deterministic-robotics-middleware": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -30949,6 +31034,93 @@
         "systems/sandboxing",
         "rust/unsafe",
         "verification/program-logics"
+      ]
+    },
+    "metamath-zero-mm0-self-verifying-x86-bootstrap-and-machine-code-kernels": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "digama0/mm0 Metamath Zero specs, mm0-c, mm0-rs/mmc, and x86/verifier formalizations"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.10703v3",
+            "doi": "10.1007/978-3-030-53518-6_5"
+          },
+          "name": "Metamath Zero: The Cartesian Theorem Prover / Designing a Theorem Prover Prover (Carneiro)"
+        },
+        {
+          "identity": {
+            "repository": "david-a-wheeler/metamath-knife",
+            "revision": "76fc9f7f39f46f4c43499a0c2bd1402eb8b1cf9a"
+          },
+          "name": "metamath-knife parallel and incremental Metamath verifier"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/stage0-posix",
+            "revision": "643598041bf7639883874fe2cdc9d9693c9b03d5"
+          },
+          "name": "oriansj/stage0-posix hex0-to-GCC minimal bootstrap seed chain"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML/cakeml end-to-end HOL4-verified ML compiler and runtime"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/candle",
+            "revision": "a9aeaa1dffd50f7cfeed811db6ee61f98e2234da"
+          },
+          "name": "CakeML/candle HOL4-verified HOL Light implementation on CakeML"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.3"
+          },
+          "name": "Candle: A Verified Implementation of HOL Light (Abrahamsson et al., ITP 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229"
+          },
+          "name": "The verified CakeML compiler backend (Tan et al., JFP 2019)"
+        },
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "6dbb775efdff7f75aa20006532bf6336bc645861"
+          },
+          "name": "jrh13/hol-light stateless LCF OCaml kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3706056",
+            "repository": "MetaRocq/metarocq",
+            "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+          },
+          "name": "MetaRocq/metarocq PCUIC typechecker and erasure formalization"
+        },
+        {
+          "identity": {
+            "repository": "CertiCoq/certirocq",
+            "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+          },
+          "name": "CertiCoq/certirocq certified Gallina-to-Clight/Wasm compiler"
+        }
+      ],
+      "topics": [
+        "verification/metamath-zero",
+        "compilers/bootstrapping-trust",
+        "isa/self-verifying-elf",
+        "lean/proof-export"
       ]
     },
     "metaprogrammed-class-d-loop-memory-framing-and-width-polymorphic-bitvec-rules": {

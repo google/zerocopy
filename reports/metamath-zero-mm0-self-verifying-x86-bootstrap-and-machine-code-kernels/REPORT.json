@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "verification/metamath-zero",
+    "compilers/bootstrapping-trust",
+    "isa/self-verifying-elf",
+    "lean/proof-export"
+  ],
+  "subjects": [
+    {
+      "name": "digama0/mm0 Metamath Zero specs, mm0-c, mm0-rs/mmc, and x86/verifier formalizations",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "Metamath Zero: The Cartesian Theorem Prover / Designing a Theorem Prover Prover (Carneiro)",
+      "identity": {
+        "arxiv": "1910.10703v3",
+        "doi": "10.1007/978-3-030-53518-6_5"
+      }
+    },
+    {
+      "name": "metamath-knife parallel and incremental Metamath verifier",
+      "identity": {
+        "repository": "david-a-wheeler/metamath-knife",
+        "revision": "76fc9f7f39f46f4c43499a0c2bd1402eb8b1cf9a"
+      }
+    },
+    {
+      "name": "oriansj/stage0-posix hex0-to-GCC minimal bootstrap seed chain",
+      "identity": {
+        "repository": "oriansj/stage0-posix",
+        "revision": "643598041bf7639883874fe2cdc9d9693c9b03d5"
+      }
+    },
+    {
+      "name": "CakeML/cakeml end-to-end HOL4-verified ML compiler and runtime",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "CakeML/candle HOL4-verified HOL Light implementation on CakeML",
+      "identity": {
+        "repository": "CakeML/candle",
+        "revision": "a9aeaa1dffd50f7cfeed811db6ee61f98e2234da"
+      }
+    },
+    {
+      "name": "Candle: A Verified Implementation of HOL Light (Abrahamsson et al., ITP 2022)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2022.3"
+      }
+    },
+    {
+      "name": "The verified CakeML compiler backend (Tan et al., JFP 2019)",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "jrh13/hol-light stateless LCF OCaml kernel",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "6dbb775efdff7f75aa20006532bf6336bc645861"
+      }
+    },
+    {
+      "name": "MetaRocq/metarocq PCUIC typechecker and erasure formalization",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56",
+        "doi": "10.1145/3706056"
+      }
+    },
+    {
+      "name": "CertiCoq/certirocq certified Gallina-to-Clight/Wasm compiler",
+      "identity": {
+        "repository": "CertiCoq/certirocq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
