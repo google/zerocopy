@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "pl",
+    "pl/executable-specifications",
+    "compilers/partial-evaluation",
+    "verification/mechanized-specs",
+    "runtimes/wasm"
+  ],
+  "subjects": [
+    {
+      "name": "Wasm-SpecTec (Specification Meta-Compiler)",
+      "identity": {
+        "repository": "Wasm-DSL/spectec",
+        "revision": "acc6e834ff403c82554d081237f327346190ad96",
+        "doi": "10.1145/3656440"
+      }
+    },
+    {
+      "name": "WebAssembly Official Core Specification (Wasm 1.0/2.0/3.0 with integrated SpecTec)",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe"
+      }
+    },
+    {
+      "name": "P4-SpecTec (Executable Algorithmic-Rule Specification Toolchain for P4)",
+      "identity": {
+        "repository": "kaist-plrg/p4-spectec",
+        "revision": "731621c5e3c8eb94323c112898364624fc03ce9d",
+        "doi": "10.1145/3839535",
+        "arxiv": "2608.00639v1"
+      }
+    },
+    {
+      "name": "ESMeta (ECMAScript Specification Mechanization)",
+      "identity": {
+        "repository": "es-meta/esmeta",
+        "revision": "b4a787f2716523bf76d4a897068bbd5b1fc8ef2d"
+      }
+    },
+    {
+      "name": "Ott (Syntax, Binding, and Inference Rule Compiler)",
+      "identity": {
+        "repository": "ott-lang/ott",
+        "revision": "0639ce49892252e0b53e84aa5b0c35b02785913e",
+        "doi": "10.1017/S095679680999019X"
+      }
+    },
+    {
+      "name": "Lem (Multi-Prover Functional Specification Language)",
+      "identity": {
+        "repository": "rems-project/lem",
+        "revision": "3802cb04b53d5f1096a464e51ecbfb2a750a7ccd",
+        "doi": "10.1145/2628136.2628162"
+      }
+    },
+    {
+      "name": "Sail (ISA Specification Language and Multi-Prover Compiler)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2",
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "K Semantic Framework, Reachability Logic, and Matching mu-Logic",
+      "identity": {
+        "repository": "runtimeverification/k",
+        "revision": "4a46d1231473b599c699160132fd6e76a5c46406",
+        "jlap2010_doi": "10.1016/j.jlap.2010.03.012",
+        "oopsla2016_doi": "10.1145/2983990.2984027",
+        "lics2019_doi": "10.1109/LICS.2019.8785675"
+      }
+    },
+    {
+      "name": "K Framework Matching Logic Proof Certificate Generation (Metamath)",
+      "identity": {
+        "repository": "runtimeverification/proof-generation",
+        "revision": "bdf8d0c638896dc6b2e3469ecf3e665f5eec5f26",
+        "doi": "10.1145/3586029"
+      }
+    },
+    {
+      "name": "weval (AOT WebAssembly Partial Evaluator)",
+      "identity": {
+        "repository": "bytecodealliance/weval",
+        "revision": "47164ae9e5bacfdcc23ddaeb2fa491c8f61c644d",
+        "doi": "10.1145/3729259",
+        "arxiv": "2411.10559v1"
+      }
+    },
+    {
+      "name": "waffle (Wasm-to-Wasm Block-Parameter SSA IR Framework)",
+      "identity": {
+        "repository": "bytecodealliance/waffle",
+        "revision": "dad4f9cb1e05014c8e49648bc45e071aad54dca3"
+      }
+    },
+    {
+      "name": "Collapsing Towers of Interpreters and Lightweight Modular Staging (LMS)",
+      "identity": {
+        "repository": "TiarkRompf/collapsing-towers",
+        "revision": "d938bf9cdec5bcfd1f3bf8c1ac2431007da2afe1",
+        "popl2018_doi": "10.1145/3158140",
+        "lms_gpce2010_doi": "10.1145/1868294.1868314",
+        "lms_cacm2012_doi": "10.1145/2184319.2184345"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
