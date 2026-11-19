@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "verification",
+    "verification/kernels",
+    "verification/translation-validation",
+    "compilers",
+    "lean",
+    "lean/kernel",
+    "security",
+    "tooling"
+  ],
+  "subjects": [
+    {
+      "name": "Metamath Zero (mm0 / mm0-c / x86-64 verifier specification)",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "CakeML and Candle (verified HOL Light implementation)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "HOL Light reference kernel",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "6dbb775efdff7f75aa20006532bf6336bc645861"
+      }
+    },
+    {
+      "name": "Lean 4 kernel, compiler attributes, and elaborator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Lean4Lean (Lean 4 typechecker formalized in Lean 4)",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "lean4export (Lean 4 NDJSON declaration exporter)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "nanoda_lib (independent Rust Lean 4 external kernel)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+      }
+    },
+    {
+      "name": "MetaCoq (PCUIC metatheory, safe checker, and erasure)",
+      "identity": {
+        "repository": "MetaCoq/metacoq",
+        "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+      }
+    },
+    {
+      "name": "CertiCoq (verified compiler for Gallina to C)",
+      "identity": {
+        "repository": "CertiCoq/certicoq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+      }
+    },
+    {
+      "name": "Rocq Prover kernel and standalone checker",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Alive2 LLVM bounded translation validator",
+      "identity": {
+        "repository": "AliveToolkit/alive2",
+        "revision": "3bdd4f5e1cefa47057e93110e707acd11cfe08e4"
+      }
+    },
+    {
+      "name": "Cogent proof-producing systems language compiler",
+      "identity": {
+        "repository": "au-ts/cogent",
+        "revision": "49b6ceb0d0337198a0ce26944b1ae11dd93fcb9a"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
