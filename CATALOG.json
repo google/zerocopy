@@ -31125,6 +31125,186 @@
         "verification/compiler-verification"
       ]
     },
+    "milawa-acl2-reflective-towers-mizar-soft-types-twelf-lf-and-cubical-checkers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "path": "books/projects/milawa",
+            "repository": "acl2/acl2",
+            "revision": "043ce2f2e51aa3dd7fde519be0b1091d7bc4077a"
+          },
+          "name": "Milawa self-verifying theorem prover (inside ACL2 community books)"
+        },
+        {
+          "identity": {
+            "repository": "melvinzhang/milawa-on-jitawa",
+            "revision": "2e0928f66a86e87acf352fe77dd608de89e19017"
+          },
+          "name": "Milawa on Jitawa verified Lisp runtime"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified ML ecosystem (Milawa/CakeML port context)"
+        },
+        {
+          "identity": {
+            "repository": "MizarProject/system",
+            "revision": "e04ee5d40cd3ffc4c6027f41c003bc8de0a784a6"
+          },
+          "name": "Mizar proof system (Pascal kernel, analyzer, checker)"
+        },
+        {
+          "identity": {
+            "repository": "MizarSystem/MML",
+            "revision": "047822c4d814630b28eec8ca6b455e9eb912d5ff"
+          },
+          "name": "Mizar Mathematical Library (MML)"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mizar-rs",
+            "revision": "896eed46e91ce037b5878852ecf11f15fee76bfd"
+          },
+          "name": "mizar-rs (Rust reimplementation of Mizar analyzer and checker)"
+        },
+        {
+          "identity": {
+            "repository": "standardml/twelf",
+            "revision": "4224d07cf7a32f69321fd0878043e84539163ee0"
+          },
+          "name": "Twelf (Edinburgh LF logical framework and meta-checkers)"
+        },
+        {
+          "identity": {
+            "repository": "Beluga-lang/Beluga",
+            "revision": "820615cc4758086eb7641f62340a3ab93a689303"
+          },
+          "name": "Beluga (Contextual Modal Type Theory over LF)"
+        },
+        {
+          "identity": {
+            "repository": "RedPRL/cooltt",
+            "revision": "b39bf29900451cb43ae6fbd9af5aa33d59e18935"
+          },
+          "name": "cooltt (Cartesian cubical type theory implementation)"
+        },
+        {
+          "identity": {
+            "repository": "RedPRL/redtt",
+            "revision": "ae76658873a647eb43d8cf84365a9d68e9a3273c"
+          },
+          "name": "redtt (Cartesian cubical proof assistant)"
+        },
+        {
+          "identity": {
+            "repository": "RedPRL/sml-redprl",
+            "revision": "c72190de76f7ed1cfbe1d2046c96e99ac5022b0c"
+          },
+          "name": "sml-redprl (Computational cubical refinement logic)"
+        },
+        {
+          "identity": {
+            "repository": "mortberg/cubicaltt",
+            "revision": "9baa6f2491cc61dbd4fd81d58323c04100381451"
+          },
+          "name": "cubicaltt (De Morgan cubical type theory)"
+        },
+        {
+          "identity": {
+            "repository": "AndrasKovacs/cctt",
+            "revision": "fa00f7d6f743b4ec8d6bee57e83b2e95469c6694"
+          },
+          "name": "cctt (high-performance Cartesian cubical evaluator)"
+        },
+        {
+          "identity": {
+            "repository": "vrahli/NuprlInCoq",
+            "revision": "cfb69727c6af64c9bb157e89fded5e4a791d45f5"
+          },
+          "name": "NuprlInCoq (Nuprl PER semantics and rules formalized in Coq)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-08970-6_27",
+            "extended_doi": "10.1007/s10817-015-9324-6",
+            "publication": "ITP 2014 / JAR 2015",
+            "year": "2014"
+          },
+          "name": "Davis & Myreen (2014/2015): The Reflective Milawa Theorem Prover Is Sound"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-22863-6_20",
+            "publication": "ITP 2011",
+            "year": "2011"
+          },
+          "name": "Myreen & Davis (2011): A Verified Runtime for a Verified Theorem Prover (Jitawa)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4419-1539-9_3",
+            "year": "2010"
+          },
+          "name": "Hunt, Swords, Davis, Slobodova (2010): Use of Formal Verification at Centaur Technology"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.08391",
+            "year": "2023"
+          },
+          "name": "Carneiro (2023): Reimplementing Mizar in Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/138027.138060",
+            "publication": "JACM 40(1)",
+            "year": "1993"
+          },
+          "name": "Harper, Honsell, Plotkin (1993): A Framework for Defining Logics (Edinburgh LF)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-48660-7_14",
+            "publication": "CADE-16",
+            "year": "1999"
+          },
+          "name": "Pfenning & Schurmann (1999): System Description: Twelf"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-12251-4_1",
+            "publication": "FLOPS 2010",
+            "year": "2010"
+          },
+          "name": "Pientka & Dunfield (2010): Beluga: Programming with Dependent Types, Contextual Data, and Contexts"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9472-6",
+            "year": "2018"
+          },
+          "name": "Cohen, Coquand, Huber, Mortberg (2018): Cubical Type Theory (De Morgan)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0960129521000347",
+            "publication": "MSCS 31(4)",
+            "year": "2021"
+          },
+          "name": "Angiuli, Favonia, Harper (2021): Syntax and Models of Cartesian Cubical Type Theory"
+        }
+      ],
+      "topics": [
+        "verification/reflective-towers",
+        "pl/logical-frameworks",
+        "pl/cubical-type-theory",
+        "verification/alternative-provers"
+      ]
+    },
     "mill-edge-dataflow-and-tile-bsp-compiler-architectures": {
       "observed_at": "2026-11-19",
       "subjects": [
