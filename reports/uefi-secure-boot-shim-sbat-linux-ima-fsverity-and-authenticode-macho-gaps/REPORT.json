@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "security/code-signing",
+    "systems/verified-boot",
+    "build/executable-formats",
+    "isa/wx-jit-enforcement"
+  ],
+  "subjects": [
+    {
+      "name": "EDK II DxeImageVerificationLib (UEFI PE/COFF Authenticode)",
+      "identity": {
+        "repository": "tianocore/edk2",
+        "revision": "556dcfb466e9f05affeaff881d738807f8156d3c"
+      }
+    },
+    {
+      "name": "rhboot UEFI shim Bootloader and SBAT",
+      "identity": {
+        "repository": "rhboot/shim",
+        "revision": "e794a714339b1277abe9f890fc98de6e415681b0"
+      }
+    },
+    {
+      "name": "Linux Kernel (Module Signing, IMA/EVM, fs-verity, dm-verity FEC)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Apple XNU Kernel (Code Signing, Page Validation, MAP_JIT)",
+      "identity": {
+        "repository": "apple-oss-distributions/xnu",
+        "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea"
+      }
+    },
+    {
+      "name": "Apple libpthread (JIT Write Protection and Callback Allowlist)",
+      "identity": {
+        "repository": "apple-oss-distributions/libpthread",
+        "revision": "42d026df5b07825070f60134b980a1ec2552dfee"
+      }
+    },
+    {
+      "name": "Apple Security Framework",
+      "identity": {
+        "repository": "apple-oss-distributions/Security",
+        "revision": "db15acbe6a7f257a859ad9a3bb86097bfe0679d9"
+      }
+    },
+    {
+      "name": "UEFI Specification",
+      "identity": {
+        "standard": "UEFI Specification",
+        "version": "2.10"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

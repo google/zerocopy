@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "security/binary-transparency",
+    "build/supply-chain-attestation",
+    "systems/firmware-updates",
+    "verification/transparency-claims"
+  ],
+  "subjects": [
+    {
+      "name": "Google Trillian Examples Firmware Transparency",
+      "identity": {
+        "repository": "google/trillian-examples",
+        "revision": "6931e636566371f9fa8b9e664594ab05fcacaa08"
+      }
+    },
+    {
+      "name": "Transparency Dev Witness",
+      "identity": {
+        "repository": "transparency-dev/witness",
+        "revision": "bd0f4ab93e8ee9cf3b382d7c903e864c3701a5c5"
+      }
+    },
+    {
+      "name": "C2SP Signed Checkpoints, Cosignatures, and Witness Specifications",
+      "identity": {
+        "repository": "C2SP/C2SP",
+        "revision": "d35150e795e178b7ad26cdff0ec1877bcc9e9723"
+      }
+    },
+    {
+      "name": "The Update Framework Specification",
+      "identity": {
+        "repository": "theupdateframework/specification",
+        "revision": "e2bc7d83d0740aaae8dd7133dd4f237ce3d86b16"
+      }
+    },
+    {
+      "name": "python-tuf Reference Client",
+      "identity": {
+        "repository": "theupdateframework/python-tuf",
+        "revision": "8e8a78a113b5d691672af4549d0a7abefe92b055"
+      }
+    },
+    {
+      "name": "Uptane Automotive Software Update Standard",
+      "identity": {
+        "repository": "uptane/uptane-standard",
+        "revision": "a02f9cace9e842dbc33f2151b47620a50ccc9151"
+      }
+    },
+    {
+      "name": "in-toto Supply-Chain Verification Reference Implementation",
+      "identity": {
+        "repository": "in-toto/in-toto",
+        "revision": "e352b43ad7cb8915d84c36d791aa61346152a0a3"
+      }
+    },
+    {
+      "name": "in-toto Attestation Statement Specification",
+      "identity": {
+        "repository": "in-toto/attestation",
+        "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+      }
+    },
+    {
+      "name": "SLSA Framework Build Levels and Provenance Specification",
+      "identity": {
+        "repository": "slsa-framework/slsa",
+        "revision": "8c3161670b7a6cf7bd6d858b2332ae7eb0838b0c"
+      }
+    },
+    {
+      "name": "DEDIS Cothority Skipchain (Chainiac)",
+      "identity": {
+        "repository": "dedis/cothority",
+        "revision": "e0c9afbb847b070e1bda6f54561a4082b803db80"
+      }
+    },
+    {
+      "name": "Go Module Checksum Database Client and Dirhash",
+      "identity": {
+        "repository": "golang/mod",
+        "revision": "2b553c8b61bf9bfb6f7e92f5cca8ccdf153835cc"
+      }
+    },
+    {
+      "name": "Meta Auditable Key Directory and WhatsApp KT Auditor",
+      "identity": {
+        "repository": "facebook/akd",
+        "revision": "43a60ccf7dfdd8f4b628186410e871192adaf65b"
+      }
+    },
+    {
+      "name": "OpenTitan Silicon Creator Firmware Manifest",
+      "identity": {
+        "repository": "lowRISC/opentitan",
+        "revision": "b9e9ccd9e959071f8be21c20fa9ffc4eaa06a8f5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
