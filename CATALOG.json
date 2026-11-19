@@ -9882,6 +9882,115 @@
         "rustc/driver"
       ]
     },
+    "carry-free-gpu-swizzle-algebras-and-height-monotone-fp-error-bounds": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "NVIDIA/cutlass",
+            "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+          },
+          "name": "NVIDIA CUTLASS CuTe Layout and Swizzle Library"
+        },
+        {
+          "identity": {
+            "repository": "triton-lang/triton",
+            "revision": "458c1a257c026a24c6aa7937f75f186e9bdf8353"
+          },
+          "name": "Triton GPU LinearLayout Representation"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.02298"
+          },
+          "name": "CuTe Layout Representation and Algebra"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.05972",
+            "doi": "10.48550/arXiv.2601.05972"
+          },
+          "name": "Categorical Foundations for CuTe Layouts"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.16730",
+            "doi": "10.1145/3720473",
+            "repository": "finch-tensor/Finch.jl",
+            "revision": "7aa1ca1609054b94f3a1b56bb2221ae872513a10"
+          },
+          "name": "Finch Sparse and Structured Tensor Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2019.8766229",
+            "standard": "IEEE Std 754-2019"
+          },
+          "name": "IEEE Standard for Floating-Point Arithmetic (IEEE Std 754-2019)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "7d9cd0de00e584d35b3bc077842790fe1bd7771d"
+          },
+          "name": "LLVM IR FastMathFlags"
+        },
+        {
+          "identity": {
+            "book_doi": "10.1137/1.9780898718027",
+            "summation_doi": "10.1137/0914050"
+          },
+          "name": "Higham Floating-Point Summation and Rounding Error Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/120894488",
+            "publication": "SIAM J. Matrix Anal. Appl. 34(2), 2013"
+          },
+          "name": "Jeannerod and Rump Improved Inner-Product Error Bounds"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ARITH58626.2023.00021",
+            "repository": "VeriNum/LAProof",
+            "revision": "86a9a74a55bd1ac15f1dab41e430e7498543d016"
+          },
+          "name": "LAProof Coq Linear Algebra Accuracy Library"
+        },
+        {
+          "identity": {
+            "repository": "VeriNum/vcfloat",
+            "revision": "a203b287a84b0e3c9bec136823b5622ebfde6ad6"
+          },
+          "name": "VCFloat Floating-Point Verification Framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3230733",
+            "repository": "soarlab/FPTaylor",
+            "revision": "b5a77cae348400f21f83512210d9f43c4bffb381"
+          },
+          "name": "FPTaylor Symbolic Taylor Floating-Point Error Tool"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1644001.1644003",
+            "publication": "ACM TOMS 37(1), 2010"
+          },
+          "name": "Gappa Floating-Point Bound Certification Tool"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/gpu-layouts",
+        "compilers/floating-point",
+        "domains",
+        "domains/sparse-tensors",
+        "verification",
+        "verification/floating-point",
+        "isa"
+      ]
+    },
     "charon-cargo-shared-target-incremental": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -18385,6 +18494,203 @@
         "verification/compiler-verification"
       ]
     },
+    "errata-aware-linkers-post-link-binary-validators-and-code-layout-relaxation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "7d9cd0de00e584d35b3bc077842790fe1bd7771d"
+          },
+          "name": "LLVM Project (LLD, MC Assembler, BOLT, BasicBlockSections)"
+        },
+        {
+          "identity": {
+            "repository": "git://sourceware.org/git/binutils-gdb.git",
+            "revision": "20a3bfdbee7e4615e96d779744e25e272beb1f4c"
+          },
+          "name": "GNU Binutils (upstream Sourceware binutils-gdb, RISC-V ELF BFD)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-collab/riscv-binutils-gdb",
+            "revision": "20756b0fbe065a84710aa38f2457563b57546440"
+          },
+          "name": "GNU Binutils mirror (AArch64 ELF BFD and x86 GAS)"
+        },
+        {
+          "identity": {
+            "tool": "GNU assembler (GNU Binutils for Debian)",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils (Debian x86-64 local execution toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "google/llvm-propeller",
+            "revision": "e98f399102650de7e03e07c7299029da94d7be44"
+          },
+          "name": "LLVM Propeller"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.06735",
+            "doi": "10.1109/CGO.2019.8661201"
+          },
+          "name": "BOLT: A Practical Binary Optimizer for Data Centers and Beyond (CGO 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "1809.04676",
+            "doi": "10.1109/TC.2020.2982888"
+          },
+          "name": "Improved Basic Block Reordering (IEEE Transactions on Computers, 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3575693.3575727"
+          },
+          "name": "Propeller: A Profile Guided, Relinking Optimizer for Warehouse-Scale Applications (ASPLOS 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428265"
+          },
+          "name": "CompCertELF: Verified Separate Compilation of C Programs into ELF Object Files (OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462183"
+          },
+          "name": "Translation Validation for a Verified OS Kernel (PLDI 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00074",
+            "repository": "binsec/binsec",
+            "revision": "9749bd8aed7ee0a27959158b1e53e8789cb0e5ab"
+          },
+          "name": "Binsec/Rel: Efficient Relational Symbolic Execution for Constant-Time at Binary-Level (IEEE S&P 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2005.00294",
+            "doi": "10.1145/3434330",
+            "repository": "PLSYSSEC/blade",
+            "revision": "61ac7906ddae019215ff4f33df7e774d88d6fdb1"
+          },
+          "name": "Automatically Eliminating Speculative Leaks from Cryptographic Code with Blade (POPL 2021)"
+        },
+        {
+          "identity": {
+            "eprint": "2020/1294",
+            "repository": "IAIK/coco-alma",
+            "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97"
+          },
+          "name": "Coco: Co-Design and Co-Verification of Masked Software Implementations on CPUs (USENIX Security 2021)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/linking",
+        "compilers/binary-optimization",
+        "llvm",
+        "llvm/lld",
+        "llvm/bolt",
+        "llvm/propeller",
+        "isa",
+        "isa/errata",
+        "verification",
+        "verification/translation-validation",
+        "build"
+      ]
+    },
+    "escrow-calculi-for-crdt-collaborative-editing-of-linear-capabilities": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.14026532",
+            "doi": "10.1145/3704909",
+            "url": "https://hazel.org/papers/grove-popl25.pdf",
+            "venue": "Proc. ACM Program. Lang. 9, POPL, Article 73 (January 2025)"
+          },
+          "name": "Grove collaborative structure editor calculus and Agda artifact"
+        },
+        {
+          "identity": {
+            "arxiv": "1805.00155",
+            "doi": "10.1145/3290327",
+            "repository": "hazelgrove/hazelnut-dynamics-agda",
+            "revision": "229dfb06ea51ebe91cb3b1c973c2f2792e66797c"
+          },
+          "name": "Hazelnut Live semantics and Agda mechanization"
+        },
+        {
+          "identity": {
+            "repository": "hazelgrove/hazel",
+            "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+          },
+          "name": "Hazel live functional programming environment"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2450142.2450151",
+            "venue": "Journal of the ACM, Vol. 60, No. 2, Article 15 (2013)"
+          },
+          "name": "Relational Transducers for Declarative Networking (CALM formalization)"
+        },
+        {
+          "identity": {
+            "arxiv": "1901.01930v2",
+            "doi": "10.1145/3369736",
+            "venue": "Communications of the ACM, Vol. 63, No. 9, pp. 72-81 (2020)"
+          },
+          "name": "Keeping CALM: When Distributed Consistency Is Easy"
+        },
+        {
+          "identity": {
+            "arxiv": "1503.09052v1",
+            "doi": "10.1145/2741948.2741972",
+            "venue": "EuroSys 2015, Article 16"
+          },
+          "name": "Indigo and Bounded Counter escrow CRDTs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/7239.7265",
+            "venue": "ACM Transactions on Database Systems, Vol. 11, No. 4, pp. 405-430 (1986)"
+          },
+          "name": "The Escrow Transactional Method"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TPDS.2021.3118603",
+            "venue": "IEEE Transactions on Parallel and Distributed Systems (2022)"
+          },
+          "name": "A Highly-Available Move Operation for Replicated Trees"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust standard library lock poisoning (std::sync::poison)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/linear-types",
+        "pl/structure-editors",
+        "systems",
+        "systems/crdt",
+        "systems/capability-escrow",
+        "tooling",
+        "tooling/live-programming",
+        "verification",
+        "verification/model-checking"
+      ]
+    },
     "executable-specification-compilers-spectec-k-and-futamura-specializers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -20069,6 +20375,105 @@
         "pl/gradual-typing",
         "ffi/contracts",
         "tooling/verification"
+      ]
+    },
+    "handle-tables-scoped-arenas-and-cross-runtime-ffi-pinning-protocols": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "d65bc4b262564e535c431aa8d4b58a1f7630fa64"
+          },
+          "name": "OpenJDK (Project Panama JEP 454 Foreign Function & Memory API, HotSpot ScopedMemoryAccess)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go Runtime (runtime.Pinner, movable goroutine stacks, cgo pointer checking)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "03e7a8854d714fabb3ab5b8c8f984fc1214f65b0"
+          },
+          "name": "CPython (PEP 703 free-threaded build, QSBR, biased reference counting, critical sections)"
+        },
+        {
+          "identity": {
+            "repository": "hpyproject/hpy",
+            "revision": "0a1d8791dfb28ea7d928bd1aabe37cc40dfb8146"
+          },
+          "name": "HPy (Universal Handle ABI for Python C Extensions, archived)"
+        },
+        {
+          "identity": {
+            "repository": "nodejs/node",
+            "revision": "4f37a6a8aac657b309714d953c7e28c2de6caf40"
+          },
+          "name": "Node.js Node-API (V8 HandleScope, napi_ref, External ArrayBuffer and V8 Sandbox)"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Wasmtime (Component Model VMHandleTable, HandleCounter, Host ResourceTable)"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model Canonical ABI Specification"
+        },
+        {
+          "identity": {
+            "repository": "ruby/ruby",
+            "revision": "2979ed47232036f592dcc24e05c6dab7fa139eb2"
+          },
+          "name": "CRuby (Compacting GC movable marking and pinning API)"
+        },
+        {
+          "identity": {
+            "standard": "OpenJDK JEP 454",
+            "url": "https://openjdk.org/jeps/454"
+          },
+          "name": "JEP 454: Foreign Function & Memory API (JDK 22)"
+        },
+        {
+          "identity": {
+            "standard": "Python PEP 703",
+            "url": "https://peps.python.org/pep-0703/"
+          },
+          "name": "PEP 703: Making the Global Interpreter Lock Optional in CPython"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3243176.3243195"
+          },
+          "name": "Biased Reference Counting: Minimizing Atomic Operations in Garbage Collection (PACT 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jpdc.2007.04.010"
+          },
+          "name": "Performance of Memory Reclamation for Lockless Synchronization (JPDC 2007)"
+        }
+      ],
+      "topics": [
+        "ffi",
+        "ffi/handle-tables",
+        "ffi/pinning",
+        "runtimes",
+        "runtimes/gc",
+        "runtimes/memory-reclamation",
+        "systems",
+        "systems/arenas",
+        "verification",
+        "verification/memory-safety"
       ]
     },
     "hardware-description-languages-timing-semantics-and-hw-sw-co-design": {

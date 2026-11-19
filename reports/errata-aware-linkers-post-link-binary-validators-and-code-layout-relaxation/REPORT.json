@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/linking",
+    "compilers/binary-optimization",
+    "llvm",
+    "llvm/lld",
+    "llvm/bolt",
+    "llvm/propeller",
+    "isa",
+    "isa/errata",
+    "verification",
+    "verification/translation-validation",
+    "build"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Project (LLD, MC Assembler, BOLT, BasicBlockSections)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "7d9cd0de00e584d35b3bc077842790fe1bd7771d"
+      }
+    },
+    {
+      "name": "GNU Binutils (upstream Sourceware binutils-gdb, RISC-V ELF BFD)",
+      "identity": {
+        "repository": "git://sourceware.org/git/binutils-gdb.git",
+        "revision": "20a3bfdbee7e4615e96d779744e25e272beb1f4c"
+      }
+    },
+    {
+      "name": "GNU Binutils mirror (AArch64 ELF BFD and x86 GAS)",
+      "identity": {
+        "repository": "riscv-collab/riscv-binutils-gdb",
+        "revision": "20756b0fbe065a84710aa38f2457563b57546440"
+      }
+    },
+    {
+      "name": "GNU Binutils (Debian x86-64 local execution toolchain)",
+      "identity": {
+        "tool": "GNU assembler (GNU Binutils for Debian)",
+        "version": "2.47"
+      }
+    },
+    {
+      "name": "LLVM Propeller",
+      "identity": {
+        "repository": "google/llvm-propeller",
+        "revision": "e98f399102650de7e03e07c7299029da94d7be44"
+      }
+    },
+    {
+      "name": "BOLT: A Practical Binary Optimizer for Data Centers and Beyond (CGO 2019)",
+      "identity": {
+        "doi": "10.1109/CGO.2019.8661201",
+        "arxiv": "1807.06735"
+      }
+    },
+    {
+      "name": "Improved Basic Block Reordering (IEEE Transactions on Computers, 2020)",
+      "identity": {
+        "doi": "10.1109/TC.2020.2982888",
+        "arxiv": "1809.04676"
+      }
+    },
+    {
+      "name": "Propeller: A Profile Guided, Relinking Optimizer for Warehouse-Scale Applications (ASPLOS 2023)",
+      "identity": {
+        "doi": "10.1145/3575693.3575727"
+      }
+    },
+    {
+      "name": "CompCertELF: Verified Separate Compilation of C Programs into ELF Object Files (OOPSLA 2020)",
+      "identity": {
+        "doi": "10.1145/3428265"
+      }
+    },
+    {
+      "name": "Translation Validation for a Verified OS Kernel (PLDI 2013)",
+      "identity": {
+        "doi": "10.1145/2491956.2462183"
+      }
+    },
+    {
+      "name": "Binsec/Rel: Efficient Relational Symbolic Execution for Constant-Time at Binary-Level (IEEE S&P 2020)",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00074",
+        "repository": "binsec/binsec",
+        "revision": "9749bd8aed7ee0a27959158b1e53e8789cb0e5ab"
+      }
+    },
+    {
+      "name": "Automatically Eliminating Speculative Leaks from Cryptographic Code with Blade (POPL 2021)",
+      "identity": {
+        "doi": "10.1145/3434330",
+        "arxiv": "2005.00294",
+        "repository": "PLSYSSEC/blade",
+        "revision": "61ac7906ddae019215ff4f33df7e774d88d6fdb1"
+      }
+    },
+    {
+      "name": "Coco: Co-Design and Co-Verification of Masked Software Implementations on CPUs (USENIX Security 2021)",
+      "identity": {
+        "eprint": "2020/1294",
+        "repository": "IAIK/coco-alma",
+        "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

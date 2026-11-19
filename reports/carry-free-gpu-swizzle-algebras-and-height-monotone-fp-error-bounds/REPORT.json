@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/gpu-layouts",
+    "compilers/floating-point",
+    "domains",
+    "domains/sparse-tensors",
+    "verification",
+    "verification/floating-point",
+    "isa"
+  ],
+  "subjects": [
+    {
+      "name": "NVIDIA CUTLASS CuTe Layout and Swizzle Library",
+      "identity": {
+        "repository": "NVIDIA/cutlass",
+        "revision": "dc6ae46eb5a735a0c2cf96c0b06196caadf8ea31"
+      }
+    },
+    {
+      "name": "Triton GPU LinearLayout Representation",
+      "identity": {
+        "repository": "triton-lang/triton",
+        "revision": "458c1a257c026a24c6aa7937f75f186e9bdf8353"
+      }
+    },
+    {
+      "name": "CuTe Layout Representation and Algebra",
+      "identity": {
+        "arxiv": "2603.02298"
+      }
+    },
+    {
+      "name": "Categorical Foundations for CuTe Layouts",
+      "identity": {
+        "arxiv": "2601.05972",
+        "doi": "10.48550/arXiv.2601.05972"
+      }
+    },
+    {
+      "name": "Finch Sparse and Structured Tensor Compiler",
+      "identity": {
+        "repository": "finch-tensor/Finch.jl",
+        "revision": "7aa1ca1609054b94f3a1b56bb2221ae872513a10",
+        "doi": "10.1145/3720473",
+        "arxiv": "2404.16730"
+      }
+    },
+    {
+      "name": "IEEE Standard for Floating-Point Arithmetic (IEEE Std 754-2019)",
+      "identity": {
+        "standard": "IEEE Std 754-2019",
+        "doi": "10.1109/IEEESTD.2019.8766229"
+      }
+    },
+    {
+      "name": "LLVM IR FastMathFlags",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "7d9cd0de00e584d35b3bc077842790fe1bd7771d"
+      }
+    },
+    {
+      "name": "Higham Floating-Point Summation and Rounding Error Analysis",
+      "identity": {
+        "book_doi": "10.1137/1.9780898718027",
+        "summation_doi": "10.1137/0914050"
+      }
+    },
+    {
+      "name": "Jeannerod and Rump Improved Inner-Product Error Bounds",
+      "identity": {
+        "publication": "SIAM J. Matrix Anal. Appl. 34(2), 2013",
+        "doi": "10.1137/120894488"
+      }
+    },
+    {
+      "name": "LAProof Coq Linear Algebra Accuracy Library",
+      "identity": {
+        "repository": "VeriNum/LAProof",
+        "revision": "86a9a74a55bd1ac15f1dab41e430e7498543d016",
+        "doi": "10.1109/ARITH58626.2023.00021"
+      }
+    },
+    {
+      "name": "VCFloat Floating-Point Verification Framework",
+      "identity": {
+        "repository": "VeriNum/vcfloat",
+        "revision": "a203b287a84b0e3c9bec136823b5622ebfde6ad6"
+      }
+    },
+    {
+      "name": "FPTaylor Symbolic Taylor Floating-Point Error Tool",
+      "identity": {
+        "repository": "soarlab/FPTaylor",
+        "revision": "b5a77cae348400f21f83512210d9f43c4bffb381",
+        "doi": "10.1145/3230733"
+      }
+    },
+    {
+      "name": "Gappa Floating-Point Bound Certification Tool",
+      "identity": {
+        "publication": "ACM TOMS 37(1), 2010",
+        "doi": "10.1145/1644001.1644003"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

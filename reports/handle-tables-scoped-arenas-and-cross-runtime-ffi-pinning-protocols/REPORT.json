@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "ffi",
+    "ffi/handle-tables",
+    "ffi/pinning",
+    "runtimes",
+    "runtimes/gc",
+    "runtimes/memory-reclamation",
+    "systems",
+    "systems/arenas",
+    "verification",
+    "verification/memory-safety"
+  ],
+  "subjects": [
+    {
+      "name": "OpenJDK (Project Panama JEP 454 Foreign Function & Memory API, HotSpot ScopedMemoryAccess)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "d65bc4b262564e535c431aa8d4b58a1f7630fa64"
+      }
+    },
+    {
+      "name": "Go Runtime (runtime.Pinner, movable goroutine stacks, cgo pointer checking)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    },
+    {
+      "name": "CPython (PEP 703 free-threaded build, QSBR, biased reference counting, critical sections)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "03e7a8854d714fabb3ab5b8c8f984fc1214f65b0"
+      }
+    },
+    {
+      "name": "HPy (Universal Handle ABI for Python C Extensions, archived)",
+      "identity": {
+        "repository": "hpyproject/hpy",
+        "revision": "0a1d8791dfb28ea7d928bd1aabe37cc40dfb8146"
+      }
+    },
+    {
+      "name": "Node.js Node-API (V8 HandleScope, napi_ref, External ArrayBuffer and V8 Sandbox)",
+      "identity": {
+        "repository": "nodejs/node",
+        "revision": "4f37a6a8aac657b309714d953c7e28c2de6caf40"
+      }
+    },
+    {
+      "name": "Wasmtime (Component Model VMHandleTable, HandleCounter, Host ResourceTable)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model Canonical ABI Specification",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "CRuby (Compacting GC movable marking and pinning API)",
+      "identity": {
+        "repository": "ruby/ruby",
+        "revision": "2979ed47232036f592dcc24e05c6dab7fa139eb2"
+      }
+    },
+    {
+      "name": "JEP 454: Foreign Function & Memory API (JDK 22)",
+      "identity": {
+        "standard": "OpenJDK JEP 454",
+        "url": "https://openjdk.org/jeps/454"
+      }
+    },
+    {
+      "name": "PEP 703: Making the Global Interpreter Lock Optional in CPython",
+      "identity": {
+        "standard": "Python PEP 703",
+        "url": "https://peps.python.org/pep-0703/"
+      }
+    },
+    {
+      "name": "Biased Reference Counting: Minimizing Atomic Operations in Garbage Collection (PACT 2018)",
+      "identity": {
+        "doi": "10.1145/3243176.3243195"
+      }
+    },
+    {
+      "name": "Performance of Memory Reclamation for Lockless Synchronization (JPDC 2007)",
+      "identity": {
+        "doi": "10.1016/j.jpdc.2007.04.010"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

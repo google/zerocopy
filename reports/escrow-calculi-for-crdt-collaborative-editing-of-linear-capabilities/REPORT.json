@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "pl",
+    "pl/linear-types",
+    "pl/structure-editors",
+    "systems",
+    "systems/crdt",
+    "systems/capability-escrow",
+    "tooling",
+    "tooling/live-programming",
+    "verification",
+    "verification/model-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Grove collaborative structure editor calculus and Agda artifact",
+      "identity": {
+        "artifact_doi": "10.5281/zenodo.14026532",
+        "doi": "10.1145/3704909",
+        "url": "https://hazel.org/papers/grove-popl25.pdf",
+        "venue": "Proc. ACM Program. Lang. 9, POPL, Article 73 (January 2025)"
+      }
+    },
+    {
+      "name": "Hazelnut Live semantics and Agda mechanization",
+      "identity": {
+        "arxiv": "1805.00155",
+        "doi": "10.1145/3290327",
+        "repository": "hazelgrove/hazelnut-dynamics-agda",
+        "revision": "229dfb06ea51ebe91cb3b1c973c2f2792e66797c"
+      }
+    },
+    {
+      "name": "Hazel live functional programming environment",
+      "identity": {
+        "repository": "hazelgrove/hazel",
+        "revision": "782249bbd08a6042b0f70f2baef61dc5a2cf60ac"
+      }
+    },
+    {
+      "name": "Relational Transducers for Declarative Networking (CALM formalization)",
+      "identity": {
+        "doi": "10.1145/2450142.2450151",
+        "venue": "Journal of the ACM, Vol. 60, No. 2, Article 15 (2013)"
+      }
+    },
+    {
+      "name": "Keeping CALM: When Distributed Consistency Is Easy",
+      "identity": {
+        "arxiv": "1901.01930v2",
+        "doi": "10.1145/3369736",
+        "venue": "Communications of the ACM, Vol. 63, No. 9, pp. 72-81 (2020)"
+      }
+    },
+    {
+      "name": "Indigo and Bounded Counter escrow CRDTs",
+      "identity": {
+        "arxiv": "1503.09052v1",
+        "doi": "10.1145/2741948.2741972",
+        "venue": "EuroSys 2015, Article 16"
+      }
+    },
+    {
+      "name": "The Escrow Transactional Method",
+      "identity": {
+        "doi": "10.1145/7239.7265",
+        "venue": "ACM Transactions on Database Systems, Vol. 11, No. 4, pp. 405-430 (1986)"
+      }
+    },
+    {
+      "name": "A Highly-Available Move Operation for Replicated Trees",
+      "identity": {
+        "doi": "10.1109/TPDS.2021.3118603",
+        "venue": "IEEE Transactions on Parallel and Distributed Systems (2022)"
+      }
+    },
+    {
+      "name": "Rust standard library lock poisoning (std::sync::poison)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
