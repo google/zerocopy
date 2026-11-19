@@ -28727,6 +28727,117 @@
         "verification/compiler-verification"
       ]
     },
+    "rdma-weak-memory-iommu-ats-and-byzantine-peripheral-verification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3689781",
+            "venue": "PACMPL 8(OOPSLA2), Article 341 (2024)"
+          },
+          "name": "Semantics of Remote Direct Memory Access: rdmatso (Ambal et al., OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-91118-7_3",
+            "venue": "ESOP 2025, LNCS 15694"
+          },
+          "name": "Sufficient Conditions for Robustness of RDMA Programs (Ambal, Lahav & Raad, ESOP 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.14642",
+            "url": "https://arxiv.org/abs/2601.14642"
+          },
+          "name": "Specifying and Verifying RDMA Synchronisation: rdmatso_rmw (Ambal et al., 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2984033",
+            "venue": "OOPSLA 2016"
+          },
+          "name": "Modeling and Analysis of Remote Memory Access Programming: coreRMA (Dan et al., OOPSLA 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3419111.3421294",
+            "venue": "ACM SoCC 2020"
+          },
+          "name": "Challenges and Solutions for Fast Remote Persistent Memory Access (Kalia, Andersen & Kaminsky, SoCC 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2019.23194",
+            "repository": "thunderclap-io/arria10-ubuntu-sdcard",
+            "revision": "fb644b9313085ddded28e29b40021b46a02fa885"
+          },
+          "name": "Thunderclap: Operating System IOMMU Protection Vulnerabilities (Markettos et al., NDSS 2019)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-iommu",
+            "revision": "ac1589c79d72ff109b8df6cb24803390c5021c4b",
+            "version": "1.0"
+          },
+          "name": "RISC-V IOMMU Architecture Specification and C Reference Model"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel IOMMU and PCIe ATS Subsystem"
+        },
+        {
+          "identity": {
+            "repository": "TF-RMM/tf-rmm",
+            "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92"
+          },
+          "name": "Trusted Firmware Realm Management Monitor (TF-RMM) SMMUv3 and TDISP Implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586040",
+            "venue": "PACMPL 7(OOPSLA1), 2023"
+          },
+          "name": "A Verification Methodology for the Arm Confidential Computing Architecture (Fox et al., OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/osdi22/presentation/li",
+            "venue": "USENIX OSDI 2022"
+          },
+          "name": "Design and Verification of the Arm Confidential Compute Architecture (Li et al., OSDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40001.2021.00049",
+            "venue": "IEEE S&P 2021"
+          },
+          "name": "SeKVM: A Secure and Formally Verified Linux KVM Hypervisor (Li et al., IEEE S&P 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132748",
+            "venue": "SOSP 2017"
+          },
+          "name": "Hyperkernel: Push-Button Verification of an OS Kernel (Nelson et al., SOSP 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2560537",
+            "venue": "ACM TOCS 32(2), 2014"
+          },
+          "name": "Comprehensive Formal Verification of an OS Microkernel: seL4 (Klein et al., TOCS 2014)"
+        }
+      ],
+      "topics": [
+        "ffi/hw-sw-boundary",
+        "security/iommu-isolation",
+        "systems/concurrency-weak-memory",
+        "verification/memory-models"
+      ]
+    },
     "realtime-audio-dsp-algebras-strongly-timed-concurrency-and-live-codegen": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -36193,6 +36304,137 @@
         "verification/refinement",
         "isa/jasmin",
         "lean/mechanization"
+      ]
+    },
+    "silent-data-corruption-certifying-algorithms-and-abft-compilation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3458336.3465297",
+            "venue": "HotOS XVIII (2021)"
+          },
+          "name": "Cores That Don't Count (Hochschild et al., HotOS XVIII, 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2102.11245v1",
+            "doi": "10.48550/arXiv.2102.11245"
+          },
+          "name": "Silent Data Corruptions at Scale (Dixit et al., 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.08989v1",
+            "doi": "10.48550/arXiv.2203.08989"
+          },
+          "name": "Detecting Silent Data Corruptions in the Wild (Dixit et al., 2022)"
+        },
+        {
+          "identity": {
+            "repository": "google/silifuzz",
+            "revision": "bab27a948dcdc42405644f8b1480518e0b7f8ce8"
+          },
+          "name": "SiliFuzz CPU defect fuzzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/24.994913",
+            "venue": "IEEE Trans. Reliability 51(1), 2002"
+          },
+          "name": "EDDI (Oh, Shirvani & McCluskey, IEEE Trans. Reliability, 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CGO.2005.34",
+            "venue": "CGO 2005"
+          },
+          "name": "SWIFT (Reis et al., CGO 2005)"
+        },
+        {
+          "identity": {
+            "repository": "byuccl/coast",
+            "revision": "397a26ecdb01e7c329884d12c9f6bb2a05c3abc9"
+          },
+          "name": "COAST LLVM Compiler-Assisted Software Fault Tolerance"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/200836.200880",
+            "venue": "JACM 42(1), 1995"
+          },
+          "name": "Designing Programs That Check Their Work (Blum & Kannan, JACM 1995)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.cosrev.2010.09.009",
+            "venue": "Computer Science Review 5(2), 2011"
+          },
+          "name": "Certifying Algorithms (McConnell, Mehlhorn, Naher & Schweitzer, CSR 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-22110-1_7",
+            "venue": "CAV 2011"
+          },
+          "name": "Verification of Certifying Computations (Alkassar, Bohme, Mehlhorn & Rizkallah, CAV 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TC.1984.1676475",
+            "venue": "IEEE Trans. Computers C-33(6), 1984"
+          },
+          "name": "Algorithm-Based Fault Tolerance for Matrix Operations (Huang & Abraham, IEEE TC 1984)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/12.4606",
+            "venue": "IEEE Trans. Computers 37(5), 1988"
+          },
+          "name": "Fault-Tolerant FFT Networks (Jou & Abraham, IEEE TC 1988)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jpdc.2008.12.002",
+            "venue": "JPDC 69(4), 2009"
+          },
+          "name": "Algorithm-Based Fault Tolerance Applied to High Performance Computing (Bosilca et al., JPDC 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3447818.3460364",
+            "repository": "yzhaiustc/ftblas",
+            "revision": "22b81cb37e3ee9c7d5594ecd526a4874aa0db6cc"
+          },
+          "name": "FT-BLAS online fault-tolerant BLAS"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-15651-9_13",
+            "venue": "SAFECOMP 2010"
+          },
+          "name": "ANB- and ANBDmem-Encoding (Schiffel et al., SAFECOMP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/HASE.2014.14",
+            "venue": "IEEE HASE 2014"
+          },
+          "name": "A Practitioner's Guide to Software-Based Soft-Error Mitigation Using AN-Codes (Hoffmann et al., HASE 2014)"
+        },
+        {
+          "identity": {
+            "repository": "normanrink/an-encoder",
+            "revision": "05c7c36638f4eb93d24434efe3f298bea80c9a6c"
+          },
+          "name": "LLVM AN-Encoder (Rink & Castrillon)"
+        }
+      ],
+      "topics": [
+        "compilers/fault-tolerance",
+        "domains/scientific-computing",
+        "systems/hardware-reliability",
+        "verification/result-checking"
       ]
     },
     "simulation-witness-debuginfo-and-verified-time-travel-observability": {

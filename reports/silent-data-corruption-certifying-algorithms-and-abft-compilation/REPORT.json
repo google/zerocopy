@@ -1,0 +1,131 @@
+{
+  "topics": [
+    "compilers/fault-tolerance",
+    "domains/scientific-computing",
+    "systems/hardware-reliability",
+    "verification/result-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Cores That Don't Count (Hochschild et al., HotOS XVIII, 2021)",
+      "identity": {
+        "doi": "10.1145/3458336.3465297",
+        "venue": "HotOS XVIII (2021)"
+      }
+    },
+    {
+      "name": "Silent Data Corruptions at Scale (Dixit et al., 2021)",
+      "identity": {
+        "arxiv": "2102.11245v1",
+        "doi": "10.48550/arXiv.2102.11245"
+      }
+    },
+    {
+      "name": "Detecting Silent Data Corruptions in the Wild (Dixit et al., 2022)",
+      "identity": {
+        "arxiv": "2203.08989v1",
+        "doi": "10.48550/arXiv.2203.08989"
+      }
+    },
+    {
+      "name": "SiliFuzz CPU defect fuzzer",
+      "identity": {
+        "repository": "google/silifuzz",
+        "revision": "bab27a948dcdc42405644f8b1480518e0b7f8ce8"
+      }
+    },
+    {
+      "name": "EDDI (Oh, Shirvani & McCluskey, IEEE Trans. Reliability, 2002)",
+      "identity": {
+        "doi": "10.1109/24.994913",
+        "venue": "IEEE Trans. Reliability 51(1), 2002"
+      }
+    },
+    {
+      "name": "SWIFT (Reis et al., CGO 2005)",
+      "identity": {
+        "doi": "10.1109/CGO.2005.34",
+        "venue": "CGO 2005"
+      }
+    },
+    {
+      "name": "COAST LLVM Compiler-Assisted Software Fault Tolerance",
+      "identity": {
+        "repository": "byuccl/coast",
+        "revision": "397a26ecdb01e7c329884d12c9f6bb2a05c3abc9"
+      }
+    },
+    {
+      "name": "Designing Programs That Check Their Work (Blum & Kannan, JACM 1995)",
+      "identity": {
+        "doi": "10.1145/200836.200880",
+        "venue": "JACM 42(1), 1995"
+      }
+    },
+    {
+      "name": "Certifying Algorithms (McConnell, Mehlhorn, Naher & Schweitzer, CSR 2011)",
+      "identity": {
+        "doi": "10.1016/j.cosrev.2010.09.009",
+        "venue": "Computer Science Review 5(2), 2011"
+      }
+    },
+    {
+      "name": "Verification of Certifying Computations (Alkassar, Bohme, Mehlhorn & Rizkallah, CAV 2011)",
+      "identity": {
+        "doi": "10.1007/978-3-642-22110-1_7",
+        "venue": "CAV 2011"
+      }
+    },
+    {
+      "name": "Algorithm-Based Fault Tolerance for Matrix Operations (Huang & Abraham, IEEE TC 1984)",
+      "identity": {
+        "doi": "10.1109/TC.1984.1676475",
+        "venue": "IEEE Trans. Computers C-33(6), 1984"
+      }
+    },
+    {
+      "name": "Fault-Tolerant FFT Networks (Jou & Abraham, IEEE TC 1988)",
+      "identity": {
+        "doi": "10.1109/12.4606",
+        "venue": "IEEE Trans. Computers 37(5), 1988"
+      }
+    },
+    {
+      "name": "Algorithm-Based Fault Tolerance Applied to High Performance Computing (Bosilca et al., JPDC 2009)",
+      "identity": {
+        "doi": "10.1016/j.jpdc.2008.12.002",
+        "venue": "JPDC 69(4), 2009"
+      }
+    },
+    {
+      "name": "FT-BLAS online fault-tolerant BLAS",
+      "identity": {
+        "doi": "10.1145/3447818.3460364",
+        "repository": "yzhaiustc/ftblas",
+        "revision": "22b81cb37e3ee9c7d5594ecd526a4874aa0db6cc"
+      }
+    },
+    {
+      "name": "ANB- and ANBDmem-Encoding (Schiffel et al., SAFECOMP 2010)",
+      "identity": {
+        "doi": "10.1007/978-3-642-15651-9_13",
+        "venue": "SAFECOMP 2010"
+      }
+    },
+    {
+      "name": "A Practitioner's Guide to Software-Based Soft-Error Mitigation Using AN-Codes (Hoffmann et al., HASE 2014)",
+      "identity": {
+        "doi": "10.1109/HASE.2014.14",
+        "venue": "IEEE HASE 2014"
+      }
+    },
+    {
+      "name": "LLVM AN-Encoder (Rink & Castrillon)",
+      "identity": {
+        "repository": "normanrink/an-encoder",
+        "revision": "05c7c36638f4eb93d24434efe3f298bea80c9a6c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

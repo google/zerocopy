@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "ffi/hw-sw-boundary",
+    "security/iommu-isolation",
+    "systems/concurrency-weak-memory",
+    "verification/memory-models"
+  ],
+  "subjects": [
+    {
+      "name": "Semantics of Remote Direct Memory Access: rdmatso (Ambal et al., OOPSLA 2024)",
+      "identity": {
+        "doi": "10.1145/3689781",
+        "venue": "PACMPL 8(OOPSLA2), Article 341 (2024)"
+      }
+    },
+    {
+      "name": "Sufficient Conditions for Robustness of RDMA Programs (Ambal, Lahav & Raad, ESOP 2025)",
+      "identity": {
+        "doi": "10.1007/978-3-031-91118-7_3",
+        "venue": "ESOP 2025, LNCS 15694"
+      }
+    },
+    {
+      "name": "Specifying and Verifying RDMA Synchronisation: rdmatso_rmw (Ambal et al., 2026)",
+      "identity": {
+        "arxiv": "2601.14642",
+        "url": "https://arxiv.org/abs/2601.14642"
+      }
+    },
+    {
+      "name": "Modeling and Analysis of Remote Memory Access Programming: coreRMA (Dan et al., OOPSLA 2016)",
+      "identity": {
+        "doi": "10.1145/2983990.2984033",
+        "venue": "OOPSLA 2016"
+      }
+    },
+    {
+      "name": "Challenges and Solutions for Fast Remote Persistent Memory Access (Kalia, Andersen & Kaminsky, SoCC 2020)",
+      "identity": {
+        "doi": "10.1145/3419111.3421294",
+        "venue": "ACM SoCC 2020"
+      }
+    },
+    {
+      "name": "Thunderclap: Operating System IOMMU Protection Vulnerabilities (Markettos et al., NDSS 2019)",
+      "identity": {
+        "doi": "10.14722/ndss.2019.23194",
+        "repository": "thunderclap-io/arria10-ubuntu-sdcard",
+        "revision": "fb644b9313085ddded28e29b40021b46a02fa885"
+      }
+    },
+    {
+      "name": "RISC-V IOMMU Architecture Specification and C Reference Model",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-iommu",
+        "revision": "ac1589c79d72ff109b8df6cb24803390c5021c4b",
+        "version": "1.0"
+      }
+    },
+    {
+      "name": "Linux Kernel IOMMU and PCIe ATS Subsystem",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Trusted Firmware Realm Management Monitor (TF-RMM) SMMUv3 and TDISP Implementation",
+      "identity": {
+        "repository": "TF-RMM/tf-rmm",
+        "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92"
+      }
+    },
+    {
+      "name": "A Verification Methodology for the Arm Confidential Computing Architecture (Fox et al., OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3586040",
+        "venue": "PACMPL 7(OOPSLA1), 2023"
+      }
+    },
+    {
+      "name": "Design and Verification of the Arm Confidential Compute Architecture (Li et al., OSDI 2022)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/osdi22/presentation/li",
+        "venue": "USENIX OSDI 2022"
+      }
+    },
+    {
+      "name": "SeKVM: A Secure and Formally Verified Linux KVM Hypervisor (Li et al., IEEE S&P 2021)",
+      "identity": {
+        "doi": "10.1109/SP40001.2021.00049",
+        "venue": "IEEE S&P 2021"
+      }
+    },
+    {
+      "name": "Hyperkernel: Push-Button Verification of an OS Kernel (Nelson et al., SOSP 2017)",
+      "identity": {
+        "doi": "10.1145/3132747.3132748",
+        "venue": "SOSP 2017"
+      }
+    },
+    {
+      "name": "Comprehensive Formal Verification of an OS Microkernel: seL4 (Klein et al., TOCS 2014)",
+      "identity": {
+        "doi": "10.1145/2560537",
+        "venue": "ACM TOCS 32(2), 2014"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
