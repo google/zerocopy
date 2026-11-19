@@ -1,0 +1,122 @@
+{
+  "topics": [
+    "security/parser-differentials",
+    "systems/web-protocols",
+    "verification/parsers",
+    "ffi/protocol-gateways"
+  ],
+  "subjects": [
+    {
+      "name": "nghttp2",
+      "identity": {
+        "repository": "nghttp2/nghttp2",
+        "revision": "9633d1d960c147578183760232fe32e55a6ee3f5"
+      }
+    },
+    {
+      "name": "ls-qpack",
+      "identity": {
+        "repository": "litespeedtech/ls-qpack",
+        "revision": "1aeb4f2c73a41318cb726bc1a3d603f43abe509e"
+      }
+    },
+    {
+      "name": "ada",
+      "identity": {
+        "repository": "ada-url/ada",
+        "revision": "d1fcb0b93c0d17436303384708ecdab2d003068c"
+      }
+    },
+    {
+      "name": "rust-url",
+      "identity": {
+        "repository": "servo/rust-url",
+        "revision": "e219288fc2702301803e72f7efb66d3c5c25c980"
+      }
+    },
+    {
+      "name": "llhttp",
+      "identity": {
+        "repository": "nodejs/llhttp",
+        "revision": "0ae8c68c3c5a8fce13dbff87190e1ba40d8f9666"
+      }
+    },
+    {
+      "name": "http (Rust crate)",
+      "identity": {
+        "repository": "hyperium/http",
+        "revision": "a8309a93ce24c19c89cf36bfac504ebed7b96dc7"
+      }
+    },
+    {
+      "name": "T-Reqs HTTP Fuzzer",
+      "identity": {
+        "repository": "bahruzjabiyev/t-reqs-http-fuzzer",
+        "revision": "b90f97e4f39afbe39c66ecfe99fae1b832b20f62"
+      }
+    },
+    {
+      "name": "T-Reqs: HTTP Request Smuggling with Differential Fuzzing",
+      "identity": {
+        "doi": "10.1145/3460120.3485384",
+        "venue": "ACM CCS 2021"
+      }
+    },
+    {
+      "name": "IETF RFC 9112 (HTTP/1.1)",
+      "identity": {
+        "standard": "RFC 9112",
+        "published": "2022-06",
+        "url": "https://www.rfc-editor.org/rfc/rfc9112"
+      }
+    },
+    {
+      "name": "IETF RFC 9113 (HTTP/2)",
+      "identity": {
+        "standard": "RFC 9113",
+        "published": "2022-06",
+        "url": "https://www.rfc-editor.org/rfc/rfc9113"
+      }
+    },
+    {
+      "name": "IETF RFC 7541 (HPACK: Header Compression for HTTP/2)",
+      "identity": {
+        "standard": "RFC 7541",
+        "published": "2015-05",
+        "url": "https://www.rfc-editor.org/rfc/rfc7541"
+      }
+    },
+    {
+      "name": "IETF RFC 9204 (QPACK: Field Compression for HTTP/3)",
+      "identity": {
+        "standard": "RFC 9204",
+        "published": "2022-06",
+        "url": "https://www.rfc-editor.org/rfc/rfc9204"
+      }
+    },
+    {
+      "name": "IETF RFC 3986 (URI Generic Syntax)",
+      "identity": {
+        "standard": "RFC 3986",
+        "published": "2005-01",
+        "url": "https://www.rfc-editor.org/rfc/rfc3986"
+      }
+    },
+    {
+      "name": "WHATWG URL Standard",
+      "identity": {
+        "standard": "WHATWG URL Living Standard",
+        "url": "https://url.spec.whatwg.org/"
+      }
+    },
+    {
+      "name": "CPython urllib.parse",
+      "identity": {
+        "runtime": "CPython",
+        "version": "3.13.15",
+        "module": "urllib.parse"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

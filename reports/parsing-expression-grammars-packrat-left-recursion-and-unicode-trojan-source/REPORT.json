@@ -1,0 +1,120 @@
+{
+  "topics": [
+    "compilers/parsing",
+    "security/unicode-source",
+    "pl/syntax-grammars",
+    "verification/parsers"
+  ],
+  "subjects": [
+    {
+      "name": "LPeg",
+      "identity": {
+        "repository": "roberto-ieru/LPeg",
+        "revision": "089112f883540c4434e9e8e96de50a75f2b15f7e"
+      }
+    },
+    {
+      "name": "CPython pegen",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "484bc16723ef534e693bcd13e139ccd710a64da4"
+      }
+    },
+    {
+      "name": "Ohm",
+      "identity": {
+        "repository": "ohmjs/ohm",
+        "revision": "43c345b920c98b3eb13ce6b12df2b6ebd400b63b"
+      }
+    },
+    {
+      "name": "rustc (lexer and Unicode security lints)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+      }
+    },
+    {
+      "name": "Trojan Source evaluation artifact",
+      "identity": {
+        "repository": "nickboucher/trojan-source",
+        "revision": "e3dc153fcf465f4a84424ea874ff39be29adb1f7"
+      }
+    },
+    {
+      "name": "Parsing Expression Grammars: A Recognition-Based Syntactic Foundation",
+      "identity": {
+        "doi": "10.1145/964001.964011",
+        "venue": "ACM POPL 2004"
+      }
+    },
+    {
+      "name": "Packrat Parsers Can Support Left Recursion",
+      "identity": {
+        "doi": "10.1145/1328408.1328424",
+        "venue": "ACM PEPM 2008"
+      }
+    },
+    {
+      "name": "A Text Pattern-Matching Tool based on Parsing Expression Grammars",
+      "identity": {
+        "doi": "10.1002/spe.892",
+        "venue": "Software: Practice and Experience 2009"
+      }
+    },
+    {
+      "name": "Direct Left-Recursive Parsing Expression Grammars",
+      "identity": {
+        "report": "EIS-10-01",
+        "institution": "Middlesex University",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "Left Recursion in Parsing Expression Grammars",
+      "identity": {
+        "doi": "10.1016/j.scico.2014.01.013",
+        "arxiv": "1207.0443v3",
+        "venue": "Science of Computer Programming 2014"
+      }
+    },
+    {
+      "name": "Trojan Source: Invisible Vulnerabilities",
+      "identity": {
+        "doi": "10.48550/arXiv.2111.00169",
+        "arxiv": "2111.00169v2",
+        "venue": "32nd USENIX Security Symposium 2023"
+      }
+    },
+    {
+      "name": "Unicode Standard Annex #9 (Unicode Bidirectional Algorithm)",
+      "identity": {
+        "standard": "UAX #9",
+        "url": "https://www.unicode.org/reports/tr9/"
+      }
+    },
+    {
+      "name": "Unicode Standard Annex #31 (Unicode Identifiers and Pattern Syntax)",
+      "identity": {
+        "standard": "UAX #31",
+        "url": "https://www.unicode.org/reports/tr31/"
+      }
+    },
+    {
+      "name": "Unicode Technical Standard #39 (Unicode Security Mechanisms)",
+      "identity": {
+        "standard": "UTS #39",
+        "url": "https://www.unicode.org/reports/tr39/"
+      }
+    },
+    {
+      "name": "CPython Runtime",
+      "identity": {
+        "runtime": "CPython",
+        "version": "3.13.15",
+        "unicode_version": "15.1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

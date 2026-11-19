@@ -20569,6 +20569,121 @@
         "compilers"
       ]
     },
+    "gnss-osnma-spoofing-strapdown-kalman-covariance-and-acasx-advisories": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "daniestevez/galileo-osnma",
+            "revision": "b6c337b3d559b22edd7fa45fb5c4ee93c962c533"
+          },
+          "name": "galileo-osnma (Rust no_std Galileo OSNMA Implementation)"
+        },
+        {
+          "identity": {
+            "repository": "nlsfi/fgi-osnma",
+            "revision": "f404aa947b3eb547a2ffbadb7fcbcb406fabb022"
+          },
+          "name": "fgi-osnma (Python Galileo OSNMA Receiver Engine)"
+        },
+        {
+          "identity": {
+            "repository": "tomojitakasu/RTKLIB",
+            "revision": "71db0ffa0d9735697c6adfd06fdf766d0e5ce807"
+          },
+          "name": "RTKLIB (Open-Source Program Package for GNSS Positioning)"
+        },
+        {
+          "identity": {
+            "repository": "rtklibexplorer/RTKLIB",
+            "revision": "755e6379ae600e71980b6b20d846d6d35ca8a1aa"
+          },
+          "name": "RTKLIB Explorer Fork (demo5)"
+        },
+        {
+          "identity": {
+            "repository": "sisl/HorizontalCAS",
+            "revision": "bc56a28cfe70b0486b6875deacfda947500bddcb"
+          },
+          "name": "HorizontalCAS (MDP & Neural-Network Airborne Horizontal Collision Avoidance)"
+        },
+        {
+          "identity": {
+            "repository": "LS-Lab/KeYmaeraX-projects",
+            "revision": "b9d7cb584e8fd1c3cc4f30644e82ba12cbb1d6fe",
+            "subpath": "acasx/"
+          },
+          "name": "KeYmaera X Projects \u2014 ACAS X Hybrid Systems & Hybrid Games Models"
+        },
+        {
+          "identity": {
+            "standard": "Galileo OSNMA SIS ICD v1.1 / Receiver Guidelines v1.3"
+          },
+          "name": "European Union / EUSPA Galileo OSNMA Signal-in-Space ICD & Receiver Guidelines"
+        },
+        {
+          "identity": {
+            "standard": "RTCA DO-185B / DO-385 / DO-386"
+          },
+          "name": "RTCA DO-185B (TCAS II v7.1) & RTCA DO-385 / DO-386 (ACAS Xa/Xo & ACAS Xu MOPS)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3558482.3590186",
+            "venue": "ACM WiSec 2023"
+          },
+          "name": "Motallebighomi, Sathaye, Singh, and Ranganathan (2023) \u2014 Location-independent GNSS Relay Attacks: A Lazy Attacker's Guide to Bypassing Navigation Message Authentication"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF00863419",
+            "venue": "Journal of Geodesy, Vol. 70, No. 1, pp. 65-82 (1995)"
+          },
+          "name": "Teunissen (1995) \u2014 The Least-Squares Ambiguity Decorrelation Adjustment: A Method for Fast GPS Integer Ambiguity Estimation"
+        },
+        {
+          "identity": {
+            "doi": "10.2514/3.6907",
+            "venue": "AIAA Journal, Vol. 11, No. 9, pp. 1259-1265 (1973)"
+          },
+          "name": "Carlson (1973) \u2014 Fast Triangular Formulation of the Square Root Filter"
+        },
+        {
+          "identity": {
+            "isbn": "978-0-12-097350-7",
+            "venue": "Academic Press (1977)"
+          },
+          "name": "Bierman (1977) \u2014 Factorization Methods for Discrete Sequential Estimation"
+        },
+        {
+          "identity": {
+            "report": "NASA JPL TM-33-798 / NASA-CR-149147",
+            "venue": "Jet Propulsion Laboratory, Caltech (October 1976)"
+          },
+          "name": "Thornton (1976) \u2014 Triangular Covariance Factorizations for Kalman Filtering"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10009-017-0452-9",
+            "venue": "Int. J. Softw. Tools Technol. Transf. (STTT), Vol. 19, No. 6, pp. 717-740 (2017)"
+          },
+          "name": "Jeannin, Ghorbal, Kouskoulas, Schmidt, Gardner, Mitsch, and Platzer (2017) \u2014 A Formally Verified Hybrid System for Safe Advisories in the Next-Generation Airborne Collision Avoidance System"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-63387-9_5",
+            "venue": "CAV 2017, LNCS Vol. 10426, pp. 97-117"
+          },
+          "name": "Katz, Barrett, Dill, Julian, and Kochenderfer (2017) \u2014 Reluplex: An Efficient SMT Solver for Verifying Deep Neural Networks"
+        }
+      ],
+      "topics": [
+        "domains/navigation-avionics",
+        "security/broadcast-authentication",
+        "verification/hybrid-collision-games",
+        "smt/covariance-stability"
+      ]
+    },
     "go-runtime-interfaces-goroutine-stacks-memory-model-and-cgo-ffi": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -21783,6 +21898,128 @@
         "pl/linear-types",
         "verification/floating-point",
         "verification/cryptography"
+      ]
+    },
+    "http-request-smuggling-hpack-qpack-compression-and-url-parser-differentials": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "nghttp2/nghttp2",
+            "revision": "9633d1d960c147578183760232fe32e55a6ee3f5"
+          },
+          "name": "nghttp2"
+        },
+        {
+          "identity": {
+            "repository": "litespeedtech/ls-qpack",
+            "revision": "1aeb4f2c73a41318cb726bc1a3d603f43abe509e"
+          },
+          "name": "ls-qpack"
+        },
+        {
+          "identity": {
+            "repository": "ada-url/ada",
+            "revision": "d1fcb0b93c0d17436303384708ecdab2d003068c"
+          },
+          "name": "ada"
+        },
+        {
+          "identity": {
+            "repository": "servo/rust-url",
+            "revision": "e219288fc2702301803e72f7efb66d3c5c25c980"
+          },
+          "name": "rust-url"
+        },
+        {
+          "identity": {
+            "repository": "nodejs/llhttp",
+            "revision": "0ae8c68c3c5a8fce13dbff87190e1ba40d8f9666"
+          },
+          "name": "llhttp"
+        },
+        {
+          "identity": {
+            "repository": "hyperium/http",
+            "revision": "a8309a93ce24c19c89cf36bfac504ebed7b96dc7"
+          },
+          "name": "http (Rust crate)"
+        },
+        {
+          "identity": {
+            "repository": "bahruzjabiyev/t-reqs-http-fuzzer",
+            "revision": "b90f97e4f39afbe39c66ecfe99fae1b832b20f62"
+          },
+          "name": "T-Reqs HTTP Fuzzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3485384",
+            "venue": "ACM CCS 2021"
+          },
+          "name": "T-Reqs: HTTP Request Smuggling with Differential Fuzzing"
+        },
+        {
+          "identity": {
+            "published": "2022-06",
+            "standard": "RFC 9112",
+            "url": "https://www.rfc-editor.org/rfc/rfc9112"
+          },
+          "name": "IETF RFC 9112 (HTTP/1.1)"
+        },
+        {
+          "identity": {
+            "published": "2022-06",
+            "standard": "RFC 9113",
+            "url": "https://www.rfc-editor.org/rfc/rfc9113"
+          },
+          "name": "IETF RFC 9113 (HTTP/2)"
+        },
+        {
+          "identity": {
+            "published": "2015-05",
+            "standard": "RFC 7541",
+            "url": "https://www.rfc-editor.org/rfc/rfc7541"
+          },
+          "name": "IETF RFC 7541 (HPACK: Header Compression for HTTP/2)"
+        },
+        {
+          "identity": {
+            "published": "2022-06",
+            "standard": "RFC 9204",
+            "url": "https://www.rfc-editor.org/rfc/rfc9204"
+          },
+          "name": "IETF RFC 9204 (QPACK: Field Compression for HTTP/3)"
+        },
+        {
+          "identity": {
+            "published": "2005-01",
+            "standard": "RFC 3986",
+            "url": "https://www.rfc-editor.org/rfc/rfc3986"
+          },
+          "name": "IETF RFC 3986 (URI Generic Syntax)"
+        },
+        {
+          "identity": {
+            "standard": "WHATWG URL Living Standard",
+            "url": "https://url.spec.whatwg.org/"
+          },
+          "name": "WHATWG URL Standard"
+        },
+        {
+          "identity": {
+            "module": "urllib.parse",
+            "runtime": "CPython",
+            "version": "3.13.15"
+          },
+          "name": "CPython urllib.parse"
+        }
+      ],
+      "topics": [
+        "security/parser-differentials",
+        "systems/web-protocols",
+        "verification/parsers",
+        "ffi/protocol-gateways"
       ]
     },
     "hybrid-functional-spatial-and-plan-guided-shallow-translation-in-lean4": {
@@ -33716,6 +33953,126 @@
         "ffi/versioning",
         "cargo/resolver",
         "rust/semver"
+      ]
+    },
+    "parsing-expression-grammars-packrat-left-recursion-and-unicode-trojan-source": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "roberto-ieru/LPeg",
+            "revision": "089112f883540c4434e9e8e96de50a75f2b15f7e"
+          },
+          "name": "LPeg"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "484bc16723ef534e693bcd13e139ccd710a64da4"
+          },
+          "name": "CPython pegen"
+        },
+        {
+          "identity": {
+            "repository": "ohmjs/ohm",
+            "revision": "43c345b920c98b3eb13ce6b12df2b6ebd400b63b"
+          },
+          "name": "Ohm"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c884ecfbabb04b04fa5054dafc67ec258ecde745"
+          },
+          "name": "rustc (lexer and Unicode security lints)"
+        },
+        {
+          "identity": {
+            "repository": "nickboucher/trojan-source",
+            "revision": "e3dc153fcf465f4a84424ea874ff39be29adb1f7"
+          },
+          "name": "Trojan Source evaluation artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964011",
+            "venue": "ACM POPL 2004"
+          },
+          "name": "Parsing Expression Grammars: A Recognition-Based Syntactic Foundation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1328408.1328424",
+            "venue": "ACM PEPM 2008"
+          },
+          "name": "Packrat Parsers Can Support Left Recursion"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/spe.892",
+            "venue": "Software: Practice and Experience 2009"
+          },
+          "name": "A Text Pattern-Matching Tool based on Parsing Expression Grammars"
+        },
+        {
+          "identity": {
+            "institution": "Middlesex University",
+            "report": "EIS-10-01",
+            "year": "2010"
+          },
+          "name": "Direct Left-Recursive Parsing Expression Grammars"
+        },
+        {
+          "identity": {
+            "arxiv": "1207.0443v3",
+            "doi": "10.1016/j.scico.2014.01.013",
+            "venue": "Science of Computer Programming 2014"
+          },
+          "name": "Left Recursion in Parsing Expression Grammars"
+        },
+        {
+          "identity": {
+            "arxiv": "2111.00169v2",
+            "doi": "10.48550/arXiv.2111.00169",
+            "venue": "32nd USENIX Security Symposium 2023"
+          },
+          "name": "Trojan Source: Invisible Vulnerabilities"
+        },
+        {
+          "identity": {
+            "standard": "UAX #9",
+            "url": "https://www.unicode.org/reports/tr9/"
+          },
+          "name": "Unicode Standard Annex #9 (Unicode Bidirectional Algorithm)"
+        },
+        {
+          "identity": {
+            "standard": "UAX #31",
+            "url": "https://www.unicode.org/reports/tr31/"
+          },
+          "name": "Unicode Standard Annex #31 (Unicode Identifiers and Pattern Syntax)"
+        },
+        {
+          "identity": {
+            "standard": "UTS #39",
+            "url": "https://www.unicode.org/reports/tr39/"
+          },
+          "name": "Unicode Technical Standard #39 (Unicode Security Mechanisms)"
+        },
+        {
+          "identity": {
+            "runtime": "CPython",
+            "unicode_version": "15.1.0",
+            "version": "3.13.15"
+          },
+          "name": "CPython Runtime"
+        }
+      ],
+      "topics": [
+        "compilers/parsing",
+        "security/unicode-source",
+        "pl/syntax-grammars",
+        "verification/parsers"
       ]
     },
     "partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses": {

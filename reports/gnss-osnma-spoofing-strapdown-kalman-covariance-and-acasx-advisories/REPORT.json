@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "domains/navigation-avionics",
+    "security/broadcast-authentication",
+    "verification/hybrid-collision-games",
+    "smt/covariance-stability"
+  ],
+  "subjects": [
+    {
+      "name": "galileo-osnma (Rust no_std Galileo OSNMA Implementation)",
+      "identity": {
+        "repository": "daniestevez/galileo-osnma",
+        "revision": "b6c337b3d559b22edd7fa45fb5c4ee93c962c533"
+      }
+    },
+    {
+      "name": "fgi-osnma (Python Galileo OSNMA Receiver Engine)",
+      "identity": {
+        "repository": "nlsfi/fgi-osnma",
+        "revision": "f404aa947b3eb547a2ffbadb7fcbcb406fabb022"
+      }
+    },
+    {
+      "name": "RTKLIB (Open-Source Program Package for GNSS Positioning)",
+      "identity": {
+        "repository": "tomojitakasu/RTKLIB",
+        "revision": "71db0ffa0d9735697c6adfd06fdf766d0e5ce807"
+      }
+    },
+    {
+      "name": "RTKLIB Explorer Fork (demo5)",
+      "identity": {
+        "repository": "rtklibexplorer/RTKLIB",
+        "revision": "755e6379ae600e71980b6b20d846d6d35ca8a1aa"
+      }
+    },
+    {
+      "name": "HorizontalCAS (MDP & Neural-Network Airborne Horizontal Collision Avoidance)",
+      "identity": {
+        "repository": "sisl/HorizontalCAS",
+        "revision": "bc56a28cfe70b0486b6875deacfda947500bddcb"
+      }
+    },
+    {
+      "name": "KeYmaera X Projects — ACAS X Hybrid Systems & Hybrid Games Models",
+      "identity": {
+        "repository": "LS-Lab/KeYmaeraX-projects",
+        "revision": "b9d7cb584e8fd1c3cc4f30644e82ba12cbb1d6fe",
+        "subpath": "acasx/"
+      }
+    },
+    {
+      "name": "European Union / EUSPA Galileo OSNMA Signal-in-Space ICD & Receiver Guidelines",
+      "identity": {
+        "standard": "Galileo OSNMA SIS ICD v1.1 / Receiver Guidelines v1.3"
+      }
+    },
+    {
+      "name": "RTCA DO-185B (TCAS II v7.1) & RTCA DO-385 / DO-386 (ACAS Xa/Xo & ACAS Xu MOPS)",
+      "identity": {
+        "standard": "RTCA DO-185B / DO-385 / DO-386"
+      }
+    },
+    {
+      "name": "Motallebighomi, Sathaye, Singh, and Ranganathan (2023) — Location-independent GNSS Relay Attacks: A Lazy Attacker's Guide to Bypassing Navigation Message Authentication",
+      "identity": {
+        "doi": "10.1145/3558482.3590186",
+        "venue": "ACM WiSec 2023"
+      }
+    },
+    {
+      "name": "Teunissen (1995) — The Least-Squares Ambiguity Decorrelation Adjustment: A Method for Fast GPS Integer Ambiguity Estimation",
+      "identity": {
+        "doi": "10.1007/BF00863419",
+        "venue": "Journal of Geodesy, Vol. 70, No. 1, pp. 65-82 (1995)"
+      }
+    },
+    {
+      "name": "Carlson (1973) — Fast Triangular Formulation of the Square Root Filter",
+      "identity": {
+        "doi": "10.2514/3.6907",
+        "venue": "AIAA Journal, Vol. 11, No. 9, pp. 1259-1265 (1973)"
+      }
+    },
+    {
+      "name": "Bierman (1977) — Factorization Methods for Discrete Sequential Estimation",
+      "identity": {
+        "isbn": "978-0-12-097350-7",
+        "venue": "Academic Press (1977)"
+      }
+    },
+    {
+      "name": "Thornton (1976) — Triangular Covariance Factorizations for Kalman Filtering",
+      "identity": {
+        "report": "NASA JPL TM-33-798 / NASA-CR-149147",
+        "venue": "Jet Propulsion Laboratory, Caltech (October 1976)"
+      }
+    },
+    {
+      "name": "Jeannin, Ghorbal, Kouskoulas, Schmidt, Gardner, Mitsch, and Platzer (2017) — A Formally Verified Hybrid System for Safe Advisories in the Next-Generation Airborne Collision Avoidance System",
+      "identity": {
+        "doi": "10.1007/s10009-017-0452-9",
+        "venue": "Int. J. Softw. Tools Technol. Transf. (STTT), Vol. 19, No. 6, pp. 717-740 (2017)"
+      }
+    },
+    {
+      "name": "Katz, Barrett, Dill, Julian, and Kochenderfer (2017) — Reluplex: An Efficient SMT Solver for Verifying Deep Neural Networks",
+      "identity": {
+        "doi": "10.1007/978-3-319-63387-9_5",
+        "venue": "CAV 2017, LNCS Vol. 10426, pp. 97-117"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
