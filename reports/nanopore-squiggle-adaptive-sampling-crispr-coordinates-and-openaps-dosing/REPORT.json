@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "domains/closed-loop-insulin",
+    "domains/genomic-sequencing",
+    "systems/streaming-biosignals",
+    "verification/coordinate-bijections"
+  ],
+  "subjects": [
+    {
+      "name": "Dorado",
+      "identity": {
+        "repository": "https://github.com/nanoporetech/dorado",
+        "revision": "8b8fc5d36a9c0baab262a743cb175b5878e38ca6"
+      }
+    },
+    {
+      "name": "readfish",
+      "identity": {
+        "repository": "https://github.com/LooseLab/readfish",
+        "revision": "dd5ea5d8396d699923d22a549ca7542547a551f6"
+      }
+    },
+    {
+      "name": "CRISPResso2",
+      "identity": {
+        "repository": "https://github.com/pinellolab/CRISPResso2",
+        "revision": "c303946d10efd5514402cd2f0f204a3c2c080031"
+      }
+    },
+    {
+      "name": "Loop",
+      "identity": {
+        "repository": "https://github.com/LoopKit/Loop",
+        "revision": "813f07cb18bf0d31c2dbd720b68703e454d9691e"
+      }
+    },
+    {
+      "name": "oref0",
+      "identity": {
+        "repository": "https://github.com/openaps/oref0",
+        "revision": "88cf032aa74ff25f69464a7d9cd601ee3940c0b3"
+      }
+    },
+    {
+      "name": "Readfish targeted nanopore sequencing of gigabase-sized genomes (Payne et al. 2021)",
+      "identity": {
+        "doi": "10.1038/s41587-020-00746-x",
+        "journal": "Nature Biotechnology",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "CRISPResso2 provides accurate and rapid genome editing sequence analysis (Clement et al. 2019)",
+      "identity": {
+        "doi": "10.1038/s41587-019-0032-3",
+        "journal": "Nature Biotechnology",
+        "year": "2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
