@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "pl",
+    "pl/ruby",
+    "pl/javascript",
+    "pl/typescript",
+    "runtimes",
+    "runtimes/ruby",
+    "runtimes/v8",
+    "compilers",
+    "compilers/jit",
+    "ffi",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "CRuby (YARV, YJIT, and Modular GC)",
+      "identity": {
+        "repository": "ruby/ruby",
+        "revision": "2e6b197f6849401b2c25894b5b8ac39ac3c2558e",
+        "api_version": "4.1.0"
+      }
+    },
+    {
+      "name": "ECMAScript Language Specification (ECMA-262)",
+      "identity": {
+        "repository": "tc39/ecma262",
+        "revision": "b1eaed82fc5e8a511c5b2007f194b16c8f7e5ea6"
+      }
+    },
+    {
+      "name": "V8 JavaScript Engine",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0",
+        "version": "16.0.0-candidate"
+      }
+    },
+    {
+      "name": "TypeScript Compiler (native Go checker)",
+      "identity": {
+        "repository": "microsoft/TypeScript",
+        "revision": "9c4ad5cbc5a24f3e8893c6e395ac8981c1154c16",
+        "version": "7.1.0-dev"
+      }
+    },
+    {
+      "name": "CRuby 3.3.8 Linux x86_64 execution host",
+      "identity": {
+        "runtime": "ruby",
+        "version": "3.3.8",
+        "revision": "b200bad6cd",
+        "platform": "x86_64-linux-gnu (built without YJIT)"
+      }
+    },
+    {
+      "name": "Node.js v24.21.0 (V8 13.6) Linux x86_64 execution host",
+      "identity": {
+        "runtime": "Node.js",
+        "version": "v24.21.0",
+        "v8_version": "13.6.233.17-node.53",
+        "platform": "x86_64-linux-gnu"
+      }
+    },
+    {
+      "name": "Chevalier-Boisvert, Feeley, Lazy Basic Block Versioning (ECOOP 2015)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2015.101",
+        "venue": "ECOOP 2015"
+      }
+    },
+    {
+      "name": "Chevalier-Boisvert et al., Evaluating YJIT's Performance in a Production Context (MPLR 2023)",
+      "identity": {
+        "doi": "10.1145/3617651.3622982",
+        "venue": "MPLR 2023"
+      }
+    },
+    {
+      "name": "Van Cutsem, Miller, Trustworthy Proxies: Virtualizing Objects with Invariants (ECOOP 2013)",
+      "identity": {
+        "doi": "10.1007/978-3-642-39038-8_7",
+        "venue": "ECOOP 2013"
+      }
+    },
+    {
+      "name": "Fluckiger et al., Correctness of Speculative Optimizations with Dynamic Deoptimization (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158137",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "Watt et al., Repairing and Mechanising the JavaScript Relaxed Memory Model (PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3385973",
+        "venue": "PLDI 2020"
+      }
+    },
+    {
+      "name": "Bierman, Abadi, Torgersen, Understanding TypeScript (ECOOP 2014)",
+      "identity": {
+        "doi": "10.1007/978-3-662-44202-9_11",
+        "venue": "ECOOP 2014"
+      }
+    },
+    {
+      "name": "Rastogi et al., Safe & Efficient Gradual Typing for TypeScript (POPL 2015)",
+      "identity": {
+        "doi": "10.1145/2676726.2676971",
+        "venue": "POPL 2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
