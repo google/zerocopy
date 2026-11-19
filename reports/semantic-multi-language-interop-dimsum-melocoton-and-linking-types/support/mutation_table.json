@@ -1,0 +1,84 @@
+{
+  "description": "Single-edit mutations of verify_dimsum_and_melocoton_wrappers.py. Apply exactly one (first occurrence of 'search' replaced by 'replace'), run the mutated copy from a scratch directory with 'python3 -B', and expect a non-zero exit status with at least the listed checks failing. A mutant that still exits 0 means the probe has lost discriminating power.",
+  "probe": "verify_dimsum_and_melocoton_wrappers.py",
+  "mutations": [
+    {
+      "name": "roots_not_updated_by_gc",
+      "expect_failing": [
+        "B5",
+        "B8"
+      ],
+      "search": "            self.mem[a] = self.repr_lval(lv)       # roots are updated by the GC\n",
+      "replace": "            pass\n"
+    },
+    {
+      "name": "roots_not_kept_live",
+      "expect_failing": [
+        "B5",
+        "B8"
+      ],
+      "search": "            [lv[1] for lv in root_vals.values() if lv[0] == \"loc\"] + list(must_live))",
+      "replace": "            list(must_live))"
+    },
+    {
+      "name": "gc_never_moves",
+      "expect_failing": [
+        "B7"
+      ],
+      "search": "                opts = [fresh[g]]\n                if g in old:\n                    opts.append(old[g])",
+      "replace": "                opts = [old[g]] if g in old else [fresh[g]]"
+    },
+    {
+      "name": "tagging_2n",
+      "expect_failing": [
+        "B1",
+        "B2",
+        "uncaught Stuck"
+      ],
+      "search": "    return 2 * z + 1",
+      "replace": "    return 2 * z"
+    },
+    {
+      "name": "sim_ignores_angelic_side",
+      "expect_failing": [
+        "A3",
+        "A5",
+        "A9",
+        "A11",
+        "A13",
+        "A14",
+        "A15"
+      ],
+      "search": "    if a is None and any(sim(t1, s2) for t1 in impl_succ):",
+      "replace": "    if a is None:"
+    },
+    {
+      "name": "source_allows_any_return",
+      "expect_failing": [
+        "C1",
+        "C2",
+        "C5"
+      ],
+      "search": "            if is_top:\n                out.append((label, c_resume(st, k, variant)))\n            continue",
+      "replace": "            out.append((label, c_resume(st, k, variant)))\n            continue"
+    },
+    {
+      "name": "lifo_accepts_everything",
+      "expect_failing": [
+        "C8",
+        "C9",
+        "C10"
+      ],
+      "search": "            accept = is_top                                 # LIFO; popping makes it one-shot",
+      "replace": "            accept = True"
+    },
+    {
+      "name": "compiler_without_backdoor",
+      "expect_failing": [
+        "D3"
+      ],
+      "search": "            out[n] = (42,)",
+      "replace": "            out[n] = (prog[n % 2],)"
+    }
+  ]
+}

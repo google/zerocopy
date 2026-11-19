@@ -1,0 +1,133 @@
+{
+  "topics": [
+    "ffi/multi-runtime",
+    "ffi/gc-interop",
+    "runtimes/interop",
+    "ffi/bridges"
+  ],
+  "subjects": [
+    {
+      "name": "OpenJDK (HotSpot JNI, GCLocker, Region Pinning, Panama FFM, and libjsig)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "JEP 454: Foreign Function & Memory API",
+      "identity": {
+        "specification": "OpenJDK JEP 454",
+        "author": "Maurizio Cimadamore",
+        "release": "JDK 22",
+        "url": "https://openjdk.org/jeps/454"
+      }
+    },
+    {
+      "name": "CPython (PEP 703 Free-Threaded Runtime, Critical Sections, QSBR, and C-API)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75"
+      }
+    },
+    {
+      "name": "PEP 703: Making the Global Interpreter Lock Optional in CPython",
+      "identity": {
+        "specification": "Python PEP 703",
+        "author": "Sam Gross",
+        "release": "Python 3.13",
+        "url": "https://peps.python.org/pep-0703/"
+      }
+    },
+    {
+      "name": "HPy (Handle-Based C API for Python)",
+      "identity": {
+        "repository": "hpyproject/hpy",
+        "revision": "0a1d8791dfb28ea7d928bd1aabe37cc40dfb8146"
+      }
+    },
+    {
+      "name": "PyO3 (Rust Bindings for CPython and Free-Threaded Python)",
+      "identity": {
+        "repository": "PyO3/pyo3",
+        "revision": "a6addae8948adedafd09b2832edf3fa23d282b16"
+      }
+    },
+    {
+      "name": "Go Runtime and cgo (Pointer-Passing Rules, runtime.Pinner, and Signal Dispatch)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    },
+    {
+      "name": "OCaml 5 Runtime (C-FFI Shadow Roots, Write Barriers, and Fiber Callbacks)",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+      }
+    },
+    {
+      "name": "Erlang/OTP BEAM Emulator (NIFs, Reductions, and Dirty Schedulers)",
+      "identity": {
+        "repository": "erlang/otp",
+        "revision": "2f60d1b6a246b3f7ae997fd93a9af067fab7f981"
+      }
+    },
+    {
+      "name": "V8 and Oilpan CppHeap (Unified Cross-Heap Tracing and TracedReference)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    },
+    {
+      "name": "Cross-Component Garbage Collection (V8 and Blink Oilpan)",
+      "identity": {
+        "authors": "Ulan Degenbaev, Jochen Eisinger, Kentaro Hara, Marcel Hlopko, Michael Lippautz, Hannes Payer",
+        "venue": "PACMPL / OOPSLA 2018",
+        "doi": "10.1145/3276521",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Concurrent Cycle Collection in Reference Counted Systems",
+      "identity": {
+        "authors": "David F. Bacon, V. T. Rajan",
+        "venue": "ECOOP 2001 (LNCS 2072)",
+        "doi": "10.1007/3-540-45337-7_12",
+        "year": "2001"
+      }
+    },
+    {
+      "name": "CXX (Safe Rust-C++ Interop, Trivial Relocation, and Pinning)",
+      "identity": {
+        "repository": "dtolnay/cxx",
+        "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+      }
+    },
+    {
+      "name": "UniFFI (Multi-Language Rust Bindings, Handle Tagging, and RustBuffer Serialization)",
+      "identity": {
+        "repository": "mozilla/uniffi-rs",
+        "revision": "d5a18867e723852247ee9db61bc277f6243fe61d"
+      }
+    },
+    {
+      "name": "Diplomat (Zero-Copy Borrowed FFI Views and Target-Native Lifetime Lowering)",
+      "identity": {
+        "repository": "rust-diplomat/diplomat",
+        "revision": "71628f09c2969bc6e1013d50041f33b365e6cd81"
+      }
+    },
+    {
+      "name": "Repairing and Mechanising the JavaScript Relaxed Memory Model",
+      "identity": {
+        "authors": "Conrad Watt, Christopher Pulte, Anton Podkopaev, Guillaume Barbier, Stephen Dolan, Shaked Flur, Jean Pichon-Pharabod, Shu-yu Guo",
+        "venue": "PLDI 2020",
+        "doi": "10.1145/3385412.3385973",
+        "year": "2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

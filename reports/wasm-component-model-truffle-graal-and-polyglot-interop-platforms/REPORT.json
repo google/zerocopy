@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "ffi/component-model",
+    "runtimes/polyglot",
+    "ffi/bridges",
+    "compilers/wasm"
+  ],
+  "subjects": [
+    {
+      "name": "WebAssembly Component Model Specification (WIT, Canonical ABI, Concurrency)",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "WebAssembly Garbage Collection Proposal (MVP and Post-MVP)",
+      "identity": {
+        "repository": "WebAssembly/gc",
+        "revision": "756060f5816c7e2159f4817fbdee76cf52f9c923"
+      }
+    },
+    {
+      "name": "WebAssembly Shared-Everything Threads Proposal",
+      "identity": {
+        "repository": "WebAssembly/shared-everything-threads",
+        "revision": "de560922268ca89fd3303776c5c1b8f123da2aec"
+      }
+    },
+    {
+      "name": "Wasmtime Component Model Runtime",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+      }
+    },
+    {
+      "name": "GraalVM Truffle Polyglot Interop, NFI, and LLVM Runtime",
+      "identity": {
+        "repository": "oracle/graal",
+        "revision": "3fd1dcaa85129cc6df8232487f9506d73787a755"
+      }
+    },
+    {
+      "name": "Cross-Language Interoperability in a Multi-Language Runtime (ACM TOPLAS 2018)",
+      "identity": {
+        "authors": "Matthias Grimmer, Roland Schatz, Chris Seaton, Thomas Würthinger, Mikel Luján, Hanspeter Mössenböck",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 40, No. 2, Article 8",
+        "year": "2018",
+        "doi": "10.1145/3201898"
+      }
+    },
+    {
+      "name": "High-Performance Cross-Language Interoperability in a Multi-Language Runtime (DLS 2015)",
+      "identity": {
+        "authors": "Matthias Grimmer, Chris Seaton, Roland Schatz, Thomas Würthinger, Hanspeter Mössenböck",
+        "venue": "Proceedings of the 11th Symposium on Dynamic Languages (DLS 2015)",
+        "year": "2015",
+        "doi": "10.1145/2816707.2816714"
+      }
+    },
+    {
+      "name": "ECMA-335 Common Language Infrastructure (CLI), 6th Edition",
+      "identity": {
+        "standard": "ECMA-335 (ISO/IEC 23271)",
+        "edition": "6th Edition, June 2012",
+        "url": "https://www.ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf"
+      }
+    },
+    {
+      "name": ".NET CoreCLR Runtime and ECMA-335 Specification Addendum",
+      "identity": {
+        "repository": "dotnet/runtime",
+        "revision": "db341b0b461356d954079d27e86cb47c929e7e8a"
+      }
+    },
+    {
+      "name": "Cap'n Proto Encoding Specification and C++ Layout Engine",
+      "identity": {
+        "repository": "capnproto/capnproto",
+        "revision": "20fe8fd325bf3825d6cdc3cf16bb263a4c142326"
+      }
+    },
+    {
+      "name": "Fuchsia FIDL Wire Format Specification and RFCs 0126 / 0131",
+      "identity": {
+        "specification": "FIDL Wire Format (v2 Envelopes), RFC-0126 (Driver Runtime), RFC-0131 (Design Principles of the FIDL Wire Format)",
+        "url": "https://fuchsia.dev/fuchsia-src/reference/fidl/language/wire-format"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

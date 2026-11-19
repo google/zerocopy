@@ -1,0 +1,176 @@
+{
+  "topics": [
+    "verification/specifications",
+    "tooling/spec-authoring",
+    "tooling/testing-fuzzing",
+    "verification/ux",
+    "verification/gradual-verification",
+    "verification/property-based-testing"
+  ],
+  "subjects": [
+    {
+      "name": "QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs",
+      "identity": {
+        "authors": "Koen Claessen, John Hughes",
+        "venue": "ICFP 2000",
+        "doi": "10.1145/351240.351266"
+      }
+    },
+    {
+      "name": "Generating Good Generators for Inductive Relations (QuickChick)",
+      "identity": {
+        "authors": "Leonidas Lampropoulos, Zoe Paraskevopoulou, Benjamin C. Pierce",
+        "venue": "PACMPL 2(POPL), 2018",
+        "doi": "10.1145/3158133"
+      }
+    },
+    {
+      "name": "Coverage Guided, Property Based Testing (FuzzChick)",
+      "identity": {
+        "authors": "Leonidas Lampropoulos, Michael Hicks, Benjamin C. Pierce",
+        "venue": "PACMPL 3(OOPSLA), 2019",
+        "doi": "10.1145/3360607"
+      }
+    },
+    {
+      "name": "QuickChick property-based testing framework",
+      "identity": {
+        "repository": "QuickChick/QuickChick",
+        "revision": "ed334c76a7fbd6eefe9b1e618e42ce9c70dd8691"
+      }
+    },
+    {
+      "name": "How Amazon Web Services Uses Formal Methods",
+      "identity": {
+        "authors": "Chris Newcombe, Tim Rath, Fan Zhang, Bogdan Munteanu, Marc Brooker, Michael Deardeuff",
+        "venue": "Communications of the ACM 58(4), 2015",
+        "doi": "10.1145/2699417"
+      }
+    },
+    {
+      "name": "Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3",
+      "identity": {
+        "authors": "James Bornholt, Rajeev Joshi, Vytautas Astrauskas, Brendan Cully, Bernhard Kragl, Seth Markle, Kyle Sauri, Drew Schleit, Grant Slatton, Serdar Tasiran, Jacob Van Geffen, Andrew Warfield",
+        "venue": "SOSP 2021",
+        "doi": "10.1145/3477132.3483540"
+      }
+    },
+    {
+      "name": "An Empirical Study on the Correctness of Formally Verified Distributed Systems",
+      "identity": {
+        "authors": "Pedro Fonseca, Kai-Yuan Zhang, Xi Wang, Arvind Krishnamurthy",
+        "venue": "EuroSys 2017",
+        "doi": "10.1145/3064176.3064183"
+      }
+    },
+    {
+      "name": "Empirical Study Towards a Leading Indicator for Cost of Formal Software Verification",
+      "identity": {
+        "authors": "Daniel Matichuk, Toby Murray, June Andronick, D. Ross Jeffery, Gerwin Klein, Mark Staples",
+        "venue": "ICSE 2015",
+        "doi": "10.1109/ICSE.2015.85"
+      }
+    },
+    {
+      "name": "Gradual Program Verification",
+      "identity": {
+        "authors": "Johannes Bader, Jonathan Aldrich, Éric Tanter",
+        "venue": "VMCAI 2018",
+        "doi": "10.1007/978-3-319-73721-8_2"
+      }
+    },
+    {
+      "name": "Gradual Verification of Recursive Heap Data Structures",
+      "identity": {
+        "authors": "Jenna Wise, Johannes Bader, Cameron Wong, Jonathan Aldrich, Éric Tanter, Joshua Sunshine",
+        "venue": "PACMPL 4(OOPSLA), 2020",
+        "doi": "10.1145/3428296"
+      }
+    },
+    {
+      "name": "Sound Gradual Verification with Symbolic Execution",
+      "identity": {
+        "authors": "Conrad Zimmerman, Jenna DiVincenzo, Jonathan Aldrich",
+        "venue": "PACMPL 8(POPL), 2024",
+        "doi": "10.1145/3632927",
+        "arxiv": "arXiv:2311.07559"
+      }
+    },
+    {
+      "name": "Gradual C0: Symbolic Execution for Gradual Verification",
+      "identity": {
+        "authors": "Jenna DiVincenzo, Ian McCormack, Hemant Gouni, Jacob Gorenburg, Jan-Paul Ramos-Dávila, Mona Zhang, Conrad Zimmerman, Joshua Sunshine, Éric Tanter, Jonathan Aldrich",
+        "venue": "ACM TOPLAS, 2025",
+        "doi": "10.1145/3704808",
+        "arxiv": "arXiv:2210.02428"
+      }
+    },
+    {
+      "name": "Gradual C0 verifier and runtime check weaver (gvc0)",
+      "identity": {
+        "repository": "gradual-verification/gvc0",
+        "revision": "4276d89421d9fc17058a06cff975e9c7207ab917"
+      }
+    },
+    {
+      "name": "Gradual Silicon symbolic execution backend (silicon-gv)",
+      "identity": {
+        "repository": "gradual-verification/silicon-gv",
+        "revision": "03a17ab4e796683d36cf203572ec93d572f69c3f"
+      }
+    },
+    {
+      "name": "Fulminate: Testing CN Separation-Logic Specifications in C",
+      "identity": {
+        "authors": "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell",
+        "venue": "PACMPL 9(POPL), Article 43, 2025",
+        "doi": "10.1145/3704879"
+      }
+    },
+    {
+      "name": "Bennet: Randomized Specification Testing for Heap-Manipulating Programs",
+      "identity": {
+        "authors": "Zain K. Aamer, Benjamin C. Pierce",
+        "venue": "PACMPL 9(OOPSLA), 2025",
+        "doi": "10.1145/3764115"
+      }
+    },
+    {
+      "name": "CN separation-logic verifier, Fulminate runtime tester, and Bennet generator",
+      "identity": {
+        "repository": "rems-project/cn",
+        "revision": "d1c60d1720bed3bed0d45dab247a1959145c8cb9"
+      }
+    },
+    {
+      "name": "Cerberus C semantics repository (historical host of CN)",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e"
+      }
+    },
+    {
+      "name": "Bolero fuzzing, property testing, and Kani harness frontend for Rust",
+      "identity": {
+        "repository": "camshaft/bolero",
+        "revision": "968b6b3510acbc22123e035278b1665e671a4c21",
+        "version": "0.13.7"
+      }
+    },
+    {
+      "name": "Kani Rust Verifier (function contracts and concrete playback)",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "c25a57bcbf8c8af41617e7171a535a3518ce514a"
+      }
+    },
+    {
+      "name": "Crucible and Crux-MIR symbolic testing framework",
+      "identity": {
+        "repository": "GaloisInc/crucible",
+        "revision": "2e37f7e1f06730125075e4b1ec1d19b8af5736cb"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

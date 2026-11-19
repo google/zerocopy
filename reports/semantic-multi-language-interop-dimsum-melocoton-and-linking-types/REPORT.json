@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "ffi/linking-theory",
+    "verification/multi-language",
+    "verification/separation-logic",
+    "pl/semantics",
+    "security/secure-compilation",
+    "runtimes/ocaml-ffi"
+  ],
+  "subjects": [
+    {
+      "name": "Matthews and Findler, Operational Semantics for Multi-Language Programs (ACM TOPLAS 31(3), Article 12, April 2009)",
+      "identity": {
+        "doi": "10.1145/1498926.1498930",
+        "venue": "ACM Transactions on Programming Languages and Systems, volume 31, issue 3, article 12"
+      }
+    },
+    {
+      "name": "Patterson and Ahmed, Linking Types for Multi-Language Software: Have Your Cake and Eat It Too (SNAPL 2017)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.SNAPL.2017.12",
+        "venue": "LIPIcs volume 71, pages 12:1-12:15",
+        "arxiv": "1711.04559v1"
+      }
+    },
+    {
+      "name": "Patterson, Mushtak, Wagner and Ahmed, Semantic Soundness for Language Interoperability (PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523703",
+        "arxiv": "2202.13158v2"
+      }
+    },
+    {
+      "name": "Sammler, Spies, Song, D'Osualdo, Krebbers, Garg and Dreyer, DimSum: A Decentralized Approach to Multi-language Semantics and Verification (POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571220",
+        "venue": "Proceedings of the ACM on Programming Languages, volume 7, issue POPL, article 27"
+      }
+    },
+    {
+      "name": "DimSum artifact, appendix and Coq development guide",
+      "identity": {
+        "artifact_doi": "10.5281/zenodo.7306312",
+        "project": "https://gitlab.mpi-sws.org/iris/dimsum",
+        "examined": "README.md of the master branch as served on 2026-11-19; commit identifier not resolved"
+      }
+    },
+    {
+      "name": "Guéneau, Hostert, Spies, Sammler, Birkedal and Dreyer, Melocoton: A Program Logic for Verified Interoperability Between OCaml and C (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622823",
+        "venue": "Proceedings of the ACM on Programming Languages, volume 7, issue OOPSLA2, article 247"
+      }
+    },
+    {
+      "name": "Melocoton Coq development",
+      "identity": {
+        "repository": "logsem/melocoton",
+        "revision": "039dae32893a33bc70d668a7abcd25d54587dc3c"
+      }
+    },
+    {
+      "name": "Korkut, Stark and Appel, A Verified Foreign Function Interface between Coq and C (POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704860",
+        "venue": "Proceedings of the ACM on Programming Languages, volume 9, issue POPL, article 24"
+      }
+    },
+    {
+      "name": "VeriFFI Coq development",
+      "identity": {
+        "repository": "CertiCoq/VeriFFI",
+        "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b"
+      }
+    },
+    {
+      "name": "Abate, Blanco, Garg, Hrițcu, Patrignani and Thibault, Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (CSF 2019)",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025",
+        "arxiv": "1807.04603v6"
+      }
+    },
+    {
+      "name": "Robust property preservation Coq development",
+      "identity": {
+        "repository": "secure-compilation/exploring-robust-property-preservation",
+        "revision": "c68187cbaba763d88cbb3509df4ca9cf49cc6338"
+      }
+    },
+    {
+      "name": "OCaml runtime headers (mlvalues.h, memory.h)",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "99cb5d93fc30f1a6f3e69f5aa5d2063994d33a93",
+        "version": "4.14.1"
+      }
+    },
+    {
+      "name": "Dreyer, Neis and Birkedal, The impact of higher-order state and control effects on local relational reasoning (JFP 22(4-5), 2012)",
+      "identity": {
+        "doi": "10.1017/S095679681200024X"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

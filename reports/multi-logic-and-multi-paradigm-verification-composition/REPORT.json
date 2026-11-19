@@ -1,0 +1,157 @@
+{
+  "topics": [
+    "ffi/cross-logic",
+    "verification/composition",
+    "verification/tcb",
+    "verification/program-logics",
+    "security/hyperproperties",
+    "compilers/verified-compilation"
+  ],
+  "subjects": [
+    {
+      "name": "Clarkson and Schneider, Hyperproperties (Journal of Computer Security 18(6), 2010, pp. 1157-1210)",
+      "identity": {
+        "doi": "10.3233/JCS-2009-0393",
+        "venue": "Journal of Computer Security 18(6)",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "Barthe, Blazy, Gregoire, Hutin, Laporte, Pichardie and Trieu, Formal Verification of a Constant-Time Preserving C Compiler (PACMPL 4, POPL, 2020)",
+      "identity": {
+        "doi": "10.1145/3371075",
+        "venue": "Proceedings of the ACM on Programming Languages 4(POPL)",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Xia, Zakowski, He, Hur, Malecha, Pierce and Zdancewic, Interaction Trees: Representing Recursive and Impure Programs in Coq (PACMPL 4, POPL, 2020)",
+      "identity": {
+        "doi": "10.1145/3371119",
+        "arxiv": "1906.00046",
+        "venue": "Proceedings of the ACM on Programming Languages 4(POPL)",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Interaction Trees Coq library",
+      "identity": {
+        "repository": "DeepSpec/InteractionTrees",
+        "revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+      }
+    },
+    {
+      "name": "Koenig and Shao, CompCertO: Compiling Certified Open C Components (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454097",
+        "venue": "PLDI 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "CompCertO Coq development",
+      "identity": {
+        "repository": "CertiKOS/compcert",
+        "revision": "87a62d95cd24a44e3ecd5fefddc70a969a881bcb",
+        "branch": "compcerto"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Matsushita, Denis, Jourdan and Dreyer, RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "venue": "PLDI 2022",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Creusot deductive verifier for Rust (creusot-std extern specifications)",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "dc57a795e1b457ea54c3080f4663ded461db6843"
+      }
+    },
+    {
+      "name": "Song, Cho, Lee, Hur, Sammler and Dreyer, Conditional Contextual Refinement (PACMPL 7, POPL, 2023)",
+      "identity": {
+        "doi": "10.1145/3571232",
+        "venue": "Proceedings of the ACM on Programming Languages 7(POPL)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Conditional Contextual Refinement Coq artifact",
+      "identity": {
+        "repository": "alxest/CCR",
+        "revision": "edcda8faae6580581e8e5b28050d755bcb29f55f"
+      }
+    },
+    {
+      "name": "Iris program logic (adequacy and weakest precondition)",
+      "identity": {
+        "repository": "gitlab.mpi-sws.org/iris/iris",
+        "revision": "2fe2f450add5678d9a2492343c638ccdb428a677",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "Goguen and Burstall, Institutions: Abstract Model Theory for Specification and Programming (Journal of the ACM 39(1), 1992)",
+      "identity": {
+        "doi": "10.1145/147508.147524",
+        "venue": "Journal of the ACM 39(1)",
+        "year": "1992"
+      }
+    },
+    {
+      "name": "Abate, Blanco, Garg, Hritcu, Patrignani and Thibault, Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (CSF 2019)",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025",
+        "arxiv": "1807.04603",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "IKOS abstract-interpretation static analyzer",
+      "identity": {
+        "repository": "NASA-SW-VnV/ikos",
+        "revision": "ac7f7c1738976cabc58c6a53413df6e458995c38"
+      }
+    },
+    {
+      "name": "Dafny reference manual (termination specifications)",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "8c137ba351c60a521cfb122011770fdbea9a0453"
+      }
+    },
+    {
+      "name": "Verus guide (termination checking)",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+      }
+    },
+    {
+      "name": "Kani Rust model checker documentation (loop unwinding)",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "c25a57bcbf8c8af41617e7171a535a3518ce514a"
+      }
+    },
+    {
+      "name": "Anneal verification toolchain (trusted Lean root, foundation lock, architecture documentation)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "08f1184dce262d8d3ab610d4becedc3a0ae4486c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

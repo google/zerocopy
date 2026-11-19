@@ -14847,6 +14847,133 @@
         "tooling"
       ]
     },
+    "debugging-optimized-concurrent-and-cross-language-programs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/357172.357173",
+            "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS) 4(3), pp. 323-344",
+            "year": "1982"
+          },
+          "name": "Hennessy (1982), Symbolic Debugging of Optimized Code"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:1705.05937v1",
+            "doi": "10.48550/arXiv.1705.05937",
+            "venue": "USENIX ATC 2017, pp. 377-389 (extended technical report)",
+            "year": "2017"
+          },
+          "name": "O'Callahan et al. (2017), Engineering Record And Replay For Deployability"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2011.13994v2",
+            "doi": "10.1145/3445814.3446695",
+            "venue": "ASPLOS 2021",
+            "year": "2021"
+          },
+          "name": "Di Luna et al. (2021), Who's Debugging the Debuggers? Exposing Debug Information Bugs in Optimized Binaries"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2211.09568v1",
+            "doi": "10.48550/arXiv.2211.09568",
+            "venue": "ASPLOS 2023",
+            "year": "2023"
+          },
+          "name": "Assaiante et al. (2023), Where Did My Variable Go? Poking Holes in Incomplete Debug Information"
+        },
+        {
+          "identity": {
+            "date": "2017-02-13",
+            "publisher": "DWARF Debugging Information Format Committee",
+            "specification": "DWARF Version 5",
+            "url": "https://dwarfstd.org/doc/DWARF5.pdf"
+          },
+          "name": "DWARF Debugging Information Format Version 5"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "4f67d9e5e0ce3de41929bae220feb8858b0085b9"
+          },
+          "name": "LLVM Project (Assignment Tracking, Instruction Referencing, Key Instructions, RemoveDIs, DExTer)"
+        },
+        {
+          "identity": {
+            "repository": "rr-debugger/rr",
+            "revision": "608efe319bbbc4d0f5658d984e16be187801325d"
+          },
+          "name": "rr Record-and-Replay Debugger"
+        },
+        {
+          "identity": {
+            "repository": "facebookexperimental/hermit",
+            "revision": "f5430390f6235786bf10dafac78942500766d112"
+          },
+          "name": "Hermit Deterministic Linux Execution Environment"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/console",
+            "revision": "b59758e5a6effe3a9df3ec84a2f28d319d178234"
+          },
+          "name": "Tokio Console (Async Task Instrumentation Subscriber)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/async-backtrace",
+            "revision": "3dcc5ad3c0c3e2dce2fcf513dcec3ae5448597cb"
+          },
+          "name": "Tokio async-backtrace (Logical Async Stack Reconstruction)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75"
+          },
+          "name": "CPython Runtime (Perf Trampolines, jitdump Emitter, and GDB libpython Extension)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel (x86 ORC Unwinder and perf jitdump v2 Specification)"
+        },
+        {
+          "identity": {
+            "repository": "oracle/graal",
+            "revision": "c1b06aa797a4aef3ee170f82e508f674a3d2f2f3"
+          },
+          "name": "Graal Compiler (FrameState and VirtualObjectNode)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "186489b55b5df61e270174a76104a2af27cc7197"
+          },
+          "name": "OpenJDK HotSpot JVM (ScopeDesc and DebugInformationRecorder)"
+        },
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 JavaScript Engine (Deoptimizer TranslatedState)"
+        }
+      ],
+      "topics": [
+        "tooling/debugging",
+        "tooling/time-travel",
+        "compilers/debuginfo",
+        "ffi/debugging",
+        "runtimes/async",
+        "runtimes/jit"
+      ]
+    },
     "debuginfo-free-weisfeiler-leman-cfg-and-def-use-oracle-alignment": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -25905,6 +26032,163 @@
         "isa/x86-64"
       ]
     },
+    "multi-logic-and-multi-paradigm-verification-composition": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.3233/JCS-2009-0393",
+            "venue": "Journal of Computer Security 18(6)",
+            "year": "2010"
+          },
+          "name": "Clarkson and Schneider, Hyperproperties (Journal of Computer Security 18(6), 2010, pp. 1157-1210)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371075",
+            "venue": "Proceedings of the ACM on Programming Languages 4(POPL)",
+            "year": "2020"
+          },
+          "name": "Barthe, Blazy, Gregoire, Hutin, Laporte, Pichardie and Trieu, Formal Verification of a Constant-Time Preserving C Compiler (PACMPL 4, POPL, 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "1906.00046",
+            "doi": "10.1145/3371119",
+            "venue": "Proceedings of the ACM on Programming Languages 4(POPL)",
+            "year": "2020"
+          },
+          "name": "Xia, Zakowski, He, Hur, Malecha, Pierce and Zdancewic, Interaction Trees: Representing Recursive and Impure Programs in Coq (PACMPL 4, POPL, 2020)"
+        },
+        {
+          "identity": {
+            "repository": "DeepSpec/InteractionTrees",
+            "revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+          },
+          "name": "Interaction Trees Coq library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454097",
+            "venue": "PLDI 2021",
+            "year": "2021"
+          },
+          "name": "Koenig and Shao, CompCertO: Compiling Certified Open C Components (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "branch": "compcerto",
+            "repository": "CertiKOS/compcert",
+            "revision": "87a62d95cd24a44e3ecd5fefddc70a969a881bcb"
+          },
+          "name": "CompCertO Coq development"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704",
+            "venue": "PLDI 2022",
+            "year": "2022"
+          },
+          "name": "Matsushita, Denis, Jourdan and Dreyer, RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (PLDI 2022)"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "dc57a795e1b457ea54c3080f4663ded461db6843"
+          },
+          "name": "Creusot deductive verifier for Rust (creusot-std extern specifications)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571232",
+            "venue": "Proceedings of the ACM on Programming Languages 7(POPL)",
+            "year": "2023"
+          },
+          "name": "Song, Cho, Lee, Hur, Sammler and Dreyer, Conditional Contextual Refinement (PACMPL 7, POPL, 2023)"
+        },
+        {
+          "identity": {
+            "repository": "alxest/CCR",
+            "revision": "edcda8faae6580581e8e5b28050d755bcb29f55f"
+          },
+          "name": "Conditional Contextual Refinement Coq artifact"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "gitlab.mpi-sws.org/iris/iris",
+            "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+          },
+          "name": "Iris program logic (adequacy and weakest precondition)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/147508.147524",
+            "venue": "Journal of the ACM 39(1)",
+            "year": "1992"
+          },
+          "name": "Goguen and Burstall, Institutions: Abstract Model Theory for Specification and Programming (Journal of the ACM 39(1), 1992)"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.04603",
+            "doi": "10.1109/CSF.2019.00025",
+            "year": "2019"
+          },
+          "name": "Abate, Blanco, Garg, Hritcu, Patrignani and Thibault, Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (CSF 2019)"
+        },
+        {
+          "identity": {
+            "repository": "NASA-SW-VnV/ikos",
+            "revision": "ac7f7c1738976cabc58c6a53413df6e458995c38"
+          },
+          "name": "IKOS abstract-interpretation static analyzer"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "8c137ba351c60a521cfb122011770fdbea9a0453"
+          },
+          "name": "Dafny reference manual (termination specifications)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+          },
+          "name": "Verus guide (termination checking)"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "c25a57bcbf8c8af41617e7171a535a3518ce514a"
+          },
+          "name": "Kani Rust model checker documentation (loop unwinding)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "08f1184dce262d8d3ab610d4becedc3a0ae4486c"
+          },
+          "name": "Anneal verification toolchain (trusted Lean root, foundation lock, architecture documentation)"
+        }
+      ],
+      "topics": [
+        "ffi/cross-logic",
+        "verification/composition",
+        "verification/tcb",
+        "verification/program-logics",
+        "security/hyperproperties",
+        "compilers/verified-compilation"
+      ]
+    },
     "multi-premise-sparse-farkas-and-freeze-set-refinement-certificates": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -25945,6 +26229,139 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK (HotSpot JNI, GCLocker, Region Pinning, Panama FFM, and libjsig)"
+        },
+        {
+          "identity": {
+            "author": "Maurizio Cimadamore",
+            "release": "JDK 22",
+            "specification": "OpenJDK JEP 454",
+            "url": "https://openjdk.org/jeps/454"
+          },
+          "name": "JEP 454: Foreign Function & Memory API"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75"
+          },
+          "name": "CPython (PEP 703 Free-Threaded Runtime, Critical Sections, QSBR, and C-API)"
+        },
+        {
+          "identity": {
+            "author": "Sam Gross",
+            "release": "Python 3.13",
+            "specification": "Python PEP 703",
+            "url": "https://peps.python.org/pep-0703/"
+          },
+          "name": "PEP 703: Making the Global Interpreter Lock Optional in CPython"
+        },
+        {
+          "identity": {
+            "repository": "hpyproject/hpy",
+            "revision": "0a1d8791dfb28ea7d928bd1aabe37cc40dfb8146"
+          },
+          "name": "HPy (Handle-Based C API for Python)"
+        },
+        {
+          "identity": {
+            "repository": "PyO3/pyo3",
+            "revision": "a6addae8948adedafd09b2832edf3fa23d282b16"
+          },
+          "name": "PyO3 (Rust Bindings for CPython and Free-Threaded Python)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go Runtime and cgo (Pointer-Passing Rules, runtime.Pinner, and Signal Dispatch)"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml 5 Runtime (C-FFI Shadow Roots, Write Barriers, and Fiber Callbacks)"
+        },
+        {
+          "identity": {
+            "repository": "erlang/otp",
+            "revision": "2f60d1b6a246b3f7ae997fd93a9af067fab7f981"
+          },
+          "name": "Erlang/OTP BEAM Emulator (NIFs, Reductions, and Dirty Schedulers)"
+        },
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 and Oilpan CppHeap (Unified Cross-Heap Tracing and TracedReference)"
+        },
+        {
+          "identity": {
+            "authors": "Ulan Degenbaev, Jochen Eisinger, Kentaro Hara, Marcel Hlopko, Michael Lippautz, Hannes Payer",
+            "doi": "10.1145/3276521",
+            "venue": "PACMPL / OOPSLA 2018",
+            "year": "2018"
+          },
+          "name": "Cross-Component Garbage Collection (V8 and Blink Oilpan)"
+        },
+        {
+          "identity": {
+            "authors": "David F. Bacon, V. T. Rajan",
+            "doi": "10.1007/3-540-45337-7_12",
+            "venue": "ECOOP 2001 (LNCS 2072)",
+            "year": "2001"
+          },
+          "name": "Concurrent Cycle Collection in Reference Counted Systems"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/cxx",
+            "revision": "4d19ca4eec78b2964035a3ea3cef5196515b13e7"
+          },
+          "name": "CXX (Safe Rust-C++ Interop, Trivial Relocation, and Pinning)"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/uniffi-rs",
+            "revision": "d5a18867e723852247ee9db61bc277f6243fe61d"
+          },
+          "name": "UniFFI (Multi-Language Rust Bindings, Handle Tagging, and RustBuffer Serialization)"
+        },
+        {
+          "identity": {
+            "repository": "rust-diplomat/diplomat",
+            "revision": "71628f09c2969bc6e1013d50041f33b365e6cd81"
+          },
+          "name": "Diplomat (Zero-Copy Borrowed FFI Views and Target-Native Lifetime Lowering)"
+        },
+        {
+          "identity": {
+            "authors": "Conrad Watt, Christopher Pulte, Anton Podkopaev, Guillaume Barbier, Stephen Dolan, Shaked Flur, Jean Pichon-Pharabod, Shu-yu Guo",
+            "doi": "10.1145/3385412.3385973",
+            "venue": "PLDI 2020",
+            "year": "2020"
+          },
+          "name": "Repairing and Mechanising the JavaScript Relaxed Memory Model"
+        }
+      ],
+      "topics": [
+        "ffi/multi-runtime",
+        "ffi/gc-interop",
+        "runtimes/interop",
+        "ffi/bridges"
       ]
     },
     "multicore-realtime-interference-cache-partitioning-and-mrsp-locking": {
@@ -28622,6 +29039,269 @@
         "verification/binary-validation",
         "verification/compiler-verification",
         "verification/isa-coverage"
+      ]
+    },
+    "proof-fragility-smt-instability-and-verification-scaling-walls": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Yi Zhou, Jay Bosamiya, Yoshiki Takashima, Jessica Li, Marijn Heule, Bryan Parno",
+            "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+            "url": "https://www.andrew.cmu.edu/user/bparno/papers/mariposa.pdf",
+            "venue": "FMCAD 2023"
+          },
+          "name": "Mariposa: Measuring SMT Instability in Automated Program Verification (FMCAD 2023)"
+        },
+        {
+          "identity": {
+            "authors": "Yi Zhou, Jay Bosamiya, Jessica Li, Marijn J. H. Heule, Bryan Parno",
+            "doi": "10.34727/2024/isbn.978-3-85448-065-5_12",
+            "url": "https://www.cs.cmu.edu/~mheule/publications/shake.pdf",
+            "venue": "FMCAD 2024"
+          },
+          "name": "Context Pruning for More Robust SMT-based Program Verification \u2014 SHAKE (FMCAD 2024)"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/mariposa",
+            "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+          },
+          "name": "Mariposa and SHAKE implementation and benchmark reports"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.05491",
+            "authors": "Andrea Lattuada, Travis Hance, Chanhee Cho, Matthias Brun, Isitha Subasinghe, Yi Zhou, Jon Howell, Bryan Parno, Chris Hawblitzel",
+            "doi": "10.1145/3586037",
+            "venue": "Proc. ACM Program. Lang. 7(OOPSLA1), 2023"
+          },
+          "name": "Verus: Verifying Rust Programs using Linear Ghost Types (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "authors": "Andrea Lattuada, Travis Hance, Jay Bosamiya, Matthias Brun, Chanhee Cho, Hayley LeBlanc, Pranav Srinivasan, Reto Achermann, Tej Chajed, Chris Hawblitzel, Jon Howell, Jacob R. Lorch, Oded Padon, Bryan Parno",
+            "doi": "10.1145/3694715.3695952",
+            "url": "https://www.chajed.io/papers/verus:sosp2024.pdf",
+            "venue": "SOSP 2024"
+          },
+          "name": "Verus: A Practical Foundation for Systems Verification (SOSP 2024)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+          },
+          "name": "Verus verification toolchain and VIR/SMT lowering source"
+        },
+        {
+          "identity": {
+            "repository": "Z3Prover/z3",
+            "revision": "437536cd64a544a1c329fc57d83e56e294fdf47c"
+          },
+          "name": "Z3 SMT Solver (Matching Abstract Machine and Quantifier Instantiation Queue)"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/smt-scope",
+            "revision": "665f9263c6102ff63494dafb39976d015c675951"
+          },
+          "name": "SMT Scope (formerly Axiom Profiler 2) quantifier-instantiation debugger"
+        },
+        {
+          "identity": {
+            "arxiv": "2003.06458",
+            "authors": "Talia Ringer, Karl Palmskog, Ilya Sergey, Milos Gligoric, Zachary Tatlock",
+            "doi": "10.1561/2500000045",
+            "venue": "Foundations and Trends in Programming Languages 5(2-3), 2019"
+          },
+          "name": "QED at Large: A Survey of Engineering of Formally Verified Software (FnTPL 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2010.00774",
+            "authors": "Talia Ringer, RanDair Porter, Nathaniel Yazdani, John Leo, Dan Grossman",
+            "doi": "10.1145/3453483.3454033",
+            "venue": "PLDI 2021"
+          },
+          "name": "Proof Repair across Type Equivalences \u2014 PUMPKIN Pi (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/pumpkin-pi",
+            "revision": "a7743d4665d8c7a0ebfd9d39e1247ee7804d402b"
+          },
+          "name": "PUMPKIN Pi Coq proof-repair plugin"
+        },
+        {
+          "identity": {
+            "authors": "David Greenaway, Japheth Lim, June Andronick, Gerwin Klein",
+            "doi": "10.1145/2594291.2594296",
+            "venue": "PLDI 2014"
+          },
+          "name": "Don't Sweat the Small Stuff: Formal Verification of C Code Without the Pain \u2014 AutoCorres (PLDI 2014)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "AutoCorres proof-producing C abstraction framework (seL4 L4.verified)"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.07185",
+            "authors": "Son Ho, Jonathan Protzenko",
+            "doi": "10.1145/3547647",
+            "venue": "Proc. ACM Program. Lang. 6(ICFP), 2022"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation (ICFP 2022)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "8f4466db9f0d59267b8e76b54473a21a005cf7be"
+          },
+          "name": "Aeneas functional Rust translation toolchain"
+        },
+        {
+          "identity": {
+            "authors": "Fran\u00e7ois Bobot, Jean-Christophe Filli\u00e2tre, Claude March\u00e9, Guillaume Melquiond, Andrei Paskevich",
+            "doi": "10.1007/978-3-642-54108-7_10",
+            "venue": "VSTTE 2013"
+          },
+          "name": "Preserving User Proofs across Specification Changes \u2014 Why3 Proof Sessions (VSTTE 2013)"
+        }
+      ],
+      "topics": [
+        "verification/scaling",
+        "smt/instability",
+        "smt/e-matching",
+        "tooling/proof-engineering",
+        "verification/maintenance",
+        "verification/functional-lifting"
+      ]
+    },
+    "proof-kernels-opaque-interfaces-and-adversarial-spec-hardening": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 kernel typechecker, declaration model, and compacted-region runtime (HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "410fab7284703f41660ca2454218dcca9b2ec896",
+            "version": "v4.14.0"
+          },
+          "name": "Lean 4 kernel typechecker (v4.14.0 historical baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq prover kernel, opaque proof table, and .vo object loader"
+        },
+        {
+          "identity": {
+            "repository": "agda/agda",
+            "revision": "9691cf2331ed3d5f9aba04380cc1cc8f415d192e"
+          },
+          "name": "Agda typechecker, opaque block unfolding control, and .agdai serializer"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (mm0-c) verifier and .mmb binary proof specification"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "0.4.32"
+          },
+          "name": "nanoda_lib safe-Rust external Lean 4 kernel typechecker"
+        },
+        {
+          "identity": {
+            "repository": "Deducteam/lambdapi",
+            "revision": "b7e9e0a0ae09b16a8841bbce1c7bfceb013ff3e3"
+          },
+          "name": "Lambdapi logical framework signature serialization"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "08f1184dce262d8d3ab610d4becedc3a0ae4486c"
+          },
+          "name": "Anneal trust model and TrustedBoundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "6b09691a2820d0608034e1468b8685a0dccddb77"
+          },
+          "name": "Anneal clean-room lean-miri correspondence hardening commit"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.10703",
+            "doi": "10.1007/978-3-030-53518-6_5",
+            "venue": "CICM 2020, LNCS 12236, pp. 71-88"
+          },
+          "name": "Carneiro (2020), Metamath Zero: Designing a Theorem Prover Prover"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/oso/9780198501275.003.0013",
+            "report": "BRICS RS-97-18",
+            "report_doi": "10.7146/brics.v4i18.18945"
+          },
+          "name": "Pollack (1998), How to Believe a Machine-Checked Proof"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3064176.3064183",
+            "venue": "EuroSys 2017"
+          },
+          "name": "Fonseca, Zhang, Wang, and Krishnamurthy (2017), An Empirical Study on the Correctness of Formally Verified Distributed Systems"
+        },
+        {
+          "identity": {
+            "arxiv": "0902.2137",
+            "doi": "10.1007/s10817-009-9155-4",
+            "venue": "Journal of Automated Reasoning 43(4):363-446"
+          },
+          "name": "Leroy (2009), A Formally Verified Compiler Back-End"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428265",
+            "venue": "PACMPL 4 (OOPSLA 2020)"
+          },
+          "name": "Wang, Xu, Wilke, and Shao (2020), CompCertELF: Verified Separate Compilation of C Programs into ELF Object Files"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.15403",
+            "doi": "10.48550/arXiv.2511.15403",
+            "venue": "ICSE 2026"
+          },
+          "name": "Amaral, Mendes, and Campos (2026), MutDafny: A Mutation-Based Approach to Assess Dafny Specifications"
+        }
+      ],
+      "topics": [
+        "verification/kernels",
+        "verification/specifications",
+        "pl/dependent-types",
+        "security/trust-boundaries"
       ]
     },
     "proof-producing-compilation-and-certificate-formats-quantitative-survey": {
@@ -37332,6 +38012,112 @@
         "verification/semantic-models/trusted-computing-base"
       ]
     },
+    "semantic-multi-language-interop-dimsum-melocoton-and-linking-types": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/1498926.1498930",
+            "venue": "ACM Transactions on Programming Languages and Systems, volume 31, issue 3, article 12"
+          },
+          "name": "Matthews and Findler, Operational Semantics for Multi-Language Programs (ACM TOPLAS 31(3), Article 12, April 2009)"
+        },
+        {
+          "identity": {
+            "arxiv": "1711.04559v1",
+            "doi": "10.4230/LIPIcs.SNAPL.2017.12",
+            "venue": "LIPIcs volume 71, pages 12:1-12:15"
+          },
+          "name": "Patterson and Ahmed, Linking Types for Multi-Language Software: Have Your Cake and Eat It Too (SNAPL 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "2202.13158v2",
+            "doi": "10.1145/3519939.3523703"
+          },
+          "name": "Patterson, Mushtak, Wagner and Ahmed, Semantic Soundness for Language Interoperability (PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571220",
+            "venue": "Proceedings of the ACM on Programming Languages, volume 7, issue POPL, article 27"
+          },
+          "name": "Sammler, Spies, Song, D'Osualdo, Krebbers, Garg and Dreyer, DimSum: A Decentralized Approach to Multi-language Semantics and Verification (POPL 2023)"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.7306312",
+            "examined": "README.md of the master branch as served on 2026-11-19; commit identifier not resolved",
+            "project": "https://gitlab.mpi-sws.org/iris/dimsum"
+          },
+          "name": "DimSum artifact, appendix and Coq development guide"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622823",
+            "venue": "Proceedings of the ACM on Programming Languages, volume 7, issue OOPSLA2, article 247"
+          },
+          "name": "Gu\u00e9neau, Hostert, Spies, Sammler, Birkedal and Dreyer, Melocoton: A Program Logic for Verified Interoperability Between OCaml and C (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "repository": "logsem/melocoton",
+            "revision": "039dae32893a33bc70d668a7abcd25d54587dc3c"
+          },
+          "name": "Melocoton Coq development"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704860",
+            "venue": "Proceedings of the ACM on Programming Languages, volume 9, issue POPL, article 24"
+          },
+          "name": "Korkut, Stark and Appel, A Verified Foreign Function Interface between Coq and C (POPL 2025)"
+        },
+        {
+          "identity": {
+            "repository": "CertiCoq/VeriFFI",
+            "revision": "7e8cd8e7b631be066407f86c82ff60b6fc63ae0b"
+          },
+          "name": "VeriFFI Coq development"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.04603v6",
+            "doi": "10.1109/CSF.2019.00025"
+          },
+          "name": "Abate, Blanco, Garg, Hri\u021bcu, Patrignani and Thibault, Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (CSF 2019)"
+        },
+        {
+          "identity": {
+            "repository": "secure-compilation/exploring-robust-property-preservation",
+            "revision": "c68187cbaba763d88cbb3509df4ca9cf49cc6338"
+          },
+          "name": "Robust property preservation Coq development"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "99cb5d93fc30f1a6f3e69f5aa5d2063994d33a93",
+            "version": "4.14.1"
+          },
+          "name": "OCaml runtime headers (mlvalues.h, memory.h)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S095679681200024X"
+          },
+          "name": "Dreyer, Neis and Birkedal, The impact of higher-order state and control effects on local relational reasoning (JFP 22(4-5), 2012)"
+        }
+      ],
+      "topics": [
+        "ffi/linking-theory",
+        "verification/multi-language",
+        "verification/separation-logic",
+        "pl/semantics",
+        "security/secure-compilation",
+        "runtimes/ocaml-ffi"
+      ]
+    },
     "sf-in-lean-semantics-comparator-and-literate-verification": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -38673,6 +39459,182 @@
         "security",
         "pl",
         "smt"
+      ]
+    },
+    "specification-authoring-spec-drift-and-the-testing-verification-continuum": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Koen Claessen, John Hughes",
+            "doi": "10.1145/351240.351266",
+            "venue": "ICFP 2000"
+          },
+          "name": "QuickCheck: A Lightweight Tool for Random Testing of Haskell Programs"
+        },
+        {
+          "identity": {
+            "authors": "Leonidas Lampropoulos, Zoe Paraskevopoulou, Benjamin C. Pierce",
+            "doi": "10.1145/3158133",
+            "venue": "PACMPL 2(POPL), 2018"
+          },
+          "name": "Generating Good Generators for Inductive Relations (QuickChick)"
+        },
+        {
+          "identity": {
+            "authors": "Leonidas Lampropoulos, Michael Hicks, Benjamin C. Pierce",
+            "doi": "10.1145/3360607",
+            "venue": "PACMPL 3(OOPSLA), 2019"
+          },
+          "name": "Coverage Guided, Property Based Testing (FuzzChick)"
+        },
+        {
+          "identity": {
+            "repository": "QuickChick/QuickChick",
+            "revision": "ed334c76a7fbd6eefe9b1e618e42ce9c70dd8691"
+          },
+          "name": "QuickChick property-based testing framework"
+        },
+        {
+          "identity": {
+            "authors": "Chris Newcombe, Tim Rath, Fan Zhang, Bogdan Munteanu, Marc Brooker, Michael Deardeuff",
+            "doi": "10.1145/2699417",
+            "venue": "Communications of the ACM 58(4), 2015"
+          },
+          "name": "How Amazon Web Services Uses Formal Methods"
+        },
+        {
+          "identity": {
+            "authors": "James Bornholt, Rajeev Joshi, Vytautas Astrauskas, Brendan Cully, Bernhard Kragl, Seth Markle, Kyle Sauri, Drew Schleit, Grant Slatton, Serdar Tasiran, Jacob Van Geffen, Andrew Warfield",
+            "doi": "10.1145/3477132.3483540",
+            "venue": "SOSP 2021"
+          },
+          "name": "Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3"
+        },
+        {
+          "identity": {
+            "authors": "Pedro Fonseca, Kai-Yuan Zhang, Xi Wang, Arvind Krishnamurthy",
+            "doi": "10.1145/3064176.3064183",
+            "venue": "EuroSys 2017"
+          },
+          "name": "An Empirical Study on the Correctness of Formally Verified Distributed Systems"
+        },
+        {
+          "identity": {
+            "authors": "Daniel Matichuk, Toby Murray, June Andronick, D. Ross Jeffery, Gerwin Klein, Mark Staples",
+            "doi": "10.1109/ICSE.2015.85",
+            "venue": "ICSE 2015"
+          },
+          "name": "Empirical Study Towards a Leading Indicator for Cost of Formal Software Verification"
+        },
+        {
+          "identity": {
+            "authors": "Johannes Bader, Jonathan Aldrich, \u00c9ric Tanter",
+            "doi": "10.1007/978-3-319-73721-8_2",
+            "venue": "VMCAI 2018"
+          },
+          "name": "Gradual Program Verification"
+        },
+        {
+          "identity": {
+            "authors": "Jenna Wise, Johannes Bader, Cameron Wong, Jonathan Aldrich, \u00c9ric Tanter, Joshua Sunshine",
+            "doi": "10.1145/3428296",
+            "venue": "PACMPL 4(OOPSLA), 2020"
+          },
+          "name": "Gradual Verification of Recursive Heap Data Structures"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2311.07559",
+            "authors": "Conrad Zimmerman, Jenna DiVincenzo, Jonathan Aldrich",
+            "doi": "10.1145/3632927",
+            "venue": "PACMPL 8(POPL), 2024"
+          },
+          "name": "Sound Gradual Verification with Symbolic Execution"
+        },
+        {
+          "identity": {
+            "arxiv": "arXiv:2210.02428",
+            "authors": "Jenna DiVincenzo, Ian McCormack, Hemant Gouni, Jacob Gorenburg, Jan-Paul Ramos-D\u00e1vila, Mona Zhang, Conrad Zimmerman, Joshua Sunshine, \u00c9ric Tanter, Jonathan Aldrich",
+            "doi": "10.1145/3704808",
+            "venue": "ACM TOPLAS, 2025"
+          },
+          "name": "Gradual C0: Symbolic Execution for Gradual Verification"
+        },
+        {
+          "identity": {
+            "repository": "gradual-verification/gvc0",
+            "revision": "4276d89421d9fc17058a06cff975e9c7207ab917"
+          },
+          "name": "Gradual C0 verifier and runtime check weaver (gvc0)"
+        },
+        {
+          "identity": {
+            "repository": "gradual-verification/silicon-gv",
+            "revision": "03a17ab4e796683d36cf203572ec93d572f69c3f"
+          },
+          "name": "Gradual Silicon symbolic execution backend (silicon-gv)"
+        },
+        {
+          "identity": {
+            "authors": "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell",
+            "doi": "10.1145/3704879",
+            "venue": "PACMPL 9(POPL), Article 43, 2025"
+          },
+          "name": "Fulminate: Testing CN Separation-Logic Specifications in C"
+        },
+        {
+          "identity": {
+            "authors": "Zain K. Aamer, Benjamin C. Pierce",
+            "doi": "10.1145/3764115",
+            "venue": "PACMPL 9(OOPSLA), 2025"
+          },
+          "name": "Bennet: Randomized Specification Testing for Heap-Manipulating Programs"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cn",
+            "revision": "d1c60d1720bed3bed0d45dab247a1959145c8cb9"
+          },
+          "name": "CN separation-logic verifier, Fulminate runtime tester, and Bennet generator"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/cerberus",
+            "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e"
+          },
+          "name": "Cerberus C semantics repository (historical host of CN)"
+        },
+        {
+          "identity": {
+            "repository": "camshaft/bolero",
+            "revision": "968b6b3510acbc22123e035278b1665e671a4c21",
+            "version": "0.13.7"
+          },
+          "name": "Bolero fuzzing, property testing, and Kani harness frontend for Rust"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "c25a57bcbf8c8af41617e7171a535a3518ce514a"
+          },
+          "name": "Kani Rust Verifier (function contracts and concrete playback)"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/crucible",
+            "revision": "2e37f7e1f06730125075e4b1ec1d19b8af5736cb"
+          },
+          "name": "Crucible and Crux-MIR symbolic testing framework"
+        }
+      ],
+      "topics": [
+        "verification/specifications",
+        "tooling/spec-authoring",
+        "tooling/testing-fuzzing",
+        "verification/ux",
+        "verification/gradual-verification",
+        "verification/property-based-testing"
       ]
     },
     "starnix-ebpf-core-postcleanup-mir-and-abstract-domain-verification": {
@@ -40876,6 +41838,247 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "type-error-localization-compiler-diagnostics-and-verification-ux": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Oukseh Lee, Kwangkeun Yi",
+            "doi": "10.1145/291891.291892",
+            "title": "Proofs about a Folklore Let-Polymorphic Type Inference Algorithm",
+            "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS) 20(4):707-723",
+            "year": "1998"
+          },
+          "name": "Lee & Yi (1998) Algorithm M vs Algorithm W"
+        },
+        {
+          "identity": {
+            "authors": "Christian Haack, J. B. Wells",
+            "doi": "10.1007/3-540-36575-3_20",
+            "title": "Type Error Slicing in Implicitly Typed Higher-Order Languages",
+            "venue": "ESOP 2003, LNCS 2618",
+            "year": "2003"
+          },
+          "name": "Haack & Wells (2003) Type Error Slicing"
+        },
+        {
+          "identity": {
+            "authors": "Danfeng Zhang, Andrew C. Myers",
+            "doi": "10.1145/2535838.2535870",
+            "title": "Toward General Diagnosis of Static Errors",
+            "venue": "POPL 2014",
+            "year": "2014"
+          },
+          "name": "Zhang & Myers (2014) SHErrLoc"
+        },
+        {
+          "identity": {
+            "authors": "Danfeng Zhang, Andrew C. Myers, Dimitrios Vytiniotis, Simon Peyton Jones",
+            "doi": "10.1145/2737924.2738009",
+            "title": "Diagnosing Type Errors with Class",
+            "venue": "PLDI 2015, pp. 12-21",
+            "year": "2015"
+          },
+          "name": "Zhang, Myers, Vytiniotis & Peyton Jones (2015) SHErrLoc for Type Classes"
+        },
+        {
+          "identity": {
+            "authors": "Zvonimir Pavlinovic, Tim King, Thomas Wies",
+            "doi": "10.1145/2660193.2660230",
+            "title": "Finding Minimum Type Error Sources",
+            "venue": "OOPSLA 2014, pp. 525-542",
+            "year": "2014"
+          },
+          "name": "Pavlinovic, King & Wies (2014) MinErrLoc"
+        },
+        {
+          "identity": {
+            "authors": "Zvonimir Pavlinovic, Tim King, Thomas Wies",
+            "doi": "10.1145/2784731.2784765",
+            "title": "Practical SMT-Based Type Error Localization",
+            "venue": "ICFP 2015, pp. 412-423",
+            "year": "2015"
+          },
+          "name": "Pavlinovic, King & Wies (2015) Practical SMT-Based Type Error Localization"
+        },
+        {
+          "identity": {
+            "authors": "Sheng Chen, Martin Erwig",
+            "doi": "10.1145/2535838.2535863",
+            "title": "Counter-Factual Typing for Debugging Type Errors",
+            "venue": "POPL 2014, pp. 583-594",
+            "year": "2014"
+          },
+          "name": "Chen & Erwig (2014) Counter-Factual Typing"
+        },
+        {
+          "identity": {
+            "authors": "Eric L. Seidel, Ranjit Jhala, Westley Weimer",
+            "doi": "10.1145/2951913.2951915",
+            "title": "Dynamic Witnesses for Static Type Errors (or, Ill-Typed Programs Usually Go Wrong)",
+            "venue": "ICFP 2016, pp. 228-242",
+            "year": "2016"
+          },
+          "name": "Seidel, Jhala & Weimer (2016) Dynamic Witnesses for Static Type Errors"
+        },
+        {
+          "identity": {
+            "arxiv": "1908.05839",
+            "authors": "Jana Dunfield, Neelakantan R. Krishnaswami",
+            "doi": "10.1145/3450952",
+            "title": "Bidirectional Typing",
+            "venue": "ACM Computing Surveys 54(5), Article 98",
+            "year": "2021"
+          },
+          "name": "Dunfield & Krishnaswami (2021) Bidirectional Typing Survey"
+        },
+        {
+          "identity": {
+            "authors": "Will Crichton, Gavin Gray, Shriram Krishnamurthi",
+            "doi": "10.1145/3622841",
+            "title": "A Grounded Conceptual Model for Ownership Types in Rust",
+            "venue": "Proc. ACM Program. Lang. 7(OOPSLA2), Article 265",
+            "year": "2023"
+          },
+          "name": "Crichton, Gray & Krishnamurthi (2023) Grounded Conceptual Model for Ownership Types"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.18704",
+            "authors": "Gavin Gray, Will Crichton, Shriram Krishnamurthi",
+            "doi": "10.1145/3729302",
+            "title": "An Interactive Debugger for Rust Trait Errors",
+            "venue": "Proc. ACM Program. Lang. 9(PLDI)",
+            "year": "2025"
+          },
+          "name": "Gray, Crichton & Krishnamurthi (2025) Argus Trait Error Debugger"
+        },
+        {
+          "identity": {
+            "authors": "Eric Zhao, Raef Maroof, Anand Dukkipati, Andrew Blinn, Zhiyi Pan, Cyrus Omar",
+            "doi": "10.1145/3632910",
+            "title": "Total Type Error Localization and Recovery with Holes",
+            "venue": "Proc. ACM Program. Lang. 8(POPL)",
+            "year": "2024"
+          },
+          "name": "Zhao et al. (2024) Total Type Error Localization and Recovery with Holes"
+        },
+        {
+          "identity": {
+            "arxiv": "2001.10490",
+            "authors": "Sebastian Ullrich, Leonardo de Moura",
+            "title": "Beyond Notations: Hygienic Macro Expansion for Theorem Proving Languages",
+            "venue": "IJCAR 2020 (extended in LMCS 18(2), 2022)",
+            "year": "2020"
+          },
+          "name": "Ullrich & de Moura (2020) Beyond Notations"
+        },
+        {
+          "identity": {
+            "arxiv": "2108.02967",
+            "authors": "Benedikt Becker, Claudio Belo Lourenco, Claude Marche",
+            "doi": "10.4204/EPTCS.338.10",
+            "title": "Explaining Counterexamples with Giant-Step Assertion Checking",
+            "venue": "F-IDE 2021, EPTCS 338, pp. 82-88",
+            "year": "2021"
+          },
+          "name": "Becker, Belo Lourenco & Marche (2021) Giant-Step Assertion Checking"
+        },
+        {
+          "identity": {
+            "authors": "K. Rustan M. Leino, Clement Pit-Claudel",
+            "doi": "10.1007/978-3-319-41528-4_20",
+            "title": "Trigger Selection Strategies to Stabilize Program Verifiers",
+            "venue": "CAV 2016, LNCS 9779, pp. 361-381",
+            "year": "2016"
+          },
+          "name": "Leino & Pit-Claudel (2016) Trigger Selection Strategies"
+        },
+        {
+          "identity": {
+            "repository": "cognitive-engineering-lab/aquascope",
+            "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+          },
+          "name": "Aquascope Rust ownership permission visualizer"
+        },
+        {
+          "identity": {
+            "repository": "cognitive-engineering-lab/argus",
+            "revision": "8d41733c313e97f87c6bf390ec59f2701e4e41d9"
+          },
+          "name": "Argus Rust trait proof-tree debugger"
+        },
+        {
+          "identity": {
+            "repository": "elm/compiler",
+            "revision": "1c278bf5ecf4136f122ce1cba436783c7f561dac"
+          },
+          "name": "Elm compiler type-error constraint and reporting subsystem"
+        },
+        {
+          "identity": {
+            "repository": "roc-lang/roc",
+            "revision": "63434e9847e74db8ffed7e9244bcb8317771c350"
+          },
+          "name": "Roc compiler type-checking problem context subsystem"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust compiler trait obligation and fulfillment error reporting"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 extensible parser and incremental language processor"
+        },
+        {
+          "identity": {
+            "repository": "agda/agda",
+            "revision": "9691cf2331ed3d5f9aba04380cc1cc8f415d192e"
+          },
+          "name": "Agda two-stage mixfix operator parser"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "8c137ba351c60a521cfb122011770fdbea9a0453"
+          },
+          "name": "Dafny counterexample extraction, trigger selection, and proof-dependency warnings"
+        },
+        {
+          "identity": {
+            "repository": "AdaCore/why3",
+            "revision": "02050ad2905bc0f54e7efdf7ad809cfee7a67fef"
+          },
+          "name": "Why3 giant-step counterexample classification and RAC"
+        },
+        {
+          "identity": {
+            "repository": "ucsd-progsys/nanomaly",
+            "revision": "0de06f2c3a41063b1bf87d5f6dd11ad830be0512"
+          },
+          "name": "NanoMaLy dynamic witness generator for static type errors"
+        },
+        {
+          "identity": {
+            "repository": "scala/scala3",
+            "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+          },
+          "name": "Scala 3 typed-AST quotation macro API"
+        }
+      ],
+      "topics": [
+        "tooling/diagnostics",
+        "pl/diagnostics",
+        "verification/ux",
+        "pl/inference"
       ]
     },
     "type-system-interactions-subtyping-polymorphism-and-decidability": {
@@ -44117,6 +45320,99 @@
         "systems/object-formats",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "wasm-component-model-truffle-graal-and-polyglot-interop-platforms": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model Specification (WIT, Canonical ABI, Concurrency)"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/gc",
+            "revision": "756060f5816c7e2159f4817fbdee76cf52f9c923"
+          },
+          "name": "WebAssembly Garbage Collection Proposal (MVP and Post-MVP)"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/shared-everything-threads",
+            "revision": "de560922268ca89fd3303776c5c1b8f123da2aec"
+          },
+          "name": "WebAssembly Shared-Everything Threads Proposal"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Wasmtime Component Model Runtime"
+        },
+        {
+          "identity": {
+            "repository": "oracle/graal",
+            "revision": "3fd1dcaa85129cc6df8232487f9506d73787a755"
+          },
+          "name": "GraalVM Truffle Polyglot Interop, NFI, and LLVM Runtime"
+        },
+        {
+          "identity": {
+            "authors": "Matthias Grimmer, Roland Schatz, Chris Seaton, Thomas W\u00fcrthinger, Mikel Luj\u00e1n, Hanspeter M\u00f6ssenb\u00f6ck",
+            "doi": "10.1145/3201898",
+            "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 40, No. 2, Article 8",
+            "year": "2018"
+          },
+          "name": "Cross-Language Interoperability in a Multi-Language Runtime (ACM TOPLAS 2018)"
+        },
+        {
+          "identity": {
+            "authors": "Matthias Grimmer, Chris Seaton, Roland Schatz, Thomas W\u00fcrthinger, Hanspeter M\u00f6ssenb\u00f6ck",
+            "doi": "10.1145/2816707.2816714",
+            "venue": "Proceedings of the 11th Symposium on Dynamic Languages (DLS 2015)",
+            "year": "2015"
+          },
+          "name": "High-Performance Cross-Language Interoperability in a Multi-Language Runtime (DLS 2015)"
+        },
+        {
+          "identity": {
+            "edition": "6th Edition, June 2012",
+            "standard": "ECMA-335 (ISO/IEC 23271)",
+            "url": "https://www.ecma-international.org/wp-content/uploads/ECMA-335_6th_edition_june_2012.pdf"
+          },
+          "name": "ECMA-335 Common Language Infrastructure (CLI), 6th Edition"
+        },
+        {
+          "identity": {
+            "repository": "dotnet/runtime",
+            "revision": "db341b0b461356d954079d27e86cb47c929e7e8a"
+          },
+          "name": ".NET CoreCLR Runtime and ECMA-335 Specification Addendum"
+        },
+        {
+          "identity": {
+            "repository": "capnproto/capnproto",
+            "revision": "20fe8fd325bf3825d6cdc3cf16bb263a4c142326"
+          },
+          "name": "Cap'n Proto Encoding Specification and C++ Layout Engine"
+        },
+        {
+          "identity": {
+            "specification": "FIDL Wire Format (v2 Envelopes), RFC-0126 (Driver Runtime), RFC-0131 (Design Principles of the FIDL Wire Format)",
+            "url": "https://fuchsia.dev/fuchsia-src/reference/fidl/language/wire-format"
+          },
+          "name": "Fuchsia FIDL Wire Format Specification and RFCs 0126 / 0131"
+        }
+      ],
+      "topics": [
+        "ffi/component-model",
+        "runtimes/polyglot",
+        "ffi/bridges",
+        "compilers/wasm"
       ]
     },
     "weak-memory-concurrency-models-hardware-mappings-and-optimizations": {

@@ -1,0 +1,33 @@
+[PASS] A1 order-reflection iff injective codec: 27 codecs on 3 atoms: pi(A)<=pi(B) => A<=B holds for exactly the 6 injective ones
+[PASS] A2 forgetful codec witness (uninit vs init 0): TargetThm, ClientVerified and whole-program CompRef all hold; SourceContract fails; linked binary may emit t_bad
+[PASS] A3 refining compilation witness (identity codec): binary {1} satisfies the exported theorem; equally correct binary {2} of the same source makes the verified client fail
+[PASS] A4a paired export is sound: 2151 instances with SourceContract+CompRef+ClientVerified: all give SourceWhole and re-derive TargetThm
+[PASS] A4b target-only export is insufficient: 3240 of 6633 instances with CompRef+TargetThm+ClientVerified violate SourceWhole
+[PASS] A4c exact compilation + injective codec recovers the contract: violations: exact&injective=0, exact&forgetful=1152, refining&injective=540
+[PASS] A5 open (context-parametric) certificate makes TargetThm sufficient: 56 instances with the lax square: linked binary correct in all; 196 violations without it
+[PASS] A5b A2 revisited: separate compilation restores the lax square: inlining client violates the square at byte b00; ABI-level client satisfies it and the linked binary returns t_ok
+[PASS] B1 refinement invalidates a possibilistic policy: {0,1,h} system satisfies 'possible outputs independent of h'; subset 'always h' does not
+[PASS] B2 for-all/for-all 2-safety is subset closed: 289 (system, refinement) pairs over 8 traces: 0 violations
+[PASS] B3 possibilistic noninterference is destroyed by refinement: 96 of 121 input-total refinements break it; witness: leak jitter {0,1} resolved to leak = sec
+[PASS] B4a I/O refinement does not constrain leakage: equal I/O behaviours; source constant time, target leaks sec; target leak traces are not a subset of the source's
+[PASS] B4b alphabet gap is generic: 48 (source, target) leak assignments with identical I/O where only the source is constant time (4 constant-time x 12 leaky)
+[PASS] B5a uniform leakage transformers are relational and preserve constant time: 12544 (source, per-event transformer) pairs: all relational, all preserve for-all/for-all constant time
+[PASS] B5b the relational condition suffices for preservation: 144 relational (constant-time source, target) pairs: 0 leaky targets
+[PASS] B5c a secret-dependent pass is not relational: target leak = sec fails the 2-trace condition against a constant-time source
+[PASS] C1a adequacy: (for all n, wp n) iff reachable states are safe and final states satisfy post: 1000 closed 3-state systems: equivalence holds in all
+[PASS] C1b a fixed finite index is not a safety proof: 184 unsafe systems satisfy wp at some index k>=1; witness 0->1->stuck passes at k=1,2 and fails at k=3
+[PASS] C1c partial correctness is vacuous on divergence: 430 systems satisfy wp with postcondition False at every index; witness: a self-loop that never returns
+[PASS] C2a prophetic client VC + semantic library spec => closed-program assertion: client VC valid for all prophecies; raw-pointer max_mut satisfies its prophetic spec; all 49 closed runs satisfy the assertion
+[PASS] C2b the client VC alone does not protect against an incorrect unsafe library: wrong-pointer and aliasing-violating libraries leave the client VC valid, fail the semantic spec check, and break closed runs
+[PASS] C3 prophecy quantifier discipline: for-all prophecy VC rejects 'final value is 5' after an unknown callee; an exists-prophecy VC would accept it although runs storing other values exist
+[PASS] C4 call-boundary invariants do not survive mid-update callbacks: invariant holds at the return boundary in both variants; a callback between the two raw writes observes it broken
+[PASS] C5 frame compatibility is the composition side condition: 27 footprint-disjoint (callee writes, caller-stable) pairs compose; all 37 overlapping pairs break the caller's assertion
+[PASS] C6 partial + total correctness do not compose to total correctness: callee satisfies {True} f {False} partially; caller is total against the contract; the linked system is only partially correct (it diverges)
+[PASS] C7 closed-system adequacy for the linked client and raw-pointer library: correct library: wp holds at every index for all 49 inputs; incorrect library: 42 inputs fail at index 7 and none fails below it
+[PASS] D0 the model is closed under implication, disjunction and later: 8 downward-closed propositions over indices 0..6
+[PASS] D1 excluded middle is not valid step-indexed: P or not P is valid only for the two index-independent propositions
+[PASS] D2 later cannot be eliminated at a fixed index: (later P => P) is valid only for P = True
+[PASS] D3 Loeb induction is valid: ((later P => P) => P) holds at every index for every proposition
+[PASS] D4 later^n False holds at exactly the indices below n: n laters are discharged only by an observer that supplies more than n steps: the closed-program adequacy quantification
+
+ALL 31 CHECKS PASSED

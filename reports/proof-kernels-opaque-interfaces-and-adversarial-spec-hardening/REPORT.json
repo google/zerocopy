@@ -1,0 +1,122 @@
+{
+  "topics": [
+    "verification/kernels",
+    "verification/specifications",
+    "pl/dependent-types",
+    "security/trust-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 kernel typechecker, declaration model, and compacted-region runtime (HEAD)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Lean 4 kernel typechecker (v4.14.0 historical baseline)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "410fab7284703f41660ca2454218dcca9b2ec896",
+        "version": "v4.14.0"
+      }
+    },
+    {
+      "name": "Rocq prover kernel, opaque proof table, and .vo object loader",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Agda typechecker, opaque block unfolding control, and .agdai serializer",
+      "identity": {
+        "repository": "agda/agda",
+        "revision": "9691cf2331ed3d5f9aba04380cc1cc8f415d192e"
+      }
+    },
+    {
+      "name": "Metamath Zero (mm0-c) verifier and .mmb binary proof specification",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "nanoda_lib safe-Rust external Lean 4 kernel typechecker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.32"
+      }
+    },
+    {
+      "name": "Lambdapi logical framework signature serialization",
+      "identity": {
+        "repository": "Deducteam/lambdapi",
+        "revision": "b7e9e0a0ae09b16a8841bbce1c7bfceb013ff3e3"
+      }
+    },
+    {
+      "name": "Anneal trust model and TrustedBoundary auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "08f1184dce262d8d3ab610d4becedc3a0ae4486c"
+      }
+    },
+    {
+      "name": "Anneal clean-room lean-miri correspondence hardening commit",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "6b09691a2820d0608034e1468b8685a0dccddb77"
+      }
+    },
+    {
+      "name": "Carneiro (2020), Metamath Zero: Designing a Theorem Prover Prover",
+      "identity": {
+        "doi": "10.1007/978-3-030-53518-6_5",
+        "arxiv": "1910.10703",
+        "venue": "CICM 2020, LNCS 12236, pp. 71-88"
+      }
+    },
+    {
+      "name": "Pollack (1998), How to Believe a Machine-Checked Proof",
+      "identity": {
+        "doi": "10.1093/oso/9780198501275.003.0013",
+        "report_doi": "10.7146/brics.v4i18.18945",
+        "report": "BRICS RS-97-18"
+      }
+    },
+    {
+      "name": "Fonseca, Zhang, Wang, and Krishnamurthy (2017), An Empirical Study on the Correctness of Formally Verified Distributed Systems",
+      "identity": {
+        "doi": "10.1145/3064176.3064183",
+        "venue": "EuroSys 2017"
+      }
+    },
+    {
+      "name": "Leroy (2009), A Formally Verified Compiler Back-End",
+      "identity": {
+        "doi": "10.1007/s10817-009-9155-4",
+        "arxiv": "0902.2137",
+        "venue": "Journal of Automated Reasoning 43(4):363-446"
+      }
+    },
+    {
+      "name": "Wang, Xu, Wilke, and Shao (2020), CompCertELF: Verified Separate Compilation of C Programs into ELF Object Files",
+      "identity": {
+        "doi": "10.1145/3428265",
+        "venue": "PACMPL 4 (OOPSLA 2020)"
+      }
+    },
+    {
+      "name": "Amaral, Mendes, and Campos (2026), MutDafny: A Mutation-Based Approach to Assess Dafny Specifications",
+      "identity": {
+        "arxiv": "2511.15403",
+        "doi": "10.48550/arXiv.2511.15403",
+        "venue": "ICSE 2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

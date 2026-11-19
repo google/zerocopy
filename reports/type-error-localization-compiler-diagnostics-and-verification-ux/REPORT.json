@@ -1,0 +1,241 @@
+{
+  "topics": [
+    "tooling/diagnostics",
+    "pl/diagnostics",
+    "verification/ux",
+    "pl/inference"
+  ],
+  "subjects": [
+    {
+      "name": "Lee & Yi (1998) Algorithm M vs Algorithm W",
+      "identity": {
+        "authors": "Oukseh Lee, Kwangkeun Yi",
+        "title": "Proofs about a Folklore Let-Polymorphic Type Inference Algorithm",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS) 20(4):707-723",
+        "year": "1998",
+        "doi": "10.1145/291891.291892"
+      }
+    },
+    {
+      "name": "Haack & Wells (2003) Type Error Slicing",
+      "identity": {
+        "authors": "Christian Haack, J. B. Wells",
+        "title": "Type Error Slicing in Implicitly Typed Higher-Order Languages",
+        "venue": "ESOP 2003, LNCS 2618",
+        "year": "2003",
+        "doi": "10.1007/3-540-36575-3_20"
+      }
+    },
+    {
+      "name": "Zhang & Myers (2014) SHErrLoc",
+      "identity": {
+        "authors": "Danfeng Zhang, Andrew C. Myers",
+        "title": "Toward General Diagnosis of Static Errors",
+        "venue": "POPL 2014",
+        "year": "2014",
+        "doi": "10.1145/2535838.2535870"
+      }
+    },
+    {
+      "name": "Zhang, Myers, Vytiniotis & Peyton Jones (2015) SHErrLoc for Type Classes",
+      "identity": {
+        "authors": "Danfeng Zhang, Andrew C. Myers, Dimitrios Vytiniotis, Simon Peyton Jones",
+        "title": "Diagnosing Type Errors with Class",
+        "venue": "PLDI 2015, pp. 12-21",
+        "year": "2015",
+        "doi": "10.1145/2737924.2738009"
+      }
+    },
+    {
+      "name": "Pavlinovic, King & Wies (2014) MinErrLoc",
+      "identity": {
+        "authors": "Zvonimir Pavlinovic, Tim King, Thomas Wies",
+        "title": "Finding Minimum Type Error Sources",
+        "venue": "OOPSLA 2014, pp. 525-542",
+        "year": "2014",
+        "doi": "10.1145/2660193.2660230"
+      }
+    },
+    {
+      "name": "Pavlinovic, King & Wies (2015) Practical SMT-Based Type Error Localization",
+      "identity": {
+        "authors": "Zvonimir Pavlinovic, Tim King, Thomas Wies",
+        "title": "Practical SMT-Based Type Error Localization",
+        "venue": "ICFP 2015, pp. 412-423",
+        "year": "2015",
+        "doi": "10.1145/2784731.2784765"
+      }
+    },
+    {
+      "name": "Chen & Erwig (2014) Counter-Factual Typing",
+      "identity": {
+        "authors": "Sheng Chen, Martin Erwig",
+        "title": "Counter-Factual Typing for Debugging Type Errors",
+        "venue": "POPL 2014, pp. 583-594",
+        "year": "2014",
+        "doi": "10.1145/2535838.2535863"
+      }
+    },
+    {
+      "name": "Seidel, Jhala & Weimer (2016) Dynamic Witnesses for Static Type Errors",
+      "identity": {
+        "authors": "Eric L. Seidel, Ranjit Jhala, Westley Weimer",
+        "title": "Dynamic Witnesses for Static Type Errors (or, Ill-Typed Programs Usually Go Wrong)",
+        "venue": "ICFP 2016, pp. 228-242",
+        "year": "2016",
+        "doi": "10.1145/2951913.2951915"
+      }
+    },
+    {
+      "name": "Dunfield & Krishnaswami (2021) Bidirectional Typing Survey",
+      "identity": {
+        "authors": "Jana Dunfield, Neelakantan R. Krishnaswami",
+        "title": "Bidirectional Typing",
+        "venue": "ACM Computing Surveys 54(5), Article 98",
+        "year": "2021",
+        "doi": "10.1145/3450952",
+        "arxiv": "1908.05839"
+      }
+    },
+    {
+      "name": "Crichton, Gray & Krishnamurthi (2023) Grounded Conceptual Model for Ownership Types",
+      "identity": {
+        "authors": "Will Crichton, Gavin Gray, Shriram Krishnamurthi",
+        "title": "A Grounded Conceptual Model for Ownership Types in Rust",
+        "venue": "Proc. ACM Program. Lang. 7(OOPSLA2), Article 265",
+        "year": "2023",
+        "doi": "10.1145/3622841"
+      }
+    },
+    {
+      "name": "Gray, Crichton & Krishnamurthi (2025) Argus Trait Error Debugger",
+      "identity": {
+        "authors": "Gavin Gray, Will Crichton, Shriram Krishnamurthi",
+        "title": "An Interactive Debugger for Rust Trait Errors",
+        "venue": "Proc. ACM Program. Lang. 9(PLDI)",
+        "year": "2025",
+        "doi": "10.1145/3729302",
+        "arxiv": "2504.18704"
+      }
+    },
+    {
+      "name": "Zhao et al. (2024) Total Type Error Localization and Recovery with Holes",
+      "identity": {
+        "authors": "Eric Zhao, Raef Maroof, Anand Dukkipati, Andrew Blinn, Zhiyi Pan, Cyrus Omar",
+        "title": "Total Type Error Localization and Recovery with Holes",
+        "venue": "Proc. ACM Program. Lang. 8(POPL)",
+        "year": "2024",
+        "doi": "10.1145/3632910"
+      }
+    },
+    {
+      "name": "Ullrich & de Moura (2020) Beyond Notations",
+      "identity": {
+        "authors": "Sebastian Ullrich, Leonardo de Moura",
+        "title": "Beyond Notations: Hygienic Macro Expansion for Theorem Proving Languages",
+        "venue": "IJCAR 2020 (extended in LMCS 18(2), 2022)",
+        "year": "2020",
+        "arxiv": "2001.10490"
+      }
+    },
+    {
+      "name": "Becker, Belo Lourenco & Marche (2021) Giant-Step Assertion Checking",
+      "identity": {
+        "authors": "Benedikt Becker, Claudio Belo Lourenco, Claude Marche",
+        "title": "Explaining Counterexamples with Giant-Step Assertion Checking",
+        "venue": "F-IDE 2021, EPTCS 338, pp. 82-88",
+        "year": "2021",
+        "doi": "10.4204/EPTCS.338.10",
+        "arxiv": "2108.02967"
+      }
+    },
+    {
+      "name": "Leino & Pit-Claudel (2016) Trigger Selection Strategies",
+      "identity": {
+        "authors": "K. Rustan M. Leino, Clement Pit-Claudel",
+        "title": "Trigger Selection Strategies to Stabilize Program Verifiers",
+        "venue": "CAV 2016, LNCS 9779, pp. 361-381",
+        "year": "2016",
+        "doi": "10.1007/978-3-319-41528-4_20"
+      }
+    },
+    {
+      "name": "Aquascope Rust ownership permission visualizer",
+      "identity": {
+        "repository": "cognitive-engineering-lab/aquascope",
+        "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+      }
+    },
+    {
+      "name": "Argus Rust trait proof-tree debugger",
+      "identity": {
+        "repository": "cognitive-engineering-lab/argus",
+        "revision": "8d41733c313e97f87c6bf390ec59f2701e4e41d9"
+      }
+    },
+    {
+      "name": "Elm compiler type-error constraint and reporting subsystem",
+      "identity": {
+        "repository": "elm/compiler",
+        "revision": "1c278bf5ecf4136f122ce1cba436783c7f561dac"
+      }
+    },
+    {
+      "name": "Roc compiler type-checking problem context subsystem",
+      "identity": {
+        "repository": "roc-lang/roc",
+        "revision": "63434e9847e74db8ffed7e9244bcb8317771c350"
+      }
+    },
+    {
+      "name": "Rust compiler trait obligation and fulfillment error reporting",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "Lean 4 extensible parser and incremental language processor",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Agda two-stage mixfix operator parser",
+      "identity": {
+        "repository": "agda/agda",
+        "revision": "9691cf2331ed3d5f9aba04380cc1cc8f415d192e"
+      }
+    },
+    {
+      "name": "Dafny counterexample extraction, trigger selection, and proof-dependency warnings",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "8c137ba351c60a521cfb122011770fdbea9a0453"
+      }
+    },
+    {
+      "name": "Why3 giant-step counterexample classification and RAC",
+      "identity": {
+        "repository": "AdaCore/why3",
+        "revision": "02050ad2905bc0f54e7efdf7ad809cfee7a67fef"
+      }
+    },
+    {
+      "name": "NanoMaLy dynamic witness generator for static type errors",
+      "identity": {
+        "repository": "ucsd-progsys/nanomaly",
+        "revision": "0de06f2c3a41063b1bf87d5f6dd11ad830be0512"
+      }
+    },
+    {
+      "name": "Scala 3 typed-AST quotation macro API",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

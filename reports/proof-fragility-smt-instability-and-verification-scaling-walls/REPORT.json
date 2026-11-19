@@ -1,0 +1,141 @@
+{
+  "topics": [
+    "verification/scaling",
+    "smt/instability",
+    "smt/e-matching",
+    "tooling/proof-engineering",
+    "verification/maintenance",
+    "verification/functional-lifting"
+  ],
+  "subjects": [
+    {
+      "name": "Mariposa: Measuring SMT Instability in Automated Program Verification (FMCAD 2023)",
+      "identity": {
+        "authors": "Yi Zhou, Jay Bosamiya, Yoshiki Takashima, Jessica Li, Marijn Heule, Bryan Parno",
+        "venue": "FMCAD 2023",
+        "doi": "10.34727/2023/isbn.978-3-85448-060-0_26",
+        "url": "https://www.andrew.cmu.edu/user/bparno/papers/mariposa.pdf"
+      }
+    },
+    {
+      "name": "Context Pruning for More Robust SMT-based Program Verification — SHAKE (FMCAD 2024)",
+      "identity": {
+        "authors": "Yi Zhou, Jay Bosamiya, Jessica Li, Marijn J. H. Heule, Bryan Parno",
+        "venue": "FMCAD 2024",
+        "doi": "10.34727/2024/isbn.978-3-85448-065-5_12",
+        "url": "https://www.cs.cmu.edu/~mheule/publications/shake.pdf"
+      }
+    },
+    {
+      "name": "Mariposa and SHAKE implementation and benchmark reports",
+      "identity": {
+        "repository": "secure-foundations/mariposa",
+        "revision": "8646e7b1c601f7154e93d85ebb1083ce1ed47f95"
+      }
+    },
+    {
+      "name": "Verus: Verifying Rust Programs using Linear Ghost Types (OOPSLA 2023)",
+      "identity": {
+        "authors": "Andrea Lattuada, Travis Hance, Chanhee Cho, Matthias Brun, Isitha Subasinghe, Yi Zhou, Jon Howell, Bryan Parno, Chris Hawblitzel",
+        "venue": "Proc. ACM Program. Lang. 7(OOPSLA1), 2023",
+        "doi": "10.1145/3586037",
+        "arxiv": "2303.05491"
+      }
+    },
+    {
+      "name": "Verus: A Practical Foundation for Systems Verification (SOSP 2024)",
+      "identity": {
+        "authors": "Andrea Lattuada, Travis Hance, Jay Bosamiya, Matthias Brun, Chanhee Cho, Hayley LeBlanc, Pranav Srinivasan, Reto Achermann, Tej Chajed, Chris Hawblitzel, Jon Howell, Jacob R. Lorch, Oded Padon, Bryan Parno",
+        "venue": "SOSP 2024",
+        "doi": "10.1145/3694715.3695952",
+        "url": "https://www.chajed.io/papers/verus:sosp2024.pdf"
+      }
+    },
+    {
+      "name": "Verus verification toolchain and VIR/SMT lowering source",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "a95764f23c6876b47500beda6118e2d142a87cc3"
+      }
+    },
+    {
+      "name": "Z3 SMT Solver (Matching Abstract Machine and Quantifier Instantiation Queue)",
+      "identity": {
+        "repository": "Z3Prover/z3",
+        "revision": "437536cd64a544a1c329fc57d83e56e294fdf47c"
+      }
+    },
+    {
+      "name": "SMT Scope (formerly Axiom Profiler 2) quantifier-instantiation debugger",
+      "identity": {
+        "repository": "viperproject/smt-scope",
+        "revision": "665f9263c6102ff63494dafb39976d015c675951"
+      }
+    },
+    {
+      "name": "QED at Large: A Survey of Engineering of Formally Verified Software (FnTPL 2019)",
+      "identity": {
+        "authors": "Talia Ringer, Karl Palmskog, Ilya Sergey, Milos Gligoric, Zachary Tatlock",
+        "venue": "Foundations and Trends in Programming Languages 5(2-3), 2019",
+        "doi": "10.1561/2500000045",
+        "arxiv": "2003.06458"
+      }
+    },
+    {
+      "name": "Proof Repair across Type Equivalences — PUMPKIN Pi (PLDI 2021)",
+      "identity": {
+        "authors": "Talia Ringer, RanDair Porter, Nathaniel Yazdani, John Leo, Dan Grossman",
+        "venue": "PLDI 2021",
+        "doi": "10.1145/3453483.3454033",
+        "arxiv": "2010.00774"
+      }
+    },
+    {
+      "name": "PUMPKIN Pi Coq proof-repair plugin",
+      "identity": {
+        "repository": "uwplse/pumpkin-pi",
+        "revision": "a7743d4665d8c7a0ebfd9d39e1247ee7804d402b"
+      }
+    },
+    {
+      "name": "Don't Sweat the Small Stuff: Formal Verification of C Code Without the Pain — AutoCorres (PLDI 2014)",
+      "identity": {
+        "authors": "David Greenaway, Japheth Lim, June Andronick, Gerwin Klein",
+        "venue": "PLDI 2014",
+        "doi": "10.1145/2594291.2594296"
+      }
+    },
+    {
+      "name": "AutoCorres proof-producing C abstraction framework (seL4 L4.verified)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation (ICFP 2022)",
+      "identity": {
+        "authors": "Son Ho, Jonathan Protzenko",
+        "venue": "Proc. ACM Program. Lang. 6(ICFP), 2022",
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185"
+      }
+    },
+    {
+      "name": "Aeneas functional Rust translation toolchain",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "8f4466db9f0d59267b8e76b54473a21a005cf7be"
+      }
+    },
+    {
+      "name": "Preserving User Proofs across Specification Changes — Why3 Proof Sessions (VSTTE 2013)",
+      "identity": {
+        "authors": "François Bobot, Jean-Christophe Filliâtre, Claude Marché, Guillaume Melquiond, Andrei Paskevich",
+        "venue": "VSTTE 2013",
+        "doi": "10.1007/978-3-642-54108-7_10"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

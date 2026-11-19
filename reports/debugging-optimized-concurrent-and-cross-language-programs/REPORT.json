@@ -1,0 +1,127 @@
+{
+  "topics": [
+    "tooling/debugging",
+    "tooling/time-travel",
+    "compilers/debuginfo",
+    "ffi/debugging",
+    "runtimes/async",
+    "runtimes/jit"
+  ],
+  "subjects": [
+    {
+      "name": "Hennessy (1982), Symbolic Debugging of Optimized Code",
+      "identity": {
+        "doi": "10.1145/357172.357173",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS) 4(3), pp. 323-344",
+        "year": "1982"
+      }
+    },
+    {
+      "name": "O'Callahan et al. (2017), Engineering Record And Replay For Deployability",
+      "identity": {
+        "arxiv": "arXiv:1705.05937v1",
+        "doi": "10.48550/arXiv.1705.05937",
+        "venue": "USENIX ATC 2017, pp. 377-389 (extended technical report)",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Di Luna et al. (2021), Who's Debugging the Debuggers? Exposing Debug Information Bugs in Optimized Binaries",
+      "identity": {
+        "arxiv": "arXiv:2011.13994v2",
+        "doi": "10.1145/3445814.3446695",
+        "venue": "ASPLOS 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Assaiante et al. (2023), Where Did My Variable Go? Poking Holes in Incomplete Debug Information",
+      "identity": {
+        "arxiv": "arXiv:2211.09568v1",
+        "doi": "10.48550/arXiv.2211.09568",
+        "venue": "ASPLOS 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "DWARF Debugging Information Format Version 5",
+      "identity": {
+        "date": "2017-02-13",
+        "publisher": "DWARF Debugging Information Format Committee",
+        "specification": "DWARF Version 5",
+        "url": "https://dwarfstd.org/doc/DWARF5.pdf"
+      }
+    },
+    {
+      "name": "LLVM Project (Assignment Tracking, Instruction Referencing, Key Instructions, RemoveDIs, DExTer)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "4f67d9e5e0ce3de41929bae220feb8858b0085b9"
+      }
+    },
+    {
+      "name": "rr Record-and-Replay Debugger",
+      "identity": {
+        "repository": "rr-debugger/rr",
+        "revision": "608efe319bbbc4d0f5658d984e16be187801325d"
+      }
+    },
+    {
+      "name": "Hermit Deterministic Linux Execution Environment",
+      "identity": {
+        "repository": "facebookexperimental/hermit",
+        "revision": "f5430390f6235786bf10dafac78942500766d112"
+      }
+    },
+    {
+      "name": "Tokio Console (Async Task Instrumentation Subscriber)",
+      "identity": {
+        "repository": "tokio-rs/console",
+        "revision": "b59758e5a6effe3a9df3ec84a2f28d319d178234"
+      }
+    },
+    {
+      "name": "Tokio async-backtrace (Logical Async Stack Reconstruction)",
+      "identity": {
+        "repository": "tokio-rs/async-backtrace",
+        "revision": "3dcc5ad3c0c3e2dce2fcf513dcec3ae5448597cb"
+      }
+    },
+    {
+      "name": "CPython Runtime (Perf Trampolines, jitdump Emitter, and GDB libpython Extension)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75"
+      }
+    },
+    {
+      "name": "Linux Kernel (x86 ORC Unwinder and perf jitdump v2 Specification)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Graal Compiler (FrameState and VirtualObjectNode)",
+      "identity": {
+        "repository": "oracle/graal",
+        "revision": "c1b06aa797a4aef3ee170f82e508f674a3d2f2f3"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot JVM (ScopeDesc and DebugInformationRecorder)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "186489b55b5df61e270174a76104a2af27cc7197"
+      }
+    },
+    {
+      "name": "V8 JavaScript Engine (Deoptimizer TranslatedState)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

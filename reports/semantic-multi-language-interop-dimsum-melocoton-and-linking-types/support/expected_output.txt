@@ -1,0 +1,61 @@
+Part A: dual non-determinism and branching-sensitive simulation
+  [PASS] A1 UB is top: M <= UB for every M -- 132 terms
+  [PASS] A2 NB is bottom: NB <= M for every M
+  [PASS] A3 UB is not below a module with defined behaviour
+  [PASS] A4 reflexivity
+  [PASS] A5 transitivity on the small family -- 48 terms, 52656 (p<=q, r) instances
+  [PASS] A6 all/all commute (both directions)
+  [PASS] A7 ex/ex commute (both directions)
+  [PASS] A8 [ex x; all y; p] <= [all y; ex x; p]
+  [PASS] A9 [all y; ex x; p] is NOT <= [ex x; all y; p]
+  [PASS] A10 [ex x; vis e; p] <= [vis e; ex x; p]
+  [PASS] A11 [vis e; ex x; p] is NOT <= [ex x; vis e; p]
+  [PASS] A12 [vis e; all x; p] <= [all x; vis e; p]
+  [PASS] A13 [all x; vis e; p] is NOT <= [vis e; all x; p]
+  [PASS] A14 simulation implies trace inclusion (traces up to length 2) -- 5693 related pairs
+  [PASS] A15 trace-equal modules need not be simulation-related
+  [PASS] A16 assume(False);p refines-to anything, assert(False);p refines anything
+Part B: tagged values, moving GC, registered roots, and C glue code
+  [PASS] B1 integer tagging 2n+1 is odd and round-trips -- 144 samples
+  [PASS] B2 64-bit Val_long/Long_val agree with 2n+1 exactly on [-2^62, 2^62-1] -- 2^62 itself wraps
+  [PASS] B3 block tags and accessors (0, 1, 247 closure, 255 foreign/custom)
+  [PASS] B4 misuse is stuck (immutable write, untagging a pointer, stale pointer test, double registration, freed root at a GC point)
+    wrap_unrooted                    reuse=False runs=7      ok=3      stuck=4      wrong=0     gc_points=1
+    wrap_rooted                      reuse=False runs=6      ok=6      stuck=0      wrong=0     gc_points=1
+    wrap_rooted_stale_copy           reuse=False runs=6      ok=3      stuck=3      wrong=0     gc_points=1
+    pair_after_callback_unrooted     reuse=False runs=984    ok=64     stuck=920    wrong=0     gc_points=2
+    pair_after_callback_half_rooted  reuse=False runs=768    ok=256    stuck=512    wrong=0     gc_points=2
+    pair_after_callback_rooted       reuse=False runs=512    ok=512    stuck=0      wrong=0     gc_points=2
+    wrap_unrooted                    reuse=True  runs=23     ok=5      stuck=9      wrong=9     gc_points=1
+    wrap_rooted                      reuse=True  runs=20     ok=20     stuck=0      wrong=0     gc_points=1
+    wrap_rooted_stale_copy           reuse=True  runs=20     ok=5      stuck=7      wrong=8     gc_points=1
+  [PASS] B5 rooted glue is correct under every GC outcome (fresh addresses only) -- 6 executions
+  [PASS] B6 unrooted local across an allocation is caught (fresh addresses only) -- 4 of 7 executions
+  [PASS] B7 rooting the cell does not protect a copy taken earlier (fresh addresses only)
+  [PASS] B5 rooted glue is correct under every GC outcome (with address reuse) -- 20 executions
+  [PASS] B6 unrooted local across an allocation is caught (with address reuse) -- 18 of 23 executions
+  [PASS] B7 rooting the cell does not protect a copy taken earlier (with address reuse)
+  [PASS] B8 rooted glue around a foreign callback is correct under every GC outcome -- 512 executions
+  [PASS] B9 unrooted and half-rooted locals across a foreign callback are caught
+  [PASS] B10 the unrooted bug is schedule dependent (some GC outcomes are benign)
+  [PASS] B11 without address reuse a stale pointer is always stuck, never silently wrong
+  [PASS] B12 with address reuse a stale pointer can silently denote another block -- 9 silently wrong executions
+Part C: well-bracketed control flow versus an out-of-order-return target context
+  [PASS] C1 source contexts: g never returns 0 (robustly satisfied safety property) -- 38 context behaviours
+  [PASS] C2 source contexts cannot distinguish the stateful and constant variants
+  [PASS] C3 naive target: some context makes g return 0 -- shortest attack: call ; ret(f0.1) ; call ; ret(f0.2)
+  [PASS] C4 naive target: the two source-equivalent variants become distinguishable
+  [PASS] C5 naive target violates the robustly-safe-compilation shape: a finite target trace prefix has no source context -- witness prefix (('ret', 0),)
+  [PASS] C6 unforgeable tokens alone do not help (any issued token accepted)
+  [PASS] C7 'token of a still-pending frame' is still not enough
+  [PASS] C8 one-shot LIFO return tokens: g never returns 0
+  [PASS] C9 one-shot LIFO return tokens: variants indistinguishable again
+  [PASS] C10 one-shot LIFO return tokens: every target trace prefix is a source trace prefix
+  [PASS] C11 the wrapper pays with fail-stop rejections of out-of-order returns -- 79 rejected context moves within the bound
+Part D: trace-equivalence preservation without robust safety preservation
+  [PASS] D1 equal source behaviour implies equal target behaviour (and conversely) -- 9 programs, target inputs 0..5
+  [PASS] D2 the compiled program agrees with the source on source-like inputs
+  [PASS] D3 'never output 42' holds robustly in the source but not after compilation -- target contexts [3, 4, 5] output 42
+  [PASS] D4 the bad target prefix has no source context (robustly safe compilation fails)
+SUMMARY: 46 of 46 checks passed
+ALL CHECKS PASSED
