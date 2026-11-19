@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "security/browser-sandboxing",
+    "runtimes/vm-isolation",
+    "ffi/webidl-membranes",
+    "systems/compartmentalization"
+  ],
+  "subjects": [
+    {
+      "name": "V8 JavaScript Engine (V8 Heap Sandbox)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    },
+    {
+      "name": "Chromium Browser (Site Isolation, ProcessLock, ORB, and Blink DOMWrapperWorld)",
+      "identity": {
+        "repository": "chromium/chromium",
+        "revision": "6105bc803f9c448b923d10464fee38644066cc2a"
+      }
+    },
+    {
+      "name": "Chromium Site Isolation paper (USENIX Security 2019)",
+      "identity": {
+        "standard": "Reis, Moshchuk, Oskov, Site Isolation: Process Separation for Web Sites within the Browser, USENIX Security 2019",
+        "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/reis"
+      }
+    },
+    {
+      "name": "RLBox Sandboxing API",
+      "identity": {
+        "repository": "PLSysSec/rlbox_sandboxing_api",
+        "revision": "b0157dc84f86ffbe4549e32ed5cbdfad79c17f43"
+      }
+    },
+    {
+      "name": "RLBox Renderer Isolation paper (USENIX Security 2020)",
+      "identity": {
+        "standard": "Narayan et al., Retrofitting Fine Grain Isolation in the Firefox Renderer, USENIX Security 2020",
+        "url": "https://www.usenix.org/conference/usenixsecurity20/presentation/narayan"
+      }
+    },
+    {
+      "name": "WHATWG Web IDL Standard",
+      "identity": {
+        "repository": "whatwg/webidl",
+        "revision": "54a5f2de6a34e27a517a49370bc07d8943b0be11"
+      }
+    },
+    {
+      "name": "WHATWG HTML Living Standard (WindowProxy and Cross-Origin Objects)",
+      "identity": {
+        "repository": "whatwg/html",
+        "revision": "94e4f346fdb450f5088da17ec5fe995e8860cf35"
+      }
+    },
+    {
+      "name": "W3C Trusted Types Specification",
+      "identity": {
+        "repository": "w3c/trusted-types",
+        "revision": "afcdd4634f6c85056e9c5f39fc1fe75486ea2bc5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

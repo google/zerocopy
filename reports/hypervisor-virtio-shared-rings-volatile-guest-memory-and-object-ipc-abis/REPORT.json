@@ -1,0 +1,105 @@
+{
+  "topics": [
+    "systems/virtualization",
+    "ffi/shared-memory-ipc",
+    "security/toctou-double-fetch",
+    "minirust/volatile-memory"
+  ],
+  "subjects": [
+    {
+      "name": "OASIS Virtual I/O Device (VIRTIO) Specification",
+      "identity": {
+        "repository": "oasis-tcs/virtio-spec",
+        "revision": "bb1dd2e1fe89b862f38f15873d835a698b196f89",
+        "version": "virtio-v1.4-cs01"
+      }
+    },
+    {
+      "name": "rust-vmm vm-memory",
+      "identity": {
+        "repository": "rust-vmm/vm-memory",
+        "revision": "4837300812be77e9071b3cf0abeaa6c8390a6431"
+      }
+    },
+    {
+      "name": "rust-vmm vm-virtio (virtio-queue)",
+      "identity": {
+        "repository": "rust-vmm/vm-virtio",
+        "revision": "87bf424736548126983c278b0d49a7b061e38b12"
+      }
+    },
+    {
+      "name": "rust-vmm vhost",
+      "identity": {
+        "repository": "rust-vmm/vhost",
+        "revision": "a3a6b988cb4c3b8530278e80b44590c59697793b"
+      }
+    },
+    {
+      "name": "Linux kernel vhost and Android Binder (C and Rust drivers)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "MiniRust basic memory model specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "SeKVM verified multiprocessor hypervisor (Linux 4.18 implementation)",
+      "identity": {
+        "repository": "VeriGu/SeKVM-4.18",
+        "revision": "75e3591e663958c370c919aa36fbd484be341043"
+      }
+    },
+    {
+      "name": "SeKVM Coq proofs on Arm relaxed memory hardware (VRM)",
+      "identity": {
+        "repository": "VeriGu/VRM",
+        "revision": "683c36a169fae261207dba1cbeb91bc73d16af3b",
+        "doi": "10.1145/3477132.3483560"
+      }
+    },
+    {
+      "name": "SeKVM microverification paper (IEEE S&P 2021)",
+      "identity": {
+        "standard": "Li et al., A Secure and Formally Verified Linux KVM Hypervisor, IEEE S&P 2021",
+        "doi": "10.1109/SP40001.2021.00049"
+      }
+    },
+    {
+      "name": "DEADLINE kernel double-fetch formalization (IEEE S&P 2018)",
+      "identity": {
+        "standard": "Xu et al., Precise and Scalable Detection of Double-Fetch Bugs in OS Kernels, IEEE S&P 2018",
+        "doi": "10.1109/SP.2018.00017"
+      }
+    },
+    {
+      "name": "Android Frameworks Base (Parcel and BaseBundle)",
+      "identity": {
+        "repository": "aosp-mirror/platform_frameworks_base",
+        "revision": "1cdfff555f4a21f71ccc978290e2e212e2f8b168"
+      }
+    },
+    {
+      "name": "Fuchsia Zircon kernel handles, channels, and VMO child semantics",
+      "identity": {
+        "documentation": "Fuchsia Zircon Kernel Reference (handles, rights, zx_channel_write_etc, zx_vmo_create_child)",
+        "url": "https://fuchsia.dev/fuchsia-src/concepts/kernel/handles"
+      }
+    },
+    {
+      "name": "Microsoft COM IUnknown::QueryInterface rules and windows-rs core bindings",
+      "identity": {
+        "repository": "microsoft/windows-rs",
+        "revision": "004e38f54c9508c9d5c0fd510258663f9fee05f5",
+        "url": "https://learn.microsoft.com/en-us/windows/win32/com/rules-for-implementing-queryinterface"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
