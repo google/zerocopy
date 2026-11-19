@@ -1,0 +1,109 @@
+{
+  "topics": [
+    "systems/storage-engines",
+    "domains/databases",
+    "verification/concurrent-datastructures",
+    "systems/concurrency-weak-memory"
+  ],
+  "subjects": [
+    {
+      "name": "Iris Flow Framework and Concurrent Search Structure Templates (nyu-acsys/template-proofs)",
+      "identity": {
+        "repository": "nyu-acsys/template-proofs",
+        "revision": "6444326e04577987c66776bed34d9a76ffd0df55"
+      }
+    },
+    {
+      "name": "Krishna, Patel, Shasha, Wies — Verifying Concurrent Search Structure Templates (PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3386029",
+        "venue": "PLDI 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Krishna, Shasha, Wies — Go with the Flow: Compositional Abstractions for Concurrent Data Structures (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158125",
+        "arxiv": "1711.03272",
+        "venue": "POPL 2018",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Lehman and Yao — Efficient Locking for Concurrent Operations on B-Trees (ACM TODS 1981)",
+      "identity": {
+        "doi": "10.1145/319628.319663",
+        "venue": "ACM TODS",
+        "year": "1981"
+      }
+    },
+    {
+      "name": "ARTSynchronized (Optimistic Lock Coupling & ROWEX)",
+      "identity": {
+        "repository": "flode/ARTSynchronized",
+        "revision": "f00003ec7991da09c3dfc1c84da97c1965106eb3"
+      }
+    },
+    {
+      "name": "Leis, Scheibner, Kemper, Neumann — The ART of Practical Synchronization (DaMoN 2016)",
+      "identity": {
+        "doi": "10.1145/2933349.2933352",
+        "venue": "DaMoN 2016",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "LeanStore Storage Engine",
+      "identity": {
+        "repository": "leanstore/leanstore",
+        "revision": "fcb64bf39cf69c435173f76e062cbb305a9a998f"
+      }
+    },
+    {
+      "name": "Leis, Haubenschild, Kemper, Neumann — LeanStore: In-Memory Data Management Beyond Main Memory (ICDE 2018)",
+      "identity": {
+        "doi": "10.1109/ICDE.2018.00026",
+        "venue": "ICDE 2018",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Cicada In-Memory MVCC Transaction Engine",
+      "identity": {
+        "repository": "efficient/cicada-engine",
+        "revision": "af469679d67a59a89536de634216d349af577d3a"
+      }
+    },
+    {
+      "name": "Lim, Kaminsky, Andersen — Cicada: Dependably Fast Multi-Core In-Memory Transactions (SIGMOD 2017)",
+      "identity": {
+        "doi": "10.1145/3035918.3064015",
+        "venue": "SIGMOD 2017",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "PostgreSQL",
+      "identity": {
+        "repository": "postgres/postgres",
+        "revision": "6ec71e1ad8c26b3a93e7c5739e797a2d353dc5d6"
+      }
+    },
+    {
+      "name": "RocksDB",
+      "identity": {
+        "repository": "facebook/rocksdb",
+        "revision": "2f4f3c4b1ec6e42577e629e2e322dec1f9c2ea85"
+      }
+    },
+    {
+      "name": "Pebble",
+      "identity": {
+        "repository": "cockroachdb/pebble",
+        "revision": "a995e890c06ef86c583927906e16e7f313083a3f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
