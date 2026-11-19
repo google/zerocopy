@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "pl/surface-semantics",
+    "verification/elaboration-soundness",
+    "compilers/macro-contracts",
+    "rustc/formality-models",
+    "pl/skeletal-semantics",
+    "minirust/specr",
+    "lean/macro-hygiene"
+  ],
+  "subjects": [
+    {
+      "name": "JSCert and JSRef Coq ECMAScript 5 Mechanization and Pretty-Big-Step Semantics",
+      "identity": {
+        "repository": "jscert/jscert",
+        "revision": "891828c11308350836cdb8e832e4d00ed3019d9c",
+        "popl2014_doi": "10.1145/2535838.2535876",
+        "esop2013_doi": "10.1007/978-3-642-37036-6_3"
+      }
+    },
+    {
+      "name": "Skeletal Semantics and Necro Meta-Language (Bodin, Gardner, Jensen, Schmitt, POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290357",
+        "venue": "PACMPL Vol. 3 No. POPL Art. 44 (2019)"
+      }
+    },
+    {
+      "name": "WebAssembly SpecTec Single-Source DSL and W3C WebAssembly Specification",
+      "identity": {
+        "spectec_repository": "Wasm-DSL/spectec",
+        "spectec_revision": "acc6e834ff403c82554d081237f327346190ad96",
+        "wasm_spec_repository": "WebAssembly/spec",
+        "wasm_spec_revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe",
+        "pldi2024_doi": "10.1145/3656440"
+      }
+    },
+    {
+      "name": "K Framework and Executable C, Java, and Rust MIR Semantics (K, K-C, K-Java, KMIR)",
+      "identity": {
+        "k_repository": "runtimeverification/k",
+        "k_revision": "4a46d1231473b599c699160132fd6e76a5c46406",
+        "c_semantics_repository": "kframework/c-semantics",
+        "c_semantics_revision": "e6879d14455771aa0cb3e3d201131d4d763a73a2",
+        "java_semantics_repository": "kframework/java-semantics",
+        "java_semantics_revision": "f27067ee7a38d236499992eed1b48064e70680fa",
+        "kmir_repository": "runtimeverification/mir-semantics",
+        "kmir_revision": "b8dede6335f4317371b6025af999dc9b56d6887d",
+        "popl2012_doi": "10.1145/2103656.2103719",
+        "popl2015_doi": "10.1145/2676726.2676982"
+      }
+    },
+    {
+      "name": "Rust Surface Trait and Type Models vs. Mid-Level Operational and Extraction IRs (a-mir-formality, MiniRust, SpecR, Hax, Charon)",
+      "identity": {
+        "a_mir_formality_repository": "rust-lang/a-mir-formality",
+        "a_mir_formality_revision": "503cc9de881b7e7a6023abbb1cca3873fd2c0ffc",
+        "minirust_repository": "minirust/minirust",
+        "minirust_revision": "063d784186d3252bee242217f218223205c0b568",
+        "specr_repository": "minirust/specr",
+        "specr_revision": "f33ec909955c6889ea4c4a377ab61ec609fcf1ae",
+        "hax_repository": "hacspec/hax",
+        "hax_revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b",
+        "charon_repository": "AeneasVerif/charon",
+        "charon_revision": "b2bb11d2d3672033c8157a49cb56a44c464c5179"
+      }
+    },
+    {
+      "name": "Bidirectional Elaboration and Hygienic Macro Expansion (Lean 4, Racket Sets of Scopes, and Rust syn/proc_macro)",
+      "identity": {
+        "lean4_repository": "leanprover/lean4",
+        "lean4_revision": "e35bfaf8dab2405124cb486c80a7c12d3cccb951",
+        "lmcs2022_doi": "10.46298/lmcs-18(2:1)2022",
+        "racket_repository": "racket/racket",
+        "racket_revision": "049065d5c96121c580edc0d1253abf5ed5a4930a",
+        "popl2016_doi": "10.1145/2837614.2837620",
+        "syn_repository": "dtolnay/syn",
+        "syn_revision": "a2cddb7a893532133c17a32e4ac68a9805db7c9f",
+        "bidirectional_survey_doi": "10.1145/3450952"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

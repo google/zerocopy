@@ -19352,6 +19352,90 @@
         "verification/numerical"
       ]
     },
+    "direct-surface-operational-semantics-jscert-k-spectec-and-desugaring-proofs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "esop2013_doi": "10.1007/978-3-642-37036-6_3",
+            "popl2014_doi": "10.1145/2535838.2535876",
+            "repository": "jscert/jscert",
+            "revision": "891828c11308350836cdb8e832e4d00ed3019d9c"
+          },
+          "name": "JSCert and JSRef Coq ECMAScript 5 Mechanization and Pretty-Big-Step Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290357",
+            "venue": "PACMPL Vol. 3 No. POPL Art. 44 (2019)"
+          },
+          "name": "Skeletal Semantics and Necro Meta-Language (Bodin, Gardner, Jensen, Schmitt, POPL 2019)"
+        },
+        {
+          "identity": {
+            "pldi2024_doi": "10.1145/3656440",
+            "spectec_repository": "Wasm-DSL/spectec",
+            "spectec_revision": "acc6e834ff403c82554d081237f327346190ad96",
+            "wasm_spec_repository": "WebAssembly/spec",
+            "wasm_spec_revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe"
+          },
+          "name": "WebAssembly SpecTec Single-Source DSL and W3C WebAssembly Specification"
+        },
+        {
+          "identity": {
+            "c_semantics_repository": "kframework/c-semantics",
+            "c_semantics_revision": "e6879d14455771aa0cb3e3d201131d4d763a73a2",
+            "java_semantics_repository": "kframework/java-semantics",
+            "java_semantics_revision": "f27067ee7a38d236499992eed1b48064e70680fa",
+            "k_repository": "runtimeverification/k",
+            "k_revision": "4a46d1231473b599c699160132fd6e76a5c46406",
+            "kmir_repository": "runtimeverification/mir-semantics",
+            "kmir_revision": "b8dede6335f4317371b6025af999dc9b56d6887d",
+            "popl2012_doi": "10.1145/2103656.2103719",
+            "popl2015_doi": "10.1145/2676726.2676982"
+          },
+          "name": "K Framework and Executable C, Java, and Rust MIR Semantics (K, K-C, K-Java, KMIR)"
+        },
+        {
+          "identity": {
+            "a_mir_formality_repository": "rust-lang/a-mir-formality",
+            "a_mir_formality_revision": "503cc9de881b7e7a6023abbb1cca3873fd2c0ffc",
+            "charon_repository": "AeneasVerif/charon",
+            "charon_revision": "b2bb11d2d3672033c8157a49cb56a44c464c5179",
+            "hax_repository": "hacspec/hax",
+            "hax_revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b",
+            "minirust_repository": "minirust/minirust",
+            "minirust_revision": "063d784186d3252bee242217f218223205c0b568",
+            "specr_repository": "minirust/specr",
+            "specr_revision": "f33ec909955c6889ea4c4a377ab61ec609fcf1ae"
+          },
+          "name": "Rust Surface Trait and Type Models vs. Mid-Level Operational and Extraction IRs (a-mir-formality, MiniRust, SpecR, Hax, Charon)"
+        },
+        {
+          "identity": {
+            "bidirectional_survey_doi": "10.1145/3450952",
+            "lean4_repository": "leanprover/lean4",
+            "lean4_revision": "e35bfaf8dab2405124cb486c80a7c12d3cccb951",
+            "lmcs2022_doi": "10.46298/lmcs-18(2:1)2022",
+            "popl2016_doi": "10.1145/2837614.2837620",
+            "racket_repository": "racket/racket",
+            "racket_revision": "049065d5c96121c580edc0d1253abf5ed5a4930a",
+            "syn_repository": "dtolnay/syn",
+            "syn_revision": "a2cddb7a893532133c17a32e4ac68a9805db7c9f"
+          },
+          "name": "Bidirectional Elaboration and Hygienic Macro Expansion (Lean 4, Racket Sets of Scopes, and Rust syn/proc_macro)"
+        }
+      ],
+      "topics": [
+        "pl/surface-semantics",
+        "verification/elaboration-soundness",
+        "compilers/macro-contracts",
+        "rustc/formality-models",
+        "pl/skeletal-semantics",
+        "minirust/specr",
+        "lean/macro-hygiene"
+      ]
+    },
     "direct-verified-dwarf-v5-and-codeview-debug-section-emitter": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -40961,6 +41045,81 @@
         "pl/p4-semantics",
         "verification/floating-point",
         "systems/exotic-numerics"
+      ]
+    },
+    "programmer-mental-models-smol-misconceptions-and-wysiwyg-language-design": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "oopsla2024_doi": "10.1145/3649823",
+            "smol_repository": "shriram/smol",
+            "smol_revision": "858d1b461924a7a9a37e9119faf191304dda5835",
+            "translator_repository": "brownplt/smol-translator",
+            "translator_revision": "1ab5cfa769926642af80b5189552649dd89995fe"
+          },
+          "name": "Standard Model of Languages (SMoL), SMoL Translator, and SMoL Tutor Misconception Catalog (Lu & Krishnamurthi, OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.04134v1",
+            "oopsla2023_doi": "10.1145/3622841",
+            "repository": "cognitive-engineering-lab/aquascope",
+            "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6"
+          },
+          "name": "Aquascope Grounded Ownership Permissions Visualizer and Ownership Inventory (Crichton, Gray, Krishnamurthi, OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "hazel_repository": "hazelgrove/hazel",
+            "hazel_revision": "13ba5d135a4e47728f099f1eb56746e0e57f3c99",
+            "popl2019_doi": "10.1145/3290329",
+            "rustviz_repository": "rustviz/rustviz",
+            "rustviz_revision": "b8c05e066bc6cf11734818aa8d8332bf7542497e",
+            "vlhcc2022_doi": "10.1109/VL/HCC53370.2022.9833121"
+          },
+          "name": "RustViz Ownership Timeline Visualizer and Hazel Live Typed-Hole Environment"
+        },
+        {
+          "identity": {
+            "pldi2016_doi": "10.1145/2908080.2908081",
+            "popl2019_doi": "10.1145/3290380",
+            "repository": "rems-project/cerberus",
+            "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e"
+          },
+          "name": "Cerberus De Facto vs. ISO C11 Semantics and Empirical Systems-Programmer Survey (Memarian et al., PLDI 2016 / POPL 2019)"
+        },
+        {
+          "identity": {
+            "repository": "ziglang/zig",
+            "revision": "738d2be9d6b6ef3ff3559130c05159ef53336224"
+          },
+          "name": "Zig Compiler and Explicit-Control-Flow / Non-Associative Precedence Grammar"
+        },
+        {
+          "identity": {
+            "repository": "austral/austral",
+            "revision": "0962d2a8a5d77f7daacd7f696819520733f4897d"
+          },
+          "name": "Austral Linear-Capability Systems Language and Anti-Features Specification"
+        },
+        {
+          "identity": {
+            "anthropic_fv_report_url": "https://www.anthropic.com/research/formal-verification",
+            "miri_repository": "rust-lang/miri",
+            "miri_revision": "93d13704b5e5e12dedfc54df626468000bc46262"
+          },
+          "name": "Miri Mid-Level Rust Reference Interpreter and Differential Intent-Verification Studies"
+        }
+      ],
+      "topics": [
+        "pl/mental-models",
+        "tooling/semantic-visualization",
+        "pl/least-astonishment",
+        "verification/intent-preservation",
+        "rust/ownership-models",
+        "pl/notional-machines",
+        "compilers/differential-testing"
       ]
     },
     "proof-carrying-syscall-admission-kernel-resident-checkers-and-ring-policies": {

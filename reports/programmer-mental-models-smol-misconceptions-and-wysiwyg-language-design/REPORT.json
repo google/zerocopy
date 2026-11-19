@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "pl/mental-models",
+    "tooling/semantic-visualization",
+    "pl/least-astonishment",
+    "verification/intent-preservation",
+    "rust/ownership-models",
+    "pl/notional-machines",
+    "compilers/differential-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Standard Model of Languages (SMoL), SMoL Translator, and SMoL Tutor Misconception Catalog (Lu & Krishnamurthi, OOPSLA 2024)",
+      "identity": {
+        "smol_repository": "shriram/smol",
+        "smol_revision": "858d1b461924a7a9a37e9119faf191304dda5835",
+        "translator_repository": "brownplt/smol-translator",
+        "translator_revision": "1ab5cfa769926642af80b5189552649dd89995fe",
+        "oopsla2024_doi": "10.1145/3649823"
+      }
+    },
+    {
+      "name": "Aquascope Grounded Ownership Permissions Visualizer and Ownership Inventory (Crichton, Gray, Krishnamurthi, OOPSLA 2023)",
+      "identity": {
+        "repository": "cognitive-engineering-lab/aquascope",
+        "revision": "f2d0a06034b86765a91f10b7c8e40ec31ecb87a6",
+        "oopsla2023_doi": "10.1145/3622841",
+        "arxiv": "2309.04134v1"
+      }
+    },
+    {
+      "name": "RustViz Ownership Timeline Visualizer and Hazel Live Typed-Hole Environment",
+      "identity": {
+        "rustviz_repository": "rustviz/rustviz",
+        "rustviz_revision": "b8c05e066bc6cf11734818aa8d8332bf7542497e",
+        "vlhcc2022_doi": "10.1109/VL/HCC53370.2022.9833121",
+        "hazel_repository": "hazelgrove/hazel",
+        "hazel_revision": "13ba5d135a4e47728f099f1eb56746e0e57f3c99",
+        "popl2019_doi": "10.1145/3290329"
+      }
+    },
+    {
+      "name": "Cerberus De Facto vs. ISO C11 Semantics and Empirical Systems-Programmer Survey (Memarian et al., PLDI 2016 / POPL 2019)",
+      "identity": {
+        "repository": "rems-project/cerberus",
+        "revision": "e29a8ec9f247ef7e0fbc3a19141dfc8f0f9b902e",
+        "pldi2016_doi": "10.1145/2908080.2908081",
+        "popl2019_doi": "10.1145/3290380"
+      }
+    },
+    {
+      "name": "Zig Compiler and Explicit-Control-Flow / Non-Associative Precedence Grammar",
+      "identity": {
+        "repository": "ziglang/zig",
+        "revision": "738d2be9d6b6ef3ff3559130c05159ef53336224"
+      }
+    },
+    {
+      "name": "Austral Linear-Capability Systems Language and Anti-Features Specification",
+      "identity": {
+        "repository": "austral/austral",
+        "revision": "0962d2a8a5d77f7daacd7f696819520733f4897d"
+      }
+    },
+    {
+      "name": "Miri Mid-Level Rust Reference Interpreter and Differential Intent-Verification Studies",
+      "identity": {
+        "miri_repository": "rust-lang/miri",
+        "miri_revision": "93d13704b5e5e12dedfc54df626468000bc46262",
+        "anthropic_fv_report_url": "https://www.anthropic.com/research/formal-verification"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
