@@ -11325,6 +11325,111 @@
         "pl/alpha-equivalence"
       ]
     },
+    "control-flow-linearity-effect-compilation-and-stackless-stackful-unification": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2307.09383v2",
+            "doi": "10.1145/3632896",
+            "venue": "PACMPL Vol. 8, POPL 2024"
+          },
+          "name": "Soundly Handling Linearity (POPL 2024, F_eff and Q_eff)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473576",
+            "venue": "PACMPL Vol. 5, ICFP 2021"
+          },
+          "name": "Generalized Evidence Passing for Effect Handlers (ICFP 2021)"
+        },
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka compiler evidence passing, resume analysis, and std/core/hnd"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428194",
+            "venue": "PACMPL Vol. 4, OOPSLA 2020"
+          },
+          "name": "Effects as Capabilities: Effect Handlers and Lightweight Effect Polymorphism (OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3527320",
+            "venue": "PACMPL Vol. 6, OOPSLA 2022"
+          },
+          "name": "Effects, Capabilities, and Boxes (OOPSLA 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290318",
+            "venue": "PACMPL Vol. 3, POPL 2019"
+          },
+          "name": "Abstraction-Safe Effect Handlers via Tunneling (POPL 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371116",
+            "venue": "PACMPL Vol. 4, POPL 2020"
+          },
+          "name": "Binders by Day, Labels by Night: Effect Instances via Lexically Scoped Handlers (POPL 2020)"
+        },
+        {
+          "identity": {
+            "repository": "effekt-lang/effekt",
+            "revision": "6976c7947eac26bc1203bcd48892702ce6d3cf21"
+          },
+          "name": "Effekt compiler capability scopes and continuation machine IR"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/stack-switching",
+            "revision": "f0b43efd4952e6520592e4d601f2c271ea6cd659"
+          },
+          "name": "WebAssembly Stack Switching proposal"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model Async Canonical ABI (WASI Preview 3)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot virtual-thread unpinning and ObjectMonitor (JEP 491)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c078d7b6876e6f21c0162671374939016b174c94"
+          },
+          "name": "LLVM swifterror register promotion and x86-64/AArch64 calling conventions"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "3be0cf4b450b5366cff4b1a7e5bf7e5b4633224f"
+          },
+          "name": "Swift ABI calling convention documentation"
+        }
+      ],
+      "topics": [
+        "pl/effects",
+        "pl/linearity",
+        "compilers/effect-compilation",
+        "compilers/calling-conventions",
+        "runtimes/continuations",
+        "ffi/async-interop"
+      ]
+    },
     "coroutine-state-machine-optimization-and-hybridtrace-scaling": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -11533,6 +11638,82 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "cross-heap-cycle-collection-external-accounting-and-linear-finalization": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 CppHeap and Unified Heap cross-component tracing (Oilpan integration)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3276521",
+            "venue": "PACMPL Vol. 2, OOPSLA 2018"
+          },
+          "name": "Cross-Component Garbage Collection (OOPSLA 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45337-7_12",
+            "venue": "ECOOP 2001, LNCS 2072"
+          },
+          "name": "Concurrent Cycle Collection in Reference Counted Systems (ECOOP 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454032",
+            "venue": "PLDI 2021"
+          },
+          "name": "Perceus: Garbage Free Reference Counting with Reuse (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka compiler Perceus passes and kklib reference-counting runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3243176.3243195",
+            "venue": "PACT 2018"
+          },
+          "name": "Biased Reference Counting: Minimizing Atomic Operations in Garbage Collection (PACT 2018)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75"
+          },
+          "name": "CPython free-threaded biased reference counting, QSBR, and cyclic GC (PEP 703)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK Foreign Function & Memory API shared Arena handshakes (JEP 454)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go runtime.AddCleanup and runtime.SetFinalizer subsystem (Go 1.24+)"
+        }
+      ],
+      "topics": [
+        "runtimes/gc",
+        "runtimes/reference-counting",
+        "ffi/multi-runtime",
+        "verification/gc",
+        "pl/ownership",
+        "pl/finalization"
       ]
     },
     "cross-language-lto-linker-plugin-bitcode-and-llvm-ir-semantics": {
@@ -22202,6 +22383,112 @@
         "rustc/metadata"
       ]
     },
+    "modal-region-systems-oxcaml-verona-and-hardware-pinning-barriers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "oxcaml/oxcaml",
+            "revision": "0cfb4ab854af0395cbbcf4e7dbdd6c2e7a9c62c1"
+          },
+          "name": "OxCaml compiler modal and jkind type system"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674642",
+            "venue": "PACMPL Vol. 8, ICFP 2024, Article 253"
+          },
+          "name": "Oxidizing OCaml with Modal Memory Management (ICFP 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704859",
+            "venue": "PACMPL Vol. 9, POPL 2025, Article 23"
+          },
+          "name": "Data Race Freedom a la Mode (POPL 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408972",
+            "venue": "PACMPL Vol. 4, ICFP 2020, Article 90"
+          },
+          "name": "A Unified View of Modalities in Type Systems (ICFP 2020)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/verona-rt",
+            "revision": "5cb8e8cf3699fa53c8a9b8dc34e4431c40d6230f"
+          },
+          "name": "Project Verona runtime (isolated regions and Behaviour-Oriented Concurrency)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/verona",
+            "revision": "ed33fdf1c2e249a0393ead1cffd6e40503c70f2c"
+          },
+          "name": "Project Verona language and compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622852",
+            "venue": "PACMPL Vol. 7, OOPSLA2 2023"
+          },
+          "name": "When Concurrency Matters: Behaviour-Oriented Concurrency (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "repository": "digego/extempore",
+            "revision": "38bf1d2444a6166371c17abfa40dfa58f6ab962e"
+          },
+          "name": "Extempore runtime memory zones (EXTZones)"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/cheribsd",
+            "revision": "88f39900c32928d807dba245fba138808c666f34"
+          },
+          "name": "CheriBSD CHERI heap temporal revocation (Cornucopia Reloaded)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3620665.3640416",
+            "venue": "ASPLOS 2024"
+          },
+          "name": "Cornucopia Reloaded: Load Barriers for CHERI Heap Temporal Safety (ASPLOS 2024)"
+        },
+        {
+          "identity": {
+            "assignee": "Mill Computing, Inc.",
+            "patents": "US-9524163-B2, US-9747218-B2"
+          },
+          "name": "Mill Computing hardware pointer processing and protection domains"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot Generational ZGC colored pointer and barrier subsystem"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c078d7b6876e6f21c0162671374939016b174c94"
+          },
+          "name": "LLVM gc.statepoint and derived-pointer safepoint documentation"
+        }
+      ],
+      "topics": [
+        "pl/ownership",
+        "pl/modal-types",
+        "runtimes/gc",
+        "runtimes/regions",
+        "ffi/gc-interop",
+        "isa/cheri",
+        "isa/hardware-barriers",
+        "llvm/statepoints"
+      ]
+    },
     "modern-sfi-lfi-and-ring0-wasm-kernels-2020-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -32736,6 +33023,88 @@
         "lean/mechanization"
       ]
     },
+    "simulation-witness-debuginfo-and-verified-time-travel-observability": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c078d7b6876e6f21c0162671374939016b174c94"
+          },
+          "name": "LLVM Instruction Referencing Debug Info Infrastructure"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386020",
+            "repository": "yuanboli233/debug-info-testing",
+            "revision": "0c74da8d29601f140c60c6fb28da45b48ee54dc9",
+            "venue": "PLDI 2020"
+          },
+          "name": "Debug Information Validation for Optimized Code (Li, Ding, Zhang, and Italiano, PLDI 2020)"
+        },
+        {
+          "identity": {
+            "arxiv_asplos_2023": "2211.09568",
+            "doi_asplos_2021": "10.1145/3445814.3446695",
+            "doi_asplos_2023": "10.1145/3575693.3575720"
+          },
+          "name": "Debug Information Completeness and Correctness Studies (Di Luna et al., ASPLOS 2021; Assaiante et al., ASPLOS 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434327",
+            "repository": "Aurele-Barriere/CoreJIT",
+            "revision": "8740d4149be649d0746d9f0d2d759b387a8f3246",
+            "venue": "Proc. ACM Program. Lang. 5, POPL (2021)"
+          },
+          "name": "CoreJIT: Formally Verified Speculation and Deoptimization in a JIT Compiler (Barriere et al., POPL 2021)"
+        },
+        {
+          "identity": {
+            "doi_fluckiger_2018": "10.1145/3158137",
+            "doi_holzle_1992": "10.1145/143103.143114",
+            "doi_stadler_2014": "10.1145/2581122.2544157"
+          },
+          "name": "Dynamic Deoptimization and Partial Escape Analysis Foundations (Holzle et al. PLDI 1992; Stadler et al. CGO 2014; Fluckiger et al. POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360572",
+            "venue": "Proc. ACM Program. Lang. 3, OOPSLA (2019)"
+          },
+          "name": "Reliable and Fast DWARF-Based Stack Unwinding (Bastian, Kell, and Zappa Nardelli, OOPSLA 2019)"
+        },
+        {
+          "identity": {
+            "repository": "rr-debugger/rr",
+            "revision": "608efe319bbbc4d0f5658d984e16be187801325d",
+            "url": "https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan"
+          },
+          "name": "rr Deterministic Record-and-Replay Debugger (O'Callahan et al., USENIX ATC 2017)"
+        },
+        {
+          "identity": {
+            "repository": "facebookexperimental/hermit",
+            "revision": "8bc703d3bb736b0119bbb77b1a3a0d804da66987"
+          },
+          "name": "Hermit Deterministic Linux Execution Environment"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/EuroSP.2018.00009",
+            "venue": "IEEE EuroS&P 2018"
+          },
+          "name": "Controlling Compiler Side Effects and Secret Erasure (Simon, Chisnall, and Anderson, EuroS&P 2018)"
+        }
+      ],
+      "topics": [
+        "compilers/debuginfo",
+        "compilers/jit",
+        "tooling/debugging",
+        "tooling/time-travel",
+        "verification/compiler-verification"
+      ]
+    },
     "single-vs-swarm-model-refinement-empirical-comparison": {
       "observed_at": "2026-11-05",
       "subjects": [
@@ -33089,6 +33458,66 @@
         "lean/mathlib/bitvec",
         "lean/kernel",
         "lean/tactics"
+      ]
+    },
+    "sparse-tensor-coiteration-looplets-and-factorized-query-shredding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv_finch": "2404.16730",
+            "doi_cgo_2023": "10.1145/3579990.3580020",
+            "repository": "finch-tensor/Finch.jl",
+            "revision": "7aa1ca1609054b94f3a1b56bb2221ae872513a10"
+          },
+          "name": "Finch and Looplets (Ahrens et al., CGO 2023; arXiv:2404.16730)"
+        },
+        {
+          "identity": {
+            "doi_oopsla_2017": "10.1145/3133901",
+            "doi_oopsla_2018": "10.1145/3276493",
+            "repository": "tensor-compiler/taco",
+            "revision": "0e79acb56cb5f3d1785179536256e206790b2a9e"
+          },
+          "name": "TACO: The Tensor Algebra Compiler (Kjolstad et al., OOPSLA 2017; Chou et al., OOPSLA 2018)"
+        },
+        {
+          "identity": {
+            "arxiv": "2301.10841",
+            "doi": "10.1145/3589295",
+            "repository": "SIGMOD23p561/free-join",
+            "revision": "c020bbc7964ba17594299a1910ad6b65eebdf0e0"
+          },
+          "name": "Free Join: Unifying Worst-Case Optimal and Traditional Joins (Wang, Willsey, and Suciu, SIGMOD 2023)"
+        },
+        {
+          "identity": {
+            "doi_icfp_2013": "10.1145/2500365.2500586",
+            "doi_sigmod_2014": "10.1145/2588555.2612186"
+          },
+          "name": "Language-Integrated Query Normalization and Query Shredding (Cheney, Lindley, and Wadler, ICFP 2013; SIGMOD 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1265530.1265535",
+            "venue": "PODS 2007"
+          },
+          "name": "Provenance Semirings (Green, Karvounarakis, and Tannen, PODS 2007)"
+        },
+        {
+          "identity": {
+            "repository": "bevyengine/bevy",
+            "revision": "779770720e6ad916c1de38cf66a67d0e079ed1e3"
+          },
+          "name": "Bevy ECS Archetypal SoA Storage and Query Disjointness (bevy_ecs)"
+        }
+      ],
+      "topics": [
+        "compilers/tensor-algebra",
+        "compilers/relational",
+        "pl/datalog",
+        "pl/layout-algebras",
+        "systems/ecs"
       ]
     },
     "starnix-ebpf-core-postcleanup-mir-and-abstract-domain-verification": {

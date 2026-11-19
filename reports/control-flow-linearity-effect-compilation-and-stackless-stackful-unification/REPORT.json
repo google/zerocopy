@@ -1,0 +1,105 @@
+{
+  "topics": [
+    "pl/effects",
+    "pl/linearity",
+    "compilers/effect-compilation",
+    "compilers/calling-conventions",
+    "runtimes/continuations",
+    "ffi/async-interop"
+  ],
+  "subjects": [
+    {
+      "name": "Soundly Handling Linearity (POPL 2024, F_eff and Q_eff)",
+      "identity": {
+        "doi": "10.1145/3632896",
+        "arxiv": "2307.09383v2",
+        "venue": "PACMPL Vol. 8, POPL 2024"
+      }
+    },
+    {
+      "name": "Generalized Evidence Passing for Effect Handlers (ICFP 2021)",
+      "identity": {
+        "doi": "10.1145/3473576",
+        "venue": "PACMPL Vol. 5, ICFP 2021"
+      }
+    },
+    {
+      "name": "Koka compiler evidence passing, resume analysis, and std/core/hnd",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+      }
+    },
+    {
+      "name": "Effects as Capabilities: Effect Handlers and Lightweight Effect Polymorphism (OOPSLA 2020)",
+      "identity": {
+        "doi": "10.1145/3428194",
+        "venue": "PACMPL Vol. 4, OOPSLA 2020"
+      }
+    },
+    {
+      "name": "Effects, Capabilities, and Boxes (OOPSLA 2022)",
+      "identity": {
+        "doi": "10.1145/3527320",
+        "venue": "PACMPL Vol. 6, OOPSLA 2022"
+      }
+    },
+    {
+      "name": "Abstraction-Safe Effect Handlers via Tunneling (POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290318",
+        "venue": "PACMPL Vol. 3, POPL 2019"
+      }
+    },
+    {
+      "name": "Binders by Day, Labels by Night: Effect Instances via Lexically Scoped Handlers (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371116",
+        "venue": "PACMPL Vol. 4, POPL 2020"
+      }
+    },
+    {
+      "name": "Effekt compiler capability scopes and continuation machine IR",
+      "identity": {
+        "repository": "effekt-lang/effekt",
+        "revision": "6976c7947eac26bc1203bcd48892702ce6d3cf21"
+      }
+    },
+    {
+      "name": "WebAssembly Stack Switching proposal",
+      "identity": {
+        "repository": "WebAssembly/stack-switching",
+        "revision": "f0b43efd4952e6520592e4d601f2c271ea6cd659"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model Async Canonical ABI (WASI Preview 3)",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot virtual-thread unpinning and ObjectMonitor (JEP 491)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "LLVM swifterror register promotion and x86-64/AArch64 calling conventions",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c078d7b6876e6f21c0162671374939016b174c94"
+      }
+    },
+    {
+      "name": "Swift ABI calling convention documentation",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "3be0cf4b450b5366cff4b1a7e5bf7e5b4633224f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

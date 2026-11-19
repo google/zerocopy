@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "runtimes/gc",
+    "runtimes/reference-counting",
+    "ffi/multi-runtime",
+    "verification/gc",
+    "pl/ownership",
+    "pl/finalization"
+  ],
+  "subjects": [
+    {
+      "name": "V8 CppHeap and Unified Heap cross-component tracing (Oilpan integration)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    },
+    {
+      "name": "Cross-Component Garbage Collection (OOPSLA 2018)",
+      "identity": {
+        "doi": "10.1145/3276521",
+        "venue": "PACMPL Vol. 2, OOPSLA 2018"
+      }
+    },
+    {
+      "name": "Concurrent Cycle Collection in Reference Counted Systems (ECOOP 2001)",
+      "identity": {
+        "doi": "10.1007/3-540-45337-7_12",
+        "venue": "ECOOP 2001, LNCS 2072"
+      }
+    },
+    {
+      "name": "Perceus: Garbage Free Reference Counting with Reuse (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454032",
+        "venue": "PLDI 2021"
+      }
+    },
+    {
+      "name": "Koka compiler Perceus passes and kklib reference-counting runtime",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+      }
+    },
+    {
+      "name": "Biased Reference Counting: Minimizing Atomic Operations in Garbage Collection (PACT 2018)",
+      "identity": {
+        "doi": "10.1145/3243176.3243195",
+        "venue": "PACT 2018"
+      }
+    },
+    {
+      "name": "CPython free-threaded biased reference counting, QSBR, and cyclic GC (PEP 703)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75"
+      }
+    },
+    {
+      "name": "OpenJDK Foreign Function & Memory API shared Arena handshakes (JEP 454)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "Go runtime.AddCleanup and runtime.SetFinalizer subsystem (Go 1.24+)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

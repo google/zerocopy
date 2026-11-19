@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "compilers/tensor-algebra",
+    "compilers/relational",
+    "pl/datalog",
+    "pl/layout-algebras",
+    "systems/ecs"
+  ],
+  "subjects": [
+    {
+      "name": "Finch and Looplets (Ahrens et al., CGO 2023; arXiv:2404.16730)",
+      "identity": {
+        "repository": "finch-tensor/Finch.jl",
+        "revision": "7aa1ca1609054b94f3a1b56bb2221ae872513a10",
+        "doi_cgo_2023": "10.1145/3579990.3580020",
+        "arxiv_finch": "2404.16730"
+      }
+    },
+    {
+      "name": "TACO: The Tensor Algebra Compiler (Kjolstad et al., OOPSLA 2017; Chou et al., OOPSLA 2018)",
+      "identity": {
+        "repository": "tensor-compiler/taco",
+        "revision": "0e79acb56cb5f3d1785179536256e206790b2a9e",
+        "doi_oopsla_2017": "10.1145/3133901",
+        "doi_oopsla_2018": "10.1145/3276493"
+      }
+    },
+    {
+      "name": "Free Join: Unifying Worst-Case Optimal and Traditional Joins (Wang, Willsey, and Suciu, SIGMOD 2023)",
+      "identity": {
+        "repository": "SIGMOD23p561/free-join",
+        "revision": "c020bbc7964ba17594299a1910ad6b65eebdf0e0",
+        "doi": "10.1145/3589295",
+        "arxiv": "2301.10841"
+      }
+    },
+    {
+      "name": "Language-Integrated Query Normalization and Query Shredding (Cheney, Lindley, and Wadler, ICFP 2013; SIGMOD 2014)",
+      "identity": {
+        "doi_icfp_2013": "10.1145/2500365.2500586",
+        "doi_sigmod_2014": "10.1145/2588555.2612186"
+      }
+    },
+    {
+      "name": "Provenance Semirings (Green, Karvounarakis, and Tannen, PODS 2007)",
+      "identity": {
+        "doi": "10.1145/1265530.1265535",
+        "venue": "PODS 2007"
+      }
+    },
+    {
+      "name": "Bevy ECS Archetypal SoA Storage and Query Disjointness (bevy_ecs)",
+      "identity": {
+        "repository": "bevyengine/bevy",
+        "revision": "779770720e6ad916c1de38cf66a67d0e079ed1e3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

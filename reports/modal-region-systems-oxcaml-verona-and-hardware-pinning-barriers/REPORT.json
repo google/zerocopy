@@ -1,0 +1,106 @@
+{
+  "topics": [
+    "pl/ownership",
+    "pl/modal-types",
+    "runtimes/gc",
+    "runtimes/regions",
+    "ffi/gc-interop",
+    "isa/cheri",
+    "isa/hardware-barriers",
+    "llvm/statepoints"
+  ],
+  "subjects": [
+    {
+      "name": "OxCaml compiler modal and jkind type system",
+      "identity": {
+        "repository": "oxcaml/oxcaml",
+        "revision": "0cfb4ab854af0395cbbcf4e7dbdd6c2e7a9c62c1"
+      }
+    },
+    {
+      "name": "Oxidizing OCaml with Modal Memory Management (ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674642",
+        "venue": "PACMPL Vol. 8, ICFP 2024, Article 253"
+      }
+    },
+    {
+      "name": "Data Race Freedom a la Mode (POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704859",
+        "venue": "PACMPL Vol. 9, POPL 2025, Article 23"
+      }
+    },
+    {
+      "name": "A Unified View of Modalities in Type Systems (ICFP 2020)",
+      "identity": {
+        "doi": "10.1145/3408972",
+        "venue": "PACMPL Vol. 4, ICFP 2020, Article 90"
+      }
+    },
+    {
+      "name": "Project Verona runtime (isolated regions and Behaviour-Oriented Concurrency)",
+      "identity": {
+        "repository": "microsoft/verona-rt",
+        "revision": "5cb8e8cf3699fa53c8a9b8dc34e4431c40d6230f"
+      }
+    },
+    {
+      "name": "Project Verona language and compiler",
+      "identity": {
+        "repository": "microsoft/verona",
+        "revision": "ed33fdf1c2e249a0393ead1cffd6e40503c70f2c"
+      }
+    },
+    {
+      "name": "When Concurrency Matters: Behaviour-Oriented Concurrency (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622852",
+        "venue": "PACMPL Vol. 7, OOPSLA2 2023"
+      }
+    },
+    {
+      "name": "Extempore runtime memory zones (EXTZones)",
+      "identity": {
+        "repository": "digego/extempore",
+        "revision": "38bf1d2444a6166371c17abfa40dfa58f6ab962e"
+      }
+    },
+    {
+      "name": "CheriBSD CHERI heap temporal revocation (Cornucopia Reloaded)",
+      "identity": {
+        "repository": "CTSRD-CHERI/cheribsd",
+        "revision": "88f39900c32928d807dba245fba138808c666f34"
+      }
+    },
+    {
+      "name": "Cornucopia Reloaded: Load Barriers for CHERI Heap Temporal Safety (ASPLOS 2024)",
+      "identity": {
+        "doi": "10.1145/3620665.3640416",
+        "venue": "ASPLOS 2024"
+      }
+    },
+    {
+      "name": "Mill Computing hardware pointer processing and protection domains",
+      "identity": {
+        "patents": "US-9524163-B2, US-9747218-B2",
+        "assignee": "Mill Computing, Inc."
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot Generational ZGC colored pointer and barrier subsystem",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "LLVM gc.statepoint and derived-pointer safepoint documentation",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c078d7b6876e6f21c0162671374939016b174c94"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

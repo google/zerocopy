@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "compilers/debuginfo",
+    "compilers/jit",
+    "tooling/debugging",
+    "tooling/time-travel",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Instruction Referencing Debug Info Infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c078d7b6876e6f21c0162671374939016b174c94"
+      }
+    },
+    {
+      "name": "Debug Information Validation for Optimized Code (Li, Ding, Zhang, and Italiano, PLDI 2020)",
+      "identity": {
+        "repository": "yuanboli233/debug-info-testing",
+        "revision": "0c74da8d29601f140c60c6fb28da45b48ee54dc9",
+        "doi": "10.1145/3385412.3386020",
+        "venue": "PLDI 2020"
+      }
+    },
+    {
+      "name": "Debug Information Completeness and Correctness Studies (Di Luna et al., ASPLOS 2021; Assaiante et al., ASPLOS 2023)",
+      "identity": {
+        "doi_asplos_2021": "10.1145/3445814.3446695",
+        "doi_asplos_2023": "10.1145/3575693.3575720",
+        "arxiv_asplos_2023": "2211.09568"
+      }
+    },
+    {
+      "name": "CoreJIT: Formally Verified Speculation and Deoptimization in a JIT Compiler (Barriere et al., POPL 2021)",
+      "identity": {
+        "repository": "Aurele-Barriere/CoreJIT",
+        "revision": "8740d4149be649d0746d9f0d2d759b387a8f3246",
+        "doi": "10.1145/3434327",
+        "venue": "Proc. ACM Program. Lang. 5, POPL (2021)"
+      }
+    },
+    {
+      "name": "Dynamic Deoptimization and Partial Escape Analysis Foundations (Holzle et al. PLDI 1992; Stadler et al. CGO 2014; Fluckiger et al. POPL 2018)",
+      "identity": {
+        "doi_holzle_1992": "10.1145/143103.143114",
+        "doi_stadler_2014": "10.1145/2581122.2544157",
+        "doi_fluckiger_2018": "10.1145/3158137"
+      }
+    },
+    {
+      "name": "Reliable and Fast DWARF-Based Stack Unwinding (Bastian, Kell, and Zappa Nardelli, OOPSLA 2019)",
+      "identity": {
+        "doi": "10.1145/3360572",
+        "venue": "Proc. ACM Program. Lang. 3, OOPSLA (2019)"
+      }
+    },
+    {
+      "name": "rr Deterministic Record-and-Replay Debugger (O'Callahan et al., USENIX ATC 2017)",
+      "identity": {
+        "repository": "rr-debugger/rr",
+        "revision": "608efe319bbbc4d0f5658d984e16be187801325d",
+        "url": "https://www.usenix.org/conference/atc17/technical-sessions/presentation/ocallahan"
+      }
+    },
+    {
+      "name": "Hermit Deterministic Linux Execution Environment",
+      "identity": {
+        "repository": "facebookexperimental/hermit",
+        "revision": "8bc703d3bb736b0119bbb77b1a3a0d804da66987"
+      }
+    },
+    {
+      "name": "Controlling Compiler Side Effects and Secret Erasure (Simon, Chisnall, and Anderson, EuroS&P 2018)",
+      "identity": {
+        "doi": "10.1109/EuroSP.2018.00009",
+        "venue": "IEEE EuroS&P 2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
