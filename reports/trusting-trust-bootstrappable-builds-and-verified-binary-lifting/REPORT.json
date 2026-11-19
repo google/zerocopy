@@ -1,0 +1,209 @@
+{
+  "topics": [
+    "security/supply-chain",
+    "compilers/bootstrapping",
+    "build/reproducible-builds",
+    "isa/binary-lifting",
+    "verification/trusted-computing-base"
+  ],
+  "subjects": [
+    {
+      "name": "Bootstrappable binary seeds (hex0 and kaem)",
+      "identity": {
+        "repository": "oriansj/bootstrap-seeds",
+        "revision": "cedec6b8066d1db229b6c77d42d120a23c6980ed"
+      }
+    },
+    {
+      "name": "stage0-posix full bootstrap chain",
+      "identity": {
+        "repository": "oriansj/stage0-posix",
+        "revision": "643598041bf7639883874fe2cdc9d9693c9b03d5"
+      }
+    },
+    {
+      "name": "stage0-posix x86 hex0 source",
+      "identity": {
+        "repository": "oriansj/stage0-posix-x86",
+        "revision": "14721630c8d3e4a7de943e27488d0d582788837f"
+      }
+    },
+    {
+      "name": "stage0-posix AMD64 hex0 source",
+      "identity": {
+        "repository": "oriansj/stage0-posix-amd64",
+        "revision": "15535f88e25825f01a0de275b6d45f77e618bd6b"
+      }
+    },
+    {
+      "name": "M2-Planet bootstrappable C compiler",
+      "identity": {
+        "repository": "oriansj/M2-Planet",
+        "revision": "ebfecc2fcb2c66925b94bdd4aa11fd6ac48bb172"
+      }
+    },
+    {
+      "name": "live-bootstrap from-source Linux/POSIX environment",
+      "identity": {
+        "repository": "fosslinux/live-bootstrap",
+        "revision": "a49273cbb5c381b851198bc1e53c294702f4f7c9"
+      }
+    },
+    {
+      "name": "mrustc alternative Rust compiler and rustc bootstrap",
+      "identity": {
+        "repository": "thepowersgang/mrustc",
+        "revision": "4e020d6b307c738434209435e9b75b7d81b00077"
+      }
+    },
+    {
+      "name": "CakeML verified self-hosting ML compiler",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and compiler bootstrap",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05"
+      }
+    },
+    {
+      "name": "Lean4Lean independent Lean 4 kernel in Lean",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Metamath Zero (MM0) proof verifier",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "Camlboot OCaml from-source bootstrap",
+      "identity": {
+        "repository": "Ekdohibs/camlboot",
+        "revision": "2692b14a4e685387194556e511fe23057d25c6c3"
+      }
+    },
+    {
+      "name": "Go 1.21.0 reproducible toolchain release",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "c19c4c566c63818dfd059b352e52c4710eecf14d",
+        "version": "go1.21.0"
+      }
+    },
+    {
+      "name": "FoxDec formally verified x86-64 binary lifter",
+      "identity": {
+        "repository": "ssrg-vt/FoxDec",
+        "revision": "d9206efe59a94138924d45c3d69d7c7afa1eb4ac"
+      }
+    },
+    {
+      "name": "rev.ng unified binary analysis and decompilation framework",
+      "identity": {
+        "repository": "revng/revng",
+        "revision": "5afe53108d6487a3aecc92eec133d89f03461e52"
+      }
+    },
+    {
+      "name": "Islaris machine-code verification against authoritative ISA semantics",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+      }
+    },
+    {
+      "name": "Sail ISA specification language",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "RLBox tainted-type sandboxing API",
+      "identity": {
+        "repository": "PLSysSec/rlbox_sandboxing_api",
+        "revision": "b0157dc84f86ffbe4549e32ed5cbdfad79c17f43"
+      }
+    },
+    {
+      "name": "Ddisasm Datalog reassembleable disassembler",
+      "identity": {
+        "repository": "GrammaTech/ddisasm",
+        "revision": "f8b63ee2ebd4a3f280c786c79a6e07a24b2f1c3b"
+      }
+    },
+    {
+      "name": "Reflections on Trusting Trust",
+      "identity": {
+        "doi": "10.1145/358198.358210",
+        "venue": "Communications of the ACM 27(8), 1984"
+      }
+    },
+    {
+      "name": "CakeML: A Verified Implementation of ML",
+      "identity": {
+        "doi": "10.1145/2535838.2535841",
+        "venue": "ACM POPL 2014"
+      }
+    },
+    {
+      "name": "Formally Verified Lifting of C-Compiled x86-64 Binaries (FoxDec)",
+      "identity": {
+        "doi": "10.1145/3519939.3523702",
+        "venue": "ACM PLDI 2022"
+      }
+    },
+    {
+      "name": "Verifiably Correct Lifting of Position-Independent x86-64 Binaries to Symbolized Assembly",
+      "identity": {
+        "doi": "10.1145/3658644.3690244",
+        "venue": "ACM CCS 2024"
+      }
+    },
+    {
+      "name": "rev.ng: A Unified Binary Analysis Framework to Recover CFGs and Function Boundaries",
+      "identity": {
+        "doi": "10.1145/3033019.3033028",
+        "venue": "ACM CC 2017"
+      }
+    },
+    {
+      "name": "Islaris: Verification of Machine Code Against Authoritative ISA Semantics",
+      "identity": {
+        "doi": "10.1145/3519939.3523434",
+        "venue": "ACM PLDI 2022"
+      }
+    },
+    {
+      "name": "ISA Semantics for ARMv8-A, RISC-V, and CHERI-MIPS (Sail)",
+      "identity": {
+        "doi": "10.1145/3290384",
+        "venue": "ACM POPL 2019"
+      }
+    },
+    {
+      "name": "Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq",
+      "identity": {
+        "doi": "10.1145/3371076",
+        "venue": "ACM POPL 2020"
+      }
+    },
+    {
+      "name": "Metamath Zero: Designing a Theorem Prover Prover",
+      "identity": {
+        "doi": "10.1007/978-3-030-53518-6_5",
+        "venue": "CICM 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

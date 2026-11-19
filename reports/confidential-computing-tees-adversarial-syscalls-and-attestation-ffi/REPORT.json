@@ -1,0 +1,166 @@
+{
+  "topics": [
+    "security/confidential-computing",
+    "security/attestation",
+    "ffi/os-boundary",
+    "systems/hardware-isolation",
+    "verification/security"
+  ],
+  "subjects": [
+    {
+      "name": "Gramine SGX shielding runtime",
+      "identity": {
+        "repository": "gramineproject/gramine",
+        "revision": "918e832b8ab4f583bc878ae33cb6b15dfd3e84a9"
+      }
+    },
+    {
+      "name": "Komodo verified enclave monitor",
+      "identity": {
+        "repository": "microsoft/Komodo",
+        "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+      }
+    },
+    {
+      "name": "Serval symbolic verification framework",
+      "identity": {
+        "repository": "uw-unsat/serval",
+        "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+      }
+    },
+    {
+      "name": "Trusted Firmware Realm Management Monitor (TF-RMM)",
+      "identity": {
+        "repository": "TF-RMM/tf-rmm",
+        "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92"
+      }
+    },
+    {
+      "name": "Linux kernel confidential-computing guest support (TDX and SEV-SNP)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Google go-tdx-guest ABI and quote verification library",
+      "identity": {
+        "repository": "google/go-tdx-guest",
+        "revision": "dd3f79297a6c6fbd308f1b4bc8ad93f39c2a3a14"
+      }
+    },
+    {
+      "name": "Google go-sev-guest ABI and attestation verification library",
+      "identity": {
+        "repository": "google/go-sev-guest",
+        "revision": "64934b575821b47a27a370ffbb23664897408382"
+      }
+    },
+    {
+      "name": "Project Oak Transparent Release",
+      "identity": {
+        "repository": "project-oak/transparent-release",
+        "revision": "dd29c625ef9426d9a2be9f7448ecefb8f65fc2c5"
+      }
+    },
+    {
+      "name": "Intel SGX Data Center Attestation Primitives (DCAP)",
+      "identity": {
+        "repository": "intel/SGXDataCenterAttestationPrimitives",
+        "revision": "72f800e9696f382464bc8ef243311edf8bd7dc13"
+      }
+    },
+    {
+      "name": "Intel TDX Module reference source",
+      "identity": {
+        "repository": "intel/tdx-module",
+        "revision": "859989acb524b30d708ca5109e938e698da550eb"
+      }
+    },
+    {
+      "name": "IETF Remote ATtestation procedureS (RATS) Architecture",
+      "identity": {
+        "standard": "RFC 9334",
+        "url": "https://www.rfc-editor.org/rfc/rfc9334.txt"
+      }
+    },
+    {
+      "name": "IETF Entity Attestation Token (EAT)",
+      "identity": {
+        "standard": "RFC 9711",
+        "url": "https://www.rfc-editor.org/rfc/rfc9711.txt"
+      }
+    },
+    {
+      "name": "Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface",
+      "identity": {
+        "venue": "ASPLOS 2013",
+        "authors": "Stephen Checkoway and Hovav Shacham"
+      }
+    },
+    {
+      "name": "A Tale of Two Worlds: Assessing the Vulnerability of Enclave Shielding Runtimes",
+      "identity": {
+        "doi": "10.1145/3319535.3363206",
+        "venue": "ACM CCS 2019"
+      }
+    },
+    {
+      "name": "Controlled-Channel Attacks: Deterministic Side Channels for Untrusted Operating Systems",
+      "identity": {
+        "doi": "10.1109/SP.2015.45",
+        "venue": "IEEE S&P 2015"
+      }
+    },
+    {
+      "name": "Komodo: Using Verification to Disentangle Secure-Enclave Hardware from Software",
+      "identity": {
+        "doi": "10.1145/3132747.3132782",
+        "venue": "ACM SOSP 2017"
+      }
+    },
+    {
+      "name": "Scaling Symbolic Evaluation for Automated Verification of Systems Code with Serval",
+      "identity": {
+        "doi": "10.1145/3341301.3359641",
+        "venue": "ACM SOSP 2019"
+      }
+    },
+    {
+      "name": "VIA: Analyzing Device Interfaces of Protected Virtual Machines",
+      "identity": {
+        "doi": "10.48550/arXiv.2109.10660",
+        "venue": "ACSAC 2021"
+      }
+    },
+    {
+      "name": "WeSee: Using Malicious #VC Interrupts to Break AMD SEV-SNP",
+      "identity": {
+        "doi": "10.48550/arXiv.2404.03526",
+        "venue": "IEEE S&P 2024"
+      }
+    },
+    {
+      "name": "DFLATE: Information Flow Control for Distributed Trusted Execution Environments",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00028",
+        "venue": "IEEE CSF 2019"
+      }
+    },
+    {
+      "name": "Language Support for Secure Software Development with Enclaves (JE)",
+      "identity": {
+        "doi": "10.1109/CSF51455.2021.00009",
+        "venue": "IEEE CSF 2021"
+      }
+    },
+    {
+      "name": "Occlum: Secure and Efficient Multitasking Inside a Single Enclave of Intel SGX",
+      "identity": {
+        "doi": "10.1145/3373376.3378469",
+        "venue": "ACM ASPLOS 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

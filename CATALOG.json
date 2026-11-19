@@ -12747,6 +12747,172 @@
         "verification/empirical-evaluation"
       ]
     },
+    "confidential-computing-tees-adversarial-syscalls-and-attestation-ffi": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gramineproject/gramine",
+            "revision": "918e832b8ab4f583bc878ae33cb6b15dfd3e84a9"
+          },
+          "name": "Gramine SGX shielding runtime"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Komodo",
+            "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+          },
+          "name": "Komodo verified enclave monitor"
+        },
+        {
+          "identity": {
+            "repository": "uw-unsat/serval",
+            "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+          },
+          "name": "Serval symbolic verification framework"
+        },
+        {
+          "identity": {
+            "repository": "TF-RMM/tf-rmm",
+            "revision": "8d7961df074f08fd83a2460ab3a2ca0b658fde92"
+          },
+          "name": "Trusted Firmware Realm Management Monitor (TF-RMM)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel confidential-computing guest support (TDX and SEV-SNP)"
+        },
+        {
+          "identity": {
+            "repository": "google/go-tdx-guest",
+            "revision": "dd3f79297a6c6fbd308f1b4bc8ad93f39c2a3a14"
+          },
+          "name": "Google go-tdx-guest ABI and quote verification library"
+        },
+        {
+          "identity": {
+            "repository": "google/go-sev-guest",
+            "revision": "64934b575821b47a27a370ffbb23664897408382"
+          },
+          "name": "Google go-sev-guest ABI and attestation verification library"
+        },
+        {
+          "identity": {
+            "repository": "project-oak/transparent-release",
+            "revision": "dd29c625ef9426d9a2be9f7448ecefb8f65fc2c5"
+          },
+          "name": "Project Oak Transparent Release"
+        },
+        {
+          "identity": {
+            "repository": "intel/SGXDataCenterAttestationPrimitives",
+            "revision": "72f800e9696f382464bc8ef243311edf8bd7dc13"
+          },
+          "name": "Intel SGX Data Center Attestation Primitives (DCAP)"
+        },
+        {
+          "identity": {
+            "repository": "intel/tdx-module",
+            "revision": "859989acb524b30d708ca5109e938e698da550eb"
+          },
+          "name": "Intel TDX Module reference source"
+        },
+        {
+          "identity": {
+            "standard": "RFC 9334",
+            "url": "https://www.rfc-editor.org/rfc/rfc9334.txt"
+          },
+          "name": "IETF Remote ATtestation procedureS (RATS) Architecture"
+        },
+        {
+          "identity": {
+            "standard": "RFC 9711",
+            "url": "https://www.rfc-editor.org/rfc/rfc9711.txt"
+          },
+          "name": "IETF Entity Attestation Token (EAT)"
+        },
+        {
+          "identity": {
+            "authors": "Stephen Checkoway and Hovav Shacham",
+            "venue": "ASPLOS 2013"
+          },
+          "name": "Iago Attacks: Why the System Call API is a Bad Untrusted RPC Interface"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3319535.3363206",
+            "venue": "ACM CCS 2019"
+          },
+          "name": "A Tale of Two Worlds: Assessing the Vulnerability of Enclave Shielding Runtimes"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2015.45",
+            "venue": "IEEE S&P 2015"
+          },
+          "name": "Controlled-Channel Attacks: Deterministic Side Channels for Untrusted Operating Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132782",
+            "venue": "ACM SOSP 2017"
+          },
+          "name": "Komodo: Using Verification to Disentangle Secure-Enclave Hardware from Software"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341301.3359641",
+            "venue": "ACM SOSP 2019"
+          },
+          "name": "Scaling Symbolic Evaluation for Automated Verification of Systems Code with Serval"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.2109.10660",
+            "venue": "ACSAC 2021"
+          },
+          "name": "VIA: Analyzing Device Interfaces of Protected Virtual Machines"
+        },
+        {
+          "identity": {
+            "doi": "10.48550/arXiv.2404.03526",
+            "venue": "IEEE S&P 2024"
+          },
+          "name": "WeSee: Using Malicious #VC Interrupts to Break AMD SEV-SNP"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2019.00028",
+            "venue": "IEEE CSF 2019"
+          },
+          "name": "DFLATE: Information Flow Control for Distributed Trusted Execution Environments"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF51455.2021.00009",
+            "venue": "IEEE CSF 2021"
+          },
+          "name": "Language Support for Secure Software Development with Enclaves (JE)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3373376.3378469",
+            "venue": "ACM ASPLOS 2020"
+          },
+          "name": "Occlum: Secure and Efficient Multitasking Inside a Single Enclave of Intel SGX"
+        }
+      ],
+      "topics": [
+        "security/confidential-computing",
+        "security/attestation",
+        "ffi/os-boundary",
+        "systems/hardware-isolation",
+        "verification/security"
+      ]
+    },
     "configured-rust-capture-fnabi-placement-and-formality-specr-boundaries": {
       "observed_at": "2026-10-14",
       "subjects": [
@@ -25810,6 +25976,93 @@
         "rust",
         "systems",
         "verification"
+      ]
+    },
+    "lie-group-factor-graphs-state-estimation-and-deterministic-robotics-middleware": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "symforce-org/symforce",
+            "revision": "acdedd0bcfea11ee88e89908dd6499024dd9f89a"
+          },
+          "name": "SymForce"
+        },
+        {
+          "identity": {
+            "arxiv": "2204.07889",
+            "doi": "10.15607/RSS.2022.XVIII.041"
+          },
+          "name": "SymForce: Symbolic Computation and Code Generation for Robotics (Martiros et al., RSS 2022)"
+        },
+        {
+          "identity": {
+            "repository": "borglab/gtsam",
+            "revision": "3fd8ba1bcb12ce4ef6f1b633100020b0f4f13cc7"
+          },
+          "name": "GTSAM"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/0278364911430419"
+          },
+          "name": "iSAM2: Incremental Smoothing and Mapping Using the Bayes Tree (Kaess et al., IJRR 2012)"
+        },
+        {
+          "identity": {
+            "arxiv": "1812.01537",
+            "url": "https://arxiv.org/abs/1812.01537"
+          },
+          "name": "A micro Lie theory for state estimation in robotics (Sol\u00e0, Deray, Atchuthan)"
+        },
+        {
+          "identity": {
+            "arxiv": "1107.1119",
+            "doi": "10.1016/j.inffus.2011.08.003"
+          },
+          "name": "Integrating Generic Sensor Fusion Algorithms with Sound State Representations through Encapsulation of Manifolds (Hertzberg et al., Information Fusion 2013)"
+        },
+        {
+          "identity": {
+            "repository": "ros2/rclcpp",
+            "revision": "e32d17980dcf761712cb854b3703336c380a570e",
+            "version": "0.6.3"
+          },
+          "name": "ROS 2 rclcpp (Crystal Clemmys 0.6.3)"
+        },
+        {
+          "identity": {
+            "repository": "ros2/rclcpp",
+            "revision": "9e66d4d2ef0188656e1ac2ad71d338f15c44e1f2"
+          },
+          "name": "ROS 2 rclcpp"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ECRTS.2019.6"
+          },
+          "name": "Response-Time Analysis of ROS 2 Processing Chains Under Reservation-Based Scheduling (Casini et al., ECRTS 2019)"
+        },
+        {
+          "identity": {
+            "repository": "eclipse-iceoryx/iceoryx",
+            "revision": "9f9fb0d359f1805cdd38006c8aba6af6dbc2209e"
+          },
+          "name": "Eclipse iceoryx"
+        },
+        {
+          "identity": {
+            "repository": "eclipse-iceoryx/iceoryx2",
+            "revision": "5ff74e270863cb416583eef42c928afcb436630f"
+          },
+          "name": "Eclipse iceoryx2"
+        }
+      ],
+      "topics": [
+        "domains/robotics-slam",
+        "pl/manifold-types",
+        "systems/realtime-middleware",
+        "compilers/symbolic-codegen"
       ]
     },
     "live-typed-hole-calculi-fluid-structure-editors-and-spreadsheet-semantics": {
@@ -46868,6 +47121,215 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "trusting-trust-bootstrappable-builds-and-verified-binary-lifting": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "oriansj/bootstrap-seeds",
+            "revision": "cedec6b8066d1db229b6c77d42d120a23c6980ed"
+          },
+          "name": "Bootstrappable binary seeds (hex0 and kaem)"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/stage0-posix",
+            "revision": "643598041bf7639883874fe2cdc9d9693c9b03d5"
+          },
+          "name": "stage0-posix full bootstrap chain"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/stage0-posix-x86",
+            "revision": "14721630c8d3e4a7de943e27488d0d582788837f"
+          },
+          "name": "stage0-posix x86 hex0 source"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/stage0-posix-amd64",
+            "revision": "15535f88e25825f01a0de275b6d45f77e618bd6b"
+          },
+          "name": "stage0-posix AMD64 hex0 source"
+        },
+        {
+          "identity": {
+            "repository": "oriansj/M2-Planet",
+            "revision": "ebfecc2fcb2c66925b94bdd4aa11fd6ac48bb172"
+          },
+          "name": "M2-Planet bootstrappable C compiler"
+        },
+        {
+          "identity": {
+            "repository": "fosslinux/live-bootstrap",
+            "revision": "a49273cbb5c381b851198bc1e53c294702f4f7c9"
+          },
+          "name": "live-bootstrap from-source Linux/POSIX environment"
+        },
+        {
+          "identity": {
+            "repository": "thepowersgang/mrustc",
+            "revision": "4e020d6b307c738434209435e9b75b7d81b00077"
+          },
+          "name": "mrustc alternative Rust compiler and rustc bootstrap"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified self-hosting ML compiler"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "0171678607a54e5a72c6a4ab6409286ba5002b05"
+          },
+          "name": "Lean 4 theorem prover and compiler bootstrap"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean independent Lean 4 kernel in Lean"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (MM0) proof verifier"
+        },
+        {
+          "identity": {
+            "repository": "Ekdohibs/camlboot",
+            "revision": "2692b14a4e685387194556e511fe23057d25c6c3"
+          },
+          "name": "Camlboot OCaml from-source bootstrap"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "c19c4c566c63818dfd059b352e52c4710eecf14d",
+            "version": "go1.21.0"
+          },
+          "name": "Go 1.21.0 reproducible toolchain release"
+        },
+        {
+          "identity": {
+            "repository": "ssrg-vt/FoxDec",
+            "revision": "d9206efe59a94138924d45c3d69d7c7afa1eb4ac"
+          },
+          "name": "FoxDec formally verified x86-64 binary lifter"
+        },
+        {
+          "identity": {
+            "repository": "revng/revng",
+            "revision": "5afe53108d6487a3aecc92eec133d89f03461e52"
+          },
+          "name": "rev.ng unified binary analysis and decompilation framework"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris machine-code verification against authoritative ISA semantics"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail ISA specification language"
+        },
+        {
+          "identity": {
+            "repository": "PLSysSec/rlbox_sandboxing_api",
+            "revision": "b0157dc84f86ffbe4549e32ed5cbdfad79c17f43"
+          },
+          "name": "RLBox tainted-type sandboxing API"
+        },
+        {
+          "identity": {
+            "repository": "GrammaTech/ddisasm",
+            "revision": "f8b63ee2ebd4a3f280c786c79a6e07a24b2f1c3b"
+          },
+          "name": "Ddisasm Datalog reassembleable disassembler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/358198.358210",
+            "venue": "Communications of the ACM 27(8), 1984"
+          },
+          "name": "Reflections on Trusting Trust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2535838.2535841",
+            "venue": "ACM POPL 2014"
+          },
+          "name": "CakeML: A Verified Implementation of ML"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523702",
+            "venue": "ACM PLDI 2022"
+          },
+          "name": "Formally Verified Lifting of C-Compiled x86-64 Binaries (FoxDec)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3658644.3690244",
+            "venue": "ACM CCS 2024"
+          },
+          "name": "Verifiably Correct Lifting of Position-Independent x86-64 Binaries to Symbolized Assembly"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3033019.3033028",
+            "venue": "ACM CC 2017"
+          },
+          "name": "rev.ng: A Unified Binary Analysis Framework to Recover CFGs and Function Boundaries"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523434",
+            "venue": "ACM PLDI 2022"
+          },
+          "name": "Islaris: Verification of Machine Code Against Authoritative ISA Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384",
+            "venue": "ACM POPL 2019"
+          },
+          "name": "ISA Semantics for ARMv8-A, RISC-V, and CHERI-MIPS (Sail)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371076",
+            "venue": "ACM POPL 2020"
+          },
+          "name": "Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-53518-6_5",
+            "venue": "CICM 2020"
+          },
+          "name": "Metamath Zero: Designing a Theorem Prover Prover"
+        }
+      ],
+      "topics": [
+        "security/supply-chain",
+        "compilers/bootstrapping",
+        "build/reproducible-builds",
+        "isa/binary-lifting",
+        "verification/trusted-computing-base"
       ]
     },
     "truth-maintenance-systems-provenance-retraction-and-assurance-defeaters": {

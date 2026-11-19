@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "domains/robotics-slam",
+    "pl/manifold-types",
+    "systems/realtime-middleware",
+    "compilers/symbolic-codegen"
+  ],
+  "subjects": [
+    {
+      "name": "SymForce",
+      "identity": {
+        "repository": "symforce-org/symforce",
+        "revision": "acdedd0bcfea11ee88e89908dd6499024dd9f89a"
+      }
+    },
+    {
+      "name": "SymForce: Symbolic Computation and Code Generation for Robotics (Martiros et al., RSS 2022)",
+      "identity": {
+        "doi": "10.15607/RSS.2022.XVIII.041",
+        "arxiv": "2204.07889"
+      }
+    },
+    {
+      "name": "GTSAM",
+      "identity": {
+        "repository": "borglab/gtsam",
+        "revision": "3fd8ba1bcb12ce4ef6f1b633100020b0f4f13cc7"
+      }
+    },
+    {
+      "name": "iSAM2: Incremental Smoothing and Mapping Using the Bayes Tree (Kaess et al., IJRR 2012)",
+      "identity": {
+        "doi": "10.1177/0278364911430419"
+      }
+    },
+    {
+      "name": "A micro Lie theory for state estimation in robotics (Solà, Deray, Atchuthan)",
+      "identity": {
+        "arxiv": "1812.01537",
+        "url": "https://arxiv.org/abs/1812.01537"
+      }
+    },
+    {
+      "name": "Integrating Generic Sensor Fusion Algorithms with Sound State Representations through Encapsulation of Manifolds (Hertzberg et al., Information Fusion 2013)",
+      "identity": {
+        "doi": "10.1016/j.inffus.2011.08.003",
+        "arxiv": "1107.1119"
+      }
+    },
+    {
+      "name": "ROS 2 rclcpp (Crystal Clemmys 0.6.3)",
+      "identity": {
+        "repository": "ros2/rclcpp",
+        "revision": "e32d17980dcf761712cb854b3703336c380a570e",
+        "version": "0.6.3"
+      }
+    },
+    {
+      "name": "ROS 2 rclcpp",
+      "identity": {
+        "repository": "ros2/rclcpp",
+        "revision": "9e66d4d2ef0188656e1ac2ad71d338f15c44e1f2"
+      }
+    },
+    {
+      "name": "Response-Time Analysis of ROS 2 Processing Chains Under Reservation-Based Scheduling (Casini et al., ECRTS 2019)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECRTS.2019.6"
+      }
+    },
+    {
+      "name": "Eclipse iceoryx",
+      "identity": {
+        "repository": "eclipse-iceoryx/iceoryx",
+        "revision": "9f9fb0d359f1805cdd38006c8aba6af6dbc2209e"
+      }
+    },
+    {
+      "name": "Eclipse iceoryx2",
+      "identity": {
+        "repository": "eclipse-iceoryx/iceoryx2",
+        "revision": "5ff74e270863cb416583eef42c928afcb436630f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
