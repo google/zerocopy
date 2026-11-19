@@ -1,0 +1,89 @@
+{
+  "topics": [
+    "domains/automotive-avionics",
+    "systems/time-space-partitioning",
+    "security/vehicular-networks",
+    "verification/safety-standards"
+  ],
+  "subjects": [
+    {
+      "name": "linux-can/can-utils",
+      "identity": {
+        "repository": "linux-can/can-utils",
+        "revision": "834ceef1f1eabec67625389172eebf1050d2f42b"
+      }
+    },
+    {
+      "name": "Linux Kernel SocketCAN Device Layer",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "POK (PolyORB Kernel — ARINC 653 Partitioned Real-Time OS)",
+      "identity": {
+        "repository": "pok-kernel/pok",
+        "revision": "b2e1cc382f86adba47cb93f015d92bc2d11cf40e"
+      }
+    },
+    {
+      "name": "ISO 11898-1:2015 — Road vehicles — Controller area network (CAN) — Part 1: Data link layer and physical signalling",
+      "identity": {
+        "standard": "ISO 11898-1:2015"
+      }
+    },
+    {
+      "name": "ISO 26262:2018 — Road vehicles — Functional safety (Parts 5, 6, and 9)",
+      "identity": {
+        "standard": "ISO 26262:2018"
+      }
+    },
+    {
+      "name": "AUTOSAR E2E Protocol Specification",
+      "identity": {
+        "standard": "AUTOSAR_PRS_E2EProtocol"
+      }
+    },
+    {
+      "name": "ARINC Specification 653 Part 1 — Avionics Application Software Standard Interface",
+      "identity": {
+        "standard": "ARINC 653P1"
+      }
+    },
+    {
+      "name": "EASA AMC 20-193 / FAA AC 20-193 — Use of Multi-Core Processors (successor to CAST-32A)",
+      "identity": {
+        "standard": "AMC 20-193 / AC 20-193",
+        "supersedes": "CAST-32A"
+      }
+    },
+    {
+      "name": "Davis, Burns, Bril, and Lukkien (2007) — Controller Area Network (CAN) schedulability analysis: Refuted, revisited and revised",
+      "identity": {
+        "doi": "10.1007/s11241-007-9012-7",
+        "venue": "Real-Time Systems, Vol. 35, No. 3, pp. 239-272 (2007)"
+      }
+    },
+    {
+      "name": "Cho and Shin (2016) — Error Handling of In-vehicle Networks Makes Them Vulnerable",
+      "identity": {
+        "doi": "10.1145/2976749.2978360",
+        "venue": "ACM CCS 2016, pp. 1044-1055"
+      }
+    },
+    {
+      "name": "Yun, Yao, Pellizzoni, Caccamo, and Sha (2013) — MemGuard: Memory Bandwidth Reservation System for Efficient Performance Isolation in Multi-core Platforms",
+      "identity": {
+        "venue": "IEEE RTAS 2013, pp. 55-64"
+      }
+    },
+    {
+      "name": "Nowotsch, Paulitsch, Buehler, Theiling, Wegener, and Schmidt (2014) — Multi-core Interference-Sensitive WCET Analysis Leveraging Runtime Resource Capacity Enforcement",
+      "identity": {
+        "venue": "ECRTS 2014, pp. 109-118"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

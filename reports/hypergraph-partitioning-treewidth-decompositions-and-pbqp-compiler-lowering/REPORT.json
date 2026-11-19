@@ -1,0 +1,97 @@
+{
+  "topics": [
+    "compilers/graph-algorithms",
+    "compilers/register-allocation",
+    "llvm/pbqp",
+    "systems/distributed-sharding",
+    "verification/combinatorial-certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Mt-KaHyPar (Multithreaded Karlsruhe Hypergraph Partitioning)",
+      "identity": {
+        "repository": "kahypar/mt-kahypar",
+        "revision": "44332540ecd08a9fd63a38fd8e8ac47a2c73b6fc"
+      }
+    },
+    {
+      "name": "LLVM Project (PBQP Register Allocator and AArch64 PBQP Constraints)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "bdb0780cba671428363088c4f11e0575f14b6671"
+      }
+    },
+    {
+      "name": "libFirm (SSA Chordal Register Allocator)",
+      "identity": {
+        "repository": "libfirm/libfirm",
+        "revision": "114012d1d93427e63ba2f2ab51318e8a1b92f06c"
+      }
+    },
+    {
+      "name": "Thorup (1998) — All Structured Programs have Small Tree-Width and Good Register Allocation",
+      "identity": {
+        "doi": "10.1006/inco.1997.2697",
+        "venue": "Information and Computation, Vol. 142, No. 2, pp. 159-181 (1998)"
+      }
+    },
+    {
+      "name": "Hack, Grund, and Goos (2006) — Register Allocation for Programs in SSA-Form",
+      "identity": {
+        "doi": "10.1007/11687637_19",
+        "venue": "Compiler Construction (CC 2006), LNCS 3923, pp. 247-262"
+      }
+    },
+    {
+      "name": "Bouchez, Darte, Guillon, and Rastello (2006) — Register Allocation: What Does the NP-Completeness Proof of Chaitin et al. Really Prove?",
+      "identity": {
+        "doi": "10.1007/978-3-540-72521-3_21",
+        "venue": "Languages and Compilers for Parallel Computing (LCPC 2006), LNCS 4382"
+      }
+    },
+    {
+      "name": "Krause (2013) — Optimal Register Allocation in Polynomial Time",
+      "identity": {
+        "doi": "10.1007/978-3-642-37051-9_1",
+        "venue": "Compiler Construction (CC 2013), LNCS 7791, pp. 1-20"
+      }
+    },
+    {
+      "name": "Scholz and Eckstein (2002) — Register Allocation for Irregular Architectures",
+      "identity": {
+        "doi": "10.1145/566225.513854",
+        "venue": "LCTES/SCOPES 2002, pp. 139-148"
+      }
+    },
+    {
+      "name": "Hames and Scholz (2006) — Nearly Optimal Register Allocation with PBQP",
+      "identity": {
+        "doi": "10.1007/11860990_21",
+        "venue": "Joint Modular Languages Conference (JMLC 2006), LNCS 4228, pp. 346-361"
+      }
+    },
+    {
+      "name": "Gottesbueren, Heuer, Maas, Sanders, and Schlag (2024) — Scalable High-Quality Hypergraph Partitioning",
+      "identity": {
+        "doi": "10.1145/3626527",
+        "arxiv": "2303.17679",
+        "venue": "ACM Transactions on Algorithms, Vol. 20, No. 1, Article 1 (2024)"
+      }
+    },
+    {
+      "name": "Krause, Gottesbueren, and Maas (2025) — Deterministic Parallel High-Quality Hypergraph Partitioning",
+      "identity": {
+        "doi": "10.48550/arXiv.2504.12013",
+        "arxiv": "2504.12013"
+      }
+    },
+    {
+      "name": "Catalyurek and Aykanat (1999) — Hypergraph-Partitioning-Based Decomposition for Parallel Sparse-Matrix Vector Multiplication",
+      "identity": {
+        "doi": "10.1109/71.780863",
+        "venue": "IEEE Transactions on Parallel and Distributed Systems, Vol. 10, No. 7, pp. 673-693 (1999)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

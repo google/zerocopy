@@ -8464,6 +8464,95 @@
         "verification/compiler-verification"
       ]
     },
+    "automotive-iso26262-autosar-can-bus-arbitration-and-arinc653-partitioning": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "linux-can/can-utils",
+            "revision": "834ceef1f1eabec67625389172eebf1050d2f42b"
+          },
+          "name": "linux-can/can-utils"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux Kernel SocketCAN Device Layer"
+        },
+        {
+          "identity": {
+            "repository": "pok-kernel/pok",
+            "revision": "b2e1cc382f86adba47cb93f015d92bc2d11cf40e"
+          },
+          "name": "POK (PolyORB Kernel \u2014 ARINC 653 Partitioned Real-Time OS)"
+        },
+        {
+          "identity": {
+            "standard": "ISO 11898-1:2015"
+          },
+          "name": "ISO 11898-1:2015 \u2014 Road vehicles \u2014 Controller area network (CAN) \u2014 Part 1: Data link layer and physical signalling"
+        },
+        {
+          "identity": {
+            "standard": "ISO 26262:2018"
+          },
+          "name": "ISO 26262:2018 \u2014 Road vehicles \u2014 Functional safety (Parts 5, 6, and 9)"
+        },
+        {
+          "identity": {
+            "standard": "AUTOSAR_PRS_E2EProtocol"
+          },
+          "name": "AUTOSAR E2E Protocol Specification"
+        },
+        {
+          "identity": {
+            "standard": "ARINC 653P1"
+          },
+          "name": "ARINC Specification 653 Part 1 \u2014 Avionics Application Software Standard Interface"
+        },
+        {
+          "identity": {
+            "standard": "AMC 20-193 / AC 20-193",
+            "supersedes": "CAST-32A"
+          },
+          "name": "EASA AMC 20-193 / FAA AC 20-193 \u2014 Use of Multi-Core Processors (successor to CAST-32A)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s11241-007-9012-7",
+            "venue": "Real-Time Systems, Vol. 35, No. 3, pp. 239-272 (2007)"
+          },
+          "name": "Davis, Burns, Bril, and Lukkien (2007) \u2014 Controller Area Network (CAN) schedulability analysis: Refuted, revisited and revised"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2976749.2978360",
+            "venue": "ACM CCS 2016, pp. 1044-1055"
+          },
+          "name": "Cho and Shin (2016) \u2014 Error Handling of In-vehicle Networks Makes Them Vulnerable"
+        },
+        {
+          "identity": {
+            "venue": "IEEE RTAS 2013, pp. 55-64"
+          },
+          "name": "Yun, Yao, Pellizzoni, Caccamo, and Sha (2013) \u2014 MemGuard: Memory Bandwidth Reservation System for Efficient Performance Isolation in Multi-core Platforms"
+        },
+        {
+          "identity": {
+            "venue": "ECRTS 2014, pp. 109-118"
+          },
+          "name": "Nowotsch, Paulitsch, Buehler, Theiling, Wegener, and Schmidt (2014) \u2014 Multi-core Interference-Sensitive WCET Analysis Leveraging Runtime Resource Capacity Enforcement"
+        }
+      ],
+      "topics": [
+        "domains/automotive-avionics",
+        "systems/time-space-partitioning",
+        "security/vehicular-networks",
+        "verification/safety-standards"
+      ]
+    },
     "bidirectional-lenses-resugaring-and-non-malleable-format-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -21638,6 +21727,103 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "hypergraph-partitioning-treewidth-decompositions-and-pbqp-compiler-lowering": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "kahypar/mt-kahypar",
+            "revision": "44332540ecd08a9fd63a38fd8e8ac47a2c73b6fc"
+          },
+          "name": "Mt-KaHyPar (Multithreaded Karlsruhe Hypergraph Partitioning)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "bdb0780cba671428363088c4f11e0575f14b6671"
+          },
+          "name": "LLVM Project (PBQP Register Allocator and AArch64 PBQP Constraints)"
+        },
+        {
+          "identity": {
+            "repository": "libfirm/libfirm",
+            "revision": "114012d1d93427e63ba2f2ab51318e8a1b92f06c"
+          },
+          "name": "libFirm (SSA Chordal Register Allocator)"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.1997.2697",
+            "venue": "Information and Computation, Vol. 142, No. 2, pp. 159-181 (1998)"
+          },
+          "name": "Thorup (1998) \u2014 All Structured Programs have Small Tree-Width and Good Register Allocation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11687637_19",
+            "venue": "Compiler Construction (CC 2006), LNCS 3923, pp. 247-262"
+          },
+          "name": "Hack, Grund, and Goos (2006) \u2014 Register Allocation for Programs in SSA-Form"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-72521-3_21",
+            "venue": "Languages and Compilers for Parallel Computing (LCPC 2006), LNCS 4382"
+          },
+          "name": "Bouchez, Darte, Guillon, and Rastello (2006) \u2014 Register Allocation: What Does the NP-Completeness Proof of Chaitin et al. Really Prove?"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-37051-9_1",
+            "venue": "Compiler Construction (CC 2013), LNCS 7791, pp. 1-20"
+          },
+          "name": "Krause (2013) \u2014 Optimal Register Allocation in Polynomial Time"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/566225.513854",
+            "venue": "LCTES/SCOPES 2002, pp. 139-148"
+          },
+          "name": "Scholz and Eckstein (2002) \u2014 Register Allocation for Irregular Architectures"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11860990_21",
+            "venue": "Joint Modular Languages Conference (JMLC 2006), LNCS 4228, pp. 346-361"
+          },
+          "name": "Hames and Scholz (2006) \u2014 Nearly Optimal Register Allocation with PBQP"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.17679",
+            "doi": "10.1145/3626527",
+            "venue": "ACM Transactions on Algorithms, Vol. 20, No. 1, Article 1 (2024)"
+          },
+          "name": "Gottesbueren, Heuer, Maas, Sanders, and Schlag (2024) \u2014 Scalable High-Quality Hypergraph Partitioning"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.12013",
+            "doi": "10.48550/arXiv.2504.12013"
+          },
+          "name": "Krause, Gottesbueren, and Maas (2025) \u2014 Deterministic Parallel High-Quality Hypergraph Partitioning"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/71.780863",
+            "venue": "IEEE Transactions on Parallel and Distributed Systems, Vol. 10, No. 7, pp. 673-693 (1999)"
+          },
+          "name": "Catalyurek and Aykanat (1999) \u2014 Hypergraph-Partitioning-Based Decomposition for Parallel Sparse-Matrix Vector Multiplication"
+        }
+      ],
+      "topics": [
+        "compilers/graph-algorithms",
+        "compilers/register-allocation",
+        "llvm/pbqp",
+        "systems/distributed-sharding",
+        "verification/combinatorial-certificates"
       ]
     },
     "hypervisor-virtio-shared-rings-volatile-guest-memory-and-object-ipc-abis": {
