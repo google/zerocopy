@@ -29404,6 +29404,121 @@
         "systems/realtime"
       ]
     },
+    "reference-model-bisimulation-executable-semantics-and-differential-oracles": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust executable specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "93d13704b5e5e12dedfc54df626468000bc46262"
+          },
+          "name": "Miri Rust MIR interpreter"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "4c80e83f91826c785fb607de9b9f4efa4c3b87cf"
+          },
+          "name": "lean-miri Lean 4 port of Miri"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail ISA specification language"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "dda378c60fa0ad1bf13af5929bebee344a2e0a75"
+          },
+          "name": "Sail RISC-V formal ISA specification"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+          },
+          "name": "Sail Arm A-profile ISA specifications (Armv8.5-A, Armv9.3-A, Armv9.4-A)"
+        },
+        {
+          "identity": {
+            "repository": "Wasm-DSL/spectec",
+            "revision": "acc6e834ff403c82554d081237f327346190ad96"
+          },
+          "name": "WebAssembly SpecTec DSL and compiler"
+        },
+        {
+          "identity": {
+            "repository": "runtimeverification/k",
+            "revision": "4a46d1231473b599c699160132fd6e76a5c46406"
+          },
+          "name": "K Framework"
+        },
+        {
+          "identity": {
+            "repository": "runtimeverification/evm-semantics",
+            "revision": "fbb2edbb8e84bb05b6ba7a255ce1f44f76051ad1"
+          },
+          "name": "KEVM Ethereum Virtual Machine semantics in K"
+        },
+        {
+          "identity": {
+            "repository": "kframework/c-semantics",
+            "revision": "e6879d14455771aa0cb3e3d201131d4d763a73a2"
+          },
+          "name": "K C-Semantics (kcc)"
+        },
+        {
+          "identity": {
+            "repository": "csmith-project/csmith",
+            "revision": "0cdc710315cfee9035e22ef4363ca479270d1934"
+          },
+          "name": "Csmith random C program generator"
+        },
+        {
+          "identity": {
+            "repository": "intel/yarpgen",
+            "revision": "1adb290f453505838f3aa33dc571f292b0c1810f"
+          },
+          "name": "YARPGen random C/C++ loop and scalar program generator"
+        },
+        {
+          "identity": {
+            "repository": "tc39/test262",
+            "revision": "2e58f87d8350ad51224617a041c6e041d52f8444"
+          },
+          "name": "ECMAScript Test262 conformance test suite"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (simulation flipping reference)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/bisimulation",
+        "verification/differential-testing",
+        "verification/mutation-testing",
+        "minirust",
+        "pl",
+        "pl/executable-semantics",
+        "compilers",
+        "isa",
+        "isa/sail"
+      ]
+    },
     "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {
       "observed_at": "2026-10-30",
       "subjects": [
