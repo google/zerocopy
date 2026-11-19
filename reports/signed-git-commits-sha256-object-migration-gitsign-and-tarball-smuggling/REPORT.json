@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "vcs/signed-commits",
+    "security/source-integrity",
+    "build/release-archives",
+    "tooling/keyless-signing"
+  ],
+  "subjects": [
+    {
+      "name": "Git",
+      "identity": {
+        "repository": "git/git",
+        "revision": "e1ec09b23c8e0deb21a0b95ac5996422277395d4"
+      }
+    },
+    {
+      "name": "OpenSSH Portable",
+      "identity": {
+        "repository": "openssh/openssh-portable",
+        "revision": "fa4b2a82be7df9768272cfabc2d78e4a12c2b3c0"
+      }
+    },
+    {
+      "name": "Sigstore Gitsign",
+      "identity": {
+        "repository": "sigstore/gitsign",
+        "revision": "0366e85aa541a35abc8107a754b6690333c5fc35"
+      }
+    },
+    {
+      "name": "git-evtag",
+      "identity": {
+        "repository": "cgwalters/git-evtag",
+        "revision": "34c930a5128ac90abe040e5d908f7c639f1680a2"
+      }
+    },
+    {
+      "name": "libostree",
+      "identity": {
+        "repository": "ostreedev/ostree",
+        "revision": "d3fa64ae856cb682ba9e67f41c2b0e73ba6632b6"
+      }
+    },
+    {
+      "name": "The First Collision for Full SHA-1 (CRYPTO 2017)",
+      "identity": {
+        "doi": "10.1007/978-3-319-63688-7_19"
+      }
+    },
+    {
+      "name": "Sigstore: Software Signing for Everybody (CCS 2022)",
+      "identity": {
+        "doi": "10.1145/3548606.3560596"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

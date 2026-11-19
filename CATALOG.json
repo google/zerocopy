@@ -19858,6 +19858,136 @@
         "pl/type-systems/approximate-computing"
       ]
     },
+    "fiat-crypto-hacl-evercrypt-vale-libcrux-and-verified-crypto-synthesis": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "mit-plv/fiat-crypto",
+            "revision": "3d2880ef2803faa9385589a81a835d5828eb3d38"
+          },
+          "name": "MIT Fiat-Crypto (Rocq constructive finite-field synthesis and Bedrock2 backend)"
+        },
+        {
+          "identity": {
+            "repository": "hacl-star/hacl-star",
+            "revision": "f557259007db9933442dde10aa995c1b00bd3446"
+          },
+          "name": "HACL* and EverCrypt (Low*/F* cryptographic library and agile multiplexing provider)"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/vale",
+            "revision": "bbae0eb89143734363b14a77642dbf8dec36e288"
+          },
+          "name": "Vale (Verified Assembly Language for Everest targeting F* and Dafny)"
+        },
+        {
+          "identity": {
+            "repository": "cryspen/libcrux",
+            "revision": "4f3bc83d0dd5fda622bcba0f47009b51dd31403c"
+          },
+          "name": "Cryspen libcrux (formally verified post-quantum and modern cryptography in Rust)"
+        },
+        {
+          "identity": {
+            "repository": "cryspen/hax",
+            "revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b"
+          },
+          "name": "hax (Rust-to-prover extraction frontend and engine)"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/karamel",
+            "revision": "6bd5918c7c518adbb973f75f23cdd0900acb7526"
+          },
+          "name": "KaRaMeL (Low* to C compiler)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/eurydice",
+            "revision": "b4ce1a78f645f89f669091b3c322e9aaa30b77a4"
+          },
+          "name": "Eurydice (Rust MIR-via-Charon to Low*/C compiler)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2019.00005"
+          },
+          "name": "Simple High-Level Code For Cryptographic Arithmetic \u2013 With Proofs, Without Compromises (Erbsen et al., IEEE S&P 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00067"
+          },
+          "name": "EverCrypt: A Fast, Verified, Cross-Platform Cryptographic Provider (Protzenko et al., IEEE S&P 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133956.3134043"
+          },
+          "name": "HACL*: A Verified Modern Cryptographic Library (Zinzindohoue et al., ACM CCS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3110261"
+          },
+          "name": "Verified Low-Level Programming Embedded in F* (Protzenko et al., PACMPL ICFP 2017)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity17/technical-sessions/presentation/bond"
+          },
+          "name": "Vale: Verifying High-Performance Cryptographic Assembly Code (Bond et al., USENIX Security 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-86695-1_7"
+          },
+          "name": "hax: Verifying Security-Critical Rust Software Using Multiple Provers (Bhargavan et al., VSTTE 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3719027.3765213"
+          },
+          "name": "Formal Security and Functional Verification of Cryptographic Protocol Implementations in Rust (Bhargavan et al., ACM CCS 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.6028/NIST.FIPS.203"
+          },
+          "name": "NIST FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)"
+        },
+        {
+          "identity": {
+            "doi": "10.6028/NIST.FIPS.204"
+          },
+          "name": "NIST FIPS 204: Module-Lattice-Based Digital Signature Standard (ML-DSA)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64",
+            "interpreter": "CPython 3.13.15"
+          },
+          "name": "Python 3.13 arithmetic micro-probe environment (Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/constant-time-codegen",
+        "compilers/partial-evaluation",
+        "ffi",
+        "ffi/multiplexed-providers",
+        "rust",
+        "rust/verified-pq-crypto",
+        "security",
+        "security/side-channels",
+        "security/verified-cryptography",
+        "verification",
+        "verification/arithmetic-synthesis",
+        "verification/assembly-verification"
+      ]
+    },
     "filesystem-apfs-overlayfs-snapshot-sharing": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -47060,6 +47190,64 @@
         "verification/refinement",
         "isa/jasmin",
         "lean/mechanization"
+      ]
+    },
+    "signed-git-commits-sha256-object-migration-gitsign-and-tarball-smuggling": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "git/git",
+            "revision": "e1ec09b23c8e0deb21a0b95ac5996422277395d4"
+          },
+          "name": "Git"
+        },
+        {
+          "identity": {
+            "repository": "openssh/openssh-portable",
+            "revision": "fa4b2a82be7df9768272cfabc2d78e4a12c2b3c0"
+          },
+          "name": "OpenSSH Portable"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/gitsign",
+            "revision": "0366e85aa541a35abc8107a754b6690333c5fc35"
+          },
+          "name": "Sigstore Gitsign"
+        },
+        {
+          "identity": {
+            "repository": "cgwalters/git-evtag",
+            "revision": "34c930a5128ac90abe040e5d908f7c639f1680a2"
+          },
+          "name": "git-evtag"
+        },
+        {
+          "identity": {
+            "repository": "ostreedev/ostree",
+            "revision": "d3fa64ae856cb682ba9e67f41c2b0e73ba6632b6"
+          },
+          "name": "libostree"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-63688-7_19"
+          },
+          "name": "The First Collision for Full SHA-1 (CRYPTO 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3548606.3560596"
+          },
+          "name": "Sigstore: Software Signing for Everybody (CCS 2022)"
+        }
+      ],
+      "topics": [
+        "vcs/signed-commits",
+        "security/source-integrity",
+        "build/release-archives",
+        "tooling/keyless-signing"
       ]
     },
     "silent-data-corruption-certifying-algorithms-and-abft-compilation": {
