@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "security/post-quantum",
+    "verification/cryptography",
+    "security/side-channels",
+    "compilers/crypto-codegen"
+  ],
+  "subjects": [
+    {
+      "name": "NIST FIPS 203 (ML-KEM)",
+      "identity": {
+        "standard": "FIPS 203",
+        "doi": "10.6028/NIST.FIPS.203",
+        "published": "2024-08-13"
+      }
+    },
+    {
+      "name": "NIST FIPS 204 (ML-DSA)",
+      "identity": {
+        "standard": "FIPS 204",
+        "doi": "10.6028/NIST.FIPS.204",
+        "published": "2024-08-13"
+      }
+    },
+    {
+      "name": "NIST FIPS 205 (SLH-DSA)",
+      "identity": {
+        "standard": "FIPS 205",
+        "doi": "10.6028/NIST.FIPS.205",
+        "published": "2024-08-13"
+      }
+    },
+    {
+      "name": "CRYSTALS-Kyber reference implementation",
+      "identity": {
+        "repository": "pq-crystals/kyber",
+        "revision": "3edd5af5991927164edd4aacebfcbee00b8064e7"
+      }
+    },
+    {
+      "name": "CRYSTALS-Dilithium reference implementation",
+      "identity": {
+        "repository": "pq-crystals/dilithium",
+        "revision": "d35ba3fe5449bee3e6d43e1f296c3ca818bd36be"
+      }
+    },
+    {
+      "name": "Libcrux formally verified Rust/C cryptographic library",
+      "identity": {
+        "repository": "celabshq/libcrux",
+        "former_repository": "cryspen/libcrux",
+        "revision": "e882e13e3f6b6482ea7622d786b499f504a76e97"
+      }
+    },
+    {
+      "name": "Formosa ML-KEM archival migration repository",
+      "identity": {
+        "repository": "Formosa-Crypto/formosa-mlkem",
+        "revision": "d1e64d5fee2157b47e5030c4f0bdc07bb36a7bde"
+      }
+    },
+    {
+      "name": "Formosa Libjade Jasmin and EasyCrypt cryptographic library",
+      "identity": {
+        "repository": "formosa-crypto/formosa-libjade",
+        "revision": "90ba5dc4d9da2b6950589c58a52282caa1dbfdfd"
+      }
+    },
+    {
+      "name": "mlkem-native CBMC and HOL-Light verified ML-KEM",
+      "identity": {
+        "repository": "pq-code-package/mlkem-native",
+        "revision": "c179cea863ac90024e11b03a3cfe4f2ccd2e9629"
+      }
+    },
+    {
+      "name": "Plonky3 FRI and STARK security library",
+      "identity": {
+        "repository": "Plonky3/Plonky3",
+        "revision": "0d803737b681774186cd283b1fd2d8e493655c82"
+      }
+    },
+    {
+      "name": "DMTF libspdm reference implementation",
+      "identity": {
+        "repository": "DMTF/libspdm",
+        "revision": "3f1253df61ef1af917f1f18ce40db065e93ff82c"
+      }
+    },
+    {
+      "name": "GNU Compiler Collection (x86-64 Linux codegen probe)",
+      "identity": {
+        "toolchain": "gcc",
+        "version": "15.2.0 (Debian 15.2.0-14)",
+        "target": "x86_64-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

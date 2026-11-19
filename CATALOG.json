@@ -30353,6 +30353,106 @@
         "verification/isa-coverage"
       ]
     },
+    "post-quantum-lattice-hash-cryptography-masked-ntt-and-agile-migration": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.6028/NIST.FIPS.203",
+            "published": "2024-08-13",
+            "standard": "FIPS 203"
+          },
+          "name": "NIST FIPS 203 (ML-KEM)"
+        },
+        {
+          "identity": {
+            "doi": "10.6028/NIST.FIPS.204",
+            "published": "2024-08-13",
+            "standard": "FIPS 204"
+          },
+          "name": "NIST FIPS 204 (ML-DSA)"
+        },
+        {
+          "identity": {
+            "doi": "10.6028/NIST.FIPS.205",
+            "published": "2024-08-13",
+            "standard": "FIPS 205"
+          },
+          "name": "NIST FIPS 205 (SLH-DSA)"
+        },
+        {
+          "identity": {
+            "repository": "pq-crystals/kyber",
+            "revision": "3edd5af5991927164edd4aacebfcbee00b8064e7"
+          },
+          "name": "CRYSTALS-Kyber reference implementation"
+        },
+        {
+          "identity": {
+            "repository": "pq-crystals/dilithium",
+            "revision": "d35ba3fe5449bee3e6d43e1f296c3ca818bd36be"
+          },
+          "name": "CRYSTALS-Dilithium reference implementation"
+        },
+        {
+          "identity": {
+            "former_repository": "cryspen/libcrux",
+            "repository": "celabshq/libcrux",
+            "revision": "e882e13e3f6b6482ea7622d786b499f504a76e97"
+          },
+          "name": "Libcrux formally verified Rust/C cryptographic library"
+        },
+        {
+          "identity": {
+            "repository": "Formosa-Crypto/formosa-mlkem",
+            "revision": "d1e64d5fee2157b47e5030c4f0bdc07bb36a7bde"
+          },
+          "name": "Formosa ML-KEM archival migration repository"
+        },
+        {
+          "identity": {
+            "repository": "formosa-crypto/formosa-libjade",
+            "revision": "90ba5dc4d9da2b6950589c58a52282caa1dbfdfd"
+          },
+          "name": "Formosa Libjade Jasmin and EasyCrypt cryptographic library"
+        },
+        {
+          "identity": {
+            "repository": "pq-code-package/mlkem-native",
+            "revision": "c179cea863ac90024e11b03a3cfe4f2ccd2e9629"
+          },
+          "name": "mlkem-native CBMC and HOL-Light verified ML-KEM"
+        },
+        {
+          "identity": {
+            "repository": "Plonky3/Plonky3",
+            "revision": "0d803737b681774186cd283b1fd2d8e493655c82"
+          },
+          "name": "Plonky3 FRI and STARK security library"
+        },
+        {
+          "identity": {
+            "repository": "DMTF/libspdm",
+            "revision": "3f1253df61ef1af917f1f18ce40db065e93ff82c"
+          },
+          "name": "DMTF libspdm reference implementation"
+        },
+        {
+          "identity": {
+            "target": "x86_64-linux-gnu",
+            "toolchain": "gcc",
+            "version": "15.2.0 (Debian 15.2.0-14)"
+          },
+          "name": "GNU Compiler Collection (x86-64 Linux codegen probe)"
+        }
+      ],
+      "topics": [
+        "security/post-quantum",
+        "verification/cryptography",
+        "security/side-channels",
+        "compilers/crypto-codegen"
+      ]
+    },
     "power-em-side-channel-physics-dpa-cpa-screaming-channels-and-sifa": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -42054,6 +42154,91 @@
         "verification/interrupts",
         "systems/realtime",
         "ffi/hw-sw-boundary"
+      ]
+    },
+    "symbolic-and-computational-protocol-verifiers-tamarin-proverif-and-squirrel": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "tamarin-prover/tamarin-prover",
+            "revision": "03215cd03e7c844ca2be116b45aef9737db495fd"
+          },
+          "name": "Tamarin Prover"
+        },
+        {
+          "identity": {
+            "repository": "squirrel-prover/squirrel-prover",
+            "revision": "ebef0aca4f668b3b6c8e8e2796e59a16e7e50c9c"
+          },
+          "name": "Squirrel Proof Assistant"
+        },
+        {
+          "identity": {
+            "repository": "REPROSEC/dolev-yao-star",
+            "revision": "8a0e999267c436d9d57db0f1aa289476049b08a2"
+          },
+          "name": "DY* (Dolev-Yao*) F* Protocol Verification Framework"
+        },
+        {
+          "identity": {
+            "repository": "DMTF/libspdm",
+            "revision": "3f1253df61ef1af917f1f18ce40db065e93ff82c"
+          },
+          "name": "DMTF libspdm Reference Implementation"
+        },
+        {
+          "identity": {
+            "released": "2023-10-18",
+            "repository": "https://gitlab.inria.fr/bblanche/proverif",
+            "url": "https://bblanche.gitlabpages.inria.fr/proverif/",
+            "version": "2.05"
+          },
+          "name": "ProVerif Symbolic Protocol Verifier"
+        },
+        {
+          "identity": {
+            "url": "https://bblanche.gitlabpages.inria.fr/CryptoVerif/",
+            "version": "2.13"
+          },
+          "name": "CryptoVerif Computational Protocol Verifier"
+        },
+        {
+          "identity": {
+            "organization": "DMTF",
+            "standard": "DSP0274",
+            "versions": "1.2, 1.3, 1.4"
+          },
+          "name": "DMTF SPDM Specification (DSP0274)"
+        },
+        {
+          "identity": {
+            "organization": "PCI-SIG",
+            "standard": "PCIe 6.0 IDE and TDISP ECN"
+          },
+          "name": "PCI-SIG PCIe IDE and TDISP Specifications"
+        },
+        {
+          "identity": {
+            "organization": "Trusted Computing Group",
+            "standard": "TPM 2.0 Library Specification (Parts 1-4)"
+          },
+          "name": "TCG TPM 2.0 Library Specification"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC9420",
+            "published": "2023-07",
+            "standard": "RFC 9420"
+          },
+          "name": "IETF RFC 9420 (Messaging Layer Security)"
+        }
+      ],
+      "topics": [
+        "verification/security-protocols",
+        "security/cryptographic-protocols",
+        "smt/equational-rewriting",
+        "ffi/attested-channels"
       ]
     },
     "target-features-implications-detection-and-abi-effects": {

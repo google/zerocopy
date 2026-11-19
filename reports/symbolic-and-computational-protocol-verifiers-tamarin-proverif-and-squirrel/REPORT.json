@@ -1,0 +1,85 @@
+{
+  "topics": [
+    "verification/security-protocols",
+    "security/cryptographic-protocols",
+    "smt/equational-rewriting",
+    "ffi/attested-channels"
+  ],
+  "subjects": [
+    {
+      "name": "Tamarin Prover",
+      "identity": {
+        "repository": "tamarin-prover/tamarin-prover",
+        "revision": "03215cd03e7c844ca2be116b45aef9737db495fd"
+      }
+    },
+    {
+      "name": "Squirrel Proof Assistant",
+      "identity": {
+        "repository": "squirrel-prover/squirrel-prover",
+        "revision": "ebef0aca4f668b3b6c8e8e2796e59a16e7e50c9c"
+      }
+    },
+    {
+      "name": "DY* (Dolev-Yao*) F* Protocol Verification Framework",
+      "identity": {
+        "repository": "REPROSEC/dolev-yao-star",
+        "revision": "8a0e999267c436d9d57db0f1aa289476049b08a2"
+      }
+    },
+    {
+      "name": "DMTF libspdm Reference Implementation",
+      "identity": {
+        "repository": "DMTF/libspdm",
+        "revision": "3f1253df61ef1af917f1f18ce40db065e93ff82c"
+      }
+    },
+    {
+      "name": "ProVerif Symbolic Protocol Verifier",
+      "identity": {
+        "version": "2.05",
+        "released": "2023-10-18",
+        "url": "https://bblanche.gitlabpages.inria.fr/proverif/",
+        "repository": "https://gitlab.inria.fr/bblanche/proverif"
+      }
+    },
+    {
+      "name": "CryptoVerif Computational Protocol Verifier",
+      "identity": {
+        "version": "2.13",
+        "url": "https://bblanche.gitlabpages.inria.fr/CryptoVerif/"
+      }
+    },
+    {
+      "name": "DMTF SPDM Specification (DSP0274)",
+      "identity": {
+        "standard": "DSP0274",
+        "versions": "1.2, 1.3, 1.4",
+        "organization": "DMTF"
+      }
+    },
+    {
+      "name": "PCI-SIG PCIe IDE and TDISP Specifications",
+      "identity": {
+        "standard": "PCIe 6.0 IDE and TDISP ECN",
+        "organization": "PCI-SIG"
+      }
+    },
+    {
+      "name": "TCG TPM 2.0 Library Specification",
+      "identity": {
+        "standard": "TPM 2.0 Library Specification (Parts 1-4)",
+        "organization": "Trusted Computing Group"
+      }
+    },
+    {
+      "name": "IETF RFC 9420 (Messaging Layer Security)",
+      "identity": {
+        "standard": "RFC 9420",
+        "doi": "10.17487/RFC9420",
+        "published": "2023-07"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
