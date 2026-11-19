@@ -1,0 +1,142 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "organization": "Compute Express Link Consortium",
+        "standard": "CXL 2.0 / 3.0 / 3.1 Specification (CXL.mem, CXL.cache, HDM-DB/BISnp, DCD, G-FAM, Poison/Viral, IDE)"
+      },
+      "name": "Compute Express Link (CXL) 2.0/3.0/3.1 architecture specification"
+    },
+    {
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      },
+      "name": "Linux kernel MCE recovery (copy_mc_64.S), hwpoison (memory-failure.c), and CXL subsystem"
+    },
+    {
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "b86056e175f63cb99c5ca7c4139244c60b1056aa"
+      },
+      "name": "LLVM IR dereferenceable semantics and load speculation analysis"
+    },
+    {
+      "identity": {
+        "target": "x86_64-unknown-linux-gnu",
+        "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+      },
+      "name": "Rust compiler LLVM IR and x86-64 lowering for guarded reference loads"
+    },
+    {
+      "identity": {
+        "arxiv": "2410.15908v2",
+        "doi": "10.1145/3676641.3715999",
+        "publication": "ASPLOS 2025"
+      },
+      "name": "Formalising CXL Cache Coherence (Tan, Donaldson, Wickerson)"
+    },
+    {
+      "identity": {
+        "arxiv": "2405.19626v2",
+        "doi": "10.48550/arXiv.2405.19626",
+        "publication": "arXiv cs.DC (2024)"
+      },
+      "name": "CXL Shared Memory Programming: Barely Distributed and Almost Persistent (Xu et al.)"
+    },
+    {
+      "identity": {
+        "arxiv": "2407.16300v3",
+        "doi": "10.48550/arXiv.2407.16300",
+        "publication": "ASPLOS 2026",
+        "system": "CXL0"
+      },
+      "name": "CXL0 operational programming model for disaggregated CXL memory (Assa et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3779212.3790150",
+        "publication": "ASPLOS 2026",
+        "repository": "uci-plrg/cxlmc",
+        "revision": "1391bcbc81bc30835994105127f1ffe9a806f0ba"
+      },
+      "name": "CXLMC systematic model checker for CXL shared-memory programs (Guo, Truong, Demsky)"
+    },
+    {
+      "identity": {
+        "arxiv": "2602.08271v2",
+        "publication": "59th IEEE/ACM MICRO 2026",
+        "system": "DIKTAMO (evolved from ReCXL)"
+      },
+      "name": "DIKTAMO hardware replica-logging CXL resilience to CPU failures (Psistakis et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3698783.3699377",
+        "publication": "DIMES @ SOSP 2024",
+        "system": "Lupin"
+      },
+      "name": "Lupin CXL pod partial-failure tolerance system (Zhu et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3779212.3790149",
+        "publication": "ASPLOS 2026",
+        "repository": "nwtnni/cxlalloc",
+        "revision": "eba659a27ebd580cc72069dfb0bce625ef0580ca"
+      },
+      "name": "Cxlalloc safe and efficient memory allocator for a CXL pod"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3600006.3613135",
+        "publication": "SOSP 2023",
+        "repository": "madsys-dev/sosp-paper19-ae",
+        "revision": "0ae5ed7d073436eeaad331c05971874cc29a9889"
+      },
+      "name": "CXL-SHM partial-failure-resilient non-blocking CXL memory manager (Zhang et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1109/SC.2012.71",
+        "publication": "SC 2012 / SC 2015 (Regent DOI: 10.1145/2807591.2807629)",
+        "repository": "StanfordLegion/legion",
+        "revision": "aea587e157abff12f7d089c81f29cd3a8b993a2b"
+      },
+      "name": "Legion runtime and Regent logical-region language"
+    },
+    {
+      "identity": {
+        "doi": "10.1177/1094342007078442",
+        "publication": "IJHPCA 2007",
+        "repository": "chapel-lang/chapel",
+        "revision": "732cf95e1d870063b5be878a8ba9f7ed0642645f"
+      },
+      "name": "Chapel PGAS locales, wide pointers, and domain maps"
+    },
+    {
+      "identity": {
+        "doi": "10.25344/S4V88H",
+        "publication": "IPDPS 2019",
+        "repository": "BerkeleyLab/upcxx",
+        "revision": "824c7c5521e6b56c564eb74e75fb7ff7b084fbb5"
+      },
+      "name": "UPC++ asynchronous PGAS global_ptr, rget/rput, and persona framework"
+    }
+  ],
+  "topics": [
+    "systems",
+    "systems/cxl",
+    "isa",
+    "compilers",
+    "llvm",
+    "pl",
+    "pl/pgas",
+    "runtimes",
+    "rust",
+    "ffi",
+    "security",
+    "verification"
+  ]
+}

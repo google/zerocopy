@@ -1,0 +1,145 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "document": "IBM i 7.5 ILE Concepts & Technology Independent Machine Interface (TIMI) / Single-Level Storage & Teraspace",
+        "standard": "IBM i Architecture (System/38 -> AS/400 -> IBM i)",
+        "vendor": "IBM"
+      },
+      "name": "IBM System/38 and IBM i TIMI Single-Level Store"
+    },
+    {
+      "identity": {
+        "doi": "10.1093/comjnl/26.4.360",
+        "publication": "The Computer Journal, Vol. 26, No. 4 (1983)",
+        "system": "PS-Algol"
+      },
+      "name": "PS-Algol orthogonal persistence model (Atkinson et al.)"
+    },
+    {
+      "identity": {
+        "authors": "Atkinson, Jordan, Daynes, Printezis, Spence",
+        "publication": "PJama architecture and retrospectives (1996-2000)",
+        "system": "PJama / Napier88"
+      },
+      "name": "Napier88 and PJama orthogonally persistent object systems"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/319151.319163",
+        "publication": "SOSP 1999 (building on KeyKOS OSR 1985 and Coyotos)",
+        "system": "EROS / KeyKOS / Coyotos"
+      },
+      "name": "KeyKOS, EROS, and Coyotos capability checkpointing kernels"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3477132.3483563",
+        "publication": "SOSP 2021",
+        "system": "Aurora SLS"
+      },
+      "name": "Aurora Single-Level Store operating system"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3445814.3446710",
+        "repository": "NVSL/Corundum",
+        "revision": "1685af69d9b34d6d2c918c69c3327023ac753f03"
+      },
+      "name": "Corundum statically-enforced Rust persistent memory library"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3371079",
+        "publication": "POPL 2020 (PACMPL Vol. 4, Art. 11)",
+        "system": "Px86"
+      },
+      "name": "Px86 Intel-x86 persistency semantics (Raad et al.)"
+    },
+    {
+      "identity": {
+        "repository": "golemcloud/golem",
+        "revision": "7ca9863405ba888f897a581e0dd973b3c95fc5e5"
+      },
+      "name": "Golem WebAssembly durable execution runtime"
+    },
+    {
+      "identity": {
+        "repository": "dfinity/motoko",
+        "revision": "acd6537b74b62801b0927ed9dfba240b3a4692a4"
+      },
+      "name": "Motoko Enhanced Orthogonal Persistence compiler"
+    },
+    {
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+      },
+      "name": "Wasmtime WebAssembly runtime determinism configuration"
+    },
+    {
+      "identity": {
+        "repository": "temporalio/temporal",
+        "revision": "4841d727dae93c08444a94e47149c0fb0e74d226"
+      },
+      "name": "Temporal durable execution server"
+    },
+    {
+      "identity": {
+        "repository": "temporalio/sdk-core",
+        "revision": "8e7413bfd77b85ef35326aa4c2cf8473d556c6ea"
+      },
+      "name": "Temporal Core SDK workflow replay state machine"
+    },
+    {
+      "identity": {
+        "repository": "restatedev/restate",
+        "revision": "7e9a3b235011bf749447aa48dda80c1c71e42bb0"
+      },
+      "name": "Restate durable execution engine"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3485510",
+        "publication": "OOPSLA 2021 (PACMPL Vol. 5)",
+        "system": "Azure Durable Functions"
+      },
+      "name": "Azure Durable Functions formal semantics (Burckhardt et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.14778/3485450.3485454",
+        "repository": "dbos-inc/dbos-transact-ts",
+        "revision": "12514c0677f0a5ba98124c8ee3ee38daca6de0a8"
+      },
+      "name": "DBOS database-oriented durable workflows"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/568522.568525",
+        "publication": "ACM Computing Surveys, Vol. 34, No. 3 (2002)",
+        "system": "Rollback-Recovery / Output Commit"
+      },
+      "name": "Elnozahy et al. rollback-recovery and Output Commit survey"
+    },
+    {
+      "identity": {
+        "target": "x86_64-unknown-linux-gnu",
+        "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+      },
+      "name": "Rust compiler struct layout probe for raw-snapshot fragility"
+    }
+  ],
+  "topics": [
+    "systems",
+    "systems/persistence",
+    "runtimes",
+    "runtimes/durable-execution",
+    "runtimes/wasm",
+    "pl",
+    "pl/effects",
+    "ffi",
+    "verification"
+  ]
+}

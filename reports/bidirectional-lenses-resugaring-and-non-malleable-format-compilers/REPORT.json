@@ -1,0 +1,209 @@
+{
+  "topics": [
+    "pl",
+    "pl/bidirectional-lenses",
+    "compilers/macros-resugaring",
+    "verification/binary-formats",
+    "security",
+    "ffi/codecs"
+  ],
+  "subjects": [
+    {
+      "name": "Boomerang bidirectional lens compiler",
+      "identity": {
+        "repository": "boomerang-lang/boomerang",
+        "revision": "24a309a6c8e78ebf14fb6055ac5f813bcbeea600"
+      }
+    },
+    {
+      "name": "Optician bijective lens synthesizer",
+      "identity": {
+        "repository": "Optician-Tool/Optician-Tool",
+        "revision": "4aa9d9d0f0511bf559abdc73dbef3b888d371d3a"
+      }
+    },
+    {
+      "name": "EverParse, LowParse, 3D, ASN1*, and EverCBOR/EverCDDL",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c"
+      }
+    },
+    {
+      "name": "Vest verified Rust parser and serializer framework (v0.2 / Vest 2.0)",
+      "identity": {
+        "repository": "secure-foundations/vest",
+        "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+      }
+    },
+    {
+      "name": "Fiat / Narcissus deductive binary encoder-decoder synthesizer",
+      "identity": {
+        "repository": "mit-plv/fiat",
+        "revision": "77f43f5d5408b3543f8dd01d4d43f4c4c70f1213"
+      }
+    },
+    {
+      "name": "DaeDaLus data description language compiler",
+      "identity": {
+        "repository": "GaloisInc/daedalus",
+        "revision": "8ff2fadc981800c0457406d44fa55f8d270dfc71"
+      }
+    },
+    {
+      "name": "Nail binary format parser and generator",
+      "identity": {
+        "repository": "jbangert/nail",
+        "revision": "4bd9cc29c4092abe7a77f8294aff2337bba02ec5"
+      }
+    },
+    {
+      "name": "Kaitai Struct binary format compiler",
+      "identity": {
+        "repository": "kaitai-io/kaitai_struct",
+        "revision": "4fb24924d21317dfba9209c47c892770d2834d7a"
+      }
+    },
+    {
+      "name": "Protocol Buffers C++ runtime and CodedOutputStream",
+      "identity": {
+        "repository": "protocolbuffers/protobuf",
+        "revision": "158df6107b2469fc3d2d66e11e5ada76efddfaa4"
+      }
+    },
+    {
+      "name": "Combinators for Bidirectional Tree Transformations (Foster et al., TOPLAS 2007)",
+      "identity": {
+        "doi": "10.1145/1232420.1232424"
+      }
+    },
+    {
+      "name": "Boomerang: Resourceful Lenses for String Data (Bohannon et al., POPL 2008)",
+      "identity": {
+        "doi": "10.1145/1328897.1328487"
+      }
+    },
+    {
+      "name": "Quotient Lenses (Foster, Pilkiewicz, Pierce, ICFP 2008)",
+      "identity": {
+        "doi": "10.1145/1411203.1411257"
+      }
+    },
+    {
+      "name": "Matching Lenses: Alignment and View Update (Barbosa et al., ICFP 2010)",
+      "identity": {
+        "doi": "10.1145/1863543.1863572"
+      }
+    },
+    {
+      "name": "Symmetric Lenses (Hofmann, Pierce, Wagner, POPL 2011)",
+      "identity": {
+        "doi": "10.1145/1926385.1926428"
+      }
+    },
+    {
+      "name": "Edit Lenses (Hofmann, Pierce, Wagner, POPL 2012)",
+      "identity": {
+        "doi": "10.1145/2103656.2103715"
+      }
+    },
+    {
+      "name": "Retentive Lenses (Zhu, Yang, Ko, Hu, 2020)",
+      "identity": {
+        "arxiv": "2001.02031",
+        "doi": "10.48550/arXiv.2001.02031"
+      }
+    },
+    {
+      "name": "BiGUL: A Formally Verified Core Language for Putback-Based Bidirectional Programming (Ko, Zan, Hu, PEPM 2016)",
+      "identity": {
+        "doi": "10.1145/2847538.2847544"
+      }
+    },
+    {
+      "name": "Synthesizing Bijective Lenses (Miltner et al., POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158089"
+      }
+    },
+    {
+      "name": "HOBiT: Programming Lenses Without Using Lens Combinators (Matsuda, Wang, ESOP 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-319-89884-1_2"
+      }
+    },
+    {
+      "name": "Invertible Syntax Descriptions (Rendel, Ostermann, Haskell 2010)",
+      "identity": {
+        "doi": "10.1145/2088456.1863525"
+      }
+    },
+    {
+      "name": "Resugaring: Lifting Evaluation Sequences through Syntactic Sugar (Pombrio, Krishnamurthi, PLDI 2014)",
+      "identity": {
+        "doi": "10.1145/2594291.2594319"
+      }
+    },
+    {
+      "name": "Hygienic Resugaring of Compositional Desugaring (Pombrio, Krishnamurthi, ICFP 2015)",
+      "identity": {
+        "doi": "10.1145/2784731.2784755"
+      }
+    },
+    {
+      "name": "Inferring Scope through Syntactic Sugar (Pombrio, Krishnamurthi, ICFP 2017)",
+      "identity": {
+        "doi": "10.1145/3110288"
+      }
+    },
+    {
+      "name": "Inferring Type Rules for Syntactic Sugar (Pombrio, Krishnamurthi, PLDI 2018)",
+      "identity": {
+        "doi": "10.1145/3192366.3192398"
+      }
+    },
+    {
+      "name": "Security Applications of Formal Language Theory (Sassaman et al., IEEE Systems J. 2013)",
+      "identity": {
+        "doi": "10.1109/JSYST.2012.2222000"
+      }
+    },
+    {
+      "name": "The Seven Turrets of Babel: A Taxonomy of LangSec Errors (Momot et al., IEEE SPW 2016)",
+      "identity": {
+        "doi": "10.1109/SPW.2016.39"
+      }
+    },
+    {
+      "name": "EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats (Ramananandro et al., USENIX Security 2019)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud"
+      }
+    },
+    {
+      "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (Swamy et al., PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523708"
+      }
+    },
+    {
+      "name": "ASN1*: Provably Correct, Non-Malleable Parsing for ASN.1 DER (Ni et al., CPP 2023)",
+      "identity": {
+        "doi": "10.1145/3573105.3575684"
+      }
+    },
+    {
+      "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats (Delaware et al., ICFP 2019)",
+      "identity": {
+        "doi": "10.1145/3341686"
+      }
+    },
+    {
+      "name": "Vest: Verified, Secure, High-Performance Parsing and Serialization for Rust (Cai et al., USENIX Security 2025)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/cai"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

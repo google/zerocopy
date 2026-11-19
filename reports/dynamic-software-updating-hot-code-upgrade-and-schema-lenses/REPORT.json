@@ -1,0 +1,119 @@
+{
+  "observed_at": "2026-11-19",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "erlang/otp",
+        "revision": "2f60d1b6a246b3f7ae997fd93a9af067fab7f981"
+      },
+      "name": "Erlang/OTP BEAM hot code loading, sys:change_code, and erl_nif upgrade/unload"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/1275497.1275500",
+        "publication": "ACM TOPLAS 2007 (building on POPL 2005)",
+        "system": "Proteus"
+      },
+      "name": "Proteus con-freeness formal DSU type-safety calculus (Stoyle et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/1133255.1133991",
+        "publication": "PLDI 2006",
+        "system": "Ginseng"
+      },
+      "name": "Ginseng lazy type-wrapping C DSU compiler (Neamtiu et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/2629460",
+        "publication": "ACM TOPLAS Vol. 36, No. 4, Art. 13 (2014)",
+        "repository": "kitsune-dsu/kitsune-core",
+        "revision": "6393a0c148976c910df313bda4b578e7c240a6d2"
+      },
+      "name": "Kitsune whole-program C DSU runtime and xfgen state transformer"
+    },
+    {
+      "identity": {
+        "authors": "Makris, Bazzi",
+        "publication": "USENIX ATC 2009",
+        "system": "UpStare",
+        "url": "https://www.usenix.org/conference/usenix-atc-09/immediate-multi-threaded-dynamic-software-updates-using-stack"
+      },
+      "name": "UpStare immediate multi-threaded stack-reconstruction DSU"
+    },
+    {
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      },
+      "name": "Linux kernel livepatch (klp) hybrid consistency model and shadow variables"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/1232420.1232424",
+        "publication": "ACM TOPLAS 2007 (building on POPL 2005)",
+        "repository": "boomerang-lang/boomerang",
+        "revision": "24a309a6c8e78ebf14fb6055ac5f813bcbeea600"
+      },
+      "name": "Boomerang asymmetric bidirectional tree lenses (Foster et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/1925844.1926428",
+        "publication": "POPL 2011",
+        "system": "Symmetric Lenses"
+      },
+      "name": "Symmetric Lenses with explicit complement state (Hofmann, Pierce, Wagner)"
+    },
+    {
+      "identity": {
+        "repository": "inkandswitch/cambria",
+        "revision": "da8961440cac7eba1c3113488f5bcbc26046620f"
+      },
+      "name": "Ink & Switch Cambria bidirectional schema lens graph"
+    },
+    {
+      "identity": {
+        "doi": "10.1007/s00778-012-0302-x",
+        "publication": "The VLDB Journal 2013 (building on PRISM VLDB 2008)",
+        "system": "PRISM / PRISM++"
+      },
+      "name": "PRISM and PRISM++ coupled schema and query evolution workbench (Curino et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.1145/3035918.3064046",
+        "publication": "SIGMOD 2017 (extended VLDB Journal 2018)",
+        "system": "InVerDa / BiDEL"
+      },
+      "name": "InVerDa and BiDEL co-existing multi-schema-version database system (Herrmann et al.)"
+    },
+    {
+      "identity": {
+        "doi": "10.14778/2536206.2536210",
+        "publication": "PVLDB / VLDB 2013",
+        "system": "Google F1"
+      },
+      "name": "Google F1 online asynchronous distributed schema change protocol (Rae et al.)"
+    },
+    {
+      "identity": {
+        "repository": "unisonweb/unison",
+        "revision": "b5c5188d99f31820d0cc012f194948d2876c14e7"
+      },
+      "name": "Unison content-addressed codebase and AST hashing"
+    }
+  ],
+  "topics": [
+    "runtimes",
+    "runtimes/dsu",
+    "pl",
+    "pl/bidirectional-lenses",
+    "systems",
+    "systems/livepatch",
+    "ffi",
+    "compilers",
+    "verification"
+  ]
+}

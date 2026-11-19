@@ -7629,6 +7629,215 @@
         "verification/compiler-verification"
       ]
     },
+    "bidirectional-lenses-resugaring-and-non-malleable-format-compilers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "boomerang-lang/boomerang",
+            "revision": "24a309a6c8e78ebf14fb6055ac5f813bcbeea600"
+          },
+          "name": "Boomerang bidirectional lens compiler"
+        },
+        {
+          "identity": {
+            "repository": "Optician-Tool/Optician-Tool",
+            "revision": "4aa9d9d0f0511bf559abdc73dbef3b888d371d3a"
+          },
+          "name": "Optician bijective lens synthesizer"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c"
+          },
+          "name": "EverParse, LowParse, 3D, ASN1*, and EverCBOR/EverCDDL"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/vest",
+            "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+          },
+          "name": "Vest verified Rust parser and serializer framework (v0.2 / Vest 2.0)"
+        },
+        {
+          "identity": {
+            "repository": "mit-plv/fiat",
+            "revision": "77f43f5d5408b3543f8dd01d4d43f4c4c70f1213"
+          },
+          "name": "Fiat / Narcissus deductive binary encoder-decoder synthesizer"
+        },
+        {
+          "identity": {
+            "repository": "GaloisInc/daedalus",
+            "revision": "8ff2fadc981800c0457406d44fa55f8d270dfc71"
+          },
+          "name": "DaeDaLus data description language compiler"
+        },
+        {
+          "identity": {
+            "repository": "jbangert/nail",
+            "revision": "4bd9cc29c4092abe7a77f8294aff2337bba02ec5"
+          },
+          "name": "Nail binary format parser and generator"
+        },
+        {
+          "identity": {
+            "repository": "kaitai-io/kaitai_struct",
+            "revision": "4fb24924d21317dfba9209c47c892770d2834d7a"
+          },
+          "name": "Kaitai Struct binary format compiler"
+        },
+        {
+          "identity": {
+            "repository": "protocolbuffers/protobuf",
+            "revision": "158df6107b2469fc3d2d66e11e5ada76efddfaa4"
+          },
+          "name": "Protocol Buffers C++ runtime and CodedOutputStream"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1232420.1232424"
+          },
+          "name": "Combinators for Bidirectional Tree Transformations (Foster et al., TOPLAS 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1328897.1328487"
+          },
+          "name": "Boomerang: Resourceful Lenses for String Data (Bohannon et al., POPL 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1411203.1411257"
+          },
+          "name": "Quotient Lenses (Foster, Pilkiewicz, Pierce, ICFP 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1863543.1863572"
+          },
+          "name": "Matching Lenses: Alignment and View Update (Barbosa et al., ICFP 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926428"
+          },
+          "name": "Symmetric Lenses (Hofmann, Pierce, Wagner, POPL 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103656.2103715"
+          },
+          "name": "Edit Lenses (Hofmann, Pierce, Wagner, POPL 2012)"
+        },
+        {
+          "identity": {
+            "arxiv": "2001.02031",
+            "doi": "10.48550/arXiv.2001.02031"
+          },
+          "name": "Retentive Lenses (Zhu, Yang, Ko, Hu, 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2847538.2847544"
+          },
+          "name": "BiGUL: A Formally Verified Core Language for Putback-Based Bidirectional Programming (Ko, Zan, Hu, PEPM 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158089"
+          },
+          "name": "Synthesizing Bijective Lenses (Miltner et al., POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-89884-1_2"
+          },
+          "name": "HOBiT: Programming Lenses Without Using Lens Combinators (Matsuda, Wang, ESOP 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2088456.1863525"
+          },
+          "name": "Invertible Syntax Descriptions (Rendel, Ostermann, Haskell 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594319"
+          },
+          "name": "Resugaring: Lifting Evaluation Sequences through Syntactic Sugar (Pombrio, Krishnamurthi, PLDI 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2784731.2784755"
+          },
+          "name": "Hygienic Resugaring of Compositional Desugaring (Pombrio, Krishnamurthi, ICFP 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3110288"
+          },
+          "name": "Inferring Scope through Syntactic Sugar (Pombrio, Krishnamurthi, ICFP 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192398"
+          },
+          "name": "Inferring Type Rules for Syntactic Sugar (Pombrio, Krishnamurthi, PLDI 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JSYST.2012.2222000"
+          },
+          "name": "Security Applications of Formal Language Theory (Sassaman et al., IEEE Systems J. 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SPW.2016.39"
+          },
+          "name": "The Seven Turrets of Babel: A Taxonomy of LangSec Errors (Momot et al., IEEE SPW 2016)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/delignat-lavaud"
+          },
+          "name": "EverParse: Verified Secure Zero-Copy Parsers for Authenticated Message Formats (Ramananandro et al., USENIX Security 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523708"
+          },
+          "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (Swamy et al., PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3573105.3575684"
+          },
+          "name": "ASN1*: Provably Correct, Non-Malleable Parsing for ASN.1 DER (Ni et al., CPP 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341686"
+          },
+          "name": "Narcissus: Correct-by-Construction Derivation of Decoders and Encoders from Binary Formats (Delaware et al., ICFP 2019)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity25/presentation/cai"
+          },
+          "name": "Vest: Verified, Secure, High-Performance Parsing and Serialization for Rust (Cai et al., USENIX Security 2025)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/bidirectional-lenses",
+        "compilers/macros-resugaring",
+        "verification/binary-formats",
+        "security",
+        "ffi/codecs"
+      ]
+    },
     "bidirectional-mir-minissa-refinement-and-anneal-vc-transport": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -12771,6 +12980,267 @@
         "systems",
         "verification",
         "verification/isa-coverage"
+      ]
+    },
+    "disaggregated-cxl-memory-pgas-regions-and-partial-failure-loads": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "organization": "Compute Express Link Consortium",
+            "standard": "CXL 2.0 / 3.0 / 3.1 Specification (CXL.mem, CXL.cache, HDM-DB/BISnp, DCD, G-FAM, Poison/Viral, IDE)"
+          },
+          "name": "Compute Express Link (CXL) 2.0/3.0/3.1 architecture specification"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel MCE recovery (copy_mc_64.S), hwpoison (memory-failure.c), and CXL subsystem"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "b86056e175f63cb99c5ca7c4139244c60b1056aa"
+          },
+          "name": "LLVM IR dereferenceable semantics and load speculation analysis"
+        },
+        {
+          "identity": {
+            "target": "x86_64-unknown-linux-gnu",
+            "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Rust compiler LLVM IR and x86-64 lowering for guarded reference loads"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.15908v2",
+            "doi": "10.1145/3676641.3715999",
+            "publication": "ASPLOS 2025"
+          },
+          "name": "Formalising CXL Cache Coherence (Tan, Donaldson, Wickerson)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.19626v2",
+            "doi": "10.48550/arXiv.2405.19626",
+            "publication": "arXiv cs.DC (2024)"
+          },
+          "name": "CXL Shared Memory Programming: Barely Distributed and Almost Persistent (Xu et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.16300v3",
+            "doi": "10.48550/arXiv.2407.16300",
+            "publication": "ASPLOS 2026",
+            "system": "CXL0"
+          },
+          "name": "CXL0 operational programming model for disaggregated CXL memory (Assa et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3779212.3790150",
+            "publication": "ASPLOS 2026",
+            "repository": "uci-plrg/cxlmc",
+            "revision": "1391bcbc81bc30835994105127f1ffe9a806f0ba"
+          },
+          "name": "CXLMC systematic model checker for CXL shared-memory programs (Guo, Truong, Demsky)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.08271v2",
+            "publication": "59th IEEE/ACM MICRO 2026",
+            "system": "DIKTAMO (evolved from ReCXL)"
+          },
+          "name": "DIKTAMO hardware replica-logging CXL resilience to CPU failures (Psistakis et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3698783.3699377",
+            "publication": "DIMES @ SOSP 2024",
+            "system": "Lupin"
+          },
+          "name": "Lupin CXL pod partial-failure tolerance system (Zhu et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3779212.3790149",
+            "publication": "ASPLOS 2026",
+            "repository": "nwtnni/cxlalloc",
+            "revision": "eba659a27ebd580cc72069dfb0bce625ef0580ca"
+          },
+          "name": "Cxlalloc safe and efficient memory allocator for a CXL pod"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3600006.3613135",
+            "publication": "SOSP 2023",
+            "repository": "madsys-dev/sosp-paper19-ae",
+            "revision": "0ae5ed7d073436eeaad331c05971874cc29a9889"
+          },
+          "name": "CXL-SHM partial-failure-resilient non-blocking CXL memory manager (Zhang et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SC.2012.71",
+            "publication": "SC 2012 / SC 2015 (Regent DOI: 10.1145/2807591.2807629)",
+            "repository": "StanfordLegion/legion",
+            "revision": "aea587e157abff12f7d089c81f29cd3a8b993a2b"
+          },
+          "name": "Legion runtime and Regent logical-region language"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/1094342007078442",
+            "publication": "IJHPCA 2007",
+            "repository": "chapel-lang/chapel",
+            "revision": "732cf95e1d870063b5be878a8ba9f7ed0642645f"
+          },
+          "name": "Chapel PGAS locales, wide pointers, and domain maps"
+        },
+        {
+          "identity": {
+            "doi": "10.25344/S4V88H",
+            "publication": "IPDPS 2019",
+            "repository": "BerkeleyLab/upcxx",
+            "revision": "824c7c5521e6b56c564eb74e75fb7ff7b084fbb5"
+          },
+          "name": "UPC++ asynchronous PGAS global_ptr, rget/rput, and persona framework"
+        }
+      ],
+      "topics": [
+        "systems",
+        "systems/cxl",
+        "isa",
+        "compilers",
+        "llvm",
+        "pl",
+        "pl/pgas",
+        "runtimes",
+        "rust",
+        "ffi",
+        "security",
+        "verification"
+      ]
+    },
+    "dynamic-software-updating-hot-code-upgrade-and-schema-lenses": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "erlang/otp",
+            "revision": "2f60d1b6a246b3f7ae997fd93a9af067fab7f981"
+          },
+          "name": "Erlang/OTP BEAM hot code loading, sys:change_code, and erl_nif upgrade/unload"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1275497.1275500",
+            "publication": "ACM TOPLAS 2007 (building on POPL 2005)",
+            "system": "Proteus"
+          },
+          "name": "Proteus con-freeness formal DSU type-safety calculus (Stoyle et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1133255.1133991",
+            "publication": "PLDI 2006",
+            "system": "Ginseng"
+          },
+          "name": "Ginseng lazy type-wrapping C DSU compiler (Neamtiu et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2629460",
+            "publication": "ACM TOPLAS Vol. 36, No. 4, Art. 13 (2014)",
+            "repository": "kitsune-dsu/kitsune-core",
+            "revision": "6393a0c148976c910df313bda4b578e7c240a6d2"
+          },
+          "name": "Kitsune whole-program C DSU runtime and xfgen state transformer"
+        },
+        {
+          "identity": {
+            "authors": "Makris, Bazzi",
+            "publication": "USENIX ATC 2009",
+            "system": "UpStare",
+            "url": "https://www.usenix.org/conference/usenix-atc-09/immediate-multi-threaded-dynamic-software-updates-using-stack"
+          },
+          "name": "UpStare immediate multi-threaded stack-reconstruction DSU"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel livepatch (klp) hybrid consistency model and shadow variables"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1232420.1232424",
+            "publication": "ACM TOPLAS 2007 (building on POPL 2005)",
+            "repository": "boomerang-lang/boomerang",
+            "revision": "24a309a6c8e78ebf14fb6055ac5f813bcbeea600"
+          },
+          "name": "Boomerang asymmetric bidirectional tree lenses (Foster et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1925844.1926428",
+            "publication": "POPL 2011",
+            "system": "Symmetric Lenses"
+          },
+          "name": "Symmetric Lenses with explicit complement state (Hofmann, Pierce, Wagner)"
+        },
+        {
+          "identity": {
+            "repository": "inkandswitch/cambria",
+            "revision": "da8961440cac7eba1c3113488f5bcbc26046620f"
+          },
+          "name": "Ink & Switch Cambria bidirectional schema lens graph"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00778-012-0302-x",
+            "publication": "The VLDB Journal 2013 (building on PRISM VLDB 2008)",
+            "system": "PRISM / PRISM++"
+          },
+          "name": "PRISM and PRISM++ coupled schema and query evolution workbench (Curino et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3035918.3064046",
+            "publication": "SIGMOD 2017 (extended VLDB Journal 2018)",
+            "system": "InVerDa / BiDEL"
+          },
+          "name": "InVerDa and BiDEL co-existing multi-schema-version database system (Herrmann et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/2536206.2536210",
+            "publication": "PVLDB / VLDB 2013",
+            "system": "Google F1"
+          },
+          "name": "Google F1 online asynchronous distributed schema change protocol (Rae et al.)"
+        },
+        {
+          "identity": {
+            "repository": "unisonweb/unison",
+            "revision": "b5c5188d99f31820d0cc012f194948d2876c14e7"
+          },
+          "name": "Unison content-addressed codebase and AST hashing"
+        }
+      ],
+      "topics": [
+        "runtimes",
+        "runtimes/dsu",
+        "pl",
+        "pl/bidirectional-lenses",
+        "systems",
+        "systems/livepatch",
+        "ffi",
+        "compilers",
+        "verification"
       ]
     },
     "ebpf-certificate-verifying-kernels-and-verified-jits-2014-2026": {
@@ -21548,6 +22018,151 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "orthogonal-persistence-single-level-stores-and-durable-execution": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "document": "IBM i 7.5 ILE Concepts & Technology Independent Machine Interface (TIMI) / Single-Level Storage & Teraspace",
+            "standard": "IBM i Architecture (System/38 -> AS/400 -> IBM i)",
+            "vendor": "IBM"
+          },
+          "name": "IBM System/38 and IBM i TIMI Single-Level Store"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/comjnl/26.4.360",
+            "publication": "The Computer Journal, Vol. 26, No. 4 (1983)",
+            "system": "PS-Algol"
+          },
+          "name": "PS-Algol orthogonal persistence model (Atkinson et al.)"
+        },
+        {
+          "identity": {
+            "authors": "Atkinson, Jordan, Daynes, Printezis, Spence",
+            "publication": "PJama architecture and retrospectives (1996-2000)",
+            "system": "PJama / Napier88"
+          },
+          "name": "Napier88 and PJama orthogonally persistent object systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/319151.319163",
+            "publication": "SOSP 1999 (building on KeyKOS OSR 1985 and Coyotos)",
+            "system": "EROS / KeyKOS / Coyotos"
+          },
+          "name": "KeyKOS, EROS, and Coyotos capability checkpointing kernels"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3477132.3483563",
+            "publication": "SOSP 2021",
+            "system": "Aurora SLS"
+          },
+          "name": "Aurora Single-Level Store operating system"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3445814.3446710",
+            "repository": "NVSL/Corundum",
+            "revision": "1685af69d9b34d6d2c918c69c3327023ac753f03"
+          },
+          "name": "Corundum statically-enforced Rust persistent memory library"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371079",
+            "publication": "POPL 2020 (PACMPL Vol. 4, Art. 11)",
+            "system": "Px86"
+          },
+          "name": "Px86 Intel-x86 persistency semantics (Raad et al.)"
+        },
+        {
+          "identity": {
+            "repository": "golemcloud/golem",
+            "revision": "7ca9863405ba888f897a581e0dd973b3c95fc5e5"
+          },
+          "name": "Golem WebAssembly durable execution runtime"
+        },
+        {
+          "identity": {
+            "repository": "dfinity/motoko",
+            "revision": "acd6537b74b62801b0927ed9dfba240b3a4692a4"
+          },
+          "name": "Motoko Enhanced Orthogonal Persistence compiler"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Wasmtime WebAssembly runtime determinism configuration"
+        },
+        {
+          "identity": {
+            "repository": "temporalio/temporal",
+            "revision": "4841d727dae93c08444a94e47149c0fb0e74d226"
+          },
+          "name": "Temporal durable execution server"
+        },
+        {
+          "identity": {
+            "repository": "temporalio/sdk-core",
+            "revision": "8e7413bfd77b85ef35326aa4c2cf8473d556c6ea"
+          },
+          "name": "Temporal Core SDK workflow replay state machine"
+        },
+        {
+          "identity": {
+            "repository": "restatedev/restate",
+            "revision": "7e9a3b235011bf749447aa48dda80c1c71e42bb0"
+          },
+          "name": "Restate durable execution engine"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3485510",
+            "publication": "OOPSLA 2021 (PACMPL Vol. 5)",
+            "system": "Azure Durable Functions"
+          },
+          "name": "Azure Durable Functions formal semantics (Burckhardt et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3485450.3485454",
+            "repository": "dbos-inc/dbos-transact-ts",
+            "revision": "12514c0677f0a5ba98124c8ee3ee38daca6de0a8"
+          },
+          "name": "DBOS database-oriented durable workflows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/568522.568525",
+            "publication": "ACM Computing Surveys, Vol. 34, No. 3 (2002)",
+            "system": "Rollback-Recovery / Output Commit"
+          },
+          "name": "Elnozahy et al. rollback-recovery and Output Commit survey"
+        },
+        {
+          "identity": {
+            "target": "x86_64-unknown-linux-gnu",
+            "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Rust compiler struct layout probe for raw-snapshot fragility"
+        }
+      ],
+      "topics": [
+        "systems",
+        "systems/persistence",
+        "runtimes",
+        "runtimes/durable-execution",
+        "runtimes/wasm",
+        "pl",
+        "pl/effects",
+        "ffi",
+        "verification"
       ]
     },
     "os-syscall-interfaces-asynchronous-signals-and-environment-models": {
