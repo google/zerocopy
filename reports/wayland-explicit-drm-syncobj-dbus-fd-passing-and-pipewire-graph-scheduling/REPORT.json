@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "systems/compositor-protocols",
+    "ffi/descriptor-passing",
+    "systems/realtime-media-graphs",
+    "security/shared-memfd-seals"
+  ],
+  "subjects": [
+    {
+      "name": "Smithay Wayland Compositor Library (linux-drm-syncobj-v1)",
+      "identity": {
+        "repository": "Smithay/smithay",
+        "revision": "7ff0ede4df2af1ce3500da9ef1ee190d48b49103"
+      }
+    },
+    {
+      "name": "Wayland Rust Protocol Backend and Scanner Ecosystem",
+      "identity": {
+        "repository": "Smithay/wayland-rs",
+        "revision": "6d60c31e1386c6c954e2037b0a8cb368043ca63e"
+      }
+    },
+    {
+      "name": "PipeWire Real-Time Audio/Video Server and Simple Plugin API (SPA)",
+      "identity": {
+        "repository": "PipeWire/pipewire",
+        "revision": "89f53e32acc5b711e3eb089e5a42f4292393aabe"
+      }
+    },
+    {
+      "name": "zbus Pure-Rust D-Bus Implementation",
+      "identity": {
+        "repository": "dbus2/zbus",
+        "revision": "615620ad61bd286460a861d50c71e0fcece59e70"
+      }
+    },
+    {
+      "name": "Linux D-Bus Message Broker",
+      "identity": {
+        "repository": "bus1/dbus-broker",
+        "revision": "2956b5d381deeea709c53d02f10e799e50e44f4b"
+      }
+    },
+    {
+      "name": "XDG Desktop Portal Sandboxed IPC Broker",
+      "identity": {
+        "repository": "flatpak/xdg-desktop-portal",
+        "revision": "c00a32b7a3d136d7e86e8beb494867eb0babe9a5"
+      }
+    },
+    {
+      "name": "Linux Kernel (DRM Syncobj, AF_UNIX SCM_RIGHTS GC, SO_PEERPIDFD, and memfd Seals)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "adc218676eef25575469234709c2d87185ca223a",
+        "version": "v6.12"
+      }
+    },
+    {
+      "name": "Wayland Linux DRM Syncobj Explicit Synchronization Protocol",
+      "identity": {
+        "protocol": "linux-drm-syncobj-v1",
+        "interface": "wp_linux_drm_syncobj_manager_v1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
