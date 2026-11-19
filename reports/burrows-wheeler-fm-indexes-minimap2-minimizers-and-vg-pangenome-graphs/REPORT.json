@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "domains/computational-genomics",
+    "systems/succinct-indexes",
+    "compilers/simd-alignment",
+    "verification/graph-coordinates",
+    "zerocopy/succinct-serialization"
+  ],
+  "subjects": [
+    {
+      "name": "r-index run-length Burrows-Wheeler Transform index",
+      "identity": {
+        "repository": "nicolaprezza/r-index",
+        "revision": "7009b5374282aa1d8e9b594d0a06c49a0bc1330f"
+      }
+    },
+    {
+      "name": "minimap2 minimizer sketching, colinear chaining, and SIMD aligner",
+      "identity": {
+        "repository": "lh3/minimap2",
+        "revision": "3c28777e7e2dcc90f825de1b9f17a89cca7d4452"
+      }
+    },
+    {
+      "name": "vg bidirected pangenome variation graph toolkit",
+      "identity": {
+        "repository": "vgteam/vg",
+        "revision": "6f11d25de4d2466382b22225b74e16e4e4e9b74b"
+      }
+    },
+    {
+      "name": "GBWT Graph Burrows-Wheeler Transform haplotype index",
+      "identity": {
+        "repository": "jltsiren/gbwt",
+        "revision": "14a06d588ea6de50cd809f546b9bb57c92c15ac1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
