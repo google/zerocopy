@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "isa/ifetch-coherence",
+    "systems/live-patching",
+    "systems/concurrency-weak-memory",
+    "verification/memory-models"
+  ],
+  "subjects": [
+    {
+      "name": "Isla symbolic ISA and axiomatic concurrency engine",
+      "identity": {
+        "repository": "rems-project/isla",
+        "revision": "e9b5d945394277656593a0d429466d7fa0a2b4b3"
+      }
+    },
+    {
+      "name": "herdtools7 Armv8-A formal memory model",
+      "identity": {
+        "repository": "herd/herdtools7",
+        "revision": "1670f9e8ebb76f7cd4ba373e1c21948330eb086a"
+      }
+    },
+    {
+      "name": "Linux kernel live text patching and jump-label subsystem",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "RISC-V Unprivileged ISA Specification (Zifencei)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "5f1104a0613af80219232b1e4bc108f9ec2bd6b2"
+      }
+    },
+    {
+      "name": "ARMv8-A System Semantics: Instruction Fetch in Relaxed Architectures (Simner et al., ESOP 2020)",
+      "identity": {
+        "doi": "10.1007/978-3-030-44914-8_23",
+        "venue": "ESOP 2020"
+      }
+    },
+    {
+      "name": "Certified Self-Modifying Code (Cai, Shao, Vaynberg, PLDI 2007)",
+      "identity": {
+        "doi": "10.1145/1273442.1250743",
+        "venue": "PLDI 2007"
+      }
+    },
+    {
+      "name": "Verified Just-In-Time Compiler on x86 (Myreen, POPL 2010)",
+      "identity": {
+        "doi": "10.1145/1706299.1706313",
+        "venue": "POPL 2010"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 3A (Handling Self- and Cross-Modifying Code)",
+      "identity": {
+        "standard": "Intel 64 and IA-32 Architectures Software Developer's Manual Vol. 3A",
+        "section": "Handling Self- and Cross-Modifying Code (8.1.3 / 9.1.3)"
+      }
+    },
+    {
+      "name": "Arm Architecture Reference Manual for A-profile Architecture (DDI 0487)",
+      "identity": {
+        "standard": "Arm DDI 0487",
+        "sections": "B2.2.5 / B2.4.4 (CMODX, FEAT_IDC, FEAT_DIC)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
