@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "compilers/binary-optimization",
+    "isa/hardware-tracing",
+    "systems/profiling-debuggers",
+    "verification/binary-validation"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Project (BOLT, BasicBlockSections, and LLD ELF relaxation)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "53623acaadfe3df4ea2bfc48d347faa3fb1c57a5"
+      }
+    },
+    {
+      "name": "Propeller profile generator and layout optimizer",
+      "identity": {
+        "repository": "google/llvm-propeller",
+        "revision": "e98f399102650de7e03e07c7299029da94d7be44"
+      }
+    },
+    {
+      "name": "Intel Processor Trace Decoder Library (libipt)",
+      "identity": {
+        "repository": "intel/libipt",
+        "revision": "7f8575ce9bf25e48cf03983c12859e1edb592008"
+      }
+    },
+    {
+      "name": "ARM CoreSight Trace Decode Library (OpenCSD)",
+      "identity": {
+        "repository": "Linaro/OpenCSD",
+        "revision": "5719458c9f75714a0ee5f83fae94f0f2989b52f9"
+      }
+    },
+    {
+      "name": "Linux kernel (Intel PEBS, ARM SPE, x86 hw_breakpoint/traps/ptrace, seccomp)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "BOLT: A Practical Binary Optimizer for Data Centers and Beyond (CGO 2019)",
+      "identity": {
+        "doi": "10.1109/CGO.2019.8661201",
+        "arxiv": "1807.06735"
+      }
+    },
+    {
+      "name": "Propeller: A Profile Guided, Relinking Optimizer for Warehouse-Scale Applications (ASPLOS 2023)",
+      "identity": {
+        "doi": "10.1145/3575693.3575727"
+      }
+    },
+    {
+      "name": "TIP: Time-Proportional Instruction Profiling (MICRO 2021)",
+      "identity": {
+        "doi": "10.1145/3466752.3480058"
+      }
+    },
+    {
+      "name": "Non-Determinism and Overcount on Modern Hardware Performance Counter Implementations (ISPASS 2013)",
+      "identity": {
+        "doi": "10.1109/ISPASS.2013.6557172"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual (Vol. 3: Debug, PMU/PEBS, Intel PT)",
+      "identity": {
+        "standard": "Intel SDM Volume 3 (Order Number 325384)"
+      }
+    },
+    {
+      "name": "Arm Embedded Trace Macrocell Architecture Specification (ETMv4)",
+      "identity": {
+        "standard": "ARM IHI 0064 (ETMv4.0-ETMv4.6)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

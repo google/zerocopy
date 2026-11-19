@@ -1,0 +1,127 @@
+{
+  "topics": [
+    "verification/reactive-synthesis",
+    "pl/automata-learning",
+    "smt/temporal-logics",
+    "verification/petri-nets"
+  ],
+  "subjects": [
+    {
+      "name": "Strix explicit on-the-fly reactive LTL synthesizer",
+      "identity": {
+        "repository": "meyerphi/strix",
+        "revision": "c0b1298fe2e0d46325662b89cb58a19cb4f02be5"
+      }
+    },
+    {
+      "name": "Oink parity game solver suite (QPT, SSPM, Parys QPT-Zielonka, FPI, Zielonka)",
+      "identity": {
+        "repository": "trolando/oink",
+        "revision": "ad85a62f1c30ff95f48a4b564c0a9e3c5cef5ed5"
+      }
+    },
+    {
+      "name": "gr1c symbolic BDD GR(1) synthesizer",
+      "identity": {
+        "repository": "slivingston/gr1c",
+        "revision": "2a4ad3d7bb0ed3ecf4f6328fddf6f8922e66234e"
+      }
+    },
+    {
+      "name": "LearnLib active automata learning framework (L*, Rivest-Schapire, TTT, Wp-method)",
+      "identity": {
+        "repository": "LearnLib/learnlib",
+        "revision": "51aec213478b8074c21515c81fd162d78efb8c8c"
+      }
+    },
+    {
+      "name": "TAPAAL verifypn Petri net reachability and LTL/CTL model checker",
+      "identity": {
+        "repository": "TAPAAL/verifypn",
+        "revision": "fc0477705ddf22bf16b2cd9cdb97ca7f4f7573ba"
+      }
+    },
+    {
+      "name": "On the Synthesis of a Reactive Module (Pnueli & Rosner, POPL 1989)",
+      "identity": {
+        "doi": "10.1145/75277.75293"
+      }
+    },
+    {
+      "name": "Synthesis of Reactive(1) Designs (Bloem, Jobstmann, Piterman, Pnueli, Sa'ar, JCSS 2012)",
+      "identity": {
+        "doi": "10.1016/j.jcss.2011.08.007"
+      }
+    },
+    {
+      "name": "Deciding Parity Games in Quasipolynomial Time (Calude, Jain, Khoussainov, Li, Stephan, STOC 2017)",
+      "identity": {
+        "doi": "10.1145/3055399.3055409"
+      }
+    },
+    {
+      "name": "Succinct Progress Measures for Solving Parity Games (Jurdzinski & Lazic, LICS 2017)",
+      "identity": {
+        "doi": "10.1109/LICS.2017.8005092"
+      }
+    },
+    {
+      "name": "Strix: Explicit Reactive Synthesis Strikes Back (Meyer, Sickert, Luttenberger, CAV 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-319-96145-3_31"
+      }
+    },
+    {
+      "name": "Learning Regular Sets from Queries and Counterexamples (Angluin, Inf. Comput. 1987)",
+      "identity": {
+        "doi": "10.1016/0890-5401(87)90052-6"
+      }
+    },
+    {
+      "name": "The TTT Algorithm: A Redundancy-Free Approach to Active Automata Learning (Isberner, Howar, Steffen, RV 2014)",
+      "identity": {
+        "doi": "10.1007/978-3-319-11164-3_26"
+      }
+    },
+    {
+      "name": "The Open-Source LearnLib (Isberner, Howar, Steffen, CAV 2015)",
+      "identity": {
+        "doi": "10.1007/978-3-319-21690-6_33"
+      }
+    },
+    {
+      "name": "Protocol State Fuzzing of TLS Implementations (de Ruiter & Poll, USENIX Security 2015)",
+      "identity": {
+        "venue": "24th USENIX Security Symposium (USENIX Security 2015)",
+        "pages": "193-206"
+      }
+    },
+    {
+      "name": "The Covering and Boundedness Problems for Vector Addition Systems (Rackoff, TCS 1978)",
+      "identity": {
+        "doi": "10.1016/0304-3975(78)90036-1"
+      }
+    },
+    {
+      "name": "Reachability in Vector Addition Systems is Primitive-Recursive in Fixed Dimension (Leroux & Schmitz, LICS 2019)",
+      "identity": {
+        "doi": "10.1109/LICS.2019.8785796"
+      }
+    },
+    {
+      "name": "Reachability in Vector Addition Systems is Ackermann-complete (Czerwinski & Orlikowski, FOCS 2021)",
+      "identity": {
+        "doi": "10.1109/FOCS52979.2021.00120",
+        "arxiv": "2104.13866"
+      }
+    },
+    {
+      "name": "The Reachability Problem for Petri Nets is Not Primitive Recursive (Leroux, FOCS 2021)",
+      "identity": {
+        "doi": "10.1109/FOCS52979.2021.00121",
+        "arxiv": "2104.12695"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

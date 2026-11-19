@@ -33709,6 +33709,89 @@
         "domains/microfluidics"
       ]
     },
+    "post-link-binary-optimizers-bolt-propeller-and-hardware-pt-pmu-trace-semantics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "53623acaadfe3df4ea2bfc48d347faa3fb1c57a5"
+          },
+          "name": "LLVM Project (BOLT, BasicBlockSections, and LLD ELF relaxation)"
+        },
+        {
+          "identity": {
+            "repository": "google/llvm-propeller",
+            "revision": "e98f399102650de7e03e07c7299029da94d7be44"
+          },
+          "name": "Propeller profile generator and layout optimizer"
+        },
+        {
+          "identity": {
+            "repository": "intel/libipt",
+            "revision": "7f8575ce9bf25e48cf03983c12859e1edb592008"
+          },
+          "name": "Intel Processor Trace Decoder Library (libipt)"
+        },
+        {
+          "identity": {
+            "repository": "Linaro/OpenCSD",
+            "revision": "5719458c9f75714a0ee5f83fae94f0f2989b52f9"
+          },
+          "name": "ARM CoreSight Trace Decode Library (OpenCSD)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel (Intel PEBS, ARM SPE, x86 hw_breakpoint/traps/ptrace, seccomp)"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.06735",
+            "doi": "10.1109/CGO.2019.8661201"
+          },
+          "name": "BOLT: A Practical Binary Optimizer for Data Centers and Beyond (CGO 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3575693.3575727"
+          },
+          "name": "Propeller: A Profile Guided, Relinking Optimizer for Warehouse-Scale Applications (ASPLOS 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3466752.3480058"
+          },
+          "name": "TIP: Time-Proportional Instruction Profiling (MICRO 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ISPASS.2013.6557172"
+          },
+          "name": "Non-Determinism and Overcount on Modern Hardware Performance Counter Implementations (ISPASS 2013)"
+        },
+        {
+          "identity": {
+            "standard": "Intel SDM Volume 3 (Order Number 325384)"
+          },
+          "name": "Intel 64 and IA-32 Architectures Software Developer's Manual (Vol. 3: Debug, PMU/PEBS, Intel PT)"
+        },
+        {
+          "identity": {
+            "standard": "ARM IHI 0064 (ETMv4.0-ETMv4.6)"
+          },
+          "name": "Arm Embedded Trace Macrocell Architecture Specification (ETMv4)"
+        }
+      ],
+      "topics": [
+        "compilers/binary-optimization",
+        "isa/hardware-tracing",
+        "systems/profiling-debuggers",
+        "verification/binary-validation"
+      ]
+    },
     "post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -36174,6 +36257,133 @@
         "pl/dataflow",
         "ffi/mutation-tracking",
         "build/reproducibility"
+      ]
+    },
+    "reactive-ltl-parity-game-synthesis-active-automata-learning-and-petri-nets": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "meyerphi/strix",
+            "revision": "c0b1298fe2e0d46325662b89cb58a19cb4f02be5"
+          },
+          "name": "Strix explicit on-the-fly reactive LTL synthesizer"
+        },
+        {
+          "identity": {
+            "repository": "trolando/oink",
+            "revision": "ad85a62f1c30ff95f48a4b564c0a9e3c5cef5ed5"
+          },
+          "name": "Oink parity game solver suite (QPT, SSPM, Parys QPT-Zielonka, FPI, Zielonka)"
+        },
+        {
+          "identity": {
+            "repository": "slivingston/gr1c",
+            "revision": "2a4ad3d7bb0ed3ecf4f6328fddf6f8922e66234e"
+          },
+          "name": "gr1c symbolic BDD GR(1) synthesizer"
+        },
+        {
+          "identity": {
+            "repository": "LearnLib/learnlib",
+            "revision": "51aec213478b8074c21515c81fd162d78efb8c8c"
+          },
+          "name": "LearnLib active automata learning framework (L*, Rivest-Schapire, TTT, Wp-method)"
+        },
+        {
+          "identity": {
+            "repository": "TAPAAL/verifypn",
+            "revision": "fc0477705ddf22bf16b2cd9cdb97ca7f4f7573ba"
+          },
+          "name": "TAPAAL verifypn Petri net reachability and LTL/CTL model checker"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/75277.75293"
+          },
+          "name": "On the Synthesis of a Reactive Module (Pnueli & Rosner, POPL 1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jcss.2011.08.007"
+          },
+          "name": "Synthesis of Reactive(1) Designs (Bloem, Jobstmann, Piterman, Pnueli, Sa'ar, JCSS 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3055399.3055409"
+          },
+          "name": "Deciding Parity Games in Quasipolynomial Time (Calude, Jain, Khoussainov, Li, Stephan, STOC 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2017.8005092"
+          },
+          "name": "Succinct Progress Measures for Solving Parity Games (Jurdzinski & Lazic, LICS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-96145-3_31"
+          },
+          "name": "Strix: Explicit Reactive Synthesis Strikes Back (Meyer, Sickert, Luttenberger, CAV 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0890-5401(87)90052-6"
+          },
+          "name": "Learning Regular Sets from Queries and Counterexamples (Angluin, Inf. Comput. 1987)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-11164-3_26"
+          },
+          "name": "The TTT Algorithm: A Redundancy-Free Approach to Active Automata Learning (Isberner, Howar, Steffen, RV 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-21690-6_33"
+          },
+          "name": "The Open-Source LearnLib (Isberner, Howar, Steffen, CAV 2015)"
+        },
+        {
+          "identity": {
+            "pages": "193-206",
+            "venue": "24th USENIX Security Symposium (USENIX Security 2015)"
+          },
+          "name": "Protocol State Fuzzing of TLS Implementations (de Ruiter & Poll, USENIX Security 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(78)90036-1"
+          },
+          "name": "The Covering and Boundedness Problems for Vector Addition Systems (Rackoff, TCS 1978)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2019.8785796"
+          },
+          "name": "Reachability in Vector Addition Systems is Primitive-Recursive in Fixed Dimension (Leroux & Schmitz, LICS 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.13866",
+            "doi": "10.1109/FOCS52979.2021.00120"
+          },
+          "name": "Reachability in Vector Addition Systems is Ackermann-complete (Czerwinski & Orlikowski, FOCS 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.12695",
+            "doi": "10.1109/FOCS52979.2021.00121"
+          },
+          "name": "The Reachability Problem for Petri Nets is Not Primitive Recursive (Leroux, FOCS 2021)"
+        }
+      ],
+      "topics": [
+        "verification/reactive-synthesis",
+        "pl/automata-learning",
+        "smt/temporal-logics",
+        "verification/petri-nets"
       ]
     },
     "realtime-audio-dsp-algebras-strongly-timed-concurrency-and-live-codegen": {
@@ -52560,6 +52770,96 @@
         "verification/compiler-verification"
       ]
     },
+    "vulkan-webgpu-explicit-memory-models-spirv-uniformity-and-shader-sandboxing": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "KhronosGroup/Vulkan-MemoryModel",
+            "revision": "894ae9027ce8f66e40d5f79c3eb727e77955aef4"
+          },
+          "name": "Khronos Vulkan Memory Model (Alloy formalization)"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/Vulkan-Docs",
+            "revision": "f7de774cace1509af0f10b8d859c973b5354ff62"
+          },
+          "name": "Vulkan Specification (Memory Model and Synchronization)"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/SPIRV-Tools",
+            "revision": "326b40880bd4a4e60b1b6b9cf31560b2f040de81"
+          },
+          "name": "SPIRV-Tools Validator"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/SPIRV-Headers",
+            "revision": "50184103b19027f5c7080060712d6a9470cf59ee"
+          },
+          "name": "SPIRV-Headers"
+        },
+        {
+          "identity": {
+            "repository": "gpuweb/gpuweb",
+            "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3"
+          },
+          "name": "W3C WebGPU Shading Language (WGSL) Specification"
+        },
+        {
+          "identity": {
+            "repository": "gfx-rs/wgpu",
+            "revision": "9450c94c1ff2c734f7c73db604ad87501eee1803"
+          },
+          "name": "wgpu and Naga Shader Translator"
+        },
+        {
+          "identity": {
+            "repository": "google/dawn",
+            "revision": "05a3f2091af9815b4412d188fe1ba2b29d6683c6"
+          },
+          "name": "Dawn and Tint WGSL Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009838"
+          },
+          "name": "Automatically Comparing Memory Consistency Models (Wickerson et al., POPL 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428294"
+          },
+          "name": "Foundations of Empirical Memory Consistency Testing (Kirkham et al., OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3575693.3575750"
+          },
+          "name": "MC Mutants: Evaluating and Improving Testing for Memory Consistency Specifications (Levine et al., ASPLOS 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3763075"
+          },
+          "name": "SafeRace: Assessing and Addressing WebGPU Memory Safety in the Presence of Data Races (Levine et al., OOPSLA 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3808331"
+          },
+          "name": "Uniformity Analysis in the WebGPU Shading Language (Lee-Jones, Wickerson, Donaldson, PLDI 2026)"
+        }
+      ],
+      "topics": [
+        "systems/gpu-memory-models",
+        "compilers/shader-languages",
+        "security/gpu-sandboxing",
+        "verification/memory-models"
+      ]
+    },
     "wasm-component-model-truffle-graal-and-polyglot-interop-platforms": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -52943,6 +53243,109 @@
         "verification",
         "verification/numerical",
         "systems"
+      ]
+    },
+    "x509-pki-path-validation-asn1-frankencerts-dnssec-and-tls-state-machines": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rustls/rustls",
+            "revision": "836e411eccaf7331f4c289aabef0de32474de3b8"
+          },
+          "name": "rustls TLS Library"
+        },
+        {
+          "identity": {
+            "repository": "rustls/webpki",
+            "revision": "f6dcb14b822784c6fc23556d549e2683cc7328a1"
+          },
+          "name": "rustls-webpki X.509 Certificate Verifier"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/mitls-fstar",
+            "revision": "9a75fa8c46e50897b1f43002885d25a34dfa929a"
+          },
+          "name": "miTLS Verified TLS 1.3 Implementation (F*)"
+        },
+        {
+          "identity": {
+            "repository": "openssl/openssl",
+            "revision": "fc355e65068efe333e0764db1c32c302af8aa7fa"
+          },
+          "name": "OpenSSL X.509 and TLS Library"
+        },
+        {
+          "identity": {
+            "repository": "sumanj/frankencert",
+            "revision": "5bbaae85cab35882dec1672ef037a42e29180b40"
+          },
+          "name": "Frankencert Adversarial X.509 Certificate Generator"
+        },
+        {
+          "identity": {
+            "repository": "C2SP/x509-limbo",
+            "revision": "b12423782a88abead01141fa6582254e3eb49e74"
+          },
+          "name": "C2SP x509-limbo Cross-Implementation X.509 Test Suite"
+        },
+        {
+          "identity": {
+            "repository": "NLnetLabs/unbound",
+            "revision": "5d7ef54e1f45e1ff5a1b83057987a33883784c93"
+          },
+          "name": "Unbound Validating Recursive DNS Resolver"
+        },
+        {
+          "identity": {
+            "repository": "isc-projects/bind9",
+            "revision": "f13d302fb694db688dc50ea184bda28e9531c491"
+          },
+          "name": "ISC BIND 9 DNS Server and Resolver"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2014.15",
+            "venue": "IEEE S&P 2014"
+          },
+          "name": "Using Frankencerts for Automated Adversarial Testing of Certificate Verification in SSL/TLS Implementations (IEEE S&P 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3548606.3560594",
+            "venue": "ACM CCS 2022"
+          },
+          "name": "Hammurabi: A Framework for Pluggable, Logic-Based X.509 Certificate Validation Policies (ACM CCS 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2017.58",
+            "venue": "IEEE S&P 2017"
+          },
+          "name": "Implementing and Proving the TLS 1.3 Record Layer (IEEE S&P 2017)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/nsdi22/presentation/kakarla",
+            "venue": "USENIX NSDI 2022"
+          },
+          "name": "SCALE: Automatically Finding RFC Compliance Bugs in DNS Nameservers (USENIX NSDI 2022)"
+        },
+        {
+          "identity": {
+            "cve": "CVE-2023-50387",
+            "doi": "10.48550/arXiv.2406.03133",
+            "venue": "ACM CCS 2024"
+          },
+          "name": "The Harder You Try, The Harder You Fail: The KeyTrap Denial-of-Service Algorithmic Complexity Attacks on DNSSEC (ACM CCS 2024)"
+        }
+      ],
+      "topics": [
+        "security/pki-tls",
+        "verification/parsers",
+        "systems/internet-protocols",
+        "tooling/differential-testing"
       ]
     },
     "x86-64-adler32-simd-lane-overflow-bounds-and-avx512-codegen-width": {

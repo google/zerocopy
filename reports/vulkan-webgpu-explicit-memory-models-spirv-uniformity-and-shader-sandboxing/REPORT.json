@@ -1,0 +1,90 @@
+{
+  "topics": [
+    "systems/gpu-memory-models",
+    "compilers/shader-languages",
+    "security/gpu-sandboxing",
+    "verification/memory-models"
+  ],
+  "subjects": [
+    {
+      "name": "Khronos Vulkan Memory Model (Alloy formalization)",
+      "identity": {
+        "repository": "KhronosGroup/Vulkan-MemoryModel",
+        "revision": "894ae9027ce8f66e40d5f79c3eb727e77955aef4"
+      }
+    },
+    {
+      "name": "Vulkan Specification (Memory Model and Synchronization)",
+      "identity": {
+        "repository": "KhronosGroup/Vulkan-Docs",
+        "revision": "f7de774cace1509af0f10b8d859c973b5354ff62"
+      }
+    },
+    {
+      "name": "SPIRV-Tools Validator",
+      "identity": {
+        "repository": "KhronosGroup/SPIRV-Tools",
+        "revision": "326b40880bd4a4e60b1b6b9cf31560b2f040de81"
+      }
+    },
+    {
+      "name": "SPIRV-Headers",
+      "identity": {
+        "repository": "KhronosGroup/SPIRV-Headers",
+        "revision": "50184103b19027f5c7080060712d6a9470cf59ee"
+      }
+    },
+    {
+      "name": "W3C WebGPU Shading Language (WGSL) Specification",
+      "identity": {
+        "repository": "gpuweb/gpuweb",
+        "revision": "d178d9145ab1652ec933e71a8c30e8f6470f00a3"
+      }
+    },
+    {
+      "name": "wgpu and Naga Shader Translator",
+      "identity": {
+        "repository": "gfx-rs/wgpu",
+        "revision": "9450c94c1ff2c734f7c73db604ad87501eee1803"
+      }
+    },
+    {
+      "name": "Dawn and Tint WGSL Compiler",
+      "identity": {
+        "repository": "google/dawn",
+        "revision": "05a3f2091af9815b4412d188fe1ba2b29d6683c6"
+      }
+    },
+    {
+      "name": "Automatically Comparing Memory Consistency Models (Wickerson et al., POPL 2017)",
+      "identity": {
+        "doi": "10.1145/3009837.3009838"
+      }
+    },
+    {
+      "name": "Foundations of Empirical Memory Consistency Testing (Kirkham et al., OOPSLA 2020)",
+      "identity": {
+        "doi": "10.1145/3428294"
+      }
+    },
+    {
+      "name": "MC Mutants: Evaluating and Improving Testing for Memory Consistency Specifications (Levine et al., ASPLOS 2023)",
+      "identity": {
+        "doi": "10.1145/3575693.3575750"
+      }
+    },
+    {
+      "name": "SafeRace: Assessing and Addressing WebGPU Memory Safety in the Presence of Data Races (Levine et al., OOPSLA 2025)",
+      "identity": {
+        "doi": "10.1145/3763075"
+      }
+    },
+    {
+      "name": "Uniformity Analysis in the WebGPU Shading Language (Lee-Jones, Wickerson, Donaldson, PLDI 2026)",
+      "identity": {
+        "doi": "10.1145/3808331"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
