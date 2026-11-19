@@ -10036,6 +10036,161 @@
         "aeneas/loops-termination"
       ]
     },
+    "compiled-columnar-query-engines-vectorized-pipelines-and-simd-codecs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "duckdb/duckdb",
+            "revision": "bc04be044b0d84075aa6d63fc11d5dfaa6e9aaa8"
+          },
+          "name": "DuckDB"
+        },
+        {
+          "identity": {
+            "repository": "facebookincubator/velox",
+            "revision": "f112bee8903de272ade6086878297ad9f66cdf17"
+          },
+          "name": "Velox"
+        },
+        {
+          "identity": {
+            "repository": "apache/arrow",
+            "revision": "931b9cccda5de68d48201dc2db50b6b6a9a72741"
+          },
+          "name": "Apache Arrow (C Data Interface and Columnar Format)"
+        },
+        {
+          "identity": {
+            "repository": "apache/arrow-rs",
+            "revision": "44a4bdb287dfcc7297c5fb4c98d8c6d8c43f6e70"
+          },
+          "name": "Apache Arrow Rust (arrow-data FFI)"
+        },
+        {
+          "identity": {
+            "repository": "cwida/fsst",
+            "revision": "e638d4cf8c26129d73c242a4127b42b975de5b63"
+          },
+          "name": "FSST (Fast Static Symbol Table)"
+        },
+        {
+          "identity": {
+            "repository": "cwida/ALP",
+            "revision": "31ca0ed11c93c99d3f5b5c30e01a3e1c3832d3ce"
+          },
+          "name": "ALP (Adaptive Lossless Floating-Point Compression)"
+        },
+        {
+          "identity": {
+            "repository": "cwida/FastLanes",
+            "revision": "f0edc1020a538f1f8098640fce8347c9ac247a0d"
+          },
+          "name": "FastLanes Compression Layout"
+        },
+        {
+          "identity": {
+            "repository": "maxi-k/btrblocks",
+            "revision": "c950c3c01c1fbf91007936b05781d431a29a60d3"
+          },
+          "name": "BtrBlocks Columnar Compression"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/2002938.2002940",
+            "venue": "PVLDB 4(9), pp. 539-550, 2011"
+          },
+          "name": "HyPer Data-Centric Query Compilation (Neumann, PVLDB 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s00778-020-00643-4",
+            "venue": "The VLDB Journal 30(5), pp. 883-905, 2021"
+          },
+          "name": "Umbra Tidy Tuples and Flying Start (Kersten, Leis, Neumann, VLDB Journal 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3275366.3275370",
+            "venue": "PVLDB 11(13), pp. 2209-2222, 2018"
+          },
+          "name": "Compiled vs. Vectorized Query Evaluation Study (Kersten et al., PVLDB 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2588555.2610507",
+            "venue": "ACM SIGMOD 2014, pp. 743-754"
+          },
+          "name": "Morsel-Driven Parallelism (Leis et al., SIGMOD 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3136610.3136611",
+            "venue": "PVLDB 11(1), pp. 1-13, 2017"
+          },
+          "name": "Relaxed Operator Fusion (Menon, Mowry, Pavlo, PVLDB 2017)"
+        },
+        {
+          "identity": {
+            "publication": "MonetDB/X100: Hyper-Pipelining Query Execution",
+            "venue": "CIDR 2005, pp. 225-237"
+          },
+          "name": "MonetDB/X100 Hyper-Pipelining (Boncz, Zukowski, Nes, CIDR 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3183713.3196893",
+            "venue": "ACM SIGMOD 2018, pp. 307-322"
+          },
+          "name": "LMS Query Compiler Architecture (Tahboub, Essertel, Rompf, SIGMOD 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3554821.3554829",
+            "venue": "PVLDB 15(12), pp. 3372-3384, 2022"
+          },
+          "name": "Velox Unified Execution Engine (Pedreira et al., PVLDB 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3598581.3598587",
+            "venue": "PVLDB 16(9), pp. 2132-2144, 2023"
+          },
+          "name": "FastLanes Compression Layout Paper (Afroozeh, Boncz, PVLDB 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3407790.3407851",
+            "venue": "PVLDB 13(11), pp. 2649-2661, 2020"
+          },
+          "name": "FSST Paper (Boncz, Neumann, Leis, PVLDB 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3626717",
+            "venue": "Proc. ACM Manag. Data 1(4) / SIGMOD 2024"
+          },
+          "name": "ALP Paper (Afroozeh, Kuffo, Boncz, SIGMOD 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3589263",
+            "venue": "Proc. ACM Manag. Data 1(2) / SIGMOD 2023"
+          },
+          "name": "BtrBlocks Paper (Kuschewski et al., SIGMOD 2023)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/query-compilation",
+        "systems",
+        "systems/columnar-engines",
+        "pl",
+        "pl/layout",
+        "ffi",
+        "ffi/arrow-columnar"
+      ]
+    },
     "compiler-concurrent-source-modification-and-hermetic-input-binding": {
       "observed_at": "2026-11-17",
       "subjects": [
@@ -11348,6 +11503,182 @@
         "rust/calling-conventions",
         "minirust/semantics",
         "anneal/rustc-capture"
+      ]
+    },
+    "constraint-programming-modelling-and-pseudo-boolean-mip-proof-logging": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "MiniZinc/libminizinc",
+            "revision": "8c9f79949cb7df96c7c99b5ed41d511962879c97"
+          },
+          "name": "MiniZinc (libminizinc)"
+        },
+        {
+          "identity": {
+            "repository": "conjure-cp/conjure",
+            "revision": "fcae5cfd887080f9cfc32556b13daaae22a646a8"
+          },
+          "name": "Conjure (Essence Automated Modelling Compiler)"
+        },
+        {
+          "identity": {
+            "repository": "chuffed/chuffed",
+            "revision": "f698d5623bb0c2bcd497388ba966f0436d62caf4"
+          },
+          "name": "Chuffed (Lazy Clause Generation CP Solver)"
+        },
+        {
+          "identity": {
+            "repository": "ConSol-Lab/Pumpkin",
+            "revision": "82d30b71a81747ce969f809cb14edf679128f12c"
+          },
+          "name": "Pumpkin (Rust LCG CP Solver with DRCP Proof Logging)"
+        },
+        {
+          "identity": {
+            "repository": "google/or-tools",
+            "revision": "4948b99ec504389d5119b3bb364a96f02b70f100"
+          },
+          "name": "OR-Tools (CP-SAT)"
+        },
+        {
+          "identity": {
+            "repository": "unison-code/unison",
+            "revision": "9f9857e742156b51e6314488f4173cd1b42c4aec"
+          },
+          "name": "Unison (Combinatorial Register Allocation and Scheduling)"
+        },
+        {
+          "identity": {
+            "repository": "egraphs-good/extraction-gym",
+            "revision": "903ba0f818b50608fe20ae9e0f03c35cb27bc50a"
+          },
+          "name": "Extraction Gym (E-Graph ILP Extraction Reference)"
+        },
+        {
+          "identity": {
+            "repository": "StephanGocht/VeriPB",
+            "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+          },
+          "name": "VeriPB (Archived Python/C++ GitHub Snapshot)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakePB in CakeML (Verified Pseudo-Boolean Proof Checker)"
+        },
+        {
+          "identity": {
+            "repository": "scipopt/vipr",
+            "revision": "99eec197a49b2bd9ad33c1f4c7afabe93caa6511"
+          },
+          "name": "VIPR (Exact Rational MILP Certificate Specification v1.1 and Checker)"
+        },
+        {
+          "identity": {
+            "repository": "ambros-gleixner/VIPR",
+            "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff"
+          },
+          "name": "VIPR (Historical Archived Mirror)"
+        },
+        {
+          "identity": {
+            "repository": "scipopt/scip",
+            "revision": "a3274d2137c75fff405707a80dda11b887459f58"
+          },
+          "name": "SCIP (Exact Rational MIP Certificate Generation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-74970-7_38",
+            "venue": "CP 2007, LNCS 4741, pp. 529-543"
+          },
+          "name": "MiniZinc Paper (Nethercote et al., CP 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-23786-7_23",
+            "venue": "CP 2011, LNCS 6876, pp. 286-301"
+          },
+          "name": "Half Reification and Flattening (Feydy, Somogyi, Stuckey, CP 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10601-008-9064-x",
+            "venue": "Constraints 14(3), pp. 357-391, 2009"
+          },
+          "name": "Propagation via Lazy Clause Generation (Ohrimenko, Stuckey, Codish, Constraints 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.artint.2022.103751",
+            "venue": "Artificial Intelligence 310, 103751, 2022"
+          },
+          "name": "Conjure Paper (Akgun et al., Artificial Intelligence 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.artint.2017.07.001",
+            "venue": "Artificial Intelligence 251, pp. 35-61, 2017"
+          },
+          "name": "Savile Row Paper (Nightingale et al., Artificial Intelligence 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3332373",
+            "venue": "ACM TOPLAS 41(3), Article 19, 2019"
+          },
+          "name": "Unison Paper (Castaneda Lozano et al., ACM TOPLAS 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2101.01332",
+            "venue": "MLSys 3, 2021"
+          },
+          "name": "TENSAT Paper (Yang et al., MLSys 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1613/jair.1.14296",
+            "venue": "JAIR 77, pp. 1539-1589, 2023"
+          },
+          "name": "Certified Dominance and Symmetry Breaking (Bogaerts et al., JAIR 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1609/aaai.v38i8.28642",
+            "venue": "AAAI 38(8), pp. 8038-8047, 2024"
+          },
+          "name": "End-to-End Verification for Subgraph Solving / CakePB (Gocht et al., AAAI 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-59250-3_13",
+            "venue": "IPCO 2017, LNCS 10328, pp. 148-160"
+          },
+          "name": "Verifying Integer Programming Results / VIPR (Cheung, Gleixner, Steffy, IPCO 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/23M156046X",
+            "venue": "SIAM Journal on Optimization 34(1), pp. 742-763, 2024"
+          },
+          "name": "Safe and Verified Gomory Mixed-Integer Cuts (Eifler, Gleixner, SIAM J. Optim. 2024)"
+        }
+      ],
+      "topics": [
+        "smt",
+        "smt/proof-logging",
+        "compilers",
+        "compilers/combinatorial-optimization",
+        "verification",
+        "verification/certificates",
+        "pl",
+        "pl/constraint-modelling"
       ]
     },
     "content-addressed-typed-ir-stores-alpha-hashing-and-definition-identity": {
@@ -14391,6 +14722,105 @@
         "verification",
         "verification/compiler-verification",
         "verification/refinement"
+      ]
+    },
+    "energy-thermal-brownout-compilation-and-dvfs-power-side-channels": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "cves": "CVE-2022-24436 (Intel); CVE-2022-23823 (AMD); CVE-2022-35888 (Ampere)",
+            "ieee_micro_doi": "10.1109/MM.2023.3274619",
+            "repository": "FPSG-UIUC/hertzbleed",
+            "revision": "9cfdf955245e8e1673bb5c6cbee31f4424586ca4",
+            "usenix_isbn": "978-1-939133-31-1"
+          },
+          "name": "Hertzbleed DVFS power-to-timing side-channel artifacts and papers"
+        },
+        {
+          "identity": {
+            "cves": "CVE-2020-8694; CVE-2020-8695; CVE-2020-12912",
+            "doi": "10.1109/SP40001.2021.00063",
+            "venue": "IEEE S&P 2021"
+          },
+          "name": "PLATYPUS software-based RAPL power side-channel attack"
+        },
+        {
+          "identity": {
+            "repository": "IAIK/CollidePower",
+            "revision": "edd8b4a82d47c9bd518844313acf9a1f86e164e3",
+            "usenix_isbn": "978-1-939133-37-3",
+            "venue": "USENIX Security 2023"
+          },
+          "name": "Collide+Power shared-component Hamming-distance power side channel"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2021.23137",
+            "repository": "0xADE1A1DE/Rosita",
+            "revision": "d41621879dc2a1faa2c21600967ab2247d3de69d",
+            "rositapp_doi": "10.1145/3460120.3485380"
+          },
+          "name": "Rosita and ELMO microarchitectural power-leakage emulator and rewriter"
+        },
+        {
+          "identity": {
+            "repository": "jasmin-lang/jasmin",
+            "revision": "5741d17e3134f5b3b110e5e53494704d6d54f7c7"
+          },
+          "name": "Jasmin constant-time and speculative constant-time compiler verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2764967.2764974",
+            "repository": "nevillegrech/llvm-energy",
+            "revision": "52809feca6c18e973099accaf05bf8f87671126d"
+          },
+          "name": "llvm-energy static LLVM IR energy cost-relation analyzer"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3133920",
+            "repository": "CMUAbstract/alpaca-oopsla2017",
+            "revision": "a979300cb51409a89b7a776ead8fe50b50711bfd"
+          },
+          "name": "Alpaca intermittent-execution compiler and runtime"
+        },
+        {
+          "identity": {
+            "energy_types_doi": "10.1145/2384616.2384676",
+            "ent_doi": "10.1145/3062341.3062356"
+          },
+          "name": "Energy Types and ENT mixed static/dynamic energy-aware type systems"
+        },
+        {
+          "identity": {
+            "jayaseelan_rtas2006_doi": "10.1109/RTAS.2006.17",
+            "wagemann_ecrts2015_doi": "10.1109/ECRTS.2015.17"
+          },
+          "name": "Worst-Case Energy Consumption (WCEC) static analysis foundations"
+        },
+        {
+          "identity": {
+            "horowitz_isscc_doi": "10.1109/ISSCC.2014.6757323",
+            "tiwari_iccad_doi": "10.1109/ICCAD.1994.629825",
+            "tiwari_tvlsi_doi": "10.1109/92.335012"
+          },
+          "name": "Instruction-level power and CMOS silicon energy scaling foundations"
+        },
+        {
+          "identity": {
+            "gpuzip_doi": "10.1109/SP54263.2024.00084",
+            "hot_pixels_venue": "USENIX Security 2023"
+          },
+          "name": "GPU.zip and cross-architecture DVFS/thermal side-channel literature"
+        }
+      ],
+      "topics": [
+        "compilers/energy-aware",
+        "pl/energy-types",
+        "security/side-channels",
+        "systems/power-management"
       ]
     },
     "entity-component-systems-modular-shaders-and-cross-isa-float-determinism": {

@@ -1,0 +1,155 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/query-compilation",
+    "systems",
+    "systems/columnar-engines",
+    "pl",
+    "pl/layout",
+    "ffi",
+    "ffi/arrow-columnar"
+  ],
+  "subjects": [
+    {
+      "name": "DuckDB",
+      "identity": {
+        "repository": "duckdb/duckdb",
+        "revision": "bc04be044b0d84075aa6d63fc11d5dfaa6e9aaa8"
+      }
+    },
+    {
+      "name": "Velox",
+      "identity": {
+        "repository": "facebookincubator/velox",
+        "revision": "f112bee8903de272ade6086878297ad9f66cdf17"
+      }
+    },
+    {
+      "name": "Apache Arrow (C Data Interface and Columnar Format)",
+      "identity": {
+        "repository": "apache/arrow",
+        "revision": "931b9cccda5de68d48201dc2db50b6b6a9a72741"
+      }
+    },
+    {
+      "name": "Apache Arrow Rust (arrow-data FFI)",
+      "identity": {
+        "repository": "apache/arrow-rs",
+        "revision": "44a4bdb287dfcc7297c5fb4c98d8c6d8c43f6e70"
+      }
+    },
+    {
+      "name": "FSST (Fast Static Symbol Table)",
+      "identity": {
+        "repository": "cwida/fsst",
+        "revision": "e638d4cf8c26129d73c242a4127b42b975de5b63"
+      }
+    },
+    {
+      "name": "ALP (Adaptive Lossless Floating-Point Compression)",
+      "identity": {
+        "repository": "cwida/ALP",
+        "revision": "31ca0ed11c93c99d3f5b5c30e01a3e1c3832d3ce"
+      }
+    },
+    {
+      "name": "FastLanes Compression Layout",
+      "identity": {
+        "repository": "cwida/FastLanes",
+        "revision": "f0edc1020a538f1f8098640fce8347c9ac247a0d"
+      }
+    },
+    {
+      "name": "BtrBlocks Columnar Compression",
+      "identity": {
+        "repository": "maxi-k/btrblocks",
+        "revision": "c950c3c01c1fbf91007936b05781d431a29a60d3"
+      }
+    },
+    {
+      "name": "HyPer Data-Centric Query Compilation (Neumann, PVLDB 2011)",
+      "identity": {
+        "doi": "10.14778/2002938.2002940",
+        "venue": "PVLDB 4(9), pp. 539-550, 2011"
+      }
+    },
+    {
+      "name": "Umbra Tidy Tuples and Flying Start (Kersten, Leis, Neumann, VLDB Journal 2021)",
+      "identity": {
+        "doi": "10.1007/s00778-020-00643-4",
+        "venue": "The VLDB Journal 30(5), pp. 883-905, 2021"
+      }
+    },
+    {
+      "name": "Compiled vs. Vectorized Query Evaluation Study (Kersten et al., PVLDB 2018)",
+      "identity": {
+        "doi": "10.14778/3275366.3275370",
+        "venue": "PVLDB 11(13), pp. 2209-2222, 2018"
+      }
+    },
+    {
+      "name": "Morsel-Driven Parallelism (Leis et al., SIGMOD 2014)",
+      "identity": {
+        "doi": "10.1145/2588555.2610507",
+        "venue": "ACM SIGMOD 2014, pp. 743-754"
+      }
+    },
+    {
+      "name": "Relaxed Operator Fusion (Menon, Mowry, Pavlo, PVLDB 2017)",
+      "identity": {
+        "doi": "10.14778/3136610.3136611",
+        "venue": "PVLDB 11(1), pp. 1-13, 2017"
+      }
+    },
+    {
+      "name": "MonetDB/X100 Hyper-Pipelining (Boncz, Zukowski, Nes, CIDR 2005)",
+      "identity": {
+        "publication": "MonetDB/X100: Hyper-Pipelining Query Execution",
+        "venue": "CIDR 2005, pp. 225-237"
+      }
+    },
+    {
+      "name": "LMS Query Compiler Architecture (Tahboub, Essertel, Rompf, SIGMOD 2018)",
+      "identity": {
+        "doi": "10.1145/3183713.3196893",
+        "venue": "ACM SIGMOD 2018, pp. 307-322"
+      }
+    },
+    {
+      "name": "Velox Unified Execution Engine (Pedreira et al., PVLDB 2022)",
+      "identity": {
+        "doi": "10.14778/3554821.3554829",
+        "venue": "PVLDB 15(12), pp. 3372-3384, 2022"
+      }
+    },
+    {
+      "name": "FastLanes Compression Layout Paper (Afroozeh, Boncz, PVLDB 2023)",
+      "identity": {
+        "doi": "10.14778/3598581.3598587",
+        "venue": "PVLDB 16(9), pp. 2132-2144, 2023"
+      }
+    },
+    {
+      "name": "FSST Paper (Boncz, Neumann, Leis, PVLDB 2020)",
+      "identity": {
+        "doi": "10.14778/3407790.3407851",
+        "venue": "PVLDB 13(11), pp. 2649-2661, 2020"
+      }
+    },
+    {
+      "name": "ALP Paper (Afroozeh, Kuffo, Boncz, SIGMOD 2024)",
+      "identity": {
+        "doi": "10.1145/3626717",
+        "venue": "Proc. ACM Manag. Data 1(4) / SIGMOD 2024"
+      }
+    },
+    {
+      "name": "BtrBlocks Paper (Kuschewski et al., SIGMOD 2023)",
+      "identity": {
+        "doi": "10.1145/3589263",
+        "venue": "Proc. ACM Manag. Data 1(2) / SIGMOD 2023"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,176 @@
+{
+  "topics": [
+    "smt",
+    "smt/proof-logging",
+    "compilers",
+    "compilers/combinatorial-optimization",
+    "verification",
+    "verification/certificates",
+    "pl",
+    "pl/constraint-modelling"
+  ],
+  "subjects": [
+    {
+      "name": "MiniZinc (libminizinc)",
+      "identity": {
+        "repository": "MiniZinc/libminizinc",
+        "revision": "8c9f79949cb7df96c7c99b5ed41d511962879c97"
+      }
+    },
+    {
+      "name": "Conjure (Essence Automated Modelling Compiler)",
+      "identity": {
+        "repository": "conjure-cp/conjure",
+        "revision": "fcae5cfd887080f9cfc32556b13daaae22a646a8"
+      }
+    },
+    {
+      "name": "Chuffed (Lazy Clause Generation CP Solver)",
+      "identity": {
+        "repository": "chuffed/chuffed",
+        "revision": "f698d5623bb0c2bcd497388ba966f0436d62caf4"
+      }
+    },
+    {
+      "name": "Pumpkin (Rust LCG CP Solver with DRCP Proof Logging)",
+      "identity": {
+        "repository": "ConSol-Lab/Pumpkin",
+        "revision": "82d30b71a81747ce969f809cb14edf679128f12c"
+      }
+    },
+    {
+      "name": "OR-Tools (CP-SAT)",
+      "identity": {
+        "repository": "google/or-tools",
+        "revision": "4948b99ec504389d5119b3bb364a96f02b70f100"
+      }
+    },
+    {
+      "name": "Unison (Combinatorial Register Allocation and Scheduling)",
+      "identity": {
+        "repository": "unison-code/unison",
+        "revision": "9f9857e742156b51e6314488f4173cd1b42c4aec"
+      }
+    },
+    {
+      "name": "Extraction Gym (E-Graph ILP Extraction Reference)",
+      "identity": {
+        "repository": "egraphs-good/extraction-gym",
+        "revision": "903ba0f818b50608fe20ae9e0f03c35cb27bc50a"
+      }
+    },
+    {
+      "name": "VeriPB (Archived Python/C++ GitHub Snapshot)",
+      "identity": {
+        "repository": "StephanGocht/VeriPB",
+        "revision": "01b7b5088c8a67f1611427174501191bc5f5b365"
+      }
+    },
+    {
+      "name": "CakePB in CakeML (Verified Pseudo-Boolean Proof Checker)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "VIPR (Exact Rational MILP Certificate Specification v1.1 and Checker)",
+      "identity": {
+        "repository": "scipopt/vipr",
+        "revision": "99eec197a49b2bd9ad33c1f4c7afabe93caa6511"
+      }
+    },
+    {
+      "name": "VIPR (Historical Archived Mirror)",
+      "identity": {
+        "repository": "ambros-gleixner/VIPR",
+        "revision": "f221c3fd2274e8e859e8e24505278d6f7c1bb8ff"
+      }
+    },
+    {
+      "name": "SCIP (Exact Rational MIP Certificate Generation)",
+      "identity": {
+        "repository": "scipopt/scip",
+        "revision": "a3274d2137c75fff405707a80dda11b887459f58"
+      }
+    },
+    {
+      "name": "MiniZinc Paper (Nethercote et al., CP 2007)",
+      "identity": {
+        "doi": "10.1007/978-3-540-74970-7_38",
+        "venue": "CP 2007, LNCS 4741, pp. 529-543"
+      }
+    },
+    {
+      "name": "Half Reification and Flattening (Feydy, Somogyi, Stuckey, CP 2011)",
+      "identity": {
+        "doi": "10.1007/978-3-642-23786-7_23",
+        "venue": "CP 2011, LNCS 6876, pp. 286-301"
+      }
+    },
+    {
+      "name": "Propagation via Lazy Clause Generation (Ohrimenko, Stuckey, Codish, Constraints 2009)",
+      "identity": {
+        "doi": "10.1007/s10601-008-9064-x",
+        "venue": "Constraints 14(3), pp. 357-391, 2009"
+      }
+    },
+    {
+      "name": "Conjure Paper (Akgun et al., Artificial Intelligence 2022)",
+      "identity": {
+        "doi": "10.1016/j.artint.2022.103751",
+        "venue": "Artificial Intelligence 310, 103751, 2022"
+      }
+    },
+    {
+      "name": "Savile Row Paper (Nightingale et al., Artificial Intelligence 2017)",
+      "identity": {
+        "doi": "10.1016/j.artint.2017.07.001",
+        "venue": "Artificial Intelligence 251, pp. 35-61, 2017"
+      }
+    },
+    {
+      "name": "Unison Paper (Castaneda Lozano et al., ACM TOPLAS 2019)",
+      "identity": {
+        "doi": "10.1145/3332373",
+        "venue": "ACM TOPLAS 41(3), Article 19, 2019"
+      }
+    },
+    {
+      "name": "TENSAT Paper (Yang et al., MLSys 2021)",
+      "identity": {
+        "arxiv": "2101.01332",
+        "venue": "MLSys 3, 2021"
+      }
+    },
+    {
+      "name": "Certified Dominance and Symmetry Breaking (Bogaerts et al., JAIR 2023)",
+      "identity": {
+        "doi": "10.1613/jair.1.14296",
+        "venue": "JAIR 77, pp. 1539-1589, 2023"
+      }
+    },
+    {
+      "name": "End-to-End Verification for Subgraph Solving / CakePB (Gocht et al., AAAI 2024)",
+      "identity": {
+        "doi": "10.1609/aaai.v38i8.28642",
+        "venue": "AAAI 38(8), pp. 8038-8047, 2024"
+      }
+    },
+    {
+      "name": "Verifying Integer Programming Results / VIPR (Cheung, Gleixner, Steffy, IPCO 2017)",
+      "identity": {
+        "doi": "10.1007/978-3-319-59250-3_13",
+        "venue": "IPCO 2017, LNCS 10328, pp. 148-160"
+      }
+    },
+    {
+      "name": "Safe and Verified Gomory Mixed-Integer Cuts (Eifler, Gleixner, SIAM J. Optim. 2024)",
+      "identity": {
+        "doi": "10.1137/23M156046X",
+        "venue": "SIAM Journal on Optimization 34(1), pp. 742-763, 2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
