@@ -27012,6 +27012,85 @@
         "rustc/metadata"
       ]
     },
+    "ml-graph-compilers-dynamic-shape-guards-and-verified-spmd-sharding": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "pytorch/pytorch",
+            "revision": "8b97977cc95f31857c67ce324523254fffde5e39"
+          },
+          "name": "PyTorch (TorchDynamo, SymInt ShapeEnv, AOTAutograd)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3620665.3640366",
+            "title": "PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation",
+            "venue": "ASPLOS 2024"
+          },
+          "name": "PyTorch 2 ASPLOS 2024 Paper"
+        },
+        {
+          "identity": {
+            "repository": "openxla/stablehlo",
+            "revision": "6e7d581b2710953eef9f738d8a073ff760df5944"
+          },
+          "name": "OpenXLA StableHLO"
+        },
+        {
+          "identity": {
+            "repository": "openxla/shardy",
+            "revision": "86f54eeb42d28bf01ade85b48fb7e45062a5cddf"
+          },
+          "name": "OpenXLA Shardy"
+        },
+        {
+          "identity": {
+            "repository": "openxla/xla",
+            "revision": "c3373894110fdf32dfd45a61d075569692b1b311"
+          },
+          "name": "OpenXLA XLA (GSPMD Partitioner and Shardy Bridge)"
+        },
+        {
+          "identity": {
+            "arxiv": "2105.04663v2",
+            "doi": "10.48550/arXiv.2105.04663",
+            "title": "GSPMD: General and Scalable Parallelization for ML Computation Graphs"
+          },
+          "name": "GSPMD Paper"
+        },
+        {
+          "identity": {
+            "arxiv": "2201.12023",
+            "repository": "alpa-projects/alpa",
+            "revision": "b8078a9f75cb4c90cabb4550ee48c99ef394e209"
+          },
+          "name": "Alpa"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.11202v4",
+            "doi": "10.1145/3669940.3707284",
+            "title": "PartIR: Composing SPMD Partitioning Strategies for Machine Learning",
+            "venue": "ASPLOS 2025"
+          },
+          "name": "PartIR Paper"
+        },
+        {
+          "identity": {
+            "repository": "NVIDIA/nccl",
+            "revision": "ad2d192c1f279aefcaf340f67e07880b65a1116b"
+          },
+          "name": "NVIDIA NCCL"
+        }
+      ],
+      "topics": [
+        "compilers/ml-graphs",
+        "systems/distributed-ml",
+        "pl/dependent-shapes",
+        "verification/tensor-sharding"
+      ]
+    },
     "modal-region-systems-oxcaml-verona-and-hardware-pinning-barriers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -27731,6 +27810,111 @@
         "rustc",
         "rustc/codegen",
         "rustc/mir"
+      ]
+    },
+    "network-control-plane-verification-routing-algebras-and-transport-specs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1109/90.993304",
+            "title": "The Stable Paths Problem and Interdomain Routing",
+            "venue": "IEEE/ACM Transactions on Networking 2002"
+          },
+          "name": "Griffin-Shepherd-Wilfong Stable Paths Problem Paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICNP.2002.1181389",
+            "title": "Analysis of the MED Oscillation Problem in BGP",
+            "venue": "IEEE ICNP 2002"
+          },
+          "name": "Griffin-Wilfong BGP MED Oscillation Paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TNET.2005.857653",
+            "title": "An Algebraic Theory of Dynamic Network Routing",
+            "venue": "IEEE/ACM Transactions on Networking 2005"
+          },
+          "name": "Sobrinho Algebraic Theory of Dynamic Network Routing Paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1080091.1080094",
+            "title": "Metarouting",
+            "venue": "ACM SIGCOMM 2005"
+          },
+          "name": "Griffin-Sobrinho Metarouting Paper"
+        },
+        {
+          "identity": {
+            "repository": "batfish/batfish",
+            "revision": "735d69e0fbdf7ea9427fcff4855bb51f52a81fc2"
+          },
+          "name": "Batfish (IBDP Simulator and Minesweeper BDD Policy Engine)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3098822.3098834",
+            "title": "A General Approach to Network Configuration Verification",
+            "venue": "ACM SIGCOMM 2017"
+          },
+          "name": "Minesweeper SIGCOMM 2017 Paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2983990.2984012",
+            "repository": "uwplse/bagpipe",
+            "revision": "67a38c4c6def7fb270a045b4afa668d22e293be7"
+          },
+          "name": "Bagpipe (Coq-Verified BGP Verifier)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3386019",
+            "repository": "NetworkVerification/nv",
+            "revision": "952dae45c374dcd80e081faa16fae12217f4dc8e"
+          },
+          "name": "NV (Network Verification Intermediate Language)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341302.3342087",
+            "repository": "kenmcmil/ivy",
+            "revision": "84a6b955291ae419ed10ba96cd184fee084652e9"
+          },
+          "name": "Ivy QUIC Compositional Specification (draft-23)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3243650",
+            "repository": "rems-project/netsem",
+            "revision": "0b02450eee334fc42f74ad3da09d3ce1a0698a48"
+          },
+          "name": "Netsem HOL4 TCP/IP and Sockets Specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3230543.3230553",
+            "repository": "ccp-project/portus",
+            "revision": "a43f3071c428aef98893455ce06d40db169242da"
+          },
+          "name": "CCP Portus Userspace Congestion Control Plane"
+        },
+        {
+          "identity": {
+            "repository": "ccp-project/ccp-kernel",
+            "revision": "e3b3b7ea927ae7b7281f26c76c7bd9d872e267de"
+          },
+          "name": "CCP Linux Kernel Datapath Module"
+        }
+      ],
+      "topics": [
+        "systems/networking",
+        "verification/network-protocols",
+        "smt/network-verification",
+        "pl/routing-algebras"
       ]
     },
     "neurosymbolic-languages-type-constrained-decoding-and-runtime-shields": {

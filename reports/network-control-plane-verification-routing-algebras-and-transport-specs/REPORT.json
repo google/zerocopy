@@ -1,0 +1,105 @@
+{
+  "topics": [
+    "systems/networking",
+    "verification/network-protocols",
+    "smt/network-verification",
+    "pl/routing-algebras"
+  ],
+  "subjects": [
+    {
+      "name": "Griffin-Shepherd-Wilfong Stable Paths Problem Paper",
+      "identity": {
+        "doi": "10.1109/90.993304",
+        "title": "The Stable Paths Problem and Interdomain Routing",
+        "venue": "IEEE/ACM Transactions on Networking 2002"
+      }
+    },
+    {
+      "name": "Griffin-Wilfong BGP MED Oscillation Paper",
+      "identity": {
+        "doi": "10.1109/ICNP.2002.1181389",
+        "title": "Analysis of the MED Oscillation Problem in BGP",
+        "venue": "IEEE ICNP 2002"
+      }
+    },
+    {
+      "name": "Sobrinho Algebraic Theory of Dynamic Network Routing Paper",
+      "identity": {
+        "doi": "10.1109/TNET.2005.857653",
+        "title": "An Algebraic Theory of Dynamic Network Routing",
+        "venue": "IEEE/ACM Transactions on Networking 2005"
+      }
+    },
+    {
+      "name": "Griffin-Sobrinho Metarouting Paper",
+      "identity": {
+        "doi": "10.1145/1080091.1080094",
+        "title": "Metarouting",
+        "venue": "ACM SIGCOMM 2005"
+      }
+    },
+    {
+      "name": "Batfish (IBDP Simulator and Minesweeper BDD Policy Engine)",
+      "identity": {
+        "repository": "batfish/batfish",
+        "revision": "735d69e0fbdf7ea9427fcff4855bb51f52a81fc2"
+      }
+    },
+    {
+      "name": "Minesweeper SIGCOMM 2017 Paper",
+      "identity": {
+        "doi": "10.1145/3098822.3098834",
+        "title": "A General Approach to Network Configuration Verification",
+        "venue": "ACM SIGCOMM 2017"
+      }
+    },
+    {
+      "name": "Bagpipe (Coq-Verified BGP Verifier)",
+      "identity": {
+        "doi": "10.1145/2983990.2984012",
+        "repository": "uwplse/bagpipe",
+        "revision": "67a38c4c6def7fb270a045b4afa668d22e293be7"
+      }
+    },
+    {
+      "name": "NV (Network Verification Intermediate Language)",
+      "identity": {
+        "doi": "10.1145/3385412.3386019",
+        "repository": "NetworkVerification/nv",
+        "revision": "952dae45c374dcd80e081faa16fae12217f4dc8e"
+      }
+    },
+    {
+      "name": "Ivy QUIC Compositional Specification (draft-23)",
+      "identity": {
+        "doi": "10.1145/3341302.3342087",
+        "repository": "kenmcmil/ivy",
+        "revision": "84a6b955291ae419ed10ba96cd184fee084652e9"
+      }
+    },
+    {
+      "name": "Netsem HOL4 TCP/IP and Sockets Specification",
+      "identity": {
+        "doi": "10.1145/3243650",
+        "repository": "rems-project/netsem",
+        "revision": "0b02450eee334fc42f74ad3da09d3ce1a0698a48"
+      }
+    },
+    {
+      "name": "CCP Portus Userspace Congestion Control Plane",
+      "identity": {
+        "doi": "10.1145/3230543.3230553",
+        "repository": "ccp-project/portus",
+        "revision": "a43f3071c428aef98893455ce06d40db169242da"
+      }
+    },
+    {
+      "name": "CCP Linux Kernel Datapath Module",
+      "identity": {
+        "repository": "ccp-project/ccp-kernel",
+        "revision": "e3b3b7ea927ae7b7281f26c76c7bd9d872e267de"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

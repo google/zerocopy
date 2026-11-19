@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "compilers/ml-graphs",
+    "systems/distributed-ml",
+    "pl/dependent-shapes",
+    "verification/tensor-sharding"
+  ],
+  "subjects": [
+    {
+      "name": "PyTorch (TorchDynamo, SymInt ShapeEnv, AOTAutograd)",
+      "identity": {
+        "repository": "pytorch/pytorch",
+        "revision": "8b97977cc95f31857c67ce324523254fffde5e39"
+      }
+    },
+    {
+      "name": "PyTorch 2 ASPLOS 2024 Paper",
+      "identity": {
+        "doi": "10.1145/3620665.3640366",
+        "title": "PyTorch 2: Faster Machine Learning Through Dynamic Python Bytecode Transformation and Graph Compilation",
+        "venue": "ASPLOS 2024"
+      }
+    },
+    {
+      "name": "OpenXLA StableHLO",
+      "identity": {
+        "repository": "openxla/stablehlo",
+        "revision": "6e7d581b2710953eef9f738d8a073ff760df5944"
+      }
+    },
+    {
+      "name": "OpenXLA Shardy",
+      "identity": {
+        "repository": "openxla/shardy",
+        "revision": "86f54eeb42d28bf01ade85b48fb7e45062a5cddf"
+      }
+    },
+    {
+      "name": "OpenXLA XLA (GSPMD Partitioner and Shardy Bridge)",
+      "identity": {
+        "repository": "openxla/xla",
+        "revision": "c3373894110fdf32dfd45a61d075569692b1b311"
+      }
+    },
+    {
+      "name": "GSPMD Paper",
+      "identity": {
+        "arxiv": "2105.04663v2",
+        "doi": "10.48550/arXiv.2105.04663",
+        "title": "GSPMD: General and Scalable Parallelization for ML Computation Graphs"
+      }
+    },
+    {
+      "name": "Alpa",
+      "identity": {
+        "repository": "alpa-projects/alpa",
+        "revision": "b8078a9f75cb4c90cabb4550ee48c99ef394e209",
+        "arxiv": "2201.12023"
+      }
+    },
+    {
+      "name": "PartIR Paper",
+      "identity": {
+        "doi": "10.1145/3669940.3707284",
+        "arxiv": "2401.11202v4",
+        "title": "PartIR: Composing SPMD Partitioning Strategies for Machine Learning",
+        "venue": "ASPLOS 2025"
+      }
+    },
+    {
+      "name": "NVIDIA NCCL",
+      "identity": {
+        "repository": "NVIDIA/nccl",
+        "revision": "ad2d192c1f279aefcaf340f67e07880b65a1116b"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
