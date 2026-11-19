@@ -17604,6 +17604,109 @@
         "ffi/host-device"
       ]
     },
+    "entropy-coded-media-bitstreams-video-codec-security-and-simd-decoders": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "webmproject/libwebp",
+            "revision": "fd7bb21c0cb56e8a82e9bfa376164b842f433f3b",
+            "version": "v1.3.1"
+          },
+          "name": "libwebp (v1.3.1, pre-CVE-2023-4863)"
+        },
+        {
+          "identity": {
+            "repository": "webmproject/libwebp",
+            "revision": "2af26267cdfcb63a88e5c74a85927a12d6ca1d76",
+            "version": "v1.3.2-fix"
+          },
+          "name": "libwebp (CVE-2023-4863 fix commit)"
+        },
+        {
+          "identity": {
+            "repository": "webmproject/libwebp",
+            "revision": "eceabea8c5f72920c4a4f92724ef2c38bb2d1985"
+          },
+          "name": "libwebp (HEAD with bounds-safety annotations)"
+        },
+        {
+          "identity": {
+            "repository": "google/wuffs",
+            "revision": "a87f0bb85b9406d29f48a1c03b6f42c4585145f6"
+          },
+          "name": "Wuffs (Wrangling Untrusted File Formats Safely)"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d"
+        },
+        {
+          "identity": {
+            "repository": "videolan/dav1d",
+            "revision": "6c7bee685677fd997a431302be4fea8ea4017606"
+          },
+          "name": "dav1d"
+        },
+        {
+          "identity": {
+            "repository": "rygorous/ryg_rans",
+            "revision": "c9d162d996fd600315af9ae8eb89d832576cb32d"
+          },
+          "name": "ryg_rans"
+        },
+        {
+          "identity": {
+            "repository": "Cyan4973/FiniteStateEntropy",
+            "revision": "9f30e0918f87bd835fa040d922a208d7b219e50b"
+          },
+          "name": "FiniteStateEntropy (FSE)"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "270f5aab699ac284d8777d4f01be20a5d91ea47c"
+          },
+          "name": "EverParse"
+        },
+        {
+          "identity": {
+            "repository": "secure-foundations/vest",
+            "revision": "026867a37d4b918153058df2c8db6c52fc62ba35"
+          },
+          "name": "Vest"
+        },
+        {
+          "identity": {
+            "arxiv": "1311.2540",
+            "url": "https://arxiv.org/abs/1311.2540"
+          },
+          "name": "Asymmetric Numeral Systems (Duda 2013/2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TCSVT.2003.815173"
+          },
+          "name": "Context-Based Adaptive Binary Arithmetic Coding in H.264/AVC (Marpe, Schwarz, Wiegand 2003)"
+        },
+        {
+          "identity": {
+            "standard": "AOMedia AV1 Bitstream & Decoding Process Specification",
+            "url": "https://aomediacodec.github.io/av1-spec/av1-spec.pdf"
+          },
+          "name": "AV1 Bitstream & Decoding Process Specification"
+        }
+      ],
+      "topics": [
+        "security/media-codecs",
+        "ffi/bitstream-parsing",
+        "compilers/simd-vectorization",
+        "verification/parsers"
+      ]
+    },
     "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting": {
       "observed_at": "2026-11-13",
       "subjects": [
