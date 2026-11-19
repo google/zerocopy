@@ -1,0 +1,190 @@
+{
+  "topics": [
+    "systems/os-interfaces",
+    "systems/history",
+    "runtimes/os-boundary",
+    "ffi/os-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "IEEE Std 1003.1-2024 (POSIX.1-2024), The Open Group Base Specifications Issue 8: fork/_Fork, pthread_atfork, posix_spawn, sigaction, XSH 2.4 Signal Concepts",
+      "identity": {
+        "standard": "IEEE Std 1003.1-2024",
+        "edition": "The Open Group Base Specifications Issue 8, HTML edition",
+        "url": "https://pubs.opengroup.org/onlinepubs/9799919799/"
+      }
+    },
+    {
+      "name": "Baumann, Appavoo, Krieger & Roscoe, A fork() in the road (HotOS '19)",
+      "identity": {
+        "doi": "10.1145/3317550.3321435",
+        "venue": "Workshop on Hot Topics in Operating Systems (HotOS '19), May 13-15, 2019, Bertinoro, Italy",
+        "isbn": "978-1-4503-6727-1"
+      }
+    },
+    {
+      "name": "Ritchie, The Evolution of the Unix Time-sharing System",
+      "identity": {
+        "venue": "AT&T Bell Laboratories Technical Journal 63(6) Part 2, October 1984, pp. 1577-93; first presented at Language Design and Programming Methodology, Sydney, September 1979",
+        "url": "https://www.nokia.com/bell-labs/about/dennis-m-ritchie/hist.html"
+      }
+    },
+    {
+      "name": "Pike, Presotto, Dorward, Flandrena, Thompson, Trickey & Winterbottom, Plan 9 from Bell Labs",
+      "identity": {
+        "venue": "Computing Systems 8(3), Summer 1995, pp. 221-254",
+        "url": "https://www.usenix.org/legacy/publications/compsystems/1995/sum_pike.pdf"
+      }
+    },
+    {
+      "name": "Plan 9 from Bell Labs, 4th edition source (fork(2), notify(2), libc.h, port/sysproc.c)",
+      "identity": {
+        "repository": "plan9foundation/plan9",
+        "revision": "ed1a9c21e3297d7497a48053d33683375c75fbb4"
+      }
+    },
+    {
+      "name": "Watson, Anderson, Laurie & Kennaway, Capsicum: Practical Capabilities for UNIX",
+      "identity": {
+        "venue": "19th USENIX Security Symposium (USENIX Security 10), August 2010",
+        "url": "https://www.usenix.org/legacy/event/sec10/tech/full_papers/Watson.pdf"
+      }
+    },
+    {
+      "name": "FreeBSD Capsicum implementation (sys/kern/sys_capability.c, sys/kern/vfs_lookup.c, sys/sys/capsicum.h, cap_enter(2))",
+      "identity": {
+        "repository": "freebsd/freebsd-src",
+        "revision": "d1e14cba4a79c0b4fe7cff3c0afcc0ffb50f54b3"
+      }
+    },
+    {
+      "name": "Hunt & Larus, Singularity: Rethinking the Software Stack",
+      "identity": {
+        "doi": "10.1145/1243418.1243424",
+        "venue": "ACM SIGOPS Operating Systems Review 41(2), April 2007, pp. 37-49"
+      }
+    },
+    {
+      "name": "Linux kernel (kernel/fork.c, kernel/signal.c, arch/x86/kernel/signal.c, mm/mmap.c, mm/util.c, fs/namei.c, fs/exec.c, io_uring UAPI and ring types)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+        "version": "7.4-rc3 development tree"
+      }
+    },
+    {
+      "name": "Linux man-pages signal(7) (GitHub mirror, last updated 2021-09-01)",
+      "identity": {
+        "repository": "mkerrisk/man-pages",
+        "revision": "ae6b221882ce71ba82fcdbe02419a225111502f0"
+      }
+    },
+    {
+      "name": "liburing manual pages (io_uring_enter(2), io_uring_setup(2))",
+      "identity": {
+        "repository": "axboe/liburing",
+        "revision": "a10946dc51eeababc48ee10baf0d17489f647a80"
+      }
+    },
+    {
+      "name": "WASI 0.2 (Preview 2) interface definitions: wasi:filesystem@0.2.12, wasi:cli@0.2.12, design principles and path-resolution notes",
+      "identity": {
+        "repository": "WebAssembly/WASI",
+        "revision": "281ba75fafcd50961ef55f9e52747afcc9b71ede",
+        "version": "v0.2.12"
+      }
+    },
+    {
+      "name": "WASI default branch (wasi:filesystem@0.3.2)",
+      "identity": {
+        "repository": "WebAssembly/WASI",
+        "revision": "463701e0f6c575a5d24ae31c2ec1e0ebf09d28e1"
+      }
+    },
+    {
+      "name": "Fuchsia / Zircon kernel concept documentation and zircon/vdso/process.fidl",
+      "identity": {
+        "repository": "fuchsia.googlesource.com/fuchsia",
+        "revision": "d953ee3f076256b292cd85e449124d655cc8bf43"
+      }
+    },
+    {
+      "name": "Go runtime and syscall packages (runtime/malloc.go, runtime/signal_unix.go, os/signal/doc.go, syscall/exec_linux.go, os/file_posix.go)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot and java.base (signals_posix.cpp, os_linux_x86.cpp, compressedOops.hpp, ProcessImpl_md.c, libjsig)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "CPython (Python/pylifecycle.c, Modules/posixmodule.c, Doc/library/multiprocessing.rst)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "6c9f2b691aaf0cf88cf2c3ba862f5de237a17344"
+      }
+    },
+    {
+      "name": "LLVM compiler-rt sanitizer runtimes (asan_mapping.h, asan_linux.cpp, tsan_platform.h, tsan_platform_linux.cpp)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "36f1fd30c75dc97c58a2350b6c7646206b30a0aa"
+      }
+    },
+    {
+      "name": "V8 (include/v8-internal.h pointer-compression cage and sandbox constants)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    },
+    {
+      "name": "GNU C Library (posix/fork.c, malloc/arena.c, sysdeps/unix/sysv/linux/spawni.c), GitHub mirror",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc",
+        "version": "2.42.9000 development tree"
+      }
+    },
+    {
+      "name": "OpenBSD (sys/sys/syscall_mi.h pin_check, pinsyscalls(2))",
+      "identity": {
+        "repository": "openbsd/src",
+        "revision": "974c1b36016e2479cd10e81aa8a4266ae9284751"
+      }
+    },
+    {
+      "name": "illumos (fork(2), vfork(2), Intro(2), libc posix_spawn)",
+      "identity": {
+        "repository": "illumos/illumos-gate",
+        "revision": "21c9b825915a5d29ae49ee734ccef95e94d8aded"
+      }
+    },
+    {
+      "name": "Apple Technical Q&A QA1118, Statically linked binaries on Mac OS X",
+      "identity": {
+        "document": "Technical Q&A QA1118",
+        "revised": "2011-09-20",
+        "url": "https://developer.apple.com/library/archive/qa/qa1118/_index.html"
+      }
+    },
+    {
+      "name": "Microsoft Learn, Calling Internal APIs (Winternl.h)",
+      "identity": {
+        "url": "https://learn.microsoft.com/en-us/windows/win32/devnotes/calling-internal-apis"
+      }
+    },
+    {
+      "name": "Gabriel, The Rise of Worse is Better",
+      "identity": {
+        "url": "https://www.dreamsongs.com/RiseOfWorseIsBetter.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

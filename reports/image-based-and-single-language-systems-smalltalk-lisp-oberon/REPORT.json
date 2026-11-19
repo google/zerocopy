@@ -1,0 +1,119 @@
+{
+  "topics": [
+    "pl/history",
+    "runtimes/image-based",
+    "systems/history",
+    "tooling/live-environments",
+    "compilers/modules"
+  ],
+  "subjects": [
+    {
+      "name": "Smalltalk-80: The Language and its Implementation (Blue Book)",
+      "identity": {
+        "authors": "Adele Goldberg and David Robson",
+        "publisher": "Addison-Wesley",
+        "year": "1983",
+        "isbn": "978-0201113716"
+      }
+    },
+    {
+      "name": "OpenSmalltalk Cog/Spur Virtual Machine",
+      "identity": {
+        "repository": "OpenSmalltalk/opensmalltalk-vm",
+        "revision": "a0377cd04251fff81a613fe42e47cb2acda222f2",
+        "vmmaker_source": "VMMaker.oscog-eem.3939"
+      }
+    },
+    {
+      "name": "A Partial Read Barrier for Efficient Support of Live Object-Oriented Programming",
+      "identity": {
+        "authors": "Eliot Miranda and Clément Béra",
+        "venue": "Proceedings of the 2015 ACM SIGPLAN International Symposium on Memory Management (ISMM '15)",
+        "year": "2015",
+        "doi": "10.1145/2754169.2754186"
+      }
+    },
+    {
+      "name": "Pharo Live Smalltalk Environment (Shift-ClassBuilder and UnifiedFFI)",
+      "identity": {
+        "repository": "pharo-project/pharo",
+        "revision": "c37e8dda7d7d76a5c92a7265ebbe77015193663e"
+      }
+    },
+    {
+      "name": "Symbolics Architecture",
+      "identity": {
+        "authors": "David A. Moon",
+        "venue": "IEEE Computer, Vol. 20, No. 1, pp. 43-52",
+        "year": "1987",
+        "doi": "10.1109/MC.1987.1663443"
+      }
+    },
+    {
+      "name": "Garbage Collection in a Large Lisp System",
+      "identity": {
+        "authors": "David A. Moon",
+        "venue": "Proceedings of the 1984 ACM Symposium on LISP and Functional Programming (LFP '84), pp. 235-246",
+        "year": "1984",
+        "doi": "10.1145/800055.802040"
+      }
+    },
+    {
+      "name": "The Symbolics Genera Programming Environment",
+      "identity": {
+        "authors": "Janet H. Walker, David A. Moon, Daniel L. Weinreb, and Mike McMahon",
+        "venue": "IEEE Software, Vol. 4, No. 6, pp. 36-45",
+        "year": "1987",
+        "doi": "10.1109/MS.1987.232087"
+      }
+    },
+    {
+      "name": "A Structural View of the Cedar Programming Environment",
+      "identity": {
+        "authors": "Daniel C. Swinehart, Polle T. Zellweger, Richard J. Beach, and Robert B. Hagmann",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 8, No. 4, pp. 419-490",
+        "year": "1986",
+        "doi": "10.1145/6465.6466"
+      }
+    },
+    {
+      "name": "The Oberon System and Project Oberon (1989/1992/2013)",
+      "identity": {
+        "authors": "Niklaus Wirth and Jürg Gutknecht",
+        "venue": "Software: Practice and Experience 19(9):857-893 (1989); Addison-Wesley ISBN 978-0201544282 (1992); ETH Zurich Revised Edition (2013)",
+        "doi": "10.1002/spe.4380190905"
+      }
+    },
+    {
+      "name": "Project Oberon 2013 RISC-5 Source Tree",
+      "identity": {
+        "repository": "Spirit-of-Oberon/ProjectOberon2013",
+        "revision": "72966ea608613dad76f5afdd57578c7e53741bd3"
+      }
+    },
+    {
+      "name": "Separate Compilation and Module Extension (ETH Oberon Per-Export Fingerprints)",
+      "identity": {
+        "authors": "Régis Bernard Joseph Crelier",
+        "venue": "Dissertation ETH Nr. 10650, ETH Zurich",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Unison Content-Addressed Programming Language and Codebase",
+      "identity": {
+        "repository": "unisonweb/unison",
+        "revision": "b5c5188d99f31820d0cc012f194948d2876c14e7"
+      }
+    },
+    {
+      "name": "Lisp: Good News, Bad News, How to Win Big (The Rise of Worse is Better)",
+      "identity": {
+        "authors": "Richard P. Gabriel",
+        "venue": "AI Expert, Vol. 6, No. 6, pp. 30-35 (1991; originally distributed 1989)",
+        "url": "https://www.dreamsongs.com/RiseOfWorseIsBetter.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,36 @@
+[ok] CC-128 set-bounds matches upstream Sail-generated vectors: 15 cases
+[ok] alignment rule: byte-exact below 2^(MW-2), then 2^(E+3): 76 cases
+     CC-128: byte-exact for length < 4096; 8-byte granule from 4 KiB; 1 MiB object needs 2048-byte alignment; 1 GiB object needs 2097152-byte alignment
+     CC-64 : byte-exact for length < 64; 1 MiB object needs 131072-byte alignment
+[ok] toy CC exhaustive: rounded bounds contain request; exact flag is precise: 8384 cases
+[ok] toy CC exhaustive: rounding is idempotent (results are fixed points): 8384 cases
+[ok] toy CC exhaustive: CSetBounds inside a representable parent never escapes it: 138509 cases
+[ok] toy CC exhaustive: every address in [base, top] keeps the bounds (one-past-the-end is safe): 17809 cases
+[ok] toy CC exhaustive: CRAM-aligned base + CRRL length is always exact: 2334 cases
+[ok] CC-128 (RV64, MW=14): fast representability check implies the exact check: 20000 cases
+     fast check accepted 11496 of 11505 exactly representable moves; 39098 slack probes (s/8 below base, s/4 above top) all representable
+[ok] CC-64 (RV32, MW=8): fast representability check implies the exact check: 20000 cases
+     fast check accepted 10765 of 11263 exactly representable moves; 38046 slack probes (s/8 below base, s/4 above top) all representable
+[ok] toy CC (AW=9, MW=6): fast representability check implies the exact check: 20000 cases
+     fast check accepted 12682 of 12928 exactly representable moves; 30813 slack probes (s/8 below base, s/4 above top) all representable
+[ok] CC-128 (RV64, MW=14): random derivation chains are monotone (bounds and perms): 21048 cases
+     7831 of 21048 results had the tag cleared rather than gaining rights
+[ok] CC-64 (RV32, MW=8): random derivation chains are monotone (bounds and perms): 21002 cases
+     7843 of 21002 results had the tag cleared rather than gaining rights
+[ok] sealing: immutability, authority matching, Global stripping, sentries: 17 cases
+[ok] CBuildCap: untagged bits regain a tag only as a subset of a held authority: 4000 cases
+     2377 re-derivations accepted, 1623 rejected
+[ok] tag conservation: no instruction yields a tag from untagged operands or authorities: 33000 cases
+[ok] tagged memory: any data store into a granule clears its tag (even identical bytes): 139 cases
+[ok] tagged memory: byte images of valid capabilities never become tagged: 24000 cases
+[ok] memcpy: byte loop drops every tag; capability-word copy keeps tags only when source and destination are mutually aligned and the granule is wholly copied: 48000 cases
+     capability-word copy preserved 1717 tags; 2849 wholly overwritten granules lost a source tag because the operands were mutually misaligned
+[ok] CHERIoT encoding: byte-exact to 511 bytes, 2^e alignment, no representable space below base: 22575 cases
+[ok] 64-bit formats compared: a 1 MiB object needs 4 KiB alignment (CHERIoT) vs 128 KiB (CC-64): 4 cases
+[ok] alignment table: granule per request length for CC-128, CC-64, and CHERIoT: 21 cases
+[ok] revocation epochs: quarantine is released only after one full later sweep: 320 cases
+[ok] sweeping revocation: concurrent sweep needs a store-tracked stop-the-world pass or a load barrier: 1214 cases
+     design=none      sound=False states=474
+     design=store-stw sound=True  states=474
+     design=load      sound=True  states=266
+PASS: 23 check groups, 410851 cases

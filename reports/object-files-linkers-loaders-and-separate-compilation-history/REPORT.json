@@ -1,0 +1,152 @@
+{
+  "topics": [
+    "compilers/linking",
+    "runtimes/dynamic-linking",
+    "systems/object-formats",
+    "systems/history"
+  ],
+  "subjects": [
+    {
+      "name": "System V Application Binary Interface — ELF Object File Format (gABI v4.2)",
+      "identity": {
+        "repository": "xinuos/gabi",
+        "revision": "4ff978d04d78cbd308705a782f34a189118d11cd",
+        "version": "4.2",
+        "url": "https://gabi.xinuos.com/v42/index.html"
+      }
+    },
+    {
+      "name": "LLVM Project (lld ELF linker, ThinLTO, and Clang driver)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ffcd0a522aedc16a966e3efb9a97a336be8ddb57"
+      }
+    },
+    {
+      "name": "GNU C Library (glibc) ELF dynamic linker",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+      }
+    },
+    {
+      "name": "Apple dyld Mach-O dynamic linker",
+      "identity": {
+        "repository": "apple-oss-distributions/dyld",
+        "revision": "fd8d0c4d52320ebf64db34f3cb280310d905c5ae",
+        "version": "dyld-1378"
+      }
+    },
+    {
+      "name": "Microsoft Portable Executable (PE) and COFF Specification",
+      "identity": {
+        "repository": "MicrosoftDocs/win32",
+        "revision": "ca8274decead49403d70ceeed4af8d4ca74eaf11",
+        "path": "desktop-src/Debug/pe-format.md"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model Specification",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "Swift Library Evolution and Type Metadata ABI Documentation",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "466f30162134b2c16b0f05c05d766cdd151236a5"
+      }
+    },
+    {
+      "name": "Daley & Dennis (1968) — Virtual Memory, Processes, and Sharing in MULTICS",
+      "identity": {
+        "authors": "Robert C. Daley and Jack B. Dennis",
+        "title": "Virtual Memory, Processes, and Sharing in MULTICS",
+        "venue": "Communications of the ACM, Vol. 11, No. 5, pp. 306-312",
+        "year": "1968",
+        "doi": "10.1145/363095.363139"
+      }
+    },
+    {
+      "name": "Swinehart, Zellweger, Beach & Hagmann (1986) — Cedar Programming Environment",
+      "identity": {
+        "authors": "Daniel C. Swinehart, Polle T. Zellweger, Richard J. Beach, and Robert B. Hagmann",
+        "title": "A Structural View of the Cedar Programming Environment",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 8, No. 4, pp. 419-490",
+        "year": "1986",
+        "doi": "10.1145/6465.6469"
+      }
+    },
+    {
+      "name": "Wirth & Gutknecht (1992 / 2013) — Project Oberon",
+      "identity": {
+        "authors": "Niklaus Wirth and Jürg Gutknecht",
+        "title": "Project Oberon: The Design of an Operating System, a Compiler, and a Computer",
+        "edition": "1992 (Addison-Wesley, ISBN 0-201-54428-8) and Revised Edition 2013 (ORB.Mod / Modules.Mod)",
+        "url": "https://people.inf.ethz.ch/wirth/ProjectOberon/"
+      }
+    },
+    {
+      "name": "Crelier (1994) — Separate Compilation and Module Extension",
+      "identity": {
+        "authors": "Régis Crelier",
+        "title": "Separate Compilation and Module Extension",
+        "venue": "ETH Zurich Dissertation No. 10650",
+        "year": "1994",
+        "doi": "10.3929/ethz-a-000945227"
+      }
+    },
+    {
+      "name": "Ritchie (1993) — The Development of the C Language",
+      "identity": {
+        "authors": "Dennis M. Ritchie",
+        "title": "The Development of the C Language",
+        "venue": "ACM SIGPLAN Notices, Vol. 28, No. 3 (HOPL-II), pp. 201-208",
+        "year": "1993",
+        "doi": "10.1145/155360.155580"
+      }
+    },
+    {
+      "name": "Stroustrup (1988) — Type-safe Linkage for C++",
+      "identity": {
+        "authors": "Bjarne Stroustrup",
+        "title": "Type-safe Linkage for C++",
+        "venue": "Computing Systems, Vol. 1, No. 4, pp. 371-403; Proc. USENIX C++ Conference",
+        "year": "1988",
+        "url": "https://www.usenix.org/publications/compsystems/1988/fall_stroustrup.pdf"
+      }
+    },
+    {
+      "name": "Johnson, Amini & Li (2017) — ThinLTO: Scalable and Incremental LTO",
+      "identity": {
+        "authors": "Teresa Johnson, Mehdi Amini, and Xinliang David Li",
+        "title": "ThinLTO: Scalable and Incremental LTO",
+        "venue": "IEEE/ACM International Symposium on Code Generation and Optimization (CGO 2017), pp. 111-121",
+        "year": "2017",
+        "doi": "10.1109/CGO.2017.7863733"
+      }
+    },
+    {
+      "name": "Gingell, Lee, Dang & Weeks (1987) — Shared Libraries in SunOS",
+      "identity": {
+        "authors": "Robert A. Gingell, Meng Lee, Xuong T. Dang, and Mary S. Weeks",
+        "title": "Shared Libraries in SunOS",
+        "venue": "Proceedings of the USENIX Summer 1987 Technical Conference, pp. 131-147",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Pike (2012) — Go at Google: Language Design in the Service of Software Engineering",
+      "identity": {
+        "authors": "Rob Pike",
+        "title": "Go at Google: Language Design in the Service of Software Engineering",
+        "venue": "SPLASH 2012 Keynote",
+        "year": "2012",
+        "url": "https://go.dev/talks/2012/splash.article"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,162 @@
+== model checks (expectations transcribed from the specifications) ==
+PASS layout[sysv] {double; long long}
+PASS layout[sysv] {char; __int128}
+PASS layout[sysv] packed {char; long long}
+PASS layout[sysv] {char; char; char}
+PASS layout[win64] {double; long long}
+PASS layout[win64] {char; __int128}
+PASS layout[win64] packed {char; long long}
+PASS layout[win64] {char; char; char}
+PASS layout[aapcs64] {double; long long}
+PASS layout[aapcs64] {char; __int128}
+PASS layout[aapcs64] packed {char; long long}
+PASS layout[aapcs64] {char; char; char}
+PASS layout[sysv] long / long double
+PASS layout[win64] long / long double
+PASS layout[aapcs64] long / long double
+PASS bitfield[sysv] BF1
+PASS bitfield[ms] BF1
+PASS bitfield[sysv] BF2
+PASS bitfield[ms] BF2
+PASS bitfield[sysv] BF3
+PASS bitfield[ms] BF3
+PASS bitfield[sysv] BF4
+PASS bitfield[ms] BF4
+PASS sysv classify {double; long long}
+PASS sysv classify {float x4}
+PASS sysv classify {double x4}
+PASS sysv classify {long long x3}
+PASS sysv classify {int; float}
+PASS sysv classify __int128
+PASS sysv classify __float128
+PASS sysv classify long double
+PASS sysv classify {long double}
+PASS sysv classify packed {char; long long}
+PASS sysv classify {char; __int128}
+PASS sysv classify empty struct
+PASS sysv classify __m256
+PASS sysv psABI worked example
+PASS sysv (char, i128, i128, i128, long long)
+PASS sysv (double x8, {double; long long}, long long)
+PASS sysv (long double) / ({long double})
+PASS sysv (empty, int)
+PASS sysv (int x7, i128): stack alignment
+PASS sysv returns
+PASS sysv sret consumes rdi
+PASS win64 doc example 1
+PASS win64 doc example 2
+PASS win64 doc example 3
+PASS win64 ({double; long long}, double, {ll x3}, int, i128, {int; float})
+PASS win64 {char x3} is not 1, 2, 4 or 8 bytes
+PASS win64 variadic double is duplicated
+PASS win64 returns
+PASS win64 sret shifts arguments
+PASS aapcs64 HFA detection
+PASS aapcs64 ({float x4}) / ({double x4})
+PASS aapcs64 ({double; long long}) / ({int; float})
+PASS aapcs64 ({long long x3}) by reference
+PASS aapcs64 (int, __int128): even register rule
+PASS darwin  (int, __int128): no even register rule
+PASS aapcs64 (int, {__int128})
+PASS aapcs64 (int x7, __int128, int)
+PASS aapcs64 (double x6, {double x4}, double)
+PASS aapcs64 (long double) is binary128 in v0
+PASS aapcs64 (int x8, int, int): 8-byte stack slots
+PASS darwin  (int x8, int, int): natural-size slots
+PASS darwin  variadic arguments all on the stack
+PASS aapcs64 returns
+PASS sysv va_list transitions
+PASS sysv va_list: struct needs both classes or neither
+PASS sysv default argument promotions
+PASS aapcs64 va_list transitions
+PASS promotion: ~(unsigned char)0xFF
+PASS promotion: -1 < 1u
+PASS promotion: -1L < 1u flips with the data model
+PASS promotion: unsigned short difference is negative
+PASS promotion: unsigned int difference is not
+PASS promotion: (unsigned short)0xFFFF + 1
+PASS promotion: 0xFFFFFFFFu + 1
+PASS promotion: (char)0xFF == 0xFF flips with char signedness
+PASS promotion: unsigned short product overflows int
+PASS promotion: unsigned int product wraps
+model: 80/80 checks passed
+
+== divergence matrix: one argument / return value of each type ==
+type                   SysV AMD64 arg   ret              Win64 arg  ret              AAPCS64 arg   ret
+{double; long long}    xmm0+rdi         xmm0+rax         &rcx       sret(rcx)->rax   x0+x1         x0+x1
+{float x4}             xmm0+xmm1        xmm0+xmm1        &rcx       sret(rcx)->rax   v0+v1+v2+v3   v0+v1+v2+v3
+{double x4}            stack@0          sret(rdi)->rax   &rcx       sret(rcx)->rax   v0+v1+v2+v3   v0+v1+v2+v3
+{long long x3}         stack@0          sret(rdi)->rax   &rcx       sret(rcx)->rax   &x0           indirect(x8)
+{int; float}           rdi              rax              rcx        rax              x0            x0
+__int128               rdi+rsi          rax+rdx          &rcx       xmm0             x0+x1         x0+x1
+long double            stack@0          st0              xmm0       xmm0             v0            v0
+{char; char; char}     rdi              rax              &rcx       sret(rcx)->rax   x0            x0
+
+== integer conversion hazards by data model ==
+expression                                               LP64 signed-char    LLP64 signed-char   LP64 unsigned-char
+~(unsigned char)0xFF                                                 -256                 -256                 -256
+(unsigned char)~(unsigned char)0xFF                                     0                    0                    0
+-1 < 1u                                                                 0                    0                    0
+-1L < 1u                                                                1                    0                    1
+-1LL < 1u                                                               1                    1                    1
+((unsigned short)1 - (unsigned short)2) < 0                             1                    1                    1
+(1u - 2u) < 0                                                           0                    0                    0
+(unsigned short)0xFFFF + 1                                          65536                65536                65536
+0xFFFFFFFFu + 1                                                         0                    0                    0
+(char)0xFF == 0xFF                                                      0                    0                    1
+(char)0xFF < 0                                                          1                    1                    0
+(unsigned short)0xFFFF * (unsigned short)0xFFFF                        UB                   UB                   UB
+0xFFFFu * 0xFFFFu                                              4294836225           4294836225           4294836225
+
+== compiler cross-check ==
+compiler: cc (Debian 15.2.0-14) 15.2.0
+PASS sysv args a_dl: xmm0+rdi
+PASS sysv args a_f4: xmm0+xmm1
+PASS sysv args a_d4: stack@0
+PASS sysv args a_l3: stack@0
+PASS sysv args a_if: rdi
+PASS sysv args a_i128x3: rdi rsi+rdx rcx+r8 stack@0 r9
+PASS sysv args a_sse_full: xmm0 xmm1 xmm2 xmm3 xmm4 xmm5 xmm6 xmm7 stack@0 rdi
+PASS sysv args a_ld: stack@0 rdi
+PASS sysv args a_sld: stack@0 rdi
+PASS sysv args a_pk: stack@0 rdi
+PASS sysv args a_ci: stack@0 rdi
+PASS sysv args a_empty: ignored rdi
+PASS sysv args a_i7_i128: rdi rsi rdx rcx r8 r9 stack@0 stack@16
+PASS sysv args a_i1: rdi rsi+rdx
+PASS sysv args a_parm: rdi rsi rdx+xmm0 rcx r8 stack@0 xmm1 xmm2 r9 stack@16 stack@24
+PASS sysv args a_f128: xmm0 xmm1 rdi
+PASS sysv return r_dl: xmm0+rax
+PASS sysv return r_f4: xmm0+xmm1
+PASS sysv return r_l3: sret(rdi)->rax
+PASS sysv return r_i128: rax+rdx
+PASS sysv return r_ld: st0
+PASS sysv return r_sld: st0
+PASS sysv return r_i1: rax+rdx
+PASS sysv return r_d2: xmm0+xmm1
+PASS sysv return r_if: rax
+PASS sysv return r_d4: sret(rdi)->rax
+PASS ms_abi args m_mix: &rcx xmm1 &r8 r9 &stack@32 stack@40
+PASS ms_abi args m_ints: rcx rdx r8 r9 stack@32 stack@40
+PASS ms_abi args m_flts: xmm0 xmm1 xmm2 xmm3 stack@32 stack@40
+PASS ms_abi args m_c3: &rcx rdx &r8 &r9
+PASS ms_abi return mr_dl: sret(rcx)->rax
+PASS ms_abi return mr_if: rax
+PASS ms_abi return mr_l3: sret(rcx)->rax
+PASS ms_abi return mr_i128: xmm0
+PASS ms_abi return mr_d: xmm0
+PASS ms_abi return mr_ll: rax
+PASS sysv va_list gp_offset/fp_offset/overflow transitions (16 states)
+PASS sysv va_list mixed-class struct falls to overflow area when gp is exhausted
+PASS ms_abi va_list is a pointer advancing 8 bytes per argument (types of at most 8 bytes)
+PASS integer conversion expressions (12 evaluated, LP64, signed char)
+PASS sizeof/_Alignof of 16 specimen types
+PASS bit-field specimens: native rule and ms_struct rule
+PASS host char is signed (psABI: char is a signed byte)
+PASS -funsigned-char: (char)0xFF == 0xFF holds, as modelled for AAPCS64
+PASS -m32 (32-bit long): -1L < 1u is false, as modelled for LLP64
+NOTE ms_abi va_arg of a 16-byte struct advanced 16 bytes and did not return the passed value: INCONSISTENT with this compiler's own by-reference call sequence
+NOTE plain `int f:3` holding bit pattern 0b111 reads back as -1 (signed interpretation by this compiler)
+compiler: 45/45 checks passed
+
+RESULT: OK

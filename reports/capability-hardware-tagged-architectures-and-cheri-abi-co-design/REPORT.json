@@ -1,0 +1,164 @@
+{
+  "topics": [
+    "isa/cheri",
+    "systems/hardware-isolation",
+    "ffi/capability-abi",
+    "systems/history"
+  ],
+  "subjects": [
+    {
+      "name": "Levy, Capability-Based Computer Systems (author-hosted edition; landing page, Chapter 1, Chapter 2)",
+      "identity": {
+        "authors": "Henry M. Levy",
+        "publication": "Capability-Based Computer Systems, Digital Press, 1984",
+        "url": "https://homes.cs.washington.edu/~levy/capabook/",
+        "year": "1984"
+      }
+    },
+    {
+      "name": "Colwell, Gehringer, Jensen: Performance Effects of Architectural Complexity in the Intel 432",
+      "identity": {
+        "authors": "Robert P. Colwell, Edward F. Gehringer, E. Douglas Jensen",
+        "publication": "ACM Transactions on Computer Systems 6(3):296-339, August 1988",
+        "doi": "10.1145/45059.214411",
+        "year": "1988"
+      }
+    },
+    {
+      "name": "CHERI Instruction-Set Architecture (Version 9), UCAM-CL-TR-987, LaTeX source at release-9.0",
+      "identity": {
+        "authors": "Robert N. M. Watson, Peter G. Neumann, Jonathan Woodruff, Michael Roe, Hesham Almatary, Jonathan Anderson, John Baldwin, Graeme Barnes, David Chisnall, Jessica Clarke, Brooks Davis, Lee Eisen, Nathaniel Wesley Filardo, Franz A. Fuchs, Richard Grisenthwaite, Alexandre Joannou, Ben Laurie, A. Theodore Markettos, Simon W. Moore, Steven J. Murdoch, Kyndylan Nienhuis, Robert Norton, Alexander Richardson, Peter Rugg, Peter Sewell, Stacey Son, Hongyan Xia",
+        "publication": "University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-987, September 2023, 523 pages",
+        "doi": "10.48456/tr-987",
+        "repository": "CTSRD-CHERI/cheri-specification",
+        "revision": "b1570f87612584f31da7a962214068b7d71dd6a5",
+        "version": "release-9.0"
+      }
+    },
+    {
+      "name": "CHERI-RISC-V Sail model",
+      "identity": {
+        "repository": "CTSRD-CHERI/sail-cheri-riscv",
+        "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b"
+      }
+    },
+    {
+      "name": "RISC-V Sail model (submodule pinned by the CHERI-RISC-V Sail model)",
+      "identity": {
+        "repository": "rems-project/sail-riscv",
+        "revision": "b748a82361d12d20fa6da30d62b98a83ef8860d8"
+      }
+    },
+    {
+      "name": "cheri-compressed-cap C library and Sail-generated set-bounds test vectors",
+      "identity": {
+        "repository": "CTSRD-CHERI/cheri-compressed-cap",
+        "revision": "5b3dfd25ae49a62594477ba25be1371d29774cf9"
+      }
+    },
+    {
+      "name": "Woodruff et al.: CHERI Concentrate: Practical Compressed Capabilities",
+      "identity": {
+        "authors": "Jonathan Woodruff, Alexandre Joannou, Hongyan Xia, Anthony Fox, Robert M. Norton, Thomas Bauereiss, David Chisnall, Brooks Davis, Khilan Gudka, Nathaniel W. Filardo, A. Theodore Markettos, Michael Roe, Peter G. Neumann, Robert N. M. Watson, Simon W. Moore",
+        "publication": "IEEE Transactions on Computers 68(10):1455-1469, October 2019",
+        "doi": "10.1109/TC.2019.2914037",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Grisenthwaite et al.: The Arm Morello Evaluation Platform",
+      "identity": {
+        "authors": "Richard Grisenthwaite, Graeme Barnes, Robert N. M. Watson, Simon W. Moore, Peter Sewell, Jonathan Woodruff",
+        "publication": "IEEE Micro 43(3):50-57, May-June 2023",
+        "doi": "10.1109/MM.2023.3264676",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Davis et al.: CheriABI: Enforcing Valid Pointer Provenance and Minimizing Pointer Privilege in the POSIX C Run-time Environment",
+      "identity": {
+        "authors": "Brooks Davis, Robert N. M. Watson, Alexander Richardson, Peter G. Neumann, Simon W. Moore, John Baldwin, David Chisnall, Jessica Clarke, Nathaniel Wesley Filardo, Khilan Gudka, Alexandre Joannou, Ben Laurie, A. Theodore Markettos, J. Edward Maste, Alfredo Mazzinghi, Edward Tomasz Napierala, Robert M. Norton, Michael Roe, Peter Sewell, Stacey Son, Jonathan Woodruff",
+        "publication": "Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS '19), pages 379-393",
+        "doi": "10.1145/3297858.3304042",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "CheriBSD",
+      "identity": {
+        "repository": "CTSRD-CHERI/cheribsd",
+        "revision": "88f39900c32928d807dba245fba138808c666f34"
+      }
+    },
+    {
+      "name": "CHERI C/C++ Programming Guide (living edition source)",
+      "identity": {
+        "repository": "CTSRD-CHERI/cheri-c-programming",
+        "revision": "4fe4405fe9466ddb728f712deaba267f662fb268"
+      }
+    },
+    {
+      "name": "Zaliva et al.: Formal Mechanised Semantics of CHERI C: Capabilities, Undefined Behaviour, and Provenance",
+      "identity": {
+        "authors": "Vadim Zaliva, Kayvan Memarian, Ricardo Almeida, Jessica Clarke, Brooks Davis, Alexander Richardson, David Chisnall, Brian Campbell, Ian Stark, Robert N. M. Watson, Peter Sewell",
+        "publication": "Proceedings of the 29th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 1 (ASPLOS '24), pages 181-196",
+        "doi": "10.1145/3617232.3624859",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Filardo et al.: Cornucopia: Temporal Safety for CHERI Heaps",
+      "identity": {
+        "authors": "Nathaniel Wesley Filardo, Brett F. Gutstein, Jonathan Woodruff, Sam Ainsworth, Lucian Paul-Trifu, Brooks Davis, Hongyan Xia, Edward Tomasz Napierala, Alexander Richardson, John Baldwin, David Chisnall, Jessica Clarke, Khilan Gudka, Alexandre Joannou, A. Theodore Markettos, Alfredo Mazzinghi, Robert M. Norton, Michael Roe, Peter Sewell, Stacey Son, Timothy M. Jones, Simon W. Moore, Peter G. Neumann, Robert N. M. Watson",
+        "publication": "2020 IEEE Symposium on Security and Privacy (SP), pages 608-625",
+        "doi": "10.1109/SP40000.2020.00098",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Filardo et al.: Cornucopia Reloaded: Load Barriers for CHERI Heap Temporal Safety",
+      "identity": {
+        "authors": "Nathaniel Wesley Filardo, Brett F. Gutstein, Jonathan Woodruff, Jessica Clarke, Peter Rugg, Brooks Davis, Mark Johnston, Robert Norton, David Chisnall, Simon W. Moore, Peter G. Neumann, Robert N. M. Watson",
+        "publication": "Proceedings of the 29th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 2 (ASPLOS '24), pages 251-268",
+        "doi": "10.1145/3620665.3640416",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "CHERIoT ISA Sail model and architecture document source",
+      "identity": {
+        "repository": "CHERIoT-Platform/cheriot-sail",
+        "revision": "518813ec3e595f79930d9129eaded2521831cbe2"
+      }
+    },
+    {
+      "name": "CHERIoT RTOS",
+      "identity": {
+        "repository": "CHERIoT-Platform/cheriot-rtos",
+        "revision": "e2dad05078bd25ed6f1ab993e14f332aa8c20557"
+      }
+    },
+    {
+      "name": "Rust core library pointer-provenance documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "MiniRust specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Linux kernel documentation for MTE, pointer authentication, GCS, CET shadow stacks, and protection keys",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

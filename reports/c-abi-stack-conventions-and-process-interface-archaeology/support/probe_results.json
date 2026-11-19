@@ -1,0 +1,798 @@
+{
+  "compiler_cross_check": {
+    "attempted": true,
+    "compiler": "cc (Debian 15.2.0-14) 15.2.0",
+    "notes": [
+      "ms_abi va_arg of a 16-byte struct advanced 16 bytes and did not return the passed value: INCONSISTENT with this compiler's own by-reference call sequence",
+      "plain `int f:3` holding bit pattern 0b111 reads back as -1 (signed interpretation by this compiler)"
+    ],
+    "reason": null,
+    "results": [
+      [
+        "sysv args a_dl: xmm0+rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_f4: xmm0+xmm1",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_d4: stack@0",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_l3: stack@0",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_if: rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_i128x3: rdi rsi+rdx rcx+r8 stack@0 r9",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_sse_full: xmm0 xmm1 xmm2 xmm3 xmm4 xmm5 xmm6 xmm7 stack@0 rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_ld: stack@0 rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_sld: stack@0 rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_pk: stack@0 rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_ci: stack@0 rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_empty: ignored rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_i7_i128: rdi rsi rdx rcx r8 r9 stack@0 stack@16",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_i1: rdi rsi+rdx",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_parm: rdi rsi rdx+xmm0 rcx r8 stack@0 xmm1 xmm2 r9 stack@16 stack@24",
+        true,
+        ""
+      ],
+      [
+        "sysv args a_f128: xmm0 xmm1 rdi",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_dl: xmm0+rax",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_f4: xmm0+xmm1",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_l3: sret(rdi)->rax",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_i128: rax+rdx",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_ld: st0",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_sld: st0",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_i1: rax+rdx",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_d2: xmm0+xmm1",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_if: rax",
+        true,
+        ""
+      ],
+      [
+        "sysv return r_d4: sret(rdi)->rax",
+        true,
+        ""
+      ],
+      [
+        "ms_abi args m_mix: &rcx xmm1 &r8 r9 &stack@32 stack@40",
+        true,
+        ""
+      ],
+      [
+        "ms_abi args m_ints: rcx rdx r8 r9 stack@32 stack@40",
+        true,
+        ""
+      ],
+      [
+        "ms_abi args m_flts: xmm0 xmm1 xmm2 xmm3 stack@32 stack@40",
+        true,
+        ""
+      ],
+      [
+        "ms_abi args m_c3: &rcx rdx &r8 &r9",
+        true,
+        ""
+      ],
+      [
+        "ms_abi return mr_dl: sret(rcx)->rax",
+        true,
+        ""
+      ],
+      [
+        "ms_abi return mr_if: rax",
+        true,
+        ""
+      ],
+      [
+        "ms_abi return mr_l3: sret(rcx)->rax",
+        true,
+        ""
+      ],
+      [
+        "ms_abi return mr_i128: xmm0",
+        true,
+        ""
+      ],
+      [
+        "ms_abi return mr_d: xmm0",
+        true,
+        ""
+      ],
+      [
+        "ms_abi return mr_ll: rax",
+        true,
+        ""
+      ],
+      [
+        "sysv va_list gp_offset/fp_offset/overflow transitions (16 states)",
+        true,
+        "observed [(8, 48, 0), (16, 48, 0), (16, 64, 0), (24, 64, 0), (24, 64, 16), (32, 80, 16), (48, 80, 16), (48, 80, 24), (48, 96, 24), (48, 112, 24), (48, 128, 24), (48, 144, 24), (48, 160, 24), (48, 176, 24), (48, 176, 32)]"
+      ],
+      [
+        "sysv va_list mixed-class struct falls to overflow area when gp is exhausted",
+        true,
+        "observed [(48, 48, 0), (48, 48, 16), (48, 64, 16)]"
+      ],
+      [
+        "ms_abi va_list is a pointer advancing 8 bytes per argument (types of at most 8 bytes)",
+        true,
+        "observed [0, 8, 16, 24, 32]"
+      ],
+      [
+        "integer conversion expressions (12 evaluated, LP64, signed char)",
+        true,
+        ""
+      ],
+      [
+        "sizeof/_Alignof of 16 specimen types",
+        true,
+        ""
+      ],
+      [
+        "bit-field specimens: native rule and ms_struct rule",
+        true,
+        ""
+      ],
+      [
+        "host char is signed (psABI: char is a signed byte)",
+        true,
+        ""
+      ],
+      [
+        "-funsigned-char: (char)0xFF == 0xFF holds, as modelled for AAPCS64",
+        true,
+        ""
+      ],
+      [
+        "-m32 (32-bit long): -1L < 1u is false, as modelled for LLP64",
+        true,
+        ""
+      ]
+    ]
+  },
+  "divergence_matrix": [
+    {
+      "aapcs64_arg": "x0+x1",
+      "aapcs64_ret": "x0+x1",
+      "sysv_arg": "xmm0+rdi",
+      "sysv_ret": "xmm0+rax",
+      "type": "{double; long long}",
+      "win64_arg": "&rcx",
+      "win64_ret": "sret(rcx)->rax"
+    },
+    {
+      "aapcs64_arg": "v0+v1+v2+v3",
+      "aapcs64_ret": "v0+v1+v2+v3",
+      "sysv_arg": "xmm0+xmm1",
+      "sysv_ret": "xmm0+xmm1",
+      "type": "{float x4}",
+      "win64_arg": "&rcx",
+      "win64_ret": "sret(rcx)->rax"
+    },
+    {
+      "aapcs64_arg": "v0+v1+v2+v3",
+      "aapcs64_ret": "v0+v1+v2+v3",
+      "sysv_arg": "stack@0",
+      "sysv_ret": "sret(rdi)->rax",
+      "type": "{double x4}",
+      "win64_arg": "&rcx",
+      "win64_ret": "sret(rcx)->rax"
+    },
+    {
+      "aapcs64_arg": "&x0",
+      "aapcs64_ret": "indirect(x8)",
+      "sysv_arg": "stack@0",
+      "sysv_ret": "sret(rdi)->rax",
+      "type": "{long long x3}",
+      "win64_arg": "&rcx",
+      "win64_ret": "sret(rcx)->rax"
+    },
+    {
+      "aapcs64_arg": "x0",
+      "aapcs64_ret": "x0",
+      "sysv_arg": "rdi",
+      "sysv_ret": "rax",
+      "type": "{int; float}",
+      "win64_arg": "rcx",
+      "win64_ret": "rax"
+    },
+    {
+      "aapcs64_arg": "x0+x1",
+      "aapcs64_ret": "x0+x1",
+      "sysv_arg": "rdi+rsi",
+      "sysv_ret": "rax+rdx",
+      "type": "__int128",
+      "win64_arg": "&rcx",
+      "win64_ret": "xmm0"
+    },
+    {
+      "aapcs64_arg": "v0",
+      "aapcs64_ret": "v0",
+      "sysv_arg": "stack@0",
+      "sysv_ret": "st0",
+      "type": "long double",
+      "win64_arg": "xmm0",
+      "win64_ret": "xmm0"
+    },
+    {
+      "aapcs64_arg": "x0",
+      "aapcs64_ret": "x0",
+      "sysv_arg": "rdi",
+      "sysv_ret": "rax",
+      "type": "{char; char; char}",
+      "win64_arg": "&rcx",
+      "win64_ret": "sret(rcx)->rax"
+    }
+  ],
+  "hazards": {
+    "LLP64 signed-char (Microsoft x64)": [
+      [
+        "~(unsigned char)0xFF",
+        -256
+      ],
+      [
+        "(unsigned char)~(unsigned char)0xFF",
+        0
+      ],
+      [
+        "-1 < 1u",
+        0
+      ],
+      [
+        "-1L < 1u",
+        0
+      ],
+      [
+        "-1LL < 1u",
+        1
+      ],
+      [
+        "((unsigned short)1 - (unsigned short)2) < 0",
+        1
+      ],
+      [
+        "(1u - 2u) < 0",
+        0
+      ],
+      [
+        "(unsigned short)0xFFFF + 1",
+        65536
+      ],
+      [
+        "0xFFFFFFFFu + 1",
+        0
+      ],
+      [
+        "(char)0xFF == 0xFF",
+        0
+      ],
+      [
+        "(char)0xFF < 0",
+        1
+      ],
+      [
+        "(unsigned short)0xFFFF * (unsigned short)0xFFFF",
+        "UB"
+      ],
+      [
+        "0xFFFFu * 0xFFFFu",
+        4294836225
+      ]
+    ],
+    "LP64 signed-char (System V AMD64)": [
+      [
+        "~(unsigned char)0xFF",
+        -256
+      ],
+      [
+        "(unsigned char)~(unsigned char)0xFF",
+        0
+      ],
+      [
+        "-1 < 1u",
+        0
+      ],
+      [
+        "-1L < 1u",
+        1
+      ],
+      [
+        "-1LL < 1u",
+        1
+      ],
+      [
+        "((unsigned short)1 - (unsigned short)2) < 0",
+        1
+      ],
+      [
+        "(1u - 2u) < 0",
+        0
+      ],
+      [
+        "(unsigned short)0xFFFF + 1",
+        65536
+      ],
+      [
+        "0xFFFFFFFFu + 1",
+        0
+      ],
+      [
+        "(char)0xFF == 0xFF",
+        0
+      ],
+      [
+        "(char)0xFF < 0",
+        1
+      ],
+      [
+        "(unsigned short)0xFFFF * (unsigned short)0xFFFF",
+        "UB"
+      ],
+      [
+        "0xFFFFu * 0xFFFFu",
+        4294836225
+      ]
+    ],
+    "LP64 unsigned-char (AAPCS64)": [
+      [
+        "~(unsigned char)0xFF",
+        -256
+      ],
+      [
+        "(unsigned char)~(unsigned char)0xFF",
+        0
+      ],
+      [
+        "-1 < 1u",
+        0
+      ],
+      [
+        "-1L < 1u",
+        1
+      ],
+      [
+        "-1LL < 1u",
+        1
+      ],
+      [
+        "((unsigned short)1 - (unsigned short)2) < 0",
+        1
+      ],
+      [
+        "(1u - 2u) < 0",
+        0
+      ],
+      [
+        "(unsigned short)0xFFFF + 1",
+        65536
+      ],
+      [
+        "0xFFFFFFFFu + 1",
+        0
+      ],
+      [
+        "(char)0xFF == 0xFF",
+        1
+      ],
+      [
+        "(char)0xFF < 0",
+        0
+      ],
+      [
+        "(unsigned short)0xFFFF * (unsigned short)0xFFFF",
+        "UB"
+      ],
+      [
+        "0xFFFFu * 0xFFFFu",
+        4294836225
+      ]
+    ]
+  },
+  "model_checks": [
+    {
+      "label": "layout[sysv] {double; long long}",
+      "ok": true
+    },
+    {
+      "label": "layout[sysv] {char; __int128}",
+      "ok": true
+    },
+    {
+      "label": "layout[sysv] packed {char; long long}",
+      "ok": true
+    },
+    {
+      "label": "layout[sysv] {char; char; char}",
+      "ok": true
+    },
+    {
+      "label": "layout[win64] {double; long long}",
+      "ok": true
+    },
+    {
+      "label": "layout[win64] {char; __int128}",
+      "ok": true
+    },
+    {
+      "label": "layout[win64] packed {char; long long}",
+      "ok": true
+    },
+    {
+      "label": "layout[win64] {char; char; char}",
+      "ok": true
+    },
+    {
+      "label": "layout[aapcs64] {double; long long}",
+      "ok": true
+    },
+    {
+      "label": "layout[aapcs64] {char; __int128}",
+      "ok": true
+    },
+    {
+      "label": "layout[aapcs64] packed {char; long long}",
+      "ok": true
+    },
+    {
+      "label": "layout[aapcs64] {char; char; char}",
+      "ok": true
+    },
+    {
+      "label": "layout[sysv] long / long double",
+      "ok": true
+    },
+    {
+      "label": "layout[win64] long / long double",
+      "ok": true
+    },
+    {
+      "label": "layout[aapcs64] long / long double",
+      "ok": true
+    },
+    {
+      "label": "bitfield[sysv] BF1",
+      "ok": true
+    },
+    {
+      "label": "bitfield[ms] BF1",
+      "ok": true
+    },
+    {
+      "label": "bitfield[sysv] BF2",
+      "ok": true
+    },
+    {
+      "label": "bitfield[ms] BF2",
+      "ok": true
+    },
+    {
+      "label": "bitfield[sysv] BF3",
+      "ok": true
+    },
+    {
+      "label": "bitfield[ms] BF3",
+      "ok": true
+    },
+    {
+      "label": "bitfield[sysv] BF4",
+      "ok": true
+    },
+    {
+      "label": "bitfield[ms] BF4",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {double; long long}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {float x4}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {double x4}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {long long x3}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {int; float}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify __int128",
+      "ok": true
+    },
+    {
+      "label": "sysv classify __float128",
+      "ok": true
+    },
+    {
+      "label": "sysv classify long double",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {long double}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify packed {char; long long}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify {char; __int128}",
+      "ok": true
+    },
+    {
+      "label": "sysv classify empty struct",
+      "ok": true
+    },
+    {
+      "label": "sysv classify __m256",
+      "ok": true
+    },
+    {
+      "label": "sysv psABI worked example",
+      "ok": true
+    },
+    {
+      "label": "sysv (char, i128, i128, i128, long long)",
+      "ok": true
+    },
+    {
+      "label": "sysv (double x8, {double; long long}, long long)",
+      "ok": true
+    },
+    {
+      "label": "sysv (long double) / ({long double})",
+      "ok": true
+    },
+    {
+      "label": "sysv (empty, int)",
+      "ok": true
+    },
+    {
+      "label": "sysv (int x7, i128): stack alignment",
+      "ok": true
+    },
+    {
+      "label": "sysv returns",
+      "ok": true
+    },
+    {
+      "label": "sysv sret consumes rdi",
+      "ok": true
+    },
+    {
+      "label": "win64 doc example 1",
+      "ok": true
+    },
+    {
+      "label": "win64 doc example 2",
+      "ok": true
+    },
+    {
+      "label": "win64 doc example 3",
+      "ok": true
+    },
+    {
+      "label": "win64 ({double; long long}, double, {ll x3}, int, i128, {int; float})",
+      "ok": true
+    },
+    {
+      "label": "win64 {char x3} is not 1, 2, 4 or 8 bytes",
+      "ok": true
+    },
+    {
+      "label": "win64 variadic double is duplicated",
+      "ok": true
+    },
+    {
+      "label": "win64 returns",
+      "ok": true
+    },
+    {
+      "label": "win64 sret shifts arguments",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 HFA detection",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 ({float x4}) / ({double x4})",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 ({double; long long}) / ({int; float})",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 ({long long x3}) by reference",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 (int, __int128): even register rule",
+      "ok": true
+    },
+    {
+      "label": "darwin  (int, __int128): no even register rule",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 (int, {__int128})",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 (int x7, __int128, int)",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 (double x6, {double x4}, double)",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 (long double) is binary128 in v0",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 (int x8, int, int): 8-byte stack slots",
+      "ok": true
+    },
+    {
+      "label": "darwin  (int x8, int, int): natural-size slots",
+      "ok": true
+    },
+    {
+      "label": "darwin  variadic arguments all on the stack",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 returns",
+      "ok": true
+    },
+    {
+      "label": "sysv va_list transitions",
+      "ok": true
+    },
+    {
+      "label": "sysv va_list: struct needs both classes or neither",
+      "ok": true
+    },
+    {
+      "label": "sysv default argument promotions",
+      "ok": true
+    },
+    {
+      "label": "aapcs64 va_list transitions",
+      "ok": true
+    },
+    {
+      "label": "promotion: ~(unsigned char)0xFF",
+      "ok": true
+    },
+    {
+      "label": "promotion: -1 < 1u",
+      "ok": true
+    },
+    {
+      "label": "promotion: -1L < 1u flips with the data model",
+      "ok": true
+    },
+    {
+      "label": "promotion: unsigned short difference is negative",
+      "ok": true
+    },
+    {
+      "label": "promotion: unsigned int difference is not",
+      "ok": true
+    },
+    {
+      "label": "promotion: (unsigned short)0xFFFF + 1",
+      "ok": true
+    },
+    {
+      "label": "promotion: 0xFFFFFFFFu + 1",
+      "ok": true
+    },
+    {
+      "label": "promotion: (char)0xFF == 0xFF flips with char signedness",
+      "ok": true
+    },
+    {
+      "label": "promotion: unsigned short product overflows int",
+      "ok": true
+    },
+    {
+      "label": "promotion: unsigned int product wraps",
+      "ok": true
+    }
+  ]
+}

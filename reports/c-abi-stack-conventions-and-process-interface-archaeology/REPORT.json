@@ -1,0 +1,150 @@
+{
+  "topics": [
+    "ffi",
+    "ffi/c-abi",
+    "compilers/abi",
+    "systems/history",
+    "pl/history"
+  ],
+  "subjects": [
+    {
+      "name": "Dennis M. Ritchie, \"The Development of the C Language\" (HOPL-II preprints, ACM SIGPLAN Notices 28(3), March 1993, pp. 201-208)",
+      "identity": {
+        "doi": "10.1145/155360.155580",
+        "author_reprint": "https://www.bell-labs.com/usr/dmr/www/chist.html"
+      }
+    },
+    {
+      "name": "System V ABI, AMD64 Architecture Processor Supplement (x86-64 psABI) LaTeX source",
+      "identity": {
+        "repository": "gitlab.com/x86-psABIs/x86-64-ABI",
+        "revision": "e1ce098331da5dbd66e1ffc74162380bcc213236",
+        "version": "1.0 (draft, version macro in x86-64-ABI/macros.tex)"
+      }
+    },
+    {
+      "name": "Arm ABI for the Arm Architecture: AAPCS64",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7",
+        "version": "2026Q3"
+      }
+    },
+    {
+      "name": "Microsoft C++ documentation: x64 ABI conventions and C bit-field layout",
+      "identity": {
+        "repository": "MicrosoftDocs/cpp-docs",
+        "revision": "807f0a38b59bddf9c727b7786e36e79cb5e8d00f"
+      }
+    },
+    {
+      "name": "ISO/IEC 9899:201x committee draft (C11 public draft)",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG14 N1570",
+        "date": "2011-04-12"
+      }
+    },
+    {
+      "name": "ISO/IEC 9899:2024 (en) working draft (first draft after C23)",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG14 N3220"
+      }
+    },
+    {
+      "name": "LLVM and Clang (ABI lowering for x86-64 and AArch64)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ffcd0a522aedc16a966e3efb9a97a336be8ddb57",
+        "version": "24.0 development tree"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc_abi and rustc_target::callconv)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545",
+        "version": "1.102.0 development tree"
+      }
+    },
+    {
+      "name": "libffi (x86-64 System V and AArch64 ports)",
+      "identity": {
+        "repository": "libffi/libffi",
+        "revision": "de7afe7aa9e8ab7ac36429428a7222caae1e7988",
+        "version": "3.8.1 development tree"
+      }
+    },
+    {
+      "name": "GCC 15.2.0 release sources (i386 back end, va_arg lowering)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+        "tag": "releases/gcc-15.2.0"
+      }
+    },
+    {
+      "name": "GCC 15.2.0 as built by Debian, the compiler executed by the probe",
+      "identity": {
+        "toolchain": "gcc (Debian 15.2.0-14) 15.2.0",
+        "host": "x86_64 Linux"
+      }
+    },
+    {
+      "name": "Swift ABI documentation (stability manifesto, calling convention summary, library evolution)",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "466f30162134b2c16b0f05c05d766cdd151236a5"
+      }
+    },
+    {
+      "name": "Go internal ABI specification and runtime (cgo calls, goroutine stacks)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    },
+    {
+      "name": "Go release notes (1.3 contiguous stacks, 1.17 register ABI)",
+      "identity": {
+        "repository": "golang/website",
+        "revision": "0eef789c9f9a7cc074eab1b3fb2d96baea282546"
+      }
+    },
+    {
+      "name": "Itanium C++ ABI: Exception Handling",
+      "identity": {
+        "repository": "itanium-cxx-abi/cxx-abi",
+        "revision": "fae5e46c86147a457a057c6372fa95ec38209fe8"
+      }
+    },
+    {
+      "name": "WebAssembly Component Model: Canonical ABI explainer",
+      "identity": {
+        "repository": "WebAssembly/component-model",
+        "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+      }
+    },
+    {
+      "name": "Rust blog: \"Changes to u128/i128 layout in 1.77 and 1.78\" (2024-03-30)",
+      "identity": {
+        "repository": "rust-lang/blog.rust-lang.org",
+        "revision": "5b42e9f522217dd60b9f2258b10c98f6601b7cc2"
+      }
+    },
+    {
+      "name": "Rust RFC 230: Remove runtime",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "JEP 444: Virtual Threads (JDK 21)",
+      "identity": {
+        "document": "https://openjdk.org/jeps/444",
+        "updated": "2025/10/30 21:01"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

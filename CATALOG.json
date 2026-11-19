@@ -7806,6 +7806,156 @@
         "verification/translation-validation"
       ]
     },
+    "c-abi-stack-conventions-and-process-interface-archaeology": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "author_reprint": "https://www.bell-labs.com/usr/dmr/www/chist.html",
+            "doi": "10.1145/155360.155580"
+          },
+          "name": "Dennis M. Ritchie, \"The Development of the C Language\" (HOPL-II preprints, ACM SIGPLAN Notices 28(3), March 1993, pp. 201-208)"
+        },
+        {
+          "identity": {
+            "repository": "gitlab.com/x86-psABIs/x86-64-ABI",
+            "revision": "e1ce098331da5dbd66e1ffc74162380bcc213236",
+            "version": "1.0 (draft, version macro in x86-64-ABI/macros.tex)"
+          },
+          "name": "System V ABI, AMD64 Architecture Processor Supplement (x86-64 psABI) LaTeX source"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7",
+            "version": "2026Q3"
+          },
+          "name": "Arm ABI for the Arm Architecture: AAPCS64"
+        },
+        {
+          "identity": {
+            "repository": "MicrosoftDocs/cpp-docs",
+            "revision": "807f0a38b59bddf9c727b7786e36e79cb5e8d00f"
+          },
+          "name": "Microsoft C++ documentation: x64 ABI conventions and C bit-field layout"
+        },
+        {
+          "identity": {
+            "date": "2011-04-12",
+            "document": "ISO/IEC JTC1/SC22/WG14 N1570"
+          },
+          "name": "ISO/IEC 9899:201x committee draft (C11 public draft)"
+        },
+        {
+          "identity": {
+            "document": "ISO/IEC JTC1/SC22/WG14 N3220"
+          },
+          "name": "ISO/IEC 9899:2024 (en) working draft (first draft after C23)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ffcd0a522aedc16a966e3efb9a97a336be8ddb57",
+            "version": "24.0 development tree"
+          },
+          "name": "LLVM and Clang (ABI lowering for x86-64 and AArch64)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545",
+            "version": "1.102.0 development tree"
+          },
+          "name": "Rust compiler (rustc_abi and rustc_target::callconv)"
+        },
+        {
+          "identity": {
+            "repository": "libffi/libffi",
+            "revision": "de7afe7aa9e8ab7ac36429428a7222caae1e7988",
+            "version": "3.8.1 development tree"
+          },
+          "name": "libffi (x86-64 System V and AArch64 ports)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "tag": "releases/gcc-15.2.0"
+          },
+          "name": "GCC 15.2.0 release sources (i386 back end, va_arg lowering)"
+        },
+        {
+          "identity": {
+            "host": "x86_64 Linux",
+            "toolchain": "gcc (Debian 15.2.0-14) 15.2.0"
+          },
+          "name": "GCC 15.2.0 as built by Debian, the compiler executed by the probe"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "466f30162134b2c16b0f05c05d766cdd151236a5"
+          },
+          "name": "Swift ABI documentation (stability manifesto, calling convention summary, library evolution)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go internal ABI specification and runtime (cgo calls, goroutine stacks)"
+        },
+        {
+          "identity": {
+            "repository": "golang/website",
+            "revision": "0eef789c9f9a7cc074eab1b3fb2d96baea282546"
+          },
+          "name": "Go release notes (1.3 contiguous stacks, 1.17 register ABI)"
+        },
+        {
+          "identity": {
+            "repository": "itanium-cxx-abi/cxx-abi",
+            "revision": "fae5e46c86147a457a057c6372fa95ec38209fe8"
+          },
+          "name": "Itanium C++ ABI: Exception Handling"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model: Canonical ABI explainer"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/blog.rust-lang.org",
+            "revision": "5b42e9f522217dd60b9f2258b10c98f6601b7cc2"
+          },
+          "name": "Rust blog: \"Changes to u128/i128 layout in 1.77 and 1.78\" (2024-03-30)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 230: Remove runtime"
+        },
+        {
+          "identity": {
+            "document": "https://openjdk.org/jeps/444",
+            "updated": "2025/10/30 21:01"
+          },
+          "name": "JEP 444: Virtual Threads (JDK 21)"
+        }
+      ],
+      "topics": [
+        "ffi",
+        "ffi/c-abi",
+        "compilers/abi",
+        "systems/history",
+        "pl/history"
+      ]
+    },
     "call-and-unwind-landing-pad-machine-outliner-with-lsda-synthesis": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -7888,6 +8038,170 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "capability-hardware-tagged-architectures-and-cheri-abi-co-design": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Henry M. Levy",
+            "publication": "Capability-Based Computer Systems, Digital Press, 1984",
+            "url": "https://homes.cs.washington.edu/~levy/capabook/",
+            "year": "1984"
+          },
+          "name": "Levy, Capability-Based Computer Systems (author-hosted edition; landing page, Chapter 1, Chapter 2)"
+        },
+        {
+          "identity": {
+            "authors": "Robert P. Colwell, Edward F. Gehringer, E. Douglas Jensen",
+            "doi": "10.1145/45059.214411",
+            "publication": "ACM Transactions on Computer Systems 6(3):296-339, August 1988",
+            "year": "1988"
+          },
+          "name": "Colwell, Gehringer, Jensen: Performance Effects of Architectural Complexity in the Intel 432"
+        },
+        {
+          "identity": {
+            "authors": "Robert N. M. Watson, Peter G. Neumann, Jonathan Woodruff, Michael Roe, Hesham Almatary, Jonathan Anderson, John Baldwin, Graeme Barnes, David Chisnall, Jessica Clarke, Brooks Davis, Lee Eisen, Nathaniel Wesley Filardo, Franz A. Fuchs, Richard Grisenthwaite, Alexandre Joannou, Ben Laurie, A. Theodore Markettos, Simon W. Moore, Steven J. Murdoch, Kyndylan Nienhuis, Robert Norton, Alexander Richardson, Peter Rugg, Peter Sewell, Stacey Son, Hongyan Xia",
+            "doi": "10.48456/tr-987",
+            "publication": "University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-987, September 2023, 523 pages",
+            "repository": "CTSRD-CHERI/cheri-specification",
+            "revision": "b1570f87612584f31da7a962214068b7d71dd6a5",
+            "version": "release-9.0"
+          },
+          "name": "CHERI Instruction-Set Architecture (Version 9), UCAM-CL-TR-987, LaTeX source at release-9.0"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/sail-cheri-riscv",
+            "revision": "cf36cfd4fca0bd10a5906651bf48b9674ccd0a2b"
+          },
+          "name": "CHERI-RISC-V Sail model"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-riscv",
+            "revision": "b748a82361d12d20fa6da30d62b98a83ef8860d8"
+          },
+          "name": "RISC-V Sail model (submodule pinned by the CHERI-RISC-V Sail model)"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/cheri-compressed-cap",
+            "revision": "5b3dfd25ae49a62594477ba25be1371d29774cf9"
+          },
+          "name": "cheri-compressed-cap C library and Sail-generated set-bounds test vectors"
+        },
+        {
+          "identity": {
+            "authors": "Jonathan Woodruff, Alexandre Joannou, Hongyan Xia, Anthony Fox, Robert M. Norton, Thomas Bauereiss, David Chisnall, Brooks Davis, Khilan Gudka, Nathaniel W. Filardo, A. Theodore Markettos, Michael Roe, Peter G. Neumann, Robert N. M. Watson, Simon W. Moore",
+            "doi": "10.1109/TC.2019.2914037",
+            "publication": "IEEE Transactions on Computers 68(10):1455-1469, October 2019",
+            "year": "2019"
+          },
+          "name": "Woodruff et al.: CHERI Concentrate: Practical Compressed Capabilities"
+        },
+        {
+          "identity": {
+            "authors": "Richard Grisenthwaite, Graeme Barnes, Robert N. M. Watson, Simon W. Moore, Peter Sewell, Jonathan Woodruff",
+            "doi": "10.1109/MM.2023.3264676",
+            "publication": "IEEE Micro 43(3):50-57, May-June 2023",
+            "year": "2023"
+          },
+          "name": "Grisenthwaite et al.: The Arm Morello Evaluation Platform"
+        },
+        {
+          "identity": {
+            "authors": "Brooks Davis, Robert N. M. Watson, Alexander Richardson, Peter G. Neumann, Simon W. Moore, John Baldwin, David Chisnall, Jessica Clarke, Nathaniel Wesley Filardo, Khilan Gudka, Alexandre Joannou, Ben Laurie, A. Theodore Markettos, J. Edward Maste, Alfredo Mazzinghi, Edward Tomasz Napierala, Robert M. Norton, Michael Roe, Peter Sewell, Stacey Son, Jonathan Woodruff",
+            "doi": "10.1145/3297858.3304042",
+            "publication": "Proceedings of the 24th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS '19), pages 379-393",
+            "year": "2019"
+          },
+          "name": "Davis et al.: CheriABI: Enforcing Valid Pointer Provenance and Minimizing Pointer Privilege in the POSIX C Run-time Environment"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/cheribsd",
+            "revision": "88f39900c32928d807dba245fba138808c666f34"
+          },
+          "name": "CheriBSD"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/cheri-c-programming",
+            "revision": "4fe4405fe9466ddb728f712deaba267f662fb268"
+          },
+          "name": "CHERI C/C++ Programming Guide (living edition source)"
+        },
+        {
+          "identity": {
+            "authors": "Vadim Zaliva, Kayvan Memarian, Ricardo Almeida, Jessica Clarke, Brooks Davis, Alexander Richardson, David Chisnall, Brian Campbell, Ian Stark, Robert N. M. Watson, Peter Sewell",
+            "doi": "10.1145/3617232.3624859",
+            "publication": "Proceedings of the 29th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 1 (ASPLOS '24), pages 181-196",
+            "year": "2024"
+          },
+          "name": "Zaliva et al.: Formal Mechanised Semantics of CHERI C: Capabilities, Undefined Behaviour, and Provenance"
+        },
+        {
+          "identity": {
+            "authors": "Nathaniel Wesley Filardo, Brett F. Gutstein, Jonathan Woodruff, Sam Ainsworth, Lucian Paul-Trifu, Brooks Davis, Hongyan Xia, Edward Tomasz Napierala, Alexander Richardson, John Baldwin, David Chisnall, Jessica Clarke, Khilan Gudka, Alexandre Joannou, A. Theodore Markettos, Alfredo Mazzinghi, Robert M. Norton, Michael Roe, Peter Sewell, Stacey Son, Timothy M. Jones, Simon W. Moore, Peter G. Neumann, Robert N. M. Watson",
+            "doi": "10.1109/SP40000.2020.00098",
+            "publication": "2020 IEEE Symposium on Security and Privacy (SP), pages 608-625",
+            "year": "2020"
+          },
+          "name": "Filardo et al.: Cornucopia: Temporal Safety for CHERI Heaps"
+        },
+        {
+          "identity": {
+            "authors": "Nathaniel Wesley Filardo, Brett F. Gutstein, Jonathan Woodruff, Jessica Clarke, Peter Rugg, Brooks Davis, Mark Johnston, Robert Norton, David Chisnall, Simon W. Moore, Peter G. Neumann, Robert N. M. Watson",
+            "doi": "10.1145/3620665.3640416",
+            "publication": "Proceedings of the 29th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 2 (ASPLOS '24), pages 251-268",
+            "year": "2024"
+          },
+          "name": "Filardo et al.: Cornucopia Reloaded: Load Barriers for CHERI Heap Temporal Safety"
+        },
+        {
+          "identity": {
+            "repository": "CHERIoT-Platform/cheriot-sail",
+            "revision": "518813ec3e595f79930d9129eaded2521831cbe2"
+          },
+          "name": "CHERIoT ISA Sail model and architecture document source"
+        },
+        {
+          "identity": {
+            "repository": "CHERIoT-Platform/cheriot-rtos",
+            "revision": "e2dad05078bd25ed6f1ab993e14f332aa8c20557"
+          },
+          "name": "CHERIoT RTOS"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust core library pointer-provenance documentation"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel documentation for MTE, pointer authentication, GCS, CET shadow stacks, and protection keys"
+        }
+      ],
+      "topics": [
+        "isa/cheri",
+        "systems/hardware-isolation",
+        "ffi/capability-abi",
+        "systems/history"
       ]
     },
     "cargo-profile-and-compiler-flag-census-in-the-wild": {
@@ -13790,6 +14104,125 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "image-based-and-single-language-systems-smalltalk-lisp-oberon": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Adele Goldberg and David Robson",
+            "isbn": "978-0201113716",
+            "publisher": "Addison-Wesley",
+            "year": "1983"
+          },
+          "name": "Smalltalk-80: The Language and its Implementation (Blue Book)"
+        },
+        {
+          "identity": {
+            "repository": "OpenSmalltalk/opensmalltalk-vm",
+            "revision": "a0377cd04251fff81a613fe42e47cb2acda222f2",
+            "vmmaker_source": "VMMaker.oscog-eem.3939"
+          },
+          "name": "OpenSmalltalk Cog/Spur Virtual Machine"
+        },
+        {
+          "identity": {
+            "authors": "Eliot Miranda and Cl\u00e9ment B\u00e9ra",
+            "doi": "10.1145/2754169.2754186",
+            "venue": "Proceedings of the 2015 ACM SIGPLAN International Symposium on Memory Management (ISMM '15)",
+            "year": "2015"
+          },
+          "name": "A Partial Read Barrier for Efficient Support of Live Object-Oriented Programming"
+        },
+        {
+          "identity": {
+            "repository": "pharo-project/pharo",
+            "revision": "c37e8dda7d7d76a5c92a7265ebbe77015193663e"
+          },
+          "name": "Pharo Live Smalltalk Environment (Shift-ClassBuilder and UnifiedFFI)"
+        },
+        {
+          "identity": {
+            "authors": "David A. Moon",
+            "doi": "10.1109/MC.1987.1663443",
+            "venue": "IEEE Computer, Vol. 20, No. 1, pp. 43-52",
+            "year": "1987"
+          },
+          "name": "Symbolics Architecture"
+        },
+        {
+          "identity": {
+            "authors": "David A. Moon",
+            "doi": "10.1145/800055.802040",
+            "venue": "Proceedings of the 1984 ACM Symposium on LISP and Functional Programming (LFP '84), pp. 235-246",
+            "year": "1984"
+          },
+          "name": "Garbage Collection in a Large Lisp System"
+        },
+        {
+          "identity": {
+            "authors": "Janet H. Walker, David A. Moon, Daniel L. Weinreb, and Mike McMahon",
+            "doi": "10.1109/MS.1987.232087",
+            "venue": "IEEE Software, Vol. 4, No. 6, pp. 36-45",
+            "year": "1987"
+          },
+          "name": "The Symbolics Genera Programming Environment"
+        },
+        {
+          "identity": {
+            "authors": "Daniel C. Swinehart, Polle T. Zellweger, Richard J. Beach, and Robert B. Hagmann",
+            "doi": "10.1145/6465.6466",
+            "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 8, No. 4, pp. 419-490",
+            "year": "1986"
+          },
+          "name": "A Structural View of the Cedar Programming Environment"
+        },
+        {
+          "identity": {
+            "authors": "Niklaus Wirth and J\u00fcrg Gutknecht",
+            "doi": "10.1002/spe.4380190905",
+            "venue": "Software: Practice and Experience 19(9):857-893 (1989); Addison-Wesley ISBN 978-0201544282 (1992); ETH Zurich Revised Edition (2013)"
+          },
+          "name": "The Oberon System and Project Oberon (1989/1992/2013)"
+        },
+        {
+          "identity": {
+            "repository": "Spirit-of-Oberon/ProjectOberon2013",
+            "revision": "72966ea608613dad76f5afdd57578c7e53741bd3"
+          },
+          "name": "Project Oberon 2013 RISC-5 Source Tree"
+        },
+        {
+          "identity": {
+            "authors": "R\u00e9gis Bernard Joseph Crelier",
+            "venue": "Dissertation ETH Nr. 10650, ETH Zurich",
+            "year": "1994"
+          },
+          "name": "Separate Compilation and Module Extension (ETH Oberon Per-Export Fingerprints)"
+        },
+        {
+          "identity": {
+            "repository": "unisonweb/unison",
+            "revision": "b5c5188d99f31820d0cc012f194948d2876c14e7"
+          },
+          "name": "Unison Content-Addressed Programming Language and Codebase"
+        },
+        {
+          "identity": {
+            "authors": "Richard P. Gabriel",
+            "url": "https://www.dreamsongs.com/RiseOfWorseIsBetter.html",
+            "venue": "AI Expert, Vol. 6, No. 6, pp. 30-35 (1991; originally distributed 1989)"
+          },
+          "name": "Lisp: Good News, Bad News, How to Win Big (The Rise of Worse is Better)"
+        }
+      ],
+      "topics": [
+        "pl/history",
+        "runtimes/image-based",
+        "systems/history",
+        "tooling/live-environments",
+        "compilers/modules"
       ]
     },
     "in-kernel-side-channel-certificates-and-speculative-ct-2018-2026": {
@@ -20479,6 +20912,158 @@
         "verification/compiler-verification"
       ]
     },
+    "object-files-linkers-loaders-and-separate-compilation-history": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "xinuos/gabi",
+            "revision": "4ff978d04d78cbd308705a782f34a189118d11cd",
+            "url": "https://gabi.xinuos.com/v42/index.html",
+            "version": "4.2"
+          },
+          "name": "System V Application Binary Interface \u2014 ELF Object File Format (gABI v4.2)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ffcd0a522aedc16a966e3efb9a97a336be8ddb57"
+          },
+          "name": "LLVM Project (lld ELF linker, ThinLTO, and Clang driver)"
+        },
+        {
+          "identity": {
+            "repository": "bminor/glibc",
+            "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+          },
+          "name": "GNU C Library (glibc) ELF dynamic linker"
+        },
+        {
+          "identity": {
+            "repository": "apple-oss-distributions/dyld",
+            "revision": "fd8d0c4d52320ebf64db34f3cb280310d905c5ae",
+            "version": "dyld-1378"
+          },
+          "name": "Apple dyld Mach-O dynamic linker"
+        },
+        {
+          "identity": {
+            "path": "desktop-src/Debug/pe-format.md",
+            "repository": "MicrosoftDocs/win32",
+            "revision": "ca8274decead49403d70ceeed4af8d4ca74eaf11"
+          },
+          "name": "Microsoft Portable Executable (PE) and COFF Specification"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/component-model",
+            "revision": "585526aa1f2c7f76f07557d16e265dede38b3acb"
+          },
+          "name": "WebAssembly Component Model Specification"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "466f30162134b2c16b0f05c05d766cdd151236a5"
+          },
+          "name": "Swift Library Evolution and Type Metadata ABI Documentation"
+        },
+        {
+          "identity": {
+            "authors": "Robert C. Daley and Jack B. Dennis",
+            "doi": "10.1145/363095.363139",
+            "title": "Virtual Memory, Processes, and Sharing in MULTICS",
+            "venue": "Communications of the ACM, Vol. 11, No. 5, pp. 306-312",
+            "year": "1968"
+          },
+          "name": "Daley & Dennis (1968) \u2014 Virtual Memory, Processes, and Sharing in MULTICS"
+        },
+        {
+          "identity": {
+            "authors": "Daniel C. Swinehart, Polle T. Zellweger, Richard J. Beach, and Robert B. Hagmann",
+            "doi": "10.1145/6465.6469",
+            "title": "A Structural View of the Cedar Programming Environment",
+            "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 8, No. 4, pp. 419-490",
+            "year": "1986"
+          },
+          "name": "Swinehart, Zellweger, Beach & Hagmann (1986) \u2014 Cedar Programming Environment"
+        },
+        {
+          "identity": {
+            "authors": "Niklaus Wirth and J\u00fcrg Gutknecht",
+            "edition": "1992 (Addison-Wesley, ISBN 0-201-54428-8) and Revised Edition 2013 (ORB.Mod / Modules.Mod)",
+            "title": "Project Oberon: The Design of an Operating System, a Compiler, and a Computer",
+            "url": "https://people.inf.ethz.ch/wirth/ProjectOberon/"
+          },
+          "name": "Wirth & Gutknecht (1992 / 2013) \u2014 Project Oberon"
+        },
+        {
+          "identity": {
+            "authors": "R\u00e9gis Crelier",
+            "doi": "10.3929/ethz-a-000945227",
+            "title": "Separate Compilation and Module Extension",
+            "venue": "ETH Zurich Dissertation No. 10650",
+            "year": "1994"
+          },
+          "name": "Crelier (1994) \u2014 Separate Compilation and Module Extension"
+        },
+        {
+          "identity": {
+            "authors": "Dennis M. Ritchie",
+            "doi": "10.1145/155360.155580",
+            "title": "The Development of the C Language",
+            "venue": "ACM SIGPLAN Notices, Vol. 28, No. 3 (HOPL-II), pp. 201-208",
+            "year": "1993"
+          },
+          "name": "Ritchie (1993) \u2014 The Development of the C Language"
+        },
+        {
+          "identity": {
+            "authors": "Bjarne Stroustrup",
+            "title": "Type-safe Linkage for C++",
+            "url": "https://www.usenix.org/publications/compsystems/1988/fall_stroustrup.pdf",
+            "venue": "Computing Systems, Vol. 1, No. 4, pp. 371-403; Proc. USENIX C++ Conference",
+            "year": "1988"
+          },
+          "name": "Stroustrup (1988) \u2014 Type-safe Linkage for C++"
+        },
+        {
+          "identity": {
+            "authors": "Teresa Johnson, Mehdi Amini, and Xinliang David Li",
+            "doi": "10.1109/CGO.2017.7863733",
+            "title": "ThinLTO: Scalable and Incremental LTO",
+            "venue": "IEEE/ACM International Symposium on Code Generation and Optimization (CGO 2017), pp. 111-121",
+            "year": "2017"
+          },
+          "name": "Johnson, Amini & Li (2017) \u2014 ThinLTO: Scalable and Incremental LTO"
+        },
+        {
+          "identity": {
+            "authors": "Robert A. Gingell, Meng Lee, Xuong T. Dang, and Mary S. Weeks",
+            "title": "Shared Libraries in SunOS",
+            "venue": "Proceedings of the USENIX Summer 1987 Technical Conference, pp. 131-147",
+            "year": "1987"
+          },
+          "name": "Gingell, Lee, Dang & Weeks (1987) \u2014 Shared Libraries in SunOS"
+        },
+        {
+          "identity": {
+            "authors": "Rob Pike",
+            "title": "Go at Google: Language Design in the Service of Software Engineering",
+            "url": "https://go.dev/talks/2012/splash.article",
+            "venue": "SPLASH 2012 Keynote",
+            "year": "2012"
+          },
+          "name": "Pike (2012) \u2014 Go at Google: Language Design in the Service of Software Engineering"
+        }
+      ],
+      "topics": [
+        "compilers/linking",
+        "runtimes/dynamic-linking",
+        "systems/object-formats",
+        "systems/history"
+      ]
+    },
     "observable-behavior-property-transfer-and-anneal-statement-forms": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -21402,6 +21987,196 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "posix-process-signals-fork-and-flat-address-space-contingencies": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "edition": "The Open Group Base Specifications Issue 8, HTML edition",
+            "standard": "IEEE Std 1003.1-2024",
+            "url": "https://pubs.opengroup.org/onlinepubs/9799919799/"
+          },
+          "name": "IEEE Std 1003.1-2024 (POSIX.1-2024), The Open Group Base Specifications Issue 8: fork/_Fork, pthread_atfork, posix_spawn, sigaction, XSH 2.4 Signal Concepts"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3317550.3321435",
+            "isbn": "978-1-4503-6727-1",
+            "venue": "Workshop on Hot Topics in Operating Systems (HotOS '19), May 13-15, 2019, Bertinoro, Italy"
+          },
+          "name": "Baumann, Appavoo, Krieger & Roscoe, A fork() in the road (HotOS '19)"
+        },
+        {
+          "identity": {
+            "url": "https://www.nokia.com/bell-labs/about/dennis-m-ritchie/hist.html",
+            "venue": "AT&T Bell Laboratories Technical Journal 63(6) Part 2, October 1984, pp. 1577-93; first presented at Language Design and Programming Methodology, Sydney, September 1979"
+          },
+          "name": "Ritchie, The Evolution of the Unix Time-sharing System"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/legacy/publications/compsystems/1995/sum_pike.pdf",
+            "venue": "Computing Systems 8(3), Summer 1995, pp. 221-254"
+          },
+          "name": "Pike, Presotto, Dorward, Flandrena, Thompson, Trickey & Winterbottom, Plan 9 from Bell Labs"
+        },
+        {
+          "identity": {
+            "repository": "plan9foundation/plan9",
+            "revision": "ed1a9c21e3297d7497a48053d33683375c75fbb4"
+          },
+          "name": "Plan 9 from Bell Labs, 4th edition source (fork(2), notify(2), libc.h, port/sysproc.c)"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/legacy/event/sec10/tech/full_papers/Watson.pdf",
+            "venue": "19th USENIX Security Symposium (USENIX Security 10), August 2010"
+          },
+          "name": "Watson, Anderson, Laurie & Kennaway, Capsicum: Practical Capabilities for UNIX"
+        },
+        {
+          "identity": {
+            "repository": "freebsd/freebsd-src",
+            "revision": "d1e14cba4a79c0b4fe7cff3c0afcc0ffb50f54b3"
+          },
+          "name": "FreeBSD Capsicum implementation (sys/kern/sys_capability.c, sys/kern/vfs_lookup.c, sys/sys/capsicum.h, cap_enter(2))"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1243418.1243424",
+            "venue": "ACM SIGOPS Operating Systems Review 41(2), April 2007, pp. 37-49"
+          },
+          "name": "Hunt & Larus, Singularity: Rethinking the Software Stack"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd",
+            "version": "7.4-rc3 development tree"
+          },
+          "name": "Linux kernel (kernel/fork.c, kernel/signal.c, arch/x86/kernel/signal.c, mm/mmap.c, mm/util.c, fs/namei.c, fs/exec.c, io_uring UAPI and ring types)"
+        },
+        {
+          "identity": {
+            "repository": "mkerrisk/man-pages",
+            "revision": "ae6b221882ce71ba82fcdbe02419a225111502f0"
+          },
+          "name": "Linux man-pages signal(7) (GitHub mirror, last updated 2021-09-01)"
+        },
+        {
+          "identity": {
+            "repository": "axboe/liburing",
+            "revision": "a10946dc51eeababc48ee10baf0d17489f647a80"
+          },
+          "name": "liburing manual pages (io_uring_enter(2), io_uring_setup(2))"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/WASI",
+            "revision": "281ba75fafcd50961ef55f9e52747afcc9b71ede",
+            "version": "v0.2.12"
+          },
+          "name": "WASI 0.2 (Preview 2) interface definitions: wasi:filesystem@0.2.12, wasi:cli@0.2.12, design principles and path-resolution notes"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/WASI",
+            "revision": "463701e0f6c575a5d24ae31c2ec1e0ebf09d28e1"
+          },
+          "name": "WASI default branch (wasi:filesystem@0.3.2)"
+        },
+        {
+          "identity": {
+            "repository": "fuchsia.googlesource.com/fuchsia",
+            "revision": "d953ee3f076256b292cd85e449124d655cc8bf43"
+          },
+          "name": "Fuchsia / Zircon kernel concept documentation and zircon/vdso/process.fidl"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go runtime and syscall packages (runtime/malloc.go, runtime/signal_unix.go, os/signal/doc.go, syscall/exec_linux.go, os/file_posix.go)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot and java.base (signals_posix.cpp, os_linux_x86.cpp, compressedOops.hpp, ProcessImpl_md.c, libjsig)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "6c9f2b691aaf0cf88cf2c3ba862f5de237a17344"
+          },
+          "name": "CPython (Python/pylifecycle.c, Modules/posixmodule.c, Doc/library/multiprocessing.rst)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "36f1fd30c75dc97c58a2350b6c7646206b30a0aa"
+          },
+          "name": "LLVM compiler-rt sanitizer runtimes (asan_mapping.h, asan_linux.cpp, tsan_platform.h, tsan_platform_linux.cpp)"
+        },
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 (include/v8-internal.h pointer-compression cage and sandbox constants)"
+        },
+        {
+          "identity": {
+            "repository": "bminor/glibc",
+            "revision": "04e750e75b73957cf1c791535a3f4319534a52fc",
+            "version": "2.42.9000 development tree"
+          },
+          "name": "GNU C Library (posix/fork.c, malloc/arena.c, sysdeps/unix/sysv/linux/spawni.c), GitHub mirror"
+        },
+        {
+          "identity": {
+            "repository": "openbsd/src",
+            "revision": "974c1b36016e2479cd10e81aa8a4266ae9284751"
+          },
+          "name": "OpenBSD (sys/sys/syscall_mi.h pin_check, pinsyscalls(2))"
+        },
+        {
+          "identity": {
+            "repository": "illumos/illumos-gate",
+            "revision": "21c9b825915a5d29ae49ee734ccef95e94d8aded"
+          },
+          "name": "illumos (fork(2), vfork(2), Intro(2), libc posix_spawn)"
+        },
+        {
+          "identity": {
+            "document": "Technical Q&A QA1118",
+            "revised": "2011-09-20",
+            "url": "https://developer.apple.com/library/archive/qa/qa1118/_index.html"
+          },
+          "name": "Apple Technical Q&A QA1118, Statically linked binaries on Mac OS X"
+        },
+        {
+          "identity": {
+            "url": "https://learn.microsoft.com/en-us/windows/win32/devnotes/calling-internal-apis"
+          },
+          "name": "Microsoft Learn, Calling Internal APIs (Winternl.h)"
+        },
+        {
+          "identity": {
+            "url": "https://www.dreamsongs.com/RiseOfWorseIsBetter.html"
+          },
+          "name": "Gabriel, The Rise of Worse is Better"
+        }
+      ],
+      "topics": [
+        "systems/os-interfaces",
+        "systems/history",
+        "runtimes/os-boundary",
+        "ffi/os-boundary"
       ]
     },
     "post-link-executable-validator-relocations-veneers-erratum-843419-and-gcs": {
