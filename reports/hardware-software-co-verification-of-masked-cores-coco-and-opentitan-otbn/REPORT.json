@@ -1,0 +1,92 @@
+{
+  "topics": [
+    "security",
+    "security/side-channels",
+    "security/hardware-masking",
+    "isa",
+    "isa/riscv",
+    "verification",
+    "verification/hw-sw-co-verification",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "CocoAlma (Execution-Aware Formal Masking Verifier)",
+      "identity": {
+        "repository": "isec-tugraz/coco-alma",
+        "revision": "95c80df5d6d704bf525f47ef6e58e98e27fedf97"
+      }
+    },
+    {
+      "name": "Coco-Ibex (Side-Channel Hardened RISC-V Ibex Core and Secure RAM)",
+      "identity": {
+        "repository": "isec-tugraz/coco-ibex",
+        "revision": "1ac262929d900d63d5ed702cd40edca1602a79c9"
+      }
+    },
+    {
+      "name": "OpenTitan Silicon Root of Trust (AES, KMAC, OTBN, and Clock Manager)",
+      "identity": {
+        "repository": "lowRISC/opentitan",
+        "revision": "1e061997389b1c257043b0dbd2388a19a6c2f6f1"
+      }
+    },
+    {
+      "name": "Upstream Ibex RISC-V Core (SecureIbex, DataIndTiming, DummyInstructions)",
+      "identity": {
+        "repository": "lowRISC/ibex",
+        "revision": "9b91b3a1195aecb0d80cf2de5b852e0b5f68cc6c"
+      }
+    },
+    {
+      "name": "PROLEAD (Probing-Based Hardware Leakage Detection Tool used by OpenTitan OTBN MAI)",
+      "identity": {
+        "repository": "ChairImpSec/PROLEAD",
+        "revision": "2c8c8486d84f58b121b7198fc267ce520d29d39a"
+      }
+    },
+    {
+      "name": "Coco: Co-Design and Co-Verification of Masked Software Implementations on CPUs (Gigerl et al., USENIX Security 2021)",
+      "identity": {
+        "eprint": "https://eprint.iacr.org/2020/1294",
+        "venue": "USENIX Security 2021"
+      }
+    },
+    {
+      "name": "CocoAlma: A Versatile Masking Verifier (Hadzic and Bloem, FMCAD 2021)",
+      "identity": {
+        "doi": "10.34727/2021/isbn.978-3-85448-046-4_9",
+        "venue": "FMCAD 2021"
+      }
+    },
+    {
+      "name": "Mind the Gap: Towards Secure 1st-Order Masking in Software (Papagiannopoulos and Veshchikov, COSADE 2017)",
+      "identity": {
+        "eprint": "https://eprint.iacr.org/2017/345",
+        "venue": "COSADE 2017"
+      }
+    },
+    {
+      "name": "Rosita: Towards Automatic Elimination of Power-Analysis Leakage in Ciphers (Shelton et al., NDSS 2021)",
+      "identity": {
+        "doi": "10.14722/ndss.2021.23137",
+        "venue": "NDSS 2021"
+      }
+    },
+    {
+      "name": "Securing Encryption Systems With a Switched Capacitor Current Equalizer (Tokunaga and Blaauw, IEEE JSSC 2010)",
+      "identity": {
+        "doi": "10.1109/JSSC.2009.2034081",
+        "venue": "IEEE JSSC 2010"
+      }
+    },
+    {
+      "name": "Randomized Clocking and Elastic Alignment Literature (Guneysu-Moradi CHES 2011; van Woudenberg et al. CT-RSA 2011)",
+      "identity": {
+        "random_clock_doi": "10.1007/978-3-642-23951-9_3",
+        "elastic_align_doi": "10.1007/978-3-642-19074-2_8"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "security",
+    "security/side-channels",
+    "security/hardware-masking",
+    "isa",
+    "verification",
+    "verification/probing-security",
+    "compilers"
+  ],
+  "subjects": [
+    {
+      "name": "PROLEAD (Probing-Based Hardware Leakage Detection Tool)",
+      "identity": {
+        "repository": "ChairImpSec/PROLEAD",
+        "revision": "2c8c8486d84f58b121b7198fc267ce520d29d39a"
+      }
+    },
+    {
+      "name": "SILVER (Statistical Independence and Leakage Verification)",
+      "identity": {
+        "repository": "Chair-for-Security-Engineering/SILVER",
+        "revision": "0a3c85fc5a60d76eedb84d996473df28fc18ef42"
+      }
+    },
+    {
+      "name": "REBECCA (Glitch-Aware Formal Masking Verifier)",
+      "identity": {
+        "repository": "IAIK/REBECCA",
+        "revision": "09c93f8994ca09352e967221c4c407d060e8ea99"
+      }
+    },
+    {
+      "name": "fullVerif and HPC1/HPC2 Verilog Gadget Library",
+      "identity": {
+        "repository": "cassiersg/fullverif",
+        "revision": "227f31215d8269c3b78bb0ebaebf6a1db6bc198e"
+      }
+    },
+    {
+      "name": "AES-DOM (Domain-Oriented Masking Reference RTL)",
+      "identity": {
+        "repository": "hgrosz/aes-dom",
+        "revision": "b34d018349e5f10805a03c3c46c5ad65d3127196"
+      }
+    },
+    {
+      "name": "OpenTitan Hardware Masking Primitives (DOM S-Box and 2-Share Multiplier)",
+      "identity": {
+        "repository": "lowRISC/opentitan",
+        "revision": "1e061997389b1c257043b0dbd2388a19a6c2f6f1"
+      }
+    },
+    {
+      "name": "Threshold Implementations Against Side-Channel Attacks and Glitches (Nikova, Rechberger, Rijmen, ICISC 2006)",
+      "identity": {
+        "doi": "10.1007/11935308_38",
+        "venue": "ICISC 2006"
+      }
+    },
+    {
+      "name": "Domain-Oriented Masking: Compact Masked Hardware Implementations with Arbitrary Protection Order (Gross, Mangard, Korak, ACM TIS 2016)",
+      "identity": {
+        "doi": "10.1145/2996366.2996426",
+        "eprint": "https://eprint.iacr.org/2016/486"
+      }
+    },
+    {
+      "name": "Composable Masking Schemes in the Presence of Physical Defaults and the Robust Probing Model (Faust et al., TCHES 2018)",
+      "identity": {
+        "doi": "10.13154/tches.v2018.i3.89-120",
+        "venue": "TCHES 2018"
+      }
+    },
+    {
+      "name": "Trivially and Efficiently Composing Masked Gadgets with Probe Isolating Non-Interference (Cassiers and Standaert, IEEE TIFS 2020)",
+      "identity": {
+        "doi": "10.1109/TIFS.2020.2971153",
+        "venue": "IEEE TIFS 2020"
+      }
+    },
+    {
+      "name": "Hardware Private Circuits: From Trivial Composition to Full Verification (Cassiers et al., IEEE TC 2021)",
+      "identity": {
+        "doi": "10.1109/TC.2020.3022979",
+        "eprint": "https://eprint.iacr.org/2020/185"
+      }
+    },
+    {
+      "name": "Dual-Rail Precharge Logic Specifications and Early Propagation Analysis (SABL ESSCIRC 2002, WDDL DATE/CARDIS 2004, Suzuki-Saeki CHES 2006)",
+      "identity": {
+        "doi": "10.1109/DATE.2004.1268856",
+        "routing_doi": "10.1007/1-4020-8147-2_10",
+        "epe_doi": "10.1007/11894063_21"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
