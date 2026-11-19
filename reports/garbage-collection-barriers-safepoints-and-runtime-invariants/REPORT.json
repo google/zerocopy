@@ -1,0 +1,155 @@
+{
+  "topics": [
+    "runtimes/gc",
+    "compilers/gc-support",
+    "verification/gc",
+    "llvm/statepoints",
+    "lean/reference-counting"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM (gc.statepoint, RewriteStatepointsForGC, PlaceSafepoints)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "4d369315c397296c4e3fdaff15b7e6500b533d16"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot (Generational ZGC, G1 barriers, SafepointMechanism, C2 loop strip mining)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "Go runtime (concurrent mark-sweep, hybrid write barrier, async preemption, runtime.Pinner)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    },
+    {
+      "name": "OCaml 5 multicore runtime (STW parallel minor GC, concurrent major mark-sweep, SATB barriers)",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+      }
+    },
+    {
+      "name": "MMTk Core (VMBinding traits, BarrierSelector, PlanConstraints, LXR, Concurrent Immix)",
+      "identity": {
+        "repository": "mmtk/mmtk-core",
+        "revision": "d154f4f0dcca27439b920165ce5c948ca18aef24"
+      }
+    },
+    {
+      "name": "Lean 4 compiler and C runtime (LCNF RC/ResetReuse/InferBorrow passes, lean.h, verified RC.lean)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Koka compiler (Perceus Parc, ParcReuse, ParcReuseSpec)",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "facb7932ce6871fdb063f762a304bd8238f35fba"
+      }
+    },
+    {
+      "name": "Diwan, Moss, and Hudson (PLDI 1992): Compiler Support for Garbage Collection in a Statically Typed Language",
+      "identity": {
+        "doi": "10.1145/143095.143140",
+        "venue": "PLDI 1992"
+      }
+    },
+    {
+      "name": "Dijkstra, Lamport, Martin, Scholten, and Steffens (1978): On-the-fly garbage collection: an exercise in cooperation",
+      "identity": {
+        "doi": "10.1145/359642.359655",
+        "venue": "Communications of the ACM 21(11), 1978"
+      }
+    },
+    {
+      "name": "Yuasa (1990): Real-time garbage collection on general-purpose machines",
+      "identity": {
+        "doi": "10.1016/0164-1212(90)90084-Y",
+        "venue": "Journal of Systems and Software, 1990"
+      }
+    },
+    {
+      "name": "Wilson (IWMM 1992): Uniprocessor Garbage Collection Techniques",
+      "identity": {
+        "doi": "10.1007/BFb0017182",
+        "venue": "IWMM 1992"
+      }
+    },
+    {
+      "name": "Sivaramakrishnan et al. (ICFP 2020): Retrofitting Parallelism onto OCaml",
+      "identity": {
+        "doi": "10.1145/3408995",
+        "arxiv": "2004.11663",
+        "venue": "PACMPL 4(ICFP), 2020"
+      }
+    },
+    {
+      "name": "Ullrich and de Moura (IFL 2019): Counting Immutable Beans: Reference Counting Optimized for Purely Functional Programming",
+      "identity": {
+        "doi": "10.1145/3412932.3412935",
+        "arxiv": "1908.05647",
+        "venue": "IFL 2019"
+      }
+    },
+    {
+      "name": "Reinking, Xie, de Moura, and Leijen (PLDI 2021): Perceus: Garbage Free Reference Counting with Reuse",
+      "identity": {
+        "doi": "10.1145/3453483.3454032",
+        "venue": "PLDI 2021"
+      }
+    },
+    {
+      "name": "Bacon and Rajan (ECOOP 2001): Concurrent Cycle Collection in Reference Counted Systems",
+      "identity": {
+        "doi": "10.1007/3-540-45337-7_12",
+        "venue": "ECOOP 2001"
+      }
+    },
+    {
+      "name": "Hawblitzel and Petrank (POPL 2009): Automated Verification of Practical Garbage Collectors",
+      "identity": {
+        "doi": "10.1145/1480881.1480935",
+        "venue": "POPL 2009"
+      }
+    },
+    {
+      "name": "McCreight, Shao, Lin, and Li (PLDI 2007): A General Framework for Certifying Garbage Collectors and Their Mutators",
+      "identity": {
+        "doi": "10.1145/1273442.1250788",
+        "venue": "PLDI 2007"
+      }
+    },
+    {
+      "name": "McCreight, Chevalier, and Tolmach (ICFP 2010): A Certified Framework for Compiling and Executing Garbage-Collected Languages (GCminor)",
+      "identity": {
+        "doi": "10.1145/1863543.1863575",
+        "venue": "ICFP 2010"
+      }
+    },
+    {
+      "name": "Sandberg Ericsson, Myreen, and Åman Pohjola (JAR 2019): A Verified Generational Garbage Collector for CakeML",
+      "identity": {
+        "doi": "10.1007/s10817-018-9487-z",
+        "venue": "Journal of Automated Reasoning, 2019"
+      }
+    },
+    {
+      "name": "Gammie, Hosking, and Engelhardt (PLDI 2015): Relaxing Safely: Verified On-the-Fly Garbage Collection for x86-TSO",
+      "identity": {
+        "doi": "10.1145/2737924.2738006",
+        "afp_session": "ConcurrentGC",
+        "venue": "PLDI 2015"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

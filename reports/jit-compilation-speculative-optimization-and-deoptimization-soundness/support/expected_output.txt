@@ -1,0 +1,45 @@
+# sha256(verify_speculative_deopt_simulation.py) = ac441c2bb9d5a2fab1b0f9c6640b8c10d891657f91862e5bd890af7ca027b42d
+# command: python3 -B reports/jit-compilation-speculative-optimization-and-deoptimization-soundness/support/verify_speculative_deopt_simulation.py --verbose   (CPython 3.13.15, Linux; the 'elapsed' line is omitted)
+speculative deoptimization equivalence probe
+  scenarios: 13 hand-written x 3 tiering thresholds, 1415 runs
+  random programs: 140 seeds (1 with guest errors), total mixed-mode runs: 3501
+  forced-deopt runs: 3322; deopt points in unforced runs: 2460
+  unforced runs: compiles=742 osr_entries=558 guard_deopts=246 lazy_deopts=24 self_invalidation_deopts=83 side_exits=908 known_error_deopts=1
+  all runs: forced_deopts=4242 interpreter_frames_rebuilt=30262 max_frames_from_one_optimized_frame=4 virtual_objects_materialized=8506 relocked_on_materialization=703
+  unforced runs: dependency_invalidations=114 suspended_activations_patched=24
+  sunk_allocation_partial_escape: interpreter allocations=12, mixed-mode allocations=7
+  per-scenario unforced totals over the thresholds (deopt points, deopts by cause, OSR entries, ...):
+    sunk_allocation_partial_escape: points=41 guard=6 lazy=0 self=0 exit=12 known_error=0 osr=18 max_frames=1 materialized=15 relocked=0
+    midcall_method_mutation_lazy_deopt: points=61 guard=4 lazy=3 self=0 exit=22 known_error=0 osr=28 max_frames=1 materialized=3 relocked=3
+    alias_identity_after_materialization: points=21 guard=6 lazy=0 self=0 exit=7 known_error=0 osr=12 max_frames=1 materialized=9 relocked=0
+    cyclic_virtual_graph: points=27 guard=6 lazy=0 self=0 exit=7 known_error=0 osr=12 max_frames=1 materialized=18 relocked=0
+    nested_inline_multiframe_deopt: points=34 guard=6 lazy=0 self=0 exit=11 known_error=0 osr=15 max_frames=4 materialized=13 relocked=0
+    elided_monitors_relock: points=22 guard=5 lazy=0 self=0 exit=13 known_error=0 osr=17 max_frames=1 materialized=14 relocked=14
+    global_constant_self_invalidation: points=20 guard=2 lazy=0 self=3 exit=9 known_error=0 osr=13 max_frames=1 materialized=0 relocked=0
+    polymorphic_receiver_guard_failure: points=51 guard=6 lazy=0 self=0 exit=22 known_error=0 osr=27 max_frames=1 materialized=2 relocked=0
+    error_preserved_in_optimized_code: points=26 guard=1 lazy=0 self=0 exit=16 known_error=0 osr=19 max_frames=1 materialized=0 relocked=0
+    recursive_activations_all_patched: points=11 guard=2 lazy=12 self=0 exit=7 known_error=0 osr=0 max_frames=2 materialized=21 relocked=0
+    escape_through_residual_call_argument: points=22 guard=7 lazy=0 self=0 exit=45 known_error=0 osr=42 max_frames=1 materialized=11 relocked=0
+    known_error_on_folded_path: points=2 guard=1 lazy=0 self=0 exit=1 known_error=1 osr=2 max_frames=1 materialized=1 relocked=0
+    loop_carried_swap_osr_entry: points=18 guard=3 lazy=0 self=0 exit=1 known_error=0 osr=3 max_frames=1 materialized=0 relocked=0
+  negative controls (each must be detected):
+    no_stack_patch: DETECTED by midcall_method_mutation_lazy_deopt thresholds=(1, 1) forced=()
+    skip_patch_if_not_entrant: DETECTED by recursive_activations_all_patched thresholds=(2, 2) forced=()
+    no_self_check: DETECTED by global_constant_self_invalidation thresholds=(2, 2) forced=()
+    no_dep_registration: DETECTED by midcall_method_mutation_lazy_deopt thresholds=(1, 1) forced=()
+    dup_materialize: DETECTED by alias_identity_after_materialization thresholds=(1, 1) forced=()
+    shallow_materialize: DETECTED by cyclic_virtual_graph thresholds=(1, 1) forced=()
+    no_relock: DETECTED by midcall_method_mutation_lazy_deopt thresholds=(1, 1) forced=()
+    reexecute_call: DETECTED by midcall_method_mutation_lazy_deopt thresholds=(1, 1) forced=()
+    drop_retval: DETECTED by midcall_method_mutation_lazy_deopt thresholds=(1, 1) forced=(16,)
+    skip_instruction: DETECTED by sunk_allocation_partial_escape thresholds=(1, 1) forced=()
+    unsound_liveness: DETECTED by random[0] thresholds=(1, 1) forced=()
+    osr_assumes_preloop_constants: DETECTED by sunk_allocation_partial_escape (non-termination trap: fuel exhausted)
+    sequential_loop_moves: DETECTED by loop_carried_swap_osr_entry thresholds=(1, 1) forced=()
+narrated lazy deoptimization (scenario midcall_method_mutation_lazy_deopt):
+  code ('work', 2, 'osr') invalidated while suspended in a call; snapshot kind=after_call
+    frame work@pc7 result->r6 live registers: r0=s0, r1=s1, r2=s2, r3=s3, r5=v0
+    virtual v0: class Box, monitor depth 1, fields v=s2
+    rebuilt interpreter frame work@pc8: [Counter{lock=0, {'n': 5}}, 9, 5, 1, None, Box{lock=1, {'v': 5}}, 5, None, None, None]
+  equals reference: True
+PASS: mixed-mode execution is observationally equivalent to the reference interpreter in every run, and every negative control was detected

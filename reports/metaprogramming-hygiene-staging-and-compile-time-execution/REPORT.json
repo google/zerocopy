@@ -1,0 +1,105 @@
+{
+  "topics": [
+    "pl/macros",
+    "pl/metaprogramming",
+    "compilers/staging",
+    "tooling/ide-lsp"
+  ],
+  "subjects": [
+    {
+      "name": "Flatt 2016: Binding as Sets of Scopes (POPL '16)",
+      "identity": {
+        "citation": "Matthew Flatt, 'Binding as Sets of Scopes', POPL '16, pp. 705-717, January 2016",
+        "doi": "10.1145/2837614.2837620"
+      }
+    },
+    {
+      "name": "Racket macro expander (Sets of Scopes implementation)",
+      "identity": {
+        "repository": "racket/racket",
+        "revision": "8ed38e11307b13f25ca67224c66438b83340ae68"
+      }
+    },
+    {
+      "name": "Chang, Knauth, and Greenman 2017: Type Systems as Macros (Turnstile, POPL '17)",
+      "identity": {
+        "citation": "Stephen Chang, Alex Knauth, and Ben Greenman, 'Type Systems as Macros', POPL '17, pp. 694-705, January 2017",
+        "doi": "10.1145/3009837.3009886"
+      }
+    },
+    {
+      "name": "Ullrich and de Moura 2020/2022: Beyond Notations (IJCAR '20 / LMCS 2022)",
+      "identity": {
+        "citation": "Sebastian Ullrich and Leonardo de Moura, 'Beyond Notations: Hygienic Macro Expansion for Theorem Proving Languages', IJCAR '20 (LNCS 12167, pp. 167-182); extended in LMCS 18(2:1), 2022",
+        "doi": "10.1007/978-3-030-51054-1_10",
+        "extended_doi": "10.46298/lmcs-18(2:1)2022"
+      }
+    },
+    {
+      "name": "Lean 4 hygienic macro system and elaborator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    },
+    {
+      "name": "Taha and Sheard 2000: MetaML and Multi-Stage Programming with Explicit Annotations (TCS 248)",
+      "identity": {
+        "citation": "Walid Taha and Tim Sheard, 'MetaML and Multi-Stage Programming with Explicit Annotations', Theoretical Computer Science 248(1-2), pp. 211-242, October 2000",
+        "doi": "10.1016/S0304-3975(00)00053-0"
+      }
+    },
+    {
+      "name": "Kiselyov 2014/2024: BER MetaOCaml System Descriptions (FLOPS '14 & FLOPS '24)",
+      "identity": {
+        "citation": "Oleg Kiselyov, 'The Design and Implementation of BER MetaOCaml - System Description', FLOPS '14 (LNCS 8475, pp. 86-102); 'MetaOCaml: Ten Years Later - System Description', FLOPS '24 (LNCS 14659, pp. 219-236)",
+        "doi": "10.1007/978-3-319-07151-0_6",
+        "followup_doi": "10.1007/978-981-97-2300-3_12"
+      }
+    },
+    {
+      "name": "BER MetaOCaml compiler and staging runtime (N153)",
+      "identity": {
+        "repository": "metaocaml/ber-metaocaml",
+        "revision": "8891433d4bce906e69cb397fe27da04c4e6b3f37"
+      }
+    },
+    {
+      "name": "Scala 3 compiler staging and quoted reflection",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+      }
+    },
+    {
+      "name": "Zig semantic analyzer and comptime evaluator",
+      "identity": {
+        "repository": "ziglang/zig",
+        "revision": "738d2be9d6b6ef3ff3559130c05159ef53336224"
+      }
+    },
+    {
+      "name": "ISO/IEC JTC1/SC22/WG21 P2996R13: Reflection for C++26",
+      "identity": {
+        "document": "WG21 P2996R13",
+        "date": "2025-06-20",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2996r13.html"
+      }
+    },
+    {
+      "name": "google/zerocopy procedural derive macros",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Rust standard library proc_macro Span hygiene contract",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,140 @@
+{
+  "topics": [
+    "compilers/ir-design",
+    "compilers/optimization",
+    "llvm/mlir",
+    "pl/ir"
+  ],
+  "subjects": [
+    {
+      "name": "Click & Paleczny (1995), A Simple Graph-Based Intermediate Representation",
+      "identity": {
+        "doi": "10.1145/202529.202534",
+        "venue": "ACM SIGPLAN Workshop on Intermediate Representations (IR '95), pp. 35-49",
+        "year": "1995"
+      }
+    },
+    {
+      "name": "Click (1995), Global Code Motion / Global Value Numbering",
+      "identity": {
+        "doi": "10.1145/207110.207154",
+        "venue": "ACM SIGPLAN PLDI '95, pp. 246-257",
+        "year": "1995"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot C2 Optimizing Compiler (Sea-of-Nodes IR)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "V8 JavaScript and WebAssembly Engine (TurboFan Sea-of-Nodes & Turboshaft CFG IR)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    },
+    {
+      "name": "V8 Engineering Blog (Darius Mercadier): Land ahoy: leaving the Sea of Nodes",
+      "identity": {
+        "url": "https://v8.dev/blog/leaving-the-sea-of-nodes",
+        "published": "2025-03-25"
+      }
+    },
+    {
+      "name": "Duboscq, Wurthinger, Stadler, Wimmer, Simon & Mossenbock (2013), An Intermediate Representation for Speculative Optimizations in a Dynamic Compiler",
+      "identity": {
+        "doi": "10.1145/2542142.2542143",
+        "venue": "ACM VMIL '13, pp. 1-10",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "GraalVM Optimizing Compiler (Hybrid Fixed/Floating IR)",
+      "identity": {
+        "repository": "oracle/graal",
+        "revision": "3fd1dcaa85129cc6df8232487f9506d73787a755"
+      }
+    },
+    {
+      "name": "Reissmann, Meyer, Bahmann & Sjalander (2020), RVSDG: An Intermediate Representation for Optimizing Compilers",
+      "identity": {
+        "doi": "10.1145/3391902",
+        "arxiv": "1912.05036",
+        "venue": "ACM TECS 19(6), pp. 1-28",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Bahmann, Reissmann, Jahre & Meyer (2015), Perfect Reconstructability of Control Flow from Demand Dependence Graphs",
+      "identity": {
+        "doi": "10.1145/2693261",
+        "venue": "ACM TACO 11(4), Article 59, pp. 1-25",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Jlm RVSDG Optimizing Compiler",
+      "identity": {
+        "repository": "phate/jlm",
+        "revision": "b6d2582a87b180a2d60f9eb06652cff17448618a"
+      }
+    },
+    {
+      "name": "Kennedy (2007), Compiling with Continuations, Continued",
+      "identity": {
+        "doi": "10.1145/1291151.1291179",
+        "venue": "ACM SIGPLAN ICFP '07, pp. 177-190",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Maurer, Downen, Ariola & Peyton Jones (2017), Compiling Without Continuations",
+      "identity": {
+        "doi": "10.1145/3062341.3062380",
+        "venue": "ACM SIGPLAN PLDI '17, pp. 482-494",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler (GHC Core Join Points & Core Lint)",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "Lattner et al. (2021), MLIR: Scaling Compiler Infrastructure for Domain Specific Computation",
+      "identity": {
+        "doi": "10.1109/CGO51591.2021.9370308",
+        "arxiv": "2002.11054",
+        "venue": "IEEE/ACM CGO '21, pp. 2-14",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "LLVM / MLIR Multi-Level Intermediate Representation Infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "f19509b0393bc186173b51fe2c9bce751e8d63e6"
+      }
+    },
+    {
+      "name": "Cranelift Compiler Mid-End Acyclic E-Graph Optimizer (Wasmtime)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+      }
+    },
+    {
+      "name": "Fallin (2026), The acyclic e-graph: Cranelift's mid-end optimizer",
+      "identity": {
+        "url": "https://cfallin.org/blog/2026/04/09/aegraph/",
+        "published": "2026-04-09"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

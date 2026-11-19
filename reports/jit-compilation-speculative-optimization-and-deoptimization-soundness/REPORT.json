@@ -1,0 +1,139 @@
+{
+  "topics": [
+    "compilers/jit",
+    "compilers/jit/deoptimization",
+    "compilers/jit/on-stack-replacement",
+    "runtimes/jit",
+    "runtimes/vm",
+    "runtimes/vm/inline-caches",
+    "verification/jit",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "V8 JavaScript engine (deoptimizer, translated state, dependent code, protectors)",
+      "identity": {
+        "repository": "v8/v8",
+        "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot (deoptimization, dependencies, OSR migration)",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "GraalVM (Graal compiler FrameState and partial escape analysis, Truffle API and runtime, Substrate VM deoptimizer)",
+      "identity": {
+        "repository": "oracle/graal",
+        "revision": "3fd1dcaa85129cc6df8232487f9506d73787a755"
+      }
+    },
+    {
+      "name": "PyPy / RPython meta-tracing JIT (resume data, quasi-immutable fields, JIT hints)",
+      "identity": {
+        "repository": "pypy/pypy",
+        "revision": "8fce4f7066e606c971268834548f15626f418b5d"
+      }
+    },
+    {
+      "name": "CPython experimental copy-and-patch JIT (3.16.0a2+dev development tree)",
+      "identity": {
+        "repository": "python/cpython",
+        "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75",
+        "version": "3.16.0a2+dev"
+      }
+    },
+    {
+      "name": "LuaJIT (snapshots and allocation sinking)",
+      "identity": {
+        "repository": "LuaJIT/LuaJIT",
+        "revision": "63c8f1a9b479ba5518cf6a170ff7729178bc3cfd"
+      }
+    },
+    {
+      "name": "CoreJIT Coq development (verified speculation and deoptimization)",
+      "identity": {
+        "repository": "Aurele-Barriere/CoreJIT",
+        "revision": "8740d4149be649d0746d9f0d2d759b387a8f3246"
+      }
+    },
+    {
+      "name": "FM-JIT Coq development (verified native code generation in an effectful JIT)",
+      "identity": {
+        "repository": "Aurele-Barriere/FM-JIT",
+        "revision": "deedcb59d030b7957433fecc493a3c0f0a6bfdd6"
+      }
+    },
+    {
+      "name": "Hölzle, Chambers and Ungar, Debugging Optimized Code with Dynamic Deoptimization (PLDI 1992)",
+      "identity": {
+        "doi": "10.1145/143095.143114",
+        "venue": "ACM SIGPLAN PLDI 1992, pages 32-43"
+      }
+    },
+    {
+      "name": "Hölzle, Chambers and Ungar, Optimizing Dynamically-Typed Object-Oriented Languages With Polymorphic Inline Caches (ECOOP 1991)",
+      "identity": {
+        "doi": "10.1007/BFb0057013",
+        "venue": "ECOOP 1991, LNCS, pages 21-38"
+      }
+    },
+    {
+      "name": "Bolz, Cuni, Fijalkowski and Rigo, Tracing the Meta-Level: PyPy's Tracing JIT Compiler (ICOOOLPS 2009)",
+      "identity": {
+        "doi": "10.1145/1565824.1565827",
+        "venue": "ICOOOLPS 2009, pages 18-25"
+      }
+    },
+    {
+      "name": "Würthinger et al., Practical Partial Evaluation for High-Performance Dynamic Language Runtimes (PLDI 2017)",
+      "identity": {
+        "doi": "10.1145/3062341.3062381",
+        "venue": "ACM SIGPLAN PLDI 2017, pages 662-676"
+      }
+    },
+    {
+      "name": "Xu and Kjolstad, Copy-and-Patch Compilation (OOPSLA 2021)",
+      "identity": {
+        "doi": "10.1145/3485513",
+        "venue": "Proc. ACM Program. Lang. 5(OOPSLA), 2021",
+        "arxiv": "2011.13127v3"
+      }
+    },
+    {
+      "name": "Flückiger, Scherer, Yee, Goel, Ahmed and Vitek, Correctness of Speculative Optimizations with Dynamic Deoptimization (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158137",
+        "venue": "Proc. ACM Program. Lang. 2(POPL), 2018",
+        "arxiv": "1711.03050v2"
+      }
+    },
+    {
+      "name": "Barrière, Blazy, Flückiger, Pichardie and Vitek, Formally Verified Speculation and Deoptimization in a JIT Compiler (POPL 2021)",
+      "identity": {
+        "doi": "10.1145/3434327",
+        "venue": "Proc. ACM Program. Lang. 5(POPL), article 46, 2021"
+      }
+    },
+    {
+      "name": "Barrière, Blazy and Pichardie, Formally Verified Native Code Generation in an Effectful JIT (POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571202",
+        "venue": "Proc. ACM Program. Lang. 7(POPL), article 9, 2023",
+        "arxiv": "2212.03129v1"
+      }
+    },
+    {
+      "name": "PEP 744, JIT Compilation",
+      "identity": {
+        "url": "https://peps.python.org/pep-0744/",
+        "created": "2024-04-11",
+        "status-when-read": "Draft, Informational, Python-Version 3.13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

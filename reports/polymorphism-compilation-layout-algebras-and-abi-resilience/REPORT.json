@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "compilers/generics",
+    "pl/layout",
+    "ffi/abi-resilience",
+    "pl/types",
+    "rust/layout",
+    "zerocopy/layout"
+  ],
+  "subjects": [
+    {
+      "name": "Swift compiler, runtime, and ABI specification",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "3be0cf4b450b5366cff4b1a7e5bf7e5b4633224f"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler (GHC) representation and levity polymorphism",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "zerocopy layout algebra and derive crate (main)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "zerocopy Ref pointer metadata preservation fix",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "12f746d2307c30455db1875b9b80e45ada5b8675"
+      }
+    },
+    {
+      "name": "zerocopy TrailingSliceLayout affine-ceiling normalization fix",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "242ff08b5cf0d7723c0bc29ccfac0628b967d794"
+      }
+    },
+    {
+      "name": "Rust RFC 2580: Pointer metadata and APIs",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/2580-ptr-meta.md"
+      }
+    },
+    {
+      "name": "Rust compiler and core pointer metadata library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "The Rust Reference: Type layout",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "path": "src/type-layout.md"
+      }
+    },
+    {
+      "name": "Go generics GCShape stenciling and dictionary design proposals",
+      "identity": {
+        "repository": "golang/proposal",
+        "revision": "83ee2aaf9fdcc1a1cf4bb4d20216fc979635cf04"
+      }
+    },
+    {
+      "name": ".NET CoreCLR generic dictionary and runtime type system",
+      "identity": {
+        "repository": "dotnet/runtime",
+        "revision": "db341b0b461356d954079d27e86cb47c929e7e8a"
+      }
+    },
+    {
+      "name": "Harper & Morrisett (1995): Compiling Polymorphism Using Intensional Type Analysis",
+      "identity": {
+        "doi": "10.1145/199448.199475",
+        "venue": "POPL '95, pp. 130-141",
+        "year": "1995"
+      }
+    },
+    {
+      "name": "Tarditi et al. (1996): TIL: A Type-Directed Optimizing Compiler for ML",
+      "identity": {
+        "doi": "10.1145/235805.235830",
+        "venue": "PLDI '96, pp. 181-192",
+        "year": "1996"
+      }
+    },
+    {
+      "name": "Kennedy & Syme (2001): Design and Implementation of Generics for the .NET Common Language Runtime",
+      "identity": {
+        "doi": "10.1145/378795.378797",
+        "venue": "PLDI '01, pp. 1-12",
+        "year": "2001"
+      }
+    },
+    {
+      "name": "Eisenberg & Peyton Jones (2017): Levity Polymorphism",
+      "identity": {
+        "doi": "10.1145/3062341.3062357",
+        "venue": "PLDI '17, pp. 525-539",
+        "year": "2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

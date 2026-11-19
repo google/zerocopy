@@ -1,0 +1,187 @@
+{
+  "topics": [
+    "pl/coherence",
+    "pl/modules",
+    "compilers/generics",
+    "compilers/specialization",
+    "rust/traits"
+  ],
+  "subjects": [
+    {
+      "name": "Wadler & Blott (1989): How to Make Ad-Hoc Polymorphism Less Ad Hoc",
+      "identity": {
+        "doi": "10.1145/75277.75283",
+        "venue": "POPL '89",
+        "pages": "60-76",
+        "year": "1989"
+      }
+    },
+    {
+      "name": "Harper, Mitchell & Moggi (1990): Higher-Order Modules and the Phase Distinction",
+      "identity": {
+        "doi": "10.1145/96709.96744",
+        "venue": "POPL '90",
+        "pages": "341-354",
+        "year": "1990"
+      }
+    },
+    {
+      "name": "Leroy (1995): Applicative Functors and Fully Transparent Higher-Order Modules",
+      "identity": {
+        "doi": "10.1145/199448.199476",
+        "venue": "POPL '95",
+        "pages": "142-153",
+        "year": "1995"
+      }
+    },
+    {
+      "name": "Dreyer, Crary & Harper (2003): A Type System for Higher-Order Modules",
+      "identity": {
+        "doi": "10.1145/604131.604151",
+        "venue": "POPL '03",
+        "pages": "236-249",
+        "year": "2003"
+      }
+    },
+    {
+      "name": "Dreyer, Harper, Chakravarty & Keller (2007): Modular Type Classes",
+      "identity": {
+        "doi": "10.1145/1190216.1190229",
+        "venue": "POPL '07",
+        "pages": "63-70",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Dreyer (2007): Recursive Type Generativity",
+      "identity": {
+        "doi": "10.1017/S0956796807006429",
+        "venue": "Journal of Functional Programming 17(4-5)",
+        "pages": "433-471",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Dreyer (2007): A Type System for Recursive Modules",
+      "identity": {
+        "doi": "10.1145/1291151.1291196",
+        "venue": "ICFP '07",
+        "pages": "289-302",
+        "year": "2007"
+      }
+    },
+    {
+      "name": "Rossberg & Dreyer (2013): Mixin' Up the ML Module System",
+      "identity": {
+        "doi": "10.1145/2450136.2450137",
+        "venue": "ACM TOPLAS 35(1)",
+        "pages": "1-84",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Rossberg, Russo & Dreyer (2014): F-ing Modules",
+      "identity": {
+        "doi": "10.1017/S0956796814000264",
+        "venue": "Journal of Functional Programming 24(5)",
+        "pages": "529-607",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "White, Bour & Yallop (2015): Modular Implicits",
+      "identity": {
+        "doi": "10.4204/EPTCS.198.2",
+        "arxiv": "1512.01895",
+        "venue": "EPTCS 198 (ML/OCaml 2014)",
+        "pages": "22-63",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Rossberg (2018): 1ML - Core and Modules United",
+      "identity": {
+        "doi": "10.1017/S0956796818000205",
+        "venue": "Journal of Functional Programming 28",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Bottu, Xie, Marntirosian & Schrijvers (2019): Coherence of Type Class Resolution",
+      "identity": {
+        "doi": "10.1145/3341695",
+        "arxiv": "1907.00844",
+        "venue": "PACMPL 3(ICFP)",
+        "pages": "1-28",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Schrijvers, Oliveira, Wadler & Marntirosian (2019): COCHIS: Stable and Coherent Implicits",
+      "identity": {
+        "doi": "10.1017/S0956796818000242",
+        "venue": "Journal of Functional Programming 29",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Selsam, Ullrich & de Moura (2020): Tabled Typeclass Resolution",
+      "identity": {
+        "arxiv": "2001.04301",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Reynaud, Scherer & Yallop (2021): A Practical Mode System for Recursive Definitions",
+      "identity": {
+        "doi": "10.1145/3434326",
+        "venue": "PACMPL 5(POPL)",
+        "pages": "1-29",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 1023, RFC 1210, RFC 1268, RFC 2451)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc) coherence, orphan, and specialization implementation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "OCaml compiler module-system and recursive-definition typechecker",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+      }
+    },
+    {
+      "name": "Glasgow Haskell Compiler (GHC) instance environment and overlap checker",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "Scala 3 compiler (dotc) contextual implicit search and disambiguation",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+      }
+    },
+    {
+      "name": "Lean 4 elaborator tabled typeclass synthesizer and scoped extensions",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

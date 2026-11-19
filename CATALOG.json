@@ -1014,6 +1014,116 @@
         "aeneas/lean-backend"
       ]
     },
+    "algebraic-effects-handlers-coeffects-and-capability-tracking": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka compiler, standard library and C runtime (kklib)"
+        },
+        {
+          "identity": {
+            "repository": "effekt-lang/effekt",
+            "revision": "6976c7947eac26bc1203bcd48892702ce6d3cf21"
+          },
+          "name": "Effekt compiler, LLVM and JavaScript runtimes"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml compiler, runtime (fibers, effects) and reference manual"
+        },
+        {
+          "identity": {
+            "repository": "scala/scala3",
+            "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+          },
+          "name": "Scala 3 compiler capture checker and capture-checking reference"
+        },
+        {
+          "identity": {
+            "repository": "tweag/linear-base",
+            "revision": "bb5182a76c84eedcf78536c9ce24cb900882b2f3"
+          },
+          "name": "linear-base (Linear Haskell control functors and resource-aware IO)"
+        },
+        {
+          "identity": {
+            "repository": "ocaml-multicore/ocaml-multicore",
+            "revision": "ee7b692e49d87cc59381b1c1a643e6d66563cddb"
+          },
+          "name": "Multicore OCaml merge that removed continuation cloning"
+        },
+        {
+          "identity": {
+            "arxiv": "1312.1399v2",
+            "doi": "10.2168/LMCS-9(4:23)2013",
+            "preliminary_version_doi": "10.1007/978-3-642-00590-9_7",
+            "venue": "Logical Methods in Computer Science 9(4), 2013"
+          },
+          "name": "Plotkin and Pretnar, Handling Algebraic Effects"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473576",
+            "extended_version": "MSR-TR-2021-5 v4 (2021-06-07)",
+            "venue": "Proc. ACM Program. Lang. 5(ICFP), 2021"
+          },
+          "name": "Xie and Leijen, Generalized Evidence Passing for Effect Handlers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428194",
+            "venue": "Proc. ACM Program. Lang. 4(OOPSLA), 2020"
+          },
+          "name": "Brachth\u00e4user, Schuster and Ostermann, Effects as Capabilities"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.00250v1",
+            "doi": "10.1145/3453483.3454039",
+            "venue": "PLDI 2021"
+          },
+          "name": "Sivaramakrishnan et al., Retrofitting Effect Handlers onto OCaml"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3618003",
+            "preprint_arxiv": "2207.03402v2",
+            "venue": "ACM TOPLAS 45(4), 2023"
+          },
+          "name": "Boruch-Gruszecki et al., Capturing Types"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2628136.2628160",
+            "venue": "ICFP 2014"
+          },
+          "name": "Petricek, Orchard and Mycroft, Coeffects: A Calculus of Context-Dependent Computation"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.09383v2",
+            "doi": "10.1145/3632896",
+            "venue": "Proc. ACM Program. Lang. 8(POPL), 2024"
+          },
+          "name": "Tang, Hillerstr\u00f6m, Lindley and Morris, Soundly Handling Linearity"
+        }
+      ],
+      "topics": [
+        "pl/effects",
+        "pl/capabilities",
+        "pl/linear-types",
+        "pl/coeffects",
+        "compilers/effect-compilation",
+        "runtimes/continuations"
+      ]
+    },
     "anllvm-clean-slate-ir-semantics-and-tree-borrows-lowering": {
       "observed_at": "2026-11-01",
       "subjects": [
@@ -7754,6 +7864,130 @@
         "verification/iris"
       ]
     },
+    "async-runtimes-coroutines-schedulers-and-cancellation-semantics": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go runtime scheduler, stack growth, preemption, and cgo"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot continuations, virtual threads, and StructuredTaskScope"
+        },
+        {
+          "identity": {
+            "repository": "erlang/otp",
+            "revision": "2f60d1b6a246b3f7ae997fd93a9af067fab7f981"
+          },
+          "name": "Erlang/OTP BEAM ERTS process scheduler and dirty NIFs"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "fc0d151753b5fb10125ecef2d48f29b192c9abcf"
+          },
+          "name": "Tokio multi-thread work-stealing runtime, coop budget, select!, and channels"
+        },
+        {
+          "identity": {
+            "repository": "python-trio/trio",
+            "revision": "c327959a7175c86e1801b4ee8a17920c82b415e5"
+          },
+          "name": "Trio structured concurrency runtime (CancelScope, Nursery, checkpoints)"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml 5 runtime segmented fiber stacks"
+        },
+        {
+          "identity": {
+            "repository": "ocaml-multicore/eio",
+            "revision": "07069de0954fd2d991d7b2f6ea555f28c7abc2d4"
+          },
+          "name": "OCaml Eio structured concurrency switches and cancellation contexts"
+        },
+        {
+          "identity": {
+            "repository": "Kotlin/kotlinx.coroutines",
+            "revision": "7f4d6cf2414937b50291df6169a69afbaf9c5a20"
+          },
+          "name": "Kotlin coroutines Job lifecycle and NonCancellable cleanup"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust core Future and unstable AsyncDrop traits"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "d56bc48c9c0ea19b58427b3c6f114bd669710cbd"
+          },
+          "name": "LLVM CoroElide (HALO) coroutine heap-allocation elision pass"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/loom",
+            "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+          },
+          "name": "Loom DPOR bounded-preemption concurrency model checker"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/shuttle",
+            "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+          },
+          "name": "Shuttle randomized PCT/DFS concurrency testing scheduler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1073970.1073974",
+            "venue": "SPAA '05"
+          },
+          "name": "Chase & Lev (2005) Dynamic Circular Work-Stealing Deque"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2442516.2442524",
+            "venue": "PPoPP '13"
+          },
+          "name": "Le, Pop, Cohen & Zappa Nardelli (2013) Correct and Efficient Work-Stealing for Weak Memory Models"
+        },
+        {
+          "identity": {
+            "date": "2018-04-25",
+            "url": "https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/"
+          },
+          "name": "Smith (2018) Notes on structured concurrency, or: Go statement considered harmful"
+        },
+        {
+          "identity": {
+            "date": "2018-03-18",
+            "document": "WG21 P0981R0"
+          },
+          "name": "WG21 P0981R0 Halo: coroutine Heap Allocation eLision Optimization: the joint response"
+        }
+      ],
+      "topics": [
+        "runtimes/async-schedulers",
+        "runtimes/coroutines",
+        "pl/concurrency",
+        "ffi/async-interop",
+        "verification/concurrency"
+      ]
+    },
     "authorization-logics-speaks-for-calculi-and-attested-capability-delegation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -9834,6 +10068,193 @@
         "rustc/intrinsics"
       ]
     },
+    "coherence-orphan-instances-and-module-system-compilation": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/75277.75283",
+            "pages": "60-76",
+            "venue": "POPL '89",
+            "year": "1989"
+          },
+          "name": "Wadler & Blott (1989): How to Make Ad-Hoc Polymorphism Less Ad Hoc"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/96709.96744",
+            "pages": "341-354",
+            "venue": "POPL '90",
+            "year": "1990"
+          },
+          "name": "Harper, Mitchell & Moggi (1990): Higher-Order Modules and the Phase Distinction"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/199448.199476",
+            "pages": "142-153",
+            "venue": "POPL '95",
+            "year": "1995"
+          },
+          "name": "Leroy (1995): Applicative Functors and Fully Transparent Higher-Order Modules"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/604131.604151",
+            "pages": "236-249",
+            "venue": "POPL '03",
+            "year": "2003"
+          },
+          "name": "Dreyer, Crary & Harper (2003): A Type System for Higher-Order Modules"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1190216.1190229",
+            "pages": "63-70",
+            "venue": "POPL '07",
+            "year": "2007"
+          },
+          "name": "Dreyer, Harper, Chakravarty & Keller (2007): Modular Type Classes"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796807006429",
+            "pages": "433-471",
+            "venue": "Journal of Functional Programming 17(4-5)",
+            "year": "2007"
+          },
+          "name": "Dreyer (2007): Recursive Type Generativity"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1291151.1291196",
+            "pages": "289-302",
+            "venue": "ICFP '07",
+            "year": "2007"
+          },
+          "name": "Dreyer (2007): A Type System for Recursive Modules"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2450136.2450137",
+            "pages": "1-84",
+            "venue": "ACM TOPLAS 35(1)",
+            "year": "2013"
+          },
+          "name": "Rossberg & Dreyer (2013): Mixin' Up the ML Module System"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796814000264",
+            "pages": "529-607",
+            "venue": "Journal of Functional Programming 24(5)",
+            "year": "2014"
+          },
+          "name": "Rossberg, Russo & Dreyer (2014): F-ing Modules"
+        },
+        {
+          "identity": {
+            "arxiv": "1512.01895",
+            "doi": "10.4204/EPTCS.198.2",
+            "pages": "22-63",
+            "venue": "EPTCS 198 (ML/OCaml 2014)",
+            "year": "2015"
+          },
+          "name": "White, Bour & Yallop (2015): Modular Implicits"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000205",
+            "venue": "Journal of Functional Programming 28",
+            "year": "2018"
+          },
+          "name": "Rossberg (2018): 1ML - Core and Modules United"
+        },
+        {
+          "identity": {
+            "arxiv": "1907.00844",
+            "doi": "10.1145/3341695",
+            "pages": "1-28",
+            "venue": "PACMPL 3(ICFP)",
+            "year": "2019"
+          },
+          "name": "Bottu, Xie, Marntirosian & Schrijvers (2019): Coherence of Type Class Resolution"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000242",
+            "venue": "Journal of Functional Programming 29",
+            "year": "2019"
+          },
+          "name": "Schrijvers, Oliveira, Wadler & Marntirosian (2019): COCHIS: Stable and Coherent Implicits"
+        },
+        {
+          "identity": {
+            "arxiv": "2001.04301",
+            "year": "2020"
+          },
+          "name": "Selsam, Ullrich & de Moura (2020): Tabled Typeclass Resolution"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434326",
+            "pages": "1-29",
+            "venue": "PACMPL 5(POPL)",
+            "year": "2021"
+          },
+          "name": "Reynaud, Scherer & Yallop (2021): A Practical Mode System for Recursive Definitions"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (RFC 1023, RFC 1210, RFC 1268, RFC 2451)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust compiler (rustc) coherence, orphan, and specialization implementation"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml compiler module-system and recursive-definition typechecker"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC) instance environment and overlap checker"
+        },
+        {
+          "identity": {
+            "repository": "scala/scala3",
+            "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+          },
+          "name": "Scala 3 compiler (dotc) contextual implicit search and disambiguation"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 elaborator tabled typeclass synthesizer and scoped extensions"
+        }
+      ],
+      "topics": [
+        "pl/coherence",
+        "pl/modules",
+        "compilers/generics",
+        "compilers/specialization",
+        "rust/traits"
+      ]
+    },
     "collaborative-ast-crdts-categorical-patch-theory-and-archival-vms": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -10595,6 +11016,146 @@
         "verification",
         "verification/compiler-verification",
         "verification/empirical-evaluation"
+      ]
+    },
+    "compiler-ir-architectures-sea-of-nodes-rvsdg-cps-and-mlir": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/202529.202534",
+            "venue": "ACM SIGPLAN Workshop on Intermediate Representations (IR '95), pp. 35-49",
+            "year": "1995"
+          },
+          "name": "Click & Paleczny (1995), A Simple Graph-Based Intermediate Representation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/207110.207154",
+            "venue": "ACM SIGPLAN PLDI '95, pp. 246-257",
+            "year": "1995"
+          },
+          "name": "Click (1995), Global Code Motion / Global Value Numbering"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot C2 Optimizing Compiler (Sea-of-Nodes IR)"
+        },
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 JavaScript and WebAssembly Engine (TurboFan Sea-of-Nodes & Turboshaft CFG IR)"
+        },
+        {
+          "identity": {
+            "published": "2025-03-25",
+            "url": "https://v8.dev/blog/leaving-the-sea-of-nodes"
+          },
+          "name": "V8 Engineering Blog (Darius Mercadier): Land ahoy: leaving the Sea of Nodes"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2542142.2542143",
+            "venue": "ACM VMIL '13, pp. 1-10",
+            "year": "2013"
+          },
+          "name": "Duboscq, Wurthinger, Stadler, Wimmer, Simon & Mossenbock (2013), An Intermediate Representation for Speculative Optimizations in a Dynamic Compiler"
+        },
+        {
+          "identity": {
+            "repository": "oracle/graal",
+            "revision": "3fd1dcaa85129cc6df8232487f9506d73787a755"
+          },
+          "name": "GraalVM Optimizing Compiler (Hybrid Fixed/Floating IR)"
+        },
+        {
+          "identity": {
+            "arxiv": "1912.05036",
+            "doi": "10.1145/3391902",
+            "venue": "ACM TECS 19(6), pp. 1-28",
+            "year": "2020"
+          },
+          "name": "Reissmann, Meyer, Bahmann & Sjalander (2020), RVSDG: An Intermediate Representation for Optimizing Compilers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2693261",
+            "venue": "ACM TACO 11(4), Article 59, pp. 1-25",
+            "year": "2015"
+          },
+          "name": "Bahmann, Reissmann, Jahre & Meyer (2015), Perfect Reconstructability of Control Flow from Demand Dependence Graphs"
+        },
+        {
+          "identity": {
+            "repository": "phate/jlm",
+            "revision": "b6d2582a87b180a2d60f9eb06652cff17448618a"
+          },
+          "name": "Jlm RVSDG Optimizing Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1291151.1291179",
+            "venue": "ACM SIGPLAN ICFP '07, pp. 177-190",
+            "year": "2007"
+          },
+          "name": "Kennedy (2007), Compiling with Continuations, Continued"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062380",
+            "venue": "ACM SIGPLAN PLDI '17, pp. 482-494",
+            "year": "2017"
+          },
+          "name": "Maurer, Downen, Ariola & Peyton Jones (2017), Compiling Without Continuations"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC Core Join Points & Core Lint)"
+        },
+        {
+          "identity": {
+            "arxiv": "2002.11054",
+            "doi": "10.1109/CGO51591.2021.9370308",
+            "venue": "IEEE/ACM CGO '21, pp. 2-14",
+            "year": "2021"
+          },
+          "name": "Lattner et al. (2021), MLIR: Scaling Compiler Infrastructure for Domain Specific Computation"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "f19509b0393bc186173b51fe2c9bce751e8d63e6"
+          },
+          "name": "LLVM / MLIR Multi-Level Intermediate Representation Infrastructure"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasmtime",
+            "revision": "3ce2209872ccf1ea115914a81e020aef66a10c51"
+          },
+          "name": "Cranelift Compiler Mid-End Acyclic E-Graph Optimizer (Wasmtime)"
+        },
+        {
+          "identity": {
+            "published": "2026-04-09",
+            "url": "https://cfallin.org/blog/2026/04/09/aegraph/"
+          },
+          "name": "Fallin (2026), The acyclic e-graph: Cranelift's mid-end optimizer"
+        }
+      ],
+      "topics": [
+        "compilers/ir-design",
+        "compilers/optimization",
+        "llvm/mlir",
+        "pl/ir"
       ]
     },
     "compiler-isa-sdk-licensing-trademarks-and-upstream-governance": {
@@ -16047,6 +16608,161 @@
         "anneal/architecture"
       ]
     },
+    "garbage-collection-barriers-safepoints-and-runtime-invariants": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "4d369315c397296c4e3fdaff15b7e6500b533d16"
+          },
+          "name": "LLVM (gc.statepoint, RewriteStatepointsForGC, PlaceSafepoints)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot (Generational ZGC, G1 barriers, SafepointMechanism, C2 loop strip mining)"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go runtime (concurrent mark-sweep, hybrid write barrier, async preemption, runtime.Pinner)"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+          },
+          "name": "OCaml 5 multicore runtime (STW parallel minor GC, concurrent major mark-sweep, SATB barriers)"
+        },
+        {
+          "identity": {
+            "repository": "mmtk/mmtk-core",
+            "revision": "d154f4f0dcca27439b920165ce5c948ca18aef24"
+          },
+          "name": "MMTk Core (VMBinding traits, BarrierSelector, PlanConstraints, LXR, Concurrent Immix)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 compiler and C runtime (LCNF RC/ResetReuse/InferBorrow passes, lean.h, verified RC.lean)"
+        },
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "facb7932ce6871fdb063f762a304bd8238f35fba"
+          },
+          "name": "Koka compiler (Perceus Parc, ParcReuse, ParcReuseSpec)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/143095.143140",
+            "venue": "PLDI 1992"
+          },
+          "name": "Diwan, Moss, and Hudson (PLDI 1992): Compiler Support for Garbage Collection in a Statically Typed Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/359642.359655",
+            "venue": "Communications of the ACM 21(11), 1978"
+          },
+          "name": "Dijkstra, Lamport, Martin, Scholten, and Steffens (1978): On-the-fly garbage collection: an exercise in cooperation"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0164-1212(90)90084-Y",
+            "venue": "Journal of Systems and Software, 1990"
+          },
+          "name": "Yuasa (1990): Real-time garbage collection on general-purpose machines"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0017182",
+            "venue": "IWMM 1992"
+          },
+          "name": "Wilson (IWMM 1992): Uniprocessor Garbage Collection Techniques"
+        },
+        {
+          "identity": {
+            "arxiv": "2004.11663",
+            "doi": "10.1145/3408995",
+            "venue": "PACMPL 4(ICFP), 2020"
+          },
+          "name": "Sivaramakrishnan et al. (ICFP 2020): Retrofitting Parallelism onto OCaml"
+        },
+        {
+          "identity": {
+            "arxiv": "1908.05647",
+            "doi": "10.1145/3412932.3412935",
+            "venue": "IFL 2019"
+          },
+          "name": "Ullrich and de Moura (IFL 2019): Counting Immutable Beans: Reference Counting Optimized for Purely Functional Programming"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454032",
+            "venue": "PLDI 2021"
+          },
+          "name": "Reinking, Xie, de Moura, and Leijen (PLDI 2021): Perceus: Garbage Free Reference Counting with Reuse"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45337-7_12",
+            "venue": "ECOOP 2001"
+          },
+          "name": "Bacon and Rajan (ECOOP 2001): Concurrent Cycle Collection in Reference Counted Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1480881.1480935",
+            "venue": "POPL 2009"
+          },
+          "name": "Hawblitzel and Petrank (POPL 2009): Automated Verification of Practical Garbage Collectors"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1273442.1250788",
+            "venue": "PLDI 2007"
+          },
+          "name": "McCreight, Shao, Lin, and Li (PLDI 2007): A General Framework for Certifying Garbage Collectors and Their Mutators"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1863543.1863575",
+            "venue": "ICFP 2010"
+          },
+          "name": "McCreight, Chevalier, and Tolmach (ICFP 2010): A Certified Framework for Compiling and Executing Garbage-Collected Languages (GCminor)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9487-z",
+            "venue": "Journal of Automated Reasoning, 2019"
+          },
+          "name": "Sandberg Ericsson, Myreen, and \u00c5man Pohjola (JAR 2019): A Verified Generational Garbage Collector for CakeML"
+        },
+        {
+          "identity": {
+            "afp_session": "ConcurrentGC",
+            "doi": "10.1145/2737924.2738006",
+            "venue": "PLDI 2015"
+          },
+          "name": "Gammie, Hosking, and Engelhardt (PLDI 2015): Relaxing Safely: Verified On-the-Fly Garbage Collection for x86-TSO"
+        }
+      ],
+      "topics": [
+        "runtimes/gc",
+        "compilers/gc-support",
+        "verification/gc",
+        "llvm/statepoints",
+        "lean/reference-counting"
+      ]
+    },
     "gherrit-multi-remote-ancestry-and-graphql-batch-idempotency-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -16097,6 +16813,203 @@
         "vcs/gherrit",
         "vcs/git",
         "vcs/stacked-prs"
+      ]
+    },
+    "gradual-typing-sound-interoperability-and-blame-performance-cliffs": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Jeremy G. Siek and Walid Taha",
+            "title": "Gradual Typing for Functional Languages",
+            "url": "https://jsiek.github.io/home/siek06gradual.pdf",
+            "venue": "Scheme and Functional Programming Workshop 2006, pp. 81-92"
+          },
+          "name": "Siek & Taha (2006) \u2014 Gradual Typing for Functional Languages"
+        },
+        {
+          "identity": {
+            "authors": "Jacob Matthews and Robert Bruce Findler",
+            "doi": "10.1145/1190216.1190220",
+            "title": "Operational Semantics for Multi-Language Programs",
+            "venue": "POPL 2007, pp. 3-10"
+          },
+          "name": "Matthews & Findler (2007) \u2014 Operational Semantics for Multi-Language Programs"
+        },
+        {
+          "identity": {
+            "authors": "Philip Wadler and Robert Bruce Findler",
+            "doi": "10.1007/978-3-642-00590-9_1",
+            "title": "Well-Typed Programs Can't Be Blamed",
+            "venue": "ESOP 2009, LNCS vol. 5502, pp. 1-16"
+          },
+          "name": "Wadler & Findler (2009) \u2014 Well-Typed Programs Can't Be Blamed"
+        },
+        {
+          "identity": {
+            "authors": "David Herman, Aaron Tomb, and Cormac Flanagan",
+            "doi": "10.1007/s10990-011-9066-z",
+            "title": "Space-Efficient Gradual Typing",
+            "venue": "Higher-Order and Symbolic Computation 23(2), pp. 167-189"
+          },
+          "name": "Herman, Tomb & Flanagan (2010) \u2014 Space-Efficient Gradual Typing"
+        },
+        {
+          "identity": {
+            "authors": "T. Stephen Strickland, Sam Tobin-Hochstadt, Robert Bruce Findler, and Matthew Flatt",
+            "doi": "10.1145/2384616.2384685",
+            "title": "Chaperones and Impersonators: Run-Time Support for Reasonable Interposition",
+            "venue": "OOPSLA 2012, pp. 943-962"
+          },
+          "name": "Strickland et al. (2012) \u2014 Chaperones and Impersonators"
+        },
+        {
+          "identity": {
+            "authors": "Jeremy G. Siek, Michael M. Vitousek, Matteo Cimini, and John Tang Boyland",
+            "doi": "10.4230/LIPIcs.SNAPL.2015.274",
+            "title": "Refined Criteria for Gradual Typing",
+            "venue": "SNAPL 2015, LIPIcs vol. 32, pp. 274-293"
+          },
+          "name": "Siek et al. (2015) \u2014 Refined Criteria for Gradual Typing"
+        },
+        {
+          "identity": {
+            "authors": "Asumu Takikawa, Daniel Feltey, Ben Greenman, Max S. New, Jan Vitek, and Matthias Felleisen",
+            "doi": "10.1145/2837614.2837630",
+            "title": "Is Sound Gradual Typing Dead?",
+            "venue": "POPL 2016, pp. 456-468"
+          },
+          "name": "Takikawa et al. (2016) \u2014 Is Sound Gradual Typing Dead?"
+        },
+        {
+          "identity": {
+            "authors": "Michael M. Vitousek, Cameron Swords, and Jeremy G. Siek",
+            "doi": "10.1145/3009837.3009849",
+            "title": "Big Types in Little Runtime: Open-World Soundness and Collaborative Blame for Gradual Type Systems",
+            "venue": "POPL 2017, pp. 762-774"
+          },
+          "name": "Vitousek, Swords & Siek (2017) \u2014 Big Types in Little Runtime"
+        },
+        {
+          "identity": {
+            "authors": "Fabian Muehlboeck and Ross Tate",
+            "doi": "10.1145/3133880",
+            "title": "Sound Gradual Typing is Nominally Alive and Well",
+            "venue": "Proc. ACM Program. Lang. 1(OOPSLA), Article 56"
+          },
+          "name": "Muehlboeck & Tate (2017) \u2014 Sound Gradual Typing is Nominally Alive and Well"
+        },
+        {
+          "identity": {
+            "authors": "Ben Greenman and Matthias Felleisen",
+            "doi": "10.1145/3236766",
+            "title": "A Spectrum of Type Soundness and Performance",
+            "venue": "Proc. ACM Program. Lang. 2(ICFP), Article 71"
+          },
+          "name": "Greenman & Felleisen (2018) \u2014 A Spectrum of Type Soundness and Performance"
+        },
+        {
+          "identity": {
+            "authors": "Daniel Feltey, Ben Greenman, Christophe Scholliers, Robert Bruce Findler, and Vincent St-Amour",
+            "doi": "10.1145/3276503",
+            "title": "Collapsible Contracts: Fixing a Pathology of Gradual Typing",
+            "venue": "Proc. ACM Program. Lang. 2(OOPSLA), Article 133"
+          },
+          "name": "Feltey et al. (2018) \u2014 Collapsible Contracts"
+        },
+        {
+          "identity": {
+            "authors": "Ben Greenman, Asumu Takikawa, Max S. New, Daniel Feltey, Robert Bruce Findler, Jan Vitek, and Matthias Felleisen",
+            "doi": "10.1017/S0956796818000217",
+            "title": "How to Evaluate the Performance of Gradual Type Systems",
+            "venue": "Journal of Functional Programming 29, e4 (45 pp.)"
+          },
+          "name": "Greenman et al. (2019) \u2014 How to Evaluate the Performance of Gradual Type Systems"
+        },
+        {
+          "identity": {
+            "authors": "Ben Greenman, Matthias Felleisen, and Christos Dimoulas",
+            "doi": "10.1145/3360548",
+            "title": "Complete Monitors for Gradual Types",
+            "venue": "Proc. ACM Program. Lang. 3(OOPSLA), Article 122"
+          },
+          "name": "Greenman, Felleisen & Dimoulas (2019) \u2014 Complete Monitors for Gradual Types"
+        },
+        {
+          "identity": {
+            "authors": "Andre Kuhlenschmidt, Deyaaeldeen Almahallawi, and Jeremy G. Siek",
+            "doi": "10.1145/3314221.3314627",
+            "title": "Toward Efficient Gradual Typing for Structural Types via Coercions",
+            "venue": "PLDI 2019, pp. 517-532"
+          },
+          "name": "Kuhlenschmidt, Almahallawi & Siek (2019) \u2014 Toward Efficient Gradual Typing for Structural Types via Coercions"
+        },
+        {
+          "identity": {
+            "authors": "Ben Greenman",
+            "doi": "10.1145/3519939.3523430",
+            "title": "Deep and Shallow Types for Gradual Languages",
+            "venue": "PLDI 2022, pp. 580-593"
+          },
+          "name": "Greenman (2022) \u2014 Deep and Shallow Types for Gradual Languages"
+        },
+        {
+          "identity": {
+            "authors": "Kuang-Chen Lu, Ben Greenman, Carl Meyer, Dino Viehland, Aniket Panse, and Shriram Krishnamurthi",
+            "doi": "10.22152/programming-journal.org/2023/7/2",
+            "title": "Gradual Soundness: Lessons from Static Python",
+            "venue": "The Art, Science, and Engineering of Programming 7(1), Article 2"
+          },
+          "name": "Lu et al. (2023) \u2014 Gradual Soundness: Lessons from Static Python"
+        },
+        {
+          "identity": {
+            "repository": "racket/typed-racket",
+            "revision": "7fe7e11fae2b04e04525d63b01b33efe5ffad075"
+          },
+          "name": "Typed Racket"
+        },
+        {
+          "identity": {
+            "repository": "racket/racket",
+            "revision": "8ed38e11307b13f25ca67224c66438b83340ae68"
+          },
+          "name": "Racket Runtime & Contract Library"
+        },
+        {
+          "identity": {
+            "repository": "mvitousek/reticulated",
+            "revision": "5cd2d10e0f92505a9db2bc573d8c23360ef6548b"
+          },
+          "name": "Reticulated Python"
+        },
+        {
+          "identity": {
+            "repository": "Gradual-Typing/Grift",
+            "revision": "5fa76f837a0d6189332343d7aa899892b3c49583"
+          },
+          "name": "Grift Gradual Compiler"
+        },
+        {
+          "identity": {
+            "repository": "facebookincubator/cinderx",
+            "revision": "8ff26422ae5657cbcc9bc976c0695ab54cf861c1"
+          },
+          "name": "CinderX Static Python Runtime"
+        },
+        {
+          "identity": {
+            "repository": "bennn/gtp-benchmarks",
+            "revision": "f974dcba643880399df9fe643009e9f04dc58f19"
+          },
+          "name": "GTP Gradual Typing Performance Benchmarks"
+        }
+      ],
+      "topics": [
+        "pl/gradual-typing",
+        "ffi/contracts",
+        "runtimes/casts",
+        "pl/soundness"
       ]
     },
     "gradual-verification-dynamic-contracts-and-assurance-algebras": {
@@ -18612,6 +19525,145 @@
         "isa/x86-64",
         "verification/cryptography",
         "build/nix"
+      ]
+    },
+    "jit-compilation-speculative-optimization-and-deoptimization-soundness": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "v8/v8",
+            "revision": "e88118f63dd96f24a9acb8bd0665e7880063f5c0"
+          },
+          "name": "V8 JavaScript engine (deoptimizer, translated state, dependent code, protectors)"
+        },
+        {
+          "identity": {
+            "repository": "openjdk/jdk",
+            "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+          },
+          "name": "OpenJDK HotSpot (deoptimization, dependencies, OSR migration)"
+        },
+        {
+          "identity": {
+            "repository": "oracle/graal",
+            "revision": "3fd1dcaa85129cc6df8232487f9506d73787a755"
+          },
+          "name": "GraalVM (Graal compiler FrameState and partial escape analysis, Truffle API and runtime, Substrate VM deoptimizer)"
+        },
+        {
+          "identity": {
+            "repository": "pypy/pypy",
+            "revision": "8fce4f7066e606c971268834548f15626f418b5d"
+          },
+          "name": "PyPy / RPython meta-tracing JIT (resume data, quasi-immutable fields, JIT hints)"
+        },
+        {
+          "identity": {
+            "repository": "python/cpython",
+            "revision": "441c010fef90ab2860ae8142cbfd1fd52f53ba75",
+            "version": "3.16.0a2+dev"
+          },
+          "name": "CPython experimental copy-and-patch JIT (3.16.0a2+dev development tree)"
+        },
+        {
+          "identity": {
+            "repository": "LuaJIT/LuaJIT",
+            "revision": "63c8f1a9b479ba5518cf6a170ff7729178bc3cfd"
+          },
+          "name": "LuaJIT (snapshots and allocation sinking)"
+        },
+        {
+          "identity": {
+            "repository": "Aurele-Barriere/CoreJIT",
+            "revision": "8740d4149be649d0746d9f0d2d759b387a8f3246"
+          },
+          "name": "CoreJIT Coq development (verified speculation and deoptimization)"
+        },
+        {
+          "identity": {
+            "repository": "Aurele-Barriere/FM-JIT",
+            "revision": "deedcb59d030b7957433fecc493a3c0f0a6bfdd6"
+          },
+          "name": "FM-JIT Coq development (verified native code generation in an effectful JIT)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/143095.143114",
+            "venue": "ACM SIGPLAN PLDI 1992, pages 32-43"
+          },
+          "name": "H\u00f6lzle, Chambers and Ungar, Debugging Optimized Code with Dynamic Deoptimization (PLDI 1992)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0057013",
+            "venue": "ECOOP 1991, LNCS, pages 21-38"
+          },
+          "name": "H\u00f6lzle, Chambers and Ungar, Optimizing Dynamically-Typed Object-Oriented Languages With Polymorphic Inline Caches (ECOOP 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1565824.1565827",
+            "venue": "ICOOOLPS 2009, pages 18-25"
+          },
+          "name": "Bolz, Cuni, Fijalkowski and Rigo, Tracing the Meta-Level: PyPy's Tracing JIT Compiler (ICOOOLPS 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062381",
+            "venue": "ACM SIGPLAN PLDI 2017, pages 662-676"
+          },
+          "name": "W\u00fcrthinger et al., Practical Partial Evaluation for High-Performance Dynamic Language Runtimes (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "2011.13127v3",
+            "doi": "10.1145/3485513",
+            "venue": "Proc. ACM Program. Lang. 5(OOPSLA), 2021"
+          },
+          "name": "Xu and Kjolstad, Copy-and-Patch Compilation (OOPSLA 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "1711.03050v2",
+            "doi": "10.1145/3158137",
+            "venue": "Proc. ACM Program. Lang. 2(POPL), 2018"
+          },
+          "name": "Fl\u00fcckiger, Scherer, Yee, Goel, Ahmed and Vitek, Correctness of Speculative Optimizations with Dynamic Deoptimization (POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434327",
+            "venue": "Proc. ACM Program. Lang. 5(POPL), article 46, 2021"
+          },
+          "name": "Barri\u00e8re, Blazy, Fl\u00fcckiger, Pichardie and Vitek, Formally Verified Speculation and Deoptimization in a JIT Compiler (POPL 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2212.03129v1",
+            "doi": "10.1145/3571202",
+            "venue": "Proc. ACM Program. Lang. 7(POPL), article 9, 2023"
+          },
+          "name": "Barri\u00e8re, Blazy and Pichardie, Formally Verified Native Code Generation in an Effectful JIT (POPL 2023)"
+        },
+        {
+          "identity": {
+            "created": "2024-04-11",
+            "status-when-read": "Draft, Informational, Python-Version 3.13",
+            "url": "https://peps.python.org/pep-0744/"
+          },
+          "name": "PEP 744, JIT Compilation"
+        }
+      ],
+      "topics": [
+        "compilers/jit",
+        "compilers/jit/deoptimization",
+        "compilers/jit/on-stack-replacement",
+        "runtimes/jit",
+        "runtimes/vm",
+        "runtimes/vm/inline-caches",
+        "verification/jit",
+        "verification/compiler-verification"
       ]
     },
     "kraken-aarch64-x86-64-instruction-validation-and-rust-assembly-pilots": {
@@ -23054,6 +24106,111 @@
         "verification/compiler-verification"
       ]
     },
+    "metaprogramming-hygiene-staging-and-compile-time-execution": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "citation": "Matthew Flatt, 'Binding as Sets of Scopes', POPL '16, pp. 705-717, January 2016",
+            "doi": "10.1145/2837614.2837620"
+          },
+          "name": "Flatt 2016: Binding as Sets of Scopes (POPL '16)"
+        },
+        {
+          "identity": {
+            "repository": "racket/racket",
+            "revision": "8ed38e11307b13f25ca67224c66438b83340ae68"
+          },
+          "name": "Racket macro expander (Sets of Scopes implementation)"
+        },
+        {
+          "identity": {
+            "citation": "Stephen Chang, Alex Knauth, and Ben Greenman, 'Type Systems as Macros', POPL '17, pp. 694-705, January 2017",
+            "doi": "10.1145/3009837.3009886"
+          },
+          "name": "Chang, Knauth, and Greenman 2017: Type Systems as Macros (Turnstile, POPL '17)"
+        },
+        {
+          "identity": {
+            "citation": "Sebastian Ullrich and Leonardo de Moura, 'Beyond Notations: Hygienic Macro Expansion for Theorem Proving Languages', IJCAR '20 (LNCS 12167, pp. 167-182); extended in LMCS 18(2:1), 2022",
+            "doi": "10.1007/978-3-030-51054-1_10",
+            "extended_doi": "10.46298/lmcs-18(2:1)2022"
+          },
+          "name": "Ullrich and de Moura 2020/2022: Beyond Notations (IJCAR '20 / LMCS 2022)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 hygienic macro system and elaborator"
+        },
+        {
+          "identity": {
+            "citation": "Walid Taha and Tim Sheard, 'MetaML and Multi-Stage Programming with Explicit Annotations', Theoretical Computer Science 248(1-2), pp. 211-242, October 2000",
+            "doi": "10.1016/S0304-3975(00)00053-0"
+          },
+          "name": "Taha and Sheard 2000: MetaML and Multi-Stage Programming with Explicit Annotations (TCS 248)"
+        },
+        {
+          "identity": {
+            "citation": "Oleg Kiselyov, 'The Design and Implementation of BER MetaOCaml - System Description', FLOPS '14 (LNCS 8475, pp. 86-102); 'MetaOCaml: Ten Years Later - System Description', FLOPS '24 (LNCS 14659, pp. 219-236)",
+            "doi": "10.1007/978-3-319-07151-0_6",
+            "followup_doi": "10.1007/978-981-97-2300-3_12"
+          },
+          "name": "Kiselyov 2014/2024: BER MetaOCaml System Descriptions (FLOPS '14 & FLOPS '24)"
+        },
+        {
+          "identity": {
+            "repository": "metaocaml/ber-metaocaml",
+            "revision": "8891433d4bce906e69cb397fe27da04c4e6b3f37"
+          },
+          "name": "BER MetaOCaml compiler and staging runtime (N153)"
+        },
+        {
+          "identity": {
+            "repository": "scala/scala3",
+            "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+          },
+          "name": "Scala 3 compiler staging and quoted reflection"
+        },
+        {
+          "identity": {
+            "repository": "ziglang/zig",
+            "revision": "738d2be9d6b6ef3ff3559130c05159ef53336224"
+          },
+          "name": "Zig semantic analyzer and comptime evaluator"
+        },
+        {
+          "identity": {
+            "date": "2025-06-20",
+            "document": "WG21 P2996R13",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2996r13.html"
+          },
+          "name": "ISO/IEC JTC1/SC22/WG21 P2996R13: Reflection for C++26"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "google/zerocopy procedural derive macros"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust standard library proc_macro Span hygiene contract"
+        }
+      ],
+      "topics": [
+        "pl/macros",
+        "pl/metaprogramming",
+        "compilers/staging",
+        "tooling/ide-lsp"
+      ]
+    },
     "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -25365,6 +26522,319 @@
         "verification/compcert"
       ]
     },
+    "ownership-linearity-regions-and-safe-mutability-design-space": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/174675.177855",
+            "title": "Implementation of the Typed Call-by-Value lambda-Calculus using a Stack of Regions",
+            "venue": "POPL '94",
+            "year": "1994"
+          },
+          "name": "Tofte and Talpin 1994 stack-of-regions calculus (POPL '94)"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.1996.2613",
+            "title": "Region-Based Memory Management",
+            "venue": "Information and Computation 132(2)",
+            "year": "1997"
+          },
+          "name": "Tofte and Talpin 1997 region-based memory management (Information and Computation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/223428.207137",
+            "title": "Better Static Memory Management: Improving Region-Based Analysis of Higher-Order Languages",
+            "venue": "PLDI '95",
+            "year": "1995"
+          },
+          "name": "Aiken, Fahndrich, and Levien 1995 early region deallocation (PLDI '95)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/237721.237771",
+            "title": "From Region Inference to von Neumann Machines via Region Representation Inference",
+            "venue": "POPL '96",
+            "year": "1996"
+          },
+          "name": "Birkedal, Tofte, and Vejlstrup 1996 storage-mode analysis (POPL '96)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512529.512563",
+            "title": "Region-Based Memory Management in Cyclone",
+            "venue": "PLDI '02",
+            "year": "2002"
+          },
+          "name": "Grossman et al. 2002 Cyclone region-based memory management (PLDI '02)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.scico.2006.02.003",
+            "title": "Safe Manual Memory Management in Cyclone",
+            "venue": "Science of Computer Programming 62(2)",
+            "year": "2006"
+          },
+          "name": "Swamy, Hicks, Morrisett, Grossman, and Jim 2006 safe manual memory management in Cyclone"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/polonius",
+            "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+          },
+          "name": "Polonius borrow checker engine and specification"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.21691v5",
+            "doi": "10.1145/3763122",
+            "title": "Place Capability Graphs: A General-Purpose Model of Rust's Ownership and Borrowing Guarantees",
+            "venue": "PACMPL 9(OOPSLA2)",
+            "year": "2025"
+          },
+          "name": "Grannan et al. 2025 Place Capability Graphs (OOPSLA '25)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473597",
+            "title": "GhostCell: Separating Permissions from Data in Rust",
+            "venue": "PACMPL 5(ICFP)",
+            "year": "2021"
+          },
+          "name": "Yanovski, Dang, Jung, and Dreyer 2021 GhostCell (ICFP '21)"
+        },
+        {
+          "identity": {
+            "doi": "10.5381/jot.2022.21.2.a2",
+            "title": "Implementation Strategies for Mutable Value Semantics",
+            "venue": "Journal of Object Technology 21(2)",
+            "year": "2022"
+          },
+          "name": "Racordon, Shabalin, Zheng, Abrahams, and Saeta 2022 Mutable Value Semantics (JOT)"
+        },
+        {
+          "identity": {
+            "repository": "hylo-lang/hylo",
+            "revision": "6889158246df571baa9079115817ab2bff61156b"
+          },
+          "name": "Hylo compiler and language design documents"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift-evolution",
+            "revision": "6385c2aee62d21727333b2539b06458a9476fb2d"
+          },
+          "name": "Swift Evolution ownership, noncopyable, nonescapable, span, and reference proposals"
+        },
+        {
+          "identity": {
+            "repository": "austral/austral",
+            "revision": "0962d2a8a5d77f7daacd7f696819520733f4897d"
+          },
+          "name": "Austral linear programming language compiler"
+        },
+        {
+          "identity": {
+            "arxiv": "1710.09756v2",
+            "doi": "10.1145/3158093",
+            "title": "Linear Haskell: Practical Linearity in a Higher-Order Polymorphic Language",
+            "venue": "PACMPL 2(POPL)",
+            "year": "2018"
+          },
+          "name": "Bernardy et al. 2018 Linear Haskell (POPL '18)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2824815.2824816",
+            "title": "Deny Capabilities for Safe, Fast Actors",
+            "venue": "AGERE! '15",
+            "year": "2015"
+          },
+          "name": "Clebsch, Drossopoulou, Blessing, and McNeil 2015 Pony deny capabilities (AGERE! '15)"
+        },
+        {
+          "identity": {
+            "repository": "ponylang/ponyc",
+            "revision": "b2d900f3287e40e8e048b6f715a9f461932e14c1"
+          },
+          "name": "Pony compiler reference capability and viewpoint checker"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.02983v1",
+            "doi": "10.1145/3622846",
+            "title": "Reference Capabilities for Flexible Memory Management",
+            "venue": "PACMPL 7(OOPSLA2)",
+            "year": "2023"
+          },
+          "name": "Arvidsson et al. 2023 Project Verona Reggio region capabilities (OOPSLA '23)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622852",
+            "title": "When Concurrency Matters: Behaviour-Oriented Concurrency",
+            "venue": "PACMPL 7(OOPSLA2)",
+            "year": "2023"
+          },
+          "name": "Cheeseman et al. 2023 Project Verona Behaviour-Oriented Concurrency (OOPSLA '23)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/verona-rt",
+            "revision": "5cb8e8cf3699fa53c8a9b8dc34e4431c40d6230f"
+          },
+          "name": "Project Verona C++ runtime (cowns, BehaviourCore 2PL, and per-region allocators)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/verona",
+            "revision": "ed33fdf1c2e249a0393ead1cffd6e40503c70f2c"
+          },
+          "name": "Project Verona language documentation and VIR test suite"
+        }
+      ],
+      "topics": [
+        "pl/ownership",
+        "pl/memory-management",
+        "pl/types",
+        "pl/regions",
+        "pl/linearity"
+      ]
+    },
+    "package-management-version-solving-semver-and-supply-chain-boundaries": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "authors": "Fabio Mancinelli, Jaap Boender, Roberto Di Cosmo, J\u00e9r\u00f4me Vouillon, Berke Durak, Xavier Leroy, Ralf Treinen",
+            "doi": "10.1109/ASE.2006.49",
+            "title": "Managing the Complexity of Large Free and Open Source Package-Based Software Distributions",
+            "venue": "Proceedings of the 21st IEEE/ACM International Conference on Automated Software Engineering (ASE 2006), pp. 199-208",
+            "year": "2006"
+          },
+          "name": "EDOS FOSS package installability NP-completeness paper (Mancinelli et al., ASE 2006)"
+        },
+        {
+          "identity": {
+            "authors": "Pietro Abate, Roberto Di Cosmo, Ralf Treinen, Stefano Zacchiroli",
+            "doi": "10.1016/j.jss.2012.05.018",
+            "title": "Dependency solving: a separate concern in component evolution management",
+            "venue": "Journal of Systems and Software, Vol. 85, No. 10, pp. 2228-2240",
+            "year": "2012"
+          },
+          "name": "Mancoosi modular dependency solving and CUDF architecture paper (Abate et al., JSS 2012)"
+        },
+        {
+          "identity": {
+            "path": "doc/solver.md",
+            "repository": "dart-lang/pub",
+            "revision": "fe190660d68a4dd3070fe33fc406ff58d754dccc"
+          },
+          "name": "Dart pub PubGrub version-solving specification"
+        },
+        {
+          "identity": {
+            "repository": "pubgrub-rs/pubgrub",
+            "revision": "65355b4a1192c5a0fadb81f301e6dea713ae78d8"
+          },
+          "name": "pubgrub-rs CDCL version solver implementation"
+        },
+        {
+          "identity": {
+            "path": "src/cmd/go/internal/mvs/mvs.go",
+            "repository": "golang/go",
+            "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+          },
+          "name": "Go Modules Minimal Version Selection (cmd/go/internal/mvs)"
+        },
+        {
+          "identity": {
+            "path": "src/main/java/com/google/devtools/build/lib/bazel/bzlmod/Selection.java",
+            "repository": "bazelbuild/bazel",
+            "revision": "3a881392ced3ddf4b9ae0cfdaaf20765c7d17cdb"
+          },
+          "name": "Bazel Bzlmod module selection (Selection.java)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "e35351676760e4c90ccad19aaf85cec75e1af8b3"
+          },
+          "name": "Cargo dependency resolver, native links validator, build scripts, and fingerprinting"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs 1023, 1105, 1977, 2451, 3516, and 3537"
+        },
+        {
+          "identity": {
+            "repository": "obi1kenobi/cargo-semver-checks",
+            "revision": "8f25eea7e6869fc6710431c3dbd89f020d20a65c"
+          },
+          "name": "cargo-semver-checks static API SemVer linter"
+        },
+        {
+          "identity": {
+            "repository": "sourceware.org/git/libabigail.git",
+            "revision": "a769028c7a8f760f9d712a2fbdcf6bc430c8cfc9"
+          },
+          "name": "Libabigail ELF/DWARF/CTF/BTF ABI comparison library (abidiff)"
+        },
+        {
+          "identity": {
+            "repository": "in-toto/attestation",
+            "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+          },
+          "name": "in-toto Attestation Framework v1 specification and provenance schemas"
+        },
+        {
+          "identity": {
+            "repository": "slsa-framework/slsa",
+            "revision": "8c3161670b7a6cf7bd6d858b2332ae7eb0838b0c"
+          },
+          "name": "SLSA Build Track and Provenance specification"
+        },
+        {
+          "identity": {
+            "path": "src/lake/Lake/Build/Trace.lean",
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 Lake build trace and modification-time freshness model"
+        },
+        {
+          "identity": {
+            "authors": "Barbara H. Liskov, Jeannette M. Wing",
+            "doi": "10.1145/197320.197383",
+            "title": "A Behavioral Notion of Subtyping",
+            "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 16, No. 6, pp. 1811-1841",
+            "year": "1994"
+          },
+          "name": "Behavioral subtyping formal specification (Liskov & Wing, TOPLAS 1994)"
+        },
+        {
+          "identity": {
+            "path": "semver.md",
+            "repository": "semver/semver",
+            "revision": "f99d5485190a47c0863949e7da810a5553e0ed4d"
+          },
+          "name": "Semantic Versioning 2.0.0 specification"
+        }
+      ],
+      "topics": [
+        "tooling/package-managers",
+        "build/dependency-resolution",
+        "security/supply-chain",
+        "ffi/versioning",
+        "cargo/resolver",
+        "rust/semver"
+      ]
+    },
     "partial-sroa-escaping-fields-and-unsafecell-hybrid-memory-lenses": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -25683,6 +27153,123 @@
         "rust",
         "systems",
         "verification"
+      ]
+    },
+    "polymorphism-compilation-layout-algebras-and-abi-resilience": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "3be0cf4b450b5366cff4b1a7e5bf7e5b4633224f"
+          },
+          "name": "Swift compiler, runtime, and ABI specification"
+        },
+        {
+          "identity": {
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC) representation and levity polymorphism"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy layout algebra and derive crate (main)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "12f746d2307c30455db1875b9b80e45ada5b8675"
+          },
+          "name": "zerocopy Ref pointer metadata preservation fix"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "242ff08b5cf0d7723c0bc29ccfac0628b967d794"
+          },
+          "name": "zerocopy TrailingSliceLayout affine-ceiling normalization fix"
+        },
+        {
+          "identity": {
+            "path": "text/2580-ptr-meta.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 2580: Pointer metadata and APIs"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+          },
+          "name": "Rust compiler and core pointer metadata library"
+        },
+        {
+          "identity": {
+            "path": "src/type-layout.md",
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference: Type layout"
+        },
+        {
+          "identity": {
+            "repository": "golang/proposal",
+            "revision": "83ee2aaf9fdcc1a1cf4bb4d20216fc979635cf04"
+          },
+          "name": "Go generics GCShape stenciling and dictionary design proposals"
+        },
+        {
+          "identity": {
+            "repository": "dotnet/runtime",
+            "revision": "db341b0b461356d954079d27e86cb47c929e7e8a"
+          },
+          "name": ".NET CoreCLR generic dictionary and runtime type system"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/199448.199475",
+            "venue": "POPL '95, pp. 130-141",
+            "year": "1995"
+          },
+          "name": "Harper & Morrisett (1995): Compiling Polymorphism Using Intensional Type Analysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/235805.235830",
+            "venue": "PLDI '96, pp. 181-192",
+            "year": "1996"
+          },
+          "name": "Tarditi et al. (1996): TIL: A Type-Directed Optimizing Compiler for ML"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/378795.378797",
+            "venue": "PLDI '01, pp. 1-12",
+            "year": "2001"
+          },
+          "name": "Kennedy & Syme (2001): Design and Implementation of Generics for the .NET Common Language Runtime"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062357",
+            "venue": "PLDI '17, pp. 525-539",
+            "year": "2017"
+          },
+          "name": "Eisenberg & Peyton Jones (2017): Levity Polymorphism"
+        }
+      ],
+      "topics": [
+        "compilers/generics",
+        "pl/layout",
+        "ffi/abi-resilience",
+        "pl/types",
+        "rust/layout",
+        "zerocopy/layout"
       ]
     },
     "portable-simd-repr-simd-legalization-and-cross-arch-cost-certificates": {
@@ -36748,6 +38335,252 @@
         "rustc/codegen",
         "verification",
         "verification/compiler-verification"
+      ]
+    },
+    "type-system-interactions-subtyping-polymorphism-and-decidability": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "ghc/ghc",
+            "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+          },
+          "name": "Glasgow Haskell Compiler (GHC)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "scala/scala3",
+            "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+          },
+          "name": "Scala 3 Compiler (Dotty)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "idris-lang/Idris2",
+            "revision": "cf66cb4ccb8f0df7876fd07842f056f6222b9dce"
+          },
+          "name": "Idris 2 Compiler"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "LPTK/simple-sub",
+            "revision": "ace6a33abb3563f56938c4987cd52145d5b99ba1"
+          },
+          "name": "Simple-sub Reference Implementation"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "flux-rs/flux",
+            "revision": "7d9886b36347e9e245fa8b354da7fb9662a2087c"
+          },
+          "name": "Flux Liquid Refinement Type Checker for Rust"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "leanprover/lean4",
+            "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e"
+          },
+          "name": "Lean 4 Kernel"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "repository": "rocq-prover/rocq",
+            "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+          },
+          "name": "Rocq Prover Kernel"
+        },
+        {
+          "identity": {
+            "authors": "Benjamin C. Pierce",
+            "doi": "10.1006/inco.1994.1055",
+            "venue": "Information and Computation 112(1), pp. 131-165 (extended version of POPL 1992)",
+            "year": "1994"
+          },
+          "name": "Bounded Quantification is Undecidable (Pierce, 1994)"
+        },
+        {
+          "identity": {
+            "authors": "J. B. Wells",
+            "doi": "10.1016/S0168-0072(98)00047-5",
+            "venue": "Annals of Pure and Applied Logic 98(1-3) (extended version of LICS 1994)",
+            "year": "1999"
+          },
+          "name": "Typability and Type Checking in System F Are Equivalent and Undecidable (Wells, 1999)"
+        },
+        {
+          "identity": {
+            "authors": "Stephen Dolan, Alan Mycroft",
+            "doi": "10.1145/3009837.3009882",
+            "venue": "POPL 2017",
+            "year": "2017"
+          },
+          "name": "Polymorphism, Subtyping, and Type Inference in MLsub (Dolan & Mycroft, 2017)"
+        },
+        {
+          "identity": {
+            "authors": "Lionel Parreaux",
+            "doi": "10.1145/3409006",
+            "venue": "Proc. ACM Program. Lang. 4(ICFP), Article 124",
+            "year": "2020"
+          },
+          "name": "The Simple Essence of Algebraic Subtyping (Parreaux, 2020)"
+        },
+        {
+          "identity": {
+            "authors": "Radu Grigore",
+            "doi": "10.1145/3009837.3009871",
+            "venue": "POPL 2017",
+            "year": "2017"
+          },
+          "name": "Java Generics are Turing Complete (Grigore, 2017)"
+        },
+        {
+          "identity": {
+            "authors": "Nada Amin, Ross Tate",
+            "doi": "10.1145/2983990.2984004",
+            "venue": "OOPSLA 2016",
+            "year": "2016"
+          },
+          "name": "Java and Scala's Type Systems are Unsound (Amin & Tate, 2016)"
+        },
+        {
+          "identity": {
+            "authors": "Nada Amin, Samuel Gr\u00fctter, Martin Odersky, Tiark Rompf, Sandro Stucki",
+            "doi": "10.1007/978-3-319-30936-1_14",
+            "venue": "A List of Successes That Can Change the World (WadlerFest), LNCS 9600",
+            "year": "2016"
+          },
+          "name": "The Essence of Dependent Object Types (Amin et al., 2016)"
+        },
+        {
+          "identity": {
+            "authors": "Tiark Rompf, Nada Amin",
+            "doi": "10.1145/2983990.2984008",
+            "venue": "OOPSLA 2016",
+            "year": "2016"
+          },
+          "name": "Type Soundness for Dependent Object Types (Rompf & Amin, 2016)"
+        },
+        {
+          "identity": {
+            "authors": "Jason Z. S. Hu, Ond\u0159ej Lhot\u00e1k",
+            "doi": "10.1145/3371077",
+            "venue": "POPL 2020",
+            "year": "2020"
+          },
+          "name": "Undecidability of D<: and Its Decidable Fragments (Hu & Lhot\u00e1k, 2020)"
+        },
+        {
+          "identity": {
+            "authors": "Dimitrios Vytiniotis, Simon Peyton Jones, Tom Schrijvers, Martin Sulzmann",
+            "doi": "10.1017/S0956796811000098",
+            "venue": "Journal of Functional Programming 21(4-5)",
+            "year": "2011"
+          },
+          "name": "OutsideIn(X): Modular Type Inference with Local Assumptions (Vytiniotis et al., 2011)"
+        },
+        {
+          "identity": {
+            "authors": "Alejandro Serrano, Jurriaan Hage, Simon Peyton Jones, Dimitrios Vytiniotis",
+            "doi": "10.1145/3408971",
+            "venue": "Proc. ACM Program. Lang. 4(ICFP), Article 89",
+            "year": "2020"
+          },
+          "name": "A Quick Look at Impredicativity (Serrano et al., 2020)"
+        },
+        {
+          "identity": {
+            "authors": "Sebastian Graf, Simon Peyton Jones, Ryan G. Scott",
+            "doi": "10.1145/3408989",
+            "venue": "Proc. ACM Program. Lang. 4(ICFP)",
+            "year": "2020"
+          },
+          "name": "Lower Your Guards: A Compositional Pattern-Match Coverage Checker (Graf et al., 2020)"
+        },
+        {
+          "identity": {
+            "authors": "Jana Dunfield, Neelakantan R. Krishnaswami",
+            "doi": "10.1145/3450952",
+            "venue": "ACM Computing Surveys 54(5)",
+            "year": "2021"
+          },
+          "name": "Bidirectional Typing (Dunfield & Krishnaswami, 2021)"
+        },
+        {
+          "identity": {
+            "authors": "Warren D. Goldfarb",
+            "doi": "10.1016/0304-3975(81)90040-2",
+            "venue": "Theoretical Computer Science 13(2)",
+            "year": "1981"
+          },
+          "name": "The Undecidability of the Second-Order Unification Problem (Goldfarb, 1981)"
+        },
+        {
+          "identity": {
+            "authors": "Dale Miller",
+            "doi": "10.1093/logcom/1.4.497",
+            "venue": "Journal of Logic and Computation 1(4)",
+            "year": "1991"
+          },
+          "name": "A Logic Programming Language with Lambda-Abstraction, Function Variables, and Simple Unification (Miller, 1991)"
+        },
+        {
+          "identity": {
+            "authors": "Robert Atkey",
+            "doi": "10.1145/3209108.3209189",
+            "venue": "LICS 2018",
+            "year": "2018"
+          },
+          "name": "Syntax and Semantics of Quantitative Type Theory (Atkey, 2018)"
+        },
+        {
+          "identity": {
+            "authors": "Edwin Brady",
+            "doi": "10.4230/LIPIcs.ECOOP.2021.9",
+            "venue": "ECOOP 2021",
+            "year": "2021"
+          },
+          "name": "Idris 2: Quantitative Type Theory in Practice (Brady, 2021)"
+        },
+        {
+          "identity": {
+            "authors": "Ga\u00ebtan Gilbert, Jesper Cockx, Matthieu Sozeau, Nicolas Tabareau",
+            "doi": "10.1145/3290316",
+            "venue": "POPL 2019",
+            "year": "2019"
+          },
+          "name": "Definitional Proof-Irrelevance without K (Gilbert et al., 2019)"
+        },
+        {
+          "identity": {
+            "authors": "Patrick M. Rondon, Ming Kawaguchi, Ranjit Jhala",
+            "doi": "10.1145/1375581.1375602",
+            "venue": "PLDI 2008",
+            "year": "2008"
+          },
+          "name": "Liquid Types (Rondon, Kawaguchi & Jhala, 2008)"
+        },
+        {
+          "identity": {
+            "authors": "Nico Lehmann, Adam T. Geller, Niki Vazou, Ranjit Jhala",
+            "doi": "10.1145/3591283",
+            "venue": "PLDI 2023",
+            "year": "2023"
+          },
+          "name": "Flux: Liquid Types for Rust (Lehmann et al., 2023)"
+        }
+      ],
+      "topics": [
+        "pl/types",
+        "pl/inference",
+        "verification/type-theory"
       ]
     },
     "type-validity-seeded-range-and-farkas-bounds-check-elimination": {

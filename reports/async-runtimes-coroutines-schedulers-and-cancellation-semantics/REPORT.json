@@ -1,0 +1,124 @@
+{
+  "topics": [
+    "runtimes/async-schedulers",
+    "runtimes/coroutines",
+    "pl/concurrency",
+    "ffi/async-interop",
+    "verification/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "Go runtime scheduler, stack growth, preemption, and cgo",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764"
+      }
+    },
+    {
+      "name": "OpenJDK HotSpot continuations, virtual threads, and StructuredTaskScope",
+      "identity": {
+        "repository": "openjdk/jdk",
+        "revision": "4f33273115381cd7697082fcb1bb2642dae19043"
+      }
+    },
+    {
+      "name": "Erlang/OTP BEAM ERTS process scheduler and dirty NIFs",
+      "identity": {
+        "repository": "erlang/otp",
+        "revision": "2f60d1b6a246b3f7ae997fd93a9af067fab7f981"
+      }
+    },
+    {
+      "name": "Tokio multi-thread work-stealing runtime, coop budget, select!, and channels",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "fc0d151753b5fb10125ecef2d48f29b192c9abcf"
+      }
+    },
+    {
+      "name": "Trio structured concurrency runtime (CancelScope, Nursery, checkpoints)",
+      "identity": {
+        "repository": "python-trio/trio",
+        "revision": "c327959a7175c86e1801b4ee8a17920c82b415e5"
+      }
+    },
+    {
+      "name": "OCaml 5 runtime segmented fiber stacks",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+      }
+    },
+    {
+      "name": "OCaml Eio structured concurrency switches and cancellation contexts",
+      "identity": {
+        "repository": "ocaml-multicore/eio",
+        "revision": "07069de0954fd2d991d7b2f6ea555f28c7abc2d4"
+      }
+    },
+    {
+      "name": "Kotlin coroutines Job lifecycle and NonCancellable cleanup",
+      "identity": {
+        "repository": "Kotlin/kotlinx.coroutines",
+        "revision": "7f4d6cf2414937b50291df6169a69afbaf9c5a20"
+      }
+    },
+    {
+      "name": "Rust core Future and unstable AsyncDrop traits",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b0b600668bb9b4a897e2299b0a44289d42276545"
+      }
+    },
+    {
+      "name": "LLVM CoroElide (HALO) coroutine heap-allocation elision pass",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "d56bc48c9c0ea19b58427b3c6f114bd669710cbd"
+      }
+    },
+    {
+      "name": "Loom DPOR bounded-preemption concurrency model checker",
+      "identity": {
+        "repository": "tokio-rs/loom",
+        "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+      }
+    },
+    {
+      "name": "Shuttle randomized PCT/DFS concurrency testing scheduler",
+      "identity": {
+        "repository": "awslabs/shuttle",
+        "revision": "72bdbdb612c2311905c84bbc73d59f12a5b17e43"
+      }
+    },
+    {
+      "name": "Chase & Lev (2005) Dynamic Circular Work-Stealing Deque",
+      "identity": {
+        "doi": "10.1145/1073970.1073974",
+        "venue": "SPAA '05"
+      }
+    },
+    {
+      "name": "Le, Pop, Cohen & Zappa Nardelli (2013) Correct and Efficient Work-Stealing for Weak Memory Models",
+      "identity": {
+        "doi": "10.1145/2442516.2442524",
+        "venue": "PPoPP '13"
+      }
+    },
+    {
+      "name": "Smith (2018) Notes on structured concurrency, or: Go statement considered harmful",
+      "identity": {
+        "url": "https://vorpus.org/blog/notes-on-structured-concurrency-or-go-statement-considered-harmful/",
+        "date": "2018-04-25"
+      }
+    },
+    {
+      "name": "WG21 P0981R0 Halo: coroutine Heap Allocation eLision Optimization: the joint response",
+      "identity": {
+        "document": "WG21 P0981R0",
+        "date": "2018-03-18"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

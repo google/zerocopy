@@ -1,0 +1,197 @@
+{
+  "topics": [
+    "pl/gradual-typing",
+    "ffi/contracts",
+    "runtimes/casts",
+    "pl/soundness"
+  ],
+  "subjects": [
+    {
+      "name": "Siek & Taha (2006) — Gradual Typing for Functional Languages",
+      "identity": {
+        "authors": "Jeremy G. Siek and Walid Taha",
+        "title": "Gradual Typing for Functional Languages",
+        "venue": "Scheme and Functional Programming Workshop 2006, pp. 81-92",
+        "url": "https://jsiek.github.io/home/siek06gradual.pdf"
+      }
+    },
+    {
+      "name": "Matthews & Findler (2007) — Operational Semantics for Multi-Language Programs",
+      "identity": {
+        "authors": "Jacob Matthews and Robert Bruce Findler",
+        "title": "Operational Semantics for Multi-Language Programs",
+        "venue": "POPL 2007, pp. 3-10",
+        "doi": "10.1145/1190216.1190220"
+      }
+    },
+    {
+      "name": "Wadler & Findler (2009) — Well-Typed Programs Can't Be Blamed",
+      "identity": {
+        "authors": "Philip Wadler and Robert Bruce Findler",
+        "title": "Well-Typed Programs Can't Be Blamed",
+        "venue": "ESOP 2009, LNCS vol. 5502, pp. 1-16",
+        "doi": "10.1007/978-3-642-00590-9_1"
+      }
+    },
+    {
+      "name": "Herman, Tomb & Flanagan (2010) — Space-Efficient Gradual Typing",
+      "identity": {
+        "authors": "David Herman, Aaron Tomb, and Cormac Flanagan",
+        "title": "Space-Efficient Gradual Typing",
+        "venue": "Higher-Order and Symbolic Computation 23(2), pp. 167-189",
+        "doi": "10.1007/s10990-011-9066-z"
+      }
+    },
+    {
+      "name": "Strickland et al. (2012) — Chaperones and Impersonators",
+      "identity": {
+        "authors": "T. Stephen Strickland, Sam Tobin-Hochstadt, Robert Bruce Findler, and Matthew Flatt",
+        "title": "Chaperones and Impersonators: Run-Time Support for Reasonable Interposition",
+        "venue": "OOPSLA 2012, pp. 943-962",
+        "doi": "10.1145/2384616.2384685"
+      }
+    },
+    {
+      "name": "Siek et al. (2015) — Refined Criteria for Gradual Typing",
+      "identity": {
+        "authors": "Jeremy G. Siek, Michael M. Vitousek, Matteo Cimini, and John Tang Boyland",
+        "title": "Refined Criteria for Gradual Typing",
+        "venue": "SNAPL 2015, LIPIcs vol. 32, pp. 274-293",
+        "doi": "10.4230/LIPIcs.SNAPL.2015.274"
+      }
+    },
+    {
+      "name": "Takikawa et al. (2016) — Is Sound Gradual Typing Dead?",
+      "identity": {
+        "authors": "Asumu Takikawa, Daniel Feltey, Ben Greenman, Max S. New, Jan Vitek, and Matthias Felleisen",
+        "title": "Is Sound Gradual Typing Dead?",
+        "venue": "POPL 2016, pp. 456-468",
+        "doi": "10.1145/2837614.2837630"
+      }
+    },
+    {
+      "name": "Vitousek, Swords & Siek (2017) — Big Types in Little Runtime",
+      "identity": {
+        "authors": "Michael M. Vitousek, Cameron Swords, and Jeremy G. Siek",
+        "title": "Big Types in Little Runtime: Open-World Soundness and Collaborative Blame for Gradual Type Systems",
+        "venue": "POPL 2017, pp. 762-774",
+        "doi": "10.1145/3009837.3009849"
+      }
+    },
+    {
+      "name": "Muehlboeck & Tate (2017) — Sound Gradual Typing is Nominally Alive and Well",
+      "identity": {
+        "authors": "Fabian Muehlboeck and Ross Tate",
+        "title": "Sound Gradual Typing is Nominally Alive and Well",
+        "venue": "Proc. ACM Program. Lang. 1(OOPSLA), Article 56",
+        "doi": "10.1145/3133880"
+      }
+    },
+    {
+      "name": "Greenman & Felleisen (2018) — A Spectrum of Type Soundness and Performance",
+      "identity": {
+        "authors": "Ben Greenman and Matthias Felleisen",
+        "title": "A Spectrum of Type Soundness and Performance",
+        "venue": "Proc. ACM Program. Lang. 2(ICFP), Article 71",
+        "doi": "10.1145/3236766"
+      }
+    },
+    {
+      "name": "Feltey et al. (2018) — Collapsible Contracts",
+      "identity": {
+        "authors": "Daniel Feltey, Ben Greenman, Christophe Scholliers, Robert Bruce Findler, and Vincent St-Amour",
+        "title": "Collapsible Contracts: Fixing a Pathology of Gradual Typing",
+        "venue": "Proc. ACM Program. Lang. 2(OOPSLA), Article 133",
+        "doi": "10.1145/3276503"
+      }
+    },
+    {
+      "name": "Greenman et al. (2019) — How to Evaluate the Performance of Gradual Type Systems",
+      "identity": {
+        "authors": "Ben Greenman, Asumu Takikawa, Max S. New, Daniel Feltey, Robert Bruce Findler, Jan Vitek, and Matthias Felleisen",
+        "title": "How to Evaluate the Performance of Gradual Type Systems",
+        "venue": "Journal of Functional Programming 29, e4 (45 pp.)",
+        "doi": "10.1017/S0956796818000217"
+      }
+    },
+    {
+      "name": "Greenman, Felleisen & Dimoulas (2019) — Complete Monitors for Gradual Types",
+      "identity": {
+        "authors": "Ben Greenman, Matthias Felleisen, and Christos Dimoulas",
+        "title": "Complete Monitors for Gradual Types",
+        "venue": "Proc. ACM Program. Lang. 3(OOPSLA), Article 122",
+        "doi": "10.1145/3360548"
+      }
+    },
+    {
+      "name": "Kuhlenschmidt, Almahallawi & Siek (2019) — Toward Efficient Gradual Typing for Structural Types via Coercions",
+      "identity": {
+        "authors": "Andre Kuhlenschmidt, Deyaaeldeen Almahallawi, and Jeremy G. Siek",
+        "title": "Toward Efficient Gradual Typing for Structural Types via Coercions",
+        "venue": "PLDI 2019, pp. 517-532",
+        "doi": "10.1145/3314221.3314627"
+      }
+    },
+    {
+      "name": "Greenman (2022) — Deep and Shallow Types for Gradual Languages",
+      "identity": {
+        "authors": "Ben Greenman",
+        "title": "Deep and Shallow Types for Gradual Languages",
+        "venue": "PLDI 2022, pp. 580-593",
+        "doi": "10.1145/3519939.3523430"
+      }
+    },
+    {
+      "name": "Lu et al. (2023) — Gradual Soundness: Lessons from Static Python",
+      "identity": {
+        "authors": "Kuang-Chen Lu, Ben Greenman, Carl Meyer, Dino Viehland, Aniket Panse, and Shriram Krishnamurthi",
+        "title": "Gradual Soundness: Lessons from Static Python",
+        "venue": "The Art, Science, and Engineering of Programming 7(1), Article 2",
+        "doi": "10.22152/programming-journal.org/2023/7/2"
+      }
+    },
+    {
+      "name": "Typed Racket",
+      "identity": {
+        "repository": "racket/typed-racket",
+        "revision": "7fe7e11fae2b04e04525d63b01b33efe5ffad075"
+      }
+    },
+    {
+      "name": "Racket Runtime & Contract Library",
+      "identity": {
+        "repository": "racket/racket",
+        "revision": "8ed38e11307b13f25ca67224c66438b83340ae68"
+      }
+    },
+    {
+      "name": "Reticulated Python",
+      "identity": {
+        "repository": "mvitousek/reticulated",
+        "revision": "5cd2d10e0f92505a9db2bc573d8c23360ef6548b"
+      }
+    },
+    {
+      "name": "Grift Gradual Compiler",
+      "identity": {
+        "repository": "Gradual-Typing/Grift",
+        "revision": "5fa76f837a0d6189332343d7aa899892b3c49583"
+      }
+    },
+    {
+      "name": "CinderX Static Python Runtime",
+      "identity": {
+        "repository": "facebookincubator/cinderx",
+        "revision": "8ff26422ae5657cbcc9bc976c0695ab54cf861c1"
+      }
+    },
+    {
+      "name": "GTP Gradual Typing Performance Benchmarks",
+      "identity": {
+        "repository": "bennn/gtp-benchmarks",
+        "revision": "f974dcba643880399df9fe643009e9f04dc58f19"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

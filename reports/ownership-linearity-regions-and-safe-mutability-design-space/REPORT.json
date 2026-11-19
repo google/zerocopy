@@ -1,0 +1,181 @@
+{
+  "topics": [
+    "pl/ownership",
+    "pl/memory-management",
+    "pl/types",
+    "pl/regions",
+    "pl/linearity"
+  ],
+  "subjects": [
+    {
+      "name": "Tofte and Talpin 1994 stack-of-regions calculus (POPL '94)",
+      "identity": {
+        "doi": "10.1145/174675.177855",
+        "title": "Implementation of the Typed Call-by-Value lambda-Calculus using a Stack of Regions",
+        "venue": "POPL '94",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Tofte and Talpin 1997 region-based memory management (Information and Computation)",
+      "identity": {
+        "doi": "10.1006/inco.1996.2613",
+        "title": "Region-Based Memory Management",
+        "venue": "Information and Computation 132(2)",
+        "year": "1997"
+      }
+    },
+    {
+      "name": "Aiken, Fahndrich, and Levien 1995 early region deallocation (PLDI '95)",
+      "identity": {
+        "doi": "10.1145/223428.207137",
+        "title": "Better Static Memory Management: Improving Region-Based Analysis of Higher-Order Languages",
+        "venue": "PLDI '95",
+        "year": "1995"
+      }
+    },
+    {
+      "name": "Birkedal, Tofte, and Vejlstrup 1996 storage-mode analysis (POPL '96)",
+      "identity": {
+        "doi": "10.1145/237721.237771",
+        "title": "From Region Inference to von Neumann Machines via Region Representation Inference",
+        "venue": "POPL '96",
+        "year": "1996"
+      }
+    },
+    {
+      "name": "Grossman et al. 2002 Cyclone region-based memory management (PLDI '02)",
+      "identity": {
+        "doi": "10.1145/512529.512563",
+        "title": "Region-Based Memory Management in Cyclone",
+        "venue": "PLDI '02",
+        "year": "2002"
+      }
+    },
+    {
+      "name": "Swamy, Hicks, Morrisett, Grossman, and Jim 2006 safe manual memory management in Cyclone",
+      "identity": {
+        "doi": "10.1016/j.scico.2006.02.003",
+        "title": "Safe Manual Memory Management in Cyclone",
+        "venue": "Science of Computer Programming 62(2)",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Polonius borrow checker engine and specification",
+      "identity": {
+        "repository": "rust-lang/polonius",
+        "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+      }
+    },
+    {
+      "name": "Grannan et al. 2025 Place Capability Graphs (OOPSLA '25)",
+      "identity": {
+        "arxiv": "2503.21691v5",
+        "doi": "10.1145/3763122",
+        "title": "Place Capability Graphs: A General-Purpose Model of Rust's Ownership and Borrowing Guarantees",
+        "venue": "PACMPL 9(OOPSLA2)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Yanovski, Dang, Jung, and Dreyer 2021 GhostCell (ICFP '21)",
+      "identity": {
+        "doi": "10.1145/3473597",
+        "title": "GhostCell: Separating Permissions from Data in Rust",
+        "venue": "PACMPL 5(ICFP)",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Racordon, Shabalin, Zheng, Abrahams, and Saeta 2022 Mutable Value Semantics (JOT)",
+      "identity": {
+        "doi": "10.5381/jot.2022.21.2.a2",
+        "title": "Implementation Strategies for Mutable Value Semantics",
+        "venue": "Journal of Object Technology 21(2)",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Hylo compiler and language design documents",
+      "identity": {
+        "repository": "hylo-lang/hylo",
+        "revision": "6889158246df571baa9079115817ab2bff61156b"
+      }
+    },
+    {
+      "name": "Swift Evolution ownership, noncopyable, nonescapable, span, and reference proposals",
+      "identity": {
+        "repository": "swiftlang/swift-evolution",
+        "revision": "6385c2aee62d21727333b2539b06458a9476fb2d"
+      }
+    },
+    {
+      "name": "Austral linear programming language compiler",
+      "identity": {
+        "repository": "austral/austral",
+        "revision": "0962d2a8a5d77f7daacd7f696819520733f4897d"
+      }
+    },
+    {
+      "name": "Bernardy et al. 2018 Linear Haskell (POPL '18)",
+      "identity": {
+        "arxiv": "1710.09756v2",
+        "doi": "10.1145/3158093",
+        "title": "Linear Haskell: Practical Linearity in a Higher-Order Polymorphic Language",
+        "venue": "PACMPL 2(POPL)",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Clebsch, Drossopoulou, Blessing, and McNeil 2015 Pony deny capabilities (AGERE! '15)",
+      "identity": {
+        "doi": "10.1145/2824815.2824816",
+        "title": "Deny Capabilities for Safe, Fast Actors",
+        "venue": "AGERE! '15",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Pony compiler reference capability and viewpoint checker",
+      "identity": {
+        "repository": "ponylang/ponyc",
+        "revision": "b2d900f3287e40e8e048b6f715a9f461932e14c1"
+      }
+    },
+    {
+      "name": "Arvidsson et al. 2023 Project Verona Reggio region capabilities (OOPSLA '23)",
+      "identity": {
+        "arxiv": "2309.02983v1",
+        "doi": "10.1145/3622846",
+        "title": "Reference Capabilities for Flexible Memory Management",
+        "venue": "PACMPL 7(OOPSLA2)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Cheeseman et al. 2023 Project Verona Behaviour-Oriented Concurrency (OOPSLA '23)",
+      "identity": {
+        "doi": "10.1145/3622852",
+        "title": "When Concurrency Matters: Behaviour-Oriented Concurrency",
+        "venue": "PACMPL 7(OOPSLA2)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Project Verona C++ runtime (cowns, BehaviourCore 2PL, and per-region allocators)",
+      "identity": {
+        "repository": "microsoft/verona-rt",
+        "revision": "5cb8e8cf3699fa53c8a9b8dc34e4431c40d6230f"
+      }
+    },
+    {
+      "name": "Project Verona language documentation and VIR test suite",
+      "identity": {
+        "repository": "microsoft/verona",
+        "revision": "ed33fdf1c2e249a0393ead1cffd6e40503c70f2c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

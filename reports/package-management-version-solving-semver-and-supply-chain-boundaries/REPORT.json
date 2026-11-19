@@ -1,0 +1,132 @@
+{
+  "topics": [
+    "tooling/package-managers",
+    "build/dependency-resolution",
+    "security/supply-chain",
+    "ffi/versioning",
+    "cargo/resolver",
+    "rust/semver"
+  ],
+  "subjects": [
+    {
+      "name": "EDOS FOSS package installability NP-completeness paper (Mancinelli et al., ASE 2006)",
+      "identity": {
+        "authors": "Fabio Mancinelli, Jaap Boender, Roberto Di Cosmo, Jérôme Vouillon, Berke Durak, Xavier Leroy, Ralf Treinen",
+        "title": "Managing the Complexity of Large Free and Open Source Package-Based Software Distributions",
+        "venue": "Proceedings of the 21st IEEE/ACM International Conference on Automated Software Engineering (ASE 2006), pp. 199-208",
+        "doi": "10.1109/ASE.2006.49",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Mancoosi modular dependency solving and CUDF architecture paper (Abate et al., JSS 2012)",
+      "identity": {
+        "authors": "Pietro Abate, Roberto Di Cosmo, Ralf Treinen, Stefano Zacchiroli",
+        "title": "Dependency solving: a separate concern in component evolution management",
+        "venue": "Journal of Systems and Software, Vol. 85, No. 10, pp. 2228-2240",
+        "doi": "10.1016/j.jss.2012.05.018",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Dart pub PubGrub version-solving specification",
+      "identity": {
+        "repository": "dart-lang/pub",
+        "revision": "fe190660d68a4dd3070fe33fc406ff58d754dccc",
+        "path": "doc/solver.md"
+      }
+    },
+    {
+      "name": "pubgrub-rs CDCL version solver implementation",
+      "identity": {
+        "repository": "pubgrub-rs/pubgrub",
+        "revision": "65355b4a1192c5a0fadb81f301e6dea713ae78d8"
+      }
+    },
+    {
+      "name": "Go Modules Minimal Version Selection (cmd/go/internal/mvs)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "b496a3044e1dcdc3eed0af3e0e89db92f740d764",
+        "path": "src/cmd/go/internal/mvs/mvs.go"
+      }
+    },
+    {
+      "name": "Bazel Bzlmod module selection (Selection.java)",
+      "identity": {
+        "repository": "bazelbuild/bazel",
+        "revision": "3a881392ced3ddf4b9ae0cfdaaf20765c7d17cdb",
+        "path": "src/main/java/com/google/devtools/build/lib/bazel/bzlmod/Selection.java"
+      }
+    },
+    {
+      "name": "Cargo dependency resolver, native links validator, build scripts, and fingerprinting",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "e35351676760e4c90ccad19aaf85cec75e1af8b3"
+      }
+    },
+    {
+      "name": "Rust RFCs 1023, 1105, 1977, 2451, 3516, and 3537",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "cargo-semver-checks static API SemVer linter",
+      "identity": {
+        "repository": "obi1kenobi/cargo-semver-checks",
+        "revision": "8f25eea7e6869fc6710431c3dbd89f020d20a65c"
+      }
+    },
+    {
+      "name": "Libabigail ELF/DWARF/CTF/BTF ABI comparison library (abidiff)",
+      "identity": {
+        "repository": "sourceware.org/git/libabigail.git",
+        "revision": "a769028c7a8f760f9d712a2fbdcf6bc430c8cfc9"
+      }
+    },
+    {
+      "name": "in-toto Attestation Framework v1 specification and provenance schemas",
+      "identity": {
+        "repository": "in-toto/attestation",
+        "revision": "50bf01716982189898823e90586075f37cd9bb7d"
+      }
+    },
+    {
+      "name": "SLSA Build Track and Provenance specification",
+      "identity": {
+        "repository": "slsa-framework/slsa",
+        "revision": "8c3161670b7a6cf7bd6d858b2332ae7eb0838b0c"
+      }
+    },
+    {
+      "name": "Lean 4 Lake build trace and modification-time freshness model",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e",
+        "path": "src/lake/Lake/Build/Trace.lean"
+      }
+    },
+    {
+      "name": "Behavioral subtyping formal specification (Liskov & Wing, TOPLAS 1994)",
+      "identity": {
+        "authors": "Barbara H. Liskov, Jeannette M. Wing",
+        "title": "A Behavioral Notion of Subtyping",
+        "venue": "ACM Transactions on Programming Languages and Systems (TOPLAS), Vol. 16, No. 6, pp. 1811-1841",
+        "doi": "10.1145/197320.197383",
+        "year": "1994"
+      }
+    },
+    {
+      "name": "Semantic Versioning 2.0.0 specification",
+      "identity": {
+        "repository": "semver/semver",
+        "revision": "f99d5485190a47c0863949e7da810a5553e0ed4d",
+        "path": "semver.md"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

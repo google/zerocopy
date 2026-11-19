@@ -1,0 +1,246 @@
+{
+  "topics": [
+    "pl/types",
+    "pl/inference",
+    "verification/type-theory"
+  ],
+  "subjects": [
+    {
+      "name": "Glasgow Haskell Compiler (GHC)",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "Scala 3 Compiler (Dotty)",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Idris 2 Compiler",
+      "identity": {
+        "repository": "idris-lang/Idris2",
+        "revision": "cf66cb4ccb8f0df7876fd07842f056f6222b9dce",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Simple-sub Reference Implementation",
+      "identity": {
+        "repository": "LPTK/simple-sub",
+        "revision": "ace6a33abb3563f56938c4987cd52145d5b99ba1",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "Flux Liquid Refinement Type Checker for Rust",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "7d9886b36347e9e245fa8b354da7fb9662a2087c",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Lean 4 Kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "8009d0a64d2860606c6a5ac5ff6702622b24921e",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "Rocq Prover Kernel",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4",
+        "branch": "master"
+      }
+    },
+    {
+      "name": "Bounded Quantification is Undecidable (Pierce, 1994)",
+      "identity": {
+        "authors": "Benjamin C. Pierce",
+        "venue": "Information and Computation 112(1), pp. 131-165 (extended version of POPL 1992)",
+        "year": "1994",
+        "doi": "10.1006/inco.1994.1055"
+      }
+    },
+    {
+      "name": "Typability and Type Checking in System F Are Equivalent and Undecidable (Wells, 1999)",
+      "identity": {
+        "authors": "J. B. Wells",
+        "venue": "Annals of Pure and Applied Logic 98(1-3) (extended version of LICS 1994)",
+        "year": "1999",
+        "doi": "10.1016/S0168-0072(98)00047-5"
+      }
+    },
+    {
+      "name": "Polymorphism, Subtyping, and Type Inference in MLsub (Dolan & Mycroft, 2017)",
+      "identity": {
+        "authors": "Stephen Dolan, Alan Mycroft",
+        "venue": "POPL 2017",
+        "year": "2017",
+        "doi": "10.1145/3009837.3009882"
+      }
+    },
+    {
+      "name": "The Simple Essence of Algebraic Subtyping (Parreaux, 2020)",
+      "identity": {
+        "authors": "Lionel Parreaux",
+        "venue": "Proc. ACM Program. Lang. 4(ICFP), Article 124",
+        "year": "2020",
+        "doi": "10.1145/3409006"
+      }
+    },
+    {
+      "name": "Java Generics are Turing Complete (Grigore, 2017)",
+      "identity": {
+        "authors": "Radu Grigore",
+        "venue": "POPL 2017",
+        "year": "2017",
+        "doi": "10.1145/3009837.3009871"
+      }
+    },
+    {
+      "name": "Java and Scala's Type Systems are Unsound (Amin & Tate, 2016)",
+      "identity": {
+        "authors": "Nada Amin, Ross Tate",
+        "venue": "OOPSLA 2016",
+        "year": "2016",
+        "doi": "10.1145/2983990.2984004"
+      }
+    },
+    {
+      "name": "The Essence of Dependent Object Types (Amin et al., 2016)",
+      "identity": {
+        "authors": "Nada Amin, Samuel Grütter, Martin Odersky, Tiark Rompf, Sandro Stucki",
+        "venue": "A List of Successes That Can Change the World (WadlerFest), LNCS 9600",
+        "year": "2016",
+        "doi": "10.1007/978-3-319-30936-1_14"
+      }
+    },
+    {
+      "name": "Type Soundness for Dependent Object Types (Rompf & Amin, 2016)",
+      "identity": {
+        "authors": "Tiark Rompf, Nada Amin",
+        "venue": "OOPSLA 2016",
+        "year": "2016",
+        "doi": "10.1145/2983990.2984008"
+      }
+    },
+    {
+      "name": "Undecidability of D<: and Its Decidable Fragments (Hu & Lhoták, 2020)",
+      "identity": {
+        "authors": "Jason Z. S. Hu, Ondřej Lhoták",
+        "venue": "POPL 2020",
+        "year": "2020",
+        "doi": "10.1145/3371077"
+      }
+    },
+    {
+      "name": "OutsideIn(X): Modular Type Inference with Local Assumptions (Vytiniotis et al., 2011)",
+      "identity": {
+        "authors": "Dimitrios Vytiniotis, Simon Peyton Jones, Tom Schrijvers, Martin Sulzmann",
+        "venue": "Journal of Functional Programming 21(4-5)",
+        "year": "2011",
+        "doi": "10.1017/S0956796811000098"
+      }
+    },
+    {
+      "name": "A Quick Look at Impredicativity (Serrano et al., 2020)",
+      "identity": {
+        "authors": "Alejandro Serrano, Jurriaan Hage, Simon Peyton Jones, Dimitrios Vytiniotis",
+        "venue": "Proc. ACM Program. Lang. 4(ICFP), Article 89",
+        "year": "2020",
+        "doi": "10.1145/3408971"
+      }
+    },
+    {
+      "name": "Lower Your Guards: A Compositional Pattern-Match Coverage Checker (Graf et al., 2020)",
+      "identity": {
+        "authors": "Sebastian Graf, Simon Peyton Jones, Ryan G. Scott",
+        "venue": "Proc. ACM Program. Lang. 4(ICFP)",
+        "year": "2020",
+        "doi": "10.1145/3408989"
+      }
+    },
+    {
+      "name": "Bidirectional Typing (Dunfield & Krishnaswami, 2021)",
+      "identity": {
+        "authors": "Jana Dunfield, Neelakantan R. Krishnaswami",
+        "venue": "ACM Computing Surveys 54(5)",
+        "year": "2021",
+        "doi": "10.1145/3450952"
+      }
+    },
+    {
+      "name": "The Undecidability of the Second-Order Unification Problem (Goldfarb, 1981)",
+      "identity": {
+        "authors": "Warren D. Goldfarb",
+        "venue": "Theoretical Computer Science 13(2)",
+        "year": "1981",
+        "doi": "10.1016/0304-3975(81)90040-2"
+      }
+    },
+    {
+      "name": "A Logic Programming Language with Lambda-Abstraction, Function Variables, and Simple Unification (Miller, 1991)",
+      "identity": {
+        "authors": "Dale Miller",
+        "venue": "Journal of Logic and Computation 1(4)",
+        "year": "1991",
+        "doi": "10.1093/logcom/1.4.497"
+      }
+    },
+    {
+      "name": "Syntax and Semantics of Quantitative Type Theory (Atkey, 2018)",
+      "identity": {
+        "authors": "Robert Atkey",
+        "venue": "LICS 2018",
+        "year": "2018",
+        "doi": "10.1145/3209108.3209189"
+      }
+    },
+    {
+      "name": "Idris 2: Quantitative Type Theory in Practice (Brady, 2021)",
+      "identity": {
+        "authors": "Edwin Brady",
+        "venue": "ECOOP 2021",
+        "year": "2021",
+        "doi": "10.4230/LIPIcs.ECOOP.2021.9"
+      }
+    },
+    {
+      "name": "Definitional Proof-Irrelevance without K (Gilbert et al., 2019)",
+      "identity": {
+        "authors": "Gaëtan Gilbert, Jesper Cockx, Matthieu Sozeau, Nicolas Tabareau",
+        "venue": "POPL 2019",
+        "year": "2019",
+        "doi": "10.1145/3290316"
+      }
+    },
+    {
+      "name": "Liquid Types (Rondon, Kawaguchi & Jhala, 2008)",
+      "identity": {
+        "authors": "Patrick M. Rondon, Ming Kawaguchi, Ranjit Jhala",
+        "venue": "PLDI 2008",
+        "year": "2008",
+        "doi": "10.1145/1375581.1375602"
+      }
+    },
+    {
+      "name": "Flux: Liquid Types for Rust (Lehmann et al., 2023)",
+      "identity": {
+        "authors": "Nico Lehmann, Adam T. Geller, Niki Vazou, Ranjit Jhala",
+        "venue": "PLDI 2023",
+        "year": "2023",
+        "doi": "10.1145/3591283"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

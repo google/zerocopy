@@ -1,0 +1,110 @@
+{
+  "topics": [
+    "pl/effects",
+    "pl/capabilities",
+    "pl/linear-types",
+    "pl/coeffects",
+    "compilers/effect-compilation",
+    "runtimes/continuations"
+  ],
+  "subjects": [
+    {
+      "name": "Koka compiler, standard library and C runtime (kklib)",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+      }
+    },
+    {
+      "name": "Effekt compiler, LLVM and JavaScript runtimes",
+      "identity": {
+        "repository": "effekt-lang/effekt",
+        "revision": "6976c7947eac26bc1203bcd48892702ce6d3cf21"
+      }
+    },
+    {
+      "name": "OCaml compiler, runtime (fibers, effects) and reference manual",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d921d1e86c56baa7b30e890ced455c12255793f5"
+      }
+    },
+    {
+      "name": "Scala 3 compiler capture checker and capture-checking reference",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "90f3daf0a4795308d9c0e1b8f2265aeaecae8aa2"
+      }
+    },
+    {
+      "name": "linear-base (Linear Haskell control functors and resource-aware IO)",
+      "identity": {
+        "repository": "tweag/linear-base",
+        "revision": "bb5182a76c84eedcf78536c9ce24cb900882b2f3"
+      }
+    },
+    {
+      "name": "Multicore OCaml merge that removed continuation cloning",
+      "identity": {
+        "repository": "ocaml-multicore/ocaml-multicore",
+        "revision": "ee7b692e49d87cc59381b1c1a643e6d66563cddb"
+      }
+    },
+    {
+      "name": "Plotkin and Pretnar, Handling Algebraic Effects",
+      "identity": {
+        "doi": "10.2168/LMCS-9(4:23)2013",
+        "arxiv": "1312.1399v2",
+        "venue": "Logical Methods in Computer Science 9(4), 2013",
+        "preliminary_version_doi": "10.1007/978-3-642-00590-9_7"
+      }
+    },
+    {
+      "name": "Xie and Leijen, Generalized Evidence Passing for Effect Handlers",
+      "identity": {
+        "doi": "10.1145/3473576",
+        "venue": "Proc. ACM Program. Lang. 5(ICFP), 2021",
+        "extended_version": "MSR-TR-2021-5 v4 (2021-06-07)"
+      }
+    },
+    {
+      "name": "Brachthäuser, Schuster and Ostermann, Effects as Capabilities",
+      "identity": {
+        "doi": "10.1145/3428194",
+        "venue": "Proc. ACM Program. Lang. 4(OOPSLA), 2020"
+      }
+    },
+    {
+      "name": "Sivaramakrishnan et al., Retrofitting Effect Handlers onto OCaml",
+      "identity": {
+        "doi": "10.1145/3453483.3454039",
+        "arxiv": "2104.00250v1",
+        "venue": "PLDI 2021"
+      }
+    },
+    {
+      "name": "Boruch-Gruszecki et al., Capturing Types",
+      "identity": {
+        "doi": "10.1145/3618003",
+        "venue": "ACM TOPLAS 45(4), 2023",
+        "preprint_arxiv": "2207.03402v2"
+      }
+    },
+    {
+      "name": "Petricek, Orchard and Mycroft, Coeffects: A Calculus of Context-Dependent Computation",
+      "identity": {
+        "doi": "10.1145/2628136.2628160",
+        "venue": "ICFP 2014"
+      }
+    },
+    {
+      "name": "Tang, Hillerström, Lindley and Morris, Soundly Handling Linearity",
+      "identity": {
+        "doi": "10.1145/3632896",
+        "arxiv": "2307.09383v2",
+        "venue": "Proc. ACM Program. Lang. 8(POPL), 2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
