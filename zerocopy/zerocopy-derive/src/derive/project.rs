@@ -8,7 +8,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use syn::{
     parse_quote, spanned::Spanned as _, Data, DataEnum, DeriveInput, Error, Expr, Fields, Ident,
@@ -18,8 +18,8 @@ use syn::{
 use crate::{
     repr::{EnumRepr, StructUnionRepr},
     util::{
-        const_block, generate_tag_enum, Client, Ctx, DataExt, FieldBounds, FieldProjection,
-        ImplBlockBuilder, Trait,
+        const_block, generate_tag_enum, to_ident_str, Client, Ctx, DataExt, FieldBounds,
+        FieldProjection, ImplBlockBuilder, Trait,
     },
 };
 
@@ -150,10 +150,23 @@ pub(crate) fn derive_projection_struct_union(
         return quote! {};
     }
 
-    let field_tokens = fields.iter().map(|(vis, ident, _)| {
-        let ident = ident!(("ẕ{}", ident), ident.span());
+    let field_prefix = ctx.fresh_prefix("___ZcField_");
+    let aliasing = ctx.fresh_ident("___ZcAliasing");
+    let alignment = ctx.fresh_ident("___ZcAlignment");
+    let fields: Vec<_> = fields
+        .into_iter()
+        .map(|(vis, ident, ty)| {
+            let field_token = Ident::new(
+                &format!("{}{}", field_prefix, to_ident_str(&ident)),
+                Span::mixed_site(),
+            );
+            (vis, ident, ty, field_token)
+        })
+        .collect();
+
+    let field_tokens = fields.iter().map(|(vis, _, _, field_token)| {
         quote! {
-            #vis enum #ident {}
+            #vis enum #field_token {}
         }
     });
 
@@ -168,8 +181,7 @@ pub(crate) fn derive_projection_struct_union(
         })
         .build();
 
-    let has_fields = fields.iter().map(move |(_, ident, ty)| {
-        let field_token = ident!(("ẕ{}", ident), ident.span());
+    let has_fields = fields.iter().map(|(_, ident, ty, field_token)| {
         let projection = FieldProjection {
             variant_id: variant_id.clone(),
             field: parse_quote!(#field_token),
@@ -208,7 +220,7 @@ pub(crate) fn derive_projection_struct_union(
                 .map(|repr| repr.get_packed().is_none())
                 .unwrap();
             let output_alignment = if projection_preserves_alignment {
-                quote! { ___ZcAlignment }
+                quote! { #alignment }
             } else {
                 quote! { #zerocopy_crate::invariant::Unaligned }
             };
@@ -218,13 +230,13 @@ pub(crate) fn derive_projection_struct_union(
                 Trait::ProjectField {
                     client,
                     projection: projection.clone(),
-                    invariants: parse_quote!((___ZcAliasing, ___ZcAlignment, #input_validity)),
+                    invariants: parse_quote!((#aliasing, #alignment, #input_validity)),
                 },
                 FieldBounds::None,
             )
             .param_extras(vec![
-                parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Aliasing),
-                parse_quote!(___ZcAlignment: #zerocopy_crate::invariant::Alignment),
+                parse_quote!(#aliasing: #zerocopy_crate::invariant::Aliasing),
+                parse_quote!(#alignment: #zerocopy_crate::invariant::Alignment),
             ])
             .inner_extras(quote! {
                 // SAFETY: Struct and union projections do not depend on the value of
@@ -237,7 +249,7 @@ pub(crate) fn derive_projection_struct_union(
                 // computes its output validity: struct fields preserve validity;
                 // union fields preserve `Uninit` and `Initialized`, and no
                 // projection is emitted for `Safe` union input.
-                type Invariants = (___ZcAliasing, #output_alignment, #output_validity);
+                type Invariants = (#aliasing, #output_alignment, #output_validity);
             })
             .build()
         };
@@ -381,12 +393,14 @@ pub(crate) fn derive_enum(
         })
         .build();
 
+    let aliasing = &ctx.fresh_ident("___ZcAliasing");
+    let alignment = &ctx.fresh_ident("___ZcAlignment");
     let aliasing_param: &syn::GenericParam =
-        &parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Aliasing);
+        &parse_quote!(#aliasing: #zerocopy_crate::invariant::Aliasing);
     let reference_param: &syn::GenericParam =
-        &parse_quote!(___ZcAliasing: #zerocopy_crate::invariant::Reference);
+        &parse_quote!(#aliasing: #zerocopy_crate::invariant::Reference);
     let alignment_param: &syn::GenericParam =
-        &parse_quote!(___ZcAlignment: #zerocopy_crate::invariant::Alignment);
+        &parse_quote!(#alignment: #zerocopy_crate::invariant::Alignment);
 
     let has_fields = data.variants().into_iter().flat_map(|(variant, fields)| {
         let variant_ident = &variant.unwrap().ident;
@@ -477,7 +491,7 @@ pub(crate) fn derive_enum(
                                     <Self as #has_tag_path>::Tag,
                                     (
                                         #zerocopy_crate::invariant::Shared,
-                                        ___ZcAlignment,
+                                        #alignment,
                                         #zerocopy_crate::invariant::Safe,
                                     ),
                                 >,
@@ -498,7 +512,7 @@ pub(crate) fn derive_enum(
 
                 let validity = validity.as_type(ctx);
                 let invariants: Box<Type> =
-                    parse_quote!((___ZcAliasing, ___ZcAlignment, #validity));
+                    parse_quote!((#aliasing, #alignment, #validity));
                 let project_field_trait = Trait::ProjectField {
                     client,
                     projection: projection.clone(),

@@ -192,6 +192,22 @@ impl Ctx {
         Ident::new(&name, Span::mixed_site())
     }
 
+    /// Choose an implementation prefix absent from the caller's tokens so that
+    /// `format!("{prefix}{suffix}")` is fresh for every suffix and remains
+    /// injective across distinct suffixes. This is best-effort; names
+    /// introduced by nested macros are not considered.
+    pub(crate) fn fresh_prefix(&self, prefix: &str) -> String {
+        let idents = crate::invariant::idents(self.ast.to_token_stream());
+        let mut prefix = prefix.to_owned();
+        while idents
+            .iter()
+            .any(|ident| ident.to_string().trim_start_matches("r#").starts_with(&prefix))
+        {
+            prefix.push('_');
+        }
+        prefix
+    }
+
     /// Caller-authored invariant expressions must inherit the caller's lint
     /// policy, rather than the blanket allowances for generated glue.
     pub(crate) fn const_block(
@@ -1183,5 +1199,34 @@ pub(crate) mod testutil {
         let path = &ctx.zerocopy_crate;
         assert_eq!(quote::quote!(#path).to_string(), ":: renamed");
         assert!(ctx.skip_on_error);
+    }
+
+    #[test]
+    fn test_fresh_ident_and_prefix() {
+        let plain: syn::DeriveInput = syn::parse_quote! {
+            struct Foo {
+                a: u8,
+                a_: u16,
+            }
+        };
+        let ctx = super::Ctx::try_from_derive_input(plain).unwrap();
+        assert_eq!(ctx.fresh_prefix("___ZcField_"), "___ZcField_");
+        assert_eq!(ctx.fresh_ident("___ZcAliasing").to_string(), "___ZcAliasing");
+
+        let colliding: syn::DeriveInput = syn::parse_quote! {
+            struct ___ZcField_self<___ZcField_a, r#___ZcField__b, ___ZcAliasing>
+            where
+                (): Trait<___ZcField___c>,
+            {
+                a: ___ZcField_a,
+                a_: r#___ZcField__b,
+                aliasing: ___ZcAliasing,
+            }
+        };
+        let ctx = super::Ctx::try_from_derive_input(colliding).unwrap();
+        let prefix = ctx.fresh_prefix("___ZcField_");
+        assert_eq!(prefix, "___ZcField____");
+        assert_ne!(format!("{}a", prefix), format!("{}a_", prefix));
+        assert_eq!(ctx.fresh_ident("___ZcAliasing").to_string(), "___ZcAliasing_");
     }
 }
