@@ -50718,6 +50718,44 @@
         "verification/compiler-verification"
       ]
     },
+    "permission-accounting-fractions-counting-and-sharing-depth": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040327"
+          },
+          "name": "Permission Accounting in Separation Logic (Bornat, Calcagno, O'Hearn, Parkinson; POPL 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-10672-9_13"
+          },
+          "name": "A Fresh Look at Separation Algebras and Share Accounting (Dockins, Hobor, Appel; APLAS 2009)"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/formalized-results",
+        "verification/separation-logic",
+        "verification/permission-accounting",
+        "verification/fractional-permissions",
+        "verification/counting-permissions",
+        "verification/separation-algebras",
+        "lean",
+        "lean/mechanization",
+        "pl",
+        "pl/ownership"
+      ]
+    },
     "persistent-mmap-lean-kernel-and-nanoda-audit-daemon-for-submillisecond-checks": {
       "observed_at": "2026-11-14",
       "subjects": [

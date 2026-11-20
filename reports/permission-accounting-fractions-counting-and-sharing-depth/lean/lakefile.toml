@@ -1,0 +1,6 @@
+name = "ToyPerm"
+version = "0.1.0"
+defaultTargets = ["ToyPerm"]
+
+[[lean_lib]]
+name = "ToyPerm"

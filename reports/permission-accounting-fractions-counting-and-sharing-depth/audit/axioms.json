@@ -1,0 +1,1440 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Subtype.mk.hcongr_4": [],
+    "Toy.Perm.Cell": [],
+    "Toy.Perm.Cell.CompatFPU": [],
+    "Toy.Perm.Cell.Valid": [],
+    "Toy.Perm.Cell.Valid.eq_1": [],
+    "Toy.Perm.Cell.borrowed": [],
+    "Toy.Perm.Cell.borrowed.elim": [],
+    "Toy.Perm.Cell.borrowed.sizeOf_spec": [],
+    "Toy.Perm.Cell.casesOn": [],
+    "Toy.Perm.Cell.compat": [],
+    "Toy.Perm.Cell.compat.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.Perm.Cell.compat.eq_1": [],
+    "Toy.Perm.Cell.compat.eq_2": [],
+    "Toy.Perm.Cell.compat.eq_3": [],
+    "Toy.Perm.Cell.compat.match_1": [],
+    "Toy.Perm.Cell.compatFPU_examples": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.compatFPU_iff": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.compatFPU_iff_nonvacuous": [],
+    "Toy.Perm.Cell.compat_comm": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.compat_examples": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.compat_negative_examples": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.compat_positive_depth_irrelevant": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.ctorElim": [],
+    "Toy.Perm.Cell.ctorElimType": [],
+    "Toy.Perm.Cell.ctorIdx": [],
+    "Toy.Perm.Cell.instDecidableValid": [],
+    "Toy.Perm.Cell.noConfusion": [],
+    "Toy.Perm.Cell.noConfusionType": [],
+    "Toy.Perm.Cell.rec": [],
+    "Toy.Perm.Cell.recOn": [],
+    "Toy.Perm.Cell.shared": [],
+    "Toy.Perm.Cell.shared.elim": [],
+    "Toy.Perm.Cell.shared.inj": [],
+    "Toy.Perm.Cell.shared.injEq": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.shared.noConfusion": [],
+    "Toy.Perm.Cell.shared.sizeOf_spec": [],
+    "Toy.Perm.Cell.stepAt": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.stepAt.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.stepAt.match_1": [],
+    "Toy.Perm.Cell.stepAt_examples": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.stepAt_isSome_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.Cell.stepAt_isSome_iff_needs_valid": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.valid_examples": [],
+    "Toy.Perm.Cell.valid_set_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.Cell.valid_set_iff_needs_apply": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.valid_set_iff_needs_lookup": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.valid_set_iff_needs_valid": [
+      "propext"
+    ],
+    "Toy.Perm.Cell.valid_set_iff_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep": [],
+    "Toy.Perm.CellStep.RestoresExclusive": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.eq_2": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.eq_3": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.eq_4": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.eq_5": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.eq_6": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply_examples": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.apply_negative_examples": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.borrow": [],
+    "Toy.Perm.CellStep.borrow.elim": [],
+    "Toy.Perm.CellStep.borrow.sizeOf_spec": [],
+    "Toy.Perm.CellStep.casesOn": [],
+    "Toy.Perm.CellStep.ctorElim": [],
+    "Toy.Perm.CellStep.ctorElimType": [],
+    "Toy.Perm.CellStep.ctorIdx": [],
+    "Toy.Perm.CellStep.endBorrow": [],
+    "Toy.Perm.CellStep.endBorrow.elim": [],
+    "Toy.Perm.CellStep.endBorrow.inj": [],
+    "Toy.Perm.CellStep.endBorrow.injEq": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.endBorrow.noConfusion": [],
+    "Toy.Perm.CellStep.endBorrow.sizeOf_spec": [],
+    "Toy.Perm.CellStep.endShare": [],
+    "Toy.Perm.CellStep.endShare.elim": [],
+    "Toy.Perm.CellStep.endShare.sizeOf_spec": [],
+    "Toy.Perm.CellStep.noConfusion": [],
+    "Toy.Perm.CellStep.noConfusionType": [],
+    "Toy.Perm.CellStep.rec": [],
+    "Toy.Perm.CellStep.recOn": [],
+    "Toy.Perm.CellStep.restoresExclusive_examples": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.restoresExclusive_iff": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.restoresExclusive_negative_examples": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.share": [],
+    "Toy.Perm.CellStep.share.elim": [],
+    "Toy.Perm.CellStep.share.sizeOf_spec": [],
+    "Toy.Perm.CellStep.write": [],
+    "Toy.Perm.CellStep.write.elim": [],
+    "Toy.Perm.CellStep.write.inj": [],
+    "Toy.Perm.CellStep.write.injEq": [
+      "propext"
+    ],
+    "Toy.Perm.CellStep.write.noConfusion": [],
+    "Toy.Perm.CellStep.write.sizeOf_spec": [],
+    "Toy.Perm.Count": [],
+    "Toy.Perm.Count.readToken": [],
+    "Toy.Perm.Count.readToken.eq_1": [],
+    "Toy.Perm.Count.source": [],
+    "Toy.Perm.Count.source.eq_1": [],
+    "Toy.Perm.Count.tokens": [],
+    "Toy.Perm.Count.tokens.eq_1": [],
+    "Toy.Perm.Count.tokens.eq_2": [],
+    "Toy.Perm.Count.tokens.match_1": [],
+    "Toy.Perm.Count.tokens_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.Count.tokens_of_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.Count.tokens_zero": [],
+    "Toy.Perm.Count.total": [],
+    "Toy.Perm.Count.total.eq_1": [],
+    "Toy.Perm.CountB": [],
+    "Toy.Perm.CountB.bundleN": [
+      "propext"
+    ],
+    "Toy.Perm.CountB.bundleN.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.CountB.bundleN_val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.CountB.src1": [],
+    "Toy.Perm.CountB.srcN": [
+      "propext"
+    ],
+    "Toy.Perm.CountB.srcN.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.CountB.srcN_val": [
+      "propext"
+    ],
+    "Toy.Perm.CountB.tok1": [],
+    "Toy.Perm.CountB.total1": [],
+    "Toy.Perm.CountB.totalN": [
+      "propext"
+    ],
+    "Toy.Perm.CountB.totalN.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.FracPerm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.casesOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.compl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.compl_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ctorIdx": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ext_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.full": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.full_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.half": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.halfPow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.halfPow.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.halfPow.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.halfPow.eq_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.halfPow.match_1": [],
+    "Toy.Perm.FracPerm.half_compl_halfPow_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.half_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.instDecidableEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.mk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.mk.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.mk.inj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.mk.injEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.mk.noConfusion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.mk.sizeOf_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.noConfusion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.noConfusionType": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.nonneg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.not_fracPerm_amounts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ofRat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ofRat.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ofRat_half_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.ofRat_val_of": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.rec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.recOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.val": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.FracPerm.zero_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg": [],
+    "Toy.Perm.PartialAlg.Assoc": [],
+    "Toy.Perm.PartialAlg.Cancel": [],
+    "Toy.Perm.PartialAlg.Comm": [],
+    "Toy.Perm.PartialAlg.Compat": [],
+    "Toy.Perm.PartialAlg.Compat.eq_1": [],
+    "Toy.Perm.PartialAlg.Disjointness": [],
+    "Toy.Perm.PartialAlg.Exclusive": [],
+    "Toy.Perm.PartialAlg.FramePreserving": [],
+    "Toy.Perm.PartialAlg.IsPCM": [],
+    "Toy.Perm.PartialAlg.Positive": [],
+    "Toy.Perm.PartialAlg.PositiveDHA": [],
+    "Toy.Perm.PartialAlg.PreservesOp": [],
+    "Toy.Perm.PartialAlg.PreservesUnit": [],
+    "Toy.Perm.PartialAlg.PreservesUnit.eq_1": [],
+    "Toy.Perm.PartialAlg.UnitLeft": [],
+    "Toy.Perm.PartialAlg.casesOn": [],
+    "Toy.Perm.PartialAlg.const_true_not_preserves": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.ctorIdx": [],
+    "Toy.Perm.PartialAlg.emptyOpAlg_not_unitLeft": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_assoc": [],
+    "Toy.Perm.PartialAlg.exclAlg_cancel": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_comm": [],
+    "Toy.Perm.PartialAlg.exclAlg_compat_examples": [],
+    "Toy.Perm.PartialAlg.exclAlg_create_not_framePreserving": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_disjointness": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_drop_framePreserving": [],
+    "Toy.Perm.PartialAlg.exclAlg_isPCM": [],
+    "Toy.Perm.PartialAlg.exclAlg_positive": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_positiveDHA": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_true_exclusive": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.exclAlg_unitLeft": [],
+    "Toy.Perm.PartialAlg.id_preserves": [],
+    "Toy.Perm.PartialAlg.instDecidableCompat": [],
+    "Toy.Perm.PartialAlg.leftAlg_not_comm": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.leftAlg_not_isPCM": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.mk": [],
+    "Toy.Perm.PartialAlg.mk.inj": [],
+    "Toy.Perm.PartialAlg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.mk.noConfusion": [],
+    "Toy.Perm.PartialAlg.mk.sizeOf_spec": [],
+    "Toy.Perm.PartialAlg.mod3Alg_not_disjointness": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.mod3Alg_not_positive": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.noConfusion": [],
+    "Toy.Perm.PartialAlg.noConfusionType": [],
+    "Toy.Perm.PartialAlg.nonAssocAlg_not_assoc": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.op": [],
+    "Toy.Perm.PartialAlg.opList": [],
+    "Toy.Perm.PartialAlg.opList.eq_1": [],
+    "Toy.Perm.PartialAlg.opList.eq_2": [],
+    "Toy.Perm.PartialAlg.opList.eq_def": [],
+    "Toy.Perm.PartialAlg.opList.match_1": [],
+    "Toy.Perm.PartialAlg.opList_examples": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.opList_exclAlg_true_true": [],
+    "Toy.Perm.PartialAlg.orAlg_not_cancel": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.orAlg_true_not_exclusive": [
+      "propext"
+    ],
+    "Toy.Perm.PartialAlg.positive_iff_positiveDHA": [],
+    "Toy.Perm.PartialAlg.rec": [],
+    "Toy.Perm.PartialAlg.recOn": [],
+    "Toy.Perm.PartialAlg.unit": [],
+    "Toy.Perm.PartialAlg.z2UnitAlg_positive_not_positiveDHA": [
+      "propext"
+    ],
+    "Toy.Perm.Wit": [],
+    "Toy.Perm.Wit.casesOn": [],
+    "Toy.Perm.Wit.ctorElim": [],
+    "Toy.Perm.Wit.ctorElimType": [],
+    "Toy.Perm.Wit.ctorIdx": [],
+    "Toy.Perm.Wit.k": [],
+    "Toy.Perm.Wit.k.elim": [],
+    "Toy.Perm.Wit.k.sizeOf_spec": [],
+    "Toy.Perm.Wit.noConfusion": [],
+    "Toy.Perm.Wit.noConfusionType": [],
+    "Toy.Perm.Wit.ofCell": [],
+    "Toy.Perm.Wit.ofCell.match_1": [],
+    "Toy.Perm.Wit.ofNat": [],
+    "Toy.Perm.Wit.ofNat_ctorIdx": [],
+    "Toy.Perm.Wit.r": [],
+    "Toy.Perm.Wit.r.elim": [],
+    "Toy.Perm.Wit.r.sizeOf_spec": [],
+    "Toy.Perm.Wit.rec": [],
+    "Toy.Perm.Wit.recOn": [],
+    "Toy.Perm.Wit.u": [],
+    "Toy.Perm.Wit.u.elim": [],
+    "Toy.Perm.Wit.u.sizeOf_spec": [],
+    "Toy.Perm.Wit.w": [],
+    "Toy.Perm.Wit.w.elim": [],
+    "Toy.Perm.Wit.w.sizeOf_spec": [],
+    "Toy.Perm.Wit5": [],
+    "Toy.Perm.Wit5.casesOn": [],
+    "Toy.Perm.Wit5.ctorElim": [],
+    "Toy.Perm.Wit5.ctorElimType": [],
+    "Toy.Perm.Wit5.ctorIdx": [],
+    "Toy.Perm.Wit5.noConfusion": [],
+    "Toy.Perm.Wit5.noConfusionType": [],
+    "Toy.Perm.Wit5.ofCell": [],
+    "Toy.Perm.Wit5.ofCell.match_1": [],
+    "Toy.Perm.Wit5.ofNat": [],
+    "Toy.Perm.Wit5.ofNat_ctorIdx": [],
+    "Toy.Perm.Wit5.rec": [],
+    "Toy.Perm.Wit5.recOn": [],
+    "Toy.Perm.Wit5.s0": [],
+    "Toy.Perm.Wit5.s0.elim": [],
+    "Toy.Perm.Wit5.s0.sizeOf_spec": [],
+    "Toy.Perm.Wit5.s1": [],
+    "Toy.Perm.Wit5.s1.elim": [],
+    "Toy.Perm.Wit5.s1.sizeOf_spec": [],
+    "Toy.Perm.Wit5.s2": [],
+    "Toy.Perm.Wit5.s2.elim": [],
+    "Toy.Perm.Wit5.s2.sizeOf_spec": [],
+    "Toy.Perm.Wit5.tok": [],
+    "Toy.Perm.Wit5.tok.elim": [],
+    "Toy.Perm.Wit5.tok.sizeOf_spec": [],
+    "Toy.Perm.Wit5.u": [],
+    "Toy.Perm.Wit5.u.elim": [],
+    "Toy.Perm.Wit5.u.sizeOf_spec": [],
+    "Toy.Perm.allCompatAlg": [],
+    "Toy.Perm.allCompatAlg_restoring_steps_framePreserving": [],
+    "Toy.Perm.allZeroAlg": [],
+    "Toy.Perm.allZeroAlg_return_beside_reader": [],
+    "Toy.Perm.asymGridAlg": [
+      "propext"
+    ],
+    "Toy.Perm.asymGridAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.asymGridQuarters": [
+      "propext"
+    ],
+    "Toy.Perm.asymGridQuarters.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.asymGridToCount": [
+      "propext"
+    ],
+    "Toy.Perm.asymGridToCount_preservesOp_full_to_total": [
+      "propext"
+    ],
+    "Toy.Perm.asymGridToFrac": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.asymGridToFrac_preserves_reflects": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeAlg": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeAlg.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeAlg_comm_unit_compat_iff_not_cancel": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeOp": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeOp.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeOp.eq_2": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeOp.eq_3": [
+      "propext"
+    ],
+    "Toy.Perm.cellAgreeOp.eq_4": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_compat_examples": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_composite_does_not_determine_endShare_enabled": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_composite_does_not_determine_endShare_enabled_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_empty_disjointness": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_empty_disjointness.match_1_1": [],
+    "Toy.Perm.cellSumAlg_empty_disjointness.match_1_3": [],
+    "Toy.Perm.cellSumAlg_empty_disjointness.match_1_5": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_examples": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumAlg_isPCM_cancel_positive_compat_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.cellSumOp": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumOp.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumOp.eq_2": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumOp.eq_3": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumOp.eq_4": [
+      "propext"
+    ],
+    "Toy.Perm.cellSumOp.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.cellToCount": [],
+    "Toy.Perm.cellToCount.match_1": [],
+    "Toy.Perm.compl_ne_zero_of_ne_full": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.const_full_nonzero_token": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.const_none_preservesOp_frac": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.const_none_preservesOp_frac_half": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.const_readToken_nonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.const_readToken_not_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.const_zero_preservesOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg": [],
+    "Toy.Perm.countAlg.eq_1": [],
+    "Toy.Perm.countAlg_bundle_complete_length_ne_count": [],
+    "Toy.Perm.countAlg_complete_lower_bound_needs_complete": [],
+    "Toy.Perm.countAlg_complete_lower_bound_needs_pos": [],
+    "Toy.Perm.countAlg_complete_source_pos_has_outstanding_piece": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_examples": [],
+    "Toy.Perm.countAlg_exclusive_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_isPCM_cancel_positive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_negative_examples": [],
+    "Toy.Perm.countAlg_opList_eq_unit": [
+      "propext"
+    ],
+    "Toy.Perm.countAlg_opList_replicate_readToken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_opList_tokens_length_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_readToken_atomic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_readToken_atomic_needs_h": [],
+    "Toy.Perm.countAlg_readToken_atomic_nonvacuous": [],
+    "Toy.Perm.countAlg_readTokens_complete_iff_length_eq_count": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_readTokens_complete_iff_nonvacuous": [],
+    "Toy.Perm.countAlg_source_bound_needs_defined": [],
+    "Toy.Perm.countAlg_source_bound_needs_nonempty_pieces": [],
+    "Toy.Perm.countAlg_source_count_bounds_outstanding_pieces": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_source_count_bounds_outstanding_pieces_nonvacuous": [],
+    "Toy.Perm.countAlg_source_one_bounds_outstanding_pieces": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_source_one_complete_exactly_one_piece": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_source_one_complete_nonvacuous": [],
+    "Toy.Perm.countAlg_source_one_exactly_one_needs_complete": [],
+    "Toy.Perm.countAlg_source_one_exactly_one_needs_nonempty": [],
+    "Toy.Perm.countAlg_split_of_source": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_split_of_source_needs_h": [
+      "propext"
+    ],
+    "Toy.Perm.countAlg_split_of_source_needs_ha": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_split_of_source_needs_hb": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_split_of_source_nonvacuous": [],
+    "Toy.Perm.countAlg_total_splits_example": [],
+    "Toy.Perm.countAlg_total_splits_into_source_and_readTokens": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countAlg_two_tokens_split": [],
+    "Toy.Perm.countB0Elems": [],
+    "Toy.Perm.countB0Elems.eq_1": [],
+    "Toy.Perm.countB0Embed_preservesOp_reflects_compat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB0Embed_sources_or_bundles_compat_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB0_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB0_keep_either_pair_incompatible_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB0_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1AllFull": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1AllFull_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1AllFull_reflects_compat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1AllFull_sources_or_bundles_compat_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1Elems": [],
+    "Toy.Perm.countB1Elems.eq_1": [],
+    "Toy.Perm.countB1Embed_compat_not_reflected": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1Embed_injective_unit_op_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1Embed_preservesOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1Embed_preservesOp_nonzero_token": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1Lin_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1_injective_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1_op_iff_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countB1_thirds_preservesOp_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countBAlg": [],
+    "Toy.Perm.countBAlg.eq_1": [],
+    "Toy.Perm.countBAlg_examples": [],
+    "Toy.Perm.countBAlg_not_compat_bundleN_bundleN": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countBAlg_not_compat_srcN_srcN": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countBAlg_srcN_bundleN": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countBEmbed_injective_preserves_reflects_op_exclusive_readable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countBOp": [],
+    "Toy.Perm.countBOp.eq_1": [],
+    "Toy.Perm.countBOp.match_1": [],
+    "Toy.Perm.countBOp_eq_some_iff": [
+      "propext"
+    ],
+    "Toy.Perm.countBOp_some_some": [
+      "propext"
+    ],
+    "Toy.Perm.countEmbed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countEmbedThirds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countEmbedThirds_preservesOp_not_reflecting": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countEmbedVal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countEmbedVal.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countEmbedVal.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countEmbed_one_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLinVal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLinVal.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLinVal.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLinVal_bounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLin_preservesUnit_op_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countLin_val": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countOp": [],
+    "Toy.Perm.countOp.eq_1": [],
+    "Toy.Perm.countOp.eq_2": [],
+    "Toy.Perm.countOp.eq_3": [],
+    "Toy.Perm.countOp.match_1": [],
+    "Toy.Perm.countOp_self_ne_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countOp_some_some": [],
+    "Toy.Perm.countOp_some_some_eq_some": [
+      "propext"
+    ],
+    "Toy.Perm.countOp_some_some_of": [
+      "propext"
+    ],
+    "Toy.Perm.countToFracSourcesOnly": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countToFracSourcesOnly.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countToFracSourcesOnly.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.countToFracSourcesOnly_preserves_unit_op_total": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.counting_returns_last_share_without_coexisting_reader": [],
+    "Toy.Perm.disjointness_violation_witness_nat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.disjointness_violation_witnesses": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.emptyOpAlg": [],
+    "Toy.Perm.emptyOpAlg.eq_1": [],
+    "Toy.Perm.exclAgreeAlg": [
+      "propext"
+    ],
+    "Toy.Perm.exclAgreeAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.exclAgreeAlg_unit_token_does_not_restore": [
+      "propext"
+    ],
+    "Toy.Perm.exclAlg": [],
+    "Toy.Perm.exclAlg.eq_1": [],
+    "Toy.Perm.exclAlg.match_1": [],
+    "Toy.Perm.exclToCount": [],
+    "Toy.Perm.exclToCount_preservesOp_full_to_total": [
+      "propext"
+    ],
+    "Toy.Perm.exclToFrac": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.exclToFrac_preserves_reflects": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_compat_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_countAlg_cellSumAlg_violate_disjointness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_countAlg_cellSumAlg_violate_disjointness.match_1_1": [],
+    "Toy.Perm.fracAlg_exclusive_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_full_bounds_outstanding_pieces": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_full_complement_piece_is_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_full_half": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_half_half": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_half_not_exclusive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_halvingSplit_composes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_halvingSplit_composes_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_halvingSplit_full_recombines_to_exclusive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_halvingSplit_of_zero_has_empty_piece": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_halvingSplit_zero_pieces": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_isPCM_cancel_positive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_no_nonexclusive_element_bounds_outstanding_pieces": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_nonzero_splits_into_two_nonzero_halves": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_nonzero_splits_needs_hq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_nonzero_splits_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_opList": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_op_half_half": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_owner_complement_splits_into_any_number": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_owner_complement_splits_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_owner_complement_zero_pieces": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_owner_complement_zero_pieces.match_1_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracAlg_zero_half_is_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracOp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracOp.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracOp_eq_none_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.fracOp_eq_some_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.h_neutral_of_unitLeft": [
+      "propext"
+    ],
+    "Toy.Perm.halfGridAlg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfGridAlg_half_half": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfGridToCount": [],
+    "Toy.Perm.halfGridToCount_preservesOp_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfGridToFrac": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfGridToFrac_preserves_reflects": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfIter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfIter.match_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halfPow_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halvingSplit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halvingSplit.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halvingSplit.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halvingSplit.eq_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halvingSplit.eq_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.halvingSplit.match_1": [],
+    "Toy.Perm.halvingSplit_full_three": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.inRange": [],
+    "Toy.Perm.inRange.eq_1": [],
+    "Toy.Perm.inRange.eq_2": [],
+    "Toy.Perm.inRange.match_1": [],
+    "Toy.Perm.inRange.match_1.congr_eq_1": [],
+    "Toy.Perm.inRange.match_1.congr_eq_2": [],
+    "Toy.Perm.indicator_full_to_total": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.instDecidableEqCell": [],
+    "Toy.Perm.instDecidableEqCell.decEq": [],
+    "Toy.Perm.instDecidableEqCell.decEq.match_1": [],
+    "Toy.Perm.instDecidableEqWit": [],
+    "Toy.Perm.instDecidableEqWit5": [],
+    "Toy.Perm.instReprCell": [],
+    "Toy.Perm.instReprCell.repr": [],
+    "Toy.Perm.instReprCell.repr.match_1": [],
+    "Toy.Perm.instReprWit": [],
+    "Toy.Perm.instReprWit.repr": [],
+    "Toy.Perm.instReprWit.repr.match_1": [],
+    "Toy.Perm.instReprWit5": [],
+    "Toy.Perm.instReprWit5.repr": [],
+    "Toy.Perm.instReprWit5.repr.match_1": [],
+    "Toy.Perm.leftAlg": [],
+    "Toy.Perm.leftAlg.eq_1": [],
+    "Toy.Perm.mod3Alg": [
+      "propext"
+    ],
+    "Toy.Perm.no_assoc_alg_returns_last_share_by_composition_beside_another_reader": [
+      "propext"
+    ],
+    "Toy.Perm.no_assoc_alg_returns_last_share_hypotheses_satisfiable": [
+      "propext"
+    ],
+    "Toy.Perm.no_opPreserving_map_countB_to_frac_reflecting_compat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.no_opPreserving_map_count_to_frac_with_nonzero_readToken": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.no_opPreserving_map_frac_to_count_sending_full_to_total": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.no_opPreserving_map_frac_to_count_with_nonempty_value": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.no_opPreserving_map_halfGrid_to_count_sending_full_to_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.no_opPreserving_map_to_count_sending_self_composite_to_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.no_pcm_returns_last_share_by_composition_beside_another_reader": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.nonAssocAlg": [
+      "propext"
+    ],
+    "Toy.Perm.nonAssocAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.nonAssocDepthAlg": [
+      "propext"
+    ],
+    "Toy.Perm.nonAssocDepthAlg.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.nonAssocDepthAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.nonAssocDepthAlg_returns_last_share_beside_reader": [
+      "propext"
+    ],
+    "Toy.Perm.opPreserving_map_countB_to_frac_sources_or_bundles_compat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.opPreserving_map_frac_to_count_eq_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.opPreserving_map_frac_to_count_exists": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.opPreserving_maps_countB_to_frac_keep_either_pair_incompatible": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.orAlg": [],
+    "Toy.Perm.orAlg.eq_1": [],
+    "Toy.Perm.preservesOp_of_op_iff": [],
+    "Toy.Perm.rat_exists_nat_mul_gt_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.reader_lastness_needs_ne_full": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.reader_lastness_needs_ne_full.match_1_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.reader_lastness_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.reader_piece_does_not_determine_lastness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Perm.restoring_steps_not_framePreserving_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Perm.restoring_steps_not_framePreserving_of_sharing_exclusion_neutral": [],
+    "Toy.Perm.singleHolderAlg": [
+      "propext"
+    ],
+    "Toy.Perm.singleHolderAlg.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.singleHolderAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.singleHolderAlg_last_endShare_framePreserving": [
+      "propext"
+    ],
+    "Toy.Perm.tokenReturnAlg": [
+      "propext"
+    ],
+    "Toy.Perm.tokenReturnAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.tokenReturnAlg_returns_last_share_without_second_reader": [
+      "propext"
+    ],
+    "Toy.Perm.twoClassAlg": [
+      "propext"
+    ],
+    "Toy.Perm.twoClassAlg.eq_1": [
+      "propext"
+    ],
+    "Toy.Perm.twoClassAlg.match_1": [
+      "propext"
+    ],
+    "Toy.Perm.twoClassAlg_endBorrow_framePreserving": [
+      "propext"
+    ],
+    "Toy.Perm.z2UnitAlg": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

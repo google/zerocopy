@@ -1,0 +1,991 @@
+[
+  {
+    "id": "R1a-frac-count-pcm-laws",
+    "lean": [
+      "Toy.Perm.fracAlg_isPCM_cancel_positive",
+      "Toy.Perm.countAlg_isPCM_cancel_positive"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Dockins-Hobor-Appel present both models (Definitions 8 and 9) as separation algebras, whose axioms include cancellation, and state positivity for both; Iris proves frac cancelable, and iris-lean mechanizes the same facts for its Lean fractional camera. Restated here as a Lean statement over explicit carriers with a partial operation.",
+    "plain_claim": "The fractional algebra on [0,1] intersected with the rationals (unit 0, composite = sum when it is at most 1) and the counting algebra on Option Int (unit none, Dockins-Hobor-Appel Definition 9) are each commutative, (strongly) associative, unital, cancellative and positive (a . b = unit implies a = unit) partial commutative monoids.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement (no hypotheses). Non-trivial composites exist: 1/2 . 1/2 = 1 in fractions; source 1 . readToken = total in counting.",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.fracAlg_half_half",
+      "Toy.Perm.countAlg_examples"
+    ],
+    "supporting_lean": [
+      "Toy.Perm.PartialAlg.positive_iff_positiveDHA",
+      "Toy.Perm.PartialAlg.z2UnitAlg_positive_not_positiveDHA"
+    ],
+    "non_claims": [
+      "Says nothing about disjointness: both algebras violate it (R1b).",
+      "Positivity here is stated as a . b = unit -> a = unit (PartialAlg.Positive). Dockins-Hobor-Appel's axiom (21) (a . b = c and c . c = c imply a . a = a; PartialAlg.PositiveDHA) is equivalent to it in commutative, unital, cancellative algebras (PartialAlg.positive_iff_positiveDHA) but not in general: z2UnitAlg is a partial commutative monoid satisfying Positive and violating PositiveDHA (PartialAlg.z2UnitAlg_positive_not_positiveDHA). Antisymmetry of the resource preorder (VST join_positivity) is not stated here.",
+      "Does not prove or refute the cross-split axiom of Dockins-Hobor-Appel; cross-split is not examined.",
+      "Fractions here include 0 as an explicit unit; Bornat et al. use (0,1] and treat absence of a heap cell as the unit. Counting here adds none as unit to Bornat's (Z, *1). Results do not transfer automatically to unit-free semigroup formulations or to Iris-style total-operation-plus-validity cameras.",
+      "Fractions are Lean core rationals; real-valued fractions and the dyadic sub-algebra are not separately treated (the dyadic sub-algebra is closed under the operation, so the laws restrict to it).",
+      "Does not cover non-cancellative read-sharing models: discardable fractions (Iris dfrac), abstract read permissions (Heule et al., VMCAI 2013), or duplicable scoped read-only permissions (Chargueraud-Pottier, ESOP 2017).",
+      "Associativity is the strong (Kleene) form: one side defined iff the other is."
+    ],
+    "prior_art": [
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'",
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Boyland, J., 'Checking Interference with Fractional Permissions', Static Analysis (SAS 2003), LNCS 2694, pp. 55-72, doi:10.1007/3-540-44898-5_4 (bibliographic metadata verified via Crossref; the paper body was not inspected). As described by Bornat et al. (POPL 2005, Sections 5 and 7): a rational z per location, z = 1 exclusive ownership and total control, 0 < z < 1 shared read access. Dockins-Hobor-Appel (APLAS 2009, Section 6) instead state that Boyland works in the reals and that the rationals suffice; this disagreement is about the carrier only.",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/frac.v: frac = Qp (positive rationals), valid iff q <= 1, op = +, instances frac_full_exclusive (Exclusive 1), frac_cancelable, frac_id_free, is_op_frac (q = q/2 + q/2). iris/algebra/dfrac.v: DfracOwn q | DfracDiscarded | DfracBoth q, DfracDiscarded . DfracDiscarded = DfracDiscarded (CoreId), only DfracOwn elements are Cancelable, dfrac_discard_update. Iris uses a total operation plus validity rather than a partial operation.",
+      "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (bibliographic metadata verified via Crossref): abstract separation logic over separation algebras (cancellative partial commutative monoids), the basis of the Isabelle mechanization cited below.",
+      "iris-lean (leanprover-community/iris-lean), commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b, Iris/Iris/Algebra/Frac.lean: a Lean 4 mechanization of the Iris fractional camera over core Lean Rat, 'abbrev Qp := { q : Rat // 0 < q }', with Qp.half_add_half (q.half + q.half = q), Qp.divide_even (q / n for n > 0), and instances instExclusiveQp1, instCancelableQp, instIdFreeQp. It builds on the iris-lean camera library, not on a partial operation.",
+      "VST (PrincetonUniversity/VST), commit d50ac1969f9f6586621895eb043ccf08a165f731, msl/sepalg.v (class Perm_alg with join_eq and join_positivity: join a a' b -> join b b' a -> a = b; classes Sep_alg and Disj_alg) and msl/tree_shares.v (the Coq development of Dockins-Hobor-Appel tree shares, including split lemmas such as split_disjoint and split_nontrivial).",
+      "fcsl-pcm (imdea-software/fcsl-pcm), commit 07ca4992d53ab4a823bdd86a08d7252f32464f3b, pcm/pcm.v: partial commutative monoids in Coq presented as a total join with a validity predicate (pcm_axiom), with cancellative variants.",
+      "Klein, G., Kolanski, R. & Boyton, A., 'Separation Algebra', Archive of Formal Proofs, May 2012, https://isa-afp.org/entries/Separation_Algebra.html (a generic Isabelle/HOL type-class implementation of separation algebra based on Calcagno et al.'s abstract separation logic), and 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22 (metadata verified via Crossref).",
+      "Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552 (bibliographic metadata verified via Crossref; the book's treatment of separation algebras and shares was not re-inspected).",
+      "Further related work on share models (bibliographic records verified; bodies not inspected, nothing beyond the titles is claimed): Boyland, J. T., 'Semantics of fractional permissions with nesting', ACM TOPLAS 32(6), 2010, pp. 1-33, doi:10.1145/1749608.1749611; Le, X.-B. & Hobor, A., 'Logical Reasoning for Disjoint Permissions', ESOP 2018, LNCS 10801, pp. 385-414, doi:10.1007/978-3-319-89884-1_14; Bierhoff, K. & Aldrich, J., 'Modular typestate checking of aliased objects', OOPSLA 2007, pp. 301-320, doi:10.1145/1297027.1297050; Parkinson, M. J., 'Local reasoning for Java', University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-654, 2005.",
+      "Heule, S., Leino, K. R. M., Mueller, P. & Summers, A. J., 'Abstract Read Permissions: Fractional Permissions without the Fractions', VMCAI 2013, LNCS 7737, pp. 315-334, doi:10.1007/978-3-642-35873-9_20 (bibliographic metadata verified via Crossref). From the abstract: specification using fractional permissions 'typically requires the user to pick concrete mathematical values for partial permissions'; abstract read permissions let the user 'work at the abstract level of read and write permissions' while supporting fractional permissions; implemented in Chalice. Only the abstract was inspected; cited for the non-claim that abstract read permissions are not covered.",
+      "Chargueraud, A. & Pottier, F., 'Temporary Read-Only Permissions for Separation Logic', ESOP 2017, LNCS 10201, pp. 260-286, doi:10.1007/978-3-662-54434-1_10 (bibliographic metadata verified via Crossref and dblp). From the abstract: an extension of Separation Logic 'with a general mechanism for temporarily converting any assertion (or \"permission\") to a read-only form. No accounting is required: our read-only permissions can be freely duplicated and discarded.' Only the abstract was inspected; cited for the non-claim that duplicable read-only permissions are not covered."
+    ],
+    "design_question": "Which partial-commutative-monoid laws does each permission design satisfy, and which law-based reasoning (cancellation, positivity, disjointness) can a logic built on it rely on?"
+  },
+  {
+    "id": "R1b-disjointness-fails",
+    "lean": "Toy.Perm.fracAlg_countAlg_cellSumAlg_violate_disjointness",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Dockins-Hobor-Appel state that both the fractional and the counting share models fail disjointness. The depth-sum algebra on cells fails it for the same reason (two equal non-empty readers compose).",
+    "plain_claim": "Disjointness (a . a = b implies a = b) fails in the fractional algebra, in the counting algebra, and in the depth-sum algebra on cells over every inhabited payload type V; over the empty payload type the depth-sum algebra satisfies disjointness (proved separately, as the tightness counterexample Toy.Perm.cellSumAlg_empty_disjointness for the hypothesis Nonempty V).",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq V] (third conjunct)",
+        "purpose": "Payload equality must be decidable to define the depth-sum algebra.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "Nonempty V (third conjunct)",
+        "purpose": "A reader cell needs a payload; over Empty the only cell is borrowed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.cellSumAlg_empty_disjointness"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The witnesses: 1/2 . 1/2 = 1 with 1/2 != 1; readToken . readToken = tokens 2 with readToken != tokens 2; for every payload v, shared 1 v . shared 1 v = shared 2 v. At the concrete inhabited payload type Nat (payload 7), Nonempty Nat holds, shared 1 7 . shared 1 7 = shared 2 7 with shared 1 7 != shared 2 7, and the depth-sum algebra over Nat violates disjointness.",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.disjointness_violation_witnesses",
+      "Toy.Perm.disjointness_violation_witness_nat"
+    ],
+    "non_claims": [
+      "Does not show that disjointness is unattainable for shared-read permission models: Dockins-Hobor-Appel's tree-share model satisfies it (not formalized here; mechanized in VST msl/tree_shares.v).",
+      "Does not analyse the consequences of non-disjointness (for example, the binary-tree-versus-DAG predicate issue Dockins-Hobor-Appel attribute to Bornat et al.); not examined.",
+      "For the depth-sum algebra, disjointness fails only when the payload type is inhabited: cellSumAlg Empty satisfies disjointness (cellSumAlg_empty_disjointness)."
+    ],
+    "prior_art": [
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'",
+      "VST (PrincetonUniversity/VST), commit d50ac1969f9f6586621895eb043ccf08a165f731, msl/sepalg.v (class Perm_alg with join_eq and join_positivity: join a a' b -> join b b' a -> a = b; classes Sep_alg and Disj_alg) and msl/tree_shares.v (the Coq development of Dockins-Hobor-Appel tree shares, including split lemmas such as split_disjoint and split_nontrivial).",
+      "Further related work on share models (bibliographic records verified; bodies not inspected, nothing beyond the titles is claimed): Boyland, J. T., 'Semantics of fractional permissions with nesting', ACM TOPLAS 32(6), 2010, pp. 1-33, doi:10.1145/1749608.1749611; Le, X.-B. & Hobor, A., 'Logical Reasoning for Disjoint Permissions', ESOP 2018, LNCS 10801, pp. 385-414, doi:10.1007/978-3-319-89884-1_14; Bierhoff, K. & Aldrich, J., 'Modular typestate checking of aliased objects', OOPSLA 2007, pp. 301-320, doi:10.1145/1297027.1297050; Parkinson, M. J., 'Local reasoning for Java', University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-654, 2005."
+    ],
+    "design_question": "Which partial-commutative-monoid laws does each permission design satisfy, and which law-based reasoning (cancellation, positivity, disjointness) can a logic built on it rely on?"
+  },
+  {
+    "id": "R2a-frac-no-atoms",
+    "lean": "Toy.Perm.fracAlg_nonzero_splits_into_two_nonzero_halves",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Dockins-Hobor-Appel Definition 8 gives the splitting function s1 = s2 = s/2; Iris is_op_frac and iris-lean Qp.half_add_half prove q = q/2 + q/2. This is the n = 2 case of R2b, kept separately as the two-way infinite-splittability property.",
+    "plain_claim": "Every non-empty fractional permission q is the composite of two non-empty permissions, namely half q . half q = q with half q non-zero.",
+    "modeling_bridge": "derived (modeling bridge): if holding a fractional permission entitles a holder to replace it by any two permissions composing to it, then any holder of a non-empty fraction can hand on a non-empty read permission without involving any other party; this reading is not part of the Lean statement.",
+    "hypotheses": [
+      {
+        "name": "hq : q ≠ zero",
+        "purpose": "Needed only for half q ≠ zero; the composite equation holds for every q.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.fracAlg_nonzero_splits_needs_hq"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "q = 1 is non-empty.",
+    "nonvacuity_witness_lean": "Toy.Perm.fracAlg_nonzero_splits_nonvacuous",
+    "non_claims": [
+      "Halving is one witness; it does not claim this is the only split, nor that equal n-way splits exist in the dyadic sub-algebra (q/3 is not dyadic).",
+      "Says nothing about whether any party can detect that a split happened (see R5d).",
+      "The n-piece generalization is R2b."
+    ],
+    "prior_art": [
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/frac.v: frac = Qp (positive rationals), valid iff q <= 1, op = +, instances frac_full_exclusive (Exclusive 1), frac_cancelable, frac_id_free, is_op_frac (q = q/2 + q/2). iris/algebra/dfrac.v: DfracOwn q | DfracDiscarded | DfracBoth q, DfracDiscarded . DfracDiscarded = DfracDiscarded (CoreId), only DfracOwn elements are Cancelable, dfrac_discard_update. Iris uses a total operation plus validity rather than a partial operation.",
+      "iris-lean (leanprover-community/iris-lean), commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b, Iris/Iris/Algebra/Frac.lean: a Lean 4 mechanization of the Iris fractional camera over core Lean Rat, 'abbrev Qp := { q : Rat // 0 < q }', with Qp.half_add_half (q.half + q.half = q), Qp.divide_even (q / n for n > 0), and instances instExclusiveQp1, instCancelableQp, instIdFreeQp. It builds on the iris-lean camera library, not on a partial operation."
+    ],
+    "design_question": "Can a reader sub-delegate read access without involving the original owner (fractions), or must every split go through a counting authority (counting)?"
+  },
+  {
+    "id": "R2b-frac-halving-split",
+    "lean": [
+      "Toy.Perm.fracAlg_halvingSplit_composes",
+      "Toy.Perm.fracAlg_halvingSplit_full_recombines_to_exclusive"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Unbounded splitting and recombination of fractions is standard (Bornat et al. Sections 3 and 9; Dockins-Hobor-Appel infinite splittability) and n-way splitting is already mechanized (iris-lean Qp.divide_even; Iris big-operator splitting). Restated here with an explicit dyadic witness.",
+    "plain_claim": "For every fractional permission q and every n >= 1, the halving split halvingSplit q n (which is [q] for n = 1 and [q/2, q/4, ..., q/2^(n-1), q/2^(n-1)] for n >= 2) has exactly n pieces and composes in list order to exactly q, and if q is non-empty every piece is non-empty (first theorem); for q = 1 the pieces recombine to the full permission, which is exclusive (second theorem).",
+    "hypotheses": [
+      {
+        "name": "hn : 0 < n",
+        "purpose": "A split into zero pieces is empty and composes to 0.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.fracAlg_halvingSplit_zero_pieces",
+        "applies_to": [
+          "Toy.Perm.fracAlg_halvingSplit_composes",
+          "Toy.Perm.fracAlg_halvingSplit_full_recombines_to_exclusive"
+        ]
+      },
+      {
+        "name": "q ≠ zero (inner premise of the third conjunct)",
+        "purpose": "Pieces of a split of 0 are 0.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.fracAlg_halvingSplit_of_zero_has_empty_piece",
+        "applies_to": [
+          "Toy.Perm.fracAlg_halvingSplit_composes"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "q = 1, n = 3: pieces [1/2, 1/4, 1/4], all non-empty.",
+    "nonvacuity_witness_lean": "Toy.Perm.fracAlg_halvingSplit_composes_nonvacuous",
+    "non_claims": [
+      "The pieces are not equal (they are dyadic); equal splits q/n exist in the rational algebra but are not the witness here.",
+      "Recombination is in list order through opList; other orders follow from commutativity and associativity (R1a), not from this theorem.",
+      "Exclusivity of 1 means no other party holds anything; it does not mean the holder knows who held the pieces.",
+      "Recombination in the fractional algebra depends only on the amounts summing to 1, not on whether the pieces came from the same split: fractions carry no split provenance."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/frac.v: frac = Qp (positive rationals), valid iff q <= 1, op = +, instances frac_full_exclusive (Exclusive 1), frac_cancelable, frac_id_free, is_op_frac (q = q/2 + q/2). iris/algebra/dfrac.v: DfracOwn q | DfracDiscarded | DfracBoth q, DfracDiscarded . DfracDiscarded = DfracDiscarded (CoreId), only DfracOwn elements are Cancelable, dfrac_discard_update. Iris uses a total operation plus validity rather than a partial operation.",
+      "iris-lean (leanprover-community/iris-lean), commit 5540ef0110fc8f6d8e495c10c2f238c3ede14f3b, Iris/Iris/Algebra/Frac.lean: a Lean 4 mechanization of the Iris fractional camera over core Lean Rat, 'abbrev Qp := { q : Rat // 0 < q }', with Qp.half_add_half (q.half + q.half = q), Qp.divide_even (q / n for n > 0), and instances instExclusiveQp1, instCancelableQp, instIdFreeQp. It builds on the iris-lean camera library, not on a partial operation."
+    ],
+    "design_question": "Can a reader sub-delegate read access without involving the original owner (fractions), or must every split go through a counting authority (counting)?"
+  },
+  {
+    "id": "R2c-count-token-atomic",
+    "lean": "Toy.Perm.countAlg_readToken_atomic",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Bornat et al. Section 6: 'the split-off read permissions can't be split further'.",
+    "plain_claim": "In the counting algebra a single read token is atomic: whenever a . b equals one read token, a or b is the empty permission.",
+    "modeling_bridge": "derived (modeling bridge): if sharing read access means splitting one's permission into two non-empty permissions, a party holding exactly one read token cannot share read access onward without a source; this reading is not part of the Lean statement.",
+    "hypotheses": [
+      {
+        "name": "h : countAlg.op a b = some readToken",
+        "purpose": "The premise being analysed; atomicity is specific to single tokens (a 2-bundle splits).",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_readToken_atomic_needs_h"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "none . readToken = readToken.",
+    "nonvacuity_witness_lean": "Toy.Perm.countAlg_readToken_atomic_nonvacuous",
+    "supporting_lean": [
+      "Toy.Perm.countAlg_two_tokens_split"
+    ],
+    "non_claims": [
+      "Bundles of several tokens can be split (countAlg_two_tokens_split); readers holding several tokens can pass some on.",
+      "Atomicity rules out splitting one read token into two non-empty pieces; it does not prevent transferring (moving) a single token to another party, nor sharing read access through an external synchronization protocol or a hierarchical share model such as Dockins-Hobor-Appel tree shares.",
+      "Says nothing about combined fraction/counting models (Bornat et al. Section 10.4), where read permissions are divisible."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can a reader sub-delegate read access without involving the original owner (fractions), or must every split go through a counting authority (counting)?"
+  },
+  {
+    "id": "R2d-count-split-through-source",
+    "lean": "Toy.Perm.countAlg_split_of_source",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "A direct case inversion of the counting composition of Bornat et al. Section 10.2 and Dockins-Hobor-Appel Definition 9 (Bornat et al. equation (16) gives source n = source (n+m) . m tokens).",
+    "plain_claim": "If a source permission with count n is the composite of two non-empty parts, then one part is a source with count n + k and the other is a bundle of exactly k >= 1 tokens.",
+    "hypotheses": [
+      {
+        "name": "h : countAlg.op a b = some (source n)",
+        "purpose": "The premise being analysed: the composite is a source.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_split_of_source_needs_h"
+      },
+      {
+        "name": "ha : a ≠ none",
+        "purpose": "Excludes the trivial split unit . source n.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_split_of_source_needs_ha"
+      },
+      {
+        "name": "hb : b ≠ none",
+        "purpose": "Excludes the trivial split source n . unit.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_split_of_source_needs_hb"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "source 1 . readToken = source 0.",
+    "nonvacuity_witness_lean": "Toy.Perm.countAlg_split_of_source_nonvacuous",
+    "non_claims": [
+      "Does not say how a program obtains or stores the count; counting here is a ghost algebra, like fractions.",
+      "Says nothing about splits of token bundles (they split into smaller bundles)."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can a reader sub-delegate read access without involving the original owner (fractions), or must every split go through a counting authority (counting)?"
+  },
+  {
+    "id": "R3b-depth-fpu-characterization",
+    "lean": "Toy.Perm.Cell.compatFPU_iff",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "The predicate is the prototype's own Cell.PermWeakens, whose sufficient cases (writer to writer, any cell to borrowed, share, end-share above depth 1) are proved there; the converse and the resulting characterization are made precise here.",
+    "plain_claim": "With respect to the sharing-depth compatibility relation, a cell update a to b is frame-preserving (every cell compatible with a is compatible with b) iff b is borrowed, or a is a writer (depth 0), or a and b are both readers (positive depth) with the same payload.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq V]",
+        "purpose": "Payload equality must be decidable to compute compatibility.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At V = Nat: each disjunct is inhabited (share from depth 0; end-share from depth 2 to 1; any update to borrowed) and the last end-share satisfies none of them.",
+    "nonvacuity_witness_lean": "Toy.Perm.Cell.compatFPU_iff_nonvacuous",
+    "supporting_lean": [
+      "Toy.Perm.Cell.compat_positive_depth_irrelevant"
+    ],
+    "non_claims": [
+      "Frame-preservation is with respect to single-cell frames; frames that are composites of several views are covered only when the composite is itself a cell (as in the depth-sum algebra, R3c).",
+      "Does not say which updates the prototype permits: it permits the non-frame-preserving end-share and end-borrow under a global check (R3f).",
+      "A consequence used elsewhere: the value of a positive depth plays no role in compatibility (Cell.compat_positive_depth_irrelevant), so compatibility alone cannot distinguish one depth-2 view from a depth-1 view; the depth only gates per-view transitions (R3f, R3g)."
+    ],
+    "prior_art": [
+      "Aeneas pull request 1497 (AeneasVerif/aeneas, open and unmerged at observation; head commit d17ca83fc07d712d1785f650840cb2073c259e69; base de16f3cf877976e966906dc890f63dcb418884fa). backends/lean/Aeneas/Std/Heap/Repr.lean: Cell = shared (depth : Nat) (value : Byte) | borrowed; Cell.write and Cell.borrow require depth 0; Cell.share increments; Cell.endShare decrements a positive depth; Cell.endBorrow restores depth 0; Cell.compatible: borrowed is compatible with anything, two shared cells iff both depths are positive and the bytes are equal. Heap/README.md, section 'Permissions and overlapping views', lines 198-199: 'shared 0 is exclusive raw write permission. Positive sharing depths preserve read permission and record local outstanding shares; they are not fractions.' Heap/README.md, section 'Scope and checking', lines 417-418: 'Returning the final share to depth zero is deliberately not inferred from a positive-depth footprint: conflicting readers may still exist in other views.' Heap/Borrowing.lean, endShare.spec docstring (lines 51-52): 'Restoring depth zero is enabled only when physically conflicting observers have returned. A different view's positive shared contribution blocks this step.' Heap/Separation.lean: separation splits indexed per-view contributions; the heap invariant checks byte compatibility of overlapping views. An unmerged prototype: not a durable subject; the toy model restates the relevant design.",
+      "Aeneas pull request 1497, head commit d17ca83fc07d712d1785f650840cb2073c259e69, backends/lean/Aeneas/Std/Heap/Lemmas.lean, lines 163-164: 'def Cell.PermWeakens (old new : Cell) : Prop := forall other, old.compatible other = true -> new.compatible other = true' (the same predicate as Cell.CompatFPU here), with lemmas Cell.PermWeakens.writer (shared 0 old to shared 0 new), Cell.PermWeakens.borrow (any cell to borrowed) and Cell.PermWeakens.share (shared d b to shared (d+1) b) at lines 175-191; Heap/Ranges.lean, endShareRange_cells.spec (lines 323-348) discharges the same weakening obligation for end-share from depth d+1 to d with 0 < d ('Decrements that retain positive sharing permission cannot introduce a writer. Returning the last shared permission instead requires continuation authority.'). These are the sufficient directions of Cell.compatFPU_iff; the converse direction and the resulting characterization are not stated there.",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/updates.v: 'Definition cmra_update {A : cmra} (x y : A) := forall n mz, valid_n n (x op? mz) -> valid_n n (y op? mz)' (notation x ~~> y), and the set-valued cmra_updateP (x ~~>: P). Jung, R., Krebbers, R., Jourdan, J.-H., Bizjak, A., Birkedal, L. & Dreyer, D., 'Iris from the ground up: A modular foundation for higher-order concurrent separation logic', Journal of Functional Programming 28, e20 (2018), doi:10.1017/S0956796818000151: the published account of Iris cameras (CMRAs), the fractional and authoritative cameras, and frame-preserving updates. With a present frame mz = Some f, cmra_update requires the single-frame condition used by PartialAlg.FramePreserving here."
+    ],
+    "design_question": "Can the per-byte sharing-depth design be given a separation-algebra (PCM) semantics in which ending the last share is a local step, or must it remain a transition system with a global compatibility check?"
+  },
+  {
+    "id": "R3c-depth-sum-pcm-exists",
+    "lean": "Toy.Perm.cellSumAlg_isPCM_cancel_positive_compat_iff",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Constructing a PCM whose definedness is a given compatibility relation is routine; recorded because it shows the impossibilities R3d and R3e are not about the mere existence of a PCM.",
+    "plain_claim": "The depth-sum algebra on cells (borrowed is the unit; two readers with equal payload compose to a reader whose depth is the sum; everything else undefined) is a commutative, associative, unital, cancellative and positive partial commutative monoid whose definedness relation is exactly the sharing-depth compatibility relation.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq V]",
+        "purpose": "Payload equality must be decidable.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "shared 1 7 . shared 2 7 is defined; shared 0 7 . shared 1 7 is not, matching compatibility.",
+    "nonvacuity_witness_lean": "Toy.Perm.cellSumAlg_compat_examples",
+    "supporting_lean": [
+      "Toy.Perm.cellAgreeAlg_comm_unit_compat_iff_not_cancel"
+    ],
+    "non_claims": [
+      "Does not claim the depth-sum algebra is faithful to the prototype: it identifies one depth-2 view with two depth-1 views, which the transition system distinguishes (R3g).",
+      "Cancellativity is a choice, not forced by the compatibility relation: the idempotent reader-join algebra cellAgreeAlg (readers compose to a depth-1 reader) is commutative and unital, has exactly the same definedness relation, and is not cancellative (cellAgreeAlg_comm_unit_compat_iff_not_cancel).",
+      "The depth-sum algebra still violates disjointness for every inhabited payload type (R1b), and in it the last end-share and the end-borrow are still not frame-preserving (R3d)."
+    ],
+    "prior_art": [
+      "Aeneas pull request 1497 (AeneasVerif/aeneas, open and unmerged at observation; head commit d17ca83fc07d712d1785f650840cb2073c259e69; base de16f3cf877976e966906dc890f63dcb418884fa). backends/lean/Aeneas/Std/Heap/Repr.lean: Cell = shared (depth : Nat) (value : Byte) | borrowed; Cell.write and Cell.borrow require depth 0; Cell.share increments; Cell.endShare decrements a positive depth; Cell.endBorrow restores depth 0; Cell.compatible: borrowed is compatible with anything, two shared cells iff both depths are positive and the bytes are equal. Heap/README.md, section 'Permissions and overlapping views', lines 198-199: 'shared 0 is exclusive raw write permission. Positive sharing depths preserve read permission and record local outstanding shares; they are not fractions.' Heap/README.md, section 'Scope and checking', lines 417-418: 'Returning the final share to depth zero is deliberately not inferred from a positive-depth footprint: conflicting readers may still exist in other views.' Heap/Borrowing.lean, endShare.spec docstring (lines 51-52): 'Restoring depth zero is enabled only when physically conflicting observers have returned. A different view's positive shared contribution blocks this step.' Heap/Separation.lean: separation splits indexed per-view contributions; the heap invariant checks byte compatibility of overlapping views. An unmerged prototype: not a durable subject; the toy model restates the relevant design."
+    ],
+    "design_question": "Can the per-byte sharing-depth design be given a separation-algebra (PCM) semantics in which ending the last share is a local step, or must it remain a transition system with a global compatibility check?"
+  },
+  {
+    "id": "R3d-restoring-steps-not-frame-preserving",
+    "lean": "Toy.Perm.restoring_steps_not_framePreserving_of_sharing_exclusion_neutral",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "That a frame-preserving update cannot depend on the frame is folklore of PCM-based logics; applied here to the specific exclusivity-restoring steps of the sharing-depth design.",
+    "plain_claim": "For any partial algebra A on any carrier and any interpretation e of cells in it: if two depth-1 readers with payload v are compatible, a depth-0 writer with payload v is incompatible with a depth-1 reader with payload v, and borrowed is compatible with a depth-1 reader (all after interpretation by e), then neither the last end-share e(shared 1 v) to e(shared 0 v) nor the end-borrow e(borrowed) to e(shared 0 v) is a frame-preserving update (single right frames).",
+    "hypotheses": [
+      {
+        "name": "h_readers : A.Compat (e (shared 1 v)) (e (shared 1 v))",
+        "purpose": "Used for the end-share conjunct: another view's depth-1 reader is a frame compatible with e(shared 1 v).",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.singleHolderAlg_last_endShare_framePreserving"
+      },
+      {
+        "name": "h_excl : ¬ A.Compat (e (shared 0 v)) (e (shared 1 v))",
+        "purpose": "A writer excludes readers; used for both conjuncts.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.allCompatAlg_restoring_steps_framePreserving"
+      },
+      {
+        "name": "h_neutral : A.Compat (e borrowed) (e (shared 1 v))",
+        "purpose": "Used for the end-borrow conjunct: a borrowed view coexists with a reader. Automatic when A satisfies UnitLeft and e(borrowed) is the unit (h_neutral_of_unitLeft); its tightness witness twoClassAlg is not unital.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.twoClassAlg_endBorrow_framePreserving"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The depth-sum algebra with e = id and v = 7 satisfies all three hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Perm.restoring_steps_not_framePreserving_nonvacuous",
+    "positive_control_lean": "Toy.Perm.singleHolderAlg_last_endShare_framePreserving",
+    "supporting_lean": [
+      "Toy.Perm.h_neutral_of_unitLeft"
+    ],
+    "non_claims": [
+      "Does not show the prototype is unsound or that ending the last share is wrong: the prototype performs it under a state-specific check (R3f).",
+      "FramePreserving quantifies over single right frames (PartialAlg.FramePreserving). Any notion of frame-preserving update that includes this single-frame condition (for example Iris cmra_update with a present frame, or notions that also quantify over left frames or composite frames) is refuted as well. Nondeterministic (set-valued) updates are not covered.",
+      "Does not exclude logics in which the restoring step is not a single-element update e(c) to e(c'): updates that also consume or consult another resource, such as an authoritative element recording all outstanding readers (Iris auth), view-indexed separation with explicit whole-root return authority (the prototype's RootReturn rule), or other enriched carriers and multi-resource updates.",
+      "Escape hatch (h_readers): if two views can never be at positive depth simultaneously (single-holder regime), the last end-share is frame-preserving (positive control). The single-holder regime rescues only the last end-share: the end-borrow remains non-frame-preserving there.",
+      "Escape hatch (h_neutral): dropping h_neutral is possible only in algebras where e(borrowed) is not a unit for readers (twoClassAlg is not unital); in any unital algebra interpreting borrowed as the unit, h_neutral holds automatically (h_neutral_of_unitLeft)."
+    ],
+    "prior_art": [
+      "Aeneas pull request 1497 (AeneasVerif/aeneas, open and unmerged at observation; head commit d17ca83fc07d712d1785f650840cb2073c259e69; base de16f3cf877976e966906dc890f63dcb418884fa). backends/lean/Aeneas/Std/Heap/Repr.lean: Cell = shared (depth : Nat) (value : Byte) | borrowed; Cell.write and Cell.borrow require depth 0; Cell.share increments; Cell.endShare decrements a positive depth; Cell.endBorrow restores depth 0; Cell.compatible: borrowed is compatible with anything, two shared cells iff both depths are positive and the bytes are equal. Heap/README.md, section 'Permissions and overlapping views', lines 198-199: 'shared 0 is exclusive raw write permission. Positive sharing depths preserve read permission and record local outstanding shares; they are not fractions.' Heap/README.md, section 'Scope and checking', lines 417-418: 'Returning the final share to depth zero is deliberately not inferred from a positive-depth footprint: conflicting readers may still exist in other views.' Heap/Borrowing.lean, endShare.spec docstring (lines 51-52): 'Restoring depth zero is enabled only when physically conflicting observers have returned. A different view's positive shared contribution blocks this step.' Heap/Separation.lean: separation splits indexed per-view contributions; the heap invariant checks byte compatibility of overlapping views. An unmerged prototype: not a durable subject; the toy model restates the relevant design.",
+      "Aeneas pull request 1497, head commit d17ca83fc07d712d1785f650840cb2073c259e69, Heap/README.md, section 'Rust boundary, Boxes, and failure', lines 339-344: 'The low-level evaluator and the scoped proof interface have different roles. Raw restoration checks borrowed cells and heap compatibility, not a dynamic loan tree. It can restore a parent while a child view is itself borrowed. Scoped contracts instead require current-state return authority: the RootReturn rule excludes every other active view of that root, including suspended ones.'; section 'Assurance coverage', lines 50-55: a retained raw-operation trace 'prematurely restores a parent when a child is itself suspended', which 'is not a counterexample to the scoped callback contracts: the child remains an active view, so the parent's RootReturn authority is unavailable.'",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/updates.v: 'Definition cmra_update {A : cmra} (x y : A) := forall n mz, valid_n n (x op? mz) -> valid_n n (y op? mz)' (notation x ~~> y), and the set-valued cmra_updateP (x ~~>: P). Jung, R., Krebbers, R., Jourdan, J.-H., Bizjak, A., Birkedal, L. & Dreyer, D., 'Iris from the ground up: A modular foundation for higher-order concurrent separation logic', Journal of Functional Programming 28, e20 (2018), doi:10.1017/S0956796818000151: the published account of Iris cameras (CMRAs), the fractional and authoritative cameras, and frame-preserving updates. With a present frame mz = Some f, cmra_update requires the single-frame condition used by PartialAlg.FramePreserving here.",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/auth.v: the authoritative camera; auth_both_valid a b : valid (auth a . frag b) <-> (forall n, b is n-included in a) /\\ valid a, and for discrete cameras auth_both_valid_discrete : valid (auth a . frag b) <-> b included in a /\\ valid a. This is the standard way to give one party knowledge of the composite of all outstanding pieces."
+    ],
+    "design_question": "Can the per-byte sharing-depth design be given a separation-algebra (PCM) semantics in which ending the last share is a local step, or must it remain a transition system with a global compatibility check?"
+  },
+  {
+    "id": "R3e-no-local-token-return-beside-other-reader",
+    "lean": "Toy.Perm.no_assoc_alg_returns_last_share_by_composition_beside_another_reader",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Elementary; it makes precise the prototype's own remark that conflicting readers may exist in other views, and contrasts it with counting permissions, where the source counts every reader.",
+    "plain_claim": "In an associative partial algebra (strong associativity; commutativity and the unit law not assumed), there is no interpretation e of cells and token t such that the state 'two depth-1 views with payload v and the outstanding share t' is consistent when written with the two views composed first ((e(shared 1 v) . e(shared 1 v)) . t is defined), absorbing t turns a depth-1 view into the depth-0 cell (e(shared 1 v) . t = e(shared 0 v)), and a depth-1 reader cannot be composed with the depth-0 cell (e(shared 1 v) . e(shared 0 v) undefined).",
+    "hypotheses": [
+      {
+        "name": "hassoc : A.Assoc",
+        "purpose": "Moves the token next to one view: (r . r) . t = r . (r . t).",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.nonAssocDepthAlg_returns_last_share_beside_reader"
+      },
+      {
+        "name": "hstate : ((A.op (e (shared 1 v)) (e (shared 1 v))).bind fun x => A.op x t) ≠ none",
+        "purpose": "Faithfulness to the design: two views may both be at depth 1 while one of them has an outstanding share.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.tokenReturnAlg_returns_last_share_without_second_reader"
+      },
+      {
+        "name": "hret : A.op (e (shared 1 v)) t = some (e (shared 0 v))",
+        "purpose": "The last-reader-returns-ownership step as a composition.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.exclAgreeAlg_unit_token_does_not_restore"
+      },
+      {
+        "name": "hexcl : ¬ A.Compat (e (shared 1 v)) (e (shared 0 v))",
+        "purpose": "Depth 0 is exclusive (a reader cannot sit beside it).",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.allZeroAlg_return_beside_reader"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The conclusion is False; non-vacuity means the hypotheses are separately satisfiable: each tightness witness satisfies all hypotheses but one, and no_assoc_alg_returns_last_share_hypotheses_satisfiable exhibits (i) with (iii) and (ii) with (iii).",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.no_assoc_alg_returns_last_share_hypotheses_satisfiable",
+      "Toy.Perm.nonAssocDepthAlg_returns_last_share_beside_reader",
+      "Toy.Perm.tokenReturnAlg_returns_last_share_without_second_reader",
+      "Toy.Perm.exclAgreeAlg_unit_token_does_not_restore",
+      "Toy.Perm.allZeroAlg_return_beside_reader"
+    ],
+    "positive_control_lean": "Toy.Perm.tokenReturnAlg_returns_last_share_without_second_reader",
+    "supporting_lean": [
+      "Toy.Perm.no_pcm_returns_last_share_by_composition_beside_another_reader",
+      "Toy.Perm.counting_returns_last_share_without_coexisting_reader"
+    ],
+    "non_claims": [
+      "Associativity is required (nonAssocDepthAlg is commutative and unital, not associative, and satisfies the other hypotheses). Commutativity and the unit law are not used; in a commutative algebra the exclusion may be written in either order.",
+      "For partial commutative monoids the same impossibility holds with the state written as opList [t, e(shared 1 v), e(shared 1 v)] != none and the exclusion as not Compat e(shared 0 v) e(shared 1 v) (no_pcm_returns_last_share_by_composition_beside_another_reader).",
+      "Does not exclude token-based accounts in which the token-absorption composite is not exclusive by itself and exclusivity is concluded from an authoritative record of all readers (Iris auth style).",
+      "Escape hatch (hstate): if two depth-1 readers cannot coexist, the return by composition works (tokenReturnAlg, a partial commutative monoid; also the counting algebra with cells read as sources, counting_returns_last_share_without_coexisting_reader)."
+    ],
+    "prior_art": [
+      "Aeneas pull request 1497 (AeneasVerif/aeneas, open and unmerged at observation; head commit d17ca83fc07d712d1785f650840cb2073c259e69; base de16f3cf877976e966906dc890f63dcb418884fa). backends/lean/Aeneas/Std/Heap/Repr.lean: Cell = shared (depth : Nat) (value : Byte) | borrowed; Cell.write and Cell.borrow require depth 0; Cell.share increments; Cell.endShare decrements a positive depth; Cell.endBorrow restores depth 0; Cell.compatible: borrowed is compatible with anything, two shared cells iff both depths are positive and the bytes are equal. Heap/README.md, section 'Permissions and overlapping views', lines 198-199: 'shared 0 is exclusive raw write permission. Positive sharing depths preserve read permission and record local outstanding shares; they are not fractions.' Heap/README.md, section 'Scope and checking', lines 417-418: 'Returning the final share to depth zero is deliberately not inferred from a positive-depth footprint: conflicting readers may still exist in other views.' Heap/Borrowing.lean, endShare.spec docstring (lines 51-52): 'Restoring depth zero is enabled only when physically conflicting observers have returned. A different view's positive shared contribution blocks this step.' Heap/Separation.lean: separation splits indexed per-view contributions; the heap invariant checks byte compatibility of overlapping views. An unmerged prototype: not a durable subject; the toy model restates the relevant design.",
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/auth.v: the authoritative camera; auth_both_valid a b : valid (auth a . frag b) <-> (forall n, b is n-included in a) /\\ valid a, and for discrete cameras auth_both_valid_discrete : valid (auth a . frag b) <-> b included in a /\\ valid a. This is the standard way to give one party knowledge of the composite of all outstanding pieces."
+    ],
+    "design_question": "Can the per-byte sharing-depth design be given a separation-algebra (PCM) semantics in which ending the last share is a local step, or must it remain a transition system with a global compatibility check?"
+  },
+  {
+    "id": "R3f-depth-transition-characterization",
+    "lean": [
+      "Toy.Perm.Cell.valid_set_iff",
+      "Toy.Perm.CellStep.restoresExclusive_iff",
+      "Toy.Perm.Cell.stepAt_isSome_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Restates the enabledness behaviour of the prototype's per-cell operations at one address as a single equivalence, with the restoring steps classified.",
+    "plain_claim": "In a valid configuration (pairwise-compatible cells of the views at one address), applying a per-view operation t to view i whose cell is c, where t is defined on c with result c', yields a valid configuration iff, in case t restores exclusivity on c, every other view at that address is borrowed; the steps that restore exclusivity are exactly the last end-share (endShare on shared 1 v) and the end-borrow (endBorrow on borrowed), so write, borrow, share and end-share from depth at least 2, when defined on view i's cell, always yield a valid configuration; equivalently, stepAt cfg i t is enabled iff view i exists, t is defined on its cell, and the borrowed condition holds for restoring steps.",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq V]",
+        "purpose": "Payload equality must be decidable to compute compatibility (Valid, stepAt); CellStep.restoresExclusive_iff does not use it.",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Perm.Cell.valid_set_iff",
+          "Toy.Perm.Cell.stepAt_isSome_iff"
+        ]
+      },
+      {
+        "name": "hv : Valid cfg",
+        "purpose": "Enabledness of non-restoring steps relies on the invariant already holding.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.Cell.valid_set_iff_needs_valid",
+          "Toy.Perm.Cell.stepAt_isSome_iff_needs_valid"
+        ],
+        "applies_to": [
+          "Toy.Perm.Cell.valid_set_iff",
+          "Toy.Perm.Cell.stepAt_isSome_iff"
+        ]
+      },
+      {
+        "name": "hi : cfg[i]? = some c",
+        "purpose": "c must be the cell actually at position i.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.Cell.valid_set_iff_needs_lookup",
+        "applies_to": [
+          "Toy.Perm.Cell.valid_set_iff"
+        ]
+      },
+      {
+        "name": "ht : t.apply c = some c'",
+        "purpose": "c' must be the result of the operation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.Cell.valid_set_iff_needs_apply",
+        "applies_to": [
+          "Toy.Perm.Cell.valid_set_iff"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "[shared 1 7, borrowed]: ending view 0's last share restores exclusivity and is enabled.",
+    "nonvacuity_witness_lean": "Toy.Perm.Cell.valid_set_iff_nonvacuous",
+    "non_claims": [
+      "One address only; the prototype checks compatibility for every byte of every overlapping view and also checks bounds, liveness, alignment and provenance (not modelled).",
+      "View creation and retirement (exposures, returns) and permissions held implicitly outside the explicit heap are not modelled.",
+      "Characterizes raw per-cell compatibility only: end-borrow is enabled whenever every other active view is borrowed, including when another active view is itself a borrowed child. The prototype's scoped return contracts (RootReturn) exclude every other active view of the root, including suspended ones, and so impose strictly stronger preconditions than this enabledness condition.",
+      "Cell.stepAt_isSome_iff is derived from Cell.valid_set_iff and inherits its proof status."
+    ],
+    "prior_art": [
+      "Aeneas pull request 1497 (AeneasVerif/aeneas, open and unmerged at observation; head commit d17ca83fc07d712d1785f650840cb2073c259e69; base de16f3cf877976e966906dc890f63dcb418884fa). backends/lean/Aeneas/Std/Heap/Repr.lean: Cell = shared (depth : Nat) (value : Byte) | borrowed; Cell.write and Cell.borrow require depth 0; Cell.share increments; Cell.endShare decrements a positive depth; Cell.endBorrow restores depth 0; Cell.compatible: borrowed is compatible with anything, two shared cells iff both depths are positive and the bytes are equal. Heap/README.md, section 'Permissions and overlapping views', lines 198-199: 'shared 0 is exclusive raw write permission. Positive sharing depths preserve read permission and record local outstanding shares; they are not fractions.' Heap/README.md, section 'Scope and checking', lines 417-418: 'Returning the final share to depth zero is deliberately not inferred from a positive-depth footprint: conflicting readers may still exist in other views.' Heap/Borrowing.lean, endShare.spec docstring (lines 51-52): 'Restoring depth zero is enabled only when physically conflicting observers have returned. A different view's positive shared contribution blocks this step.' Heap/Separation.lean: separation splits indexed per-view contributions; the heap invariant checks byte compatibility of overlapping views. An unmerged prototype: not a durable subject; the toy model restates the relevant design.",
+      "Aeneas pull request 1497, head commit d17ca83fc07d712d1785f650840cb2073c259e69, Heap/README.md, section 'Rust boundary, Boxes, and failure', lines 339-344: 'The low-level evaluator and the scoped proof interface have different roles. Raw restoration checks borrowed cells and heap compatibility, not a dynamic loan tree. It can restore a parent while a child view is itself borrowed. Scoped contracts instead require current-state return authority: the RootReturn rule excludes every other active view of that root, including suspended ones.'; section 'Assurance coverage', lines 50-55: a retained raw-operation trace 'prematurely restores a parent when a child is itself suspended', which 'is not a counterexample to the scoped callback contracts: the child remains an active view, so the parent's RootReturn authority is unavailable.'"
+    ],
+    "design_question": "Can the per-byte sharing-depth design be given a separation-algebra (PCM) semantics in which ending the last share is a local step, or must it remain a transition system with a global compatibility check?"
+  },
+  {
+    "id": "R3g-depth-sum-not-faithful",
+    "lean": "Toy.Perm.cellSumAlg_composite_does_not_determine_endShare_enabled",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Concrete computation in the toy model; it makes precise the prototype's remark that pooling just total depths would lose the per-view distinction.",
+    "plain_claim": "For every payload v, the configurations [shared 2 v] and [shared 1 v, shared 1 v] have the same depth-sum composite shared 2 v, yet from the first the single view regains exclusivity by two enabled end-shares, while in the second neither view's end-share is enabled (immediate enabledness of one step).",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq V]",
+        "purpose": "Payload equality must be decidable.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "Universally quantified over the payload; instantiated at the inhabited payload type Nat with payload 7 (cellSumAlg_composite_does_not_determine_endShare_enabled_nat). Over an empty payload type the statement is vacuous.",
+    "non_claims": [
+      "Refutes faithfulness of the depth-sum algebra only; it does not show that every PCM fails to abstract the transition system (see R3d, R3e for the general statements).",
+      "Concerns immediate enabledness of end-share in this fixed-list transition model, not multi-step reachability of a depth-0 cell.",
+      "Does not show that two overlapping shared views can never regain exclusivity in the prototype: there an independent shared exposure retires at depth 1 (Heap.endSharedExposure removes the view instead of decrementing it to depth 0), after which the remaining view can end its share to depth 0. View retirement is not modelled here."
+    ],
+    "prior_art": [
+      "Aeneas pull request 1497 (AeneasVerif/aeneas, open and unmerged at observation; head commit d17ca83fc07d712d1785f650840cb2073c259e69; base de16f3cf877976e966906dc890f63dcb418884fa). backends/lean/Aeneas/Std/Heap/Repr.lean: Cell = shared (depth : Nat) (value : Byte) | borrowed; Cell.write and Cell.borrow require depth 0; Cell.share increments; Cell.endShare decrements a positive depth; Cell.endBorrow restores depth 0; Cell.compatible: borrowed is compatible with anything, two shared cells iff both depths are positive and the bytes are equal. Heap/README.md, section 'Permissions and overlapping views', lines 198-199: 'shared 0 is exclusive raw write permission. Positive sharing depths preserve read permission and record local outstanding shares; they are not fractions.' Heap/README.md, section 'Scope and checking', lines 417-418: 'Returning the final share to depth zero is deliberately not inferred from a positive-depth footprint: conflicting readers may still exist in other views.' Heap/Borrowing.lean, endShare.spec docstring (lines 51-52): 'Restoring depth zero is enabled only when physically conflicting observers have returned. A different view's positive shared contribution blocks this step.' Heap/Separation.lean: separation splits indexed per-view contributions; the heap invariant checks byte compatibility of overlapping views. An unmerged prototype: not a durable subject; the toy model restates the relevant design.",
+      "Aeneas pull request 1497, head commit d17ca83fc07d712d1785f650840cb2073c259e69, Heap/README.md, section 'Permissions and overlapping views', lines 217-219: 'Authorization remains selected-view-specific. Pooling just total depths would lose the distinction between A.borrowed/B.shared0 and A.shared0/B.borrowed.'; lines 228-230: 'Independent shared exposures retire their baseline contribution at depth one. They do not decrement it into a writer. Local nested shares decrement separately; exclusive access cannot resume until conflicting views retire.'; Heap/Model.lean, lines 361-363: Heap.endSharedExposure repr p count s = endExposureAt repr p count 1 s (retirement of a view at depth 1)."
+    ],
+    "design_question": "Can the per-byte sharing-depth design be given a separation-algebra (PCM) semantics in which ending the last share is a local step, or must it remain a transition system with a global compatibility check?",
+    "nonvacuity_witness_lean": "Toy.Perm.cellSumAlg_composite_does_not_determine_endShare_enabled_nat"
+  },
+  {
+    "id": "R4a-bounded-count-embeds-in-frac",
+    "lean": "Toy.Perm.countBEmbed_injective_preserves_reflects_op_exclusive_readable",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The idea of giving each token a small fixed fraction is folklore; the exact step 1/(3N+1), which makes the map injective and makes it reflect both composition and exclusivity, is made precise here.",
+    "plain_claim": "For every bound N, counting permissions with counts at most N form a partial commutative monoid, and the explicit map countEmbed N (bundle of k tokens to k/(3N+1), source with n outstanding tokens to 1 - n/(3N+1), empty to 0) is injective, sends the unit to 0, satisfies a . b = c iff f a . f b = f c for all a, b, c (it preserves every defined composite and reflects every fractional composite that lands in its image), maps exactly the exclusive elements to exclusive fractions, and maps exactly the non-empty permissions to non-zero fractions.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement. N = 1, fully checked: the map is injective, preserves the unit, satisfies the composition equivalence, gives the token 1/4 and the total permission the exclusive fraction 1.",
+    "nonvacuity_witness_lean": "Toy.Perm.countB1Embed_injective_unit_op_iff",
+    "supporting_lean": [
+      "Toy.Perm.countEmbedThirds_preservesOp_not_reflecting",
+      "Toy.Perm.preservesOp_of_op_iff"
+    ],
+    "non_claims": [
+      "Compatibility is not reflected: for N >= 1 no composition-preserving map from N-bounded counting to fractions reflects compatibility (R4b); under countEmbed 1 two single tokens are incompatible but their images 1/4, 1/4 are compatible, with composite 1/2 outside the image.",
+      "The step matters: with the step 1/(2N+1) (for N = 1: token 1/3, source 2/3) composition is still preserved but not reflected, because 1/3 + 1/3 = 2/3 is the image of a source (countEmbedThirds_preservesOp_not_reflecting).",
+      "Does not preserve atomicity of single read tokens: inside the fractional algebra the image 1/(3N+1) of a token splits further into two non-zero halves (R2a).",
+      "Does not preserve the counting source's bound on outstanding holders inside the fractional algebra: the complement of the image of a source splits into any number of non-zero fractions (R5d).",
+      "The image lies in the dyadic sub-algebra only when 3N+1 is a power of two (for example N = 1, N = 5); variants with other steps (for example a dyadic step 1/2^k with 2^k >= 3N+1) are not stated here.",
+      "States IsPCM for the bounded algebra only; Cancel and Positive for it are not stated here (they are inherited from the counting algebra, R1a, but this is not proved).",
+      "Does not extend to unbounded counting: no composition-preserving map from unbounded counting gives a token a non-zero fraction (R4c).",
+      "A different N gives a different map; there is no single map for all bounds."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can a logic built on one permission design be faithfully re-expressed in the other by a structure-preserving map, and what is lost in each direction?"
+  },
+  {
+    "id": "R4b-bounded-embedding-not-reflecting",
+    "lean": [
+      "Toy.Perm.no_opPreserving_map_countB_to_frac_reflecting_compat",
+      "Toy.Perm.opPreserving_map_countB_to_frac_sources_or_bundles_compat",
+      "Toy.Perm.opPreserving_maps_countB_to_frac_keep_either_pair_incompatible"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Elementary; it makes precise one way in which fractions cannot enforce a bound on the number of tokens even when the bound is fixed, and which incompatible pairs are affected.",
+    "plain_claim": "For every bound N >= 1, there is no map f from N-bounded counting permissions to fractional permissions that preserves every defined composite and reflects compatibility (any two permissions whose images are compatible fractions are compatible in N-bounded counting). More precisely, for every N >= 1 and every map f that preserves every defined composite: two sources source N are incompatible and two bundles tokens N are incompatible in N-bounded counting, yet source N . tokens N = total forces f(source N) + f(tokens N) <= 1, so at least one of the two pairs (two copies of source N, or two copies of tokens N) has compatible fractional images. Which pair it is depends on f: for every N >= 1 there is a composition-preserving map that also sends the unit to 0 and total to 1 under which two bundles tokens N have incompatible images (tokens N to 2/3, source N to 1/3), and another under which two sources source N have incompatible images (tokens N to 1/3, source N to 2/3).",
+    "hypotheses": [
+      {
+        "name": "hN : 1 ≤ N",
+        "purpose": "With N = 0 bounded counting is the two-point exclusive algebra {none, total}, which embeds faithfully; there source 0 and some (-0) are the same element total.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.countB0Embed_preservesOp_reflects_compat",
+          "Toy.Perm.countB0Embed_sources_or_bundles_compat_fails",
+          "Toy.Perm.countB0_keep_either_pair_incompatible_fails"
+        ],
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_countB_to_frac_reflecting_compat",
+          "Toy.Perm.opPreserving_map_countB_to_frac_sources_or_bundles_compat",
+          "Toy.Perm.opPreserving_maps_countB_to_frac_keep_either_pair_incompatible"
+        ]
+      },
+      {
+        "name": "PreservesOp (countBAlg N) fracAlg f (conjunct of the excluded map; hypothesis hf of the disjunction)",
+        "purpose": "Structure preservation; it is what links f(source N) and f(tokens N) through source N . tokens N = total.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.countB1AllFull_reflects_compat",
+          "Toy.Perm.countB1AllFull_sources_or_bundles_compat_fails"
+        ],
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_countB_to_frac_reflecting_compat",
+          "Toy.Perm.opPreserving_map_countB_to_frac_sources_or_bundles_compat"
+        ]
+      },
+      {
+        "name": "∀ a b, fracAlg.Compat (f a) (f b) → (countBAlg N).Compat a b (conjunct of the excluded map)",
+        "purpose": "Compatibility reflection.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countB1Embed_preservesOp",
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_countB_to_frac_reflecting_compat"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "hN holds for N = 1, and each conjunct of the excluded map alone is satisfiable at N = 1 (the map sending every non-empty permission to 1 reflects compatibility; countEmbed 1 preserves composition), so the hypotheses of the disjunction hold for N = 1 and f = countEmbed 1; under countEmbed 1 the two single tokens are incompatible but have compatible images. At N = 1 the linear maps with steps 2/3 and 1/3 preserve composition and give the token and the source the values 2/3, 1/3 and 1/3, 2/3.",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.countB1AllFull_reflects_compat",
+      "Toy.Perm.countB1Embed_preservesOp",
+      "Toy.Perm.countB1Embed_compat_not_reflected",
+      "Toy.Perm.countB1Lin_values"
+    ],
+    "positive_control_lean": "Toy.Perm.countB0Embed_preservesOp_reflects_compat",
+    "supporting_lean": [
+      "Toy.Perm.CountB.bundleN_val",
+      "Toy.Perm.countBAlg_srcN_bundleN",
+      "Toy.Perm.countBAlg_not_compat_srcN_srcN",
+      "Toy.Perm.countBAlg_not_compat_bundleN_bundleN",
+      "Toy.Perm.countLin_preservesUnit_op_values"
+    ],
+    "non_claims": [
+      "Does not say that every composition-preserving map gives compatible images to two bundles tokens N, nor that every such map gives compatible images to two sources source N: for every N >= 1 each of the two pairs keeps incompatible images under some composition-preserving map that also sends the unit to 0 and total to 1 (opPreserving_maps_countB_to_frac_keep_either_pair_incompatible). Only the disjunction holds for every composition-preserving map.",
+      "Classifies only the two pairs (source N, source N) and (tokens N, tokens N); which other incompatible pairs of N-bounded counting receive compatible images under a given map is not examined.",
+      "Does not say that composition cannot be reflected: countEmbed N reflects every fractional composite that lands in its image (R4a); the failure is only for compatibility, where the fractional composite of two images may lie outside the image.",
+      "Does not exclude translations into enriched fractional models (for example fractions paired with a token count); only maps into the plain fractional algebra are considered.",
+      "The impossibility and the disjunction assume neither the unit law for f nor f total = 1; the two maps that keep one pair incompatible satisfy both."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can a logic built on one permission design be faithfully re-expressed in the other by a structure-preserving map, and what is lost in each direction?"
+  },
+  {
+    "id": "R4c-no-count-to-frac-with-readable-token",
+    "lean": "Toy.Perm.no_opPreserving_map_count_to_frac_with_nonzero_readToken",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Makes precise Bornat et al.'s informal contrast between unbounded counting and bounded divisible fractions (Section 9).",
+    "plain_claim": "There is no map from (unbounded) counting permissions to fractional permissions that preserves every defined composite and sends the single read token to a non-zero fraction, because bundles of n tokens exist for every n while fractions are bounded by 1.",
+    "hypotheses": [
+      {
+        "name": "PreservesOp countAlg fracAlg f",
+        "purpose": "Structure preservation: a . b = c implies f a . f b = f c.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.const_full_nonzero_token"
+      },
+      {
+        "name": "f readToken ≠ zero",
+        "purpose": "Readability of a single token is preserved.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.const_zero_preservesOp",
+          "Toy.Perm.countToFracSourcesOnly_preserves_unit_op_total"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Each hypothesis alone is satisfiable (constant maps).",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.const_zero_preservesOp",
+      "Toy.Perm.const_full_nonzero_token"
+    ],
+    "positive_control_lean": "Toy.Perm.countB1Embed_preservesOp_nonzero_token",
+    "non_claims": [
+      "Only element-wise maps are excluded. Per-configuration translations exist: any finite configuration of a source and n tokens can be mirrored by n + 1 non-zero fractions summing to 1 (for example the halving split of R2b), and stateful run-level simulations that give successively issued tokens different fractions (1/2, 1/4, 1/8, ...) are not excluded.",
+      "The unit law is not assumed for f; PreservesOp alone forces f(tokens n) = n . f(readToken).",
+      "Exclusivity alone can be preserved: countToFracSourcesOnly (every source to 1, empty and every token bundle to 0) preserves the unit and composition and sends total to 1, failing only f readToken != 0 (countToFracSourcesOnly_preserves_unit_op_total); so f readToken != 0 cannot be replaced by f total = 1.",
+      "Escape hatch (bounded counts): bound the counts (positive control and R4a). Bundles cannot simply be forbidden: associativity forces a source with count 2 to accept two tokens one at a time, so the 2-bundle must be defined.",
+      "Escape hatch (target without the bound 1 or without the Archimedean property): the argument uses that fractions are at most 1 and that rationals are Archimedean; unbounded positive rationals, non-Archimedean or symbolic infinitesimal read amounts, or abstract read permissions (Heule et al., VMCAI 2013) are not covered."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'",
+      "Heule, S., Leino, K. R. M., Mueller, P. & Summers, A. J., 'Abstract Read Permissions: Fractional Permissions without the Fractions', VMCAI 2013, LNCS 7737, pp. 315-334, doi:10.1007/978-3-642-35873-9_20 (bibliographic metadata verified via Crossref). From the abstract: specification using fractional permissions 'typically requires the user to pick concrete mathematical values for partial permissions'; abstract read permissions let the user 'work at the abstract level of read and write permissions' while supporting fractional permissions; implemented in Chalice. Only the abstract was inspected."
+    ],
+    "design_question": "Can a logic built on one permission design be faithfully re-expressed in the other by a structure-preserving map, and what is lost in each direction?"
+  },
+  {
+    "id": "R4d-no-frac-to-count-preserving-exclusivity",
+    "lean": [
+      "Toy.Perm.no_opPreserving_map_to_count_sending_self_composite_to_total",
+      "Toy.Perm.no_opPreserving_map_frac_to_count_sending_full_to_total",
+      "Toy.Perm.no_opPreserving_map_halfGrid_to_count_sending_full_to_total"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Elementary; makes precise one half of Bornat et al.'s 'two distinct and somewhat incompatible properties'.",
+    "plain_claim": "In any partial algebra A, if h . h = a then no map from A to counting permissions that preserves every defined composite sends a to the total counting permission, because the total counting permission is never a composite x . x; in particular no such map from the fractions, or from the finitely divisible half-grid {0, 1/2, 1}, sends 1 = 1/2 . 1/2 to the total permission.",
+    "hypotheses": [
+      {
+        "name": "hh : A.op h h = some a",
+        "purpose": "a is a self-composite (for fractions: 1 = 1/2 . 1/2).",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.exclToCount_preservesOp_full_to_total",
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_to_count_sending_self_composite_to_total"
+        ]
+      },
+      {
+        "name": "PreservesOp A countAlg g",
+        "purpose": "Structure preservation (a conjunct of the excluded map in all three theorems). The counterexample is stated over the fractions (A = fracAlg, h = 1/2, a = 1), so it shows tightness for the first theorem and the second only. No Lean counterexample is recorded for the third (half-grid) theorem; there, dropping this conjunct leaves only g 2 = total, which a constant map satisfies (evident, not stated in Lean).",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.indicator_full_to_total",
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_to_count_sending_self_composite_to_total",
+          "Toy.Perm.no_opPreserving_map_frac_to_count_sending_full_to_total"
+        ]
+      },
+      {
+        "name": "g a = total",
+        "purpose": "Exclusivity preserved: a = 1 in the second theorem, and a = 2 (standing for 1) in the third (by fracAlg_exclusive_iff and countAlg_exclusive_iff, 1 and total are the exclusive elements of the fractions and of counting). const_none_preservesOp_frac_half (over the fractions, where 1/2 . 1/2 = 1, some map preserves composition) shows tightness for the first theorem and the second; halfGridToCount_preservesOp_nonempty (a composition-preserving map on the half-grid, sending 2 to tokens 2 rather than total) shows it for the third.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.const_none_preservesOp_frac_half",
+          "Toy.Perm.halfGridToCount_preservesOp_nonempty"
+        ],
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_to_count_sending_self_composite_to_total",
+          "Toy.Perm.no_opPreserving_map_frac_to_count_sending_full_to_total",
+          "Toy.Perm.no_opPreserving_map_halfGrid_to_count_sending_full_to_total"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "hh holds in the fractions (1/2 . 1/2 = 1) and in the half-grid (1/2 . 1/2 = 1).",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.fracAlg_half_half",
+      "Toy.Perm.halfGridAlg_half_half"
+    ],
+    "positive_control_lean": [
+      "Toy.Perm.asymGridToCount_preservesOp_full_to_total",
+      "Toy.Perm.exclToCount_preservesOp_full_to_total"
+    ],
+    "non_claims": [
+      "On the full fractional algebra this is subsumed by R4e (every composition-preserving map from fractions to counting is constantly empty); the self-composite obstruction is independent of infinite divisibility and is the operative one on finitely divisible sub-algebras containing 1/2, such as the half-grid, where a composition-preserving map keeping every non-zero element non-empty does exist (halfGridToCount_preservesOp_nonempty).",
+      "Escape hatch (asymmetric splits): the obstruction is the symmetric split 1 = 1/2 . 1/2, not splitting as such. The asymmetric grid {0, 1/4, 3/4, 1}, exactly a sub-algebra of the fractions (asymGridToFrac_preserves_reflects), maps into counting with 1/4 to readToken, 3/4 to source 1 and 1 to total, preserving composition (positive control).",
+      "Escape hatch (no split of 1): on the non-splittable sub-algebra {0, 1} of fractions (exclAlg, embedded by exclToFrac_preserves_reflects) such a map exists (positive control).",
+      "Does not exclude protocol-level simulations where splits are routed through a counting source."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can a logic built on one permission design be faithfully re-expressed in the other by a structure-preserving map, and what is lost in each direction?"
+  },
+  {
+    "id": "R4e-no-frac-to-count-preserving-nonemptiness",
+    "lean": [
+      "Toy.Perm.opPreserving_map_frac_to_count_eq_none",
+      "Toy.Perm.no_opPreserving_map_frac_to_count_with_nonempty_value"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Makes precise the clash between infinite divisibility (Dockins-Hobor-Appel) and atomic read tokens (Bornat et al.).",
+    "plain_claim": "Every map from fractional to counting permissions that preserves every defined composite sends every fraction to the empty counting permission; in particular no such map sends even a single fraction (for instance 1) to a non-empty counting permission, because repeated halving would require token bundles whose size halves forever.",
+    "hypotheses": [
+      {
+        "name": "hg : PreservesOp fracAlg countAlg g",
+        "purpose": "Structure preservation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.const_readToken_not_none",
+        "applies_to": [
+          "Toy.Perm.opPreserving_map_frac_to_count_eq_none"
+        ]
+      },
+      {
+        "name": "PreservesOp fracAlg countAlg g (conjunct of the excluded map)",
+        "purpose": "Structure preservation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.const_readToken_nonempty",
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_frac_to_count_with_nonempty_value"
+        ]
+      },
+      {
+        "name": "∃ q, g q ≠ none (conjunct of the excluded map)",
+        "purpose": "Some fraction is sent to a non-empty counting permission.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.opPreserving_map_frac_to_count_exists",
+        "applies_to": [
+          "Toy.Perm.no_opPreserving_map_frac_to_count_with_nonempty_value"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The constant map to none preserves every defined composite.",
+    "nonvacuity_witness_lean": "Toy.Perm.const_none_preservesOp_frac",
+    "positive_control_lean": "Toy.Perm.halfGridToCount_preservesOp_nonempty",
+    "non_claims": [
+      "Uses only the halving chain q, q/2, q/4, ...; it applies equally to the dyadic sub-algebra.",
+      "Relaxing 'every non-zero fraction maps to a non-empty counting permission' to 'some fraction maps to a non-empty counting permission' does not escape the impossibility on the full fractional algebra.",
+      "Escape hatch (finite divisibility): on the finitely divisible sub-algebra {0, 1/2, 1} (embedded by halfGridToFrac_preserves_reflects), i/2 maps to i tokens, preserving composition and non-emptiness; that map sends 1 to a 2-token bundle, not to the total permission (R4d)."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can a logic built on one permission design be faithfully re-expressed in the other by a structure-preserving map, and what is lost in each direction?"
+  },
+  {
+    "id": "R5a-count-source-bounds-outstanding-holders",
+    "lean": [
+      "Toy.Perm.countAlg_source_count_bounds_outstanding_pieces",
+      "Toy.Perm.countAlg_complete_source_pos_has_outstanding_piece",
+      "Toy.Perm.countAlg_source_one_complete_exactly_one_piece"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Dockins-Hobor-Appel: 'The token factory has collected all its tokens when its share is zero'; the bound on the number of holders is made precise here.",
+    "plain_claim": "If a counting source with count n together with a list of non-empty counting permissions has a defined composite (the configuration is consistent; it need not account for the whole permission), the list has at most n elements; if moreover the configuration pools to the total permission and n > 0, the list has at least one element; so in a complete configuration a source with count 1 has exactly one other non-empty piece.",
+    "hypotheses": [
+      {
+        "name": "hts : ∀ t ∈ ts, t ≠ none",
+        "purpose": "Count only genuine holders; empty pieces can pad a configuration.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.countAlg_source_bound_needs_nonempty_pieces",
+          "Toy.Perm.countAlg_source_one_exactly_one_needs_nonempty"
+        ],
+        "applies_to": [
+          "Toy.Perm.countAlg_source_count_bounds_outstanding_pieces",
+          "Toy.Perm.countAlg_source_one_complete_exactly_one_piece"
+        ]
+      },
+      {
+        "name": "hdef : countAlg.opList (source n :: ts) ≠ none",
+        "purpose": "The configuration is consistent.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_source_bound_needs_defined",
+        "applies_to": [
+          "Toy.Perm.countAlg_source_count_bounds_outstanding_pieces"
+        ]
+      },
+      {
+        "name": "hc : countAlg.opList (source n :: ts) = some total (with n = 1 in the corollary)",
+        "purpose": "The configuration accounts for the whole permission; needed for the lower bound, not for the upper bound.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Perm.countAlg_complete_lower_bound_needs_complete",
+          "Toy.Perm.countAlg_source_one_exactly_one_needs_complete"
+        ],
+        "applies_to": [
+          "Toy.Perm.countAlg_complete_source_pos_has_outstanding_piece",
+          "Toy.Perm.countAlg_source_one_complete_exactly_one_piece"
+        ]
+      },
+      {
+        "name": "hn : 0 < n",
+        "purpose": "The total permission alone is complete with no other piece.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_complete_lower_bound_needs_pos",
+        "applies_to": [
+          "Toy.Perm.countAlg_complete_source_pos_has_outstanding_piece"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "source 2 with two read tokens (complete) and with one read token (consistent, incomplete: it pools to source 1); source 1 with one read token (complete).",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.countAlg_source_count_bounds_outstanding_pieces_nonvacuous",
+      "Toy.Perm.countAlg_source_one_complete_nonvacuous"
+    ],
+    "non_claims": [
+      "The upper bound depends only on consistency, not on completeness: leaked or incomplete configurations still have at most n other non-empty pieces.",
+      "Bounds the number of holders, not their identity; holders of bundles make the number smaller than n.",
+      "Only the source has this knowledge; a token holder does not (R5e).",
+      "Ghost-level statement; it does not say a program can read the count at run time."
+    ],
+    "modeling_bridge": "derived (modeling bridge): if a counting source's count is held by the party that will regain ownership, that party knows, when its count is 1, that exactly one other holder remains, so the next return (if it is a single token) completes the whole; the operational reading is not part of the Lean statement.",
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'"
+    ],
+    "design_question": "Can 'the last reader returns ownership' be supported locally: who can tell, from their own permission, how many readers remain?"
+  },
+  {
+    "id": "R5b-count-atomic-complete-iff",
+    "lean": [
+      "Toy.Perm.countAlg_readTokens_complete_iff_length_eq_count",
+      "Toy.Perm.countAlg_total_splits_into_source_and_readTokens"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "A restatement of Bornat et al.'s counting discipline (source count = number of split-off read permissions; equations (10) and (16)).",
+    "plain_claim": "If every outstanding piece is a single read token, then a source with count n together with them pools to the total permission iff there are exactly n of them; in particular, for every n, the total counting permission is the composite of a source with count n and n single read tokens (second theorem).",
+    "hypotheses": [
+      {
+        "name": "hatom : ∀ t ∈ ts, t = readToken",
+        "purpose": "The count tracks tokens, not holders; a 2-bundle completes source 2 alone.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.countAlg_bundle_complete_length_ne_count",
+        "applies_to": [
+          "Toy.Perm.countAlg_readTokens_complete_iff_length_eq_count"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "source 2 with two read tokens; for n = 2, [source 2, readToken, readToken] composes to total.",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.countAlg_readTokens_complete_iff_nonvacuous",
+      "Toy.Perm.countAlg_total_splits_example"
+    ],
+    "non_claims": [
+      "Does not say tokens are returned in any particular order or to any particular party.",
+      "Nothing in the counting algebra prevents two readers from merging their single tokens into a bundle tokens 2; hatom is an external protocol invariant, not enforced by the algebra.",
+      "The split of the total permission into a source and n tokens exists for every n, but this does not say the pieces can be produced without the source: by R2c single tokens cannot be split further, and by R2d every split of a source goes through its count."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'."
+    ],
+    "design_question": "Can 'the last reader returns ownership' be supported locally: who can tell, from their own permission, how many readers remain? Reference point for splitting: Can a reader sub-delegate read access without involving the original owner (fractions), or must every split go through a counting authority (counting)?"
+  },
+  {
+    "id": "R5d-frac-no-element-bounds-holders",
+    "lean": [
+      "Toy.Perm.fracAlg_no_nonexclusive_element_bounds_outstanding_pieces",
+      "Toy.Perm.fracAlg_owner_complement_splits_into_any_number"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Bornat et al. Section 9 note that fractional proofs need not know how many times a permission will be split; the impossibility contrasting with counting sources, with its explicit witness (an n-way split of the complement, itself a T0-level corollary of R2b), is made precise here.",
+    "plain_claim": "There is no non-exclusive fractional permission p and number N such that every list of non-empty pieces completing p to the full permission has at most N elements; explicitly, for every p other than 1 and every n >= 1, the halving split of 1 - p into n pieces gives n non-empty pieces that together with p pool to 1. Unlike a counting source, no non-exclusive fractional piece bounds the number of other holders (the exclusive piece 1 bounds them by 0).",
+    "hypotheses": [
+      {
+        "name": "¬ fracAlg.Exclusive p (inside the existential)",
+        "purpose": "The exclusive piece 1 trivially bounds the others by 0.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.fracAlg_full_bounds_outstanding_pieces",
+        "applies_to": [
+          "Toy.Perm.fracAlg_no_nonexclusive_element_bounds_outstanding_pieces"
+        ]
+      },
+      {
+        "name": "∀ x ∈ ps, x ≠ zero (inside the bound)",
+        "purpose": "Count only non-empty pieces; dropping it only makes the impossibility easier (pad with zeros).",
+        "tightness": "harmless",
+        "applies_to": [
+          "Toy.Perm.fracAlg_no_nonexclusive_element_bounds_outstanding_pieces"
+        ]
+      },
+      {
+        "name": "hp : p ≠ full",
+        "purpose": "For p = 1 the complement is 0 and has no non-empty pieces.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.fracAlg_full_complement_piece_is_zero",
+        "applies_to": [
+          "Toy.Perm.fracAlg_owner_complement_splits_into_any_number"
+        ]
+      },
+      {
+        "name": "hn : 0 < n",
+        "purpose": "With zero pieces, p alone is not the whole.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.fracAlg_owner_complement_zero_pieces",
+        "applies_to": [
+          "Toy.Perm.fracAlg_owner_complement_splits_into_any_number"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "p = 1/2 is not exclusive; with n = 3 the other pieces are [1/4, 1/8, 1/8].",
+    "nonvacuity_witness_lean": [
+      "Toy.Perm.fracAlg_half_not_exclusive",
+      "Toy.Perm.fracAlg_owner_complement_splits_nonvacuous"
+    ],
+    "positive_control_lean": "Toy.Perm.countAlg_source_one_bounds_outstanding_pieces",
+    "non_claims": [
+      "Escape hatch (counting and authoritative models): permissions carrying an atomic count (counting sources, positive control) or an authoritative record of all outstanding holders restore a bound. By contrast, Bornat et al.'s combined model (Q, *3) of Section 10.4 has divisible read permissions and does not restore a bound on the number of holders.",
+      "Escape hatch (minimum quantum, not formalized here): restricting holders to pieces of at least some fixed epsilon > 0 (for example multiples of 1/M) bounds the number of other non-empty pieces by (1 - p)/epsilon, since n such pieces sum to at least n . epsilon.",
+      "Does not say fractions cannot detect recombination: the holder of 1 is exclusive (fracAlg_exclusive_iff) and whether a returned piece completes the whole is decided by the two amounts alone (fracOp_eq_some_iff); if returned pieces are pooled at one place, the pool reaching 1 is locally detectable.",
+      "Does not say the number of holders is unbounded in any particular run; only that the owner's piece does not bound it."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13. Axioms (5)-(9) include cancellation; positivity axiom (21); disjointness axiom (23) a + a = b -> a = b; infinite splittability (28)-(30). Definition 8: fractional shares on [0,1] intersected with Q with partial +, 'infinitely splittable', 'satisfies the positivity axiom but not the disjointness axiom'. Definition 9: counting shares on Z plus a unit, J(x, y, x + y) when (x < 0 or y < 0) and (x + y >= 0 or (x < 0 and y < 0)); 'Like the fractional model, the counting model satisfies positivity but not disjointness.'",
+      "Iris, commit 3d176f124f708e7325a362722c3d2b3957e3675d (tag iris-4.3.0), iris/algebra/auth.v: the authoritative camera; auth_both_valid a b : valid (auth a . frag b) <-> (forall n, b is n-included in a) /\\ valid a, and for discrete cameras auth_both_valid_discrete : valid (auth a . frag b) <-> b included in a /\\ valid a. This is the standard way to give one party knowledge of the composite of all outstanding pieces."
+    ],
+    "design_question": "Can 'the last reader returns ownership' be supported locally: who can tell, from their own permission, how many readers remain?"
+  },
+  {
+    "id": "R5e-reader-side-lastness-undetermined",
+    "lean": "Toy.Perm.reader_piece_does_not_determine_lastness",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Elementary computation; it makes precise that lastness is a property of the configuration, not of a reader's piece.",
+    "plain_claim": "In both designs a returning reader's own piece does not determine whether it is the last one out: for every token bundle tokens k, it completes source k alone, does not complete source (k+1) alone, and does complete source (k+1) together with one more read token; for every fraction q other than 1, it completes 1 - q alone, does not complete (1 - q)/2 alone, and does complete it together with a second piece (1 - q)/2.",
+    "hypotheses": [
+      {
+        "name": "q ≠ full (inner premise of the fraction conjunct)",
+        "purpose": "For q = 1, [0, 1] already composes to the full permission.",
+        "tightness": "tight",
+        "counterexample": "Toy.Perm.reader_lastness_needs_ne_full"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "q = 1/4 satisfies q != 1; for k = 1 the configurations [source 1, readToken] (complete) and [source 2, readToken] (incomplete, pooling to source 1).",
+    "nonvacuity_witness_lean": "Toy.Perm.reader_lastness_nonvacuous",
+    "non_claims": [
+      "Says nothing about designs with a shared physical counter (reference counting), which are not modelled.",
+      "The k = 0 and q = 0 instances are degenerate (the empty permission is not a reader piece) but hold as stated.",
+      "Does not rule out last-reader detection through a shared synchronization point: a returning reader can enter a critical region holding the source permission (or a fractional pool), combine its piece there and check whether the result is total, as in the readers-and-writers proof of Bornat et al. Section 8.1."
+    ],
+    "prior_art": [
+      "Bornat, R., Calcagno, C., O'Hearn, P. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327. Section 6: a central authority holds a source permission annotated with the number of split-off read permissions; 'the split-off read permissions can't be split further; only a source with no split-off children gives total read/write/dispose ownership'. Section 9: 'unbounded divisibility suits some problems; unbounded counting suits others'; fractions need not know how many times a permission will be split. Section 10.2: the counting model (Z, *1) with i *1 j undefined if i >= 0 and j >= 0, undefined if (i >= 0 or j >= 0) and i + j < 0, else i + j; write permission 0; equations (16). Section 10.3: fractions {q in Q | 0 < q <= 1}, undefined iff q + q' > 1. Section 8.1 ('A counting permission example'): in the readers-and-writers proof the readers' critical regions hold a resource whose invariant is 'if count = 0 then emp else' a source permission annotated with count; a returning reader gives its read permission back inside that critical region. Section 10.4 ('Combined Model'): the model (Q, *3) makes read permissions divisible ('By making read permissions divisible, it's possible to combine the properties of fractional and counting permissions'); equation (18) splits a read permission -(q+q') into -q and -q' for all q, q' > 0; 'it is impossible in the combined model to set up a logic in which read permissions cannot be split once issued'."
+    ],
+    "design_question": "Can 'the last reader returns ownership' be supported locally: who can tell, from their own permission, how many readers remain?"
+  }
+]
