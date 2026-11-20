@@ -1,0 +1,146 @@
+{
+  "topics": [
+    "compilers/destination-passing-style",
+    "compilers/tail-recursion-modulo-context",
+    "compilers/copy-elision-and-sret",
+    "pl/linear-write-once-destinations",
+    "llvm/memcpyopt-call-slot"
+  ],
+  "subjects": [
+    {
+      "name": "OCaml compiler (lambda/tmc.ml), main",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "d2a87472c63a51b737619cca7ce9147fe0bbf035",
+        "path": "lambda/tmc.ml"
+      }
+    },
+    {
+      "name": "OCaml compiler 5.4.0 (executed native compiler)",
+      "identity": {
+        "repository": "ocaml/ocaml",
+        "revision": "907eec0b75c5bcf0fe6da5f4b9f11c5c22995a16",
+        "version": "5.4.0"
+      }
+    },
+    {
+      "name": "LLVM project (MemCpyOpt, AliasAnalysis, MLIR bufferization), main",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "c7d7fe46c0b78c0fdf5a04d7eb1271e0240337f2"
+      }
+    },
+    {
+      "name": "LLVM 21.1.8 (executed opt; Debian llvm-21 1:21.1.8-3)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "2078da43e25a4623cab2d0d60decddf709aaea28",
+        "version": "llvmorg-21.1.8"
+      }
+    },
+    {
+      "name": "LLVM/Clang 19.1.7 (executed opt and clang++; Debian clang-19 1:19.1.7-10.1+build1)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+        "version": "llvmorg-19.1.7"
+      }
+    },
+    {
+      "name": "Swift compiler (AddressLowering, CopyPropagation)",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "509314b5ad018ede69b4fd58d2ca0ab8a019c0ed"
+      }
+    },
+    {
+      "name": "Koka compiler and runtime (TRMC)",
+      "identity": {
+        "repository": "koka-lang/koka",
+        "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+      }
+    },
+    {
+      "name": "linear-dest (Haskell destination-passing library)",
+      "identity": {
+        "repository": "tweag/linear-dest",
+        "revision": "0e7db2e6b24aad348837ac78d8137712c1d8d12a"
+      }
+    },
+    {
+      "name": "GCC g++ (executed)",
+      "identity": {
+        "artifact": "Debian package g++-15",
+        "version": "15.2.0-14"
+      }
+    },
+    {
+      "name": "A Functional Representation of Data Structures with a Hole (Minamide, POPL 1998)",
+      "identity": {
+        "doi": "10.1145/268946.268953"
+      }
+    },
+    {
+      "name": "Destination-Passing Style for Efficient Memory Management (Shaikhha et al., FHPC 2017)",
+      "identity": {
+        "doi": "10.1145/3122948.3122949"
+      }
+    },
+    {
+      "name": "Tail Modulo Cons (Bour, Clement, Scherer, JFLA 2021)",
+      "identity": {
+        "arxiv": "2102.09823",
+        "url": "https://arxiv.org/abs/2102.09823"
+      }
+    },
+    {
+      "name": "Tail Recursion Modulo Context: An Equational Approach (Leijen, Lorenzen, POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571233"
+      }
+    },
+    {
+      "name": "Tail recursion modulo context: An equational approach, extended version (JFP 2025)",
+      "identity": {
+        "doi": "10.1017/S0956796825100117"
+      }
+    },
+    {
+      "name": "Destination-passing style programming: a Haskell implementation (Bagrel, JFLA 2024)",
+      "identity": {
+        "arxiv": "2312.11257",
+        "url": "https://arxiv.org/abs/2312.11257"
+      }
+    },
+    {
+      "name": "Tail Modulo Cons, OCaml, and Relational Separation Logic (Allain et al., POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704915",
+        "arxiv": "2411.19397"
+      }
+    },
+    {
+      "name": "Destination Calculus: A Linear lambda-Calculus for Purely Functional Memory Writes (Bagrel, Spiwack, OOPSLA 2025)",
+      "identity": {
+        "doi": "10.1145/3720423",
+        "arxiv": "2503.07489"
+      }
+    },
+    {
+      "name": "C++17 working draft N4659 ([dcl.init] 11.6/17.6.1) with P0135R1",
+      "identity": {
+        "standard": "ISO/IEC 14882:2017 working draft N4659",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0135r1.html"
+      }
+    },
+    {
+      "name": "System V ABI AMD64 Architecture Processor Supplement",
+      "identity": {
+        "standard": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+        "version": "1.0",
+        "url": "https://gitlab.com/x86-psABIs/x86-64-ABI"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

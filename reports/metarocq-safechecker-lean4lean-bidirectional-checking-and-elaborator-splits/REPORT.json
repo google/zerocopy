@@ -1,0 +1,179 @@
+{
+  "topics": [
+    "verification/verified-bidirectional-typecheckers",
+    "pl/algorithmic-typing-completeness",
+    "lean/kernel-checker-verification",
+    "pl/elaborator-kernel-split",
+    "verification/refinement-type-checkers"
+  ],
+  "subjects": [
+    {
+      "name": "MetaRocq (PCUIC bidirectional typing and safe checker)",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+      }
+    },
+    {
+      "name": "CakeML (verified type inferencer)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "Lean4Lean (Lean kernel in Lean, with verification)",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Lean 4 (kernel and elaborator sources), main",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "920a9e5f4f5e9b509f4d879d1b58a1f4d645f3d0"
+      }
+    },
+    {
+      "name": "Lean 4 v4.34.1 (executed elaborator/kernel probe)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 v4.33.0-rc2 (toolchain of the executed Lean4Lean)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+        "version": "v4.33.0-rc2"
+      }
+    },
+    {
+      "name": "LiquidHaskell (constraint generation)",
+      "identity": {
+        "repository": "ucsd-progsys/liquidhaskell",
+        "revision": "7c809b687388dc837c53b9db29b0a70b7165b716"
+      }
+    },
+    {
+      "name": "Flux (refinement type checker for Rust)",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "ac24831e4f3dc570ad991751ff65bea0826ed446"
+      }
+    },
+    {
+      "name": "Oxide reference implementation (OCaml type and borrow checker)",
+      "identity": {
+        "repository": "aatxe/oxide",
+        "revision": "203e42936b273e7f1351ce1d0ea5bb8d1b0dc5c1"
+      }
+    },
+    {
+      "name": "Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371076"
+      }
+    },
+    {
+      "name": "The MetaCoq Project (JAR 2020)",
+      "identity": {
+        "doi": "10.1007/s10817-019-09540-0"
+      }
+    },
+    {
+      "name": "Correct and Complete Type Checking and Certified Erasure for Coq, in Coq (J. ACM 2025)",
+      "identity": {
+        "doi": "10.1145/3706056"
+      }
+    },
+    {
+      "name": "Complete Bidirectional Typing for the Calculus of Inductive Constructions (ITP 2021)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2021.24"
+      }
+    },
+    {
+      "name": "A Verified Type System for CakeML (IFL 2015)",
+      "identity": {
+        "doi": "10.1145/2897336.2897344"
+      }
+    },
+    {
+      "name": "CakeML: A Verified Implementation of ML (POPL 2014)",
+      "identity": {
+        "doi": "10.1145/2535838.2535841"
+      }
+    },
+    {
+      "name": "Lean4Lean: Verifying a Typechecker for Lean, in Lean (TYPES 2025)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.TYPES.2025.2",
+        "arxiv": "2403.14064"
+      }
+    },
+    {
+      "name": "Bidirectional Typing (ACM Computing Surveys)",
+      "identity": {
+        "doi": "10.1145/3450952",
+        "arxiv": "1908.05839"
+      }
+    },
+    {
+      "name": "Complete and Easy Bidirectional Typechecking for Higher-Rank Polymorphism (ICFP 2013)",
+      "identity": {
+        "doi": "10.1145/2500365.2500582",
+        "arxiv": "1306.6032"
+      }
+    },
+    {
+      "name": "Local Type Inference (TOPLAS 2000)",
+      "identity": {
+        "doi": "10.1145/345099.345100"
+      }
+    },
+    {
+      "name": "Liquid Types (PLDI 2008)",
+      "identity": {
+        "doi": "10.1145/1375581.1375602"
+      }
+    },
+    {
+      "name": "Refinement Types for Haskell (ICFP 2014)",
+      "identity": {
+        "doi": "10.1145/2628136.2628161"
+      }
+    },
+    {
+      "name": "Flux: Liquid Types for Rust (PLDI 2023)",
+      "identity": {
+        "doi": "10.1145/3591283",
+        "arxiv": "2207.04034"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust (preprint, v4)",
+      "identity": {
+        "arxiv": "1903.00982",
+        "version": "v4",
+        "url": "https://arxiv.org/abs/1903.00982v4"
+      }
+    },
+    {
+      "name": "Decidability of Conversion for Type Theory in Type Theory (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158111"
+      }
+    },
+    {
+      "name": "The Lean 4 Theorem Prover and Programming Language (CADE-28)",
+      "identity": {
+        "doi": "10.1007/978-3-030-79876-5_37"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

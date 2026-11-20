@@ -1,0 +1,138 @@
+{
+  "topics": [
+    "verification/formal-spec-review-rates",
+    "pl/alloy-specification-comprehension",
+    "verification/tlaplus-specification-auditing",
+    "verification/trusted-spec-defect-taxonomies",
+    "verification/specification-mutation-testing",
+    "tooling/model-finder-counterexamples"
+  ],
+  "subjects": [
+    {
+      "name": "Alloy4Fun web platform",
+      "identity": {
+        "repository": "haslab/Alloy4Fun",
+        "revision": "c97f9b2041c7b8ba947122bfc8ae276a2c0d492f"
+      }
+    },
+    {
+      "name": "Alloy4Fun 2019/20 University of Minho interaction dataset (em1920, nine JSON-lines files)",
+      "identity": {
+        "git_url": "https://github.com/haslab/Alloy4Fun.wiki.git",
+        "path": "em1920/",
+        "last_commit_touching_path": "886eba28b854f08187db9aa36a0e96c442fbe291",
+        "observed_wiki_head": "1478014567d9f213956ca76548fd41c34ed24926",
+        "sha256_9jPK8KBWzjFmBx4Hb.json": "57d81ebe004d4ed1cc4340f35036cf4e14ecb2462ea69b5b9eaa8d39e30905ad",
+        "sha256_YH3ANm7Y5Qe5dSYem.json": "f690ca92e113da35e40f203f31c54d0bf12e89c1175f8ff21cdc41add313c21a"
+      }
+    },
+    {
+      "name": "Forge relational modeling language for teaching",
+      "identity": {
+        "repository": "tnelson/Forge",
+        "revision": "326400a735540d25f697336c7efbacd215b1800e"
+      }
+    },
+    {
+      "name": "Sterling (Alloy with browser-based visualizations)",
+      "identity": {
+        "repository": "alloy-js/sterling",
+        "revision": "78cb1500ebe0e2f85b3bd4faddc19753dbd4d01b"
+      }
+    },
+    {
+      "name": "ARepair benchmark of real faulty Alloy models",
+      "identity": {
+        "repository": "kaiyuanw/ARepair",
+        "revision": "dacd87d1fa3de4017f6c415f72ab6466211e6150"
+      }
+    },
+    {
+      "name": "MuAlloy mutation testing framework for Alloy",
+      "identity": {
+        "repository": "kaiyuanw/MuAlloy",
+        "revision": "1083004d6968e92ada75e52f21dcf8bf61a80b26"
+      }
+    },
+    {
+      "name": "Alloy Analyzer 6.2.0 source (release tag v6.2.0)",
+      "identity": {
+        "repository": "AlloyTools/org.alloytools.alloy",
+        "revision": "59ba2033993449d483d54acad0e11a7bbf20354f",
+        "version": "v6.2.0"
+      }
+    },
+    {
+      "name": "Alloy Analyzer 6.2.0 release jar (executed)",
+      "identity": {
+        "artifact": "org.alloytools.alloy.dist.jar",
+        "url": "https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar",
+        "sha256": "6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d"
+      }
+    },
+    {
+      "name": "Alloy Analyzer source at default-branch head",
+      "identity": {
+        "repository": "AlloyTools/org.alloytools.alloy",
+        "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+      }
+    },
+    {
+      "name": "TLA+ tools 1.7.4 (TLC2 2.19) source tag",
+      "identity": {
+        "repository": "tlaplus/tlaplus",
+        "revision": "5a47802b5c391f59ecdd44117981f4ff8c0656ba",
+        "version": "v1.7.4"
+      }
+    },
+    {
+      "name": "TLA+ tools 1.7.4 release jar (executed)",
+      "identity": {
+        "artifact": "tla2tools.jar",
+        "url": "https://github.com/tlaplus/tlaplus/releases/download/v1.7.4/tla2tools.jar",
+        "sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88"
+      }
+    },
+    {
+      "name": "TLA+ Examples collection",
+      "identity": {
+        "repository": "tlaplus/Examples",
+        "revision": "334c3983a2f44ac78fce89d1d20aa79ceb3e6987"
+      }
+    },
+    {
+      "name": "seL4 proofs and specifications (l4v), abstract specification",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e",
+        "path": "spec/abstract/"
+      }
+    },
+    {
+      "name": "Fonseca et al., An Empirical Study on the Correctness of Formally Verified Distributed Systems (EuroSys 2017)",
+      "identity": {
+        "doi": "10.1145/3064176.3064183"
+      }
+    },
+    {
+      "name": "Macedo et al., Experiences on Teaching Alloy with an Automated Assessment Platform (ABZ 2020)",
+      "identity": {
+        "doi": "10.1007/978-3-030-48077-6_5"
+      }
+    },
+    {
+      "name": "Greenman et al., Little Tricky Logic: Misconceptions in the Understanding of LTL",
+      "identity": {
+        "doi": "10.22152/programming-journal.org/2023/7/7",
+        "arxiv": "2211.01677"
+      }
+    },
+    {
+      "name": "Klein et al., seL4: Formal Verification of an OS Kernel (SOSP 2009)",
+      "identity": {
+        "doi": "10.1145/1629575.1629596"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

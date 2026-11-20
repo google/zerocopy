@@ -1,0 +1,144 @@
+{
+  "topics": [
+    "verification/spec-code-correspondence",
+    "tooling/checked-literate-specifications",
+    "tooling/docstring-code-consistency",
+    "verification/inline-executable-contracts",
+    "verification/contract-checker-completeness"
+  ],
+  "subjects": [
+    {
+      "name": "Ott semantic-definition tool (built and executed)",
+      "identity": {
+        "repository": "ott-lang/ott",
+        "revision": "0639ce49892252e0b53e84aa5b0c35b02785913e",
+        "version": "0.34"
+      }
+    },
+    {
+      "name": "Verso documentation authoring tool for Lean",
+      "identity": {
+        "repository": "leanprover/verso",
+        "revision": "0b8baf4248c351aa5a38929badde9b22ac8cc8af"
+      }
+    },
+    {
+      "name": "CrossHair symbolic contract checker for Python (v0.0.114, built from source and executed)",
+      "identity": {
+        "repository": "pschanely/CrossHair",
+        "revision": "0b39c5bc3b02478f49cbe046df0d09f15101dcf4",
+        "version": "v0.0.114"
+      }
+    },
+    {
+      "name": "CrossHair PyPI release (executed)",
+      "identity": {
+        "package": "crosshair-tool",
+        "registry": "PyPI",
+        "version": "0.0.113",
+        "solver": "z3-solver 5.4.1.0"
+      }
+    },
+    {
+      "name": "Toradocu / Jdoctor comment-to-specification translator",
+      "identity": {
+        "repository": "albertogoffi/toradocu",
+        "revision": "d76899fc65bf0c8912479606d61998d91f30e5bd"
+      }
+    },
+    {
+      "name": "hax Rust-to-prover extraction toolchain",
+      "identity": {
+        "repository": "pereq-dev/hax",
+        "revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b"
+      }
+    },
+    {
+      "name": "Alectryon literate proof recorder",
+      "identity": {
+        "repository": "cpitclaudel/alectryon",
+        "revision": "a6f19454a4a8756c51c6c4413544ad09d188e006"
+      }
+    },
+    {
+      "name": "SPARK 2014 / GNATprove sources and user guide",
+      "identity": {
+        "repository": "AdaCore/spark2014",
+        "revision": "80a91869007be9be5a7d5ead3ffccd121faab893"
+      }
+    },
+    {
+      "name": "GNATprove FSF 16.1.0 binary release (executed)",
+      "identity": {
+        "artifact": "gnatprove-x86_64-linux-16.1.0-1.tar.gz",
+        "url": "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnatprove-16.1.0-1/gnatprove-x86_64-linux-16.1.0-1.tar.gz",
+        "sha256": "82528bef29857e239373fcc36732837d743f5a00805d502c70455422ffc97191"
+      }
+    },
+    {
+      "name": "GNAT FSF 16.1.0 compiler binary release (executed; runtime library contracts inspected)",
+      "identity": {
+        "artifact": "gnat-x86_64-linux-16.1.0-1.tar.gz",
+        "url": "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnat-16.1.0-1/gnat-x86_64-linux-16.1.0-1.tar.gz",
+        "sha256": "9f74f58a827a2ad40dd84c72a413e75ea52888e0d8f7e252fba4d26762402703"
+      }
+    },
+    {
+      "name": "The Isabelle/Isar Reference Manual (document antiquotations, section 4.2)",
+      "identity": {
+        "url": "https://isabelle.in.tum.de/doc/isar-ref.pdf",
+        "version": "manual dated October 24, 2026"
+      }
+    },
+    {
+      "name": "OpenJML User Guide",
+      "identity": {
+        "url": "https://www.openjml.org/documentation/OpenJMLUserGuide.pdf",
+        "accessed": "2026-11-20"
+      }
+    },
+    {
+      "name": "Blasi et al., Translating Code Comments to Procedure Specifications (Jdoctor, ISSTA 2018)",
+      "identity": {
+        "doi": "10.1145/3213846.3213872"
+      }
+    },
+    {
+      "name": "Wen et al., A Large-Scale Empirical Study on Code-Comment Inconsistencies (ICPC 2019)",
+      "identity": {
+        "doi": "10.1109/ICPC.2019.00019"
+      }
+    },
+    {
+      "name": "Tan et al., iComment: Bugs or Bad Comments? (SOSP 2007)",
+      "identity": {
+        "doi": "10.1145/1294261.1294276"
+      }
+    },
+    {
+      "name": "Tan et al., @tComment: Testing Javadoc Comments to Detect Comment-Code Inconsistencies (ICST 2012)",
+      "identity": {
+        "doi": "10.1109/ICST.2012.106"
+      }
+    },
+    {
+      "name": "Zhong and Su, Detecting API Documentation Errors (OOPSLA 2013)",
+      "identity": {
+        "doi": "10.1145/2509136.2509523"
+      }
+    },
+    {
+      "name": "Ratol and Robillard, Detecting Fragile Comments (ASE 2017)",
+      "identity": {
+        "doi": "10.1109/ASE.2017.8115624"
+      }
+    },
+    {
+      "name": "Sewell et al., Ott: Effective Tool Support for the Working Semanticist (JFP 2010)",
+      "identity": {
+        "doi": "10.1017/S0956796809990293"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

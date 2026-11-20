@@ -1328,6 +1328,144 @@
         "runtimes/continuations"
       ]
     },
+    "alloy4fun-forge-sterling-misconceptions-tlaplus-audits-and-spec-review-effort": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "haslab/Alloy4Fun",
+            "revision": "c97f9b2041c7b8ba947122bfc8ae276a2c0d492f"
+          },
+          "name": "Alloy4Fun web platform"
+        },
+        {
+          "identity": {
+            "git_url": "https://github.com/haslab/Alloy4Fun.wiki.git",
+            "last_commit_touching_path": "886eba28b854f08187db9aa36a0e96c442fbe291",
+            "observed_wiki_head": "1478014567d9f213956ca76548fd41c34ed24926",
+            "path": "em1920/",
+            "sha256_9jPK8KBWzjFmBx4Hb.json": "57d81ebe004d4ed1cc4340f35036cf4e14ecb2462ea69b5b9eaa8d39e30905ad",
+            "sha256_YH3ANm7Y5Qe5dSYem.json": "f690ca92e113da35e40f203f31c54d0bf12e89c1175f8ff21cdc41add313c21a"
+          },
+          "name": "Alloy4Fun 2019/20 University of Minho interaction dataset (em1920, nine JSON-lines files)"
+        },
+        {
+          "identity": {
+            "repository": "tnelson/Forge",
+            "revision": "326400a735540d25f697336c7efbacd215b1800e"
+          },
+          "name": "Forge relational modeling language for teaching"
+        },
+        {
+          "identity": {
+            "repository": "alloy-js/sterling",
+            "revision": "78cb1500ebe0e2f85b3bd4faddc19753dbd4d01b"
+          },
+          "name": "Sterling (Alloy with browser-based visualizations)"
+        },
+        {
+          "identity": {
+            "repository": "kaiyuanw/ARepair",
+            "revision": "dacd87d1fa3de4017f6c415f72ab6466211e6150"
+          },
+          "name": "ARepair benchmark of real faulty Alloy models"
+        },
+        {
+          "identity": {
+            "repository": "kaiyuanw/MuAlloy",
+            "revision": "1083004d6968e92ada75e52f21dcf8bf61a80b26"
+          },
+          "name": "MuAlloy mutation testing framework for Alloy"
+        },
+        {
+          "identity": {
+            "repository": "AlloyTools/org.alloytools.alloy",
+            "revision": "59ba2033993449d483d54acad0e11a7bbf20354f",
+            "version": "v6.2.0"
+          },
+          "name": "Alloy Analyzer 6.2.0 source (release tag v6.2.0)"
+        },
+        {
+          "identity": {
+            "artifact": "org.alloytools.alloy.dist.jar",
+            "sha256": "6b8c1cb5bc93bedfc7c61435c4e1ab6e688a242dc702a394628d9a9801edb78d",
+            "url": "https://github.com/AlloyTools/org.alloytools.alloy/releases/download/v6.2.0/org.alloytools.alloy.dist.jar"
+          },
+          "name": "Alloy Analyzer 6.2.0 release jar (executed)"
+        },
+        {
+          "identity": {
+            "repository": "AlloyTools/org.alloytools.alloy",
+            "revision": "ed89fdb16c58aea17a55e312c44f99e31aa63ee1"
+          },
+          "name": "Alloy Analyzer source at default-branch head"
+        },
+        {
+          "identity": {
+            "repository": "tlaplus/tlaplus",
+            "revision": "5a47802b5c391f59ecdd44117981f4ff8c0656ba",
+            "version": "v1.7.4"
+          },
+          "name": "TLA+ tools 1.7.4 (TLC2 2.19) source tag"
+        },
+        {
+          "identity": {
+            "artifact": "tla2tools.jar",
+            "sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88",
+            "url": "https://github.com/tlaplus/tlaplus/releases/download/v1.7.4/tla2tools.jar"
+          },
+          "name": "TLA+ tools 1.7.4 release jar (executed)"
+        },
+        {
+          "identity": {
+            "repository": "tlaplus/Examples",
+            "revision": "334c3983a2f44ac78fce89d1d20aa79ceb3e6987"
+          },
+          "name": "TLA+ Examples collection"
+        },
+        {
+          "identity": {
+            "path": "spec/abstract/",
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 proofs and specifications (l4v), abstract specification"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3064176.3064183"
+          },
+          "name": "Fonseca et al., An Empirical Study on the Correctness of Formally Verified Distributed Systems (EuroSys 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-48077-6_5"
+          },
+          "name": "Macedo et al., Experiences on Teaching Alloy with an Automated Assessment Platform (ABZ 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2211.01677",
+            "doi": "10.22152/programming-journal.org/2023/7/7"
+          },
+          "name": "Greenman et al., Little Tricky Logic: Misconceptions in the Understanding of LTL"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1629575.1629596"
+          },
+          "name": "Klein et al., seL4: Formal Verification of an OS Kernel (SOSP 2009)"
+        }
+      ],
+      "topics": [
+        "verification/formal-spec-review-rates",
+        "pl/alloy-specification-comprehension",
+        "verification/tlaplus-specification-auditing",
+        "verification/trusted-spec-defect-taxonomies",
+        "verification/specification-mutation-testing",
+        "tooling/model-finder-counterexamples"
+      ]
+    },
     "amba-chi-axi-coherency-deadlocks-tilelink-diplomacy-and-ucie-chiplet-flits": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -42544,6 +42682,185 @@
         "tooling/ide-lsp"
       ]
     },
+    "metarocq-safechecker-lean4lean-bidirectional-checking-and-elaborator-splits": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "MetaRocq/metarocq",
+            "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+          },
+          "name": "MetaRocq (PCUIC bidirectional typing and safe checker)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML (verified type inferencer)"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean (Lean kernel in Lean, with verification)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "920a9e5f4f5e9b509f4d879d1b58a1f4d645f3d0"
+          },
+          "name": "Lean 4 (kernel and elaborator sources), main"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 (executed elaborator/kernel probe)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "d8b18978322de05a8f3dba51ef03cf5461676c17",
+            "version": "v4.33.0-rc2"
+          },
+          "name": "Lean 4 v4.33.0-rc2 (toolchain of the executed Lean4Lean)"
+        },
+        {
+          "identity": {
+            "repository": "ucsd-progsys/liquidhaskell",
+            "revision": "7c809b687388dc837c53b9db29b0a70b7165b716"
+          },
+          "name": "LiquidHaskell (constraint generation)"
+        },
+        {
+          "identity": {
+            "repository": "flux-rs/flux",
+            "revision": "ac24831e4f3dc570ad991751ff65bea0826ed446"
+          },
+          "name": "Flux (refinement type checker for Rust)"
+        },
+        {
+          "identity": {
+            "repository": "aatxe/oxide",
+            "revision": "203e42936b273e7f1351ce1d0ea5bb8d1b0dc5c1"
+          },
+          "name": "Oxide reference implementation (OCaml type and borrow checker)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371076"
+          },
+          "name": "Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-019-09540-0"
+          },
+          "name": "The MetaCoq Project (JAR 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3706056"
+          },
+          "name": "Correct and Complete Type Checking and Certified Erasure for Coq, in Coq (J. ACM 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2021.24"
+          },
+          "name": "Complete Bidirectional Typing for the Calculus of Inductive Constructions (ITP 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2897336.2897344"
+          },
+          "name": "A Verified Type System for CakeML (IFL 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2535838.2535841"
+          },
+          "name": "CakeML: A Verified Implementation of ML (POPL 2014)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.14064",
+            "doi": "10.4230/LIPIcs.TYPES.2025.2"
+          },
+          "name": "Lean4Lean: Verifying a Typechecker for Lean, in Lean (TYPES 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "1908.05839",
+            "doi": "10.1145/3450952"
+          },
+          "name": "Bidirectional Typing (ACM Computing Surveys)"
+        },
+        {
+          "identity": {
+            "arxiv": "1306.6032",
+            "doi": "10.1145/2500365.2500582"
+          },
+          "name": "Complete and Easy Bidirectional Typechecking for Higher-Rank Polymorphism (ICFP 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/345099.345100"
+          },
+          "name": "Local Type Inference (TOPLAS 2000)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375602"
+          },
+          "name": "Liquid Types (PLDI 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2628136.2628161"
+          },
+          "name": "Refinement Types for Haskell (ICFP 2014)"
+        },
+        {
+          "identity": {
+            "arxiv": "2207.04034",
+            "doi": "10.1145/3591283"
+          },
+          "name": "Flux: Liquid Types for Rust (PLDI 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.00982",
+            "url": "https://arxiv.org/abs/1903.00982v4",
+            "version": "v4"
+          },
+          "name": "Oxide: The Essence of Rust (preprint, v4)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158111"
+          },
+          "name": "Decidability of Conversion for Type Theory in Type Theory (POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-79876-5_37"
+          },
+          "name": "The Lean 4 Theorem Prover and Programming Language (CADE-28)"
+        }
+      ],
+      "topics": [
+        "verification/verified-bidirectional-typecheckers",
+        "pl/algorithmic-typing-completeness",
+        "lean/kernel-checker-verification",
+        "pl/elaborator-kernel-split",
+        "verification/refinement-type-checkers"
+      ]
+    },
     "microarchitectural-code-layout-variance-dsb-jcc-and-btb-dissection": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -42940,6 +43257,152 @@
         "systems/exotic-cpus",
         "compilers/dataflow-irs",
         "pl/execution-models"
+      ]
+    },
+    "minamide-holes-ocaml-tmc-destination-calculus-and-sret-copy-elision": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "lambda/tmc.ml",
+            "repository": "ocaml/ocaml",
+            "revision": "d2a87472c63a51b737619cca7ce9147fe0bbf035"
+          },
+          "name": "OCaml compiler (lambda/tmc.ml), main"
+        },
+        {
+          "identity": {
+            "repository": "ocaml/ocaml",
+            "revision": "907eec0b75c5bcf0fe6da5f4b9f11c5c22995a16",
+            "version": "5.4.0"
+          },
+          "name": "OCaml compiler 5.4.0 (executed native compiler)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "c7d7fe46c0b78c0fdf5a04d7eb1271e0240337f2"
+          },
+          "name": "LLVM project (MemCpyOpt, AliasAnalysis, MLIR bufferization), main"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "2078da43e25a4623cab2d0d60decddf709aaea28",
+            "version": "llvmorg-21.1.8"
+          },
+          "name": "LLVM 21.1.8 (executed opt; Debian llvm-21 1:21.1.8-3)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+            "version": "llvmorg-19.1.7"
+          },
+          "name": "LLVM/Clang 19.1.7 (executed opt and clang++; Debian clang-19 1:19.1.7-10.1+build1)"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "509314b5ad018ede69b4fd58d2ca0ab8a019c0ed"
+          },
+          "name": "Swift compiler (AddressLowering, CopyPropagation)"
+        },
+        {
+          "identity": {
+            "repository": "koka-lang/koka",
+            "revision": "b66091b2a5a7ea20c5ed9498ad1e1f03caee9589"
+          },
+          "name": "Koka compiler and runtime (TRMC)"
+        },
+        {
+          "identity": {
+            "repository": "tweag/linear-dest",
+            "revision": "0e7db2e6b24aad348837ac78d8137712c1d8d12a"
+          },
+          "name": "linear-dest (Haskell destination-passing library)"
+        },
+        {
+          "identity": {
+            "artifact": "Debian package g++-15",
+            "version": "15.2.0-14"
+          },
+          "name": "GCC g++ (executed)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/268946.268953"
+          },
+          "name": "A Functional Representation of Data Structures with a Hole (Minamide, POPL 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3122948.3122949"
+          },
+          "name": "Destination-Passing Style for Efficient Memory Management (Shaikhha et al., FHPC 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "2102.09823",
+            "url": "https://arxiv.org/abs/2102.09823"
+          },
+          "name": "Tail Modulo Cons (Bour, Clement, Scherer, JFLA 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571233"
+          },
+          "name": "Tail Recursion Modulo Context: An Equational Approach (Leijen, Lorenzen, POPL 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796825100117"
+          },
+          "name": "Tail recursion modulo context: An equational approach, extended version (JFP 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.11257",
+            "url": "https://arxiv.org/abs/2312.11257"
+          },
+          "name": "Destination-passing style programming: a Haskell implementation (Bagrel, JFLA 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.19397",
+            "doi": "10.1145/3704915"
+          },
+          "name": "Tail Modulo Cons, OCaml, and Relational Separation Logic (Allain et al., POPL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.07489",
+            "doi": "10.1145/3720423"
+          },
+          "name": "Destination Calculus: A Linear lambda-Calculus for Purely Functional Memory Writes (Bagrel, Spiwack, OOPSLA 2025)"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 14882:2017 working draft N4659",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0135r1.html"
+          },
+          "name": "C++17 working draft N4659 ([dcl.init] 11.6/17.6.1) with P0135R1"
+        },
+        {
+          "identity": {
+            "standard": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+            "url": "https://gitlab.com/x86-psABIs/x86-64-ABI",
+            "version": "1.0"
+          },
+          "name": "System V ABI AMD64 Architecture Processor Supplement"
+        }
+      ],
+      "topics": [
+        "compilers/destination-passing-style",
+        "compilers/tail-recursion-modulo-context",
+        "compilers/copy-elision-and-sret",
+        "pl/linear-write-once-destinations",
+        "llvm/memcpyopt-call-slot"
       ]
     },
     "minimal-tcb-verification-spines-and-statement-adequacy-architectures": {
@@ -48363,6 +48826,150 @@
         "verification",
         "verification/cakeml",
         "verification/compcert"
+      ]
+    },
+    "ott-verso-antiquotations-spark-openjml-contracts-and-jdoctor-comment-drift": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ott-lang/ott",
+            "revision": "0639ce49892252e0b53e84aa5b0c35b02785913e",
+            "version": "0.34"
+          },
+          "name": "Ott semantic-definition tool (built and executed)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/verso",
+            "revision": "0b8baf4248c351aa5a38929badde9b22ac8cc8af"
+          },
+          "name": "Verso documentation authoring tool for Lean"
+        },
+        {
+          "identity": {
+            "repository": "pschanely/CrossHair",
+            "revision": "0b39c5bc3b02478f49cbe046df0d09f15101dcf4",
+            "version": "v0.0.114"
+          },
+          "name": "CrossHair symbolic contract checker for Python (v0.0.114, built from source and executed)"
+        },
+        {
+          "identity": {
+            "package": "crosshair-tool",
+            "registry": "PyPI",
+            "solver": "z3-solver 5.4.1.0",
+            "version": "0.0.113"
+          },
+          "name": "CrossHair PyPI release (executed)"
+        },
+        {
+          "identity": {
+            "repository": "albertogoffi/toradocu",
+            "revision": "d76899fc65bf0c8912479606d61998d91f30e5bd"
+          },
+          "name": "Toradocu / Jdoctor comment-to-specification translator"
+        },
+        {
+          "identity": {
+            "repository": "pereq-dev/hax",
+            "revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b"
+          },
+          "name": "hax Rust-to-prover extraction toolchain"
+        },
+        {
+          "identity": {
+            "repository": "cpitclaudel/alectryon",
+            "revision": "a6f19454a4a8756c51c6c4413544ad09d188e006"
+          },
+          "name": "Alectryon literate proof recorder"
+        },
+        {
+          "identity": {
+            "repository": "AdaCore/spark2014",
+            "revision": "80a91869007be9be5a7d5ead3ffccd121faab893"
+          },
+          "name": "SPARK 2014 / GNATprove sources and user guide"
+        },
+        {
+          "identity": {
+            "artifact": "gnatprove-x86_64-linux-16.1.0-1.tar.gz",
+            "sha256": "82528bef29857e239373fcc36732837d743f5a00805d502c70455422ffc97191",
+            "url": "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnatprove-16.1.0-1/gnatprove-x86_64-linux-16.1.0-1.tar.gz"
+          },
+          "name": "GNATprove FSF 16.1.0 binary release (executed)"
+        },
+        {
+          "identity": {
+            "artifact": "gnat-x86_64-linux-16.1.0-1.tar.gz",
+            "sha256": "9f74f58a827a2ad40dd84c72a413e75ea52888e0d8f7e252fba4d26762402703",
+            "url": "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnat-16.1.0-1/gnat-x86_64-linux-16.1.0-1.tar.gz"
+          },
+          "name": "GNAT FSF 16.1.0 compiler binary release (executed; runtime library contracts inspected)"
+        },
+        {
+          "identity": {
+            "url": "https://isabelle.in.tum.de/doc/isar-ref.pdf",
+            "version": "manual dated October 24, 2026"
+          },
+          "name": "The Isabelle/Isar Reference Manual (document antiquotations, section 4.2)"
+        },
+        {
+          "identity": {
+            "accessed": "2026-11-20",
+            "url": "https://www.openjml.org/documentation/OpenJMLUserGuide.pdf"
+          },
+          "name": "OpenJML User Guide"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3213846.3213872"
+          },
+          "name": "Blasi et al., Translating Code Comments to Procedure Specifications (Jdoctor, ISSTA 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICPC.2019.00019"
+          },
+          "name": "Wen et al., A Large-Scale Empirical Study on Code-Comment Inconsistencies (ICPC 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1294261.1294276"
+          },
+          "name": "Tan et al., iComment: Bugs or Bad Comments? (SOSP 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICST.2012.106"
+          },
+          "name": "Tan et al., @tComment: Testing Javadoc Comments to Detect Comment-Code Inconsistencies (ICST 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2509136.2509523"
+          },
+          "name": "Zhong and Su, Detecting API Documentation Errors (OOPSLA 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ASE.2017.8115624"
+          },
+          "name": "Ratol and Robillard, Detecting Fragile Comments (ASE 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796809990293"
+          },
+          "name": "Sewell et al., Ott: Effective Tool Support for the Working Semanticist (JFP 2010)"
+        }
+      ],
+      "topics": [
+        "verification/spec-code-correspondence",
+        "tooling/checked-literate-specifications",
+        "tooling/docstring-code-consistency",
+        "verification/inline-executable-contracts",
+        "verification/contract-checker-completeness"
       ]
     },
     "owicki-gries-fsl-gps-cosmo-and-first-order-view-logics-for-weak-memory-rust": {
