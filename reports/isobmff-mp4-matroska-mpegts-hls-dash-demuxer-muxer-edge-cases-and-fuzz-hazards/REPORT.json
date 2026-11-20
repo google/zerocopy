@@ -1,0 +1,99 @@
+{
+  "topics": [
+    "domains/media-containers",
+    "security/parsers",
+    "verification/parsers",
+    "systems/ffmpeg",
+    "zerocopy/wire-formats",
+    "rust/memory-safety"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavformat, libavutil, and OSS-Fuzz demuxer harness",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Mozilla mp4parse-rust fallible ISOBMFF parser and C ABI",
+      "identity": {
+        "repository": "mozilla/mp4parse-rust",
+        "revision": "d3a9abfc93b22687e5e5cd9df86697adcb7d5887"
+      }
+    },
+    {
+      "name": "Symphonia pure-Rust multimedia container demuxers",
+      "identity": {
+        "repository": "pdeljanov/Symphonia",
+        "revision": "5f879df0bf309246a48d57caae457fd8c0e2a5cb"
+      }
+    },
+    {
+      "name": "zerocopy layout-verified zero-copy wire parsing library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "EverParse and LowParse verified non-malleable binary parser framework",
+      "identity": {
+        "repository": "project-everest/everparse",
+        "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean MIR verification toolchain",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "ISO Base Media File Format (ISOBMFF) and Common Media Application Format (CMAF)",
+      "identity": {
+        "standard": "ISO/IEC 14496-12:2022",
+        "related_standard": "ISO/IEC 23000-19:2024"
+      }
+    },
+    {
+      "name": "Extensible Binary Meta Language (EBML) and Matroska Media Container Format",
+      "identity": {
+        "standard": "IETF RFC 8794",
+        "related_standard": "IETF RFC 9559",
+        "url": "https://www.rfc-editor.org/info/rfc9559"
+      }
+    },
+    {
+      "name": "MPEG-2 Systems Transport Stream",
+      "identity": {
+        "standard": "ITU-T Rec. H.222.0 | ISO/IEC 13818-1"
+      }
+    },
+    {
+      "name": "HTTP Live Streaming (HLS) and Dynamic Adaptive Streaming over HTTP (MPEG-DASH)",
+      "identity": {
+        "standard": "IETF RFC 8216",
+        "related_standard": "ISO/IEC 23009-1",
+        "url": "https://www.rfc-editor.org/info/rfc8216"
+      }
+    },
+    {
+      "name": "Ogg Encapsulation Format and Real-Time Streaming Protocol",
+      "identity": {
+        "standard": "IETF RFC 3533",
+        "related_standard": "IETF RFC 7826",
+        "url": "https://www.rfc-editor.org/info/rfc3533"
+      }
+    },
+    {
+      "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (EverParse3D)",
+      "identity": {
+        "doi": "10.1145/3519939.3523708",
+        "venue": "PLDI 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

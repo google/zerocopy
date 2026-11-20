@@ -31536,6 +31536,105 @@
         "rust/layout"
       ]
     },
+    "isobmff-mp4-matroska-mpegts-hls-dash-demuxer-muxer-edge-cases-and-fuzz-hazards": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg libavformat, libavutil, and OSS-Fuzz demuxer harness"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/mp4parse-rust",
+            "revision": "d3a9abfc93b22687e5e5cd9df86697adcb7d5887"
+          },
+          "name": "Mozilla mp4parse-rust fallible ISOBMFF parser and C ABI"
+        },
+        {
+          "identity": {
+            "repository": "pdeljanov/Symphonia",
+            "revision": "5f879df0bf309246a48d57caae457fd8c0e2a5cb"
+          },
+          "name": "Symphonia pure-Rust multimedia container demuxers"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy layout-verified zero-copy wire parsing library"
+        },
+        {
+          "identity": {
+            "repository": "project-everest/everparse",
+            "revision": "f3e4ce51d9b68593fd98472cadcdeb8b6abf388f"
+          },
+          "name": "EverParse and LowParse verified non-malleable binary parser framework"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Rust-to-Lean MIR verification toolchain"
+        },
+        {
+          "identity": {
+            "related_standard": "ISO/IEC 23000-19:2024",
+            "standard": "ISO/IEC 14496-12:2022"
+          },
+          "name": "ISO Base Media File Format (ISOBMFF) and Common Media Application Format (CMAF)"
+        },
+        {
+          "identity": {
+            "related_standard": "IETF RFC 9559",
+            "standard": "IETF RFC 8794",
+            "url": "https://www.rfc-editor.org/info/rfc9559"
+          },
+          "name": "Extensible Binary Meta Language (EBML) and Matroska Media Container Format"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T Rec. H.222.0 | ISO/IEC 13818-1"
+          },
+          "name": "MPEG-2 Systems Transport Stream"
+        },
+        {
+          "identity": {
+            "related_standard": "ISO/IEC 23009-1",
+            "standard": "IETF RFC 8216",
+            "url": "https://www.rfc-editor.org/info/rfc8216"
+          },
+          "name": "HTTP Live Streaming (HLS) and Dynamic Adaptive Streaming over HTTP (MPEG-DASH)"
+        },
+        {
+          "identity": {
+            "related_standard": "IETF RFC 7826",
+            "standard": "IETF RFC 3533",
+            "url": "https://www.rfc-editor.org/info/rfc3533"
+          },
+          "name": "Ogg Encapsulation Format and Real-Time Streaming Protocol"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523708",
+            "venue": "PLDI 2022"
+          },
+          "name": "Hardening Attack Surfaces with Formally Proven Binary Format Parsers (EverParse3D)"
+        }
+      ],
+      "topics": [
+        "domains/media-containers",
+        "security/parsers",
+        "verification/parsers",
+        "systems/ffmpeg",
+        "zerocopy/wire-formats",
+        "rust/memory-safety"
+      ]
+    },
     "jasmin-s2n-bignum-cslib-and-verified-cryptographic-assembly": {
       "observed_at": "2026-10-29",
       "subjects": [
@@ -35635,6 +35734,61 @@
         "security/timestamp-smearing-divergence",
         "systems/ntp-ptp-leap-second-smearing",
         "verification/civil-tzdb-epoch-injectivity"
+      ]
+    },
+    "libavfilter-graph-scheduling-frame-threading-and-avbufferref-lifetime-invariants": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg libavfilter, libavutil AVBuffer/AVFrame/slicethread, and libavcodec frame/slice threading"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d memory-safe Rust port of dav1d AV1 decoder (DisjointMut and task threading)"
+        },
+        {
+          "identity": {
+            "repository": "crossbeam-rs/crossbeam",
+            "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+          },
+          "name": "Crossbeam concurrent programming primitives for Rust"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy layout-verified byte slice casting library"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Rust-to-Lean MIR verification toolchain"
+        },
+        {
+          "identity": {
+            "section": "7.17 Atomics <stdatomic.h>",
+            "standard": "ISO/IEC 9899:2018"
+          },
+          "name": "ISO/IEC 9899:2018 C17 Standard Atomics and Memory Model"
+        }
+      ],
+      "topics": [
+        "systems/ffmpeg",
+        "systems/concurrency",
+        "rust/ownership",
+        "verification/memory-safety",
+        "verification/concurrency",
+        "ffi/c-abi"
       ]
     },
     "libwebp-huffman-tables-dav1d-rans-cdfs-and-lcms2-icc-tetrahedral-luts": {

@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "systems/ffmpeg",
+    "systems/concurrency",
+    "rust/ownership",
+    "verification/memory-safety",
+    "verification/concurrency",
+    "ffi/c-abi"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavfilter, libavutil AVBuffer/AVFrame/slicethread, and libavcodec frame/slice threading",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "rav1d memory-safe Rust port of dav1d AV1 decoder (DisjointMut and task threading)",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "Crossbeam concurrent programming primitives for Rust",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "zerocopy layout-verified byte slice casting library",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Anneal Rust-to-Lean MIR verification toolchain",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "ISO/IEC 9899:2018 C17 Standard Atomics and Memory Model",
+      "identity": {
+        "standard": "ISO/IEC 9899:2018",
+        "section": "7.17 Atomics <stdatomic.h>"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
