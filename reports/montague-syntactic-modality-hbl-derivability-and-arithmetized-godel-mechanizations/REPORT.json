@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "verification/arithmetized-provability",
+    "lean/incompleteness-formalizations",
+    "pl/provability-predicates-versus-operators",
+    "verification/self-reference-statement-adequacy"
+  ],
+  "subjects": [
+    {
+      "name": "FormalizedFormalLogic/Foundation",
+      "identity": {
+        "repository": "FormalizedFormalLogic/Foundation",
+        "revision": "fbcfee52cb4a892087fa978366282a9ebd844f29"
+      }
+    },
+    {
+      "name": "Archive of Formal Proofs (Incompleteness, Goedel_Incompleteness, Goedel_HFSet_Semantic, Goedel_HFSet_Semanticless)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+      }
+    },
+    {
+      "name": "Hydras & Co. (theories/goedel)",
+      "identity": {
+        "repository": "rocq-community/hydra-battles",
+        "revision": "ed8e6048018a61b4fe6d7d6f96daf0d63da2eba8"
+      }
+    },
+    {
+      "name": "Coq Library for First-Order Logic (theories/Incompleteness)",
+      "identity": {
+        "repository": "uds-psl/coq-library-fol",
+        "revision": "4e5702240aa0cae803dbb2d4bc5a4b7744fef217"
+      }
+    },
+    {
+      "name": "lob (Coq and Agda formalizations of Loeb's theorem)",
+      "identity": {
+        "repository": "JasonGross/lob",
+        "revision": "fe3113a89c155254a0525ea741aad7469361d161"
+      }
+    },
+    {
+      "name": "David Kaplan and Richard Montague, A Paradox Regained",
+      "identity": {
+        "doi": "10.1305/ndjfl/1093956549",
+        "journal": "Notre Dame Journal of Formal Logic 1(3):79-90",
+        "year": "1960"
+      }
+    },
+    {
+      "name": "Solomon Feferman, Arithmetization of Metamathematics in a General Setting",
+      "identity": {
+        "doi": "10.4064/fm-49-1-35-92",
+        "journal": "Fundamenta Mathematicae 49(1):35-92",
+        "year": "1960"
+      }
+    },
+    {
+      "name": "Richard Montague, Syntactical Treatments of Modality, with Corollaries on Reflexion Principles and Finite Axiomatizability",
+      "identity": {
+        "journal": "Acta Philosophica Fennica 16:153-167",
+        "year": "1963"
+      }
+    },
+    {
+      "name": "Robert M. Solovay, Provability Interpretations of Modal Logic",
+      "identity": {
+        "doi": "10.1007/BF02757006",
+        "journal": "Israel Journal of Mathematics 25(3-4):287-304",
+        "year": "1976"
+      }
+    },
+    {
+      "name": "Dan E. Willard, Self-Verifying Axiom Systems, the Incompleteness Theorem and Related Reflection Principles",
+      "identity": {
+        "doi": "10.2307/2695030",
+        "journal": "Journal of Symbolic Logic 66(2):536-596",
+        "year": "2001"
+      }
+    },
+    {
+      "name": "Albert Visser, Can We Make the Second Incompleteness Theorem Coordinate Free?",
+      "identity": {
+        "doi": "10.1093/logcom/exp048",
+        "journal": "Journal of Logic and Computation 21(4):543-560",
+        "year": "2011"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
