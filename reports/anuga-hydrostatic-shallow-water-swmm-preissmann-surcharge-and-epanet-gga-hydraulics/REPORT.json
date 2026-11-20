@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "domains/shallow-water-dam-break-hydraulics",
+    "domains/stormwater-surcharge-routing",
+    "domains/water-distribution-network-solvers",
+    "verification/wet-dry-positivity-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "ANUGA shallow-water solver (anuga_core)",
+      "identity": {
+        "repository": "anuga-community/anuga_core",
+        "revision": "44ed9a1ff7c676de0d52c6cce72ab6e35a031245"
+      }
+    },
+    {
+      "name": "EPA Storm Water Management Model (SWMM 5.2.4)",
+      "identity": {
+        "repository": "USEPA/Stormwater-Management-Model",
+        "revision": "07c371f8a0d477da1d9d4e7c0d75719664f62fec",
+        "version": "5.2.4"
+      }
+    },
+    {
+      "name": "EPANET (OWA EPANET 2.3.06)",
+      "identity": {
+        "repository": "OpenWaterAnalytics/EPANET",
+        "revision": "57d8bd8ad60e89b57f2a1ac591f05c8e13589866",
+        "version": "2.3.06"
+      }
+    },
+    {
+      "name": "LISFLOOD hydrological model (lisflood-code)",
+      "identity": {
+        "repository": "ec-jrc/lisflood-code",
+        "revision": "05a2f58bfd986e33086d52c0947bcff6f452f62b"
+      }
+    },
+    {
+      "name": "Audusse et al. 2004, well-balanced hydrostatic reconstruction",
+      "identity": {
+        "doi": "10.1137/S1064827503431090"
+      }
+    },
+    {
+      "name": "Kurganov and Petrova 2007, positivity-preserving central-upwind Saint-Venant scheme",
+      "identity": {
+        "doi": "10.4310/CMS.2007.v5.n1.a6"
+      }
+    },
+    {
+      "name": "Kurganov, Noelle and Petrova 2001, semidiscrete central-upwind schemes",
+      "identity": {
+        "doi": "10.1137/S1064827500373413"
+      }
+    },
+    {
+      "name": "Leon et al. 2009, Godunov-type schemes for transient mixed flows",
+      "identity": {
+        "doi": "10.3826/jhr.2009.3157"
+      }
+    },
+    {
+      "name": "Wagner, Shamir and Marks 1988, water distribution reliability simulation methods",
+      "identity": {
+        "doi": "10.1061/(ASCE)0733-9496(1988)114:3(276)"
+      }
+    },
+    {
+      "name": "Van Der Knijff, Younis and De Roo 2010, LISFLOOD model description",
+      "identity": {
+        "doi": "10.1080/13658810802549154"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

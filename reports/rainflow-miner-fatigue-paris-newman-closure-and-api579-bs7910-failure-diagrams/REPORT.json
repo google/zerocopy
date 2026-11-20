@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "domains/fracture-mechanics-and-fad",
+    "domains/fatigue-crack-growth-laws",
+    "domains/rainflow-cycle-counting",
+    "verification/pressure-vessel-ffs-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "pyLife fatigue library (four-point rainflow, Woehler/Miner, mean-stress)",
+      "identity": {
+        "repository": "boschresearch/pylife",
+        "revision": "84685b82323b66b05cca530c51acbf1b7f2da895",
+        "version": "2.3.1.post1.dev65+g84685b823"
+      }
+    },
+    {
+      "name": "fatpack fatigue analysis package (rainflow, endurance curves, stress corrections)",
+      "identity": {
+        "repository": "Gunnstein/fatpack",
+        "revision": "82d4aeef031f803d09edb1893a6c4587fa3adfd2"
+      }
+    },
+    {
+      "name": "rainflow (ASTM E1049-85 section 5.4.4 cycle counting)",
+      "identity": {
+        "repository": "iamlikeme/rainflow",
+        "revision": "5fc6822fd1c626739c6f95d9b4595ee80330b4fc"
+      }
+    },
+    {
+      "name": "CrackPy crack analysis tool (J/interaction integrals, Williams fitting)",
+      "identity": {
+        "repository": "dlr-wf/crackpy",
+        "revision": "f5178fd4248adca457238ab55551444c1c7ae5ee"
+      }
+    },
+    {
+      "name": "MOOSE solid_mechanics fracture domain integrals (CrackFrontDefinition, JIntegral)",
+      "identity": {
+        "repository": "idaholab/moose",
+        "revision": "1cb383aae1689b05b546a915340641517c43b190"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

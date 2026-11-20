@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "domains/mri-kspace-reconstruction",
+    "domains/mri-sar-and-pns-safety",
+    "domains/cone-beam-ct-reconstruction",
+    "verification/inverse-reconstruction-stability"
+  ],
+  "subjects": [
+    {
+      "name": "BART Berkeley Advanced Reconstruction Toolbox (pics, ecalib)",
+      "identity": {
+        "repository": "mrirecon/bart",
+        "revision": "731bfd3ec4f09ffa59b497ded1274a2c0357c8af",
+        "version": "v1.0.00-1-g731bfd3"
+      }
+    },
+    {
+      "name": "Pulseq MATLAB pulse-sequence framework (Sequence, checkTiming, calcPNS)",
+      "identity": {
+        "repository": "pulseq/pulseq",
+        "revision": "11e459d9b6b426aa6ea57a01153fb9afea332f6f"
+      }
+    },
+    {
+      "name": "SAFE-model PNS prediction (safe_pns_prediction)",
+      "identity": {
+        "repository": "filip-szczepankiewicz/safe_pns_prediction",
+        "revision": "152ab67c086170c40c1988ebba9002e018a0652c"
+      }
+    },
+    {
+      "name": "RTK Reconstruction Toolkit (FDK cone-beam filters)",
+      "identity": {
+        "repository": "RTKConsortium/RTK",
+        "revision": "3f6b9e185a97af546b2eb4dcd9c7bfdbc3a45c96"
+      }
+    },
+    {
+      "name": "ASTRA Toolbox (cone geometry, CUDA FDK, FBP filters)",
+      "identity": {
+        "repository": "astra-toolbox/astra-toolbox",
+        "revision": "627d834ce2339b505d098c205f0293a401faf6b4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,111 @@
+{
+  "topics": [
+    "domains/wildfire-spread-physics",
+    "domains/structural-fire-dynamics",
+    "domains/atmospheric-plume-dispersion",
+    "verification/fire-and-plume-regime-limits"
+  ],
+  "subjects": [
+    {
+      "name": "ELMFIRE wildland fire model",
+      "identity": {
+        "repository": "lautenberger/elmfire",
+        "revision": "f4927b7ce68cb74eb0eb117085cc920782c8644e"
+      }
+    },
+    {
+      "name": "NIST Fire Dynamics Simulator (FDS)",
+      "identity": {
+        "repository": "firemodels/fds",
+        "revision": "272b8dd9fbbb1ce8dbcf8a537863bb3d29f08a2b"
+      }
+    },
+    {
+      "name": "WindNinja terrain wind model",
+      "identity": {
+        "repository": "firelab/windninja",
+        "revision": "38fc7ca2650f9665cf62e00984880705fe3ddd55"
+      }
+    },
+    {
+      "name": "FLEXPART Lagrangian particle dispersion model (GitHub snapshot)",
+      "identity": {
+        "repository": "flexpart/flexpart",
+        "revision": "3d7eebf7c4909f59db5ec32c524f88fb846e9fe5"
+      }
+    },
+    {
+      "name": "Rothermel 1972, mathematical model for predicting fire spread in wildland fuels",
+      "identity": {
+        "doi": "10.2737/INT-RP-115"
+      }
+    },
+    {
+      "name": "Andrews, Cruz and Rothermel 2013, Rothermel wind speed limit function",
+      "identity": {
+        "doi": "10.1071/WF12122"
+      }
+    },
+    {
+      "name": "Finney 1998, FARSITE model development and evaluation",
+      "identity": {
+        "doi": "10.2737/RMRS-RP-4"
+      }
+    },
+    {
+      "name": "Lautenberger 2013, Eulerian level set wildland fire modeling",
+      "identity": {
+        "doi": "10.1016/j.firesaf.2013.08.014"
+      }
+    },
+    {
+      "name": "FDS Technical Reference Guide Volume 1, sixth edition (NIST SP 1018)",
+      "identity": {
+        "doi": "10.6028/NIST.SP.1018e6"
+      }
+    },
+    {
+      "name": "Forthofer, Butler and Wagenbrenner 2014, fine-scale surface wind approaches",
+      "identity": {
+        "doi": "10.1071/WF12089"
+      }
+    },
+    {
+      "name": "Cimorelli et al. 2005, AERMOD Part I model formulation",
+      "identity": {
+        "doi": "10.1175/JAM2227.1"
+      }
+    },
+    {
+      "name": "Perry et al. 2005, AERMOD Part II model performance",
+      "identity": {
+        "doi": "10.1175/JAM2228.1"
+      }
+    },
+    {
+      "name": "Stein et al. 2015, NOAA HYSPLIT modeling system",
+      "identity": {
+        "doi": "10.1175/BAMS-D-14-00110.1"
+      }
+    },
+    {
+      "name": "Pisso et al. 2019, FLEXPART version 10.4",
+      "identity": {
+        "doi": "10.5194/gmd-12-4955-2019"
+      }
+    },
+    {
+      "name": "Thomson 1987, well-mixed criteria for stochastic particle models",
+      "identity": {
+        "doi": "10.1017/S0022112087001940"
+      }
+    },
+    {
+      "name": "Stohl and Thomson 1999, density correction for Lagrangian particle dispersion models",
+      "identity": {
+        "doi": "10.1023/A:1001741110696"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -7849,6 +7849,83 @@
         "verification/refinement"
       ]
     },
+    "anuga-hydrostatic-shallow-water-swmm-preissmann-surcharge-and-epanet-gga-hydraulics": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "anuga-community/anuga_core",
+            "revision": "44ed9a1ff7c676de0d52c6cce72ab6e35a031245"
+          },
+          "name": "ANUGA shallow-water solver (anuga_core)"
+        },
+        {
+          "identity": {
+            "repository": "USEPA/Stormwater-Management-Model",
+            "revision": "07c371f8a0d477da1d9d4e7c0d75719664f62fec",
+            "version": "5.2.4"
+          },
+          "name": "EPA Storm Water Management Model (SWMM 5.2.4)"
+        },
+        {
+          "identity": {
+            "repository": "OpenWaterAnalytics/EPANET",
+            "revision": "57d8bd8ad60e89b57f2a1ac591f05c8e13589866",
+            "version": "2.3.06"
+          },
+          "name": "EPANET (OWA EPANET 2.3.06)"
+        },
+        {
+          "identity": {
+            "repository": "ec-jrc/lisflood-code",
+            "revision": "05a2f58bfd986e33086d52c0947bcff6f452f62b"
+          },
+          "name": "LISFLOOD hydrological model (lisflood-code)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S1064827503431090"
+          },
+          "name": "Audusse et al. 2004, well-balanced hydrostatic reconstruction"
+        },
+        {
+          "identity": {
+            "doi": "10.4310/CMS.2007.v5.n1.a6"
+          },
+          "name": "Kurganov and Petrova 2007, positivity-preserving central-upwind Saint-Venant scheme"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S1064827500373413"
+          },
+          "name": "Kurganov, Noelle and Petrova 2001, semidiscrete central-upwind schemes"
+        },
+        {
+          "identity": {
+            "doi": "10.3826/jhr.2009.3157"
+          },
+          "name": "Leon et al. 2009, Godunov-type schemes for transient mixed flows"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)0733-9496(1988)114:3(276)"
+          },
+          "name": "Wagner, Shamir and Marks 1988, water distribution reliability simulation methods"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/13658810802549154"
+          },
+          "name": "Van Der Knijff, Younis and De Roo 2010, LISFLOOD model description"
+        }
+      ],
+      "topics": [
+        "domains/shallow-water-dam-break-hydraulics",
+        "domains/stormwater-surcharge-routing",
+        "domains/water-distribution-network-solvers",
+        "verification/wet-dry-positivity-invariants"
+      ]
+    },
     "arm-cca-sev-snp-vmpl-pkvm-and-mutually-distrusting-world-isolation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -9975,6 +10052,53 @@
         "domains/araim-integrity-monitoring",
         "systems/adsb-mode-s-cpr-decoding",
         "verification/airborne-navigation-envelopes"
+      ]
+    },
+    "bart-kspace-instabilities-pulseq-safe-pns-and-fdk-conebeam-tomography": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "mrirecon/bart",
+            "revision": "731bfd3ec4f09ffa59b497ded1274a2c0357c8af",
+            "version": "v1.0.00-1-g731bfd3"
+          },
+          "name": "BART Berkeley Advanced Reconstruction Toolbox (pics, ecalib)"
+        },
+        {
+          "identity": {
+            "repository": "pulseq/pulseq",
+            "revision": "11e459d9b6b426aa6ea57a01153fb9afea332f6f"
+          },
+          "name": "Pulseq MATLAB pulse-sequence framework (Sequence, checkTiming, calcPNS)"
+        },
+        {
+          "identity": {
+            "repository": "filip-szczepankiewicz/safe_pns_prediction",
+            "revision": "152ab67c086170c40c1988ebba9002e018a0652c"
+          },
+          "name": "SAFE-model PNS prediction (safe_pns_prediction)"
+        },
+        {
+          "identity": {
+            "repository": "RTKConsortium/RTK",
+            "revision": "3f6b9e185a97af546b2eb4dcd9c7bfdbc3a45c96"
+          },
+          "name": "RTK Reconstruction Toolkit (FDK cone-beam filters)"
+        },
+        {
+          "identity": {
+            "repository": "astra-toolbox/astra-toolbox",
+            "revision": "627d834ce2339b505d098c205f0293a401faf6b4"
+          },
+          "name": "ASTRA Toolbox (cone geometry, CUDA FDK, FBP filters)"
+        }
+      ],
+      "topics": [
+        "domains/mri-kspace-reconstruction",
+        "domains/mri-sar-and-pns-safety",
+        "domains/cone-beam-ct-reconstruction",
+        "verification/inverse-reconstruction-stability"
       ]
     },
     "bazel-reapi-merkle-action-caches-symlink-sandboxes-and-content-defined-cas": {
@@ -54822,6 +54946,53 @@
         "systems/substation-ethernet"
       ]
     },
+    "rainflow-miner-fatigue-paris-newman-closure-and-api579-bs7910-failure-diagrams": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "boschresearch/pylife",
+            "revision": "84685b82323b66b05cca530c51acbf1b7f2da895",
+            "version": "2.3.1.post1.dev65+g84685b823"
+          },
+          "name": "pyLife fatigue library (four-point rainflow, Woehler/Miner, mean-stress)"
+        },
+        {
+          "identity": {
+            "repository": "Gunnstein/fatpack",
+            "revision": "82d4aeef031f803d09edb1893a6c4587fa3adfd2"
+          },
+          "name": "fatpack fatigue analysis package (rainflow, endurance curves, stress corrections)"
+        },
+        {
+          "identity": {
+            "repository": "iamlikeme/rainflow",
+            "revision": "5fc6822fd1c626739c6f95d9b4595ee80330b4fc"
+          },
+          "name": "rainflow (ASTM E1049-85 section 5.4.4 cycle counting)"
+        },
+        {
+          "identity": {
+            "repository": "dlr-wf/crackpy",
+            "revision": "f5178fd4248adca457238ab55551444c1c7ae5ee"
+          },
+          "name": "CrackPy crack analysis tool (J/interaction integrals, Williams fitting)"
+        },
+        {
+          "identity": {
+            "repository": "idaholab/moose",
+            "revision": "1cb383aae1689b05b546a915340641517c43b190"
+          },
+          "name": "MOOSE solid_mechanics fracture domain integrals (CrackFrontDefinition, JIntegral)"
+        }
+      ],
+      "topics": [
+        "domains/fracture-mechanics-and-fad",
+        "domains/fatigue-crack-growth-laws",
+        "domains/rainflow-cycle-counting",
+        "verification/pressure-vessel-ffs-envelopes"
+      ]
+    },
     "rank-polymorphic-array-languages-and-sparse-structured-tensor-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -58115,6 +58286,117 @@
         "anneal/trusted-boundary",
         "rustc/targets",
         "llvm/riscv"
+      ]
+    },
+    "rothermel-elmfire-level-sets-nist-fds-les-and-flexpart-plume-dispersion": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "lautenberger/elmfire",
+            "revision": "f4927b7ce68cb74eb0eb117085cc920782c8644e"
+          },
+          "name": "ELMFIRE wildland fire model"
+        },
+        {
+          "identity": {
+            "repository": "firemodels/fds",
+            "revision": "272b8dd9fbbb1ce8dbcf8a537863bb3d29f08a2b"
+          },
+          "name": "NIST Fire Dynamics Simulator (FDS)"
+        },
+        {
+          "identity": {
+            "repository": "firelab/windninja",
+            "revision": "38fc7ca2650f9665cf62e00984880705fe3ddd55"
+          },
+          "name": "WindNinja terrain wind model"
+        },
+        {
+          "identity": {
+            "repository": "flexpart/flexpart",
+            "revision": "3d7eebf7c4909f59db5ec32c524f88fb846e9fe5"
+          },
+          "name": "FLEXPART Lagrangian particle dispersion model (GitHub snapshot)"
+        },
+        {
+          "identity": {
+            "doi": "10.2737/INT-RP-115"
+          },
+          "name": "Rothermel 1972, mathematical model for predicting fire spread in wildland fuels"
+        },
+        {
+          "identity": {
+            "doi": "10.1071/WF12122"
+          },
+          "name": "Andrews, Cruz and Rothermel 2013, Rothermel wind speed limit function"
+        },
+        {
+          "identity": {
+            "doi": "10.2737/RMRS-RP-4"
+          },
+          "name": "Finney 1998, FARSITE model development and evaluation"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.firesaf.2013.08.014"
+          },
+          "name": "Lautenberger 2013, Eulerian level set wildland fire modeling"
+        },
+        {
+          "identity": {
+            "doi": "10.6028/NIST.SP.1018e6"
+          },
+          "name": "FDS Technical Reference Guide Volume 1, sixth edition (NIST SP 1018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1071/WF12089"
+          },
+          "name": "Forthofer, Butler and Wagenbrenner 2014, fine-scale surface wind approaches"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/JAM2227.1"
+          },
+          "name": "Cimorelli et al. 2005, AERMOD Part I model formulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/JAM2228.1"
+          },
+          "name": "Perry et al. 2005, AERMOD Part II model performance"
+        },
+        {
+          "identity": {
+            "doi": "10.1175/BAMS-D-14-00110.1"
+          },
+          "name": "Stein et al. 2015, NOAA HYSPLIT modeling system"
+        },
+        {
+          "identity": {
+            "doi": "10.5194/gmd-12-4955-2019"
+          },
+          "name": "Pisso et al. 2019, FLEXPART version 10.4"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0022112087001940"
+          },
+          "name": "Thomson 1987, well-mixed criteria for stochastic particle models"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1001741110696"
+          },
+          "name": "Stohl and Thomson 1999, density correction for Lagrangian particle dispersion models"
+        }
+      ],
+      "topics": [
+        "domains/wildfire-spread-physics",
+        "domains/structural-fire-dynamics",
+        "domains/atmospheric-plume-dispersion",
+        "verification/fire-and-plume-regime-limits"
       ]
     },
     "rowan-red-green-csts-tree-sitter-glr-recovery-and-hyperscan-teddy-automata": {
