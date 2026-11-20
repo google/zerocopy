@@ -62261,6 +62261,53 @@
         "rustc/mir"
       ]
     },
+    "rust-ctfe-pointer-provenance-read-pointer-as-int-and-const-eval-vs-runtime-gaps": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "560abf7946ae41fd210edac5dfe829d7eff86eec"
+          },
+          "name": "Rust compiler and CTFE MIR interpreter (rustc_const_eval and rustc_middle)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7e679961edcfe2c526f19153bb8b03de346efa5c"
+          },
+          "name": "Miri Rust Undefined Behavior interpreter"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust operational semantics specification"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Rust Unsafe Code Guidelines Reference"
+        }
+      ],
+      "topics": [
+        "rust/miri",
+        "rust/provenance",
+        "rust/const-eval",
+        "rustc/const-eval",
+        "minirust/memory"
+      ]
+    },
     "rust-drop-check-eyepatch-dangling-generics-and-phantomdata-variance-rules": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -79933,6 +79980,74 @@
         "verification/compositional-contracts",
         "zerocopy/bidirectional-lenses",
         "runtimes/effect-handlers"
+      ]
+    },
+    "unreachable-stub-isolation-opaque-axioms-and-scoped-isa-correspondence-proofs": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "450d6b121a45a48ffc58a83c921c813dffb259cb"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Lean FRO Comparator proof-auditing tool"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker environment replay verifier"
+        },
+        {
+          "identity": {
+            "repository": "digama0/lean4lean",
+            "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+          },
+          "name": "Lean4Lean mechanized Lean 4 typechecker"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail architecture specification compiler and Lean backend"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "079463134b9c50450b8393e1566a09fc492a34d9"
+          },
+          "name": "Sail Lean 4 support library"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Official Sail RISC-V ISA specification"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Extracted Lean 4 RISC-V RV64D specification"
+        }
+      ],
+      "topics": [
+        "verification/trust-boundaries",
+        "verification/lean4",
+        "isa/riscv",
+        "isa/sail",
+        "lean/kernel"
       ]
     },
     "unsafecell-cell-refcell-ghostcell-and-oncecell-formal-protocols-in-first-order-separation-logic": {

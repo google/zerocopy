@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "verification/trust-boundaries",
+    "verification/lean4",
+    "isa/riscv",
+    "isa/sail",
+    "lean/kernel"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "450d6b121a45a48ffc58a83c921c813dffb259cb"
+      }
+    },
+    {
+      "name": "Lean FRO Comparator proof-auditing tool",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "lean4checker environment replay verifier",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "Lean4Lean mechanized Lean 4 typechecker",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Sail architecture specification compiler and Lean backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "Sail Lean 4 support library",
+      "identity": {
+        "repository": "rems-project/lean-sail",
+        "revision": "079463134b9c50450b8393e1566a09fc492a34d9"
+      }
+    },
+    {
+      "name": "Official Sail RISC-V ISA specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+      }
+    },
+    {
+      "name": "Extracted Lean 4 RISC-V RV64D specification",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
