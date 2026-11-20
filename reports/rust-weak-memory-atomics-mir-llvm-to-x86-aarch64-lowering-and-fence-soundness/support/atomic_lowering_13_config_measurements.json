@@ -1,0 +1,5493 @@
+{
+ "configs": {
+  "aarch64_lse_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "ret"
+    ],
+    "at_cfence_acquire": [
+     "ret"
+    ],
+    "at_cfence_release": [
+     "ret"
+    ],
+    "at_cfence_seqcst": [
+     "ret"
+    ],
+    "at_fence_acqrel": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_acquire": [
+     "dmb\tishld",
+     "ret"
+    ],
+    "at_fence_release": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_seqcst": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "casal\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "casal\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "casl\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_fadd_acqrel": [
+     "ldaddal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_acquire": [
+     "ldadda\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_relaxed": [
+     "ldadd\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_release": [
+     "ldaddl\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_seqcst": [
+     "ldaddal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_acquire": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_relaxed": [
+     "ldr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_seqcst": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_store_relaxed": [
+     "str\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_release": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_seqcst": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acqrel": [
+     "swpal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acquire": [
+     "swpa\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_relaxed": [
+     "swp\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_release": [
+     "swpl\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_seqcst": [
+     "swpal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u64_cas_seqcst": [
+     "casal\tx1, x2, [x0]",
+     "mov\tx0, x1",
+     "ret"
+    ],
+    "at_u64_fadd_acqrel": [
+     "ldaddal\tx1, x0, [x0]",
+     "ret"
+    ],
+    "at_u64_load_acquire": [
+     "ldar\tx0, [x0]",
+     "ret"
+    ],
+    "at_u64_store_seqcst": [
+     "stlr\tx1, [x0]",
+     "ret"
+    ],
+    "at_u8_fand_acqrel": [
+     "mvn\tw8, w1",
+     "ldclralb\tw8, w0, [x0]",
+     "ret"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "str\tw1, [x0]",
+     "str\tw2, [x0]",
+     "ret"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ],
+    "canary_dead_relaxed_load": [
+     "mov\tx8, x0",
+     "mov\tw0,",
+     "ldr\twzr, [x8]",
+     "ret"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=+lse"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "aarch64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "aarch64_lse_rcpc3_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "ret"
+    ],
+    "at_cfence_acquire": [
+     "ret"
+    ],
+    "at_cfence_release": [
+     "ret"
+    ],
+    "at_cfence_seqcst": [
+     "ret"
+    ],
+    "at_fence_acqrel": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_acquire": [
+     "dmb\tishld",
+     "ret"
+    ],
+    "at_fence_release": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_seqcst": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "casal\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "casal\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "casl\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_fadd_acqrel": [
+     "ldaddal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_acquire": [
+     "ldadda\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_relaxed": [
+     "ldadd\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_release": [
+     "ldaddl\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_seqcst": [
+     "ldaddal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_acquire": [
+     "ldapr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_relaxed": [
+     "ldr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_seqcst": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_store_relaxed": [
+     "str\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_release": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_seqcst": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acqrel": [
+     "swpal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acquire": [
+     "swpa\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_relaxed": [
+     "swp\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_release": [
+     "swpl\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_seqcst": [
+     "swpal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u64_cas_seqcst": [
+     "casal\tx1, x2, [x0]",
+     "mov\tx0, x1",
+     "ret"
+    ],
+    "at_u64_fadd_acqrel": [
+     "ldaddal\tx1, x0, [x0]",
+     "ret"
+    ],
+    "at_u64_load_acquire": [
+     "ldapr\tx0, [x0]",
+     "ret"
+    ],
+    "at_u64_store_seqcst": [
+     "stlr\tx1, [x0]",
+     "ret"
+    ],
+    "at_u8_fand_acqrel": [
+     "mvn\tw8, w1",
+     "ldclralb\tw8, w0, [x0]",
+     "ret"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "str\tw1, [x0]",
+     "str\tw2, [x0]",
+     "ret"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ],
+    "canary_dead_relaxed_load": [
+     "mov\tx8, x0",
+     "mov\tw0,",
+     "ldr\twzr, [x8]",
+     "ret"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=+lse,+rcpc,+rcpc3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "aarch64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "aarch64_lse_rcpc_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "ret"
+    ],
+    "at_cfence_acquire": [
+     "ret"
+    ],
+    "at_cfence_release": [
+     "ret"
+    ],
+    "at_cfence_seqcst": [
+     "ret"
+    ],
+    "at_fence_acqrel": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_acquire": [
+     "dmb\tishld",
+     "ret"
+    ],
+    "at_fence_release": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_seqcst": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "casal\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "casal\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "casl\tw1, w2, [x0]",
+     "mov\tw0, w1",
+     "ret"
+    ],
+    "at_u32_fadd_acqrel": [
+     "ldaddal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_acquire": [
+     "ldadda\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_relaxed": [
+     "ldadd\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_release": [
+     "ldaddl\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_fadd_seqcst": [
+     "ldaddal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_acquire": [
+     "ldapr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_relaxed": [
+     "ldr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_seqcst": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_store_relaxed": [
+     "str\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_release": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_seqcst": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acqrel": [
+     "swpal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acquire": [
+     "swpa\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_relaxed": [
+     "swp\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_release": [
+     "swpl\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_seqcst": [
+     "swpal\tw1, w0, [x0]",
+     "ret"
+    ],
+    "at_u64_cas_seqcst": [
+     "casal\tx1, x2, [x0]",
+     "mov\tx0, x1",
+     "ret"
+    ],
+    "at_u64_fadd_acqrel": [
+     "ldaddal\tx1, x0, [x0]",
+     "ret"
+    ],
+    "at_u64_load_acquire": [
+     "ldapr\tx0, [x0]",
+     "ret"
+    ],
+    "at_u64_store_seqcst": [
+     "stlr\tx1, [x0]",
+     "ret"
+    ],
+    "at_u8_fand_acqrel": [
+     "mvn\tw8, w1",
+     "ldclralb\tw8, w0, [x0]",
+     "ret"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "str\tw1, [x0]",
+     "str\tw2, [x0]",
+     "ret"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ],
+    "canary_dead_relaxed_load": [
+     "mov\tx8, x0",
+     "mov\tw0,",
+     "ldr\twzr, [x8]",
+     "ret"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=+lse,+rcpc"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "aarch64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "aarch64_v80_default_outline_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "ret"
+    ],
+    "at_cfence_acquire": [
+     "ret"
+    ],
+    "at_cfence_release": [
+     "ret"
+    ],
+    "at_cfence_seqcst": [
+     "ret"
+    ],
+    "at_fence_acqrel": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_acquire": [
+     "dmb\tishld",
+     "ret"
+    ],
+    "at_fence_release": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_seqcst": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tw1, w2",
+     "mov\tx2, x8",
+     "bl\t__aarch64_cas4_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tw1, w2",
+     "mov\tx2, x8",
+     "bl\t__aarch64_cas4_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tw1, w2",
+     "mov\tx2, x8",
+     "bl\t__aarch64_cas4_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_fadd_acqrel": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldadd4_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_fadd_acquire": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldadd4_acq",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_fadd_relaxed": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldadd4_relax",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_fadd_release": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldadd4_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_fadd_seqcst": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldadd4_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_load_acquire": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_relaxed": [
+     "ldr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_seqcst": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_store_relaxed": [
+     "str\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_release": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_seqcst": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acqrel": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_swp4_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_swap_acquire": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_swp4_acq",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_swap_relaxed": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_swp4_relax",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_swap_release": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_swp4_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u32_swap_seqcst": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_swp4_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u64_cas_seqcst": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tx0, x1",
+     "mov\tx1, x2",
+     "mov\tx2, x8",
+     "bl\t__aarch64_cas8_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u64_fadd_acqrel": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mov\tx0, x1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldadd8_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "at_u64_load_acquire": [
+     "ldar\tx0, [x0]",
+     "ret"
+    ],
+    "at_u64_store_seqcst": [
+     "stlr\tx1, [x0]",
+     "ret"
+    ],
+    "at_u8_fand_acqrel": [
+     "stp\tx29, x30, [sp,",
+     "mov\tx29, sp",
+     "mov\tx8, x0",
+     "mvn\tw0, w1",
+     "mov\tx1, x8",
+     "bl\t__aarch64_ldclr1_acq_rel",
+     "ldp\tx29, x30, [sp],",
+     "ret"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "str\tw1, [x0]",
+     "str\tw2, [x0]",
+     "ret"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ],
+    "canary_dead_relaxed_load": [
+     "mov\tx8, x0",
+     "mov\tw0,",
+     "ldr\twzr, [x8]",
+     "ret"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "aarch64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "aarch64_v80_no_outline_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "ret"
+    ],
+    "at_cfence_acquire": [
+     "ret"
+    ],
+    "at_cfence_release": [
+     "ret"
+    ],
+    "at_cfence_seqcst": [
+     "ret"
+    ],
+    "at_fence_acqrel": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_acquire": [
+     "dmb\tishld",
+     "ret"
+    ],
+    "at_fence_release": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_fence_seqcst": [
+     "dmb\tish",
+     "ret"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "mov\tx8, x0",
+     "ldaxr\tw0, [x8]",
+     "cmp\tw0, w1",
+     "b.ne\t.LBB8_4",
+     "stlxr\tw9, w2, [x8]",
+     "cbnz\tw9, .LBB8_1",
+     "ret",
+     "clrex",
+     "ret"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "mov\tx8, x0",
+     "ldaxr\tw0, [x8]",
+     "cmp\tw0, w1",
+     "b.ne\t.LBB9_4",
+     "stlxr\tw9, w2, [x8]",
+     "cbnz\tw9, .LBB9_1",
+     "ret",
+     "clrex",
+     "ret"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "mov\tx8, x0",
+     "ldxr\tw0, [x0]",
+     "cmp\tw0, w1",
+     "b.ne\t.LBB10_2",
+     "stlxr\twzr, w2, [x8]",
+     "ret",
+     "clrex",
+     "ret"
+    ],
+    "at_u32_fadd_acqrel": [
+     "ldaxr\tw8, [x0]",
+     "add\tw9, w8, w1",
+     "stlxr\tw10, w9, [x0]",
+     "cbnz\tw10, .LBB11_1",
+     "mov\tw0, w8",
+     "ret"
+    ],
+    "at_u32_fadd_acquire": [
+     "ldaxr\tw8, [x0]",
+     "add\tw9, w8, w1",
+     "stxr\tw10, w9, [x0]",
+     "cbnz\tw10, .LBB12_1",
+     "mov\tw0, w8",
+     "ret"
+    ],
+    "at_u32_fadd_relaxed": [
+     "ldxr\tw8, [x0]",
+     "add\tw9, w8, w1",
+     "stxr\tw10, w9, [x0]",
+     "cbnz\tw10, .LBB13_1",
+     "mov\tw0, w8",
+     "ret"
+    ],
+    "at_u32_fadd_release": [
+     "ldxr\tw8, [x0]",
+     "add\tw9, w8, w1",
+     "stlxr\tw10, w9, [x0]",
+     "cbnz\tw10, .LBB14_1",
+     "mov\tw0, w8",
+     "ret"
+    ],
+    "at_u32_fadd_seqcst": [
+     "ldaxr\tw8, [x0]",
+     "add\tw9, w8, w1",
+     "stlxr\tw10, w9, [x0]",
+     "cbnz\tw10, .LBB15_1",
+     "mov\tw0, w8",
+     "ret"
+    ],
+    "at_u32_load_acquire": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_relaxed": [
+     "ldr\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_load_seqcst": [
+     "ldar\tw0, [x0]",
+     "ret"
+    ],
+    "at_u32_store_relaxed": [
+     "str\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_release": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_store_seqcst": [
+     "stlr\tw1, [x0]",
+     "ret"
+    ],
+    "at_u32_swap_acqrel": [
+     "mov\tx8, x0",
+     "ldaxr\tw0, [x8]",
+     "stlxr\tw9, w1, [x8]",
+     "cbnz\tw9, .LBB22_1",
+     "ret"
+    ],
+    "at_u32_swap_acquire": [
+     "mov\tx8, x0",
+     "ldaxr\tw0, [x8]",
+     "stxr\tw9, w1, [x8]",
+     "cbnz\tw9, .LBB23_1",
+     "ret"
+    ],
+    "at_u32_swap_relaxed": [
+     "mov\tx8, x0",
+     "ldxr\tw0, [x8]",
+     "stxr\tw9, w1, [x8]",
+     "cbnz\tw9, .LBB24_1",
+     "ret"
+    ],
+    "at_u32_swap_release": [
+     "mov\tx8, x0",
+     "ldxr\tw0, [x8]",
+     "stlxr\tw9, w1, [x8]",
+     "cbnz\tw9, .LBB25_1",
+     "ret"
+    ],
+    "at_u32_swap_seqcst": [
+     "mov\tx8, x0",
+     "ldaxr\tw0, [x8]",
+     "stlxr\tw9, w1, [x8]",
+     "cbnz\tw9, .LBB26_1",
+     "ret"
+    ],
+    "at_u64_cas_seqcst": [
+     "mov\tx8, x0",
+     "ldaxr\tx0, [x8]",
+     "cmp\tx0, x1",
+     "b.ne\t.LBB27_4",
+     "stlxr\tw9, x2, [x8]",
+     "cbnz\tw9, .LBB27_1",
+     "ret",
+     "clrex",
+     "ret"
+    ],
+    "at_u64_fadd_acqrel": [
+     "mov\tx8, x0",
+     "ldaxr\tx0, [x8]",
+     "add\tx9, x0, x1",
+     "stlxr\tw10, x9, [x8]",
+     "cbnz\tw10, .LBB28_1",
+     "ret"
+    ],
+    "at_u64_load_acquire": [
+     "ldar\tx0, [x0]",
+     "ret"
+    ],
+    "at_u64_store_seqcst": [
+     "stlr\tx1, [x0]",
+     "ret"
+    ],
+    "at_u8_fand_acqrel": [
+     "ldaxrb\tw8, [x0]",
+     "and\tw9, w8, w1",
+     "stlxrb\tw10, w9, [x0]",
+     "cbnz\tw10, .LBB31_1",
+     "mov\tw0, w8",
+     "ret"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "str\tw1, [x0]",
+     "str\tw2, [x0]",
+     "ret"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ],
+    "canary_dead_relaxed_load": [
+     "mov\tx8, x0",
+     "mov\tw0,",
+     "ldr\twzr, [x8]",
+     "ret"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "mov\tx8, x0",
+     "mov\tw9,",
+     "mov\tw0, w2",
+     "str\tw2, [x1]",
+     "str\tw9, [x8]",
+     "ret"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=-outline-atomics"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "aarch64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "i686_default_sse2_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "retl"
+    ],
+    "at_cfence_acquire": [
+     "retl"
+    ],
+    "at_cfence_release": [
+     "retl"
+    ],
+    "at_cfence_seqcst": [
+     "retl"
+    ],
+    "at_fence_acqrel": [
+     "retl"
+    ],
+    "at_fence_acquire": [
+     "retl"
+    ],
+    "at_fence_release": [
+     "retl"
+    ],
+    "at_fence_seqcst": [
+     "mfence",
+     "retl"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "movl\t8(%esp), %eax",
+     "movl\t12(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "lock\t\tcmpxchgl\t%ecx, (%edx)",
+     "retl"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "movl\t8(%esp), %eax",
+     "movl\t12(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "lock\t\tcmpxchgl\t%ecx, (%edx)",
+     "retl"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "movl\t8(%esp), %eax",
+     "movl\t12(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "lock\t\tcmpxchgl\t%ecx, (%edx)",
+     "retl"
+    ],
+    "at_u32_fadd_acqrel": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_acquire": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_relaxed": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_release": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_seqcst": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_load_acquire": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "retl"
+    ],
+    "at_u32_load_relaxed": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "retl"
+    ],
+    "at_u32_load_seqcst": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "retl"
+    ],
+    "at_u32_store_relaxed": [
+     "movl\t8(%esp), %eax",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_store_release": [
+     "movl\t8(%esp), %eax",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_store_seqcst": [
+     "movl\t4(%esp), %eax",
+     "movl\t8(%esp), %ecx",
+     "xchgl\t%ecx, (%eax)",
+     "retl"
+    ],
+    "at_u32_swap_acqrel": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_acquire": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_relaxed": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_release": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_seqcst": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u64_cas_seqcst": [
+     "pushl\t%ebx",
+     "pushl\t%esi",
+     "movl\t16(%esp), %eax",
+     "movl\t20(%esp), %edx",
+     "movl\t24(%esp), %ebx",
+     "movl\t28(%esp), %ecx",
+     "movl\t12(%esp), %esi",
+     "lock\t\tcmpxchg8b\t(%esi)",
+     "popl\t%esi",
+     "popl\t%ebx",
+     "retl"
+    ],
+    "at_u64_fadd_acqrel": [
+     "pushl\t%ebp",
+     "pushl\t%ebx",
+     "pushl\t%edi",
+     "pushl\t%esi",
+     "movl\t20(%esp), %ebp",
+     "movl\t28(%esp), %esi",
+     "movl\t24(%esp), %edi",
+     "movl\t(%ebp), %eax",
+     "movl\t4(%ebp), %edx",
+     "movl\t%eax, %ebx",
+     "movl\t%edx, %ecx",
+     "addl\t%edi, %ebx",
+     "adcl\t%esi, %ecx",
+     "lock\t\tcmpxchg8b\t(%ebp)",
+     "jne\t.LBB28_1",
+     "popl\t%esi",
+     "popl\t%edi",
+     "popl\t%ebx",
+     "popl\t%ebp",
+     "retl"
+    ],
+    "at_u64_load_acquire": [
+     "movl\t4(%esp), %eax",
+     "movq\t(%eax), %xmm0",
+     "movd\t%xmm0, %eax",
+     "pshufd\t$85, %xmm0, %xmm0",
+     "movd\t%xmm0, %edx",
+     "retl"
+    ],
+    "at_u64_store_seqcst": [
+     "movl\t4(%esp), %eax",
+     "movsd\t8(%esp), %xmm0",
+     "movlps\t%xmm0, (%eax)",
+     "lock\t\torl\t$0, (%esp)",
+     "retl"
+    ],
+    "at_u8_fand_acqrel": [
+     "movl\t4(%esp), %edx",
+     "movzbl\t8(%esp), %ecx",
+     "movzbl\t(%edx), %eax",
+     "movb\t%al, %ah",
+     "andb\t%cl, %ah",
+     "lock\t\tcmpxchgb\t%ah, (%edx)",
+     "jne\t.LBB31_1",
+     "retl"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "movl\t12(%esp), %eax",
+     "movl\t8(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "movl\t%ecx, (%edx)",
+     "movl\t%eax, (%edx)",
+     "retl"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "movl\t12(%esp), %eax",
+     "movl\t8(%esp), %edx",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%edx)",
+     "movl\t$1, (%ecx)",
+     "retl"
+    ],
+    "canary_dead_relaxed_load": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "movl\t$42, %eax",
+     "retl"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "movl\t12(%esp), %eax",
+     "movl\t8(%esp), %edx",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%edx)",
+     "movl\t$1, (%ecx)",
+     "retl"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !3 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !7 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !31",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !41 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "i686-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "i686_nosse2_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "retl"
+    ],
+    "at_cfence_acquire": [
+     "retl"
+    ],
+    "at_cfence_release": [
+     "retl"
+    ],
+    "at_cfence_seqcst": [
+     "retl"
+    ],
+    "at_fence_acqrel": [
+     "retl"
+    ],
+    "at_fence_acquire": [
+     "retl"
+    ],
+    "at_fence_release": [
+     "retl"
+    ],
+    "at_fence_seqcst": [
+     "lock\t\torl\t$0, (%esp)",
+     "retl"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "movl\t8(%esp), %eax",
+     "movl\t12(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "lock\t\tcmpxchgl\t%ecx, (%edx)",
+     "retl"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "movl\t8(%esp), %eax",
+     "movl\t12(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "lock\t\tcmpxchgl\t%ecx, (%edx)",
+     "retl"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "movl\t8(%esp), %eax",
+     "movl\t12(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "lock\t\tcmpxchgl\t%ecx, (%edx)",
+     "retl"
+    ],
+    "at_u32_fadd_acqrel": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_acquire": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_relaxed": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_release": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_fadd_seqcst": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "lock\t\txaddl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_load_acquire": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "retl"
+    ],
+    "at_u32_load_relaxed": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "retl"
+    ],
+    "at_u32_load_seqcst": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "retl"
+    ],
+    "at_u32_store_relaxed": [
+     "movl\t8(%esp), %eax",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_store_release": [
+     "movl\t8(%esp), %eax",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_store_seqcst": [
+     "movl\t4(%esp), %eax",
+     "movl\t8(%esp), %ecx",
+     "xchgl\t%ecx, (%eax)",
+     "retl"
+    ],
+    "at_u32_swap_acqrel": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_acquire": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_relaxed": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_release": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u32_swap_seqcst": [
+     "movl\t4(%esp), %ecx",
+     "movl\t8(%esp), %eax",
+     "xchgl\t%eax, (%ecx)",
+     "retl"
+    ],
+    "at_u64_cas_seqcst": [
+     "pushl\t%ebx",
+     "pushl\t%esi",
+     "movl\t16(%esp), %eax",
+     "movl\t20(%esp), %edx",
+     "movl\t24(%esp), %ebx",
+     "movl\t28(%esp), %ecx",
+     "movl\t12(%esp), %esi",
+     "lock\t\tcmpxchg8b\t(%esi)",
+     "popl\t%esi",
+     "popl\t%ebx",
+     "retl"
+    ],
+    "at_u64_fadd_acqrel": [
+     "pushl\t%ebp",
+     "pushl\t%ebx",
+     "pushl\t%edi",
+     "pushl\t%esi",
+     "movl\t20(%esp), %ebp",
+     "movl\t28(%esp), %esi",
+     "movl\t24(%esp), %edi",
+     "movl\t(%ebp), %eax",
+     "movl\t4(%ebp), %edx",
+     "movl\t%eax, %ebx",
+     "movl\t%edx, %ecx",
+     "addl\t%edi, %ebx",
+     "adcl\t%esi, %ecx",
+     "lock\t\tcmpxchg8b\t(%ebp)",
+     "jne\t.LBB28_1",
+     "popl\t%esi",
+     "popl\t%edi",
+     "popl\t%ebx",
+     "popl\t%ebp",
+     "retl"
+    ],
+    "at_u64_load_acquire": [
+     "subl\t$12, %esp",
+     "movl\t16(%esp), %eax",
+     "fildll\t(%eax)",
+     "fistpll\t(%esp)",
+     "movl\t(%esp), %eax",
+     "movl\t4(%esp), %edx",
+     "addl\t$12, %esp",
+     "retl"
+    ],
+    "at_u64_store_seqcst": [
+     "subl\t$12, %esp",
+     "movl\t20(%esp), %ecx",
+     "movl\t24(%esp), %edx",
+     "movl\t16(%esp), %eax",
+     "movl\t%edx, 4(%esp)",
+     "movl\t%ecx, (%esp)",
+     "fildll\t(%esp)",
+     "fistpll\t(%eax)",
+     "lock\t\torl\t$0, (%esp)",
+     "addl\t$12, %esp",
+     "retl"
+    ],
+    "at_u8_fand_acqrel": [
+     "movl\t4(%esp), %edx",
+     "movzbl\t8(%esp), %ecx",
+     "movzbl\t(%edx), %eax",
+     "movb\t%al, %ah",
+     "andb\t%cl, %ah",
+     "lock\t\tcmpxchgb\t%ah, (%edx)",
+     "jne\t.LBB31_1",
+     "retl"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "movl\t12(%esp), %eax",
+     "movl\t8(%esp), %ecx",
+     "movl\t4(%esp), %edx",
+     "movl\t%ecx, (%edx)",
+     "movl\t%eax, (%edx)",
+     "retl"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "movl\t12(%esp), %eax",
+     "movl\t8(%esp), %edx",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%edx)",
+     "movl\t$1, (%ecx)",
+     "retl"
+    ],
+    "canary_dead_relaxed_load": [
+     "movl\t4(%esp), %eax",
+     "movl\t(%eax), %eax",
+     "movl\t$42, %eax",
+     "retl"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "movl\t12(%esp), %eax",
+     "movl\t8(%esp), %edx",
+     "movl\t4(%esp), %ecx",
+     "movl\t%eax, (%edx)",
+     "movl\t$1, (%ecx)",
+     "retl"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "target-feature=-sse2,-sse"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !3 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !7 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8, !noalias !31",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !41 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "i686-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "s390x_nightly_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "br\t%r14"
+    ],
+    "at_cfence_acquire": [
+     "br\t%r14"
+    ],
+    "at_cfence_release": [
+     "br\t%r14"
+    ],
+    "at_cfence_seqcst": [
+     "br\t%r14"
+    ],
+    "at_fence_acqrel": [
+     "br\t%r14"
+    ],
+    "at_fence_acquire": [
+     "br\t%r14"
+    ],
+    "at_fence_release": [
+     "br\t%r14"
+    ],
+    "at_fence_seqcst": [
+     "bcr\t15, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "cs\t%r3, %r4, 0(%r2)",
+     "llgfr\t%r2, %r3",
+     "br\t%r14"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "cs\t%r3, %r4, 0(%r2)",
+     "llgfr\t%r2, %r3",
+     "br\t%r14"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "cs\t%r3, %r4, 0(%r2)",
+     "llgfr\t%r2, %r3",
+     "br\t%r14"
+    ],
+    "at_u32_fadd_acqrel": [
+     "l\t%r0, 0(%r2)",
+     "lr\t%r1, %r0",
+     "ar\t%r1, %r3",
+     "cs\t%r0, %r1, 0(%r2)",
+     "jl\t.LBB11_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_fadd_acquire": [
+     "l\t%r0, 0(%r2)",
+     "lr\t%r1, %r0",
+     "ar\t%r1, %r3",
+     "cs\t%r0, %r1, 0(%r2)",
+     "jl\t.LBB12_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_fadd_relaxed": [
+     "l\t%r0, 0(%r2)",
+     "lr\t%r1, %r0",
+     "ar\t%r1, %r3",
+     "cs\t%r0, %r1, 0(%r2)",
+     "jl\t.LBB13_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_fadd_release": [
+     "l\t%r0, 0(%r2)",
+     "lr\t%r1, %r0",
+     "ar\t%r1, %r3",
+     "cs\t%r0, %r1, 0(%r2)",
+     "jl\t.LBB14_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_fadd_seqcst": [
+     "l\t%r0, 0(%r2)",
+     "lr\t%r1, %r0",
+     "ar\t%r1, %r3",
+     "cs\t%r0, %r1, 0(%r2)",
+     "jl\t.LBB15_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_load_acquire": [
+     "llgf\t%r2, 0(%r2)",
+     "br\t%r14"
+    ],
+    "at_u32_load_relaxed": [
+     "llgf\t%r2, 0(%r2)",
+     "br\t%r14"
+    ],
+    "at_u32_load_seqcst": [
+     "llgf\t%r2, 0(%r2)",
+     "br\t%r14"
+    ],
+    "at_u32_store_relaxed": [
+     "st\t%r3, 0(%r2)",
+     "br\t%r14"
+    ],
+    "at_u32_store_release": [
+     "st\t%r3, 0(%r2)",
+     "br\t%r14"
+    ],
+    "at_u32_store_seqcst": [
+     "st\t%r3, 0(%r2)",
+     "bcr\t15, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_swap_acqrel": [
+     "l\t%r0, 0(%r2)",
+     "cs\t%r0, %r3, 0(%r2)",
+     "jl\t.LBB22_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_swap_acquire": [
+     "l\t%r0, 0(%r2)",
+     "cs\t%r0, %r3, 0(%r2)",
+     "jl\t.LBB23_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_swap_relaxed": [
+     "l\t%r0, 0(%r2)",
+     "cs\t%r0, %r3, 0(%r2)",
+     "jl\t.LBB24_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_swap_release": [
+     "l\t%r0, 0(%r2)",
+     "cs\t%r0, %r3, 0(%r2)",
+     "jl\t.LBB25_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u32_swap_seqcst": [
+     "l\t%r0, 0(%r2)",
+     "cs\t%r0, %r3, 0(%r2)",
+     "jl\t.LBB26_1",
+     "llgfr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "at_u64_cas_seqcst": [
+     "csg\t%r3, %r4, 0(%r2)",
+     "lgr\t%r2, %r3",
+     "br\t%r14"
+    ],
+    "at_u64_fadd_acqrel": [
+     "lgr\t%r1, %r2",
+     "lg\t%r2, 0(%r2)",
+     "lgr\t%r0, %r2",
+     "agr\t%r0, %r3",
+     "csg\t%r2, %r0, 0(%r1)",
+     "jl\t.LBB28_1",
+     "br\t%r14"
+    ],
+    "at_u64_load_acquire": [
+     "lg\t%r2, 0(%r2)",
+     "br\t%r14"
+    ],
+    "at_u64_store_seqcst": [
+     "stg\t%r3, 0(%r2)",
+     "bcr\t15, %r0",
+     "br\t%r14"
+    ],
+    "at_u8_fand_acqrel": [
+     "risbg\t%r1, %r2, 0, 189, 0",
+     "sll\t%r2, 3",
+     "l\t%r0, 0(%r1)",
+     "lcr\t%r4, %r2",
+     "sll\t%r3, 24",
+     "oilf\t%r3, 16777215",
+     "rll\t%r5, %r0, 0(%r2)",
+     "nr\t%r5, %r3",
+     "rll\t%r5, %r5, 0(%r4)",
+     "cs\t%r0, %r5, 0(%r1)",
+     "jl\t.LBB31_1",
+     "rll\t%r0, %r0, 8(%r2)",
+     "llgcr\t%r2, %r0",
+     "br\t%r14"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "st\t%r3, 0(%r2)",
+     "st\t%r4, 0(%r2)",
+     "br\t%r14"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "st\t%r4, 0(%r3)",
+     "mvhi\t0(%r2), 1",
+     "lgr\t%r2, %r4",
+     "br\t%r14"
+    ],
+    "canary_dead_relaxed_load": [
+     "l\t%r0, 0(%r2)",
+     "lghi\t%r2, 42",
+     "br\t%r14"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "st\t%r4, 0(%r3)",
+     "mvhi\t0(%r2), 1",
+     "lgr\t%r2, %r4",
+     "br\t%r14"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !3 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !7 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef zeroext i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned zeroext %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !36 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef zeroext i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned zeroext %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !38 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "s390x-unknown-linux-gnu",
+   "toolchain": "nightly"
+  },
+  "x86_64_1.100.0_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "retq"
+    ],
+    "at_cfence_acquire": [
+     "retq"
+    ],
+    "at_cfence_release": [
+     "retq"
+    ],
+    "at_cfence_seqcst": [
+     "retq"
+    ],
+    "at_fence_acqrel": [
+     "retq"
+    ],
+    "at_fence_acquire": [
+     "retq"
+    ],
+    "at_fence_release": [
+     "retq"
+    ],
+    "at_fence_seqcst": [
+     "lock\t\torl\t$0, -64(%rsp)",
+     "retq"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acqrel": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acquire": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_relaxed": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_release": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_load_acquire": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_relaxed": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_seqcst": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_store_relaxed": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_release": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_seqcst": [
+     "xchgl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acqrel": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acquire": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_relaxed": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_release": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_seqcst": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_cas_seqcst": [
+     "movq\t%rsi, %rax",
+     "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+     "retq"
+    ],
+    "at_u64_fadd_acqrel": [
+     "movq\t%rsi, %rax",
+     "lock\t\txaddq\t%rax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_load_acquire": [
+     "movq\t(%rdi), %rax",
+     "retq"
+    ],
+    "at_u64_store_seqcst": [
+     "xchgq\t%rsi, (%rdi)",
+     "retq"
+    ],
+    "at_u8_fand_acqrel": [
+     "movzbl\t(%rdi), %eax",
+     "movl\t%eax, %ecx",
+     "andb\t%sil, %cl",
+     "lock\t\tcmpxchgb\t%cl, (%rdi)",
+     "jne\t.LBB31_1",
+     "retq"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "movl\t%esi, (%rdi)",
+     "movl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ],
+    "canary_dead_relaxed_load": [
+     "movl\t(%rdi), %eax",
+     "movl\t$42, %eax",
+     "retq"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "x86_64-unknown-linux-gnu",
+   "toolchain": "1.100.0"
+  },
+  "x86_64_1.99.1_O0": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "pushq\t%rax",
+     "movl\t$3, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB20_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_cfence_acquire": [
+     "pushq\t%rax",
+     "movl\t$2, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB21_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_cfence_release": [
+     "pushq\t%rax",
+     "movl\t$1, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB22_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_cfence_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB23_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_fence_acqrel": [
+     "pushq\t%rax",
+     "movl\t$3, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB24_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_fence_acquire": [
+     "pushq\t%rax",
+     "movl\t$2, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB25_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_fence_release": [
+     "pushq\t%rax",
+     "movl\t$1, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB26_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_fence_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB27_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "subq\t$24, %rsp",
+     "movl\t$3, %ecx",
+     "movl\t$2, %r8d",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE16compare_exchangeCs3Au2cvYB0CL_7atomics",
+     "movl\t%edx, 4(%rsp)",
+     "movl\t%eax, 8(%rsp)",
+     "jmp\t.LBB28_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "movl\t8(%rsp), %ecx",
+     "movl\t%ecx, 12(%rsp)",
+     "movl\t%eax, 16(%rsp)",
+     "movl\t12(%rsp), %eax",
+     "testq\t$1, %rax",
+     "je\t.LBB28_4",
+     "movl\t16(%rsp), %eax",
+     "movl\t%eax, 20(%rsp)",
+     "jmp\t.LBB28_5",
+     "movl\t16(%rsp), %eax",
+     "movl\t%eax, 20(%rsp)",
+     "movl\t20(%rsp), %eax",
+     "addq\t$24, %rsp",
+     "retq"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "subq\t$24, %rsp",
+     "movl\t$4, %r8d",
+     "movl\t%r8d, %ecx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE16compare_exchangeCs3Au2cvYB0CL_7atomics",
+     "movl\t%edx, 4(%rsp)",
+     "movl\t%eax, 8(%rsp)",
+     "jmp\t.LBB29_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "movl\t8(%rsp), %ecx",
+     "movl\t%ecx, 12(%rsp)",
+     "movl\t%eax, 16(%rsp)",
+     "movl\t12(%rsp), %eax",
+     "testq\t$1, %rax",
+     "je\t.LBB29_4",
+     "movl\t16(%rsp), %eax",
+     "movl\t%eax, 20(%rsp)",
+     "jmp\t.LBB29_5",
+     "movl\t16(%rsp), %eax",
+     "movl\t%eax, 20(%rsp)",
+     "movl\t20(%rsp), %eax",
+     "addq\t$24, %rsp",
+     "retq"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "subq\t$24, %rsp",
+     "movl\t$1, %ecx",
+     "xorl\t%r8d, %r8d",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE21compare_exchange_weakCs3Au2cvYB0CL_7atomics",
+     "movl\t%edx, 4(%rsp)",
+     "movl\t%eax, 8(%rsp)",
+     "jmp\t.LBB30_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "movl\t8(%rsp), %ecx",
+     "movl\t%ecx, 12(%rsp)",
+     "movl\t%eax, 16(%rsp)",
+     "movl\t12(%rsp), %eax",
+     "testq\t$1, %rax",
+     "je\t.LBB30_4",
+     "movl\t16(%rsp), %eax",
+     "movl\t%eax, 20(%rsp)",
+     "jmp\t.LBB30_5",
+     "movl\t16(%rsp), %eax",
+     "movl\t%eax, 20(%rsp)",
+     "movl\t20(%rsp), %eax",
+     "addq\t$24, %rsp",
+     "retq"
+    ],
+    "at_u32_fadd_acqrel": [
+     "pushq\t%rax",
+     "movl\t$3, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB31_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_fadd_acquire": [
+     "pushq\t%rax",
+     "movl\t$2, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB32_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_fadd_relaxed": [
+     "pushq\t%rax",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB33_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_fadd_release": [
+     "pushq\t%rax",
+     "movl\t$1, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB34_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_fadd_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB35_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_load_acquire": [
+     "pushq\t%rax",
+     "movl\t$2, %esi",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB36_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_load_relaxed": [
+     "pushq\t%rax",
+     "xorl\t%esi, %esi",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB37_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_load_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %esi",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB38_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_store_relaxed": [
+     "pushq\t%rax",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB39_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_u32_store_release": [
+     "pushq\t%rax",
+     "movl\t$1, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB40_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_u32_store_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB41_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_u32_swap_acqrel": [
+     "pushq\t%rax",
+     "movl\t$3, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB42_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_swap_acquire": [
+     "pushq\t%rax",
+     "movl\t$2, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB43_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_swap_relaxed": [
+     "pushq\t%rax",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB44_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_swap_release": [
+     "pushq\t%rax",
+     "movl\t$1, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB45_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u32_swap_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics",
+     "movl\t%eax, 4(%rsp)",
+     "jmp\t.LBB46_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t4(%rsp), %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u64_cas_seqcst": [
+     "subq\t$40, %rsp",
+     "movl\t$4, %ecx",
+     "movl\t$2, %r8d",
+     "callq\t_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE16compare_exchangeCs3Au2cvYB0CL_7atomics",
+     "movq\t%rdx, (%rsp)",
+     "movq\t%rax, 8(%rsp)",
+     "jmp\t.LBB47_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movq\t(%rsp), %rax",
+     "movq\t8(%rsp), %rcx",
+     "movq\t%rcx, 16(%rsp)",
+     "movq\t%rax, 24(%rsp)",
+     "testq\t$1, 16(%rsp)",
+     "je\t.LBB47_4",
+     "movq\t24(%rsp), %rax",
+     "movq\t%rax, 32(%rsp)",
+     "jmp\t.LBB47_5",
+     "movq\t24(%rsp), %rax",
+     "movq\t%rax, 32(%rsp)",
+     "movq\t32(%rsp), %rax",
+     "addq\t$40, %rsp",
+     "retq"
+    ],
+    "at_u64_fadd_acqrel": [
+     "pushq\t%rax",
+     "movl\t$3, %edx",
+     "callq\t_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE9fetch_addCs3Au2cvYB0CL_7atomics",
+     "movq\t%rax, (%rsp)",
+     "jmp\t.LBB48_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movq\t(%rsp), %rax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u64_load_acquire": [
+     "pushq\t%rax",
+     "movl\t$2, %esi",
+     "callq\t_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE4loadCs3Au2cvYB0CL_7atomics",
+     "movq\t%rax, (%rsp)",
+     "jmp\t.LBB49_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movq\t(%rsp), %rax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "at_u64_store_seqcst": [
+     "pushq\t%rax",
+     "movl\t$4, %edx",
+     "callq\t_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB50_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "popq\t%rax",
+     "retq"
+    ],
+    "at_u8_fand_acqrel": [
+     "pushq\t%rax",
+     "movb\t%sil, %al",
+     "movzbl\t%al, %esi",
+     "movl\t$3, %edx",
+     "callq\t_RNvMsA_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomichE9fetch_andCs3Au2cvYB0CL_7atomics",
+     "movb\t%al, 7(%rsp)",
+     "jmp\t.LBB51_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movb\t7(%rsp), %al",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "subq\t$24, %rsp",
+     "movq\t%rdi, 8(%rsp)",
+     "movl\t%edx, 20(%rsp)",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB52_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t20(%rsp), %esi",
+     "movq\t8(%rsp), %rdi",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB52_3",
+     "addq\t$24, %rsp",
+     "retq"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "subq\t$24, %rsp",
+     "movq\t%rdi, 8(%rsp)",
+     "movq\t%rsi, 16(%rsp)",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB53_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movq\t8(%rsp), %rdi",
+     "movl\t$1, %esi",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB53_3",
+     "movl\t$2, %edi",
+     "callq\t_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB53_4",
+     "movq\t16(%rsp), %rax",
+     "movl\t(%rax), %eax",
+     "addq\t$24, %rsp",
+     "retq"
+    ],
+    "canary_dead_relaxed_load": [
+     "pushq\t%rax",
+     "xorl\t%esi, %esi",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB54_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movl\t$42, %eax",
+     "popq\t%rcx",
+     "retq"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "pushq\t%rax",
+     "movq\t%rsi, (%rsp)",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, %esi",
+     "xorl\t%edx, %edx",
+     "callq\t_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics",
+     "jmp\t.LBB55_2",
+     "callq\t*_RNvNtCskADBYZwJmSU_4core9panicking19panic_cannot_unwind@GOTPCREL(%rip)",
+     "movq\t(%rsp), %rax",
+     "movl\t(%rax), %eax",
+     "popq\t%rcx",
+     "retq"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=0"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !42 {",
+     "; invoke core::sync::atomic::compiler_fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics(i8 3)",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !43 {",
+     "; invoke core::sync::atomic::compiler_fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics(i8 2)",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !44 {",
+     "; invoke core::sync::atomic::compiler_fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics(i8 1)",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !45 {",
+     "; invoke core::sync::atomic::compiler_fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics(i8 4)",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !46 {",
+     "; invoke core::sync::atomic::fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics(i8 3)",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !47 {",
+     "; invoke core::sync::atomic::fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics(i8 2)",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !48 {",
+     "; invoke core::sync::atomic::fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics(i8 1)",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !49 {",
+     "; invoke core::sync::atomic::fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic5fenceCs3Au2cvYB0CL_7atomics(i8 4)",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::compare_exchange",
+     "%0 = invoke { i32, i32 } @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE16compare_exchangeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %c, i32 %n, i8 3, i8 2)",
+     "store i32 %2, ptr %_4, align 4",
+     "store i32 %3, ptr %4, align 4",
+     "%5 = load i32, ptr %_4, align 4",
+     "%7 = load i32, ptr %6, align 4",
+     "%10 = load i32, ptr %9, align 4",
+     "store i32 %10, ptr %v, align 4",
+     "%12 = load i32, ptr %11, align 4",
+     "store i32 %12, ptr %v, align 4",
+     "%_0 = load i32, ptr %v, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::compare_exchange",
+     "%0 = invoke { i32, i32 } @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE16compare_exchangeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %c, i32 %n, i8 4, i8 4)",
+     "store i32 %2, ptr %_4, align 4",
+     "store i32 %3, ptr %4, align 4",
+     "%5 = load i32, ptr %_4, align 4",
+     "%7 = load i32, ptr %6, align 4",
+     "%10 = load i32, ptr %9, align 4",
+     "store i32 %10, ptr %v, align 4",
+     "%12 = load i32, ptr %11, align 4",
+     "store i32 %12, ptr %v, align 4",
+     "%_0 = load i32, ptr %v, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::compare_exchange_weak",
+     "%0 = invoke { i32, i32 } @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE21compare_exchange_weakCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %c, i32 %n, i8 1, i8 0)",
+     "store i32 %2, ptr %_4, align 4",
+     "store i32 %3, ptr %4, align 4",
+     "%5 = load i32, ptr %_4, align 4",
+     "%7 = load i32, ptr %6, align 4",
+     "%10 = load i32, ptr %9, align 4",
+     "store i32 %10, ptr %v, align 4",
+     "%12 = load i32, ptr %11, align 4",
+     "store i32 %12, ptr %v, align 4",
+     "%_0 = load i32, ptr %v, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acqrel": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::fetch_add",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 3)",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::fetch_add",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 2)",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::fetch_add",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 0)",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::fetch_add",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 1)",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::fetch_add",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE9fetch_addCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 4)",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::load",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i8 2)",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_relaxed": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::load",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i8 0)",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::load",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i8 4)",
+     "ret i32 %_0"
+    ],
+    "at_u32_store_relaxed": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 0)",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 1)",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 4)",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::swap",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 3)",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::swap",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 2)",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::swap",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 0)",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::swap",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 1)",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::swap",
+     "%_0 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4swapCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %v, i8 4)",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u64>>::compare_exchange",
+     "%0 = invoke { i64, i64 } @_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE16compare_exchangeCs3Au2cvYB0CL_7atomics(ptr align 8 %a, i64 %c, i64 %n, i8 4, i8 2)",
+     "store i64 %2, ptr %_4, align 8",
+     "store i64 %3, ptr %4, align 8",
+     "%_7 = load i64, ptr %_4, align 8",
+     "%6 = load i64, ptr %5, align 8",
+     "%9 = load i64, ptr %8, align 8",
+     "store i64 %9, ptr %v, align 8",
+     "%11 = load i64, ptr %10, align 8",
+     "store i64 %11, ptr %v, align 8",
+     "%_0 = load i64, ptr %v, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_fadd_acqrel": [
+     "; invoke <core::sync::atomic::Atomic<u64>>::fetch_add",
+     "%_0 = invoke i64 @_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE9fetch_addCs3Au2cvYB0CL_7atomics(ptr align 8 %a, i64 %v, i8 3)",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "; invoke <core::sync::atomic::Atomic<u64>>::load",
+     "%_0 = invoke i64 @_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE4loadCs3Au2cvYB0CL_7atomics(ptr align 8 %a, i8 2)",
+     "ret i64 %_0"
+    ],
+    "at_u64_store_seqcst": [
+     "; invoke <core::sync::atomic::Atomic<u64>>::store",
+     "invoke void @_RNvMsY_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicyE5storeCs3Au2cvYB0CL_7atomics(ptr align 8 %a, i64 %v, i8 4)",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "; invoke <core::sync::atomic::Atomic<u8>>::fetch_and",
+     "%_0 = invoke i8 @_RNvMsA_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomichE9fetch_andCs3Au2cvYB0CL_7atomics(ptr %a, i8 %m, i8 3)",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %x, i8 0)",
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i32 %y, i8 0)",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define i32 @canary_cfence_blocks_store_hoist(ptr align 4 %flag, ptr align 4 %data, i32 %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !75 {",
+     "store i32 %v, ptr %data, align 4",
+     "; invoke core::sync::atomic::compiler_fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics(i8 1)",
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %flag, i32 1, i8 0)",
+     "; invoke core::sync::atomic::compiler_fence",
+     "invoke void @_RNvNtNtCskADBYZwJmSU_4core4sync6atomic14compiler_fenceCs3Au2cvYB0CL_7atomics(i8 2)",
+     "%_0 = load i32, ptr %data, align 4",
+     "ret i32 %_0"
+    ],
+    "canary_dead_relaxed_load": [
+     "; invoke <core::sync::atomic::Atomic<u32>>::load",
+     "%_2 = invoke i32 @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE4loadCs3Au2cvYB0CL_7atomics(ptr align 4 %a, i8 0)",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define i32 @canary_no_cfence_store_forwarding(ptr align 4 %flag, ptr align 4 %data, i32 %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !77 {",
+     "store i32 %v, ptr %data, align 4",
+     "; invoke <core::sync::atomic::Atomic<u32>>::store",
+     "invoke void @_RNvMsQ_NtNtCskADBYZwJmSU_4core4sync6atomicINtB5_6AtomicmE5storeCs3Au2cvYB0CL_7atomics(ptr align 4 %flag, i32 1, i8 0)",
+     "%_0 = load i32, ptr %data, align 4",
+     "ret i32 %_0"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "x86_64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "x86_64_1.99.1_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "retq"
+    ],
+    "at_cfence_acquire": [
+     "retq"
+    ],
+    "at_cfence_release": [
+     "retq"
+    ],
+    "at_cfence_seqcst": [
+     "retq"
+    ],
+    "at_fence_acqrel": [
+     "retq"
+    ],
+    "at_fence_acquire": [
+     "retq"
+    ],
+    "at_fence_release": [
+     "retq"
+    ],
+    "at_fence_seqcst": [
+     "lock\t\torl\t$0, -64(%rsp)",
+     "retq"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acqrel": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acquire": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_relaxed": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_release": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_load_acquire": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_relaxed": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_seqcst": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_store_relaxed": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_release": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_seqcst": [
+     "xchgl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acqrel": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acquire": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_relaxed": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_release": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_seqcst": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_cas_seqcst": [
+     "movq\t%rsi, %rax",
+     "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+     "retq"
+    ],
+    "at_u64_fadd_acqrel": [
+     "movq\t%rsi, %rax",
+     "lock\t\txaddq\t%rax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_load_acquire": [
+     "movq\t(%rdi), %rax",
+     "retq"
+    ],
+    "at_u64_store_seqcst": [
+     "xchgq\t%rsi, (%rdi)",
+     "retq"
+    ],
+    "at_u8_fand_acqrel": [
+     "movzbl\t(%rdi), %eax",
+     "movl\t%eax, %ecx",
+     "andb\t%sil, %cl",
+     "lock\t\tcmpxchgb\t%cl, (%rdi)",
+     "jne\t.LBB31_1",
+     "retq"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "movl\t%esi, (%rdi)",
+     "movl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ],
+    "canary_dead_relaxed_load": [
+     "movl\t(%rdi), %eax",
+     "movl\t$42, %eax",
+     "retq"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "x86_64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "x86_64_1.99.1_O3_no_redzone": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "retq"
+    ],
+    "at_cfence_acquire": [
+     "retq"
+    ],
+    "at_cfence_release": [
+     "retq"
+    ],
+    "at_cfence_seqcst": [
+     "retq"
+    ],
+    "at_fence_acqrel": [
+     "retq"
+    ],
+    "at_fence_acquire": [
+     "retq"
+    ],
+    "at_fence_release": [
+     "retq"
+    ],
+    "at_fence_seqcst": [
+     "lock\t\torl\t$0, (%rsp)",
+     "retq"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acqrel": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acquire": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_relaxed": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_release": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_load_acquire": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_relaxed": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_seqcst": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_store_relaxed": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_release": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_seqcst": [
+     "xchgl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acqrel": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acquire": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_relaxed": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_release": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_seqcst": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_cas_seqcst": [
+     "movq\t%rsi, %rax",
+     "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+     "retq"
+    ],
+    "at_u64_fadd_acqrel": [
+     "movq\t%rsi, %rax",
+     "lock\t\txaddq\t%rax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_load_acquire": [
+     "movq\t(%rdi), %rax",
+     "retq"
+    ],
+    "at_u64_store_seqcst": [
+     "xchgq\t%rsi, (%rdi)",
+     "retq"
+    ],
+    "at_u8_fand_acqrel": [
+     "movzbl\t(%rdi), %eax",
+     "movl\t%eax, %ecx",
+     "andb\t%sil, %cl",
+     "lock\t\tcmpxchgb\t%cl, (%rdi)",
+     "jne\t.LBB31_1",
+     "retq"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "movl\t%esi, (%rdi)",
+     "movl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ],
+    "canary_dead_relaxed_load": [
+     "movl\t(%rdi), %eax",
+     "movl\t$42, %eax",
+     "retq"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3",
+    "-C",
+    "no-redzone=yes"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "x86_64-unknown-linux-gnu",
+   "toolchain": "1.99.1"
+  },
+  "x86_64_nightly_O3": {
+   "asm": {
+    "at_cfence_acqrel": [
+     "retq"
+    ],
+    "at_cfence_acquire": [
+     "retq"
+    ],
+    "at_cfence_release": [
+     "retq"
+    ],
+    "at_cfence_seqcst": [
+     "retq"
+    ],
+    "at_fence_acqrel": [
+     "retq"
+    ],
+    "at_fence_acquire": [
+     "retq"
+    ],
+    "at_fence_release": [
+     "retq"
+    ],
+    "at_fence_seqcst": [
+     "lock\t\torl\t$0, -64(%rsp)",
+     "retq"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "movl\t%esi, %eax",
+     "lock\t\tcmpxchgl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acqrel": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_acquire": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_relaxed": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_release": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_fadd_seqcst": [
+     "movl\t%esi, %eax",
+     "lock\t\txaddl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_load_acquire": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_relaxed": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_load_seqcst": [
+     "movl\t(%rdi), %eax",
+     "retq"
+    ],
+    "at_u32_store_relaxed": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_release": [
+     "movl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_store_seqcst": [
+     "xchgl\t%esi, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acqrel": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_acquire": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_relaxed": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_release": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u32_swap_seqcst": [
+     "movl\t%esi, %eax",
+     "xchgl\t%eax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_cas_seqcst": [
+     "movq\t%rsi, %rax",
+     "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+     "retq"
+    ],
+    "at_u64_fadd_acqrel": [
+     "movq\t%rsi, %rax",
+     "lock\t\txaddq\t%rax, (%rdi)",
+     "retq"
+    ],
+    "at_u64_load_acquire": [
+     "movq\t(%rdi), %rax",
+     "retq"
+    ],
+    "at_u64_store_seqcst": [
+     "xchgq\t%rsi, (%rdi)",
+     "retq"
+    ],
+    "at_u8_fand_acqrel": [
+     "movzbl\t(%rdi), %eax",
+     "movl\t%eax, %ecx",
+     "andb\t%sil, %cl",
+     "lock\t\tcmpxchgb\t%cl, (%rdi)",
+     "jne\t.LBB31_1",
+     "retq"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "movl\t%esi, (%rdi)",
+     "movl\t%edx, (%rdi)",
+     "retq"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ],
+    "canary_dead_relaxed_load": [
+     "movl\t(%rdi), %eax",
+     "movl\t$42, %eax",
+     "retq"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "movl\t%edx, %eax",
+     "movl\t%edx, (%rsi)",
+     "movl\t$1, (%rdi)",
+     "retq"
+    ]
+   },
+   "extra_flags": [
+    "-C",
+    "opt-level=3"
+   ],
+   "llvm_ir": {
+    "at_cfence_acqrel": [
+     "define void @at_cfence_acqrel() unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+     "fence syncscope(\"singlethread\") acq_rel",
+     "ret void"
+    ],
+    "at_cfence_acquire": [
+     "define void @at_cfence_acquire() unnamed_addr #0 personality ptr @rust_eh_personality !guid !5 {",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret void"
+    ],
+    "at_cfence_release": [
+     "define void @at_cfence_release() unnamed_addr #0 personality ptr @rust_eh_personality !guid !6 {",
+     "fence syncscope(\"singlethread\") release",
+     "ret void"
+    ],
+    "at_cfence_seqcst": [
+     "define void @at_cfence_seqcst() unnamed_addr #0 personality ptr @rust_eh_personality !guid !7 {",
+     "fence syncscope(\"singlethread\") seq_cst",
+     "ret void"
+    ],
+    "at_fence_acqrel": [
+     "define void @at_fence_acqrel() unnamed_addr #1 personality ptr @rust_eh_personality !guid !8 {",
+     "fence acq_rel",
+     "ret void"
+    ],
+    "at_fence_acquire": [
+     "define void @at_fence_acquire() unnamed_addr #1 personality ptr @rust_eh_personality !guid !9 {",
+     "fence acquire",
+     "ret void"
+    ],
+    "at_fence_release": [
+     "define void @at_fence_release() unnamed_addr #1 personality ptr @rust_eh_personality !guid !10 {",
+     "fence release",
+     "ret void"
+    ],
+    "at_fence_seqcst": [
+     "define void @at_fence_seqcst() unnamed_addr #1 personality ptr @rust_eh_personality !guid !11 {",
+     "fence seq_cst",
+     "ret void"
+    ],
+    "at_u32_cas_strong_acqrel_acq": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n acq_rel acquire, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_strong_seqcst_seqcst": [
+     "%0 = cmpxchg ptr %a, i32 %c, i32 %n seq_cst seq_cst, align 4",
+     "ret i32 %_8.sroa.0.0.i"
+    ],
+    "at_u32_cas_weak_rel_rlx": [
+     "%0 = cmpxchg weak ptr %a, i32 %c, i32 %n release monotonic, align 4",
+     "ret i32 %1"
+    ],
+    "at_u32_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_acquire": [
+     "%_0 = atomicrmw add ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_relaxed": [
+     "%_0 = atomicrmw add ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_release": [
+     "%_0 = atomicrmw add ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_fadd_seqcst": [
+     "%_0 = atomicrmw add ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_load_acquire": [
+     "%0 = load atomic i32, ptr %a acquire, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_relaxed": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_load_seqcst": [
+     "%0 = load atomic i32, ptr %a seq_cst, align 4",
+     "ret i32 %0"
+    ],
+    "at_u32_store_relaxed": [
+     "store atomic i32 %v, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "at_u32_store_release": [
+     "store atomic i32 %v, ptr %a release, align 4",
+     "ret void"
+    ],
+    "at_u32_store_seqcst": [
+     "store atomic i32 %v, ptr %a seq_cst, align 4",
+     "ret void"
+    ],
+    "at_u32_swap_acqrel": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acq_rel, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_acquire": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v acquire, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_relaxed": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v monotonic, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_release": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v release, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u32_swap_seqcst": [
+     "%_0 = atomicrmw xchg ptr %a, i32 %v seq_cst, align 4",
+     "ret i32 %_0"
+    ],
+    "at_u64_cas_seqcst": [
+     "%0 = cmpxchg ptr %a, i64 %c, i64 %n seq_cst acquire, align 8",
+     "ret i64 %1"
+    ],
+    "at_u64_fadd_acqrel": [
+     "%_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+     "ret i64 %_0"
+    ],
+    "at_u64_load_acquire": [
+     "%0 = load atomic i64, ptr %a acquire, align 8",
+     "ret i64 %0"
+    ],
+    "at_u64_store_seqcst": [
+     "store atomic i64 %v, ptr %a seq_cst, align 8",
+     "ret void"
+    ],
+    "at_u8_fand_acqrel": [
+     "%_0 = atomicrmw and ptr %a, i8 %m acq_rel, align 1",
+     "ret i8 %_0"
+    ],
+    "canary_adjacent_relaxed_stores": [
+     "store atomic i32 %x, ptr %a monotonic, align 4",
+     "store atomic i32 %y, ptr %a monotonic, align 4",
+     "ret void"
+    ],
+    "canary_cfence_blocks_store_hoist": [
+     "define noundef i32 @canary_cfence_blocks_store_hoist(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #1 personality ptr @rust_eh_personality !guid !37 {",
+     "store i32 %v, ptr %data, align 4",
+     "fence syncscope(\"singlethread\") release",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "fence syncscope(\"singlethread\") acquire",
+     "ret i32 %v"
+    ],
+    "canary_dead_relaxed_load": [
+     "%0 = load atomic i32, ptr %a monotonic, align 4",
+     "ret i32 42"
+    ],
+    "canary_no_cfence_store_forwarding": [
+     "define noundef i32 @canary_no_cfence_store_forwarding(ptr nofree noundef nonnull align 4 captures(none) %flag, ptr noalias nofree noundef writeonly align 4 captures(none) dereferenceable(4) initializes((0, 4)) %data, i32 noundef returned %v) unnamed_addr #2 personality ptr @rust_eh_personality !guid !39 {",
+     "store i32 %v, ptr %data, align 4",
+     "store atomic i32 1, ptr %flag monotonic, align 4",
+     "ret i32 %v"
+    ]
+   },
+   "rc_asm": 0,
+   "rc_ll": 0,
+   "target": "x86_64-unknown-linux-gnu",
+   "toolchain": "nightly"
+  }
+ },
+ "description": "Measured rustc output for 36 atomic/fence probe functions under 13 target/flag/toolchain configurations ('configs': LLVM IR and assembly lines per function), the MIR call lines of six of those functions under five toolchains ('mir_atomic_call_lines'), and, for a separate 37-function MIR probe, the number of functions whose MIR differs between consecutive toolchains together with the unified diffs of its five atomic functions ('mir_atomic_function_transitions'). Assembly lines were recorded with everything from the first '#' removed, which also removes AArch64 immediates such as '#1' and '#-16]!'.",
+ "mir_atomic_call_lines": {
+  "1.100.0": {
+   "atomics.at_cfence_seqcst": [
+    "fn at_cfence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = compiler_fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_fence_seqcst": [
+    "fn at_fence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_cas_strong_acqrel_acq": [
+    "fn at_u32_cas_strong_acqrel_acq(_1: &Atomic<u32>, _2: u32, _3: u32) -> u32 {",
+    "let mut _5: &core::sync::atomic::Atomic<u32>;",
+    "let mut _8: core::sync::atomic::Ordering;",
+    "let mut _9: core::sync::atomic::Ordering;",
+    "_8 = core::sync::atomic::Ordering::AcqRel;",
+    "_9 = core::sync::atomic::Ordering::Acquire;",
+    "_4 = Atomic::<u32>::compare_exchange(move _5, move _6, move _7, move _8, move _9) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_fadd_acqrel": [
+    "fn at_u32_fadd_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::AcqRel;",
+    "_0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_load_acquire": [
+    "fn at_u32_load_acquire(_1: &Atomic<u32>) -> u32 {",
+    "let mut _2: &core::sync::atomic::Atomic<u32>;",
+    "let mut _3: core::sync::atomic::Ordering;",
+    "_3 = core::sync::atomic::Ordering::Acquire;",
+    "_0 = Atomic::<u32>::load(move _2, move _3) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_store_seqcst": [
+    "fn at_u32_store_seqcst(_1: &Atomic<u32>, _2: u32) -> () {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = Atomic::<u32>::store(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ]
+  },
+  "1.93.1": {
+   "atomics.at_cfence_seqcst": [
+    "fn at_cfence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = compiler_fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_fence_seqcst": [
+    "fn at_fence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_cas_strong_acqrel_acq": [
+    "fn at_u32_cas_strong_acqrel_acq(_1: &AtomicU32, _2: u32, _3: u32) -> u32 {",
+    "let mut _5: &core::sync::atomic::AtomicU32;",
+    "let mut _8: core::sync::atomic::Ordering;",
+    "let mut _9: core::sync::atomic::Ordering;",
+    "_8 = core::sync::atomic::Ordering::AcqRel;",
+    "_9 = core::sync::atomic::Ordering::Acquire;",
+    "_4 = AtomicU32::compare_exchange(move _5, move _6, move _7, move _8, move _9) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_fadd_acqrel": [
+    "fn at_u32_fadd_acqrel(_1: &AtomicU32, _2: u32) -> u32 {",
+    "let mut _3: &core::sync::atomic::AtomicU32;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::AcqRel;",
+    "_0 = AtomicU32::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_load_acquire": [
+    "fn at_u32_load_acquire(_1: &AtomicU32) -> u32 {",
+    "let mut _2: &core::sync::atomic::AtomicU32;",
+    "let mut _3: core::sync::atomic::Ordering;",
+    "_3 = core::sync::atomic::Ordering::Acquire;",
+    "_0 = AtomicU32::load(move _2, move _3) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_store_seqcst": [
+    "fn at_u32_store_seqcst(_1: &AtomicU32, _2: u32) -> () {",
+    "let mut _3: &core::sync::atomic::AtomicU32;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = AtomicU32::store(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ]
+  },
+  "1.96.0": {
+   "atomics.at_cfence_seqcst": [
+    "fn at_cfence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = compiler_fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_fence_seqcst": [
+    "fn at_fence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_cas_strong_acqrel_acq": [
+    "fn at_u32_cas_strong_acqrel_acq(_1: &Atomic<u32>, _2: u32, _3: u32) -> u32 {",
+    "let mut _5: &core::sync::atomic::Atomic<u32>;",
+    "let mut _8: core::sync::atomic::Ordering;",
+    "let mut _9: core::sync::atomic::Ordering;",
+    "_8 = core::sync::atomic::Ordering::AcqRel;",
+    "_9 = core::sync::atomic::Ordering::Acquire;",
+    "_4 = Atomic::<u32>::compare_exchange(move _5, move _6, move _7, move _8, move _9) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_fadd_acqrel": [
+    "fn at_u32_fadd_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::AcqRel;",
+    "_0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_load_acquire": [
+    "fn at_u32_load_acquire(_1: &Atomic<u32>) -> u32 {",
+    "let mut _2: &core::sync::atomic::Atomic<u32>;",
+    "let mut _3: core::sync::atomic::Ordering;",
+    "_3 = core::sync::atomic::Ordering::Acquire;",
+    "_0 = Atomic::<u32>::load(move _2, move _3) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_store_seqcst": [
+    "fn at_u32_store_seqcst(_1: &Atomic<u32>, _2: u32) -> () {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = Atomic::<u32>::store(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ]
+  },
+  "1.99.1": {
+   "atomics.at_cfence_seqcst": [
+    "fn at_cfence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = compiler_fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_fence_seqcst": [
+    "fn at_fence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_cas_strong_acqrel_acq": [
+    "fn at_u32_cas_strong_acqrel_acq(_1: &Atomic<u32>, _2: u32, _3: u32) -> u32 {",
+    "let mut _5: &core::sync::atomic::Atomic<u32>;",
+    "let mut _8: core::sync::atomic::Ordering;",
+    "let mut _9: core::sync::atomic::Ordering;",
+    "_8 = core::sync::atomic::Ordering::AcqRel;",
+    "_9 = core::sync::atomic::Ordering::Acquire;",
+    "_4 = Atomic::<u32>::compare_exchange(move _5, move _6, move _7, move _8, move _9) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_fadd_acqrel": [
+    "fn at_u32_fadd_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::AcqRel;",
+    "_0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_load_acquire": [
+    "fn at_u32_load_acquire(_1: &Atomic<u32>) -> u32 {",
+    "let mut _2: &core::sync::atomic::Atomic<u32>;",
+    "let mut _3: core::sync::atomic::Ordering;",
+    "_3 = core::sync::atomic::Ordering::Acquire;",
+    "_0 = Atomic::<u32>::load(move _2, move _3) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_store_seqcst": [
+    "fn at_u32_store_seqcst(_1: &Atomic<u32>, _2: u32) -> () {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = Atomic::<u32>::store(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ]
+  },
+  "nightly": {
+   "atomics.at_cfence_seqcst": [
+    "fn at_cfence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = compiler_fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_fence_seqcst": [
+    "fn at_fence_seqcst() -> () {",
+    "let mut _1: core::sync::atomic::Ordering;",
+    "_1 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = fence(move _1) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_cas_strong_acqrel_acq": [
+    "fn at_u32_cas_strong_acqrel_acq(_1: &Atomic<u32>, _2: u32, _3: u32) -> u32 {",
+    "let mut _5: &core::sync::atomic::Atomic<u32>;",
+    "let mut _8: core::sync::atomic::Ordering;",
+    "let mut _9: core::sync::atomic::Ordering;",
+    "_8 = core::sync::atomic::Ordering::AcqRel;",
+    "_9 = core::sync::atomic::Ordering::Acquire;",
+    "_4 = Atomic::<u32>::compare_exchange(move _5, move _6, move _7, move _8, move _9) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_fadd_acqrel": [
+    "fn at_u32_fadd_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::AcqRel;",
+    "_0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_load_acquire": [
+    "fn at_u32_load_acquire(_1: &Atomic<u32>) -> u32 {",
+    "let mut _2: &core::sync::atomic::Atomic<u32>;",
+    "let mut _3: core::sync::atomic::Ordering;",
+    "_3 = core::sync::atomic::Ordering::Acquire;",
+    "_0 = Atomic::<u32>::load(move _2, move _3) -> [return: bb1, unwind terminate(abi)];"
+   ],
+   "atomics.at_u32_store_seqcst": [
+    "fn at_u32_store_seqcst(_1: &Atomic<u32>, _2: u32) -> () {",
+    "let mut _3: &core::sync::atomic::Atomic<u32>;",
+    "let mut _5: core::sync::atomic::Ordering;",
+    "_5 = core::sync::atomic::Ordering::SeqCst;",
+    "_0 = Atomic::<u32>::store(move _3, move _4, move _5) -> [return: bb1, unwind terminate(abi)];"
+   ]
+  }
+ },
+ "mir_atomic_function_transitions": [
+  {
+   "common_fns": 37,
+   "diff_samples": {},
+   "from": "1.93.1",
+   "semantic_changed": 0,
+   "semantic_changed_atomic_fns": [],
+   "semantic_changed_other_fn_count": 0,
+   "to": "1.94.0"
+  },
+  {
+   "common_fns": 37,
+   "diff_samples": {
+    "feature_probe.f25_atomic_load_acquire": [
+     "--- 1.94.0:feature_probe.f25_atomic_load_acquire",
+     "+++ 1.96.0:feature_probe.f25_atomic_load_acquire",
+     "@@ -1,5 +1,5 @@",
+     "-fn f25_atomic_load_acquire(_1: &AtomicU64) -> u64 {",
+     "+fn f25_atomic_load_acquire(_1: &Atomic<u64>) -> u64 {",
+     "     debug a => _1;",
+     "     let mut _0: u64;",
+     "-    let mut _2: &std::sync::atomic::AtomicU64;",
+     "+    let mut _2: &std::sync::atomic::Atomic<u64>;",
+     "     let mut _3: std::sync::atomic::Ordering;",
+     "@@ -10,3 +10,3 @@",
+     "         _3 = std::sync::atomic::Ordering::Acquire;",
+     "-        _0 = AtomicU64::load(move _2, move _3) -> [return: bb1, unwind continue];",
+     "+        _0 = Atomic::<u64>::load(move _2, move _3) -> [return: bb1, unwind continue];",
+     "     }"
+    ],
+    "feature_probe.f26_atomic_store_release": [
+     "--- 1.94.0:feature_probe.f26_atomic_store_release",
+     "+++ 1.96.0:feature_probe.f26_atomic_store_release",
+     "@@ -1,2 +1,2 @@",
+     "-fn f26_atomic_store_release(_1: &AtomicU64, _2: u64) -> () {",
+     "+fn f26_atomic_store_release(_1: &Atomic<u64>, _2: u64) -> () {",
+     "     debug a => _1;",
+     "@@ -5,3 +5,3 @@",
+     "     let _3: ();",
+     "-    let mut _4: &std::sync::atomic::AtomicU64;",
+     "+    let mut _4: &std::sync::atomic::Atomic<u64>;",
+     "     let mut _5: u64;",
+     "@@ -16,3 +16,3 @@",
+     "         _6 = std::sync::atomic::Ordering::Release;",
+     "-        _3 = AtomicU64::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+     "+        _3 = Atomic::<u64>::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+     "     }"
+    ],
+    "feature_probe.f27_atomic_rmw_acqrel": [
+     "--- 1.94.0:feature_probe.f27_atomic_rmw_acqrel",
+     "+++ 1.96.0:feature_probe.f27_atomic_rmw_acqrel",
+     "@@ -1,2 +1,2 @@",
+     "-fn f27_atomic_rmw_acqrel(_1: &AtomicU32, _2: u32) -> u32 {",
+     "+fn f27_atomic_rmw_acqrel(_1: &Atomic<u32>, _2: u32) -> u32 {",
+     "     debug a => _1;",
+     "@@ -4,3 +4,3 @@",
+     "     let mut _0: u32;",
+     "-    let mut _3: &std::sync::atomic::AtomicU32;",
+     "+    let mut _3: &std::sync::atomic::Atomic<u32>;",
+     "     let mut _4: u32;",
+     "@@ -14,3 +14,3 @@",
+     "         _5 = std::sync::atomic::Ordering::AcqRel;",
+     "-        _0 = AtomicU32::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind continue];",
+     "+        _0 = Atomic::<u32>::fetch_add(move _3, move _4, move _5) -> [return: bb1, unwind continue];",
+     "     }"
+    ],
+    "feature_probe.f28_atomic_cas_seqcst": [
+     "--- 1.94.0:feature_probe.f28_atomic_cas_seqcst",
+     "+++ 1.96.0:feature_probe.f28_atomic_cas_seqcst",
+     "@@ -1,2 +1,2 @@",
+     "-fn f28_atomic_cas_seqcst(_1: &AtomicU64, _2: u64, _3: u64) -> Result<u64, u64> {",
+     "+fn f28_atomic_cas_seqcst(_1: &Atomic<u64>, _2: u64, _3: u64) -> Result<u64, u64> {",
+     "     debug a => _1;",
+     "@@ -5,3 +5,3 @@",
+     "     let mut _0: std::result::Result<u64, u64>;",
+     "-    let mut _4: &std::sync::atomic::AtomicU64;",
+     "+    let mut _4: &std::sync::atomic::Atomic<u64>;",
+     "     let mut _5: u64;",
+     "@@ -21,3 +21,3 @@",
+     "         _8 = std::sync::atomic::Ordering::Acquire;",
+     "-        _0 = AtomicU64::compare_exchange(move _4, move _5, move _6, move _7, move _8) -> [return: bb1, unwind continue];",
+     "+        _0 = Atomic::<u64>::compare_exchange(move _4, move _5, move _6, move _7, move _8) -> [return: bb1, unwind continue];",
+     "     }"
+    ],
+    "feature_probe.f29_atomic_fence_and_compiler_fence": [
+     "--- 1.94.0:feature_probe.f29_atomic_fence_and_compiler_fence",
+     "+++ 1.96.0:feature_probe.f29_atomic_fence_and_compiler_fence",
+     "@@ -1,2 +1,2 @@",
+     "-fn f29_atomic_fence_and_compiler_fence(_1: &AtomicU8, _2: u8) -> u8 {",
+     "+fn f29_atomic_fence_and_compiler_fence(_1: &Atomic<u8>, _2: u8) -> u8 {",
+     "     debug a => _1;",
+     "@@ -5,3 +5,3 @@",
+     "     let _3: ();",
+     "-    let mut _4: &std::sync::atomic::AtomicU8;",
+     "+    let mut _4: &std::sync::atomic::Atomic<u8>;",
+     "     let mut _5: u8;",
+     "@@ -12,3 +12,3 @@",
+     "     let mut _10: std::sync::atomic::Ordering;",
+     "-    let mut _11: &std::sync::atomic::AtomicU8;",
+     "+    let mut _11: &std::sync::atomic::Atomic<u8>;",
+     "     let mut _12: std::sync::atomic::Ordering;",
+     "@@ -22,3 +22,3 @@",
+     "         _6 = std::sync::atomic::Ordering::Relaxed;",
+     "-        _3 = AtomicU8::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+     "+        _3 = Atomic::<u8>::store(move _4, move _5, move _6) -> [return: bb1, unwind continue];",
+     "     }",
+     "@@ -49,3 +49,3 @@",
+     "         _12 = std::sync::atomic::Ordering::Relaxed;",
+     "-        _0 = AtomicU8::load(move _11, move _12) -> [return: bb4, unwind continue];",
+     "+        _0 = Atomic::<u8>::load(move _11, move _12) -> [return: bb4, unwind continue];",
+     "     }"
+    ]
+   },
+   "from": "1.94.0",
+   "semantic_changed": 5,
+   "semantic_changed_atomic_fns": [
+    "feature_probe.f25_atomic_load_acquire",
+    "feature_probe.f26_atomic_store_release",
+    "feature_probe.f27_atomic_rmw_acqrel",
+    "feature_probe.f28_atomic_cas_seqcst",
+    "feature_probe.f29_atomic_fence_and_compiler_fence"
+   ],
+   "semantic_changed_other_fn_count": 0,
+   "to": "1.96.0"
+  },
+  {
+   "common_fns": 37,
+   "diff_samples": {},
+   "from": "1.96.0",
+   "semantic_changed": 2,
+   "semantic_changed_atomic_fns": [],
+   "semantic_changed_other_fn_count": 2,
+   "to": "1.99.0"
+  },
+  {
+   "common_fns": 37,
+   "diff_samples": {},
+   "from": "1.99.0",
+   "semantic_changed": 0,
+   "semantic_changed_atomic_fns": [],
+   "semantic_changed_other_fn_count": 0,
+   "to": "1.99.1"
+  },
+  {
+   "common_fns": 37,
+   "diff_samples": {},
+   "from": "1.99.1",
+   "semantic_changed": 0,
+   "semantic_changed_atomic_fns": [],
+   "semantic_changed_other_fn_count": 0,
+   "to": "1.100.0"
+  },
+  {
+   "common_fns": 37,
+   "diff_samples": {},
+   "from": "1.100.0",
+   "semantic_changed": 0,
+   "semantic_changed_atomic_fns": [],
+   "semantic_changed_other_fn_count": 0,
+   "to": "nightly"
+  }
+ ],
+ "observed_utc": "2026-11-20T20:49:41Z",
+ "toolchains": {
+  "1.100.0": {
+   "LLVM version": "23.1.5",
+   "commit-date": "2026-11-09",
+   "commit-hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.100.0",
+   "version_line": "rustc 1.100.0 (0ef1bc386 2026-11-09)"
+  },
+  "1.93.1": {
+   "LLVM version": "21.1.8",
+   "commit-date": "2026-02-11",
+   "commit-hash": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.93.1",
+   "version_line": "rustc 1.93.1 (01f6ddf75 2026-02-11)"
+  },
+  "1.94.0": {
+   "LLVM version": "21.1.8",
+   "commit-date": "2026-03-02",
+   "commit-hash": "4a4ef493e3a1488c6e321570238084b38948f6db",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.94.0",
+   "version_line": "rustc 1.94.0 (4a4ef493e 2026-03-02)"
+  },
+  "1.96.0": {
+   "LLVM version": "22.1.2",
+   "commit-date": "2026-05-25",
+   "commit-hash": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.96.0",
+   "version_line": "rustc 1.96.0 (ac68faa20 2026-05-25)"
+  },
+  "1.99.0": {
+   "LLVM version": "23.1.1",
+   "commit-date": "2026-09-28",
+   "commit-hash": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.99.0",
+   "version_line": "rustc 1.99.0 (b940084d7 2026-09-28)"
+  },
+  "1.99.1": {
+   "LLVM version": "23.1.1",
+   "commit-date": "2026-10-13",
+   "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.99.1",
+   "version_line": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+  },
+  "nightly": {
+   "LLVM version": "23.1.5",
+   "commit-date": "2026-11-11",
+   "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "host": "x86_64-unknown-linux-gnu",
+   "release": "1.102.0-nightly",
+   "version_line": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+  }
+ }
+}

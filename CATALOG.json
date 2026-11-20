@@ -71187,6 +71187,132 @@
         "rustc/mir"
       ]
     },
+    "rust-weak-memory-atomics-mir-llvm-to-x86-aarch64-lowering-and-fence-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc, library/core and compiler-builtins (primary measured toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rustc (cross-release comparison)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc (cross-release comparison and s390x measurement)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc (live-probe toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+            "version": "1.95.0"
+          },
+          "name": "library/core before atomic primitives became aliases of Atomic<T>"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+            "version": "1.96.0"
+          },
+          "name": "library/core after atomic primitives became aliases of Atomic<T>"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fa66fef1d1c78d2ecf2ba09a68e25e1e7ab154f7"
+          },
+          "name": "commit: core: make atomic primitives type aliases of Atomic<T>"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "6dfe1677ab8dffbc6ec13d53a1e0215d75147689",
+            "version": "llvmorg-23.1.1"
+          },
+          "name": "LLVM target lowering, TableGen patterns and IR predicates"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "1b9c0d5ff9bbe7634aead059efe6b11a7eeba145",
+            "version": "23.1.1"
+          },
+          "name": "LLVM bundled with rustc 1.99.1"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+            "version": "22.1.6"
+          },
+          "name": "LLVM bundled with the live-probe toolchain"
+        },
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "1ae595498c7af7d9d2f00e29aea328b36663104c"
+          },
+          "name": "herd cat models (x86tso.cat, aarch64hwreqs.cat, aarch64.cat, rc11.cat)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "adc218676eef25575469234709c2d87185ca223a",
+            "version": "v6.12"
+          },
+          "name": "Linux s390 barrier definitions"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/backend",
+        "isa",
+        "isa/aarch64",
+        "isa/x86-64",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "llvm/codegen",
+        "rust",
+        "rust/atomics",
+        "rustc",
+        "rustc/mir",
+        "systems",
+        "systems/concurrency-weak-memory",
+        "verification"
+      ]
+    },
     "rustbelt-refinedrust-verus-creusot-and-rust-ownership-verifiers": {
       "observed_at": "2026-10-14",
       "subjects": [
