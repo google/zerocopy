@@ -1,0 +1,1182 @@
+[
+ {
+  "id": "refinement-preorder",
+  "lean": [
+   "Toy.UB.refinesU_refl",
+   "Toy.UB.refinesU_trans",
+   "Toy.UB.refinesP_refl",
+   "Toy.UB.refinesP_trans"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Reflexivity and transitivity of value-level refinement with UB-permissive sources are standard (Lopes et al., PLDI 2021, Sections 5-5.2; mechanized for LLVM IR in Coq by Zakowski et al., ICFP 2021, Section 5); restated for the toy models.",
+  "plain_claim": "In the undef model (over environments that bind every variable to a nonempty set) and in the poison(+freeze) model (semP on all expressions, including freeze), at every width w, program refinement - in every admissible environment, either the source may reach UB or every target outcome is a value refining some source value - is reflexive and transitive.",
+  "statement": "refinesU_refl w e : RefinesU w e e;  refinesU_trans w (hab : RefinesU w (tgt := a) (src := b)) (hbc : RefinesU w (tgt := b) (src := c)) : RefinesU w (tgt := a) (src := c);  the same for RefinesP. Unfolded: RefinesU w tgt src := ∀ ρ, UInhabited ρ → OutRef USet.Sub (semU w ρ tgt) (semU w ρ src); RefinesP w tgt src := ∀ ρ, OutRef PVal.Refines (semP w ρ tgt) (semP w ρ src); OutRef R T S := MayUB S ∨ ∀ o ∈ T, ∃ o' ∈ S, LeVal R o o'.",
+  "hypotheses": [
+   {
+    "name": "hab",
+    "purpose": "first link of the chain (a refines b)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.UB.refinesU_trans_needs_hab",
+     "Toy.UB.refinesP_trans_needs_hab"
+    ]
+   },
+   {
+    "name": "hbc",
+    "purpose": "second link of the chain (b refines c)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.UB.refinesU_trans_needs_hbc",
+     "Toy.UB.refinesP_trans_needs_hbc"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "freeze (2*x) refines 2*x, which refines x+x (width 2), in both models.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_refinesU_trans",
+   "Toy.UB.nonvacuity_refinesP_trans"
+  ],
+  "supporting_lean": [
+   "Toy.UB.semP_ne_nil",
+   "Toy.UB.semU_ne_nil",
+   "Toy.UB.refinesP_iff_outRefNE",
+   "Toy.UB.refinesU_iff_outRefNE"
+  ],
+  "non_claims": [
+   "Refinement is not antisymmetric on syntax: distinct programs (e.g. x + x and 2 * x in the poison(+freeze) model) refine each other; no partial order on programs is claimed.",
+   "OutRef places no lower bound on the target outcome list (an empty target refines everything; Toy.UB.outRef_example_empty_target). The package's semantics never produce an empty list in an admissible environment, so refinement here coincides with the variant that requires a nonempty target (card semantics-total); a semantics that can produce no outcome would need that variant.",
+   "Nothing is claimed about the refinement relation implemented by any tool.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Lopes, Lee, Hur, Liu, Regehr. \"Alive2: Bounded Translation Validation for LLVM.\" PLDI 2021, pp. 65-79. DOI 10.1145/3453483.3454030. Section 5 (p. 71) states refinement of functions and notes that it ensures compositionality; Section 5.1 (Figure 4, p. 71) gives value refinement (value-poison: poison is refined by any value; value-undef: an undef value is refined by an equally or more defined one) and final-state refinement (final-state-ub); Section 5.2 (pp. 71-72) extends it to nondeterminism (undef, freeze): every target behaviour must be matched by some source behaviour.",
+   "Zakowski, Beck, Yoon, Zaichuk, Zaliva, Zdancewic. \"Modular, Compositional, and Executable Formal Semantics for LLVM IR.\" Proc. ACM Program. Lang. 5 (ICFP), Article 67, 2021. DOI 10.1145/3473572. Section 5 (pp. 67:18-67:20) defines and mechanizes in Coq refinement relations for LLVM IR with undef and poison (anything refines poison; under-defined values are refined by inclusion of their concrete-value sets)."
+  ],
+  "design_question": "How must refinement between programs with undefined values be defined (value-level, permissive after source UB, aware of nondeterminism) so that it is a preorder and composes through every language construct, and which candidate definitions fail?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.semP_ne_nil",
+   "Toy.UB.semU_ne_nil",
+   "Toy.UB.refinesP_iff_outRefNE",
+   "Toy.UB.refinesU_iff_outRefNE"
+  ]
+ },
+ {
+  "id": "source-ub-refined-by-anything",
+  "lean": [
+   "Toy.UB.refinesU_of_src_mayUB",
+   "Toy.UB.refinesP_of_src_mayUB",
+   "Toy.UB.refinesU_ub",
+   "Toy.UB.refinesP_ub"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "A definitional reference point: it restates the UB clause of refinement (Lopes et al., PLDI 2021, Section 5.1, final-state-ub, extended to nondeterministic sources in Section 5.2) for the toy.",
+  "plain_claim": "Reference point (definitional): in both models, at every width, a source program that may reach UB in every admissible environment (in particular the program ub) is refined by every target program; 'may reach UB' means that at least one of the source's nondeterministic outcomes is UB.",
+  "statement": "refinesU_of_src_mayUB w (h : ∀ ρ, UInhabited ρ → MayUB (semU w ρ src)) tgt : RefinesU w (tgt := tgt) (src := src);  refinesP_of_src_mayUB w (h : ∀ ρ, MayUB (semP w ρ src)) tgt : RefinesP w (tgt := tgt) (src := src);  refinesU_ub w tgt : RefinesU w tgt ub;  refinesP_ub w tgt : RefinesP w tgt ub. MayUB S := ∃ o ∈ S, o.isUB.",
+  "hypotheses": [
+   {
+    "name": "h (the source may reach UB in every admissible environment)",
+    "purpose": "the UB disjunct of OutRef must be available in every environment",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.UB.refinesU_of_src_mayUB_needs_mayUB",
+     "Toy.UB.refinesP_of_src_mayUB_needs_mayUB"
+    ]
+   }
+  ],
+  "depth": "definitional",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "x + ub (undef model) and if x then ub else ub (poison(+freeze) model) reach UB in every environment (width 2).",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_refinesU_of_src_mayUB",
+   "Toy.UB.nonvacuity_refinesP_of_src_mayUB"
+  ],
+  "non_claims": [
+   "A source that reaches UB only in some environments is refined by an arbitrary target only in those environments; that per-environment statement is the definition of OutRef, not a separate result.",
+   "'May reach UB' is existential over the source's nondeterministic choices (freeze, and branching in the undef model): a single UB-reaching choice in the source permits any target behaviour, as in the per-behaviour formulation of Lopes et al. (PLDI 2021, Section 5.2). No claim is made about refinement notions that permit arbitrary target behaviour only when every source choice reaches UB.",
+   "This is a reference point that holds by definition; it carries no information beyond the definition of OutRef.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Lopes, Lee, Hur, Liu, Regehr. \"Alive2: Bounded Translation Validation for LLVM.\" PLDI 2021, pp. 65-79. DOI 10.1145/3453483.3454030. Section 5.1 (Figure 4, rule final-state-ub, p. 71): a final state that is undefined is refined by any state; Section 5.2 (pp. 71-72): with nondeterminism, each target behaviour must be refined by some source behaviour."
+  ],
+  "design_question": "How must refinement between programs with undefined values be defined (value-level, permissive after source UB, aware of nondeterminism) so that it is a preorder and composes through every language construct, and which candidate definitions fail?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "refinement-congruence",
+  "lean": [
+   "Toy.UB.refinesU_congr_add",
+   "Toy.UB.refinesU_congr_mul",
+   "Toy.UB.refinesU_congr_eq",
+   "Toy.UB.refinesU_congr_ite",
+   "Toy.UB.refinesU_congr_letE",
+   "Toy.UB.refinesU_congr_freeze",
+   "Toy.UB.refinesP_congr_add",
+   "Toy.UB.refinesP_congr_mul",
+   "Toy.UB.refinesP_congr_eq",
+   "Toy.UB.refinesP_congr_ite",
+   "Toy.UB.refinesP_congr_letE",
+   "Toy.UB.refinesP_congr_freeze"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Compositionality of refinement is known and mechanized for LLVM IR with undef and poison (Zakowski et al., ICFP 2021, Section 5, in Coq); Lopes et al. (PLDI 2021, Section 5) state it for function-level refinement. Here it is restated construct by construct for the toy language.",
+  "plain_claim": "In the undef model (over environments of nonempty sets) and in the poison(+freeze) model, at every width, refinement is a congruence for every construct: if each argument of +, *, the equality test, if, let (bound expression and body) or freeze in the target refines the corresponding argument in the source, the whole target expression refines the whole source expression.",
+  "statement": "e.g. refinesU_congr_letE w x (ha : RefinesU w (tgt := a') (src := a)) (hb : RefinesU w (tgt := b') (src := b)) : RefinesU w (tgt := letE x a' b') (src := letE x a b); analogous for add, mul, eq, ite (three premises), freeze (one premise), and for RefinesP.",
+  "hypotheses": [
+   {
+    "name": "U: premise ha of refinesU_congr_add",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_add_premises_tight"
+   },
+   {
+    "name": "U: premise hb of refinesU_congr_add",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_add_premises_tight"
+   },
+   {
+    "name": "U: premise ha of refinesU_congr_mul",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_mul_premises_tight"
+   },
+   {
+    "name": "U: premise hb of refinesU_congr_mul",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_mul_premises_tight"
+   },
+   {
+    "name": "U: premise ha of refinesU_congr_eq",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_eq_premises_tight"
+   },
+   {
+    "name": "U: premise hb of refinesU_congr_eq",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_eq_premises_tight"
+   },
+   {
+    "name": "U: premise hc of refinesU_congr_ite",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_ite_premises_tight"
+   },
+   {
+    "name": "U: premise ht of refinesU_congr_ite",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_ite_premises_tight"
+   },
+   {
+    "name": "U: premise he of refinesU_congr_ite",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_ite_premises_tight"
+   },
+   {
+    "name": "U: premise ha of refinesU_congr_letE",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_letE_premises_tight"
+   },
+   {
+    "name": "U: premise hb of refinesU_congr_letE",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_letE_premises_tight"
+   },
+   {
+    "name": "U: premise ha of refinesU_congr_freeze",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesU_congr_freeze_premises_tight"
+   },
+   {
+    "name": "P: premise ha of refinesP_congr_add",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_add_premises_tight"
+   },
+   {
+    "name": "P: premise hb of refinesP_congr_add",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_add_premises_tight"
+   },
+   {
+    "name": "P: premise ha of refinesP_congr_mul",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_mul_premises_tight"
+   },
+   {
+    "name": "P: premise hb of refinesP_congr_mul",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_mul_premises_tight"
+   },
+   {
+    "name": "P: premise ha of refinesP_congr_eq",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_eq_premises_tight"
+   },
+   {
+    "name": "P: premise hb of refinesP_congr_eq",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_eq_premises_tight"
+   },
+   {
+    "name": "P: premise hc of refinesP_congr_ite",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_ite_premises_tight"
+   },
+   {
+    "name": "P: premise ht of refinesP_congr_ite",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_ite_premises_tight"
+   },
+   {
+    "name": "P: premise he of refinesP_congr_ite",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_ite_premises_tight"
+   },
+   {
+    "name": "P: premise ha of refinesP_congr_letE",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_letE_premises_tight"
+   },
+   {
+    "name": "P: premise hb of refinesP_congr_letE",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_letE_premises_tight"
+   },
+   {
+    "name": "P: premise ha of refinesP_congr_freeze",
+    "purpose": "the corresponding argument (target first, source second) is refined",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.refinesP_congr_freeze_premises_tight"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "2*x refines x+x, freeze y refines y, and 7 refines ub (width 2, both models): all premises of every congruence theorem can be instantiated by non-trivial refining pairs.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_refinesU_congr",
+   "Toy.UB.nonvacuity_refinesP_congr"
+  ],
+  "non_claims": [
+   "Congruence is for the package's value-level refinement only. The coarser comparison of produced integers (ObsRefinesU) is not a congruence (card undef-observational-refinement-not-congruence).",
+   "Congruence covers the constructs of this language only; nothing is claimed about memory operations, calls, loops or select.",
+   "The let case relies on monotonicity of the semantics in the environment (Toy.UB.semU_mono, Toy.UB.semP_mono), which holds because no construct can inspect whether a value is poison or how large an undef set is.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Zakowski, Beck, Yoon, Zaichuk, Zaliva, Zdancewic. \"Modular, Compositional, and Executable Formal Semantics for LLVM IR.\" Proc. ACM Program. Lang. 5 (ICFP), Article 67, 2021. DOI 10.1145/3473572. Section 5 (pp. 67:18-67:20): refinement relations for LLVM IR with undef/poison, mechanized in Coq and lifted compositionally through the semantics, so that program transformations can be proved correct compositionally.",
+   "Lopes, Lee, Hur, Liu, Regehr. \"Alive2: Bounded Translation Validation for LLVM.\" PLDI 2021, pp. 65-79. DOI 10.1145/3453483.3454030. Section 5 (p. 71): 'The definition above ensures compositionality: if a function's inputs are refined, so are the outputs.'",
+   "Bhat, Keizer, Hughes, Goens, Grosser. \"Verifying Peephole Rewriting in SSA Compiler IRs.\" ITP 2024, LIPIcs vol. 309, Article 9. DOI 10.4230/LIPIcs.ITP.2024.9 (preprint arXiv:2407.03685). Section 4.1: Lean 4 mechanization that applying a verified peephole rewrite inside an SSA program preserves its denotation (stated for semantic equality); Section 6.1 treats LLVM bitvector rewrites at arbitrary width with poison and UB collapsed into Option."
+  ],
+  "design_question": "How must refinement between programs with undefined values be defined (value-level, permissive after source UB, aware of nondeterminism) so that it is a preorder and composes through every language construct, and which candidate definitions fail?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "undef-observational-refinement-not-congruence",
+  "lean": "Toy.UB.undef_obsRefines_not_congruence_letE",
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "That undef refinement must be judged per value (Lopes et al., PLDI 2021, Section 5.1, value-undef) rather than by comparing produced integers is implicit in the literature; the precise failure of congruence at let is made explicit here.",
+  "plain_claim": "In the undef model (environments of nonempty sets), for every width w ≥ 1 and variables x, y: x observationally refines freeze x (comparing only the integers a program may produce, and UB), but let y := x; y + y does not observationally refine let y := freeze x; y + y; so observational refinement is not a congruence for let.",
+  "statement": "1 ≤ w → ObsRefinesU w (var x) (freeze (var x)) ∧ ¬ ObsRefinesU w (letE y (var x) (add (var y) (var y))) (letE y (freeze (var x)) (add (var y) (var y)));  ObsRefinesU w tgt src := ∀ ρ, UInhabited ρ → MayUB (semU w ρ src) ∨ (¬ MayUB (semU w ρ tgt) ∧ ∀ z, ObsU (semU w ρ tgt) z → ObsU (semU w ρ src) z).",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w",
+    "purpose": "at width 0 there is only one integer and both let programs produce exactly {0}",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_obsRefines_not_congruence_letE_needs_width"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic for all w ≥ 1; at w = 0 the second conjunct fails (Toy.UB.undef_obsRefines_letE_width_zero).",
+  "nonvacuity_witness": "w = 2, x = 0, y = 1: the full statement instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_undef_obsRefines_not_congruence_letE",
+   "Toy.UB.nonvacuity_width_two"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.refinesU_congr_letE",
+   "Toy.UB.undef_obsRefines_letE_width_zero"
+  ],
+  "non_claims": [
+   "The failure is specific to let: let binds y to the whole value set of x, and the two uses of y in y + y then choose independently, whereas freeze x fixes one integer. Contexts that use their argument once do not separate x from freeze x in this way; no characterization of the contexts that preserve observational refinement is given.",
+   "Value-level refinement (RefinesU) restores congruence for let and every other construct (Toy.UB.refinesU_congr_letE) and correctly rejects freeze x -> x (Toy.UB.undef_remove_freeze_unsound).",
+   "ObsRefinesU is introduced only to exhibit this failure; it is not the package's refinement notion.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited)."
+  ],
+  "prior_art": [
+   "Lopes, Lee, Hur, Liu, Regehr. \"Alive2: Bounded Translation Validation for LLVM.\" PLDI 2021, pp. 65-79. DOI 10.1145/3453483.3454030. Section 5.1 (Figure 4, rule value-undef, p. 71) judges undef refinement per value, not by the integers a whole program produces."
+  ],
+  "design_question": "How must refinement between programs with undefined values be defined (value-level, permissive after source UB, aware of nondeterminism) so that it is a preorder and composes through every language construct, and which candidate definitions fail?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "merge-uses-sound",
+  "lean": [
+   "Toy.UB.undef_rewrite_add_self_to_two_mul_sound",
+   "Toy.UB.poison_rewrite_add_self_to_two_mul_sound"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Lee et al. (PLDI 2017, Section 3.1) show that 2*x -> x+x is wrong under undef because it enlarges the outcome set; the reverse direction, which shrinks it, is the implied sound one. Restated for the toy.",
+  "plain_claim": "At every width, for every expression e (including expressions containing freeze or ub), rewriting e + e to 2 * e is a refinement in the undef model (over environments of nonempty sets) and in the poison(+freeze) model.",
+  "statement": "∀ w e, RefinesU w (tgt := mul (const 2) e) (src := add e e);  ∀ w e, RefinesP w (tgt := mul (const 2) e) (src := add e e)  (two theorems).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "w = 3 with e = if x then y else freeze y (undef model) and e = freeze x (poison(+freeze) model).",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_undef_rewrite_add_self_to_two_mul_sound",
+   "Toy.UB.nonvacuity_poison_rewrite_add_self_to_two_mul_sound"
+  ],
+  "non_claims": [
+   "Only the pair e + e / 2 * e is covered; nothing is claimed about merging duplicated subexpressions in other contexts (e.g. e * e, or e used by two different operations).",
+   "Expressions are pure and multiplication wraps modulo 2^w. In an IR where e has observable side effects (I/O, volatile accesses, stores) or where multiplication carries overflow-poison flags (mul nsw / mul nuw; note that the literal 2 is negative in signed 2-bit arithmetic), the rewrite is not covered.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 3.1 ('Duplicate SSA uses', p. 637): rewriting %y = mul %x, 2 to %y = add %x, %x is wrong when %x is undef because 'we have increased the set of possible outcomes'.",
+   "Lopes, Menendez, Nagarakatte, Regehr. \"Provably Correct Peephole Optimizations with Alive.\" PLDI 2015. DOI 10.1145/2737924.2737965. Introduces SMT-based verification of LLVM peephole rewrites with the semantics of undef, poison and UB.",
+   "Bhat, Keizer, Hughes, Goens, Grosser. \"Verifying Peephole Rewriting in SSA Compiler IRs.\" ITP 2024, LIPIcs vol. 309, Article 9. DOI 10.4230/LIPIcs.ITP.2024.9 (preprint arXiv:2407.03685). Section 6.1: Lean 4 proofs of LLVM bitvector peephole rewrites at arbitrary width, with poison and UB collapsed into Option (no undef sets)."
+  ],
+  "design_question": "Under which value model is it sound for an optimizer to change the number of uses of a value (2 * e versus e + e), and what is the repair when it is not?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "undef-duplicate-use-unsound",
+  "lean": "Toy.UB.undef_rewrite_two_mul_to_add_self_unsound",
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Direct restatement of Lee et al. (PLDI 2017, Section 3.1) in the toy undef model.",
+  "plain_claim": "In the undef model (environments of nonempty sets), at every width w ≥ 1 and for every variable x, rewriting 2 * x to x + x is not a refinement: with x bound to {0, 1} the target can produce the odd integer 1, which 2 * x cannot.",
+  "statement": "1 ≤ w → ¬ RefinesU w (tgt := add (var x) (var x)) (src := mul (const 2) (var x)).",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w",
+    "purpose": "at width 0 there is only one integer, so every value set is {0}",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_rewrite_two_mul_to_add_self_unsound_needs_width"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic for all w ≥ 1; the rewrite is sound at w = 0 (Toy.UB.undef_rewrite_two_mul_to_add_self_sound_width_zero).",
+  "nonvacuity_witness": "w = 2, x = 0: the statement instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_undef_rewrite_two_mul_to_add_self_unsound",
+   "Toy.UB.nonvacuity_width_two"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.undef_rewrite_two_mul_to_add_self_sound_width_zero",
+   "Toy.UB.undef_rewrite_two_mul_to_let_freeze_add_self_sound",
+   "Toy.UB.undef_rewrite_two_mul_to_add_self_sound_at_singleton",
+   "Toy.UB.poison_rewrite_two_mul_to_add_self_sound_of_freezeFree"
+  ],
+  "non_claims": [
+   "Shown for a variable operand x; for some other operands (e.g. constants) the rewrite is sound, and no characterization of the operands for which it is sound is given.",
+   "Escape hatches (each proved): duplicating a single frozen copy, 2 * e -> let a := freeze e; a + a, is a refinement for every e at every width (Toy.UB.undef_rewrite_two_mul_to_let_freeze_add_self_sound); for an input known to be a singleton (well defined, e.g. under a noundef-style precondition) the rewrite is sound pointwise (Toy.UB.undef_rewrite_two_mul_to_add_self_sound_at_singleton); in the poison(+freeze) model the rewrite is sound for freeze-free operands (Toy.UB.poison_rewrite_two_mul_to_add_self_sound_of_freezeFree).",
+   "The counterexample involves no branch, so it does not depend on the undef model's nondeterministic-branch rule.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited)."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 3.1 (p. 637): 'In the original code, the result can be any even number, while in the transformed code the result can be any number.'",
+   "Lopes, Lee, Hur, Liu, Regehr. \"Alive2: Bounded Translation Validation for LLVM.\" PLDI 2021, pp. 65-79. DOI 10.1145/3453483.3454030. Section 2 repeats the add-versus-multiply-by-two example under undef.",
+   "Lobo, McIver, Mitenkov, Lee, Sundararajah, Lopes. \"Towards Removing Undef Values from LLVM IR.\" Proc. ACM Program. Lang. 10 (PLDI), Article 172, 2026. DOI 10.1145/3808250. Abstract: the per-use behaviour of undef 'makes even simple algebraic rewrites, such as replacing 2 × y with y + y, unsound in LLVM'."
+  ],
+  "design_question": "Under which value model is it sound for an optimizer to change the number of uses of a value (2 * e versus e + e), and what is the repair when it is not?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "poison-duplicate-freeze-free-use-sound",
+  "lean": "Toy.UB.poison_rewrite_two_mul_to_add_self_sound_of_freezeFree",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Lee et al. (PLDI 2017, Section 4) replace undef by poison so that all uses of a value agree; that duplicating uses is then sound for deterministic operands is the implied consequence. Restated for the toy.",
+  "plain_claim": "In the poison(+freeze) model, at every width, for every freeze-free expression e (in particular every variable), rewriting 2 * e to e + e is a refinement; together with merge-uses-sound, both directions are sound for freeze-free e.",
+  "statement": "e.FreezeFree = true → RefinesP w (tgt := add e e) (src := mul (const 2) e).",
+  "hypotheses": [
+   {
+    "name": "he : e.FreezeFree = true",
+    "purpose": "freeze-free programs are deterministic in the poison model (Toy.UB.semP_freezeFree_singleton), so both evaluations of e agree",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.UB.poison_rewrite_two_mul_to_add_self_needs_freezeFree",
+     "Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_unsound"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "e = if x then x + y else ub is freeze-free (and may reach UB).",
+  "nonvacuity_witness_lean": "Toy.UB.nonvacuity_freezeFree",
+  "non_claims": [
+   "FreezeFree is syntactic; an expression containing freeze can still be deterministic (e.g. freeze 1), and no semantic characterization of the operands for which the rewrite is sound is given.",
+   "Expressions are pure and multiplication wraps modulo 2^w; side effects and overflow-poison flags (nsw/nuw) are not modelled.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 4 (p. 639): the proposed semantics replaces undef by poison and introduces freeze; 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.'",
+   "Bhat, Keizer, Hughes, Goens, Grosser. \"Verifying Peephole Rewriting in SSA Compiler IRs.\" ITP 2024, LIPIcs vol. 309, Article 9. DOI 10.4230/LIPIcs.ITP.2024.9 (preprint arXiv:2407.03685). Section 6.1: Lean 4 proofs of LLVM bitvector rewrites with poison collapsed into Option."
+  ],
+  "design_question": "Under which value model is it sound for an optimizer to change the number of uses of a value (2 * e versus e + e), and what is the repair when it is not?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "poisonFreeze-duplicate-frozen-operand-unsound",
+  "lean": "Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_unsound",
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Restates Lee et al. (PLDI 2017, Section 5.5, 'Pitfall 1: Freeze duplication') in the toy: duplicating a freeze may observe two different values.",
+  "plain_claim": "In the poison + freeze model, at every width w ≥ 1 and for every variable x, rewriting 2 * freeze x to freeze x + freeze x is not a refinement: with x ↦ poison the two freezes may pick 0 and 1, giving the odd integer 1, while every outcome of 2 * freeze x is even.",
+  "statement": "1 ≤ w → ¬ RefinesP w (tgt := add (freeze (var x)) (freeze (var x))) (src := mul (const 2) (freeze (var x))).",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w",
+    "purpose": "at width 0 every integer is 0",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_unsound_needs_width"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic for all w ≥ 1; sound at w = 0 (Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_sound_width_zero).",
+  "nonvacuity_witness": "w = 2, x = 0: the statement instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_poisonFreeze_rewrite_two_mul_to_add_self_unsound",
+   "Toy.UB.nonvacuity_width_two"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.poisonFreeze_rewrite_two_mul_to_add_self_sound_width_zero",
+   "Toy.UB.poison_rewrite_two_mul_to_add_self_sound_of_freezeFree",
+   "Toy.UB.poisonFreeze_rewrite_two_mul_to_let_freeze_add_self_sound",
+   "Toy.UB.poisonFreeze_rewrite_two_mul_freeze_sound_at_int"
+  ],
+  "non_claims": [
+   "This is the same phenomenon as duplicate-freeze-unsound (2 * freeze x and let a := freeze x; a + a have the same outcomes); the two cards differ only in the source program.",
+   "Escape hatches (each proved): binding one frozen copy, 2 * e -> let a := freeze e; a + a, is a refinement for every e at every width (Toy.UB.poisonFreeze_rewrite_two_mul_to_let_freeze_add_self_sound); for an input known to be an integer rather than poison (a noundef-style precondition) the rewrite is sound pointwise (Toy.UB.poisonFreeze_rewrite_two_mul_freeze_sound_at_int).",
+   "Shown for e = freeze x; no characterization of the non-freeze-free operands for which 2 * e -> e + e is sound is given.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 5.5 ('Pitfall 1: Freeze duplication', p. 641): 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction: 'All uses of a value returned by the same freeze instruction are guaranteed to always observe the same value, while different freeze instructions may yield different values.'"
+  ],
+  "design_question": "Under which value model is it sound for an optimizer to change the number of uses of a value (2 * e versus e + e), and what is the repair when it is not?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "poison-gvn-sound",
+  "lean": "Toy.UB.poison_gvn_sound",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Lee et al. (PLDI 2017, Section 3.3 and Section 5.1) explain that GVN is sound once branching on poison is UB; restated for the toy.",
+  "plain_claim": "In the poison(+freeze) model (branching on poison is UB), at every width, for all variables x, y and expressions t, e, rewriting if x = y then t else e to if x = y then (let y := x; t) else e is a refinement.",
+  "statement": "RefinesP w (tgt := ite (eq (var x) (var y)) (letE y (var x) t) e) (src := ite (eq (var x) (var y)) t e).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "width_dependence": "Generic in w. At w = 0 with integer inputs the test yields 0 and both programs take the else-branch; if x or y is poison, the test is poison and both programs reach UB.",
+  "nonvacuity_witness": "w = 2, then-branch y + freeze y, else-branch y.",
+  "nonvacuity_witness_lean": "Toy.UB.nonvacuity_poison_gvn_sound",
+  "supporting_lean": [
+   "Toy.UB.semP_letE_var_var",
+   "Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound"
+  ],
+  "non_claims": [
+   "Phase ordering: once the comparison is wrapped in freeze the rewrite is unsound. For every w ≥ 1, rewriting if freeze (x = y) then y else 0 to if freeze (x = y) then (let y := x; y) else 0 is not a refinement in the poison + freeze model (x ↦ poison, y ↦ 1: the source yields 0 or 1, the target may yield poison; Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound). Inserting freeze (sound by itself) removes the UB the GVN argument relies on.",
+   "The rewrite is stated with let y := x; t (which rebinds y), not with syntactic substitution t[y := x]; substitution is not formalized. The two agree for t = y (Toy.UB.semP_letE_var_var), and in general because x denotes a single value in the poison model; this need not hold when y is replaced by an expression that contains freeze.",
+   "Only integer equality is modelled. Nothing is shown for equality on pointers (where equal addresses need not make two pointers interchangeable under provenance-based semantics) or on floating point (where -0.0 == +0.0 although the two values are distinguishable).",
+   "The equality test yields 1 or 0 modulo 2^w; at width 0 every integer is 0, so eq a b always yields 0 and if (eq a b) always takes the else-branch (unless an operand reaches UB or, in the poison(+freeze) model, evaluates to poison).",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 3.3 (pp. 637-638) shows that GVN needs branch-on-poison to be UB while loop unswitching needs it to be a nondeterministic choice; Section 5.1 (p. 640): 'With the new semantics, GVN becomes sound, since we chose to trigger UB in case of branch on poison value.'",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. Poison Values: the condition operand of a br instruction is among the operands for which poison triggers immediate undefined behavior.",
+   "Kang, Kim, Song, Lee, Park, Shin, Kim, Cho, Choi, Hur, Yi. \"Crellvm: Verified Credible Compilation for LLVM.\" PLDI 2018. DOI 10.1145/3192366.3192377. Validates LLVM's gvn pass (GVN-PRE) with a Coq-verified translation-validation checker."
+  ],
+  "design_question": "Under which value model, and in which order relative to freeze insertion, may an optimizer propagate an equality learned from a branch condition (GVN)?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.semP_letE_var_var",
+   "Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound"
+  ]
+ },
+ {
+  "id": "undef-gvn-unsound",
+  "lean": "Toy.UB.undef_gvn_var_branch_distinct_vars_unsound",
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "The undef counterpart of the GVN discussion in Lee et al. (PLDI 2017, Section 3.3): when the comparison and a later use may observe different values, equality propagation fails. Restated for the toy undef model.",
+  "plain_claim": "In the undef model (environments of nonempty sets; branching on an undef value is a nondeterministic choice), for every width w ≥ 1 and distinct variables x ≠ y, the GVN rewrite with then-branch y and else-branch 0 - if x = y then y else 0 to if x = y then (let y := x; y) else 0 - is not a refinement: with x ↦ {0, 1} and y ↦ {1} the comparison may succeed while the later use of x observes 0.",
+  "statement": "1 ≤ w → x ≠ y → ¬ RefinesU w (tgt := ite (eq (var x) (var y)) (letE y (var x) (var y)) (const 0)) (src := ite (eq (var x) (var y)) (var y) (const 0)).",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w",
+    "purpose": "at width 0 the test always yields 0 and both programs take the else-branch",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_gvn_var_branch_distinct_vars_unsound_needs_width"
+   },
+   {
+    "name": "hxy : x ≠ y",
+    "purpose": "if x = y the comparison is between two uses of one variable and the then-branch is unchanged",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_gvn_var_branch_distinct_vars_unsound_needs_distinct"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic for all w ≥ 1; sound at w = 0 (Toy.UB.undef_gvn_sound_width_zero).",
+  "nonvacuity_witness": "w = 2, x = 0, y = 1: the statement instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_undef_gvn_instance",
+   "Toy.UB.nonvacuity_undef_gvn"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.undef_gvn_sound_width_zero",
+   "Toy.UB.undef_gvn_sound_of_same_var",
+   "Toy.UB.undef_gvn_sound_examples_closed_or_x_branch",
+   "Toy.UB.undef_gvn_with_frozen_operand_sound"
+  ],
+  "non_claims": [
+   "Shown for the then-branch y and else-branch 0; for other branches (e.g. 0 or x) the rewrite can be sound (Toy.UB.undef_gvn_sound_examples_closed_or_x_branch), and no characterization of the branches for which it fails is given.",
+   "Escape hatch (proved for x = 0, y = 1, x' = 2): freezing the compared operand first, rewriting if x = y then y else 0 to let x' := freeze x; if x' = y then x' else 0, is a refinement at every width (Toy.UB.undef_gvn_with_frozen_operand_sound). The binder x' must not be y.",
+   "This counterexample depends on the undef model's rule that branching on an undef value is a nondeterministic choice. Under a rule that makes branching on an undefined value UB (as the LLVM 19.1.0 Language Reference states for conditional branches), the source of this counterexample would itself reach UB; that rule is not modelled here. The same document's select semantics states no such rule, and its undef examples say that undefined select conditions 'can go either way'; this package does not model select and claims nothing about equality propagation through select in LLVM.",
+   "The equality test yields 1 or 0 modulo 2^w; at width 0 every integer is 0, so eq a b always yields 0 and if (eq a b) always takes the else-branch (unless an operand reaches UB or, in the poison(+freeze) model, evaluates to poison).",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 3.3 (pp. 637-638): GVN is unsound if branching on an invalid value is a nondeterministic choice (stated there for poison).",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. Undefined Values: 'Branching on an undefined value is undefined behavior. This explains optimizations that depend on branch conditions to construct predicates, such as Correlated Value Propagation and Global Value Numbering.'"
+  ],
+  "design_question": "Under which value model, and in which order relative to freeze insertion, may an optimizer propagate an equality learned from a branch condition (GVN)?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "poison-unswitch-without-freeze-unsound",
+  "lean": "Toy.UB.poison_unswitch_without_freeze_distinct_vars_unsound",
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Restates Lee et al. (PLDI 2017, Section 3.3): if branching on poison is UB, loop unswitching without freeze can introduce UB when the loop does not run.",
+  "plain_claim": "In the poison(+freeze) model (branching on poison is UB), for every width w, distinct condition variables c ≠ d, branches a, b and literal else-branch n, rewriting if c then (if d then a else b) else n to if d then (if c then a else n) else (if c then b else n) is not a refinement: with c ↦ 0 and d ↦ poison the source returns n while the target branches on poison.",
+  "statement": "c ≠ d → ¬ RefinesP w (tgt := ite (var d) (ite (var c) a (const n)) (ite (var c) b (const n))) (src := ite (var c) (ite (var d) a b) (const n)).",
+  "hypotheses": [
+   {
+    "name": "hcd : c ≠ d",
+    "purpose": "if c = d the inner branch is only reached when the outer one already branched on the same value",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poison_unswitch_without_freeze_distinct_vars_unsound_needs_distinct"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w, including w = 0.",
+  "nonvacuity_witness": "w = 2, c = 2, d = 3, branches d and c + d, else-branch 7: the statement instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_poison_unswitch_instance",
+   "Toy.UB.nonvacuity_poison_unswitch"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.poison_unswitch_without_freeze_sound_of_same_var",
+   "Toy.UB.poisonFreeze_unswitch_with_freeze_sound_of_ubFree",
+   "Toy.UB.undef_unswitch_without_freeze_sound_of_ubFree"
+  ],
+  "non_claims": [
+   "Escape hatches: freezing the hoisted condition (proved: Toy.UB.poisonFreeze_unswitch_with_freeze_sound_of_ubFree); the undef model, where branching is a choice (proved: Toy.UB.undef_unswitch_without_freeze_sound_of_ubFree). Not proved here, but the counterexample needs an environment with c ↦ 0 and d ↦ poison, so it says nothing about contexts where the outer condition is known to be nonzero (e.g. a loop known to execute at least once, Lee et al., PLDI 2017, Section 5.1) or where d is known not to be poison.",
+   "The toy has no loops; the guarding if c stands in for a loop that may run zero times.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 3.3 (p. 637): loop unswitching 'assumes that branching on poison is not UB, but is rather a non-deterministic choice. Otherwise, if c2 was poison, then loop unswitching would be introducing UB if c was always false'; Section 5.1 (p. 640): 'Freeze can be avoided if the branch on c2 is placed in the loop pre-header (since then the loop is guaranteed to execute at least once).'",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. Poison Values: the condition operand of br triggers immediate undefined behavior on poison."
+  ],
+  "design_question": "Under which value model may a branch be hoisted out of a conditional that might not execute it (loop unswitching), what does freeze buy, and what does it not buy?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "undef-unswitch-without-freeze-sound",
+  "lean": [
+   "Toy.UB.undef_unswitch_without_freeze_sound_of_ubFree",
+   "Toy.UB.undef_unswitch_without_freeze_sound"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Under the nondeterministic-branch reading that loop unswitching assumes (Lee et al., PLDI 2017, Section 3.3, stated there for poison), unswitching is sound; restated for the toy undef model.",
+  "plain_claim": "In the undef model (environments of nonempty sets; branching on an undef value is a nondeterministic choice), at every width, for every outer condition ec, every inner condition ed that reaches UB in no inhabited environment, and all branches a, b, e, rewriting if ec then (if ed then a else b) else e to if ed then (if ec then a else e) else (if ec then b else e) is a refinement; in particular for condition variables c, d (equal or not).",
+  "statement": "UBFreeU w ed → RefinesU w (tgt := ite ed (ite ec a e) (ite ec b e)) (src := ite ec (ite ed a b) e);  UBFreeU w ed := ∀ ρ, UInhabited ρ → ¬ MayUB (semU w ρ ed).  Corollary: RefinesU w (ite (var d) (ite (var c) a e) (ite (var c) b e)) (ite (var c) (ite (var d) a b) e).",
+  "hypotheses": [
+   {
+    "name": "hed : UBFreeU w ed",
+    "purpose": "the target always evaluates ed, the source only when ec is nonzero; UB in ed would be introduced",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_unswitch_without_freeze_needs_ubFree"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "w = 2 with inner condition if d then 1 else 0, outer condition c = x, and branches mentioning both conditions; and the variable corollary with c = 2, d = 3.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_undef_unswitch_of_ubFree",
+   "Toy.UB.nonvacuity_undef_unswitch"
+  ],
+  "supporting_lean": [
+   "Toy.UB.undef_unswitch_vars_outRef_all_envs",
+   "Toy.UB.undef_unswitch_empty_input_target_has_no_outcomes",
+   "Toy.UB.ubFreeU_examples"
+  ],
+  "non_claims": [
+   "UInhabited (every input is a nonempty set) is part of RefinesU. It is not what makes the variable corollary true: the pointwise refinement condition holds even in environments with an empty input set (Toy.UB.undef_unswitch_vars_outRef_all_envs), because then the target has no outcome and OutRef accepts an empty target. What UInhabited guarantees is that every program has at least one outcome (card semantics-total), so the theorem is not satisfied by an empty target.",
+   "Soundness here depends on branching on an undef value being a nondeterministic choice; with LLVM 19.1.0's rule that branching on an undefined value is UB, the poison-model counterexample (card poison-unswitch-without-freeze-unsound) applies instead.",
+   "The equality test yields 1 or 0 modulo 2^w; at width 0 every integer is 0, so eq a b always yields 0 and if (eq a b) always takes the else-branch (unless an operand reaches UB or, in the poison(+freeze) model, evaluates to poison).",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 3.3 (p. 637): loop unswitching assumes that branching on an invalid value is a nondeterministic choice rather than UB."
+  ],
+  "design_question": "Under which value model may a branch be hoisted out of a conditional that might not execute it (loop unswitching), what does freeze buy, and what does it not buy?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.undef_unswitch_vars_outRef_all_envs",
+   "Toy.UB.undef_unswitch_empty_input_target_has_no_outcomes",
+   "Toy.UB.ubFreeU_examples"
+  ]
+ },
+ {
+  "id": "poisonFreeze-unswitch-with-freeze-sound",
+  "lean": [
+   "Toy.UB.poisonFreeze_unswitch_with_freeze_sound_of_ubFree",
+   "Toy.UB.poisonFreeze_unswitch_with_freeze_sound_of_fresh"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Restates the fix of Lee et al. (PLDI 2017, Section 5.1: 'When a branch is hoisted out of a loop, the condition needs to be frozen') for the toy, with its side conditions made explicit.",
+  "plain_claim": "In the poison + freeze model, at every width, for every outer condition ec, every inner condition ed that reaches UB in no environment, and every variable t not free in ec, a, b, e, rewriting if ec then (if ed then a else b) else e to let t := freeze ed; if t then (if ec then a else e) else (if ec then b else e) is a refinement; in particular for condition variables c, d with t ≠ c.",
+  "statement": "UBFreeP w ed → ec.freeIn t = false → a.freeIn t = false → b.freeIn t = false → e.freeIn t = false → RefinesP w (tgt := letE t (freeze ed) (ite (var t) (ite ec a e) (ite ec b e))) (src := ite ec (ite ed a b) e);  UBFreeP w ed := ∀ ρ, ¬ MayUB (semP w ρ ed).  Corollary (poisonFreeze_unswitch_with_freeze_sound_of_fresh): ec = var c, ed = var d, t ≠ c.",
+  "hypotheses": [
+   {
+    "name": "hed : UBFreeP w ed",
+    "purpose": "freeze removes poison but not immediate UB (semP w ρ (freeze ub) = [ub]); hoisting an inner condition whose evaluation can reach UB (e.g. one that itself branches on a possibly-poison value) introduces UB",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.UB.poisonFreeze_unswitch_with_freeze_needs_ubFree",
+     "Toy.UB.poisonFreeze_unswitch_with_freeze_needs_ubFree_branch"
+    ]
+   },
+   {
+    "name": "htc : ec.freeIn t = false",
+    "purpose": "the outer condition must still read its own inputs after t is bound",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_cond"
+   },
+   {
+    "name": "hta : a.freeIn t = false",
+    "purpose": "the branch a must not see the new binding",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_a"
+   },
+   {
+    "name": "htb : b.freeIn t = false",
+    "purpose": "the branch b must not see the new binding",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_b"
+   },
+   {
+    "name": "hte : e.freeIn t = false",
+    "purpose": "the branch e must not see the new binding",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_unswitch_with_freeze_needs_t_not_free_in_e"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "w = 2 with outer condition x = y, inner condition d = z, t = 4, branches d, c + d, freeze c; all hypotheses hold and the instance is proved.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_poisonFreeze_unswitch_of_ubFree",
+   "Toy.UB.nonvacuity_poisonFreeze_unswitch"
+  ],
+  "supporting_lean": [
+   "Toy.UB.ubFreeP_examples",
+   "Toy.UB.ubFreeP_eq_var"
+  ],
+  "non_claims": [
+   "freeze converts poison into an arbitrary integer but does not suppress immediate undefined behaviour: semP w ρ (freeze ub) = [ub]. Hoisting an inner condition whose own evaluation may reach UB remains unsound even with freeze (Toy.UB.poisonFreeze_unswitch_with_freeze_needs_ubFree, Toy.UB.poisonFreeze_unswitch_with_freeze_needs_ubFree_branch).",
+   "The target replaces the source's possible UB on a poison inner condition by a nondeterministic choice; it refines the source but discards facts a later pass could have derived from that UB (e.g. GVN on the frozen condition; see card poison-gvn-sound).",
+   "The toy has no loops; the guarding if ec stands in for a loop that may run zero times.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 5.1 (p. 640): 'When a branch is hoisted out of a loop, the condition needs to be frozen ... By using the freeze instruction, we avoid introducing UB in case c2 is poison and force a non-deterministic choice between the two loops instead.'",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction: 'If the argument is undef or poison, freeze returns an arbitrary, but fixed, value of type ty. Otherwise, this instruction is a no-op and returns the input argument.'"
+  ],
+  "design_question": "Under which value model may a branch be hoisted out of a conditional that might not execute it (loop unswitching), what does freeze buy, and what does it not buy?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.ubFreeP_examples",
+   "Toy.UB.ubFreeP_eq_var"
+  ]
+ },
+ {
+  "id": "freeze-identity-on-non-poison",
+  "lean": [
+   "Toy.UB.poisonFreeze_freeze_eq_self_of_no_poison",
+   "Toy.UB.poisonFreeze_remove_freeze_sound_of_no_poison",
+   "Toy.UB.poisonFreeze_remove_redundant_freeze_sound",
+   "Toy.UB.undef_remove_redundant_freeze_sound"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "The identity law is the definition of freeze on non-poison values (LLVM 19.1.0 Language Reference, 'freeze' Instruction); the redundant-freeze corollary is the InstCombine folding freeze(freeze(x)) to freeze(x) described by Lee et al. (PLDI 2017, Section 6).",
+  "plain_claim": "In the poison + freeze model, at every width: if no outcome of e is poison in environment ρ then freeze e has exactly the outcomes of e in ρ (a definitional reference point); consequently, if e never yields poison, rewriting freeze e to e is a refinement, and in particular rewriting freeze (freeze e) to freeze e is a refinement (also in the undef model, over environments of nonempty sets).",
+  "statement": "poisonFreeze_freeze_eq_self_of_no_poison w ρ e (h : val poison ∉ semP w ρ e) : semP w ρ (freeze e) = semP w ρ e;  (∀ ρ, val poison ∉ semP w ρ e) → RefinesP w (tgt := e) (src := freeze e);  RefinesP w (tgt := freeze e) (src := freeze (freeze e));  RefinesU w (tgt := freeze e) (src := freeze (freeze e)).",
+  "hypotheses": [
+   {
+    "name": "h : val poison ∉ semP w ρ e",
+    "purpose": "on poison, freeze returns integers instead",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_freeze_eq_self_needs_no_poison"
+   },
+   {
+    "name": "(corollary) ∀ ρ, val poison ∉ semP w ρ e",
+    "purpose": "removing freeze from a possibly-poison operand reintroduces poison",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_remove_freeze_needs_no_poison"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "x + 1 with x ↦ 1 has no poison outcome (width 2); freeze x + 1 never yields poison; freeze (freeze x) -> freeze x in both models (width 2).",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_freeze_eq_self",
+   "Toy.UB.nonvacuity_remove_redundant_freeze"
+  ],
+  "non_claims": [
+   "The first statement is pointwise (one environment); it is a definitional reference point.",
+   "The never-poison condition is semantic and quantifies over all environments; it is not decided by a syntactic check here.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction: 'Otherwise, this instruction is a no-op and returns the input argument.'",
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 6 (p. 642): InstCombine folds freeze(freeze(x)) to freeze(x) and freeze(const) to const."
+  ],
+  "design_question": "Which algebraic laws of freeze (insertion, removal, duplication, merging) can an optimizer rely on in a semantics with poison and freeze?",
+  "proof_status": "proved",
+  "depth_note": "the first statement (the pointwise equality semP w ρ (freeze e) = semP w ρ e) is definitional; the refinement corollaries, in particular the undef-model redundant-freeze theorem, need short non-definitional proofs."
+ },
+ {
+  "id": "freeze-insertion-sound",
+  "lean": [
+   "Toy.UB.poisonFreeze_insert_freeze_sound",
+   "Toy.UB.undef_insert_freeze_sound"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Follows from the definition of freeze and of value refinement (poison and undef sets are refined by any of their possible values; Lopes et al., PLDI 2021, Section 5.1); restated for the toy.",
+  "plain_claim": "At every width and for every expression e, rewriting e to freeze e is a refinement in the poison + freeze model and in the undef model (over environments of nonempty sets).",
+  "statement": "RefinesP w (tgt := freeze e) (src := e);  RefinesU w (tgt := freeze e) (src := e).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "e = if x then y else ub, which may reach UB in some environments (width 2, both models).",
+  "nonvacuity_witness_lean": "Toy.UB.nonvacuity_insert_freeze",
+  "supporting_lean": [
+   "Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound"
+  ],
+  "non_claims": [
+   "Inserting freeze is a refinement in isolation, but it removes poison (and the UB of branching on it) that later rewrites may depend on, so it does not commute with them: GVN on if x = y is sound (card poison-gvn-sound) but GVN on if freeze (x = y) is not (Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound).",
+   "Nothing is claimed about the cost or code-size effect of inserting freeze.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction and Poison Values: 'It is correct to replace a poison value with an undef value or any value of the type.'",
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 6 (pp. 642-643, paragraphs 'Optimizations' and 'Opportunities for improvement') describes optimizations that freeze blocked in the authors' prototype (lowering a branch on a frozen and/or into two jumps; moving a frozen comparison next to its branch) and notes that GVN does not yet fold equivalent freeze instructions; Section 7.2 (p. 644) reports a benchmark in which jump threading did not kick in because it did not know about freeze."
+  ],
+  "design_question": "Which algebraic laws of freeze (insertion, removal, duplication, merging) can an optimizer rely on in a semantics with poison and freeze?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.poisonFreeze_gvn_after_freezing_condition_unsound"
+  ]
+ },
+ {
+  "id": "freeze-removal-unsound",
+  "lean": [
+   "Toy.UB.poisonFreeze_remove_freeze_unsound",
+   "Toy.UB.undef_remove_freeze_unsound"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Converse of freeze insertion; follows from the definitions (poison refines no integer; a non-singleton undef set is contained in no singleton). Restated for the toy.",
+  "plain_claim": "Rewriting freeze x to x (x a variable) is not a refinement: in the poison + freeze model at every width (with x ↦ poison the target yields poison, which refines no integer), and in the undef model (over environments of nonempty sets) at every width w ≥ 1 (with x ↦ {0, 1} the target's value set is contained in no source singleton).",
+  "statement": "¬ RefinesP w (tgt := var x) (src := freeze (var x));  1 ≤ w → ¬ RefinesU w (tgt := var x) (src := freeze (var x)).",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w (undef part only)",
+    "purpose": "at width 0 every nonempty set is {0}, a singleton",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_remove_freeze_unsound_needs_width"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Poison part: every w. Undef part: every w ≥ 1; sound at w = 0 (Toy.UB.undef_remove_freeze_sound_width_zero).",
+  "nonvacuity_witness": "w = 2, x = 0: both statements instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_remove_freeze_unsound",
+   "Toy.UB.nonvacuity_width_two"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.poisonFreeze_remove_freeze_sound_of_no_poison",
+   "Toy.UB.poisonFreeze_remove_redundant_freeze_sound",
+   "Toy.UB.undef_remove_redundant_freeze_sound",
+   "Toy.UB.undef_remove_freeze_sound_width_zero"
+  ],
+  "non_claims": [
+   "Escape hatches (each proved): removing freeze from an operand that never yields poison is sound (Toy.UB.poisonFreeze_remove_freeze_sound_of_no_poison), in particular redundant-freeze elimination freeze (freeze e) -> freeze e in both models (Toy.UB.poisonFreeze_remove_redundant_freeze_sound, Toy.UB.undef_remove_redundant_freeze_sound).",
+   "Shown for a variable operand; for operands that are always well defined the rewrite can be sound, and no characterization is given beyond the never-poison condition.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited)."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction: freeze returns a fixed value on undef or poison, so removing it can re-expose poison or undef.",
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 6 (p. 642): freeze(freeze(x)) is folded to freeze(x)."
+  ],
+  "design_question": "Which algebraic laws of freeze (insertion, removal, duplication, merging) can an optimizer rely on in a semantics with poison and freeze?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "frozen-value-used-twice-even",
+  "lean": [
+   "Toy.UB.poisonFreeze_let_freeze_add_self_nonempty_even",
+   "Toy.UB.poisonFreeze_freeze_add_freeze_all_values_of_poison",
+   "Toy.UB.poisonFreeze_freeze_add_freeze_can_be_odd"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Restates the LLVM 19.1.0 Language Reference's freeze example (%z = add i32 %x, %x is even because all uses of %x observe the same value, while two freeze instructions may differ) for the toy.",
+  "plain_claim": "In the poison + freeze model, at every width w and in every environment, let a := freeze x; a + a has at least one outcome and every outcome is an even integer (never poison or UB); whereas with x ↦ poison, freeze x + freeze x has every w-bit integer as an outcome, in particular (for w ≥ 1) an odd one.",
+  "statement": "semP w ρ (letE a (freeze (var x)) (add (var a) (var a))) ≠ [] ∧ ∀ o ∈ semP w ρ (letE a (freeze (var x)) (add (var a) (var a))), ∃ v, o = val (int v) ∧ v.toNat % 2 = 0;  ∀ v, val (int v) ∈ semP w (fun _ => poison) (add (freeze (var x)) (freeze (var x)));  1 ≤ w → ∃ ρ v, val (int v) ∈ semP w ρ (add (freeze (var x)) (freeze (var x))) ∧ v.toNat % 2 = 1.",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w (odd outcome only)",
+    "purpose": "at width 0 every integer is 0, which is even",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_freeze_add_freeze_can_be_odd_needs_width"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w; the odd outcome needs w ≥ 1.",
+  "nonvacuity_witness": "w = 2, where the hypothesis 1 ≤ w holds (1 ≤ 2, stated by Toy.UB.nonvacuity_width_two); with x ↦ poison, let a := freeze x; a + a has the outcome 2, and freeze x + freeze x has an odd outcome.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_let_freeze_mem",
+   "Toy.UB.nonvacuity_width_two"
+  ],
+  "non_claims": [
+   "These are supporting facts for duplicate-freeze-unsound; they do not characterize the full outcome set of let a := freeze x; a + a for every environment (e.g. with x ↦ 0 its only outcome is 0).",
+   "Parity is used only as a convenient invariant distinguishing one frozen value used twice from two frozen values.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction example: '%z = add i32 %x, %x ; even number because all uses of %x observe the same value' and '%cmp = icmp eq i32 %x, %x2 ; can be true or false'.",
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 4 (p. 639): 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.'"
+  ],
+  "design_question": "Which algebraic laws of freeze (insertion, removal, duplication, merging) can an optimizer rely on in a semantics with poison and freeze?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "duplicate-freeze-unsound",
+  "lean": "Toy.UB.poisonFreeze_duplicate_freeze_unsound",
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Restates Lee et al. (PLDI 2017, Section 5.5, 'Pitfall 1: Freeze duplication') for the toy.",
+  "plain_claim": "In the poison + freeze model, at every width w ≥ 1 and for all variables x, a, duplicating a freeze - rewriting let a := freeze x; a + a to freeze x + freeze x - is not a refinement (with x ↦ poison the target may be odd, the source never is).",
+  "statement": "1 ≤ w → ¬ RefinesP w (tgt := add (freeze (var x)) (freeze (var x))) (src := letE a (freeze (var x)) (add (var a) (var a))).",
+  "hypotheses": [
+   {
+    "name": "hw : 1 ≤ w",
+    "purpose": "at width 0 every integer is 0",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.poisonFreeze_duplicate_freeze_unsound_needs_width"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic for all w ≥ 1; sound at w = 0 (Toy.UB.poisonFreeze_duplicate_freeze_sound_width_zero).",
+  "nonvacuity_witness": "w = 2, x = 0, a = 1: the statement instantiated.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_duplicate_freeze_unsound",
+   "Toy.UB.nonvacuity_width_two"
+  ],
+  "positive_control_lean": [
+   "Toy.UB.poisonFreeze_duplicate_freeze_sound_width_zero",
+   "Toy.UB.poisonFreeze_merge_freeze_sound",
+   "Toy.UB.poisonFreeze_duplicate_freeze_sound_at_int"
+  ],
+  "supporting_lean": [
+   "Toy.UB.poisonFreeze_let_freeze_add_self_nonempty_even",
+   "Toy.UB.poisonFreeze_freeze_add_freeze_can_be_odd",
+   "Toy.UB.poisonFreeze_duplicate_freeze_of_nonpoison_compound_unsound"
+  ],
+  "non_claims": [
+   "Escape hatch (proved): for an input known to be an integer rather than poison (a noundef-style precondition), the duplication is sound pointwise (Toy.UB.poisonFreeze_duplicate_freeze_sound_at_int). For a compound operand, 'never yields poison' is not enough: e = freeze y never yields poison, yet duplicating freeze e is unsound at width 2 because the two copies of e may differ (Toy.UB.poisonFreeze_duplicate_freeze_of_nonpoison_compound_unsound).",
+   "The reverse rewrite (merging two freezes into one let-bound freeze) is sound (card merge-freeze-sound).",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 5.5 ('Pitfall 1: Freeze duplication', p. 641): 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction: 'different freeze instructions may yield different values'."
+  ],
+  "design_question": "Which algebraic laws of freeze (insertion, removal, duplication, merging) can an optimizer rely on in a semantics with poison and freeze?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.poisonFreeze_let_freeze_add_self_nonempty_even",
+   "Toy.UB.poisonFreeze_freeze_add_freeze_can_be_odd",
+   "Toy.UB.poisonFreeze_duplicate_freeze_of_nonpoison_compound_unsound"
+  ]
+ },
+ {
+  "id": "merge-freeze-sound",
+  "lean": "Toy.UB.poisonFreeze_merge_freeze_sound",
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Lee et al. (PLDI 2017, Section 6) discuss folding equivalent freeze instructions in GVN, with the condition that all uses be replaced; restated for the toy with a generic operand.",
+  "plain_claim": "In the poison + freeze model, at every width, for every expression e and variable a, merging two freezes of the same operand - rewriting freeze e + freeze e to let a := freeze e; a + a - is a refinement.",
+  "statement": "RefinesP w (tgt := letE a (freeze e) (add (var a) (var a))) (src := add (freeze e) (freeze e)).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "e = freeze x, a = 5 (width 2).",
+  "nonvacuity_witness_lean": "Toy.UB.nonvacuity_merge_freeze",
+  "supporting_lean": [
+   "Toy.UB.poisonFreeze_partial_merge_freeze_unsound"
+  ],
+  "non_claims": [
+   "Merging is sound when every use of the eliminated freeze is redirected. Replacing only some uses is unsound: for every w ≥ 1, in let b1 := freeze x; let b2 := freeze x; (b2 = b2), replacing one use of b2 by b1 gives a program that can yield 0 while the source always yields 1 (Toy.UB.poisonFreeze_partial_merge_freeze_unsound).",
+   "The variable a is bound only in the target and is used only in a + a, so no freshness condition is needed in this statement; nothing is claimed for contexts where a is used elsewhere.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 6 (p. 643): 'for GVN to be sound for freeze it has to replace all uses of a given freeze instruction if it wants to replace one of the uses.'",
+   "LLVM Language Reference Manual, LLVM 19.1.0 release documentation, https://releases.llvm.org/19.1.0/docs/LangRef.html. 'freeze' Instruction: all uses of one freeze observe the same value."
+  ],
+  "design_question": "Which algebraic laws of freeze (insertion, removal, duplication, merging) can an optimizer rely on in a semantics with poison and freeze?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.poisonFreeze_partial_merge_freeze_unsound"
+  ]
+ },
+ {
+  "id": "poison-refines-eager-uninit",
+  "lean": [
+   "Toy.UB.poison_refines_eagerUninit_eq",
+   "Toy.UB.poison_refines_eagerUninit"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "That a deferred invalid value (poison) is weaker than an eagerly-UB one is noted informally by Lee et al. (PLDI 2017, Section 9, comparing Firm's 'Bad' value with poison); made precise here for a toy expression language.",
+  "plain_claim": "For every width w, eager environment ρ (each input initialized or not) and fixed program e: either the eager-uninitialized evaluation of e (reading an uninitialized input is UB) may reach UB, or every poison(+freeze)-model outcome of e on the same environment read with uninitialized ↦ poison is equal to an eager outcome; in particular the poison(+freeze)-model outcomes refine the eager ones.",
+  "statement": "OutRef (· = ·) (semP w (toPoisonEnv ρ) e) ((semE w ρ e).map Outcome.toP);  corollary: OutRef PVal.Refines (semP w (toPoisonEnv ρ) e) ((semE w ρ e).map Outcome.toP).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "let y := x; 0 with x uninitialized (width 2): eager UB, poison result 0, and the refinement holds; also if x then 3 else y with x ↦ 1, y uninitialized.",
+  "nonvacuity_witness_lean": [
+   "Toy.UB.nonvacuity_poison_refines_eagerUninit_live",
+   "Toy.UB.nonvacuity_poison_refines_eagerUninit"
+  ],
+  "supporting_lean": [
+   "Toy.UB.semE_spec",
+   "Toy.UB.dead_read_insertion_poison_sound_eager_unsound",
+   "Toy.UB.mul_zero_to_branch_eager_sound_poison_unsound",
+   "Toy.UB.outRef_mono_rel"
+  ],
+  "non_claims": [
+   "Because eager outcomes never contain poison, the refinement uses only equality of integers (the strict form poison_refines_eagerUninit_eq); the poison clause of PVal.Refines is never exercised.",
+   "The eager reading is a toy: each input is wholly initialized or wholly uninitialized, reading an uninitialized input at integer type is immediate UB, let only ever binds initialized values, and freeze is the identity (so freeze x with x uninitialized is UB, because the read happens first; Toy.UB.semE_freeze_uninit_example). There are no bytes, padding, unions or untyped copies.",
+   "Nothing is claimed about lowering Rust to LLVM IR: Rust values passed or returned with LLVM noundef attributes make poison immediate UB at those points (LLVM 19.1.0 Language Reference, noundef), and Rust permits uninitialized bytes in padding and unions (MaybeUninit) without UB; neither is modelled.",
+   "The comparison is per fixed program and environment. It does not transfer the soundness of rewrites between the readings in either direction: inserting a dead read (0 -> let y := x; 0) is sound with poison and unsound eagerly (Toy.UB.dead_read_insertion_poison_sound_eager_unsound), while x * 0 -> if x then 0 else 0 is sound eagerly and unsound with poison (Toy.UB.mul_zero_to_branch_eager_sound_poison_unsound).",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 9 (p. 645): 'Firm additionally has the concept of a \"Bad\" value, the use of which triggers UB. This semantics is stronger than LLVM's poison'.",
+   "The Rust Reference, Rust 1.83.0, \"Behavior considered undefined\", https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html. Under 'Producing an invalid value': 'An integer (i*/u*), floating point value (f*), or raw pointer must be initialized, i.e., must not be obtained from uninitialized memory.' The toy's eager reading mirrors this rule for whole integer inputs only.",
+   "Jung. \"'What The Hardware Does' is not What Your Program Does: Uninitialized Memory.\" Blog post, 14 July 2019, https://www.ralfj.de/blog/2019/07/14/uninit.html. Informal account of uninitialized memory in the Rust/C abstract machine as bytes that may be absent ('Option<u8>'), relating the absent byte to LLVM's poison.",
+   "Lobo, McIver, Mitenkov, Lee, Sundararajah, Lopes. \"Towards Removing Undef Values from LLVM IR.\" Proc. ACM Program. Lang. 10 (PLDI), Article 172, 2026. DOI 10.1145/3808250. Proposes a raw byte type and a freezing load so that uninitialized memory in LLVM can be modelled with poison rather than undef (context; not formalized here).",
+   "Memarian, Gomes, Davis, Kell, Richardson, Watson, Sewell. \"Exploring C Semantics and Pointer Provenance.\" Proc. ACM Program. Lang. 3 (POPL), Article 67, 2019. DOI 10.1145/3290380. Section 1 states that the paper does not address uninitialised values; cited only as contrast."
+  ],
+  "design_question": "Can uninitialized reads be modelled as poison instead of immediate UB, and what does the choice change for a verifier comparing programs under the two readings?",
+  "proof_status": "proved",
+  "lean_names": [
+   "Toy.UB.semE_spec",
+   "Toy.UB.dead_read_insertion_poison_sound_eager_unsound",
+   "Toy.UB.mul_zero_to_branch_eager_sound_poison_unsound",
+   "Toy.UB.outRef_mono_rel"
+  ]
+ },
+ {
+  "id": "eager-uninit-does-not-refine-poison",
+  "lean": "Toy.UB.eagerUninit_not_refines_poison",
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "The converse direction of poison-refines-eager-uninit; a concrete instance of the Firm-versus-poison remark of Lee et al. (PLDI 2017, Section 9).",
+  "plain_claim": "For every width w, with every input uninitialized, the program let y := x; 0 (which reads x and discards it) is UB in the eager-uninitialized reading but returns 0 in the poison reading, so eager outcomes do not refine poison outcomes in general.",
+  "statement": "¬ OutRef PVal.Refines ((semE w (fun _ => none) (letE 1 (var 0) (const 0))).map Outcome.toP) (semP w (toPoisonEnv fun _ => none) (letE 1 (var 0) (const 0))).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "width_dependence": "Generic in w, including w = 0.",
+  "nonvacuity_witness": "The statement is a concrete counterexample at every width.",
+  "nonvacuity_witness_lean": "Toy.UB.eagerUninit_not_refines_poison",
+  "non_claims": [
+   "This shows that the eager reading is strictly stronger (more UB) than the poison reading on one program; it does not say that either reading is the right model for any language.",
+   "The eager reading is a toy: each input is wholly initialized or wholly uninitialized, reading an uninitialized input at integer type is immediate UB, let only ever binds initialized values, and freeze is the identity (so freeze x with x uninitialized is UB, because the read happens first; Toy.UB.semE_freeze_uninit_example). There are no bytes, padding, unions or untyped copies.",
+   "Nothing is claimed about lowering Rust to LLVM IR: Rust values passed or returned with LLVM noundef attributes make poison immediate UB at those points (LLVM 19.1.0 Language Reference, noundef), and Rust permits uninitialized bytes in padding and unions (MaybeUninit) without UB; neither is modelled.",
+   "The comparison is per fixed program and environment. It does not transfer the soundness of rewrites between the readings in either direction: inserting a dead read (0 -> let y := x; 0) is sound with poison and unsound eagerly (Toy.UB.dead_read_insertion_poison_sound_eager_unsound), while x * 0 -> if x then 0 else 0 is sound eagerly and unsound with poison (Toy.UB.mul_zero_to_branch_eager_sound_poison_unsound).",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite."
+  ],
+  "prior_art": [
+   "Lee, Kim, Song, Hur, Das, Majnemer, Regehr, Lopes. \"Taming Undefined Behavior in LLVM.\" PLDI 2017, pp. 633-647. DOI 10.1145/3062341.3062343. Section 9 (p. 645): Firm's 'Bad' value, 'the use of which triggers UB', is stronger than LLVM's poison.",
+   "The Rust Reference, Rust 1.83.0, \"Behavior considered undefined\", https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html. 'Behavior considered undefined', 'Producing an invalid value' (integers must be initialized)."
+  ],
+  "design_question": "Can uninitialized reads be modelled as poison instead of immediate UB, and what does the choice change for a verifier comparing programs under the two readings?",
+  "proof_status": "proved"
+ },
+ {
+  "id": "semantics-total",
+  "lean": [
+   "Toy.UB.semP_ne_nil",
+   "Toy.UB.semU_ne_nil",
+   "Toy.UB.refinesP_iff_outRefNE",
+   "Toy.UB.refinesU_iff_outRefNE"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Totality of the outcome semantics is a routine sanity property; stated so that no refinement result can be satisfied by an empty target.",
+  "plain_claim": "At every width, every expression has at least one outcome in every poison(+freeze)-model environment and in every undef-model environment that binds each variable to a nonempty set; consequently RefinesP and RefinesU are equivalent to the variants that additionally require a nonempty target outcome list, so no refinement result in this package holds because a target has no outcomes.",
+  "statement": "semP w ρ e ≠ [];  UInhabited ρ → semU w ρ e ≠ [];  RefinesP w tgt src ↔ ∀ ρ, OutRefNE PVal.Refines (semP w ρ tgt) (semP w ρ src);  RefinesU w tgt src ↔ ∀ ρ, UInhabited ρ → OutRefNE USet.Sub (semU w ρ tgt) (semU w ρ src);  OutRefNE R T S := MayUB S ∨ ((S ≠ [] → T ≠ []) ∧ ∀ o ∈ T, ∃ o' ∈ S, LeVal R o o').",
+  "hypotheses": [
+   {
+    "name": "UInhabited ρ (undef model)",
+    "purpose": "with an empty input set, if on that input has no outcome",
+    "tightness": "tight",
+    "counterexample": "Toy.UB.undef_unswitch_empty_input_target_has_no_outcomes"
+   }
+  ],
+  "depth": "shallow",
+  "width_dependence": "Generic in w.",
+  "nonvacuity_witness": "if freeze x then y else ub at width 2 in both models, and the OutRefNE form of 2*x refining x+x. The undef-model environment used (every variable bound to {0}) satisfies UInhabited; that fact is stated as a theorem in Toy.UB.uInhabited_examples (which also shows that the all-empty environment is not inhabited).",
+  "nonvacuity_witness_lean": "Toy.UB.nonvacuity_semantics_total",
+  "non_claims": [
+   "Totality is about the number of outcomes, not termination or absence of UB; programs may still have UB outcomes.",
+   "OutRef itself still accepts an empty target (Toy.UB.outRef_example_empty_target); the equivalence holds for this package's semantics, not for arbitrary outcome lists.",
+   "The language is a toy (first-order expressions over w-bit integers with let, +, *, an equality test, if, freeze and an explicit ub); it is not LLVM IR, Rust MIR, or any production IR, and no result is a theorem about LLVM or Rust.",
+   "The models have no memory, pointers, loads/stores, loops, function calls, select/phi, floating point, or integer types of different widths; nothing is shown about those features.",
+   "No operation creates an invalid value from valid operands: + and * wrap modulo 2^w (there are no nsw/nuw overflow-poison flags), and there are no shifts, division or remainder. Invalid values enter only through inputs, and UB only through ub or, in the poison model, through branching.",
+   "Refinement is written RefinesU w tgt src / RefinesP w tgt src with the target first: rewriting src to tgt is sound exactly when the statement holds. Reading the arguments in the other order inverts the rewrite.",
+   "In the undef model a value is an arbitrary nonempty set of w-bit integers (the power-set reading of undefined values in Lopes et al., PLDI 2021, Figure 2), not a pattern of defined and undefined bits; RefinesU quantifies only over environments that bind every variable to a nonempty set (UInhabited).",
+   "In the undef model, if commits to a branch at the level of outcomes (with c bound to {0, 1}, if c then 1 else 0 has the two outcomes {1} and {0}, not the single value {0, 1}; Toy.UB.semU_ite_commits_example): it models a conditional branch whose direction is chosen nondeterministically, not a select instruction, and branching on an undef value is never UB. The LLVM 19.1.0 Language Reference states the rule 'Branching on an undefined value is undefined behavior' (while an example discussion in the same section says undefined select and conditional branch conditions 'can go either way'); undef-model results involving if therefore describe the nondeterministic-branch reading only, not LLVM 19.1.0's rule for br."
+  ],
+  "prior_art": [
+   "Lopes, Lee, Hur, Liu, Regehr. \"Alive2: Bounded Translation Validation for LLVM.\" PLDI 2021, pp. 65-79. DOI 10.1145/3453483.3454030. Section 5.2 (pp. 71-72): refinement quantifies over target behaviours, so a target with no behaviour would satisfy it vacuously; the toy semantics are shown never to produce that case."
+  ],
+  "design_question": "How must refinement between programs with undefined values be defined (value-level, permissive after source UB, aware of nondeterminism) so that it is a preorder and composes through every language construct, and which candidate definitions fail?",
+  "proof_status": "proved",
+  "supporting_lean": [
+   "Toy.UB.uInhabited_examples"
+  ]
+ }
+]

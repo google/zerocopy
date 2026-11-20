@@ -1,0 +1,6 @@
+name = "toy-ub"
+version = "0.1.0"
+defaultTargets = ["ToyUB"]
+
+[[lean_lib]]
+name = "ToyUB"

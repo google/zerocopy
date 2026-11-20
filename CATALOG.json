@@ -79177,6 +79177,108 @@
         "isa/sum-factorization"
       ]
     },
+    "undefined-values-poison-undef-freeze-and-refinement": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/LangRef.rst",
+            "repository": "llvm/llvm-project",
+            "revision": "a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4",
+            "url": "https://releases.llvm.org/19.1.0/docs/LangRef.html",
+            "version": "llvmorg-19.1.0"
+          },
+          "name": "LLVM Language Reference Manual (LLVM 19.1.0)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343"
+          },
+          "name": "Taming Undefined Behavior in LLVM (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3473572"
+          },
+          "name": "Modular, Compositional, and Executable Formal Semantics for LLVM IR (ICFP 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2024.9"
+          },
+          "name": "Verifying Peephole Rewriting in SSA Compiler IRs (ITP 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2737965"
+          },
+          "name": "Provably Correct Peephole Optimizations with Alive (PLDI 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192377"
+          },
+          "name": "Crellvm: Verified Credible Compilation for LLVM (PLDI 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3808250"
+          },
+          "name": "Towards Removing Undef Values from LLVM IR (PLDI 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380"
+          },
+          "name": "Exploring C Semantics and Pointer Provenance (POPL 2019)"
+        },
+        {
+          "identity": {
+            "url": "https://doc.rust-lang.org/1.83.0/reference/behavior-considered-undefined.html",
+            "version": "1.83.0"
+          },
+          "name": "The Rust Reference, Behavior considered undefined (Rust 1.83.0)"
+        },
+        {
+          "identity": {
+            "date": "2019-07-14",
+            "source_path": "personal/_posts/2019-07-14-uninit.md",
+            "source_repository": "https://git.ralfj.de/web.git",
+            "source_revision": "ad96fffd4618ba6e126cc16214a04cf3902f5d99",
+            "url": "https://www.ralfj.de/blog/2019/07/14/uninit.html"
+          },
+          "name": "What The Hardware Does is not What Your Program Does: Uninitialized Memory (blog post)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/undefined-behavior",
+        "compilers/undef-poison-freeze",
+        "compilers/peephole-optimization",
+        "lean",
+        "lean/mechanization",
+        "pl",
+        "pl/semantics",
+        "pl/nondeterminism",
+        "verification",
+        "verification/formalized-results",
+        "verification/refinement"
+      ]
+    },
     "unicode-encoding-transducers-and-verified-ui-accessibility-layouts": {
       "observed_at": "2026-11-19",
       "subjects": [
