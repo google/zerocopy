@@ -1,0 +1,182 @@
+{
+  "topics": [
+    "isa/x86-64",
+    "isa/aarch64",
+    "isa/armv7",
+    "verification/isa-semantics",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "K-Framework x86-64 user-level ISA semantics",
+      "identity": {
+        "repository": "kframework/X86-64-semantics",
+        "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+      }
+    },
+    {
+      "name": "ACL2 theorem prover and x86isa / rtl/rel11 community books",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "08bec1884997560686932229dbfe458c1bba34bf"
+      }
+    },
+    {
+      "name": "ACL2-to-Sail translator and generated Sail x86 model",
+      "identity": {
+        "repository": "rems-project/sail-x86-from-acl2",
+        "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf"
+      }
+    },
+    {
+      "name": "L3 ISA specification language and x86-64 / ARMv7 / ARMv8 models",
+      "identity": {
+        "repository": "coruus/L3",
+        "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+      }
+    },
+    {
+      "name": "HOL4 theorem prover and l3-machine-code / machine-code x86 and Arm theories",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+      }
+    },
+    {
+      "name": "s2n-bignum HOL Light x86_64 and AArch64 formal models and cryptographic proofs",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "CSLib Lean 4 translation of s2n-bignum specifications",
+      "identity": {
+        "repository": "cslib-community/bignum",
+        "revision": "1b3952cba6438a6a03da02ff207deb6c93e7d4eb"
+      }
+    },
+    {
+      "name": "Kraken Rust-to-Lean assembly verification orchestrator",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "3acb3ee4a7e6711d198cb1a124bb892de9dac5d4"
+      }
+    },
+    {
+      "name": "Intel X86 Encoder Decoder (XED)",
+      "identity": {
+        "repository": "intelxed/xed",
+        "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+      }
+    },
+    {
+      "name": "XED-to-XML machine-readable x86 instruction variant generator for uops.info",
+      "identity": {
+        "repository": "andreas-abel/XED-to-XML",
+        "revision": "56fe1b1c228c2407fbde6b2de24b7b39d1e8da9a"
+      }
+    },
+    {
+      "name": "uiCA (uops.info Code Analyzer) x86-64 microarchitectural throughput simulator",
+      "identity": {
+        "repository": "andreas-abel/uiCA",
+        "revision": "6ebeeab0f8705cae4b17a9362f9c65ef91f5cc44"
+      }
+    },
+    {
+      "name": "ASLp partial evaluator and Reduced ASL (rASL) lifter for Armv8/v9",
+      "identity": {
+        "repository": "UQ-PAC/aslp",
+        "revision": "92e4fd949402056e16e3747e66922060be57ecc8"
+      }
+    },
+    {
+      "name": "REMS Machine Readable Architecture (MRA) XML-to-ASL extraction tools",
+      "identity": {
+        "repository": "rems-project/mra_tools",
+        "revision": "941317606f36580f668498889abc6301ed8222d8"
+      }
+    },
+    {
+      "name": "Sail ARMv8.5-A and ARMv9.4-A formal ISA specifications",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+      }
+    },
+    {
+      "name": "LNSym native Lean 4 AArch64 operational semantics and symbolic simulator",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+      "identity": {
+        "standard": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+        "document_number": "325462"
+      }
+    },
+    {
+      "name": "Arm Architecture Reference Manual for A-profile architecture",
+      "identity": {
+        "standard": "Arm Architecture Reference Manual for A-profile architecture",
+        "document_number": "ARM DDI 0487"
+      }
+    },
+    {
+      "name": "Dasgupta et al., A Complete Formal Semantics of x86-64 User-Level Instruction Set Architecture (PLDI 2019)",
+      "identity": {
+        "doi": "10.1145/3314221.3314601"
+      }
+    },
+    {
+      "name": "Goel, The x86isa Books: Features, Usage, and Future Plans (ACL2 2017)",
+      "identity": {
+        "doi": "10.4204/EPTCS.249.1",
+        "arxiv": "1705.01225"
+      }
+    },
+    {
+      "name": "Goel and Coglio, Adding 32-bit Mode to the ACL2 Model of the x86 ISA (ACL2 2018)",
+      "identity": {
+        "doi": "10.4204/EPTCS.280.6",
+        "arxiv": "1810.04313"
+      }
+    },
+    {
+      "name": "Abel and Reineke, uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures (ASPLOS 2019)",
+      "identity": {
+        "doi": "10.1145/3297858.3304062"
+      }
+    },
+    {
+      "name": "Abel and Reineke, uiCA: Accurate Throughput Prediction of Basic Blocks on Recent Intel Microarchitectures (ICS 2022)",
+      "identity": {
+        "doi": "10.1145/3524059.3532396"
+      }
+    },
+    {
+      "name": "Lam and Coughlin, Lift-off: Trustworthy ARMv8 Semantics from Formal Specifications (FMCAD 2023)",
+      "identity": {
+        "doi": "10.34727/2023/isbn.978-3-85448-060-0_36"
+      }
+    },
+    {
+      "name": "Armstrong et al., ISA Semantics for ARMv8-a, RISC-V, and CHERI-MIPS (POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290384"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

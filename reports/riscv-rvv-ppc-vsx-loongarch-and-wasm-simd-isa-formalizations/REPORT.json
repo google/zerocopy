@@ -1,0 +1,215 @@
+{
+  "topics": [
+    "isa/riscv64",
+    "isa/ppc64",
+    "isa/loongarch64",
+    "isa/mips",
+    "isa/wasm",
+    "verification/isa-semantics",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Official Sail RISC-V ISA specification (RV64, RVV 1.0, Zba/Zbb, Zvk*)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "OpenCompl Sail-generated Lean 4 RV64D + RVV + Zba/Zbb semantics",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "OpenCompl purified BitVec Lean 4 RISC-V dialect and Sail equivalence",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+      }
+    },
+    {
+      "name": "RISC-V Vector Extension Specification v1.0",
+      "identity": {
+        "repository": "riscvarchive/riscv-v-spec",
+        "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34"
+      }
+    },
+    {
+      "name": "RISC-V Instruction Set Manual (Unprivileged and Privileged)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "OpenPOWER SDK machine-readable Power ISA JSON extraction",
+      "identity": {
+        "repository": "open-power-sdk/PowerISA",
+        "revision": "ea48c49e9fe0271106e2e540cb6cbccad20c8afe"
+      }
+    },
+    {
+      "name": "Microwatt OpenPOWER VHDL 2008 softcore",
+      "identity": {
+        "repository": "antonblanchard/microwatt",
+        "revision": "f341bed306a9a7281bf65200df8cc1f0a002617d"
+      }
+    },
+    {
+      "name": "Sail specification language and legacy Power / MIPS snapshots",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "RMEM operational concurrency explorer for Power, ARM, RISC-V, and MIPS",
+      "identity": {
+        "repository": "rems-project/rmem",
+        "revision": "b2d346393eaa83d84c657eeec7d70b01b0656643"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (PowerPC backend)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Official LoongArch Reference Manual AsciiDoc repository",
+      "identity": {
+        "repository": "loongson/LoongArch-Documentation",
+        "revision": "e0d6592229d9e00e512bd28b688a7f20b171714f"
+      }
+    },
+    {
+      "name": "LoongArch machine-readable opcode and operand format tables (LSX/LASX)",
+      "identity": {
+        "repository": "loongson-community/loongarch-opcodes",
+        "revision": "e269905901feb91e13444c0ce4b52f6ea06e9969"
+      }
+    },
+    {
+      "name": "Sail formal specification of 64-bit MIPS and CHERI-MIPS",
+      "identity": {
+        "repository": "CTSRD-CHERI/sail-cheri-mips",
+        "revision": "13a9c3fb0c3f8d320d4f4650a63d23d3a8b12724"
+      }
+    },
+    {
+      "name": "L3 64-bit MIPS III ISA specification",
+      "identity": {
+        "repository": "coruus/L3",
+        "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+      }
+    },
+    {
+      "name": "Official WebAssembly 3.0 specification, OCaml reference interpreter, and SpecTec integration",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe"
+      }
+    },
+    {
+      "name": "SpecTec formal specification DSL and toolchain for WebAssembly",
+      "identity": {
+        "repository": "Wasm-DSL/spectec",
+        "revision": "acc6e834ff403c82554d081237f327346190ad96"
+      }
+    },
+    {
+      "name": "WebAssembly 128-bit packed SIMD specification archive",
+      "identity": {
+        "repository": "WebAssembly/simd",
+        "revision": "a78b98a6899c9e91a13095e560767af6e99d98fd"
+      }
+    },
+    {
+      "name": "WebAssembly Relaxed-SIMD specification repository",
+      "identity": {
+        "repository": "WebAssembly/relaxed-simd",
+        "revision": "c3f9359af2cd607cc46b0a3274f90ea52543a2f2"
+      }
+    },
+    {
+      "name": "WasmCert-Isabelle mechanization of WebAssembly",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Isabelle",
+        "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+      }
+    },
+    {
+      "name": "WasmCert-Coq (Rocq) mechanization of WebAssembly 2.0",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Coq",
+        "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8"
+      }
+    },
+    {
+      "name": "OpenPOWER Foundation Power ISA Specification",
+      "identity": {
+        "standard": "OpenPOWER Power ISA",
+        "version": "v3.1C"
+      }
+    },
+    {
+      "name": "MIPS Architecture for Programmers Volume IV-j: The MIPS64 SIMD Architecture Module",
+      "identity": {
+        "standard": "MIPS64 SIMD Architecture Module",
+        "document_number": "MD00867"
+      }
+    },
+    {
+      "name": "W3C WebAssembly Core Specification",
+      "identity": {
+        "standard": "WebAssembly Core Specification",
+        "version": "3.0"
+      }
+    },
+    {
+      "name": "Breitner et al., Bringing the WebAssembly Standard up to Speed with SpecTec (PLDI 2024)",
+      "identity": {
+        "doi": "10.1145/3656440",
+        "arxiv": "2311.07223"
+      }
+    },
+    {
+      "name": "Watt et al., Two Mechanisations of WebAssembly 1.0 (FM 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-90870-6_4"
+      }
+    },
+    {
+      "name": "Rao et al., Iris-Wasm: Robust and Modular Verification of WebAssembly Programs (PLDI 2023)",
+      "identity": {
+        "doi": "10.1145/3591265"
+      }
+    },
+    {
+      "name": "Armstrong et al., ISA Semantics for ARMv8-a, RISC-V, and CHERI-MIPS (POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "Node.js V8 WebAssembly JIT runtime",
+      "identity": {
+        "artifact": "node",
+        "version": "v24.21.0",
+        "platform": "linux-x86_64"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

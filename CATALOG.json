@@ -49615,6 +49615,221 @@
         "tooling"
       ]
     },
+    "riscv-rvv-ppc-vsx-loongarch-and-wasm-simd-isa-formalizations": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+          },
+          "name": "Official Sail RISC-V ISA specification (RV64, RVV 1.0, Zba/Zbb, Zvk*)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "OpenCompl Sail-generated Lean 4 RV64D + RVV + Zba/Zbb semantics"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+          },
+          "name": "OpenCompl purified BitVec Lean 4 RISC-V dialect and Sail equivalence"
+        },
+        {
+          "identity": {
+            "repository": "riscvarchive/riscv-v-spec",
+            "revision": "2f68ef7256d6ec53e4d2bd7cb12862f406d64e34"
+          },
+          "name": "RISC-V Vector Extension Specification v1.0"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Instruction Set Manual (Unprivileged and Privileged)"
+        },
+        {
+          "identity": {
+            "repository": "open-power-sdk/PowerISA",
+            "revision": "ea48c49e9fe0271106e2e540cb6cbccad20c8afe"
+          },
+          "name": "OpenPOWER SDK machine-readable Power ISA JSON extraction"
+        },
+        {
+          "identity": {
+            "repository": "antonblanchard/microwatt",
+            "revision": "f341bed306a9a7281bf65200df8cc1f0a002617d"
+          },
+          "name": "Microwatt OpenPOWER VHDL 2008 softcore"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail specification language and legacy Power / MIPS snapshots"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/rmem",
+            "revision": "b2d346393eaa83d84c657eeec7d70b01b0656643"
+          },
+          "name": "RMEM operational concurrency explorer for Power, ARM, RISC-V, and MIPS"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (PowerPC backend)"
+        },
+        {
+          "identity": {
+            "repository": "loongson/LoongArch-Documentation",
+            "revision": "e0d6592229d9e00e512bd28b688a7f20b171714f"
+          },
+          "name": "Official LoongArch Reference Manual AsciiDoc repository"
+        },
+        {
+          "identity": {
+            "repository": "loongson-community/loongarch-opcodes",
+            "revision": "e269905901feb91e13444c0ce4b52f6ea06e9969"
+          },
+          "name": "LoongArch machine-readable opcode and operand format tables (LSX/LASX)"
+        },
+        {
+          "identity": {
+            "repository": "CTSRD-CHERI/sail-cheri-mips",
+            "revision": "13a9c3fb0c3f8d320d4f4650a63d23d3a8b12724"
+          },
+          "name": "Sail formal specification of 64-bit MIPS and CHERI-MIPS"
+        },
+        {
+          "identity": {
+            "repository": "coruus/L3",
+            "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+          },
+          "name": "L3 64-bit MIPS III ISA specification"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/spec",
+            "revision": "d0b2e8d5544d2049fba0521922c436e3f0fcaebe"
+          },
+          "name": "Official WebAssembly 3.0 specification, OCaml reference interpreter, and SpecTec integration"
+        },
+        {
+          "identity": {
+            "repository": "Wasm-DSL/spectec",
+            "revision": "acc6e834ff403c82554d081237f327346190ad96"
+          },
+          "name": "SpecTec formal specification DSL and toolchain for WebAssembly"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/simd",
+            "revision": "a78b98a6899c9e91a13095e560767af6e99d98fd"
+          },
+          "name": "WebAssembly 128-bit packed SIMD specification archive"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/relaxed-simd",
+            "revision": "c3f9359af2cd607cc46b0a3274f90ea52543a2f2"
+          },
+          "name": "WebAssembly Relaxed-SIMD specification repository"
+        },
+        {
+          "identity": {
+            "repository": "WasmCert/WasmCert-Isabelle",
+            "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+          },
+          "name": "WasmCert-Isabelle mechanization of WebAssembly"
+        },
+        {
+          "identity": {
+            "repository": "WasmCert/WasmCert-Coq",
+            "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8"
+          },
+          "name": "WasmCert-Coq (Rocq) mechanization of WebAssembly 2.0"
+        },
+        {
+          "identity": {
+            "standard": "OpenPOWER Power ISA",
+            "version": "v3.1C"
+          },
+          "name": "OpenPOWER Foundation Power ISA Specification"
+        },
+        {
+          "identity": {
+            "document_number": "MD00867",
+            "standard": "MIPS64 SIMD Architecture Module"
+          },
+          "name": "MIPS Architecture for Programmers Volume IV-j: The MIPS64 SIMD Architecture Module"
+        },
+        {
+          "identity": {
+            "standard": "WebAssembly Core Specification",
+            "version": "3.0"
+          },
+          "name": "W3C WebAssembly Core Specification"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.07223",
+            "doi": "10.1145/3656440"
+          },
+          "name": "Breitner et al., Bringing the WebAssembly Standard up to Speed with SpecTec (PLDI 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-90870-6_4"
+          },
+          "name": "Watt et al., Two Mechanisations of WebAssembly 1.0 (FM 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3591265"
+          },
+          "name": "Rao et al., Iris-Wasm: Robust and Modular Verification of WebAssembly Programs (PLDI 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384"
+          },
+          "name": "Armstrong et al., ISA Semantics for ARMv8-a, RISC-V, and CHERI-MIPS (POPL 2019)"
+        },
+        {
+          "identity": {
+            "artifact": "node",
+            "platform": "linux-x86_64",
+            "version": "v24.21.0"
+          },
+          "name": "Node.js V8 WebAssembly JIT runtime"
+        }
+      ],
+      "topics": [
+        "isa/riscv64",
+        "isa/ppc64",
+        "isa/loongarch64",
+        "isa/mips",
+        "isa/wasm",
+        "verification/isa-semantics",
+        "lean/mechanization"
+      ]
+    },
     "riscv-zkvms-risc0-sp1-jolt-lasso-lookup-arguments-and-air-underconstraint-bugs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -70270,6 +70485,188 @@
         "rust/unsafe",
         "verification",
         "lean"
+      ]
+    },
+    "x86-64-and-aarch64-simd-isa-formalizations-sail-asl-acl2-hol-k-comparison": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg multimedia framework"
+        },
+        {
+          "identity": {
+            "repository": "kframework/X86-64-semantics",
+            "revision": "592380aea04820ea11cfa5475b343f0257f2474e"
+          },
+          "name": "K-Framework x86-64 user-level ISA semantics"
+        },
+        {
+          "identity": {
+            "repository": "acl2/acl2",
+            "revision": "08bec1884997560686932229dbfe458c1bba34bf"
+          },
+          "name": "ACL2 theorem prover and x86isa / rtl/rel11 community books"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-x86-from-acl2",
+            "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf"
+          },
+          "name": "ACL2-to-Sail translator and generated Sail x86 model"
+        },
+        {
+          "identity": {
+            "repository": "coruus/L3",
+            "revision": "d6558e679a25ffaaf16a47a3189f8f8111e45e0c"
+          },
+          "name": "L3 ISA specification language and x86-64 / ARMv7 / ARMv8 models"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+          },
+          "name": "HOL4 theorem prover and l3-machine-code / machine-code x86 and Arm theories"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "280a220986a0bc6249248187717a771153d073db"
+          },
+          "name": "s2n-bignum HOL Light x86_64 and AArch64 formal models and cryptographic proofs"
+        },
+        {
+          "identity": {
+            "repository": "cslib-community/bignum",
+            "revision": "1b3952cba6438a6a03da02ff207deb6c93e7d4eb"
+          },
+          "name": "CSLib Lean 4 translation of s2n-bignum specifications"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/kraken",
+            "revision": "3acb3ee4a7e6711d198cb1a124bb892de9dac5d4"
+          },
+          "name": "Kraken Rust-to-Lean assembly verification orchestrator"
+        },
+        {
+          "identity": {
+            "repository": "intelxed/xed",
+            "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+          },
+          "name": "Intel X86 Encoder Decoder (XED)"
+        },
+        {
+          "identity": {
+            "repository": "andreas-abel/XED-to-XML",
+            "revision": "56fe1b1c228c2407fbde6b2de24b7b39d1e8da9a"
+          },
+          "name": "XED-to-XML machine-readable x86 instruction variant generator for uops.info"
+        },
+        {
+          "identity": {
+            "repository": "andreas-abel/uiCA",
+            "revision": "6ebeeab0f8705cae4b17a9362f9c65ef91f5cc44"
+          },
+          "name": "uiCA (uops.info Code Analyzer) x86-64 microarchitectural throughput simulator"
+        },
+        {
+          "identity": {
+            "repository": "UQ-PAC/aslp",
+            "revision": "92e4fd949402056e16e3747e66922060be57ecc8"
+          },
+          "name": "ASLp partial evaluator and Reduced ASL (rASL) lifter for Armv8/v9"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/mra_tools",
+            "revision": "941317606f36580f668498889abc6301ed8222d8"
+          },
+          "name": "REMS Machine Readable Architecture (MRA) XML-to-ASL extraction tools"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail-arm",
+            "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+          },
+          "name": "Sail ARMv8.5-A and ARMv9.4-A formal ISA specifications"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/LNSym",
+            "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+          },
+          "name": "LNSym native Lean 4 AArch64 operational semantics and symbolic simulator"
+        },
+        {
+          "identity": {
+            "document_number": "325462",
+            "standard": "Intel 64 and IA-32 Architectures Software Developer's Manual"
+          },
+          "name": "Intel 64 and IA-32 Architectures Software Developer's Manual"
+        },
+        {
+          "identity": {
+            "document_number": "ARM DDI 0487",
+            "standard": "Arm Architecture Reference Manual for A-profile architecture"
+          },
+          "name": "Arm Architecture Reference Manual for A-profile architecture"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314601"
+          },
+          "name": "Dasgupta et al., A Complete Formal Semantics of x86-64 User-Level Instruction Set Architecture (PLDI 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "1705.01225",
+            "doi": "10.4204/EPTCS.249.1"
+          },
+          "name": "Goel, The x86isa Books: Features, Usage, and Future Plans (ACL2 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1810.04313",
+            "doi": "10.4204/EPTCS.280.6"
+          },
+          "name": "Goel and Coglio, Adding 32-bit Mode to the ACL2 Model of the x86 ISA (ACL2 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3297858.3304062"
+          },
+          "name": "Abel and Reineke, uops.info: Characterizing Latency, Throughput, and Port Usage of Instructions on Intel Microarchitectures (ASPLOS 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3524059.3532396"
+          },
+          "name": "Abel and Reineke, uiCA: Accurate Throughput Prediction of Basic Blocks on Recent Intel Microarchitectures (ICS 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.34727/2023/isbn.978-3-85448-060-0_36"
+          },
+          "name": "Lam and Coughlin, Lift-off: Trustworthy ARMv8 Semantics from Formal Specifications (FMCAD 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384"
+          },
+          "name": "Armstrong et al., ISA Semantics for ARMv8-a, RISC-V, and CHERI-MIPS (POPL 2019)"
+        }
+      ],
+      "topics": [
+        "isa/x86-64",
+        "isa/aarch64",
+        "isa/armv7",
+        "verification/isa-semantics",
+        "lean/mechanization"
       ]
     },
     "x86-avx512-short-loop-regression-and-vector-width-profitability": {
