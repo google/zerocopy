@@ -15,11 +15,13 @@ those terms. -->
 
 Anneal is a formal verification framework for Rust. It allows engineers to
 prove that Rust crates—including crates that rely on `unsafe` pointers, custom
-memory layouts, interior mutability, and inline assembly—cannot trigger
-undefined behavior (UB) and satisfy their functional specifications.
+memory layouts, interior mutability, and inline assembly—are sound (cannot
+trigger undefined behavior (UB)) and satisfy any stated specifications.
 
 Anneal is designed around three commitments that implement
-[`PRINCIPLES.md`](../PRINCIPLES.md):
+[`META_PRINCIPLES.md`](../META_PRINCIPLES.md),
+[`PRINCIPLES.md`](../PRINCIPLES.md), and
+[`THREAT_MODEL.md`](../THREAT_MODEL.md):
 
 1. **Verify the code `rustc` actually compiles.** Anneal does not ask users to
    rewrite Rust in a custom verification language. Instead, it hooks into Cargo
@@ -49,8 +51,14 @@ Anneal is designed around three commitments that implement
 
 For deeper coverage of specific subsystems, see:
 
+- [`META_PRINCIPLES.md`](../META_PRINCIPLES.md) for the invariant goals
+  governing [`PRINCIPLES.md`](../PRINCIPLES.md) and
+  [`THREAT_MODEL.md`](../THREAT_MODEL.md).
 - [`PRINCIPLES.md`](../PRINCIPLES.md) for Anneal's mission, correctness
   promise, and decision-making priority order.
+- [`THREAT_MODEL.md`](../THREAT_MODEL.md) for the threat model, bounded
+  human-review surfaces (stated specifications and the TCB audit log), and
+  explicit assumptions vs. total defenses.
 - [`docs/architecture.md`](architecture.md) for the three-stage MIR pipeline,
   `rustc` extraction lifecycle, repository layout, and multi-version toolchain
   strategy.
@@ -91,8 +99,9 @@ flowchart LR
 2. **Statement generation (`trusted/lean/`):** `Trusted.CrateTheorem Mir.crate`
    combines the captured `Mir.crate` definition with Anneal's reference
    operational semantics for Rust MIR. It asserts that every targeted function
-   satisfies its specification and that all trusted definitions and assumptions
-   used in the verification satisfy the crate's trust policy.
+   is sound (UB-free) and satisfies any stated specifications, and that all
+   trusted definitions and assumptions used in the verification satisfy the
+   crate's trust policy.
 3. **Lowering and proof discharge (`theory/`):** Raw `rustc` MIR contains
    compiler-version-specific details and low-level control-flow edges that are
    awkward to reason about directly. When Lean elaborates `Proof.lean`,

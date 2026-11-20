@@ -1,0 +1,38 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Codex review diagnostics
+
+'on':
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Dispatch refs must not select code that receives the read token.
+          ref: refs/heads/main
+          persist-credentials: false
+      - name: Inspect proposed Code Review verdicts without publishing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # Isolated Python ignores user site packages and PYTHONPATH. The default
+        # mode reads GitHub data and prints verdicts without writing statuses.
+        run: python3 -I -B ci/codex_review.py

@@ -10,6 +10,7 @@
 //! repository trust boundary (`trusted/` vs. `theory/`) in CI.
 
 use std::env;
+use std::ffi::OsString;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
@@ -40,7 +41,9 @@ struct Cli {
 }
 
 fn main() -> ExitCode {
-    match run(env::args().collect()) {
+    // Paths are native OS values. Let clap validate each argument instead of
+    // making an unrelated non-UTF-8 path panic before argument handling.
+    match run(env::args_os().collect()) {
         Ok(code) => ExitCode::from(code),
         Err((code, msg)) => {
             eprintln!("{msg}");
@@ -60,14 +63,11 @@ fn failure_message(err: &Failure, checker: Option<&Checker>) -> (u8, String) {
     )
 }
 
-fn run(raw_args: Vec<String>) -> Result<u8, (u8, String)> {
+fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
     let cli = match Cli::try_parse_from(raw_args) {
         Ok(c) => c,
         Err(e) => {
-            if matches!(
-                e.kind(),
-                ErrorKind::DisplayHelp | ErrorKind::DisplayVersion
-            ) {
+            if matches!(e.kind(), ErrorKind::DisplayHelp | ErrorKind::DisplayVersion) {
                 print!("{e}");
                 return Ok(0);
             }
@@ -75,15 +75,13 @@ fn run(raw_args: Vec<String>) -> Result<u8, (u8, String)> {
         }
     };
 
-    let checkout = cli.anneal_root.unwrap_or_else(|| {
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
-    });
+    let checkout = cli
+        .anneal_root
+        .unwrap_or_else(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."));
     let mut checker = Checker::new(&checkout, cli.lean.as_deref()).map_err(|e| {
         (
             2,
-            format!(
-                "Trusted check could not initialize staging directory: {e}"
-            ),
+            format!("Trusted check could not initialize staging directory: {e}"),
         )
     })?;
 
@@ -92,15 +90,11 @@ fn run(raw_args: Vec<String>) -> Result<u8, (u8, String)> {
             if cli.json {
                 println!(
                     "{}",
-                    serde_json::to_string_pretty(&report)
-                        .expect("serialize audit report")
+                    serde_json::to_string_pretty(&report).expect("serialize audit report")
                 );
                 return Ok(0);
             }
-            let guarantee = report
-                .get("guarantee")
-                .and_then(Json::as_str)
-                .unwrap_or("");
+            let guarantee = report.get("guarantee").and_then(Json::as_str).unwrap_or("");
             let k_decls = report
                 .get("kernelDeclarations")
                 .and_then(Json::as_i64)
@@ -113,10 +107,7 @@ fn run(raw_args: Vec<String>) -> Result<u8, (u8, String)> {
                 .get("axioms")
                 .and_then(|v| serde_json::to_string(v).ok())
                 .unwrap_or_else(|| "[]".to_string());
-            let tc = report
-                .get("toolchain")
-                .and_then(Json::as_str)
-                .unwrap_or("");
+            let tc = report.get("toolchain").and_then(Json::as_str).unwrap_or("");
             let adm = checker
                 .admitted()
                 .expect("toolchain must be admitted on Ok");

@@ -62,8 +62,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::fs;
 use std::io;
+#[cfg(unix)]
+use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::path::{Component, Path, PathBuf};
-use std::process::Command;
+use std::process::{Command, Output};
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -86,13 +88,7 @@ pub const IR_PARTS: [&str; 2] = ["ir.sig", "ir"];
 
 /// All five compiled Lean artifact companion suffixes tracked by
 /// `foundation-lock.json` and module compilation.
-pub const PARTS: [&str; 5] = [
-    "olean",
-    "olean.server",
-    "olean.private",
-    "ir.sig",
-    "ir",
-];
+pub const PARTS: [&str; 5] = ["olean", "olean.server", "olean.private", "ir.sig", "ir"];
 
 // ---------------------------------------------------------------------------
 // Domain types
@@ -113,11 +109,7 @@ pub struct Failure {
 
 impl Failure {
     /// Construct a new [`Failure`].
-    pub fn new(
-        code: i32,
-        phase: impl Into<String>,
-        message: impl Into<String>,
-    ) -> Self {
+    pub fn new(code: i32, phase: impl Into<String>, message: impl Into<String>) -> Self {
         Self {
             code,
             phase: phase.into(),
@@ -126,18 +118,12 @@ impl Failure {
     }
 
     /// Construct a TCB policy-rejection [`Failure`] (`code == 1`).
-    pub fn policy(
-        phase: impl Into<String>,
-        message: impl Into<String>,
-    ) -> Self {
+    pub fn policy(phase: impl Into<String>, message: impl Into<String>) -> Self {
         Self::new(1, phase, message)
     }
 
     /// Construct an operational or environment [`Failure`] (`code == 2`).
-    pub fn operational(
-        phase: impl Into<String>,
-        message: impl Into<String>,
-    ) -> Self {
+    pub fn operational(phase: impl Into<String>, message: impl Into<String>) -> Self {
         Self::new(2, phase, message)
     }
 }
@@ -294,9 +280,7 @@ pub struct ImportEdge {
 pub enum InspectorRequest {
     /// Phase 1 (`"preflight"`): parse `(module_name, staged_path)` pairs
     /// against the locked foundation parser environment before any elaboration.
-    Preflight {
-        sources: Vec<(String, PathBuf)>,
-    },
+    Preflight { sources: Vec<(String, PathBuf)> },
     /// Phase 2 (`"audit"`): load compiled `.olean`s with `loadExts := false`,
     /// verify module-level trust tiers and namespace hygiene, and replay all
     /// non-foundation constants through the Lean kernel.
@@ -325,13 +309,8 @@ impl InspectorRequest {
 /// FIFO, or device node) using `symlink_metadata` so symlinks are never
 /// silently followed.
 pub fn regular(path: &Path, phase: &str) -> Result<(), Failure> {
-    let meta = fs::symlink_metadata(path).map_err(|e| {
-        Failure::new(
-            2,
-            phase,
-            format!("cannot inspect {}: {e}", path.display()),
-        )
-    })?;
+    let meta = fs::symlink_metadata(path)
+        .map_err(|e| Failure::new(2, phase, format!("cannot inspect {}: {e}", path.display())))?;
     if meta.file_type().is_symlink() || !meta.file_type().is_file() {
         return Err(Failure::new(
             1,
@@ -351,47 +330,24 @@ pub fn sha256_bytes(data: &[u8]) -> String {
 /// digest.
 pub fn sha256_file(path: &Path, phase: &str) -> Result<String, Failure> {
     regular(path, phase)?;
-    let bytes = fs::read(path).map_err(|e| {
-        Failure::new(
-            2,
-            phase,
-            format!("cannot read {}: {e}", path.display()),
-        )
-    })?;
+    let bytes = fs::read(path)
+        .map_err(|e| Failure::new(2, phase, format!("cannot read {}: {e}", path.display())))?;
     Ok(sha256_bytes(&bytes))
 }
 
 /// Copy a regular source file `src` to `dst`, creating parent directories as
 /// needed, and return the SHA-256 digest of the copied bytes.
-fn stage_regular_file(
-    src: &Path,
-    dst: &Path,
-    phase: &str,
-) -> Result<String, Failure> {
+fn stage_regular_file(src: &Path, dst: &Path, phase: &str) -> Result<String, Failure> {
     regular(src, phase)?;
-    let bytes = fs::read(src).map_err(|e| {
-        Failure::new(
-            2,
-            phase,
-            format!("cannot read {}: {e}", src.display()),
-        )
-    })?;
+    let bytes = fs::read(src)
+        .map_err(|e| Failure::new(2, phase, format!("cannot read {}: {e}", src.display())))?;
     if let Some(parent) = dst.parent() {
         fs::create_dir_all(parent).map_err(|e| {
-            Failure::new(
-                2,
-                phase,
-                format!("cannot create {}: {e}", parent.display()),
-            )
+            Failure::new(2, phase, format!("cannot create {}: {e}", parent.display()))
         })?;
     }
-    fs::write(dst, &bytes).map_err(|e| {
-        Failure::new(
-            2,
-            phase,
-            format!("cannot write {}: {e}", dst.display()),
-        )
-    })?;
+    fs::write(dst, &bytes)
+        .map_err(|e| Failure::new(2, phase, format!("cannot write {}: {e}", dst.display())))?;
     Ok(sha256_bytes(&bytes))
 }
 
@@ -413,8 +369,7 @@ fn is_lean_ident(s: &str) -> bool {
 /// `/`, `.`, or `..`).
 fn is_clean_relative_path(rel: &str) -> bool {
     let mut comps = Path::new(rel).components();
-    comps.clone().next().is_some()
-        && comps.all(|c| matches!(c, Component::Normal(_)))
+    comps.clone().next().is_some() && comps.all(|c| matches!(c, Component::Normal(_)))
 }
 
 // ---------------------------------------------------------------------------
@@ -458,9 +413,7 @@ struct MemberCargoManifest {
 impl MemberCargoManifest {
     /// Yield every `(section_label, target)` declared in `[lib]`, `[[bin]]`,
     /// `[[example]]`, `[[test]]`, and `[[bench]]`.
-    fn all_targets(
-        &self,
-    ) -> impl Iterator<Item = (&'static str, &MemberTarget)> {
+    fn all_targets(&self) -> impl Iterator<Item = (&'static str, &MemberTarget)> {
         self.lib
             .iter()
             .map(|t| ("lib", t))
@@ -531,7 +484,10 @@ impl MemberDepTables {
         [
             ("dependencies", self.dependencies.as_ref()),
             ("dev-dependencies", self.dev_dependencies.as_ref()),
-            ("dev_dependencies", self.dev_dependencies_underscore.as_ref()),
+            (
+                "dev_dependencies",
+                self.dev_dependencies_underscore.as_ref(),
+            ),
             ("build-dependencies", self.build_dependencies.as_ref()),
             (
                 "build_dependencies",
@@ -578,9 +534,7 @@ fn reject_cargo_toolchain_overrides(checkout: &Path) -> Result<(), Failure> {
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "forbidden Cargo/toolchain override at repository root: {forbidden}"
-                ),
+                format!("forbidden Cargo/toolchain override at repository root: {forbidden}"),
             ));
         }
     }
@@ -617,13 +571,8 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
         return Ok(());
     }
     regular(&manifest_path, phase)?;
-    let manifest_text = fs::read_to_string(&manifest_path).map_err(|e| {
-        Failure::new(
-            1,
-            phase,
-            format!("cannot read root-manifest.sha256: {e}"),
-        )
-    })?;
+    let manifest_text = fs::read_to_string(&manifest_path)
+        .map_err(|e| Failure::new(1, phase, format!("cannot read root-manifest.sha256: {e}")))?;
     let mut seen_paths = BTreeSet::new();
     for line in manifest_text
         .lines()
@@ -644,9 +593,7 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "invalid or duplicate entry in root-manifest.sha256: {line}"
-                ),
+                format!("invalid or duplicate entry in root-manifest.sha256: {line}"),
             ));
         }
         let actual_hex = sha256_file(&checkout.join(rel_path), phase)
@@ -661,15 +608,12 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
             ));
         }
     }
-    for required_rel in ["Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"]
-    {
+    for required_rel in ["Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"] {
         if !seen_paths.contains(required_rel) {
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "root-manifest.sha256 missing required entry: {required_rel}"
-                ),
+                format!("root-manifest.sha256 missing required entry: {required_rel}"),
             ));
         }
     }
@@ -694,15 +638,11 @@ fn validate_member_target(
         ));
     };
     let path = Path::new(p);
-    if path.is_absolute()
-        || path.components().any(|c| matches!(c, Component::ParentDir))
-    {
+    if path.is_absolute() || path.components().any(|c| matches!(c, Component::ParentDir)) {
         return Err(Failure::new(
             1,
             "cargo-boundary",
-            format!(
-                "{member} target {section}.path escapes member directory: {p}"
-            ),
+            format!("{member} target {section}.path escapes member directory: {p}"),
         ));
     }
     Ok(())
@@ -750,21 +690,16 @@ fn validate_dep_table(
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "non-string path dependency {dep_name} in {member}/Cargo.toml"
-                ),
+                format!("non-string path dependency {dep_name} in {member}/Cargo.toml"),
             ));
         };
-        let resolved =
-            fs::canonicalize(member_parent.join(dep_path)).map_err(|_| {
-                Failure::new(
-                    1,
-                    phase,
-                    format!(
-                        "{member} path dependency target does not exist: {dep_path}"
-                    ),
-                )
-            })?;
+        let resolved = fs::canonicalize(member_parent.join(dep_path)).map_err(|_| {
+            Failure::new(
+                1,
+                phase,
+                format!("{member} path dependency target does not exist: {dep_path}"),
+            )
+        })?;
         let rel = resolved.strip_prefix(checkout_canon).map_err(|_| {
             Failure::new(
                 1,
@@ -777,18 +712,14 @@ fn validate_dep_table(
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "{member} path dependency points outside trusted/: {rel_str}"
-                ),
+                format!("{member} path dependency points outside trusted/: {rel_str}"),
             ));
         }
         if !member_set.contains(&rel_str) {
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "{member} path dependency points to non-member crate: {rel_str}"
-                ),
+                format!("{member} path dependency points to non-member crate: {rel_str}"),
             ));
         }
         regular(&resolved.join("Cargo.toml"), phase)?;
@@ -799,28 +730,19 @@ fn validate_dep_table(
 /// Validate `Cargo.lock` (when present): version 4, every external dependency
 /// sourced from `crates.io-index` with a 64-hex SHA-256 checksum, and every
 /// source-less package belonging to `member_pkg_names`.
-fn verify_cargo_lock(
-    checkout: &Path,
-    member_pkg_names: &BTreeSet<String>,
-) -> Result<(), Failure> {
+fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     let lock_path = checkout.join("Cargo.lock");
     if fs::symlink_metadata(&lock_path).is_err() {
         return Ok(());
     }
     regular(&lock_path, phase)?;
-    let lock_text = fs::read_to_string(&lock_path).map_err(|e| {
-        Failure::new(1, phase, format!("cannot read Cargo.lock: {e}"))
-    })?;
-    let lock_file: CargoLockFile = toml::from_str(&lock_text).map_err(|e| {
-        Failure::new(1, phase, format!("malformed Cargo.lock: {e}"))
-    })?;
+    let lock_text = fs::read_to_string(&lock_path)
+        .map_err(|e| Failure::new(1, phase, format!("cannot read Cargo.lock: {e}")))?;
+    let lock_file: CargoLockFile = toml::from_str(&lock_text)
+        .map_err(|e| Failure::new(1, phase, format!("malformed Cargo.lock: {e}")))?;
     if lock_file.version != Some(4) {
-        return Err(Failure::new(
-            1,
-            phase,
-            "Cargo.lock must have version = 4",
-        ));
+        return Err(Failure::new(1, phase, "Cargo.lock must have version = 4"));
     }
     for pkg in &lock_file.package {
         let pkg_name = pkg.name.as_str();
@@ -830,9 +752,7 @@ fn verify_cargo_lock(
                     return Err(Failure::new(
                         1,
                         phase,
-                        format!(
-                            "missing or invalid checksum in Cargo.lock for {pkg_name}"
-                        ),
+                        format!("missing or invalid checksum in Cargo.lock for {pkg_name}"),
                     ));
                 }
             }
@@ -846,14 +766,11 @@ fn verify_cargo_lock(
                 ));
             }
             None => {
-                if pkg.checksum.is_some() || !member_pkg_names.contains(pkg_name)
-                {
+                if pkg.checksum.is_some() || !member_pkg_names.contains(pkg_name) {
                     return Err(Failure::new(
                         1,
                         phase,
-                        format!(
-                            "untrusted local package without source in Cargo.lock: {pkg_name}"
-                        ),
+                        format!("untrusted local package without source in Cargo.lock: {pkg_name}"),
                     ));
                 }
             }
@@ -875,17 +792,15 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
     regular(&capture_toml_path, phase)?;
     verify_root_manifest_sha256(checkout)?;
 
-    let root_text = fs::read_to_string(&root_toml_path).map_err(|e| {
-        Failure::new(1, phase, format!("malformed Cargo manifest: {e}"))
+    let root_text = fs::read_to_string(&root_toml_path)
+        .map_err(|e| Failure::new(1, phase, format!("malformed Cargo manifest: {e}")))?;
+    let root_manifest: RootCargoManifest = toml::from_str(&root_text).map_err(|e| {
+        Failure::new(
+            1,
+            phase,
+            format!("root Cargo.toml may contain only [workspace]: {e}"),
+        )
     })?;
-    let root_manifest: RootCargoManifest =
-        toml::from_str(&root_text).map_err(|e| {
-            Failure::new(
-                1,
-                phase,
-                format!("root Cargo.toml may contain only [workspace]: {e}"),
-            )
-        })?;
     if root_manifest.workspace.resolver.as_deref() != Some("2") {
         return Err(Failure::new(
             1,
@@ -894,9 +809,8 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         ));
     }
 
-    let checkout_canon = fs::canonicalize(checkout).map_err(|e| {
-        Failure::new(2, phase, format!("cannot canonicalize checkout: {e}"))
-    })?;
+    let checkout_canon = fs::canonicalize(checkout)
+        .map_err(|e| Failure::new(2, phase, format!("cannot canonicalize checkout: {e}")))?;
 
     let member_set: BTreeSet<String> = root_manifest
         .workspace
@@ -936,41 +850,29 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
                 format!("malformed member Cargo.toml in {member}: {e}"),
             )
         })?;
-        let manifest: MemberCargoManifest =
-            toml::from_str(&member_text).map_err(|e| {
-                Failure::new(
-                    1,
-                    phase,
-                    format!("malformed member Cargo.toml in {member}: {e}"),
-                )
-            })?;
+        let manifest: MemberCargoManifest = toml::from_str(&member_text).map_err(|e| {
+            Failure::new(
+                1,
+                phase,
+                format!("malformed member Cargo.toml in {member}: {e}"),
+            )
+        })?;
         let pkg_name = manifest
             .package
             .name
             .as_deref()
             .filter(|s| !s.is_empty())
-            .ok_or_else(|| {
-                Failure::new(
-                    1,
-                    phase,
-                    format!("missing package.name in {member}"),
-                )
-            })?;
+            .ok_or_else(|| Failure::new(1, phase, format!("missing package.name in {member}")))?;
         member_pkg_names.insert(pkg_name.to_string());
 
-        if manifest.package.build.is_some()
-            || manifest.package.workspace.is_some()
-        {
+        if manifest.package.build.is_some() || manifest.package.workspace.is_some() {
             return Err(Failure::new(
                 1,
                 phase,
-                format!(
-                    "disallowed package.build or package.workspace in {member}/Cargo.toml"
-                ),
+                format!("disallowed package.build or package.workspace in {member}/Cargo.toml"),
             ));
         }
-        if fs::symlink_metadata(checkout.join(member).join("build.rs")).is_ok()
-        {
+        if fs::symlink_metadata(checkout.join(member).join("build.rs")).is_ok() {
             return Err(Failure::new(
                 1,
                 phase,
@@ -1105,8 +1007,7 @@ pub fn scan_lean_tree(
                 ));
             }
         } else if !(umbrella_prefix == "Trusted"
-            && (relative == "lean-toolchain"
-                || relative == "foundation-lock.json"))
+            && (relative == "lean-toolchain" || relative == "foundation-lock.json"))
         {
             return Err(Failure::new(
                 1,
@@ -1147,7 +1048,7 @@ pub fn default_lean_path() -> PathBuf {
         .into_iter()
         .chain(std::iter::once(home.clone()))
     {
-        let tc_base = base.join(".anneal/toolchain");
+        let tc_base = base.join("anneal/toolchain");
         if let Ok(entries) = fs::read_dir(&tc_base) {
             let mut dirs: Vec<(std::time::SystemTime, PathBuf)> = entries
                 .filter_map(Result::ok)
@@ -1164,8 +1065,7 @@ pub fn default_lean_path() -> PathBuf {
             candidate_paths.extend(dirs.into_iter().map(|(_, p)| p));
         }
     }
-    let elan_lean =
-        home.join(".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean");
+    let elan_lean = home.join(".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean");
     if elan_lean.is_file() {
         candidate_paths.push(elan_lean.clone());
     }
@@ -1292,10 +1192,35 @@ struct PreflightResult {
     headers: Vec<PreflightHeader>,
 }
 
+fn is_retained_environment_key(key: &str) -> bool {
+    matches!(key, "HOME" | "TMPDIR" | "LANG" | "LC_ALL")
+}
+
 impl Checker {
     /// Create a new [`Checker`] with a fresh private staging directory.
+    ///
+    /// Discard unlisted environment entries before decoding their values. A
+    /// retained value that is not valid UTF-8 returns an `InvalidInput` error.
     pub fn new(checkout: &Path, lean: Option<&Path>) -> io::Result<Self> {
-        Self::new_with_env(checkout, lean, env::vars())
+        // Unforwarded host settings have no bearing on the Lean child, so
+        // they impose no UTF-8 requirement. Validate retained values without
+        // lossy conversion before admitting them to the child environment.
+        let environment = env::vars_os()
+            .filter_map(|(key, value)| {
+                let key = key.to_str()?;
+                is_retained_environment_key(key).then(|| (key.to_owned(), value))
+            })
+            .map(|(key, value)| {
+                let value = value.into_string().map_err(|_| {
+                    io::Error::new(
+                        io::ErrorKind::InvalidInput,
+                        format!("environment variable {key} is not valid UTF-8"),
+                    )
+                })?;
+                Ok((key, value))
+            })
+            .collect::<io::Result<Vec<_>>>()?;
+        Self::new_with_env(checkout, lean, environment)
     }
 
     /// Create a new [`Checker`] using a closed environment allowlist.
@@ -1305,11 +1230,7 @@ impl Checker {
     /// `LEAN_SRC_PATH`), toolchain overrides (`ELAN_TOOLCHAIN`), or dynamic
     /// linker preloading (`LD_PRELOAD`, `LD_LIBRARY_PATH`,
     /// `DYLD_INSERT_LIBRARIES`) cannot influence child `lean` invocations.
-    pub fn new_with_env<I>(
-        checkout: &Path,
-        lean: Option<&Path>,
-        ambient_env: I,
-    ) -> io::Result<Self>
+    pub fn new_with_env<I>(checkout: &Path, lean: Option<&Path>, ambient_env: I) -> io::Result<Self>
     where
         I: IntoIterator<Item = (String, String)>,
     {
@@ -1324,16 +1245,18 @@ impl Checker {
         } else {
             env::current_dir()?.join(lean_raw)
         };
-        let stage_dir = tempfile::Builder::new()
-            .prefix("anneal-trusted-")
-            .tempdir()?;
+        let mut stage_builder = tempfile::Builder::new();
+        stage_builder.prefix("anneal-trusted-");
+        // Staged sources and proofs must not be readable by other Unix users.
+        // Set permissions at creation, before any inputs reach the directory.
+        #[cfg(unix)]
+        stage_builder.permissions(fs::Permissions::from_mode(0o700));
+        let stage_dir = stage_builder.tempdir()?;
         let stage = stage_dir.path().to_path_buf();
 
         let mut environment: BTreeMap<String, String> = ambient_env
             .into_iter()
-            .filter(|(k, _)| {
-                matches!(k.as_str(), "HOME" | "TMPDIR" | "LANG" | "LC_ALL")
-            })
+            .filter(|(k, _)| is_retained_environment_key(k))
             .collect();
         environment.insert("PATH".to_string(), "/usr/bin:/bin".to_string());
 
@@ -1374,23 +1297,26 @@ impl Checker {
         })
     }
 
-    /// Execute `self.lean` with `arguments` in the sanitized `self.environment`
-    /// with `self.stage` as the working directory.
-    pub fn process(
-        &mut self,
-        label: &str,
-        arguments: &[String],
-    ) -> Result<String, Failure> {
-        self.counter += 1;
-        let output = Command::new(&self.lean)
+    /// Capture a Lean child in the stage with only the selected environment.
+    ///
+    /// I/O errors remain distinct from a completed child's exit status. Each
+    /// caller applies its own diagnostic and protocol rules to the raw output.
+    fn launch_lean(&self, arguments: &[String]) -> io::Result<Output> {
+        Command::new(&self.lean)
             .args(arguments)
             .current_dir(&self.stage)
             .env_clear()
             .envs(&self.environment)
             .output()
-            .map_err(|e| {
-                Failure::new(2, label, format!("could not execute Lean: {e}"))
-            })?;
+    }
+
+    /// Execute `self.lean` with `arguments` in the sanitized `self.environment`
+    /// with `self.stage` as the working directory.
+    pub fn process(&mut self, label: &str, arguments: &[String]) -> Result<String, Failure> {
+        self.counter += 1;
+        let output = self
+            .launch_lean(arguments)
+            .map_err(|e| Failure::new(2, label, format!("could not execute Lean: {e}")))?;
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             let stdout = String::from_utf8_lossy(&output.stdout);
@@ -1405,9 +1331,8 @@ impl Checker {
                 format!("Lean exited {:?}: {detail}", output.status.code()),
             ));
         }
-        String::from_utf8(output.stdout).map_err(|e| {
-            Failure::new(2, label, format!("invalid UTF-8 from Lean: {e}"))
-        })
+        String::from_utf8(output.stdout)
+            .map_err(|e| Failure::new(2, label, format!("invalid UTF-8 from Lean: {e}")))
     }
 
     /// Write a `<module>.setup.json` descriptor for `lean --setup`.
@@ -1432,19 +1357,15 @@ impl Checker {
             "options": {},
         });
         let setup_path = self.stage.join(format!("{module}.setup.json"));
-        let bytes = serde_json::to_vec(&setup_obj)
-            .map_err(|e| Failure::new(2, "setup", e.to_string()))?;
-        fs::write(&setup_path, bytes)
-            .map_err(|e| Failure::new(2, "setup", e.to_string()))?;
+        let bytes =
+            serde_json::to_vec(&setup_obj).map_err(|e| Failure::new(2, "setup", e.to_string()))?;
+        fs::write(&setup_path, bytes).map_err(|e| Failure::new(2, "setup", e.to_string()))?;
         Ok(setup_path)
     }
 
     /// Invoke `TrustedBoundary.lean` with a typed [`InspectorRequest`] and
     /// validate the structured response envelope.
-    pub fn inspect(
-        &mut self,
-        request: InspectorRequest,
-    ) -> Result<Json, Failure> {
+    pub fn inspect(&mut self, request: InspectorRequest) -> Result<Json, Failure> {
         let mode = request.mode();
         let adm = self.admitted()?;
         let arts_arr: Vec<Json> = adm
@@ -1498,14 +1419,11 @@ impl Checker {
             .stage
             .join(format!("request-{:03}-{mode}", self.counter));
         let request_path = PathBuf::from(format!("{}.json", stem.display()));
-        let result_path =
-            PathBuf::from(format!("{}.result.json", stem.display()));
-        let req_bytes = serde_json::to_vec(&req).map_err(|e| {
-            Failure::new(2, mode, format!("cannot serialize request: {e}"))
-        })?;
-        fs::write(&request_path, req_bytes).map_err(|e| {
-            Failure::new(2, mode, format!("cannot write request: {e}"))
-        })?;
+        let result_path = PathBuf::from(format!("{}.result.json", stem.display()));
+        let req_bytes = serde_json::to_vec(&req)
+            .map_err(|e| Failure::new(2, mode, format!("cannot serialize request: {e}")))?;
+        fs::write(&request_path, req_bytes)
+            .map_err(|e| Failure::new(2, mode, format!("cannot write request: {e}")))?;
 
         let args = vec![
             "-j1".to_string(),
@@ -1515,22 +1433,15 @@ impl Checker {
             request_path.to_string_lossy().into_owned(),
             result_path.to_string_lossy().into_owned(),
         ];
-        let output = Command::new(&self.lean)
-            .args(&args)
-            .current_dir(&self.stage)
-            .env_clear()
-            .envs(&self.environment)
-            .output()
-            .map_err(|e| {
-                Failure::new(2, mode, format!("could not execute Lean: {e}"))
-            })?;
+        let output = self
+            .launch_lean(&args)
+            .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
 
         if !output.status.success() {
             if output.status.code() == Some(1)
                 && result_path.is_file()
                 && let Ok(text) = fs::read_to_string(&result_path)
-                && let Ok(resp) =
-                    serde_json::from_str::<InspectorErrResponse>(&text)
+                && let Ok(resp) = serde_json::from_str::<InspectorErrResponse>(&text)
                 && !resp.ok
                 && resp.category == "policy"
                 && resp.message.starts_with("policy:")
@@ -1541,25 +1452,15 @@ impl Checker {
             return Err(Failure::new(
                 2,
                 mode,
-                format!(
-                    "Lean exited {:?}: {}",
-                    output.status.code(),
-                    stderr.trim()
-                ),
+                format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
             ));
         }
 
         let resp_text = fs::read_to_string(&result_path).map_err(|e| {
-            Failure::new(
-                2,
-                mode,
-                format!("missing/malformed inspector result: {e}"),
-            )
+            Failure::new(2, mode, format!("missing/malformed inspector result: {e}"))
         })?;
-        let resp: InspectorOkResponse =
-            serde_json::from_str(&resp_text).map_err(|_| {
-                Failure::new(2, mode, "unexpected inspector protocol response")
-            })?;
+        let resp: InspectorOkResponse = serde_json::from_str(&resp_text)
+            .map_err(|_| Failure::new(2, mode, "unexpected inspector protocol response"))?;
         if !resp.ok {
             return Err(Failure::new(
                 2,
@@ -1602,7 +1503,12 @@ impl Checker {
                 )
             })?;
         }
-        fs::create_dir_all(&self.stage).map_err(|e| {
+        let mut stage_builder = fs::DirBuilder::new();
+        // Recreating the stage must preserve its owner-only Unix permissions.
+        // A pre-existing replacement directory must cause creation to fail.
+        #[cfg(unix)]
+        stage_builder.mode(0o700);
+        stage_builder.create(&self.stage).map_err(|e| {
             Failure::new(
                 2,
                 "snapshot",
@@ -1618,8 +1524,7 @@ impl Checker {
     /// `TrustedBoundary.lean`, and verify the pinned Lean 4.34.1 binary and
     /// `Init.*` artifacts by SHA-256 digest against `foundation-lock.json`.
     pub fn tool_admission(&mut self) -> Result<&mut AdmittedToolchain, Failure> {
-        let modules =
-            self.scan_and_stage_tree(&self.source, "Trusted", "src/trusted")?;
+        let modules = self.scan_and_stage_tree(&self.source, "Trusted", "src/trusted")?;
         let theory_dir = self.checkout.join("theory");
         let theory_modules = if fs::symlink_metadata(&theory_dir).is_ok() {
             self.scan_and_stage_tree(&theory_dir, "Anneal", "src/theory")?
@@ -1627,8 +1532,7 @@ impl Checker {
             BTreeMap::new()
         };
 
-        let inspector_src =
-            self.checkout.join("trusted/audit/TrustedBoundary.lean");
+        let inspector_src = self.checkout.join("trusted/audit/TrustedBoundary.lean");
         let inspector = self.stage.join("src/TrustedBoundary.lean");
         stage_regular_file(&inspector_src, &inspector, "tool-snapshot")?;
 
@@ -1637,32 +1541,18 @@ impl Checker {
         regular(&lock_path, "lock")?;
         regular(&toolchain_path, "lock")?;
 
-        let lock_text = fs::read_to_string(&lock_path).map_err(|e| {
-            Failure::new(2, "lock", format!("cannot read foundation lock: {e}"))
-        })?;
-        let parsed_lock: FoundationLock =
-            serde_json::from_str(&lock_text).map_err(|e| {
-                Failure::new(
-                    2,
-                    "lock",
-                    format!("cannot read foundation lock: {e}"),
-                )
-            })?;
+        let lock_text = fs::read_to_string(&lock_path)
+            .map_err(|e| Failure::new(2, "lock", format!("cannot read foundation lock: {e}")))?;
+        let parsed_lock: FoundationLock = serde_json::from_str(&lock_text)
+            .map_err(|e| Failure::new(2, "lock", format!("cannot read foundation lock: {e}")))?;
         if parsed_lock.schema != 1
             || parsed_lock.toolchain != TOOLCHAIN
             || parsed_lock.distributions.is_empty()
-            || !parsed_lock
-                .distributions
-                .values()
-                .all(|s| is_sha256_hex(s))
+            || !parsed_lock.distributions.values().all(|s| is_sha256_hex(s))
             || parsed_lock.modules.is_empty()
             || !parsed_lock.modules.keys().eq(parsed_lock.graph.keys())
         {
-            return Err(Failure::new(
-                2,
-                "lock",
-                "unsupported lock/toolchain schema",
-            ));
+            return Err(Failure::new(2, "lock", "unsupported lock/toolchain schema"));
         }
         for (module, record) in &parsed_lock.modules {
             if !is_sha256_hex(&record.source_sha256)
@@ -1693,20 +1583,10 @@ impl Checker {
             }
         }
 
-        let toolchain_text =
-            fs::read_to_string(&toolchain_path).map_err(|e| {
-                Failure::new(
-                    2,
-                    "lock",
-                    format!("cannot read lean-toolchain: {e}"),
-                )
-            })?;
+        let toolchain_text = fs::read_to_string(&toolchain_path)
+            .map_err(|e| Failure::new(2, "lock", format!("cannot read lean-toolchain: {e}")))?;
         if toolchain_text.trim() != TOOLCHAIN {
-            return Err(Failure::new(
-                1,
-                "lock",
-                "lean-toolchain differs from lock",
-            ));
+            return Err(Failure::new(1, "lock", "lean-toolchain differs from lock"));
         }
 
         let lean_sha = sha256_file(&self.lean, "toolchain")?;
@@ -1726,15 +1606,11 @@ impl Checker {
             .process("version", &["--version".to_string()])?
             .trim()
             .to_string();
-        let Some(expected_lean_sha) =
-            parsed_lock.distributions.get(&actual_version)
-        else {
+        let Some(expected_lean_sha) = parsed_lock.distributions.get(&actual_version) else {
             return Err(Failure::new(
                 2,
                 "toolchain",
-                format!(
-                    "Lean version/commit differs from lock: {actual_version}"
-                ),
+                format!("Lean version/commit differs from lock: {actual_version}"),
             ));
         };
         if !expected_lean_sha.eq_ignore_ascii_case(&lean_sha) {
@@ -1751,16 +1627,14 @@ impl Checker {
             .process("prefix", &["--print-prefix".to_string()])?
             .trim()
             .to_string();
-        let prefix = fs::canonicalize(&prefix_raw).map_err(|e| {
-            Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}"))
-        })?;
+        let prefix = fs::canonicalize(&prefix_raw)
+            .map_err(|e| Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}")))?;
 
         let mut artifacts = BTreeMap::new();
 
         for (module, record) in &parsed_lock.modules {
             let rel_mod = module.replace('.', "/");
-            let source_path =
-                prefix.join("src/lean").join(format!("{rel_mod}.lean"));
+            let source_path = prefix.join("src/lean").join(format!("{rel_mod}.lean"));
             let actual_source_sha = sha256_file(&source_path, "foundation")?;
             if !actual_source_sha.eq_ignore_ascii_case(&record.source_sha256) {
                 return Err(Failure::new(
@@ -1788,11 +1662,8 @@ impl Checker {
                         }
                     }
                     Some(expected_part_sha) => {
-                        let actual_part_sha =
-                            sha256_file(&installed, "foundation")?;
-                        if !actual_part_sha
-                            .eq_ignore_ascii_case(expected_part_sha)
-                        {
+                        let actual_part_sha = sha256_file(&installed, "foundation")?;
+                        if !actual_part_sha.eq_ignore_ascii_case(expected_part_sha) {
                             return Err(Failure::new(
                                 2,
                                 "foundation",
@@ -1801,16 +1672,14 @@ impl Checker {
                                 ),
                             ));
                         }
-                        available
-                            .insert(part, installed.to_string_lossy().into_owned());
+                        available.insert(part, installed.to_string_lossy().into_owned());
                     }
                 }
             }
 
-            let mod_arts =
-                ModuleArtifacts::from_available(&available, "foundation", || {
-                    format!("missing olean for {module}")
-                })?;
+            let mod_arts = ModuleArtifacts::from_available(&available, "foundation", || {
+                format!("missing olean for {module}")
+            })?;
             artifacts.insert(module.clone(), mod_arts);
         }
 
@@ -1842,15 +1711,11 @@ impl Checker {
             .chain(adm.theory_modules.iter())
             .map(|(n, p)| (n.clone(), p.clone()))
             .collect();
-        let pf_res: PreflightResult = serde_json::from_value(
-            self.inspect(InspectorRequest::Preflight { sources })?,
-        )
-        .map_err(|_| {
-            Failure::operational(
-                "preflight",
-                "incomplete source-header inventory",
-            )
-        })?;
+        let pf_res: PreflightResult =
+            serde_json::from_value(self.inspect(InspectorRequest::Preflight { sources })?)
+                .map_err(|_| {
+                    Failure::operational("preflight", "incomplete source-header inventory")
+                })?;
 
         let adm = self.admitted()?;
         let mut imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
@@ -1862,17 +1727,13 @@ impl Checker {
                 let raw_tier = h.trust_tier.ok_or_else(|| {
                     Failure::policy(
                         "preflight",
-                        format!(
-                            "missing trust tier for Trusted module {mod_name}"
-                        ),
+                        format!("missing trust tier for Trusted module {mod_name}"),
                     )
                 })?;
                 let tier = TrustTier::parse(&raw_tier).ok_or_else(|| {
                     Failure::policy(
                         "preflight",
-                        format!(
-                            "invalid trust tier {raw_tier} for Trusted module {mod_name}"
-                        ),
+                        format!("invalid trust tier {raw_tier} for Trusted module {mod_name}"),
                     )
                 })?;
                 module_tiers.insert(mod_name.clone(), tier);
@@ -1880,8 +1741,7 @@ impl Checker {
             for edge in &h.imports {
                 let imp_mod = edge.module.as_str();
                 let allowed = if is_trusted {
-                    adm.artifacts.contains_key(imp_mod)
-                        || adm.modules.contains_key(imp_mod)
+                    adm.artifacts.contains_key(imp_mod) || adm.modules.contains_key(imp_mod)
                 } else {
                     adm.artifacts.contains_key(imp_mod)
                         || adm.modules.contains_key(imp_mod)
@@ -1890,9 +1750,7 @@ impl Checker {
                 if !allowed {
                     return Err(Failure::policy(
                         "preflight",
-                        format!(
-                            "foreign/missing import {imp_mod} in {mod_name}"
-                        ),
+                        format!("foreign/missing import {imp_mod} in {mod_name}"),
                     ));
                 }
             }
@@ -1971,10 +1829,9 @@ impl Checker {
                 available.insert(part, artifact.to_string_lossy().into_owned());
             }
         }
-        let mod_arts =
-            ModuleArtifacts::from_available(&available, "compile", || {
-                format!("compiler omitted output for {module}")
-            })?;
+        let mod_arts = ModuleArtifacts::from_available(&available, "compile", || {
+            format!("compiler omitted output for {module}")
+        })?;
         let adm = self.admitted_mut()?;
         adm.artifacts.insert(module.to_string(), mod_arts);
         adm.graph.insert(module.to_string(), edge_list);
@@ -1996,42 +1853,23 @@ impl Checker {
                 adm.theory_modules.keys().cloned().collect(),
             )
         };
-        let trusted_order = topo_sort_modules(
-            trusted_set,
-            &preflight.imports,
-            "Trusted import cycle",
-        )?;
-        let theory_order = topo_sort_modules(
-            theory_set,
-            &preflight.imports,
-            "Theory import cycle",
-        )?;
+        let trusted_order =
+            topo_sort_modules(trusted_set, &preflight.imports, "Trusted import cycle")?;
+        let theory_order =
+            topo_sort_modules(theory_set, &preflight.imports, "Theory import cycle")?;
 
         for module in &trusted_order {
             let edge_list = preflight.imports[module].clone();
             let staged_src_path = self.admitted()?.modules[module].clone();
             self.execution_began = true;
-            self.compile_lean_module(
-                module,
-                &staged_src_path,
-                edge_list,
-                "lib",
-                false,
-            )?;
+            self.compile_lean_module(module, &staged_src_path, edge_list, "lib", false)?;
         }
 
         for module in &theory_order {
             let edge_list = preflight.imports[module].clone();
-            let staged_src_path =
-                self.admitted()?.theory_modules[module].clone();
+            let staged_src_path = self.admitted()?.theory_modules[module].clone();
             self.execution_began = true;
-            self.compile_lean_module(
-                module,
-                &staged_src_path,
-                edge_list,
-                "theory-lib",
-                true,
-            )?;
+            self.compile_lean_module(module, &staged_src_path, edge_list, "theory-lib", true)?;
         }
 
         let audit_req = {
@@ -2048,9 +1886,7 @@ impl Checker {
         rep_obj.insert("toolchain".to_string(), json!(version));
         rep_obj.insert(
             "guarantee".to_string(),
-            json!(
-                "kernel dependency closure, module-origin separation, and Cargo DAG boundary"
-            ),
+            json!("kernel dependency closure, module-origin separation, and Cargo DAG boundary"),
         );
 
         Ok(report)
@@ -2060,26 +1896,313 @@ impl Checker {
 /// Topologically sort the module set `pending` according to `imports_map`,
 /// returning a policy rejection (`code == 1`) with `cycle_msg` if `pending`
 /// contains an import cycle.
+///
+/// Emit each ready layer in sorted order. Imports outside `pending` are assumed
+/// to be available.
+///
+/// Use iteration so deep import chains do not consume one Rust stack frame
+/// per module. Sorted layers keep staging and checking order deterministic.
 fn topo_sort_modules(
-    pending: BTreeSet<String>,
+    mut pending: BTreeSet<String>,
     imports_map: &BTreeMap<String, Vec<ImportEdge>>,
     cycle_msg: &str,
 ) -> Result<Vec<String>, Failure> {
-    if pending.is_empty() {
-        return Ok(Vec::new());
+    let mut order = Vec::with_capacity(pending.len());
+    while !pending.is_empty() {
+        // Snapshot the whole ready layer before removing modules so newly
+        // unlocked modules cannot interleave with its sorted order.
+        let ready: Vec<_> = pending
+            .iter()
+            .filter(|module| {
+                imports_map[*module]
+                    .iter()
+                    .all(|edge| !pending.contains(&edge.module))
+            })
+            .cloned()
+            .collect();
+        if ready.is_empty() {
+            return Err(Failure::policy("preflight", cycle_msg));
+        }
+        for module in ready {
+            pending.remove(&module);
+            order.push(module);
+        }
     }
-    let (ready, remaining): (BTreeSet<String>, BTreeSet<String>) = pending
-        .iter()
-        .cloned()
-        .partition(|n| {
-            imports_map[n]
-                .iter()
-                .all(|e| !pending.contains(&e.module))
-        });
-    if ready.is_empty() {
-        return Err(Failure::policy("preflight", cycle_msg));
-    }
-    let mut order: Vec<String> = ready.into_iter().collect();
-    order.extend(topo_sort_modules(remaining, imports_map, cycle_msg)?);
     Ok(order)
+}
+
+#[cfg(test)]
+mod module_order_tests {
+    use super::*;
+
+    fn import(module: &str) -> ImportEdge {
+        ImportEdge {
+            module: module.to_string(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        }
+    }
+
+    fn sort(modules: &[(&str, &[&str])]) -> Result<Vec<String>, Failure> {
+        let imports: BTreeMap<_, _> = modules
+            .iter()
+            .map(|(module, dependencies)| {
+                (
+                    module.to_string(),
+                    dependencies.iter().map(|name| import(name)).collect(),
+                )
+            })
+            .collect();
+        topo_sort_modules(
+            imports.keys().cloned().collect(),
+            &imports,
+            "fixture import cycle",
+        )
+    }
+
+    #[test]
+    fn empty_module_set_has_no_ordering_work() {
+        assert_eq!(sort(&[]).unwrap(), Vec::<String>::new());
+    }
+
+    #[test]
+    fn independent_roots_are_sorted() {
+        assert_eq!(
+            sort(&[("Z", &[]), ("A", &[]), ("M", &[])]).unwrap(),
+            ["A", "M", "Z"]
+        );
+    }
+
+    #[test]
+    fn branching_graph_preserves_sorted_ready_layers() {
+        assert_eq!(
+            sort(&[
+                ("Final", &["AChild", "ZChild"]),
+                ("ZRoot", &[]),
+                ("AChild", &["ZRoot"]),
+                ("ARoot", &[]),
+                ("ZChild", &["ARoot"]),
+            ])
+            .unwrap(),
+            ["ARoot", "ZRoot", "AChild", "ZChild", "Final"]
+        );
+    }
+
+    #[test]
+    fn imports_outside_the_pending_set_are_already_available() {
+        let imports = BTreeMap::from([
+            (
+                "Trusted.Child".to_string(),
+                vec![import("Trusted.Root"), import("External.Ready")],
+            ),
+            (
+                "Trusted.Root".to_string(),
+                vec![import("Init.Prelude"), import("Init.Notation")],
+            ),
+            ("External.Ready".to_string(), Vec::new()),
+        ]);
+        assert_eq!(
+            topo_sort_modules(
+                BTreeSet::from(["Trusted.Child".to_string(), "Trusted.Root".to_string(),]),
+                &imports,
+                "fixture import cycle",
+            )
+            .unwrap(),
+            ["Trusted.Root", "Trusted.Child"]
+        );
+    }
+
+    #[test]
+    fn cycles_reject_with_the_selected_policy_message() {
+        let expected = Err(Failure::policy("preflight", "fixture import cycle"));
+        assert_eq!(sort(&[("Self", &["Self"])]), expected);
+        assert_eq!(
+            sort(&[("Root", &[]), ("A", &["B"]), ("B", &["A"])]),
+            expected
+        );
+    }
+
+    #[test]
+    fn deep_dependency_chain_fits_a_small_thread_stack() {
+        let modules: Vec<_> = (0..512).map(|i| format!("Module{i:03}")).collect();
+        let imports = modules
+            .iter()
+            .enumerate()
+            .map(|(index, module)| {
+                let dependencies = if index == 0 {
+                    Vec::new()
+                } else {
+                    vec![import(&modules[index - 1])]
+                };
+                (module.clone(), dependencies)
+            })
+            .collect();
+        let pending = modules.iter().cloned().collect();
+        let order = std::thread::Builder::new()
+            .stack_size(128 * 1024)
+            .spawn(move || topo_sort_modules(pending, &imports, "fixture import cycle"))
+            .expect("spawn module ordering thread")
+            .join()
+            .expect("module ordering thread panicked")
+            .unwrap();
+        assert_eq!(order, modules);
+    }
+}
+
+#[cfg(all(test, unix))]
+mod process_tests {
+    use super::*;
+
+    fn shell_checker(checkout: &Path) -> Checker {
+        Checker::new_with_env(checkout, Some(Path::new("/bin/sh")), []).unwrap()
+    }
+
+    #[test]
+    fn keeps_staging_private_at_creation_and_after_reset() {
+        const PROBE: &str = "ANNEAL_AUDIT_STAGE_PERMISSION_PROBE";
+        if env::var_os(PROBE).is_some() {
+            use std::os::unix::fs::PermissionsExt;
+
+            let checkout = tempfile::tempdir().unwrap();
+            let mut checker = shell_checker(checkout.path());
+            assert_eq!(
+                fs::metadata(&checker.stage).unwrap().permissions().mode() & 0o777,
+                0o700,
+                "initial staging directory exposes its contents to other users"
+            );
+            fs::write(checker.stage.join("input"), b"private source bytes").unwrap();
+            checker.reset_stage().unwrap();
+            assert_eq!(
+                fs::metadata(&checker.stage).unwrap().permissions().mode() & 0o777,
+                0o700,
+                "reset staging directory exposes its contents to other users"
+            );
+            assert!(!checker.stage.join("input").exists());
+            return;
+        }
+
+        // Change only the child's umask; other tests may run concurrently.
+        let output = Command::new("/bin/sh")
+            .args(["-c", "umask 022 && exec \"$@\"", "stage-permissions"])
+            .arg(env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "process_tests::keeps_staging_private_at_creation_and_after_reset",
+                "--nocapture",
+            ])
+            .env(PROBE, "1")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "permission probe failed:\n{}\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert!(String::from_utf8_lossy(&output.stdout).contains("1 passed"));
+    }
+
+    #[test]
+    fn captures_successful_child_output() {
+        let checkout = tempfile::tempdir().unwrap();
+        let checker = shell_checker(checkout.path());
+        let output = checker
+            .launch_lean(&[
+                "-c".to_string(),
+                "printf 'stdout\\000\\377'; printf 'stderr\\000\\376' >&2".to_string(),
+            ])
+            .unwrap();
+
+        assert!(output.status.success());
+        assert_eq!(output.stdout, b"stdout\0\xff");
+        assert_eq!(output.stderr, b"stderr\0\xfe");
+    }
+
+    #[test]
+    fn preserves_failed_child_status_and_raw_streams() {
+        let checkout = tempfile::tempdir().unwrap();
+        let checker = shell_checker(checkout.path());
+        let output = checker
+            .launch_lean(&[
+                "-c".to_string(),
+                "printf 'stdout\\000\\377'; printf 'stderr\\000\\376' >&2; exit 37".to_string(),
+            ])
+            .unwrap();
+
+        assert_eq!(output.status.code(), Some(37));
+        assert_eq!(output.stdout, b"stdout\0\xff");
+        assert_eq!(output.stderr, b"stderr\0\xfe");
+    }
+
+    #[test]
+    fn returns_io_error_when_child_cannot_launch() {
+        let checkout = tempfile::tempdir().unwrap();
+        let missing = checkout.path().join("missing-lean");
+        let checker = Checker::new_with_env(checkout.path(), Some(&missing), []).unwrap();
+
+        let error = checker.launch_lean(&[]).unwrap_err();
+
+        assert_eq!(error.kind(), io::ErrorKind::NotFound);
+    }
+
+    #[test]
+    fn preserves_arguments_and_stage_working_directory() {
+        let checkout = tempfile::tempdir().unwrap();
+        let checker = shell_checker(checkout.path());
+        fs::write(checker.stage.join("marker"), b"from-stage\n").unwrap();
+        let output = checker
+            .launch_lean(&[
+                "-c".to_string(),
+                "IFS= read -r marker < marker; printf '%s\\000' \"$marker\" \"$@\"".to_string(),
+                "fixture".to_string(),
+                "space separated".to_string(),
+                String::new(),
+                "$HOME;*".to_string(),
+                "line\nbreak".to_string(),
+            ])
+            .unwrap();
+
+        assert!(output.status.success());
+        assert_eq!(
+            output.stdout,
+            b"from-stage\0space separated\0\0$HOME;*\0line\nbreak\0"
+        );
+        assert!(output.stderr.is_empty());
+    }
+
+    #[test]
+    fn launches_with_only_the_filtered_environment() {
+        let checkout = tempfile::tempdir().unwrap();
+        let checker = Checker::new_with_env(
+            checkout.path(),
+            Some(Path::new("/usr/bin/env")),
+            [
+                ("HOME".to_string(), "/selected/home".to_string()),
+                ("TMPDIR".to_string(), "/selected/tmp".to_string()),
+                ("LANG".to_string(), "C".to_string()),
+                ("LC_ALL".to_string(), "C".to_string()),
+                ("PATH".to_string(), "/unselected/bin".to_string()),
+                ("LEAN_PATH".to_string(), "/unselected/lean".to_string()),
+                ("ELAN_TOOLCHAIN".to_string(), "unselected".to_string()),
+                ("LD_PRELOAD".to_string(), "/unselected.so".to_string()),
+            ],
+        )
+        .unwrap();
+        let output = checker.launch_lean(&[]).unwrap();
+
+        assert!(output.status.success());
+        let environment = String::from_utf8(output.stdout).unwrap();
+        assert_eq!(
+            environment.lines().collect::<BTreeSet<_>>(),
+            BTreeSet::from([
+                "HOME=/selected/home",
+                "LANG=C",
+                "LC_ALL=C",
+                "PATH=/usr/bin:/bin",
+                "TMPDIR=/selected/tmp",
+            ])
+        );
+        assert!(output.stderr.is_empty());
+    }
 }
