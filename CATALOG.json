@@ -48341,6 +48341,97 @@
         "compilers/incremental-architecture"
       ]
     },
+    "predicate-transformer-healthiness-and-relational-semantics": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/360933.360975"
+          },
+          "name": "Guarded commands, nondeterminacy and formal derivation of programs (Dijkstra, CACM 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0022-0000(77)80006-8"
+          },
+          "name": "A characterization of weakest preconditions (Wand, JCSS 1977)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-10007-5_48"
+          },
+          "name": "Dijkstra's predicate transformers and Smyth's powerdomains (Plotkin, LNCS 86, 1980)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/69558.69559"
+          },
+          "name": "A generalization of Dijkstra's calculus (Nelson, ACM TOPLAS 1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4612-1674-2"
+          },
+          "name": "Refinement Calculus: A Systematic Introduction (Back and von Wright, Springer 1998)"
+        },
+        {
+          "identity": {
+            "coq_repository": "jalpuim/dtp-refinement",
+            "coq_revision": "a29203b823d0399657c3f5edca3b8a105797260b",
+            "doi": "10.1016/j.scico.2017.04.003"
+          },
+          "name": "Embedding the refinement calculus in Coq (Alpuim and Swierstra, Science of Computer Programming 2018)"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.01237",
+            "doi": "10.1145/3341708"
+          },
+          "name": "Dijkstra monads for all (Maillard et al., PACMPL ICFP 2019)"
+        },
+        {
+          "identity": {
+            "mirror_repository": "isabelle-prover/mirror-afp-devel",
+            "mirror_revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+            "url": "https://isa-afp.org/entries/RefinementReactive.html"
+          },
+          "name": "Formalization of Refinement Calculus for Reactive Systems (Preoteasa, Archive of Formal Proofs 2014), theory Refinement.thy"
+        },
+        {
+          "identity": {
+            "mirror_repository": "isabelle-prover/mirror-afp-devel",
+            "mirror_revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720",
+            "url": "https://isa-afp.org/entries/Transformer_Semantics.html"
+          },
+          "name": "Transformer Semantics (Struth, Archive of Formal Proofs 2018), theory Kleisli_Transformers.thy"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5f78f9ce46fc85fa3cb45561d47b489c4c98cd04"
+          },
+          "name": "Mathlib relations (SetRel.core), file Mathlib/Basic/Rel.lean"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/weakest-preconditions",
+        "verification/refinement",
+        "verification/refinement-calculus",
+        "pl/predicate-transformers",
+        "pl/relational-semantics",
+        "pl/nondeterminism"
+      ]
+    },
     "probabilistic-programming-measure-semantics-and-inference-compilers": {
       "observed_at": "2026-11-19",
       "subjects": [

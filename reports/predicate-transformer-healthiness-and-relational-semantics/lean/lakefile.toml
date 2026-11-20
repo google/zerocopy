@@ -1,0 +1,6 @@
+name = "toy_predtrans"
+version = "0.1.0"
+defaultTargets = ["ToyPredTrans"]
+
+[[lean_lib]]
+name = "ToyPredTrans"

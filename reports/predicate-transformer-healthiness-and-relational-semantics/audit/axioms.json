@@ -1,0 +1,797 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.PredTrans.Chain": [],
+    "Toy.PredTrans.Chain.mono": [],
+    "Toy.PredTrans.ChaosNormal": [],
+    "Toy.PredTrans.ConjAll": [],
+    "Toy.PredTrans.ConjBin": [],
+    "Toy.PredTrans.ConjNonempty": [],
+    "Toy.PredTrans.ContinuumState": [],
+    "Toy.PredTrans.CountableState": [],
+    "Toy.PredTrans.DirContinuous": [],
+    "Toy.PredTrans.Directed": [],
+    "Toy.PredTrans.FiniteImage": [],
+    "Toy.PredTrans.FiniteState": [],
+    "Toy.PredTrans.Monotone": [],
+    "Toy.PredTrans.OmegaContinuous": [],
+    "Toy.PredTrans.Pred": [],
+    "Toy.PredTrans.RefinedBy": [],
+    "Toy.PredTrans.Rel": [],
+    "Toy.PredTrans.Strict": [],
+    "Toy.PredTrans.TopPreserving": [],
+    "Toy.PredTrans.TotalOn": [],
+    "Toy.PredTrans.Transformer": [],
+    "Toy.PredTrans.UpClosed": [],
+    "Toy.PredTrans.abortT": [],
+    "Toy.PredTrans.abortT_conjNonempty_not_wlp": [],
+    "Toy.PredTrans.abortT_eq_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.abortT_finiteState_conjBin_not_conjAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.abortT_refinedBy": [],
+    "Toy.PredTrans.angelic": [],
+    "Toy.PredTrans.angelicDemonic": [],
+    "Toy.PredTrans.angelicDemonic_not_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.angelic_continuum_omegaContinuous_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.angelic_countable_omegaContinuous_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.angelic_dirContinuous_monotone_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.angelic_eq_angelicDemonic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.angelic_finiteState_monotone_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.angelic_laws_not_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.chain_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.chaosNormal_chaos": [],
+    "Toy.PredTrans.chaosNormal_havocR": [],
+    "Toy.PredTrans.chaosNormal_not_preserved_by_comp": [],
+    "Toy.PredTrans.chaosNormal_of_forall_term": [],
+    "Toy.PredTrans.chaosNormal_relOf_termOf_of_monotone": [],
+    "Toy.PredTrans.chaosNormal_unique_of_wp_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.comp": [],
+    "Toy.PredTrans.comp_stepR_example": [],
+    "Toy.PredTrans.conjAll_arbitrary_sort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjAll_iff_conjNonempty_and_topPreserving": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjAll_iff_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjAll_iff_eq_wlp_relOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjAll_iff_exists_unique_wlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjAll_iff_set": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjAll_wlp": [],
+    "Toy.PredTrans.conjAll_wlp_stepR_and_not_conjAll_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_dirContinuous_nonvacuous_beyond_continuum": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_iff_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_iff_exists_wp_of_finiteState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_of_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_omegaContinuous_iff_wp_finiteImage_of_continuumState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_orT": [],
+    "Toy.PredTrans.conjBin_topPreserving_iff_exists_wlp_of_finiteState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_wlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjBin_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjList_of_conjBin_of_topPreserving": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_abortT": [],
+    "Toy.PredTrans.conjNonempty_arbitrary_sort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_iff_eq_wp_relOf_termOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_iff_exists_unique_chaosNormal_wp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_iff_exists_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_iff_set": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_of_conjAll": [],
+    "Toy.PredTrans.conjNonempty_of_conjBin_of_dirContinuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_of_conjBin_of_finiteState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_of_conjBin_of_omegaContinuous_of_continuumState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_of_conjBin_of_omegaContinuous_of_continuumState.match_1_11": [],
+    "Toy.PredTrans.conjNonempty_of_conjBin_of_omegaContinuous_of_countable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.conjNonempty_wp": [],
+    "Toy.PredTrans.conjNonempty_wp_predR_posP_and_not_conjNonempty_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.constT": [],
+    "Toy.PredTrans.constT_conjNonempty_not_strict_not_topPreserving": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.constT_eq_wp_emptyR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.continuumState_nat": [],
+    "Toy.PredTrans.continuumState_nat_to_bool": [],
+    "Toy.PredTrans.continuumState_of_countableState": [],
+    "Toy.PredTrans.continuum_conjBin_omegaContinuous_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.countableState_bool": [],
+    "Toy.PredTrans.countableState_nat": [],
+    "Toy.PredTrans.countable_conjBin_omegaContinuous_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.decideExistsLt": [],
+    "Toy.PredTrans.decideExistsLt.match_1_1": [],
+    "Toy.PredTrans.decideExistsLt.match_1_3": [],
+    "Toy.PredTrans.decideExistsLt.match_1_5": [],
+    "Toy.PredTrans.decideExistsLt.match_1_7": [],
+    "Toy.PredTrans.dirContinuous_angelic": [],
+    "Toy.PredTrans.dirContinuous_negT": [],
+    "Toy.PredTrans.dirContinuous_orT": [],
+    "Toy.PredTrans.dirContinuous_wp_skipR": [],
+    "Toy.PredTrans.directed_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.em_of_conjNonempty_orT": [],
+    "Toy.PredTrans.emptyR": [],
+    "Toy.PredTrans.eventually": [],
+    "Toy.PredTrans.eventually_conjBin_not_dirContinuous_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_conjList": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_continuum_conjBin_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_countable_conjBin_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_eq_angelicDemonic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_finitary_laws_not_relational": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_iff_exists_fromN": [],
+    "Toy.PredTrans.eventually_infinite_conjBin_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_ne_wlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.eventually_ne_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.exists_wp_of_conjBin_of_dirContinuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.finitary_laws_do_not_imply_relational": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.finiteImage_emptyR": [],
+    "Toy.PredTrans.finiteImage_on_term_of_dirContinuous_wp": [],
+    "Toy.PredTrans.finiteImage_skipR": [],
+    "Toy.PredTrans.finiteImage_stepR": [],
+    "Toy.PredTrans.finiteState_bool": [],
+    "Toy.PredTrans.finiteState_conjBin_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.fromN": [],
+    "Toy.PredTrans.fromN_eq_wlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.havocR": [],
+    "Toy.PredTrans.havocR_nat_conjAll_strict_not_omegaContinuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.kernel_established_of_list": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.lem_of_chaosNormal_unique_of_wp_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.lem_of_conjNonempty_of_conjBin_of_dirContinuous": [],
+    "Toy.PredTrans.lem_of_conjNonempty_of_conjBin_of_finiteState": [],
+    "Toy.PredTrans.lem_of_conjNonempty_of_conjBin_of_omegaContinuous_of_continuumState": [],
+    "Toy.PredTrans.lem_of_conjNonempty_of_conjBin_of_omegaContinuous_of_countable": [],
+    "Toy.PredTrans.lem_of_refinedBy_wp_iff_of_chaosNormal": [],
+    "Toy.PredTrans.lem_of_relOf_wp_of_chaosNormal": [],
+    "Toy.PredTrans.lem_of_strict_wlp_iff": [],
+    "Toy.PredTrans.lem_of_strict_wp_iff_totalOn": [],
+    "Toy.PredTrans.list_chain_bound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.list_nat_bounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.lpo_of_finiteImage_imp_omegaContinuous_wp": [],
+    "Toy.PredTrans.lpo_of_finiteImage_imp_omegaContinuous_wp.match_1_1": [],
+    "Toy.PredTrans.monotone_angelic": [],
+    "Toy.PredTrans.monotone_angelicDemonic": [],
+    "Toy.PredTrans.monotone_angelicDemonic_both_sides_occur": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.monotone_eventually": [],
+    "Toy.PredTrans.monotone_iff_eq_angelicDemonic_multirelOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.monotone_iff_exists_angelicDemonic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.monotone_of_conjBin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.monotone_of_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.monotone_wlp": [],
+    "Toy.PredTrans.monotone_wp": [],
+    "Toy.PredTrans.multirelOf": [],
+    "Toy.PredTrans.multirelOf_angelicDemonic_both_sides_occur": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.multirelOf_angelicDemonic_eq_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.multirelOf_wlp_skipR": [],
+    "Toy.PredTrans.nat_to_bool_uncountable_conjBin_omegaContinuous_conjNonempty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.negT": [],
+    "Toy.PredTrans.negT_ne_angelicDemonic": [],
+    "Toy.PredTrans.negT_ne_wp": [],
+    "Toy.PredTrans.negT_not_monotone_not_angelicDemonic": [],
+    "Toy.PredTrans.negT_not_monotone_not_angelicDemonic.match_1_1": [],
+    "Toy.PredTrans.negT_not_monotone_not_wp": [],
+    "Toy.PredTrans.negT_not_monotone_not_wp.match_1_1": [],
+    "Toy.PredTrans.no_injection_pred_bool": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_chain_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_chaosNormal_predR_posP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_comp_stepR_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_conjAll_abortT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_conjAll_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_conjBin_angelic": [],
+    "Toy.PredTrans.not_conjNonempty_angelic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_conjNonempty_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_continuous_on_arbitrary_families_stepR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_continuous_on_arbitrary_families_stepR_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_continuumState_pred_nat_to_bool": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_countableState_nat_to_bool": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_dirContinuous_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_dirContinuous_wlp_havocR_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_directed_empty": [],
+    "Toy.PredTrans.not_directed_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_disjBin_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_disjBin_wlp_stepR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_finiteImage_havocR_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_finiteState_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_monotone_negT": [],
+    "Toy.PredTrans.not_multirelOf_wlp_skipR_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_omegaContinuous_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_omegaContinuous_wlp_havocR_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_omegaContinuous_wp_havocR_nat_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_refinedBy_stepR_havocR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_seqTerm_example": [],
+    "Toy.PredTrans.not_strict_wlp_emptyR": [],
+    "Toy.PredTrans.not_strict_wp_predR_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_termOf_wp_predR_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_topPreserving_abortT": [],
+    "Toy.PredTrans.not_totalOn_predR_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_union_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_upClosed_not_recovered_by_multirelOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_upClosed_singleton": [],
+    "Toy.PredTrans.not_wlp_stepR_eq_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.not_wp_predR_zero": [],
+    "Toy.PredTrans.omegaContinuous_angelic": [],
+    "Toy.PredTrans.omegaContinuous_negT": [],
+    "Toy.PredTrans.omegaContinuous_negT_not_monotone": [],
+    "Toy.PredTrans.omegaContinuous_of_dirContinuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_of_dirContinuous.match_1_1": [],
+    "Toy.PredTrans.omegaContinuous_of_dirContinuous.match_1_3": [],
+    "Toy.PredTrans.omegaContinuous_orT": [],
+    "Toy.PredTrans.omegaContinuous_two_sided_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_two_sided_iff.match_1_1": [],
+    "Toy.PredTrans.omegaContinuous_two_sided_iff.match_1_3": [],
+    "Toy.PredTrans.omegaContinuous_wlp_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wlp_stepR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wp_both_sides_occur": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wp_emptyR": [],
+    "Toy.PredTrans.omegaContinuous_wp_iff_finiteImage_on_term": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wp_partial_both_sides_occur": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wp_partial_infinite_image_outside_term": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wp_skipR": [],
+    "Toy.PredTrans.omegaContinuous_wp_stepR_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.omegaContinuous_wp_with_infinite_image_outside_term": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.orT": [],
+    "Toy.PredTrans.posP": [],
+    "Toy.PredTrans.predR": [],
+    "Toy.PredTrans.pred_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.refinedBy_havocR_stepR": [],
+    "Toy.PredTrans.refinedBy_wlp_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.refinedBy_wp_both_sides_occur": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.refinedBy_wp_chaosNormal_partial_nonvacuous": [],
+    "Toy.PredTrans.refinedBy_wp_global_inclusion_needs_chaosNormal": [],
+    "Toy.PredTrans.refinedBy_wp_iff": [],
+    "Toy.PredTrans.refinedBy_wp_iff_of_chaosNormal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.refinedBy_wp_partial_both_sides_occur": [],
+    "Toy.PredTrans.refinedBy_wp_without_global_relation_inclusion": [],
+    "Toy.PredTrans.relOf": [],
+    "Toy.PredTrans.relOf_eventually": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relOf_eventually_finite_not_conjNonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relOf_iff_not_avoids_of_monotone": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relOf_wlp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relOf_wlp_skipR": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relOf_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relOf_wp_of_chaosNormal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.rel_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.relation_inclusion_without_term_inclusion_not_refinedBy": [],
+    "Toy.PredTrans.relational_criterion_fails_off_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.seqTerm": [],
+    "Toy.PredTrans.seqTerm_eq_wp": [],
+    "Toy.PredTrans.seqTerm_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.skipR": [],
+    "Toy.PredTrans.stepR": [],
+    "Toy.PredTrans.strict_abortT": [],
+    "Toy.PredTrans.strict_conjBin_omegaContinuous_iff_wp_finiteImage_totalOn_of_continuumState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.strict_eventually": [],
+    "Toy.PredTrans.strict_iff_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.strict_wlp_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.strict_wp_both_sides_occur": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.strict_wp_iff_totalOn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.strict_wp_predR_posP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.strict_wp_skipR": [],
+    "Toy.PredTrans.strict_wp_without_total_relation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.termOf": [],
+    "Toy.PredTrans.termOf_wlp_emptyR_no_outcome": [],
+    "Toy.PredTrans.termOf_wlp_emptyR_no_outcome.match_1_1": [],
+    "Toy.PredTrans.termOf_wp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.termOf_wp_predR_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.topPreserving_eventually": [],
+    "Toy.PredTrans.topPreserving_iff_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.topPreserving_of_conjAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.topPreserving_wlp": [],
+    "Toy.PredTrans.topPreserving_wp_iff": [],
+    "Toy.PredTrans.totalOn_predR_posP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.trans_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.union": [],
+    "Toy.PredTrans.union_example": [],
+    "Toy.PredTrans.upClosed_contains": [],
+    "Toy.PredTrans.upClosed_multirelOf_iff": [],
+    "Toy.PredTrans.upClosed_not_unique_among_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp": [],
+    "Toy.PredTrans.wlp_comp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp_emptyR": [],
+    "Toy.PredTrans.wlp_eq_wp_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp_iUnion": [],
+    "Toy.PredTrans.wlp_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp_predR_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp_relOf_eventually_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp_skipR": [],
+    "Toy.PredTrans.wlp_stepR_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wlp_union": [],
+    "Toy.PredTrans.wp": [],
+    "Toy.PredTrans.wp_chaos_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_comp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_comp_conj_term_wrong": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_comp_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_comp_first_term_wrong": [],
+    "Toy.PredTrans.wp_eq_angelicDemonic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_eq_wp_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_predR_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_predR_posP_conjNonempty_not_wlp": [],
+    "Toy.PredTrans.wp_restrict_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_same_with_different_relations": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_skipR_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.PredTrans.wp_union": [],
+    "Toy.PredTrans.wp_union_disj_term_wrong": [],
+    "Toy.PredTrans.zeroHavocR": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
