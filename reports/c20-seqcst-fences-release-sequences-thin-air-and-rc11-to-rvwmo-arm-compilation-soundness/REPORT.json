@@ -1,0 +1,114 @@
+{
+  "topics": [
+    "compilers/verified-rustc/concurrency",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/x86-64",
+    "minirust/concurrency",
+    "rust/atomics",
+    "rust/memory-model",
+    "rust/miri",
+    "verification/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+      }
+    },
+    {
+      "name": "minirust",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "rc11",
+      "identity": {
+        "repository": "qladevez/rc11",
+        "revision": "fad08ae4c6f41c4268e11140e551b5c42ce07224"
+      }
+    },
+    {
+      "name": "promising-coq",
+      "identity": {
+        "repository": "snu-sf/promising-coq",
+        "revision": "fd9796ede251a2edf0ebf8c938443a30d5eadee9"
+      }
+    },
+    {
+      "name": "promising2-coq",
+      "identity": {
+        "repository": "snu-sf/promising2-coq",
+        "revision": "6b70a57d10666ec66bfa96b7801dd870f9054da9"
+      }
+    },
+    {
+      "name": "riscv-isa-manual",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "riscv-elf-psabi-doc",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+        "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+      }
+    },
+    {
+      "name": "Repairing Sequential Consistency in C/C++11 (RC11)",
+      "identity": {
+        "doi": "10.1145/3062341.3062352",
+        "venue": "PLDI 2017"
+      }
+    },
+    {
+      "name": "A Promising Semantics for Relaxed-Memory Concurrency",
+      "identity": {
+        "doi": "10.1145/3009837.3009850",
+        "venue": "POPL 2017"
+      }
+    },
+    {
+      "name": "Promising 2.0: Global Optimizations in Relaxed Memory Concurrency",
+      "identity": {
+        "doi": "10.1145/3385412.3386010",
+        "venue": "PLDI 2020"
+      }
+    },
+    {
+      "name": "Simplifying ARM Concurrency: Multicopy-Atomic Axiomatic and Operational Models for ARMv8",
+      "identity": {
+        "doi": "10.1145/3158107",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "Weaken Release Sequences (ISO C++20 P0982R1)",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG21 P0982R1",
+        "published": "2018-10-07"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

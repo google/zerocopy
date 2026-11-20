@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "anneal/theory",
+    "lean/mechanization",
+    "rust/atomics",
+    "rust/concurrency",
+    "rust/unsafe",
+    "verification/concurrency",
+    "verification/iris",
+    "verification/program-logics",
+    "verification/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "relaxed-memory-separation-logic (GPFSL / iRC11 / ORC11)",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "iris",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+      }
+    },
+    {
+      "name": "rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "crossbeam",
+      "identity": {
+        "repository": "crossbeam-rs/crossbeam",
+        "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
+      }
+    },
+    {
+      "name": "Owicki-Gries Reasoning for Weak Memory Models (OGRA)",
+      "identity": {
+        "doi": "10.1007/978-3-662-47666-6_25",
+        "venue": "ICALP 2015"
+      }
+    },
+    {
+      "name": "Relaxed Separation Logic: A Program Logic for C11 Concurrency (RSL)",
+      "identity": {
+        "doi": "10.1145/2509136.2509532",
+        "venue": "OOPSLA 2013"
+      }
+    },
+    {
+      "name": "A Program Logic for C11 Memory Fences (FSL)",
+      "identity": {
+        "doi": "10.1007/978-3-662-49122-5_20",
+        "venue": "VMCAI 2016"
+      }
+    },
+    {
+      "name": "Tackling Real-Life Relaxed Concurrency with FSL++",
+      "identity": {
+        "doi": "10.1007/978-3-662-54434-1_17",
+        "venue": "ESOP 2017"
+      }
+    },
+    {
+      "name": "GPS: Navigating Weak Memory with Ghosts, Protocols, and Separation",
+      "identity": {
+        "doi": "10.1145/2660193.2660243",
+        "venue": "OOPSLA 2014"
+      }
+    },
+    {
+      "name": "Strong Logic for Weak Memory: Reasoning About Release-Acquire Consistency in Iris (iGPS)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2017.17",
+        "venue": "ECOOP 2017"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory (iRC11)",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Cosmo: A Concurrent Separation Logic for Multicore OCaml",
+      "identity": {
+        "doi": "10.1145/3408978",
+        "venue": "ICFP 2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
