@@ -1,0 +1,105 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "rust/atomics",
+    "rust/memory-model",
+    "rust/miri",
+    "systems/concurrency-weak-memory",
+    "verification/concurrency",
+    "verification/lean4"
+  ],
+  "subjects": [
+    {
+      "name": "promising-lib",
+      "identity": {
+        "repository": "snu-sf/promising-lib",
+        "revision": "ce6cccb9c26ecdfa0265682a2d3f40cfdbadd433"
+      }
+    },
+    {
+      "name": "promising-coq",
+      "identity": {
+        "repository": "snu-sf/promising-coq",
+        "revision": "fd9796ede251a2edf0ebf8c938443a30d5eadee9"
+      }
+    },
+    {
+      "name": "promising2-coq",
+      "identity": {
+        "repository": "snu-sf/promising2-coq",
+        "revision": "6b70a57d10666ec66bfa96b7801dd870f9054da9"
+      }
+    },
+    {
+      "name": "relaxed-memory-separation-logic (ORC11 / iRC11)",
+      "identity": {
+        "repository": "kaist-cp/relaxed-memory-separation-logic",
+        "revision": "6fe1475af1f8c49f8c144a67d9175b5b3e6bc472"
+      }
+    },
+    {
+      "name": "rc11",
+      "identity": {
+        "repository": "qladevez/rc11",
+        "revision": "fad08ae4c6f41c4268e11140e551b5c42ce07224"
+      }
+    },
+    {
+      "name": "miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+      }
+    },
+    {
+      "name": "rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "450d6b121a45a48ffc58a83c921c813dffb259cb"
+      }
+    },
+    {
+      "name": "A Promising Semantics for Relaxed-Memory Concurrency",
+      "identity": {
+        "doi": "10.1145/3009837.3009850",
+        "venue": "POPL 2017"
+      }
+    },
+    {
+      "name": "Promising 2.0: Global Optimizations in Relaxed Memory Concurrency",
+      "identity": {
+        "doi": "10.1145/3385412.3386010",
+        "venue": "PLDI 2020"
+      }
+    },
+    {
+      "name": "Repairing Sequential Consistency in C/C++11 (RC11)",
+      "identity": {
+        "doi": "10.1145/3062341.3062352",
+        "venue": "PLDI 2017"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory",
+      "identity": {
+        "doi": "10.1145/3371102",
+        "venue": "POPL 2020"
+      }
+    },
+    {
+      "name": "Weaken Release Sequences (ISO C++20 P0982R1)",
+      "identity": {
+        "document": "ISO/IEC JTC1/SC22/WG21 P0982R1",
+        "published": "2018-10-07"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
