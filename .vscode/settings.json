@@ -10,6 +10,7 @@
     "rust-analyzer.linkedProjects": [
         "zerocopy/Cargo.toml",
         "tools/Cargo.toml",
+        "anneal/Cargo.toml",
         "anneal/v2/Cargo.toml",
         "anneal/v1/Cargo.toml",
         "exocrate/Cargo.toml"

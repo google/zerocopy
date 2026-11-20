@@ -457,20 +457,18 @@ jobs:
         run: cargo test --workspace --all-features # include, e.g., tests that assume exocrate prebuilt
         working-directory: anneal/v2
 
-  # Used to signal to branch protections that all other jobs have succeeded.
+  current_anneal:
+    name: Current Anneal
+    uses: ./.github/workflows/anneal-current.yml
+
   all-jobs-succeed:
-      # WARNING: This name is load-bearing! It's how GitHub's settings UI
-      # configures which jobs to block on. DO NOT change this name without
-      # updating the settings UI to match.
-      name: All checks succeeded (anneal.yml)
-      # On failure, we run and unconditionally exit with a failing status code.
-      # On success, this job is skipped. Jobs skipped using `if:` are considered
-      # to have succeeded:
-      #
-      # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
-      if: failure()
-      runs-on: ubuntu-latest
-      needs: [static_checks, anneal_tests, verify_examples, v2_nix_cache, v2]
-      steps:
-        - name: Mark the job as failed
-          run: exit 1
+    # This name is configured in Zerocopy's branch protection.
+    name: All checks succeeded (anneal.yml)
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: [static_checks, anneal_tests, verify_examples, v2_nix_cache, v2, current_anneal]
+    steps:
+      - name: Require every dependency to succeed
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: jq -e 'length > 0 and all(.[]; .result == "success")' <<< "$NEEDS_JSON"
