@@ -27,8 +27,8 @@ use crate::toolchain::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex,
 /// discovers model, lock, or inspector files from an untrusted checkout. Within
 /// `theory/`, `BUNDLE_SOURCES` includes `theory/Anneal/NatBitwise.lean`,
 /// `theory/Anneal/BitVec.lean`, `theory/Anneal/BitVecArith.lean`,
-/// `theory/Anneal/LeBytes.lean`, `theory/Anneal/ListChunks.lean`, and
-/// `theory/Anneal/MirWp.lean`, which
+/// `theory/Anneal/LeBytes.lean`, `theory/Anneal/ListChunks.lean`,
+/// `theory/Anneal/MirWp.lean`, and `theory/Anneal/LoopInv.lean`, which
 /// target verification stages and compiles demand-driven via BFS from
 /// non-bundled target modules so unused bundled theory modules incur no
 /// compilation or provenance overhead.
@@ -46,6 +46,7 @@ pub const BUNDLE_SOURCES: &[&str] = &[
     "theory/Anneal/LeBytes.lean",
     "theory/Anneal/ListChunks.lean",
     "theory/Anneal/MirWp.lean",
+    "theory/Anneal/LoopInv.lean",
 ];
 
 const UPSTREAM_PIN_PATH: &str = "vendor/lean-miri/UPSTREAM_PIN.json";

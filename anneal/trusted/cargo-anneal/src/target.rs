@@ -2455,4 +2455,219 @@ mod unpinned_admission_tests {
         assert!(export_dir.join("Anneal/BitVecArith.olean").is_file());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
+
+    #[test]
+    fn live_demand_driven_loopinv_three_axiom_proof() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let trusted_path = repo_root().join("trusted/lean/Trusted.lean");
+        let trusted_sha = sha256_file(&trusted_path, "fixture").unwrap();
+        let mir_ast_path = repo_root().join("trusted/lean/Trusted/MirAst.lean");
+        let mir_ast_sha = sha256_file(&mir_ast_path, "fixture").unwrap();
+        let mir_sem_path = repo_root().join("trusted/lean/Trusted/MirSemantics.lean");
+        let mir_sem_sha = sha256_file(&mir_sem_path, "fixture").unwrap();
+        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
+        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
+        let mir_wp_path = repo_root().join("theory/Anneal/MirWp.lean");
+        let mir_wp_sha = sha256_file(&mir_wp_path, "fixture").unwrap();
+        let loopinv_path = repo_root().join("theory/Anneal/LoopInv.lean");
+        let loopinv_sha = sha256_file(&loopinv_path, "fixture").unwrap();
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-loopinv"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.u32Ty : Trusted.MirAst.MirTy := .int .i32 false\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 1, isUnsafe := false,\n    \
+                       locals := [Captured.u32Ty, Captured.u32Ty],\n    \
+                       basicBlocks := [\n      \
+                         { statements := [.assign ⟨0, []⟩ (.use (.constant ⟨Captured.u32Ty, .scalar (BitVec.ofNat 128 0)⟩))],\n        \
+                           terminator := .goto 1 },\n      \
+                         { statements := [],\n        \
+                           terminator := .switchInt (.copy ⟨1, []⟩) { branches := [(BitVec.ofNat 128 0, 3)], otherwise := 2 } },\n      \
+                         { statements := [\n            \
+                             .assign ⟨1, []⟩ (.binaryOp .sub (.copy ⟨1, []⟩) (.constant ⟨Captured.u32Ty, .scalar (BitVec.ofNat 128 1)⟩)),\n            \
+                             .assign ⟨0, []⟩ (.binaryOp .add (.copy ⟨0, []⟩) (.constant ⟨Captured.u32Ty, .scalar (BitVec.ofNat 128 1)⟩))],\n        \
+                           terminator := .goto 1 },\n      \
+                         { statements := [], terminator := .return_ }],\n    \
+                       identity := \"count_down\" }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun prog =>\n    \
+                     ∀ (n : Nat), n < Nat.pow 2 32 →\n      \
+                       Trusted.MirSemantics.WellFormed prog\n        \
+                         { args := [.scalar ⟨.i32, false, BitVec.ofNat 128 n⟩] } ∧\n      \
+                       Trusted.MirSemantics.Behavior prog\n        \
+                         { args := [.scalar ⟨.i32, false, BitVec.ofNat 128 n⟩] }\n        \
+                         (.returned ⟨.scalar ⟨.i32, false, BitVec.ofNat 128 n⟩, ⟨[]⟩⟩)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.LoopInv\n\
+                     private theorem check_arg_u32 (v : Trusted.MirSemantics.Val)\n  \
+                       (h : Trusted.MirSemantics.checkVal v Captured.u32Ty = true) :\n  \
+                       ∃ n, n < Nat.pow 2 32 ∧ v = .scalar ⟨.i32, false, BitVec.ofNat 128 n⟩ := by\n  \
+                       cases v with\n  \
+                       | scalar s =>\n    \
+                         cases s with\n    \
+                         | mk w sg b =>\n      \
+                           cases hwf : Trusted.MirSemantics.ScalarVal.wf ⟨w, sg, b⟩ with\n      \
+                           | false =>\n        \
+                             unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h\n        \
+                             rw [hwf] at h; cases h\n      \
+                           | true =>\n        \
+                             cases w <;> cases sg <;> try (unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h; rw [hwf] at h; cases h)\n        \
+                             have heq : Trusted.MirSemantics.truncateBits .i32 b = b := beq_iff_eq.mp hwf\n        \
+                             have hlt : b.toNat < Nat.pow 2 32 := by\n          \
+                               have h1 : b.toNat = (Trusted.MirSemantics.truncateBits .i32 b).toNat := congrArg BitVec.toNat heq.symm\n          \
+                               rw [h1]\n          \
+                               exact Nat.lt_of_le_of_lt (Nat.mod_le _ _) (Nat.mod_lt _ (Nat.pow_pos (by decide)))\n        \
+                             exact ⟨b.toNat, hlt, congrArg (fun x => Trusted.MirSemantics.Val.scalar ⟨.i32, false, x⟩) (congrArg BitVec.ofFin (Fin.eq_of_val_eq (Nat.mod_eq_of_lt b.isLt))).symm⟩\n  \
+                       | unit => cases h\n  \
+                       | bool _ => cases h\n  \
+                       | enumVal ety variant =>\n    \
+                         unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h\n    \
+                         cases hc : (Trusted.MirSemantics.enumAdmitted ety && Nat.blt variant ety.discriminants.length) <;> (rw [hc] at h; cases h)\n  \
+                       | tuple fields =>\n    \
+                         unfold Trusted.MirSemantics.checkVal Trusted.MirSemantics.Val.ty? at h\n    \
+                         cases hc : fields.isEmpty with\n    \
+                         | true => rw [hc] at h; cases h\n    \
+                         | false =>\n      \
+                           rw [hc] at h\n      \
+                           cases ht : Trusted.MirSemantics.Val.tys? fields <;> (rw [ht] at h; cases h)\n  \
+                       | ptr _ => cases h\n  \
+                       | bytes _ => cases h\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩\n  \
+                     · intro id selected h\n    \
+                       cases id with\n    \
+                       | zero =>\n      \
+                         cases h\n      \
+                         refine ⟨rfl, rfl, fun args hv _ => ?_⟩\n      \
+                         change Trusted.MirSemantics.checkArgsMatch args [Captured.u32Ty] = true at hv\n      \
+                         cases args with\n      \
+                         | nil => cases hv\n      \
+                         | cons v rest =>\n        \
+                           cases rest with\n        \
+                           | cons _ _ =>\n          \
+                             change (Trusted.MirSemantics.checkVal v Captured.u32Ty && false) = true at hv\n          \
+                             rw [Bool.and_false] at hv; cases hv\n        \
+                           | nil =>\n          \
+                             change (Trusted.MirSemantics.checkVal v Captured.u32Ty && true) = true at hv\n          \
+                             rw [Bool.and_true] at hv\n          \
+                             let ⟨n, hn, hvEq⟩ := check_arg_u32 v hv\n          \
+                             rw [hvEq]\n          \
+                             exact (Anneal.LoopInv.countDown_returns n hn).1\n    \
+                       | succ n => cases n <;> cases h\n  \
+                     · exact fun n hn => Anneal.LoopInv.countDown_returns n hn\n",
+                ),
+            ],
+        );
+        req.modules.push(TargetModule {
+            module: "Trusted".to_owned(),
+            source: trusted_path,
+            expected_sha256: trusted_sha,
+            role: TargetRole::Model,
+        });
+        req.modules.push(TargetModule {
+            module: "Trusted.MirAst".to_owned(),
+            source: mir_ast_path,
+            expected_sha256: mir_ast_sha,
+            role: TargetRole::Model,
+        });
+        req.modules.push(TargetModule {
+            module: "Trusted.MirSemantics".to_owned(),
+            source: mir_sem_path,
+            expected_sha256: mir_sem_sha,
+            role: TargetRole::Model,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.NatBitwise".to_owned(),
+            source: nat_bitwise_path,
+            expected_sha256: nat_bitwise_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.MirWp".to_owned(),
+            source: mir_wp_path,
+            expected_sha256: mir_wp_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.LoopInv".to_owned(),
+            source: loopinv_path,
+            expected_sha256: loopinv_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> = report["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(
+            used_axioms.is_subset(&allowed_axioms),
+            "unexpected axioms: {used_axioms:?}"
+        );
+        let export_dir = base.join("export-with-loopinv");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
+        assert!(export_dir.join("Anneal/MirWp.olean").is_file());
+        assert!(export_dir.join("Anneal/LoopInv.olean").is_file());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
 }
