@@ -48,8 +48,6 @@ cargo run --locked -p anneal-audit -- \
   and test the Rust workspace.
 - The [Release workflow](../../.github/workflows/release.yml) prepares and
   publishes the [MIR verifier alpha](alpha.md).
-- The verifier's former standalone release and review workflows live under
-  [`anneal/.github/`](../.github) for reference.
 - The [Codex review guide](codex-review.md) describes review gates and the
   standalone diagnostic evaluator.
 
