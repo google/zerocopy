@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Exercise the current Anneal CI root override checks."""
+"""Exercise current Anneal CI manifest guards and cache invariants."""
 
 import hashlib
 import os
@@ -23,9 +23,10 @@ SOURCE = Path(__file__).resolve().parent
 
 class CiWorkflowManifestGuardTests(unittest.TestCase):
     def setUp(self):
-        workflow = load_workflow_yaml(
+        self.workflow = load_workflow_yaml(
             (SOURCE.parent.parent / ".github/workflows/anneal-current.yml").read_text()
         )
+        workflow = self.workflow
         self.manifest_steps = {}
         for job_name in ("static-checks", "build-exocrate", "test-and-verify"):
             steps = workflow["jobs"][job_name]["steps"]
@@ -130,6 +131,221 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                         self.assertIn(
                             "forbidden root config override:", res.stdout + res.stderr
                         )
+
+    def test_nix_cache_restricts_trusted_substituter_to_main_push(self):
+        build_steps = {
+            step["id"]: step
+            for step in self.workflow["jobs"]["build-exocrate"]["steps"]
+            if "id" in step
+        }
+        restore = build_steps["restore_nix_cache"]
+        expected_restore_if = (
+            "github.event_name == 'push' "
+            "&& github.repository == 'google/zerocopy' "
+            "&& github.ref == 'refs/heads/main'"
+        )
+        self.assertEqual(restore["if"], expected_restore_if)
+        self.assertTrue(
+            restore["uses"].startswith("actions/cache/restore@")
+        )
+        self.assertNotIn("pull_request", restore["if"])
+        self.assertNotIn("merge_group", restore["if"])
+        self.assertNotIn("restore-keys", restore["with"])
+        self.assertTrue(restore["with"]["path"].startswith("${{ runner.temp }}/"))
+        self.assertNotIn("anneal/trusted/audit/**", restore["with"]["key"])
+
+        expected_writer_if = (
+            "github.event_name == 'push' "
+            "&& github.repository == 'google/zerocopy' "
+            "&& github.ref == 'refs/heads/main' "
+            "&& steps.restore_nix_cache.outputs.cache-hit != 'true'"
+        )
+        for writer_id in ("populate_nix_cache", "save_nix_cache"):
+            self.assertEqual(build_steps[writer_id]["if"], expected_writer_if)
+        populate_run = build_steps["populate_nix_cache"]["run"]
+        wipe_idx = populate_run.index('rm -rf "$RUNNER_TEMP/anneal-nix-cache"')
+        mkdir_idx = populate_run.index('mkdir -p "$RUNNER_TEMP/anneal-nix-cache"')
+        self.assertLess(wipe_idx, mkdir_idx)
+        save_nix = build_steps["save_nix_cache"]
+        self.assertTrue(save_nix["uses"].startswith("actions/cache/save@"))
+        self.assertEqual(save_nix["with"]["path"], restore["with"]["path"])
+        self.assertEqual(
+            save_nix["with"]["key"],
+            "${{ steps.restore_nix_cache.outputs.cache-primary-key }}",
+        )
+
+    def test_miri_olean_cache_compiles_cold_on_main_and_merge_group(self):
+        ordered_steps = self.workflow["jobs"]["test-and-verify"]["steps"]
+        step_indices = {
+            step["id"]: idx
+            for idx, step in enumerate(ordered_steps)
+            if "id" in step
+        }
+        test_steps = {
+            step["id"]: step for step in ordered_steps if "id" in step
+        }
+        self.assertLess(
+            step_indices["miri_olean_cache"], step_indices["audit"]
+        )
+        self.assertLess(
+            step_indices["audit"], step_indices["save_miri_olean_cache"]
+        )
+
+        restore = test_steps["miri_olean_cache"]
+        self.assertTrue(
+            restore["uses"].startswith("actions/cache/restore@")
+        )
+        self.assertEqual(
+            restore["if"],
+            "${{ github.event_name == 'pull_request' || "
+            "(github.event_name == 'push' "
+            "&& github.repository == 'google/zerocopy' "
+            "&& github.ref == 'refs/heads/main') }}",
+        )
+        self.assertNotIn("restore-keys", restore["with"])
+        self.assertTrue(restore["with"]["path"].startswith("${{ runner.temp }}/"))
+        self.assertEqual(
+            restore["with"]["lookup-only"],
+            "${{ github.event_name == 'push' }}",
+        )
+
+        save = test_steps["save_miri_olean_cache"]
+        self.assertTrue(save["uses"].startswith("actions/cache/save@"))
+        self.assertEqual(
+            save["if"],
+            "${{ steps.miri_olean_cache.outputs.cache-hit != 'true' && "
+            "(github.event_name == 'pull_request' || "
+            "(github.event_name == 'push' "
+            "&& github.repository == 'google/zerocopy' "
+            "&& github.ref == 'refs/heads/main')) }}",
+        )
+        self.assertEqual(save["with"]["path"], restore["with"]["path"])
+        self.assertEqual(
+            save["with"]["key"],
+            "${{ steps.miri_olean_cache.outputs.cache-primary-key }}",
+        )
+
+        # Execute the `audit` step's argument-selection shell logic against a
+        # stub `cargo` command to verify cold compilation on `push`,
+        # `merge_group`, `workflow_dispatch`, and unknown events, and seeding
+        # only on a missing `main` cache entry.
+        audit_script = test_steps["audit"]["run"]
+        with tempfile.TemporaryDirectory(prefix="anneal-ci-miri-cache-") as tmp:
+            tmp_path = Path(tmp)
+            bin_dir = tmp_path / "bin"
+            bin_dir.mkdir()
+            recorded = tmp_path / "cargo_args.txt"
+            seen_cache = tmp_path / "cache_seen_by_cargo.txt"
+            seen_env = tmp_path / "ambient_env_seen.txt"
+            stub_cargo = bin_dir / "cargo"
+            stub_cargo.write_text(
+                "#!/usr/bin/env bash\n"
+                f"printf '%s\\n' \"$@\" > '{recorded}'\n"
+                "if [ -e \"$MIRI_OLEAN_CACHE_DIR\" ]; then\n"
+                f"  echo exists > '{seen_cache}'\n"
+                "else\n"
+                f"  echo absent > '{seen_cache}'\n"
+                "fi\n"
+                f"printf '%s' \"${{ANNEAL_MIRI_CACHE_DIR-UNSET}}\" > '{seen_env}'\n"
+            )
+            stub_cargo.chmod(0o755)
+            diag = tmp_path / "diag"
+            diag.mkdir()
+
+            def run_audit_case(event_name, repo, ref, cache_hit, preseed=False):
+                cache_dir = tmp_path / "miri-cache"
+                if cache_dir.exists():
+                    for p in sorted(cache_dir.rglob("*"), reverse=True):
+                        p.unlink() if p.is_file() else p.rmdir()
+                    cache_dir.rmdir()
+                if preseed:
+                    cache_dir.mkdir(parents=True, exist_ok=True)
+                    (cache_dir / "stale.olean").write_text("stale")
+                recorded.unlink(missing_ok=True)
+                seen_cache.unlink(missing_ok=True)
+                seen_env.unlink(missing_ok=True)
+                env = os.environ.copy()
+                env.update({
+                    "PATH": f"{bin_dir}:{env.get('PATH', '')}",
+                    "ANNEAL_MIRI_CACHE_DIR": "/ambient/poison",
+                    "ANNEAL_TEST_DIAGNOSTICS": str(diag),
+                    "ANNEAL_TEST_INSTALL_ROOT": "/fake/install",
+                    "CI_EVENT_NAME": event_name,
+                    "CI_REPOSITORY": repo,
+                    "CI_REF": ref,
+                    "MIRI_CACHE_HIT": cache_hit,
+                    "MIRI_OLEAN_CACHE_DIR": str(cache_dir),
+                })
+                res = subprocess.run(
+                    [
+                        "bash",
+                        "--noprofile",
+                        "--norc",
+                        "-eo",
+                        "pipefail",
+                        "-c",
+                        audit_script,
+                    ],
+                    cwd=tmp_path,
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+                self.assertEqual(seen_env.read_text(), "UNSET")
+                return (
+                    recorded.read_text().splitlines(),
+                    seen_cache.read_text().strip(),
+                )
+
+            # 1. merge_group, workflow_dispatch, and other non-PR events never
+            # pass --miri-cache-dir.
+            for ev in ("merge_group", "workflow_dispatch", "schedule"):
+                args, _ = run_audit_case(
+                    ev, "google/zerocopy", "refs/heads/main", ""
+                )
+                self.assertNotIn("--miri-cache-dir", args)
+
+            # 2. push on main with cache hit wipes any pre-existing cache dir
+            # before cargo runs and omits --miri-cache-dir.
+            args, seen = run_audit_case(
+                "push", "google/zerocopy", "refs/heads/main", "true",
+                preseed=True,
+            )
+            self.assertEqual(seen, "absent")
+            self.assertNotIn("--miri-cache-dir", args)
+
+            # 3. push on main with cache miss (false or empty) wipes any
+            # pre-existing cache dir before cargo runs (cold compile) and
+            # passes --miri-cache-dir to seed main.
+            for miss_val in ("false", ""):
+                args, seen = run_audit_case(
+                    "push", "google/zerocopy", "refs/heads/main", miss_val,
+                    preseed=True,
+                )
+                self.assertEqual(seen, "absent")
+                self.assertIn("--miri-cache-dir", args)
+
+            # 4. push on a fork or non-main branch wipes any pre-existing cache
+            # dir before cargo runs and omits --miri-cache-dir.
+            for repo, ref in (
+                ("someone/zerocopy", "refs/heads/main"),
+                ("google/zerocopy", "refs/heads/dev"),
+            ):
+                args, seen = run_audit_case(
+                    "push", repo, ref, "false", preseed=True
+                )
+                self.assertEqual(seen, "absent")
+                self.assertNotIn("--miri-cache-dir", args)
+
+            # 5. pull_request preserves the restored cache dir and passes
+            # --miri-cache-dir to consume main's cache.
+            args, seen = run_audit_case(
+                "pull_request", "google/zerocopy", "refs/pull/1/merge", "true",
+                preseed=True,
+            )
+            self.assertEqual(seen, "exists")
+            self.assertIn("--miri-cache-dir", args)
 
 
 if __name__ == "__main__":
