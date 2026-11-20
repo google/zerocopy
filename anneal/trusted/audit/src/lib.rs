@@ -1734,6 +1734,7 @@ pub struct Checker {
     counter: usize,
     pub admitted: Option<AdmittedToolchain>,
     pub miri_cache_dir: Option<PathBuf>,
+    pub require_mir_wp: bool,
 }
 
 #[derive(Deserialize)]
@@ -1856,6 +1857,7 @@ impl Checker {
             counter: 0,
             admitted: None,
             miri_cache_dir: None,
+            require_mir_wp: true,
         })
     }
 
@@ -1863,6 +1865,15 @@ impl Checker {
     /// artifacts (`execution_machine_closure` in `UPSTREAM_PIN.json`).
     pub fn set_miri_cache_dir(&mut self, cache_dir: Option<PathBuf>) {
         self.miri_cache_dir = cache_dir;
+    }
+
+    /// Configure whether the Phase 2 `"audit"` inspector unconditionally
+    /// requires `Trusted.MirAst`, `Trusted.MirSemantics`, and `Anneal.MirWp`
+    /// to be present (defaults to `true`; only disabled in minimal synthetic
+    /// unit test fixtures; even when `false`, the check still runs if any MIR
+    /// or `PureLift` module is loaded).
+    pub fn set_require_mir_wp(&mut self, require: bool) {
+        self.require_mir_wp = require;
     }
 
     /// Return a shared reference to the [`AdmittedToolchain`], or an
@@ -2029,6 +2040,7 @@ impl Checker {
                     "trusted": trusted,
                     "theory": theory,
                     "moduleTiers": tiers,
+                    "requireMirWp": self.require_mir_wp,
                 })
             }
             InspectorRequest::CorrespondenceAudit {

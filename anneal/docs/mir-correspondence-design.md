@@ -1402,7 +1402,7 @@ checks that:
    types (`bool`, integers, `()`, `!`, and admitted fieldless enums).
 4. `q.args` has length `body.argumentCount` and each argument `v` satisfies
    `v.ty? = some paramTy` (including `ScalarVal.wf`: `v.bits.toNat <
-   v.width.modulus`).
+   2 ^ v.width.bitWidth`).
 
 `initRefState` applies the same checks to `encodeProg p` and fails with the
 same `.error .unsupported`, so the two machines reject exactly the same entry
@@ -2289,7 +2289,9 @@ def WpSoundnessClaim
     (wpProgFn : Program → Nat → Query → (TerminalOut → Prop) → Prop) : Prop :=
   ∀ (p : Program) (q : Query) (fuel : Nat) (post : TerminalOut → Prop),
     wpProgFn p fuel q post →
-      SatisfiesPost p q post ∧ ∃ out : TerminalOut, Behavior p q out ∧ post out
+      SatisfiesPost p q post ∧
+      ¬ Diverges p q ∧
+      ∃ out : TerminalOut, Behavior p q out ∧ post out
 
 def WpFaultSoundnessClaim
     (wpFaultProgFn : Program → Nat → Query → FaultKind → Prop) : Prop :=
@@ -2299,6 +2301,7 @@ def WpFaultSoundnessClaim
       (∀ k : FaultKind, k ≠ expected →
         ¬ ReachesResult p q (.fault k)) ∧
       (∀ out : TerminalOut, ¬ ReachesResult p q (.done out)) ∧
+      ¬ Diverges p q ∧
       ¬ WellFormed p q
 ```
 

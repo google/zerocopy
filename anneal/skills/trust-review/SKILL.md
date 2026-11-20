@@ -41,8 +41,8 @@ companions—to its required pass:
 | Touched path or trigger | Required pass | Sub-surface scope |
 |---|---|---|
 | Filesystem, mode, Unicode, or ambient config anomalies anywhere in the repo | Repo-wide check | Always runs on every path |
-| `theory/`, target-crate test fixtures, specs, docs, or tests/new dirs outside TCB/CI | Pass 1 | Untrusted input, seam, and spec integrity |
-| `trusted/lean/` | Pass 2 | §1 Lean TCB and trust tiers |
+| `theory/`, `correspondence/`, target-crate test fixtures, specs, docs, or tests/new dirs outside TCB/CI | Pass 1 | Untrusted input, seam, and spec integrity |
+| `trusted/lean/`, `trusted/correspondence/` | Pass 2 | §1 Lean TCB and trust tiers |
 | `trusted/rustc-capture/` | Pass 2 | §2 Capture and two-surface completeness |
 | `trusted/audit/`, `trusted/cargo-anneal/` | Pass 2 | §3 Auditor and orchestrator |
 | `trusted/root-manifest.sha256`, `trusted/lean/foundation-lock.json`, pinned root manifests (`Cargo.toml`, `Cargo.lock`, `flake.nix`, `flake.lock`), any `lakefile.*` or `lean-toolchain`, packaged toolchain archives or bundles | Pass 2 | §4 Provenance, locks, and bundles (plus Pass 1 rejection of `lakefile.*` outside TCB/CI or `lean-toolchain` outside `trusted/lean/`) |
@@ -51,9 +51,9 @@ companions—to its required pass:
 | Any `-- anneal-trust-tier:` directive edit in a `.lean` file (even comment-only) | Pass 2 | §1 Bidirectional trust-tier audit |
 
 - **Immediate Pass 2 skip:** Paths that CI or `anneal-audit` only scan, hash,
-  or audit as untrusted inputs (such as `theory/` or `docs/`) do not trigger
-  Pass 2. When no Pass 2 surface or trigger is touched, skip Pass 2 immediately
-  and record `inapplicable: untouched TCB surface`.
+  or audit as untrusted inputs (such as `theory/`, `correspondence/`, or
+  `docs/`) do not trigger Pass 2. When no Pass 2 surface or trigger is touched,
+  skip Pass 2 immediately and record `inapplicable: untouched TCB surface`.
 - **Diff-scoped Pass 2:** When Pass 2 applies, audit only the touched and
   affected sub-surfaces (plus cross-surface seams they depend on).
 - **Never dismiss `trusted/` comment edits:** Comment-only changes in
@@ -94,10 +94,11 @@ hashed in `trusted/root-manifest.sha256`: `Cargo.toml`, `Cargo.lock`,
    `lean-toolchain`, `.nix`, workflow, `.pre-commit-config.yaml`, or shell or
    Python script (except unexecuted SHA-256-pinned provenance files under
    `vendor/lean-miri/`).
-3. **Lean file placement and `theory/` purity:** Outside `trusted/`, `ci/`,
-   `.github/`, and pinned root manifests, reject `.lean` files outside
-   `theory/` and the SHA-256-pinned `vendor/lean-miri/` reference model
-   (audit `.lean` files inside `trusted/` under Pass 2). For any change
+3. **Lean file placement and `theory/`/`correspondence/` purity:** Outside
+   `trusted/`, `ci/`, `.github/`, and pinned root manifests, reject `.lean`
+   files outside `theory/`, `correspondence/`, and the SHA-256-pinned
+   `vendor/lean-miri/` reference model (audit `.lean` files inside
+   `trusted/lean/` and `trusted/correspondence/` under Pass 2). For any change
    touching `vendor/lean-miri/` (which bypasses Phase 1 syntactic preflight
    and belongs to the correspondence TCB), verify `LOCKED_MIRI_COMMIT`,
    `vendor_tree.manifest_sha256`, `LOCKED_PATCHED_MIRI_FILES`,
@@ -122,10 +123,12 @@ hashed in `trusted/root-manifest.sha256`: `Cargo.toml`, `Cargo.lock`,
    `@[implemented_by]`, `@[extern]`, `@[csimp]`, `Lean.ofReduceBool`,
    `Lean.trustCompiler`, silent `_unsafe_rec` or `isPartial` `.olean`
    auxiliaries, and `noncomputable section` (`TrustedBoundary.lean` admits
-   `noncomputable` declaration modifiers; flag redundant `noncomputable` on
-   `: Prop` only as a non-blocking hygiene note). Never declare constants in
-   the `Trusted` root namespace or place `-- anneal-trust-tier:` directives
-   outside `trusted/lean/`.
+   `noncomputable` declaration modifiers across roles—unlike `theory/`,
+   `correspondence/` modules may use `noncomputable def`; flag redundant
+   `noncomputable` on `: Prop` only as a non-blocking hygiene note). Never
+   declare constants in the `Trusted` root namespace or place
+   `-- anneal-trust-tier:` directives outside `trusted/lean/` and
+   `trusted/correspondence/`.
 4. **Stated specifications, `trusted/`–`theory/` seams, and waivers:** Even
    when `trusted/` is untouched (`THREAT_MODEL.md` §1, §2.2, §3.2), inspect
    edits to stated specifications (`requires`, `ensures`, specification types),
@@ -232,9 +235,11 @@ or audit them is permitted).
 - **`.olean` hardening, kernel replay, and environment stripping:** Verify
   `trusted/audit/src/lib.rs` and `TrustedBoundary.lean` preserve `.olean`
   audit-mode loading (`trustLevel := 0`, `plugins := #[]`,
-  `extensions := false` / `loadExts := false`, restricting `extensions := true`
-  with `enableInitializersExecution` strictly to locked-foundation
-  `"preflight"` parsing), fresh kernel replay (`base.toKernelEnv.replay`),
+  `extensions := false` / `loadExts := false` in `"audit"` and
+  `"correspondence-audit"`, restricting `extensions := true` with
+  `enableInitializersExecution` strictly to locked-foundation `"preflight"`
+  and pinned-vendor `"correspondence-preflight"` parsing),
+  `checkDeclarationEdges`, fresh kernel replay (`base.toKernelEnv.replay`),
   `check_cargo_boundary`, `scan_lean_tree`, environment stripping (`env_clear`
   and ambient `LEAN_*`/`LAKE_*`/`ELAN_*`/`LD_*`), synchronous kernel flags
   (`-DElab.async=false`, `-Ddebug.skipKernelTC=false`), and manifest checks.
@@ -244,7 +249,8 @@ or audit them is permitted).
 - **Mandatory negative tests and anti-vacuity:** Any change to `anneal-audit`
   admission rules, syntax filters, or tier checks must add or update negative
   tests in `trusted/audit/tests/boundary_audit.rs` asserting policy exit code
-  `1` and the target guard's failure diagnostic. Verify every negative security
+  `1` (or non-zero exit code `2` for standalone kernel-replay rejections) and
+  the target guard's failure diagnostic. Verify every negative security
   test—by guard-removal reasoning or an isolated sandbox probe—fails if its
   target guard is disabled.
 - **Orchestrator integrity and conservative TCB dependencies:** Verify

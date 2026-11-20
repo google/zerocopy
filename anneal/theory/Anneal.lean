@@ -7,4 +7,19 @@
 -- those terms.
 
 prelude
+import Init.NotationExtra
+import Trusted
+import Anneal.MirWp
 import Anneal.PureLift
+
+namespace Anneal
+
+/-!
+# Anneal Theory Umbrella
+
+Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
+`Trusted`, the fuel-bounded MIR weakest-precondition machinery
+(`Anneal.MirWp`), and `Anneal.PureLift`.
+-/
+
+end Anneal
