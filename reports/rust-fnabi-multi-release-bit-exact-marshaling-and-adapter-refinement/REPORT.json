@@ -1,0 +1,107 @@
+{
+  "observed_at": "2026-11-20",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      },
+      "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1 — baseline FnAbi release epoch)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      },
+      "name": "rust-lang/rust (rustc 1.100.0, LLVM 23.1.5 — x86/x86_64 SIMD direct-register epoch)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      },
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, LLVM 23.1.5 — AArch64 NEON, Win64 ZST, and vectorcall decoration epoch)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "429c1c18ca616ec5a097019c6071dc8ca75585be"
+      },
+      "name": "rust-lang/rust (causal ABI commit D1: x86/x86_64 extern \"Rust\" <=128-bit SIMD direct vector passing)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "a654a240456566a313e53698f42c70ad7366676d"
+      },
+      "name": "rust-lang/rust (causal ABI commit D2: AArch64 extern \"Rust\" <=128-bit NEON direct vector passing)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "916dda0c26e7736748e2ef8233f1fd1477e1be1e"
+      },
+      "name": "rust-lang/rust (causal ABI commit D3: Win64 extern \"C\" non-#[repr(C)] ZST PassMode::Ignore via LayoutData.repr_c)"
+    },
+    {
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "d11b3f4d61c50f4149ea34a89302cf24a0c52b86"
+      },
+      "name": "rust-lang/rust (causal ABI commit D4: pre-lowering FnAbi vectorcall/MSVC byte-count symbol decoration in declare_rust_fn)"
+    },
+    {
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      },
+      "name": "joshlf/anneal (TrustedBoundary.lean, foundation-lock.json, Trusted.MirAst, Trusted.MirSemantics)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "leanprover/lean4 (v4.34.1 — locked primary kernel and TrustedBoundary replay)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      },
+      "name": "leanprover/lean4 (v4.35.0 — independent cross-version kernel check)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+        "version": "3.1.0"
+      },
+      "name": "leanprover/lean4export (format 3.1.0 — NDJSON proof-term exporter)"
+    },
+    {
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.19"
+      },
+      "name": "ammkrn/nanoda_lib (nanoda_bin 0.4.19 — independent Rust external typechecker)"
+    }
+  ],
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/abi",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification",
+    "verification/formalized-results"
+  ]
+}
