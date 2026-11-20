@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "verification/semantics",
+    "anneal/theory",
+    "lean/mechanization",
+    "verification/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "Choice Trees (CTrees Coq/Rocq library)",
+      "identity": {
+        "repository": "vellvm/ctrees",
+        "revision": "cabcf9bf24b0f459204a7da19ac01b7697ff04e3"
+      }
+    },
+    {
+      "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq (POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571254",
+        "arxiv": "2211.06863"
+      }
+    },
+    {
+      "name": "Mathlib 4 (PFunctor univariate W-types and M-types)",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "dd44a18bacca0dba65ac4275af92024f400e63e3"
+      }
+    },
+    {
+      "name": "Lean 4 (coinductive predicate elaborator and Init.* foundation)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Anneal.MirWp)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

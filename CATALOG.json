@@ -12431,6 +12431,53 @@
         "rustc/intrinsics"
       ]
     },
+    "choice-trees-pfunctor-coinduction-and-nondeterministic-effect-handlers": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "vellvm/ctrees",
+            "revision": "cabcf9bf24b0f459204a7da19ac01b7697ff04e3"
+          },
+          "name": "Choice Trees (CTrees Coq/Rocq library)"
+        },
+        {
+          "identity": {
+            "arxiv": "2211.06863",
+            "doi": "10.1145/3571254"
+          },
+          "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq (POPL 2023)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "dd44a18bacca0dba65ac4275af92024f400e63e3"
+          },
+          "name": "Mathlib 4 (PFunctor univariate W-types and M-types)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 (coinductive predicate elaborator and Init.* foundation)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Anneal.MirWp)"
+        }
+      ],
+      "topics": [
+        "verification/semantics",
+        "anneal/theory",
+        "lean/mechanization",
+        "verification/program-logics"
+      ]
+    },
     "choreographic-programming-multiparty-session-types-and-distributed-protocols": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -23706,6 +23753,62 @@
         "pl/phantom-brands",
         "systems/intrusive-containers",
         "verification/aliasing-tokens"
+      ]
+    },
+    "gkat-bigkat-coalgebraic-automata-and-decidable-cfg-alignment": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "1907.05920",
+            "doi": "10.1145/3371129"
+          },
+          "name": "Guarded Kleene Algebra with Tests: Verification of Uninterpreted Programs in Nearly Linear Time (POPL 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2102.08286",
+            "doi": "10.4230/LIPIcs.ICALP.2021.142"
+          },
+          "name": "Guarded Kleene Algebra with Tests: Coequations, Coinduction, and Completeness (ICALP 2021)"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.7144067",
+            "arxiv": "2202.04278",
+            "doi": "10.1145/3571213"
+          },
+          "name": "An Algebra of Alignment for Relational Verification \u2014 BiKAT (POPL 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-90897-2_12",
+            "hal": "hal-04017128"
+          },
+          "name": "BiGKAT: An Algebraic Framework for Relational Verification of Probabilistic Programs (FoSSaCS 2025)"
+        },
+        {
+          "identity": {
+            "related_arxiv": "2411.13220",
+            "related_doi": "10.1145/3704857",
+            "repository": "SpencerKoevering/cfgkat-rocq",
+            "revision": "8873fd7b48de42cc47a09d3373d683a5a71c6811"
+          },
+          "name": "CF-GKAT Rocq Formalization (Control-Flow GKAT automata, jump resolution, and bisimulation)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Anneal.MirWp)"
+        }
+      ],
+      "topics": [
+        "verification/relational",
+        "compilers/cfg-structuring",
+        "anneal/theory",
+        "lean/mechanization"
       ]
     },
     "glitch-resistant-hardware-masking-ti-dom-pini-and-dual-rail-logic": {

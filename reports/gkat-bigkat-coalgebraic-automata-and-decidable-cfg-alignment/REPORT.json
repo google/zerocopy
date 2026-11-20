@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "verification/relational",
+    "compilers/cfg-structuring",
+    "anneal/theory",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Guarded Kleene Algebra with Tests: Verification of Uninterpreted Programs in Nearly Linear Time (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371129",
+        "arxiv": "1907.05920"
+      }
+    },
+    {
+      "name": "Guarded Kleene Algebra with Tests: Coequations, Coinduction, and Completeness (ICALP 2021)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ICALP.2021.142",
+        "arxiv": "2102.08286"
+      }
+    },
+    {
+      "name": "An Algebra of Alignment for Relational Verification — BiKAT (POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571213",
+        "arxiv": "2202.04278",
+        "artifact_doi": "10.5281/zenodo.7144067"
+      }
+    },
+    {
+      "name": "BiGKAT: An Algebraic Framework for Relational Verification of Probabilistic Programs (FoSSaCS 2025)",
+      "identity": {
+        "doi": "10.1007/978-3-031-90897-2_12",
+        "hal": "hal-04017128"
+      }
+    },
+    {
+      "name": "CF-GKAT Rocq Formalization (Control-Flow GKAT automata, jump resolution, and bisimulation)",
+      "identity": {
+        "repository": "SpencerKoevering/cfgkat-rocq",
+        "revision": "8873fd7b48de42cc47a09d3373d683a5a71c6811",
+        "related_doi": "10.1145/3704857",
+        "related_arxiv": "2411.13220"
+      }
+    },
+    {
+      "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Anneal.MirWp)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
