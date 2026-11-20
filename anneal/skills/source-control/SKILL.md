@@ -97,6 +97,24 @@ a commit message; `./ci/check_todo.sh` audits commit messages across
 `origin/main..HEAD` and rejects them.
 <!-- TODO-check-enable -->
 
+## Review before publication
+
+Before pushing authored changes, opening or updating a pull request, or marking
+it ready, complete the local preflight in
+[`change-review`](../change-review/SKILL.md). This includes review fixes:
+inspect the complete final change, not just the latest commit. Use
+fresh-context reviewers when available and disclose any self-review fallback.
+Prepare the compact receipt before pushing; after verifying the push, include
+it in the initial PR body when creating the PR or update the existing PR.
+For authorized branch-only publication, include it in the task handoff instead.
+The shared procedure covers partial publication and receipt reuse on retries.
+
+Recheck candidate and base identities before publication. A new commit, dirty
+edit, changed comparison base, or conflict resolution must not inherit a stale
+review verdict. Preserve review history and the independent merge requirements
+in [`docs/codex-review.md`](../../docs/codex-review.md). An explicitly
+authorized incomplete handoff must be labeled incomplete, not ready for merge.
+
 ## Branches and pull requests
 
 Inspect the current branch before changing history; whether to create a

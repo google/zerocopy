@@ -30,6 +30,7 @@ development notes, upstream. The provenance links below retain access to it.
 | [`swarm-model-refinement`](swarm-model-refinement/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`swarm-model-refinement/` at `3bf3f345b2916f8417306ba197f779b0b4429c1d`](https://github.com/joshlf/skills/tree/3bf3f345b2916f8417306ba197f779b0b4429c1d/swarm-model-refinement) |
 | [`tech-lead`](tech-lead/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`tech-lead/` at `3bf3f345b2916f8417306ba197f779b0b4429c1d`](https://github.com/joshlf/skills/tree/3bf3f345b2916f8417306ba197f779b0b4429c1d/tech-lead) |
 | [`williams-style`](williams-style/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`williams-style/` at `b563468a8148df117283494915cee5b6561cc47f`](https://github.com/joshlf/skills/tree/b563468a8148df117283494915cee5b6561cc47f/williams-style) |
+| [`change-review`](change-review/SKILL.md) | Repository-owned | Complete-change local preflight and hosted review; [maintainer contract](../docs/review-policy-design.md) |
 | [`architectural-design`](architectural-design/SKILL.md) | Repository-owned | End-to-end architectural design workflow for `joshlf/anneal` |
 | [`source-control`](source-control/SKILL.md) | Repository-owned | Adapted from [`google/zerocopy`'s Contributing Guide](https://github.com/google/zerocopy/discussions/1318) |
 | [`trust-review`](trust-review/SKILL.md) | Repository-owned | Derived from [`PRINCIPLES.md`](../PRINCIPLES.md) and [`docs/trust-model.md`](../docs/trust-model.md) |
@@ -62,5 +63,5 @@ modifications:
 Except for documented local modifications, keep vendored `joshlf/skills`
 packages unmodified so they can be updated cleanly from upstream; place
 Anneal-specific conventions in repository-owned files (`AGENTS.md`,
-`skills/architectural-design/`, `skills/source-control/`, and
-`skills/trust-review/`).
+`skills/architectural-design/`, `skills/change-review/`,
+`skills/source-control/`, and `skills/trust-review/`).

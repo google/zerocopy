@@ -12,6 +12,26 @@ Follow [`AGENTS.md`](../AGENTS.md) and the applicable skills in
 [`skills/`](../skills/README.md) when authoring or reviewing changes in this
 repository.
 
+## Complete-change review
+
+Apply the `Code Review Rules` in [`AGENTS.md`](../AGENTS.md) and the shared
+[`change-review`](../skills/change-review/SKILL.md) procedure. Review every
+changed path and relevant interaction; keep investigating after the first few
+findings. Verify and deduplicate findings, then report all supported actionable
+issues permitted by the host. Do not invent findings or inflate severity to
+appear exhaustive. A final coverage sweep, not a comment count, ends review.
+
+Keep the trust pass below distinct from general review. In a single-turn
+review, perform it first. Report assessments and blocked checks in permitted
+summary or status fields, or another already authorized channel. If none
+exists, omit the narrative, not the assessment; return only valid findings.
+A completed clean review may return empty findings. Use the
+[shared reporting fallback](../skills/change-review/SKILL.md#report-within-the-hosts-constraints)
+for incomplete reviews; findings-only output alone is not completion evidence
+or approval. When authoring changes, complete local preflight before
+publication, use fresh-context reviewers when available, and disclose any
+self-review fallback.
+
 ## Dedicated Trust-Boundary Review Pass
 
 In addition to general code review, evaluate every pull request against
@@ -38,8 +58,9 @@ treat any violation as a blocking finding:
      discharge proof obligations.
 2. **Changes inside `trusted/`, `ci/`, `.github/`, and pinned root manifests
    (TCB and harness audit):** Whenever a PR touches these paths (or
-   `Cargo.toml`, `Cargo.lock`, `flake.nix`, or `flake.lock`), include a
-   `### Trust-Boundary Assessment` section in the review and verify:
+   `Cargo.toml`, `Cargo.lock`, `flake.nix`, or `flake.lock`), perform a
+   trust-boundary assessment and report it using the fallback above. Use a
+   `### Trust-Boundary Assessment` section when the host permits prose. Verify:
    - **`trusted/lean/` & `trusted/rustc-capture/`:** Semantic rules and MIR
      capture must fail closed (including `tcx.dcx().has_errors()` guards),
      perform no unverified semantic normalization in Rust, maintain
