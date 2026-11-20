@@ -1,0 +1,61 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/optimization-soundness",
+    "lean",
+    "lean/mechanization",
+    "pl",
+    "pl/aliasing",
+    "pl/memory-models",
+    "rust",
+    "rust/aliasing-model",
+    "rust/stacked-borrows",
+    "rust/tree-borrows",
+    "verification",
+    "verification/formalized-results",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371109"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust - Artifact",
+      "identity": {
+        "doi": "10.5281/zenodo.3541779",
+        "url": "https://gitlab.mpi-sws.org/FP/stacked-borrows"
+      }
+    },
+    {
+      "name": "Tree Borrows (PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592"
+      }
+    },
+    {
+      "name": "Simuliris: A Separation Logic Framework for Verifying Concurrent Program Optimizations (POPL 2022)",
+      "identity": {
+        "doi": "10.1145/3498689"
+      }
+    },
+    {
+      "name": "Miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

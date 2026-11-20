@@ -1,0 +1,444 @@
+[
+  {
+    "id": "R1a-read-elim-mut-unpassed",
+    "lean": "Toy.Alias.readElim_refines_of_fresh_or_protected_of_unique_of_unpassed",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The Stacked Borrows paper's example1 (store-to-load forwarding, Section 3.4) is justified by moving the read *x of an unprotected &mut up across unknown code (Section 4, p. 41:16); the paper reports mechanized correctness proofs of its example transformations (Section 7.2), and the artifact proves example1 in theories/opt/ex1.v. R1a applies the same step when the value before the call comes from a read instead of a write, in the toy model, with each hypothesis shown necessary.",
+    "plain_claim": "For a mutable reference (p = unique) whose tag the unknown code is not given, and whose tag is fresh or whose entry reborrow is protected, replacing a read after an unknown call by the value read before the call is a refinement, for all callee code (including callees that hold parent tags, act observably, or never return) and all initial states.",
+    "hypotheses": [
+      {
+        "name": "hfresh : NextFresh m ∨ prot = true",
+        "purpose": "Without freshness and without a protector, an old item can carry x's tag; after the callee removes x through a parent write, the source's second read silently uses the old item. Only unreachable states violate NextFresh (see non-claims).",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readElim_fresh_or_protected_needed"
+      },
+      {
+        "name": "hp : p = unique",
+        "purpose": "With p = sharedRW the new item sits below an existing sharedRW sibling (here a raw pointer created earlier from the same parent), and a write through the sibling does not remove x. In Stacked Borrows the sibling also survives (its granting item is unique, where the toy's insertion rule and the paper's coincide). p = sharedRO is covered by R2a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readElim_unique_needed"
+      },
+      {
+        "name": "hts : m.next ∉ ts",
+        "purpose": "Otherwise the callee holds x itself and writes through it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readElim_unpassed_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Unprotected &mut reborrowed from the root of initMem; the callee holds the parent tag, emits 3, creates a sharedRW child of the parent, emits 4, and returns; the source is defined with observations [3, 4, 0, 0]. A second witness has a callee that writes 9 through the parent, reads it, and halts (both sides halt with [9]).",
+    "nonvacuity_witness_lean": "Toy.Alias.readElim_unpassed_nonvacuous",
+    "companions_lean": [
+      "Toy.Alias.readElim_unpassed_nonvacuous_halting",
+      "Toy.Alias.memSibling_reachable",
+      "Toy.Alias.not_tagsBelowNext_memDupNext"
+    ],
+    "non_claims": [
+      "Does not say a protector is needed for this shape: when the tag is fresh it is not (a callee that uses an aliasing tag and returns makes the source's own second read UB; a callee that halts stops both sides before that read).",
+      "Proves read-then-read elimination (v1 := *x; f(ts); v2 := *x becomes return v1 twice). It is not store-to-load forwarding (*x = v; f(ts); return *x, the Stacked Borrows paper's example1), and it is not moving a read down across the call (that needs a protector: R1b).",
+      "Does not cover passing a reborrow or raw pointer derived from x (such as &mut *x, &*x, or x as *mut T) to the callee.",
+      "For a read-only shared reference (p = sharedRO) see R2a, which also allows passing the reference to the callee.",
+      "The hypothesis NextFresh m or prot = true matters only on states that violate TagsBelowNext; initMem satisfies TagsBelowNext and read, write, retag and runCallee preserve it (tagsBelowNext_read, tagsBelowNext_write, tagsBelowNext_retag, tagsBelowNext_runCallee), and its counterexample uses the unreachable state memDupNext. It is a well-formedness condition on the tag counter, not an aliasing condition.",
+      "Does not transfer without qualification to Tree Borrows for mutable references to interior-mutable data (&mut Cell<T>): without a protector, Tree Borrows starts such references in ReservedIM, which tolerates foreign writes before activation (Tree Borrows paper, Section 2.4), so a callee writing through a parent would not make the second read UB.",
+      "Single location: a returning callee that accesses the location through a parent makes the source UB, so the returning executions covered non-trivially are those whose callee only emits or creates sharedRW reborrows; callees that access the location are covered only when they halt.",
+      "Toy model with one tracked location: not Stacked Borrows or Tree Borrows. Omitted: provenance, allocation and deallocation, multiple locations and ranges, Box, two-phase borrows, retag kinds other than an explicit reborrow, unwinding, concurrency.",
+      "Deviations from the Stacked Borrows paper's rules: a read removes (rather than disables) the unique items above the granting item; a write removes every item above the granting item (the paper keeps the adjacent group of SharedRW items above a SharedRW granting item); a new sharedRW item is inserted directly above the granting item (the paper inserts it above the adjacent SharedRW group when the granting item is SharedRW). Consequently, in this toy a sharedRW item can remove another sharedRW item above it by writing, whereas in Stacked Borrows adjacent SharedRW items do not remove each other. Raw pointers appear only as tagged sharedRW items (the paper uses the untagged ⊥; the later Miri implementation tags raw pointers).",
+      "Protectors are permanent flags that never end, and Refines compares the exact final state (value, borrow stack, tag counter). Not modelled: the end of a protector at function return, continuations after return, or simulation-based contextual refinement in which internal borrow states may differ.",
+      "Unknown code is a fixed, non-adaptive operation sequence (it cannot branch on values it reads; its reborrows are unprotected); it may act observably (emit) and may halt. Extension to adaptive callees is not proved.",
+      "The optimization is a fixed program shape placed immediately after the function-entry reborrow; soundness in arbitrary surrounding code is not shown.",
+      "Allocation and deallocation are not modelled; nothing here shows that protectors prevent unknown code from deallocating the location.",
+      "Only one-way refinement is stated; whether the reverse transformation is also a refinement is not claimed.",
+      "Nothing about the Rust compiler, Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4, POPL, Article 41 (January 2020). https://doi.org/10.1145/3371109 (Section 3.4, example1; Section 4, p. 41:16; Section 7.2).",
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust - Artifact (2019). https://doi.org/10.5281/zenodo.3541779 (Coq development; public repository https://gitlab.mpi-sws.org/FP/stacked-borrows, README and theories/opt read on 2026-11-20, branch master, commit not pinned) (theories/opt/ex1.v).",
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9, PLDI, Article 188 (June 2025). https://doi.org/10.1145/3735592 (Section 5, pp. 188:20-21: the Stacked Borrows paper proved that a read can be hoisted up across unknown code for an unprotected reference when an access of that reference is already next to the destination)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "Can reads through &mut be cached across opaque calls, and does that need a protector?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "R1a's verdicts agree with Stacked Borrows: caching a read of an unprotected, unpassed &mut across unknown code is justified, and passing x or using an interior-mutable or raw-pointer permission breaks it.",
+      "reasoning": "The paper justifies moving a read of an unprotected &mut up across unknown code when the reference was used right before (Section 3.4 and Section 4, p. 41:16; restated in the Tree Borrows paper, Section 5). The toy's mechanism is the same: any access by unknown code through a tag below x removes x's unique item, so a later use of x is UB. None of R1a's counterexamples depends on the toy's rule deviations: every sharedRW insertion in them has a unique granting item, every write through a sharedRW item has nothing above it, and the read-removes-versus-disables difference only affects unique items whose later use is UB under both rules.",
+      "sources": [
+        "[SB] Sections 3.4, 4 (p. 41:16), Fig. 3 and Fig. 4 (pp. 41:24-25)",
+        "[TB] Section 5 (pp. 188:20-21)",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    },
+    "lean_names": [
+      "Toy.Alias.readElim_unpassed_nonvacuous_halting",
+      "Toy.Alias.memSibling_reachable",
+      "Toy.Alias.not_tagsBelowNext_memDupNext"
+    ]
+  },
+  {
+    "id": "R2a-read-elim-shared-ro",
+    "lean": "Toy.Alias.readElim_refines_of_fresh_or_protected_of_sharedRO",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The Stacked Borrows paper's example2 (Section 3.6, proof sketch in Section 3.7): a read through &i32 is deduplicated across a call f(x) that receives the reference; mechanized in the artifact (theories/opt/ex2.v). Restated in the toy model with each hypothesis shown necessary.",
+    "plain_claim": "For a read-only shared reference (p = sharedRO, no interior mutability) whose tag is fresh or whose entry reborrow is protected, replacing a read after an unknown call by the value read before the call is a refinement, for any tags handed to the callee (including the reference itself), all callee code, and all initial states.",
+    "hypotheses": [
+      {
+        "name": "hfresh : NextFresh m ∨ prot = true",
+        "purpose": "Without freshness and without a protector, an old write-capable item can carry the reference's tag, and a callee write through that tag changes the value without UB. Only unreachable states violate NextFresh.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readElim_sharedRO_fresh_or_protected_needed"
+      },
+      {
+        "name": "hp : p = sharedRO",
+        "purpose": "With interior mutability (sharedRW) the callee may write through the reference it is given.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readElim_sharedRO_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The unprotected shared reference is handed to the callee, which reads through it, reborrows it, and reads through the reborrow; the source is defined with observations [0, 0, 0, 0].",
+    "nonvacuity_witness_lean": "Toy.Alias.readElim_sharedRO_nonvacuous",
+    "non_claims": [
+      "Does not model partial interior mutability (such as &(T, Cell<U>)), which needs per-location (per-byte) tracking of read-only versus read-write permissions.",
+      "Does not justify inserting a read where the source performs none (for example hoisting a load out of a loop that may run zero times); in Tree Borrows such spurious reads rely on protectors and on the implicit read at retag (Tree Borrows paper, Section 3.2, Example 15).",
+      "Equality of final states is an artifact of the toy: in Tree Borrows, deleting a read through a shared reference can leave different internal conflicted flags on protected Reserved references, and the paper's proof of that optimization uses a simulation relation (Tree Borrows paper, Section 5, Example 17).",
+      "Says nothing about Cell or UnsafeCell beyond the counterexample with a sharedRW permission. No claim that the read may be moved down without a protector (it may not: R2b).",
+      "The hypothesis NextFresh m or prot = true matters only on states that violate TagsBelowNext; initMem satisfies TagsBelowNext and read, write, retag and runCallee preserve it (tagsBelowNext_read, tagsBelowNext_write, tagsBelowNext_retag, tagsBelowNext_runCallee), and its counterexample uses the unreachable state memDupNext. It is a well-formedness condition on the tag counter, not an aliasing condition.",
+      "Toy model with one tracked location: not Stacked Borrows or Tree Borrows. Omitted: provenance, allocation and deallocation, multiple locations and ranges, Box, two-phase borrows, retag kinds other than an explicit reborrow, unwinding, concurrency.",
+      "Deviations from the Stacked Borrows paper's rules: a read removes (rather than disables) the unique items above the granting item; a write removes every item above the granting item (the paper keeps the adjacent group of SharedRW items above a SharedRW granting item); a new sharedRW item is inserted directly above the granting item (the paper inserts it above the adjacent SharedRW group when the granting item is SharedRW). Consequently, in this toy a sharedRW item can remove another sharedRW item above it by writing, whereas in Stacked Borrows adjacent SharedRW items do not remove each other. Raw pointers appear only as tagged sharedRW items (the paper uses the untagged ⊥; the later Miri implementation tags raw pointers).",
+      "Protectors are permanent flags that never end, and Refines compares the exact final state (value, borrow stack, tag counter). Not modelled: the end of a protector at function return, continuations after return, or simulation-based contextual refinement in which internal borrow states may differ.",
+      "Unknown code is a fixed, non-adaptive operation sequence (it cannot branch on values it reads; its reborrows are unprotected); it may act observably (emit) and may halt. Extension to adaptive callees is not proved.",
+      "The optimization is a fixed program shape placed immediately after the function-entry reborrow; soundness in arbitrary surrounding code is not shown.",
+      "Allocation and deallocation are not modelled; nothing here shows that protectors prevent unknown code from deallocating the location.",
+      "Only one-way refinement is stated; whether the reverse transformation is also a refinement is not claimed.",
+      "Nothing about the Rust compiler, Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4, POPL, Article 41 (January 2020). https://doi.org/10.1145/3371109 (Sections 3.6-3.7, example2; Section 7.2).",
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust - Artifact (2019). https://doi.org/10.5281/zenodo.3541779 (Coq development; public repository https://gitlab.mpi-sws.org/FP/stacked-borrows, README and theories/opt read on 2026-11-20, branch master, commit not pinned) (theories/opt/ex2.v).",
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9, PLDI, Article 188 (June 2025). https://doi.org/10.1145/3735592 (Section 5, Example 17, pp. 188:18-19: the corresponding read deletion for an unprotected shared reference passed to unknown code, proved for Tree Borrows with a simulation relation)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "Can reads through &T be cached across opaque calls that receive the same &T, and what does interior mutability change?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "R2a's verdicts agree with Stacked Borrows' treatment of example2 and of interior mutability.",
+      "reasoning": "In the paper, every write access pops all SharedRO items, which sit on top of the stack (Section 3.7); the toy's write rule removes every item above the granting item, so the same argument applies. A sharedRW (interior-mutable) reference grants writes in both, which is the counterexample. The toy's rule deviations do not affect the counterexamples (the only sharedRW insertion has a unique granting item and the write through it has nothing above it).",
+      "sources": [
+        "[SB] Sections 3.6-3.7 (pp. 41:14-15), Section 5",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    }
+  },
+  {
+    "id": "R1b-read-defer-mut-protected",
+    "lean": "Toy.Alias.readDefer_refines_of_protected_of_unique_of_unpassed",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The Stacked Borrows artifact proves exactly this transformation for a protected &mut i32 argument and an unknown call f() (theories/opt/ex1_down.v, lemma ex1_down_sim_fun; its README states that example1_down did not appear in the paper but was verified). The paper states in prose that reads through mutable references can similarly be moved down across code that does not need them (Section 4, p. 41:16). Simuliris contains an adapted version (theories/stacked_borrows/examples/opt1_down.v).",
+    "plain_claim": "For a mutable reference (p = unique) whose entry reborrow is protected and whose tag the unknown code is not given, moving a read from before an unknown call to after it is a refinement, for all callee code and all initial states; no freshness assumption is needed.",
+    "hypotheses": [
+      {
+        "name": "hprot : prot = true",
+        "purpose": "Without a protector, a callee that merely reads through a parent tag removes x, so the deferred read is UB while the source is defined.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readDefer_protected_needed"
+      },
+      {
+        "name": "hp : p = unique",
+        "purpose": "With p = sharedRW the reference sits below a sharedRW sibling (here a raw pointer created earlier from the same parent), through which the callee writes without removing it. In Stacked Borrows the sibling also survives (its granting item is unique, where the toy's insertion rule and the paper's coincide). p = sharedRO is covered by R2b.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readDefer_unique_needed"
+      },
+      {
+        "name": "hts : m.next ∉ ts",
+        "purpose": "Otherwise the callee writes through x itself.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readDefer_unpassed_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A protected &mut reborrowed from the root of initMem; the callee holds the parent tag, emits 3, and creates a sharedRW child of the parent; the source is defined with observations [3, 0].",
+    "nonvacuity_witness_lean": "Toy.Alias.readDefer_unpassed_nonvacuous",
+    "companions_lean": [
+      "Toy.Alias.readDeferSrc_unique_ub_of_touches",
+      "Toy.Alias.runCallee_ub_of_touches_of_protected_unique_head"
+    ],
+    "non_claims": [
+      "For a read-only shared reference (p = sharedRO) see R2b, which also allows passing the reference.",
+      "Does not model deallocation or function return: deferring a read past a deallocation performed by the callee, or past the end of the protector's call, is not covered.",
+      "Does not cover moving the read down past code other than one unknown call.",
+      "Only one location is tracked, and unknown code can otherwise only act observably (emit). Under the hypotheses, every callee that accesses the location before halting makes the source UB (readDeferSrc_unique_ub_of_touches); the result tests same-location conflict detection, not unknown code reading or writing other memory.",
+      "Toy model with one tracked location: not Stacked Borrows or Tree Borrows. Omitted: provenance, allocation and deallocation, multiple locations and ranges, Box, two-phase borrows, retag kinds other than an explicit reborrow, unwinding, concurrency.",
+      "Deviations from the Stacked Borrows paper's rules: a read removes (rather than disables) the unique items above the granting item; a write removes every item above the granting item (the paper keeps the adjacent group of SharedRW items above a SharedRW granting item); a new sharedRW item is inserted directly above the granting item (the paper inserts it above the adjacent SharedRW group when the granting item is SharedRW). Consequently, in this toy a sharedRW item can remove another sharedRW item above it by writing, whereas in Stacked Borrows adjacent SharedRW items do not remove each other. Raw pointers appear only as tagged sharedRW items (the paper uses the untagged ⊥; the later Miri implementation tags raw pointers).",
+      "Protectors are permanent flags that never end, and Refines compares the exact final state (value, borrow stack, tag counter). Not modelled: the end of a protector at function return, continuations after return, or simulation-based contextual refinement in which internal borrow states may differ.",
+      "Unknown code is a fixed, non-adaptive operation sequence (it cannot branch on values it reads; its reborrows are unprotected); it may act observably (emit) and may halt. Extension to adaptive callees is not proved.",
+      "The optimization is a fixed program shape placed immediately after the function-entry reborrow; soundness in arbitrary surrounding code is not shown.",
+      "Allocation and deallocation are not modelled; nothing here shows that protectors prevent unknown code from deallocating the location.",
+      "Only one-way refinement is stated; whether the reverse transformation is also a refinement is not claimed.",
+      "Nothing about the Rust compiler, Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust - Artifact (2019). https://doi.org/10.5281/zenodo.3541779 (Coq development; public repository https://gitlab.mpi-sws.org/FP/stacked-borrows, README and theories/opt read on 2026-11-20, branch master, commit not pinned) (theories/opt/ex1_down.v, lemma ex1_down_sim_fun).",
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4, POPL, Article 41 (January 2020). https://doi.org/10.1145/3371109 (Section 4, p. 41:16; Section 4.1, protectors).",
+      "Lennard Gäher, Michael Sammler, Simon Spies, Ralf Jung, Hoang-Hai Dang, Robbert Krebbers, Jeehoon Kang, Derek Dreyer. Simuliris: A Separation Logic Framework for Verifying Concurrent Program Optimizations. Proc. ACM Program. Lang. 6, POPL (2022). https://doi.org/10.1145/3498689 (Coq development https://gitlab.mpi-sws.org/iris/simuliris, file theories/stacked_borrows/examples/opt1_down.v read on 2026-11-20, commit not pinned)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "What do protectors buy for &mut function arguments?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "R1b's verdicts agree with Stacked Borrows: deferring a read of a &mut argument across unknown code needs the function-entry protector.",
+      "reasoning": "In the paper, the protector makes it UB for unknown code to pop the reference's item while the call runs (Section 4.1, Rule (protector)); in the toy, removing a protected item is UB. Without the protector, a parent read by the callee pops x in the toy and disables x in the paper (rule read-2); either way the deferred read is UB.",
+      "sources": [
+        "[SB] Section 4.1 (pp. 41:16-18), Fig. 3 (p. 41:24)",
+        "[SB-artifact] theories/opt/ex1_down.v",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    },
+    "lean_names": [
+      "Toy.Alias.readDeferSrc_unique_ub_of_touches",
+      "Toy.Alias.runCallee_ub_of_touches_of_protected_unique_head"
+    ]
+  },
+  {
+    "id": "R2b-read-defer-shared-ro-protected",
+    "lean": "Toy.Alias.readDefer_refines_of_protected_of_sharedRO",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The Stacked Borrows paper's example2_down: introduced in Section 4 (p. 41:16), counterexample without protectors and the protector rules in Section 4.1 (pp. 41:16-18), proof sketch with protectors in Section 4.2 (p. 41:18); mechanized in the artifact (theories/opt/ex2_down.v).",
+    "plain_claim": "For a read-only shared reference (p = sharedRO) whose entry reborrow is protected, moving a read from before an unknown call to after it is a refinement, for any tags given to the callee (including the reference), all callee code, and all initial states.",
+    "hypotheses": [
+      {
+        "name": "hprot : prot = true",
+        "purpose": "Without a protector, a callee holding a parent tag writes through it and removes the reference; the deferred read is UB.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readDefer_sharedRO_protected_needed"
+      },
+      {
+        "name": "hp : p = sharedRO",
+        "purpose": "With interior mutability (sharedRW) the callee may write through the reference it is given.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.readDefer_sharedRO_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The protected shared reference is handed to the callee, which reads through it; the source is defined with observations [0, 0].",
+    "nonvacuity_witness_lean": "Toy.Alias.readDefer_sharedRO_nonvacuous",
+    "non_claims": [
+      "Moves an existing pre-call read down; does not justify inserting a read where the source performs none.",
+      "Does not model deallocation or function return: deferring a read past a deallocation or past the end of the protector's call is not covered.",
+      "Toy model with one tracked location: not Stacked Borrows or Tree Borrows. Omitted: provenance, allocation and deallocation, multiple locations and ranges, Box, two-phase borrows, retag kinds other than an explicit reborrow, unwinding, concurrency.",
+      "Deviations from the Stacked Borrows paper's rules: a read removes (rather than disables) the unique items above the granting item; a write removes every item above the granting item (the paper keeps the adjacent group of SharedRW items above a SharedRW granting item); a new sharedRW item is inserted directly above the granting item (the paper inserts it above the adjacent SharedRW group when the granting item is SharedRW). Consequently, in this toy a sharedRW item can remove another sharedRW item above it by writing, whereas in Stacked Borrows adjacent SharedRW items do not remove each other. Raw pointers appear only as tagged sharedRW items (the paper uses the untagged ⊥; the later Miri implementation tags raw pointers).",
+      "Protectors are permanent flags that never end, and Refines compares the exact final state (value, borrow stack, tag counter). Not modelled: the end of a protector at function return, continuations after return, or simulation-based contextual refinement in which internal borrow states may differ.",
+      "Unknown code is a fixed, non-adaptive operation sequence (it cannot branch on values it reads; its reborrows are unprotected); it may act observably (emit) and may halt. Extension to adaptive callees is not proved.",
+      "The optimization is a fixed program shape placed immediately after the function-entry reborrow; soundness in arbitrary surrounding code is not shown.",
+      "Allocation and deallocation are not modelled; nothing here shows that protectors prevent unknown code from deallocating the location.",
+      "Only one-way refinement is stated; whether the reverse transformation is also a refinement is not claimed.",
+      "Nothing about the Rust compiler, Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4, POPL, Article 41 (January 2020). https://doi.org/10.1145/3371109 (Section 4, p. 41:16; Section 4.1, pp. 41:16-18; Section 4.2, p. 41:18; example2_down).",
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust - Artifact (2019). https://doi.org/10.5281/zenodo.3541779 (Coq development; public repository https://gitlab.mpi-sws.org/FP/stacked-borrows, README and theories/opt read on 2026-11-20, branch master, commit not pinned) (theories/opt/ex2_down.v)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "What do protectors buy for &T function arguments?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "R2b's verdicts agree with Stacked Borrows' treatment of example2_down.",
+      "reasoning": "The paper's counterexample without protectors (a raw-pointer write by the callee pops the shared reference) and its proof sketch with protectors (any write would pop the protected SharedRO item, which is UB) match the toy's counterexample and statement; in the toy, the raw pointer is replaced by the parent tag.",
+      "sources": [
+        "[SB] Sections 4.1-4.2 (pp. 41:16-18)",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    }
+  },
+  {
+    "id": "R3-dead-store-elim-protected",
+    "lean": "Toy.Alias.dse_refines_of_protected_of_unique_of_unpassed",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The Stacked Borrows paper's example3_down: introduced in Section 4 (p. 41:16), proof sketch with protectors in Section 4.2 (p. 41:18), including the remark that the argument holds even if f runs into an infinite loop; mechanized in the artifact (theories/opt/ex3_down.v).",
+    "plain_claim": "For a mutable reference (p = unique) whose entry reborrow is protected and whose tag the unknown code is not given, removing the first store in *x = v1; f(ts); *x = v2 is a refinement, for all callee code (including callees that never return), all values, and all initial states.",
+    "hypotheses": [
+      {
+        "name": "hprot : prot = true",
+        "purpose": "Without a protector, the callee can read the stored value through a parent tag (removing x) and then halt, so the source's second store, which would be UB, is never reached and the callee's observation differs (5 versus 0).",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.dse_protected_needed"
+      },
+      {
+        "name": "hp : p = unique",
+        "purpose": "A protected sharedRW reference survives a read through the parent, so the callee observes the first store. For p = sharedRO the source is UB at its first store (dseSrc_sharedRO_protected_ub), so that case is excluded rather than counted as a refinement.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.dse_unique_needed"
+      },
+      {
+        "name": "hts : m.next ∉ ts",
+        "purpose": "Otherwise the callee reads the first store through x itself.",
+        "tightness": "tight",
+        "counterexample": "Toy.Alias.dse_unpassed_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A protected &mut reborrowed from the root of initMem; the callee holds the parent tag, emits 3, and creates a sharedRW child of the parent; the source is defined with observations [3] and final value 7. A second witness has a callee that emits 3 and halts.",
+    "nonvacuity_witness_lean": "Toy.Alias.dse_nonvacuous",
+    "companions_lean": [
+      "Toy.Alias.dse_nonvacuous_halting",
+      "Toy.Alias.storeElim_without_overwrite_not_refines",
+      "Toy.Alias.dseSrc_sharedRO_protected_ub",
+      "Toy.Alias.dse_sharedRO_tgt_defined_src_ub",
+      "Toy.Alias.dseSrc_ub_of_touches",
+      "Toy.Alias.runCallee_ub_of_touches_of_protected_unique_head"
+    ],
+    "non_claims": [
+      "Stated for p = unique only; for p = sharedRO the source is UB at its first store (dseSrc_sharedRO_protected_ub), so a statement for that case would hold only because the source is UB.",
+      "The three hypotheses form a minimal uniform sufficient condition over all (possibly halting) callees, values, and states, each shown necessary by a counterexample; they are not an exact characterization of individual instances (for example, when the callee does nothing, removing the store is a refinement without a protector).",
+      "Requires an unconditional overwrite *x = v2 through the same tag after the call: without it, removing the store changes the final stored value (storeElim_without_overwrite_not_refines). Conditional overwrites and overwrites through another pointer are not covered.",
+      "Unwinding is not modelled. In Rust, if the callee unwinds, the overwrite never runs; the Stacked Borrows paper notes that the transformation then requires placing the first store on the unwinding path as well (Section 4.2, footnote 4). Removing the store outright, as here, is not justified for callees that may unwind.",
+      "In Tree Borrows the first store is the activating write of x; the Tree Borrows paper's proof framework cannot move an activating write down (its Section 5, p. 188:20, and limitation (a) in Section 7, p. 188:22), so nothing here establishes this transformation for Tree Borrows.",
+      "The callee cannot observe the first store without UB; nothing here concerns stores that unknown code may legitimately observe.",
+      "Only one location is tracked, and unknown code can otherwise only act observably (emit). Under the hypotheses, every callee that accesses the location before halting makes the source UB (dseSrc_ub_of_touches); the result tests same-location conflict detection, not unknown code reading or writing other memory.",
+      "Toy model with one tracked location: not Stacked Borrows or Tree Borrows. Omitted: provenance, allocation and deallocation, multiple locations and ranges, Box, two-phase borrows, retag kinds other than an explicit reborrow, unwinding, concurrency.",
+      "Deviations from the Stacked Borrows paper's rules: a read removes (rather than disables) the unique items above the granting item; a write removes every item above the granting item (the paper keeps the adjacent group of SharedRW items above a SharedRW granting item); a new sharedRW item is inserted directly above the granting item (the paper inserts it above the adjacent SharedRW group when the granting item is SharedRW). Consequently, in this toy a sharedRW item can remove another sharedRW item above it by writing, whereas in Stacked Borrows adjacent SharedRW items do not remove each other. Raw pointers appear only as tagged sharedRW items (the paper uses the untagged ⊥; the later Miri implementation tags raw pointers).",
+      "Protectors are permanent flags that never end, and Refines compares the exact final state (value, borrow stack, tag counter). Not modelled: the end of a protector at function return, continuations after return, or simulation-based contextual refinement in which internal borrow states may differ.",
+      "Unknown code is a fixed, non-adaptive operation sequence (it cannot branch on values it reads; its reborrows are unprotected); it may act observably (emit) and may halt. Extension to adaptive callees is not proved.",
+      "The optimization is a fixed program shape placed immediately after the function-entry reborrow; soundness in arbitrary surrounding code is not shown.",
+      "Allocation and deallocation are not modelled; nothing here shows that protectors prevent unknown code from deallocating the location.",
+      "Only one-way refinement is stated; whether the reverse transformation is also a refinement is not claimed.",
+      "Nothing about the Rust compiler, Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust. Proc. ACM Program. Lang. 4, POPL, Article 41 (January 2020). https://doi.org/10.1145/3371109 (Section 4, p. 41:16; Section 4.2 and footnote 4, p. 41:18; example3_down).",
+      "Ralf Jung, Hoang-Hai Dang, Jeehoon Kang, Derek Dreyer. Stacked Borrows: An Aliasing Model for Rust - Artifact (2019). https://doi.org/10.5281/zenodo.3541779 (Coq development; public repository https://gitlab.mpi-sws.org/FP/stacked-borrows, README and theories/opt read on 2026-11-20, branch master, commit not pinned) (theories/opt/ex3_down.v).",
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9, PLDI, Article 188 (June 2025). https://doi.org/10.1145/3735592 (Section 5, p. 188:20, and Section 7, p. 188:22: activating writes)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "When is a store through &mut before an opaque call dead?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "R3's verdicts agree with Stacked Borrows' treatment of example3_down, including the need for the protector and the role of non-returning callees.",
+      "reasoning": "The paper argues that any access by f to x would pop x's protected item, so f cannot observe the stored value, and that this holds even if f never returns (Section 4.2). In the toy, the halting callee is what makes the protector necessary: with callees that always return and a fresh tag, the source's own second store would be UB after a parent access. The counterexample for the protector uses only a parent read and a halt, where the toy's rules and the paper's agree.",
+      "sources": [
+        "[SB] Section 4.2 (p. 41:18)",
+        "[SB-artifact] theories/opt/ex3_down.v",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    },
+    "lean_names": [
+      "Toy.Alias.dse_nonvacuous_halting",
+      "Toy.Alias.storeElim_without_overwrite_not_refines",
+      "Toy.Alias.dseSrc_sharedRO_protected_ub",
+      "Toy.Alias.dse_sharedRO_tgt_defined_src_ub",
+      "Toy.Alias.dseSrc_ub_of_touches",
+      "Toy.Alias.runCallee_ub_of_touches_of_protected_unique_head"
+    ]
+  },
+  {
+    "id": "R4a-parent-read-before-child-write",
+    "lean": "Toy.Alias.Tree.stack_ub_tree_defined_parentReadThenChildWrite",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Direct instance of the Tree Borrows paper's account: mutable references start Reserved, which allows foreign reads until the first local write (Section 2.2, pp. 188:7-8, footnote 3: this applies to all mutable references, not only two-phase borrows), whereas in Stacked Borrows mutable references start Unique and are invalidated by any foreign access (Section 4.1, pp. 188:13-14).",
+    "plain_claim": "The program let x = &mut *root; read root; *x = 5; read x is UB in the toy stack model and defined (observing [0, 5]) in the toy tree model, because a not-yet-written mutable reference is reserved and tolerates foreign reads.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Closed statement about one concrete program (no hypotheses).",
+    "non_claims": [
+      "One program; no general theorem about either model.",
+      "If x were a protected function argument, Tree Borrows would mark the Reserved reference conflicted at the foreign read and the later write would be UB (Tree Borrows paper, Section 3.1), so the verdicts would agree; the toy tree model has no protectors.",
+      "Does not imply that Tree Borrows accepts more programs than Stacked Borrows in general: R4d gives a program accepted by the toy stack model and rejected by the toy tree model (the Tree Borrows paper's Example 16).",
+      "Models an explicit &mut reborrow. The Miri implementation of Stacked Borrows treats implicit two-phase borrows like raw pointers (Tree Borrows paper, Section 4.1) and may accept the corresponding two-phase pattern for that reason.",
+      "Toy tree model: one location, no protectors (hence no conflicted Reserved state and no protector-end accesses), no ReservedIM, no ranges or lazy initialization; raw pointers only as reuse of the parent's tag. Not Tree Borrows. The toy stack model is not Stacked Borrows (see the deviations listed for the stack results).",
+      "Nothing about Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9, PLDI, Article 188 (June 2025). https://doi.org/10.1145/3735592 (Section 2.2, Example 8 and footnote 3; Section 4.1)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "Where do stack-structured and tree-structured permission models differ (reads before the first write through a fresh &mut)?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "The same verdict pair holds for an explicit &mut in Stacked Borrows (UB) and Tree Borrows (defined), absent protectors.",
+      "reasoning": "Tree Borrows paper: all mutable references start Reserved, which allows foreign reads (Section 2.2); Stacked Borrows has no Reserved state and mutable references become Disabled on any foreign access (Section 4.1). The toy's transitions for this program are exactly these.",
+      "sources": [
+        "[TB] Sections 2.2 and 4.1 (pp. 188:7-8, 188:13-14)",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/tree_borrows/perms.rs: PermissionPriv (lines 10-53: Cell, ReservedFrz, ReservedIM, Unique, Frozen, Disabled) and the transitions child_read, foreign_read, child_write, foreign_write (lines 136-218: an unprotected Unique becomes Frozen on a foreign read, Reserved becomes Unique on a child write, a foreign write disables everything except Cell and ReservedIM); src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    }
+  },
+  {
+    "id": "R4c-tree-reads-commute",
+    "lean": "Toy.Alias.Tree.tree_read_read_commute",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The Tree Borrows paper proves in Rocq that executing two adjacent reads in either order from an arbitrary state ends in the exact same state (Section 5, Example 19, p. 188:20), relying on foreign reads freezing rather than disabling (Section 2.2, p. 188:8). This is the toy restatement.",
+    "plain_claim": "In the toy tree model, two reads through any tags commute on every state: the same values, the same final tree, and UB in one order exactly when in the other.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Reading through the root and then an active child of a two-node tree is defined and changes the tree (the child becomes frozen).",
+    "nonvacuity_witness_lean": "Toy.Alias.Tree.tree_read_read_commute_nonvacuous",
+    "positive_control_lean": "Toy.Alias.Tree.stack_read_read_not_commute",
+    "companions_lean": [
+      "Toy.Alias.Tree.readRead_swap_stack_rejects_tree_agrees"
+    ],
+    "non_claims": [
+      "The toy tree model has one location, no protectors, no ReservedIM, no ranges or lazy initialization, and no concurrency; both reads read the same location, so the two values are always the stored value.",
+      "Only two immediately adjacent sequential reads; nothing about reordering reads across writes, reborrows, or unknown code, or about concurrent or atomic reads.",
+      "The companion program readRead_swap_stack_rejects_tree_agrees (source readReadSrc = [reborrowMut 0, write 1 42, read 1, read 0], i.e. let x = &mut *root; *x = 42; read x; read root; target readReadTgt = [reborrowMut 0, write 1 42, read 0, read 1], i.e. the same program with the last two reads swapped) assumes no protector: if x were a protected argument, the foreign read through root after the write would be UB in Tree Borrows in both orders (a foreign read of a protected Unique reference is UB, Tree Borrows paper, Section 3.1).",
+      "Does not imply that read-read swaps fail in Stacked Borrows in general: reads through shared read-only references commute there; the positive control is one specific state.",
+      "Holds on every TMem without a well-formedness assumption because locality depends only on tags and parent links; this says nothing about how the toy's other definitions behave on ill-formed trees.",
+      "Nothing about Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9, PLDI, Article 188 (June 2025). https://doi.org/10.1145/3735592 (Section 2.2, p. 188:8; Section 5, Example 19, p. 188:20).",
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows - Artifact (2025). https://doi.org/10.5281/zenodo.15002703 (record as given in the reference list of the Tree Borrows paper; contents not inspected)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "Which reorderings does the tree structure enable that the stack structure does not?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "Read-read reordering is valid in Tree Borrows and invalid in Stacked Borrows for a written &mut and its parent.",
+      "reasoning": "Tree Borrows paper: proven state-identical read-read reordering (Section 5, Example 19); the enabling mechanism is that a foreign read transitions Unique to Frozen (Section 2.2), which the toy reproduces; it also states that Stacked Borrows does not support this reordering (Section 5, p. 188:20).",
+      "sources": [
+        "[TB] Sections 2.2 and 5 (pp. 188:8, 188:20)",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/tree_borrows/perms.rs: PermissionPriv (lines 10-53: Cell, ReservedFrz, ReservedIM, Unique, Frozen, Disabled) and the transitions child_read, foreign_read, child_write, foreign_write (lines 136-218: an unprotected Unique becomes Frozen on a foreign read, Reserved becomes Unique on a child write, a foreign write disables everything except Cell and ReservedIM)"
+      ]
+    },
+    "lean_names": [
+      "Toy.Alias.Tree.stack_read_read_not_commute",
+      "Toy.Alias.Tree.readRead_swap_stack_rejects_tree_agrees"
+    ]
+  },
+  {
+    "id": "R4d-raw-write-around-parent-read",
+    "lean": "Toy.Alias.Tree.stack_defined_tree_ub_rawWriteAroundParentRead",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The Tree Borrows paper's Example 16 (Section 4.1, pp. 188:14-15): accepted by Stacked Borrows, rejected by Tree Borrows. Restated in the toy models.",
+    "plain_claim": "The program let tmp = &mut *root; let ptr = tmp as *mut _; *ptr = 1; read root; *ptr = 2 is defined (observing [1]) in the toy stack model and UB in the toy tree model, because the stack keeps the raw pointer's own item when the parent read removes tmp, while the tree gives the raw pointer tmp's tag, which the parent read freezes after the first write.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Closed statement about one concrete program (no hypotheses).",
+    "non_claims": [
+      "One program; no general theorem about either model, and no claim about which model accepts more programs overall (R4a differs in the other direction).",
+      "The toy stack model represents the raw pointer as a tagged sharedRW item (as the later Miri implementation of Stacked Borrows does; the Stacked Borrows paper uses an untagged ⊥, with the same verdict here); the toy tree model gives the raw pointer its parent's tag, as Tree Borrows does. Other raw-pointer behaviour (ranges, provenance, casts to integers) is not modelled.",
+      "Toy tree model: one location, no protectors (hence no conflicted Reserved state and no protector-end accesses), no ReservedIM, no ranges or lazy initialization; raw pointers only as reuse of the parent's tag. Not Tree Borrows. The toy stack model is not Stacked Borrows (see the deviations listed for the stack results).",
+      "Nothing about Miri, Stacked Borrows, or Tree Borrows follows from the Lean statement alone; the connection stated under modeling_bridge is a separate modelling argument."
+    ],
+    "prior_art": [
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung. Tree Borrows. Proc. ACM Program. Lang. 9, PLDI, Article 188 (June 2025). https://doi.org/10.1145/3735592 (Section 2.3, p. 188:9: raw pointers inherit the parent's tag; Section 4.1, Example 16, pp. 188:14-15).",
+      "Rust Unsafe Code Guidelines, issue #248, 'Stacked Borrows: track raw pointers more precisely' (2020). https://github.com/rust-lang/unsafe-code-guidelines/issues/248 (cited by the Tree Borrows paper, Section 4.1, for the change of the Stacked Borrows implementation to tagged raw pointers)."
+    ],
+    "design_question": "Rust's aliasing models (Stacked Borrows, Tree Borrows) exist to justify compiler optimizations that move or eliminate memory accesses through references across code the compiler cannot see. In a deliberately small borrow-tracking model, which optimizations are justified? What does each one need: protectors for function arguments, no interior mutability, or no prior reads? Where do stack-structured and tree-structured permission models differ?",
+    "informs": "Where do stack-structured and tree-structured permission models differ (raw pointers derived from a &mut)?",
+    "modeling_bridge": {
+      "role": "derived (modeling bridge)",
+      "claim": "Stacked Borrows accepts and Tree Borrows rejects this program.",
+      "reasoning": "Stated by the Tree Borrows paper for its Example 16 (Section 4.1): in Stacked Borrows the read from root invalidates tmp but not the raw pointer, which stays SharedRW; in Tree Borrows the raw pointer is tmp, which becomes Unique at the first write and Frozen at the read from root. The toy reproduces both traces.",
+      "sources": [
+        "[TB] Section 4.1 (pp. 188:14-15)",
+        "[Miri] rust-lang/miri commit 0a0ce195cb0e91890c21ed717cca6eefef5e1ff3 (commit dated 2026-11-20; observed 2026-11-20), src/borrow_tracker/tree_borrows/perms.rs: PermissionPriv (lines 10-53: Cell, ReservedFrz, ReservedIM, Unique, Frozen, Disabled) and the transitions child_read, foreign_read, child_write, foreign_write (lines 136-218: an unprotected Unique becomes Frozen on a foreign read, Reserved becomes Unique on a child write, a foreign write disables everything except Cell and ReservedIM); src/borrow_tracker/stacked_borrows/mod.rs: NewPermission::from_ref_ty (lines 62-131: &mut gets Unique with a write access and, at function entry, a protector; a frozen &T gets SharedReadOnly with a read access; *mut gets SharedReadWrite with no access and no protector), Stack::find_first_write_incompatible (lines 201-225), Stack::access (lines 271-355: a write pops every item above the first write-incompatible item; a read disables the Unique items above the granting item), Stack::grant (lines 382-441: a SharedReadWrite reborrow without access is inserted at the first write-incompatible position)"
+      ]
+    }
+  }
+]

@@ -1,0 +1,889 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Alias.AccessKind": [],
+    "Toy.Alias.AccessKind.casesOn": [],
+    "Toy.Alias.AccessKind.ctorElim": [],
+    "Toy.Alias.AccessKind.ctorElimType": [],
+    "Toy.Alias.AccessKind.ctorIdx": [],
+    "Toy.Alias.AccessKind.noConfusion": [],
+    "Toy.Alias.AccessKind.noConfusionType": [],
+    "Toy.Alias.AccessKind.ofNat": [],
+    "Toy.Alias.AccessKind.ofNat_ctorIdx": [],
+    "Toy.Alias.AccessKind.read": [],
+    "Toy.Alias.AccessKind.read.elim": [],
+    "Toy.Alias.AccessKind.read.sizeOf_spec": [],
+    "Toy.Alias.AccessKind.rec": [],
+    "Toy.Alias.AccessKind.recOn": [],
+    "Toy.Alias.AccessKind.write": [],
+    "Toy.Alias.AccessKind.write.elim": [],
+    "Toy.Alias.AccessKind.write.sizeOf_spec": [],
+    "Toy.Alias.COp": [],
+    "Toy.Alias.COp.casesOn": [],
+    "Toy.Alias.COp.ctorElim": [],
+    "Toy.Alias.COp.ctorElimType": [],
+    "Toy.Alias.COp.ctorIdx": [],
+    "Toy.Alias.COp.emit": [],
+    "Toy.Alias.COp.emit.elim": [],
+    "Toy.Alias.COp.emit.inj": [],
+    "Toy.Alias.COp.emit.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.COp.emit.noConfusion": [],
+    "Toy.Alias.COp.emit.sizeOf_spec": [],
+    "Toy.Alias.COp.halt": [],
+    "Toy.Alias.COp.halt.elim": [],
+    "Toy.Alias.COp.halt.sizeOf_spec": [],
+    "Toy.Alias.COp.noConfusion": [],
+    "Toy.Alias.COp.noConfusionType": [],
+    "Toy.Alias.COp.read": [],
+    "Toy.Alias.COp.read.elim": [],
+    "Toy.Alias.COp.read.inj": [],
+    "Toy.Alias.COp.read.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.COp.read.noConfusion": [],
+    "Toy.Alias.COp.read.sizeOf_spec": [],
+    "Toy.Alias.COp.rec": [],
+    "Toy.Alias.COp.recOn": [],
+    "Toy.Alias.COp.retag": [],
+    "Toy.Alias.COp.retag.elim": [],
+    "Toy.Alias.COp.retag.inj": [],
+    "Toy.Alias.COp.retag.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.COp.retag.noConfusion": [],
+    "Toy.Alias.COp.retag.sizeOf_spec": [],
+    "Toy.Alias.COp.touchesLocation": [],
+    "Toy.Alias.COp.touchesLocation.eq_1": [],
+    "Toy.Alias.COp.touchesLocation.eq_2": [],
+    "Toy.Alias.COp.touchesLocation.eq_3": [],
+    "Toy.Alias.COp.touchesLocation.eq_4": [],
+    "Toy.Alias.COp.touchesLocation.eq_5": [],
+    "Toy.Alias.COp.touchesLocation.eq_6": [],
+    "Toy.Alias.COp.touchesLocation.eq_7": [],
+    "Toy.Alias.COp.touchesLocation.match_1": [],
+    "Toy.Alias.COp.write": [],
+    "Toy.Alias.COp.write.elim": [],
+    "Toy.Alias.COp.write.inj": [],
+    "Toy.Alias.COp.write.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.COp.write.noConfusion": [],
+    "Toy.Alias.COp.write.sizeOf_spec": [],
+    "Toy.Alias.CalleeInv.Inv": [],
+    "Toy.Alias.CalleeInv.accessStack_protUniqueHead_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.all_sharedRO_read_no_invalid": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.filter_not_invalidatedBy_write": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.findGranting_append_hit": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.findGranting_append_in_pre": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.findGranting_append_skip": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.findGranting_append_skip.match_1": [],
+    "Toy.Alias.CalleeInv.findGranting_none_skip": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.insertAboveGranting_protUniqueHead": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.inv_runCallee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.inv_step_read": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.inv_step_retag": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.inv_step_retag.match_1_6": [],
+    "Toy.Alias.CalleeInv.inv_step_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.inv_step_write.match_1_6": [],
+    "Toy.Alias.CalleeInv.read_at_inv_good": [
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.runCallee_val_indep_under_protected_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.CalleeInv.runCallee_val_indep_under_protected_unique.match_1": [
+      "propext"
+    ],
+    "Toy.Alias.Item": [],
+    "Toy.Alias.Item.casesOn": [],
+    "Toy.Alias.Item.ctorIdx": [],
+    "Toy.Alias.Item.mk": [],
+    "Toy.Alias.Item.mk.inj": [],
+    "Toy.Alias.Item.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Item.mk.noConfusion": [],
+    "Toy.Alias.Item.mk.sizeOf_spec": [],
+    "Toy.Alias.Item.noConfusion": [],
+    "Toy.Alias.Item.noConfusionType": [],
+    "Toy.Alias.Item.perm": [],
+    "Toy.Alias.Item.prot": [],
+    "Toy.Alias.Item.rec": [],
+    "Toy.Alias.Item.recOn": [],
+    "Toy.Alias.Item.tag": [],
+    "Toy.Alias.Mem": [],
+    "Toy.Alias.Mem.casesOn": [],
+    "Toy.Alias.Mem.ctorIdx": [],
+    "Toy.Alias.Mem.mk": [],
+    "Toy.Alias.Mem.mk.inj": [],
+    "Toy.Alias.Mem.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Mem.mk.noConfusion": [],
+    "Toy.Alias.Mem.mk.sizeOf_spec": [],
+    "Toy.Alias.Mem.next": [],
+    "Toy.Alias.Mem.noConfusion": [],
+    "Toy.Alias.Mem.noConfusionType": [],
+    "Toy.Alias.Mem.rec": [],
+    "Toy.Alias.Mem.recOn": [],
+    "Toy.Alias.Mem.stack": [],
+    "Toy.Alias.Mem.val": [],
+    "Toy.Alias.NextFresh": [],
+    "Toy.Alias.Outcome": [],
+    "Toy.Alias.Outcome.bind": [],
+    "Toy.Alias.Outcome.bind.eq_1": [],
+    "Toy.Alias.Outcome.bind.eq_2": [],
+    "Toy.Alias.Outcome.bind.eq_3": [],
+    "Toy.Alias.Outcome.bind.match_1": [],
+    "Toy.Alias.Outcome.casesOn": [],
+    "Toy.Alias.Outcome.consObs": [],
+    "Toy.Alias.Outcome.consObs.eq_1": [],
+    "Toy.Alias.Outcome.consObs.eq_2": [],
+    "Toy.Alias.Outcome.consObs.eq_3": [],
+    "Toy.Alias.Outcome.ctorElim": [],
+    "Toy.Alias.Outcome.ctorElimType": [],
+    "Toy.Alias.Outcome.ctorIdx": [],
+    "Toy.Alias.Outcome.done": [],
+    "Toy.Alias.Outcome.done.elim": [],
+    "Toy.Alias.Outcome.done.inj": [],
+    "Toy.Alias.Outcome.done.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Outcome.done.noConfusion": [],
+    "Toy.Alias.Outcome.done.sizeOf_spec": [],
+    "Toy.Alias.Outcome.halted": [],
+    "Toy.Alias.Outcome.halted.elim": [],
+    "Toy.Alias.Outcome.halted.inj": [],
+    "Toy.Alias.Outcome.halted.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Outcome.halted.noConfusion": [],
+    "Toy.Alias.Outcome.halted.sizeOf_spec": [],
+    "Toy.Alias.Outcome.noConfusion": [],
+    "Toy.Alias.Outcome.noConfusionType": [],
+    "Toy.Alias.Outcome.rec": [],
+    "Toy.Alias.Outcome.recOn": [],
+    "Toy.Alias.Outcome.ub": [],
+    "Toy.Alias.Outcome.ub.elim": [],
+    "Toy.Alias.Outcome.ub.sizeOf_spec": [],
+    "Toy.Alias.Outcome.visible": [],
+    "Toy.Alias.Perm": [],
+    "Toy.Alias.Perm.casesOn": [],
+    "Toy.Alias.Perm.ctorElim": [],
+    "Toy.Alias.Perm.ctorElimType": [],
+    "Toy.Alias.Perm.ctorIdx": [],
+    "Toy.Alias.Perm.grants": [],
+    "Toy.Alias.Perm.grants.eq_1": [],
+    "Toy.Alias.Perm.grants.eq_2": [],
+    "Toy.Alias.Perm.grants.eq_3": [],
+    "Toy.Alias.Perm.grants.eq_4": [],
+    "Toy.Alias.Perm.grants.match_1": [],
+    "Toy.Alias.Perm.grants_unique_write": [],
+    "Toy.Alias.Perm.noConfusion": [],
+    "Toy.Alias.Perm.noConfusionType": [],
+    "Toy.Alias.Perm.not_grants_sharedRO_write": [],
+    "Toy.Alias.Perm.ofNat": [],
+    "Toy.Alias.Perm.ofNat_ctorIdx": [],
+    "Toy.Alias.Perm.rec": [],
+    "Toy.Alias.Perm.recOn": [],
+    "Toy.Alias.Perm.sharedRO": [],
+    "Toy.Alias.Perm.sharedRO.elim": [],
+    "Toy.Alias.Perm.sharedRO.sizeOf_spec": [],
+    "Toy.Alias.Perm.sharedRW": [],
+    "Toy.Alias.Perm.sharedRW.elim": [],
+    "Toy.Alias.Perm.sharedRW.sizeOf_spec": [],
+    "Toy.Alias.Perm.unique": [],
+    "Toy.Alias.Perm.unique.elim": [],
+    "Toy.Alias.Perm.unique.sizeOf_spec": [],
+    "Toy.Alias.Refines": [],
+    "Toy.Alias.Refines.visibly": [],
+    "Toy.Alias.Tag": [],
+    "Toy.Alias.TagsBelowNext": [],
+    "Toy.Alias.TouchesBeforeHalt": [
+      "propext"
+    ],
+    "Toy.Alias.TouchesBeforeHalt.eq_1": [
+      "propext"
+    ],
+    "Toy.Alias.TouchesBeforeHalt.eq_2": [
+      "propext"
+    ],
+    "Toy.Alias.TouchesBeforeHalt.eq_3": [
+      "propext"
+    ],
+    "Toy.Alias.TouchesBeforeHalt.eq_def": [
+      "propext"
+    ],
+    "Toy.Alias.TouchesBeforeHalt.match_1": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Node": [],
+    "Toy.Alias.Tree.Node.casesOn": [],
+    "Toy.Alias.Tree.Node.ctorIdx": [],
+    "Toy.Alias.Tree.Node.mk": [],
+    "Toy.Alias.Tree.Node.mk.inj": [],
+    "Toy.Alias.Tree.Node.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Node.mk.noConfusion": [],
+    "Toy.Alias.Tree.Node.mk.sizeOf_spec": [],
+    "Toy.Alias.Tree.Node.noConfusion": [],
+    "Toy.Alias.Tree.Node.noConfusionType": [],
+    "Toy.Alias.Tree.Node.parent": [],
+    "Toy.Alias.Tree.Node.perm": [],
+    "Toy.Alias.Tree.Node.rec": [],
+    "Toy.Alias.Tree.Node.recOn": [],
+    "Toy.Alias.Tree.Node.tag": [],
+    "Toy.Alias.Tree.Op": [],
+    "Toy.Alias.Tree.Op.casesOn": [],
+    "Toy.Alias.Tree.Op.ctorElim": [],
+    "Toy.Alias.Tree.Op.ctorElimType": [],
+    "Toy.Alias.Tree.Op.ctorIdx": [],
+    "Toy.Alias.Tree.Op.noConfusion": [],
+    "Toy.Alias.Tree.Op.noConfusionType": [],
+    "Toy.Alias.Tree.Op.read": [],
+    "Toy.Alias.Tree.Op.read.elim": [],
+    "Toy.Alias.Tree.Op.read.inj": [],
+    "Toy.Alias.Tree.Op.read.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Op.read.noConfusion": [],
+    "Toy.Alias.Tree.Op.read.sizeOf_spec": [],
+    "Toy.Alias.Tree.Op.reborrowMut": [],
+    "Toy.Alias.Tree.Op.reborrowMut.elim": [],
+    "Toy.Alias.Tree.Op.reborrowMut.inj": [],
+    "Toy.Alias.Tree.Op.reborrowMut.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Op.reborrowMut.noConfusion": [],
+    "Toy.Alias.Tree.Op.reborrowMut.sizeOf_spec": [],
+    "Toy.Alias.Tree.Op.reborrowRaw": [],
+    "Toy.Alias.Tree.Op.reborrowRaw.elim": [],
+    "Toy.Alias.Tree.Op.reborrowRaw.inj": [],
+    "Toy.Alias.Tree.Op.reborrowRaw.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Op.reborrowRaw.noConfusion": [],
+    "Toy.Alias.Tree.Op.reborrowRaw.sizeOf_spec": [],
+    "Toy.Alias.Tree.Op.reborrowShared": [],
+    "Toy.Alias.Tree.Op.reborrowShared.elim": [],
+    "Toy.Alias.Tree.Op.reborrowShared.inj": [],
+    "Toy.Alias.Tree.Op.reborrowShared.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Op.reborrowShared.noConfusion": [],
+    "Toy.Alias.Tree.Op.reborrowShared.sizeOf_spec": [],
+    "Toy.Alias.Tree.Op.rec": [],
+    "Toy.Alias.Tree.Op.recOn": [],
+    "Toy.Alias.Tree.Op.write": [],
+    "Toy.Alias.Tree.Op.write.elim": [],
+    "Toy.Alias.Tree.Op.write.inj": [],
+    "Toy.Alias.Tree.Op.write.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.Op.write.noConfusion": [],
+    "Toy.Alias.Tree.Op.write.sizeOf_spec": [],
+    "Toy.Alias.Tree.TMem": [],
+    "Toy.Alias.Tree.TMem.casesOn": [],
+    "Toy.Alias.Tree.TMem.ctorIdx": [],
+    "Toy.Alias.Tree.TMem.mk": [],
+    "Toy.Alias.Tree.TMem.mk.inj": [],
+    "Toy.Alias.Tree.TMem.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.TMem.mk.noConfusion": [],
+    "Toy.Alias.Tree.TMem.mk.sizeOf_spec": [],
+    "Toy.Alias.Tree.TMem.next": [],
+    "Toy.Alias.Tree.TMem.noConfusion": [],
+    "Toy.Alias.Tree.TMem.noConfusionType": [],
+    "Toy.Alias.Tree.TMem.nodes": [],
+    "Toy.Alias.Tree.TMem.rec": [],
+    "Toy.Alias.Tree.TMem.recOn": [],
+    "Toy.Alias.Tree.TMem.val": [],
+    "Toy.Alias.Tree.TPerm": [],
+    "Toy.Alias.Tree.TPerm.casesOn": [],
+    "Toy.Alias.Tree.TPerm.ctorElim": [],
+    "Toy.Alias.Tree.TPerm.ctorElimType": [],
+    "Toy.Alias.Tree.TPerm.ctorIdx": [],
+    "Toy.Alias.Tree.TPerm.disabled": [],
+    "Toy.Alias.Tree.TPerm.disabled.elim": [],
+    "Toy.Alias.Tree.TPerm.disabled.sizeOf_spec": [],
+    "Toy.Alias.Tree.TPerm.frozen": [],
+    "Toy.Alias.Tree.TPerm.frozen.elim": [],
+    "Toy.Alias.Tree.TPerm.frozen.sizeOf_spec": [],
+    "Toy.Alias.Tree.TPerm.noConfusion": [],
+    "Toy.Alias.Tree.TPerm.noConfusionType": [],
+    "Toy.Alias.Tree.TPerm.ofNat": [],
+    "Toy.Alias.Tree.TPerm.ofNat_ctorIdx": [],
+    "Toy.Alias.Tree.TPerm.rec": [],
+    "Toy.Alias.Tree.TPerm.recOn": [],
+    "Toy.Alias.Tree.TPerm.reserved": [],
+    "Toy.Alias.Tree.TPerm.reserved.elim": [],
+    "Toy.Alias.Tree.TPerm.reserved.sizeOf_spec": [],
+    "Toy.Alias.Tree.TPerm.step": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.TPerm.step.match_1": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.TPerm.step_frozen_local_write": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.TPerm.step_reserved_foreign_read": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.TPerm.step_unique_foreign_read": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.TPerm.unique": [],
+    "Toy.Alias.Tree.TPerm.unique.elim": [],
+    "Toy.Alias.Tree.TPerm.unique.sizeOf_spec": [],
+    "Toy.Alias.Tree.any_tag_congr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.derivedFrom": [],
+    "Toy.Alias.Tree.derivedFrom.eq_1": [],
+    "Toy.Alias.Tree.derivedFrom.eq_2": [],
+    "Toy.Alias.Tree.derivedFrom.eq_def": [],
+    "Toy.Alias.Tree.derivedFrom.match_1": [],
+    "Toy.Alias.Tree.derivedFrom.match_3": [],
+    "Toy.Alias.Tree.derivedFrom_congr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.initTMem": [],
+    "Toy.Alias.Tree.instDecidableEqNode": [],
+    "Toy.Alias.Tree.instDecidableEqNode.decEq": [],
+    "Toy.Alias.Tree.instDecidableEqNode.decEq.match_1": [],
+    "Toy.Alias.Tree.instDecidableEqOp": [],
+    "Toy.Alias.Tree.instDecidableEqOp.decEq": [],
+    "Toy.Alias.Tree.instDecidableEqOp.decEq.match_1": [],
+    "Toy.Alias.Tree.instDecidableEqTMem": [],
+    "Toy.Alias.Tree.instDecidableEqTMem.decEq": [],
+    "Toy.Alias.Tree.instDecidableEqTMem.decEq.match_1": [],
+    "Toy.Alias.Tree.instDecidableEqTPerm": [],
+    "Toy.Alias.Tree.instReprNode": [],
+    "Toy.Alias.Tree.instReprNode.repr": [],
+    "Toy.Alias.Tree.instReprOp": [],
+    "Toy.Alias.Tree.instReprOp.repr": [],
+    "Toy.Alias.Tree.instReprOp.repr.match_1": [],
+    "Toy.Alias.Tree.instReprTMem": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.instReprTMem.repr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.instReprTPerm": [],
+    "Toy.Alias.Tree.instReprTPerm.repr": [],
+    "Toy.Alias.Tree.instReprTPerm.repr.match_1": [],
+    "Toy.Alias.Tree.isLocal": [],
+    "Toy.Alias.Tree.isLocal_child_for_root": [],
+    "Toy.Alias.Tree.isLocal_congr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.length_congr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt.eq_1": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt.eq_2": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt.eq_def": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt.match_1": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt.match_4": [],
+    "Toy.Alias.Tree.mapOpt_bind": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt_bind.match_1_1": [],
+    "Toy.Alias.Tree.mapOpt_congr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.mapOpt_congr.match_1_1": [],
+    "Toy.Alias.Tree.not_isLocal_root_for_child": [],
+    "Toy.Alias.Tree.parentOf": [],
+    "Toy.Alias.Tree.parentOf_congr": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.parentReadThenChildWrite": [],
+    "Toy.Alias.Tree.rawWriteAroundParentRead": [],
+    "Toy.Alias.Tree.rd": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.rd_bind_tag": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.rd_comm": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.readReadSrc": [],
+    "Toy.Alias.Tree.readReadTgt": [],
+    "Toy.Alias.Tree.readRead_swap_stack_rejects_tree_agrees": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.runStack": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.runStack.match_1": [],
+    "Toy.Alias.Tree.runStack.match_3": [],
+    "Toy.Alias.Tree.runStack.match_5": [],
+    "Toy.Alias.Tree.runStack.match_7": [],
+    "Toy.Alias.Tree.runTree": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.runTree.match_1": [],
+    "Toy.Alias.Tree.runTree.match_3": [],
+    "Toy.Alias.Tree.runTree.match_5": [],
+    "Toy.Alias.Tree.runTree.match_7": [],
+    "Toy.Alias.Tree.run_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.run_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.shape": [],
+    "Toy.Alias.Tree.shape.eq_1": [],
+    "Toy.Alias.Tree.shape_mapOpt_rd": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.shape_mapOpt_rd.match_1_1": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.stack_defined_tree_ub_rawWriteAroundParentRead": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.stack_read_read_not_commute": [],
+    "Toy.Alias.Tree.stack_ub_tree_defined_parentReadThenChildWrite": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tread": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tread_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tread_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.treeAccess": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.treeAccess_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.treeAccess_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.treeAccess_read_after_read": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.treeAccess_read_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.Tree.treeAccess_read_eq": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tree_read_read_commute": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.Tree.tree_read_read_commute_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tretag": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tretag_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.tretag_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.twoNodes": [],
+    "Toy.Alias.Tree.twrite": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.twrite_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.Tree.twrite_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.VisiblyRefines": [],
+    "Toy.Alias.accessStack": [],
+    "Toy.Alias.accessStack.eq_1": [],
+    "Toy.Alias.accessStack.match_1": [],
+    "Toy.Alias.accessStack_parent_read_pops_child": [],
+    "Toy.Alias.accessStack_parent_read_protected_child_ub": [],
+    "Toy.Alias.accessStack_sublist_prop": [
+      "propext"
+    ],
+    "Toy.Alias.accessStack_write_popped_ub": [],
+    "Toy.Alias.dseSrc": [
+      "propext"
+    ],
+    "Toy.Alias.dseSrc_sharedRO_protected_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dseSrc_ub_of_touches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dseTgt": [
+      "propext"
+    ],
+    "Toy.Alias.dse_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dse_nonvacuous_halting": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dse_protected_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dse_refines_of_protected_of_unique_of_unpassed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dse_shapes_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.dse_sharedRO_tgt_defined_src_ub": [
+      "propext"
+    ],
+    "Toy.Alias.dse_unique_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.dse_unpassed_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.findGranting": [],
+    "Toy.Alias.findGranting.eq_1": [],
+    "Toy.Alias.findGranting.eq_2": [],
+    "Toy.Alias.findGranting.eq_def": [],
+    "Toy.Alias.findGranting.match_1": [],
+    "Toy.Alias.findGranting.match_3": [],
+    "Toy.Alias.findGranting_cons_skip": [
+      "propext"
+    ],
+    "Toy.Alias.findGranting_example_neg": [],
+    "Toy.Alias.findGranting_example_pos": [],
+    "Toy.Alias.findGranting_spec": [
+      "propext"
+    ],
+    "Toy.Alias.initMem": [],
+    "Toy.Alias.insertAboveGranting": [],
+    "Toy.Alias.insertAboveGranting.match_1": [],
+    "Toy.Alias.insertAboveGranting_example_neg": [],
+    "Toy.Alias.insertAboveGranting_example_pos": [],
+    "Toy.Alias.instDecidableEqAccessKind": [],
+    "Toy.Alias.instDecidableEqCOp": [],
+    "Toy.Alias.instDecidableEqCOp.decEq": [],
+    "Toy.Alias.instDecidableEqCOp.decEq.match_1": [],
+    "Toy.Alias.instDecidableEqItem": [],
+    "Toy.Alias.instDecidableEqItem.decEq": [],
+    "Toy.Alias.instDecidableEqItem.decEq.match_1": [],
+    "Toy.Alias.instDecidableEqMem": [],
+    "Toy.Alias.instDecidableEqMem.decEq": [],
+    "Toy.Alias.instDecidableEqMem.decEq.match_1": [],
+    "Toy.Alias.instDecidableEqOutcome": [],
+    "Toy.Alias.instDecidableEqOutcome.decEq": [],
+    "Toy.Alias.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.Alias.instDecidableEqPerm": [],
+    "Toy.Alias.instDecidableNextFresh": [],
+    "Toy.Alias.instDecidableRefines": [],
+    "Toy.Alias.instDecidableTagsBelowNext": [],
+    "Toy.Alias.instDecidableVisiblyRefines": [],
+    "Toy.Alias.instReprAccessKind": [],
+    "Toy.Alias.instReprAccessKind.repr": [],
+    "Toy.Alias.instReprAccessKind.repr.match_1": [],
+    "Toy.Alias.instReprCOp": [],
+    "Toy.Alias.instReprCOp.repr": [],
+    "Toy.Alias.instReprCOp.repr.match_1": [],
+    "Toy.Alias.instReprItem": [],
+    "Toy.Alias.instReprItem.repr": [],
+    "Toy.Alias.instReprMem": [
+      "propext"
+    ],
+    "Toy.Alias.instReprMem.repr": [
+      "propext"
+    ],
+    "Toy.Alias.instReprOutcome": [
+      "propext"
+    ],
+    "Toy.Alias.instReprOutcome.repr": [
+      "propext"
+    ],
+    "Toy.Alias.instReprOutcome.repr.match_1": [],
+    "Toy.Alias.instReprPerm": [],
+    "Toy.Alias.instReprPerm.repr": [],
+    "Toy.Alias.instReprPerm.repr.match_1": [],
+    "Toy.Alias.invalidatedBy": [],
+    "Toy.Alias.invalidatedBy.eq_1": [],
+    "Toy.Alias.invalidatedBy.eq_2": [],
+    "Toy.Alias.invalidatedBy.match_1": [],
+    "Toy.Alias.invalidatedBy_read_sharedRW": [],
+    "Toy.Alias.invalidatedBy_read_unique": [],
+    "Toy.Alias.liftO": [],
+    "Toy.Alias.liftO.eq_1": [],
+    "Toy.Alias.liftO.eq_2": [],
+    "Toy.Alias.liftO.match_1": [],
+    "Toy.Alias.memDupNext": [],
+    "Toy.Alias.memSibling": [],
+    "Toy.Alias.memSibling_reachable": [],
+    "Toy.Alias.nextFresh_initMem": [],
+    "Toy.Alias.nextFresh_memSibling": [],
+    "Toy.Alias.nextFresh_not_tagsBelowNext": [],
+    "Toy.Alias.nextFresh_of_tagsBelowNext": [],
+    "Toy.Alias.not_nextFresh_example": [],
+    "Toy.Alias.not_refines_obs": [],
+    "Toy.Alias.not_refines_tgt_ub": [],
+    "Toy.Alias.not_tagsBelowNext_example": [],
+    "Toy.Alias.not_tagsBelowNext_memDupNext": [],
+    "Toy.Alias.read": [],
+    "Toy.Alias.read.eq_1": [],
+    "Toy.Alias.readDeferSrc": [
+      "propext"
+    ],
+    "Toy.Alias.readDeferSrc_unique_ub_of_touches": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readDeferTgt": [
+      "propext"
+    ],
+    "Toy.Alias.readDefer_protected_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readDefer_refines_of_protected_of_sharedRO": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readDefer_refines_of_protected_of_unique_of_unpassed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readDefer_shapes_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.readDefer_sharedRO_needed": [
+      "propext"
+    ],
+    "Toy.Alias.readDefer_sharedRO_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Alias.readDefer_sharedRO_protected_needed": [
+      "propext"
+    ],
+    "Toy.Alias.readDefer_unique_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readDefer_unpassed_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readDefer_unpassed_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElimSrc": [
+      "propext"
+    ],
+    "Toy.Alias.readElimSrc.match_1": [],
+    "Toy.Alias.readElimSrc.match_3": [],
+    "Toy.Alias.readElimTgt": [
+      "propext"
+    ],
+    "Toy.Alias.readElim_fresh_or_protected_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElim_refines_of_fresh_or_protected_of_sharedRO": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElim_refines_of_fresh_or_protected_of_unique_of_unpassed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElim_shapes_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.readElim_shapes_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.readElim_sharedRO_fresh_or_protected_needed": [
+      "propext"
+    ],
+    "Toy.Alias.readElim_sharedRO_needed": [
+      "propext"
+    ],
+    "Toy.Alias.readElim_sharedRO_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Alias.readElim_unique_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElim_unpassed_needed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElim_unpassed_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.readElim_unpassed_nonvacuous_halting": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.read_example_neg": [],
+    "Toy.Alias.read_example_pos": [],
+    "Toy.Alias.refines_of_src_ub": [],
+    "Toy.Alias.refines_refl_example": [],
+    "Toy.Alias.retag": [],
+    "Toy.Alias.retag.eq_1": [],
+    "Toy.Alias.retag.eq_2": [],
+    "Toy.Alias.retag.eq_3": [],
+    "Toy.Alias.retag.match_1": [],
+    "Toy.Alias.retag_example_neg": [],
+    "Toy.Alias.retag_example_pos": [],
+    "Toy.Alias.retag_tag": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_1": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_2": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_3": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_4": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_5": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_6": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.eq_def": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee.match_1": [],
+    "Toy.Alias.runCallee.match_3": [],
+    "Toy.Alias.runCallee.match_5": [],
+    "Toy.Alias.runCallee_example_child": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee_example_emit": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.runCallee_ub_of_touches_of_protected_unique_head": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.storeElimSrc": [
+      "propext"
+    ],
+    "Toy.Alias.storeElimTgt": [
+      "propext"
+    ],
+    "Toy.Alias.storeElim_shapes_example": [
+      "propext"
+    ],
+    "Toy.Alias.storeElim_without_overwrite_not_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Alias.tagsBelowNext_initMem": [],
+    "Toy.Alias.tagsBelowNext_read": [
+      "propext"
+    ],
+    "Toy.Alias.tagsBelowNext_retag": [
+      "propext"
+    ],
+    "Toy.Alias.tagsBelowNext_runCallee": [
+      "propext"
+    ],
+    "Toy.Alias.tagsBelowNext_write": [
+      "propext"
+    ],
+    "Toy.Alias.touchesBeforeHalt_example_neg": [
+      "propext"
+    ],
+    "Toy.Alias.touchesBeforeHalt_example_pos": [
+      "propext"
+    ],
+    "Toy.Alias.visiblyRefines_example_neg": [],
+    "Toy.Alias.visiblyRefines_example_pos": [],
+    "Toy.Alias.write": [],
+    "Toy.Alias.write.eq_1": [],
+    "Toy.Alias.write_example_neg": [],
+    "Toy.Alias.write_example_pos": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
