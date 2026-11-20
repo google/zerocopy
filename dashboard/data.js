@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795161908862,
+  "lastUpdate": 1795163997794,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -24007,6 +24007,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1553,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "c7177366119c7d1b6784186e7185fd376e792899",
+          "message": "[anneal] Import MIR enum and crate-scope support (#3941)\n\nExtend the MIR semantics and correspondence proofs for fieldless enums,\nnever, and crate scope. Exercise the new cases through both audit\npasses.\n\nSource: https://github.com/joshlf/anneal/tree/20aa204315cd36aaf944778b7d33c0d609ced8e8\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-20T07:31:44Z",
+          "tree_id": "62f202c8567c09385333dd986f049ef414368904",
+          "url": "https://github.com/google/zerocopy/commit/c7177366119c7d1b6784186e7185fd376e792899"
+        },
+        "date": 1795163995334,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1471,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1687,
             "unit": "seconds"
           }
         ]
