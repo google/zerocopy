@@ -38832,6 +38832,116 @@
         "systems/concurrency-weak-memory"
       ]
     },
+    "mzi-clements-photonic-crosstalk-euler-rib-bends-and-reram-crossbar-sneak-paths": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "gdsfactory/gdsfactory",
+            "revision": "7407836dd5d872c704fc06f38562a2ffc88049dc"
+          },
+          "name": "gdsfactory photonic layout and PDK framework"
+        },
+        {
+          "identity": {
+            "repository": "flaport/photontorch",
+            "revision": "57296d4972e4f8cc92ce45b20fea9aced7dc4f29"
+          },
+          "name": "PhotonTorch differentiable photonic circuit simulator"
+        },
+        {
+          "identity": {
+            "repository": "NanoComp/meep",
+            "revision": "84cbc56a2e94b90acfa05dee78247b565b68d04c"
+          },
+          "name": "Meep 3D FDTD electromagnetic solver and adjoint optimizer"
+        },
+        {
+          "identity": {
+            "repository": "sandialabs/cross-sim",
+            "revision": "b1f4755188ea7b38a71f61075cff7045ab6b589f"
+          },
+          "name": "Sandia CrossSim analog crossbar simulator"
+        },
+        {
+          "identity": {
+            "repository": "IBM/aihwkit",
+            "revision": "86681d9dbf47413eb083f1f6414667931a31b3b2"
+          },
+          "name": "IBM Analog Hardware Acceleration Kit (AIHWKIT)"
+        },
+        {
+          "identity": {
+            "arxiv": "1603.08788",
+            "doi": "10.1364/OPTICA.3.001460",
+            "publication": "Optica 3(12):1460-1465 (2016)"
+          },
+          "name": "Clements et al. rectangular multiport interferometer decomposition"
+        },
+        {
+          "identity": {
+            "doi": "10.1103/PhysRevLett.73.58",
+            "publication": "Physical Review Letters 73(1):58-61 (1994)"
+          },
+          "name": "Reck et al. triangular discrete unitary operator decomposition"
+        },
+        {
+          "identity": {
+            "doi": "10.1364/OPTICA.424052",
+            "publication": "Optica 8(10):1247-1255 (2021)"
+          },
+          "name": "Bandyopadhyay, Hamerly & Englund hardware error correction for programmable photonics"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JLT.2019.2892512",
+            "publication": "Journal of Lightwave Technology 37(4):1325-1332 (2019)"
+          },
+          "name": "Milanizadeh et al. thermal crosstalk cancellation in photonic integrated circuits"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41586-020-2764-0",
+            "publication": "Nature 586:207-216 (2020)"
+          },
+          "name": "Bogaerts et al. programmable photonic circuits review"
+        },
+        {
+          "identity": {
+            "doi": "10.1364/OE.27.031394",
+            "publication": "Optics Express 27(22):31394-31406 (2019)"
+          },
+          "name": "Vogelbacher et al. silicon nitride partial Euler waveguide bends"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41565-020-0655-z",
+            "publication": "Nature Nanotechnology 15:529-544 (2020)"
+          },
+          "name": "Sebastian et al. in-memory computing with PCM and ReRAM"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICECS46596.2019.8964852",
+            "publication": "IEEE ICECS 2019"
+          },
+          "name": "Nandakumar et al. empirical phase-change memory noise and drift models"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41586-022-04992-8",
+            "publication": "Nature 608:504-512 (2022)"
+          },
+          "name": "Wan et al. ReRAM compute-in-memory chip characterization"
+        }
+      ],
+      "topics": [
+        "domains/silicon-photonics-unitary-meshes",
+        "isa/analog-reram-crossbar-accelerators",
+        "compilers/photonic-layout-drc-routing",
+        "verification/analog-parasitic-error-envelopes"
+      ]
+    },
     "nanopore-squiggle-adaptive-sampling-crispr-coordinates-and-openaps-dosing": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -40701,6 +40811,145 @@
         "isa/static-timing-closure",
         "verification/layout-signoff",
         "compilers/hardware-physical"
+      ]
+    },
+    "opensees-liquefaction-singularities-su2-limiter-overshoots-and-sleipner-shear": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "OpenSees/OpenSees",
+            "revision": "5b9b70511e04e8f1b65710edb98fdffd8ef3add0"
+          },
+          "name": "OpenSees finite-element earthquake engineering framework"
+        },
+        {
+          "identity": {
+            "repository": "su2code/SU2",
+            "revision": "6c0e5c5c720936b175c4004e57332884443437f5"
+          },
+          "name": "SU2 unstructured compressible CFD and adjoint solver"
+        },
+        {
+          "identity": {
+            "repository": "OpenFOAM/OpenFOAM-dev",
+            "revision": "af6c9e8f1a7f5872256bb288c3905002a5e435ab"
+          },
+          "name": "OpenFOAM-dev finite-volume continuum mechanics toolbox"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)1090-0241(2003)129:12(1119)",
+            "publication": "ASCE J. Geotech. Geoenviron. Eng. 129(12):1119-1127 (2003)"
+          },
+          "name": "Yang, Elgamal & Parra multi-yield-surface cyclic mobility plasticity"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s11440-012-0168-5",
+            "publication": "Acta Geotechnica 7(4):297-311 (2012)"
+          },
+          "name": "McGann, Arduino & Mackenzie-Helnwein SSPquadUP porous media element"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/jcph.1995.1084",
+            "publication": "Journal of Computational Physics 118(1):120-130 (1995)"
+          },
+          "name": "Venkatakrishnan unstructured Euler slope limiter paper"
+        },
+        {
+          "identity": {
+            "doi": "10.2514/6.1989-366",
+            "publication": "AIAA Paper 89-0366 (1989)"
+          },
+          "name": "Barth & Jespersen unstructured upwind reconstruction paper"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jcp.2010.08.016",
+            "publication": "Journal of Computational Physics 229(23):8918-8934 (2010)"
+          },
+          "name": "Zhang & Shu positivity-preserving compressible Euler schemes"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10915-011-9472-8",
+            "publication": "Journal of Scientific Computing 50:29-62 (2012)"
+          },
+          "name": "Zhang, Xia & Shu positivity-preserving schemes on triangular meshes"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S003614450036757X",
+            "publication": "SIAM Review 43(1):89-112 (2001)"
+          },
+          "name": "Gottlieb, Shu & Tadmor strong stability-preserving Runge-Kutta methods"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0021-9991(84)90142-6",
+            "publication": "Journal of Computational Physics 54(1):115-173 (1984)"
+          },
+          "name": "Woodward & Colella double Mach reflection strong-shock benchmark"
+        },
+        {
+          "identity": {
+            "doi": "10.2749/101686694780601971",
+            "publication": "Structural Engineering International 4(3):190-193 (1994)"
+          },
+          "name": "Jakobsen & Rosendahl Sleipner A accident forensic review"
+        },
+        {
+          "identity": {
+            "publication": "Concrete International 19(8):28-35 (August 1997)",
+            "publisher": "American Concrete Institute"
+          },
+          "name": "Selby, Vecchio & Collins Sleipner A nonlinear concrete reanalysis"
+        },
+        {
+          "identity": {
+            "doi": "10.1090/QAM/25902",
+            "publication": "Quarterly of Applied Mathematics 5(3):241-269 (1947)"
+          },
+          "name": "Prager & Synge elasticity hypercircle error identity"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/9781118032824",
+            "isbn": "978-0471294115",
+            "publication": "Wiley-Interscience (2000)"
+          },
+          "name": "Ainsworth & Oden a posteriori FEM error estimation treatise"
+        },
+        {
+          "identity": {
+            "section": "Tables A1.2(A) EQU and A1.2(B) STR/GEO",
+            "standard": "EN 1990:2002"
+          },
+          "name": "Eurocode 0 Basis of Structural Design"
+        },
+        {
+          "identity": {
+            "section": "Section 2.3.1 Strength Design Load Combinations",
+            "standard": "ASCE/SEI 7-22"
+          },
+          "name": "ASCE Minimum Design Loads and Associated Criteria for Buildings and Other Structures"
+        },
+        {
+          "identity": {
+            "agency": "National Transportation Safety Board",
+            "date": "2019-10-22",
+            "report_id": "NTSB/HAR-19/02"
+          },
+          "name": "NTSB FIU Pedestrian Bridge Collapse Investigation Report"
+        }
+      ],
+      "topics": [
+        "domains/geotechnical-liquefaction-and-fem-shear",
+        "domains/cfd-unstructured-slope-limiters",
+        "smt/positivity-preserving-conservation-laws",
+        "verification/mesh-error-and-load-combinations"
       ]
     },
     "opentype-text-shaping-gpu-vector-pipelines-and-reactive-gui-trees": {

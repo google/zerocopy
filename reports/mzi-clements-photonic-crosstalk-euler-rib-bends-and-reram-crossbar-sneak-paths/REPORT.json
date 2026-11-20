@@ -1,0 +1,110 @@
+{
+  "topics": [
+    "domains/silicon-photonics-unitary-meshes",
+    "isa/analog-reram-crossbar-accelerators",
+    "compilers/photonic-layout-drc-routing",
+    "verification/analog-parasitic-error-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "gdsfactory photonic layout and PDK framework",
+      "identity": {
+        "repository": "gdsfactory/gdsfactory",
+        "revision": "7407836dd5d872c704fc06f38562a2ffc88049dc"
+      }
+    },
+    {
+      "name": "PhotonTorch differentiable photonic circuit simulator",
+      "identity": {
+        "repository": "flaport/photontorch",
+        "revision": "57296d4972e4f8cc92ce45b20fea9aced7dc4f29"
+      }
+    },
+    {
+      "name": "Meep 3D FDTD electromagnetic solver and adjoint optimizer",
+      "identity": {
+        "repository": "NanoComp/meep",
+        "revision": "84cbc56a2e94b90acfa05dee78247b565b68d04c"
+      }
+    },
+    {
+      "name": "Sandia CrossSim analog crossbar simulator",
+      "identity": {
+        "repository": "sandialabs/cross-sim",
+        "revision": "b1f4755188ea7b38a71f61075cff7045ab6b589f"
+      }
+    },
+    {
+      "name": "IBM Analog Hardware Acceleration Kit (AIHWKIT)",
+      "identity": {
+        "repository": "IBM/aihwkit",
+        "revision": "86681d9dbf47413eb083f1f6414667931a31b3b2"
+      }
+    },
+    {
+      "name": "Clements et al. rectangular multiport interferometer decomposition",
+      "identity": {
+        "doi": "10.1364/OPTICA.3.001460",
+        "arxiv": "1603.08788",
+        "publication": "Optica 3(12):1460-1465 (2016)"
+      }
+    },
+    {
+      "name": "Reck et al. triangular discrete unitary operator decomposition",
+      "identity": {
+        "doi": "10.1103/PhysRevLett.73.58",
+        "publication": "Physical Review Letters 73(1):58-61 (1994)"
+      }
+    },
+    {
+      "name": "Bandyopadhyay, Hamerly & Englund hardware error correction for programmable photonics",
+      "identity": {
+        "doi": "10.1364/OPTICA.424052",
+        "publication": "Optica 8(10):1247-1255 (2021)"
+      }
+    },
+    {
+      "name": "Milanizadeh et al. thermal crosstalk cancellation in photonic integrated circuits",
+      "identity": {
+        "doi": "10.1109/JLT.2019.2892512",
+        "publication": "Journal of Lightwave Technology 37(4):1325-1332 (2019)"
+      }
+    },
+    {
+      "name": "Bogaerts et al. programmable photonic circuits review",
+      "identity": {
+        "doi": "10.1038/s41586-020-2764-0",
+        "publication": "Nature 586:207-216 (2020)"
+      }
+    },
+    {
+      "name": "Vogelbacher et al. silicon nitride partial Euler waveguide bends",
+      "identity": {
+        "doi": "10.1364/OE.27.031394",
+        "publication": "Optics Express 27(22):31394-31406 (2019)"
+      }
+    },
+    {
+      "name": "Sebastian et al. in-memory computing with PCM and ReRAM",
+      "identity": {
+        "doi": "10.1038/s41565-020-0655-z",
+        "publication": "Nature Nanotechnology 15:529-544 (2020)"
+      }
+    },
+    {
+      "name": "Nandakumar et al. empirical phase-change memory noise and drift models",
+      "identity": {
+        "doi": "10.1109/ICECS46596.2019.8964852",
+        "publication": "IEEE ICECS 2019"
+      }
+    },
+    {
+      "name": "Wan et al. ReRAM compute-in-memory chip characterization",
+      "identity": {
+        "doi": "10.1038/s41586-022-04992-8",
+        "publication": "Nature 608:504-512 (2022)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
