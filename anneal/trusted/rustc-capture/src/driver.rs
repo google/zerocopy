@@ -22,8 +22,6 @@ use rustc_middle::ty::TyCtxt;
 use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::ErrorOutputType;
 
-const COMPILER_VERSION: &str = "1.98.0-nightly (f8a08b688 2026-05-30)";
-
 struct AnalysisCallbacks {
     error_format: ErrorOutputType,
     analysis_reached: bool,
@@ -31,45 +29,8 @@ struct AnalysisCallbacks {
 
 impl Callbacks for AnalysisCallbacks {
     fn config(&mut self, config: &mut interface::Config) {
-        // EarlyDiagCtxt supports the user's "preference on error emission
-        // format". Use that format once compiler options are available,
-        // including for failures before a compiler session exists.
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L1412-L1446
         self.error_format = config.opts.error_format;
-        let early_dcx = EarlyDiagCtxt::new(self.error_format);
-
-        // The distribution hashes in flake.nix authenticate the complete
-        // compiler. This check catches builds against another nightly.
-        // rustc_version_str returns the "version string for `rustc` itself".
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_interface/src/util.rs#L688-L691
-        if rustc_interface::util::rustc_version_str() != Some(COMPILER_VERSION) {
-            early_dcx.early_fatal("driver was built with an unexpected compiler version");
-        }
-
-        // Let rustc parse --sysroot, including options in response files.
-        // Sysroot::path selects the "explicit sysroot if it was passed with
-        // `--sysroot`, or default sysroot otherwise". Replace only the default
-        // so the compiler's build path cannot rescue an incomplete archive.
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L1343-L1356
-        if config.opts.sysroot.explicit.is_none() {
-            let executable = std::env::current_exe().unwrap_or_else(|error| {
-                early_dcx.early_fatal(format!("cannot resolve capture executable: {error}"))
-            });
-            let install_root = executable
-                .parent()
-                .and_then(|bin| bin.parent())
-                .unwrap_or_else(|| {
-                    early_dcx.early_fatal("capture executable has no installation root")
-                });
-            let packaged_sysroot = install_root.join("rust");
-            if !packaged_sysroot.join("lib/rustlib").is_dir() {
-                early_dcx.early_fatal(format!(
-                    "packaged Rust sysroot is missing at {}; pass --sysroot for an unbundled binary",
-                    packaged_sysroot.display()
-                ));
-            }
-            config.opts.sysroot.default = packaged_sysroot;
-        }
+        configure(config);
     }
 
     fn after_analysis<'tcx>(&mut self, _: &interface::Compiler, tcx: TyCtxt<'tcx>) -> Compilation {
@@ -84,9 +45,83 @@ impl Callbacks for AnalysisCallbacks {
     }
 }
 
+pub(super) fn resolve_packaged_sysroot() -> Result<std::path::PathBuf, String> {
+    let executable = std::env::current_exe()
+        .map_err(|error| format!("cannot resolve capture executable: {error}"))?;
+    let install_root = executable
+        .parent()
+        .and_then(|bin| bin.parent())
+        .ok_or_else(|| "capture executable has no installation root".to_owned())?;
+    let packaged_sysroot = install_root.join("rust");
+    if !packaged_sysroot.join("lib/rustlib").is_dir() {
+        return Err(format!(
+            "packaged Rust sysroot is missing at {}; pass --sysroot for an unbundled binary",
+            packaged_sysroot.display()
+        ));
+    }
+    Ok(packaged_sysroot)
+}
+
+/// Apply the pinned compiler version and packaged-sysroot policy.
+///
+/// Both compiler modes call this after rustc has parsed its options, so an
+/// explicit sysroot takes precedence over the adjacent distribution.
+pub(super) fn configure(config: &mut interface::Config) {
+    // EarlyDiagCtxt supports the user's "preference on error emission
+    // format". Use that format once compiler options are available,
+    // including for failures before a compiler session exists.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L1412-L1446
+    let early_dcx = EarlyDiagCtxt::new(config.opts.error_format);
+
+    // The distribution hashes in flake.nix authenticate the complete
+    // compiler. This check catches builds against another nightly.
+    // rustc_version_str returns the "version string for `rustc` itself".
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_interface/src/util.rs#L688-L691
+    if rustc_interface::util::rustc_version_str() != Some(crate::ir::COMPILER_VERSION) {
+        early_dcx.early_fatal("driver was built with an unexpected compiler version");
+    }
+
+    // Let rustc parse --sysroot, including options in response files.
+    // Sysroot::path selects the "explicit sysroot if it was passed with
+    // `--sysroot`, or default sysroot otherwise". Replace only the default
+    // so the compiler's build path cannot rescue an incomplete archive.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L1343-L1356
+    if config.opts.sysroot.explicit.is_none() {
+        config.opts.sysroot.default =
+            resolve_packaged_sysroot().unwrap_or_else(|message| early_dcx.early_fatal(message));
+    }
+}
+
+/// Reject non-Unicode process arguments before rustc's hook inspects them.
+///
+/// Typed capture builds its own compiler argument list, but the hook still
+/// reads the original process arguments, including its program name.
+pub(super) fn install_ice_hook() {
+    let early_dcx = EarlyDiagCtxt::new(ErrorOutputType::default());
+    for (index, argument) in std::env::args_os().enumerate() {
+        if argument.to_str().is_none() {
+            let subject = if index == 0 {
+                "program name"
+            } else {
+                "argument"
+            };
+            early_dcx.early_fatal(format!("compiler {subject} is not UTF-8: {argument:?}"));
+        }
+    }
+    // The hook will "print the ICE message on unexpected panics" and is
+    // "useable even by external tools". It scans `std::env::args()` for
+    // "-Zui-testing" when RUST_BACKTRACE is unset, including the program name.
+    // Compiler panics retain rustc's context and bug-report guidance.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_driver_impl/src/lib.rs#L1434-L1461
+    rustc_driver::install_ice_hook(
+        "https://github.com/google/zerocopy/issues/new?template=anneal.yml",
+        |_| (),
+    );
+}
+
 /// Run one compiler session and require a clean analysis callback.
 ///
-/// Diagnostics, including callback evidence, use rustc's selected stderr format.
+/// Diagnostics, including callback evidence, use rustc's chosen stderr format.
 /// Argument errors before options are parsed use rustc's default format.
 /// Evidence appears only after the entire requested compilation succeeds. A
 /// compiler information request that returns without analysis fails this check.
@@ -100,13 +135,6 @@ pub(super) fn run(args: Vec<OsString>) -> ExitCode {
         // compiler options, using the default early diagnostic format.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_driver_impl/src/args.rs#L114-L134
         let early_dcx = EarlyDiagCtxt::new(ErrorOutputType::default());
-        if let Some(program_name) = std::env::args_os().next()
-            && program_name.to_str().is_none()
-        {
-            early_dcx.early_fatal(format!(
-                "compiler program name is not UTF-8: {program_name:?}"
-            ));
-        }
         let mut compiler_args = vec!["anneal-rustc-capture".into()];
         compiler_args.extend(args.into_iter().map(|arg| {
             arg.into_string().unwrap_or_else(|arg| {
@@ -114,17 +142,7 @@ pub(super) fn run(args: Vec<OsString>) -> ExitCode {
             })
         }));
 
-        // The hook will "print the ICE message on unexpected panics" and is
-        // "useable even by external tools". It scans `std::env::args()` for
-        // "-Zui-testing" when RUST_BACKTRACE is unset, including the program
-        // name. Install it only after rejecting non-Unicode arguments and
-        // program names. Compiler panics still retain rustc's context and
-        // bug-report guidance, including before analysis.
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_driver_impl/src/lib.rs#L1434-L1461
-        rustc_driver::install_ice_hook(
-            "https://github.com/google/zerocopy/issues/new?template=anneal.yml",
-            |_| (),
-        );
+        install_ice_hook();
 
         let mut callbacks = AnalysisCallbacks {
             error_format: ErrorOutputType::default(),
