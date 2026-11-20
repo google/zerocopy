@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import unittest
@@ -29,7 +30,12 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         )
         workflow = self.workflow
         self.manifest_steps = {}
-        for job_name in ("static-checks", "build-exocrate", "test-and-verify"):
+        for job_name in (
+            "static-checks",
+            "build-exocrate",
+            "test-and-verify",
+            "workspace-tests",
+        ):
             steps = workflow["jobs"][job_name]["steps"]
             matches = [
                 step["run"]
@@ -347,6 +353,96 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             )
             self.assertEqual(seen, "exists")
             self.assertIn("--miri-cache-dir", args)
+
+    def test_parallel_workspace_tests_job_wired_into_gate_and_isolated(self):
+        jobs = self.workflow["jobs"]
+        self.assertIn("workspace-tests", jobs["all-jobs-succeed"]["needs"])
+        self.assertEqual(jobs["workspace-tests"]["needs"], ["build-exocrate"])
+        ws_steps_list = jobs["workspace-tests"]["steps"]
+        ws_steps = {
+            step["id"]: step
+            for step in ws_steps_list
+            if "id" in step
+        }
+        self.assertEqual(
+            ws_steps["checkout"]["with"]["persist-credentials"], "false"
+        )
+        self.assertIn("cargo test --workspace --locked", ws_steps["workspace"]["run"])
+        tokens = (
+            "ACTIONS_CACHE_URL",
+            "ACTIONS_RESULTS_URL",
+            "ACTIONS_RUNTIME_TOKEN",
+        )
+        # Every run step after checkout in workspace-tests (including manifest
+        # and Record workspace test step results) must strip Actions tokens.
+        checkout_idx = next(
+            i for i, step in enumerate(ws_steps_list)
+            if step.get("id") == "checkout"
+        )
+        post_checkout_run_steps = [
+            step for step in ws_steps_list[checkout_idx + 1:] if "run" in step
+        ]
+        self.assertGreaterEqual(len(post_checkout_run_steps), 7)
+        for step in post_checkout_run_steps:
+            step_env = step.get("env", {})
+            for token in tokens:
+                self.assertEqual(
+                    step_env.get(token),
+                    "",
+                    f"workspace-tests step {step.get('name')!r} must strip {token}",
+                )
+        # Record test step results in test-and-verify strips Actions tokens too.
+        record_test_step = next(
+            s for s in jobs["test-and-verify"]["steps"]
+            if s.get("name") == "Record test step results"
+        )
+        for token in tokens:
+            self.assertEqual(record_test_step.get("env", {}).get(token), "")
+        # Every inline python3 heredoc in anneal-current.yml must run isolated
+        # (-I -B) so untrusted repo root files cannot shadow stdlib modules.
+        inline_py_count = 0
+        for job_name, job in jobs.items():
+            for step in job.get("steps", []):
+                run_src = step.get("run", "")
+                for match in re.finditer(r"python3\b[^;\n]*<<", run_src):
+                    inline_py_count += 1
+                    self.assertTrue(
+                        match.group(0).startswith("python3 -I -B -"),
+                        f"{job_name}/{step.get('name')!r} must use python3 -I -B -: "
+                        f"{match.group(0)!r}",
+                    )
+        self.assertGreaterEqual(inline_py_count, 6)
+        # Verify clean_tree in both test-and-verify and workspace-tests fails
+        # closed when git status errors (e.g., outside a git repository).
+        with tempfile.TemporaryDirectory() as non_git_dir:
+            for job_name in ("test-and-verify", "workspace-tests"):
+                clean_step = next(
+                    s for s in jobs[job_name]["steps"]
+                    if s.get("id") == "clean_tree"
+                )
+                self.assertIn("set -euo pipefail", clean_step["run"])
+                res = subprocess.run(
+                    ["bash", "--noprofile", "--norc", "-c", clean_step["run"]],
+                    cwd=non_git_dir,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(
+                    res.returncode,
+                    0,
+                    f"{job_name}.clean_tree masked git status failure",
+                )
+        # Diagnostic artifact names must stay distinct so parallel failures
+        # never collide during upload.
+        test_upload = next(
+            s for s in jobs["test-and-verify"]["steps"]
+            if s.get("name") == "Upload failed test diagnostics"
+        )
+        ws_upload = next(
+            s for s in jobs["workspace-tests"]["steps"]
+            if s.get("name") == "Upload failed workspace test diagnostics"
+        )
+        self.assertNotEqual(test_upload["with"]["name"], ws_upload["with"]["name"])
 
 
 class PathFilterWorkflowTests(unittest.TestCase):
