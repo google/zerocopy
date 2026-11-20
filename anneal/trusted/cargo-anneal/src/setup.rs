@@ -24,8 +24,21 @@ exocrate::config! {
     };
 }
 
+#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 exocrate::parse_remote_archive! {
     const REMOTE_ARCHIVE: RemoteArchive = "Cargo.toml";
+}
+
+fn remote_archive() -> Result<exocrate::RemoteArchive, String> {
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    {
+        if REMOTE_ARCHIVE.sha256 == [0; 32] {
+            return Err("the alpha archive has not been pinned; use --local-archive".into());
+        }
+        Ok(REMOTE_ARCHIVE)
+    }
+    #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+    Err("the downloadable alpha toolchain requires x86-64 Linux".into())
 }
 
 pub(crate) struct InstalledTools {
@@ -65,7 +78,7 @@ pub(crate) fn install_at(
 ) -> Result<PathBuf, String> {
     let source = match local_archive {
         Some(path) => exocrate::Source::Local(path),
-        None => exocrate::Source::Remote(REMOTE_ARCHIVE),
+        None => exocrate::Source::Remote(remote_archive()?),
     };
     CONFIG
         .resolve_installation_dir_or_install(location, source)
