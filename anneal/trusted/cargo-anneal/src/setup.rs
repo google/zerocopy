@@ -62,8 +62,9 @@ pub(crate) fn installed_tools() -> Result<InstalledTools, String> {
 
 /// Installs or resolves the Anneal toolchain archive in the user-global cache.
 ///
-/// Uses `local_archive` when set, falling back to the remote archive recorded
-/// in `[[package.metadata.exocrate]]` for the current platform.
+/// Reuses an installed toolchain for this version. A new installation uses
+/// `local_archive` when set or the remote archive recorded in
+/// `[[package.metadata.exocrate]]` for the current platform.
 pub fn install(local_archive: Option<PathBuf>) -> Result<PathBuf, String> {
     install_at(local_archive, exocrate::Location::UserGlobal)
 }
@@ -78,7 +79,10 @@ pub(crate) fn install_at(
 ) -> Result<PathBuf, String> {
     let source = match local_archive {
         Some(path) => exocrate::Source::Local(path),
-        None => exocrate::Source::Remote(remote_archive()?),
+        None => match remote_archive() {
+            Ok(archive) => exocrate::Source::Remote(archive),
+            Err(reason) => return CONFIG.resolve_installation_dir(location).map_err(|_| reason),
+        },
     };
     CONFIG
         .resolve_installation_dir_or_install(location, source)
@@ -140,5 +144,27 @@ mod tests {
             fs::read(root.join("marker.txt")).expect("ordinary cache survives"),
             b"archive under test"
         );
+    }
+
+    #[test]
+    fn setup_reuses_a_locally_installed_toolchain() {
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("toolchain.tar.zst");
+        write_archive(&archive);
+        let cache = temp.path().join("cache");
+        let installed =
+            install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+                .expect("install local archive");
+        fs::remove_file(archive).expect("remove original archive");
+
+        assert_eq!(
+            install_at(None, exocrate::Location::Custom(cache))
+                .expect("reuse the installed toolchain"),
+            installed
+        );
+        if let Err(reason) = remote_archive() {
+            let fresh = exocrate::Location::Custom(temp.path().join("fresh-cache"));
+            assert_eq!(install_at(None, fresh), Err(reason));
+        }
     }
 }
