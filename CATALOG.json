@@ -51749,6 +51749,78 @@
         "verification/physical-unit-consistency-checking"
       ]
     },
+    "non-coherent-dma-cache-maintenance-zicbom-granules-and-adjacent-field-tearing-hazards": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "src/unpriv/cmo.adoc",
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V ISA Manual (Cache Management Operations / Zicbom)"
+        },
+        {
+          "identity": {
+            "repository": "riscvarchive/riscv-CMOs",
+            "revision": "615baa163b15c02f32bdbdeeab401ca486a3a9bc",
+            "version": "v1.0.1"
+          },
+          "name": "RISC-V Cache Management Operations Specification Archive"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Sail RISC-V Formal ISA Model"
+        },
+        {
+          "identity": {
+            "architecture": "Armv8-A / Armv9-A",
+            "document": "ARM DDI 0487"
+          },
+          "name": "Arm Architecture Reference Manual for A-profile Architecture"
+        },
+        {
+          "identity": {
+            "repository": "herd/herdtools7",
+            "revision": "1ae595498c7af7d9d2f00e29aea328b36663104c"
+          },
+          "name": "herdtools7 Formal Memory Consistency Models"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "d0f871bfb831705d9f55479f5b2b40f636ea7b16"
+          },
+          "name": "Linux Kernel Non-Coherent DMA and Rust DMA Abstractions"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust Core Library (Freeze and UnsafeCell Definitions)"
+        },
+        {
+          "identity": {
+            "repository": "RalfJung/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust Operational Semantics and Tree Borrows"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "isa/aarch64",
+        "verification/os-kernels",
+        "verification/separation-logic",
+        "rust/concurrency",
+        "rust/unsafe",
+        "systems/dma"
+      ]
+    },
     "non-llvm-btl-superblock-symbolic-validation-over-real-rustc-mir": {
       "observed_at": "2026-11-20",
       "subjects": [
