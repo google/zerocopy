@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1794934498404,
+  "lastUpdate": 1795161908862,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -23973,6 +23973,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1645,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fd793268d403f83cd1fc9082b28097c5b0b92cbd",
+          "message": "[anneal] Import PureLift’s permission and lens foundations (#3936)\n\nAdd lenses, permission trees, loan graphs, and spatial pinning. Compile\nthe generic Lean theory under the existing trusted-boundary audit.\n\nUse the full reference-value equality guard from the evaluator\ncheckpoint in this layer so branch joins preserve handle metadata.\n\nSource: https://github.com/joshlf/anneal/tree/548fc856f09eef231358d5811baf5a0aa5fff429\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-20T06:39:49Z",
+          "tree_id": "b621ee907aee6fb9b49c28ad1b6c97e602d5020a",
+          "url": "https://github.com/google/zerocopy/commit/fd793268d403f83cd1fc9082b28097c5b0b92cbd"
+        },
+        "date": 1795161906097,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1395,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1553,
             "unit": "seconds"
           }
         ]
