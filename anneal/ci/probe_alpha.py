@@ -22,7 +22,7 @@ FIXTURE = (
 )
 
 
-def check(cli, directory, code, status):
+def check(cli, directory, code, status, stderr_contains=None):
     result = subprocess.run(
         [str(cli), "verify", "--request", "request.json"],
         cwd=directory,
@@ -38,6 +38,8 @@ def check(cli, directory, code, status):
     receipt = json.loads(result.stdout)
     if receipt["status"] != status:
         raise RuntimeError(f"expected {status}, got {receipt}")
+    if stderr_contains is not None and stderr_contains not in result.stderr:
+        raise RuntimeError(f"missing compiler diagnostic: {result.stderr}")
     print(f"{status} (exit {code})", flush=True)
     return receipt
 
@@ -62,6 +64,9 @@ def main():
             raise RuntimeError("scalar fixture no longer returns zero")
         source.write_text(changed)
         check(cli, directory, 1, "proof_failed")
+
+        source.write_text('compile_error!("alpha compiler diagnostic");\n')
+        check(cli, directory, 2, "compiler_failed", "alpha compiler diagnostic")
 
         source.write_text(original)
         request_path = directory / "request.json"

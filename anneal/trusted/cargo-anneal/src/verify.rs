@@ -428,6 +428,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             _ => "tool_failed",
         };
         let detail = if envelope.is_object() {
+            if !output.stderr.is_empty() {
+                eprint!("{}", String::from_utf8_lossy(&output.stderr));
+            }
             envelope.to_string()
         } else {
             String::from_utf8_lossy(&output.stderr).into_owned()
