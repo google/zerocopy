@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "verification/relational",
+    "verification/semantics",
+    "anneal/theory",
+    "rust/zerocopy",
+    "rust/provenance",
+    "minirust/memory",
+    "zerocopy/validity",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR operational semantics, AllocByte memory model, and Pass-1 boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri executable Rust MIR allocation, provenance, and address-generator model",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "MiniRust operational semantics and AbstractByte representation relation",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "zerocopy safe transmutation trait hierarchy and raw-pointer provenance invariants",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "CompCert verified C memory model and meminj block-injection algebra",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "doi": "10.1007/s10817-008-9099-0"
+      }
+    },
+    {
+      "name": "Simple Relational Correctness Proofs for Static Analyses and Program Transformations (Benton, POPL 2004)",
+      "identity": {
+        "doi": "10.1145/964001.964003",
+        "publication": "Proc. 31st ACM SIGPLAN-SIGACT Symp. Principles of Programming Languages (POPL 2004)"
+      }
+    },
+    {
+      "name": "Ownership Confinement and Heap Partial Bijections (Banerjee and Naumann, 2005)",
+      "identity": {
+        "doi": "10.1145/1101821.1101824",
+        "jfp_doi": "10.1017/S0956796804005453"
+      }
+    },
+    {
+      "name": "Rust compiler MIR pointer and allocation provenance definitions",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

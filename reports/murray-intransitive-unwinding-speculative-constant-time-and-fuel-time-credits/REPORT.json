@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "verification/relational",
+    "security/constant-time",
+    "security/speculative-constant-time",
+    "verification/resource-bounds",
+    "anneal/theory",
+    "systems/os-verification",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR operational semantics, weakest-precondition calculus, and Pass-1 boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL intransitive noninterference and unwinding proofs",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e",
+        "doi": "10.1109/SP.2013.35"
+      }
+    },
+    {
+      "name": "Noninterference for Operating System Kernels (Murray et al., CPP 2012)",
+      "identity": {
+        "doi": "10.1007/978-3-642-35308-6_12",
+        "publication": "Certified Programs and Proofs (CPP 2012)"
+      }
+    },
+    {
+      "name": "Jasmin compiler forward speculative constant-time checker and Coq SLH proofs",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724",
+        "doi": "10.1145/3704880"
+      }
+    },
+    {
+      "name": "Typing High-Speed Cryptography against Spectre v1 (Shivakumar et al., IEEE S&P 2023)",
+      "identity": {
+        "doi": "10.1109/SP46215.2023.10179418",
+        "publication": "2023 IEEE Symposium on Security and Privacy (SP)"
+      }
+    },
+    {
+      "name": "Blade automatic speculative leak elimination type system and benchmark suite",
+      "identity": {
+        "repository": "PLSysSec/blade",
+        "revision": "61ac7906ddae019215ff4f33df7e774d88d6fdb1",
+        "doi": "10.1145/3434330",
+        "arxiv": "2005.00294"
+      }
+    },
+    {
+      "name": "Amortised Resource Analysis with Separation Logic (Atkey)",
+      "identity": {
+        "doi": "10.1007/978-3-642-11957-6_6",
+        "journal_doi": "10.2168/LMCS-7(2:17)2011"
+      }
+    },
+    {
+      "name": "Separation Logic with Time Credits (Charguéraud and Pottier)",
+      "identity": {
+        "doi": "10.1007/s10817-017-9431-7",
+        "publication": "Journal of Automated Reasoning 62(3), 2019"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and C++ kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
