@@ -1,0 +1,719 @@
+[
+  {
+    "id": "R1a-greedy-footprints-are-witnesses",
+    "lean": "Toy.Monitor.fpGreedy_strategySound",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Computational interpretation of separating conjunction by sequential consumption and of disjunction by committed left-first choice is the evaluation scheme described by Nguyen et al. (colouring) and Fulminate; stated here against the declarative exact semantics. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For every assertion A (cells, pure conditions, separating conjunction, and arbitrary - possibly imprecise - disjunction) and every heap fragment g, whenever the greedy consumption-style footprint computation returns F, every address of F is allocated in g and the restriction of g to F satisfies A.",
+    "hypotheses": [
+      {
+        "name": "fpGreedy A g = some F (inside StrategySound)",
+        "purpose": "The footprint must have been computed; failure says nothing.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fpGreedy (sep (owned 0 or owned 1) (owned 1)) hTwo = some [0, 1].",
+    "nonvacuity_witness_lean": "Toy.Monitor.fpGreedy_strategySound_nonvacuous",
+    "non_claims": [
+      "Soundness of one computed footprint only; it does not say greedy finds a footprint whenever one exists (it does not: fpGreedy_rejects_satisfying_run_imprecise_contract, fpGreedy_rejects_satisfying_run_precise_not_disjPrecise).",
+      "Does not say the computed footprint is the one the program intends to transfer.",
+      "The right-biased variant fpGreedyR is sound as well (fpGreedyR_strategySound); the choice of bias matters for completeness, not soundness.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2.",
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Jan Smans, Bart Jacobs, Frank Piessens, 'Implicit Dynamic Frames', ACM Trans. Program. Lang. Syst. 34(1), Article 2, 2012, doi:10.1145/2160910.2160911 - as summarized in Fulminate Sec. 6: a variant of separation logic with executable heap-dependent assertions and access sets, discussing runtime checking as one advantage while focusing on proof (the paper itself was not examined)."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.fpGreedyR_strategySound",
+      "Toy.Monitor.fpGreedy_rejects_satisfying_run_imprecise_contract",
+      "Toy.Monitor.fpGreedy_rejects_satisfying_run_precise_not_disjPrecise"
+    ]
+  },
+  {
+    "id": "R1b-search-footprints-are-witnesses",
+    "lean": "Toy.Monitor.fpSearch_strategySound",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Exhaustive (backtracking) enumeration of splittings is the naive reading of the separating conjunction. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For every assertion A and fragment g, the first footprint found by exhaustive consumption-style search (if any) consists of allocated addresses of g and carves out a sub-fragment satisfying A.",
+    "hypotheses": [
+      {
+        "name": "fpSearch A g = some F (inside StrategySound)",
+        "purpose": "The footprint must have been found.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fpSearch C' hTwo = some [0, 1] for the precise, not disjunction-precise C'.",
+    "nonvacuity_witness_lean": "Toy.Monitor.fpSearch_strategySound_nonvacuous",
+    "non_claims": [
+      "Says nothing about cost: search is exponential in the number of disjunctions in general.",
+      "Search is still an online strategy: for imprecise contracts it can pick the wrong footprint (fpSearch_rejects_satisfying_run_imprecise_contract).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.fpSearch_rejects_satisfying_run_imprecise_contract"
+    ]
+  },
+  {
+    "id": "R1-monitor-soundness",
+    "lean": "Toy.Monitor.accepts_imp_satisfiesBy_of_strategySound",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Fulminate proves that its ghost-state instrumentation and a resource-passing semantics bisimulate and fail under the same conditions (Thm 3.5, Cor 3.6) - a relation between two dynamic semantics; the present statement instead relates a depth-indexed monitor, generic in the footprint strategy, to the declarative separation-logic meaning of the contracts, exposing the monitor's footprints as witnesses. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "If the footprint strategy is sound, the monitor performs the leak check, and unannotated callees are checked as inlined, then every run the monitor accepts satisfies all its contracts with the monitor's own footprints as witnesses: at each call the strategy's footprint F lies in the caller's fragment and that fragment restricted to F satisfies the precondition, the callee accesses only F, and at return the strategy's footprint has the same members as F and the callee's final fragment on F satisfies the postcondition.",
+    "hypotheses": [
+      {
+        "name": "hs : StrategySound s",
+        "purpose": "The monitor never evaluates assertions itself; it trusts the strategy's footprint.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.unsound_strategy_accepts_contract_violating_run"
+      },
+      {
+        "name": "hleak : cfg.leakCheck = true",
+        "purpose": "Exact postconditions must describe the callee's whole final fragment; without the check leaked bytes also stay attributed to the callee's depth.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Monitor.noLeakCheck_accepts_leaky_post",
+          "Toy.Monitor.noLeakCheck_later_callee_inherits_leaked_byte"
+        ]
+      },
+      {
+        "name": "hun : cfg.checkUnannot = true",
+        "purpose": "Accesses of unannotated callees must be checked against the caller's frame (R1-trusted replaces this by a confinement assumption).",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.trusted_unannot_write_outside_footprint_accepted"
+      },
+      {
+        "name": "hacc : Accepts cfg s p h O",
+        "purpose": "The premise: the monitor accepted this run.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.read_unowned_rejected_and_unsatisfied"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fpAtom (sound), strict configuration, progNV = call (owned 0) (pointsTo 0 5) (unannot (write 0 5)) from the one-byte heap, accepted.",
+    "nonvacuity_witness_lean": "Toy.Monitor.accepts_imp_satisfiesBy_of_strategySound_nonvacuous",
+    "non_claims": [
+      "Soundness holds for the whole toy assertion language, including imprecise disjunction; precision matters only for completeness. Do not read this as 'imprecise contracts are unsafe to monitor'.",
+      "It is a statement about the one observed run; acceptance of a run says nothing about other inputs or schedules (testing, not verification).",
+      "Exposes the monitor's footprints as witnesses; it does not say they are the footprints the programmer intended (for imprecise contracts there may be several).",
+      "Frames are identified by call depth and ownership is whole (no fractions); results for per-frame maps or fractional permissions are not stated.",
+      "The leak check here inspects only the bytes transferred to the callee; this is adequate because the monitor starts with no ownership at deeper depths, which is built into Accepts (initOwn).",
+      "Proved as the cfg.checkUnannot = true instance of R1-trusted (whose confinement assumption is then vacuous), hence depth shallow; the substantive content is the shared induction with the ownership-depth invariant (Lemmas: OwnInv, monitorAux_sound), counted under R1-trusted, which also shows the monitor restores the ownership map exactly.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2.",
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "rust-lang/compiler-team issue #942, 'Contracts: primitive ownership assertions: owned and alloc_block' (major change proposal by Dawid Lachowicz, opened 2025-11-10, closed as accepted 2025-11-22), https://github.com/rust-lang/compiler-team/issues/942. Proposes Fulminate-inspired owned/alloc_block assertions for Rust contracts: owned 'asserts exclusive ownership of memory pointed at by some raw pointer'; asserting a resource in a precondition consumes it and in a postcondition gives it back; read-only permissions are 'an open question and out of scope of this proposal'; runtime ownership tracking is left to interpreters, and the proposal mentions that a prototype runtime ownership tracker exists in Miri. The seconding comment notes that the compiler-team ask is only the addition of some intrinsics, with design decisions left to the owners of the contracts experiment; further progress is tracked in rust-lang/rust#149213.",
+      "Samin S. Ishtiaq, Peter W. O'Hearn, 'BI as an Assertion Language for Mutable Data Structures', POPL 2001, pp. 14-26, doi:10.1145/360204.375719; John C. Reynolds, 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817 - foundational accounts of separation-logic assertions over heap fragments, separating conjunction, and the frame rule; the exact (classical) reading of assertions used here, as opposed to an intuitionistic or affine one, is one of the variants discussed in this line of work (bibliographic data verified; bodies not re-examined).",
+      "Gradual verification: Johannes Bader, Jonathan Aldrich, Eric Tanter, 'Gradual Program Verification', VMCAI 2018, LNCS 10747, pp. 25-46, doi:10.1007/978-3-319-73721-8_2; Jenna Wise, Johannes Bader, Cameron Wong, Jonathan Aldrich, Eric Tanter, Joshua Sunshine, 'Gradual Verification of Recursive Heap Data Structures', Proc. ACM Program. Lang. 4(OOPSLA), 2020, doi:10.1145/3428296; Conrad Zimmerman, Jenna DiVincenzo, Jonathan Aldrich, 'Sound Gradual Verification with Symbolic Execution', Proc. ACM Program. Lang. 8(POPL), 2024, doi:10.1145/3632927. Combine static verification of partial specifications (implicit dynamic frames / separation-logic style heap ownership) with run-time checks where static information is missing, with soundness results for the combination (bibliographic data and abstracts verified; bodies not examined). Related in spirit (run-time checks standing in for missing proof), not in the specific monitor/footprint-strategy setting here.",
+      "Neven Villani, Johannes Hostert, Derek Dreyer, Ralf Jung, 'Tree Borrows', Proc. ACM Program. Lang. 9(PLDI), 2025, doi:10.1145/3735592; Ralf Jung, Benjamin Kimock, Christian Poveda, Eduardo Sanchez Munoz, Oli Scherer, Qian Wang, 'Miri: Practical Undefined Behavior Detection for Rust', Proc. ACM Program. Lang. 10(POPL), 2026, doi:10.1145/3776690 - context only (the aliasing model and the interpreter hosting the prototype above); bibliographic data verified, not examined for ownership contracts."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.monitorAux_sound"
+    ]
+  },
+  {
+    "id": "R1prime-no-false-alarms-relative-to-own-footprints",
+    "lean": "Toy.Monitor.satisfiesBy_imp_accepts",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Converse direction of the monitor/semantics correspondence (compare Fulminate Cor 3.6, 'fail under the same conditions', for its two operational semantics). Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "Under any monitor configuration and any strategy, a run that satisfies its contracts with the strategy's footprints (SatisfiesBy) is accepted by the monitor.",
+    "hypotheses": [
+      {
+        "name": "hsat : SatisfiesBy s p h O",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.read_unowned_rejected_and_unsatisfied"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "SatisfiesBy fpAtom progNV hOne [0].",
+    "nonvacuity_witness_lean": "Toy.Monitor.satisfiesBy_imp_accepts_nonvacuous",
+    "non_claims": [
+      "Relative to the strategy's own footprints only: a run that satisfies its contracts with some other footprints may still be rejected (completeness needs witness recovery; see R2).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?"
+  },
+  {
+    "id": "R1-trusted-soundness-under-unannot-confinement",
+    "lean": "Toy.Monitor.accepts_imp_satisfiesBy_of_unannotConfined",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Makes explicit, as an operational property of the run, the assumption under which leaving unannotated code uninstrumented is sound; boundary checking against unverified code (Agten et al., as summarized by Fulminate) relies on a related integrity assumption, enforced there by other means. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "With a sound strategy and the leak check, a run accepted by the monitor satisfies all contracts with the monitor's footprints, under either policy for unannotated callees, provided that - when unannotated callees are trusted (not instrumented) - every read and write they execute targets an allocated byte of the frame they run in (their caller's frame, as attributed by the strategy); annotated callees called from unannotated code are monitored in both policies.",
+    "hypotheses": [
+      {
+        "name": "hs : StrategySound s",
+        "purpose": "As in R1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.unsound_strategy_accepts_contract_violating_run"
+      },
+      {
+        "name": "hleak : cfg.leakCheck = true",
+        "purpose": "As in R1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.noLeakCheck_accepts_leaky_post"
+      },
+      {
+        "name": "hacc : Accepts cfg s p h O",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.read_unowned_rejected_and_unsatisfied"
+      },
+      {
+        "name": "hconf : cfg.checkUnannot = false \u2192 UnannotConfined s p h O",
+        "purpose": "The confinement assumption on uninstrumented code. Guarded: when cfg.checkUnannot = true the monitor checks those accesses itself and nothing is assumed. UnannotConfined constrains only access targets along the concrete run (not satisfaction of any contract).",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.trusted_unannot_write_outside_footprint_accepted"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "fpAtom, configuration (leak check on, unannotated callees trusted), progMixed = call (owned 0) (owned 0) (unannot (seq (write 0 5) (call (owned 0) (pointsTo 0 5) (read 0)))) from the one-byte heap: accepted, and the unannotated helper's unchecked store stays in the callee's footprint [0] while its annotated callee is monitored.",
+    "nonvacuity_witness_lean": "Toy.Monitor.accepts_imp_satisfiesBy_of_unannotConfined_nonvacuous",
+    "non_claims": [
+      "UnannotConfined is a property of the run that the trusted policy does not check; this theorem does not provide a way to establish it (e.g. by a static analysis or hardware isolation).",
+      "The confinement assumption is relative to the frames the strategy computes for enclosing annotated calls; it is not a property of the unannotated code alone.",
+      "Annotated callees called from unannotated code are always monitored here (trusted_monitor_checks_nested_annotated_call); a monitor that skipped them as well would need their contracts as an extra assumption.",
+      "The examined Miri prototype keeps access checks on in unannotated callees (the inline-checking policy, covered by R1); Fulminate as published instruments a single translation unit of annotated C and does not discuss uninstrumented callees. This theorem is about the toy trusted policy only.",
+      "Confinement covers reads as well as writes: an unannotated helper that reads a byte outside its frame leaves the heap unchanged, so a boundary check that only compares the heap before and after the call (such as the integrity check attributed to Agten et al. below) passes, yet the run violates UnannotConfined and its contracts, the monitor trusting unannotated callees accepts it, and the strict monitor rejects it (trusted_unannot_read_outside_footprint_accepted_heap_unchanged).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Prototype ownership tracking in Miri: repository JoJoDeveloping/miri, branch 'fulminate', commit a33a3c076f10bd42c742ca9eec9c30ed1d0166af (author Johannes Hostert, 2025-08-18; src/ownership/mod.rs, src/ownership/fraction.rs). One map per annotated frame from bytes (and allocation block tokens) to dyadic fractions; writes require the full fraction, reads a nonzero one; owned transfers a full fraction between the top annotated frame and its parent (into the child in preconditions, into the parent in postconditions; the partial-split variant is marked #[allow(unused)]); source comment: 'If non-ownership-annotated funcs are called, we treat it as if they were inlined', i.e. they run in the topmost annotated frame with access checks still active; when an annotated frame is popped (on_stack_pop) every remaining entry is inserted into the parent frame (no check that the popped frame is empty is made there). compiler-team #942 links this prototype directly: its section 'Fulminate' states that Johannes Hostert 'has already implemented a prototype runtime ownership tracker in Miri' and links https://github.com/JoJoDeveloping/miri/tree/fulminate, and its sections 'Examples', 'Semantics of owned and alloc_block' and 'Miri implementation' link example_dream.rs at commit a33a3c076f10bd42c742ca9eec9c30ed1d0166af (in 'Miri implementation' as a 'prototype ownership checker for contracts in Miri'; in 'Examples' at line 155). That commit was the head of branch 'fulminate' when checked (2026-11-20), so the source summarized here is the revision #942 links; #942 links example_dream.rs, not src/ownership/ itself, and none of the comments on #942 links the prototype.",
+      "Pieter Agten, Bart Jacobs, Frank Piessens, 'Sound Modular Verification of C Code Executing in an Unverified Context', POPL 2015, pp. 581-594, doi:10.1145/2676726.2676972 - as summarized in Fulminate Sec. 6: runtime checking of separation-logic contracts at module boundaries, with an integrity check that the untrusted context has not mutated the module state; not fine-grained checks of all accesses (the paper itself was not examined).",
+      "Gradual verification: Johannes Bader, Jonathan Aldrich, Eric Tanter, 'Gradual Program Verification', VMCAI 2018, LNCS 10747, pp. 25-46, doi:10.1007/978-3-319-73721-8_2; Jenna Wise, Johannes Bader, Cameron Wong, Jonathan Aldrich, Eric Tanter, Joshua Sunshine, 'Gradual Verification of Recursive Heap Data Structures', Proc. ACM Program. Lang. 4(OOPSLA), 2020, doi:10.1145/3428296; Conrad Zimmerman, Jenna DiVincenzo, Jonathan Aldrich, 'Sound Gradual Verification with Symbolic Execution', Proc. ACM Program. Lang. 8(POPL), 2024, doi:10.1145/3632927. Combine static verification of partial specifications (implicit dynamic frames / separation-logic style heap ownership) with run-time checks where static information is missing, with soundness results for the combination (bibliographic data and abstracts verified; bodies not examined). Related in spirit (run-time checks standing in for missing proof), not in the specific monitor/footprint-strategy setting here.",
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.trusted_monitor_checks_nested_annotated_call",
+      "Toy.Monitor.trusted_unannot_read_outside_footprint_accepted_heap_unchanged"
+    ]
+  },
+  {
+    "id": "R1-frame-property",
+    "lean": "Toy.Monitor.satisfies_frame",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The frame property of separation-logic triples (standard), restated for this toy semantics.",
+    "plain_claim": "If a run satisfies its contracts in a frame owning exactly the addresses O, it changes no byte outside O; in particular bytes not transferred to a callee are unchanged when the callee returns.",
+    "hypotheses": [
+      {
+        "name": "Satisfies p h O",
+        "purpose": "Only contract-respecting runs are confined to their frame.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.write_outside_frame_changes_byte"
+      },
+      {
+        "name": "a \u2209 O",
+        "purpose": "Bytes in O may change.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.satisfies_frame_needs_not_mem"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Satisfies progNV hOne [0] and 1 \u2209 [0].",
+    "nonvacuity_witness_lean": "Toy.Monitor.satisfies_frame_nonvacuous",
+    "non_claims": [
+      "About the angelic Satisfies; it combines with R1 to give frame preservation for monitor-accepted runs only under R1's hypotheses.",
+      "The heap domain never changes in this model (no allocation); with address-targeted allocation a frame property of this form needs extra side conditions (fresh addresses must avoid the frame), which are not studied here.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Samin S. Ishtiaq, Peter W. O'Hearn, 'BI as an Assertion Language for Mutable Data Structures', POPL 2001, pp. 14-26, doi:10.1145/360204.375719; John C. Reynolds, 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817 - foundational accounts of separation-logic assertions over heap fragments, separating conjunction, and the frame rule; the exact (classical) reading of assertions used here, as opposed to an intuitionistic or affine one, is one of the variants discussed in this line of work (bibliographic data verified; bodies not re-examined)."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?"
+  },
+  {
+    "id": "R1-footprint-witnesses-separating-conjunction",
+    "lean": "Toy.Monitor.restrict_witnesses_sep",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Definitional unfolding of the separating conjunction.",
+    "plain_claim": "If the restriction of a fragment g to an address list F satisfies A, then g satisfies A * R for the frame R holding of exactly g.remove F, with the split exposed (A-part = g.restrict F, frame = g.remove F).",
+    "hypotheses": [
+      {
+        "name": "hA : sat A (g.restrict F)",
+        "purpose": "The restricted part must satisfy A.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.restrict_witnesses_sep_needs_sat"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "sat (owned 0) (hTwo.restrict [0]).",
+    "nonvacuity_witness_lean": "Toy.Monitor.restrict_witnesses_sep_nonvacuous",
+    "non_claims": [
+      "Purely definitional; it is the bridge from 'footprint' to 'witness for pre * frame' used to read R1.",
+      "hA does not require the addresses of F to be allocated in g, unlike IsFootprint: for F = [0, 99] on hTwo, the restriction satisfies owned 0 and the conclusion holds, although F is not a footprint of owned 0 (restrict_witnesses_sep_allows_unallocated_addrs). R1 uses the theorem with strategy footprints, which are allocated.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.restrict_witnesses_sep_allows_unallocated_addrs"
+    ]
+  },
+  {
+    "id": "R2-disjPrecise-implies-precise",
+    "lean": "Toy.Monitor.precise_of_disjPrecise",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of a known result: cell assertions and pure assertions (which hold only of the empty fragment in this model) are precise, and precision is closed under separating conjunction; the closure lemma is mechanized for separation algebras in Isabelle (Archive of Formal Proofs entry Separata, lemma precise_sep_conj). DisjPrecise puts the precision of each disjunction into its definition, so this statement is that closure property restated for this assertion language.",
+    "plain_claim": "Every disjunction-precise assertion (every disjunction occurring in it is precise) is precise in the sense of O'Hearn-Yang-Reynolds.",
+    "hypotheses": [
+      {
+        "name": "hA : DisjPrecise A",
+        "purpose": "Imprecise disjunctions can make the whole assertion imprecise; the hypothesis rules them out.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.not_precise_C"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "DisjPrecise (pointsTo 0 0 or pointsTo 0 1).",
+    "nonvacuity_witness_lean": "Toy.Monitor.precise_of_disjPrecise_nonvacuous",
+    "non_claims": [
+      "The converse is false: C' is precise but not disjunction-precise.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Gerwin Klein, Rafal Kolanski, Andrew Boyton, 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22 (Isabelle/HOL library; Archive of Formal Proofs entry Separation_Algebra). Mechanizes separation algebras and defines precise predicates (at most one sub-state of a state satisfies P); the specific closure lemmas were not examined.",
+      "Zhe Hou, David Sanan, Alwen Tiu, Rajeev Gore, Ranald Clouston, 'Separata: Isabelle tactics for Separation Algebra', Archive of Formal Proofs, November 2016, https://isa-afp.org/entries/Separata.html. Theory Separata, lemma precise_sep_conj: 'assumes precise I and precise I' shows precise (I \u2227* I')'. Separata imports the Separation_Algebra entry (Klein, Kolanski, Boyton) and uses its precise without redefining it."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?"
+  },
+  {
+    "id": "R2a-greedy-recovers-every-witness-for-disjPrecise",
+    "lean": "Toy.Monitor.fpGreedy_recoversEveryWitness_of_disjPrecise",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Fulminate observes that CN's restrictions (outputs computable from inputs, if-then-else with guarded clauses instead of disjunction, similar to RefinedC) let runtime checking determine without backtracking which clause applies; this states the corresponding witness-recovery property of a committed-choice evaluator for the semantic class 'every disjunction precise'. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For every disjunction-precise assertion A, whenever some sub-fragment g' of g satisfies A, the greedy strategy returns a footprint of allocated addresses of g that carves out exactly g'.",
+    "hypotheses": [
+      {
+        "name": "hA : DisjPrecise A",
+        "purpose": "Committed left-first choice can pick a disjunct whose footprint blocks the rest of the assertion or the intended witness.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Monitor.not_recoversEveryWitness_fpGreedy_C",
+          "Toy.Monitor.fpGreedy_rejects_satisfying_run_precise_not_disjPrecise"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "A = pointsTo 0 0 or pointsTo 0 1, g = g' = the one-byte heap holding 0.",
+    "nonvacuity_witness_lean": "Toy.Monitor.fpGreedy_recoversEveryWitness_of_disjPrecise_nonvacuous",
+    "non_claims": [
+      "DisjPrecise cannot be weakened to Precise (C' is precise and greedy does not recover its witness).",
+      "DisjPrecise is a semantic condition on each disjunction; this result does not give a syntactic or decidable criterion (CN's if-then-else with pure guards is one sufficient pattern, not formalized here).",
+      "Witness recovery is the uniqueness-including notion defined by RecoversEveryWitness, not mere existence of some footprint (ExistsFootprintComplete).",
+      "DisjPrecise is sufficient, not necessary, for greedy witness recovery: the committed left-first choice is order-sensitive, and fpGreedy recovers every witness of CFlip = (owned 0 or (owned 0 * owned 1)) * owned 1, which is satisfiable and precise but not disjunction-precise, while the right-biased fpGreedyR does not (fpGreedy_recoversEveryWitness_CFlip_not_disjPrecise).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2.",
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Michael Sammler, Rodolphe Lepigre, Robbert Krebbers, Kayvan Memarian, Derek Dreyer, Deepak Garg, 'RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types', PLDI 2021, pp. 158-174, doi:10.1145/3453483.3454036 - cited by Fulminate Sec. 2.4.2 as precedent for guarded clauses replacing general disjunction (the paper itself was not examined)."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.fpGreedy_recoversEveryWitness_CFlip_not_disjPrecise"
+    ]
+  },
+  {
+    "id": "R2b-search-recovers-every-witness-for-precise",
+    "lean": "Toy.Monitor.fpSearch_recoversEveryWitness_of_precise",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Precision means at most one witness, so any exhaustive search that returns some witness returns the witness. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For every precise assertion A, whenever some sub-fragment g' of g satisfies A, the backtracking strategy returns a footprint of allocated addresses of g that carves out exactly g'.",
+    "hypotheses": [
+      {
+        "name": "hA : Precise A",
+        "purpose": "With two witnesses a single answer cannot carve out both.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.not_recoversEveryWitness_fpSearch_C"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A = C' (precise, not disjunction-precise), g = g' = hTwo.",
+    "nonvacuity_witness_lean": "Toy.Monitor.fpSearch_recoversEveryWitness_of_precise_nonvacuous",
+    "non_claims": [
+      "No cost bound: backtracking can be exponential.",
+      "Precision is also necessary for any strategy to recover every witness (precise_of_recoversEveryWitness), so no strategy beats search on this criterion; on the weaker criterion of finding some footprint whenever one exists, search succeeds for every assertion, precise or not (fpSearch_existsFootprintComplete).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.fpSearch_existsFootprintComplete",
+      "Toy.Monitor.precise_of_recoversEveryWitness"
+    ]
+  },
+  {
+    "id": "R2-recovers-every-witness-implies-precise",
+    "lean": "Toy.Monitor.precise_of_recoversEveryWitness",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Immediate from the definitions: RecoversEveryWitness asks one answer s A g, which cannot depend on the witness, to carve out every witness, so it builds uniqueness in.",
+    "plain_claim": "If some strategy s recovers every witness of an assertion A (its single answer carves out whichever sub-fragment satisfies A), then A is precise.",
+    "hypotheses": [
+      {
+        "name": "hc : RecoversEveryWitness s A",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.not_precise_C"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "RecoversEveryWitness fpAtom (owned 0).",
+    "nonvacuity_witness_lean": "Toy.Monitor.precise_of_recoversEveryWitness_nonvacuous",
+    "non_claims": [
+      "Definitional: the uniqueness is part of the definition of RecoversEveryWitness. It does not say that precision is necessary for weaker notions of completeness.",
+      "Existential footprint completeness (some genuine footprint is returned whenever one exists) does not imply precision: fpSearch has it for every assertion, including the imprecise owned 0 or owned 1 (existsFootprintComplete_not_imp_precise).",
+      "Whole-program completeness of a monitor for one fixed program does not imply that the program's contracts are precise: the greedy monitor accepts every satisfying run of call C C skip although C = owned 0 or owned 1 is imprecise, because the callee cannot tell the witnesses apart (accepts_fpGreedy_call_C_C_skip_of_satisfies).",
+      "Witness recovery is a property of one contract evaluation; whole-run completeness is R2c and its corollaries.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_fpGreedy_call_C_C_skip_of_satisfies",
+      "Toy.Monitor.existsFootprintComplete_not_imp_precise"
+    ]
+  },
+  {
+    "id": "R2c-satisfies-implies-satisfiesBy-for-witness-recovering-strategies",
+    "lean": "Toy.Monitor.satisfies_imp_satisfiesBy_of_recoversEveryWitness",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "If a strategy recovers every witness of every contract of the program, then a run that satisfies its contracts with some (angelically chosen) footprints also satisfies them with the strategy's footprints.",
+    "hypotheses": [
+      {
+        "name": "hc : \u2200 A \u2208 p.contracts, RecoversEveryWitness s A",
+        "purpose": "Every footprint choice must be the forced one.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.fpGreedy_rejects_satisfying_run_imprecise_contract"
+      },
+      {
+        "name": "hsat : Satisfies p h O",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.read_unowned_rejected_and_unsatisfied"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fpAtom, progNV (atomic contracts, whose witnesses fpAtom recovers), Satisfies progNV hOne [0].",
+    "nonvacuity_witness_lean": "Toy.Monitor.satisfies_imp_satisfiesBy_of_recoversEveryWitness_nonvacuous",
+    "non_claims": [
+      "Requires witness recovery for every contract occurring in the program, postconditions included.",
+      "Sufficient, not necessary: call C C skip is handled by the greedy monitor although greedy does not recover every witness of C (accepts_fpGreedy_call_C_C_skip_of_satisfies).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_fpGreedy_call_C_C_skip_of_satisfies"
+    ]
+  },
+  {
+    "id": "R2-greedy-monitor-complete-for-disjPrecise-contracts",
+    "lean": "Toy.Monitor.accepts_fpGreedy_of_satisfies_of_disjPrecise",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Composition of R2a, R2c and R1prime. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "If every contract of the program is disjunction-precise, the greedy monitor, under any configuration, accepts every run that satisfies its contracts.",
+    "hypotheses": [
+      {
+        "name": "hdp : \u2200 A \u2208 p.contracts, DisjPrecise A",
+        "purpose": "Greedy committed choice must not be able to pick a wrong footprint.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Monitor.fpGreedy_rejects_satisfying_run_imprecise_contract",
+          "Toy.Monitor.fpGreedy_rejects_satisfying_run_precise_not_disjPrecise"
+        ]
+      },
+      {
+        "name": "hsat : Satisfies p h O",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.read_unowned_rejected_and_unsatisfied"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "progOr = call (pointsTo 0 0 or pointsTo 0 1) (pointsTo 0 1) (write 0 1) from the one-byte heap holding 0.",
+    "nonvacuity_witness_lean": "Toy.Monitor.accepts_fpGreedy_of_satisfies_of_disjPrecise_nonvacuous",
+    "non_claims": [
+      "Precision of the whole contract is not enough (C').",
+      "Sufficient, not necessary, for a fixed program (accepts_fpGreedy_call_C_C_skip_of_satisfies).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Michael Sammler, Rodolphe Lepigre, Robbert Krebbers, Kayvan Memarian, Derek Dreyer, Deepak Garg, 'RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types', PLDI 2021, pp. 158-174, doi:10.1145/3453483.3454036 - cited by Fulminate Sec. 2.4.2 as precedent for guarded clauses replacing general disjunction (the paper itself was not examined)."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_fpGreedy_call_C_C_skip_of_satisfies"
+    ]
+  },
+  {
+    "id": "R2-search-monitor-complete-for-precise-contracts",
+    "lean": "Toy.Monitor.accepts_fpSearch_of_satisfies_of_precise",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Composition of R2b, R2c and R1prime. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "If every contract of the program is precise, the backtracking monitor, under any configuration, accepts every run that satisfies its contracts.",
+    "hypotheses": [
+      {
+        "name": "hp : \u2200 A \u2208 p.contracts, Precise A",
+        "purpose": "With an imprecise contract the single online choice may be wrong.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.fpSearch_rejects_satisfying_run_imprecise_contract"
+      },
+      {
+        "name": "hsat : Satisfies p h O",
+        "purpose": "The premise.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.read_unowned_rejected_and_unsatisfied"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "runP = call C' C' skip from hTwo owning {0, 1}.",
+    "nonvacuity_witness_lean": "Toy.Monitor.accepts_fpSearch_of_satisfies_of_precise_nonvacuous",
+    "non_claims": [
+      "No cost bound.",
+      "Sufficient, not necessary, for a fixed program: call C C skip has only imprecise contracts, yet the strict search monitor accepts exactly its satisfying runs (accepts_strict_fpSearch_iff_satisfies_call_C_C_skip).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_strict_fpSearch_iff_satisfies_call_C_C_skip"
+    ]
+  },
+  {
+    "id": "R2-greedy-characterization",
+    "lean": "Toy.Monitor.accepts_strict_fpGreedy_iff_satisfies_of_disjPrecise",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Combines soundness (R1, R1a) and completeness (R2a, R2c, R1prime). Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For programs whose contracts are all disjunction-precise, the strict greedy monitor (leak check on, unannotated callees checked) accepts a run if and only if the run satisfies its contracts.",
+    "hypotheses": [
+      {
+        "name": "hdp : \u2200 A \u2208 p.contracts, DisjPrecise A",
+        "purpose": "Needed only for the 'if' direction; 'only if' holds for all contracts.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Monitor.fpGreedy_rejects_satisfying_run_imprecise_contract",
+          "Toy.Monitor.fpGreedy_rejects_satisfying_run_precise_not_disjPrecise"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "progOr (disjunctive precondition) from the one-byte heap.",
+    "nonvacuity_witness_lean": "Toy.Monitor.accepts_fpGreedy_of_satisfies_of_disjPrecise_nonvacuous",
+    "non_claims": [
+      "The equivalence is per run; it is not a statement that the program is correct on all inputs.",
+      "DisjPrecise cannot be weakened to Precise: runP's contracts are the precise but not disjunction-precise C', runP satisfies them, and the strict greedy monitor rejects it (fpGreedy_rejects_satisfying_run_precise_not_disjPrecise).",
+      "Sufficient, not necessary, for a fixed program: call C C skip has only imprecise contracts, yet the greedy monitor accepts every satisfying run of it (accepts_fpGreedy_call_C_C_skip_of_satisfies) and, by R1, accepts only satisfying runs.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2.",
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_fpGreedy_call_C_C_skip_of_satisfies"
+    ]
+  },
+  {
+    "id": "R2-search-characterization",
+    "lean": "Toy.Monitor.accepts_strict_fpSearch_iff_satisfies_of_precise",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Combines R1, R1b, R2b, R2c, R1prime. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For programs whose contracts are all precise, the strict backtracking monitor accepts a run if and only if the run satisfies its contracts.",
+    "hypotheses": [
+      {
+        "name": "hp : \u2200 A \u2208 p.contracts, Precise A",
+        "purpose": "Needed only for the 'if' direction.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.fpSearch_rejects_satisfying_run_imprecise_contract"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "runP from hTwo.",
+    "nonvacuity_witness_lean": "Toy.Monitor.accepts_fpSearch_of_satisfies_of_precise_nonvacuous",
+    "non_claims": [
+      "The equivalence is per run.",
+      "Sufficient, not necessary, for a fixed program: call C C skip has only imprecise contracts, yet the strict search monitor accepts a run of it if and only if the run satisfies its contracts (accepts_strict_fpSearch_iff_satisfies_call_C_C_skip).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_strict_fpSearch_iff_satisfies_call_C_C_skip"
+    ]
+  },
+  {
+    "id": "R2-owned0-or-owned1-defeats-every-sound-online-strategy",
+    "lean": "Toy.Monitor.owned0_or_owned1_no_sound_strategy_accepts_both",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: imprecise assertions let different splittings be chosen at different times (O'Hearn-Yang-Reynolds Sec. 6), and evaluators must undo choices for disjunction (Nguyen et al.). Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "For the imprecise contract owned 0 or owned 1, the run whose callee reads byte 0 and the run whose callee reads byte 1 both satisfy their contracts from the same heap and ownership, yet no sound footprint strategy - under any monitor configuration - gets both accepted, because the footprint is chosen at call time from the contract and the caller's fragment alone.",
+    "hypotheses": [
+      {
+        "name": "StrategySound s",
+        "purpose": "An unsound strategy can transfer both bytes and accept both runs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Monitor.owned0_or_owned1_unsound_strategy_accepts_both"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "fpGreedy is a sound strategy that handles disjunction (it returns [0] for owned 0 or owned 1 here); both runs satisfy their contracts.",
+    "nonvacuity_witness_lean": "Toy.Monitor.owned0_or_owned1_no_sound_strategy_accepts_both_nonvacuous",
+    "positive_control_lean": "Toy.Monitor.owned0_or_owned1_each_run_accepted_by_some_strategy",
+    "non_claims": [
+      "Shown for one concrete contract and one pair of runs; the general statement 'every imprecise contract defeats every sound strategy on some pair of runs' is not stated and is false at the level of single programs: the greedy monitor accepts every satisfying run of call C C skip (accepts_fpGreedy_call_C_C_skip_of_satisfies). Only the per-evaluation analogue precise_of_recoversEveryWitness is general.",
+      "Positive control: swapping the quantifiers makes the conclusion fail - each run alone is accepted by some sound strategy (fpGreedy for the first, fpGreedyR for the second).",
+      "Escape hatches (each defeats the impossibility; none is formalized here): (1) restrict contracts to a precise fragment, e.g. guarded if-then-else clauses as in CN/RefinedC (R2a/R2b then give completeness); (2) let the strategy see more than the contract and the caller's fragment - the callee's code, a call-site or static annotation naming the intended witness, or lookahead; (3) defer the choice: transfer lazily on first access, or backtrack over executions (re-run the callee with the other footprint, in the spirit of Nguyen et al.'s undo of disjunct colouring); (4) weaken satisfaction from exact to intuitionistic/affine, where transferring both bytes satisfies owned 0 or owned 1 at the cost of the caller temporarily losing the unused byte.",
+      "Because both runs start from the same state with the call as first event, a strategy that also looked at the history before the call would not escape it.",
+      "Rejection is a false alarm, not unsoundness: by R1 nothing unsound is accepted.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'.",
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2.",
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Michael Sammler, Rodolphe Lepigre, Robbert Krebbers, Kayvan Memarian, Derek Dreyer, Deepak Garg, 'RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types', PLDI 2021, pp. 158-174, doi:10.1145/3453483.3454036 - cited by Fulminate Sec. 2.4.2 as precedent for guarded clauses replacing general disjunction (the paper itself was not examined)."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.accepts_fpGreedy_call_C_C_skip_of_satisfies",
+      "Toy.Monitor.precise_of_recoversEveryWitness"
+    ]
+  },
+  {
+    "id": "CE-precise-not-disjPrecise-greedy-false-alarm",
+    "lean": "Toy.Monitor.fpGreedy_rejects_satisfying_run_precise_not_disjPrecise",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Committed-choice evaluation without backtracking is known to be incomplete in general; this pins the gap between Precise and DisjPrecise with a concrete contract. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "The contract C' = ((owned 0 * owned 1) or owned 0) * owned 1 is precise but not disjunction-precise; greedy does not recover its witness, and the strict greedy monitor rejects the run call C' C' skip from two owned bytes although the run satisfies its contracts, while the backtracking monitor accepts it.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement about a concrete instance; it has no hypotheses and is its own witness.",
+    "nonvacuity_witness_lean": "Toy.Monitor.fpGreedy_rejects_satisfying_run_precise_not_disjPrecise",
+    "non_claims": [
+      "Does not show greedy fails for every precise contract outside DisjPrecise.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Huu Hai Nguyen, Viktor Kuncak, Wei-Ngan Chin, 'Runtime Checking for Separation Logic', VMCAI 2008, LNCS 4905, pp. 203-217, doi:10.1007/978-3-540-78163-9_19. Marks (colours) the objects in a formula's footprint, an attempt to mark an object twice makes the disjunct unsatisfiable; for F1 or F2 it evaluates F1 first and, if F1 fails, undoes F1's colouring and evaluates F2.",
+      "Peter W. O'Hearn, Hongseok Yang, John C. Reynolds, 'Separation and Information Hiding', POPL 2004, pp. 268-280, doi:10.1145/964001.964024. Defines: 'A predicate p is precise if and only if for all states (s,h), there is at most one subheap hp of h for which (s,hp) in p'. Sec. 6 ('A Conundrum') uses the imprecise precondition emp or x|->- and observes that with imprecise assertions 'different splittings can be chosen at different times'."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?"
+  },
+  {
+    "id": "R3-trusted-unannotated-callee-breaks-soundness",
+    "lean": "Toy.Monitor.trusted_unannot_write_outside_footprint_accepted",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Uninstrumented code can invalidate monitor verdicts; the prototype Miri tracker sidesteps this by checking inlined callees' accesses (source comment). Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "If unannotated callees are trusted rather than checked, the monitor (with a sound strategy and the leak check) accepts a run in which an unannotated helper of a callee that was given only owned 0 stores to byte 1, which its caller kept: byte 1 changes across a call whose footprint is [0], the confinement assumption fails, the contracts are violated, and the inline-checking monitor rejects the run.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement about a concrete instance; it has no hypotheses and is its own witness.",
+    "nonvacuity_witness_lean": "Toy.Monitor.trusted_unannot_write_outside_footprint_accepted",
+    "non_claims": [
+      "The inline-checking policy is sound (R1), and the trusted policy is sound under the confinement assumption (R1-trusted); this counterexample is only about trusting unconfined unannotated code.",
+      "Does not model unannotated code that is outside the instrumented program entirely (e.g. foreign code), beyond its heap effect.",
+      "Out-of-frame reads break the trusted policy too, not only out-of-frame writes such as the one here: an unannotated helper that reads a byte outside its frame leaves the heap unchanged, so a boundary check that only compares the heap before and after the call (such as the integrity check attributed to Agten et al. below) passes, yet the run violates UnannotConfined and its contracts, the monitor trusting unannotated callees accepts it, and the strict monitor rejects it (trusted_unannot_read_outside_footprint_accepted_heap_unchanged).",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Prototype ownership tracking in Miri: repository JoJoDeveloping/miri, branch 'fulminate', commit a33a3c076f10bd42c742ca9eec9c30ed1d0166af (author Johannes Hostert, 2025-08-18; src/ownership/mod.rs, src/ownership/fraction.rs). One map per annotated frame from bytes (and allocation block tokens) to dyadic fractions; writes require the full fraction, reads a nonzero one; owned transfers a full fraction between the top annotated frame and its parent (into the child in preconditions, into the parent in postconditions; the partial-split variant is marked #[allow(unused)]); source comment: 'If non-ownership-annotated funcs are called, we treat it as if they were inlined', i.e. they run in the topmost annotated frame with access checks still active; when an annotated frame is popped (on_stack_pop) every remaining entry is inserted into the parent frame (no check that the popped frame is empty is made there). compiler-team #942 links this prototype directly: its section 'Fulminate' states that Johannes Hostert 'has already implemented a prototype runtime ownership tracker in Miri' and links https://github.com/JoJoDeveloping/miri/tree/fulminate, and its sections 'Examples', 'Semantics of owned and alloc_block' and 'Miri implementation' link example_dream.rs at commit a33a3c076f10bd42c742ca9eec9c30ed1d0166af (in 'Miri implementation' as a 'prototype ownership checker for contracts in Miri'; in 'Examples' at line 155). That commit was the head of branch 'fulminate' when checked (2026-11-20), so the source summarized here is the revision #942 links; #942 links example_dream.rs, not src/ownership/ itself, and none of the comments on #942 links the prototype.",
+      "Pieter Agten, Bart Jacobs, Frank Piessens, 'Sound Modular Verification of C Code Executing in an Unverified Context', POPL 2015, pp. 581-594, doi:10.1145/2676726.2676972 - as summarized in Fulminate Sec. 6: runtime checking of separation-logic contracts at module boundaries, with an integrity check that the untrusted context has not mutated the module state; not fine-grained checks of all accesses (the paper itself was not examined).",
+      "rust-lang/compiler-team issue #942, 'Contracts: primitive ownership assertions: owned and alloc_block' (major change proposal by Dawid Lachowicz, opened 2025-11-10, closed as accepted 2025-11-22), https://github.com/rust-lang/compiler-team/issues/942. Proposes Fulminate-inspired owned/alloc_block assertions for Rust contracts: owned 'asserts exclusive ownership of memory pointed at by some raw pointer'; asserting a resource in a precondition consumes it and in a postcondition gives it back; read-only permissions are 'an open question and out of scope of this proposal'; runtime ownership tracking is left to interpreters, and the proposal mentions that a prototype runtime ownership tracker exists in Miri. The seconding comment notes that the compiler-team ask is only the addition of some intrinsics, with design decisions left to the owners of the contracts experiment; further progress is tracked in rust-lang/rust#149213."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?",
+    "lean_names": [
+      "Toy.Monitor.trusted_unannot_read_outside_footprint_accepted_heap_unchanged"
+    ]
+  },
+  {
+    "id": "CE-no-leak-check-stale-depth-ownership",
+    "lean": "Toy.Monitor.noLeakCheck_later_callee_inherits_leaked_byte",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Consequence of identifying frames by call depth (as Fulminate's ghost state does) when leaks are not checked. Recorded search (2026-11-20): web searches for runtime checking of separation logic with ownership monitors, completeness, precise assertions, disjunction, online footprint choice and backtracking, gradual verification, and mechanized separation algebras; reading of Fulminate (full text), Nguyen-Kuncak-Chin (full text), O'Hearn-Yang-Reynolds (full text), compiler-team #942 (full text) and the Miri prototype source. No source examined states this result in this form or mechanizes it; the ideas are standard, hence T1 rather than T3.",
+    "plain_claim": "Without the leak check, in this depth-indexed monitor a byte leaked by one callee stays attributed to depth 1, and a later sibling callee at depth 1 that was given only owned 1 reads the leaked byte 0 and is accepted, although that call does not satisfy its contract even on its own.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement about a concrete instance; it has no hypotheses and is its own witness.",
+    "nonvacuity_witness_lean": "Toy.Monitor.noLeakCheck_later_callee_inherits_leaked_byte",
+    "non_claims": [
+      "Specific to depth-indexed attribution without a leak check. Three return policies should be distinguished: (i) exact postconditions with a leak check (this model; required for the exact Satisfies); (ii) affine postconditions, where unmentioned callee resources may be discarded and are then inaccessible to everyone (as in affine separation logic, e.g. the \\GC predicate of Separation Logic Foundations); (iii) the examined Miri prototype, which on frame pop inserts every remaining entry of the callee frame into the caller frame - the caller then holds ownership the postcondition did not state. Policies (ii) and (iii) are not modeled.",
+      "Not examined whether any implementation exhibits this.",
+      "Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim)."
+    ],
+    "prior_art": [
+      "Rini Banerjee, Kayvan Memarian, Dhruv Makwana, Christopher Pulte, Neel Krishnaswami, Peter Sewell, 'Fulminate: Testing CN Separation-Logic Specifications in C', Proc. ACM Program. Lang. 9(POPL), Article 43, 2025, doi:10.1145/3704879. Sec. 2.3: reified ghost state records the C stack depth owning each byte; at a call the precondition's resources must be mapped at the caller's depth and are moved to the current depth, postconditions move them back, and leak checking is optional; Sec. 4.5.3: memory accesses are (optionally) instrumented to check ownership at the current depth. Sec. 2.4.2: CN restricts classical separation logic (resource outputs computed from inputs; if-then-else with guarded clauses instead of general disjunction, 'similar to RefinedC') so that runtime checking can determine 'without backtracking' which clause applies. Sec. 3.4: Theorem 3.5 and Corollary 3.6 relate two dynamic semantics (resource passing and the ghost-state instrumentation: they bisimulate and fail under the same conditions); they do not relate a monitor to a declarative satisfaction relation. Sec. 4.6: generated code is placed in a single file and multiple-file compilation units are not handled at present; the paper does not discuss uninstrumented or unannotated callees.",
+      "Christopher Pulte, Dhruv C. Makwana, Thomas Sewell, Kayvan Memarian, Peter Sewell, Neel Krishnaswami, 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', Proc. ACM Program. Lang. 7(POPL), Article 1, 2023, doi:10.1145/3571194. Introduces CN, a separation-logic refinement type system for C (static verification); Fulminate tests specifications written in CN's specification language at run time. CN restricts specifications so that resources and logical variables can be inferred without backtracking: 'CN does not allow general disjunction in predicate definitions; instead predicate definitions are ordered lists of guarded cases' (Sec. 2.9); resource types use 'a conditional rather than a traditional disjunction to avoid backtracking during typechecking' (Sec. 4.1); and logical variables may be introduced only as outputs of resources, through resource-let-bindings such as let O = Owned<struct s>(p), because unrestricted quantifiers would allow imprecise specifications (Sec. 2.6, 2.12). Sec. 6 says this well-moded style of assertion 'should also be amenable to runtime checking (though we leave this to future work)'. The paper defines no runtime monitor.",
+      "Prototype ownership tracking in Miri: repository JoJoDeveloping/miri, branch 'fulminate', commit a33a3c076f10bd42c742ca9eec9c30ed1d0166af (author Johannes Hostert, 2025-08-18; src/ownership/mod.rs, src/ownership/fraction.rs). One map per annotated frame from bytes (and allocation block tokens) to dyadic fractions; writes require the full fraction, reads a nonzero one; owned transfers a full fraction between the top annotated frame and its parent (into the child in preconditions, into the parent in postconditions; the partial-split variant is marked #[allow(unused)]); source comment: 'If non-ownership-annotated funcs are called, we treat it as if they were inlined', i.e. they run in the topmost annotated frame with access checks still active; when an annotated frame is popped (on_stack_pop) every remaining entry is inserted into the parent frame (no check that the popped frame is empty is made there). compiler-team #942 links this prototype directly: its section 'Fulminate' states that Johannes Hostert 'has already implemented a prototype runtime ownership tracker in Miri' and links https://github.com/JoJoDeveloping/miri/tree/fulminate, and its sections 'Examples', 'Semantics of owned and alloc_block' and 'Miri implementation' link example_dream.rs at commit a33a3c076f10bd42c742ca9eec9c30ed1d0166af (in 'Miri implementation' as a 'prototype ownership checker for contracts in Miri'; in 'Examples' at line 155). That commit was the head of branch 'fulminate' when checked (2026-11-20), so the source summarized here is the revision #942 links; #942 links example_dream.rs, not src/ownership/ itself, and none of the comments on #942 links the prototype.",
+      "Arthur Chargueraud, 'Separation Logic Foundations', Software Foundations Vol. 6 (Coq), https://softwarefoundations.cis.upenn.edu - mechanized separation logic whose 'Affine' chapter generalizes the linear (exact) logic so that heap predicates may be discarded (the \\GC predicate), as needed for garbage-collected languages; this is the affine alternative to the exact postconditions enforced here by the leak check."
+    ],
+    "design_question": "Separation-logic ownership contracts (owned(p)-style pre/postconditions) can be monitored at run time by a per-byte ownership map with transfer on call/return. Which fragment of the contract language has a computational interpretation such that an accepted run really satisfied every contract as a separation-logic assertion, when is the monitor complete, and what does it assume about unannotated code?"
+  }
+]

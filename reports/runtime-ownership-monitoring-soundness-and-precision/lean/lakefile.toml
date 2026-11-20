@@ -1,0 +1,5 @@
+name = "toy-monitor"
+defaultTargets = ["ToyMonitor"]
+
+[[lean_lib]]
+name = "ToyMonitor"

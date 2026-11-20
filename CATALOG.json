@@ -62098,6 +62098,59 @@
         "verification/kinematic-root-and-servo-envelopes"
       ]
     },
+    "runtime-ownership-monitoring-soundness-and-precision": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704879"
+          },
+          "name": "Fulminate: Testing CN Separation-Logic Specifications in C"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571194"
+          },
+          "name": "CN: Verifying Systems C Code with Separation-Logic Refinement Types"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-78163-9_19"
+          },
+          "name": "Runtime Checking for Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964024"
+          },
+          "name": "Separation and Information Hiding"
+        },
+        {
+          "identity": {
+            "date": "2016-11-16",
+            "url": "https://isa-afp.org/entries/Separata.html"
+          },
+          "name": "Separata: Isabelle tactics for Separation Algebra (Archive of Formal Proofs)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/runtime-verification",
+        "verification/separation-logic",
+        "verification/precise-assertions",
+        "pl/ownership",
+        "pl/contracts"
+      ]
+    },
     "rupicola-bedrock2-dlet-cps-nlet-eq-and-sepreflection-normalizers": {
       "observed_at": "2026-11-19",
       "subjects": [
