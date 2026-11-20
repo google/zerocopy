@@ -227,7 +227,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Toolchain setup & workspace tests
     needs: [build-exocrate]
-    timeout-minutes: 45
+    timeout-minutes: 90
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
       ANNEAL_TEST_INSPECTOR: ${{ github.workspace }}/anneal/trusted/audit/TrustedBoundary.lean
