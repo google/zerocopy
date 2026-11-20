@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795203357908,
+  "lastUpdate": 1795211268724,
   "repoUrl": "https://github.com/google/zerocopy",
   "entries": {
     "Docker Image Size": [
@@ -24109,6 +24109,40 @@ window.BENCHMARK_DATA = {
           {
             "name": "Total CI Duration (All Steps)",
             "value": 1459,
+            "unit": "seconds"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joshlf@users.noreply.github.com",
+            "name": "Josh Liebow-Feeser",
+            "username": "joshlf"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": false,
+          "id": "7a3a28d2bd5a79d50447feb5990a2b664ec716ac",
+          "message": "[zerocopy] Split endian and sized-DST Kani proofs (#3981)\n\nTwo Kani proofs in `zerocopy` construct unnecessarily large CBMC SAT\ninstances:\n\n1. `layout::proofs::prove_dst_layout_pad_to_align_sized` generates an\n   arbitrary `DstLayout` via `any_valid_dst_layout` and discards the\n   `SizeInfo::SliceDst` variant with `kani::assume(false)`. Because\n   CBMC merges control-flow paths before solving rather than pruning\n   infeasible branches eagerly, it still bit-blasts the entire\n   `TrailingSliceLayout` minimum-size alignment formula into CNF. Add\n   `any_valid_sized_dst_layout` with the identical `SizeInfo::Sized`\n   bounds (`size <= DstLayout::MAX_SIZE` and\n   `Layout::from_size_align(size, align.get()).is_ok()`) and call it\n   directly from `prove_dst_layout_pad_to_align_sized`.\n\n2. `byteorder::tests::test_endian` inlines round-trip checks across all\n   12 unsigned, signed, and IEEE-754 floating-point byte-order types in\n   both native and non-native endianness into one harness, producing a\n   single >5 GiB CBMC goto-program. Keep the unified `#[test]` entry\n   point for `cargo test` and Miri, and split the `#[cfg(kani)]` proof\n   into `test_endian_unsigned`, `test_endian_signed`, and\n   `test_endian_float` sharing the same generic round-trip helper so\n   each family is verified in an independent smaller CBMC instance.\n\nAgent-authored-by: AI agent acting on joshlf's behalf",
+          "timestamp": "2026-11-20T20:06:49Z",
+          "tree_id": "4d512ddc46b974e5ae786e43e718b1409f9a6937",
+          "url": "https://github.com/google/zerocopy/commit/7a3a28d2bd5a79d50447feb5990a2b664ec716ac"
+        },
+        "date": 1795211266248,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "Test Time",
+            "value": 1641,
+            "unit": "seconds"
+          },
+          {
+            "name": "Total CI Duration (All Steps)",
+            "value": 1842,
             "unit": "seconds"
           }
         ]
