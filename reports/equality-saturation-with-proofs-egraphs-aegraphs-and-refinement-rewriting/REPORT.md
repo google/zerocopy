@@ -231,7 +231,7 @@ reduction using only `[propext, Quot.sound]`.
     FMCAD 2022 proof-length shortcutting ratios, and shared-DAG `let` vs. flat
     explanation byte sizes across depths `1..6`.
 - **Primary Upstream Sources:**
-  - `bytecodealliance/wasmtime` at `87282b8fd77fa9fbba6caadb0be690bedec2dc64`
+  - `bytecodealliance/wasmtime` at `68f6475eac03b53a863c3e9c83ec587265fc70a4`
     (`cranelift/codegen/src/egraph/{mod.rs,cost.rs,elaborate.rs}`).
   - `egraphs-good/egg` (`v0.11.0`, Willsey et al., POPL 2021
     `doi:10.1145/3434304`; Flatt et al., FMCAD 2022

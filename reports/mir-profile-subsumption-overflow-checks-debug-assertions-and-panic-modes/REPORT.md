@@ -85,7 +85,7 @@ linear-time structural diff checker `checkProfileSubsumption`**:
 This report applies to `rustc 1.99.1`
 (`58cf8f9c35b355199727627d07ae34a4e2846d67`), `Lean 4 v4.34.1`
 (`5045d0056413266e57c625dcd7c365b10e377c52`), and Anneal
-(`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) when certifying
+(`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`) when certifying
 multi-profile builds (`cargo anneal` vs. `cargo build --release`) across
 `overflow-checks`, `debug-assertions`, and `panic` modes.
 

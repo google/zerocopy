@@ -50,8 +50,8 @@
       "identity": {
         "doi": "10.1145/3434320",
         "publication": "PACMPL 5 (POPL 2021), Article 39",
-        "repository": "JeremieKoenig/compcerto",
-        "revision": "c28836773d2cf1146f3895d3282db3b9c87f0000"
+        "repository": "SJTU-PLV/CompCert",
+        "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
       }
     },
     {
@@ -73,7 +73,7 @@
       "name": "Vellvm Coq/Rocq formalization of LLVM IR",
       "identity": {
         "repository": "vellvm/vellvm",
-        "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+        "revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e"
       }
     },
     {
@@ -106,7 +106,7 @@
       "name": "regalloc2 register allocator and symbolic checker",
       "identity": {
         "repository": "bytecodealliance/regalloc2",
-        "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+        "revision": "2fe490bc9dda433f70c54f90f7633ed929f693d9",
         "version": "0.15.2"
       }
     },
@@ -115,7 +115,7 @@
       "identity": {
         "doi": "10.1145/3371126",
         "repository": "jasmin-lang/jasmin",
-        "revision": "6c4994d572112a6c3037c47a272f4cf4a09cb0f1"
+        "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
       }
     },
     {
@@ -138,7 +138,7 @@
       "identity": {
         "doi": "10.1145/3453483.3454039",
         "repository": "mit-plv/bedrock2",
-        "revision": "7cbf3ef1be3c4fa6be792371ab0ec79cf773bd7f"
+        "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
       }
     },
     {
@@ -153,8 +153,8 @@
       "name": "AWS s2n-bignum HOL Light cryptographic assembly verification suite",
       "identity": {
         "doi": "10.1007/978-3-031-65627-9_10",
-        "repository": "aws/s2n-bignum",
-        "revision": "6fb0e53d155eb9ceab82411220210fc2ff1b0120"
+        "repository": "awslabs/s2n-bignum",
+        "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
       }
     },
     {
@@ -162,7 +162,7 @@
       "identity": {
         "doi": "10.1007/s10817-016-9386-0",
         "repository": "acl2/acl2",
-        "revision": "9df88e94f63087e4bc7eb003497a38732a4cb120"
+        "revision": "2df7fd8b81f0f36964114b09007c17dc7f8d2d28"
       }
     },
     {

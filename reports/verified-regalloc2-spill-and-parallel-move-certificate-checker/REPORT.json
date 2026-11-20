@@ -24,7 +24,7 @@
       "name": "regalloc2 Ion register allocator, parallel-move resolver, and symbolic dataflow checker",
       "identity": {
         "repository": "bytecodealliance/regalloc2",
-        "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+        "revision": "2fe490bc9dda433f70c54f90f7633ed929f693d9",
         "version": "0.15.2"
       }
     },

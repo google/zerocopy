@@ -33,7 +33,7 @@
       "name": "Lean 4 v4.34.1 theorem-checking kernel and Anneal MIR verification infrastructure",
       "identity": {
         "anneal_repository": "joshlf/anneal",
-        "anneal_revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7",
+        "anneal_revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a",
         "lean_repository": "leanprover/lean4",
         "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
         "lean_version": "v4.34.1"

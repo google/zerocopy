@@ -304,7 +304,7 @@
         "theory/Anneal"
       ],
       "normative_sources": [
-        "joshlf/anneal@7abf0691c404",
+        "joshlf/anneal@d4ca2c861f66",
         "leanprover/lean4@5045d0056413"
       ],
       "topic_queries": [
@@ -1260,7 +1260,7 @@
         "trusted/audit"
       ],
       "normative_sources": [
-        "joshlf/anneal@7abf0691c404",
+        "joshlf/anneal@d4ca2c861f66",
         "rust-lang/rust@58cf8f9c35b3"
       ],
       "topic_queries": [

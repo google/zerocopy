@@ -28,7 +28,7 @@ In `bidirectional-mir-minissa-refinement-and-anneal-vc-transport` and `anneal-sp
 - **Extends:** `bidirectional-mir-minissa-refinement-and-anneal-vc-transport`, `anneal-spec-minissa-normalization-and-proof-compression`, `observable-behavior-property-transfer-and-anneal-statement-forms`
 - **Subjects:**
   - **Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`)**: Kernel typechecker (`-DElab.async=false -Ddebug.skipKernelTC=false`).
-  - **Anneal (`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`)**: `Trusted.VerificationResult`, `Trusted.StatefulVerificationResult`, `runCfgSteps`, and `#[anneal_spec]` loop/recursion verification workflow.
+  - **Anneal (`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`)**: `Trusted.VerificationResult`, `Trusted.StatefulVerificationResult`, `runCfgSteps`, and `#[anneal_spec]` loop/recursion verification workflow.
   - **Rust Compiler (`rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67`, `1.99.1`)**: `Runtime(PostCleanup)` MIR loop control-flow graphs (`SwitchInt`, backedge `Goto`, `StorageLive`/`StorageDead`) and recursive `Call` terminators.
 
 ## Findings

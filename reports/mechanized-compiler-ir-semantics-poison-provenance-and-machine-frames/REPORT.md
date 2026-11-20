@@ -242,7 +242,7 @@ flat `Asm` stack frame are strictly disjoint (`slotByteOffset s1 + 8 ≤ slotByt
   - `byte_load_preserves_field_across_uninit_padding` (lines 147–150),
   - `mach_to_asm_frame_isolation` (lines 169–209).
 - **Primary Upstream Repositories Inspected:**
-  - `vellvm/vellvm` at `506f1eb0be542611521985719b971fbce8498dc9` (`src/coq/Semantics/`
+  - `vellvm/vellvm` at `0d6d403b8d411cacdace3dba0ccfd2b41b811b1e` (`src/coq/Semantics/`
     for `uvalue`/`dvalue`, `SByte`, and `freeze`).
   - `AliveToolkit/alive2` at `adacbd5180ccf95075e9867c4f0c259f59c9fef2` (`ir/memory.cpp`,
     `ir/value.cpp` for 8-bit `Byte` and `freeze` encodings).
@@ -250,7 +250,7 @@ flat `Asm` stack frame are strictly disjoint (`slotByteOffset s1 + 8 ≤ slotByt
     `SSA/Projects/InstCombine/`, `SSA/Projects/LLVMRiscV/`) and
     `opencompl/riscv-lean` at `7c6b500c1744f40d928fb131125cd06edf9f4fce`.
   - `BasisResearch/ship-your-interpreter` at `fb07094cff916318c34b07494a7d739f1e53989b`.
-  - `bytecodealliance/wasmtime` at `87282b8fd77fa9fbba6caadb0be690bedec2dc64`
+  - `bytecodealliance/wasmtime` at `68f6475eac03b53a863c3e9c83ec587265fc70a4`
     (`cranelift/frontend/src/ssa.rs`, `cranelift/codegen/src/ir/`).
   - `rust-lang/rust` at `58cf8f9c35b355199727627d07ae34a4e2846d67` (Rust `1.99.1`).
 

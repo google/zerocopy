@@ -16,7 +16,7 @@ canonical verification and code-generation baseline:
    (`rust-lang/fls` tag `1.99`, commit
    `946eacae5a4a33a89af7832178504692439e7478`) and matches the `Runtime(PostCleanup)`
    MIR semantics mechanized in `joshlf/anneal`
-   (`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`). It includes the point-release
+   (`d4ca2c861f664f200b69cdced9f6af38b5b1175a`). It includes the point-release
    fix for the x86-64 FFI `bool` return-value miscompilation
    (`rust-lang/rust#163911`) while avoiding the unindexed `ProjectionElem::PhantomDeref`
    MIR variant (`rust-lang/rust#159103`) and the x86 `"Rust"` calling-convention

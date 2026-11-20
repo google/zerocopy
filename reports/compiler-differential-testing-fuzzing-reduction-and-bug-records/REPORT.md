@@ -19,7 +19,7 @@ Building a high-yield differential-testing and fuzzing pipeline for a verified `
   - `rust-lang/rust` @ `58cf8f9c35b355199727627d07ae34a4e2846d67` (`rustc 1.99.1`, `tests/crashes` with 179 ICE reproducers, `compiler/rustc_codegen_gcc/build_system/src/fuzz.rs`, `compiler/rustc_codegen_cranelift/build_system/abi_cafe.rs`).
   - `rust-lang/rust` @ `3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1` (`rustc 1.102.0-nightly` with `rustc-codegen-cranelift-preview`).
   - `Miri` @ `5c543b0b8c73c7b72bc8284ced4fb22ead15734d` (`1.101.0-nightly`).
-  - `minirust/minirust` @ `24c9dfceab29a2eb1f3bc55c92b02ef7e8e9d733`.
+  - `minirust/minirust` @ `063d784186d3252bee242217f218223205c0b568`.
 - **Extends**:
   - `minirust-source-lowering-miri-differential-and-open-contract-boundaries` (MiniRust vs. Miri operational semantics and open contract boundaries).
   - `anneal-vacuity-mutation-oracles-and-verification-scaling` (specification vacuity, mutation oracles, and negative attribution).

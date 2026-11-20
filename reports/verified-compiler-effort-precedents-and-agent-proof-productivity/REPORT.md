@@ -304,7 +304,7 @@ gates:
   - Zhao et al., "Formalizing the LLVM Intermediate Representation for Verified
     Program Transformations," *POPL* 2012, and Zakowski et al., "Modular,
     Compositional, and Executable Formal Semantics for LLVM IR," *ICFP* 2021
-    (`vellvm/vellvm` `506f1eb0be542611521985719b971fbce8498dc9`).
+    (`vellvm/vellvm` `0d6d403b8d411cacdace3dba0ccfd2b41b811b1e`).
   - Kang et al., "Crellvm: Verified Credible Compilation for LLVM," *PLDI* 2018,
     DOI `10.1145/3192366.3192377` (`snu-sf/crellvm`
     `668249b88756233f96b3ef21f12993501a348afc`).
@@ -315,10 +315,10 @@ gates:
     Instruction Selection," *ASPLOS* 2024, DOI `10.1145/3620665.3640369`
     (Cranelift ISLE / Crocus, `bytecodealliance/wasmtime`
     `83166ba31317afbe1574186798f4db17cd641ab4`, `bytecodealliance/regalloc2`
-    `969bad6297dfca4db2db4eeefebba6c1ebafcf27`).
+    `2fe490bc9dda433f70c54f90f7633ed929f693d9`).
   - Almeida et al., "Jasmin: High-Assurance and High-Speed Cryptography," *CCS*
     2017 / *POPL* 2020, DOI `10.1145/3371126` (`jasmin-lang/jasmin`
-    `6c4994d572112a6c3037c47a272f4cf4a09cb0f1`).
+    `34f15840f10625bbc2cbf59b3d877e94c75bfbd9`).
   - Bond et al., "Vale: Verifying High-Performance Cryptographic Assembly Code,"
     *USENIX Security* 2017, and Fromherz et al., *POPL* 2019
     (`project-everest/vale` `bbae0eb89143734363b14a77642dbf8dec36e288`).
@@ -327,16 +327,16 @@ gates:
     (`mit-plv/fiat-crypto` `b4ad623c6a5bde0c71169493963a308c612fce3f`), and
     Erbsen et al., "Integration Verification Across Software and Hardware for a
     Simple Embedded System," *PLDI* 2021, DOI `10.1145/3453483.3454039`
-    (`mit-plv/bedrock2` `7cbf3ef1be3c4fa6be792371ab0ec79cf773bd7f`).
+    (`mit-plv/bedrock2` `757f17c6083bf8d43b5293a0db545c8d0aa32a13`).
   - Sammler et al., "Islaris: Verification of Machine Code Against Authoritative
     ISA Semantics," *PLDI* 2022, DOI `10.1145/3519939.3523434`
     (`rems-project/islaris` `c978e10f50db5c40f0fdf113f5f76a779782c6f9`).
   - Harrison et al., "s2n-bignum: Verified Cryptographic Assembly for Production
     Systems," *CAV* 2024, DOI `10.1007/978-3-031-65627-9_10`
-    (`aws/s2n-bignum` `6fb0e53d155eb9ceab82411220210fc2ff1b0120`).
+    (`awslabs/s2n-bignum` `4d1356a7470663c752660a59375dc3a9ef548428`).
   - Goel, Hunt, Kaufmann, "Engineering a Formal, Executable x86 ISA Simulator
     for Software Verification," *JAR* 2017, DOI `10.1007/s10817-016-9386-0`
-    (`acl2/acl2` `9df88e94f63087e4bc7eb003497a38732a4cb120`).
+    (`acl2/acl2` `2df7fd8b81f0f36964114b09007c17dc7f8d2d28`).
   - Yang, Chen, Eide, Regehr, "Finding and Understanding Bugs in C Compilers,"
     *PLDI* 2011 (Csmith empirical study on CompCert).
 - **Support artifacts:**

@@ -22,7 +22,7 @@ Designing and benchmarking a **5-layer decoupled Lean `v4.34.1` theorem-dependen
 ## Applicability
 
 - **Extends:** `lean-environment-identity-imports-and-trust-admissions`, `anneal-trusted-boundary-audit-olean-stubbing-and-conservativity`, `compcert-sel4-everest-pass-composition-and-proof-maintenance`
-- **Subjects:** Evaluated on Lean 4 `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) and `v4.28.0-rc1` (`3b0f2862196c6a8af9eb0025ee650252694013dd`), `rust-lang/rust` `1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and `1.100.0` (`0ef1bc386059596dada8fb65b50425aab2ea637a`), and `joshlf/anneal` (`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`).
+- **Subjects:** Evaluated on Lean 4 `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) and `v4.28.0-rc1` (`3b0f2862196c6a8af9eb0025ee650252694013dd`), `rust-lang/rust` `1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and `1.100.0` (`0ef1bc386059596dada8fb65b50425aab2ea637a`), and `joshlf/anneal` (`d4ca2c861f664f200b69cdced9f6af38b5b1175a`).
 
 ## Findings
 

@@ -50,7 +50,7 @@
       "name": "Anneal trusted verification kernel interface, .olean boundary auditor, and MIR extractor",
       "identity": {
         "repository": "joshlf/anneal",
-        "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+        "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
       }
     },
     {

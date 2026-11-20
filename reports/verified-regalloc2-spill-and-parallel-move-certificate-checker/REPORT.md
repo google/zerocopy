@@ -17,7 +17,7 @@ A complete, self-contained, zero-`sorry`, zero-`native_decide` Lean `v4.34.1` (`
 - **Metadata:** Created: 2026-11-14 · Updated: 2026-11-14
 - **Subjects:**
   - `leanprover/lean4` at `5045d0056413266e57c625dcd7c365b10e377c52` (`v4.34.1`, standard `Init` prelude without Mathlib).
-  - `bytecodealliance/regalloc2` at `969bad6297dfca4db2db4eeefebba6c1ebafcf27` (`v0.15.2`, `src/checker.rs` symbolic checker and `src/ion/Moves.rs` parallel-move cycle resolver).
+  - `bytecodealliance/regalloc2` at `2fe490bc9dda433f70c54f90f7633ed929f693d9` (`v0.15.2`, `src/checker.rs` symbolic checker and `src/ion/Moves.rs` parallel-move cycle resolver).
   - `rust-lang/rust` at `58cf8f9c35b355199727627d07ae34a4e2846d67` (`rustc 1.99.1`, LLVM `23.1.1` `RAGreedy` and `PrologEpilogInserter`).
   - `AbsInt/CompCert` at `74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6` (`v3.18`, `backend/Allocproof.v` and `backend/Stackingproof.v`).
 

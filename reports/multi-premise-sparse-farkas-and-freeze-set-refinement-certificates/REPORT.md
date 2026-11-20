@@ -57,7 +57,7 @@ These findings apply to:
   `InstCombine`, `EarlyCSE`, and `GVN` operating over `nuw`/`nsw`, `poison`,
   and `freeze`.
 - **Anneal Trusted Boundary:** `joshlf/anneal` at
-  `7abf0691c404393e3e4fc26eb3d4094e3170b5c7` (`[propext, Quot.sound]` axiom
+  `d4ca2c861f664f200b69cdced9f6af38b5b1175a` (`[propext, Quot.sound]` axiom
   whitelist).
 
 ## Findings

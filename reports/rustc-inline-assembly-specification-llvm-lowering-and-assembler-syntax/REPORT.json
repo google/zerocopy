@@ -35,7 +35,7 @@
       "name": "The Rust Reference (inline-assembly chapter)",
       "identity": {
         "repository": "rust-lang/reference",
-        "revision": "b96ad7f37eb5fcab7bd2ffd8f9fb4c20fa07c86b"
+        "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
       }
     },
     {

@@ -27,7 +27,7 @@ In `type-validity-seeded-range-and-farkas-bounds-check-elimination`, linear Fark
 - **Subjects:**
   - **Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`)**: Kernel typechecker (`-DElab.async=false -Ddebug.skipKernelTC=false`).
   - **Rust Compiler (`rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67`, `1.99.1`)** and **LLVM (`rust-lang/llvm-project@1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`, `23.1.1`)**: Non-linear bounds-check survival in `InstCombine`, `SelectionDAG` `KnownBits`, and `ConstraintElimination`.
-  - **Anneal (`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`)**: `bitwiseAndBits` symbolic evaluation and `TrustedBoundary` axiom rules.
+  - **Anneal (`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`)**: `bitwiseAndBits` symbolic evaluation and `TrustedBoundary` axiom rules.
 
 ## Findings
 

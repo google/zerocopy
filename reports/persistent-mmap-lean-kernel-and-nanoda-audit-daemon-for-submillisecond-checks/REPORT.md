@@ -51,7 +51,7 @@ These findings apply to:
   `0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929` (`v0.4.32`, `#![forbid(unsafe_code)]`).
 - **Rust Toolchain & Anneal Boundary:** `rust-lang/rust` at
   `58cf8f9c35b355199727627d07ae34a4e2846d67` (`1.99.1`) and `joshlf/anneal` at
-  `7abf0691c404393e3e4fc26eb3d4094e3170b5c7`.
+  `d4ca2c861f664f200b69cdced9f6af38b5b1175a`.
 - **Relationship among subjects:** `anneal-audit-daemon` embeds both the
   Lean `v4.34.1` C++ kernel and the safe-Rust `nanoda_lib` checker behind a
   single incremental verification IPC protocol, requiring both engines and the

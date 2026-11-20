@@ -9,7 +9,7 @@
 /-!
 # Three-Tier Relational `freeze`-Set Refinement & Graduated `AEGraph` Certificates (`FreezeRefinement.lean`)
 
-Retires the blanket `isFreezeFree` syntactic block from Wave 5 (`X2`) by mechanizing:
+Retires the blanket `isFreezeFree` syntactic block from the prior baseline (`X2`) by mechanizing:
 1. **Oracle-Indexed Nondeterministic `freeze` Semantics (`evalFreezeOracle` & `refinesFreezeSet`):**
    Each dynamic evaluation of `.freeze siteId e` resolves `.poison` to `oracle siteId : Int`,
    modeling LLVM/MiniSSA's nondeterministic choice of an arbitrary concrete value per `freeze`

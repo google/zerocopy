@@ -140,7 +140,7 @@ def checkGradCert (c : GraduatedAEGraphCert) : Bool :=
   checkAEGraphGraduated s t c
 
 /-- Batch 3 (Obligations 56..75): 20 positive `freeze`-containing `AEGraph` rewrites that
-Wave 5 (`X2`) blocked via `isFreezeFree`, now accepted by `checkAEGraphGraduated`. -/
+The prior baseline (`X2`) blocked via `isFreezeFree`, now accepted by `checkAEGraphGraduated`. -/
 def checkBatch20FreezePos : Bool :=
   -- 1..5: Algebraic rewrites directly inside `.freeze site (...)`
   checkGradCert (.congFreeze 0 (.addZeroRight (.var 1))) &&

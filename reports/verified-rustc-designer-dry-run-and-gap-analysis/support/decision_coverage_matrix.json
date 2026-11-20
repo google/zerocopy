@@ -8,7 +8,7 @@
     "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
     "fls_tag": "1.99",
     "fls_revision": "946eacae5a4a33a89af7832178504692439e7478",
-    "anneal_revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7",
+    "anneal_revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a",
     "tier1_targets": [
       "x86_64-unknown-linux-gnu",
       "x86_64-pc-windows-msvc",
@@ -43,7 +43,7 @@
         31,
         35
       ],
-      "selected_architecture": "Pin Rust 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67) paired with bundled LLVM 23.1.1 (1b9c0d5ff9bbe7634aead059efe6b11a7eeba145), Ferrocene Language Specification tag 1.99 (946eacae5a4a33a89af7832178504692439e7478), Anneal (7abf0691c404393e3e4fc26eb3d4094e3170b5c7), and Lean 4 v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52, bundled Clang/LLD 22.1.4 at 35990504507d79e0b9deb809c8ee5e1b34ceef20) across all 8 Tier 1 targets (x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc, x86_64-pc-windows-gnu, aarch64-unknown-linux-gnu, aarch64-apple-darwin, aarch64-pc-windows-msvc, i686-unknown-linux-gnu, i686-pc-windows-msvc). Isolate the version-coupled rustc frontend adapter (.anneal-mir / CoreMIR exporter and automated target/intrinsic/TableGen extractors) from the version-invariant MiniSSA/MiniMach proof core via a 5-layer opaque interface firewall and a zero-sorryAx Soundness Quarantine registry so upgrading across rustc point/minor releases (1.98.1 -> 1.99.1 -> 1.100.0) invalidates <=17.6% of .olean modules and takes days of automated table regeneration.",
+      "selected_architecture": "Pin Rust 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67) paired with bundled LLVM 23.1.1 (1b9c0d5ff9bbe7634aead059efe6b11a7eeba145), Ferrocene Language Specification tag 1.99 (946eacae5a4a33a89af7832178504692439e7478), Anneal (d4ca2c861f664f200b69cdced9f6af38b5b1175a), and Lean 4 v4.34.1 (5045d0056413266e57c625dcd7c365b10e377c52, bundled Clang/LLD 22.1.4 at 35990504507d79e0b9deb809c8ee5e1b34ceef20) across all 8 Tier 1 targets (x86_64-unknown-linux-gnu, x86_64-pc-windows-msvc, x86_64-pc-windows-gnu, aarch64-unknown-linux-gnu, aarch64-apple-darwin, aarch64-pc-windows-msvc, i686-unknown-linux-gnu, i686-pc-windows-msvc). Isolate the version-coupled rustc frontend adapter (.anneal-mir / CoreMIR exporter and automated target/intrinsic/TableGen extractors) from the version-invariant MiniSSA/MiniMach proof core via a 5-layer opaque interface firewall and a zero-sorryAx Soundness Quarantine registry so upgrading across rustc point/minor releases (1.98.1 -> 1.99.1 -> 1.100.0) invalidates <=17.6% of .olean modules and takes days of automated table regeneration.",
       "quantitative_facts": [
         "Rust 1.99.1 includes the x86-64 FFI bool return-value miscompilation fix (rust-lang/rust#163911) while avoiding the unindexed ProjectionElem::PhantomDeref MIR change (#159103) and x86 Rust-ABI SSE register-passing shift (#161401) in 1.100.0.",
         "Sysroot compilation exercises 469 unstable #![feature(...)] gates across core, alloc, std, and compiler_builtins, making stable vs. nightly compiler surface identical for sysroot builds.",

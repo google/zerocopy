@@ -19,7 +19,7 @@
         "crates": "cranelift-isle, cranelift-codegen",
         "paths": "cranelift/isle/isle/src/{ast.rs,sema.rs,trie_again.rs,codegen.rs}, cranelift/codegen/src/egraph/{mod.rs,cost.rs,elaborate.rs}, cranelift/codegen/src/{opts.rs,inst_predicates.rs,ir/memflags.rs,prelude_opt.isle}, cranelift/codegen/src/opts/{README.md,arithmetic.isle,bitops.isle,shifts.isle}, cranelift/codegen/src/isa/{riscv64,aarch64,x64}/{lower.isle,inst.isle}",
         "repository": "bytecodealliance/wasmtime",
-        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "revision": "68f6475eac03b53a863c3e9c83ec587265fc70a4",
         "version": "0.132.0"
       }
     },
@@ -60,7 +60,7 @@
       "name": "Anneal verification framework",
       "identity": {
         "repository": "joshlf/anneal",
-        "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4f9c81"
+        "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
       }
     },
     {

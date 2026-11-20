@@ -9,7 +9,7 @@
 /-!
 # Arbitrary $k$-Premise, $m$-Variable Sparse Linear Farkas Certificates (`SparseFarkas.lean`)
 
-Generalizes Wave 5's `FarkasCert2` (fixed to 2 hypotheses over 2 variables `x, y`) to arbitrary
+Generalizes the prior baseline `FarkasCert2` (fixed to 2 hypotheses over 2 variables `x, y`) to arbitrary
 $k$-premise systems over $m$ variables (`SparseLinearLeZero` and `FarkasCertN`).
 Proves `checkFarkasCertN_sound` and `checkFarkasCertN_iff_valid` in Lean `v4.34.1` using only
 `[propext, Quot.sound]`, discharging multi-dimensional slice/subslice bounds (`a + i < len` from

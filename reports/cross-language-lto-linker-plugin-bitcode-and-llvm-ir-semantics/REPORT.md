@@ -31,7 +31,7 @@ The findings in this report apply to:
 
 - **`rust-lang/rust` (`1.99.1`, commit `58cf8f9c35b355199727627d07ae34a4e2846d67`)**: specifically `compiler/rustc_codegen_ssa/src/back/{write.rs, link.rs, linker.rs, lto.rs}`, `compiler/rustc_codegen_llvm/src/back/{write.rs, lto.rs}`, `compiler/rustc_session/src/{config.rs, options.rs}`, and `compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp`.
 - **`llvm/llvm-project` (`23.1.1`, commit `1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`)**: LLVM bitcode format (`LLVMBitCodes.h`), `Instruction.def` (63 opcodes), `FixedMetadataKinds.def` (41 metadata kinds), `ModuleSummaryIndex.h` (summary version 14), and `rust-lld` / `LLVMgold.so` ThinLTO linker plugin pipeline.
-- **Verified LLVM IR semantics and translation validators**: **Vellvm** (`vellvm/vellvm@506f1eb0be59291e3e6f6e624fb156a622e73a13`), **Alive2** (`AliveToolkit/alive2@adacbd516b7aa35cbac6c4498a779f0b3056da88`), and **Lean 4** (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`).
+- **Verified LLVM IR semantics and translation validators**: **Vellvm** (`vellvm/vellvm@0d6d403b8d411cacdace3dba0ccfd2b41b811b1e`), **Alive2** (`AliveToolkit/alive2@5d0eb277235b73f71000501c3a4f5ab9b2586915`), and **Lean 4** (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`).
 
 ## Findings
 

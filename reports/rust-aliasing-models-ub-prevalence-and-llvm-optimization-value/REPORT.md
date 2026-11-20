@@ -19,7 +19,7 @@ Evaluating Stacked Borrows (`SB`) and Tree Borrows (`TB`) under strict and permi
 - **Subjects and Scope:**
   - `rust-lang/rust` `1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`), specifically `compiler/rustc_codegen_llvm/src/abi.rs` and `compiler/rustc_middle/src/ty/layout.rs`.
   - `rust-lang/llvm-project` `23.1.1-rust-1.99.1-stable` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), specifically `BasicAliasAnalysis.cpp`, `LICM.cpp`, `GVN.cpp`, `DeadStoreElimination.cpp`, and `LoopVectorize.cpp`.
-  - `rust-lang/miri` `0.1.0` (`3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1`) under `-Zmiri-strict-provenance`, `-Zmiri-permissive-provenance`, `-Zmiri-tree-borrows -Zmiri-strict-provenance`, and `-Zmiri-tree-borrows -Zmiri-permissive-provenance`.
+  - `rust-lang/miri` `0.1.0` (`d0ba3b629c83077918288d36887a4bcd4ce1fed9`) under `-Zmiri-strict-provenance`, `-Zmiri-permissive-provenance`, `-Zmiri-tree-borrows -Zmiri-strict-provenance`, and `-Zmiri-tree-borrows -Zmiri-permissive-provenance`.
   - Five Tier 1 targets examined in the attribute ablation matrix: `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`, `i686-unknown-linux-gnu`, `x86_64-pc-windows-msvc`, and `aarch64-apple-darwin`.
 
 ## Findings

@@ -45,7 +45,7 @@
     {
       "name": "Fuchsia Starnix eBPF verifier (src/starnix/lib/ebpf)",
       "identity": {
-        "repository": "fuchsia/fuchsia",
+        "repository": "https://fuchsia.googlesource.com/fuchsia",
         "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
       }
     },

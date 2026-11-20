@@ -5,7 +5,7 @@
 Designing, verifying, and validating a drop-in replacement for **Rust 1.99.1**
 (`rust-lang/rust` `58cf8f9c35b355199727627d07ae34a4e2846d67`, bundled **LLVM
 23.1.1** at `1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`, **Anneal** at
-`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`, and **Lean 4 v4.34.1** at
+`d4ca2c861f664f200b69cdced9f6af38b5b1175a`, and **Lean 4 v4.34.1** at
 `5045d0056413266e57c625dcd7c365b10e377c52`) spans **17 architectural design
 areas** and **186 technical research questions**:
 
@@ -30,7 +30,7 @@ areas** and **186 technical research questions**:
    `compilers/verified-rustc` report packages** (alongside **67 foundational
    Anneal, MiniRust, and Lean 4 packages**, totaling **246 mapped packages**)
    across all 17 design areas. All **186 program research questions** (`114`
-   from Waves 0–4, `40` from Wave 5, and `32` from Wave 6 across `L1_`–`L8_`,
+   from earlier baseline studies, `40` from focused architecture studies, and `32` from follow-up empirical studies across `L1_`–`L8_`,
    `O1_`–`O8_`, `M1_`–`M8_`, and `K1_`–`K8_`) are **answered in full (`186`
    answered fully, `0` answered partly, `0` open)**, and the end-to-end designer
    dry run (`verified-rustc-designer-dry-run-and-gap-analysis`) confirms that
@@ -43,7 +43,7 @@ This map and question ledger apply to the **Rust 1.99.1** compiler and
 standard-library workspace (`58cf8f9c35b355199727627d07ae34a4e2846d67`), its
 **LLVM 23.1.1** backend (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), the
 **Lean 4 v4.34.1** proof kernel (`5045d0056413266e57c625dcd7c365b10e377c52`),
-the **Anneal** verification pipeline (`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`),
+the **Anneal** verification pipeline (`d4ca2c861f664f200b69cdced9f6af38b5b1175a`),
 and the eight Tier 1 targets (`x86_64-unknown-linux-gnu`,
 `x86_64-pc-windows-msvc`, `x86_64-pc-windows-gnu`, `aarch64-unknown-linux-gnu`,
 `aarch64-apple-darwin`, `aarch64-pc-windows-msvc`, `i686-unknown-linux-gnu`, and
@@ -96,7 +96,7 @@ repositories inspected alongside `rust-lang/rust` `1.99.1`.
 | `minirust/minirust` | `063d784186d3252bee242217f218223205c0b568` | 2026-11-06 | Mechanized-style operational semantics for MiniRust (`BasicMemory`, `TreeBorrows`, `StackedBorrows`, pointer provenance, and value representation transfers). |
 | `rust-lang/opsem-team` | `d462085814030cc5b21dfa0ce831dfc1619d69b1` | 2026-09-14 | Operational Semantics Team decisions and tracking issues on UB, provenance, and concurrency. |
 | `rust-lang/rfcs` | `7677feddd580f356f780cb7123aeda6a3708275a` | 2026-11-10 | Design RFCs (`v0` symbol mangling RFC 2603, inline `asm!` RFC 2873, `c_unwind` RFC 2945, Strict Provenance RFC 3559, Float Semantics RFC 3514). |
-| `joshlf/anneal` | `7abf0691c404393e3e4fc26eb3d4094e3170b5c7` | 2026-11-12 | `trusted/lean` MIR semantics, `Trusted.CrateTheorem`, `trusted/audit` `.olean` verifier, and `trusted/rustc-capture`. |
+| `joshlf/anneal` | `d4ca2c861f664f200b69cdced9f6af38b5b1175a` | 2026-11-12 | `trusted/lean` MIR semantics, `Trusted.CrateTheorem`, `trusted/audit` `.olean` verifier, and `trusted/rustc-capture`. |
 | `leanprover/lean4` | `5045d0056413266e57c625dcd7c365b10e377c52` (`v4.34.1`) | 2026-09-24 | Lean 4 kernel, `bv_decide`/`bv_omega` decision procedures, Lean-to-C compiler, and bundled LLVM `22.1.4` toolchain. |
 
 ### 3. Complete 17-Area Coverage Summary (`179` `compilers/verified-rustc` Packages, `186 / 186` Questions Answered)
@@ -109,7 +109,7 @@ replacement, mapping each area to its governing `rustc 1.99.1` crates, count of
 packages), and closed question counts (`186` answered in full, `0` partly
 answered, `0` open).
 
-| Area ID & Title | Governing `rustc 1.99.1` Crates | `verified-rustc` Packages (+ Foundational) | Answered (Full / Part) | Open Questions | Representative Wave 0–6 Architectural and Quantitative Findings |
+| Area ID & Title | Governing `rustc 1.99.1` Crates | `verified-rustc` Packages (+ Foundational) | Answered (Full / Part) | Open Questions | Representative Corpus Architectural and Quantitative Findings |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **1. `contract`** (1. Drop-In Compiler Contract, CLI/JSON Surfaces, Build Systems, Tooling, and Deviation Policy) | `rustc_driver`, `rustc_driver_impl`, `rustc_interface`, `rustc_session`, `rustc_errors`, `rustc_feature`, `rustc_lint` | 8 (+ 4) | 8 / 0 | 0 | [C7] Miri (20 rustc_private crates, -Zmiri-tree-borrows), rust-analyzer, proc-macro server ABI v2 (format version 10), and rustdoc --test-builder integration contracts; [K8_] Span-stripped MirItemKey with sideband StmtOrd Span tables (100% cache hit under 50-line comment shifts, 100% exact shifted diagnostic spans) and unified cargo anneal human/JSON/SARIF 2.1.0 diagnostic engine + 513-byte .anneal-repro minidumps |
 | **2. `end-to-end-theorem`** (2. End-to-End Compiler Correctness Theorem, Compositional Linking, Cross-Prover Soundness, and Five-Link Prototype) | `rustc_middle`, `rustc_codegen_ssa` | 10 (+ 8) | 10 / 0 | 0 | [O6_] Cross-DSO LinkWorldContract in Lean 4.34.1 proving duplicate vtable addresses across cdylib/dlopen boundaries, two-level DSO vtable+slot guarding (95% hit rate, +22.43% speedup), and CratePrivateTraitInOpenBinary unguarded devirtualization (+52.63% speedup); [O7_] Tarjan SCC greatest-fixpoint certificates (SccGfpCert for nounwind/memory effects) and 2D lexicographic Farkas ranking certificates (SccRankingCert for willreturn) proving 26/26 bounded mutually recursive functions where LLVM proves 0/26 (339.46x caller DCE/LICM speedup) |

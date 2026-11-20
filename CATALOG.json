@@ -15917,7 +15917,7 @@
         {
           "identity": {
             "repository": "minirust/minirust",
-            "revision": "24c9dfceab29a2eb1f3bc55c92b02ef7e8e9d733"
+            "revision": "063d784186d3252bee242217f218223205c0b568"
           },
           "name": "MiniRust"
         }
@@ -16670,7 +16670,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted-boundary .olean auditor"
         }
@@ -18772,7 +18772,7 @@
           "identity": {
             "crate_sha256": "b5aba8db14291edd000dfcc4d620c7ebfb122c613afb886ca8803fa4e128a20a",
             "repository": "rust-lang/libc",
-            "revision": "333bf0394a696c4514e0f200fa9fa461487791b8",
+            "revision": "bb5944c67d6f7f3ead944120ec30561731b427de",
             "version": "0.2.169"
           },
           "name": "libc crate (Platform C FFI declarations)"
@@ -18937,7 +18937,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal MIR and Lean 4 verification toolchain"
         }
@@ -19071,14 +19071,14 @@
         {
           "identity": {
             "repository": "vellvm/vellvm",
-            "revision": "506f1eb0be59291e3e6f6e624fb156a622e73a13"
+            "revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e"
           },
           "name": "Vellvm verified LLVM IR semantics"
         },
         {
           "identity": {
             "repository": "AliveToolkit/alive2",
-            "revision": "adacbd516b7aa35cbac6c4498a779f0b3056da88"
+            "revision": "5d0eb277235b73f71000501c3a4f5ab9b2586915"
           },
           "name": "Alive2 LLVM translation validation engine"
         }
@@ -20014,7 +20014,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted verification boundary"
         }
@@ -20611,7 +20611,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted MIR verification boundary and refinement definitions"
         }
@@ -21863,7 +21863,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -24440,7 +24440,7 @@
             "crates": "cranelift-isle, cranelift-codegen",
             "paths": "cranelift/isle/isle/src/{ast.rs,sema.rs,trie_again.rs,codegen.rs}, cranelift/codegen/src/egraph/{mod.rs,cost.rs,elaborate.rs}, cranelift/codegen/src/{opts.rs,inst_predicates.rs,ir/memflags.rs,prelude_opt.isle}, cranelift/codegen/src/opts/{README.md,arithmetic.isle,bitops.isle,shifts.isle}, cranelift/codegen/src/isa/{riscv64,aarch64,x64}/{lower.isle,inst.isle}",
             "repository": "bytecodealliance/wasmtime",
-            "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+            "revision": "68f6475eac03b53a863c3e9c83ec587265fc70a4",
             "version": "0.132.0"
           },
           "name": "Cranelift ISLE compiler and acyclic e-graph optimizer"
@@ -24481,7 +24481,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "c065b55a3a143ec3f6a4f9c8166bd9e6a4f9c81"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal verification framework"
         },
@@ -29408,7 +29408,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal MIR and Lean 4 verification toolchain"
         }
@@ -32142,7 +32142,7 @@
         {
           "identity": {
             "anneal_repository": "joshlf/anneal",
-            "anneal_revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7",
+            "anneal_revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a",
             "lean_repository": "leanprover/lean4",
             "lean_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
             "lean_version": "v4.34.1"
@@ -37240,7 +37240,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal two-stage boundary auditor and statement-correspondence checker (trusted/audit, trusted/lean)"
         }
@@ -40099,7 +40099,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted MIR verification boundary and refinement definitions"
         },
@@ -40772,7 +40772,7 @@
           "identity": {
             "inspected_revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e",
             "repository": "vellvm/vellvm",
-            "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+            "revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e"
           },
           "name": "Vellvm Coq/Rocq VIR semantics, byte-level poison memory (DTYPE_B), and nondeterministic freeze"
         },
@@ -40795,7 +40795,7 @@
           "identity": {
             "inspected_revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
             "repository": "opencompl/lean-mlir",
-            "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+            "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
           },
           "name": "lean-mlir (VeIR) LLVM dialect semantics and LLVMRiscV peephole refinement pipeline"
         },
@@ -40803,7 +40803,7 @@
           "identity": {
             "inspected_revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4",
             "repository": "seL4/graph-refine",
-            "revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+            "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4"
           },
           "name": "seL4 GraphLang binary translation validator and stack-slot scalarizer (graph-refine)"
         },
@@ -40851,7 +40851,7 @@
             "crate": "cranelift-frontend",
             "paths": "cranelift/frontend/src/ssa.rs",
             "repository": "bytecodealliance/wasmtime",
-            "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+            "revision": "68f6475eac03b53a863c3e9c83ec587265fc70a4",
             "version": "0.136.2"
           },
           "name": "Cranelift SSA construction frontend (SSABuilder)"
@@ -40928,7 +40928,7 @@
         {
           "identity": {
             "repository": "opencompl/lean-mlir",
-            "revision": "ae0dd933",
+            "revision": "ae0dd9332273e3e2c58f7e5fef63ca1709e7b67c",
             "tag": "ITP24",
             "venue": "ITP 2024"
           },
@@ -41022,7 +41022,7 @@
         },
         {
           "identity": {
-            "repository": "iris/simuliris",
+            "repository": "https://gitlab.mpi-sws.org/iris/simuliris",
             "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
             "url": "https://gitlab.mpi-sws.org/iris/simuliris"
           },
@@ -41151,15 +41151,15 @@
         },
         {
           "identity": {
-            "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+            "commit": "d4ca2c861f664f200b69cdced9f6af38b5b1175a",
             "kind": "git",
-            "ref": "skeleton",
-            "repo": "joshlf/anneal-private",
+            "ref": "main",
+            "repo": "joshlf/anneal",
             "role": "comparison",
             "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json).",
-            "url": "https://github.com/joshlf/anneal-private"
+            "url": "https://github.com/joshlf/anneal"
           },
-          "name": "joshlf/anneal-private"
+          "name": "joshlf/anneal"
         },
         {
           "identity": {
@@ -43399,7 +43399,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted MIR verification boundary and refinement definitions"
         }
@@ -44367,7 +44367,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -46066,7 +46066,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -48616,7 +48616,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal MIR specification and proof pipeline"
         }
@@ -48887,7 +48887,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -49889,7 +49889,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -57504,7 +57504,7 @@
         {
           "identity": {
             "repository": "rust-lang/miri",
-            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "revision": "d0ba3b629c83077918288d36887a4bcd4ce1fed9",
             "version": "0.1.0 (nightly-2026-09-30 / nightly-2026-11-12)"
           },
           "name": "Miri"
@@ -61266,7 +61266,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal Rust-to-Lean verification system"
         },
@@ -62408,7 +62408,7 @@
         {
           "identity": {
             "repository": "rust-lang/reference",
-            "revision": "b96ad7f37eb5fcab7bd2ffd8f9fb4c20fa07c86b"
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
           },
           "name": "The Rust Reference (inline-assembly chapter)"
         },
@@ -62724,7 +62724,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal Rust-to-Lean verification system"
         }
@@ -64188,7 +64188,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal Rust-to-Lean verification system"
         },
@@ -65349,7 +65349,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted verification boundary"
         }
@@ -67920,7 +67920,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal MIR specification and proof pipeline"
         }
@@ -70807,7 +70807,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal MIR and Lean 4 verification toolchain"
         }
@@ -73856,7 +73856,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal MIR and Lean 4 verification toolchain"
         }
@@ -74438,7 +74438,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted verification boundary"
         }
@@ -74725,7 +74725,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal cargo-anneal CLI and trusted verification boundary"
         }
@@ -74773,7 +74773,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -74820,7 +74820,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted kernel boundary and axiom auditor"
         }
@@ -76399,8 +76399,8 @@
           "identity": {
             "doi": "10.1145/3434320",
             "publication": "PACMPL 5 (POPL 2021), Article 39",
-            "repository": "JeremieKoenig/compcerto",
-            "revision": "c28836773d2cf1146f3895d3282db3b9c87f0000"
+            "repository": "SJTU-PLV/CompCert",
+            "revision": "e3d03ed822a7aaf452b7022c347187ed1efc1c12"
           },
           "name": "CompCertO compositional verified compiler"
         },
@@ -76422,7 +76422,7 @@
         {
           "identity": {
             "repository": "vellvm/vellvm",
-            "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+            "revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e"
           },
           "name": "Vellvm Coq/Rocq formalization of LLVM IR"
         },
@@ -76455,7 +76455,7 @@
         {
           "identity": {
             "repository": "bytecodealliance/regalloc2",
-            "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+            "revision": "2fe490bc9dda433f70c54f90f7633ed929f693d9",
             "version": "0.15.2"
           },
           "name": "regalloc2 register allocator and symbolic checker"
@@ -76464,7 +76464,7 @@
           "identity": {
             "doi": "10.1145/3371126",
             "repository": "jasmin-lang/jasmin",
-            "revision": "6c4994d572112a6c3037c47a272f4cf4a09cb0f1"
+            "revision": "34f15840f10625bbc2cbf59b3d877e94c75bfbd9"
           },
           "name": "Jasmin high-assurance cryptographic compiler"
         },
@@ -76487,7 +76487,7 @@
           "identity": {
             "doi": "10.1145/3453483.3454039",
             "repository": "mit-plv/bedrock2",
-            "revision": "7cbf3ef1be3c4fa6be792371ab0ec79cf773bd7f"
+            "revision": "757f17c6083bf8d43b5293a0db545c8d0aa32a13"
           },
           "name": "Bedrock2 verified low-level systems programming and compiler framework"
         },
@@ -76502,8 +76502,8 @@
         {
           "identity": {
             "doi": "10.1007/978-3-031-65627-9_10",
-            "repository": "aws/s2n-bignum",
-            "revision": "6fb0e53d155eb9ceab82411220210fc2ff1b0120"
+            "repository": "awslabs/s2n-bignum",
+            "revision": "4d1356a7470663c752660a59375dc3a9ef548428"
           },
           "name": "AWS s2n-bignum HOL Light cryptographic assembly verification suite"
         },
@@ -76511,7 +76511,7 @@
           "identity": {
             "doi": "10.1007/s10817-016-9386-0",
             "repository": "acl2/acl2",
-            "revision": "9df88e94f63087e4bc7eb003497a38732a4cb120"
+            "revision": "2df7fd8b81f0f36964114b09007c17dc7f8d2d28"
           },
           "name": "ACL2 x86isa machine-code model and verification books"
         },
@@ -76770,7 +76770,7 @@
         {
           "identity": {
             "repository": "bytecodealliance/regalloc2",
-            "revision": "969bad6297dfca4db2db4eeefebba6c1ebafcf27",
+            "revision": "2fe490bc9dda433f70c54f90f7633ed929f693d9",
             "version": "0.15.2"
           },
           "name": "regalloc2 Ion register allocator, parallel-move resolver, and symbolic dataflow checker"
@@ -77181,7 +77181,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal Rust-to-Lean verification system"
         },
@@ -77217,7 +77217,7 @@
         {
           "identity": {
             "repository": "AeneasVerif/aeneas",
-            "revision": "ca282ec2312a96f6a985a4d23a6636908564d23"
+            "revision": "0855ce1b8ed3958512b6c19de6bf3035b7acb552"
           },
           "name": "Aeneas LLBC-to-Lean pure functional translator"
         }
@@ -77274,7 +77274,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal trusted verification kernel interface, .olean boundary auditor, and MIR extractor"
         },
@@ -77337,7 +77337,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal Rust-to-Lean verification system"
         },
@@ -77436,7 +77436,7 @@
         {
           "identity": {
             "repository": "joshlf/anneal",
-            "revision": "7abf0691c404393e3e4fc26eb3d4094e3170b5c7"
+            "revision": "d4ca2c861f664f200b69cdced9f6af38b5b1175a"
           },
           "name": "Anneal Rust-to-Lean verification system"
         },
@@ -77539,7 +77539,7 @@
         },
         {
           "identity": {
-            "repository": "fuchsia/fuchsia",
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
             "revision": "823a15538f191b9dbd9ebafaa6ba23220b87d2e1"
           },
           "name": "Fuchsia Starnix eBPF verifier (src/starnix/lib/ebpf)"

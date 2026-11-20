@@ -31,7 +31,7 @@ The findings in this report apply to:
   - **Verus** (`verus-lang/verus@0141ebc6f14410dfc87fef1da57408578002eb7c`);
   - **Creusot** (`creusot-rs/creusot@c4e9770ac1371ac4274bfe02145266d315c2fb86`);
   - **Foundational VeriFast** (`verifast/verifast@0a83dba42db7ce0b445034ece98afe980e57dc`);
-  - **Anneal** (`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) and **Lean 4** (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`).
+  - **Anneal** (`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`) and **Lean 4** (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`).
 
 This report extends `rustbelt-refinedrust-verus-creusot-and-rust-ownership-verifiers` and `open-rust-library-certificate-closure-and-consumer-acceptance-protocols`.
 

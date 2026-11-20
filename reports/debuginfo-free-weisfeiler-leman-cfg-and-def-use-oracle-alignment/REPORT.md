@@ -18,7 +18,7 @@ The 3-level `AnchorKey` alignment protocol established in `oracle-hint-drift-ali
 ## Applicability
 
 - **Extends:** `oracle-hint-drift-alignment-and-fallback-resilience`, `untrusted-llvm-optimization-oracle-and-certificate-replay-architecture`, `llvm-oracle-guided-minissa-minimach-replay-prototype-and-parity`
-- **Subjects and Scope:** Evaluated on Lean `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`), `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`), bundled LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), and `joshlf/anneal` (`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`).
+- **Subjects and Scope:** Evaluated on Lean `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`), `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`), bundled LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), and `joshlf/anneal` (`d4ca2c861f664f200b69cdced9f6af38b5b1175a`).
 
 ## Findings
 

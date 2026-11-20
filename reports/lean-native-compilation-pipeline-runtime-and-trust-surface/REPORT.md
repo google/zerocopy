@@ -31,7 +31,7 @@ These findings govern:
 
 - **Lean 4 v4.34.1** (`leanprover/lean4` commit `5045d0056413266e57c625dcd7c365b10e377c52`), specifically the `Lean.Compiler.LCNF` compiler pipeline, `Lean.Compiler.IR` interpreter bridge, C++ runtime (`src/runtime/`, `include/lean/lean.h`), C++ kernel (`src/kernel/type_checker.cpp`), and `Lean.Meta.nativeEqTrue` (`src/Lean/Meta/Native.lean`).
 - **Lean 4 v4.34.1 official Linux `x86_64` toolchain archive** (`lean-4.34.1-linux.tar.zst`), including bundled `clang` and `ld.lld` `22.1.4` (`llvm/llvm-project` commit `35990504507d79e0b9deb809c8ee5e1b34ceef20`), `mimalloc v3.4.4`, `GMP 6.3.0`, `libuv v1.48.0`, `OpenSSL 3.6.0`, `CaDiCaL rel-2.1.2`, `leantar v0.1.20`, and the NixOS 18.03 glibc `2.26` stub sysroot.
-- **Anneal (`joshlf/anneal` commit `7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) and verified Rust compiler architectures** that either:
+- **Anneal (`joshlf/anneal` commit `d4ca2c861f664f200b69cdced9f6af38b5b1175a`) and verified Rust compiler architectures** that either:
   1. check proofs inside the Lean kernel (`Trusted.CrateTheorem`) while auditing `.olean` files with `trusted/audit`, or
   2. compile a verified translation-validation / proof-checking function (`check : Cert → Input → Bool`) to a standalone native binary via `lean --c` and `leanc`.
 

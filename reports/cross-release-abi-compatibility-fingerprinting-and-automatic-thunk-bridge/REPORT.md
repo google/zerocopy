@@ -2,7 +2,7 @@
 
 ## Summary
 
-In Wave 5 (`rustc-multi-release-mir-abi-drift-and-version-isolated-adapter` and
+In the prior baseline (`rustc-multi-release-mir-abi-drift-and-version-isolated-adapter` and
 `compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds`), upgrading
 `rustc` from `1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) to `1.100.0`
 (`0ef1bc386059596dada8fb65b50425aab2ea637a`) exposed a cross-release binary
@@ -11,7 +11,7 @@ calling convention—specifically `1.100.0` PR `#161583` on `i686` (`x86_32`),
 which moved up to three `f32`/`f64`/SIMD parameters from `[esp + disp]` stack
 slots into `XMM0..XMM2`, and `1.100.0`'s representation change from
 `PassMode::Cast { pad_i32: bool }` to `PassMode::Cast { pad_i32_count: u8 }`—the
-Wave 5 adapter invalidated and rebuilt `100.0%` of pre-compiled `.rlib` crates
+prior baseline adapter invalidated and rebuilt `100.0%` of pre-compiled `.rlib` crates
 for the affected target.
 
 Mechanizing **`PhysicalFnAbi`**, **`abiCompatEq` (`AbiCompatHash`)**, and
@@ -77,7 +77,7 @@ This report applies to `rustc 1.99.1`
 (`58cf8f9c35b355199727627d07ae34a4e2846d67`), `rustc 1.100.0`
 (`0ef1bc386059596dada8fb65b50425aab2ea637a`), `Lean 4 v4.34.1`
 (`5045d0056413266e57c625dcd7c365b10e377c52`), and Anneal
-(`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) when linking
+(`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`) when linking
 cached `.rlib` artifacts and Tier 3 `CompiledArtifactKey` proofs across
 compiler point releases.
 

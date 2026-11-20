@@ -24,7 +24,7 @@ This report specifies, prototypes, and mechanizes in Lean `v4.34.1` (`5045d00564
   - `rust-lang/rust` `1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`)
   - `rust-lang/llvm-project` `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`)
   - `leanprover/lean4` `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`)
-  - `joshlf/anneal` (`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`)
+  - `joshlf/anneal` (`d4ca2c861f664f200b69cdced9f6af38b5b1175a`)
 - **Targets and flags examined**: `x86_64-unknown-linux-gnu` with `-C opt-level=3`, `-C debuginfo=1`, `-Z debuginfo-for-profiling=yes`, and `-Z profile-sample-use=<path>` (note that on stable `rustc` 1.99.1, both `-Z debuginfo-for-profiling=yes` and `-Z profile-sample-use` are gated behind `RUSTC_BOOTSTRAP=1`).
 - **Relationship to other corpus packages**: Extends `mutation-resilient-polarity-safe-ir-portable-pgo`, `rustc-pgo-mechanics-heuristics-value-and-ir-portability`, and `value-profile-specialization-and-hybridtrace-guard-certificates`.
 

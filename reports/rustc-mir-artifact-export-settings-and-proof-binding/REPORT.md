@@ -27,7 +27,7 @@ serializes this complete standalone backend payload out of the box:
    outside the originating `rustc_public::run!` callback without also dumping the
    interner tables.
 3. Anneal's capture driver (`trusted/rustc-capture/src/lib.rs` in `joshlf/anneal`
-   @ `7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) captures `Runtime(PostCleanup)`
+   @ `d4ca2c861f664f200b69cdced9f6af38b5b1175a`) captures `Runtime(PostCleanup)`
    bodies (`mir_drops_elaborated_and_const_checked`), layouts, and obligations into
    Lean 4 modules, while `.rlib` archives built by `ArArchiveBuilder`
    (`compiler/rustc_codegen_ssa/src/back/archive.rs:545-580`) tolerate arbitrary
@@ -38,7 +38,7 @@ serializes this complete standalone backend payload out of the box:
 
 These findings apply to `rust-lang/rust` `1.99.1`
 (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and `joshlf/anneal`
-(`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) on `x86_64-unknown-linux-gnu` and
+(`d4ca2c861f664f200b69cdced9f6af38b5b1175a`) on `x86_64-unknown-linux-gnu` and
 across all Tier 1 targets for MIR phase selection, `.rmeta`/`.rlib` container
 layout, session-hash computation, and proof-to-artifact binding.
 

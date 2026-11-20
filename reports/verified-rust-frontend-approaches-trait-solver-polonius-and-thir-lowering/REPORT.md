@@ -27,7 +27,7 @@ The findings in this report apply to:
 
 - **`rust-lang/rust` (`1.99.1`, commit `58cf8f9c35b355199727627d07ae34a4e2846d67`)**: specifically the 78 workspace crates under `compiler/`, including `rustc_type_ir`, `rustc_next_trait_solver`, `rustc_pattern_analysis`, `rustc_trait_selection`, `rustc_hir_analysis`, `rustc_hir_typeck`, `rustc_middle` (`src/thir.rs`), `rustc_mir_build`, `rustc_borrowck`, and `rustc_polonius`.
 - **`leanprover/lean4` (`v4.34.1`, commit `5045d0056413266e57c625dcd7c365b10e377c52`)**: kernel environment used to check `support/VerifiedFrontendTraitPoloniusAndThirProbe.lean`.
-- **`joshlf/anneal` (`7abf0691c404393e3e4fc26eb3d4094e3170b5c7`)**, **`AeneasVerif/charon` (`cf02e3f228f97ee7be3a415be56989053063326d`)**, and **`AeneasVerif/aeneas` (`ca282ec2312a96f6a985a4d23a6636908564d23`)**: MIR/THIR capture boundaries and pure functional extraction pipelines.
+- **`joshlf/anneal` (`d4ca2c861f664f200b69cdced9f6af38b5b1175a`)**, **`AeneasVerif/charon` (`cf02e3f228f97ee7be3a415be56989053063326d`)**, and **`AeneasVerif/aeneas` (`0855ce1b8ed3958512b6c19de6bf3035b7acb552`)**: MIR/THIR capture boundaries and pure functional extraction pipelines.
 - **Normative and formal semantic specifications**: `rust-lang/reference` (`bcd62f35e8bf480ec5b0fa569b6d12ea5924030c`), `rust-lang/fls` tag `1.99` (`946eacae5a4a33a89af7832178504692439e7478`), and `minirust/minirust` (`063d784186d3252bee242217f218223205c0b568`).
 
 This package extends `rustc-name-resolution-local-item-identity-and-type-lowering` (which covers `rustc_resolve`, `DefId` vs. `DefPathHash`, and HIR type-alias lowering) and `verified-rust-compiler-architecture-self-hosting-and-certifying-bootstrap` (which covers the `Runtime(PostCleanup)` MIR-to-machine-code backend architecture).

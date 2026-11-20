@@ -69,7 +69,7 @@ syntax (`AsmParser.cpp`, `X86AsmParser.cpp`, `AArch64AsmParser.cpp`):
 
 This specification applies to **Rust 1.99.1** (`58cf8f9c35b355199727627d07ae34a4e2846d67`),
 **LLVM 23.1.1** (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), the **Rust
-Reference** (`b96ad7f37eb5fcab7bd2ffd8f9fb4c20fa07c86b`, `src/inline-assembly.md`),
+Reference** (`bcd62f35e8bf480ec5b0fa569b6d12ea5924030c`, `src/inline-assembly.md`),
 and **FLS 1.99** (`946eacae5a4a33a89af7832178504692439e7478`).
 
 ## Findings
@@ -232,7 +232,7 @@ Parsing the directive dispatch tables in LLVM `23.1.1`'s MC layer identifies:
   - `llvm/lib/MC/MCParser/AsmParser.cpp`, `llvm/lib/Target/X86/AsmParser/X86AsmParser.cpp`,
     `llvm/lib/Target/AArch64/AsmParser/AArch64AsmParser.cpp`.
 - **Normative specifications:**
-  - `rust-lang/reference` (`b96ad7f37eb5fcab7bd2ffd8f9fb4c20fa07c86b`), `src/inline-assembly.md`.
+  - `rust-lang/reference` (`bcd62f35e8bf480ec5b0fa569b6d12ea5924030c`), `src/inline-assembly.md`.
   - `rust-lang/fls` (`946eacae5a4a33a89af7832178504692439e7478`, tag `1.99`), `src/inline-assembly.rst`.
 - **Preserved support artifacts:**
   - `support/inline_asm_spec.json`: Complete extracted register classes,

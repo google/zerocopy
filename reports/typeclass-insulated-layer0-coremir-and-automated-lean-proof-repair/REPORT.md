@@ -2,7 +2,7 @@
 
 ## Summary
 
-In Wave 5 (`compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds`),
+In the prior baseline (`compiler-upgrade-soundness-quarantine-and-proof-invalidation-bounds`),
 factoring the Lean 4 compiler verification hierarchy into a 5-layer DAG
 (`Layer0_TrustedCore` $\to$ `Layer1_Adapter` $\to$ `Layer2_RuleFamily_01..52`
 $\to$ `Layer3_Target` $\to$ `Layer4_CrateTheorem`) bounded adapter, rule-family,
@@ -75,7 +75,7 @@ This report applies to `Lean 4 v4.34.1`
 (`5045d0056413266e57c625dcd7c365b10e377c52`), `rustc 1.99.1`
 (`58cf8f9c35b355199727627d07ae34a4e2846d67`), `rustc 1.100.0`
 (`0ef1bc386059596dada8fb65b50425aab2ea637a`), and Anneal
-(`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`) when structuring the
+(`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`) when structuring the
 `Layer 0`–`Layer 4` `.olean` module graph and maintaining `Layer 2` rule-family
 proofs across Rust edition and MIR evolutions.
 

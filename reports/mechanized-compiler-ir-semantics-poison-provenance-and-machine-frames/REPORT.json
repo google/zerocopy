@@ -66,7 +66,7 @@
       "identity": {
         "inspected_revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e",
         "repository": "vellvm/vellvm",
-        "revision": "506f1eb0be542611521985719b971fbce8498dc9"
+        "revision": "0d6d403b8d411cacdace3dba0ccfd2b41b811b1e"
       }
     },
     {
@@ -89,7 +89,7 @@
       "identity": {
         "inspected_revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
         "repository": "opencompl/lean-mlir",
-        "revision": "b8c4a77131919c8e18cf8bc7fdde40ef3cf87924"
+        "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8"
       }
     },
     {
@@ -97,7 +97,7 @@
       "identity": {
         "inspected_revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4",
         "repository": "seL4/graph-refine",
-        "revision": "94c93d18830d680fc6732d21fb16ca58ebca9dc5"
+        "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4"
       }
     },
     {
@@ -145,7 +145,7 @@
         "crate": "cranelift-frontend",
         "paths": "cranelift/frontend/src/ssa.rs",
         "repository": "bytecodealliance/wasmtime",
-        "revision": "87282b8fd77fa9fbba6caadb0be690bedec2dc64",
+        "revision": "68f6475eac03b53a863c3e9c83ec587265fc70a4",
         "version": "0.136.2"
       }
     },
@@ -222,7 +222,7 @@
       "name": "Lean-MLIR SSA dialect semantics and peephole verification framework",
       "identity": {
         "repository": "opencompl/lean-mlir",
-        "revision": "ae0dd933",
+        "revision": "ae0dd9332273e3e2c58f7e5fef63ca1709e7b67c",
         "tag": "ITP24",
         "venue": "ITP 2024"
       }
@@ -316,7 +316,7 @@
     {
       "name": "Simuliris mechanized Tree Borrows and Stacked Borrows refinement",
       "identity": {
-        "repository": "iris/simuliris",
+        "repository": "https://gitlab.mpi-sws.org/iris/simuliris",
         "revision": "e3abfcdc301f92250d4227fc03c00463bf57b982",
         "url": "https://gitlab.mpi-sws.org/iris/simuliris"
       }
@@ -443,15 +443,15 @@
       }
     },
     {
-      "name": "joshlf/anneal-private",
+      "name": "joshlf/anneal",
       "identity": {
-        "commit": "42f4571d761b46c7142815f38b69c3781b3555e3",
+        "commit": "d4ca2c861f664f200b69cdced9f6af38b5b1175a",
         "kind": "git",
-        "ref": "skeleton",
-        "repo": "joshlf/anneal-private",
+        "ref": "main",
+        "repo": "joshlf/anneal",
         "role": "comparison",
         "summary": "Anneal's trusted verification boundary (trusted/lean/Trusted/Refinement.lean, StepResult.lean, MirSemantics.lean) and TCB auditor (trusted/audit/TrustedBoundary.lean, trusted/lean/foundation-lock.json).",
-        "url": "https://github.com/joshlf/anneal-private"
+        "url": "https://github.com/joshlf/anneal"
       }
     },
     {

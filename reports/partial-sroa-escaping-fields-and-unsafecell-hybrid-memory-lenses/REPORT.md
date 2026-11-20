@@ -25,7 +25,7 @@ In `bidirectional-mir-minissa-refinement-and-anneal-vc-transport` (`NORM-04` `Me
 - **Subjects:**
   - **Rust Compiler (`rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67`, `1.99.1`)** and **Miri (`rust-lang/rust@3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1`, `0.1.0`)**: `src/tools/miri/src/borrow_tracker/tree_borrows/{mod.rs,perms.rs,tree.rs}` (`-Zmiri-tree-borrows`).
   - **Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`)**: Kernel verification of `PartialSroaAndHybridMemoryLensProbe.lean`.
-  - **Anneal (`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`)**: $\Sigma_{\text{spec}}$ contract translation for aggregates mixing scalar fields with buffers or `UnsafeCell`.
+  - **Anneal (`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`)**: $\Sigma_{\text{spec}}$ contract translation for aggregates mixing scalar fields with buffers or `UnsafeCell`.
 
 ## Findings
 

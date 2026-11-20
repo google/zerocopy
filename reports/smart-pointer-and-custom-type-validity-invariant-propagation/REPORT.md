@@ -24,7 +24,7 @@ In `rust-postcleanup-mir-type-validity-and-range-invariant-catalog`, language-le
   - **Rust Compiler (`rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67`, `1.99.1`)**: `library/alloc/src/{vec/mod.rs,raw_vec/mod.rs,sync.rs,rc.rs,boxed.rs}`, `library/core/src/{num/niche_types.rs,ptr/non_null.rs,ptr/unique.rs}`, and `compiler/rustc_ty_utils/src/layout.rs`.
   - **LLVM (`rust-lang/llvm-project@1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`, `23.1.1`)**: `-C opt-level=3` `range(...)` attributes, `@llvm.assume`, `MergeFunctions`, and `ConstraintElimination`.
   - **Lean 4 (`leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`, `v4.34.1`)**: Kernel verification of `SmartPointerValidityAndTypeInvariantProbe.lean`.
-  - **Anneal (`joshlf/anneal@7abf0691c404393e3e4fc26eb3d4094e3170b5c7`)**: `#[anneal_spec]` and modular `type_invariant` propagation.
+  - **Anneal (`joshlf/anneal@d4ca2c861f664f200b69cdced9f6af38b5b1175a`)**: `#[anneal_spec]` and modular `type_invariant` propagation.
 
 ## Findings
 

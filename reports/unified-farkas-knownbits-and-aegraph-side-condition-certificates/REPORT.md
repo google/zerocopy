@@ -20,7 +20,7 @@ A complete, self-contained, zero-`sorry`, zero-`native_decide` Lean `v4.34.1` (`
 - **Subjects:**
   - `leanprover/lean4` at `5045d0056413266e57c625dcd7c365b10e377c52` (`v4.34.1`).
   - `rust-lang/rust` at `58cf8f9c35b355199727627d07ae34a4e2846d67` (`rustc 1.99.1`, LLVM `23.1.1` `ConstraintElimination`, `InstCombine`, and `llvm::KnownBits`).
-  - `joshlf/anneal` at `7abf0691c404393e3e4fc26eb3d4094e3170b5c7` (`TrustedBoundary` kernel axiom policy forbidding `Lean.ofReduceBool` and `sorryAx`).
+  - `joshlf/anneal` at `d4ca2c861f664f200b69cdced9f6af38b5b1175a` (`TrustedBoundary` kernel axiom policy forbidding `Lean.ofReduceBool` and `sorryAx`).
 
 ## Findings
 
