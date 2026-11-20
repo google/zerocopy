@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "domains/epidemic-intervention-modelling",
+    "domains/reproduction-number-estimation",
+    "domains/probabilistic-forecast-scoring",
+    "tooling/simulation-reproducibility-certificates"
+  ],
+  "subjects": [
+    {
+      "name": "CovidSim individual-based epidemic simulator",
+      "identity": {
+        "repository": "mrc-ide/covid-sim",
+        "revision": "b719de9df5909f8fc47753dd1d2baf89fc415943"
+      }
+    },
+    {
+      "name": "CovidSim revision reproduced by CODECHECK certificate 2020-010",
+      "identity": {
+        "repository": "mrc-ide/covid-sim",
+        "revision": "b125307e13d0a5226bff78b472b61a51516064e7"
+      }
+    },
+    {
+      "name": "CODECHECK reproduction repository for Imperial Report 9",
+      "identity": {
+        "repository": "codecheckers/covid-report9",
+        "revision": "7e3d7b0559659699ea90be612ad0479db62fb1fa"
+      }
+    },
+    {
+      "name": "CODECHECK certificate 2020-010",
+      "identity": {
+        "doi": "10.5281/zenodo.3865491",
+        "url": "https://zenodo.org/record/3865491"
+      }
+    },
+    {
+      "name": "Covasim agent-based COVID-19 model (version 4.0.2, Starsim-based)",
+      "identity": {
+        "repository": "InstituteforDiseaseModeling/covasim",
+        "revision": "9454c841cda45d431d7c0eb9ec1edfa28240b11a",
+        "version": "4.0.2"
+      }
+    },
+    {
+      "name": "EpiEstim R package (version 3.0.0)",
+      "identity": {
+        "repository": "mrc-ide/EpiEstim",
+        "revision": "402982637562690073884b58100c80d98b6a8538",
+        "version": "3.0.0"
+      }
+    },
+    {
+      "name": "US COVID-19 Forecast Hub data and ensemble metadata",
+      "identity": {
+        "repository": "reichlab/covid19-forecast-hub",
+        "revision": "3a6997b6abdcfabe321dd059ebe32334095d49b5"
+      }
+    },
+    {
+      "name": "covidEnsembles ensemble-construction package",
+      "identity": {
+        "repository": "reichlab/covidEnsembles",
+        "revision": "9b46312a6fd3635ac4e7e9c03ac29ccb0ad69b5f"
+      }
+    },
+    {
+      "name": "scoringutils R package (development version 2.3.0.9000)",
+      "identity": {
+        "repository": "epiforecasts/scoringutils",
+        "revision": "779d7d68fa34d80146fdfd4b46f5919c5d61d982",
+        "version": "2.3.0.9000"
+      }
+    },
+    {
+      "name": "Gostic et al., Practical considerations for measuring the effective reproductive number",
+      "identity": {
+        "doi": "10.1371/journal.pcbi.1008409"
+      }
+    },
+    {
+      "name": "Bracher et al., Evaluating epidemic forecasts in an interval format",
+      "identity": {
+        "doi": "10.1371/journal.pcbi.1008618"
+      }
+    },
+    {
+      "name": "Cramer et al., Evaluation of individual and ensemble probabilistic forecasts of COVID-19 mortality in the United States",
+      "identity": {
+        "doi": "10.1073/pnas.2113561119"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

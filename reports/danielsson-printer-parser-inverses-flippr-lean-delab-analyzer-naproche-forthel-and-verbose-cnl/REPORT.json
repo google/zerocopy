@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "verification/printer-parser-roundtrip-guarantees",
+    "lean/delaborator-reelaboration-fidelity",
+    "tooling/controlled-natural-language-provers",
+    "pl/invertible-syntax-descriptions"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 delaborator, top-down analyzer, parenthesizer (source) and v4.35.0 toolchain (execution)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Rocq notation machinery",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "ddb69e5c5cff459fc2b0dfe3ec4ed0c968720c76"
+      }
+    },
+    {
+      "name": "Naproche (ForTheL) and Isabelle/Naproche integration",
+      "identity": {
+        "repository": "naproche/naproche",
+        "revision": "bdb727a2998c1a4cbaa51b9ea3678ba47a3fe56f"
+      }
+    },
+    {
+      "name": "Verbose Lean 4",
+      "identity": {
+        "repository": "PatrickMassot/verbose-lean4",
+        "revision": "ea52f4bf6c60d986cb3fa2a5b7d7a8429b886eed"
+      }
+    },
+    {
+      "name": "Correct-by-construction pretty-printing library (Agda)",
+      "identity": {
+        "repository": "nad/pretty",
+        "revision": "975d543009aef6647319494df27081ec197caf88"
+      }
+    },
+    {
+      "name": "flippre: embedded FliPpr",
+      "identity": {
+        "repository": "kztk-m/flippre",
+        "revision": "da2ed20723a88d82f072dbbefc9926de4e1814b5",
+        "version": "flippre 0.3.1"
+      }
+    },
+    {
+      "name": "PureScript port of invertible syntax descriptions",
+      "identity": {
+        "repository": "paulyoung/purescript-invertible-syntax",
+        "revision": "81f4c91df215d4d17fc0b3abe13cf446649f4913"
+      }
+    },
+    {
+      "name": "PureScript port of partial isomorphisms",
+      "identity": {
+        "repository": "paulyoung/purescript-partial-isomorphisms",
+        "revision": "7a53fd3248850ce92eba4b40094abf78247fd839"
+      }
+    },
+    {
+      "name": "Danielsson, Correct-by-Construction Pretty-Printing (DTP 2013)",
+      "identity": {
+        "doi": "10.1145/2502409.2502410"
+      }
+    },
+    {
+      "name": "Rendel and Ostermann, Invertible Syntax Descriptions (Haskell Symposium 2010)",
+      "identity": {
+        "doi": "10.1145/1863523.1863525"
+      }
+    },
+    {
+      "name": "Matsuda and Wang, FliPpr: A Prettier Invertible Printing System (ESOP 2013)",
+      "identity": {
+        "doi": "10.1007/978-3-642-37036-6_6"
+      }
+    },
+    {
+      "name": "Matsuda and Wang, Embedding Invertible Languages with Binders: a Case of the FliPpr Language (Haskell 2018)",
+      "identity": {
+        "doi": "10.1145/3242744.3242758"
+      }
+    },
+    {
+      "name": "Wiedijk, Pollack-Inconsistency (ENTCS 2012)",
+      "identity": {
+        "doi": "10.1016/j.entcs.2012.06.008"
+      }
+    },
+    {
+      "name": "De Lon et al., The Isabelle/Naproche Natural Language Proof Assistant (CADE 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-79876-5_36"
+      }
+    },
+    {
+      "name": "Massot, Teaching Mathematics Using Lean and Controlled Natural Language (ITP 2024)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2024.27",
+        "pdf_sha256": "25f1f7ded607417738134f640c985f95213f89daaee6e9010edb05428233c8c5"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

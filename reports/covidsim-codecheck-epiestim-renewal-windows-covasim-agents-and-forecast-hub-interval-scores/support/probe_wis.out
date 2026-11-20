@@ -1,0 +1,10 @@
+F1: max |WIS - mean quantile score| over 2000 random cases (23 levels) = 1.42e-14
+F2: WIS default=1.603159, count_median_twice=1.661360 (normaliser K+1/2=11.5 vs K+1=12)
+F3: E[WIS] true quantiles = 5.0336
+    shift +2 : E[WIS] = 5.1342
+    shift -2 : E[WIS] = 5.1342
+    sd x0.8  : E[WIS] = 5.1019
+    sd x1.25 : E[WIS] = 5.1132
+F4: model A (40/40 weeks) mean WIS=62.55; model B (32/40, skips high-count weeks, biased +10%) mean WIS=7.38; overlap mean-score ratio B/A=1.353
+F5: 23-level: E[WIS] C=5.0522 D=5.0372 -> better: D
+F5: 7-level: E[WIS] C=4.2925 D=4.2971 -> better: C

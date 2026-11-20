@@ -1,0 +1,11 @@
+Each variant is one Lean file: the contents of RoundTrip.lean followed by exactly one of these lines.
+Run with the Lean v4.35.0 toolchain (lean --githash = eb6cafb7290e8bd5f2937522d8d804f58f02bafc):
+  lean V_A.lean
+
+A  #eval RTProbe.run "A-default" [] [`Init, `Std]
+B  #eval RTProbe.run "B-pp.analyze" [(`pp.analyze, .ofBool true)] [`Init, `Std]
+C  #eval RTProbe.run "C-pp.all" [(`pp.all, .ofBool true)] [`Init, `Std]
+D  #eval RTProbe.run "D-default-excludeGenerated" [] [`Init, `Std] (excludeGenerated := true)
+E  #eval RTProbe.run "E-pp.analyze+checkInstances" [(`pp.analyze, .ofBool true), (`pp.analyze.checkInstances, .ofBool true)] [`Init, `Std]
+F  #eval RTProbe.run "F-proofs+deepTerms" [(`pp.proofs, .ofBool true), (`pp.deepTerms, .ofBool true)] [`Init, `Std]
+catalog  #eval RTProbe.catalog [`Init, `Std]

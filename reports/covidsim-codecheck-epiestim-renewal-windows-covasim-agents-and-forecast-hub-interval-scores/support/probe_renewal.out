@@ -1,0 +1,14 @@
+A: discretised SI moments mean=2.600000 sd=1.554880 (snapshot: 2.6, 1.55488); w[1..3]=0.2331721,0.3585794,0.1981108 (snapshot 2.331721e-01,3.585794e-01,1.981108e-01)
+A: 25 windows, max|mean-snapshot|=4.55e-08, max|sd-snapshot|=4.68e-09 (snapshot printed to 7-8 significant digits)
+B: GI misspecification (true GI discretised gamma mean 6.5 sd 4.0; window 7; estimate reported at window end)
+   assumed mean 4.5         R_hat(t_end=35, true 2.0)=1.584  R_hat(t_end=80, true 0.8)=0.857  R_hat(t_end=115, true 1.15)=1.103
+   assumed mean 6.5 (true)  R_hat(t_end=35, true 2.0)=2.002  R_hat(t_end=80, true 0.8)=0.802  R_hat(t_end=115, true 1.15)=1.152
+   assumed mean 8.5         R_hat(t_end=35, true 2.0)=2.540  R_hat(t_end=80, true 0.8)=0.751  R_hat(t_end=115, true 1.15)=1.204
+C: first t_end with R_hat < 1 after the true drop at day 41 (true GI, no delay)
+   window  1: first t_end with R_hat<1 = 41  (lag 0 d)
+   window  7: first t_end with R_hat<1 = 46  (lag 5 d)
+   window 14: first t_end with R_hat<1 = 52  (lag 11 d)
+   window 21: first t_end with R_hat<1 = 57  (lag 16 d)
+D: counts by report date (delay mean 8 d), window 7: first t_end with R_hat<1 = 55 vs 46 by infection date
+E: analysis day 60: last-window R_hat infection-date complete=0.801 vs right-truncated (only infections already reported)=0.187 (true R=0.8)
+E: analysis day 100: last-window R_hat infection-date complete=1.153 vs right-truncated (only infections already reported)=0.268 (true R=1.15)

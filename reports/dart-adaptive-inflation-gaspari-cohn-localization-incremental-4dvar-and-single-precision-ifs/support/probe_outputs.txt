@@ -1,0 +1,75 @@
+Probe outputs (toy models; not DART, IFS, ecTrans or WRF).
+Host class: x86-64 Linux workstation; Python 3.13.15; numpy 2.3.5. Observed 2026-11-20.
+The six Lorenz-96 runs and the other two probes ran concurrently; wall times in parentheses reflect that.
+
+$ python3 support/gc_probe.py
+max|horner-expanded| over [0,2.2c] = 3.997e-15
+max|float32-float64| (horner) = 1.114e-06
+r=1.0: left=0.208333334042 right=0.208333332625
+r=1.0: dleft=-3.541670 dright=-3.541663
+r=2.0: left=-0.000000000000 right=0.000000000000
+r=2.0: dleft=0.000000 dright=0.000000
+value at r=1 exact 5/24 = 0.208333333333
+n=40 periodic, half-width=0.05: min eig=+1.389e-02  max eig=2.819
+n=40 periodic, half-width=0.1: min eig=+2.183e-03  max eig=5.637
+n=40 periodic, half-width=0.2: min eig=+2.958e-04  max eig=11.273
+n=40 periodic, half-width=0.25: min eig=+1.531e-04  max eig=14.091
+n=40 periodic, half-width=0.3: min eig=-2.320e-03  max eig=16.903
+
+$ python3 support/l96_eakf_probe.py --nens 20 1
+L96 N=40 F=8.0 dt=0.05 ens=20 cycles=3000 spin=500 obs_var=1.0
+A no-loc, no-inf           stream=1  rmse=  4.217  spread=  0.172  mean_inflation= 1.000  (8.4s)
+B GC c=0.2, no-inf         stream=1  rmse=  0.207  spread=  0.180  mean_inflation= 1.000  (7.4s)
+C GC c=0.2, fixed 1.05     stream=1  rmse=  0.199  spread=  0.228  mean_inflation= 1.000  (9.6s)
+D GC c=0.2, adaptive       stream=1  rmse=  0.199  spread=  0.215  mean_inflation= 1.048  (21.7s)
+E no-loc, fixed 1.05       stream=1  rmse=  0.184  spread=  0.207  mean_inflation= 1.000  (6.0s)
+
+$ python3 support/l96_eakf_probe.py --nens 20 2
+L96 N=40 F=8.0 dt=0.05 ens=20 cycles=3000 spin=500 obs_var=1.0
+A no-loc, no-inf           stream=2  rmse=  4.197  spread=  0.173  mean_inflation= 1.000  (8.5s)
+B GC c=0.2, no-inf         stream=2  rmse=  0.242  spread=  0.182  mean_inflation= 1.000  (7.9s)
+C GC c=0.2, fixed 1.05     stream=2  rmse=  0.198  spread=  0.229  mean_inflation= 1.000  (8.9s)
+D GC c=0.2, adaptive       stream=2  rmse=  0.195  spread=  0.213  mean_inflation= 1.018  (22.1s)
+E no-loc, fixed 1.05       stream=2  rmse=  0.186  spread=  0.207  mean_inflation= 1.000  (6.6s)
+
+$ python3 support/l96_eakf_probe.py --nens 20 3
+L96 N=40 F=8.0 dt=0.05 ens=20 cycles=3000 spin=500 obs_var=1.0
+A no-loc, no-inf           stream=3  rmse=  4.215  spread=  0.176  mean_inflation= 1.000  (8.7s)
+B GC c=0.2, no-inf         stream=3  rmse=  0.197  spread=  0.182  mean_inflation= 1.000  (7.4s)
+C GC c=0.2, fixed 1.05     stream=3  rmse=  0.196  spread=  0.229  mean_inflation= 1.000  (8.7s)
+D GC c=0.2, adaptive       stream=3  rmse=  0.194  spread=  0.213  mean_inflation= 1.048  (21.5s)
+E no-loc, fixed 1.05       stream=3  rmse=  3.385  spread=  0.219  mean_inflation= 1.000  (6.3s)
+
+$ python3 support/l96_eakf_probe.py --nens 10 1
+L96 N=40 F=8.0 dt=0.05 ens=10 cycles=3000 spin=500 obs_var=1.0
+A no-loc, no-inf           stream=1  rmse=  4.438  spread=  0.155  mean_inflation= 1.000  (8.2s)
+B GC c=0.2, no-inf         stream=1  rmse=  2.865  spread=  0.179  mean_inflation= 1.000  (6.3s)
+C GC c=0.2, fixed 1.05     stream=1  rmse=  0.199  spread=  0.218  mean_inflation= 1.000  (9.0s)
+D GC c=0.2, adaptive       stream=1  rmse=  0.202  spread=  0.206  mean_inflation= 1.046  (22.0s)
+E no-loc, fixed 1.05       stream=1  rmse=  4.238  spread=  0.185  mean_inflation= 1.000  (5.6s)
+
+$ python3 support/l96_eakf_probe.py --nens 10 2
+L96 N=40 F=8.0 dt=0.05 ens=10 cycles=3000 spin=500 obs_var=1.0
+A no-loc, no-inf           stream=2  rmse=  4.536  spread=  0.158  mean_inflation= 1.000  (7.7s)
+B GC c=0.2, no-inf         stream=2  rmse=  2.648  spread=  0.182  mean_inflation= 1.000  (6.0s)
+C GC c=0.2, fixed 1.05     stream=2  rmse=  0.196  spread=  0.218  mean_inflation= 1.000  (9.7s)
+D GC c=0.2, adaptive       stream=2  rmse=  0.197  spread=  0.204  mean_inflation= 1.018  (21.5s)
+E no-loc, fixed 1.05       stream=2  rmse=  4.206  spread=  0.186  mean_inflation= 1.000  (5.4s)
+
+$ python3 support/l96_eakf_probe.py --nens 10 3
+L96 N=40 F=8.0 dt=0.05 ens=10 cycles=3000 spin=500 obs_var=1.0
+A no-loc, no-inf           stream=3  rmse=  4.494  spread=  0.157  mean_inflation= 1.000  (7.7s)
+B GC c=0.2, no-inf         stream=3  rmse=  1.931  spread=  0.176  mean_inflation= 1.000  (6.0s)
+C GC c=0.2, fixed 1.05     stream=3  rmse=  0.200  spread=  0.219  mean_inflation= 1.000  (9.1s)
+D GC c=0.2, adaptive       stream=3  rmse=  0.201  spread=  0.204  mean_inflation= 1.049  (21.5s)
+E no-loc, fixed 1.05       stream=3  rmse=  4.265  spread=  0.185  mean_inflation= 1.000  (5.4s)
+
+$ python3 support/precision_probe.py
+binary32(0.4) = 0.4000000059604645
+binary32 eps = 1.1920929e-07  binary64 eps = 2.220446049250313e-16
+L63 dt=0.01: float64 vs float32 RMS diff > 1.0 at t=11.43 (first nonzero diff at step 1)
+L63 dt=0.01: float64 vs float64-reassociated RMS diff > 1.0 at t=32.67 (first nonzero diff at step 10)
+L96 N=40 F=8 dt=0.05: float64 vs float32 RMS diff > 1.0 at t=8.85 (first nonzero diff at step 1)
+L96 N=40 F=8 dt=0.05: float64 vs float64-reassociated RMS diff > 1.0 at t=20.9 (first nonzero diff at step 1)
+L96 climate over 50000 steps: float64 mean=2.3441 sd=3.6410 | float32 mean=2.3451 sd=3.6415
+   batch-mean standard error of mean: float64 0.0060  float32 0.0063

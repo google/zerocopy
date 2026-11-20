@@ -1,0 +1,9 @@
+$ python3 toy_invertible_syntax.py
+T0 left-recursive description: naive top-down parser does not terminate (RecursionError)
+T1 no-separator grammar: print([1,2]) = '12' ; parses = [[1, 2], [12]] ; print([12]) = '12'
+T2 number of parses of '1'*n, n=1..10: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+T3 separator grammar: print([1,2]) = '1 2' ; parses = [[1, 2]]
+T4 lawful iso: print = '1,2' ; parse(print) = [('pair', 1, 2)]
+T5 non-lawful iso: print = '2,1' ; parse(print) = [('pair', 2, 1)] ; round trip holds: False
+T6 biased choice: print(7) = '7' ; parse('((7))') = [7] ; so print(parse(s)) != s for s='((7))'
+T7 partial printer: print(-3) = None (no string denotes -3 in this description)

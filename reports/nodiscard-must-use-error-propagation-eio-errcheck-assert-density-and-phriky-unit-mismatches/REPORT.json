@@ -1,0 +1,204 @@
+{
+  "topics": [
+    "pl/unused-result-diagnostics",
+    "systems/error-handling-defect-studies",
+    "tooling/return-value-static-checkers",
+    "verification/physical-unit-consistency-checking"
+  ],
+  "subjects": [
+    {
+      "name": "rustc unused_must_use / unused_results lints (source)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "560abf7946ae41fd210edac5dfe829d7eff86eec",
+        "path": "compiler/rustc_lint/src/unused/must_use.rs"
+      }
+    },
+    {
+      "name": "rustc nightly toolchain used for execution",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "errcheck",
+      "identity": {
+        "repository": "kisielk/errcheck",
+        "revision": "59d0c8437e9f9e666d6b5ab02e55a093eecf7736"
+      }
+    },
+    {
+      "name": "golang.org/x/tools (go vet unusedresult analyzer source)",
+      "identity": {
+        "repository": "golang/tools",
+        "revision": "7594d6faa7b96cfab035af98d21146b78e23738d",
+        "path": "go/analysis/passes/unusedresult/unusedresult.go"
+      }
+    },
+    {
+      "name": "golang.org/x/tools v0.51.0 (errcheck build dependency)",
+      "identity": {
+        "repository": "golang/tools",
+        "revision": "ea2f152dc35325e4b9b639583972375972350a84",
+        "version": "v0.51.0"
+      }
+    },
+    {
+      "name": "golang.org/x/mod v0.41.0 (errcheck build dependency)",
+      "identity": {
+        "repository": "golang/mod",
+        "revision": "d0a27b2d4a48460806692bf5c87fc157c3c65292",
+        "version": "v0.41.0"
+      }
+    },
+    {
+      "name": "golang.org/x/sync v0.23.0 (errcheck build dependency and scanned corpus)",
+      "identity": {
+        "repository": "golang/sync",
+        "revision": "f75267d8412fc1dfd12b343644a7ea46e4d9c85d",
+        "version": "v0.23.0"
+      }
+    },
+    {
+      "name": "Go toolchain used for execution (go vet)",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+        "version": "go1.27.3 linux/amd64 (distribution build)"
+      }
+    },
+    {
+      "name": "Error Prone CheckReturnValue",
+      "identity": {
+        "repository": "google/error-prone",
+        "revision": "103086b59892dbbac53c573a44ecad79f9decfae",
+        "path": "core/src/main/java/com/google/errorprone/bugpatterns/CheckReturnValue.java"
+      }
+    },
+    {
+      "name": "clang-tidy bugprone-unused-return-value",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "0c99e3f432142834a257cd4c3067d7a69373e6d1",
+        "path": "clang-tools-extra/clang-tidy/bugprone/UnusedReturnValueCheck.cpp"
+      }
+    },
+    {
+      "name": "GCC C and C++ compilers used for execution",
+      "identity": {
+        "version": "gcc (Debian 15.2.0-14) 15.2.0",
+        "invocation": "gcc -std=c23 / g++ -std=c++20"
+      }
+    },
+    {
+      "name": "phriky-units",
+      "identity": {
+        "repository": "unl-nimbus-lab/phriky-units",
+        "revision": "16c8cdd91de0899411b139e5a94fcb4ea8104ad2"
+      }
+    },
+    {
+      "name": "Assert-use replication scripts",
+      "identity": {
+        "repository": "caseycas/assert_replication",
+        "revision": "50fa733c85b019733d13dbaaf37dda609d4e0776"
+      }
+    },
+    {
+      "name": "Engler et al., Bugs as Deviant Behavior (SOSP 2001)",
+      "identity": {
+        "doi": "10.1145/502034.502041"
+      }
+    },
+    {
+      "name": "Gunawi et al., EIO: Error Handling is Occasionally Correct (FAST 2008)",
+      "identity": {
+        "url": "https://www.usenix.org/legacy/event/fast08/tech/full_papers/gunawi/gunawi.pdf"
+      }
+    },
+    {
+      "name": "Rubio-Gonzalez et al., Error Propagation Analysis for File Systems (PLDI 2009)",
+      "identity": {
+        "doi": "10.1145/1542476.1542506"
+      }
+    },
+    {
+      "name": "Aftandilian et al., Building Useful Program Analysis Tools Using an Extensible Java Compiler (SCAM 2012)",
+      "identity": {
+        "doi": "10.1109/SCAM.2012.28"
+      }
+    },
+    {
+      "name": "Yuan et al., Simple Testing Can Prevent Most Critical Failures (OSDI 2014)",
+      "identity": {
+        "url": "https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf"
+      }
+    },
+    {
+      "name": "Jana et al., Automatically Detecting Error Handling Bugs Using Error Specifications (USENIX Security 2016)",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/jana"
+      }
+    },
+    {
+      "name": "Kudrjavets, Nagappan, Ball, assertion density and faults (ISSRE 2006; Microsoft Research TR-2006-54)",
+      "identity": {
+        "doi": "10.1109/ISSRE.2006.14",
+        "technical_report": "MSR-TR-2006-54"
+      }
+    },
+    {
+      "name": "Casalnuovo et al., Assert Use in GitHub Projects (ICSE 2015)",
+      "identity": {
+        "doi": "10.1109/ICSE.2015.88"
+      }
+    },
+    {
+      "name": "Casalnuovo et al., Replication of Assert Use in GitHub Projects",
+      "identity": {
+        "url": "https://baishakhir.github.io/uploads/icse2015-assert-revised.pdf"
+      }
+    },
+    {
+      "name": "Ore, Detweiler, Elbaum, Lightweight Detection of Physical Unit Inconsistencies without Program Annotations (ISSTA 2017)",
+      "identity": {
+        "doi": "10.1145/3092703.3092722"
+      }
+    },
+    {
+      "name": "Ore, Detweiler, Elbaum, Phriky-units tool demonstration (ISSTA 2017)",
+      "identity": {
+        "doi": "10.1145/3092703.3098219"
+      }
+    },
+    {
+      "name": "Ore, Dimensional Analysis of Robot Software without Developer Annotations (PhD dissertation, University of Nebraska, 2019)",
+      "identity": {
+        "url": "https://jpwco.com/pdf/Dimensional_Analysis_of_Robot_Software_without_Developer_Annotations.pdf"
+      }
+    },
+    {
+      "name": "Holzmann, The Power of 10: Rules for Developing Safety-Critical Code (IEEE Computer 2006)",
+      "identity": {
+        "doi": "10.1109/MC.2006.212"
+      }
+    },
+    {
+      "name": "Ariane 5 Flight 501 Failure, Report by the Inquiry Board (Lions et al., 19 July 1996)",
+      "identity": {
+        "url": "https://www-users.cse.umn.edu/~arnold/disasters/ariane5rep.html",
+        "original_url": "http://www.esrin.esa.it/htdocs/tidc/Press/Press96/ariane5rep.html"
+      }
+    },
+    {
+      "name": "C++ and C nodiscard attribute",
+      "identity": {
+        "standard": "ISO/IEC 14882:2017 [[nodiscard]]; ISO/IEC 9899:2024 [[nodiscard]]",
+        "papers": "WG21 P0189R1, P1301R4, P1771R1; WG14 N2267, N2448"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

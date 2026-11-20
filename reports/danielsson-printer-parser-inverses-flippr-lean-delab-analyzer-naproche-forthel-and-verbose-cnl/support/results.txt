@@ -1,0 +1,315 @@
+VARIANT A-default prefixes=[Init, Std] stride=1 excludeGenerated=false theorems=50421 wall_ms=271625 us_per_thm=5387 printed_chars=8735698
+  delabErr: 0
+  omission: 4647
+  parseErr: 679
+  elabErr: 4887
+  notDefEq: 471
+  defEqOnly: 1598
+  mdataOnly: 137
+  eqvOnly: 0
+  exact: 38002
+  category 1156 elabErr :: invalid {...} notation, expected type is not kno
+  category 585 elabErr :: residual metavariables
+  category 491 elabErr :: typeclass instance problem is stuck   Std.Iterat
+  category 314 elabErr :: Invalid field notation: Type of   ∅ is not known
+  category 312 elabErr :: failed to prove index is valid, possible solutio
+  category 106 parseErr :: <roundtrip>:9:99: expected end of input
+  category 98 parseErr :: <roundtrip>:9:999: expected ':'
+  category 97 parseErr :: <roundtrip>:9:999: expected token
+  category 95 elabErr :: failed to synthesize instance of type class   St
+  category 82 parseErr :: <roundtrip>:9:9: expected ':'
+  category 69 parseErr :: <roundtrip>:9:999: expected '_' or identifier
+  category 64 elabErr :: invalid coercion notation, expected type is not 
+  category 62 elabErr :: typeclass instance problem is stuck   LT ?m.99  
+  category 52 elabErr :: Type mismatch: Alternative has type   motive (Le
+  category 49 parseErr :: <roundtrip>:9:99: expected ')', ',' or ':'
+  /usr/bin/time: Elapsed (wall clock) time (h:mm:ss or m:ss): 4:47.21
+  /usr/bin/time: Maximum resident set size (kbytes): 5448044
+  example omission Array.anyM.loop.congr_simp: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p p_1 : α → m Bool), p = p_1 → ∀ (as as_1 : Array α) (e_as : as = as_1) (stop stop_1 : Nat) (e_stop : stop = stop_1) (h : stop ≤ as.size) (j j_1 : Nat), j = j_1 → Array.anyM.loop p as sto… 
+  example omission Array.anyM.loop.eq_def: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p : α → m Bool) (as : Array α) (stop : Nat) (h : stop ≤ as.size) (j : Nat),
+  example omission Array.anyM_eq_anyM_loop: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {as : Array α} {start stop : Nat}, Array.anyM p as start stop = Array.anyM.loop p as (min stop as.size) ⋯ start 
+  example omission Array.anyM_loop_cons: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {a : α} {as : List α} {stop start : Nat} (h : stop + 1 ≤ (a :: as).length), Array.anyM.loop p { toList := a :: as } (stop + 1) h (start + 1) = Array.anyM.loop p { toLi… 
+  example parseErr BitVec.getLsbD_ofNatLT: ∀ {n : Nat} (x : Nat) (lt : x < 2 ^ n) (i : Nat), (x#'lt).getLsbD i = x.testBit i ## <roundtrip>:1:52: expected ')', ',' or ':'
+  example parseErr BitVec.getMsbD_ofNatLT: ∀ {n x i : Nat} (h : x < 2 ^ n), (x#'h).getMsbD i = (decide (i < n) && x.testBit (n - 1 - i)) ## <roundtrip>:1:35: expected ')', ',' or ':'
+  example parseErr BitVec.ofNatLT_eq_ofNat: ∀ {w n : Nat} (hn : n < 2 ^ w), n#'hn = BitVec.ofNat w n ## <roundtrip>:1:33: expected end of input
+  example parseErr BitVec.ofNatLT_zero: ∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w ## <roundtrip>:1:34: missing end of character literal
+  example elabErr Acc.brecOn: ∀ {α : Sort u} {r : α → α → Prop} {motive : (a : α) → Acc r a → Prop} {a : α} (t : Acc r a), (∀ (a : α) (t : Acc r a), Acc.below t → motive a t) → motive a t ## residual metavariables
+  example elabErr Acc.ndrecOn_eq_ndrecOnC: @Acc.ndrecOn = @Acc.ndrecOnC ## residual metavariables
+  example elabErr Acc.ndrec_eq_ndrecC: @Acc.ndrec = @Acc.ndrecC ## residual metavariables
+  example elabErr Acc.rec_eq_recC: @Acc.rec = @Acc.recC ## residual metavariables
+  example notDefEq Array.mapFinIdx_eq_iff: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {ys : Array β}, xs.mapFinIdx f = ys ↔ ∃ h, ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1 ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapFinIdx_induction: ∀ {α : Type u_1} {β : Type u_2} (xs : Array α) (f : (i : Nat) → α → i < xs.size → β) (motive : Nat → Prop), motive 0 → ∀ (p : (i : Nat) → β → i < xs.size → Prop), (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i] h) h ∧ motive (i + … ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapFinIdx_spec: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {p : (i : Nat) → β → i < xs.size → Prop}, (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i] h) h) → ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[… ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapIdx_induction: ∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α} {motive : Nat → Prop}, motive 0 → ∀ {p : (i : Nat) → β → i < xs.size → Prop}, (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i]) h ∧ motive (i + 1)) → motive xs.size ∧… ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example defEqOnly Array.all_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.all_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example mdataOnly Array.getElem?_swap: ∀ {α : Type u_1} {xs : Array α} {i j : Nat} (hi : i < xs.size) (hj : j < xs.size) {k : Nat}, (xs.swap i j hi hj)[k]? = if j = k then some xs[i] else if i = k then some xs[j] else xs[k]? ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.getInternal_eq_getElem: ∀ {α : Type u_1} (a : Array α) (i : Nat) (h : i < a.size), a.getInternal i h = a[i] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set!_eq_setIfInBounds: ∀ {α : Type u_1} {xs : Array α} {i : Nat} {v : α}, xs.set! i v = xs.setIfInBounds i v ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set_push: ∀ {α : Type u_1} {i : Nat} {xs : Array α} {x y : α} {h : i < (xs.push x).size}, (xs.push x).set i y h = if x_1 : i < xs.size then (xs.set i y x_1).push x else xs.push y ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example exact Acc.inv: ∀ {α : Sort u} {r : α → α → Prop} {x y : α}, Acc r x → r y x → Acc r y 
+  example exact Acc.inv_of_transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {x y : α}, Acc r x → Relation.TransGen r y x → Acc r y 
+  example exact Acc.transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {a : α}, Acc r a → Acc (Relation.TransGen r) a 
+  example exact And.comm: ∀ {a b : Prop}, a ∧ b ↔ b ∧ a 
+
+VARIANT B-pp.analyze prefixes=[Init, Std] stride=1 excludeGenerated=false theorems=50421 wall_ms=495367 us_per_thm=9824 printed_chars=9964411
+  delabErr: 0
+  omission: 5074
+  parseErr: 611
+  elabErr: 2361
+  notDefEq: 327
+  defEqOnly: 2435
+  mdataOnly: 223
+  eqvOnly: 0
+  exact: 39390
+  category 691 elabErr :: failed to synthesize instance of type class   Ge
+  category 689 elabErr :: Invalid field notation: Type of   m is not known
+  category 116 parseErr :: <roundtrip>:9:99: expected end of input
+  category 101 elabErr :: failed to synthesize instance of type class   St
+  category 97 elabErr :: residual metavariables
+  category 97 parseErr :: <roundtrip>:9:999: expected token
+  category 75 parseErr :: <roundtrip>:9:999: expected ':'
+  category 62 parseErr :: <roundtrip>:9:9: expected ':'
+  category 52 elabErr :: Type mismatch: Alternative has type   motive (Le
+  category 49 parseErr :: <roundtrip>:9:99: expected ')', ',' or ':'
+  category 39 elabErr :: Invalid pattern variable: Variable name must be 
+  category 37 parseErr :: <roundtrip>:9:999: expected '_' or identifier
+  category 35 parseErr :: <roundtrip>:9:99: expected token
+  category 35 elabErr :: Type mismatch   k has type   Int of sort `Type` 
+  category 35 elabErr :: failed to synthesize instance of type class   Le
+  /usr/bin/time: Elapsed (wall clock) time (h:mm:ss or m:ss): 8:31.91
+  /usr/bin/time: Maximum resident set size (kbytes): 5510388
+  example omission Array.anyM.loop.congr_simp: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p p_1 : α → m Bool), p = p_1 → ∀ (as as_1 : Array α) (e_as : as = as_1) (stop stop_1 : Nat) (e_stop : stop = stop_1) (h : stop ≤ as.size) (j j_1 : Nat), j = j_1 → Array.anyM.loop p as sto… 
+  example omission Array.anyM.loop.eq_def: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p : α → m Bool) (as : Array α) (stop : Nat) (h : stop ≤ as.size) (j : Nat),
+  example omission Array.anyM_eq_anyM_loop: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {as : Array α} {start stop : Nat}, Array.anyM p as start stop = Array.anyM.loop p as (min stop as.size) ⋯ start 
+  example omission Array.anyM_loop_cons: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {a : α} {as : List α} {stop start : Nat} (h : stop + 1 ≤ (a :: as).length), Array.anyM.loop p { toList := a :: as : Array α } (stop + 1) h (start + 1) = Array.anyM.loo… 
+  example parseErr BitVec.getLsbD_ofNatLT: ∀ {n : Nat} (x : Nat) (lt : x < 2 ^ n) (i : Nat), (x#'lt).getLsbD i = x.testBit i ## <roundtrip>:1:52: expected ')', ',' or ':'
+  example parseErr BitVec.getMsbD_ofNatLT: ∀ {n x i : Nat} (h : x < 2 ^ n), (x#'h).getMsbD i = (decide (i < n) && x.testBit (n - 1 - i)) ## <roundtrip>:1:35: expected ')', ',' or ':'
+  example parseErr BitVec.ofNatLT_eq_ofNat: ∀ {w n : Nat} (hn : n < 2 ^ w), n#'hn = BitVec.ofNat w n ## <roundtrip>:1:33: expected end of input
+  example parseErr BitVec.ofNatLT_zero: ∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w ## <roundtrip>:1:34: missing end of character literal
+  example elabErr Acc.ndrecOn_eq_ndrecOnC: @Acc.ndrecOn = @Acc.ndrecOnC ## residual metavariables
+  example elabErr Acc.ndrec_eq_ndrecC: @Acc.ndrec = @Acc.ndrecC ## residual metavariables
+  example elabErr Acc.rec_eq_recC: @Acc.rec = @Acc.recC ## residual metavariables
+  example elabErr Add.add_eq_hAdd: ∀ {α : Type u} [inst : Add α], Add.add = HAdd.hAdd ## typeclass instance problem is stuck   Add (?m.8 (α := α))  Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Add` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.  Hint: Adding type annotation…
+  example notDefEq Array.prod_empty: ∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], Array.prod #[] = 1 ## orig: Eq.{succ u_1} | reelab: Eq.{1}
+  example notDefEq Array.prod_eq_foldl: ∀ {α : Type u_1} [inst : One α] [inst_1 : Mul α] [Std.Associative fun (x1 : α) x2 => x1 * x2] [Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1] {xs : Array α}, xs.prod = Array.foldl (fun x1 x2 => x1 * x2) 1 xs ## orig: Std.LawfulIdentity.{succ u_1} | reelab: Std.LawfulIdentity.{1}
+  example notDefEq Array.prod_push: ∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.Associative fun (x1 : α) x2 => x1 * x2] [Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1] {xs : Array α} {x : α}, (xs.push x).prod = xs.prod * x ## orig: Std.LawfulIdentity.{succ u_1} | reelab: Std.LawfulIdentity.{1}
+  example notDefEq Array.sum_empty: ∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α], Array.sum #[] = 0 ## orig: Eq.{succ u_1} | reelab: Eq.{1}
+  example defEqOnly Array.all_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.all_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example mdataOnly Array.countP_eq_size_filter': ∀ {α : Type u_1} {p : α → Bool}, Array.countP p = Function.comp (β := Array α) Array.size fun as => Array.filter p as ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Array.{u_1} #1
+  example mdataOnly Array.emptyWithCapacity_eq: ∀ {α : Type u_1} {n : Nat}, Eq.{u_1 + 1} (α := Array α) (Array.emptyWithCapacity n) #[] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.mkEmpty_eq: ∀ {α : Type u_1} {n : Nat}, Eq.{u_1 + 1} (α := Array α) (Array.mkEmpty n) #[] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set!_eq_setIfInBounds: ∀ {α : Type u_1} {xs : Array α} {i : Nat} {v : α}, xs.set! i v = xs.setIfInBounds i v ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example exact Acc.brecOn: ∀ {α : Sort u} {r : α → α → Prop} {motive : (a : α) → Acc r a → Prop} {a : α} (t : Acc r a), (∀ (a : α) (t : Acc r a), Acc.below (r := r) (motive := motive) t → motive a t) → motive a t 
+  example exact Acc.inv: ∀ {α : Sort u} {r : α → α → Prop} {x y : α}, Acc r x → r y x → Acc r y 
+  example exact Acc.inv_of_transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {x y : α}, Acc r x → Relation.TransGen r y x → Acc r y 
+  example exact Acc.transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {a : α}, Acc r a → Acc (Relation.TransGen r) a 
+
+VARIANT C-pp.all prefixes=[Init, Std] stride=1 excludeGenerated=false theorems=50421 wall_ms=231444 us_per_thm=4590 printed_chars=30815523
+  delabErr: 0
+  omission: 2
+  parseErr: 6
+  elabErr: 9
+  notDefEq: 0
+  defEqOnly: 87
+  mdataOnly: 408
+  eqvOnly: 0
+  exact: 49909
+  category 8 elabErr :: Application type mismatch: The argument   fun (i
+  category 4 parseErr :: <roundtrip>:9:999: unexpected identifier after d
+  category 2 parseErr :: <roundtrip>:9:9999: unexpected identifier after 
+  category 1 elabErr :: Type mismatch   b x has type   β x but is expect
+  /usr/bin/time: Elapsed (wall clock) time (h:mm:ss or m:ss): 4:33.90
+  /usr/bin/time: Maximum resident set size (kbytes): 12673792
+  example omission Std.Iter.step_flatMapAfterM: ∀ {α β α₂ γ : ⋯} {m : ⋯} [inst : ⋯] [inst_1 : ⋯] [inst_2 : ⋯] [inst_3 : ⋯] [inst_4 : ⋯] [inst_5 : ⋯] {f : ⋯} {it₁ : ⋯} {it₂ : ⋯}, @Eq.{w' + 1} (m (Std.Shrink.{w} (@Std.IterM.Step.{w, w'} (Std.Iterators.Types.Flatten.{w, w'} (@Std.Iterators.… 
+  example omission Std.Tactic.BVDecide.BVExpr.bitblast.go.eq_def: ∀ {w : ⋯} (aig : ⋯) (expr : ⋯) (cache : ⋯),
+  example parseErr Array.eraseIdx.induct: ∀ {α : Type u} (motive : (xs : Array.{u} α) → (i : Nat) → (h : @LT.lt.{0} Nat instLTNat i (@Array.size.{u} α xs)) → Prop)
+  example parseErr Char.succ?.fun_cases_unfolding: ∀ (c : Char) (motive : (r : Option.{0} Char) → Prop) (case1 : ∀ (h : @LT.lt.{0} UInt32 instLTUInt32 (Char.val c) (@OfNat.ofNat.{0} UInt32 (nat_lit 55295) (@UInt32.instOfNat (nat_lit 55295)))), motive (@Option.some.{0} Char (Char.mk (@HAdd.h… ## <roundtrip>:1:429: unexpected identifier after decimal point; consider parenthesizing the number
+  example parseErr List.mergeSort.fun_cases_unfolding: ∀ {α : Type u_1} (motive : List.{u_1} α → (α → α → Bool) → (r : List.{u_1} α) → Prop) (case1 : ∀ (x : α → α → Bool), motive (@List.nil.{u_1} α) x (@List.nil.{u_1} α)) (case2 : ∀ (a : α) (x : α → α → Bool), motive (@List.cons.{u_1} α a (@Lis… ## <roundtrip>:4:1140: unexpected identifier after decimal point; consider parenthesizing the number
+  example parseErr String.Slice.Pattern.Model.split.induct_unfolding: ∀ {ρ : Type} (pat : ρ) [inst : @String.Slice.Pattern.Model.PatternModel ρ pat] [inst_1 : @String.Slice.Pattern.Model.StrictPatternModel ρ pat inst] {s : String.Slice} (motive : (firstRejected curr : String.Slice.Pos s) → (hle : @LE.le.{0} (… ## <roundtrip>:1:1243: unexpected identifier after decimal point; consider parenthesizing the number
+  example elabErr Nat.dfoldRev_add: ∀ {n m : Nat} {α : (i : Nat) → (h : autoParam.{0} (@LE.le.{0} Nat instLENat i (@HAdd.hAdd.{0, 0, 0} Nat Nat Nat (@instHAdd.{0} Nat instAddNat) n m)) Nat.dfoldRev_add._auto_5) → Type u} (f : (i : Nat) → (h : @LT.lt.{0} Nat instLTNat i (@HAdd… ## Application type mismatch: The argument   fun (i : Nat) => α i (?m.2 i) has type   (i : Nat) → Type u but is expected to have type   (i : Nat) →     (h :         autoParam.{0} (@LE.le.{0} Nat instLENat i (@HAdd.hAdd.{0, 0, 0} Nat Nat Nat (@instHAdd.{0} Nat instAddNat) n m))           Nat.dfoldRev._a…
+  example elabErr Nat.dfoldRev_congr: ∀ {n m : Nat} (w : @Eq.{1} Nat n m) {α : (i : Nat) → (h : autoParam.{0} (@LE.le.{0} Nat instLENat i n) Nat.dfoldRev_congr._auto_1) → Type u} (f : (i : Nat) → (h : @LT.lt.{0} Nat instLTNat i n) → α (@HAdd.hAdd.{0, 0, 0} Nat Nat Nat (@instHAd… ## Application type mismatch: The argument   fun (i : Nat) => α i (?m.2 i) has type   (i : Nat) → Type u but is expected to have type   (i : Nat) → (h : autoParam.{0} (@LE.le.{0} Nat instLENat i n) Nat.dfoldRev._auto_1) → Type u in the application   @Nat.dfoldRev.{u} n fun (i : Nat) => α i (?m.2 i
+  example elabErr Nat.dfoldRev_succ: ∀ {n : Nat} {α : (i : Nat) → (h : autoParam.{0} (@LE.le.{0} Nat instLENat i (@HAdd.hAdd.{0, 0, 0} Nat Nat Nat (@instHAdd.{0} Nat instAddNat) n (@OfNat.ofNat.{0} Nat (nat_lit 1) (instOfNatNat (nat_lit 1))))) Nat.dfoldRev_succ._auto_3) → Type… ## Application type mismatch: The argument   fun (i : Nat) => α i (?m.2 i) has type   (i : Nat) → Type u but is expected to have type   (i : Nat) →     (h :         autoParam.{0}           (@LE.le.{0} Nat instLENat i             (@HAdd.hAdd.{0, 0, 0} Nat Nat Nat (@instHAdd.{0} Nat instAddNat) n        …
+  example elabErr Nat.dfoldRev_zero: ∀ {α : (i : Nat) → (h : autoParam.{0} (@LE.le.{0} Nat instLENat i (@OfNat.ofNat.{0} Nat (nat_lit 0) (instOfNatNat (nat_lit 0)))) Nat.dfoldRev_zero._auto_1) → Type u} (f : (i : Nat) → (x : @LT.lt.{0} Nat instLTNat i (@OfNat.ofNat.{0} Nat (na… ## Application type mismatch: The argument   fun (i : Nat) => α i (?m.2 i) has type   (i : Nat) → Type u but is expected to have type   (i : Nat) →     (h :         autoParam.{0} (@LE.le.{0} Nat instLENat i (@OfNat.ofNat.{0} Nat (nat_lit 0) (instOfNatNat (nat_lit 0))))           Nat.dfoldRev._auto_1) →
+  example defEqOnly ExceptT.run_monadMap: ∀ {n : Type u → Type u_1} {m : Type u → Type u_2} {ε α : Type u} [inst : MonadFunctorT.{u, u_1, u_2} n m] (f : {β : Type u} → n β → n β) (x : ExceptT.{u, u_2} ε m α), @Eq.{u_2 + 1} (m (Except.{u, u} ε α)) (@ExceptT.run.{u, u_2} ε m α (@Mona… ## orig: #1 | reelab: fun {β._@.V_C.736333987._hygCtx._hyg.343804 : Type.{u}} => #1 β._@.V_C.736333987._hygCtx._hyg.343804
+  example defEqOnly Int.Internal.Linear.Expr.brecOn.eq: ∀ {motive : (t : Int.Internal.Linear.Expr) → Sort u} (t : Int.Internal.Linear.Expr) (F_1 : (t : Int.Internal.Linear.Expr) → (f : @Int.Internal.Linear.Expr.below.{u} motive t) → motive t), @Eq.{u} (motive t) (@Int.Internal.Linear.Expr.brecOn… ## orig: (Int.Internal.Linear.Expr.brecOn.go.{u} #2 #1 #0).2 | reelab: PProd.snd.{u, max 1 u} (#2 #1) (Int.Internal.Linear.Expr.below.{u} #2 #1) (Int.Internal.Linear.Expr.brecOn.go.{u} #2 #1 #0)
+  example defEqOnly Int.Internal.Linear.Poly.brecOn.eq: ∀ {motive : (t : Int.Internal.Linear.Poly) → Sort u} (t : Int.Internal.Linear.Poly) (F_1 : (t : Int.Internal.Linear.Poly) → (f : @Int.Internal.Linear.Poly.below.{u} motive t) → motive t), @Eq.{u} (motive t) (@Int.Internal.Linear.Poly.brecOn… ## orig: (Int.Internal.Linear.Poly.brecOn.go.{u} #2 #1 #0).2 | reelab: PProd.snd.{u, max 1 u} (#2 #1) (Int.Internal.Linear.Poly.below.{u} #2 #1) (Int.Internal.Linear.Poly.brecOn.go.{u} #2 #1 #0)
+  example defEqOnly Lean.Data.AC.Expr.brecOn.eq: ∀ {motive : (t : Lean.Data.AC.Expr) → Sort u} (t : Lean.Data.AC.Expr) (F_1 : (t : Lean.Data.AC.Expr) → (f : @Lean.Data.AC.Expr.below.{u} motive t) → motive t), @Eq.{u} (motive t) (@Lean.Data.AC.Expr.brecOn.{u} motive t F_1) (F_1 t (@Lean.Da… ## orig: (Lean.Data.AC.Expr.brecOn.go.{u} #2 #1 #0).2 | reelab: PProd.snd.{u, max 1 u} (#2 #1) (Lean.Data.AC.Expr.below.{u} #2 #1) (Lean.Data.AC.Expr.brecOn.go.{u} #2 #1 #0)
+  example mdataOnly Array.countP_eq_size_filter': ∀ {α : Type u_1} {p : α → Bool}, @Eq.{u_1 + 1} ((as : Array.{u_1} α) → Nat) (@Array.countP.{u_1} α p) (@Function.comp.{u_1 + 1, u_1 + 1, 1} (Array.{u_1} α) (Array.{u_1} α) Nat (@Array.size.{u_1} α) fun (as : Array.{u_1} α) => @Array.filter.… ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Array.{u_1} #1
+  example mdataOnly Array.emptyWithCapacity_eq: ∀ {α : Type u_1} {n : Nat}, @Eq.{u_1 + 1} (Array.{u_1} α) (@Array.emptyWithCapacity.{u_1} α n) (@List.toArray.{u_1} α (@List.nil.{u_1} α)) ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.eq_iff_flatten_eq: ∀ {α : Type u_1} {xss₁ xss₂ : Array.{u_1} (Array.{u_1} α)}, Iff (@Eq.{u_1 + 1} (Array.{u_1} (Array.{u_1} α)) xss₁ xss₂) (And (@Eq.{u_1 + 1} (Array.{u_1} α) (@Array.flatten.{u_1} α xss₁) (@Array.flatten.{u_1} α xss₂)) (@Eq.{1} (Array.{0} Nat… ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Array.{u_1} #2
+  example mdataOnly Array.filterMap_push: ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {f : α → Option.{u_2} β} {a : α} {xs : Array.{u_1} α} (w : @Eq.{1} Nat stop (@HAdd.hAdd.{0, 0, 0} Nat Nat Nat (@instHAdd.{0} Nat instAddNat) (@Array.size.{u_1} α xs) (@OfNat.ofNat.{0} Nat (nat_li… ## orig: [mdata save_info:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Array.filterMap_push.match_1.{u_2, succ u_2} #5 (fun (x : Option.{u_2} #5) => Array.{u_2} #5) (#3 #2) (fun (x._@.V_C.736333987._hygCtx._hyg.39823 : Unit) => Arr…
+  example exact Acc.brecOn: ∀ {α : Sort u} {r : α → α → Prop} {motive : (a : α) → (t : @Acc.{u} α r a) → Prop} {a : α} (t : @Acc.{u} α r a) (F_1 : ∀ (a : α) (t : @Acc.{u} α r a), @Acc.below.{u} α r motive a t → motive a t), motive a t 
+  example exact Acc.inv: ∀ {α : Sort u} {r : α → α → Prop} {x y : α} (h₁ : @Acc.{u} α r x) (h₂ : r y x), @Acc.{u} α r y 
+  example exact Acc.inv_of_transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {x y : α} (h₁ : @Acc.{u_1} α r x) (h₂ : @Relation.TransGen.{u_1} α r y x), @Acc.{u_1} α r y 
+  example exact Acc.ndrecOn_eq_ndrecOnC: @Eq.{imax (u_1 + 1) (max 1 u_1) (max u_1 (u_2 + 1)) u_1 (imax u_1 (imax u_1 u_2) u_2) u_2} ({α : Sort u_1} → {r : α → α → Prop} → {C : α → Sort u_2} → {a : α} → (n : @Acc.{u_1} α r a) → (m : (x : α) → (∀ (y : α), r y x → @Acc.{u_1} α r y) →… 
+
+VARIANT D-default-excludeGenerated prefixes=[Init, Std] stride=1 excludeGenerated=true theorems=46449 wall_ms=253726 us_per_thm=5462 printed_chars=7658189
+  delabErr: 0
+  omission: 4193
+  parseErr: 671
+  elabErr: 3580
+  notDefEq: 453
+  defEqOnly: 1293
+  mdataOnly: 134
+  eqvOnly: 0
+  exact: 36125
+  category 471 elabErr :: typeclass instance problem is stuck   Std.Iterat
+  category 455 elabErr :: residual metavariables
+  category 314 elabErr :: Invalid field notation: Type of   ∅ is not known
+  category 310 elabErr :: failed to prove index is valid, possible solutio
+  category 153 elabErr :: invalid {...} notation, expected type is not kno
+  category 106 parseErr :: <roundtrip>:9:99: expected end of input
+  category 98 parseErr :: <roundtrip>:9:999: expected ':'
+  category 96 parseErr :: <roundtrip>:9:999: expected token
+  category 90 elabErr :: failed to synthesize instance of type class   St
+  category 82 parseErr :: <roundtrip>:9:9: expected ':'
+  category 69 parseErr :: <roundtrip>:9:999: expected '_' or identifier
+  category 63 elabErr :: invalid coercion notation, expected type is not 
+  category 62 elabErr :: typeclass instance problem is stuck   LT ?m.99  
+  category 52 elabErr :: Type mismatch: Alternative has type   motive (Le
+  category 48 elabErr :: typeclass instance problem is stuck   LE ?m.99  
+  /usr/bin/time: Elapsed (wall clock) time (h:mm:ss or m:ss): 4:29.17
+  /usr/bin/time: Maximum resident set size (kbytes): 5136532
+  example omission Array.anyM_eq_anyM_loop: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {as : Array α} {start stop : Nat}, Array.anyM p as start stop = Array.anyM.loop p as (min stop as.size) ⋯ start 
+  example omission Array.anyM_loop_cons: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {a : α} {as : List α} {stop start : Nat} (h : stop + 1 ≤ (a :: as).length), Array.anyM.loop p { toList := a :: as } (stop + 1) h (start + 1) = Array.anyM.loop p { toLi… 
+  example omission Array.attachWith_append: ∀ {α : Type u_1} {P : α → Prop} {xs ys : Array α} {H : ∀ (a : α), a ∈ xs ++ ys → P a}, (xs ++ ys).attachWith P H = xs.attachWith P ⋯ ++ ys.attachWith P ⋯ 
+  example omission Array.attachWith_congr: ∀ {α : Type u_1} {xs ys : Array α} (w : xs = ys) {P : α → Prop} {H : ∀ (x : α), x ∈ xs → P x}, xs.attachWith P H = ys.attachWith P ⋯ 
+  example parseErr BitVec.getLsbD_ofNatLT: ∀ {n : Nat} (x : Nat) (lt : x < 2 ^ n) (i : Nat), (x#'lt).getLsbD i = x.testBit i ## <roundtrip>:1:52: expected ')', ',' or ':'
+  example parseErr BitVec.getMsbD_ofNatLT: ∀ {n x i : Nat} (h : x < 2 ^ n), (x#'h).getMsbD i = (decide (i < n) && x.testBit (n - 1 - i)) ## <roundtrip>:1:35: expected ')', ',' or ':'
+  example parseErr BitVec.ofNatLT_eq_ofNat: ∀ {w n : Nat} (hn : n < 2 ^ w), n#'hn = BitVec.ofNat w n ## <roundtrip>:1:33: expected end of input
+  example parseErr BitVec.ofNatLT_zero: ∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w ## <roundtrip>:1:34: missing end of character literal
+  example elabErr Acc.ndrecOn_eq_ndrecOnC: @Acc.ndrecOn = @Acc.ndrecOnC ## residual metavariables
+  example elabErr Acc.ndrec_eq_ndrecC: @Acc.ndrec = @Acc.ndrecC ## residual metavariables
+  example elabErr Acc.rec_eq_recC: @Acc.rec = @Acc.recC ## residual metavariables
+  example elabErr Add.add_eq_hAdd: ∀ {α : Type u} [inst : Add α], Add.add = HAdd.hAdd ## typeclass instance problem is stuck   Add ?m.8  Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Add` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.  Hint: Adding type annotations and suppl…
+  example notDefEq Array.mapFinIdx_eq_iff: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {ys : Array β}, xs.mapFinIdx f = ys ↔ ∃ h, ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1 ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapFinIdx_induction: ∀ {α : Type u_1} {β : Type u_2} (xs : Array α) (f : (i : Nat) → α → i < xs.size → β) (motive : Nat → Prop), motive 0 → ∀ (p : (i : Nat) → β → i < xs.size → Prop), (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i] h) h ∧ motive (i + … ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapFinIdx_spec: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {p : (i : Nat) → β → i < xs.size → Prop}, (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i] h) h) → ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[… ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapIdx_induction: ∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α} {motive : Nat → Prop}, motive 0 → ∀ {p : (i : Nat) → β → i < xs.size → Prop}, (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i]) h ∧ motive (i + 1)) → motive xs.size ∧… ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example defEqOnly Array.all_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.all_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example mdataOnly Array.getElem?_swap: ∀ {α : Type u_1} {xs : Array α} {i j : Nat} (hi : i < xs.size) (hj : j < xs.size) {k : Nat}, (xs.swap i j hi hj)[k]? = if j = k then some xs[i] else if i = k then some xs[j] else xs[k]? ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.getInternal_eq_getElem: ∀ {α : Type u_1} (a : Array α) (i : Nat) (h : i < a.size), a.getInternal i h = a[i] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set!_eq_setIfInBounds: ∀ {α : Type u_1} {xs : Array α} {i : Nat} {v : α}, xs.set! i v = xs.setIfInBounds i v ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set_push: ∀ {α : Type u_1} {i : Nat} {xs : Array α} {x y : α} {h : i < (xs.push x).size}, (xs.push x).set i y h = if x_1 : i < xs.size then (xs.set i y x_1).push x else xs.push y ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example exact Acc.inv: ∀ {α : Sort u} {r : α → α → Prop} {x y : α}, Acc r x → r y x → Acc r y 
+  example exact Acc.inv_of_transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {x y : α}, Acc r x → Relation.TransGen r y x → Acc r y 
+  example exact Acc.transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {a : α}, Acc r a → Acc (Relation.TransGen r) a 
+  example exact And.comm: ∀ {a b : Prop}, a ∧ b ↔ b ∧ a 
+
+VARIANT E-pp.analyze+checkInstances prefixes=[Init, Std] stride=1 excludeGenerated=false theorems=50421 wall_ms=515968 us_per_thm=10233 printed_chars=10038483
+  delabErr: 0
+  omission: 5110
+  parseErr: 604
+  elabErr: 2037
+  notDefEq: 239
+  defEqOnly: 2479
+  mdataOnly: 223
+  eqvOnly: 0
+  exact: 39729
+  category 689 elabErr :: Invalid field notation: Type of   m is not known
+  category 687 elabErr :: failed to synthesize instance of type class   Ge
+  category 116 parseErr :: <roundtrip>:9:99: expected end of input
+  category 103 elabErr :: residual metavariables
+  category 97 parseErr :: <roundtrip>:9:999: expected token
+  category 70 parseErr :: <roundtrip>:9:999: expected ':'
+  category 62 parseErr :: <roundtrip>:9:9: expected ':'
+  category 52 elabErr :: Type mismatch: Alternative has type   motive (Le
+  category 49 parseErr :: <roundtrip>:9:99: expected ')', ',' or ':'
+  category 48 elabErr :: failed to synthesize instance of type class   St
+  category 39 elabErr :: Invalid pattern variable: Variable name must be 
+  category 35 parseErr :: <roundtrip>:9:99: expected token
+  category 35 parseErr :: <roundtrip>:9:999: expected '_' or identifier
+  category 29 elabErr :: Type mismatch: Alternative has type   motive (St
+  category 24 elabErr :: Invalid pattern: Expected a constructor or const
+  /usr/bin/time: Elapsed (wall clock) time (h:mm:ss or m:ss): 8:53.26
+  /usr/bin/time: Maximum resident set size (kbytes): 5576540
+  example omission Array.anyM.loop.congr_simp: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p p_1 : α → m Bool), p = p_1 → ∀ (as as_1 : Array α) (e_as : as = as_1) (stop stop_1 : Nat) (e_stop : stop = stop_1) (h : stop ≤ as.size) (j j_1 : Nat), j = j_1 → Array.anyM.loop p as sto… 
+  example omission Array.anyM.loop.eq_def: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p : α → m Bool) (as : Array α) (stop : Nat) (h : stop ≤ as.size) (j : Nat),
+  example omission Array.anyM_eq_anyM_loop: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {as : Array α} {start stop : Nat}, Array.anyM p as start stop = Array.anyM.loop p as (min stop as.size) ⋯ start 
+  example omission Array.anyM_loop_cons: ∀ {m : Type → Type u_1} {α : Type u_2} [inst : Monad m] {p : α → m Bool} {a : α} {as : List α} {stop start : Nat} (h : stop + 1 ≤ (a :: as).length), Array.anyM.loop p { toList := a :: as : Array α } (stop + 1) h (start + 1) = Array.anyM.loo… 
+  example parseErr BitVec.getLsbD_ofNatLT: ∀ {n : Nat} (x : Nat) (lt : x < 2 ^ n) (i : Nat), (x#'lt).getLsbD i = x.testBit i ## <roundtrip>:1:52: expected ')', ',' or ':'
+  example parseErr BitVec.getMsbD_ofNatLT: ∀ {n x i : Nat} (h : x < 2 ^ n), (x#'h).getMsbD i = (decide (i < n) && x.testBit (n - 1 - i)) ## <roundtrip>:1:35: expected ')', ',' or ':'
+  example parseErr BitVec.ofNatLT_eq_ofNat: ∀ {w n : Nat} (hn : n < 2 ^ w), n#'hn = BitVec.ofNat w n ## <roundtrip>:1:33: expected end of input
+  example parseErr BitVec.ofNatLT_zero: ∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w ## <roundtrip>:1:34: missing end of character literal
+  example elabErr Acc.ndrecOn_eq_ndrecOnC: @Acc.ndrecOn = @Acc.ndrecOnC ## residual metavariables
+  example elabErr Acc.ndrec_eq_ndrecC: @Acc.ndrec = @Acc.ndrecC ## residual metavariables
+  example elabErr Acc.rec_eq_recC: @Acc.rec = @Acc.recC ## residual metavariables
+  example elabErr Add.add_eq_hAdd: ∀ {α : Type u} [inst : Add α], Add.add = HAdd.hAdd ## typeclass instance problem is stuck   Add (?m.8 (α := α) (inst := inst))  Note: Lean will not try to resolve this typeclass instance problem because the type argument to `Add` contains metavariables. This argument must be fully determined before Lean will try to resolve the typeclass.  Hint: Adding …
+  example notDefEq Array.prod_empty: ∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], Array.prod #[] = 1 ## orig: Eq.{succ u_1} | reelab: Eq.{1}
+  example notDefEq Array.prod_eq_foldl: ∀ {α : Type u_1} [inst : One α] [inst_1 : Mul α] [Std.Associative fun (x1 : α) x2 => x1 * x2] [Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1] {xs : Array α}, xs.prod = Array.foldl (fun x1 x2 => x1 * x2) 1 xs ## orig: Std.LawfulIdentity.{succ u_1} | reelab: Std.LawfulIdentity.{1}
+  example notDefEq Array.prod_push: ∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α] [Std.Associative fun (x1 : α) x2 => x1 * x2] [Std.LawfulIdentity (fun x1 x2 => x1 * x2) 1] {xs : Array α} {x : α}, (xs.push x).prod = xs.prod * x ## orig: Std.LawfulIdentity.{succ u_1} | reelab: Std.LawfulIdentity.{1}
+  example notDefEq Array.sum_empty: ∀ {α : Type u_1} [inst : Add α] [inst_1 : Zero α], Array.sum #[] = 0 ## orig: Eq.{succ u_1} | reelab: Eq.{1}
+  example defEqOnly Array.all_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.all_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.any_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example mdataOnly Array.countP_eq_size_filter': ∀ {α : Type u_1} {p : α → Bool}, Array.countP p = Function.comp (β := Array α) Array.size fun as => Array.filter p as ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Array.{u_1} #1
+  example mdataOnly Array.emptyWithCapacity_eq: ∀ {α : Type u_1} {n : Nat}, Eq.{u_1 + 1} (α := Array α) (Array.emptyWithCapacity n) #[] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.mkEmpty_eq: ∀ {α : Type u_1} {n : Nat}, Eq.{u_1 + 1} (α := Array α) (Array.mkEmpty n) #[] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set!_eq_setIfInBounds: ∀ {α : Type u_1} {xs : Array α} {i : Nat} {v : α}, xs.set! i v = xs.setIfInBounds i v ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example exact Acc.brecOn: ∀ {α : Sort u} {r : α → α → Prop} {motive : (a : α) → Acc r a → Prop} {a : α} (t : Acc r a), (∀ (a : α) (t : Acc r a), Acc.below (r := r) (motive := motive) t → motive a t) → motive a t 
+  example exact Acc.inv: ∀ {α : Sort u} {r : α → α → Prop} {x y : α}, Acc r x → r y x → Acc r y 
+  example exact Acc.inv_of_transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {x y : α}, Acc r x → Relation.TransGen r y x → Acc r y 
+  example exact Acc.transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {a : α}, Acc r a → Acc (Relation.TransGen r) a 
+
+VARIANT F-proofs+deepTerms prefixes=[Init, Std] stride=1 excludeGenerated=false theorems=50421 wall_ms=321521 us_per_thm=6376 printed_chars=9037036
+  delabErr: 0
+  omission: 0
+  parseErr: 764
+  elabErr: 5349
+  notDefEq: 480
+  defEqOnly: 2261
+  mdataOnly: 154
+  eqvOnly: 0
+  exact: 41413
+  category 1183 elabErr :: invalid {...} notation, expected type is not kno
+  category 761 elabErr :: residual metavariables
+  category 500 elabErr :: typeclass instance problem is stuck   Std.Iterat
+  category 354 elabErr :: failed to prove index is valid, possible solutio
+  category 314 elabErr :: Invalid field notation: Type of   ∅ is not known
+  category 133 parseErr :: <roundtrip>:9:999: expected token
+  category 114 parseErr :: <roundtrip>:9:99: expected end of input
+  category 102 parseErr :: <roundtrip>:9:999: expected ':'
+  category 96 elabErr :: failed to synthesize instance of type class   St
+  category 82 parseErr :: <roundtrip>:9:9: expected ':'
+  category 69 parseErr :: <roundtrip>:9:999: expected '_' or identifier
+  category 64 elabErr :: invalid coercion notation, expected type is not 
+  category 62 elabErr :: typeclass instance problem is stuck   LT ?m.99  
+  category 61 elabErr :: Invalid pattern variable: Variable name must be 
+  category 59 elabErr :: Invalid match expression: The type of pattern va
+  /usr/bin/time: Elapsed (wall clock) time (h:mm:ss or m:ss): 5:41.52
+  /usr/bin/time: Maximum resident set size (kbytes): 6099788
+  example parseErr Array.eraseIdx.induct: ∀ {α : Type u} (motive : (xs : Array α) → (i : Nat) → i < xs.size → Prop),
+  example parseErr BitVec.getLsbD_ofNatLT: ∀ {n : Nat} (x : Nat) (lt : x < 2 ^ n) (i : Nat), (x#'lt).getLsbD i = x.testBit i ## <roundtrip>:1:52: expected ')', ',' or ':'
+  example parseErr BitVec.getMsbD_ofNatLT: ∀ {n x i : Nat} (h : x < 2 ^ n), (x#'h).getMsbD i = (decide (i < n) && x.testBit (n - 1 - i)) ## <roundtrip>:1:35: expected ')', ',' or ':'
+  example parseErr BitVec.ofNatLT.congr_simp: ∀ {w : Nat} (i i_1 : Nat) (e_i : i = i_1) (p : i < 2 ^ w), i#'p = i_1#'(e_i ▸ p) ## <roundtrip>:1:60: expected end of input
+  example elabErr Acc.brecOn: ∀ {α : Sort u} {r : α → α → Prop} {motive : (a : α) → Acc r a → Prop} {a : α} (t : Acc r a), (∀ (a : α) (t : Acc r a), Acc.below t → motive a t) → motive a t ## residual metavariables
+  example elabErr Acc.ndrecOn_eq_ndrecOnC: @Acc.ndrecOn = @Acc.ndrecOnC ## residual metavariables
+  example elabErr Acc.ndrec_eq_ndrecC: @Acc.ndrec = @Acc.ndrecC ## residual metavariables
+  example elabErr Acc.rec_eq_recC: @Acc.rec = @Acc.recC ## residual metavariables
+  example notDefEq Array.mapFinIdx_eq_iff: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {ys : Array β}, xs.mapFinIdx f = ys ↔ ∃ h, ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1 ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapFinIdx_induction: ∀ {α : Type u_1} {β : Type u_2} (xs : Array α) (f : (i : Nat) → α → i < xs.size → β) (motive : Nat → Prop), motive 0 → ∀ (p : (i : Nat) → β → i < xs.size → Prop), (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i] h) h ∧ motive (i + … ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapFinIdx_spec: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {p : (i : Nat) → β → i < xs.size → Prop}, (∀ (i : Nat) (h : i < xs.size), p i (f i xs[i] h) h) → ∃ eq, ∀ (i : Nat) (h : i < xs.size), p i (xs.mapFinIdx f)[… ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example notDefEq Array.mapIdx_induction: ∀ {α : Type u_1} {β : Type u_2} {f : Nat → α → β} {xs : Array α} {motive : Nat → Prop}, motive 0 → ∀ {p : (i : Nat) → β → i < xs.size → Prop}, (∀ (i : Nat) (h : i < xs.size), motive i → p i (f i xs[i]) h ∧ motive (i + 1)) → motive xs.size ∧… ## orig: Array.size.{u_2} | reelab: Std.Rio.upper.{0}
+  example defEqOnly Array.all_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.all_filterMap': ∀ {α : Type u_1} {β : Type u_2} {stop : Nat} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example defEqOnly Array.anyM.loop.congr_simp: ∀ {α : Type u} {m : Type → Type w} [inst : Monad m] (p p_1 : α → m Bool), p = p_1 → ∀ (as as_1 : Array α) (e_as : as = as_1) (stop stop_1 : Nat) (e_stop : stop = stop_1) (h : stop ≤ as.size) (j j_1 : Nat), j = j_1 → Array.anyM.loop p as sto… ## orig: Eq.ndrec.{0, succ u} | reelab: Eq.rec.{0, succ u}
+  example defEqOnly Array.any_filterMap: ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : α → Option β} {p : β → Bool},
+  example mdataOnly Array.getElem?_swap: ∀ {α : Type u_1} {xs : Array α} {i j : Nat} (hi : i < xs.size) (hj : j < xs.size) {k : Nat}, (xs.swap i j hi hj)[k]? = if j = k then some xs[i] else if i = k then some xs[j] else xs[k]? ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.getInternal_eq_getElem: ∀ {α : Type u_1} (a : Array α) (i : Nat) (h : i < a.size), a.getInternal i h = a[i] ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set!_eq_setIfInBounds: ∀ {α : Type u_1} {xs : Array α} {i : Nat} {v : α}, xs.set! i v = xs.setIfInBounds i v ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example mdataOnly Array.set_push: ∀ {α : Type u_1} {i : Nat} {xs : Array α} {x y : α} {h : i < (xs.push x).size}, (xs.push x).set i y h = if x_1 : i < xs.size then (xs.set i y x_1).push x else xs.push y ## orig: [mdata borrowed:1 MDATA_ONLY_IN_ORIGINAL] | reelab: Nat
+  example exact Acc.inv: ∀ {α : Sort u} {r : α → α → Prop} {x y : α}, Acc r x → r y x → Acc r y 
+  example exact Acc.inv_of_transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {x y : α}, Acc r x → Relation.TransGen r y x → Acc r y 
+  example exact Acc.transGen: ∀ {α : Sort u_1} {r : α → α → Prop} {a : α}, Acc r a → Acc (Relation.TransGen r) a 
+  example exact And.comm: ∀ {a b : Prop}, a ∧ b ↔ b ∧ a 
+

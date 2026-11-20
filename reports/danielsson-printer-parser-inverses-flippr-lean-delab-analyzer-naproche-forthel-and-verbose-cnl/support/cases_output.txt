@@ -1,0 +1,21 @@
+$ lean Cases.lean
+@Array.mapFinIdx_eq_iff : ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β}
+  {ys : Array β}, xs.mapFinIdx f = ys ↔ ∃ h, ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1
+@Array.mapFinIdx_eq_iff : ∀ {α : Type u_1} {β : Type u_2} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β}
+  {ys : Array β},
+  xs.mapFinIdx f = ys ↔ ∃ (h : ys.size = xs.size), ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1
+@BitVec.ofNatLT_zero : ∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w
+∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w : Prop
+@Array.foldl_min : ∀ {α : Type u_1} [inst : Min α] [Std.IdempotentOp min] [Std.Associative min] {xs : Array α} {a : α},
+  Array.foldl min a xs = min a (xs.min?.getD a)
+$ lean Cases2.lean
+Cases2.lean:5:41: error: missing end of character literal
+∀ {w : Nat} {h : 0 < 2 ^ w}, 0#'h = 0#w : Prop
+∀ {α β : Type} {xs : Array α} {f : (i : Nat) → α → i < xs.size → β} {ys : Array β},
+  xs.mapFinIdx f = ys ↔
+    ∃ (h : (*...xs.toList.length).upper = ys.size), ∀ (i : Nat) (h_1 : i < xs.size), ys[i] = f i xs[i] h_1 : Prop
+$ lean Cases3.lean
+∀ {M : Type u} [inst : Lean.Grind.AddCommGroup M], (-0 : Int) = (0 : Int) : Prop
+∀ {α : Type u_1} [inst : Mul α] [inst_1 : One α], #[].prod = (1 : Nat) : Prop
+∀ {n : Nat} {x : BitVec n}, x.toNat % (2 : Nat) ^ n = x.toNat : Prop
+@BitVec.toNat_mod_cancel' : ∀ {n : Nat} {x : BitVec n}, (↑x.toNat : Int) % (↑((2 : Nat) ^ n) : Int) = (↑x.toNat : Int)

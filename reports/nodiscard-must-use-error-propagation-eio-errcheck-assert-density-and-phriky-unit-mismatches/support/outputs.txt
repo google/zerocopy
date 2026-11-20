@@ -1,0 +1,117 @@
+Host: Linux x86_64, 96 logical CPUs (Intel Xeon @ 2.60 GHz), 236 GiB RAM. Observed 2026-11-20.
+
+$ gcc --version | head -1
+gcc (Debian 15.2.0-14) 15.2.0
+
+$ gcc -std=c23 -c -o /dev/null wur.c
+wur.c:12:5: warning: ignoring return value of ‘modern’, declared with attribute ‘nodiscard’ [-Wunused-result]
+wur.c:14:5: warning: ignoring return value of ‘modern_reason’, declared with attribute ‘nodiscard’: "check the status" [-Wunused-result]
+wur.c:10:5: warning: ignoring return value of ‘legacy’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+wur.c:11:11: warning: ignoring return value of ‘legacy’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+wur.c:6:23: warning: ignoring return value of ‘legacy’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+
+$ g++ -std=c++20 -c -o /dev/null nd.cpp
+nd.cpp:8:6: warning: ignoring return value of ‘int f()’, declared with attribute ‘nodiscard’ [-Wunused-result]
+nd.cpp:10:7: warning: ignoring returned value of type ‘Status’, declared with attribute ‘nodiscard’ [-Wunused-result]
+nd.cpp:13:9: warning: ignoring returned value of type ‘Status’, declared with attribute ‘nodiscard’ [-Wunused-result]
+nd.cpp:14:12: warning: ignoring return value of ‘Guard::Guard(int)’, declared with attribute ‘nodiscard’ [-Wunused-result]
+
+$ gcc -std=c23 -Wno-unused-result -c -o /dev/null wur.c   (no output expected)
+
+$ rustc --version --verbose
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+binary: rustc
+commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1
+commit-date: 2026-11-11
+
+$ rustc --edition 2024 --crate-type bin --emit=metadata -o mu.rmeta mu.rs
+warning: unused return value of `g` that must be used	  --> mu.rs:15:5
+warning: unused `Result` that must be used	  --> mu.rs:17:5
+warning: unused `Result` that must be used	  --> mu.rs:20:5
+warning: unused return value of `g` that must be used	  --> mu.rs:22:5
+warning: unused return value of `T::t` that must be used	  --> mu.rs:23:5
+warning: unused `Guard` that must be used	  --> mu.rs:24:5
+warning: unused `Result` in tuple element 0 that must be used	  --> mu.rs:26:6
+warning: unused boxed `Result` that must be used	  --> mu.rs:27:5
+warning: unused return value of `Box::<T>::new` that must be used	  --> mu.rs:27:5
+warning: unused array of `Result` that must be used	  --> mu.rs:28:5
+warning: calls to `std::mem::drop` with a value that implements `Copy` does nothing	  --> mu.rs:29:5
+warning: unused arithmetic operation that must be used	  --> mu.rs:30:5
+warning: unused `Map` that must be used	  --> mu.rs:31:5
+warning: 13 warnings emitted	
+
+$ rustc --edition 2024 --crate-type bin --emit=metadata -W unused_results -o mu.rmeta mu.rs   (unused_results lines only)
+warning: unused result of type `i32`	  --> mu.rs:18:16
+warning: unused result of type `i32`	  --> mu.rs:19:5
+warning: unused result of type `i32`	  --> mu.rs:21:5
+warning: unused result of type `Option<Result<(), ()>>`	  --> mu.rs:25:5
+warning: unused result of type `usize`	  --> mu.rs:32:35
+
+$ go version
+go version go1.27.3 linux/amd64
+
+$ errcheck ./...          (in godemo; errcheck built from kisielk/errcheck@59d0c8437e9f9e666d6b5ab02e55a093eecf7736)
+demo.go:13:34:	func callIt(fn func() error) { fn() } // C13: the wrapper itself drops the error
+demo.go:18:9:	mayFail()                              // C1 bare call
+demo.go:20:15:	defer f.Close()                        // C3 deferred Close
+demo.go:21:12:	go mayFail()                           // C4 go statement
+demo.go:22:13:	fmt.Fprintf(w, "x")                    // C5 fmt.Fprintf to an arbitrary io.Writer
+demo.go:34:4:	cb()                                   // C10 call through a function value
+demo.go:35:35:	func() error { return mayFail() }()    // C11 immediately-invoked closure
+demo.go:41:12:	errors.New("x")                        // C16 constructed error discarded
+
+$ errcheck -blank -asserts ./...
+demo.go:13:34:	func callIt(fn func() error) { fn() } // C13: the wrapper itself drops the error
+demo.go:18:9:	mayFail()                              // C1 bare call
+demo.go:19:2:	_ = mayFail()                          // C2 explicit blank discard
+demo.go:20:15:	defer f.Close()                        // C3 deferred Close
+demo.go:21:12:	go mayFail()                           // C4 go statement
+demo.go:22:13:	fmt.Fprintf(w, "x")                    // C5 fmt.Fprintf to an arbitrary io.Writer
+demo.go:26:5:	n, _ := pair()                         // C8 blank in tuple
+demo.go:34:4:	cb()                                   // C10 call through a function value
+demo.go:35:35:	func() error { return mayFail() }()    // C11 immediately-invoked closure
+demo.go:37:7:	s := i.(string)                        // C12 unchecked type assertion
+demo.go:41:12:	errors.New("x")                        // C16 constructed error discarded
+
+$ go vet ./...
+demo.go:40:2: result of fmt.Sprintf call not used
+demo.go:41:2: result of errors.New call not used
+
+$ errcheck ./...          (in golang/sync v0.23.0, f75267d8412fc1dfd12b343644a7ea46e4d9c85d)
+errgroup/errgroup_example_md5all_test.go:85:9:	g.Wait()
+errgroup/errgroup_test.go:52:20:	resp.Body.Close()
+errgroup/errgroup_test.go:202:8:	g.Wait()
+errgroup/errgroup_test.go:208:8:	g.Wait()
+errgroup/errgroup_test.go:219:8:	g.Wait()
+errgroup/errgroup_test.go:228:8:	g.Wait()
+errgroup/errgroup_test.go:300:8:	g.Wait()
+semaphore/semaphore_bench_test.go:60:15:	sem.Acquire(context.Background(), size)
+semaphore/semaphore_test.go:23:14:	sem.Acquire(context.Background(), n)
+semaphore/semaphore_test.go:91:12:	w.Acquire(ctx, -1)
+semaphore/semaphore_test.go:119:13:	sem.Acquire(ctx, 1)
+semaphore/semaphore_test.go:126:13:	sem.Acquire(ctx, 1)
+semaphore/semaphore_test.go:149:13:	sem.Acquire(ctx, 1)
+semaphore/semaphore_test.go:156:13:	sem.Acquire(ctx, 1)
+semaphore/semaphore_test.go:175:17:	go sem.Acquire(ctx, n+1)
+semaphore/semaphore_test.go:207:14:	sem.Acquire(ctx, 1)
+semaphore/semaphore_test.go:216:16:	sem.Acquire(ctx, 1)
+semaphore/semaphore_test.go:221:13:	sem.Acquire(ctx, n)
+semaphore/semaphore_test.go:232:13:	sem.Acquire(context.Background(), 1)
+semaphore/semaphore_test.go:238:14:	sem.Acquire(ctx, 10)
+semaphore/semaphore_test.go:262:13:	sem.Acquire(context.Background(), 1)
+singleflight/singleflight_test.go:170:7:	g.Do("key", func() (i any, e error) {
+singleflight/singleflight_test.go:243:8:	g.Do("key", fn)
+singleflight/singleflight_test.go:309:11:	recover()
+singleflight/singleflight_test.go:352:12:	recover()
+singleflight/singleflight_test.go:354:8:	g.Do("", func() (any, error) {
+
+$ errcheck -ignoretests ./... | wc -l   (golang/sync)
+0
+
+$ errcheck -blank ./... | wc -l   (golang/sync)
+27
+
+Timings (/usr/bin/time -f '%e s wall, %M KB maxrss'; single runs, warm build cache unless noted):
+  errcheck probe: 0.48 s, 62212 KB; errcheck -blank -asserts probe: 0.62 s, 64844 KB; go vet probe: 0.38 s, 33908 KB
+  rustc --emit=metadata probe: 0.10 s, 112312 KB; gcc c23 probe: 0.06 s, 23164 KB; g++ c++20 probe: 0.05 s, 24864 KB
+  errcheck on golang/sync v0.23.0 (cold analysis cache): 5.75 s, 274648 KB; errcheck on its own repository: 1.29 s, 146520 KB

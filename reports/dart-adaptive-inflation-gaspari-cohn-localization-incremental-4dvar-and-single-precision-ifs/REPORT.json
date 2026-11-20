@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "domains/ensemble-data-assimilation",
+    "domains/ensemble-data-assimilation/adaptive-covariance-inflation",
+    "domains/ensemble-data-assimilation/gaspari-cohn-localization",
+    "domains/variational-data-assimilation",
+    "domains/variational-data-assimilation/incremental-4dvar",
+    "domains/numerical-weather-prediction-precision",
+    "verification/forecast-model-bitwise-reproducibility",
+    "verification/tangent-linear-adjoint-tests"
+  ],
+  "subjects": [
+    {
+      "name": "DART (Data Assimilation Research Testbed)",
+      "identity": {
+        "repository": "NCAR/DART",
+        "revision": "df5b08d03aa44c3a6b2b561a903b00b7193611ca"
+      }
+    },
+    {
+      "name": "JEDI OOPS (object-oriented prediction system)",
+      "identity": {
+        "repository": "JCSDA/oops",
+        "revision": "5625198ec14e3ad6ec0c77f59f9de9d210d4dcac"
+      }
+    },
+    {
+      "name": "ecTrans spectral transform library",
+      "identity": {
+        "repository": "ecmwf-ifs/ectrans",
+        "revision": "e63c36a5902444284a5650325be72a34097f7362"
+      }
+    },
+    {
+      "name": "WRF (Weather Research and Forecasting model)",
+      "identity": {
+        "repository": "wrf-model/WRF",
+        "revision": "06d4240ae989cc3e50af412bb472df3d9048783c"
+      }
+    },
+    {
+      "name": "Anderson 2001, An Ensemble Adjustment Kalman Filter for Data Assimilation",
+      "identity": {
+        "doi": "10.1175/1520-0493(2001)129<2884:AEAKFF>2.0.CO;2"
+      }
+    },
+    {
+      "name": "Anderson 2009, Spatially and temporally varying adaptive covariance inflation for ensemble filters",
+      "identity": {
+        "doi": "10.1111/j.1600-0870.2008.00361.x"
+      }
+    },
+    {
+      "name": "Gaspari and Cohn 1999, Construction of correlation functions in two and three dimensions",
+      "identity": {
+        "doi": "10.1002/qj.49712555417"
+      }
+    },
+    {
+      "name": "Courtier, Thepaut and Hollingsworth 1994, incremental 4D-Var",
+      "identity": {
+        "doi": "10.1002/qj.49712051912"
+      }
+    },
+    {
+      "name": "Vana et al. 2017, Single Precision in Weather Forecasting Models: An Evaluation with the IFS",
+      "identity": {
+        "doi": "10.1175/MWR-D-16-0228.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

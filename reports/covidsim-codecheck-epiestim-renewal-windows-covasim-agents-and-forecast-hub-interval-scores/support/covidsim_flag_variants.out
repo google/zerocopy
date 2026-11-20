@@ -1,0 +1,15 @@
+=== variant O2_contract_off: -O2 -ffp-contract=off
+  j1 exit=0 SUCCESS: checksums match
+  j2 exit=0 SUCCESS: checksums match
+=== variant O3: -O3
+  j1 exit=0 SUCCESS: checksums match
+  j2 exit=0 SUCCESS: checksums match
+=== variant O2_march_native_fma: -O2 -march=native -ffp-contract=fast
+  j1 exit=1 FAILURE: checksums do not match
+  j2 exit=1 FAILURE: checksums do not match
+=== variant O2_fastmath: -O2 -ffast-math
+  j1 exit=1 FAILURE: checksums do not match
+  j2 exit=1 FAILURE: checksums do not match
+=== variant O0: -O0
+  j1 exit=0 SUCCESS: checksums match
+  j2 exit=0 SUCCESS: checksums match
