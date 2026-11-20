@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "verification/rust",
+    "verification/separation-logic",
+    "rust/unsafe",
+    "anneal/theory",
+    "aeneas/borrows-regions",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f",
+        "doi": "10.1145/3547647"
+      }
+    },
+    {
+      "name": "Creusot",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8",
+        "doi": "10.1007/978-3-031-17244-1_6"
+      }
+    },
+    {
+      "name": "Verus",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e",
+        "doi": "10.1145/3586037"
+      }
+    },
+    {
+      "name": "Miri Tree Borrows reference interpreter",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "5a2649e9c3bfbada72665448bddf8b54021bec2e",
+        "doi": "10.1145/3735592"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "RefinedRust",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "publication": "Proceedings of the ACM on Programming Languages, Vol. 8, PLDI 2024, Article 196"
+      }
+    },
+    {
+      "name": "tiny-iris",
+      "identity": {
+        "repository": "JoJoDeveloping/tiny-iris",
+        "revision": "5b18c311e746d2ae4170b0d253b5d7d36ee5d6d9"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
