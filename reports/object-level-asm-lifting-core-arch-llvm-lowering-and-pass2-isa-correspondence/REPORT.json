@@ -1,0 +1,100 @@
+{
+  "topics": [
+    "isa/binary-lifting",
+    "compilers/verified-rustc",
+    "anneal/tcb-audit",
+    "lean/mechanization",
+    "isa/x86-64",
+    "isa/aarch64",
+    "isa/riscv64"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Anneal verification framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Rust compiler source (rustc_codegen_llvm and rustc_codegen_ssa)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Rust compiler nightly toolchain (rustc 1.98.0-nightly, LLVM 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "Rust stdarch (core::arch vendor intrinsics)",
+      "identity": {
+        "repository": "rust-lang/stdarch",
+        "revision": "ca26a96d57b295dcd927622877242940a0f3c02e"
+      }
+    },
+    {
+      "name": "Intel X86 Encoder Decoder (XED)",
+      "identity": {
+        "repository": "intelxed/xed",
+        "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+      }
+    },
+    {
+      "name": "Sail Armv9.4-A ISA specification",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+      }
+    },
+    {
+      "name": "ASLp partial evaluator for Arm ASL",
+      "identity": {
+        "repository": "UQ-PAC/ASLp",
+        "revision": "92e4fd949402056e16e3747e66922060be57ecc8",
+        "doi": "10.1007/978-3-031-74776-2_4"
+      }
+    },
+    {
+      "name": "LNSym Armv8 Lean 4 symbolic simulator",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 ISA specification",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Sail RISC-V reference specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "RISC-V Vector Extension Specification v1.0",
+      "identity": {
+        "standard": "RISC-V \"V\" Vector Extension",
+        "version": "1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
