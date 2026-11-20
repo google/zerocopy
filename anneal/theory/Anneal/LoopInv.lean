@@ -1199,17 +1199,19 @@ theorem evalRvalue_binaryOp {tys : List MirTy}
 /-- Step an assignment of a binary operation from the result of `evalRvalue`
 and the result of `writePlace`. -/
 theorem evalStatement_assign_binaryOp {body : Body} {frame : FrameState}
-    {cm : CallerMemory} {dst : Place} {op : BinOp} {lhs rhs : Operand}
-    {localTy dstTy : MirTy} {val : Val} {ls ls' : List LocalSlot}
+    {callers : List FrameState} {cm : CallerMemory} {dst : Place} {op : BinOp}
+    {lhs rhs : Operand} {localTy dstTy : MirTy} {val : Val}
+    {ls ls' : List LocalSlot}
     (hLoc : Trusted.MirSemantics.getElem? body.locals dst.localId =
       some localTy)
     (hTy : projectTy? localTy dst.projection = some dstTy)
     (hRv : evalRvalue body.locals frame.locals dstTy
       (.binaryOp op lhs rhs) = .ok (val, ls))
     (hW : writePlace ls dst dstTy val = .ok ls') :
-    evalStatement body frame cm (.assign dst (.binaryOp op lhs rhs)) =
+    evalStatement body frame callers cm (.assign dst (.binaryOp op lhs rhs)) =
       .step {
-        frames := [{ frame with stmtIdx := frame.stmtIdx + 1, locals := ls' }]
+        frames :=
+          { frame with stmtIdx := frame.stmtIdx + 1, locals := ls' } :: callers
         callerMem := cm
       } := by
   have hOv :
@@ -1240,17 +1242,17 @@ theorem evalStatement_assign_binaryOp {body : Body} {frame : FrameState}
 
 /-- Step a `switchInt` terminator on a scalar discriminant from the result of
 `evalSwitchBranches`. -/
-theorem evalTerminator_switchInt_scalar {body : Body} {bb : BasicBlock}
-    {frame : FrameState} {cm : CallerMemory} {discr : Operand}
-    {targets : SwitchTargets} {sv : ScalarVal} {ls : List LocalSlot}
-    {target : BasicBlockId}
+theorem evalTerminator_switchInt_scalar {p : Program} {body : Body}
+    {bb : BasicBlock} {frame : FrameState} {callers : List FrameState}
+    {cm : CallerMemory} {discr : Operand} {targets : SwitchTargets}
+    {sv : ScalarVal} {ls : List LocalSlot} {target : BasicBlockId}
     (hTerm : bb.terminator = .switchInt discr targets)
     (hDiscr : evalPrimitiveOperand body.locals frame.locals discr =
       .ok (.scalar sv, ls))
     (hSw : evalSwitchBranches sv.width sv.bits targets.otherwise
       targets.branches = .ok target) :
-    evalTerminator body bb frame cm =
-      jumpToBlock { frame with locals := ls } cm target := by
+    evalTerminator p body bb frame callers cm =
+      jumpToBlock { frame with locals := ls } callers cm target := by
   first
     | (unfold evalTerminator
        rw [hTerm]
@@ -1568,9 +1570,9 @@ theorem countDown_step_switch (acc : Nat) {k : Nat}
   have hSw : evalSwitchBranches .i32 (BitVec.ofNat 128 (k + 1)) 2
       [(BitVec.ofNat 128 0, 3)] = .ok 2 :=
     evalSwitchBranches_single_ne rfl (switch_beq_false_u32 hk)
-  have hTerm : evalTerminator countDownBody countDownHeader
-      (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)]) ⟨[]⟩ =
-      jumpToBlock (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)]) ⟨[]⟩ 2 :=
+  have hTerm : evalTerminator countDownProg countDownBody countDownHeader
+      (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)]) [] ⟨[]⟩ =
+      jumpToBlock (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)]) [] ⟨[]⟩ 2 :=
     evalTerminator_switchInt_scalar
       (discr := .copy ⟨1, []⟩)
       (targets := { branches := [(BitVec.ofNat 128 0, 3)], otherwise := 2 })
@@ -1603,7 +1605,7 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
       cases hChk
     | true => rfl
   have hStmt : evalStatement countDownBody
-      (frameAt 2 0 [u32Slot acc, u32Slot (k + 1)]) ⟨[]⟩ countDownDec =
+      (frameAt 2 0 [u32Slot acc, u32Slot (k + 1)]) [] ⟨[]⟩ countDownDec =
       .step (mkState 2 1 [u32Slot acc, u32Slot k]) :=
     evalStatement_assign_binaryOp (localTy := u32Ty) (dstTy := u32Ty)
       rfl rfl hRv hW
@@ -1632,7 +1634,7 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
       cases hChk
     | true => rfl
   have hStmt : evalStatement countDownBody
-      (frameAt 2 1 [u32Slot acc, u32Slot k]) ⟨[]⟩ countDownInc =
+      (frameAt 2 1 [u32Slot acc, u32Slot k]) [] ⟨[]⟩ countDownInc =
       .step (mkState 2 2 [u32Slot (acc + 1), u32Slot k]) :=
     evalStatement_assign_binaryOp (localTy := u32Ty) (dstTy := u32Ty)
       rfl rfl hRv hW

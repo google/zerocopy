@@ -56,7 +56,7 @@ This module proves the foundational codec, simulation-uniqueness, and
 
 Per-step simulation (`evalRefStep_eq`), end-to-end correspondence
 (`anneal_corresponds_to_miri`, `reachesResult_fault_iff_refReachesOutcome`,
-`miri_move_deinit_wiring_claim_holds`), and non-vacuity canaries (`D6`–`D18`)
+`miri_move_deinit_wiring_claim_holds`), and non-vacuity canaries (`D6`–`D24`)
 are proved in `Anneal.MirCorrespondenceProof`.
 -/
 
@@ -908,6 +908,15 @@ theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
     dsimp only [encodeTerminator, decodeTerminator]
     rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
     rfl
+  | callBuiltin builtin args dst t u =>
+    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
+      encodeOperand decodeOperand collectOperand_spec acc args
+    let ⟨h_sub₂, h_dec₂⟩ :=
+      collectPlace_spec (args.foldl collectOperand acc) dst
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeTerminator, decodeTerminator]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
 
 theorem collectBasicBlock_spec (acc : List MirTy) (bb : BasicBlock) :
     SubTable acc (collectBasicBlock acc bb) ∧
@@ -1055,7 +1064,7 @@ theorem collectTerminator_canonical (acc : List MirTy) (term : TerminatorKind)
   cases term with
   | goto _ | return_ | unreachable | unwindResume | unsupported => exact h
   | switchInt d _ | assert d _ _ _ _ => exact collectOperand_canonical acc d h
-  | call _ args dst _ _ =>
+  | call _ args dst _ _ | callBuiltin _ args dst _ _ =>
     exact collectPlace_canonical (args.foldl collectOperand acc) dst
       (foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
         collectOperand_canonical args h)
@@ -1107,43 +1116,103 @@ theorem unzipRefSlots_zipRefLocals {bodyLocals : List MirTy}
       simp only [List.length_cons, Nat.add_right_cancel_iff] at h_len
       exact congrArg (s :: ·) (ih h_len)
 
-/-- One-to-one uniqueness of `SimulationInv` (left-injective): any `RefState`
-`rs` corresponds to at most one $M_{\text{anneal}}$ `State`. -/
-theorem state_unique_of_simulationInv_base :
-    StateUniqueOfSimulationInvClaim := by
-  intro p s₁ s₂ rs h₁ h₂
-  let ⟨f₁, rf₁, _, hs₁, hrs₁, hcm₁, _, _, body₁, _, hlen₁, hrf₁⟩ := h₁
-  let ⟨f₂, rf₂, _, hs₂, hrs₂, hcm₂, _, _, body₂, _, hlen₂, hrf₂⟩ := h₂
-  rw [hrs₁] at hrs₂
-  injection hrs₂ with _ h_tail
-  injection h_tail with h_rf_eq
-  subst h_rf_eq
-  have h_def : f₁.defId = f₂.defId := by
-    have := congrArg RefFrameState.defId (hrf₁.symm.trans hrf₂)
-    exact this
-  have h_blk : f₁.blockIdx = f₂.blockIdx := by
-    have := congrArg RefFrameState.blockIdx (hrf₁.symm.trans hrf₂)
-    exact this
-  have h_stmt : f₁.stmtIdx = f₂.stmtIdx := by
-    have := congrArg RefFrameState.stmtIdx (hrf₁.symm.trans hrf₂)
-    exact this
+theorem list_reverse_inj {α : Type} {xs ys : List α}
+    (h : xs.reverse = ys.reverse) : xs = ys := by
+  have h' := congrArg List.reverse h
+  rw [List.reverse_reverse, List.reverse_reverse] at h'
+  exact h'
+
+theorem frame_unique_of_frameSimInv {p : Program} {f₁ f₂ : FrameState}
+    {rf : RefFrameState}
+    (h₁ : FrameSimInv p f₁ rf) (h₂ : FrameSimInv p f₂ rf) : f₁ = f₂ := by
+  let ⟨body₁, _, hlen₁, hrf₁⟩ := h₁
+  let ⟨body₂, _, hlen₂, hrf₂⟩ := h₂
+  have h_eq := hrf₁.symm.trans hrf₂
+  have h_def : f₁.defId = f₂.defId := congrArg RefFrameState.defId h_eq
+  have h_blk : f₁.blockIdx = f₂.blockIdx :=
+    congrArg RefFrameState.blockIdx h_eq
+  have h_stmt : f₁.stmtIdx = f₂.stmtIdx := congrArg RefFrameState.stmtIdx h_eq
+  have h_cont : f₁.returnCont = f₂.returnCont :=
+    congrArg RefFrameState.returnCont h_eq
   have h_loc_eq : zipRefLocals body₁.locals f₁.locals =
-      zipRefLocals body₂.locals f₂.locals := by
-    have := congrArg RefFrameState.locals (hrf₁.symm.trans hrf₂)
-    exact this
+      zipRefLocals body₂.locals f₂.locals :=
+    congrArg RefFrameState.locals h_eq
   have h_slots : f₁.locals = f₂.locals := by
     have h_u := congrArg unzipRefSlots h_loc_eq
     rw [unzipRefSlots_zipRefLocals hlen₁,
       unzipRefSlots_zipRefLocals hlen₂] at h_u
     exact h_u
-  have h_f : f₁ = f₂ := by
-    cases f₁; cases f₂
-    simp only [ FrameState.mk.injEq]
-    exact ⟨h_def, h_blk, h_stmt, h_slots⟩
-  subst h_f
+  cases f₁; cases f₂
+  simp only [FrameState.mk.injEq]
+  exact ⟨h_def, h_blk, h_stmt, h_slots, h_cont⟩
+
+theorem refFrame_unique_of_frameSimInv {p : Program} {f : FrameState}
+    {rf₁ rf₂ : RefFrameState}
+    (h₁ : FrameSimInv p f rf₁) (h₂ : FrameSimInv p f rf₂) : rf₁ = rf₂ := by
+  let ⟨body₁, hbody₁, _, hrf₁⟩ := h₁
+  let ⟨body₂, hbody₂, _, hrf₂⟩ := h₂
+  rw [hbody₁] at hbody₂
+  injection hbody₂ with h_b_eq
+  subst h_b_eq
+  exact hrf₁.trans hrf₂.symm
+
+theorem frames_unique_of_framesSimInv {p : Program} {fs₁ fs₂ : List FrameState}
+    {rfs : List RefFrameState}
+    (h₁ : FramesSimInv p fs₁ rfs) (h₂ : FramesSimInv p fs₂ rfs) :
+    fs₁ = fs₂ := by
+  induction rfs generalizing fs₁ fs₂ with
+  | nil =>
+    cases fs₁ with
+    | nil =>
+      cases fs₂ with
+      | nil => rfl
+      | cons _ _ => cases h₂
+    | cons _ _ => cases h₁
+  | cons rf rest ih =>
+    cases fs₁ with
+    | nil => cases h₁
+    | cons f₁ t₁ =>
+      cases fs₂ with
+      | nil => cases h₂
+      | cons f₂ t₂ =>
+        rw [frame_unique_of_frameSimInv h₁.1 h₂.1, ih h₁.2 h₂.2]
+
+theorem refFrames_unique_of_framesSimInv {p : Program} {fs : List FrameState}
+    {rfs₁ rfs₂ : List RefFrameState}
+    (h₁ : FramesSimInv p fs rfs₁) (h₂ : FramesSimInv p fs rfs₂) :
+    rfs₁ = rfs₂ := by
+  induction fs generalizing rfs₁ rfs₂ with
+  | nil =>
+    cases rfs₁ with
+    | nil =>
+      cases rfs₂ with
+      | nil => rfl
+      | cons _ _ => cases h₂
+    | cons _ _ => cases h₁
+  | cons f rest ih =>
+    cases rfs₁ with
+    | nil => cases h₁
+    | cons rf₁ t₁ =>
+      cases rfs₂ with
+      | nil => cases h₂
+      | cons rf₂ t₂ =>
+        rw [refFrame_unique_of_frameSimInv h₁.1 h₂.1, ih h₁.2 h₂.2]
+
+/-- One-to-one uniqueness of `SimulationInv` (left-injective): any `RefState`
+`rs` corresponds to at most one $M_{\text{anneal}}$ `State`. -/
+theorem state_unique_of_simulationInv_base :
+    StateUniqueOfSimulationInvClaim := by
+  intro p s₁ s₂ rs h₁ h₂
+  let ⟨rfs₁, _, _, hrs₁, hcm₁, _, hfs₁⟩ := h₁
+  let ⟨rfs₂, _, _, hrs₂, hcm₂, _, hfs₂⟩ := h₂
+  rw [hrs₁] at hrs₂
+  injection hrs₂ with _ h_rev
+  have h_rfs := list_reverse_inj h_rev
+  subst h_rfs
+  have h_frames := frames_unique_of_framesSimInv hfs₁ hfs₂
   cases s₁; cases s₂
   simp only [State.mk.injEq]
-  exact ⟨hs₁.trans hs₂.symm, hcm₁.symm.trans hcm₂⟩
+  exact ⟨h_frames, hcm₁.symm.trans hcm₂⟩
 
 /-- One-to-one uniqueness of `SimulationInv` (right-injective at fixed step
 counters): any $M_{\text{anneal}}$ `State` `s` and step counters
@@ -1152,18 +1221,13 @@ sentinel frame. -/
 theorem refState_unique_of_simulationInv_base :
     RefStateUniqueOfSimulationInvClaim := by
   intro p s rs₁ rs₂ h₁ h₂ h_steps h_max
-  let ⟨f₁, rf₁, retTy₁, hs₁, hrs₁, hcm₁, hret₁, _, body₁, hbody₁, _, hrf₁⟩ := h₁
-  let ⟨f₂, rf₂, retTy₂, hs₂, hrs₂, hcm₂, hret₂, _, body₂, hbody₂, _, hrf₂⟩ := h₂
-  rw [hs₁] at hs₂
-  injection hs₂ with h_f_eq
-  subst h_f_eq
-  rw [hbody₁] at hbody₂
-  injection hbody₂ with h_b_eq
-  subst h_b_eq
+  let ⟨rfs₁, retTy₁, _, hrs₁, hcm₁, hret₁, hfs₁⟩ := h₁
+  let ⟨rfs₂, retTy₂, _, hrs₂, hcm₂, hret₂, hfs₂⟩ := h₂
   rw [hret₁] at hret₂
   injection hret₂ with h_ret_eq
   subst h_ret_eq
-  subst hrf₁; subst hrf₂
+  have h_rfs := refFrames_unique_of_framesSimInv hfs₁ hfs₂
+  subst h_rfs
   cases rs₁; cases rs₂
   simp only [RefState.mk.injEq]
   exact ⟨hrs₁.trans hrs₂.symm, hcm₁.trans hcm₂.symm, h_steps, h_max⟩
@@ -1808,6 +1872,101 @@ theorem refWriteSlotPath?_eq {ts : List MirTy} {rproj : List RefProjectionElem}
             rw [ih h_es field]
             cases writeSlotPath? field es' new <;> rfl
         | _ => rfl
+
+theorem evalCallArgs_length {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot} {args : List Operand}
+    {pairs : List (MirTy × SlotVal)}
+    (h : evalCallArgs bodyLocals locals args = .ok (pairs, locals')) :
+    locals'.length = locals.length := by
+  induction args generalizing locals pairs with
+  | nil =>
+    injection h with h_p
+    injection h_p with _ h_loc
+    subst h_loc
+    rfl
+  | cons a rest ih =>
+    dsimp only [evalCallArgs] at h
+    cases h_op : evalOperandToSlot bodyLocals locals a with
+    | error _ => rw [h_op] at h; cases h
+    | ok r₁ =>
+      let ⟨ty, sv, l₁⟩ := r₁
+      rw [h_op] at h
+      dsimp only at h
+      cases h_rest : evalCallArgs bodyLocals l₁ rest with
+      | error _ => rw [h_rest] at h; cases h
+      | ok r₂ =>
+        let ⟨ps, l₂⟩ := r₂
+        rw [h_rest] at h
+        injection h with h_p
+        injection h_p with _ h_loc
+        subst h_loc
+        exact (ih h_rest).trans (evalOperandToSlot_length h_op)
+
+/-- `refProjectReturnTy?` agrees with `projectTy?` on every decoded place
+projection. -/
+theorem refProjectReturnTy?_eq (ty : MirTy) (proj : List ProjectionElem) :
+    refProjectReturnTy? ty proj = projectTy? ty proj := by
+  induction proj generalizing ty with
+  | nil => rfl
+  | cons e rest ih =>
+    cases ty with
+    | tuple fieldTys =>
+      cases e with
+      | field idx statedTy =>
+        dsimp only [refProjectReturnTy?, projectTy?]
+        cases MirSemantics.getElem? fieldTys idx with
+        | none => rfl
+        | some ft =>
+          dsimp only
+          rw [ih ft]
+      | deref | unsupported => rfl
+    | _ => rfl
+
+/-- `refWriteSlotPath?` over `proj.map toMiriReturnProjElem` agrees with
+`writeSlotPath?` over `proj`. -/
+theorem refWriteSlotPath?_toMiriReturnProjElem_eq (sv : SlotVal)
+    (proj : List ProjectionElem) (new : SlotVal) :
+    refWriteSlotPath? sv (proj.map toMiriReturnProjElem) new =
+      writeSlotPath? sv proj new := by
+  induction proj generalizing sv with
+  | nil => rfl
+  | cons e rest ih =>
+    cases sv with
+    | tuple fields =>
+      cases e with
+      | field idx _ =>
+        dsimp only [List.map, toMiriReturnProjElem, refWriteSlotPath?,
+          writeSlotPath?]
+        cases MirSemantics.getElem? fields idx with
+        | none => rfl
+        | some field =>
+          dsimp only
+          rw [ih field]
+          cases writeSlotPath? field rest new <;> rfl
+      | deref | unsupported => rfl
+    | _ => rfl
+
+/-- `decodeMiriProjElem` inverts `toMiriProjElem` to `decodeProjElem`. -/
+theorem decodeMiriProjElem_toMiriProjElem (ts : List MirTy)
+    (e : RefProjectionElem) :
+    decodeMiriProjElem ts (toMiriProjElem e) = decodeProjElem ts e := by
+  cases e <;> rfl
+
+/-- `decodeMiriPlace` inverts `toMiriPlace` to `decodePlace`. -/
+theorem decodeMiriPlace_toMiriPlace (ts : List MirTy) (rp : RefPlace) :
+    decodeMiriPlace ts (toMiriPlace rp) = decodePlace ts rp := by
+  cases rp with
+  | mk localId proj =>
+    dsimp only [decodeMiriPlace, decodePlace, toMiriPlace]
+    have h_map :
+        mapOption (decodeMiriProjElem ts) (proj.map toMiriProjElem) =
+          mapOption (decodeProjElem ts) proj := by
+      induction proj with
+      | nil => rfl
+      | cons e rest ih =>
+        dsimp only [List.map, mapOption]
+        rw [decodeMiriProjElem_toMiriProjElem, ih]
+    rw [h_map]
 
 /-- The translated projection of a reference place is empty exactly when the
 reference projection is. -/
@@ -4668,11 +4827,11 @@ theorem decodeScalar_beq_eq (w : IntWidth) (s : Bool) (x y : BitVec 128) :
       rw [h_t, beq_self_eq_true] at h_eq
       cases h_eq
 
-theorem evalRefSwitchScalarCase_eq (ts : List MirTy)
+theorem evalRefSwitchScalarCase_eq (rp : RefProg)
     (callerMem : CallerMemory) (sv : ScalarVal) (caseBits : BitVec 128)
-    (st : Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout
+    (st : Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout
       Unit RefStepMachine) :
-    (refTerminatorHooksFor ts callerMem).compareSwitchCase () (.scalar sv)
+    (refTerminatorHooksFor rp callerMem).compareSwitchCase () (.scalar sv)
         caseBits.toNat st =
       (st,
         if truncateBits sv.width caseBits != caseBits then
@@ -4704,11 +4863,11 @@ theorem evalRefSwitchScalarCase_eq (ts : List MirTy)
         decodeScalar ⟨sv.width, sv.signed, truncateBits sv.width caseBits⟩) = _
     rw [decodeScalar_beq_eq, truncateBits_idem]
 
-theorem evalRefSwitchBoolCase_eq (ts : List MirTy)
+theorem evalRefSwitchBoolCase_eq (rp : RefProg)
     (callerMem : CallerMemory) (b : Bool) (caseBits : BitVec 128)
-    (st : Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout
+    (st : Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout
       Unit RefStepMachine) :
-    (refTerminatorHooksFor ts callerMem).compareSwitchCase () (.bool b)
+    (refTerminatorHooksFor rp callerMem).compareSwitchCase () (.bool b)
         caseBits.toNat st =
       (st,
         match evalConstLit .bool (.scalar caseBits) with
@@ -4731,6 +4890,931 @@ theorem evalRefSwitchBoolCase_eq (ts : List MirTy)
       rw [evalRefBinOp_eq]
       rfl
     | scalar _ | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ => rfl
+
+private theorem miriScalar_toBits (w : IntWidth) (bits : BitVec 128) :
+    (miriScalar w bits).toBits (toMiriSize w) = .ok (truncateBits w bits) := by
+  have h : (miriScalar w bits).toBits (toMiriSize w) =
+      ((toMiriSize w).truncate bits).mapError ScalarIntError.sizeError := by
+    cases w <;> rfl
+  rw [h, size_truncate_eq]
+  rfl
+
+/-- `refReadPrimitiveArgs` agrees with `readPrimitiveArgs` element by element.
+-/
+theorem refReadPrimitiveArgs_eq (pairs : List (MirTy × SlotVal)) :
+    refReadPrimitiveArgs pairs = readPrimitiveArgs pairs := by
+  induction pairs with
+  | nil => rfl
+  | cons p rest ih =>
+    cases p with
+    | mk ty sv =>
+      dsimp only [refReadPrimitiveArgs, readPrimitiveArgs,
+        readRefPrimitiveSlot]
+      rw [refIsPrimitiveReadableTy_eq]
+      cases isPrimitiveReadableTy ty with
+      | false => rfl
+      | true =>
+        dsimp only [Bool.not, ite_false_eq_true]
+        cases sv.toVal? with
+        | none => rfl
+        | some v =>
+          dsimp only
+          rw [ih]
+          rfl
+
+private theorem nat_testBit_of_lt {raw k : Nat} (h : raw < HPow.hPow 2 k) :
+    Nat.testBit raw k = false := by
+  dsimp only [Nat.testBit]
+  rw [Nat.shiftRight_eq_zero raw k h]
+  rfl
+
+private theorem nat_div_pow_eq_one {raw k : Nat}
+    (h_lo : HPow.hPow 2 k ≤ raw) (h_hi : raw < HPow.hPow 2 (k + 1)) :
+    HDiv.hDiv raw (HPow.hPow 2 k) = 1 := by
+  have h_pos : 0 < HPow.hPow 2 k := Nat.pow_pos (by decide)
+  have h_sub_lt : raw - HPow.hPow 2 k < HPow.hPow 2 k := by
+    have h_add : raw - HPow.hPow 2 k + HPow.hPow 2 k <
+        HPow.hPow 2 k + HPow.hPow 2 k := by
+      rw [Nat.sub_add_cancel h_lo]
+      have h_pow : HPow.hPow 2 (k + 1) = HPow.hPow 2 k + HPow.hPow 2 k := by
+        rw [Nat.pow_succ, Nat.mul_two]
+      rw [← h_pow]
+      exact h_hi
+    exact Nat.lt_of_add_lt_add_right h_add
+  have h_eq : raw = (raw - HPow.hPow 2 k) + 1 * HPow.hPow 2 k := by
+    rw [Nat.one_mul, Nat.sub_add_cancel h_lo]
+  have h_div : HDiv.hDiv raw (HPow.hPow 2 k) =
+      HDiv.hDiv ((raw - HPow.hPow 2 k) + 1 * HPow.hPow 2 k) (HPow.hPow 2 k) :=
+    congrArg (fun x => HDiv.hDiv x (HPow.hPow 2 k)) h_eq
+  rw [h_div, Nat.add_mul_div_right _ _ h_pos, Nat.div_eq_of_lt h_sub_lt]
+
+private theorem nat_testBit_of_range {raw k : Nat}
+    (h_lo : HPow.hPow 2 k ≤ raw) (h_hi : raw < HPow.hPow 2 (k + 1)) :
+    Nat.testBit raw k = true := by
+  dsimp only [Nat.testBit]
+  rw [Nat.shiftRight_eq_div_pow, nat_div_pow_eq_one h_lo h_hi]
+  rfl
+
+private theorem nat_log2_eq_of_range (k : Nat) :
+    ∀ {raw : Nat}, HPow.hPow 2 k ≤ raw → raw < HPow.hPow 2 (k + 1) →
+      Nat.log2 raw = k := by
+  induction k with
+  | zero =>
+    intro raw h_lo h_hi
+    cases raw with
+    | zero => cases h_lo
+    | succ r =>
+      cases r with
+      | zero => rfl
+      | succ r' =>
+        have h_lt : Nat.succ (Nat.succ r') < 2 := h_hi
+        cases Nat.not_lt_zero r'
+          (Nat.lt_of_succ_lt_succ (Nat.lt_of_succ_lt_succ h_lt))
+  | succ k ih =>
+    intro raw h_lo h_hi
+    have h_ge2 : 2 ≤ raw := by
+      have h1 : 1 ≤ HPow.hPow 2 k := Nat.one_le_pow k 2 (by decide)
+      have h2 : 2 ≤ HPow.hPow 2 (k + 1) := by
+        rw [Nat.pow_succ, Nat.mul_two]
+        exact Nat.add_le_add h1 h1
+      exact Nat.le_trans h2 h_lo
+    rw [Nat.log2_def, ite_eq_left h_ge2]
+    have h_div_lo : HPow.hPow 2 k ≤ HDiv.hDiv raw 2 := by
+      rw [Nat.le_div_iff_mul_le (by decide)]
+      rw [← Nat.pow_succ]
+      exact h_lo
+    have h_div_hi : HDiv.hDiv raw 2 < HPow.hPow 2 (k + 1) := by
+      rw [Nat.div_lt_iff_lt_mul (by decide)]
+      rw [← Nat.pow_succ]
+      exact h_hi
+    rw [ih h_div_lo h_div_hi]
+
+private theorem countLeadingZerosNat_zero (width : Nat) :
+    countLeadingZerosNat 0 width = width := by
+  induction width with
+  | zero => rfl
+  | succ k ih =>
+    change (if Nat.testBit 0 k then 0 else countLeadingZerosNat 0 k + 1) =
+      k + 1
+    rw [nat_testBit_of_lt (Nat.pow_pos (by decide)), ih]
+    rfl
+
+private theorem countLeadingZerosNat_pos (k : Nat) :
+    ∀ {raw : Nat}, 0 < raw → raw < HPow.hPow 2 k →
+      Nat.log2 raw < k ∧
+        countLeadingZerosNat raw k = k - (Nat.log2 raw + 1) := by
+  induction k with
+  | zero =>
+    intro raw h_pos h_lt
+    cases raw with
+    | zero => cases h_pos
+    | succ r =>
+      cases Nat.not_lt_zero r (Nat.lt_of_succ_lt_succ h_lt)
+  | succ k ih =>
+    intro raw h_pos h_lt
+    cases h_cmp : decide (raw < HPow.hPow 2 k) with
+    | true =>
+      have h_lt_k : raw < HPow.hPow 2 k := of_decide_eq_true h_cmp
+      let ⟨h_log_lt, h_clz⟩ := ih h_pos h_lt_k
+      refine ⟨Nat.lt_succ_of_lt h_log_lt, ?_⟩
+      change (if Nat.testBit raw k then 0
+          else countLeadingZerosNat raw k + 1) = k + 1 - (Nat.log2 raw + 1)
+      rw [nat_testBit_of_lt h_lt_k, h_clz]
+      dsimp only [ite_false_eq_true]
+      exact (Nat.sub_add_comm h_log_lt).symm
+    | false =>
+      have h_ge_k : HPow.hPow 2 k ≤ raw :=
+        Nat.le_of_not_lt (of_decide_eq_false h_cmp)
+      have h_log : Nat.log2 raw = k := nat_log2_eq_of_range k h_ge_k h_lt
+      refine ⟨h_log ▸ Nat.lt_succ_self k, ?_⟩
+      change (if Nat.testBit raw k then 0
+          else countLeadingZerosNat raw k + 1) = k + 1 - (Nat.log2 raw + 1)
+      rw [nat_testBit_of_range h_ge_k h_lt, h_log, Nat.sub_self]
+      rfl
+
+theorem countLeadingZerosNat_eq (raw width : Nat)
+    (h_lt : raw < HPow.hPow 2 width) :
+    (if raw == 0 then width else width - (Nat.log2 raw + 1)) =
+      countLeadingZerosNat raw width := by
+  cases raw with
+  | zero =>
+    exact (countLeadingZerosNat_zero width).symm
+  | succ r =>
+    have h_pos : 0 < Nat.succ r := Nat.succ_pos r
+    exact (countLeadingZerosNat_pos width h_pos h_lt).2.symm
+
+private theorem ctz_forIn_range'_eq (raw width : Nat) :
+    ∀ (m : Nat), m ≤ width →
+      (Option.casesOn (motive := fun _ => Nat)
+        (forIn (m := Id) (List.range' (width - m) m 1)
+          ((none : Option Nat), Unit.unit)
+          (fun index _ =>
+            if Nat.testBit raw index = true then
+              pure (ForInStep.done (some index, Unit.unit))
+            else
+              pure (ForInStep.yield (none, Unit.unit)))).1
+        width (fun r => r)) =
+        (width - m) +
+          @Nat.rec (fun _ => Nat) 0
+            (fun k ih => if Nat.testBit raw (width - 1 - k) then 0 else ih + 1)
+            m := by
+  intro m
+  induction m with
+  | zero =>
+    intro _
+    rw [List.range', List.forIn_nil]
+    dsimp only [Pure.pure, Id.run]
+    rw [Nat.sub_zero]
+    change width = width + 0
+    rw [Nat.add_zero]
+  | succ m ih =>
+    intro h_le
+    rw [List.range', List.forIn_cons]
+    have h_idx : width - (m + 1) = width - 1 - m := by
+      rw [Nat.sub_sub, Nat.add_comm 1 m]
+    have h_step : width - (m + 1) + 1 = width - m := by
+      have h_pos : 0 < width - m := Nat.sub_pos_of_lt h_le
+      rw [← Nat.sub_sub, Nat.sub_add_cancel h_pos]
+    dsimp only [Bind.bind, Pure.pure, Id.run]
+    rw [h_idx]
+    cases h_tb : Nat.testBit raw (width - 1 - m) with
+    | true =>
+      simp only [ite_true, Nat.add_zero]
+    | false =>
+      have h_next' : width - 1 - m + 1 = width - m := by
+        rw [← h_idx]
+        exact h_step
+      rw [h_next']
+      simp only [Bool.false_eq_true, ite_false]
+      dsimp only [Pure.pure, Id.run] at ih
+      rw [ih (Nat.le_of_succ_le h_le)]
+      rw [← h_next', Nat.add_assoc, Nat.add_comm 1]
+
+private theorem integerIntrinsic_ctlz_eq (w : IntWidth) (s : Bool)
+    (bits : BitVec 128) :
+    (match IntegerIntrinsic.run .ctlz (miriScalar w bits)
+        (toMiriIntType w s) (toMiriIntType .i32 false) with
+    | .ok sc =>
+      (Except.ok (Val.scalar ⟨.i32, false, sc.data⟩) : Except FaultKind Val)
+    | .error _ => .error .unsupported) =
+      .ok (.scalar ⟨.i32, false,
+        truncateBits .i32 (BitVec.ofNat 128
+          (if (truncateBits w bits).toNat == 0 then w.bitWidth
+           else w.bitWidth - (Nat.log2 (truncateBits w bits).toNat + 1)))⟩) := by
+  dsimp only [IntegerIntrinsic.run, bind, Except.bind, pure, Except.pure,
+    Except.mapError]
+  rw [toMiriIntType_size, miriScalar_toBits]
+  have h_w : (toMiriSize w).bits = .ok (UInt64.ofNat w.bitWidth) := by
+    cases w <;> rfl
+  have h_toNat : (UInt64.ofNat w.bitWidth).toNat = w.bitWidth := by
+    cases w <;> rfl
+  have h_nz :
+      (IntegerIntrinsic.ctlz == .cttzNonzero ||
+        IntegerIntrinsic.ctlz == .ctlzNonzero) = false := rfl
+  dsimp only
+  rw [h_w]
+  dsimp only
+  rw [h_toNat, toMiriIntType_size, h_nz]
+  simp only [Bool.false_and, Bool.false_eq_true, ite_false]
+  cases ((truncateBits w bits).toNat == 0) with
+  | true =>
+    simp only [ite_true]
+    rw [truncateFromUInt_eq_miriScalar]
+    dsimp only
+    rw [miriScalar_data]
+  | false =>
+    simp only [Bool.false_eq_true, ite_false]
+    rw [truncateFromUInt_eq_miriScalar]
+    dsimp only
+    rw [miriScalar_data]
+
+private theorem integerIntrinsic_cttz_eq (w : IntWidth) (s : Bool)
+    (bits : BitVec 128) :
+    (match IntegerIntrinsic.run .cttz (miriScalar w bits)
+        (toMiriIntType w s) (toMiriIntType .i32 false) with
+    | .ok sc =>
+      (Except.ok (Val.scalar ⟨.i32, false, sc.data⟩) : Except FaultKind Val)
+    | .error _ => .error .unsupported) =
+      .ok (.scalar ⟨.i32, false,
+        truncateBits .i32 (BitVec.ofNat 128
+          (countTrailingZerosNat (truncateBits w bits).toNat w.bitWidth))⟩) := by
+  dsimp only [IntegerIntrinsic.run, bind, Except.bind, pure, Except.pure,
+    Except.mapError]
+  rw [toMiriIntType_size, miriScalar_toBits]
+  have h_w : (toMiriSize w).bits = .ok (UInt64.ofNat w.bitWidth) := by
+    cases w <;> rfl
+  have h_toNat : (UInt64.ofNat w.bitWidth).toNat = w.bitWidth := by
+    cases w <;> rfl
+  have h_nz :
+      (IntegerIntrinsic.cttz == .cttzNonzero ||
+        IntegerIntrinsic.cttz == .ctlzNonzero) = false := rfl
+  dsimp only
+  rw [h_w]
+  dsimp only
+  rw [h_toNat, toMiriIntType_size, h_nz]
+  simp only [Bool.false_and, Bool.false_eq_true, ite_false]
+  rw [truncateFromUInt_eq_miriScalar]
+  dsimp only
+  rw [miriScalar_data]
+  change Except.ok (Val.scalar ⟨.i32, false, truncateBits .i32 (BitVec.ofNat 128
+    (Break.runK.match_1 (motive := fun _ => Id Nat)
+      (forIn (m := Id) (Std.Legacy.Range.mk 0 w.bitWidth 1 (by decide))
+        ((none : Option Nat), Unit.unit)
+        (fun index _ =>
+          if Nat.testBit (truncateBits w bits).toNat index = true then
+            pure (ForInStep.done (some index, Unit.unit))
+          else
+            pure (ForInStep.yield (none, Unit.unit)))).1
+      (fun r => pure r) (fun _ => pure w.bitWidth)))⟩) = _
+  have h_brk : ∀ (opt : Option Nat),
+      Break.runK.match_1 (motive := fun _ => Id Nat) opt
+        (fun r => pure r) (fun _ => pure w.bitWidth) =
+        Option.casesOn (motive := fun _ => Nat) opt w.bitWidth (fun r => r) := by
+    intro opt; cases opt <;> rfl
+  rw [h_brk]
+  dsimp only [Pure.pure, Id.run]
+  rw [Std.Legacy.Range.forIn_eq_forIn_range']
+  dsimp only [Std.Legacy.Range.start, Std.Legacy.Range.size,
+    Std.Legacy.Range.step]
+  have h_sz : HDiv.hDiv (w.bitWidth - 0 + 1 - 1) 1 = w.bitWidth := by
+    cases w <;> rfl
+  rw [h_sz]
+  have h_ctz := ctz_forIn_range'_eq (truncateBits w bits).toNat w.bitWidth
+    w.bitWidth (Nat.le_refl w.bitWidth)
+  rw [Nat.sub_self, Nat.zero_add] at h_ctz
+  dsimp only [Pure.pure, Id.run] at h_ctz
+  exact congrArg
+    (fun n => (Except.ok (Val.scalar ⟨.i32, false,
+      truncateBits .i32 (BitVec.ofNat 128 n)⟩) : Except FaultKind Val))
+    h_ctz
+
+private theorem intWidth_modulus_eq_pow (w : IntWidth) :
+    Nat.pow 2 w.bitWidth = HPow.hPow 2 w.bitWidth := by
+  cases w <;> rfl
+
+private theorem truncateBits_toNat_lt_pow (w : IntWidth) (bits : BitVec 128) :
+    (truncateBits w bits).toNat < HPow.hPow 2 w.bitWidth := by
+  rw [toNat_truncateBits, ← intWidth_modulus_eq_pow]
+  exact Nat.mod_lt bits.toNat (intWidth_modulus_pos w)
+
+private theorem saturatingArith_clamp_eq (isAdd : Bool) (w : IntWidth)
+    (s : Bool) (lBits : BitVec 128) :
+    (match
+      (if (toMiriIntType w s).signed then
+        bind ((IntegerOps.decode (miriIntValue ⟨w, s, lBits⟩)).mapError
+            IntegerArithmeticIntrinsicError.integerOperation)
+          (fun first =>
+            if first ≥ 0 then
+              bind (((toMiriIntType w s).size.signedIntMax).mapError
+                  (fun e => .scalar (.sizeError e)))
+                (fun maximum =>
+                  bind ((ScalarInt.truncateFromInt maximum
+                      (toMiriIntType w s).size).mapError .scalar)
+                    (fun p => pure p.1))
+            else
+              bind (((toMiriIntType w s).size.signedIntMin).mapError
+                  (fun e => .scalar (.sizeError e)))
+                (fun minimum =>
+                  bind ((ScalarInt.truncateFromInt minimum
+                      (toMiriIntType w s).size).mapError .scalar)
+                    (fun p => pure p.1)))
+      else if (if isAdd then IntegerSaturatingOp.add else .sub) == .add then
+        bind (((toMiriIntType w s).size.unsignedIntMax).mapError
+            (fun e => .scalar (.sizeError e)))
+          (fun maximum =>
+            bind ((ScalarInt.truncateFromUInt maximum
+                (toMiriIntType w s).size).mapError .scalar)
+              (fun p => pure p.1))
+      else
+        (ScalarInt.null (toMiriIntType w s).size).mapError .scalar) with
+    | .ok sc =>
+      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
+    | .error _ => .error .unsupported) =
+      .ok (.scalar ⟨w, s,
+        if s then
+          if decide (decodeScalar ⟨w, s, lBits⟩ ≥ 0) then
+            BitVec.ofNat 128 (Nat.pow 2 (w.bitWidth - 1) - 1)
+          else
+            BitVec.ofNat 128 (Nat.pow 2 (w.bitWidth - 1))
+        else if isAdd then
+          BitVec.ofNat 128 (Nat.pow 2 w.bitWidth - 1)
+        else
+          BitVec.ofNat 128 0⟩) := by
+  rw [toMiriIntType_signed, toMiriIntType_size]
+  cases s with
+  | true =>
+    rw [integerOps_decode_eq]
+    dsimp only [bind, Except.bind, pure, Except.pure, Except.mapError]
+    cases h_ge : decide (decodeScalar ⟨w, true, lBits⟩ ≥ 0) with
+    | true =>
+      rw [ite_eq_left (of_decide_eq_true h_ge)]
+      cases w <;> rfl
+    | false =>
+      rw [ite_eq_right (of_decide_eq_false h_ge)]
+      cases w <;> rfl
+  | false =>
+    cases isAdd <;> cases w <;> rfl
+
+private theorem truncateScalar_ne_undefined (w : IntWidth) (s : Bool) (v : Int) :
+    truncateScalar w s v ≠ .error .undefined := by
+  unfold truncateScalar
+  cases s with
+  | false => intro h; cases h
+  | true =>
+    dsimp only
+    cases (decide (bvToInt (bvOfInt 128 v) < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+        decide (bvToInt (bvOfInt 128 v) ≥ HPow.hPow (2 : Int) 127)) <;>
+      (intro h; cases h)
+
+private theorem evalOverflowingArithOp_addSub_ne_undefined (isAdd : Bool)
+    (w : IntWidth) (s : Bool) (a b : Int) :
+    evalOverflowingArithOp (if isAdd then .addWithOverflow else .subWithOverflow)
+        w s a b ≠ .error .undefined := by
+  intro h
+  cases isAdd with
+  | true =>
+    simp only [ite_true] at h
+    dsimp only [evalOverflowingArithOp] at h
+    cases h_ts : truncateScalar w s (a + b) with
+    | ok p => rw [h_ts] at h; cases h
+    | error k =>
+      rw [h_ts] at h
+      injection h with hk
+      subst hk
+      exact truncateScalar_ne_undefined w s (a + b) h_ts
+  | false =>
+    simp only [Bool.false_eq_true, ite_false] at h
+    dsimp only [evalOverflowingArithOp] at h
+    cases h_ts : truncateScalar w s (a - b) with
+    | ok p => rw [h_ts] at h; cases h
+    | error k =>
+      rw [h_ts] at h
+      injection h with hk
+      subst hk
+      exact truncateScalar_ne_undefined w s (a - b) h_ts
+
+private theorem evalRefSaturatingOp_eq (isAdd : Bool) (l r : ScalarVal) :
+    (match IntegerArithmeticIntrinsic.saturatingArith
+        (if isAdd then .add else .sub) (miriIntValue l) (miriIntValue r) with
+    | .ok sc =>
+      (Except.ok (Val.scalar ⟨l.width, l.signed, sc.data⟩) :
+        Except FaultKind Val)
+    | .error _ => .error .unsupported) =
+      evalSaturatingOp isAdd (.scalar l) (.scalar r) := by
+  cases l with
+  | mk w₁ s₁ bits₁ =>
+    cases r with
+    | mk w₂ s₂ bits₂ =>
+      let op : BinOp := if isAdd then .addWithOverflow else .subWithOverflow
+      have h_bin_eq :
+          evalRefBinOp op (.scalar ⟨w₁, s₁, bits₁⟩) (.scalar ⟨w₂, s₂, bits₂⟩) =
+            evalBinOp op (.scalar ⟨w₁, s₁, bits₁⟩) (.scalar ⟨w₂, s₂, bits₂⟩) :=
+        evalRefBinOp_eq op _ _
+      cases h_ty : (IntWidth.beq w₁ w₂ && (s₁ == s₂)) with
+      | false =>
+        have h_bne :=
+          miriIntValue_type_bne_of_false w₁ w₂ s₁ s₂ bits₁ bits₂ h_ty
+        dsimp only [evalSaturatingOp, IntegerArithmeticIntrinsic.saturatingArith]
+        rw [h_ty]
+        cases isAdd <;> (
+          dsimp only [IntegerOps.binary, bind, Except.bind, Except.mapError]
+          rw [integerOps_decode_eq, integerOps_decode_eq]
+          dsimp only [bind, Except.bind, pure, Except.pure]
+          rw [h_bne]
+          rfl)
+      | true =>
+        let ⟨hw, hs⟩ := eq_of_intWidth_beq_and_signed h_ty
+        subst hw; subst hs
+        have h_ovf_case :
+            (match IntegerOps.binary (toMiriBinOp op)
+                (miriIntValue ⟨w₁, s₁, bits₁⟩)
+                (miriIntValue ⟨w₁, s₁, bits₂⟩) with
+            | .ok (.withOverflow sc overflow) =>
+              (Except.ok (Val.tuple
+                [.scalar ⟨w₁, s₁, sc.data⟩, .bool overflow]) :
+                Except FaultKind Val)
+            | .ok _ => .error .unsupported
+            | .error (.undefinedBehavior _) => .error .undefined
+            | .error _ => .error .unsupported) =
+              evalOverflowingArithOp op w₁ s₁
+                (decodeScalar ⟨w₁, s₁, bits₁⟩)
+                (decodeScalar ⟨w₁, s₁, bits₂⟩) := by
+          dsimp only [evalRefBinOp, evalRefMiriBinOp, evalBinOp] at h_bin_eq
+          rw [h_ty] at h_bin_eq
+          have h_not_sh : op.isShift = false := by cases isAdd <;> rfl
+          rw [h_not_sh] at h_bin_eq
+          cases isAdd <;> exact h_bin_eq
+        cases isAdd with
+        | true =>
+          dsimp only [evalSaturatingOp,
+            IntegerArithmeticIntrinsic.saturatingArith, op] at h_ovf_case
+          dsimp only [evalSaturatingOp,
+            IntegerArithmeticIntrinsic.saturatingArith, op]
+          simp only [ite_true] at h_ovf_case
+          simp only [ite_true]
+          dsimp only [toMiriBinOp] at h_ovf_case
+          rw [h_ty]
+          simp only [Bool.not_true, Bool.false_eq_true, ite_false]
+          dsimp only [bind, Except.bind, pure, Except.pure, Except.mapError]
+          cases h_res : IntegerOps.binary .AddWithOverflow
+              (miriIntValue ⟨w₁, s₁, bits₁⟩)
+              (miriIntValue ⟨w₁, s₁, bits₂⟩) with
+          | error e =>
+            rw [h_res] at h_ovf_case
+            cases e with
+            | undefinedBehavior _ =>
+              exact False.elim
+                (evalOverflowingArithOp_addSub_ne_undefined true w₁ s₁
+                  (decodeScalar ⟨w₁, s₁, bits₁⟩)
+                  (decodeScalar ⟨w₁, s₁, bits₂⟩) h_ovf_case.symm)
+            | scalar _ | asymmetricTypes _ _
+            | invalidBinaryOperator _ | invalidUnaryOperator _ _ =>
+              rw [← h_ovf_case]
+          | ok ir =>
+            rw [h_res] at h_ovf_case
+            cases ir with
+            | scalar _ | boolean _ | ordering _ =>
+              rw [← h_ovf_case]
+              rfl
+            | withOverflow sc ovf =>
+              rw [← h_ovf_case]
+              cases ovf with
+              | false => rfl
+              | true =>
+                have h_clamp := saturatingArith_clamp_eq true w₁ s₁ bits₁
+                simp only [ite_true] at h_clamp
+                dsimp only [bind, Except.bind, pure, Except.pure,
+                  Except.mapError] at h_clamp
+                exact h_clamp
+        | false =>
+          dsimp only [evalSaturatingOp,
+            IntegerArithmeticIntrinsic.saturatingArith, op] at h_ovf_case
+          dsimp only [evalSaturatingOp,
+            IntegerArithmeticIntrinsic.saturatingArith, op]
+          simp only [Bool.false_eq_true, ite_false] at h_ovf_case
+          simp only [Bool.false_eq_true, ite_false]
+          dsimp only [toMiriBinOp] at h_ovf_case
+          rw [h_ty]
+          simp only [Bool.not_true, Bool.false_eq_true, ite_false]
+          dsimp only [bind, Except.bind, pure, Except.pure, Except.mapError]
+          cases h_res : IntegerOps.binary .SubWithOverflow
+              (miriIntValue ⟨w₁, s₁, bits₁⟩)
+              (miriIntValue ⟨w₁, s₁, bits₂⟩) with
+          | error e =>
+            rw [h_res] at h_ovf_case
+            cases e with
+            | undefinedBehavior _ =>
+              exact False.elim
+                (evalOverflowingArithOp_addSub_ne_undefined false w₁ s₁
+                  (decodeScalar ⟨w₁, s₁, bits₁⟩)
+                  (decodeScalar ⟨w₁, s₁, bits₂⟩) h_ovf_case.symm)
+            | scalar _ | asymmetricTypes _ _
+            | invalidBinaryOperator _ | invalidUnaryOperator _ _ =>
+              rw [← h_ovf_case]
+          | ok ir =>
+            rw [h_res] at h_ovf_case
+            cases ir with
+            | scalar _ | boolean _ | ordering _ =>
+              rw [← h_ovf_case]
+              rfl
+            | withOverflow sc ovf =>
+              rw [← h_ovf_case]
+              cases ovf with
+              | false => rfl
+              | true =>
+                have h_clamp := saturatingArith_clamp_eq false w₁ s₁ bits₁
+                simp only [Bool.false_eq_true, ite_false] at h_clamp
+                dsimp only [bind, Except.bind, pure, Except.pure,
+                  Except.mapError] at h_clamp
+                exact h_clamp
+
+private theorem int_ofNat_beq_zero (n : Nat) :
+    (Int.ofNat n == (0 : Int)) = Nat.beq n 0 := by
+  cases n <;> rfl
+
+private theorem int_ofNat_beq_ofNat_zero (n : Nat) :
+    (Int.ofNat n == Int.ofNat 0) = Nat.beq n 0 := by
+  cases n <;> rfl
+
+private theorem evalRefIsMultipleOf_eq (w : IntWidth) (b₁ b₂ : BitVec 128) :
+    (let zero : Val := .scalar ⟨w, false, BitVec.ofNat 128 0⟩
+     match evalRefMiriBinOp .Eq (.scalar ⟨w, false, b₂⟩) zero with
+     | .ok (.bool true) => evalRefMiriBinOp .Eq (.scalar ⟨w, false, b₁⟩) zero
+     | .ok (.bool false) =>
+       match evalRefMiriBinOp .Rem (.scalar ⟨w, false, b₁⟩)
+           (.scalar ⟨w, false, b₂⟩) with
+       | .ok remVal => evalRefMiriBinOp .Eq remVal zero
+       | .error k => .error k
+     | .error k => .error k
+     | .ok _ => .error .unsupported) =
+      (let lNat := (truncateBits w b₁).toNat
+       let rNat := (truncateBits w b₂).toNat
+       if Nat.beq rNat 0 then
+         .ok (.bool (Nat.beq lNat 0))
+       else
+         .ok (.bool (Nat.beq (Nat.mod lNat rNat) 0))) := by
+  have h_w : IntWidth.beq w w = true := IntWidth.beq_refl w
+  have h_z0 : (truncateBits w (BitVec.ofNat 128 0)).toNat = 0 := by
+    cases w <;> rfl
+  have h_eq_zero : ∀ b : BitVec 128,
+      evalRefMiriBinOp .Eq (.scalar ⟨w, false, b⟩)
+          (.scalar ⟨w, false, BitVec.ofNat 128 0⟩) =
+        .ok (.bool (Nat.beq (truncateBits w b).toNat 0)) := by
+    intro b
+    have h := evalRefBinOp_eq .eq (.scalar ⟨w, false, b⟩)
+      (.scalar ⟨w, false, BitVec.ofNat 128 0⟩)
+    dsimp only [evalRefBinOp, toMiriBinOp, evalBinOp, BinOp.isShift,
+      decodeScalar] at h
+    rw [h_w, h_z0] at h
+    simp only [Bool.false_eq_true, ite_false, Bool.and_true, beq_self_eq_true,
+      Bool.not_true] at h
+    rw [int_ofNat_beq_ofNat_zero] at h
+    exact h
+  dsimp only
+  rw [h_eq_zero b₂]
+  cases h_r0 : Nat.beq (truncateBits w b₂).toNat 0 with
+  | true => exact h_eq_zero b₁
+  | false =>
+    have h_rem := evalRefBinOp_eq .rem (.scalar ⟨w, false, b₁⟩)
+      (.scalar ⟨w, false, b₂⟩)
+    dsimp only [evalRefBinOp, toMiriBinOp, evalBinOp, BinOp.isShift,
+      evalArithOp, decodeScalar] at h_rem
+    rw [h_w] at h_rem
+    simp only [Bool.false_eq_true, ite_false, Bool.and_true, beq_self_eq_true,
+      Bool.not_true, Bool.true_and, Bool.false_and] at h_rem
+    rw [int_ofNat_beq_zero, h_r0] at h_rem
+    simp only [Bool.false_eq_true, ite_false, BinOp.isUnchecked, Bool.and_false,
+      intTmod, truncateScalar, bvOfInt, intEmod, Int.natAbs, Int.toNat] at h_rem
+    rw [h_rem]
+    dsimp only
+    rw [h_eq_zero]
+    have h_mod_lt_w :
+        Nat.mod (truncateBits w b₁).toNat (truncateBits w b₂).toNat <
+          Nat.pow 2 w.bitWidth := by
+      have h_pos : 0 < (truncateBits w b₂).toNat := by
+        cases h_n : (truncateBits w b₂).toNat with
+        | zero => rw [h_n] at h_r0; cases h_r0
+        | succ _ => exact Nat.succ_pos _
+      rw [intWidth_modulus_eq_pow]
+      exact Nat.lt_trans (Nat.mod_lt _ h_pos) (truncateBits_toNat_lt_pow w b₂)
+    have h_mod_lt_128 :
+        Nat.mod (truncateBits w b₁).toNat (truncateBits w b₂).toNat <
+          Nat.pow 2 128 :=
+      Nat.lt_of_lt_of_le h_mod_lt_w (intWidth_modulus_le_u128 w)
+    have h_trunc_mod :
+        (truncateBits w (truncateBits w (BitVec.ofNat 128
+          (Nat.mod (Nat.mod (truncateBits w b₁).toNat (truncateBits w b₂).toNat)
+            (Nat.pow 2 128))))).toNat =
+          Nat.mod (truncateBits w b₁).toNat (truncateBits w b₂).toNat := by
+      rw [truncateBits_idem, toNat_truncateBits, BitVec.toNat_ofNat]
+      change HMod.hMod
+        (HMod.hMod
+          (HMod.hMod (Nat.mod (truncateBits w b₁).toNat (truncateBits w b₂).toNat)
+            (Nat.pow 2 128))
+          (Nat.pow 2 128))
+        (Nat.pow 2 w.bitWidth) = _
+      rw [Nat.mod_eq_of_lt h_mod_lt_128, Nat.mod_eq_of_lt h_mod_lt_128,
+        Nat.mod_eq_of_lt h_mod_lt_w]
+    simp only [Bool.false_eq_true, ite_false]
+    rw [h_trunc_mod]
+
+/-- The reference `CoreBuiltin` evaluator (`evalRefCoreBuiltin`) agrees with
+`Trusted.MirSemantics.evalCoreBuiltin` across all 15 builtins and all argument
+lists. -/
+theorem evalRefCoreBuiltin_eq (builtin : CoreBuiltin) (args : List Val) :
+    evalRefCoreBuiltin builtin args = evalCoreBuiltin builtin args := by
+  cases builtin with
+  | wrappingAdd =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | nil => exact evalRefBinOp_eq .add (.scalar l) (.scalar r)
+            | cons _ _ => rfl
+          | _ => rfl
+      | _ => rfl
+  | wrappingSub =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | nil => exact evalRefBinOp_eq .sub (.scalar l) (.scalar r)
+            | cons _ _ => rfl
+          | _ => rfl
+      | _ => rfl
+  | wrappingMul =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | nil => exact evalRefBinOp_eq .mul (.scalar l) (.scalar r)
+            | cons _ _ => rfl
+          | _ => rfl
+      | _ => rfl
+  | wrappingShl =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | cons _ _ => rfl
+            | nil =>
+              dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+              cases (IntWidth.beq r.width .i32 && !r.signed) with
+              | false => rfl
+              | true => exact evalRefBinOp_eq .shl (.scalar l) (.scalar r)
+          | _ => rfl
+      | _ => rfl
+  | wrappingShr =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | cons _ _ => rfl
+            | nil =>
+              dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+              cases (IntWidth.beq r.width .i32 && !r.signed) with
+              | false => rfl
+              | true => exact evalRefBinOp_eq .shr (.scalar l) (.scalar r)
+          | _ => rfl
+      | _ => rfl
+  | overflowingAdd =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | nil => exact evalRefBinOp_eq .addWithOverflow (.scalar l) (.scalar r)
+            | cons _ _ => rfl
+          | _ => rfl
+      | _ => rfl
+  | overflowingSub =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | nil => exact evalRefBinOp_eq .subWithOverflow (.scalar l) (.scalar r)
+            | cons _ _ => rfl
+          | _ => rfl
+      | _ => rfl
+  | overflowingMul =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | nil => exact evalRefBinOp_eq .mulWithOverflow (.scalar l) (.scalar r)
+            | cons _ _ => rfl
+          | _ => rfl
+      | _ => rfl
+  | saturatingAdd =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases rest with
+      | nil => cases a <;> rfl
+      | cons b rest' =>
+        cases rest' with
+        | cons _ _ => cases a <;> cases b <;> rfl
+        | nil =>
+          cases a with
+          | scalar l =>
+            cases b with
+            | scalar r => exact evalRefSaturatingOp_eq true l r
+            | _ => rfl
+          | _ => rfl
+  | saturatingSub =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases rest with
+      | nil => cases a <;> rfl
+      | cons b rest' =>
+        cases rest' with
+        | cons _ _ => cases a <;> cases b <;> rfl
+        | nil =>
+          cases a with
+          | scalar l =>
+            cases b with
+            | scalar r => exact evalRefSaturatingOp_eq false l r
+            | _ => rfl
+          | _ => rfl
+  | leadingZeros =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar sv =>
+        cases rest with
+        | cons _ _ => rfl
+        | nil =>
+          cases sv with
+          | mk w s bits =>
+            dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+            have h_clz := integerIntrinsic_ctlz_eq w s bits
+            rw [countLeadingZerosNat_eq _ _ (truncateBits_toNat_lt_pow w bits)]
+              at h_clz
+            exact h_clz
+      | _ => rfl
+  | trailingZeros =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar sv =>
+        cases rest with
+        | cons _ _ => rfl
+        | nil =>
+          cases sv with
+          | mk w s bits =>
+            dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+            exact integerIntrinsic_cttz_eq w s bits
+      | _ => rfl
+  | isMultipleOf =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | cons _ _ => rfl
+            | nil =>
+              cases l with
+              | mk w₁ s₁ b₁ =>
+                cases r with
+                | mk w₂ s₂ b₂ =>
+                  dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+                  cases s₁ with
+                  | true => rfl
+                  | false =>
+                    cases s₂ with
+                    | true => rfl
+                    | false =>
+                      cases h_w : IntWidth.beq w₁ w₂ with
+                      | false => rfl
+                      | true =>
+                        have hw := IntWidth.eq_of_beq h_w
+                        subst hw
+                        dsimp only [Bool.false_or, Bool.not, ite_false_eq_true]
+                        exact evalRefIsMultipleOf_eq w₁ b₁ b₂
+          | _ => rfl
+      | _ => rfl
+  | cmpMin =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | cons _ _ => rfl
+            | nil =>
+              dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+              have h_le := evalRefBinOp_eq .le (.scalar l) (.scalar r)
+              simp only [evalRefBinOp, toMiriBinOp, evalBinOp, BinOp.isShift,
+                Bool.false_eq_true, ite_false] at h_le
+              rw [h_le]
+              cases (IntWidth.beq l.width r.width && (l.signed == r.signed)) with
+              | false => rfl
+              | true =>
+                simp only [Bool.not_true, Bool.false_eq_true, ite_false]
+                cases decide (decodeScalar l ≤ decodeScalar r) with
+                | true => simp only [ite_true, miriScalar_data]
+                | false =>
+                  simp only [Bool.false_eq_true, ite_false, miriScalar_data]
+          | _ => rfl
+      | _ => rfl
+  | cmpMax =>
+    cases args with
+    | nil => rfl
+    | cons a rest =>
+      cases a with
+      | scalar l =>
+        cases rest with
+        | nil => rfl
+        | cons b rest' =>
+          cases b with
+          | scalar r =>
+            cases rest' with
+            | cons _ _ => rfl
+            | nil =>
+              dsimp only [evalRefCoreBuiltin, evalCoreBuiltin]
+              have h_ge := evalRefBinOp_eq .ge (.scalar l) (.scalar r)
+              simp only [evalRefBinOp, toMiriBinOp, evalBinOp, BinOp.isShift,
+                Bool.false_eq_true, ite_false] at h_ge
+              rw [h_ge]
+              cases (IntWidth.beq l.width r.width && (l.signed == r.signed)) with
+              | false => rfl
+              | true =>
+                simp only [Bool.not_true, Bool.false_eq_true, ite_false]
+                cases decide (decodeScalar l ≥ decodeScalar r) with
+                | true => simp only [ite_true, miriScalar_data]
+                | false =>
+                  simp only [Bool.false_eq_true, ite_false, miriScalar_data]
+          | _ => rfl
+      | _ => rfl
 
 end MiriEquiv
 
