@@ -1,0 +1,1511 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SCT.AllLoopsCriterion": [
+      "propext"
+    ],
+    "Toy.SCT.Audit.allowedSorry": [],
+    "Toy.SCT.Audit.standardAxioms": [],
+    "Toy.SCT.ClosureCriterion": [
+      "propext"
+    ],
+    "Toy.SCT.ClosureCriterionInf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.ConsistentRunIn": [],
+    "Toy.SCT.ConsistentRunInf": [],
+    "Toy.SCT.CriterionWith": [
+      "propext"
+    ],
+    "Toy.SCT.FiniteRunFrom": [],
+    "Toy.SCT.GeneratorCriterion": [
+      "propext"
+    ],
+    "Toy.SCT.HasFactorPath": [],
+    "Toy.SCT.HasInfDescThread": [],
+    "Toy.SCT.InClosure": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.below": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.below.casesOn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.below.comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.below.gen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.below.rec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.brecOn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.casesOn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.gen": [],
+    "Toy.SCT.InClosureInf.rec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureInf.recOn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.below": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.below.casesOn": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.below.comp": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.below.gen": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.below.rec": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.brecOn": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.casesOn": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.comp": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.gen": [],
+    "Toy.SCT.InClosureWith.rec": [
+      "propext"
+    ],
+    "Toy.SCT.InClosureWith.recOn": [
+      "propext"
+    ],
+    "Toy.SCT.IsCallPath": [],
+    "Toy.SCT.Label": [],
+    "Toy.SCT.Label.Ok": [],
+    "Toy.SCT.Label.Ok.eq_1": [],
+    "Toy.SCT.Label.absent": [],
+    "Toy.SCT.Label.absent.elim": [],
+    "Toy.SCT.Label.absent.sizeOf_spec": [],
+    "Toy.SCT.Label.casesOn": [],
+    "Toy.SCT.Label.ctorElim": [],
+    "Toy.SCT.Label.ctorElimType": [],
+    "Toy.SCT.Label.ctorIdx": [],
+    "Toy.SCT.Label.eq_of_ok_iff": [
+      "propext"
+    ],
+    "Toy.SCT.Label.join": [
+      "propext"
+    ],
+    "Toy.SCT.Label.join.match_1": [
+      "propext"
+    ],
+    "Toy.SCT.Label.join_eq_strict": [
+      "propext"
+    ],
+    "Toy.SCT.Label.join_ne_absent": [
+      "propext"
+    ],
+    "Toy.SCT.Label.noConfusion": [],
+    "Toy.SCT.Label.noConfusionType": [],
+    "Toy.SCT.Label.nonstrict": [],
+    "Toy.SCT.Label.nonstrict.elim": [],
+    "Toy.SCT.Label.nonstrict.sizeOf_spec": [],
+    "Toy.SCT.Label.ofNat": [],
+    "Toy.SCT.Label.ofNat_ctorIdx": [],
+    "Toy.SCT.Label.ok_false": [
+      "propext"
+    ],
+    "Toy.SCT.Label.ok_true": [
+      "propext"
+    ],
+    "Toy.SCT.Label.rec": [],
+    "Toy.SCT.Label.recOn": [],
+    "Toy.SCT.Label.seq": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq.eq_2": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq.eq_3": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq.eq_4": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq.eq_5": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq.match_1": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seqForgetLeft": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seqForgetLeft.match_1": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seqForgetRight": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seqForgetRight.match_1": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seqOverStrict": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seqOverStrict.match_1": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq_eq_strict": [
+      "propext"
+    ],
+    "Toy.SCT.Label.seq_ne_absent": [
+      "propext"
+    ],
+    "Toy.SCT.Label.strict": [],
+    "Toy.SCT.Label.strict.elim": [],
+    "Toy.SCT.Label.strict.sizeOf_spec": [],
+    "Toy.SCT.LexLt": [],
+    "Toy.SCT.LexProjDecreases": [],
+    "Toy.SCT.NoLoopGuardCriterion": [
+      "propext"
+    ],
+    "Toy.SCT.Prog": [],
+    "Toy.SCT.Prog.calls": [],
+    "Toy.SCT.Prog.casesOn": [],
+    "Toy.SCT.Prog.ctorIdx": [],
+    "Toy.SCT.Prog.mk": [],
+    "Toy.SCT.Prog.mk.inj": [],
+    "Toy.SCT.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SCT.Prog.mk.noConfusion": [],
+    "Toy.SCT.Prog.mk.sizeOf_spec": [],
+    "Toy.SCT.Prog.noConfusion": [],
+    "Toy.SCT.Prog.noConfusionType": [],
+    "Toy.SCT.Prog.rec": [],
+    "Toy.SCT.Prog.recOn": [],
+    "Toy.SCT.RamseyProof.InfOften": [],
+    "Toy.SCT.RamseyProof.InfOften.mono": [],
+    "Toy.SCT.RamseyProof.InfOften.mono.match_1_1": [],
+    "Toy.SCT.RamseyProof.RState": [],
+    "Toy.SCT.RamseyProof.color": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.enum": [
+      "Classical.choice"
+    ],
+    "Toy.SCT.RamseyProof.enum.match_1": [],
+    "Toy.SCT.RamseyProof.enum_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.exists_color": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.exists_color.match_1_1": [
+      "Classical.choice"
+    ],
+    "Toy.SCT.RamseyProof.infOften_pigeonhole": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.infOften_pigeonhole.match_1_1": [],
+    "Toy.SCT.RamseyProof.infOften_pigeonhole.match_1_3": [],
+    "Toy.SCT.RamseyProof.infOften_pigeonhole.match_1_7": [],
+    "Toy.SCT.RamseyProof.infOften_pigeonhole.match_1_9": [],
+    "Toy.SCT.RamseyProof.next": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.pairs_colored": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.pick": [
+      "Classical.choice"
+    ],
+    "Toy.SCT.RamseyProof.pick_mem": [
+      "Classical.choice"
+    ],
+    "Toy.SCT.RamseyProof.ramsey": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.states": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.states_sub": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.strictMono_of_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.tail_inf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.RamseyProof.tail_inf.match_1_1": [
+      "Classical.choice"
+    ],
+    "Toy.SCT.Respects": [],
+    "Toy.SCT.RespectsIn": [],
+    "Toy.SCT.RespectsIn.eq_1": [],
+    "Toy.SCT.RespectsInf": [],
+    "Toy.SCT.SCG": [],
+    "Toy.SCT.SCG.HasSelfArc": [],
+    "Toy.SCT.SCG.HasStrictSelfArc": [],
+    "Toy.SCT.SCG.casesOn": [],
+    "Toy.SCT.SCG.comp": [
+      "propext"
+    ],
+    "Toy.SCT.SCG.compWith": [
+      "propext"
+    ],
+    "Toy.SCT.SCG.comp_lab_eq_strict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.comp_lab_ne_absent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.comp_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.comp_ok'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.ctorIdx": [],
+    "Toy.SCT.SCG.dst": [],
+    "Toy.SCT.SCG.ext_iff'": [
+      "Quot.sound"
+    ],
+    "Toy.SCT.SCG.ext_iff'.match_1_1": [],
+    "Toy.SCT.SCG.instDecidableEq": [
+      "Quot.sound"
+    ],
+    "Toy.SCT.SCG.instDecidableHasSelfArc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.instDecidableHasStrictSelfArc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.lab": [],
+    "Toy.SCT.SCG.mk": [],
+    "Toy.SCT.SCG.mk.inj": [],
+    "Toy.SCT.SCG.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SCT.SCG.mk.noConfusion": [],
+    "Toy.SCT.SCG.mk.sizeOf_spec": [],
+    "Toy.SCT.SCG.noConfusion": [],
+    "Toy.SCT.SCG.noConfusionType": [],
+    "Toy.SCT.SCG.rec": [],
+    "Toy.SCT.SCG.recOn": [],
+    "Toy.SCT.SCG.src": [],
+    "Toy.SCT.SCG.toInf": [],
+    "Toy.SCT.SCG.toInf_comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCG.toInf_injective": [],
+    "Toy.SCT.SCGInf": [],
+    "Toy.SCT.SCGInf.casesOn": [],
+    "Toy.SCT.SCGInf.comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCGInf.comp.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCGInf.ctorIdx": [],
+    "Toy.SCT.SCGInf.dst": [],
+    "Toy.SCT.SCGInf.ext": [
+      "Quot.sound"
+    ],
+    "Toy.SCT.SCGInf.lab": [],
+    "Toy.SCT.SCGInf.mk": [],
+    "Toy.SCT.SCGInf.mk.inj": [],
+    "Toy.SCT.SCGInf.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SCT.SCGInf.mk.noConfusion": [],
+    "Toy.SCT.SCGInf.mk.sizeOf_spec": [],
+    "Toy.SCT.SCGInf.noConfusion": [],
+    "Toy.SCT.SCGInf.noConfusionType": [],
+    "Toy.SCT.SCGInf.rec": [],
+    "Toy.SCT.SCGInf.recOn": [],
+    "Toy.SCT.SCGInf.src": [],
+    "Toy.SCT.SCGInf.toInf_toSCG": [],
+    "Toy.SCT.SCGInf.toSCG": [],
+    "Toy.SCT.SCGInf.toSCG_comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.SCGInf.toSCG_toInf": [],
+    "Toy.SCT.SegThread": [],
+    "Toy.SCT.SegThread.match_1": [],
+    "Toy.SCT.SizeChangeTerminating": [],
+    "Toy.SCT.SizeChangeTerminatingInf": [],
+    "Toy.SCT.State": [],
+    "Toy.SCT.StepInv": [
+      "propext"
+    ],
+    "Toy.SCT.StepRespects": [],
+    "Toy.SCT.StepRespectsInf": [],
+    "Toy.SCT.Terminates": [],
+    "Toy.SCT.WeakSelfArcCriterion": [
+      "propext"
+    ],
+    "Toy.SCT.ackLinStep": [
+      "propext"
+    ],
+    "Toy.SCT.ackOrd": [],
+    "Toy.SCT.ackProg": [
+      "propext"
+    ],
+    "Toy.SCT.ackProg.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.ackProg_unbounded_finite_runs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.acycProg": [
+      "propext"
+    ],
+    "Toy.SCT.acycProg.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.acycProg_closureCriterion_no_lexProjDecreases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.addNew": [
+      "propext"
+    ],
+    "Toy.SCT.addNew_extends": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.addNew_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allFuns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allFuns.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allFuns.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allFuns.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allFuns.match_1": [],
+    "Toy.SCT.allLabels": [],
+    "Toy.SCT.allLabels.eq_1": [],
+    "Toy.SCT.allLoopsCriterion_decLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allSCG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.allSCG.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.altProg": [
+      "propext"
+    ],
+    "Toy.SCT.alt_consistentRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.alt_generatorCriterion_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.arcVal": [],
+    "Toy.SCT.arcVal.eq_1": [],
+    "Toy.SCT.arcVal.eq_2": [],
+    "Toy.SCT.arcVal.eq_3": [],
+    "Toy.SCT.arcVal.match_1": [],
+    "Toy.SCT.arcsG": [],
+    "Toy.SCT.checkSCT": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.checkSCT.match_1": [],
+    "Toy.SCT.checkSCT_eq_true_of_closureCriterion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.checkSCT_eq_true_of_closureCriterion_proof": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.checkSCT_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.checkSCT_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.checker_correct_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.checker_premise_contrast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_ackProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_decLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_iff_closureCriterionInf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_mutProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_of_checkSCT_eq_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_of_checkSCT_eq_true_proof": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_of_lexProjDecreases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_of_sizeChangeTerminating": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureCriterion_swapDec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureFuel": [],
+    "Toy.SCT.closureIter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter.eq_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter.match_1": [],
+    "Toy.SCT.closureIter_complete": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter_complete.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter_complete.match_1_7": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter_some_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureIter_some_spec.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureStep_comp_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureStep_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closureStep_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_criterion_exact_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_criterion_sound_model_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_criterion_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_decLoop_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_idLoop_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_iff_sct_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_stallProg_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.closure_swapDec_sub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.compWith_forgetLeft_mut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.compWith_forgetRight_mut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.compWith_overStrict_gId": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.comp_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.comp_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.consistentRunIn_nat_iff_consistentRunInf": [],
+    "Toy.SCT.consistentRunIn_nat_iff_not_terminates_runStep": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.consistentRun_idLoop": [
+      "propext"
+    ],
+    "Toy.SCT.consistent_nat_run_of_not_closureCriterion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.consistent_nat_run_of_not_closureCriterion_proof": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.consistent_nat_run_of_not_closureCriterion_proof.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.countP_lt_of_imp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.countP_lt_of_imp.match_1_1": [],
+    "Toy.SCT.countUpStep": [
+      "propext"
+    ],
+    "Toy.SCT.countUp_size_norm_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.countUp_size_norm_positive_control.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.countUp_terminates_and_no_sound_prog_passes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.criterionWith_forgetLeft_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.criterionWith_forgetRight_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.criterionWith_of_closed": [
+      "propext"
+    ],
+    "Toy.SCT.criterionWith_overStrict_idLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.decLoop": [
+      "propext"
+    ],
+    "Toy.SCT.decLoop.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.decLoop_closureCriterion_consistent_int_run": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.decLoop_finiteRun_length_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.decLoop_int_model_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.decLoop_int_model_counterexample.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.decStep": [
+      "propext"
+    ],
+    "Toy.SCT.dedupGraphs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.dedupGraphs_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.dedupGraphs_spec.match_1_1": [],
+    "Toy.SCT.denseCalls": [
+      "propext"
+    ],
+    "Toy.SCT.denseG": [
+      "propext"
+    ],
+    "Toy.SCT.denseG.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.denseG_idem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.f0": [
+      "propext"
+    ],
+    "Toy.SCT.finCons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.finCons_head_tail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.finMax": [],
+    "Toy.SCT.finMax_cases": [
+      "propext"
+    ],
+    "Toy.SCT.fin_one_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.finiteRunFrom_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.finiteRunFrom_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.foldl_join_eq_strict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.foldl_join_eq_strict.match_1_1": [],
+    "Toy.SCT.foldl_join_ne_absent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.foldl_join_ne_absent.match_1_1": [],
+    "Toy.SCT.foldl_max_cases": [
+      "propext"
+    ],
+    "Toy.SCT.foldl_max_cases.match_1_1": [],
+    "Toy.SCT.foldl_max_ge": [
+      "propext"
+    ],
+    "Toy.SCT.foldl_max_ge.match_1_1": [],
+    "Toy.SCT.foldl_preserves": [
+      "propext"
+    ],
+    "Toy.SCT.foldl_preserves.match_1_1": [],
+    "Toy.SCT.forall_fin_one": [
+      "propext"
+    ],
+    "Toy.SCT.forall_fin_one.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.forall_fin_two": [
+      "propext"
+    ],
+    "Toy.SCT.forall_fin_two.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.forall_fin_two.match_1_3": [
+      "propext"
+    ],
+    "Toy.SCT.forget_composition_rejects_mutProg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.gAcyc": [
+      "propext"
+    ],
+    "Toy.SCT.gDec": [
+      "propext"
+    ],
+    "Toy.SCT.gEmpty1": [
+      "propext"
+    ],
+    "Toy.SCT.gEmpty2": [
+      "propext"
+    ],
+    "Toy.SCT.gId": [
+      "propext"
+    ],
+    "Toy.SCT.gKeepX": [
+      "propext"
+    ],
+    "Toy.SCT.gMut00": [
+      "propext"
+    ],
+    "Toy.SCT.gMut01": [
+      "propext"
+    ],
+    "Toy.SCT.gMut10": [
+      "propext"
+    ],
+    "Toy.SCT.gMut10s": [
+      "propext"
+    ],
+    "Toy.SCT.gMut11": [
+      "propext"
+    ],
+    "Toy.SCT.gStall": [
+      "propext"
+    ],
+    "Toy.SCT.gStall_present_src": [
+      "propext"
+    ],
+    "Toy.SCT.gSwap": [
+      "propext"
+    ],
+    "Toy.SCT.gSwap2": [
+      "propext"
+    ],
+    "Toy.SCT.gSwap3": [
+      "propext"
+    ],
+    "Toy.SCT.gX": [
+      "propext"
+    ],
+    "Toy.SCT.gX_present": [
+      "propext"
+    ],
+    "Toy.SCT.gY": [
+      "propext"
+    ],
+    "Toy.SCT.gY_present": [
+      "propext"
+    ],
+    "Toy.SCT.generatorCriterion_altProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasFactorPath_of_inClosure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasInfDescThread_neg": [
+      "propext"
+    ],
+    "Toy.SCT.hasInfDescThread_of_blocks": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasInfDescThread_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasSelfArc_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasSelfArc_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasStrictSelfArc_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.hasStrictSelfArc_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.idLoop": [
+      "propext"
+    ],
+    "Toy.SCT.idLoop_decLoop_contrast": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.idLoop_no_lexProjDecreases_not_criterion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.idLoop_runStep_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.idStep": [],
+    "Toy.SCT.idemTest": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.idempotence_needed_for_converse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.inClosureWith_mem_of_closed": [
+      "propext"
+    ],
+    "Toy.SCT.inClosure_altProg_empty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.inClosure_iff_inClosureInf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.inClosure_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.inClosure_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infFnCalls": [],
+    "Toy.SCT.infinite_functions_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infinite_functions_model_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infinite_params_converse_exactness_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infinite_params_model_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infinite_params_soundness_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infinite_ramsey_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.infinite_ramsey_pairs_of_finite_colors": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.instDecidableEqLabel": [],
+    "Toy.SCT.instDecidableLexLt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.instDecidableRatLt": [],
+    "Toy.SCT.instDecidableRespectsNat": [],
+    "Toy.SCT.instReprLabel": [],
+    "Toy.SCT.instReprLabel.repr": [],
+    "Toy.SCT.instReprLabel.repr.match_1": [],
+    "Toy.SCT.isCallPath_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.isCallPath_pos": [
+      "propext"
+    ],
+    "Toy.SCT.join_neg": [
+      "propext"
+    ],
+    "Toy.SCT.join_pos": [
+      "propext"
+    ],
+    "Toy.SCT.le_finMax": [
+      "propext"
+    ],
+    "Toy.SCT.length_allFuns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.length_allSCG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.length_flatMap_const": [
+      "propext"
+    ],
+    "Toy.SCT.length_flatMap_const.match_1_1": [],
+    "Toy.SCT.lexLt_head_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lexLt_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lexLt_no_infinite_descent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lexLt_no_infinite_descent.match_1_1": [],
+    "Toy.SCT.lexLt_no_infinite_descent.match_1_3": [],
+    "Toy.SCT.lexLt_no_infinite_descent.match_1_5": [
+      "propext"
+    ],
+    "Toy.SCT.lexLt_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lexProjDecreases_ackProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lexProjDecreases_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lex_implies_closure_criterion_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.lookupArc": [],
+    "Toy.SCT.lookupArc.match_1": [],
+    "Toy.SCT.loop_guard_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.loop_guard_needed_for_converse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.mem_addNew_iff": [
+      "propext"
+    ],
+    "Toy.SCT.mem_allFuns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.mem_allLabels": [
+      "propext"
+    ],
+    "Toy.SCT.mem_allSCG": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.mem_closureStep_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.misfit_graphs_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.misfit_graphs_counterexample.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.mutProg": [
+      "propext"
+    ],
+    "Toy.SCT.mutProg_closureCriterion_no_lexProjDecreases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.nat_no_inf_weak_descent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.nat_no_infinite_descent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.noLoopGuardCriterion_decLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.no_consistent_nat_run_of_closureCriterion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.no_consistent_nat_run_of_sizeChangeTerminating": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.no_consistent_nat_run_of_sizeChangeTerminating_proof": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.no_run_length_bound_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_allLoopsCriterion_swapDec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_closureCriterion_altProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_closureCriterion_idLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_closureCriterion_stallProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_consistentRun_decLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_criterionWith_forgetLeft_mutProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_criterionWith_forgetRight_mutProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_criterionWith_overStrict_altProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_generatorCriterion_idLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_noLoopGuardCriterion_acycProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_sizeChangeTerminating_altProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_sizeChangeTerminating_idLoop": [
+      "propext"
+    ],
+    "Toy.SCT.not_sizeChangeTerminating_stallProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_stepRespects_idStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_terminates_idStep": [
+      "propext"
+    ],
+    "Toy.SCT.not_terminates_runStep_idLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.not_weakSelfArcCriterion_altProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.overStrict_composition_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.progCallsInf": [],
+    "Toy.SCT.progCallsInf.eq_1": [],
+    "Toy.SCT.ramsey_infinite_colors_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.ratLt": [],
+    "Toy.SCT.ratLt.eq_1": [],
+    "Toy.SCT.ratLt_dense": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.ratLt_trans": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_gDec_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_gId_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_gKeepX_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_gStall_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_gSwap_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_gX_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.respects_neg": [
+      "propext"
+    ],
+    "Toy.SCT.respects_pos": [
+      "propext"
+    ],
+    "Toy.SCT.runStep": [],
+    "Toy.SCT.runStepInf": [],
+    "Toy.SCT.sct_incomplete_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.sct_not_lex_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.sct_sound_nat_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.segComp": [
+      "propext"
+    ],
+    "Toy.SCT.segComp.match_1": [],
+    "Toy.SCT.segComp_dst": [
+      "propext"
+    ],
+    "Toy.SCT.segComp_dst.match_1_1": [],
+    "Toy.SCT.segComp_inClosure": [
+      "propext"
+    ],
+    "Toy.SCT.segComp_inClosure.match_1_1": [],
+    "Toy.SCT.segComp_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.segComp_src": [
+      "propext"
+    ],
+    "Toy.SCT.segComp_src.match_1_1": [],
+    "Toy.SCT.segThread_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.segThread_one": [
+      "propext"
+    ],
+    "Toy.SCT.segThread_to_fun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.seqForgetLeft_neg": [
+      "propext"
+    ],
+    "Toy.SCT.seqForgetLeft_pos": [
+      "propext"
+    ],
+    "Toy.SCT.seqForgetRight_neg": [
+      "propext"
+    ],
+    "Toy.SCT.seqForgetRight_pos": [
+      "propext"
+    ],
+    "Toy.SCT.seqOverStrict_neg": [
+      "propext"
+    ],
+    "Toy.SCT.seqOverStrict_pos": [
+      "propext"
+    ],
+    "Toy.SCT.seq_neg": [
+      "propext"
+    ],
+    "Toy.SCT.seq_pos": [
+      "propext"
+    ],
+    "Toy.SCT.shiftCalls": [
+      "propext"
+    ],
+    "Toy.SCT.shiftG": [
+      "propext"
+    ],
+    "Toy.SCT.shiftG.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.shiftG_comp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.sizeChangeTerminating_decLoop": [
+      "propext"
+    ],
+    "Toy.SCT.sizeChangeTerminating_iff_sizeChangeTerminatingInf": [],
+    "Toy.SCT.sizeChangeTerminating_of_closureCriterion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.sizeChangeTerminating_of_closureCriterion_proof": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.sizeChangeTerminating_swapDec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.stallProg": [
+      "propext"
+    ],
+    "Toy.SCT.stall_consistentRun": [
+      "propext"
+    ],
+    "Toy.SCT.stall_weakSelfArcCriterion_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.stepRespects_ackLinStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.stepRespects_iff_stepRespectsInf": [],
+    "Toy.SCT.stepRespects_runStep": [],
+    "Toy.SCT.stepRespects_swapStep": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.succ_mod_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.swapDec": [
+      "propext"
+    ],
+    "Toy.SCT.swapDec.eq_1": [
+      "propext"
+    ],
+    "Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases.match_1_1": [
+      "propext"
+    ],
+    "Toy.SCT.swapDec_order_ranking": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.swapStep": [
+      "propext"
+    ],
+    "Toy.SCT.terminates_countUpStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.terminates_of_stepRespects_of_closureCriterion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.terminates_swapStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.unguardedDecStep": [
+      "propext"
+    ],
+    "Toy.SCT.vec2": [],
+    "Toy.SCT.vec2.eq_1": [],
+    "Toy.SCT.weakSelfArcCriterion_stallProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv.eq_def": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv_ge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SCT.wv_respects": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

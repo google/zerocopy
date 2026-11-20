@@ -1,0 +1,77 @@
+{
+  "topics": [
+    "verification",
+    "verification/formalized-results",
+    "verification/termination",
+    "verification/size-change-termination",
+    "lean",
+    "lean/mechanization",
+    "lean/termination",
+    "pl/termination-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "The size-change principle for program termination (Lee, Jones, Ben-Amram, POPL 2001)",
+      "identity": {
+        "doi": "10.1145/360204.360210"
+      }
+    },
+    {
+      "name": "On a problem of formal logic (Ramsey, 1930)",
+      "identity": {
+        "doi": "10.1112/plms/s2-30.1.264"
+      }
+    },
+    {
+      "name": "Size-change termination, monotonicity constraints and ranking functions (Ben-Amram, LMCS 2010)",
+      "identity": {
+        "doi": "10.2168/LMCS-6(3:2)2010"
+      }
+    },
+    {
+      "name": "Ranking functions for size-change termination II (Ben-Amram, Lee, LMCS 2009)",
+      "identity": {
+        "arxiv": "0903.4382v4"
+      }
+    },
+    {
+      "name": "An intuitionistic analysis of size-change termination (Steila, TYPES 2014)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.TYPES.2014.288"
+      }
+    },
+    {
+      "name": "Agda termination checker module documentation",
+      "identity": {
+        "package": "Agda",
+        "version": "2.9.0",
+        "url": "https://hackage.haskell.org/package/Agda-2.9.0/docs/Agda-Termination-Termination.html"
+      }
+    },
+    {
+      "name": "Isabelle/Isar Reference Manual source (size_change method)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-isabelle",
+        "revision": "446d51f954e2f91b8656d4fee8412f702103611b",
+        "path": "src/Doc/Isar_Ref/HOL_Specific.thy"
+      }
+    },
+    {
+      "name": "ACL2 calling-context-graph termination analysis",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "79fb1487b53cc49a59b31f8bc5b7b7a7ad32cf4b",
+        "path": "books/acl2s/ccg/ccg.lisp"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

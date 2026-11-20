@@ -79026,6 +79026,83 @@
         "verification/program-verification"
       ]
     },
+    "size-change-termination-soundness-closure-decision-and-lexicographic-measures": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/360204.360210"
+          },
+          "name": "The size-change principle for program termination (Lee, Jones, Ben-Amram, POPL 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1112/plms/s2-30.1.264"
+          },
+          "name": "On a problem of formal logic (Ramsey, 1930)"
+        },
+        {
+          "identity": {
+            "doi": "10.2168/LMCS-6(3:2)2010"
+          },
+          "name": "Size-change termination, monotonicity constraints and ranking functions (Ben-Amram, LMCS 2010)"
+        },
+        {
+          "identity": {
+            "arxiv": "0903.4382v4"
+          },
+          "name": "Ranking functions for size-change termination II (Ben-Amram, Lee, LMCS 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.TYPES.2014.288"
+          },
+          "name": "An intuitionistic analysis of size-change termination (Steila, TYPES 2014)"
+        },
+        {
+          "identity": {
+            "package": "Agda",
+            "url": "https://hackage.haskell.org/package/Agda-2.9.0/docs/Agda-Termination-Termination.html",
+            "version": "2.9.0"
+          },
+          "name": "Agda termination checker module documentation"
+        },
+        {
+          "identity": {
+            "path": "src/Doc/Isar_Ref/HOL_Specific.thy",
+            "repository": "isabelle-prover/mirror-isabelle",
+            "revision": "446d51f954e2f91b8656d4fee8412f702103611b"
+          },
+          "name": "Isabelle/Isar Reference Manual source (size_change method)"
+        },
+        {
+          "identity": {
+            "path": "books/acl2s/ccg/ccg.lisp",
+            "repository": "acl2/acl2",
+            "revision": "79fb1487b53cc49a59b31f8bc5b7b7a7ad32cf4b"
+          },
+          "name": "ACL2 calling-context-graph termination analysis"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/formalized-results",
+        "verification/termination",
+        "verification/size-change-termination",
+        "lean",
+        "lean/mechanization",
+        "lean/termination",
+        "pl/termination-checking"
+      ]
+    },
     "slice-scaled-tree-borrows-range-permissions-and-unsafecell-freeze-visitor-soundness": {
       "observed_at": "2026-11-20",
       "subjects": [

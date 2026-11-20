@@ -1,0 +1,588 @@
+[
+  {
+    "id": "closure-iff-sct",
+    "lean": [
+      "Toy.SCT.sizeChangeTerminating_of_closureCriterion",
+      "Toy.SCT.closureCriterion_of_sizeChangeTerminating"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Theorem 4 of Lee, Jones and Ben-Amram (POPL 2001) in the unrooted form (Ben-Amram, LMCS 2010; Ben-Amram and Lee, LMCS 2009, Theorem 2), restated in this vocabulary; mechanized before in Isabelle/HOL (Krauss, CADE 2007; Wright, Cohen, Rowe and Popescu, ITP 2026) and in PVS (Munoz et al., ITP 2021).",
+    "plain_claim": "A program (finitely many functions, finitely many parameter slots) satisfies the closure criterion (every idempotent loop graph G = G ; G in the composition closure of its call-site graphs has a strict self-arc) if and only if it is size-change terminating (every infinite path through its call sites, from any function, has an infinitely descending thread).",
+    "hypotheses": [
+      {
+        "name": "h : ClosureCriterion P - component: the test ranges over the whole composition closure, not just the call-site graphs (forward direction)",
+        "purpose": "A loop that alternates two calls is only visible in a composite graph.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.alt_generatorCriterion_counterexample"
+      },
+      {
+        "name": "h : ClosureCriterion P - component: the self-arc must be strict (forward direction)",
+        "purpose": "A nonstrict self-arc only says a value does not grow; it never forces descent.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.stall_weakSelfArcCriterion_counterexample"
+      },
+      {
+        "name": "h : ClosureCriterion P - component: composition does not over-claim strictness, <= ; <= = <= (forward direction)",
+        "purpose": "Over-claiming strictness manufactures a strict self-arc that no thread justifies.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.overStrict_composition_counterexample"
+      },
+      {
+        "name": "ClosureCriterion P - component: composition keeps mixed strictness, <= ; < = < and < ; <= = < (converse direction)",
+        "purpose": "Forgetting either mixed case turns a strict two-call cycle into a nonstrict idempotent loop.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.forget_composition_rejects_mutProg"
+      },
+      {
+        "name": "ClosureCriterion P - component: only loop graphs G.src = G.dst are tested (converse direction)",
+        "purpose": "Composition is total, so a non-loop graph can be idempotent as a label matrix; testing it rejects a non-recursive program.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.loop_guard_needed_for_converse"
+      },
+      {
+        "name": "ClosureCriterion P - component: only idempotent loop graphs are tested (converse direction)",
+        "purpose": "A size-change-terminating program can have non-idempotent loop graphs without self-arcs.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.idempotence_needed_for_converse"
+      },
+      {
+        "name": "h : SizeChangeTerminating P (premise of the converse direction)",
+        "purpose": "Premise of the converse; without it the criterion can fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.idLoop_decLoop_contrast"
+      },
+      {
+        "name": "finitely many functions (built into SCG nf k as Fin nf; needed for the forward direction only)",
+        "purpose": "Forward direction (ClosureCriterion P -> SizeChangeTerminating P): with infinitely many functions a call chain f_0 -> f_1 -> ... has no loop graphs at all, so the criterion holds vacuously without size-change termination (generalized model SCGInf). Not needed for the converse, which goes through closure-criterion-exact; that proof uses finiteness of the parameter slots only. The generalized model agrees with this one on finite types (closureCriterion_iff_closureCriterionInf, sizeChangeTerminating_iff_sizeChangeTerminatingInf, consistentRunIn_nat_iff_consistentRunInf), so the counterexample varies only the finiteness assumption.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.infinite_functions_counterexample"
+      },
+      {
+        "name": "finitely many parameter slots (built into SCG nf k as Fin k; needed for both directions)",
+        "purpose": "With infinitely many parameters the forward direction fails (shift graph: no idempotent graph, no descending thread) and so does the converse (a dense strict order gives an idempotent loop without self-arcs, yet every path has a descending thread) (generalized model SCGInf). The generalized model agrees with this one on finite types (closureCriterion_iff_closureCriterionInf, sizeChangeTerminating_iff_sizeChangeTerminatingInf, consistentRunIn_nat_iff_consistentRunInf), so the counterexample varies only the finiteness assumption.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.SCT.infinite_params_soundness_counterexample",
+          "Toy.SCT.infinite_params_converse_exactness_counterexample"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Forward direction (Toy/SCT/Soundness.lean): colour each pair of positions of an infinite call path by the composite of the graphs between them (colours range over the finite list of all graphs, Toy/SCT/Enum.lean), apply Ramsey's theorem for pairs (card ramsey) to get an idempotent loop graph of the closure, and glue the threads given by its strict self-arc into an infinitely descending thread. Converse: via closure-criterion-exact and sct-sound-nat. Both directions rest on the thread semantics of composition (Toy/SCT/Threads.lean).",
+    "nonvacuity_witness": "The permuting call f(x, y) = f(y, x - 1) (for x > 0) satisfies the criterion and is size-change terminating (its path gSwap, gSwap, ... has the thread x, y, x, y, ...); so does f(x) = f(x - 1).",
+    "nonvacuity_witness_lean": "Toy.SCT.closure_iff_sct_nonvacuous",
+    "non_claims": [
+      "Both sides are properties of the size-change graphs only. Neither says anything about a real program unless its calls respect the graphs (card graphs-must-be-sound).",
+      "Size-change termination here quantifies over all infinite paths through the call sites, regardless of guards or reachability; it is not a statement about the paths a real program can actually take.",
+      "No complexity or efficiency claim: the closure can be exponentially large, and the problem is PSPACE-hard (Lee, Jones and Ben-Amram, Theorem 5; not formalized here).",
+      "Only idempotent loop graphs (G.src = G.dst and G ; G = G) must have a strict self-arc; non-idempotent loop graphs in the closure of a size-change-terminating program may have no self-arc at all (for swapDec: its only call-site graph gSwap = arcsG f0 f0 [(1, 0, .nonstrict), (0, 1, .strict)], that is x' <= y and y' < x, and gSwap3 = gSwap ; gSwap ; gSwap = arcsG f0 f0 [(0, 1, .strict), (1, 0, .strict)], with strict cross-arcs x -> y' and y -> x' and no self-arc, which lies in the closure by comp_pos and inClosure_pos; idempotence_needed_for_converse).",
+      "Unrooted model: every function is a possible entry point (as in Ben-Amram, LMCS 2010). Lee, Jones and Ben-Amram (POPL 2001, Definitions 10 and 16) restrict call sequences and the closure to calls reachable from a designated initial function, so a recursive function unreachable from it is ignored there but tested (and possibly rejected) here.",
+      "Every function has the same number k of parameter slots; functions with fewer parameters are modelled by slots without arcs. Such slots do not affect the closure, the criterion, size-change termination, consistent runs or checkSCT, but they do affect lexicographic projection measures (card lex-implies-closure-criterion).",
+      "Finiteness is essential and is not a removable side condition: finitely many functions are needed for the forward direction, finitely many parameter slots for both directions (counterexamples in the generalized model SCGInf, listed in the hypothesis ledger). Nothing is claimed for systems with infinitely many functions or parameters."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. Krauss, \"Certified size-change termination\", CADE-21, LNCS 4603, pp. 460-475, 2007, doi:10.1007/978-3-540-73595-3_34 (verified via Crossref and the publisher's abstract: a formalization of the size-change principle in Isabelle/HOL, used to construct certified termination proofs automatically). The full text was not consulted; no claim is made here about its proof route.",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect.",
+      "S. Steila, \"An intuitionistic analysis of size-change termination\", TYPES 2014, LIPIcs 39, pp. 288-307, 2015, doi:10.4230/LIPIcs.TYPES.2014.288 (verified at the publisher's page): the original proof of the size-change termination theorem used Ramsey's theorem for pairs; Vytiniotis, Coquand and Wahlstedt (2012) proved a classical variant intuitionistically via the Almost-Full Theorem; Steila gives an intuitionistic proof via the H-closure Theorem.",
+      "D. Vytiniotis, T. Coquand, D. Wahlstedt, \"Stop when you are almost-full: adventures in constructive termination\", Interactive Theorem Proving (ITP 2012), pp. 250-265, doi:10.1007/978-3-642-32347-8_17 (DOI verified via Crossref; title and pages as listed in the references of Steila 2015; content as summarized by Steila 2015).",
+      "A. M. Ben-Amram, C. S. Lee, \"Ranking functions for size-change termination II\", Logical Methods in Computer Science 5(2), 2009 (full text arXiv:0903.4382v4 consulted). Section 2.2: for a set G of size-change graphs over a well-ordered set of values, the transition system T_G (a state may move to any state that some graph of G describes; runStep here) terminates iff G satisfies SCT (Theorem 1, the 'only if' direction credited to Lee, TOPLAS 2009), and G satisfies SCT iff every idempotent graph of the composition closure has a strict self-arc (Theorem 2). Section 1: Lee (TOPLAS 2009) shows every terminating SCT instance has a global ranking function of the form min(max S_1, max S_2, ...), each S_i a set of lexicographically ordered tuples of variables and constants.",
+      "J. Wright, L. Cohen, R. N. S. Rowe, A. Popescu, \"Certified Infinite Descent Criteria in Isabelle/HOL\", ITP 2026, LIPIcs 382, pp. 14:1-14:18, doi:10.4230/LIPIcs.ITP.2026.14, and the Archive of Formal Proofs entry \"Certified Infinite Descent Criteria\" (Infinite_Descent_Criteria, June 2026) (verified at the publisher's page and the AFP entry page): an Isabelle/HOL framework for Infinite Descent, the condition underlying size-change termination, with mechanized complete criteria (among them a relation-based criterion), soundness proofs of incomplete heuristics, and verified counterexamples certifying their incompleteness.",
+      "C. A. Munoz, M. Ayala-Rincon, M. M. Moscato, A. M. Dutle, A. J. Narkawicz, A. A. Almeida, A. B. Avelar, T. M. Ferreira Ramos, \"Formal verification of termination criteria for first-order recursive functions\", ITP 2021, LIPIcs 193, pp. 27:1-27:17, doi:10.4230/LIPIcs.ITP.2021.27 (full text consulted; an extended version appeared in the Journal of Automated Reasoning 67(4), 2023): a PVS mechanization, for a first-order language, of the equivalence of semantic termination, measure termination, the size-change principle, calling context graphs and matrix-weighted graphs. Its Lemma 42 bounds the length of the circuits that must be checked by |W_p| * 3^(N^2) + 1 by a counting argument on (vertex, weight) pairs; this bound drives a fuel-bounded decision procedure (Dutle's procedure), the analogue of closureFuel here.",
+      "R. Thiemann, J. Giesl, \"The size-change principle and dependency pairs for termination of term rewriting\", AAECC 16(4):229-270, 2005, doi:10.1007/s00200-005-0179-7 (verified via Crossref and the publisher's abstract): the size-change principle adapted to term rewriting."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "sct-sound-nat",
+    "lean": "Toy.SCT.no_consistent_nat_run_of_sizeChangeTerminating",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Theorem 1 of Lee, Jones and Ben-Amram and Lemma 3.4 of Ben-Amram (LMCS 2010), restated over Nat.",
+    "plain_claim": "If every infinite path through a program's call sites has an infinitely descending thread, then there is no infinite call sequence with natural-number argument values consistent with the program's size-change graphs. The kernel-checked theorem covers only programs with finitely many functions and finitely many parameter slots (Fin nf, Fin k): its statement quantifies over P : Prog nf k.",
+    "hypotheses": [
+      {
+        "name": "h : SizeChangeTerminating P",
+        "purpose": "Supplies the infinitely descending thread along the run's call path.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.idLoop_decLoop_contrast"
+      },
+      {
+        "name": "values are natural numbers (ConsistentRunIn Nat)",
+        "purpose": "Infinite descent is impossible only in a well-founded order; over Int a strictly decreasing argument runs forever.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.decLoop_closureCriterion_consistent_int_run"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Follow the thread's values along the run: they never increase and decrease infinitely often, contradicting well-foundedness of Nat.",
+    "nonvacuity_witness": "f(x, y) = f(y, x - 1) (for x > 0) is size-change terminating.",
+    "nonvacuity_witness_lean": "Toy.SCT.sct_sound_nat_nonvacuous",
+    "non_claims": [
+      "Only runs that respect the graphs at every step are excluded; a real program's calls must be shown to respect them separately.",
+      "Over a non-well-founded value domain the conclusion fails: over Int, f(x) = f(x - 1) has the consistent run 0, -1, -2, ... (decLoop_closureCriterion_consistent_int_run).",
+      "Generalizing from Nat to another value type would need not only well-foundedness of < but also the compatibility laws a < b <= c -> a < c and a <= b < c -> a < c (Ben-Amram, LMCS 2010, Definition 3.5); RespectsIn assumes no relation between < and <= on a general type, and nothing is claimed beyond Nat.",
+      "No bound on run length is implied (card no-run-length-bound)."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "closure-criterion-sound",
+    "lean": "Toy.SCT.no_consistent_nat_run_of_closureCriterion",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The closure-criterion soundness of Lee, Jones and Ben-Amram (Theorem 4 combined with Theorem 1), restated over Nat.",
+    "plain_claim": "If every idempotent loop graph G = G ; G in the composition closure of a program's size-change graphs (finitely many functions and parameter slots) has a strict self-arc (i, i, <), then there is no infinite call sequence with natural-number argument values consistent with the graphs.",
+    "hypotheses": [
+      {
+        "name": "h : ClosureCriterion P — component: the test ranges over the whole composition closure, not just the call-site graphs",
+        "purpose": "A loop that alternates two calls is only visible in a composite graph.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.alt_generatorCriterion_counterexample"
+      },
+      {
+        "name": "h : ClosureCriterion P — component: the self-arc must be strict",
+        "purpose": "A nonstrict self-arc only says a value does not grow; it never forces descent.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.stall_weakSelfArcCriterion_counterexample"
+      },
+      {
+        "name": "h : ClosureCriterion P - component: composition does not over-claim strictness, <= ; <= = <=",
+        "purpose": "Over-claiming strictness (<= ; <= = <) manufactures a strict self-arc that no thread justifies.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.overStrict_composition_counterexample"
+      },
+      {
+        "name": "values are natural numbers (ConsistentRunIn Nat)",
+        "purpose": "Infinite descent is impossible only in a well-founded order; over Int a strictly decreasing argument runs forever.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.decLoop_closureCriterion_consistent_int_run"
+      },
+      {
+        "name": "finitely many functions (built into SCG nf k as Fin nf)",
+        "purpose": "With infinitely many functions the criterion can hold vacuously while an infinite consistent run exists (generalized model SCGInf). The generalized model agrees with this one on finite types (closureCriterion_iff_closureCriterionInf, sizeChangeTerminating_iff_sizeChangeTerminatingInf, consistentRunIn_nat_iff_consistentRunInf), so the counterexample varies only the finiteness assumption.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.infinite_functions_counterexample"
+      },
+      {
+        "name": "finitely many parameter slots (built into SCG nf k as Fin k)",
+        "purpose": "With infinitely many parameters the criterion can hold vacuously while an infinite consistent run exists (generalized model SCGInf). The generalized model agrees with this one on finite types (closureCriterion_iff_closureCriterionInf, sizeChangeTerminating_iff_sizeChangeTerminatingInf, consistentRunIn_nat_iff_consistentRunInf), so the counterexample varies only the finiteness assumption.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.infinite_params_soundness_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "One line given closure-iff-sct (forward direction) and sct-sound-nat. The substance (Ramsey's theorem and the thread semantics of composition) is in closure-iff-sct. (Depth labels in this package are marginal: they measure the argument needed given the earlier results of the package.)",
+    "nonvacuity_witness": "The criterion holds for the permuting call f(x, y) = f(y, x - 1) (for x > 0), for two mutually recursive one-parameter functions (f0(x) calls f1(x - 1) for x > 0, f1(y) calls f0(y)), and for the Ackermann call structure.",
+    "nonvacuity_witness_lean": "Toy.SCT.closure_criterion_sound_nonvacuous",
+    "non_claims": [
+      "It is a statement about the abstraction only. 'Passed' licenses termination of a real program only together with a proof that every real call respects one of the graphs (card closure-criterion-sound-model and graphs-must-be-sound).",
+      "Over a non-well-founded value domain the conclusion fails (decLoop_closureCriterion_consistent_int_run).",
+      "No bound on the number of calls (card no-run-length-bound).",
+      "First-order calls only: the model has a fixed finite set of functions and explicit call sites; higher-order calls (calls through function-valued arguments) are outside the model, and nothing here covers them.",
+      "It does not show that a program failing the criterion diverges (cards closure-criterion-exact and sct-incomplete-for-termination).",
+      "Weakening any component of the criterion (generators only, nonstrict self-arcs, composition that over-claims strictness) breaks it (cards generators-insufficient, nonstrict-self-arcs-insufficient, composition-tracks-strictness).",
+      "Unrooted model: every function is tested as a possible entry point (card closure-iff-sct); Lee, Jones and Ben-Amram (POPL 2001) consider only calls reachable from an initial function.",
+      "Graphs abstract calls only under the program's guards: with truncated Nat subtraction an unguarded call f(x - 1) at x = 0 passes 0 and violates x' < x (card graphs-must-be-sound)."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. Krauss, \"Certified size-change termination\", CADE-21, LNCS 4603, pp. 460-475, 2007, doi:10.1007/978-3-540-73595-3_34 (verified via Crossref and the publisher's abstract: a formalization of the size-change principle in Isabelle/HOL, used to construct certified termination proofs automatically). The full text was not consulted; no claim is made here about its proof route.",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect.",
+      "A. M. Ben-Amram, C. S. Lee, \"Ranking functions for size-change termination II\", Logical Methods in Computer Science 5(2), 2009 (full text arXiv:0903.4382v4 consulted). Section 2.2: for a set G of size-change graphs over a well-ordered set of values, the transition system T_G (a state may move to any state that some graph of G describes; runStep here) terminates iff G satisfies SCT (Theorem 1, the 'only if' direction credited to Lee, TOPLAS 2009), and G satisfies SCT iff every idempotent graph of the composition closure has a strict self-arc (Theorem 2). Section 1: Lee (TOPLAS 2009) shows every terminating SCT instance has a global ranking function of the form min(max S_1, max S_2, ...), each S_i a set of lexicographically ordered tuples of variables and constants."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "closure-criterion-sound-model",
+    "lean": "Toy.SCT.terminates_of_stepRespects_of_closureCriterion",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Theorem 1 of Lee, Jones and Ben-Amram (safe graphs over well-founded data) combined with their Theorem 4, for an arbitrary call relation on Nat-valued states.",
+    "plain_claim": "If every call made by a call relation step on states (one of finitely many functions, together with a vector of natural-number argument values over finitely many parameter slots) is justified by some call-site graph of P with matching endpoints that the call respects, and P satisfies the closure criterion, then step has no infinite call sequence.",
+    "hypotheses": [
+      {
+        "name": "hstep : StepRespects P step (the graphs are sound for the real calls)",
+        "purpose": "Connects the real call relation to the graphs; without it the graphs say nothing about step.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.misfit_graphs_counterexample"
+      },
+      {
+        "name": "h : ClosureCriterion P",
+        "purpose": "The abstraction must exclude infinite consistent runs.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.idLoop_runStep_counterexample"
+      },
+      {
+        "name": "argument values are natural numbers (State nf k := Fin nf x (Fin k -> Nat))",
+        "purpose": "Over integer states the model x -> x - 1 respects x' < x on every call and the criterion holds, yet it does not terminate.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.decLoop_int_model_counterexample"
+      },
+      {
+        "name": "finitely many functions (State nf k := Fin nf x (Fin k -> Nat) uses Fin nf)",
+        "purpose": "With infinitely many functions the call chain f_0 -> f_1 -> ... has no loop graphs, so the criterion holds vacuously, yet it has an infinite consistent Nat run (infinite_functions_counterexample, graph-level form). Model-level form, proved in Lean: infinite_functions_model_counterexample (the most permissive model respects the graphs, the criterion holds, and the model does not terminate). The generalized model agrees with StepRespects on finite types (stepRespects_iff_stepRespectsInf, closureCriterion_iff_closureCriterionInf).",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.infinite_functions_counterexample"
+      },
+      {
+        "name": "finitely many parameter slots (State nf k := Fin nf x (Fin k -> Nat) uses Fin k)",
+        "purpose": "With infinitely many parameters the single shift call (parameter i passed, not larger, to position i + 1) has no idempotent closure graph, so the criterion holds vacuously, yet it has an infinite consistent Nat run (infinite_params_soundness_counterexample, graph-level form). Model-level form, proved in Lean: infinite_params_model_counterexample. The generalized model agrees with StepRespects on finite types (stepRespects_iff_stepRespectsInf, closureCriterion_iff_closureCriterionInf).",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.infinite_params_soundness_counterexample"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "An infinite step sequence yields an infinite consistent run (choose a justifying graph per step); then apply closure-criterion-sound. (Depth labels in this package are marginal: they measure the argument needed given the earlier results of the package.)",
+    "nonvacuity_witness": "The model of f(x, y) = if x = 0 then 0 else f(y, x - 1) respects the graph x' <= y, y' < x, which satisfies the criterion.",
+    "nonvacuity_witness_lean": "Toy.SCT.closure_criterion_sound_model_nonvacuous",
+    "non_claims": [
+      "StepRespects is an obligation about the real program that this theorem assumes and does not check; a checker that accepts unsound graphs proves nothing (card graphs-must-be-sound).",
+      "Termination here means no infinite call sequence of the given relation; it says nothing about non-call sources of divergence (loops inside a function body, partial primitives) unless they are modelled as calls.",
+      "Values are natural numbers, and there are finitely many functions and finitely many parameter slots (all three are built into State nf k and each is tight). A real size measure must map into Nat (another well-founded order is not covered here), and nothing is claimed for systems with infinitely many functions or parameters.",
+      "No complexity bound (card no-run-length-bound).",
+      "Totalized operations need their guards: over Nat, truncated subtraction gives 0 - 1 = 0, so an unguarded call f(x - 1) does not respect x' < x at x = 0 and StepRespects fails (misfit_graphs_counterexample); the same holds for total list operations such as tail [] = [].",
+      "Connecting a functional program with nested calls (such as A(m - 1, A(m, n - 1))) to a call relation on evaluated argument states needs a separate call-by-value adequacy argument (Lee, Jones and Ben-Amram, Lemmas 2 and 3); under lazy or non-strict evaluation an infinite call chain need not mean divergence. Neither is modelled."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect.",
+      "C. A. Munoz, M. Ayala-Rincon, M. M. Moscato, A. M. Dutle, A. J. Narkawicz, A. A. Almeida, A. B. Avelar, T. M. Ferreira Ramos, \"Formal verification of termination criteria for first-order recursive functions\", ITP 2021, LIPIcs 193, pp. 27:1-27:17, doi:10.4230/LIPIcs.ITP.2021.27 (full text consulted; an extended version appeared in the Journal of Automated Reasoning 67(4), 2023): a PVS mechanization, for a first-order language, of the equivalence of semantic termination, measure termination, the size-change principle, calling context graphs and matrix-weighted graphs. Its Lemma 42 bounds the length of the circuits that must be checked by |W_p| * 3^(N^2) + 1 by a counting argument on (vertex, weight) pairs; this bound drives a fuel-bounded decision procedure (Dutle's procedure), the analogue of closureFuel here."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "closure-criterion-exact",
+    "lean": "Toy.SCT.consistent_nat_run_of_not_closureCriterion",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Known: Ben-Amram and Lee (LMCS 2009, Theorems 1 and 2, the 'only if' direction credited to Lee, TOPLAS 2009) state that the transition system T_G of a set of size-change graphs over any well-ordered value set, Nat included, terminates iff every idempotent graph of the closure has a strict self-arc; this card is the 'only if' half for Nat, restated in this vocabulary. Ben-Amram (LMCS 2010, Lemma 3.7 and Theorem 3.8) proves completeness for general monotonicity constraints over a constructed well-ordered set.",
+    "plain_claim": "If some idempotent loop graph in the composition closure of a program's size-change graphs (finitely many functions and parameter slots) has no strict self-arc, then there is an infinite call sequence with natural-number argument values consistent with the program's graphs.",
+    "hypotheses": [
+      {
+        "name": "h : ¬ ClosureCriterion P",
+        "purpose": "Premise; programs satisfying the criterion have no consistent run (card closure-criterion-sound).",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.idLoop_decLoop_contrast"
+      },
+      {
+        "name": "finitely many parameter slots (built into SCG nf k as Fin k)",
+        "purpose": "With infinitely many parameters an idempotent loop graph without self-arcs can coexist with the absence of any consistent Nat run (dense strict order, generalized model SCGInf).",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.infinite_params_converse_exactness_counterexample"
+      },
+      {
+        "name": "finitely many functions (built into SCG nf k as Fin nf)",
+        "purpose": "Not needed by the construction: the run only visits the functions of one finite factor path of the failing graph, and the Lean proof uses finiteness of the parameter slots only.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Toy/SCT/Exactness.lean: write the failing graph G as the composite of a call-site path F 0, ..., F (m - 1) (Toy/SCT/Threads.lean) and repeat that path forever. Because G = G ; G has no strict self-arc, its strict arcs form a strict partial order, ranked by the number hc q of strict arcs out of q. Block boundaries get the values (m + 1) * hc q + m and positions inside a block get the least values respecting the remaining arcs of the block (backward maximum over arcs); every arc of every step is respected.",
+    "nonvacuity_witness": "The criterion fails for f(x, y) = f(x, x - 1) and for the alternating program with calls f(x - 1, ?) and f(?, y - 1).",
+    "nonvacuity_witness_lean": "Toy.SCT.closure_criterion_exact_nonvacuous",
+    "non_claims": [
+      "The run exists in the abstraction (it respects the graphs). It need not be a run of any real program: rejection by the checker does not mean the real program diverges (card sct-incomplete-for-termination).",
+      "Together with closure-criterion-sound it characterizes the criterion as exactly 'no consistent infinite Nat run' for this abstraction; it does not characterize termination of real programs.",
+      "No value bound and no computability claim is stated in Lean. By inspection of the proof the construction is explicit, with values at most (m + 1) * (k + 2) for a factor path of length m, but this bound is not formalized, and no claim is made about computing the run from P."
+    ],
+    "prior_art": [
+      "A. M. Ben-Amram, C. S. Lee, \"Ranking functions for size-change termination II\", Logical Methods in Computer Science 5(2), 2009 (full text arXiv:0903.4382v4 consulted). Section 2.2: for a set G of size-change graphs over a well-ordered set of values, the transition system T_G (a state may move to any state that some graph of G describes; runStep here) terminates iff G satisfies SCT (Theorem 1, the 'only if' direction credited to Lee, TOPLAS 2009), and G satisfies SCT iff every idempotent graph of the composition closure has a strict self-arc (Theorem 2). Section 1: Lee (TOPLAS 2009) shows every terminating SCT instance has a global ranking function of the form min(max S_1, max S_2, ...), each S_i a set of lexicographically ordered tuples of variables and constants.",
+      "C. S. Lee, \"Ranking functions for size-change termination\", ACM TOPLAS 31(3), 2009, doi:10.1145/1498926.1498928 (verified via the Crossref abstract; its completeness and ranking-function results are as summarized by Ben-Amram and Lee 2009, Sections 1 and 2.2).",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect.",
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard."
+    ],
+    "design_question": "Can the closure criterion be decided by a simple fixpoint computation whose acceptance is trustworthy, and what does rejection mean?"
+  },
+  {
+    "id": "checker-correct",
+    "lean": [
+      "Toy.SCT.closureCriterion_of_checkSCT_eq_true",
+      "Toy.SCT.checkSCT_eq_true_of_closureCriterion"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "The graph-based algorithm of Lee, Jones and Ben-Amram (Section 3.2) made precise as a fuel-bounded fixpoint iteration.",
+    "plain_claim": "checkSCT P (compute the composition closure of the call-site graphs by fixpoint iteration with fuel nf * nf * 3^(k*k) + 1, then test every idempotent loop graph for a strict self-arc) returns true if and only if P satisfies the closure criterion.",
+    "hypotheses": [
+      {
+        "name": "h : checkSCT P = true (soundness direction) / h : ClosureCriterion P (completeness direction)",
+        "purpose": "The premise of each direction.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.checker_premise_contrast"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Soundness is shallow (a fixpoint list containing the generators and closed under composition contains the closure). Completeness needs a counting argument (Toy/SCT/CheckCorrect.lean): every list produced is duplicate-free and consists of closure graphs, each non-final iteration step adds a new graph, and a duplicate-free list of graphs has at most nf * nf * 3^(k*k) elements (explicit enumeration, Toy/SCT/Enum.lean).",
+    "nonvacuity_witness": "checkSCT accepts the permuting call, which satisfies the criterion.",
+    "nonvacuity_witness_lean": "Toy.SCT.checker_correct_nonvacuous",
+    "non_claims": [
+      "Not an efficient algorithm: the closure may have exponentially many graphs; the decision problem is PSPACE-hard (Lee, Jones and Ben-Amram, Theorem 5), which is not formalized here.",
+      "Specification-level cost: the fuel nf * nf * 3^(k*k) + 1 already exceeds 4 * 10^7 for one function with k = 4, and each iteration step scans all pairs of the current list with list-membership tests (cubic in the list length); direct execution or kernel evaluation is impractical except for tiny closures.",
+      "The checker computes the full closure. Optimizations such as subsumption change what must be tested (Ben-Amram, LMCS 2010, Section 4.3) and are not covered.",
+      "Correctness is relative to the closure criterion, a property of the graphs; it carries no information about whether the graphs are sound for a real program.",
+      "The fuel is fixed by the definition; with too little fuel the iteration gives up and the checker rejects (closureIter_neg).",
+      "Unrooted: the closure contains the composites of all call paths, from every function (card closure-iff-sct).",
+      "Composition is total (it does not check G.dst = H.src, unlike the partial composition of Lee, Jones and Ben-Amram, Definition 14); the closure only composes composable pairs, and the loop guard G.src = G.dst in the test is what excludes non-loop graphs that are idempotent as label matrices.",
+      "The finite function set and parameter slots are preconditions of the definition (the fuel counts the graphs of the finite type SCG nf k), not hypotheses that could be dropped; no checker for infinite systems is considered."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. Krauss, \"Certified size-change termination\", CADE-21, LNCS 4603, pp. 460-475, 2007, doi:10.1007/978-3-540-73595-3_34 (verified via Crossref and the publisher's abstract: a formalization of the size-change principle in Isabelle/HOL, used to construct certified termination proofs automatically). The full text was not consulted; no claim is made here about its proof route.",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect.",
+      "C. A. Munoz, M. Ayala-Rincon, M. M. Moscato, A. M. Dutle, A. J. Narkawicz, A. A. Almeida, A. B. Avelar, T. M. Ferreira Ramos, \"Formal verification of termination criteria for first-order recursive functions\", ITP 2021, LIPIcs 193, pp. 27:1-27:17, doi:10.4230/LIPIcs.ITP.2021.27 (full text consulted; an extended version appeared in the Journal of Automated Reasoning 67(4), 2023): a PVS mechanization, for a first-order language, of the equivalence of semantic termination, measure termination, the size-change principle, calling context graphs and matrix-weighted graphs. Its Lemma 42 bounds the length of the circuits that must be checked by |W_p| * 3^(N^2) + 1 by a counting argument on (vertex, weight) pairs; this bound drives a fuel-bounded decision procedure (Dutle's procedure), the analogue of closureFuel here."
+    ],
+    "design_question": "Can the closure criterion be decided by a simple fixpoint computation whose acceptance is trustworthy, and what does rejection mean?"
+  },
+  {
+    "id": "lex-implies-closure-criterion",
+    "lean": "Toy.SCT.closureCriterion_of_lexProjDecreases",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Stated informally by Lee, Jones and Ben-Amram ('naturally subsumes ... the lexical ordering') and by Ben-Amram (2002: size-change termination extends and subsumes lexicographic descent); here made precise for lexicographic tuples of parameter projections that decrease for all graph-consistent values.",
+    "plain_claim": "If for some length L and some choice ord of an L-tuple of parameters per function, the tuple of argument values decreases lexicographically on every call-site graph for all caller and callee values consistent with that graph, then the program satisfies the closure criterion. (By checker-correct, checkSCT then accepts it.) The kernel-checked theorem covers only programs with finitely many functions and finitely many parameter slots (Fin nf, Fin k): its statement quantifies over P : Prog nf k.",
+    "hypotheses": [
+      {
+        "name": "h : LexProjDecreases P ord",
+        "purpose": "The measure must decrease on every call, justified by the graph alone.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.idLoop_no_lexProjDecreases_not_criterion"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Via closure-criterion-exact: a failing criterion yields an infinite consistent Nat run, along which the measure would decrease lexicographically forever, contradicting well-foundedness of the lexicographic order on Nat^L (lexLt_no_infinite_descent). (Depth labels in this package are marginal: they measure the argument needed given the earlier results of the package.)",
+    "nonvacuity_witness": "The Ackermann call structure (calls f(x - 1, ?) and f(x, y - 1)) with measure (x, y).",
+    "nonvacuity_witness_lean": "Toy.SCT.lex_implies_closure_criterion_nonvacuous",
+    "non_claims": [
+      "The measure must decrease for every pair of argument vectors consistent with the graph, not merely on the calls a real program makes. A measure that decreases on real calls but relies on information absent from the graphs (arithmetic facts like x + 1 > x, or the branch taken inside one call site) does not make the criterion pass.",
+      "Single-graph limit: a call site is described by one conjunctive graph. For f(x, y) = f(if y = 0 then x - 1 else x, if y = 0 then 5 else y - 1) every real call decreases (x, y) lexicographically, but the only sound single graph is x' <= x, which fails the criterion unless the call site is split into its two branches (as in ackProg).",
+      "Decrease is required on every single call site, not around cycles: mutProg (f0(x) = f1(x - 1) for x > 0, f1(y) = f0(y)) passes the criterion and checkSCT but has no such measure of any length (mutProg_closureCriterion_no_lexProjDecreases); Lean's inference (with an order on functions) and Ben-Amram's cycle-based lexicographic descent (2002) handle such programs.",
+      "Padding slots: a function with zero real parameters still needs projections onto arc-free slots, which are unconstrained on every call into it; the non-recursive acycProg : Prog 2 1 := ⟨[gAcyc]⟩ with gAcyc : SCG 2 1 := arcsG 0 1 [] (two functions with one slot each; f0 calls f1 once with no size information, and f1 makes no calls) has no such measure (acycProg_closureCriterion_no_lexProjDecreases).",
+      "Only lexicographic tuples of single parameter projections; measures such as sums, maxima or multisets of parameters are not covered.",
+      "All functions use tuples of the same length; an order on the functions themselves (used by Lean's inference for mutual recursion) is not modelled.",
+      "No comparison with Lean's termination inference is proved: checkSCT and Lean's inference are incomparable on examples (swapDec is accepted only by checkSCT; guarded counting-up loops, function-ordered mutual recursion and unsplit conditional calls only by Lean; observations recorded in prior art).",
+      "The converse is false (card sct-not-lex)."
+    ],
+    "prior_art": [
+      "Lee, Jones and Ben-Amram (POPL 2001, doi:10.1145/360204.360210), full text: Examples 3 (Ackermann, lexically ordered parameters), 4 and 5 (permuted parameters) in Section 1.4; Section 2.3.3 says Examples 4 and 5 'seem to possess no natural lexical descent'; Appendix B (more on related work, term rewriting) says size-change termination 'naturally subsumes an interesting class of orderings, including the lexical ordering'. These are informal remarks; no lexicographic statement is proved there.",
+      "A. M. Ben-Amram, \"General size-change termination and lexicographic descent\", in The Essence of Computation, LNCS 2566, pp. 3-17, 2002, doi:10.1007/3-540-36377-7_1 (verified via Crossref and the publisher's abstract): size-change termination extends and subsumes lexicographic descent; the functions computable by size-change-terminating programs are exactly the multiply-recursive functions. Its lexicographic descent is tested along cycles of the call graph, not on every single call as LexProjDecreases requires.",
+      "Lean 4 v4.34.1 sources (github.com/leanprover/lean4 at tag v4.34.1, files fetched and read): the termination_by docstring in src/Lean/Parser/Term.lean ('If omitted, a termination measure will be inferred') and the module documentation of src/Lean/Elab/PreDefinition/WF/GuessLex.lean (inference searches lexicographic combinations of basic measures sizeOf x_i, of measures e2 - e1 when e1 < e2 is found in the context of a recursive call, and of orders on the functions themselves for mutual recursion). The module documentation credits the search for lexicographic orders to Bulwahn, Krauss and Nipkow, \"Finding lexicographic orders for termination proofs in Isabelle/HOL\", TPHOLs 2007, pp. 38-53, doi:10.1007/978-3-540-74591-4_5 (verified via Crossref), and the idea of the measures e2 - e1 to Manolios and Vroon, \"Termination analysis with calling context graphs\", CAV 2006, LNCS 4144, pp. 401-414, doi:10.1007/11817963_36. Lean builds such definitions by well-founded recursion on a measure; it does not use the size-change principle. Checked with Lean v4.34.1: 'def swapF (x y : Nat) : Nat := if x = 0 then 0 else swapF y (x - 1)' is rejected with 'Could not find a decreasing measure' and accepted with 'termination_by x + y'; the Ackermann function is accepted with inferred measure (x1, x2); 'if x < 100 then f (x + 1) else 0' is accepted."
+    ],
+    "design_question": "How does a size-change checker compare in power with checkers that search for lexicographic measures over parameters (as Lean's termination inference does)?"
+  },
+  {
+    "id": "sct-not-lex",
+    "lean": "Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Lee, Jones and Ben-Amram note that their permuted-parameter examples 'seem to possess no natural lexical descent'; here a simpler permuting call is shown to have no decreasing lexicographic projection measure at all, both relative to its graph and relative to its model.",
+    "plain_claim": "The permuting call f(x, y) = f(y, x - 1) (for x > 0) satisfies the closure criterion, is accepted by checkSCT, and its model (f(x, y) = if x = 0 then 0 else f(y, x - 1)) respects its graph and terminates; yet no lexicographic tuple of single-parameter projections, of any length, decreases on its call, neither for all graph-consistent values nor on the model's own calls.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "The first component of any such tuple is x or y, and an explicit call makes it increase: (1, 2) -> (2, 0) increases x and (2, 0) -> (0, 1) increases y.",
+    "nonvacuity_witness": "Concrete program swapDec and model swapStep.",
+    "nonvacuity_witness_lean": "Toy.SCT.swapDec_closureCriterion_and_no_lexProjDecreases",
+    "positive_control": "The Ackermann call structure ackProg (calls f(x - 1, ?) and f(x, y - 1); fixtures quoted under no-run-length-bound) does have a decreasing lexicographic projection measure, ackOrd = (x, y) (LexProjDecreases ackProg ackOrd), and satisfies the closure criterion, so a program accepted by the criterion can have such a measure; swapDec has none.",
+    "positive_control_lean": "Toy.SCT.sct_not_lex_positive_control",
+    "non_claims": [
+      "The separation is only against lexicographic tuples of single parameters. It does not mean arithmetic is needed for a ranking function: the order-based measure max(2x, 2y + 1) (the lexicographic maximum of <x, 0> and <y, 1>) decreases on every graph-consistent step (swapDec_order_ranking), and every terminating size-change instance has a global ranking function built from minima and maxima of lexicographically ordered tuples of variables and constants (Lee, TOPLAS 2009, as summarized by Ben-Amram and Lee, LMCS 2009); x + y also works.",
+      "The extra power is in which programs are certified, not in which functions can be computed: size-change-terminating programs compute exactly the multiply-recursive functions, the same class as lexicographic descent (Ben-Amram 2002, not formalized here).",
+      "checkSCT is not claimed to be stronger than Lean's termination inference overall: they are incomparable on examples (card lex-implies-closure-criterion and sct-incomplete-for-termination); the separation from Lean is an observation on one example (recorded in prior art), not a theorem about Lean.",
+      "One program; no claim about how often such programs occur."
+    ],
+    "prior_art": [
+      "Lee, Jones and Ben-Amram (POPL 2001, doi:10.1145/360204.360210), full text: Examples 3 (Ackermann, lexically ordered parameters), 4 and 5 (permuted parameters) in Section 1.4; Section 2.3.3 says Examples 4 and 5 'seem to possess no natural lexical descent'; Appendix B (more on related work, term rewriting) says size-change termination 'naturally subsumes an interesting class of orderings, including the lexical ordering'. These are informal remarks; no lexicographic statement is proved there.",
+      "A. M. Ben-Amram, \"General size-change termination and lexicographic descent\", in The Essence of Computation, LNCS 2566, pp. 3-17, 2002, doi:10.1007/3-540-36377-7_1 (verified via Crossref and the publisher's abstract): size-change termination extends and subsumes lexicographic descent; the functions computable by size-change-terminating programs are exactly the multiply-recursive functions.",
+      "Lean 4 v4.34.1 sources (github.com/leanprover/lean4 at tag v4.34.1, files fetched and read): the termination_by docstring in src/Lean/Parser/Term.lean ('If omitted, a termination measure will be inferred') and the module documentation of src/Lean/Elab/PreDefinition/WF/GuessLex.lean (inference searches lexicographic combinations of basic measures sizeOf x_i, of measures e2 - e1 when e1 < e2 is found in the context of a recursive call, and of orders on the functions themselves for mutual recursion). The module documentation credits the search for lexicographic orders to Bulwahn, Krauss and Nipkow, \"Finding lexicographic orders for termination proofs in Isabelle/HOL\", TPHOLs 2007, pp. 38-53, doi:10.1007/978-3-540-74591-4_5 (verified via Crossref), and the idea of the measures e2 - e1 to Manolios and Vroon, \"Termination analysis with calling context graphs\", CAV 2006, LNCS 4144, pp. 401-414, doi:10.1007/11817963_36. Lean builds such definitions by well-founded recursion on a measure; it does not use the size-change principle. Checked with Lean v4.34.1: 'def swapF (x y : Nat) : Nat := if x = 0 then 0 else swapF y (x - 1)' is rejected with 'Could not find a decreasing measure' and accepted with 'termination_by x + y'; the Ackermann function is accepted with inferred measure (x1, x2); 'if x < 100 then f (x + 1) else 0' is accepted.",
+      "A. Abel, T. Altenkirch, \"A predicative analysis of structural recursion\", Journal of Functional Programming 12(1):1-41, 2002, doi:10.1017/S0956796801004191 (verified via the Crossref abstract: the foetus checker for structural recursion and a proof that structurally recursive terms normalize). Lee, Jones and Ben-Amram (POPL 2001, Section 5) describe foetus as returning a lexical ordering on the arguments if one exists.",
+      "A. M. Ben-Amram, C. S. Lee, \"Ranking functions for size-change termination II\", Logical Methods in Computer Science 5(2), 2009 (full text arXiv:0903.4382v4 consulted). Section 2.2: for a set G of size-change graphs over a well-ordered set of values, the transition system T_G (a state may move to any state that some graph of G describes; runStep here) terminates iff G satisfies SCT (Theorem 1, the 'only if' direction credited to Lee, TOPLAS 2009), and G satisfies SCT iff every idempotent graph of the composition closure has a strict self-arc (Theorem 2). Section 1: Lee (TOPLAS 2009) shows every terminating SCT instance has a global ranking function of the form min(max S_1, max S_2, ...), each S_i a set of lexicographically ordered tuples of variables and constants."
+    ],
+    "design_question": "How does a size-change checker compare in power with checkers that search for lexicographic measures over parameters (as Lean's termination inference does)?"
+  },
+  {
+    "id": "nonstrict-self-arcs-insufficient",
+    "lean": "Toy.SCT.stall_weakSelfArcCriterion_counterexample",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Immediate from the definitions; the strictness requirement is part of Theorem 4 of Lee, Jones and Ben-Amram.",
+    "plain_claim": "For f(x, y) = f(x, x - 1) (for x > 0), every idempotent loop graph in the closure has a self-arc, but only a nonstrict one (the graph also has a strict arc x -> y'); the closure criterion fails, the program is not size-change terminating, it has an infinite consistent Nat run, and its most permissive model does not terminate.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "The closure is the single idempotent graph; the run (1, 0), (1, 0), ... respects it; a thread must stay on x.",
+    "nonvacuity_witness": "Concrete program stallProg.",
+    "nonvacuity_witness_lean": "Toy.SCT.stall_weakSelfArcCriterion_counterexample",
+    "non_claims": [
+      "Shows only that the criterion cannot be weakened to nonstrict self-arcs; it says nothing about other weakenings.",
+      "Strict arcs between different parameters (here x -> y') do not substitute for a strict self-arc on an idempotent graph."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "generators-insufficient",
+    "lean": "Toy.SCT.alt_generatorCriterion_counterexample",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Instance of Theorem 4 of Lee, Jones and Ben-Amram, which tests the composition closure: the generator-only test is that criterion with the closure step removed, and altProg separates the two (its closure contains the empty idempotent loop). Same status as nonstrict-self-arcs-insufficient. Mechanized counterexamples to other incomplete descent criteria appear in Wright, Cohen, Rowe and Popescu (ITP 2026).",
+    "plain_claim": "For the program with calls f(x - 1, ?) (for x > 0) and f(?, y - 1) (for y > 0), every call-site graph has a strict self-arc and passes the idempotent test, but the composite of the two calls is the empty idempotent graph: the closure criterion fails, the program is not size-change terminating, it has an infinite consistent Nat run, and its most permissive model does not terminate.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Direct computation of one composite; the run alternates (1, 0) and (0, 1).",
+    "nonvacuity_witness": "Concrete program altProg.",
+    "nonvacuity_witness_lean": "Toy.SCT.alt_generatorCriterion_counterexample",
+    "non_claims": [
+      "Shows that checking generators is unsound; it does not say how much of the closure an optimized checker may omit (for subsumption see Ben-Amram, LMCS 2010, Section 4.3)."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. M. Ben-Amram, \"Size-change termination, monotonicity constraints and ranking functions\", Logical Methods in Computer Science 6(3:2), 2010, doi:10.2168/LMCS-6(3:2)2010 (verified via Crossref; full text arXiv:1005.0253v5 consulted). Lemma 3.4: size-change termination implies semantic termination. Lemma 3.7 and Theorem 3.8: a monotonicity-constraint system terminates iff it is size-change terminating; the converse direction builds a satisfying assignment in a well-ordered set constructed in the proof (not necessarily the naturals). Section 4.3 warns that once the closure is reduced by subsumption, testing only idempotent graphs is incorrect.",
+      "J. Wright, L. Cohen, R. N. S. Rowe, A. Popescu, \"Certified Infinite Descent Criteria in Isabelle/HOL\", ITP 2026, LIPIcs 382, pp. 14:1-14:18, doi:10.4230/LIPIcs.ITP.2026.14, and the Archive of Formal Proofs entry \"Certified Infinite Descent Criteria\" (Infinite_Descent_Criteria, June 2026) (verified at the publisher's page and the AFP entry page): an Isabelle/HOL framework for Infinite Descent, the condition underlying size-change termination, with mechanized complete criteria (among them a relation-based criterion), soundness proofs of incomplete heuristics, and verified counterexamples certifying their incompleteness."
+    ],
+    "design_question": "Can the closure criterion be decided by a simple fixpoint computation whose acceptance is trustworthy, and what does rejection mean?"
+  },
+  {
+    "id": "composition-tracks-strictness",
+    "lean": [
+      "Toy.SCT.overStrict_composition_counterexample",
+      "Toy.SCT.forget_composition_rejects_mutProg"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore about the composition of Lee, Jones and Ben-Amram (Definition 14); stated precisely here.",
+    "plain_claim": "Composition must sequence labels exactly as <= ; < = <, < ; <= = < and <= ; <= = <=: if <= ; <= is taken to be <, the criterion accepts f(x) = f(x), which fails the standard criterion and has an infinite consistent run; if either mixed case is forgotten (<= ; < = <= or < ; <= = <=), the criterion rejects the mutually recursive mutProg (f0(x) = f1(x - 1) for x > 0, f1(y) = f0(y)), which satisfies the standard criterion, is size-change terminating and has no infinite consistent Nat run.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Small closures computed by decision procedures in the kernel; size-change termination and absence of runs for mutProg come from closure-iff-sct and closure-criterion-sound.",
+    "nonvacuity_witness": "Concrete programs idLoop and mutProg with the alternative sequencings Label.seqOverStrict, Label.seqForgetLeft and Label.seqForgetRight; both lossy sequencings still accept decLoop and swapDec (criterionWith_forgetLeft_pos, criterionWith_forgetRight_pos), so they are not degenerate.",
+    "nonvacuity_witness_lean": [
+      "Toy.SCT.overStrict_composition_counterexample",
+      "Toy.SCT.forget_composition_rejects_mutProg"
+    ],
+    "non_claims": [
+      "Over-claiming breaks soundness; forgetting a mixed case breaks completeness. Whether the forgetful criteria are sound is neither claimed nor refuted.",
+      "Only these three alternative sequencings are examined."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard."
+    ],
+    "design_question": "Can the closure criterion be decided by a simple fixpoint computation whose acceptance is trustworthy, and what does rejection mean?"
+  },
+  {
+    "id": "graphs-must-be-sound",
+    "lean": "Toy.SCT.misfit_graphs_counterexample",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Immediate; corresponds to the safety requirement on graphs in Theorem 1 of Lee, Jones and Ben-Amram.",
+    "plain_claim": "The graph x' < x satisfies the closure criterion and checkSCT accepts it, but the model of f(x) = f(x - 1) with the base-case guard forgotten (truncated subtraction, so 0 calls 0 - 1 = 0) respects that graph on every call with x > 0, fails it on the call from 0, and does not terminate; likewise the model of f(x) = f(x).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "The call 0 -> 0 violates x' < x; the constant run at 0 is infinite.",
+    "nonvacuity_witness": "Concrete program decLoop and models unguardedDecStep and idStep.",
+    "nonvacuity_witness_lean": "Toy.SCT.misfit_graphs_counterexample",
+    "non_claims": [
+      "Does not show how to establish that graphs are sound for a real program; that is a separate size analysis outside this package.",
+      "Totalized or saturating operations break graph soundness exactly at their base cases (0 - 1 = 0 over Nat, tail [] = [] for lists); such calls respect a strict arc only on paths guarded by x > 0 (or a non-empty test)."
+    ],
+    "prior_art": [
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "no-run-length-bound",
+    "lean": "Toy.SCT.ackProg_unbounded_finite_runs",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore that termination certificates carry no complexity bound; Ben-Amram (2002) shows size-change-terminating programs compute exactly the multiply-recursive functions. The concrete statement here is about the nondeterministic abstraction.",
+    "plain_claim": "In the abstraction, the Ackermann call structure (calls f(x - 1, ?) and f(x, y - 1)) satisfies the closure criterion and has the decreasing lexicographic measure (x, y), yet from the single start state f(1, 0) there are consistent finite runs of every length N, because the call f(x - 1, ?) leaves the second argument unconstrained.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "For N >= 1: first the call f(0, N - 1) (allowed because gX leaves y unconstrained), then N - 1 calls decreasing y to 0; for N = 0 the empty run.",
+    "nonvacuity_witness": "Concrete program ackProg from start (1, 0).",
+    "nonvacuity_witness_lean": "Toy.SCT.ackProg_unbounded_finite_runs",
+    "positive_control": "For f(x) = f(x - 1) (program decLoop, single graph x' < x, which leaves no callee argument unconstrained), every consistent finite run from argument u 0 has at most u 0 steps (FiniteRunFrom decLoop f0 u N -> N <= u 0), so the run-length bound that fails for ackProg holds for this program.",
+    "positive_control_lean": "Toy.SCT.no_run_length_bound_positive_control",
+    "non_claims": [
+      "The unboundedness comes from one state having infinitely many possible successors in the abstraction (an unconstrained callee argument). A deterministic or finitely branching call relation that terminates has a finite maximum run length from each start state (a classical consequence of Konig's lemma, not formalized here).",
+      "The same graphs ackProg also describe the deterministic, linear-time program f(x, y) = if x > 0 then f(x - 1, y + 1) else if y > 0 then f(x, y - 1) else 0 (stepRespects_ackLinStep); the non-primitive-recursive growth of the real Ackermann function comes from its nested call A(m - 1, A(m, n - 1)) supplying the second argument, which this abstraction does not see. No growth rate of any real program is claimed.",
+      "A lexicographic measure does not bound run length either; the issue is not specific to size-change termination."
+    ],
+    "prior_art": [
+      "A. M. Ben-Amram, \"General size-change termination and lexicographic descent\", in The Essence of Computation, LNCS 2566, pp. 3-17, 2002, doi:10.1007/3-540-36377-7_1 (verified via Crossref and the publisher's abstract): size-change termination extends and subsumes lexicographic descent; the functions computable by size-change-terminating programs are exactly the multiply-recursive functions.",
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "sct-incomplete-for-termination",
+    "lean": "Toy.SCT.countUp_terminates_and_no_sound_prog_passes",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Known: Steila (TYPES 2014, Example 37) gives the counting-up program f(x, y) := if x > y then x else f(x + 1, y), which terminates but is not size-change terminating; Heizmann, Jones and Podelski (SAS 2010) show size-change termination is strictly stronger than termination. Restated here for a one-parameter counting-up loop, over all graph sets that describe its calls.",
+    "plain_claim": "f(x) = if x < 100 then f(x + 1) else 0 terminates, yet every abstraction of it with one function and one parameter slot holding the raw argument x - every P : Prog 1 1 whose graphs describe all of its calls - fails the closure criterion.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "The call 0 -> 1 rules out both labels on the only arc of the graph that justifies it, so P contains the empty graph, which is idempotent without a self-arc.",
+    "nonvacuity_witness": "Concrete model countUpStep.",
+    "nonvacuity_witness_lean": "Toy.SCT.countUp_terminates_and_no_sound_prog_passes",
+    "positive_control": "Two nearby settings in which the closure criterion does certify termination. (1) On the raw argument, the counting-down loop f(x) = if x = 0 then 0 else f(x - 1) (model decStep s t = (t.1 = s.1 ∧ 0 < s.2 0 ∧ t.2 0 = s.2 0 - 1)) is certified: the one-function, one-slot program decLoop with the single graph x' < x describes all of its calls (StepRespects decLoop decStep), decLoop passes the closure criterion, and decStep terminates. (2) The counting-up loop itself is certified once the slot holds the size norm 100 - x instead of the raw argument x: every call s -> t of countUpStep respects the graph x' < x of decLoop on the values 100 - x (that is, 100 - x' < 100 - x), and decLoop passes the closure criterion.",
+    "positive_control_lean": [
+      "Toy.SCT.sct_incomplete_positive_control",
+      "Toy.SCT.countUp_size_norm_positive_control"
+    ],
+    "non_claims": [
+      "Rejection by the checker is not evidence of divergence.",
+      "The impossibility fixes nf = 1, k = 1 and identifies the single slot with the raw argument x. Within plain size-change graphs (no difference constraints) the loop is certified as soon as the abstraction changes: measured by the size norm 100 - x every call respects x' < x (countUp_size_norm_positive_control); a second slot tracking 100 - x, or splitting the 101 values into acyclic control points, also works (not formalized).",
+      "Richer abstractions (difference constraints, guards) can also certify this loop, and Lean's own inference accepts it via a measure 100 - x derived from the guard (observation recorded in prior art)."
+    ],
+    "prior_art": [
+      "S. Steila, \"An intuitionistic analysis of size-change termination\", TYPES 2014, LIPIcs 39, pp. 288-307, 2015, doi:10.4230/LIPIcs.TYPES.2014.288 (full text consulted). Example 37 (Section 6): f(x, y) := if x > y then x else f(x + 1, y) is not SCT, since its only graph is idempotent with no decreasing edge, yet it terminates. Section 1 attributes to Heizmann, Jones and Podelski (\"Size-change termination and transition invariants\", SAS 2010, pp. 22-50) the result that size-change termination is strictly stronger than termination.",
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "A. M. Ben-Amram, \"Size-change termination with difference constraints\", ACM TOPLAS 30(3), Article 16, 2008, doi:10.1145/1353445.1353450 (verified via the Crossref abstract): with general difference bounds the analogous termination problem is undecidable; with at most one bound per target variable it is PSPACE-complete. Cited as context only.",
+      "Lean 4 v4.34.1 sources (github.com/leanprover/lean4 at tag v4.34.1, files fetched and read): the termination_by docstring in src/Lean/Parser/Term.lean ('If omitted, a termination measure will be inferred') and the module documentation of src/Lean/Elab/PreDefinition/WF/GuessLex.lean (inference searches lexicographic combinations of basic measures sizeOf x_i, of measures e2 - e1 when e1 < e2 is found in the context of a recursive call, and of orders on the functions themselves for mutual recursion). The module documentation credits the search for lexicographic orders to Bulwahn, Krauss and Nipkow, \"Finding lexicographic orders for termination proofs in Isabelle/HOL\", TPHOLs 2007, pp. 38-53, doi:10.1007/978-3-540-74591-4_5 (verified via Crossref), and the idea of the measures e2 - e1 to Manolios and Vroon, \"Termination analysis with calling context graphs\", CAV 2006, LNCS 4144, pp. 401-414, doi:10.1007/11817963_36. Lean builds such definitions by well-founded recursion on a measure; it does not use the size-change principle. Checked with Lean v4.34.1: 'def swapF (x y : Nat) : Nat := if x = 0 then 0 else swapF y (x - 1)' is rejected with 'Could not find a decreasing measure' and accepted with 'termination_by x + y'; the Ackermann function is accepted with inferred measure (x1, x2); 'if x < 100 then f (x + 1) else 0' is accepted."
+    ],
+    "design_question": "What exactly does a passed size-change (closure-criterion) check license about a recursive definition, and what does it not license?"
+  },
+  {
+    "id": "ramsey",
+    "lean": "Toy.SCT.infinite_ramsey_pairs_of_finite_colors",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Ramsey's theorem for pairs (infinite version, finitely many colours) restated over Nat; included as an auxiliary statement because the soundness direction of the closure criterion is classically proved from it.",
+    "plain_claim": "Auxiliary lemma (not a headline result of this package): For any colouring col of the pairs m < n of natural numbers whose colours all lie in a finite list S, there is a strictly increasing h : Nat -> Nat and a colour a with col (h m) (h n) = a for all m < n.",
+    "hypotheses": [
+      {
+        "name": "hS : ∀ m n, m < n → col m n ∈ S (finitely many colours)",
+        "purpose": "With infinitely many colours there need not be any homogeneous infinite set.",
+        "tightness": "tight",
+        "counterexample": "Toy.SCT.ramsey_infinite_colors_counterexample"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Proved by iterated infinite pigeonhole (Toy/SCT/Ramsey.lean): repeatedly pick a candidate position and shrink the infinite candidate set to the positions whose pair with it has one colour, then apply pigeonhole once more to the chosen colours. Needs explicit construction of infinite sequences by choice; no library support.",
+    "nonvacuity_witness": "The parity colouring (m + n) % 2 takes values in [0, 1]; h n = 2 n is homogeneous of colour 0.",
+    "nonvacuity_witness_lean": "Toy.SCT.infinite_ramsey_nonvacuous",
+    "non_claims": [
+      "Only the infinite version for pairs and finitely many colours; no finite Ramsey numbers, no hypergraph version, no bounds.",
+      "The homogeneous colour a is not computed; the statement is purely existential.",
+      "It is not claimed that Ramsey's theorem is necessary for size-change soundness; intuitionistic alternatives exist in the literature (Vytiniotis, Coquand and Wahlstedt 2012; Steila 2015).",
+      "Proof-theoretic strength is not addressed: the size-change characterization does not need the full strength of Ramsey's theorem for pairs (over RCA_0 the SCT criterion is equivalent to Sigma^0_2 induction and needs only a triangle corollary of Ramsey's theorem; Frittaion, Steila and Yokoyama, TAMC 2017). The package proves the full infinite version for pairs because it is simple to state and to apply."
+    ],
+    "prior_art": [
+      "F. P. Ramsey, \"On a problem of formal logic\", Proceedings of the London Mathematical Society s2-30(1):264-286, 1930, doi:10.1112/plms/s2-30.1.264 (verified via Crossref).",
+      "C. S. Lee, N. D. Jones, A. M. Ben-Amram, \"The size-change principle for program termination\", POPL 2001, pp. 81-92, doi:10.1145/360204.360210 (bibliographic data verified via Crossref; statements checked in the full text). Definition 11: a program is size-change terminating if every infinite call sequence following its control flow has an infinitely descending thread. Theorem 1: size-change termination implies termination, for size-change graphs that are safe for the program and well-founded data. Theorem 4: the program is not size-change terminating iff the composition closure contains an idempotent G : f -> f with no strict arc x -> x; the forward direction is proved with Ramsey's theorem. Theorems 3 and 5: decidable in polynomial space; PSPACE-hard.",
+      "S. Steila, \"An intuitionistic analysis of size-change termination\", TYPES 2014, LIPIcs 39, pp. 288-307, 2015, doi:10.4230/LIPIcs.TYPES.2014.288 (verified at the publisher's page): the original proof of the size-change termination theorem used Ramsey's theorem for pairs; Vytiniotis, Coquand and Wahlstedt (2012) proved a classical variant intuitionistically via the Almost-Full Theorem; Steila gives an intuitionistic proof via the H-closure Theorem.",
+      "Isabelle/HOL library theory HOL-Library.Ramsey, section 'Ramsey's Theorem: Infinitary Version', theorem Ramsey (verified on the Isabelle library web page): a mechanized infinite Ramsey theorem.",
+      "E. Frittaion, S. Steila, K. Yokoyama, \"The strength of the SCT criterion\", TAMC 2017, LNCS 10185, pp. 260-273 (full text arXiv:1611.05176 consulted): over RCA_0 the statement of the SCT criterion is equivalent to Sigma^0_2 induction; its classical proof needs only a 'triangle' corollary of Ramsey's theorem for pairs (infinitely many monochromatic triangles sharing a vertex)."
+    ],
+    "design_question": "Reference point: which combinatorial principle does a mechanized proof of size-change soundness have to supply when no library provides it?",
+    "role": "auxiliary"
+  }
+]
