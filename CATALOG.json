@@ -40080,6 +40080,102 @@
         "verification/separation-logic"
       ]
     },
+    "miniz-deflate-kraft-prefix-tables-and-lz77-overlapping-ring-buffer-matches": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "b28c237471f63efebe152bddd962dc57bbb531eb",
+            "version": "0.9.1"
+          },
+          "name": "miniz_oxide pure-Rust DEFLATE compression and decompression library"
+        },
+        {
+          "identity": {
+            "repository": "madler/zlib",
+            "revision": "99623ef7097352da7993ba614161fd6a311e046e",
+            "version": "1.4"
+          },
+          "name": "zlib C compression library and enough.c table-bound analyzer (1.4 trunk)"
+        },
+        {
+          "identity": {
+            "repository": "madler/zlib",
+            "revision": "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+            "version": "v1.3.1"
+          },
+          "name": "zlib C compression library release v1.3.1"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal post-cleanup MIR verification framework and boundary auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and C++ kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC1951",
+            "rfc": "1951"
+          },
+          "name": "RFC 1951: DEFLATE Compressed Data Format Specification version 1.3 (Deutsch, May 1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TIT.1977.1055714"
+          },
+          "name": "A Universal Algorithm for Sequential Data Compression (Ziv & Lempel, IEEE Trans. Inf. Theory 1977)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/JRPROC.1952.273898"
+          },
+          "name": "A Method for the Construction of Minimum-Redundancy Codes (Huffman, Proc. IRE 1952)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TIT.1956.1056818"
+          },
+          "name": "Two Inequalities Implied by Unique Decipherability (McMillan, IRE Trans. Inf. Theory 1956)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9116-y"
+          },
+          "name": "Proof Pearl: Mechanizing the Textbook Proof of Huffman's Algorithm (Blanchette, J. Autom. Reason. 2009)"
+        },
+        {
+          "identity": {
+            "arxiv": "1609.01220",
+            "doi": "10.48550/arXiv.1609.01220"
+          },
+          "name": "An Implementation of Deflate in Coq (Senjak & Hofmann, 2016)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64",
+            "interpreter": "CPython 3.13.15"
+          },
+          "name": "Python 3.13 DEFLATE Kraft-table DP and LZ77 circular-ring probe environment (Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "verification/algorithms",
+        "rust/unsafe",
+        "anneal/theory",
+        "lean/mechanization",
+        "systems/compression"
+      ]
+    },
     "mir-move-deinit-gvn-cse-and-guarded-preheader-licm-soundness": {
       "observed_at": "2026-11-19",
       "subjects": [
