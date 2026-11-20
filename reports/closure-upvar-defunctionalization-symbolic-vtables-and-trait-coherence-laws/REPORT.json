@@ -1,0 +1,91 @@
+{
+  "topics": [
+    "rustc/mir",
+    "pl/type-theory",
+    "anneal/theory",
+    "verification/rust",
+    "rust/traits",
+    "zerocopy/soundness-policy"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification boundary and MIR semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Rust compiler MIR shims, closures, vtables, and coherence",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Miri freeze-sensitive visitor",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and standard prelude",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "zerocopy unsafe layout and immutability traits",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Verus standard library trait laws",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Aeneas Rust-to-Lean functional translator",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "d86aa34c75fd036ac139eb6e65da1cacc5492d0f"
+      }
+    },
+    {
+      "name": "Creusot deductive Rust verifier",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+      }
+    },
+    {
+      "name": "Reynolds defunctionalization",
+      "identity": {
+        "doi": "10.1145/800194.805852",
+        "republication_doi": "10.1023/A:1010027404223"
+      }
+    },
+    {
+      "name": "Pottier and Gauthier polymorphic typed defunctionalization",
+      "identity": {
+        "doi": "10.1145/964001.964009",
+        "journal_doi": "10.1007/s10990-006-8611-7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -13054,6 +13054,97 @@
         "ffi/protocols"
       ]
     },
+    "closure-upvar-defunctionalization-symbolic-vtables-and-trait-coherence-laws": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification boundary and MIR semantics"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust MIR interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler MIR shims, closures, vtables, and coherence"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri freeze-sensitive visitor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and standard prelude"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy unsafe layout and immutability traits"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus standard library trait laws"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "d86aa34c75fd036ac139eb6e65da1cacc5492d0f"
+          },
+          "name": "Aeneas Rust-to-Lean functional translator"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "601d97891bb0bc0b569686cc946ef4980560b5d8"
+          },
+          "name": "Creusot deductive Rust verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/800194.805852",
+            "republication_doi": "10.1023/A:1010027404223"
+          },
+          "name": "Reynolds defunctionalization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964009",
+            "journal_doi": "10.1007/s10990-006-8611-7"
+          },
+          "name": "Pottier and Gauthier polymorphic typed defunctionalization"
+        }
+      ],
+      "topics": [
+        "rustc/mir",
+        "pl/type-theory",
+        "anneal/theory",
+        "verification/rust",
+        "rust/traits",
+        "zerocopy/soundness-policy"
+      ]
+    },
     "clr-reified-generics-swift-value-witness-tables-and-julia-world-age": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -27807,6 +27898,93 @@
         "systems",
         "isa",
         "verification"
+      ]
+    },
+    "ieee754-softfloat-dyadic-interval-gappa-certificates-and-nan-choice-refinement": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verification boundary and MIR semantics"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust MIR interpreter"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and standard prelude"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+          },
+          "name": "Miri reference interpreter for Rust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc_apfloat",
+            "revision": "eeaacad81247af65d4043cb3e32d023a652d7951"
+          },
+          "name": "rustc_apfloat software IEEE-754 engine"
+        },
+        {
+          "identity": {
+            "document": "text/3514-float-semantics.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 3514 (float_semantics)"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.19352v1",
+            "repository": "lean-dojo/FloatLib",
+            "revision": "71a3d7ff211b28bc3d27673b70b90644941a5fff"
+          },
+          "name": "FloatLib verified floating-point arithmetic in Lean 4"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3636501.3636953",
+            "repository": "VeriNum/vcfloat",
+            "revision": "a203b287a84b0e3c9bec136823b5622ebfde6ad6"
+          },
+          "name": "VCFloat2 Coq floating-point error analysis framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ARITH.2011.40",
+            "publication": "20th IEEE Symposium on Computer Arithmetic (ARITH 2011), pp. 243-252"
+          },
+          "name": "Flocq formalization of floating-point arithmetic"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1644001.1644003",
+            "publication": "ACM Transactions on Mathematical Software, Vol. 37, No. 1, Article 2 (2010)"
+          },
+          "name": "Gappa dyadic interval and rounding-error proof generator"
+        }
+      ],
+      "topics": [
+        "verification/floating-point",
+        "anneal/theory",
+        "lean/mechanization",
+        "verification/arithmetic",
+        "rust/floating-point",
+        "anneal/certificates"
       ]
     },
     "image-based-and-single-language-systems-smalltalk-lisp-oberon": {

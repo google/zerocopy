@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "verification/floating-point",
+    "anneal/theory",
+    "lean/mechanization",
+    "verification/arithmetic",
+    "rust/floating-point",
+    "anneal/certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal verification boundary and MIR semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri mechanized Rust MIR interpreter",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and standard prelude",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Miri reference interpreter for Rust",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "rustc_apfloat software IEEE-754 engine",
+      "identity": {
+        "repository": "rust-lang/rustc_apfloat",
+        "revision": "eeaacad81247af65d4043cb3e32d023a652d7951"
+      }
+    },
+    {
+      "name": "Rust RFC 3514 (float_semantics)",
+      "identity": {
+        "document": "text/3514-float-semantics.md",
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "FloatLib verified floating-point arithmetic in Lean 4",
+      "identity": {
+        "arxiv": "2609.19352v1",
+        "repository": "lean-dojo/FloatLib",
+        "revision": "71a3d7ff211b28bc3d27673b70b90644941a5fff"
+      }
+    },
+    {
+      "name": "VCFloat2 Coq floating-point error analysis framework",
+      "identity": {
+        "doi": "10.1145/3636501.3636953",
+        "repository": "VeriNum/vcfloat",
+        "revision": "a203b287a84b0e3c9bec136823b5622ebfde6ad6"
+      }
+    },
+    {
+      "name": "Flocq formalization of floating-point arithmetic",
+      "identity": {
+        "doi": "10.1109/ARITH.2011.40",
+        "publication": "20th IEEE Symposium on Computer Arithmetic (ARITH 2011), pp. 243-252"
+      }
+    },
+    {
+      "name": "Gappa dyadic interval and rounding-error proof generator",
+      "identity": {
+        "doi": "10.1145/1644001.1644003",
+        "publication": "ACM Transactions on Mathematical Software, Vol. 37, No. 1, Article 2 (2010)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
