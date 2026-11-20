@@ -73460,6 +73460,55 @@
         "anneal/theory"
       ]
     },
+    "sail-to-lean-code-generation-primitive-extractions-and-verified-decoder-equivalence": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "src/sail_lean_backend",
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "Sail ISA Specification Language and Lean 4 Backend"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/lean-sail",
+            "revision": "e4745c82fe329f162700020dcd31da6b342473b9"
+          },
+          "name": "Lean-Sail Support Library and Concurrency Interfaces"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Official Sail RISC-V Formal ISA Model"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Extracted Lean 4 RISC-V Model (LeanRV64D and LeanRV32D)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/riscv-lean",
+            "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f"
+          },
+          "name": "Lean 4 RISC-V Monadic Purification and BitVec Equivalence Proofs"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "isa/sail",
+        "verification/lean4",
+        "verification/refinement",
+        "lean/code-generation",
+        "lean/kernel-soundness"
+      ]
+    },
     "saml-xml-signature-wrapping-oauth-pkce-downgrades-and-jwt-confusion": {
       "observed_at": "2026-11-19",
       "subjects": [
