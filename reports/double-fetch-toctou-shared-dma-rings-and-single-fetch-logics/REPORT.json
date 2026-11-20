@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "verification/concurrency",
+    "systems/os-verification",
+    "anneal/theory",
+    "rust/unsafe",
+    "security/toctou",
+    "verification/separation-logic",
+    "zerocopy/soundness-policy"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel (io_uring shared rings, READ_ONCE, and Rust uaccess UserSlice)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+      }
+    },
+    {
+      "name": "Asterinas OS framework (OSTD VmReader, PodOnce, DmaStream, and DmaCoherent)",
+      "identity": {
+        "repository": "asterinas/asterinas",
+        "revision": "7fecb4ffabc72d0767277a9ffb66168bc512034c"
+      }
+    },
+    {
+      "name": "zerocopy Rust library (FromBytes, Immutable, and Ref aliasing preconditions)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+      }
+    },
+    {
+      "name": "Anneal Rust verification framework (TrustedBoundary, MirSemantics, and PureLift SpatialPin)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Perennial concurrent and crash-safe verification framework (Lean 4 and Rocq branches)",
+      "identity": {
+        "doi": "10.1145/3341301.3359632",
+        "repository": "mit-pdos/perennial",
+        "revision": "c44b7487179b2e88e9f4dd8b0155c893406571ef",
+        "rocq_branch_revision": "c3b7ecff27c1a6e8ed058d5aca362df1e2f63311"
+      }
+    },
+    {
+      "name": "iris-lean higher-order concurrent separation logic in Lean 4",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "5540ef0110fc8f6d8e495c10c2f238c3ede14f3b"
+      }
+    },
+    {
+      "name": "Verified Software Toolchain (VST external_specification and shared-world semantics)",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (Event_vload and volatile_load trace semantics)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "Fuchsia IOBuffer peered shared-memory specification and Zircon user-copy architecture",
+      "identity": {
+        "specification": "Fuchsia RFC-0218 (IOBuffer: A Peered Shared Memory Object for Efficient IO)",
+        "url": "https://fuchsia.dev/fuchsia-src/contribute/governance/rfcs/0218_io_buffer"
+      }
+    },
+    {
+      "name": "Kernel double-fetch vulnerability and symbolic multi-read analysis literature",
+      "identity": {
+        "doi": "10.1109/SP.2018.00017",
+        "publication": "Wang et al., USENIX Security 2017 (ISBN 978-1-931971-40-9, pp. 1-16); Xu et al. (Deadline), IEEE S&P 2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

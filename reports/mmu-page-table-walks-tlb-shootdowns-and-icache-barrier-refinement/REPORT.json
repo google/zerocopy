@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "verification/hardware",
+    "systems/os-verification",
+    "anneal/theory",
+    "verification/semantics",
+    "isa/riscv64",
+    "isa/aarch64",
+    "isa/x86-64",
+    "isa/sail"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Instruction Set Manual (Volume I Zifencei and Volume II Privileged Sv39/Sv48/SFENCE.VMA)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Sail RISC-V formal ISA model and Lean 4 generator (vmem_ptw, vmem_tlb, zifencei, RiscvExtras.lean)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "ec5200bdfe0c10afa6dbb1f7b0980db2d236236e"
+      }
+    },
+    {
+      "name": "seL4 microkernel implementation (RISC-V Sv39 and ARMv8-A 64-bit VSpace, TLB, and cache barriers)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL formal verification suite (RISCV64 and ARM64 MachineOps specifications)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "ACL2 x86isa formal machine model (IA-32e 4-level paging, linear-memory TLB state, and INVLPG)",
+      "identity": {
+        "doi": "10.1109/FMCAD.2014.6987600",
+        "repository": "acl2/acl2",
+        "revision": "08bec1884997560686932229dbfe458c1bba34bf"
+      }
+    },
+    {
+      "name": "Anneal Rust verification framework (TrustedBoundary, statement-origin separation, and trust tiers)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Syeda & Klein formal reasoning under cached address translation (Isabelle/HOL TLB & walk model)",
+      "identity": {
+        "doi": "10.1007/s10817-019-09539-7",
+        "publication": "Journal of Automated Reasoning 64(6):911-945 (2020); precursor ITP 2018 (DOI 10.1007/978-3-319-94821-8_32)"
+      }
+    },
+    {
+      "name": "Simner et al. relaxed ARMv8-A virtual-memory and instruction-fetch operational/axiomatic models",
+      "identity": {
+        "doi": "10.1007/978-3-030-99336-8_6",
+        "publication": "ESOP 2022 (Relaxed virtual memory in Armv8-A) & ESOP 2020 (DOI 10.1007/978-3-030-44914-8_23)"
+      }
+    },
+    {
+      "name": "Intel 64 SDM Vol. 3A §4.10 and Armv8-A Architecture Reference Manual translation-cache specifications",
+      "identity": {
+        "specification": "Intel SDM Vol. 3A §4.10.4.1-4.10.4.2 (INVLPG / INVPCID / Paging-Structure Caches) & Arm ARM DDI 0487 (Stage-1 TLBI / IC IVAU / ISB)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
