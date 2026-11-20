@@ -34,7 +34,7 @@
         # V1 embeds these values in its binary. They are compatibility mirrors
         # of this flake's upstream pin, and must agree before an archive builds.
         v1ToolchainMetadata =
-          (builtins.fromTOML (builtins.readFile ./v1/Cargo.toml)).package.metadata.build_rs;
+          (builtins.fromTOML (builtins.readFile ../v1/Cargo.toml)).package.metadata.build_rs;
         toolchainMetadata = {
           aeneas-release = aeneasReleaseTag;
           aeneas-revision = aeneasRevision;

@@ -104,7 +104,7 @@ similar = "2.7.0"
 [package.metadata.build_rs]
 
 # Values embedded in V1's binary. The archive builder checks these against the
-# authoritative Aeneas source pin in ../flake.nix and ../flake.lock.
+# authoritative Aeneas source pin in ../v2/flake.nix and ../v2/flake.lock.
 aeneas_rev = "ca282ec2312a96f6a985a4d23a663690816d3f3e"
 
 # The Lean toolchain version to use. This must match the version of Lean used

@@ -294,11 +294,11 @@ jobs:
           set -eo pipefail
           ARCHIVE_NAME="anneal-toolchain-${TARGET}.tar.zst"
           MAX_GITHUB_RELEASE_ASSET_SIZE=2147483647
-          mkdir -p anneal/target anneal/v1/release-download-check anneal/v1/release-metadata
+          mkdir -p anneal/v2/target anneal/v1/release-download-check anneal/v1/release-metadata
 
-          nix build ./anneal#omnibus-archive-ci --system "$NIX_SYSTEM" --out-link "anneal/target/${ARCHIVE_NAME}"
-          nix build ./anneal#omnibus-archive-layout-check --system "$NIX_SYSTEM" --no-link
-          cp -L "anneal/target/${ARCHIVE_NAME}" "anneal/v1/${ARCHIVE_NAME}"
+          nix build ./anneal/v2#omnibus-archive-ci --system "$NIX_SYSTEM" --out-link "anneal/v2/target/${ARCHIVE_NAME}"
+          nix build ./anneal/v2#omnibus-archive-layout-check --system "$NIX_SYSTEM" --no-link
+          cp -L "anneal/v2/target/${ARCHIVE_NAME}" "anneal/v1/${ARCHIVE_NAME}"
           ARCHIVE_SIZE="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "anneal/v1/${ARCHIVE_NAME}")"
           printf 'Built %s (%s bytes)\n' "$ARCHIVE_NAME" "$ARCHIVE_SIZE"
           if [ "$ARCHIVE_SIZE" -gt "$MAX_GITHUB_RELEASE_ASSET_SIZE" ]; then
