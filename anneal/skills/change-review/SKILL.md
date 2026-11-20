@@ -270,8 +270,8 @@ trivial edits incur zero needless ceremony:
      bullet receipt).
 2. **Change structure and conceptual refinement:**
    Weigh four questions before running conceptual refinement
-   ([`model-refinement`](../model-refinement/SKILL.md) or
-   [`swarm-model-refinement`](../swarm-model-refinement/SKILL.md)):
+   ([`model-refinement`](../../../skills/model-refinement/SKILL.md) or
+   [`swarm-model-refinement`](../../../skills/swarm-model-refinement/SKILL.md)):
    - Does complexity or security criticality justify conceptual refinement at
      all?
    - Should refinement start across the whole stack or within conceptual
@@ -319,12 +319,12 @@ trivial edits incur zero needless ceremony:
   reviewers never spawn sub-reviews.
 - **Holdout probes and monotonic isolation:** When holdouts apply (semantic,
   compiler, or auditor logic), use the role separation in
-  [`swarm-model-refinement`](../swarm-model-refinement/SKILL.md): keep the
-  holdout probe prompt mechanically distinct from challenger prompts, isolate
-  holdout files in a per-agent `mktemp -d` directory, and fix **active** versus
-  **withheld reserve** holdouts before the first repair. Isolation moves only
-  one way: `Sealed` (host-enforced filesystem or workspace isolation prevents
-  the author from listing or reading holdouts) -> `Behavioral` (shared
+  [`swarm-model-refinement`](../../../skills/swarm-model-refinement/SKILL.md):
+  keep the holdout probe prompt mechanically distinct from challenger prompts,
+  isolate holdout files in a per-agent `mktemp -d` directory, and fix **active**
+  versus **withheld reserve** holdouts before the first repair. Isolation moves
+  only one way: `Sealed` (host-enforced filesystem or workspace isolation
+  prevents the author from listing or reading holdouts) -> `Behavioral` (shared
   filesystem where the author does not inspect; disclose in the receipt) ->
   `exposed design witness` (premise reached the author or synthesizer). Repair
   handoffs carry only failing obligations, never passing holdout premises;

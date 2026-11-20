@@ -1,0 +1,178 @@
+{
+  "schema": 1,
+  "packages": {
+    "authorship-disclosure": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "authorship_disclosure",
+      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 5359,
+          "sha256": "5071260837969199ab71aa0d0708cb442d9977ffb1a84153ace19ee3b6392f89"
+        }
+      ]
+    },
+    "comment-guidelines": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "comment_guidelines",
+      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 5367,
+          "sha256": "7830c3897ff9ba5e8a1c3f09e3fe5023f584ed8d1d1bd81231cc29d954e1663a"
+        }
+      ]
+    },
+    "commit-message": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "commit-message",
+      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 10679,
+          "sha256": "9f7ed741e1b1824a90c981c807ca25facf6c6f311cfea2451b75e1303e165fb8"
+        }
+      ]
+    },
+    "model-refinement": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "model-refinement",
+      "upstream_commit": "0073be02ea65150ad56ded426261245ec1a22848",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 18518,
+          "sha256": "a219d993410dcd67b0783f05681e686bc1fb2e2fe4378acc32daf751e5a190e9"
+        }
+      ]
+    },
+    "reader-oriented-explanation": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "reader-oriented-explanation",
+      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 10575,
+          "sha256": "02a6676a35e547dc8b9ad2e5d6bdec5741b41b33b4f459bf72b3681c0c8aeaa1"
+        }
+      ]
+    },
+    "robust-code": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "robust-code",
+      "upstream_commit": "468f74547999ad6879905c91398b1a218b010791",
+      "omitted_upstream_paths": [
+        "references/agent-scaffolding.md"
+      ],
+      "local_modifications": [
+        "SKILL.md: removed the sentence linking to omitted references/agent-scaffolding.md.",
+        "references/design-examples.md: prepended the Fuchsia copyright and license header."
+      ],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 10687,
+          "sha256": "dcd6c00dbc6a68384e0e9bec05d696b773175c7cd5bf36625e4f92f1c5103e8c"
+        },
+        {
+          "path": "references/design-examples.md",
+          "mode": "100644",
+          "bytes": 5591,
+          "sha256": "bcfeb3b0f33c3849527abb7f99aff895b15093a0637531084345c29d57f2bfa4"
+        }
+      ]
+    },
+    "skill-authorship": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "skill-authorship",
+      "upstream_commit": "3bf3f345b2916f8417306ba197f779b0b4429c1d",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 18623,
+          "sha256": "e4798b0b05965a85792db08a8b4091be99e0d062b0749b77acb0124d131649dd"
+        }
+      ]
+    },
+    "swarm-model-refinement": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "swarm-model-refinement",
+      "upstream_commit": "3bf3f345b2916f8417306ba197f779b0b4429c1d",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 22461,
+          "sha256": "157092de1eabf6686a47b97c7a62e50649cfc5ec508555bc3e66e1da9f4691aa"
+        }
+      ]
+    },
+    "tech-lead": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "tech-lead",
+      "upstream_commit": "3bf3f345b2916f8417306ba197f779b0b4429c1d",
+      "omitted_upstream_paths": [],
+      "local_modifications": [
+        "references/context-recovery.md: prepended the Fuchsia copyright and license header."
+      ],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 9816,
+          "sha256": "56a5a9f873ffb15379e96b925664d2220a4afe92a348dc717139e797f1e05319"
+        },
+        {
+          "path": "references/context-recovery.md",
+          "mode": "100644",
+          "bytes": 9732,
+          "sha256": "197d3589d20a13c58d9be32a92865302609374e849b6bb19cf2ebcad8b766536"
+        }
+      ]
+    },
+    "williams-style": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "williams-style",
+      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "omitted_upstream_paths": [
+        "references/SOURCES.md"
+      ],
+      "local_modifications": [
+        "SKILL.md: removed the optional link to omitted references/SOURCES.md."
+      ],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 11640,
+          "sha256": "332625fd21ba7f405870e2b1d15a20a038b0281456cd4a0257332534dcea2939"
+        }
+      ]
+    }
+  }
+}
