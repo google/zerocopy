@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "verification/rust",
+    "verification/separation-logic",
+    "anneal/theory",
+    "rustc/mir",
+    "rust/unsafe",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "RefinedRust Coq/Rocq formalization (lgaeher/refinedrust-dev)",
+      "identity": {
+        "repository": "https://gitlab.mpi-sws.org/lgaeher/refinedrust-dev",
+        "revision": "2862b1d8044919d22330a9c8d5778fef85a47936"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (PLDI 2024)",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "arxiv": "2404.04029",
+        "publication": "Proc. ACM Program. Lang. 8, PLDI, Article 192"
+      }
+    },
+    {
+      "name": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454036",
+        "publication": "Proc. ACM Program. Lang. PLDI 2021"
+      }
+    },
+    {
+      "name": "RefinedRust and Radium 2026 companion paper and Zenodo artifact",
+      "identity": {
+        "doi": "10.1145/3839484",
+        "zenodo": "21636474",
+        "sha256": "34573bac60de68c3597c23136cd5221a7129f89a24b69340f8e361750f331d53"
+      }
+    },
+    {
+      "name": "Gillian-Rust symbolic memory and prophecy engine",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "Gillian parametric symbolic execution platform",
+      "identity": {
+        "repository": "GillianPlatform/Gillian",
+        "revision": "469aa5c134ba7790c40669bd4bc50483aff36d7b"
+      }
+    },
+    {
+      "name": "Gillian-Rust: A Hybrid Approach to Semi-automated Rust Verification (PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3729289",
+        "arxiv": "2403.15122v3",
+        "publication": "Proc. ACM Program. Lang. 9, PLDI 2025"
+      }
+    },
+    {
+      "name": "Anneal MIR verifier, PureLift, and TrustedBoundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 proof assistant and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

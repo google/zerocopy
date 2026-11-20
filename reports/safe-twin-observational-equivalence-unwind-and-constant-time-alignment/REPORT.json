@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "verification/relational",
+    "anneal/theory",
+    "rust/unsafe",
+    "security/constant-time",
+    "rustc/mir",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR operational semantics, correspondence, and TrustedBoundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "lean-miri executable Rust MIR operational semantics reference",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Rust compiler MIR syntax and unwind semantics specification",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "HACL* secrecy-level integer abstraction (Lib.IntTypes and Lib.RawIntTypes)",
+      "identity": {
+        "repository": "hacl-star/hacl-star",
+        "revision": "f557259007db9933442dde10aa995c1b00bd3446",
+        "publication": "ACM CCS 2017"
+      }
+    },
+    {
+      "name": "SAW and Crux-MIR compositional override verifier",
+      "identity": {
+        "repository": "GaloisInc/saw-script",
+        "revision": "f290af7bda474779c8e5685ddd30612a7e6f0399",
+        "arxiv": "2410.18280"
+      }
+    },
+    {
+      "name": "Guarded Kleene Algebra with Tests (GKAT, POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371129",
+        "publication": "Proc. ACM Program. Lang. 4, POPL 2020"
+      }
+    },
+    {
+      "name": "Bikleene Algebra with Tests (BiKAT, POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571213",
+        "publication": "Proc. ACM Program. Lang. 7, POPL 2023"
+      }
+    },
+    {
+      "name": "BiGKAT: Bikleene Algebra with Guarded Tests (ESOP 2025)",
+      "identity": {
+        "doi": "10.1007/978-3-031-90897-2_12",
+        "publication": "Programming Languages and Systems (ESOP 2025)"
+      }
+    },
+    {
+      "name": "Lean 4 proof assistant and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
