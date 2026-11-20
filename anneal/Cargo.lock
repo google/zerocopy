@@ -12,13 +12,11 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 name = "anneal-audit"
 version = "0.1.0"
 dependencies = [
+ "cargo-anneal",
  "clap",
- "dirs",
  "serde",
  "serde_json",
- "sha2",
  "tempfile",
- "thiserror",
  "toml",
  "walkdir",
 ]
@@ -116,11 +114,16 @@ name = "cargo-anneal"
 version = "0.1.0-alpha.1"
 dependencies = [
  "clap",
+ "dirs",
  "exocrate",
+ "serde",
  "serde_json",
+ "sha2",
  "tar",
  "tempfile",
+ "thiserror",
  "wait-timeout",
+ "walkdir",
  "zstd",
 ]
 

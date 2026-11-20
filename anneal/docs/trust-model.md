@@ -205,6 +205,15 @@ the boundary controls detailed below across Pass 1 (core repository
 `trusted/lean/` and `theory/`) and Pass 2 (vendored `lean-miri`,
 `trusted/correspondence/`, and `correspondence/`).
 
+The repository auditor and the target verifier share toolchain admission and
+staging code in [`trusted/cargo-anneal/`](../trusted/cargo-anneal). The
+target checker authenticates a narrower library import closure, separately
+checks specification and proof dependencies, and replays the accepted
+theorem against the bound obligation. The target checker runs on the
+operator's host, so only use it with source and proof input you trust to
+elaborate there. The repository correspondence audit retains its existing
+OS isolation for the reference model.
+
 ### Cargo workspace containment
 
 Before inspecting Lean files, `anneal-audit` verifies the repository's root
@@ -560,7 +569,7 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   executable and all `Init.*` prelude source and `.olean` companion files,
   verified by both the Nix toolchain build (`flake.nix`) and `anneal-audit`.
 - **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`**
-  (`trusted/audit/src/lib.rs`): Pins one SHA-256 digest over the sorted
+  (`trusted/cargo-anneal/src/toolchain.rs`): Pins one SHA-256 digest over the sorted
   `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
   `.olean.server`, and `.olean.private` file in the pinned toolchain's
   `lib/lean/`, verified by Pass 2 before compiling or loading `.vendorMiri`
@@ -570,9 +579,9 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   Pins the upstream commit and SHA-256 digest of every file in
   `vendor/lean-miri/`, the human-audited 10-file `deinitMovedPlace` patch
   records (`upstream_sha256`/`patched_sha256` in `patched_files`, closed by
-  `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/src/lib.rs`), and the
+  `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/src/miri_pin.rs`), and the
   160-module `Miri.Interpreter.ExecutionMachine` `.olean` digests, verified
-  against `LOCKED_UPSTREAM_PIN_SHA256` inside `trusted/audit/src/lib.rs`.
+  against `LOCKED_UPSTREAM_PIN_SHA256` inside `trusted/audit/src/miri_pin.rs`.
 
 Because CI and `anneal-audit` reject any mismatch against these files, changing
 a root manifest or toolchain artifact requires a corresponding diff inside

@@ -140,7 +140,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/anneal-nix-cache
-          key: anneal-current-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/rustc-capture/**', 'anneal/theory/**') }}
+          key: anneal-current-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/rustc-capture/**', 'anneal/trusted/audit/TrustedBoundary.lean', 'anneal/trusted/audit/library-lock.json', 'anneal/trusted/cargo-anneal/src/bundled_resources.rs', 'anneal/theory/**') }}
 
       - name: Install Nix
         id: nix
@@ -738,6 +738,8 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/workspace.log") 2>&1
+          cargo run --locked -p cargo-anneal --example regenerate_bundle -- \
+            --root . --check
           cargo test --workspace --locked
 
       - name: Verify clean working tree

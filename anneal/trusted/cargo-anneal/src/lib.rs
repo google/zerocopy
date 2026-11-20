@@ -1,0 +1,40 @@
+// Copyright 2026 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+//! Admits Lean 4.34.1 toolchains against locked digests and verifies external
+//! target theorems (`cargo-anneal`).
+//!
+//! External callers construct a [`Checker`] over a staged bundle root and pass
+//! a [`TargetAuditRequest`] to [`Checker::run_target`]. Each run stages the
+//! declared [`TargetModule`] sources into a private `0o700` directory, enforces
+//! [`TargetRole::allows`] over parsed imports and compiled kernel declaration
+//! edges, replays logically reached declarations onto `foundation-lock.json`,
+//! and verifies exact definitional equality against the canonical obligation.
+//!
+//! Admission hashes the `lean` executable, the `foundation-lock.json` modules,
+//! and the imported `library-lock.json` modules. The Lean shared libraries and
+//! other sysroot modules are identified only by `lean --version`, under the
+//! uncompromised execution environment that `THREAT_MODEL.md` assumes.
+
+#[doc(hidden)]
+pub mod bundle;
+mod stage;
+mod target;
+mod toolchain;
+
+pub use stage::Checker;
+pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
+pub use toolchain::{Failure, Json, default_lean_path};
+
+#[doc(hidden)]
+pub use toolchain::{
+    AdmittedToolchain, IR_PARTS, ImportEdge, LOCKED_LEAN_SHA256,
+    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, ModuleArtifacts, OLEAN_PARTS, PARTS,
+    PreflightHeader, PreflightResult, TOOLCHAIN, is_clean_relative_path, is_lean_ident,
+    is_sha256_hex, regular, sha256_bytes, sha256_file, stage_regular_file, topo_sort_modules,
+};
