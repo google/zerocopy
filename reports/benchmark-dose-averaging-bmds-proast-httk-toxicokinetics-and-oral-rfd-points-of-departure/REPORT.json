@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "domains/benchmark-dose-modeling",
+    "domains/chemical-risk-assessment",
+    "domains/high-throughput-toxicokinetics",
+    "verification/dose-response-model-averaging"
+  ],
+  "subjects": [
+    {
+      "name": "U.S. EPA Benchmark Dose Modeling Software (bmdscore C++ library and pybmds)",
+      "identity": {
+        "repository": "USEPA/BMDS",
+        "revision": "0018abea713f61b0bcc9dd30821af18b61a77e77",
+        "version": "25.2 (tags 25.2 and 25.2p1 point at this revision)"
+      }
+    },
+    {
+      "name": "httk R package for high-throughput toxicokinetics",
+      "identity": {
+        "repository": "USEPA/CompTox-ExpoCast-httk",
+        "revision": "f6605eebc6eb5a483a8824dce6cbddb36c8fb091",
+        "version": "2.7.4 (httk/DESCRIPTION)"
+      }
+    },
+    {
+      "name": "U.S. EPA Benchmark Dose Technical Guidance",
+      "identity": {
+        "standard": "EPA/100/R-12/001 (June 2012)",
+        "url": "https://www.epa.gov/sites/default/files/2015-01/documents/benchmark_dose_guidance.pdf"
+      }
+    },
+    {
+      "name": "EFSA Scientific Committee guidance on the use of the benchmark dose approach in risk assessment",
+      "identity": {
+        "doi": "10.2903/j.efsa.2022.7584",
+        "pmcid": "PMC9593753"
+      }
+    },
+    {
+      "name": "PROAST dose-response software (RIVM) distribution page",
+      "identity": {
+        "url": "https://www.rivm.nl/en/proast",
+        "version": "proast71.1.zip offered for download on the access date"
+      }
+    },
+    {
+      "name": "A new method for determining allowable daily intakes (Crump)",
+      "identity": {
+        "doi": "10.1016/0272-0590(84)90107-6",
+        "pmid": "6510615"
+      }
+    },
+    {
+      "name": "Dose-response modeling of continuous endpoints (Slob)",
+      "identity": {
+        "doi": "10.1093/toxsci/66.2.298",
+        "pmid": "11896297"
+      }
+    },
+    {
+      "name": "Properties of model-averaged BMDLs (Wheeler and Bailer)",
+      "identity": {
+        "doi": "10.1111/j.1539-6924.2007.00920.x",
+        "pmid": "17640214"
+      }
+    },
+    {
+      "name": "A unified probabilistic framework for dose-response assessment of human health effects (Chiu and Slob)",
+      "identity": {
+        "doi": "10.1289/ehp.1409385",
+        "pmcid": "PMC4671238"
+      }
+    },
+    {
+      "name": "Beyond the RfD: broad application of a probabilistic approach (Chiu et al.)",
+      "identity": {
+        "doi": "10.1289/EHP3368",
+        "pmcid": "PMC6084844"
+      }
+    },
+    {
+      "name": "Integration of dosimetry, exposure, and high-throughput screening data (Wetmore et al.)",
+      "identity": {
+        "doi": "10.1093/toxsci/kfr254",
+        "pmid": "21948869"
+      }
+    },
+    {
+      "name": "httk: R package for high-throughput toxicokinetics (Pearce et al.)",
+      "identity": {
+        "doi": "10.18637/jss.v079.i04"
+      }
+    },
+    {
+      "name": "Toxicokinetic triage for environmental chemicals (Wambaugh et al.)",
+      "identity": {
+        "doi": "10.1093/toxsci/kfv118",
+        "pmcid": "PMC4560038"
+      }
+    },
+    {
+      "name": "Evaluating in vitro-in vivo extrapolation of toxicokinetics (Wambaugh et al.)",
+      "identity": {
+        "doi": "10.1093/toxsci/kfy020",
+        "pmcid": "PMC5920326"
+      }
+    },
+    {
+      "name": "Assessing toxicokinetic uncertainty and variability in risk prioritization (Wambaugh et al.)",
+      "identity": {
+        "doi": "10.1093/toxsci/kfz205",
+        "pmid": "31532498"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,13 @@
+bumps 37 span_days 363.3 mean_interval_days 10.1 median_interval_days 6.6 max_interval_days 40.6 min_interval_days 0.63
+final_release_bumps 11 ['v4.26.0', 'v4.27.0', 'v4.28.0', 'v4.29.0', 'v4.30.0', 'v4.31.0', 'v4.32.0', 'v4.33.0', 'v4.34.0', 'v4.35.0', 'v4.36.0']
+rc_bumps 26
+v4.27 rc1_to_final_on_master_days 40.6
+v4.28 rc1_to_final_on_master_days 21.1
+v4.29 rc1_to_final_on_master_days 40.8
+v4.30 rc1_to_final_on_master_days 51.8
+v4.31 rc1_to_final_on_master_days 17.0
+v4.32 rc1_to_final_on_master_days 24.7
+v4.33 rc1_to_final_on_master_days 25.3
+v4.34 rc1_to_final_on_master_days 35.0
+v4.35 rc1_to_final_on_master_days 27.7
+v4.36 rc1_to_final_on_master_days 31.0

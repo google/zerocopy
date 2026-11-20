@@ -1,0 +1,12 @@
+Part A: two independent lognormal factors, median 1, P95 = 10 each (illustrative)
+  sigma (log scale) = ln(10)/z95 = 1.3999
+  analytic P95 of product = exp(z95*sqrt(2)*sigma) = 25.95  vs product of P95s = 100
+  Monte Carlo P95 of product (2e6 draws) = 25.92
+  P(product > 100) = 0.00995
+  deterministic RfD = 1.65 / 100 = 0.0165 mg/kg-day; 'P95-product' RfD = 0.0636 mg/kg-day
+
+Part B: steady-state Css and oral equivalent dose (hypothetical parameters)
+  Fup=0.5   Clint=1.0   CLh=0.4921 L/h/kg  Css(1 mg/kg/d)=0.0258 mg/L  dose for 1 mg/L = 38.7764 mg/kg/d
+  Fup=0.05  Clint=1.0   CLh=0.0499 L/h/kg  Css(1 mg/kg/d)=0.2568 mg/L  dose for 1 mg/L = 3.8947 mg/kg/d
+  Fup=0.5   Clint=50.0  CLh=13.8621 L/h/kg  Css(1 mg/kg/d)=0.0028 mg/L  dose for 1 mg/L = 359.6574 mg/kg/d
+  Fup=0.01  Clint=50.0  CLh=0.4921 L/h/kg  Css(1 mg/kg/d)=0.0810 mg/L  dose for 1 mg/L = 12.3495 mg/kg/d

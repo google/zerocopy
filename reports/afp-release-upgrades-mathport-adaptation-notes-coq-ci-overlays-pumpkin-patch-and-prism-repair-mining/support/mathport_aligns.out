@@ -1,0 +1,7 @@
+align_entries 130784
+identical_names 8045
+renamed 122739
+renamed_only_by_case_or_underscores 106250
+distinct_lean4_targets 129416
+lean4_targets_with_multiple_lean3_sources 303
+alignImport_entries 3019

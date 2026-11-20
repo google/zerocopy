@@ -1,0 +1,10 @@
+entries_in_releases_toml 1043
+isabelle_releases_in_release_dates 31 2003 ... 2026
+entries_released_for_latest(2026) 1042
+entries_whose_last_release_is_not_latest 1
+last_release_histogram_excluding_latest {'2025-2': 1}
+entries_with_a_skipped_isabelle_release_between_first_and_last 1 ['Nominal2']
+entries_not_released_for_latest ['Iptables_Semantics']
+per_release_entry_counts {'2003': 4, '2004': 18, '2005': 27, '2007': 43, '2008': 50, '2009': 63, '2009-1': 76, '2009-2': 86, '2011': 100, '2011-1': 112, '2012': 130, '2013': 141, '2013-1': 151, '2013-2': 186, '2014': 218, '2015': 253, '2016': 313, '2016-1': 376, '2017': 424, '2018': 475, '2019': 528, '2020': 577, '2021': 641, '2021-1': 710, '2022': 762, '2023': 823, '2024': 889, '2025': 940, '2025-1': 952, '2025-2': 1039, '2026': 1042}
+entries_with_multiple_tarball_dates_for_one_release 185
+metadata_entries 1043 not_in_releases_toml 0

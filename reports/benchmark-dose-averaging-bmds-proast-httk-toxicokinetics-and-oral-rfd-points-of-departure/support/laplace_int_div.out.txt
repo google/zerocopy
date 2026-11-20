@@ -1,0 +1,4 @@
+nparms=1  int_div=0.000000  float_div=0.918939  deficit=0.918939  weight_factor=exp(-deficit)=0.398942
+nparms=2  int_div=1.837877  float_div=1.837877  deficit=0.000000  weight_factor=exp(-deficit)=1.000000
+nparms=3  int_div=1.837877  float_div=2.756816  deficit=0.918939  weight_factor=exp(-deficit)=0.398942
+nparms=4  int_div=3.675754  float_div=3.675754  deficit=0.000000  weight_factor=exp(-deficit)=1.000000

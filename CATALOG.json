@@ -1218,6 +1218,121 @@
         "verification/rfc1624-ones-complement-checksum"
       ]
     },
+    "afp-release-upgrades-mathport-adaptation-notes-coq-ci-overlays-pumpkin-patch-and-prism-repair-mining": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "lean-toolchain": "leanprover/lean4:v4.37.0-rc1",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5fc503cdd50c2c198f54ccc97121ec82919e2930"
+          },
+          "name": "Mathlib (Lean 4 mathematical library)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathport",
+            "revision": "375a0a491c3179de17e4524875c69a7d92459588"
+          },
+          "name": "Mathport (Lean 3 to Lean 4 translator)"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+          },
+          "name": "Archive of Formal Proofs development repository (GitHub mirror)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "ddb69e5c5cff459fc2b0dfe3ec4ed0c968720c76"
+          },
+          "name": "Rocq prover (CI overlay infrastructure)"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/PUMPKIN-PATCH",
+            "revision": "75e93275290c76d13a7a8b3a2124257be895f5e4"
+          },
+          "name": "PUMPKIN PATCH proof repair plugin"
+        },
+        {
+          "identity": {
+            "repository": "Radiance-Technologies/prism",
+            "revision": "f54c9bf25488d022be16362944a389f1d01cbbe0"
+          },
+          "name": "PRISM proof repair mining framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2012.6227120"
+          },
+          "name": "Andronick et al., Large-Scale Formal Verification in Practice: A Process Perspective (ICSE 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2652524.2652551"
+          },
+          "name": "Staples et al., Productivity for Proof Engineering (ESEM 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-06410-9_2"
+          },
+          "name": "Klein, Proof Engineering Considered Essential (FM 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-20615-8_1"
+          },
+          "name": "Blanchette et al., Mining the Archive of Formal Proofs (CICM 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3167094"
+          },
+          "name": "Ringer et al., Adapting Proof Automation to Adapt Proofs (CPP 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3213846.3213877"
+          },
+          "name": "Palmskog et al., piCoq: Parallel Regression Proving for Large-Scale Verification Projects (ISSTA 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2023.26"
+          },
+          "name": "Reichel et al., Proof Repair Infrastructure for Supervised Models (ITP 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jss.2016.04.008"
+          },
+          "name": "Raemaekers et al., Semantic Versioning and Impact of Breaking Changes in the Maven Repository (JSS 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "2110.07889",
+            "doi": "10.1007/s10664-021-10052-y"
+          },
+          "name": "Ochoa et al., Breaking Bad? Semantic Versioning and Impact of Breaking Changes in Maven Central (EMSE 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2019.2918315"
+          },
+          "name": "Decan and Mens, What Do Package Dependencies Tell Us About Semantic Versioning? (TSE 2021)"
+        }
+      ],
+      "topics": [
+        "verification/proof-upgrade-breakage-studies",
+        "lean/library-toolchain-bump-processes",
+        "tooling/proof-repair-dataset-mining",
+        "vcs/proof-library-version-pinning"
+      ]
+    },
     "algebraic-effects-handlers-coeffects-and-capability-tracking": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -1523,6 +1638,115 @@
         "verification",
         "verification/formalized-results",
         "verification/refinement"
+      ]
+    },
+    "aliasjava-annotation-inference-generic-universe-types-p1179-defaults-swift-dependence-attributes-and-c-translation-aliasing-limits": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "path": "text/0141-lifetime-elision.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 141 (lifetime elision)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "Rust compiler and standard library sources (nightly 2026-11-11)"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift-evolution",
+            "revision": "f75d0a0456d72c2ca3ae418cc6a9939d32f42779"
+          },
+          "name": "Swift Evolution proposals SE-0446 (Nonescapable Types) and SE-0103"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "4b7146ceb4f284a962f7669f3c7780ddb5b643ff"
+          },
+          "name": "Swift compiler (lifetime dependence annotations and default inference)"
+        },
+        {
+          "identity": {
+            "repository": "isocpp/CppCoreGuidelines",
+            "revision": "5baf9fe252d034e8363217efc6e12c2215f2a442",
+            "sha256": "4f81c6b189b282067174105815ccf681ca580d75f8d010956927e85a8124e4cd",
+            "standard": "WG21 P1179R1"
+          },
+          "name": "C++ Core Guidelines Lifetime profile (WG21 P1179R1, docs/Lifetime.pdf)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "21dba964640e0a1e037caea23f6afd86dd0567e0"
+          },
+          "name": "Clang lifetime attribute inference"
+        },
+        {
+          "identity": {
+            "repository": "opprop/checker-framework-inference",
+            "revision": "2b6e1d9e4ea1a5e2908fecb1691700021b22d3dd"
+          },
+          "name": "Checker Framework Inference"
+        },
+        {
+          "identity": {
+            "repository": "opprop/universe",
+            "revision": "ee75b409f57b0aaff733e0b5a3682dd2768dccc9"
+          },
+          "name": "Generic Universe Types checker and inference"
+        },
+        {
+          "identity": {
+            "repository": "KomaEc/crown",
+            "revision": "621904cd356b433215d5f55db39ffd71714f44ff"
+          },
+          "name": "Crown ownership analysis for C-to-Rust translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/582419.582448"
+          },
+          "name": "Aldrich, Kostadinov, Chambers, Alias Annotations for Program Understanding (OOPSLA 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-22655-7_16"
+          },
+          "name": "Dietl, Ernst, Mueller, Tunable Static Inference for Generic Universe Types (ECOOP 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-31057-7_9"
+          },
+          "name": "Huang, Dietl, Milanova, Ernst, Inference and Checking of Object Ownership (ECOOP 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586046"
+          },
+          "name": "Emre et al., Aliasing Limits on Translating C to Safe Rust (PACMPL OOPSLA1 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.10515",
+            "doi": "10.1007/978-3-031-37709-9_22"
+          },
+          "name": "Zhang, David, Yu, Wang, Ownership Guided C to Rust Translation (CAV 2023)"
+        }
+      ],
+      "topics": [
+        "pl/ownership-annotation-inference",
+        "verification/annotation-inference-completeness",
+        "rust/lifetime-elision-and-default-rules",
+        "compilers/c-to-safe-rust-ownership-recovery"
       ]
     },
     "alloy4fun-forge-sterling-misconceptions-tlaplus-audits-and-spec-review-effort": {
@@ -10702,6 +10926,123 @@
         "verification/distributed-rc",
         "zerocopy/binary-slicing",
         "runtimes/garbage-collection"
+      ]
+    },
+    "benchmark-dose-averaging-bmds-proast-httk-toxicokinetics-and-oral-rfd-points-of-departure": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "USEPA/BMDS",
+            "revision": "0018abea713f61b0bcc9dd30821af18b61a77e77",
+            "version": "25.2 (tags 25.2 and 25.2p1 point at this revision)"
+          },
+          "name": "U.S. EPA Benchmark Dose Modeling Software (bmdscore C++ library and pybmds)"
+        },
+        {
+          "identity": {
+            "repository": "USEPA/CompTox-ExpoCast-httk",
+            "revision": "f6605eebc6eb5a483a8824dce6cbddb36c8fb091",
+            "version": "2.7.4 (httk/DESCRIPTION)"
+          },
+          "name": "httk R package for high-throughput toxicokinetics"
+        },
+        {
+          "identity": {
+            "standard": "EPA/100/R-12/001 (June 2012)",
+            "url": "https://www.epa.gov/sites/default/files/2015-01/documents/benchmark_dose_guidance.pdf"
+          },
+          "name": "U.S. EPA Benchmark Dose Technical Guidance"
+        },
+        {
+          "identity": {
+            "doi": "10.2903/j.efsa.2022.7584",
+            "pmcid": "PMC9593753"
+          },
+          "name": "EFSA Scientific Committee guidance on the use of the benchmark dose approach in risk assessment"
+        },
+        {
+          "identity": {
+            "url": "https://www.rivm.nl/en/proast",
+            "version": "proast71.1.zip offered for download on the access date"
+          },
+          "name": "PROAST dose-response software (RIVM) distribution page"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0272-0590(84)90107-6",
+            "pmid": "6510615"
+          },
+          "name": "A new method for determining allowable daily intakes (Crump)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/toxsci/66.2.298",
+            "pmid": "11896297"
+          },
+          "name": "Dose-response modeling of continuous endpoints (Slob)"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.1539-6924.2007.00920.x",
+            "pmid": "17640214"
+          },
+          "name": "Properties of model-averaged BMDLs (Wheeler and Bailer)"
+        },
+        {
+          "identity": {
+            "doi": "10.1289/ehp.1409385",
+            "pmcid": "PMC4671238"
+          },
+          "name": "A unified probabilistic framework for dose-response assessment of human health effects (Chiu and Slob)"
+        },
+        {
+          "identity": {
+            "doi": "10.1289/EHP3368",
+            "pmcid": "PMC6084844"
+          },
+          "name": "Beyond the RfD: broad application of a probabilistic approach (Chiu et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/toxsci/kfr254",
+            "pmid": "21948869"
+          },
+          "name": "Integration of dosimetry, exposure, and high-throughput screening data (Wetmore et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.18637/jss.v079.i04"
+          },
+          "name": "httk: R package for high-throughput toxicokinetics (Pearce et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/toxsci/kfv118",
+            "pmcid": "PMC4560038"
+          },
+          "name": "Toxicokinetic triage for environmental chemicals (Wambaugh et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/toxsci/kfy020",
+            "pmcid": "PMC5920326"
+          },
+          "name": "Evaluating in vitro-in vivo extrapolation of toxicokinetics (Wambaugh et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/toxsci/kfz205",
+            "pmid": "31532498"
+          },
+          "name": "Assessing toxicokinetic uncertainty and variability in risk prioritization (Wambaugh et al.)"
+        }
+      ],
+      "topics": [
+        "domains/benchmark-dose-modeling",
+        "domains/chemical-risk-assessment",
+        "domains/high-throughput-toxicokinetics",
+        "verification/dose-response-model-averaging"
       ]
     },
     "beyond-relooper-sese-cfg-decompilation-and-postcleanup-idiom-resugaring": {

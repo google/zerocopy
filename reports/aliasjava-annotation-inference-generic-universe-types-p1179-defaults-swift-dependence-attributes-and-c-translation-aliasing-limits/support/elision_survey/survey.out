@@ -1,0 +1,18 @@
+dir=<rust-src>/library/core/src files=295 parse_failures=74 fn_signatures=2995 with_lifetime_in_inputs=1842 with_lifetime_in_output=496
+  ELIDED                278   56.0%
+  EXPLICIT_ELIDABLE      10    2.0%
+  EXPLICIT_NEEDED        52   10.5%
+  OUTER_LIFETIME        138   27.8%
+  STATIC_ONLY            18    3.6%
+dir=<rust-src>/library/alloc/src files=97 parse_failures=7 fn_signatures=2693 with_lifetime_in_inputs=1643 with_lifetime_in_output=494
+  ELIDED                314   63.6%
+  EXPLICIT_ELIDABLE       3    0.6%
+  EXPLICIT_NEEDED        34    6.9%
+  OUTER_LIFETIME        139   28.1%
+  STATIC_ONLY             4    0.8%
+dir=<rust-src>/library/std/src files=654 parse_failures=32 fn_signatures=7767 with_lifetime_in_inputs=5243 with_lifetime_in_output=557
+  ELIDED                448   80.4%
+  EXPLICIT_ELIDABLE       3    0.5%
+  EXPLICIT_NEEDED        27    4.8%
+  OUTER_LIFETIME         59   10.6%
+  STATIC_ONLY            20    3.6%

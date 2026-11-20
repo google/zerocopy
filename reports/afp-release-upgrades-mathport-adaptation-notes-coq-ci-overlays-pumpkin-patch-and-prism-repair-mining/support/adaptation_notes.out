@@ -1,0 +1,9 @@
+total_notes 364
+notes_with_unusual_prefix (kept, listed for audit) 0
+files_with_notes 239
+by_top_dir {'Mathlib': 353, 'MathlibTest': 11}
+notes_without_doc_comment 1
+reference_kinds {'no-version-ref': 222, 'lean4-PR-ref': 93, 'nightly-date': 29, 'bare-date': 8, 'nightly-date+lean4-PR-ref': 4, 'release-version': 3, 'lean4-PR-ref+bare-date': 3, 'release-version+lean4-PR-ref': 2}
+notes_directly_followed_by_set_option_backward 217 {'backward.isDefEq.respectTransparency.types': 203, 'backward.isDefEq.respectTransparency.instanceSearchTypes': 10, 'backward.isDefEq.respectTransparency': 2, 'backward.defeqAttrib.useBackward': 2}
+first_nightly_year_cited {'2023': 1, '2024': 2, '2025': 5, '2026': 25}
+first_release_minor_cited(4.x) {7: 1, 31: 2, 35: 2}

@@ -1,0 +1,14 @@
+A1_elided_self_returns_other       ed2021  REJECT (no-code)  error: lifetime may not live long enough
+A2_annotated_returns_other         ed2021  ACCEPT  
+B1_two_inputs_elided_output        ed2021  REJECT error[E0106]   error[E0106]: missing lifetime specifier
+B2_two_inputs_annotated            ed2021  ACCEPT  
+C1_box_dyn_default_static          ed2021  REJECT (no-code)  error: lifetime may not live long enough
+C2_box_dyn_explicit_bound          ed2021  ACCEPT  
+D1_rpit_capture_2021               ed2021  REJECT error[E0700]   error[E0700]: hidden type for `impl Iterator<Item = u8>` captures lifetime that does not appear in bounds
+D2_rpit_capture_2024               ed2024  ACCEPT  
+D3_rpit_use_bound_2021             ed2021  ACCEPT  
+E1_closure_ref_return              ed2021  REJECT (no-code)  error: lifetime may not live long enough
+E2_fn_ref_return                   ed2021  ACCEPT  
+F1_impl_header_elided              ed2021  ACCEPT  
+G1_static_elided_const             ed2021  ACCEPT  
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)

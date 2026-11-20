@@ -1,0 +1,52 @@
+## mathlib4 commits touching lean-toolchain, 2025-11-20..2026-11-20, reachable from the pinned commit
+31ce06eaadf4 2026-11-19T17:15:09Z chore: bump toolchain to v4.37.0-rc1 (#46167)
+fc4f59e577fe 2026-11-16T18:06:17Z chore: bump toolchain to v4.36.0 (#46085)
+9d581dfff2e4 2026-10-27T21:34:08Z chore: bump toolchain to v4.36.0-rc2 (#45383)
+625d8914199b 2026-10-16T18:26:42Z chore: bump toolchain to v4.36.0-rc1 (#44879)
+56a005855ea1 2026-10-13T13:08:46Z chore: bump toolchain to v4.35.0 (#44806)
+1f414401f690 2026-10-06T16:05:53Z chore: bump toolchain to v4.35.0-rc4 (#44557)
+c55e6e786f49 2026-09-24T23:06:03Z chore: bump toolchain to v4.35.0-rc3 (#44172)
+065356127b1d 2026-09-16T19:44:28Z chore: bump toolchain to v4.35.0-rc2 (#43874)
+c32e1ec0d1eb 2026-09-15T20:19:27Z chore: bump toolchain to v4.35.0-rc1 (#43843)
+5ed296525643 2026-09-15T00:29:41Z chore: bump toolchain to v4.34.0 (#43798)
+85e3a25e006c 2026-08-21T15:44:32Z chore: bump toolchain to v4.34.0-rc2 (#43012)
+de5ce8a9a66a 2026-08-11T00:21:07Z chore: bump toolchain to v4.34.0-rc1 (#42619)
+db584cd6d46c 2026-08-10T09:12:31Z chore: bump toolchain to v4.33.0 (#42604)
+51e6992efd06 2026-08-03T14:29:46Z chore: bump toolchain to v4.33.0-rc2 (#42401)
+79d0395a1825 2026-07-16T01:47:53Z chore: bump toolchain to v4.33.0-rc1 (#41779)
+81a5d257c8e4 2026-07-13T15:46:04Z chore: bump toolchain to v4.32.0 (#41690)
+360da6fa66c1 2026-06-18T23:59:56Z chore: bump toolchain to v4.32.0-rc1 (#40732)
+fabf563a7c95 2026-06-15T14:22:22Z chore: bump toolchain to v4.31.0 (#40633)
+d90090f647ca 2026-06-08T18:06:51Z chore: bump toolchain to v4.31.0-rc2 (#40358)
+d568c8c09630 2026-05-29T13:23:40Z chore: bump toolchain to v4.31.0-rc1 (#39980)
+c5ea00351c28 2026-05-26T18:25:31Z chore: bump toolchain to v4.30.0 (#39879)
+5450b53e5ddc 2026-04-18T10:41:35Z chore: bump toolchain to v4.30.0-rc2 (#38167)
+0c154d67103f 2026-04-04T23:52:10Z chore: bump toolchain to v4.30.0-rc1 (#37564)
+8a178386ffc0 2026-03-30T18:47:58Z chore: bump toolchain to v4.29.0 (#37377)
+698d2b68b870 2026-03-25T01:43:58Z chore: bump toolchain to v4.29.0-rc8 (#37133)
+276bbda7c2ab 2026-03-24T02:02:59Z chore: bump toolchain to `v4.29.0-rc7` (#37034)
+777eb7c44150 2026-03-10T05:56:11Z chore: bump toolchain to v4.29.0-rc6 (#36422)
+229f9edd3222 2026-03-04T23:17:21Z chore: bump toolchain to v4.29.0-rc4 (#36122)
+9b1001cbdbfe 2026-03-02T00:47:45Z chore: bump toolchain to v4.29.0-rc3 (#35942)
+0c08ce96d5d3 2026-02-24T10:38:36Z chore: bump toolchain to v4.29.0-rc2 (#35708)
+33a7291a345d 2026-02-17T23:08:40Z chore: bump toolchain to v4.29.0-rc1 (#35459)
+8f9d9cff6bd7 2026-02-16T15:28:25Z chore: bump toolchain to v4.28.0 (#35406)
+5352afccd686 2026-01-26T12:03:38Z chore: bump toolchain to v4.28.0-rc1 (#34436)
+955d88207408 2026-01-24T03:09:11Z chore: bump toolchain to v4.27.0 (#34346)
+5e9b6b999586 2025-12-14T13:26:50Z chore: bump toolchain to v4.27.0-rc1 (#32874)
+2df2f0150c27 2025-12-13T10:35:53Z chore: bump toolchain to v4.26.0 (#32833)
+7cc87f6abc95 2025-11-21T09:52:04Z chore: bump toolchain to v4.26.0-rc2 (#31877)
+## rocq commits touching dev/ci/user-overlays, 2025-11-20..2026-11-20, per month
+     13 2025-11
+     12 2025-12
+      9 2026-01
+     18 2026-02
+     17 2026-03
+      5 2026-04
+     10 2026-05
+     12 2026-06
+     12 2026-07
+      9 2026-08
+      4 2026-09
+     14 2026-10
+     13 2026-11

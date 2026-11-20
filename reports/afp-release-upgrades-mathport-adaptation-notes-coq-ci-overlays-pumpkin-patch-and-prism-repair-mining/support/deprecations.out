@@ -1,0 +1,4 @@
+deprecated_attributes 5607
+deprecated_by_since_year {'2026': 5596} without_since 11
+deprecated_module_commands 146
+set_option_backward_total 7913 {'backward.isDefEq.respectTransparency': 3518, 'backward.isDefEq.respectTransparency.types': 1970, 'backward.defeqAttrib.useBackward': 1761, 'backward.privateInPublic': 459, 'backward.privateInPublic.warn': 177, 'backward.isDefEq.respectTransparency.instanceSearchTypes': 13, 'backward.inferInstanceAs.wrap.instances': 12, 'backward.inferInstanceAs.wrap.data': 3}

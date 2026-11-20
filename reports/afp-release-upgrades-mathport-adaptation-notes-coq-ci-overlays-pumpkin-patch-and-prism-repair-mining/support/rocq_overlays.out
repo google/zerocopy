@@ -1,0 +1,8 @@
+overlay_files 126
+pr_number_range 19023 22854
+overlay_calls 309
+distinct_projects_overlaid 43
+overlay_calls_per_file_histogram {1: 68, 2: 23, 3: 13, 4: 3, 5: 6, 6: 3, 7: 3, 8: 1, 9: 1, 11: 3, 12: 1, 13: 1}
+top_projects [('elpi', 53), ('equations', 35), ('tactician', 29), ('metarocq', 24), ('mtac2', 18), ('rocq_lsp', 13), ('paramcoq', 13), ('waterproof', 13), ('lean_importer', 11), ('rewriter', 11), ('coq_lsp', 9), ('quickchick', 8)]
+ci_basic_overlay_project_declarations 73 subproject_declarations 3
+overlaid_projects_not_declared_in_ci_basic_overlay ['bbv', 'coq_lsp', 'kami']

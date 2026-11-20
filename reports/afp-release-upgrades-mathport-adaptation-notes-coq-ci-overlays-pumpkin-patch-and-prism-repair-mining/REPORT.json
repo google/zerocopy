@@ -1,0 +1,115 @@
+{
+  "topics": [
+    "verification/proof-upgrade-breakage-studies",
+    "lean/library-toolchain-bump-processes",
+    "tooling/proof-repair-dataset-mining",
+    "vcs/proof-library-version-pinning"
+  ],
+  "subjects": [
+    {
+      "name": "Mathlib (Lean 4 mathematical library)",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5fc503cdd50c2c198f54ccc97121ec82919e2930",
+        "lean-toolchain": "leanprover/lean4:v4.37.0-rc1"
+      }
+    },
+    {
+      "name": "Mathport (Lean 3 to Lean 4 translator)",
+      "identity": {
+        "repository": "leanprover-community/mathport",
+        "revision": "375a0a491c3179de17e4524875c69a7d92459588"
+      }
+    },
+    {
+      "name": "Archive of Formal Proofs development repository (GitHub mirror)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+      }
+    },
+    {
+      "name": "Rocq prover (CI overlay infrastructure)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "ddb69e5c5cff459fc2b0dfe3ec4ed0c968720c76"
+      }
+    },
+    {
+      "name": "PUMPKIN PATCH proof repair plugin",
+      "identity": {
+        "repository": "uwplse/PUMPKIN-PATCH",
+        "revision": "75e93275290c76d13a7a8b3a2124257be895f5e4"
+      }
+    },
+    {
+      "name": "PRISM proof repair mining framework",
+      "identity": {
+        "repository": "Radiance-Technologies/prism",
+        "revision": "f54c9bf25488d022be16362944a389f1d01cbbe0"
+      }
+    },
+    {
+      "name": "Andronick et al., Large-Scale Formal Verification in Practice: A Process Perspective (ICSE 2012)",
+      "identity": {
+        "doi": "10.1109/ICSE.2012.6227120"
+      }
+    },
+    {
+      "name": "Staples et al., Productivity for Proof Engineering (ESEM 2014)",
+      "identity": {
+        "doi": "10.1145/2652524.2652551"
+      }
+    },
+    {
+      "name": "Klein, Proof Engineering Considered Essential (FM 2014)",
+      "identity": {
+        "doi": "10.1007/978-3-319-06410-9_2"
+      }
+    },
+    {
+      "name": "Blanchette et al., Mining the Archive of Formal Proofs (CICM 2015)",
+      "identity": {
+        "doi": "10.1007/978-3-319-20615-8_1"
+      }
+    },
+    {
+      "name": "Ringer et al., Adapting Proof Automation to Adapt Proofs (CPP 2018)",
+      "identity": {
+        "doi": "10.1145/3167094"
+      }
+    },
+    {
+      "name": "Palmskog et al., piCoq: Parallel Regression Proving for Large-Scale Verification Projects (ISSTA 2018)",
+      "identity": {
+        "doi": "10.1145/3213846.3213877"
+      }
+    },
+    {
+      "name": "Reichel et al., Proof Repair Infrastructure for Supervised Models (ITP 2023)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ITP.2023.26"
+      }
+    },
+    {
+      "name": "Raemaekers et al., Semantic Versioning and Impact of Breaking Changes in the Maven Repository (JSS 2017)",
+      "identity": {
+        "doi": "10.1016/j.jss.2016.04.008"
+      }
+    },
+    {
+      "name": "Ochoa et al., Breaking Bad? Semantic Versioning and Impact of Breaking Changes in Maven Central (EMSE 2022)",
+      "identity": {
+        "doi": "10.1007/s10664-021-10052-y",
+        "arxiv": "2110.07889"
+      }
+    },
+    {
+      "name": "Decan and Mens, What Do Package Dependencies Tell Us About Semantic Versioning? (TSE 2021)",
+      "identity": {
+        "doi": "10.1109/TSE.2019.2918315"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

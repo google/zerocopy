@@ -1,0 +1,25 @@
+odd-k multiplicative factor (2*pi)^-1/2 = 0.398942
+Example 1: intended posterior weights all equal (1/9)
+  model          k  intended  computed
+  Hill           4  0.1111    0.1668
+  Gamma          3  0.1111    0.0665
+  Logistic       2  0.1111    0.1668
+  LogLogistic    3  0.1111    0.0665
+  LogProbit      3  0.1111    0.0665
+  Multistage(2)  3  0.1111    0.0665
+  Probit         2  0.1111    0.1668
+  QuantalLinear  2  0.1111    0.1668
+  Weibull        3  0.1111    0.0665
+  total weight on 3-parameter models: intended=0.5556 computed=0.3327
+Example 2: intended weights split 50/50 between a 2-parameter and a 3-parameter model
+  model          k  intended  computed
+  Hill           4  0.0000    0.0000
+  Gamma          3  0.0000    0.0000
+  Logistic       2  0.5000    0.7148
+  LogLogistic    3  0.5000    0.2852
+  LogProbit      3  0.0000    0.0000
+  Multistage(2)  3  0.0000    0.0000
+  Probit         2  0.0000    0.0000
+  QuantalLinear  2  0.0000    0.0000
+  Weibull        3  0.0000    0.0000
+  total weight on 3-parameter models: intended=0.5000 computed=0.2852
