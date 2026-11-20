@@ -1,1 +1,0 @@
-fn util_func() {}

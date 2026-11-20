@@ -1,3 +1,0 @@
-/// ```anneal
-/// ```
-pub fn foo() {}

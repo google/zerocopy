@@ -1,3 +1,0 @@
-/// ```lean, anneal
-/// ```
-fn main() {}

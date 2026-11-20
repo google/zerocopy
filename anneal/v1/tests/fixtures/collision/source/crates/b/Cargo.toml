@@ -1,8 +1,0 @@
-[package]
-name = "pkg_b"
-version = "0.1.0"
-edition = "2021"
-
-# Force the library artifact to *also* be named "common_utils"
-[lib]
-name = "common_utils"

@@ -451,10 +451,8 @@ mechanism that Pass 2 applies to `correspondence/`.
 
 ## Repository layout
 
-The current MIR-based workspace is rooted at [`anneal/`](../). The
-independent [V1 workspace](../v1/) contains the Charon/Aeneas verifier. The
-historical [V2 workspace](../v2/) retains its prototype code and builds the
-Aeneas toolchain used by V1.
+The MIR-based workspace is rooted at [`anneal/`](../). See the developer
+guide for the [historical workspaces](README.md#historical-workspaces).
 
 The layout below shows where trust-boundary components, proof theory, and
 correspondence checks live. Entries marked `[planned]` show future
@@ -493,8 +491,6 @@ anneal/
 │   └── Anneal/
 │       ├── MirCorrespondenceBase.lean
 │       └── MirCorrespondenceProof.lean
-├── v1/                             # Charon/Aeneas verifier
-├── v2/                             # Historical prototype and toolchain build
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/

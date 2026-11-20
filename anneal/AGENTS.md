@@ -9,8 +9,7 @@ those terms. -->
 # Agent instructions for Anneal
 
 These instructions apply to the current verifier in `anneal/` and its
-build and CI integration. The historical workspaces in [`v1/`](v1/) and
-[`v2/`](v2/) use their own instructions. In the rules below, repository-root
+build and CI integration. In the rules below, repository-root
 paths refer to the current verifier's project root, unless a rule refers to
 Git history or a workflow under Zerocopy's root `.github/workflows/`.
 

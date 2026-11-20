@@ -34,7 +34,7 @@ env:
   # These are bounded, client-native retries for recognized transient download
   # failures. They never rerun a Cargo or rustup command, so deterministic build
   # and test failures still fail immediately. Keep these values coordinated
-  # with `.github/workflows/anneal.yml` and the CI Dockerfile.
+  # with the CI Dockerfile.
   CARGO_NET_RETRY: "10"
   RUSTUP_MAX_RETRIES: "10"
   # These two values are the producer/consumer protocol for the matrix's CI

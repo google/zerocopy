@@ -1,6 +1,0 @@
-description = "Tests that syntax errors across multiple files are all reported"
-
-[test]
-stderr_file = "expected.stderr"
-args = ["verify", "--allow-sorry"]
-expected_status = "failure"
