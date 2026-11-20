@@ -1,0 +1,23 @@
+Toy rates: {'PHET1': 0.2, 'PHET2': 0.05, 'PHOM1': 0.1, 'PHET0': 0.75, 'PHOM0': 0.9} Pc0..2 = (0.97, 0.02, 0.01) theta = 0.03
+
+[A] 0.97 frequency-sum locus removal (CheckFrequencyForRemoval)
+  evidence alleles 8,9,10,11,12; freq sum = 0.98 -> removed: True
+  suspect ('8', '11'): locus LR if kept = 0.8102; after removal factor = 1 -> removal multiplies total LR by 1.234
+  suspect ('10', '12'): locus LR if kept = 0.03833; after removal factor = 1 -> removal multiplies total LR by 26.09
+  suspect ('8', '13'): locus LR if kept = 0.003262; after removal factor = 1 -> removal multiplies total LR by 306.6
+
+[B] Drop-in term: FST count-based Pc vs ISFG-style Pr(C)*p_a (counterfactual)
+  FST code  : Pn=7.9388e-03 Pd=1.5886e-04 LR=49.97
+  ISFG-style: Pn=7.9388e-05 Pd=1.5878e-06 LR=50
+
+[C] Genotype probability: FST hom-only theta vs Balding-Nichols conditional
+  genotype ('a', 'a'): FST=0.01270  BN|suspect typed=0.02689  ratio BN/FST=2.117
+  genotype ('a', 'b'): FST=0.02000  BN|suspect typed=0.02955  ratio BN/FST=1.477
+
+[D] A replicate recorded as 'NEG' at a locus where other replicates have alleles
+  allele list used for unknown genotypes: ['14', '15', 'NEG', 'w']
+  as coded ('NEG' string)     : Pn=5.2926e-04 Pd=1.0635e-05 LR=49.77
+  'NEG' treated as empty/INC  : Pn=5.2926e-01 Pd=1.0599e-02 LR=49.93
+
+[E] float32 range for the stored per-race LR ((float)P, Comparison.cs L513)
+  largest finite float32 = 3.402823e+38; log10 = 38.532

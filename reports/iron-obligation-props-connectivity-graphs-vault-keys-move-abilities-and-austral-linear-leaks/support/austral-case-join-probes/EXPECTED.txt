@@ -1,0 +1,21 @@
+Observed 2026-11-20 on an x86-64 Linux workstation, OCaml 5.4.0, dune, gcc,
+austral/austral at 0962d2a8a5d77f7daacd7f696819520733f4897d (unmodified):
+
+probe  arms  shape                                                 austral exit  meaning
+p1     3     Red,Green consume r; Blue skips                        255 (reject)  (Blue,Green) is the compared pair
+p2     2     Red consumes r; Green skips                            255 (reject)  control: two arms
+p3     3     Red,Green skip; Blue consumes; r consumed after case   255 (reject)  (Blue,Green) compared
+p4     3     Red,Blue consume; Green skips                          255 (reject)  (Blue,Green) compared
+p5     4     Red,Green consume; Blue,Black skip                     255 (reject)  pairs consistent; caught later by the return check
+p6     3     Red skips; Green,Blue consume                          0 (ACCEPT)    r leaks when c = Red
+p7     3     Red consumes; Green,Blue skip; r consumed after case   0 (ACCEPT)    r consumed twice when c = Red; program prints 32
+p8     3     p7 shape with a heap-owning linear Box                 0 (ACCEPT)    running the C output: "free(): double free detected in tcache 2", exit 134
+
+The typed `case` arms reach the linearity checker in reverse declaration order
+(Blue, Green, Red for `union Color is case Red; case Green; case Blue;`), so the
+checker compares (Blue, Green) and never compares Red.
+
+With one-line-fix.diff applied (table_list_is_consistent (b :: rest)), all of
+p1..p8 are rejected with "is used inconsistently in the branches of a case
+statement", and test-programs/runner.py reports 284 PASS / 0 FAIL both with and
+without the fix.

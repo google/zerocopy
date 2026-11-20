@@ -1,0 +1,22 @@
+module body Test is
+    record R : Linear is
+        x: Int32;
+    end;
+
+    union Color: Free is
+        case Red;
+        case Green;
+    end;
+
+    function main(): ExitCode is
+        let r: R := R(x => 32);
+        let c: Color := Green();
+        case c of
+            when Red do
+                let { x: Int32 } := r;
+            when Green do
+                skip;
+        end case;
+        return ExitSuccess();
+    end;
+end module body.

@@ -1,0 +1,54 @@
+pragma Unsafe_Module;
+
+import Austral.Memory (
+    Address,
+    Pointer,
+    allocate,
+    nullCheck,
+    store,
+    deallocate
+);
+
+module body Test is
+    record Box : Linear is
+        ptr: Pointer[Int32];
+    end;
+
+    union Color: Free is
+        case Red;
+        case Green;
+        case Blue;
+    end;
+
+    function makeBox(): Box is
+        let addr: Address[Int32] := allocate();
+        case nullCheck(addr) of
+            when Some(value as p: Pointer[Int32]) do
+                store(p, 7);
+                return Box(ptr => p);
+            when None do
+                abort("allocation failed");
+        end case;
+    end;
+
+    function destroyBox(b: Box): Unit is
+        let { ptr: Pointer[Int32] } := b;
+        deallocate(ptr);
+        return nil;
+    end;
+
+    function main(): ExitCode is
+        let b: Box := makeBox();
+        let c: Color := Red();
+        case c of
+            when Red do
+                destroyBox(b);
+            when Green do
+                skip;
+            when Blue do
+                skip;
+        end case;
+        destroyBox(b);
+        return ExitSuccess();
+    end;
+end module body.

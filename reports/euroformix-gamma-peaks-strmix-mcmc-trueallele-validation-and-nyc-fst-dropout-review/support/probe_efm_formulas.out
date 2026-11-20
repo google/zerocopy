@@ -1,0 +1,28 @@
+self-check of incomplete gamma/beta implementations: OK
+
+[1] P(drop-out) = P(Y < AT) for one allele copy, Gamma(shape0*Mx*deg, scale0)
+  AT=50.0
+  mu    omega  Mx    beta  bp   shape     mean(rfu)  P(dropout)
+  1000  0.3    0.3   1.0   125  3.3333    300.00     0.009981
+  1000  0.3    0.1   1.0   125  1.1111    100.00     0.3738
+  1000  0.3    0.05  1.0   125  0.5556    50.00      0.6742
+  1000  0.6    0.05  1.0   125  0.1389    50.00      0.7982
+  1000  0.3    0.1   0.6   325  0.4000    36.00      0.7697
+  300   0.5    0.1   0.8   300  0.2707    20.30      0.8747
+  homozygote (n=2) vs heterozygote (n=1), mu=1000, omega=0.3, Mx=0.05:
+    n=1: P(Y<AT) = 0.6742
+    n=2: P(Y<AT) = 0.3738
+
+[2] validMLEmodel envelope: Beta(i-0.5, N-i+1.5) (code) vs Beta(i, N-i+1) (exact)
+  N=20: two-sided Bonferroni level per point = 0.00025
+    i=1    code [2.424e-09, 0.281814]  exact [1.250e-05, 0.339463]
+    i=10   code [1.347e-01, 0.799586]  exact [1.501e-01, 0.817056]
+    i=20   code [6.150e-01, 0.999757]  exact [6.605e-01, 0.999987]
+  N=50: two-sided Bonferroni level per point = 0.0001
+    i=1    code [1.563e-10, 0.139811]  exact [2.000e-06, 0.168236]
+    i=25   code [2.390e-01, 0.728007]  exact [2.471e-01, 0.736401]
+    i=50   code [8.088e-01, 0.999948]  exact [8.318e-01, 0.999998]
+  N=200: two-sided Bonferroni level per point = 2.5e-05
+    i=1    code [2.451e-12, 0.043386]  exact [1.250e-07, 0.051604]
+    i=100  code [3.550e-01, 0.635588]  exact [3.573e-01, 0.637956]
+    i=200  code [9.417e-01, 0.999995]  exact [9.484e-01, 1.000000]

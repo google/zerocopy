@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "domains/forensic-dna-mixture-interpretation",
+    "domains/probabilistic-genotyping-validation",
+    "security/forensic-software-source-review",
+    "verification/likelihood-ratio-numerical-reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "EuroForMix",
+      "identity": {
+        "repository": "oyvble/euroformix",
+        "revision": "800c314c91235e2b9a67270437226d4dada325b4",
+        "version": "4.2.6"
+      }
+    },
+    {
+      "name": "New York City Forensic Statistical Tool (FST) source release",
+      "identity": {
+        "repository": "propublica/nyc-dna-software",
+        "revision": "5b3500de6f0b879350dd1b487218e590eeacc138"
+      }
+    },
+    {
+      "name": "ISFG DNA Commission recommendations on drop-out and drop-in (Gill et al. 2012)",
+      "identity": {
+        "doi": "10.1016/j.fsigen.2012.06.002"
+      }
+    },
+    {
+      "name": "Validating TrueAllele DNA mixture interpretation (Perlin et al. 2011)",
+      "identity": {
+        "doi": "10.1111/j.1556-4029.2011.01859.x"
+      }
+    },
+    {
+      "name": "Developmental validation of STRmix (Bright et al. 2016)",
+      "identity": {
+        "doi": "10.1016/j.fsigen.2016.05.007"
+      }
+    },
+    {
+      "name": "Internal validation of STRmix, multi-laboratory response to PCAST (Bright et al. 2018)",
+      "identity": {
+        "doi": "10.1016/j.fsigen.2018.01.003"
+      }
+    },
+    {
+      "name": "Validation of a DNA mixture statistics tool incorporating allelic drop-out and drop-in (Mitchell et al. 2012)",
+      "identity": {
+        "doi": "10.1016/j.fsigen.2012.08.007"
+      }
+    },
+    {
+      "name": "PCAST report: Forensic Science in Criminal Courts",
+      "identity": {
+        "url": "https://obamawhitehouse.archives.gov/sites/default/files/microsites/ostp/PCAST/pcast_forensic_science_report_final.pdf",
+        "version": "2016-09"
+      }
+    },
+    {
+      "name": "SWGDAM Guidelines for the Validation of Probabilistic Genotyping Systems",
+      "identity": {
+        "standard": "SWGDAM Guidelines for the Validation of Probabilistic Genotyping Systems",
+        "version": "2015"
+      }
+    },
+    {
+      "name": "ANSI/ASB Standard 018, Standard for Validation of Probabilistic Genotyping Systems",
+      "identity": {
+        "standard": "ANSI/ASB Standard 018",
+        "version": "First Edition, 2020",
+        "url": "https://www.aafs.org/asb-standard/standard-validation-probabilistic-genotyping-systems"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

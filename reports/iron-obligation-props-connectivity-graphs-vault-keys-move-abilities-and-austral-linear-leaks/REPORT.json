@@ -1,0 +1,131 @@
+{
+  "topics": [
+    "verification/obligation-and-leak-freedom-logics",
+    "pl/linear-resource-must-consume-types",
+    "verification/deadlock-freedom-connectivity-graphs",
+    "security/bytecode-resource-safety-verification",
+    "verification/leak-freedom-certificates"
+  ],
+  "subjects": [
+    {
+      "name": "Connectivity graphs Coq development (binary and multiparty session types, locks, barriers)",
+      "identity": {
+        "repository": "julesjacobs/cgraphs",
+        "revision": "74329952423f3db07dd0b60c62d823bd42df544c"
+      }
+    },
+    {
+      "name": "LinearActris Coq development (deadlock-free separation logic), last revision containing the sources",
+      "identity": {
+        "repository": "julesjacobs/dlf-actris",
+        "revision": "121131ccc74c9793e620ebfcd2ae6d6bc6545169"
+      }
+    },
+    {
+      "name": "LinearActris artifact repository tip (sources removed, README points elsewhere)",
+      "identity": {
+        "repository": "julesjacobs/dlf-actris",
+        "revision": "02a9c468aa5b8d8f6e87476871756a4514ac4af0"
+      }
+    },
+    {
+      "name": "Move bytecode verifier (archived move-language repository)",
+      "identity": {
+        "repository": "move-language/move",
+        "revision": "c453c90994cba0af30314fe4134acee57fb20d0c"
+      }
+    },
+    {
+      "name": "Austral bootstrapping compiler and linearity checker",
+      "identity": {
+        "repository": "austral/austral",
+        "revision": "0962d2a8a5d77f7daacd7f696819520733f4897d"
+      }
+    },
+    {
+      "name": "GHC (GitHub mirror) linear types documentation and multiplicity core",
+      "identity": {
+        "repository": "ghc/ghc",
+        "revision": "83038fbee5efea8e3ebd5090b2ff5537462e169d"
+      }
+    },
+    {
+      "name": "Rust RFC 1066: safe mem::forget",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "path": "text/1066-safe-mem-forget.md"
+      }
+    },
+    {
+      "name": "Iron: Managing Obligations in Higher-Order Concurrent Separation Logic (POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290378"
+      }
+    },
+    {
+      "name": "Connectivity Graphs: A Method for Proving Deadlock Freedom Based on Separation Logic (POPL 2022)",
+      "identity": {
+        "doi": "10.1145/3498662"
+      }
+    },
+    {
+      "name": "Multiparty GV: Functional Multiparty Session Types with Certified Deadlock Freedom (ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547638"
+      }
+    },
+    {
+      "name": "Higher-Order Leak and Deadlock Free Locks (POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571229"
+      }
+    },
+    {
+      "name": "Deadlock-Free Separation Logic: Linearity Yields Progress for Dependent Higher-Order Message Passing (POPL 2024)",
+      "identity": {
+        "doi": "10.1145/3632889"
+      }
+    },
+    {
+      "name": "Enforcing High-Level Protocols in Low-Level Software (Vault, PLDI 2001)",
+      "identity": {
+        "doi": "10.1145/378795.378811"
+      }
+    },
+    {
+      "name": "Resources: A Safe Language Abstraction for Money",
+      "identity": {
+        "arxiv": "2004.05106v2",
+        "doi": "10.48550/arXiv.2004.05106"
+      }
+    },
+    {
+      "name": "The Move Prover (CAV 2020)",
+      "identity": {
+        "doi": "10.1007/978-3-030-53288-8_7"
+      }
+    },
+    {
+      "name": "Linear Haskell: Practical Linearity in a Higher-Order Polymorphic Language (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158093",
+        "arxiv": "1710.09756"
+      }
+    },
+    {
+      "name": "Propositions as Sessions (ICFP 2012)",
+      "identity": {
+        "doi": "10.1145/2364527.2364568"
+      }
+    },
+    {
+      "name": "The Austral Language Specification (web edition)",
+      "identity": {
+        "url": "https://austral-lang.org/spec/spec.html",
+        "retrieved": "2026-11-20"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

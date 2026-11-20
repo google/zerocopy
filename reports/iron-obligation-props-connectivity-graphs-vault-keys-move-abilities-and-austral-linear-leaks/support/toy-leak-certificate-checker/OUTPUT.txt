@@ -1,0 +1,22 @@
+rejected with join set [] -> O2: join j0 arm 2 live=['r'] != certified []
+rejected with join set ['r'] -> O2: join j0 arm 0 live=[] != certified ['r']
+seed=1 programs=500 valid_accepted=500/500 statements=200427
+  M1-delete-consume: killed 500/500
+  M1-delete-consume [pairs-join variant]: killed 456/500
+  M2-duplicate-consume: killed 500/500
+  M2-duplicate-consume [pairs-join variant]: killed 500/500
+  M3-last-arm-skip: killed 468/468
+  M3-last-arm-skip [pairs-join variant]: killed 222/468
+  M4-bad-split: killed 245/245
+  M4-bad-split [pairs-join variant]: killed 245/245
+  check time total=0.1158s  throughput=1,731,077 statements/s
+seed=2 programs=2000 valid_accepted=2000/2000 statements=803307
+  M1-delete-consume: killed 2000/2000
+  M1-delete-consume [pairs-join variant]: killed 1829/2000
+  M2-duplicate-consume: killed 2000/2000
+  M2-duplicate-consume [pairs-join variant]: killed 2000/2000
+  M3-last-arm-skip: killed 1843/1843
+  M3-last-arm-skip [pairs-join variant]: killed 941/1843
+  M4-bad-split: killed 975/975
+  M4-bad-split [pairs-join variant]: killed 975/975
+  check time total=0.5055s  throughput=1,588,981 statements/s

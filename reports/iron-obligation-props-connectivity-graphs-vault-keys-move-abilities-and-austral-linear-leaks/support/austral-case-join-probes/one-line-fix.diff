@@ -1,0 +1,11 @@
+--- a/lib/LinearityCheck.ml
++++ b/lib/LinearityCheck.ml
+@@ -357,7 +357,7 @@
+   match lst with
+   | a::b::rest ->
+      let _ = tables_are_consistent "a case" a b in
+-     table_list_is_consistent rest
++     table_list_is_consistent (b :: rest)
+   | [a] ->
+      let _ = a in
+      ()
