@@ -570,7 +570,7 @@ noncomputable def sStatement (body : Body) (s : SState) : StatementKind → SRes
 
 theorem sStatement_sound {body : Body} {s s' : SState} {stmt : StatementKind}
     (x : Word) (h : sStatement body s stmt = .step s') :
-    evalStatement body (s.frame x) ⟨[]⟩ stmt = .step (s'.state x) := by
+    evalStatement body (s.frame x) [] ⟨[]⟩ stmt = .step (s'.state x) := by
   cases stmt with
   | nop =>
     cases h
@@ -684,7 +684,8 @@ noncomputable def sTerminator (body : Body) (bb : BasicBlock) (s : SState) :
 
 theorem sTerminator_step {body : Body} {bb : BasicBlock} {s s' : SState}
     (x : Word) (h : sTerminator body bb s = .step s') :
-    evalTerminator body bb (s.frame x) ⟨[]⟩ = .step (s'.state x) := by
+    evalTerminator (bodyProg body) body bb (s.frame x) [] ⟨[]⟩ =
+      .step (s'.state x) := by
   simp only [sTerminator] at h
   split at h
   · rename_i t hterm
@@ -720,7 +721,7 @@ theorem sTerminator_step {body : Body} {bb : BasicBlock} {s s' : SState}
 
 theorem sTerminator_ret {body : Body} {bb : BasicBlock} {s : SState}
     {v : SVal} (x : Word) (h : sTerminator body bb s = .ret v) :
-    evalTerminator body bb (s.frame x) ⟨[]⟩ =
+    evalTerminator (bodyProg body) body bb (s.frame x) [] ⟨[]⟩ =
       .done (.returned ⟨v.val x, ⟨[]⟩⟩) := by
   simp only [sTerminator] at h
   split at h
@@ -767,10 +768,10 @@ theorem evalStep_state (body : Body) (x : Word) (s : SState) :
       | none => .fault .unsupported
       | some bb =>
         match Trusted.MirSemantics.getElem? bb.statements s.stmt with
-        | some stmt => evalStatement body (s.frame x) ⟨[]⟩ stmt
+        | some stmt => evalStatement body (s.frame x) [] ⟨[]⟩ stmt
         | none =>
           if Nat.beq s.stmt bb.statements.length then
-            evalTerminator body bb (s.frame x) ⟨[]⟩
+            evalTerminator (bodyProg body) body bb (s.frame x) [] ⟨[]⟩
           else .fault .unsupported :=
   rfl
 

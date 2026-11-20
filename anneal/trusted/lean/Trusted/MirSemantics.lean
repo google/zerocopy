@@ -726,19 +726,37 @@ inductive LocalSlot where
   | dead
   | live (val : SlotVal)
 
+/-- Caller-frame return and unwind continuation saved on every non-root callee
+frame, corresponding to `ReturnContinuation::Goto { ret, unwind }` paired with
+`Frame::return_place` (`compiler/rustc_const_eval/src/interpret/stack.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+structure ReturnContinuation where
+  dst : Place
+  target : Option BasicBlockId
+  unwind : UnwindAction
+
 /-- Active execution frame of $M_{\text{anneal}}$, corresponding to
 `rustc_const_eval::interpret::Frame`
 (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+`8144389c895da997dbdecaa635e41d6a50be6ffd`).
+
+`returnCont` is `none` on the root entry frame and `some cont` on every callee
+frame pushed by `TerminatorKind.call`. -/
 structure FrameState where
   defId : DefId
   blockIdx : BasicBlockId
   stmtIdx : Nat
   locals : List LocalSlot
+  returnCont : Option ReturnContinuation := none
 
 /-- Running machine state of $M_{\text{anneal}}$ (factored cleanly from
 `initState` so `State` carries only active execution frames and caller
-memory, with no synthetic pre-entry variant). -/
+memory, with no synthetic pre-entry variant).
+
+`frames` stores the active call stack with the current (innermost) frame at
+the head (`frame :: callers`), the root entry frame at the tail
+(`returnCont = none`), and every non-root callee frame carrying
+`returnCont = some cont`. -/
 structure State where
   frames : List FrameState
   callerMem : CallerMemory := ⟨[]⟩
@@ -921,13 +939,22 @@ noncomputable def initLocalsLoop (body : Body) (args : List Val) :
           liveUninitSlot ty
       slot :: initLocalsLoop body args (idx + 1) rest
 
+/-- Static body-entry admission predicate shared by `initState` and
+`TerminatorKind.call`: checks non-empty basic blocks,
+`argumentCount < locals.length`, in-bounds storage annotations, and supported
+local types (`isSupportedScalarOrUnitTy`). -/
+noncomputable def bodyEntryAdmitted (body : Body) : Bool :=
+  !body.basicBlocks.isEmpty &&
+    Nat.blt body.argumentCount body.locals.length &&
+    storageAnnotationsInBounds body &&
+    body.locals.all isSupportedScalarOrUnitTy
+
 /-- Entry initialization (`initState p q`):
 Validates the 64-bit target layout (`p.pointerWidthBits = 64`), the MIR
 semantic profile version (`p.mirProfileVersion = 1`; see
-`Trusted.MirAst.Program`), entry body existence, non-empty basic blocks,
-in-bounds storage annotations, supported local types, empty `callerMem`, and
-well-typed `q.args`. Returns `.error .unsupported` if any static/entry
-precondition fails. -/
+`Trusted.MirAst.Program`), entry body existence, `bodyEntryAdmitted`, empty
+`callerMem`, and well-typed `q.args`. Returns `.error .unsupported` if any
+static/entry precondition fails. -/
 noncomputable def initState (p : Program) (q : Query) :
     Except FaultKind State :=
   if !Nat.beq p.pointerWidthBits 64 || !Nat.beq p.mirProfileVersion 1 then
@@ -938,13 +965,7 @@ noncomputable def initState (p : Program) (q : Query) :
     match getElem? p.bodies p.entryDefId with
     | none => .error .unsupported
     | some body =>
-      if body.basicBlocks.isEmpty then
-        .error .unsupported
-      else if !Nat.blt body.argumentCount body.locals.length then
-        .error .unsupported
-      else if !storageAnnotationsInBounds body then
-        .error .unsupported
-      else if !body.locals.all isSupportedScalarOrUnitTy then
+      if !bodyEntryAdmitted body then
         .error .unsupported
       else
         let paramTys := (body.locals.drop 1).take body.argumentCount
@@ -1547,6 +1568,27 @@ noncomputable def anyOperandMayOverlapPlace (dst : Place) :
   | opnd :: rest =>
     operandMayOverlapPlace dst opnd || anyOperandMayOverlapPlace dst rest
 
+/-- Return `true` iff `opnd` is a `.move` whose source place may overlap `dst`.
+In `rustc` (`compiler/rustc_const_eval/src/interpret/call.rs`,
+`move_definitely_disjoint` + `init_stack_frame`) and `lean-miri`
+(`Miri/Interpreter/Call.lean`, `moveDefinitelyDisjoint` + `passArgument` +
+`protectArgument`), passing a `.move` argument whose local overlaps the call
+destination disables `move_definitely_disjoint`, forces the argument in-place,
+and applies Tree Borrows / Stacked Borrows protectors to both the moved
+argument and `dst`, causing immediate UB even for scalars. -/
+noncomputable def moveOperandMayOverlapPlace (dst : Place) : Operand → Bool
+  | .move src => placesMayOverlap dst src
+  | .copy _ => false
+  | .constant _ => false
+
+/-- Return `true` iff any `.move` operand in `ops` may overlap `dst`. -/
+noncomputable def anyMoveOperandMayOverlapPlace (dst : Place) :
+    List Operand → Bool
+  | [] => false
+  | opnd :: rest =>
+    moveOperandMayOverlapPlace dst opnd ||
+      anyMoveOperandMayOverlapPlace dst rest
+
 /-- Return `true` iff `ty` is a tuple type (`MirTy.tuple _`). -/
 noncomputable def isTupleTy : MirTy → Bool
   | .tuple _ => true
@@ -1870,11 +1912,14 @@ noncomputable def writeAggregateTuple (bodyLocals : List MirTy)
   `.use` checks uninitialized input before writing while `rustc`'s `copy_op`
   validates after writing, both producing `.undefined`). -/
 noncomputable def evalStatement (body : Body) (frame : FrameState)
-    (callerMem : CallerMemory) (stmt : StatementKind) :
-    StepResult State TerminalOut :=
+    (callers : List FrameState) (callerMem : CallerMemory)
+    (stmt : StatementKind) : StepResult State TerminalOut :=
   match stmt with
   | .nop =>
-    .step { frames := [{ frame with stmtIdx := frame.stmtIdx + 1 }], callerMem }
+    .step {
+      frames := { frame with stmtIdx := frame.stmtIdx + 1 } :: callers
+      callerMem
+    }
   | .storageLive localId =>
     match getElem? body.locals localId with
     | none => .fault .unsupported
@@ -1882,11 +1927,11 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
       match setElem? frame.locals localId (liveUninitSlot localTy) with
       | some locals' =>
         .step {
-          frames := [{
+          frames := {
             frame with
             stmtIdx := frame.stmtIdx + 1
             locals := locals'
-          }]
+          } :: callers
           callerMem
         }
       | none => .fault .unsupported
@@ -1897,11 +1942,11 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
       match setElem? frame.locals localId .dead with
       | some locals' =>
         .step {
-          frames := [{
+          frames := {
             frame with
             stmtIdx := frame.stmtIdx + 1
             locals := locals'
-          }]
+          } :: callers
           callerMem
         }
       | none => .fault .unsupported
@@ -1922,11 +1967,11 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
             | .error k => .fault k
             | .ok localsAfterWrite =>
               .step {
-                frames := [{
+                frames := {
                   frame with
                   stmtIdx := frame.stmtIdx + 1
                   locals := localsAfterWrite
-                }]
+                } :: callers
                 callerMem
               }
           | _ =>
@@ -1937,11 +1982,11 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
               | .error k => .fault k
               | .ok localsAfterWrite =>
                 .step {
-                  frames := [{
+                  frames := {
                     frame with
                     stmtIdx := frame.stmtIdx + 1
                     locals := localsAfterWrite
-                  }]
+                  } :: callers
                   callerMem
                 }
   | .unsupported => .fault .unsupported
@@ -2022,16 +2067,265 @@ noncomputable def evalBoolSwitchBranches (discr : Bool)
     | .ok _ =>
       .error .unsupported
 
-/-- Assign the frame location to `(target, 0)`, matching
-`Miri.Interpreter.ControlFlow.goToBlock` (`Miri/Interpreter/ControlFlow.lean`:
-target block existence is checked at the start of the next step in `evalStep` /
-`Step.step`). -/
-noncomputable def jumpToBlock (frame : FrameState) (callerMem : CallerMemory)
-    (target : BasicBlockId) : StepResult State TerminalOut :=
+/-- Assign the active frame location to `(target, 0)` while keeping suspended
+`callers` intact, matching `Miri.Interpreter.ControlFlow.goToBlock`
+(`Miri/Interpreter/ControlFlow.lean`: target block existence is checked at the
+start of the next step in `evalStep` / `Step.step`). -/
+noncomputable def jumpToBlock (frame : FrameState) (callers : List FrameState)
+    (callerMem : CallerMemory) (target : BasicBlockId) :
+    StepResult State TerminalOut :=
   .step {
-    frames := [{ frame with blockIdx := target, stmtIdx := 0 }]
+    frames := { frame with blockIdx := target, stmtIdx := 0 } :: callers
     callerMem
   }
+
+/-- Deinitialize `place` of type `ty` in `locals` on call entry: verifies that
+`place` resolves to a live storage slot whose shape matches `place.projection`
+and writes `uninitSlotVal ty` at that subplace (`writeSlotPath?`), matching the
+`place_to_op(destination)` liveness check and
+`protect_in_place_function_argument` (`write_uninit`) in `init_stack_frame`
+(`compiler/rustc_const_eval/src/interpret/call.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Call.initStackFrame` /
+`Miri.Interpreter.MachineHooks.protectInPlaceFunctionArgument`
+(`vendor/lean-miri/Miri/Interpreter/{Call,MachineHooks}.lean`). -/
+noncomputable def deinitPlace (locals : List LocalSlot) (place : Place)
+    (ty : MirTy) : Except FaultKind (List LocalSlot) :=
+  match getElem? locals place.localId with
+  | none => .error .unsupported
+  | some .dead => .error .undefined
+  | some (.live root) =>
+    match writeSlotPath? root place.projection (uninitSlotVal ty) with
+    | none => .error .unsupported
+    | some root' =>
+      match setElem? locals place.localId (.live root') with
+      | some locals' => .ok locals'
+      | none => .error .unsupported
+
+/-- Stage 1 left-to-right call argument evaluation via `evalOperandToSlot`,
+threading `locals` across conservative `Operand.move` deinitializations in
+argument order, matching `eval_callee_and_args` in
+`compiler/rustc_const_eval/src/interpret/call.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Call.evalCalleeAndArgs`
+(`vendor/lean-miri/Miri/Interpreter/Call.lean`). -/
+noncomputable def evalCallArgs (bodyLocals : List MirTy)
+    (locals : List LocalSlot) :
+    List Operand → Except FaultKind (List (MirTy × SlotVal) × List LocalSlot)
+  | [] => .ok ([], locals)
+  | opnd :: rest =>
+    match evalOperandToSlot bodyLocals locals opnd with
+    | .error k => .error k
+    | .ok (ty, sv, locals₁) =>
+      match evalCallArgs bodyLocals locals₁ rest with
+      | .error k => .error k
+      | .ok (pairs, locals₂) => .ok ((ty, sv) :: pairs, locals₂)
+
+/-- Stage 2 left-to-right call argument validation against callee parameter
+types `paramTys`, matching `pass_argument` (`copy_op_allow_transmute` +
+validity checking) in `compiler/rustc_const_eval/src/interpret/call.rs`
+(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Call.passArgument`
+(`vendor/lean-miri/Miri/Interpreter/Call.lean`).
+
+Static type mismatches and malformed values fault with `.unsupported`; reading
+an uninitialized or moved-out argument faults with `.undefined`. -/
+noncomputable def validateCallArgs :
+    List (MirTy × SlotVal) → List MirTy → Except FaultKind (List Val)
+  | [], [] => .ok []
+  | (argTy, sv) :: restArgs, paramTy :: restTys =>
+    if !(MirTy.beq argTy paramTy) then
+      .error .unsupported
+    else
+      match sv.toVal? with
+      | none => .error .undefined
+      | some v =>
+        if !checkVal v paramTy then
+          .error .unsupported
+        else
+          match validateCallArgs restArgs restTys with
+          | .error k => .error k
+          | .ok vs => .ok (v :: vs)
+  | _, _ => .error .unsupported
+
+/-- Stage 2 primitive-operand reading for `CoreBuiltin` argument lists: checks
+`isPrimitiveReadableTy ty` (`.unsupported` on non-primitives) and full
+initialization `sv.toVal?` (`.undefined` on uninitialized storage) left to
+right. -/
+noncomputable def readPrimitiveArgs :
+    List (MirTy × SlotVal) → Except FaultKind (List Val)
+  | [] => .ok []
+  | (ty, sv) :: rest =>
+    if !isPrimitiveReadableTy ty then
+      .error .unsupported
+    else
+      match sv.toVal? with
+      | none => .error .undefined
+      | some v =>
+        match readPrimitiveArgs rest with
+        | .error k => .error k
+        | .ok vs => .ok (v :: vs)
+
+/-- Evaluate saturating integer addition (`isAdd = true`) or subtraction
+(`isAdd = false`) in lockstep with `saturating_arith` in
+`compiler/rustc_const_eval/src/interpret/intrinsics.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith`
+(`vendor/lean-miri/Miri/Interpreter/IntegerCast.lean`):
+
+On overflow, signed operations clamp to `T::MAX` when `lhs ≥ 0` and `T::MIN`
+when `lhs < 0`, while unsigned operations clamp to `T::MAX` for addition and
+`0` for subtraction. -/
+noncomputable def evalSaturatingOp (isAdd : Bool) (lhs rhs : Val) :
+    Except FaultKind Val :=
+  match lhs, rhs with
+  | .scalar l, .scalar r =>
+    if !(IntWidth.beq l.width r.width && (l.signed == r.signed)) then
+      .error .unsupported
+    else
+      let op : BinOp := if isAdd then .addWithOverflow else .subWithOverflow
+      match evalOverflowingArithOp op l.width l.signed
+          (decodeScalar l) (decodeScalar r) with
+      | .ok (.tuple [.scalar wrapped, .bool false]) => .ok (.scalar wrapped)
+      | .ok (.tuple [.scalar _, .bool true]) =>
+        let bits : BitVec 128 :=
+          if l.signed then
+            if decide (decodeScalar l ≥ 0) then
+              BitVec.ofNat 128 (Nat.pow 2 (l.width.bitWidth - 1) - 1)
+            else
+              BitVec.ofNat 128 (Nat.pow 2 (l.width.bitWidth - 1))
+          else if isAdd then
+            BitVec.ofNat 128 (Nat.pow 2 l.width.bitWidth - 1)
+          else
+            BitVec.ofNat 128 0
+        .ok (.scalar ⟨l.width, l.signed, bits⟩)
+      | .error k => .error k
+      | .ok _ => .error .unsupported
+  | _, _ => .error .unsupported
+
+/-- Count consecutive leading zero bits of `raw` across the low `width` bits
+using structural `@Nat.rec` (avoiding compiler `_unsafe_rec` helpers).
+Matches `core::intrinsics::ctlz` (`library/core/src/intrinsics/mod.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.IntegerIntrinsic.run .ctlz`
+(`vendor/lean-miri/Miri/Interpreter/IntegerCast.lean`). -/
+noncomputable def countLeadingZerosNat (raw width : Nat) : Nat :=
+  @Nat.rec (fun _ => Nat)
+    0
+    (fun k ih => if Nat.testBit raw k then 0 else ih + 1)
+    width
+
+/-- Count consecutive trailing zero bits of `raw` across the low `width` bits
+using structural `@Nat.rec` (avoiding compiler `_unsafe_rec` helpers).
+Matches `core::intrinsics::cttz` (`library/core/src/intrinsics/mod.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.IntegerIntrinsic.run .cttz`
+(`vendor/lean-miri/Miri/Interpreter/IntegerCast.lean`). -/
+noncomputable def countTrailingZerosNat (raw width : Nat) : Nat :=
+  @Nat.rec (fun _ => Nat)
+    0
+    (fun k ih => if Nat.testBit raw (width - 1 - k) then 0 else ih + 1)
+    width
+
+/-- Evaluate a recognized `CoreBuiltin` on evaluated primitive arguments,
+matching `library/core/src/num/{int_macros,uint_macros}.rs`,
+`library/core/src/intrinsics/mod.rs`, and `library/core/src/cmp.rs`
+(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+- `wrappingAdd`/`wrappingSub`/`wrappingMul`: 2 same-type integers via
+  `evalBinOp` (`.add`/`.sub`/`.mul`).
+- `wrappingShl`/`wrappingShr`: integer `lhs` and `u32` `rhs`, masking `rhs`
+  modulo `lhs.width.bitWidth` via `evalBinOp` (`.shl`/`.shr`).
+- `overflowingAdd`/`overflowingSub`/`overflowingMul`: 2 same-type integers
+  returning `(wrapped, overflowed)` via `evalBinOp`.
+- `saturatingAdd`/`saturatingSub`: 2 same-type integers via `evalSaturatingOp`.
+- `leadingZeros`/`trailingZeros`: 1 integer returning `u32` zero-bit count.
+- `isMultipleOf`: 2 same-type unsigned integers returning `lhs == 0` when
+  `rhs == 0` and `lhs % rhs == 0` otherwise.
+- `cmpMin`/`cmpMax`: 2 same-type integers ordered by `decodeScalar`. -/
+noncomputable def evalCoreBuiltin (builtin : CoreBuiltin) (args : List Val) :
+    Except FaultKind Val :=
+  match builtin, args with
+  | .wrappingAdd, [.scalar l, .scalar r] =>
+    evalBinOp .add (.scalar l) (.scalar r)
+  | .wrappingSub, [.scalar l, .scalar r] =>
+    evalBinOp .sub (.scalar l) (.scalar r)
+  | .wrappingMul, [.scalar l, .scalar r] =>
+    evalBinOp .mul (.scalar l) (.scalar r)
+  | .wrappingShl, [.scalar l, .scalar r] =>
+    if IntWidth.beq r.width .i32 && !r.signed then
+      evalBinOp .shl (.scalar l) (.scalar r)
+    else
+      .error .unsupported
+  | .wrappingShr, [.scalar l, .scalar r] =>
+    if IntWidth.beq r.width .i32 && !r.signed then
+      evalBinOp .shr (.scalar l) (.scalar r)
+    else
+      .error .unsupported
+  | .overflowingAdd, [.scalar l, .scalar r] =>
+    evalBinOp .addWithOverflow (.scalar l) (.scalar r)
+  | .overflowingSub, [.scalar l, .scalar r] =>
+    evalBinOp .subWithOverflow (.scalar l) (.scalar r)
+  | .overflowingMul, [.scalar l, .scalar r] =>
+    evalBinOp .mulWithOverflow (.scalar l) (.scalar r)
+  | .saturatingAdd, [lhs, rhs] => evalSaturatingOp true lhs rhs
+  | .saturatingSub, [lhs, rhs] => evalSaturatingOp false lhs rhs
+  | .leadingZeros, [.scalar sv] =>
+    let raw := (truncateBits sv.width sv.bits).toNat
+    let count := countLeadingZerosNat raw sv.width.bitWidth
+    .ok (.scalar ⟨.i32, false, truncateBits .i32 (BitVec.ofNat 128 count)⟩)
+  | .trailingZeros, [.scalar sv] =>
+    let raw := (truncateBits sv.width sv.bits).toNat
+    let count := countTrailingZerosNat raw sv.width.bitWidth
+    .ok (.scalar ⟨.i32, false, truncateBits .i32 (BitVec.ofNat 128 count)⟩)
+  | .isMultipleOf, [.scalar l, .scalar r] =>
+    if l.signed || r.signed || !IntWidth.beq l.width r.width then
+      .error .unsupported
+    else
+      let lNat := (truncateBits l.width l.bits).toNat
+      let rNat := (truncateBits r.width r.bits).toNat
+      if Nat.beq rNat 0 then
+        .ok (.bool (Nat.beq lNat 0))
+      else
+        .ok (.bool (Nat.beq (Nat.mod lNat rNat) 0))
+  | .cmpMin, [.scalar l, .scalar r] =>
+    if !(IntWidth.beq l.width r.width && (l.signed == r.signed)) then
+      .error .unsupported
+    else if decide (decodeScalar l ≤ decodeScalar r) then
+      .ok (.scalar ⟨l.width, l.signed, truncateBits l.width l.bits⟩)
+    else
+      .ok (.scalar ⟨r.width, r.signed, truncateBits r.width r.bits⟩)
+  | .cmpMax, [.scalar l, .scalar r] =>
+    if !(IntWidth.beq l.width r.width && (l.signed == r.signed)) then
+      .error .unsupported
+    else if decide (decodeScalar l ≥ decodeScalar r) then
+      .ok (.scalar ⟨l.width, l.signed, truncateBits l.width l.bits⟩)
+    else
+      .ok (.scalar ⟨r.width, r.signed, truncateBits r.width r.bits⟩)
+  | _, _ => .error .unsupported
+
+/-- Propagate an unwind starting at `(frame, callers)` along `unwind`,
+recursing structurally over `callers` on `.continue_` until reaching a cleanup
+block, an `.unreachable`/`.terminate` boundary, or exiting the root frame
+(`.done (.unwound callerMem)`), matching `unwind_to_block` and
+`return_from_current_stack_frame(/* unwinding */ true)`
+(`compiler/rustc_const_eval/src/interpret/{eval_context,call}.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.ControlFlow.{unwindToBlock, returnFromCurrentFrame}`. -/
+noncomputable def unwindFrame (callerMem : CallerMemory) :
+    FrameState → List FrameState → UnwindAction → StepResult State TerminalOut
+  | frame, callers, .cleanup block =>
+    jumpToBlock frame callers callerMem block
+  | _, _, .unreachable => .fault .undefined
+  | _, _, .terminate => .fault .unsupported
+  | frame, [], .continue_ =>
+    match frame.returnCont with
+    | none => .done (.unwound callerMem)
+    | some _ => .fault .unsupported
+  | frame, caller :: rest, .continue_ =>
+    match frame.returnCont with
+    | some cont => unwindFrame callerMem caller rest cont.unwind
+    | none => .fault .unsupported
 
 /-- Whether a failing `Assert` with message `msg` panics through a panic
 function that takes no operand, so that $M_{\text{anneal}}$ can model the
@@ -2172,8 +2466,11 @@ that panics on a zero divisor) can still satisfy `WellFormed` and
      >     ...
      > }"
 
-     - `.continue_`: the entry frame has no cleanup to run, so the unwind
-       leaves the entry function: `.done (.unwound callerMem)`.
+     - `.continue_`: unwinds out of the current frame via `unwindFrame`: on the
+       root frame (`returnCont = none`, `callers = []`) this exits with
+       `.done (.unwound callerMem)`; on a callee frame
+       (`returnCont = some cont`, `callers = caller :: rest`) it propagates
+       along `cont.unwind` in `caller`.
      - `.cleanup block`: the frame jumps to the cleanup block `block`.
      - `.unreachable`: unwinding out of a frame that does not allow it is
        Undefined Behavior: `.fault .undefined`.
@@ -2187,16 +2484,31 @@ that panics on a zero divisor) can still satisfy `WellFormed` and
   `.unreachable`) a fault where the compiled program aborts.
   `Trusted.MirAst.TerminatorKind` records the producer obligation for sessions
   that disable overflow checks.
-- `.unwindResume` ends a cleanup block by continuing the unwind out of the
-  entry function: `.done (.unwound callerMem)`. Outside a cleanup block
-  (`bb.cleanup = false`) it faults with `.unsupported`, matching the
-  `return_from_current_stack_frame` assertion that unwinding returns only from
-  cleanup blocks (as `.return_` faults with `.unsupported` inside one). -/
-noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (callerMem : CallerMemory) :
-    StepResult State TerminalOut :=
+- `.unwindResume` ends a cleanup block by propagating the unwind out of the
+  current frame via `unwindFrame` (exiting with `.done (.unwound callerMem)` at
+  the root frame or propagating along `cont.unwind` in the caller). Outside a
+  cleanup block (`bb.cleanup = false`) it faults with `.unsupported`, matching
+  the `return_from_current_stack_frame` assertion that unwinding returns only
+  from cleanup blocks (as `.return_` faults with `.unsupported` inside one).
+- `.call callee args dst target unwind` rejects `.move` arguments that may
+  overlap `dst` (`anyMoveOperandMayOverlapPlace`), resolves `dst`'s static type
+  in the caller, evaluates `args` left-to-right (`evalCallArgs`), checks
+  `callee`'s existence, `bodyEntryAdmitted`, argument arity, and return-type
+  compatibility against `dst`, deinitializes `dst` on call entry
+  (`deinitPlace`), validates `args` left-to-right (`validateCallArgs`),
+  initializes the callee locals (`initLocalsLoop`), and pushes the callee frame
+  with `returnCont = some ⟨dst, target, unwind⟩` onto the call stack above the
+  caller frame with deinitialized `dst`.
+- `.callBuiltin builtin args dst target _unwind` rejects `.move` arguments that
+  may overlap `dst` (`anyMoveOperandMayOverlapPlace`), resolves `dst`'s static
+  type, evaluates `args` left-to-right (`evalCallArgs` + `readPrimitiveArgs`),
+  evaluates `evalCoreBuiltin`, writes the result into `dst` (`writePlace`), and
+  jumps to `target` (or faults with `.undefined` when `target = none`). -/
+noncomputable def evalTerminator (p : Program) (body : Body) (bb : BasicBlock)
+    (frame : FrameState) (callers : List FrameState)
+    (callerMem : CallerMemory) : StepResult State TerminalOut :=
   match bb.terminator with
-  | .goto target => jumpToBlock frame callerMem target
+  | .goto target => jumpToBlock frame callers callerMem target
   | .return_ =>
     if bb.cleanup then
       .fault .unsupported
@@ -2204,7 +2516,28 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       match getElem? frame.locals 0 with
       | some (.live sv) =>
         match sv.toVal? with
-        | some retVal => .done (.returned ⟨retVal, callerMem⟩)
+        | some retVal =>
+          match frame.returnCont, callers with
+          | none, [] => .done (.returned ⟨retVal, callerMem⟩)
+          | some cont, caller :: rest =>
+            match getElem? p.bodies caller.defId with
+            | none => .fault .unsupported
+            | some callerBody =>
+              match getElem? callerBody.locals cont.dst.localId with
+              | none => .fault .unsupported
+              | some localTy =>
+                match projectTy? localTy cont.dst.projection with
+                | none => .fault .unsupported
+                | some dstTy =>
+                  match writePlace caller.locals cont.dst dstTy retVal with
+                  | .error k => .fault k
+                  | .ok callerLocals' =>
+                    match cont.target with
+                    | some nextBb =>
+                      jumpToBlock { caller with locals := callerLocals' }
+                        rest callerMem nextBb
+                    | none => .fault .undefined
+          | _, _ => .fault .unsupported
         | none => .fault .undefined
       | some .dead => .fault .undefined
       | none => .fault .unsupported
@@ -2224,7 +2557,8 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       match targetRes with
       | .error k => .fault k
       | .ok target =>
-        jumpToBlock { frame with locals := localsAfterDiscr } callerMem target
+        jumpToBlock { frame with locals := localsAfterDiscr } callers
+          callerMem target
   | .assert cond expected msg target unwind =>
     match evalPrimitiveOperand body.locals frame.locals cond with
     | .error k => .fault k
@@ -2232,24 +2566,97 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       match condVal with
       | .bool b =>
         if expected == b then
-          jumpToBlock { frame with locals := localsAfterCond } callerMem target
+          jumpToBlock { frame with locals := localsAfterCond } callers
+            callerMem target
         else if !isOperandFreeAssertKind msg then
           .fault .unsupported
         else
-          match unwind with
-          | .continue_ => .done (.unwound callerMem)
-          | .cleanup block =>
-            jumpToBlock { frame with locals := localsAfterCond } callerMem
-              block
-          | .unreachable => .fault .undefined
-          | .terminate => .fault .unsupported
+          unwindFrame callerMem { frame with locals := localsAfterCond }
+            callers unwind
       | _ => .fault .unsupported
   | .unwindResume =>
     if bb.cleanup then
-      .done (.unwound callerMem)
+      unwindFrame callerMem frame callers .continue_
     else
       .fault .unsupported
-  | .call _ _ _ _ _ | .unsupported =>
+  | .call callee args dst target unwind =>
+    if anyMoveOperandMayOverlapPlace dst args then
+      .fault .unsupported
+    else
+      match getElem? body.locals dst.localId with
+      | none => .fault .unsupported
+      | some localTy =>
+        match projectTy? localTy dst.projection with
+        | none => .fault .unsupported
+        | some dstTy =>
+          match evalCallArgs body.locals frame.locals args with
+          | .error k => .fault k
+          | .ok (argPairs, localsAfterArgs) =>
+            match getElem? p.bodies callee with
+            | none => .fault .unsupported
+            | some calleeBody =>
+              if !bodyEntryAdmitted calleeBody then
+                .fault .unsupported
+              else if !Nat.beq argPairs.length calleeBody.argumentCount then
+                .fault .unsupported
+              else
+                match getElem? calleeBody.locals 0 with
+                | none => .fault .unsupported
+                | some calleeRetTy =>
+                  if !MirTy.beq calleeRetTy dstTy then
+                    .fault .unsupported
+                  else
+                    match deinitPlace localsAfterArgs dst dstTy with
+                    | .error k => .fault k
+                    | .ok localsAfterDeinit =>
+                      let paramTys :=
+                        (calleeBody.locals.drop 1).take calleeBody.argumentCount
+                      match validateCallArgs argPairs paramTys with
+                      | .error k => .fault k
+                      | .ok argVals =>
+                        let calleeLocals :=
+                          initLocalsLoop calleeBody argVals 0 calleeBody.locals
+                        let callerFrame' : FrameState :=
+                          { frame with locals := localsAfterDeinit }
+                        let calleeFrame : FrameState := {
+                          defId := callee
+                          blockIdx := 0
+                          stmtIdx := 0
+                          locals := calleeLocals
+                          returnCont := some ⟨dst, target, unwind⟩
+                        }
+                        .step {
+                          frames := calleeFrame :: callerFrame' :: callers
+                          callerMem
+                        }
+  | .callBuiltin builtin args dst target _ =>
+    if anyMoveOperandMayOverlapPlace dst args then
+      .fault .unsupported
+    else
+      match getElem? body.locals dst.localId with
+      | none => .fault .unsupported
+      | some localTy =>
+        match projectTy? localTy dst.projection with
+        | none => .fault .unsupported
+        | some dstTy =>
+          match evalCallArgs body.locals frame.locals args with
+          | .error k => .fault k
+          | .ok (argPairs, localsAfterArgs) =>
+            match readPrimitiveArgs argPairs with
+            | .error k => .fault k
+            | .ok argVals =>
+              match evalCoreBuiltin builtin argVals with
+              | .error k => .fault k
+              | .ok resVal =>
+                match writePlace localsAfterArgs dst dstTy resVal with
+                | .error k => .fault k
+                | .ok localsAfterWrite =>
+                  match target with
+                  | some nextBb =>
+                    jumpToBlock { frame with locals := localsAfterWrite }
+                      callers callerMem nextBb
+                  | none => .fault .undefined
+  | .unsupported =>
     .fault .unsupported
 
 /-- Total single-step evaluator of $M_{\text{anneal}}$ over running `State`s,
@@ -2281,7 +2688,7 @@ Out-of-bounds `frame.blockIdx` faults with `.fault .unsupported` (matching
 noncomputable def evalStep (p : Program) (_c : Choice) (s : State) :
     StepResult State TerminalOut :=
   match s.frames with
-  | [frame] =>
+  | frame :: callers =>
     match getElem? p.bodies frame.defId with
     | none => .fault .unsupported
     | some body =>
@@ -2289,13 +2696,13 @@ noncomputable def evalStep (p : Program) (_c : Choice) (s : State) :
       | none => .fault .unsupported
       | some bb =>
         match getElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatement body frame s.callerMem stmt
+        | some stmt => evalStatement body frame callers s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminator body bb frame s.callerMem
+            evalTerminator p body bb frame callers s.callerMem
           else
             .fault .unsupported
-  | _ => .fault .unsupported
+  | [] => .fault .unsupported
 
 /-- Relational small-step transition quantifying over admissible demonic
 choices. -/
@@ -2372,10 +2779,12 @@ Explicit semantic scoping notes for human auditors:
    empty caller memory `{ args := args, callerMem := ⟨[]⟩ }`, matching
    `initState`'s rejection of non-empty `callerMem` while pointer and reference
    entry parameters remain outside the supported domain.
-2. **Interprocedural calls fail closed:** `entryProgForBody p defId` retains
-   `p.bodies` so the program environment carries all sibling definitions, while
-   any reachable `TerminatorKind.call` steps to `.fault .unsupported` and
-   therefore refutes `WellFormed` fail-closed.
+2. **Direct crate-local calls and core builtins:** `entryProgForBody p defId`
+   retains `p.bodies` so direct crate-local `TerminatorKind.call` terminators
+   push callee frames and return or unwind across sibling definitions, while
+   recognized `TerminatorKind.callBuiltin` terminators execute core numeric and
+   comparison operations directly. Uncaptured callees and indirect calls step
+   to `.fault .unsupported` and refute `WellFormed` fail-closed.
 3. **Fault-freedom vs. termination (`WellFormed` vs. `Diverges`):**
    `WellFormed` establishes absence of `.fault .undefined` (UB) and
    `.fault .unsupported` (unmodeled constructs) across all executions while

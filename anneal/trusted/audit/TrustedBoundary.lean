@@ -113,7 +113,7 @@ this file across seven JSON IPC modes (`run` and `main`):
   `correspondence/`) directly on top of that replayed vendor kernel
   environment, checks that the 21-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 36 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 41 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 - **`"target-audit"` (external target crate verification):**
   Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
@@ -2037,7 +2037,7 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 36 Pass 2 correspondence, wiring, and canary (`D6`–`D19`)
+/-- Verify that all 41 Pass 2 correspondence, wiring, and canary (`D6`–`D24`)
 claims—covering top-level correspondence, fault equivalence, `deinitMovedPlace`
 wiring, codec round-trip, constructor preservation, uniqueness, simulation, and
 canaries—are present in `Trusted.Correspondence`, reference their required
@@ -2297,13 +2297,65 @@ def verifyCorrespondenceClaims (env : Environment)
          `Trusted.Correspondence.RefBehavior,
          `Trusted.MirSemantics.ReachesResult,
          `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD20DirectCallAndReturnClaim,
+       `Anneal.MirCorrespondenceProof.canary_D20_direct_call_and_return,
+       [`Trusted.Correspondence.progDirectCallD20,
+         `Trusted.Correspondence.progCallUseAfterMoveArgD20,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD21MultiFrameUnwindClaim,
+       `Anneal.MirCorrespondenceProof.canary_D21_multi_frame_unwind,
+       [`Trusted.Correspondence.mkMultiFrameUnwindProgD21,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD22CoreBuiltinsClaim,
+       `Anneal.MirCorrespondenceProof.canary_D22_core_builtins,
+       [`Trusted.Correspondence.mkUnaryBuiltinProgD22,
+         `Trusted.Correspondence.mkBinaryBuiltinProgD22,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD23DivergingCallReturnUbClaim,
+       `Anneal.MirCorrespondenceProof.canary_D23_diverging_call_return_ub,
+       [`Trusted.Correspondence.progDivergingCallReturnD23,
+         `Trusted.Correspondence.progDivergingBuiltinD23,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.Correspondence.RefReachesOutcome,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD24CallDeinitAndOverlapClaim,
+       `Anneal.MirCorrespondenceProof.canary_D24_call_deinit_and_overlap,
+       [`Trusted.Correspondence.progCallDeinitUnwindReadD24,
+         `Trusted.Correspondence.progCallMoveOverlapDstD24,
+         `Trusted.Correspondence.progBuiltinMoveOverlapDstD24,
+         `Trusted.Correspondence.progCallAndBuiltinCopyOverlapDstD24,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefReachesOutcome,
          `Trusted.Correspondence.encodeProg])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
 /-- Verify that the reference machine `M_ref`
 (`Trusted.Correspondence.evalRefStep` and
-`Trusted.Correspondence.initRefState`) reaches the 25 required
-`vendor/lean-miri` primitives and never references any of the 56 named
+`Trusted.Correspondence.initRefState`) reaches the 35 required
+`vendor/lean-miri` primitives and never references any of the 68 named
 `M_anneal` evaluator entry points below. This is a regression check against
 accidental fallback to `M_anneal`; human review of `trusted/correspondence/`
 remains the semantic boundary. -/
@@ -2318,6 +2370,8 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Miri.Interpreter.IntegerOps.binaryBool,
       `Miri.Interpreter.IntegerOps.unary,
       `Miri.Interpreter.IntegerCast.cast,
+      `Miri.Interpreter.IntegerIntrinsic.run,
+      `Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith,
       `Miri.Memory.ScalarInt.truncateFromUInt,
       `Miri.Memory.ScalarInt.tryFromUInt,
       `Miri.Memory.ScalarInt.tryToBool,
@@ -2333,11 +2387,19 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Miri.Interpreter.Step.evalStatement,
       `Miri.Interpreter.Frame.storageLive,
       `Miri.Interpreter.Frame.storageDead,
+      `Miri.Interpreter.Stack.pushFrame,
       `Miri.Interpreter.Stack.popFrame,
       `Miri.Interpreter.ControlFlow.goToBlock,
+      `Miri.Interpreter.ControlFlow.returnToBlock,
       `Miri.Interpreter.ControlFlow.unwindToBlock,
       `Miri.Interpreter.ControlFlow.evalTerminator,
-      `Miri.Interpreter.ControlFlow.returnFromCurrentFrame] do
+      `Miri.Interpreter.ControlFlow.returnFromCurrentFrame,
+      `Miri.Interpreter.Call.evalCallTerminator,
+      `Miri.Interpreter.Call.evalCalleeAndArgs,
+      `Miri.Interpreter.Call.initFnCall,
+      `Miri.Interpreter.Call.initStackFrame,
+      `Miri.Interpreter.Call.passArgument,
+      `Miri.Interpreter.Call.run] do
     unless refCone.contains reqMiri do
       fail (s!"reference evaluator cone is missing required Miri " ++
         s!"primitive {reqMiri}")
@@ -2380,15 +2442,27 @@ def verifyRefEvaluatorIndependence (env : Environment)
       `Trusted.MirSemantics.placesMayOverlap,
       `Trusted.MirSemantics.operandMayOverlapPlace,
       `Trusted.MirSemantics.anyOperandMayOverlapPlace,
+      `Trusted.MirSemantics.moveOperandMayOverlapPlace,
+      `Trusted.MirSemantics.anyMoveOperandMayOverlapPlace,
       `Trusted.MirSemantics.isTupleTy,
       `Trusted.MirSemantics.assignHasUnsupportedOverlap,
       `Trusted.MirSemantics.writeAggregateTupleFields,
       `Trusted.MirSemantics.writeAggregateTuple,
       `Trusted.MirSemantics.checkVal,
       `Trusted.MirSemantics.checkArgsMatch,
+      `Trusted.MirSemantics.bodyEntryAdmitted,
+      `Trusted.MirSemantics.deinitPlace,
+      `Trusted.MirSemantics.evalCallArgs,
+      `Trusted.MirSemantics.validateCallArgs,
+      `Trusted.MirSemantics.readPrimitiveArgs,
+      `Trusted.MirSemantics.evalSaturatingOp,
+      `Trusted.MirSemantics.countLeadingZerosNat,
+      `Trusted.MirSemantics.countTrailingZerosNat,
+      `Trusted.MirSemantics.evalCoreBuiltin,
       `Trusted.MirSemantics.evalSwitchBranches,
       `Trusted.MirSemantics.evalBoolSwitchBranches,
       `Trusted.MirSemantics.jumpToBlock,
+      `Trusted.MirSemantics.unwindFrame,
       `Trusted.MirSemantics.isOperandFreeAssertKind,
       `Trusted.MirSemantics.evalOperandToSlot,
       `Trusted.MirSemantics.evalPrimitiveOperand,
@@ -2516,7 +2590,7 @@ def replayCorrAndVendor (sysrootStr : String)
   return (miriReplayed, corrReplayed)
 
 /-- Verify the 21-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 36 correspondence claims,
+Pass 2 correspondence modules are present—all 41 correspondence claims,
 reference-evaluator independence, and the correspondence dependency cone in a
 dedicated scope. -/
 def verifyCorrConesAndClaims

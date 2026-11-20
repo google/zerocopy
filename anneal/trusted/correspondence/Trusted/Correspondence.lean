@@ -15,6 +15,7 @@ import Init.Data.Nat.Div.Basic
 import Init.Data.Nat.Bitwise.Basic
 import Init.Control.Except
 import Miri.Interpreter.ExecutionMachine
+import Miri.Interpreter.IntegerCast
 import Miri.Interpreter.LocalAccess
 import Miri.Interpreter.Place
 import Miri.Interpreter.Rvalue
@@ -22,6 +23,7 @@ import Miri.Interpreter.Aggregate
 import Miri.Interpreter.Discriminant
 import Miri.Interpreter.Step
 import Miri.Interpreter.ControlFlow
+import Miri.Interpreter.Call
 import Trusted.MirAst
 import Trusted.MirSemantics
 
@@ -99,12 +101,18 @@ This module defines five components:
      calls `Miri.Interpreter.Frame.storageLive` on a dummy single-local
      frame, always returning `.ok ()`, because adapter locals are modeled
      in the wrapper frame); and
-   - basic-block jumps, terminators, `Assert` panics, and unwinding
-     (`evalRefTerminator`) through `Miri.Interpreter.Step.step`,
+   - basic-block jumps, terminators, direct crate-local calls, `CoreBuiltin`
+     calls, `Assert` panics, and multi-frame unwinding (`evalRefTerminator`)
+     through `Miri.Interpreter.Step.step`,
      `Miri.Interpreter.ControlFlow.goToBlock`,
+     `Miri.Interpreter.ControlFlow.returnToBlock`,
      `Miri.Interpreter.ControlFlow.evalTerminator`,
-     `Miri.Interpreter.ControlFlow.unwindToBlock`, and
-     `Miri.Interpreter.ControlFlow.returnFromCurrentFrame`:
+     `Miri.Interpreter.ControlFlow.unwindToBlock`,
+     `Miri.Interpreter.ControlFlow.returnFromCurrentFrame`,
+     `Miri.Interpreter.Call.evalCallTerminator`,
+     `Miri.Interpreter.Stack.pushFrame`,
+     `Miri.Interpreter.IntegerIntrinsic.run`, and
+     `Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith`:
 
    > "pub fn step(&mut self) -> InterpResult<'tcx, bool> { ...
    > if let Some(stmt) = basic_block.statements.get(loc.statement_index) { ...
@@ -128,8 +136,10 @@ This module defines five components:
 5. **Fail-closed target, profile, and stack shape:** `initRefState` rejects
    programs whose `pointerWidthBits` is not 64 or whose `mirProfileVersion` is
    not 1 (matching `Trusted.MirSemantics.initState`) and starts the reference
-   stack as `[callerSentinelFrame retTy, entryFrame]`, which `evalRefStep`
-   requires and preserves.
+   stack as `[callerSentinelFrame retTy, entryFrame]`. Direct crate-local calls
+   push callee frames on top of that stack (stored bottom-to-top after the
+   sentinel, matching `Miri.Interpreter.Stack.frames`), and returns/unwinds pop
+   them while preserving the sentinel.
 -/
 
 /-- Interned type-table index (`Miri.MIR.TyId`). -/
@@ -190,6 +200,8 @@ inductive RefTerminatorKind where
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List RefOperand) (dst : RefPlace)
       (target : Option BasicBlockId) (unwind : UnwindAction)
+  | callBuiltin (builtin : CoreBuiltin) (args : List RefOperand)
+      (dst : RefPlace) (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 
 /-- Reference MIR basic block (`Miri.MIR.BasicBlock`). -/
@@ -349,7 +361,7 @@ noncomputable def collectTerminator (acc : List MirTy) :
     TerminatorKind → List MirTy
   | .switchInt d _ => collectOperand acc d
   | .assert c _ _ _ _ => collectOperand acc c
-  | .call _ args dst _ _ =>
+  | .call _ args dst _ _ | .callBuiltin _ args dst _ _ =>
     collectPlace (args.foldl collectOperand acc) dst
   | .goto _ | .return_ | .unreachable | .unwindResume | .unsupported => acc
 
@@ -416,6 +428,8 @@ noncomputable def encodeTerminator (ts : List MirTy) :
   | .assert c exp msg t u => .assert (encodeOperand ts c) exp msg t u
   | .call callee args dst t u =>
     .call callee (args.map (encodeOperand ts)) (encodePlace ts dst) t u
+  | .callBuiltin builtin args dst t u =>
+    .callBuiltin builtin (args.map (encodeOperand ts)) (encodePlace ts dst) t u
   | .unsupported => .unsupported
 
 /-- Encode a `BasicBlock` against type table `ts`. -/
@@ -498,6 +512,9 @@ noncomputable def decodeTerminator (ts : List MirTy) :
   | .call callee args dst t u =>
     optMap2 (fun args' dst' => .call callee args' dst' t u)
       (mapOption (decodeOperand ts) args) (decodePlace ts dst)
+  | .callBuiltin builtin args dst t u =>
+    optMap2 (fun args' dst' => .callBuiltin builtin args' dst' t u)
+      (mapOption (decodeOperand ts) args) (decodePlace ts dst)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefBasicBlock` against type table `ts`. -/
@@ -542,15 +559,18 @@ structure RefLocalState where
 `isCallerSentinel` distinguishes the two kinds of frames that the reference
 stack holds: `false` marks an active frame that executes `defId`'s body, and
 `true` marks the suspended caller sentinel frame (`callerSentinelFrame`) beneath
-the entry frame that owns its return destination slot `_0`. `evalRefStep`
-executes only the top frame and requires `[sentinel, rframe]` with
-`sentinel.isCallerSentinel = true` and `rframe.isCallerSentinel = false`. -/
+the entry frame that owns its return destination slot `_0`. Active frames sit
+above the sentinel in bottom-to-top order (`callerSentinelFrame retTy ::
+active.reverse`), where the entry frame carries `returnCont = none` and each
+callee frame pushed by `TerminatorKind.call` carries `returnCont = some cont`.
+-/
 structure RefFrameState where
   defId : DefId
   blockIdx : BasicBlockId
   stmtIdx : Nat
   locals : List RefLocalState
   isCallerSentinel : Bool := false
+  returnCont : Option ReturnContinuation := none
 
 /-- Reference machine state for $M_{\text{ref}}$, which executes
 `Miri.Interpreter.Step.step` over
@@ -595,9 +615,10 @@ noncomputable def faultToRefOutcome : FaultKind → RefOutcome
 /-- Convert the `StepResult` of executing the top frame's statement or
 terminator into a `RefOutcome`.
 
-Statement and terminator evaluators rebuild only the top frame
-(`frames := [rframe']`). On `.step`, this function restores the caller
-`sentinel` beneath that frame and increments `stepsExecuted`. -/
+Statement and terminator evaluators return the updated active call stack in
+bottom-to-top order (`frames := active'.reverse`). On `.step`, this function
+restores the caller `sentinel` beneath that stack and increments
+`stepsExecuted`. -/
 noncomputable def stepResultToRefOutcome (sentinel : RefFrameState)
     (stepsExecuted maxSteps : Nat) :
     StepResult RefState TerminalOut → RefOutcome
@@ -1284,6 +1305,17 @@ noncomputable def initRefLocalsLoop (rbody : RefBody) (args : List Val) :
           refLiveUninitSlot ty
       ⟨slot, some ty⟩ :: initRefLocalsLoop rbody args (idx + 1) rest
 
+/-- Independent $M_{\text{ref}}$ static body-entry admission check shared by
+`initRefState` and `refCallHooks.findMirOrEvalFn`: checks non-empty basic
+blocks, `argumentCount < localTys.length`, in-bounds storage annotations, and
+supported local types (`refIsSupportedLocalTy`). -/
+noncomputable def refBodyEntryAdmitted (rbody : RefBody)
+    (localTys : List MirTy) : Bool :=
+  !rbody.basicBlocks.isEmpty &&
+    Nat.blt rbody.argumentCount localTys.length &&
+    refStorageAnnotationsInBounds rbody &&
+    localTys.all refIsSupportedLocalTy
+
 /-- Entry initialization of $M_{\text{ref}}$ (`initRefState rp q maxSteps`):
 resolves `rbody.locals` against `rp.types`, pre-populates `cachedLayout := some
 ty` on every local, and initializes `stepsExecuted := 0` and
@@ -1307,13 +1339,7 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
       match decodeLocalTys rp.types rbody.locals with
       | none => .error .unsupported
       | some localTys =>
-        if rbody.basicBlocks.isEmpty then
-          .error .unsupported
-        else if !Nat.blt rbody.argumentCount localTys.length then
-          .error .unsupported
-        else if !refStorageAnnotationsInBounds rbody then
-          .error .unsupported
-        else if !localTys.all refIsSupportedLocalTy then
+        if !refBodyEntryAdmitted rbody localTys then
           .error .unsupported
         else
           let paramTys := (localTys.drop 1).take rbody.argumentCount
@@ -1451,10 +1477,10 @@ noncomputable def refDummyMirBody (cleanup : Bool) : Miri.MIR.Body := {
 
 /-- Construct a single-local `Miri.Interpreter.Frame` holding `lv` at local `0`
 with pre-cached `layout`. -/
-noncomputable def mkSingleLocalMiriFrameWithLayout
-    (lv : Miri.Interpreter.LocalValue SlotVal)
+noncomputable def mkSingleLocalMiriFrameWithLayout {Prov : Type}
+    (lv : Miri.Interpreter.LocalValue Prov)
     (layout : Miri.Interpreter.LocalLayout) (cleanup : Bool) :
-    Miri.Interpreter.Frame SlotVal Miri.Interpreter.LocalLayout Unit := {
+    Miri.Interpreter.Frame Prov Miri.Interpreter.LocalLayout Unit := {
   body := refDummyMirBody cleanup
   bodyIdentity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex 0
   functionInstance := { kind := .Item 0, args := Array.empty }
@@ -1471,9 +1497,9 @@ noncomputable def mkSingleLocalMiriFrameWithLayout
 
 /-- Construct a single-local `Miri.Interpreter.Frame` holding `lv` at local `0`
 with pre-cached `refSizedLocalLayout`. -/
-noncomputable def mkSingleLocalMiriFrame
-    (lv : Miri.Interpreter.LocalValue SlotVal) (cleanup : Bool) :
-    Miri.Interpreter.Frame SlotVal Miri.Interpreter.LocalLayout Unit :=
+noncomputable def mkSingleLocalMiriFrame {Prov : Type}
+    (lv : Miri.Interpreter.LocalValue Prov) (cleanup : Bool) :
+    Miri.Interpreter.Frame Prov Miri.Interpreter.LocalLayout Unit :=
   mkSingleLocalMiriFrameWithLayout lv refSizedLocalLayout cleanup
 
 /-- Construct a two-local `Miri.Interpreter.Frame` holding `lv₀` at `_0` and
@@ -2007,6 +2033,24 @@ noncomputable def refAnyOperandMayOverlapPlace (dst : Miri.MIR.Place) :
     refOperandMayOverlapPlace dst opnd ||
       refAnyOperandMayOverlapPlace dst rest
 
+/-- Independent $M_{\text{ref}}$ check whether `mirOp` is a `.Move` whose source
+place may overlap `dst`. -/
+noncomputable def refMoveOperandMayOverlapPlace (dst : Miri.MIR.Place) :
+    Miri.MIR.Operand → Bool
+  | .Move src => refPlacesMayOverlap dst src
+  | .Copy _ => false
+  | .Constant _ => false
+  | .RuntimeChecks _ => false
+
+/-- Independent $M_{\text{ref}}$ check whether any `.Move` operand in `ops` may
+overlap `dst`. -/
+noncomputable def refAnyMoveOperandMayOverlapPlace (dst : Miri.MIR.Place) :
+    List Miri.MIR.Operand → Bool
+  | [] => false
+  | opnd :: rest =>
+    refMoveOperandMayOverlapPlace dst opnd ||
+      refAnyMoveOperandMayOverlapPlace dst rest
+
 /-- Independent $M_{\text{ref}}$ tuple-type predicate. -/
 noncomputable def refIsTupleTy : MirTy → Bool
   | .tuple _ => true
@@ -2440,8 +2484,8 @@ discriminant reading, and destination writes to
 `Miri.Interpreter.evalRvalueIntoPlace`, `Miri.Interpreter.writeAggregate`,
 `Miri.Interpreter.Discriminant.{readDiscriminant, discriminantForVariant}`,
 `Miri.Interpreter.placeWriteLocalImmediate`, and `Miri.Interpreter.runRvalue`
-(`vendor/lean-miri/Miri/Interpreter/{Rvalue,Aggregate,Discriminant,Place}.lean`),
-matching `eval_rvalue_into_place` in
+(`vendor/lean-miri/Miri/Interpreter/{Rvalue,Aggregate,Discriminant}.lean` and
+`Place.lean`), matching `eval_rvalue_into_place` in
 `compiler/rustc_const_eval/src/interpret/step.rs` (`rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
@@ -2488,90 +2532,410 @@ noncomputable def refLocalStorageHooks :
   deallocateStack := fun s _ => ⟨s, .ok ()⟩
 }
 
+/-- Independent $M_{\text{ref}}$ type projection over decoded `Place`
+projections used by `refControlHooksFor.copyReturn` when writing a callee's
+return value into its caller's saved destination place. -/
+noncomputable def refProjectReturnTy? :
+    MirTy → List ProjectionElem → Option MirTy
+  | ty, [] => some ty
+  | ty, elem :: rest =>
+    match ty, elem with
+    | .tuple fieldTys, .field idx statedTy =>
+      match MirSemantics.getElem? fieldTys idx with
+      | some fieldTy =>
+        if MirTy.beq fieldTy statedTy then
+          refProjectReturnTy? fieldTy rest
+        else
+          none
+      | none => none
+    | _, _ => none
+
+/-- Map a decoded `ProjectionElem` to a `Miri.MIR.ProjectionElem` for
+`writeRefPlace` (whose `refWriteSlotPath?` consumes only field indices). -/
+noncomputable def toMiriReturnProjElem :
+    ProjectionElem → Miri.MIR.ProjectionElem
+  | .deref => .Deref
+  | .field idx _ => .Field idx 0
+  | .unsupported => .PhantomDeref
+
+/-- Decode a `Miri.MIR.ProjectionElem` against type table `ts` to recover the
+resolved `ProjectionElem` for a callee's `ReturnContinuation.dst`. -/
+noncomputable def decodeMiriProjElem (ts : List MirTy) :
+    Miri.MIR.ProjectionElem → Option ProjectionElem
+  | .Deref => some .deref
+  | .Field idx tyId =>
+    optMap (ProjectionElem.field idx) (MirSemantics.getElem? ts tyId)
+  | _ => some .unsupported
+
+/-- Decode a `Miri.MIR.Place` against type table `ts` into a resolved `Place`
+(`decodeMiriPlace ts (toMiriPlace rp) = decodePlace ts rp`). -/
+noncomputable def decodeMiriPlace (ts : List MirTy)
+    (p : Miri.MIR.Place) : Option Place :=
+  optMap (Place.mk p.localId)
+    (mapOption (decodeMiriProjElem ts) p.projection.toList)
+
+/-- Independent $M_{\text{ref}}$ destination-liveness check for
+`Miri.Interpreter.Call.initStackFrame` (`placeToOp destination`): delegates base
+local liveness to `Miri.Interpreter.evalPlaceToOp` and checks that
+`dst.projection` resolves against the live slot contents (`refReadSlotPath?`).
+-/
+noncomputable def refCheckPlaceLive (rlocals : List RefLocalState)
+    (dst : RefDest) : Except FaultKind Unit :=
+  match MirSemantics.getElem? rlocals dst.localId with
+  | some ⟨slot, some _⟩ =>
+    let frame₀ := mkSingleLocalMiriFrame (slotToMiriLocalValue slot) false
+    match Miri.Interpreter.evalPlaceToOp (refLocalAccessHooks false) frame₀
+        () ⟨0, Array.empty⟩ (some refSizedLocalLayout) with
+    | ⟨_, _, .ok ⟨.immediate imm, _⟩⟩ =>
+      let root : SlotVal :=
+        match miriImmediateToPayload? imm with
+        | some sv => sv
+        | none => .uninit
+      match refReadSlotPath? root dst.projection with
+      | some _ => .ok ()
+      | none => .error .unsupported
+    | _ => .error .undefined
+  | _ => .error .unsupported
+
+/-- Independent $M_{\text{ref}}$ call-entry destination deinitialization for
+`Miri.Interpreter.Call.initStackFrame` (`protectArgument destinationMplace`):
+reads the destination local through `Miri.Interpreter.evalPlaceToOp`, writes
+`refUninitSlotVal dst.ty` at `dst.projection` (`refWriteSlotPath?`), and
+commits the updated slot via `Miri.Interpreter.placeWriteLocalImmediate`. -/
+noncomputable def refDeinitPlace (rlocals : List RefLocalState)
+    (dst : RefDest) : Except FaultKind (List RefLocalState) :=
+  match MirSemantics.getElem? rlocals dst.localId with
+  | some ⟨slot, some localTy⟩ =>
+    let frame₀ := mkSingleLocalMiriFrame (slotToMiriLocalValue slot) false
+    match Miri.Interpreter.evalPlaceToOp (refLocalAccessHooks false) frame₀
+        () ⟨0, Array.empty⟩ (some refSizedLocalLayout) with
+    | ⟨_, _, .ok ⟨.immediate imm, _⟩⟩ =>
+      let root : SlotVal :=
+        match miriImmediateToPayload? imm with
+        | some sv => sv
+        | none => .uninit
+      match refWriteSlotPath? root dst.projection
+          (refUninitSlotVal dst.ty) with
+      | none => .error .unsupported
+      | some root' =>
+        match Miri.Interpreter.placeWriteLocalImmediate
+            EStateM.get EStateM.set (pure true)
+            (fun _ _ => pure ()) (fun _ _ => pure ())
+            0 refSizedLocalLayout (payloadToMiriImmediate root') frame₀ with
+        | .ok () frame₁ =>
+          match frame₁.getLocal 0,
+              MirSemantics.setElem? rlocals dst.localId
+                ⟨.live root', some localTy⟩ with
+          | .ok ⟨.live (.immediate _), _⟩, some rlocals' => .ok rlocals'
+          | .ok ⟨.live (.immediate _), _⟩, none => .error .unsupported
+          | _, _ => .error .undefined
+        | .error _ _ => .error .undefined
+    | _ => .error .undefined
+  | _ => .error .unsupported
+
+/-- Stage 2 left-to-right primitive-operand reading for `CoreBuiltin` argument
+lists in $M_{\text{ref}}$ (`readRefPrimitiveSlot`). -/
+noncomputable def refReadPrimitiveArgs :
+    List (MirTy × SlotVal) → Except FaultKind (List Val)
+  | [] => .ok []
+  | (ty, sv) :: rest =>
+    match readRefPrimitiveSlot ty sv with
+    | .error k => .error k
+    | .ok v =>
+      match refReadPrimitiveArgs rest with
+      | .error k => .error k
+      | .ok vs => .ok (v :: vs)
+
+/-- Bijective `Nat` tag encoding each `CoreBuiltin` into a `Miri.MIR.DefId`
+for `Miri.Interpreter.CallInstance.kind = .Intrinsic tag`. -/
+noncomputable def coreBuiltinTag : CoreBuiltin → Nat
+  | .wrappingAdd => 0
+  | .wrappingSub => 1
+  | .wrappingMul => 2
+  | .wrappingShl => 3
+  | .wrappingShr => 4
+  | .overflowingAdd => 5
+  | .overflowingSub => 6
+  | .overflowingMul => 7
+  | .saturatingAdd => 8
+  | .saturatingSub => 9
+  | .leadingZeros => 10
+  | .trailingZeros => 11
+  | .isMultipleOf => 12
+  | .cmpMin => 13
+  | .cmpMax => 14
+
+/-- Left-inverse decoder for `coreBuiltinTag`. -/
+noncomputable def coreBuiltinOfTag? : Nat → Option CoreBuiltin
+  | 0 => some .wrappingAdd
+  | 1 => some .wrappingSub
+  | 2 => some .wrappingMul
+  | 3 => some .wrappingShl
+  | 4 => some .wrappingShr
+  | 5 => some .overflowingAdd
+  | 6 => some .overflowingSub
+  | 7 => some .overflowingMul
+  | 8 => some .saturatingAdd
+  | 9 => some .saturatingSub
+  | 10 => some .leadingZeros
+  | 11 => some .trailingZeros
+  | 12 => some .isMultipleOf
+  | 13 => some .cmpMin
+  | 14 => some .cmpMax
+  | _ => none
+
+/-- Reference `CoreBuiltin` evaluator routing every recognized `core::num` and
+`core::cmp` builtin through `vendor/lean-miri` primitives:
+- `wrapping{Add,Sub,Mul,Shl,Shr}`, `overflowing{Add,Sub,Mul}`, `isMultipleOf`,
+  and `cmp{Min,Max}` through `evalRefMiriBinOp`
+  (`Miri.Interpreter.IntegerOps.binary`);
+- `saturating{Add,Sub}` through
+  `Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith`
+  (`vendor/lean-miri/Miri/Interpreter/IntegerCast.lean`);
+- `leadingZeros` and `trailingZeros` through
+  `Miri.Interpreter.IntegerIntrinsic.run` (`.ctlz` / `.cttz`,
+  `vendor/lean-miri/Miri/Interpreter/IntegerCast.lean`). -/
+noncomputable def evalRefCoreBuiltin (builtin : CoreBuiltin) (args : List Val) :
+    Except FaultKind Val :=
+  match builtin, args with
+  | .wrappingAdd, [.scalar l, .scalar r] =>
+    evalRefMiriBinOp .Add (.scalar l) (.scalar r)
+  | .wrappingSub, [.scalar l, .scalar r] =>
+    evalRefMiriBinOp .Sub (.scalar l) (.scalar r)
+  | .wrappingMul, [.scalar l, .scalar r] =>
+    evalRefMiriBinOp .Mul (.scalar l) (.scalar r)
+  | .wrappingShl, [.scalar l, .scalar r] =>
+    if IntWidth.beq r.width .i32 && !r.signed then
+      evalRefMiriBinOp .Shl (.scalar l) (.scalar r)
+    else
+      .error .unsupported
+  | .wrappingShr, [.scalar l, .scalar r] =>
+    if IntWidth.beq r.width .i32 && !r.signed then
+      evalRefMiriBinOp .Shr (.scalar l) (.scalar r)
+    else
+      .error .unsupported
+  | .overflowingAdd, [.scalar l, .scalar r] =>
+    evalRefMiriBinOp .AddWithOverflow (.scalar l) (.scalar r)
+  | .overflowingSub, [.scalar l, .scalar r] =>
+    evalRefMiriBinOp .SubWithOverflow (.scalar l) (.scalar r)
+  | .overflowingMul, [.scalar l, .scalar r] =>
+    evalRefMiriBinOp .MulWithOverflow (.scalar l) (.scalar r)
+  | .saturatingAdd, [.scalar l, .scalar r] =>
+    match Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith
+        .add (miriIntValue l) (miriIntValue r) with
+    | .ok sc => .ok (.scalar ⟨l.width, l.signed, sc.data⟩)
+    | .error _ => .error .unsupported
+  | .saturatingSub, [.scalar l, .scalar r] =>
+    match Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith
+        .sub (miriIntValue l) (miriIntValue r) with
+    | .ok sc => .ok (.scalar ⟨l.width, l.signed, sc.data⟩)
+    | .error _ => .error .unsupported
+  | .leadingZeros, [.scalar sv] =>
+    match Miri.Interpreter.IntegerIntrinsic.run .ctlz
+        (miriScalar sv.width sv.bits) (toMiriIntType sv.width sv.signed)
+        (toMiriIntType .i32 false) with
+    | .ok sc => .ok (.scalar ⟨.i32, false, sc.data⟩)
+    | .error _ => .error .unsupported
+  | .trailingZeros, [.scalar sv] =>
+    match Miri.Interpreter.IntegerIntrinsic.run .cttz
+        (miriScalar sv.width sv.bits) (toMiriIntType sv.width sv.signed)
+        (toMiriIntType .i32 false) with
+    | .ok sc => .ok (.scalar ⟨.i32, false, sc.data⟩)
+    | .error _ => .error .unsupported
+  | .isMultipleOf, [.scalar l, .scalar r] =>
+    if l.signed || r.signed || !IntWidth.beq l.width r.width then
+      .error .unsupported
+    else
+      let zero : Val := .scalar ⟨l.width, false, BitVec.ofNat 128 0⟩
+      match evalRefMiriBinOp .Eq (.scalar r) zero with
+      | .ok (.bool true) => evalRefMiriBinOp .Eq (.scalar l) zero
+      | .ok (.bool false) =>
+        match evalRefMiriBinOp .Rem (.scalar l) (.scalar r) with
+        | .ok remVal => evalRefMiriBinOp .Eq remVal zero
+        | .error k => .error k
+      | .error k => .error k
+      | .ok _ => .error .unsupported
+  | .cmpMin, [.scalar l, .scalar r] =>
+    match evalRefMiriBinOp .Le (.scalar l) (.scalar r) with
+    | .ok (.bool true) =>
+      .ok (.scalar ⟨l.width, l.signed, (miriScalar l.width l.bits).data⟩)
+    | .ok (.bool false) =>
+      .ok (.scalar ⟨r.width, r.signed, (miriScalar r.width r.bits).data⟩)
+    | .error k => .error k
+    | .ok _ => .error .unsupported
+  | .cmpMax, [.scalar l, .scalar r] =>
+    match evalRefMiriBinOp .Ge (.scalar l) (.scalar r) with
+    | .ok (.bool true) =>
+      .ok (.scalar ⟨l.width, l.signed, (miriScalar l.width l.bits).data⟩)
+    | .ok (.bool false) =>
+      .ok (.scalar ⟨r.width, r.signed, (miriScalar r.width r.bits).data⟩)
+    | .error k => .error k
+    | .ok _ => .error .unsupported
+  | _, _ => .error .unsupported
+
+/-- Provenance carrier threaded through `Miri.Interpreter.StepState` and
+`Miri.Interpreter.CallHooks` so evaluated call destinations (`dst`) and
+evaluated call arguments (`arg`) travel directly inside Miri's
+`RuntimeStackPlace` and `OpTy` values. -/
+inductive RefCallProv where
+  | dst (dest : RefDest) (place : Place)
+  | arg (ty : MirTy) (sv : SlotVal)
+
+/-- Extract the evaluated `(MirTy, SlotVal)` argument payload carried inside an
+`OpTy RefCallProv` (handling both immediate `.Copy`/`.Constant`/disjoint `.Move`
+arguments and indirect non-disjoint `.Move` arguments uniformly). -/
+noncomputable def extractRefCallArg?
+    (op : Miri.Interpreter.OpTy RefCallProv) : Option (MirTy × SlotVal) :=
+  match op.op with
+  | .immediate imm =>
+    match miriImmediateToPayload? imm with
+    | some (.arg ty sv) => some (ty, sv)
+    | _ => none
+  | .indirect mp =>
+    match mp.ptr.provenance with
+    | some (.arg ty sv) => some (ty, sv)
+    | _ => none
+
+/-- In-progress callee frame accumulated across `pushRaw`, `passArgument`, and
+`pushDone` inside `Miri.Interpreter.Call.initStackFrame`. -/
+structure RefCalleeInit where
+  defId : DefId
+  rbody : RefBody
+  localTys : List MirTy
+  argValsRev : List Val
+  returnCont : ReturnContinuation
+
 /-- Machine state threaded through `Miri.Interpreter.Step.step`: holds the
-active frame's `locals` (updated in place by `.Assign`, `.StorageLive`,
-`.StorageDead`, `.SwitchInt` discriminant moves, and `.Assert` condition
-moves) and an optional `terminal` outcome (set by `ControlHooks.copyReturn` on
-a normal return and by `ControlHooks.cleanupFrame` when the entry frame
-unwinds). -/
+active call stack `frames` top-to-bottom (current frame at the head), an
+optional in-progress callee initialization record `calleeInit` populated during
+`Miri.Interpreter.Call.initStackFrame`, and an optional `terminal` outcome (set
+by `ControlHooks.copyReturn` on a root normal return and by
+`ControlHooks.cleanupFrame` when unwinding leaves the root frame). -/
 structure RefStepMachine where
-  locals : List RefLocalState
+  frames : List RefFrameState
+  calleeInit : Option RefCalleeInit := none
   terminal : Option (StepResult RefState TerminalOut) := none
 
 /-- Construct a single-frame `Miri.Interpreter.StepState` over `bbs` at
-location `.mir ⟨blockIdx, 0⟩` with frame `cleanup` flag and initial
-`locals := rlocals`. -/
-noncomputable def mkRefStepStateWith (rlocals : List RefLocalState)
-    (bbs : Array Miri.MIR.BasicBlock) (blockIdx : BasicBlockId)
-    (cleanup : Bool) :
-    Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout Unit
+location `.mir ⟨blockIdx, 0⟩` with frame `cleanup` flag and top-to-bottom
+active frames `rframe :: rcallers`. -/
+noncomputable def mkRefStepStateWith (rframe : RefFrameState)
+    (rcallers : List RefFrameState) (bbs : Array Miri.MIR.BasicBlock)
+    (blockIdx : BasicBlockId) (cleanup : Bool) :
+    Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout Unit
       RefStepMachine := {
   stack := ⟨Array.mk [{
-    mkSingleLocalMiriFrame .dead cleanup with
+    mkSingleLocalMiriFrame
+      (.dead : Miri.Interpreter.LocalValue RefCallProv) cleanup with
     body := { refDummyMirBody cleanup with basicBlocks := bbs }
     location := .mir ⟨blockIdx, 0⟩
   }]⟩
-  machine := { locals := rlocals }
+  machine := { frames := rframe :: rcallers }
 }
 
 /-- Minimal `Miri.Interpreter.StepState` with a single statement `stmt` at
 location `.mir ⟨0, 0⟩` so `Miri.Interpreter.Step.step` executes its statement
 dispatch and statement-index increment path. -/
-noncomputable def mkRefStmtStepState (rlocals : List RefLocalState)
-    (stmt : Miri.MIR.Statement) :
-    Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout Unit
+noncomputable def mkRefStmtStepState (rframe : RefFrameState)
+    (rcallers : List RefFrameState) (stmt : Miri.MIR.Statement) :
+    Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout Unit
       RefStepMachine :=
-  mkRefStepStateWith rlocals
+  mkRefStepStateWith rframe rcallers
     (Array.mk [{ refDummyMirBlock false with statements := Array.mk [stmt] }])
     0 false
 
-/-- Minimal two-frame `Miri.Interpreter.StepState` at terminator position
-(`statements := Array.empty`, `location := .mir ⟨0, 0⟩`) so
+/-- Map `Trusted.MirAst.UnwindAction` to `Miri.MIR.UnwindAction`.
+`.terminate` maps to `.Terminate .Abi`; the reference machine rejects every
+`.Terminate` reason in `refControlHooksFor.unwindTerminate`. -/
+noncomputable def toMiriUnwindAction : UnwindAction → Miri.MIR.UnwindAction
+  | .continue_ => .Continue
+  | .cleanup target => .Cleanup target
+  | .unreachable => .Unreachable
+  | .terminate => .Terminate .Abi
+
+/-- Construct a suspended `Miri.Interpreter.Frame` mirroring caller frame `rf`
+on the Miri call stack (`bodyIdentity = 0` iff `rf.returnCont.isNone`, carrying
+`rf`'s `returnContinuation` for multi-frame unwind propagation). -/
+noncomputable def mkRefCallerMiriFrame (rf : RefFrameState) :
+    Miri.Interpreter.Frame RefCallProv Miri.Interpreter.LocalLayout Unit := {
+  mkSingleLocalMiriFrame
+    (.dead : Miri.Interpreter.LocalValue RefCallProv) false with
+  bodyIdentity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex
+    (if rf.returnCont.isNone then 0 else 1)
+  returnContinuation :=
+    match rf.returnCont with
+    | none => .goto (some 0) .Continue
+    | some c => .goto c.target (toMiriUnwindAction c.unwind)
+  location := .mir ⟨0, 1⟩
+}
+
+/-- Build the bottom-to-top list of suspended Miri caller frames from the
+top-to-bottom caller list `rcallers` (`mkCallerMiriFrames (c :: cs) =
+mkCallerMiriFrames cs ++ [mkRefCallerMiriFrame c]`). -/
+noncomputable def mkCallerMiriFrames :
+    List RefFrameState →
+    List (Miri.Interpreter.Frame RefCallProv Miri.Interpreter.LocalLayout Unit)
+  | [] => []
+  | rf :: rest => mkCallerMiriFrames rest ++ [mkRefCallerMiriFrame rf]
+
+/-- Multi-frame `Miri.Interpreter.StepState` at terminator position
+(`statements := Array.empty`, `location := .mir ⟨0, 1⟩`) so
 `Miri.Interpreter.Step.step` executes its `beforeTerminator` + `terminator`
 (`Miri.Interpreter.ControlFlow.evalTerminator`) path.
 
-The stack mirrors the reference stack `[sentinel, rframe]` that `evalRefStep`
-requires: a caller frame beneath the executing entry frame. The entry frame's
-return continuation is `.goto (some 0) .Continue`, the continuation of a callee
-whose caller resumes at a block after a normal return and keeps unwinding
-(`UnwindAction.Continue`) after an unwinding one. With the caller frame
-present, `Miri.Interpreter.ControlFlow.returnFromCurrentFrame` can pop the
-entry frame while unwinding; on a one-frame stack it would instead report
-"unwinding past the topmost stack frame" as UB. The caller frame never
-executes: `evalRefTerminator` ends the execution as soon as the entry frame is
-popped. -/
-noncomputable def mkRefTermStepState (rlocals : List RefLocalState)
-    (term : Miri.MIR.Terminator) (cleanup : Bool) :
-    Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout Unit
-      RefStepMachine := {
-  stack := ⟨Array.mk [
-    mkSingleLocalMiriFrame .dead false,
-    { mkSingleLocalMiriFrame .dead cleanup with
-      body := {
-        refDummyMirBody cleanup with
-        basicBlocks :=
-          Array.mk [{ refDummyMirBlock cleanup with terminator := term }]
-      }
-      returnContinuation := .goto (some 0) .Continue
-      location := .mir ⟨0, 0⟩ }]⟩
-  machine := { locals := rlocals }
-}
+Setting `location := .mir ⟨0, 1⟩` (with `statements := Array.empty`) both
+enters the terminator branch of `Step.step` and ensures a builtin call whose
+`target = some 0` updates `location` to `.mir ⟨0, 0⟩ ≠ .mir ⟨0, 1⟩`, satisfying
+Miri's call-progress check.
+
+The stack mirrors `callerSentinelFrame :: (rframe :: rcallers).reverse`: a
+sentinel frame sits beneath the root frame so
+`Miri.Interpreter.ControlFlow.returnFromCurrentFrame` can pop the root frame
+while unwinding without triggering "unwinding past the topmost stack frame". -/
+noncomputable def mkRefTermStepState (rframe : RefFrameState)
+    (rcallers : List RefFrameState) (term : Miri.MIR.Terminator)
+    (cleanup : Bool) :
+    Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout Unit
+      RefStepMachine :=
+  let sentinelFrame :=
+    mkSingleLocalMiriFrame
+      (.dead : Miri.Interpreter.LocalValue RefCallProv) false
+  let topFrame : Miri.Interpreter.Frame RefCallProv
+      Miri.Interpreter.LocalLayout Unit := {
+    mkSingleLocalMiriFrame
+      (.dead : Miri.Interpreter.LocalValue RefCallProv) cleanup with
+    body := {
+      refDummyMirBody cleanup with
+      basicBlocks :=
+        Array.mk [{ refDummyMirBlock cleanup with terminator := term }]
+    }
+    bodyIdentity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex
+      (if rframe.returnCont.isNone then 0 else 1)
+    returnContinuation :=
+      match rframe.returnCont with
+      | none => .goto (some 0) .Continue
+      | some c => .goto c.target (toMiriUnwindAction c.unwind)
+    location := .mir ⟨0, 1⟩
+  }
+  { stack := ⟨Array.mk
+      ((sentinelFrame :: mkCallerMiriFrames rcallers) ++ [topFrame])⟩
+    machine := { frames := rframe :: rcallers } }
 
 /-- Minimal `Miri.Interpreter.StepState` with `basicBlocks := Array.empty` at
 location `.mir ⟨blockIdx, 0⟩`. Because `basicBlocks` is empty,
 `Miri.Interpreter.Step.step` always takes its out-of-bounds `.invalidBlock`
 error path here (making the fallback `_ => .ub` arm in `evalRefStep`
 unreachable). -/
-noncomputable def mkRefInvalidBlockStepState (rlocals : List RefLocalState)
-    (blockIdx : BasicBlockId) :
-    Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout Unit
+noncomputable def mkRefInvalidBlockStepState (rframe : RefFrameState)
+    (rcallers : List RefFrameState) (blockIdx : BasicBlockId) :
+    Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout Unit
       RefStepMachine :=
-  mkRefStepStateWith rlocals Array.empty blockIdx false
+  mkRefStepStateWith rframe rcallers Array.empty blockIdx false
 
 /-- Extract the active `.mir loc` from the top frame of `st`, returning `none`
 on an empty stack or `.unwinding` frame. -/
-noncomputable def extractMirLocation? {M : Type}
-    (st : Miri.Interpreter.StepState SlotVal
+noncomputable def extractMirLocation? {P M : Type}
+    (st : Miri.Interpreter.StepState P
       Miri.Interpreter.LocalLayout Unit M) :
     Option Miri.MIR.Location :=
   match st.stack.currentFrame? with
@@ -2630,15 +2994,6 @@ noncomputable def toMiriAssertKind : AssertKind → Miri.MIR.AssertKind
   | .nullPtrDeref => .NullPointerDereference
   | .unsupported => .InvalidEnumConstruction refAssertOperandPlaceholder
 
-/-- Map `Trusted.MirAst.UnwindAction` to `Miri.MIR.UnwindAction`.
-`.terminate` maps to `.Terminate .Abi`; the reference machine rejects every
-`.Terminate` reason in `refControlHooksFor.unwindTerminate`. -/
-noncomputable def toMiriUnwindAction : UnwindAction → Miri.MIR.UnwindAction
-  | .continue_ => .Continue
-  | .cleanup target => .Cleanup target
-  | .unreachable => .Unreachable
-  | .terminate => .Terminate .Abi
-
 /-- Independent $M_{\text{ref}}$ check that a failing `Assert` with message
 `msg` panics through a panic function that takes no operand.
 
@@ -2661,21 +3016,21 @@ noncomputable def refIsOperandFreeAssertKind : Miri.MIR.AssertKind → Bool
   | _ => false
 
 /-- Map `RefTerminatorKind` to its `Miri.MIR.Terminator` constructor for
-`Miri.Interpreter.Step.step` and
-`Miri.Interpreter.ControlFlow.evalTerminator`.
+`Miri.Interpreter.Step.step`, `Miri.Interpreter.ControlFlow.evalTerminator`,
+and `Miri.Interpreter.Call.evalCallTerminator`.
 
-- `.goto`, `.return_`, `.unreachable`, `.unwindResume`, `.switchInt`, and
-  `.assert` translate to their corresponding `Miri.MIR.TerminatorKind`
-  constructors. For `.switchInt`, each `BitVec 128` case literal is encoded
-  losslessly as `caseBits.toNat` in `Miri.MIR.SwitchTarget.Case`, driving
-  `evalDiscriminant`, `compareSwitchCase`, and `ControlFlow.goToBlock`. For
-  `.assert`, the condition, expected value, message (`toMiriAssertKind`),
-  target, and unwind action (`toMiriUnwindAction`) drive `readAssertCondition`,
-  `assertPanic`, and `ControlFlow.goToBlock`.
-- The unmodeled terminators `.call` and `.unsupported` route to the fail-closed
-  sentinel `.UnwindTerminate .Abi` (firing `unwindTerminate` -> `.fault
-  .unsupported`). Routing `.call` directly would only construct unused
-  placeholder callee fields before `call` fails closed. -/
+- `.goto`, `.return_`, `.unreachable`, `.unwindResume`, `.switchInt`, `.assert`,
+  `.call`, and `.callBuiltin` translate to their corresponding
+  `Miri.MIR.TerminatorKind` constructors.
+- `.call callee ...` encodes the function operand as a zero-sized constant with
+  even `TyId = 2 * callee`, which `refCallHooks.resolve` maps to
+  `CallInstance.kind = .Item callee`.
+- `.callBuiltin builtin ...` encodes the function operand as a zero-sized
+  constant with odd `TyId = 2 * coreBuiltinTag builtin + 1`, which
+  `refCallHooks.resolve` maps to
+  `CallInstance.kind = .Intrinsic (coreBuiltinTag builtin)`.
+- `.unsupported` routes to the fail-closed sentinel `.UnwindTerminate .Abi`
+  (firing `unwindTerminate` -> `.fault .unsupported`). -/
 noncomputable def toMiriTerminatorForDispatch :
     RefTerminatorKind → Miri.MIR.Terminator
   | .goto target =>
@@ -2696,28 +3051,381 @@ noncomputable def toMiriTerminatorForDispatch :
     { sourceInfo := ⟨⟨0⟩, 0⟩
       kind := .Assert (toMiriOperand cond) expected (toMiriAssertKind msg)
         target (toMiriUnwindAction unwind) }
-  | .call _ _ _ _ _ | .unsupported =>
+  | .call callee args dst target unwind =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Call
+        (.Constant ⟨⟨0⟩, none, .Val .ZeroSized (2 * callee)⟩)
+        (Array.mk (args.map (fun a => ⟨⟨0⟩, toMiriOperand a⟩)))
+        (toMiriPlace dst) target (toMiriUnwindAction unwind) .Normal ⟨0⟩ }
+  | .callBuiltin builtin args dst target unwind =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Call
+        (.Constant ⟨⟨0⟩, none,
+          .Val .ZeroSized (2 * coreBuiltinTag builtin + 1)⟩)
+        (Array.mk (args.map (fun a => ⟨⟨0⟩, toMiriOperand a⟩)))
+        (toMiriPlace dst) target (toMiriUnwindAction unwind) .Normal ⟨0⟩ }
+  | .unsupported =>
     { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .UnwindTerminate .Abi }
+
+/-- `Miri.Interpreter.CallHooks` wiring direct crate-local calls (`.call`) and
+core numeric/comparison builtins (`.callBuiltin`) directly through
+`Miri.Interpreter.Call.{evalCallTerminator, evalCalleeAndArgs, initFnCall,
+initStackFrame, passArgument, run}`, `Miri.Interpreter.Stack.pushFrame`,
+`Miri.Interpreter.ControlFlow.{goToBlock, returnToBlock}`,
+`Miri.Interpreter.IntegerOps.binary`, `Miri.Interpreter.IntegerIntrinsic.run`,
+and `Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith`
+(`vendor/lean-miri/Miri/Interpreter/{Call,Stack,ControlFlow,IntegerCast}.lean`),
+matching `eval_callee_and_args` and `init_stack_frame` in
+`compiler/rustc_const_eval/src/interpret/call.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`).
+
+Move deinitialization of `.Move` arguments runs inside `evalPlace ... true` via
+`evalRefMiriOperandToSlot` (`Miri.Interpreter.evalOperand` with
+`deinitMovedPlace = true`), so `CallHooks.deinitMovedPlace` is set to `false`
+to avoid redundant stack-memory snapshots for immediate locals. -/
+noncomputable def refCallHooks (rp : RefProg) :
+    Miri.Interpreter.CallHooks RefCallProv
+      (Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout
+        Unit RefStepMachine)
+      Unit Unit Unit Unit Nat Unit := {
+  debugAssertions := false
+  getFrame := fun st =>
+    match st.stack.currentFrame? with
+    | some frame => .ok frame st
+    | none => .error (.stack .emptyStack) st
+  setFrame := fun frame st =>
+    if st.stack.frames.isEmpty then
+      .error (.stack .emptyStack) st
+    else
+      .ok () { st with stack := ⟨st.stack.frames.pop.push frame⟩ }
+  frameIndex := fun st =>
+    match st.stack.frameIndex with
+    | .ok idx => .ok idx st
+    | .error e => .error (.stack e) st
+  evalOperand := fun _ mirOp st =>
+    match st.machine.frames with
+    | top :: rest =>
+      match evalRefMiriOperandToSlot rp.types top.locals mirOp with
+      | .error k => .error (faultToStepError k) st
+      | .ok (ty, sv, locals') =>
+        .ok ⟨.immediate (payloadToMiriImmediate (.arg ty sv)),
+            refSizedLocalLayout⟩
+          { st with machine := { st.machine with
+              frames := { top with locals := locals' } :: rest } }
+    | [] => .error (.unsupported "empty frames in call operand") st
+  evalOperandAt := fun _ path mirOp st =>
+    if Nat.beq path.size 2 then
+      match mirOp with
+      | .Constant ⟨_, _, .Val .ZeroSized encodedId⟩ =>
+        .ok ⟨.immediate .uninit,
+          { refSizedLocalLayout with ty := encodedId }⟩ st
+      | _ => .error (.invalidProgram "non-constant callee") st
+    else
+      match st.machine.frames with
+      | top :: rest =>
+        match evalRefMiriOperandToSlot rp.types top.locals mirOp with
+        | .error k => .error (faultToStepError k) st
+        | .ok (ty, sv, locals') =>
+          .ok ⟨.immediate (payloadToMiriImmediate (.arg ty sv)),
+              refSizedLocalLayout⟩
+            { st with machine := { st.machine with
+                frames := { top with locals := locals' } :: rest } }
+      | [] => .error (.unsupported "empty frames in call operand") st
+  evalPlace := fun _ place isMove st =>
+    if isMove then
+      match st.machine.frames with
+      | top :: rest =>
+        match evalRefMiriOperandToSlot rp.types top.locals (.Move place) with
+        | .error k => .error (faultToStepError k) st
+        | .ok (ty, sv, locals') =>
+          let mp : Miri.Interpreter.MPlaceTy RefCallProv :=
+            ⟨⟨⟨Miri.ABI.Size.ZERO, some (.arg ty sv)⟩, .none, none⟩,
+              refSizedLocalLayout⟩
+          .ok (.memory mp)
+            { st with machine := { st.machine with
+                frames := { top with locals := locals' } :: rest } }
+      | [] => .error (.unsupported "empty frames in move call arg") st
+    else
+      match st.machine.calleeInit with
+      | some _ =>
+        .ok (.frameLocal 0 place.localId none refSizedLocalLayout
+          (Miri.Interpreter.LocalsIdentity.ofAllocationToken 0)) st
+      | none =>
+        match st.machine.frames with
+        | top :: _ =>
+          match MirSemantics.getElem? top.locals place.localId with
+          | some ⟨_, some localTy⟩ =>
+            match refProjectTy? rp.types localTy place.projection.toList,
+                decodeMiriPlace rp.types place with
+            | some dstTy, some decodedPlace =>
+              let rdest : RefDest :=
+                ⟨place.localId, place.projection.toList, dstTy⟩
+              let mp : Miri.Interpreter.MPlaceTy RefCallProv :=
+                ⟨⟨⟨Miri.ABI.Size.ZERO, some (.dst rdest decodedPlace)⟩,
+                    .none, none⟩,
+                  refSizedLocalLayout⟩
+              .ok (.memory mp) st
+            | _, _ => .error (.unsupported "unsupported call destination") st
+          | _ => .error (.unsupported "missing call destination local") st
+        | [] => .error (.unsupported "empty frames in call destination") st
+  placeToOp := fun _ rplace st =>
+    match rplace with
+    | .memory mp =>
+      match mp.mplace.ptr.provenance with
+      | some (.arg ty sv) =>
+        .ok ⟨.immediate (payloadToMiriImmediate (.arg ty sv)),
+          refSizedLocalLayout⟩ st
+      | some (.dst rdest _) =>
+        match st.machine.frames with
+        | top :: _ =>
+          match refCheckPlaceLive top.locals rdest with
+          | .ok () => .ok ⟨.indirect mp.mplace, mp.layout⟩ st
+          | .error k => .error (faultToStepError k) st
+        | [] => .error (.unsupported "empty frames in destination liveness") st
+      | none => .error (.invalidProgram "unexpected call place in placeToOp") st
+    | _ => .error (.invalidProgram "unexpected call place in placeToOp") st
+  forceAllocation := fun _ rplace st =>
+    match rplace with
+    | .memory mp => .ok mp st
+    | _ => .error (.unsupported "forceAllocation on non-memory call arg") st
+  functionSignature := fun _ _ st => .ok (0, ()) st
+  functionKind := fun tyId st => .ok (.FnDef tyId Array.empty) st
+  readPointer := fun _ _ st => .error (.unsupported "FnPtr unsupported") st
+  getPtrFn := fun _ _ st => .error (.unsupported "FnPtr unsupported") st
+  resolve := fun _ encodedId _ st =>
+    if Nat.beq (Nat.mod encodedId 2) 0 then
+      .ok { kind := .Item (Nat.div encodedId 2), args := Array.empty } st
+    else
+      .ok { kind := .Intrinsic (Nat.div encodedId 2), args := Array.empty } st
+  fnAbiOfFnPtr := fun _ _ _ st => .error (.unsupported "FnPtr unsupported") st
+  fnAbiOfInstance := fun _ inst _ st =>
+    match inst.kind with
+    | .Item callee =>
+      match MirSemantics.getElem? rp.bodies callee with
+      | some rbody => .ok rbody.argumentCount st
+      | none => .ok 0 st
+    | _ => .ok 0 st
+  requiresCallerLocation := fun _ st => .ok false st
+  callerLocation := fun st => .ok ⟨0⟩ st
+  abiCanUnwind := fun _ => true
+  abiVariadic := fun _ => false
+  abiFixedCount := fun n => n
+  abiArgs := fun n => Array.replicate n ()
+  abiReturn := fun _ => ()
+  sameConvention := fun _ _ => true
+  isRustCall := fun _ => false
+  rustAbi := ()
+  argLayout := fun _ => refSizedLocalLayout
+  argIsIgnore := fun _ => false
+  isOneZst := fun _ => false
+  checkArgumentCompat := fun _ _ _ st => .ok true st
+  checkTargetFeatures := fun _ _ st => .ok () st
+  tupleFields := fun _ st => .error (.unsupported "spread arg unsupported") st
+  projectFnArg := fun _ _ _ st =>
+    .error (.unsupported "RustCall unsupported") st
+  localLayout := fun _ _ st => .ok refSizedLocalLayout st
+  localSpan := fun _ _ st => .ok ⟨0⟩ st
+  storageLiveDyn := fun _ _ _ st => .ok () st
+  copyAllowTransmute := fun _ copied dest st =>
+    match st.machine.calleeInit, extractRefCallArg? copied, dest with
+    | some ci, some (argTy, sv), .frameLocal _ localId _ _ _ =>
+      match MirSemantics.getElem? ci.localTys localId with
+      | none => .error (.unsupported "missing callee parameter type") st
+      | some paramTy =>
+        if !(MirTy.beq argTy paramTy) then
+          .error (.unsupported "call argument type mismatch") st
+        else
+          match sv.toVal? with
+          | none => .error (.undefinedBehavior "uninit call argument") st
+          | some v =>
+            if !checkRefVal v paramTy then
+              .error (.unsupported "invalid call argument value") st
+            else
+              .ok () { st with machine := { st.machine with
+                calleeInit := some { ci with
+                  argValsRev := v :: ci.argValsRev } } }
+    | _, _, _ => .error (.invalidProgram "invalid copyAllowTransmute state") st
+  protectArgument := fun _ mplace st =>
+    match mplace.mplace.ptr.provenance with
+    | some (.dst rdest _) =>
+      match st.machine.frames with
+      | top :: rest =>
+        match refDeinitPlace top.locals rdest with
+        | .ok localsAfterDeinit =>
+          .ok () { st with machine := { st.machine with
+            frames := { top with locals := localsAfterDeinit } :: rest } }
+        | .error k => .error (faultToStepError k) st
+      | [] => .error (.unsupported "empty frames in destination deinit") st
+    | _ => .ok () st
+  withRetagMode := fun _ _ act => act
+  nonCapturingClosure := fun _ _ _ st => .ok false st
+  allocateStack := fun _ _ st =>
+    .error (.unsupported "allocateStack unsupported") st
+  copyToMemory := fun _ _ _ st =>
+    .error (.unsupported "copyToMemory unsupported") st
+  vaListPtr := fun _ _ st => .error (.unsupported "varargs unsupported") st
+  writeZeroBytes := fun _ _ _ st =>
+    .error (.unsupported "varargs unsupported") st
+  vaListKeyField := fun _ _ st => .error (.unsupported "varargs unsupported") st
+  writePointerToMemory := fun _ _ _ st =>
+    .error (.unsupported "varargs unsupported") st
+  pushRaw := fun _ fnInstance loadedBody destination cont st =>
+    match fnInstance.kind, destination with
+    | .Item callee, .memory ⟨⟨⟨_, some (.dst _ decodedPlace)⟩, _, _⟩, _⟩ =>
+      match MirSemantics.getElem? rp.bodies callee with
+      | some rbody =>
+        match decodeLocalTys rp.types rbody.locals with
+        | some localTys =>
+          let unwind' : UnwindAction :=
+            match cont with
+            | .goto _ (.Cleanup blk) => .cleanup blk
+            | .goto _ .Unreachable => .unreachable
+            | .goto _ (.Terminate _) => .terminate
+            | _ => .continue_
+          let target' : Option BasicBlockId :=
+            match cont with
+            | .goto t _ => t
+            | .stop _ => none
+          let newFrame : Miri.Interpreter.Frame RefCallProv
+              Miri.Interpreter.LocalLayout Unit :=
+            Miri.Interpreter.Frame.create loadedBody fnInstance () cont
+              destination ⟨0⟩
+              (Miri.Interpreter.LocalsIdentity.ofAllocationToken 0)
+          match st.stack.pushFrame newFrame with
+          | .ok stack' =>
+            .ok () {
+              stack := stack'
+              machine := { st.machine with
+                calleeInit := some {
+                  defId := callee
+                  rbody := rbody
+                  localTys := localTys
+                  argValsRev := []
+                  returnCont := ⟨decodedPlace, target', unwind'⟩
+                } }
+            }
+          | .error e => .error (.stack e) st
+        | none => .error (.unsupported "bad callee locals in pushRaw") st
+      | none => .error (.unsupported "missing callee body in pushRaw") st
+    | _, _ => .error (.invalidProgram "invalid pushRaw arguments") st
+  pushDone := fun _ st =>
+    match st.machine.calleeInit with
+    | some ci =>
+      let calleeLocals :=
+        initRefLocalsLoop ci.rbody ci.argValsRev.reverse 0 ci.localTys
+      let calleeFrame : RefFrameState := {
+        defId := ci.defId
+        blockIdx := 0
+        stmtIdx := 0
+        locals := calleeLocals
+        isCallerSentinel := false
+        returnCont := some ci.returnCont
+      }
+      match Miri.Interpreter.ControlFlow.goToBlock 0 st with
+      | (st', .ok ()) =>
+        .ok () { st' with machine := { st'.machine with
+          frames := calleeFrame :: st'.machine.frames
+          calleeInit := none } }
+      | (st', .error e) => .error e st'
+    | none => .error (.invalidProgram "missing calleeInit in pushDone") st
+  popRaw := fun _ st => .error (.unsupported "TailCall unsupported") st
+  cleanup := fun _ _ _ st => .error (.unsupported "TailCall unsupported") st
+  afterFrameInit := fun _ st => .ok () st
+  callExtra := fun _ _ _ _ _ _ _ st =>
+    .error (.unsupported "callExtra unsupported") st
+  callIntrinsic := fun _ fnInstance args dest target _ st =>
+    match fnInstance.kind, dest, st.machine.frames with
+    | .Intrinsic tag, .memory ⟨⟨⟨_, some (.dst rdest _)⟩, _, _⟩, _⟩,
+        top :: rest =>
+      match coreBuiltinOfTag? tag,
+          mapOption extractRefCallArg? args.toList with
+      | some builtin, some argPairs =>
+        match refReadPrimitiveArgs argPairs with
+        | .error k => .error (faultToStepError k) st
+        | .ok argVals =>
+          match evalRefCoreBuiltin builtin argVals with
+          | .error k => .error (faultToStepError k) st
+          | .ok resVal =>
+            match writeRefPlace top.locals rdest resVal with
+            | .error k => .error (faultToStepError k) st
+            | .ok localsAfterWrite =>
+              let st1 := { st with machine := { st.machine with
+                frames := { top with locals := localsAfterWrite } :: rest } }
+              match Miri.Interpreter.ControlFlow.returnToBlock target st1 with
+              | (st2, .ok ()) => .ok none st2
+              | (st2, .error e) => .error e st2
+      | _, _ => .error (.unsupported "invalid builtin call arguments") st
+    | _, _, _ => .error (.invalidProgram "invalid callIntrinsic state") st
+  callLlvmIntrinsic := fun _ _ _ _ _ st =>
+    .error (.unsupported "LlvmIntrinsic unsupported") st
+  findMirOrEvalFn := fun _ fnInstance _ args dest _ _ st =>
+    match fnInstance.kind, dest with
+    | .Item callee, .memory ⟨⟨⟨_, some (.dst rdest _)⟩, _, _⟩, _⟩ =>
+      match MirSemantics.getElem? rp.bodies callee with
+      | none => .error (.unsupported "callee body out of bounds") st
+      | some rbody =>
+        match decodeLocalTys rp.types rbody.locals with
+        | none => .error (.unsupported "callee local types invalid") st
+        | some localTys =>
+          if !refBodyEntryAdmitted rbody localTys then
+            .error (.unsupported "callee body not admitted") st
+          else if !Nat.beq args.size rbody.argumentCount then
+            .error (.unsupported "call argument count mismatch") st
+          else
+            match MirSemantics.getElem? localTys 0 with
+            | none => .error (.unsupported "callee missing return local") st
+            | some calleeRetTy =>
+              if !MirTy.beq calleeRetTy rdest.ty then
+                .error (.unsupported "call return type mismatch") st
+              else
+                let mirBody : Miri.MIR.Body := {
+                  refDummyMirBody false with
+                  argumentCount := rbody.argumentCount
+                  spreadArgument := none
+                }
+                let loaded : Miri.Interpreter.LoadedBody := {
+                  identity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex 1
+                  body := mirBody
+                }
+                .ok (some (loaded, fnInstance)) st
+    | _, _ => .error (.unsupported "invalid direct call target") st
+  resolveVirtual := fun _ _ _ _ _ _ st =>
+    .error (.unsupported "virtual call unsupported") st
+  isDynamic := fun _ st => .ok false st
+  unpackDynForDrop := fun _ _ st => .error (.unsupported "drop unsupported") st
+  resolveDropGlue := fun _ _ st => .error (.unsupported "drop unsupported") st
+  mplaceToMutRef := fun _ _ st => .error (.unsupported "drop unsupported") st
+  fakeUnitReturn := fun _ st => .error (.unsupported "drop unsupported") st
+  deinitMovedPlace := false
+}
 
 /-- `Miri.Interpreter.ControlHooks` for
 `Miri.Interpreter.ControlFlow.returnFromCurrentFrame` and
 `Miri.Interpreter.ControlFlow.unwindToBlock`: the frame-popping half of
 `refTerminatorHooksFor`, shared with `refStepHooksFor.returnFromCurrentFrame`.
 
-`popFrame` pops the executing entry frame with
-`Miri.Interpreter.Stack.popFrame`. Because the reference machine executes
-only the entry function, popping its frame ends the execution, and the two
-hooks that run after the pop record how it ended in `RefStepMachine.terminal`:
+`popFrame` pops both the Miri frame (`Miri.Interpreter.Stack.popFrame`) and the
+top `RefFrameState` from `RefStepMachine.frames`:
 
-- `copyReturn` (normal return) reads the return place `_0` and records
-  `.done (.returned ⟨retVal, callerMem⟩)`.
-- `cleanupFrame` with `unwinding = true` records
-  `.done (.unwound callerMem)`: the panic leaves the entry function.
+- `copyReturn` (normal return) reads `_0` of the popped frame. On a root frame
+  (`returnCont = none`, remaining stack `[]`), it records
+  `.done (.returned ⟨retVal, callerMem⟩)` and `cleanupFrame` returns `.noJump`.
+  On a callee frame (`returnCont = some cont`, remaining stack `caller ::
+  rest`), it writes `retVal` into `cont.dst` in `caller` via `writeRefPlace`,
+  and `cleanupFrame` returns `.normal` so `returnFromCurrentFrame` follows
+  `Miri.Interpreter.ControlFlow.returnToBlock cont.target` (raising UB
+  `"Unreachable"` when `cont.target = none`).
+- `cleanupFrame` with `unwinding = true` records `.done (.unwound callerMem)`
+  and returns `.noJump` when unwinding leaves the root frame (`bodyIdentity =
+  0`, remaining stack `[]`); when unwinding leaves a callee frame
+  (`bodyIdentity ≠ 0`, non-empty remaining stack), it returns `.normal` so
+  `returnFromCurrentFrame` applies `ControlFlow.unwindToBlock` to the caller's
+  `cont.unwind`.
 
 Uninitialized-read UB in `copyReturn`: adapter frames never store
 `Immediate.uninit` (see `slotToMiriLocalValue`), so `copyReturn` itself
-rejects an uninitialized return place `_0` (contents with
-`sv.toVal? = none` fault with `.undefined`; so does a dead `_0`, matching
+rejects an uninitialized return place `_0` (contents with `sv.toVal? = none`
+fault with `.undefined`; so does a dead `_0`, matching
 `Trusted.MirSemantics.evalTerminator`). This Anneal-written rule matches
 `return_from_current_stack_frame`, which copies `_0` into the caller's return
 place with `copy_op_allow_transmute`:
@@ -2730,39 +3438,73 @@ place with `copy_op_allow_transmute`:
 > (`compiler/rustc_const_eval/src/interpret/call.rs`, `rust-lang/rust`
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
-Like `copy_op`, `copy_op_allow_transmute` delegates to `copy_op_inner`, whose
-validation reports an uninitialized `bool` or integer value as UB (both quoted
-at `refRvalueHooks`).
-
 `unwindTerminate` fails closed (`.fault .unsupported`): aborting the process
 is unmodeled. -/
-noncomputable def refControlHooksFor (callerMem : CallerMemory) :
-    Miri.Interpreter.ControlHooks SlotVal Miri.Interpreter.LocalLayout
-      Unit RefStepMachine Unit Unit := {
+noncomputable def refControlHooksFor (rp : RefProg)
+    (callerMem : CallerMemory) :
+    Miri.Interpreter.ControlHooks RefCallProv Miri.Interpreter.LocalLayout
+      Unit RefStepMachine Unit (Option RefFrameState) := {
   bodySpan := fun _ => .ok ⟨0⟩
-  returnOperand := fun _ st => (st, .ok ())
+  returnOperand := fun _ st => (st, .ok st.machine.frames.head?)
   popFrame := fun _ st =>
-    match st.stack.popFrame with
-    | .ok (stack', frame) => ({ st with stack := stack' }, .ok frame)
-    | .error e => (st, .error (.stack e))
-  copyReturn := fun _ _ _ st =>
-    -- An uninitialized `_0` is UB (`copy_op_allow_transmute` validation in
-    -- `rustc@8144389c`; see the docstring above).
-    match MirSemantics.getElem? st.machine.locals 0 with
-    | some ⟨.live sv, some _⟩ =>
-      match sv.toVal? with
-      | some retVal =>
-        ({ st with machine := { st.machine with
-            terminal := some (.done (.returned ⟨retVal, callerMem⟩)) } },
-          .ok ())
-      | none => (st, .error (.undefinedBehavior "uninit return place"))
-    | some ⟨.dead, some _⟩ =>
-      (st, .error (.undefinedBehavior "dead return place"))
-    | _ => (st, .error (.unsupported "missing return place"))
-  cleanupFrame := fun _ unwinding _ st =>
+    match st.stack.popFrame, st.machine.frames with
+    | .ok (stack', frame), _ :: rest =>
+      ({ stack := stack', machine := { st.machine with frames := rest } },
+        .ok frame)
+    | .error e, _ => (st, .error (.stack e))
+    | _, [] => (st, .error (.unsupported "empty frames in popFrame"))
+  copyReturn := fun _ popped? _ st =>
+    match popped? with
+    | none => (st, .error (.unsupported "missing popped frame"))
+    | some popped =>
+      match MirSemantics.getElem? popped.locals 0 with
+      | some ⟨.live sv, some _⟩ =>
+        match sv.toVal? with
+        | some retVal =>
+          match popped.returnCont, st.machine.frames with
+          | none, [] =>
+            ({ st with machine := { st.machine with
+                terminal := some (.done (.returned ⟨retVal, callerMem⟩)) } },
+              .ok ())
+          | some cont, caller :: rest =>
+            match MirSemantics.getElem? rp.bodies caller.defId with
+            | none => (st, .error (.unsupported "missing caller body"))
+            | some _ =>
+              match MirSemantics.getElem? caller.locals cont.dst.localId with
+              | some ⟨_, some localTy⟩ =>
+                match refProjectReturnTy? localTy cont.dst.projection with
+                | none =>
+                  (st, .error (.unsupported "unsupported return destination"))
+                | some dstTy =>
+                  let rdest : RefDest :=
+                    ⟨cont.dst.localId,
+                      cont.dst.projection.map toMiriReturnProjElem, dstTy⟩
+                  match writeRefPlace caller.locals rdest retVal with
+                  | .error k => (st, .error (faultToStepError k))
+                  | .ok callerLocals' =>
+                    ({ st with machine := { st.machine with
+                        frames :=
+                          { caller with locals := callerLocals' } :: rest } },
+                      .ok ())
+              | _ =>
+                (st, .error (.unsupported "missing caller return local"))
+          | _, _ => (st, .error (.unsupported "malformed call stack"))
+        | none => (st, .error (.undefinedBehavior "uninit return place"))
+      | some ⟨.dead, some _⟩ =>
+        (st, .error (.undefinedBehavior "dead return place"))
+      | _ => (st, .error (.unsupported "missing return place"))
+  cleanupFrame := fun _ unwinding frame st =>
     if unwinding then
-      ({ st with machine := { st.machine with
-          terminal := some (.done (.unwound callerMem)) } }, .ok .normal)
+      match frame.bodyIdentity ==
+              Miri.Interpreter.BodyIdentity.ofCanonicalIndex 0,
+          st.machine.frames with
+      | true, [] =>
+        ({ st with machine := { st.machine with
+            terminal := some (.done (.unwound callerMem)) } }, .ok .noJump)
+      | false, _ :: _ => (st, .ok .normal)
+      | _, _ => (st, .error (.unsupported "malformed unwind stack"))
+    else if st.machine.terminal.isSome then
+      (st, .ok .noJump)
     else
       (st, .ok .normal)
   unwindTerminate := fun _ _ st =>
@@ -2771,101 +3513,38 @@ noncomputable def refControlHooksFor (callerMem : CallerMemory) :
 
 /-- `Miri.Interpreter.TerminatorHooks` for
 `Miri.Interpreter.ControlFlow.evalTerminator`, extending the frame-popping
-hooks `refControlHooksFor`.
+hooks `refControlHooksFor` and wiring `.Call` through
+`Miri.Interpreter.Call.evalCallTerminator` (`refCallHooks`).
 
 `evalDiscriminant` evaluates Miri's passed `op : Miri.MIR.Operand` via
 `evalRefMiriOperandToSlot` and `readRefPrimitiveSlot`, threading post-move
-locals through `RefStepMachine.locals`. `compareSwitchCase` decodes each case
-literal at the discriminant's type via `evalRefConstLit`
-(`Miri.Memory.ScalarInt.tryFromUInt` and `tryToBool`) and compares it via
-`evalRefMiriBinOp .Eq` (`Miri.Interpreter.IntegerOps.binary` / `binaryBool`),
-matching `compareSwitchCase` in `Miri.Interpreter.ExecutionMachine.stepHooks`
-(`vendor/lean-miri/Miri/Interpreter/ExecutionMachine.lean`),
-`ScalarInt::try_from_uint` in `compiler/rustc_middle/src/ty/consts/int.rs`, and
-`SwitchInt` in `compiler/rustc_const_eval/src/interpret/step.rs`
-(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "for (const_int, target) in targets.iter() {
->     ...
->     let res = self.binary_op(
->         mir::BinOp::Eq,
->         &discr,
->         &ImmTy::from_uint(const_int, discr.layout),
->     )?;
->     if res.to_scalar().to_bool()? {
->         target_block = target;
->         break;
->     }
-> }"
-> (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
-
-> "pub fn try_from_uint(i: impl Into<u128>, size: Size) -> Option<Self> {
->     let (r, overflow) = Self::truncate_from_uint(i, size);
->     if overflow { None } else { Some(r) }
-> }"
-> (`compiler/rustc_middle/src/ty/consts/int.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
-
-`Assert`: `readAssertCondition` evaluates the condition operand like
-`evalDiscriminant` and requires a `bool` (`.fault .unsupported` otherwise).
-`ignoreOptionalOverflowChecks` is `false`, so
-`Miri.Interpreter.ControlFlow.evalTerminator` never skips a check (see
-`Trusted.MirAst.TerminatorKind` for the producer obligation in sessions that
-disable overflow checks). When the condition differs from the expected value,
-`evalTerminator` calls `assertPanic`, which rejects a message that carries an
-operand (`refIsOperandFreeAssertKind`) and otherwise starts unwinding with
-`Miri.Interpreter.ControlFlow.unwindToBlock`, matching `eval_terminator` in
-`compiler/rustc_const_eval/src/interpret/step.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "Assert { ref cond, expected, ref msg, target, unwind } => {
->     let ignored =
->         M::ignore_optional_overflow_checks(self)
->             && msg.is_optional_overflow_check();
->     let cond_val =
->         self.read_scalar(&self.eval_operand(cond, None)?)?.to_bool()?;
->     if ignored || expected == cond_val {
->         self.go_to_block(target);
->     } else {
->         M::assert_panic(self, msg, unwind)?;
->     }
-> }"
-
-`assertPanic` abstracts the panic runtime between the failed assertion and the
-start of unwinding. Miri's `assert_panic` calls the panic lang item with
-`ReturnContinuation::Goto { ret: None, unwind }` (quoted at
-`Trusted.MirSemantics.isOperandFreeAssertKind`), and the unwinding that the
-panic starts reaches the asserting frame along `unwind`. `assertPanic` applies
-`unwind` to the asserting frame directly and assumes the `unwind` panic
-strategy, like `Trusted.MirSemantics.evalTerminator`.
-
-Hook coverage: `.return_` and `.unwindResume` exercise `bodySpan`,
-`returnOperand`, `popFrame`, `copyReturn`, and `cleanupFrame`; `.switchInt`
-exercises `evalDiscriminant` and `compareSwitchCase`; `.assert` exercises
-`ignoreOptionalOverflowChecks`, `readAssertCondition`, and `assertPanic`; and
-`.call` and `.unsupported` route through `.UnwindTerminate .Abi` and fail
-closed in `unwindTerminate`. The remaining `TerminatorHooks` fields (`call`,
-`tailCall`, and `drop`) are required by the record, fail closed, and are
-unreachable under the `RefTerminatorKind` fragment. -/
-noncomputable def refTerminatorHooksFor (types : List MirTy)
+locals through the active frame at the head of `RefStepMachine.frames`.
+`compareSwitchCase` decodes each case literal via `evalRefConstLit` and
+compares via `evalRefMiriBinOp .Eq`. `assertPanic` checks
+`refIsOperandFreeAssertKind` and invokes `ControlFlow.unwindToBlock`. `call`
+runs `Miri.Interpreter.Call.evalCallTerminator (refCallHooks rp) c 2 term`. -/
+noncomputable def refTerminatorHooksFor (rp : RefProg)
     (callerMem : CallerMemory) :
-    Miri.Interpreter.TerminatorHooks SlotVal Miri.Interpreter.LocalLayout
-      Unit RefStepMachine Unit Unit Val := {
-  toControlHooks := refControlHooksFor callerMem
+    Miri.Interpreter.TerminatorHooks RefCallProv Miri.Interpreter.LocalLayout
+      Unit RefStepMachine Unit (Option RefFrameState) Val := {
+  toControlHooks := refControlHooksFor rp callerMem
   evalDiscriminant := fun _ op st =>
-    match evalRefMiriOperandToSlot types st.machine.locals op with
-    | .error k => (st, .error (faultToStepError k))
-    | .ok (ty, sv, rlocalsAfterDiscr) =>
-      match readRefPrimitiveSlot ty sv with
+    match st.machine.frames with
+    | top :: rest =>
+      match evalRefMiriOperandToSlot rp.types top.locals op with
       | .error k => (st, .error (faultToStepError k))
-      | .ok discrVal =>
-        match discrVal with
-        | .scalar _ | .bool _ =>
-          ({ st with machine :=
-              { st.machine with locals := rlocalsAfterDiscr } },
-            .ok discrVal)
-        | _ => (st, .error (.unsupported "non-scalar SwitchInt discriminant"))
+      | .ok (ty, sv, rlocalsAfterDiscr) =>
+        match readRefPrimitiveSlot ty sv with
+        | .error k => (st, .error (faultToStepError k))
+        | .ok discrVal =>
+          match discrVal with
+          | .scalar _ | .bool _ =>
+            ({ st with machine := { st.machine with
+                frames := { top with locals := rlocalsAfterDiscr } :: rest } },
+              .ok discrVal)
+          | _ =>
+            (st, .error (.unsupported "non-scalar SwitchInt discriminant"))
+    | [] => (st, .error (.unsupported "empty frames in SwitchInt"))
   compareSwitchCase := fun _ discrVal caseBitsNat st =>
     let caseBits := BitVec.ofNat 128 caseBitsNat
     let caseTy? : Option MirTy :=
@@ -2884,112 +3563,156 @@ noncomputable def refTerminatorHooksFor (types : List MirTy)
           | .ok (.bool eq) => .ok eq
           | .error k => .error (faultToStepError k)
           | .ok _ => .error (.unsupported "non-bool SwitchInt Eq result"))
-  call := fun _ _ st => (st, .error (.unsupported "Call unsupported"))
+  call := fun c term st =>
+    match term.kind with
+    | .Call _ args dst _ _ _ _ =>
+      if refAnyMoveOperandMayOverlapPlace dst
+          (args.toList.map (fun a => a.operand)) then
+        (st, .error (.unsupported "overlapping move call arg and dest"))
+      else
+        Miri.Interpreter.Call.run
+          (Miri.Interpreter.Call.evalCallTerminator (refCallHooks rp) c 2 term)
+          st
+    | _ =>
+      Miri.Interpreter.Call.run
+        (Miri.Interpreter.Call.evalCallTerminator (refCallHooks rp) c 2 term)
+        st
   tailCall := fun _ _ st => (st, .error (.unsupported "TailCall unsupported"))
   drop := fun _ _ _ _ st => (st, .error (.unsupported "Drop unsupported"))
   ignoreOptionalOverflowChecks := fun _ => false
   readAssertCondition := fun _ op st =>
-    match evalRefMiriOperandToSlot types st.machine.locals op with
-    | .error k => (st, .error (faultToStepError k))
-    | .ok (ty, sv, rlocalsAfterCond) =>
-      match readRefPrimitiveSlot ty sv with
+    match st.machine.frames with
+    | top :: rest =>
+      match evalRefMiriOperandToSlot rp.types top.locals op with
       | .error k => (st, .error (faultToStepError k))
-      | .ok condVal =>
-        match condVal with
-        | .bool b =>
-          ({ st with machine :=
-              { st.machine with locals := rlocalsAfterCond } },
-            .ok b)
-        | _ => (st, .error (.unsupported "non-bool Assert condition"))
+      | .ok (ty, sv, rlocalsAfterCond) =>
+        match readRefPrimitiveSlot ty sv with
+        | .error k => (st, .error (faultToStepError k))
+        | .ok condVal =>
+          match condVal with
+          | .bool b =>
+            ({ st with machine := { st.machine with
+                frames := { top with locals := rlocalsAfterCond } :: rest } },
+              .ok b)
+          | _ => (st, .error (.unsupported "non-bool Assert condition"))
+    | [] => (st, .error (.unsupported "empty frames in Assert"))
   assertPanic := fun c msg unwind st =>
     if !refIsOperandFreeAssertKind msg then
       (st, .error (.unsupported "Assert message operands unsupported"))
     else
-      Miri.Interpreter.ControlFlow.unwindToBlock (refControlHooksFor callerMem)
-        c unwind st
+      Miri.Interpreter.ControlFlow.unwindToBlock
+        (refControlHooksFor rp callerMem) c unwind st
 }
 
 /-- `Miri.Interpreter.StepHooks` routing `.Assign`, `.StorageLive`,
 `.StorageDead`, and terminators through `Miri.Interpreter.Step.step`,
-`Miri.Interpreter.Step.evalStatement`,
-`Miri.Interpreter.Frame.storageLive`,
-`Miri.Interpreter.Frame.storageDead`, and
-`Miri.Interpreter.ControlFlow.evalTerminator`.
-
-Closes over only `types` and `callerMem`: all statement places/rvalues and
-terminator operands/switch targets arrive through `Miri.Interpreter.Step.step`
-and frame locals thread through `RefStepMachine.locals`. Note on `storageLive`:
-it invokes `Miri.Interpreter.Frame.storageLive` on a dummy dead local `0`
-(where `refLocalStorageHooks.veryTriviallySized` returns `.ok true`, so
-`refLocalStorageHooks.layout` is skipped and the call always returns `.ok ()`),
-discards the resulting Miri frame, and writes `refLiveUninitSlot localTy`
-directly into `RefStepMachine.locals`.
-
-Hook coverage: `.assign`, `.storageLive`, `.storageDead`, `.unsupported`
-(via `.Intrinsic (.Assume ...)`), and terminators exercise `assign`,
-`storageLive`, `storageDead`, `intrinsic`, `beforeTerminator`, and `terminator`.
-`returnFromCurrentFrame` runs when `Miri.Interpreter.Step.step` steps a frame
-whose location is `.unwinding` (the second step of `evalRefTerminator` after a
-failed `Assert` whose unwind action is `Continue`); it pops that frame with
-`Miri.Interpreter.ControlFlow.returnFromCurrentFrame` over
-`refControlHooksFor`. The remaining `StepHooks` fields (`evalPlace`,
-`writeDiscriminant`, and `incrementConstEvalCounter`) are required by the
-record but unreachable under the `RefStatementKind` fragment (`evalPlace` and
-`writeDiscriminant` fail closed). -/
-noncomputable def refStepHooksFor (types : List MirTy)
+`Miri.Interpreter.Step.evalStatement`, `Miri.Interpreter.Frame.storageLive`,
+`Miri.Interpreter.Frame.storageDead`,
+`Miri.Interpreter.ControlFlow.evalTerminator`,
+`Miri.Interpreter.ControlFlow.returnFromCurrentFrame`, and
+`Miri.Interpreter.Call.evalCallTerminator`. -/
+noncomputable def refStepHooksFor (rp : RefProg)
     (callerMem : CallerMemory) :
-    Miri.Interpreter.StepHooks SlotVal Miri.Interpreter.LocalLayout Unit
+    Miri.Interpreter.StepHooks RefCallProv Miri.Interpreter.LocalLayout Unit
       RefStepMachine Unit Unit := {
   assign := fun _ dst rvalue st =>
-    match evalRefMiriRvalue types st.machine.locals dst rvalue with
-    | .error k => (st, .error (faultToStepError k))
-    | .ok rlocalsAfterWrite =>
-      ({ st with machine :=
-          { st.machine with locals := rlocalsAfterWrite } }, .ok ())
+    match st.machine.frames with
+    | top :: rest =>
+      match evalRefMiriRvalue rp.types top.locals dst rvalue with
+      | .error k => (st, .error (faultToStepError k))
+      | .ok rlocalsAfterWrite =>
+        ({ st with machine := { st.machine with
+            frames := { top with locals := rlocalsAfterWrite } :: rest } },
+          .ok ())
+    | [] => (st, .error (.unsupported "empty frames in assign"))
   evalPlace := fun _ _ _ st => (st, .error (.unsupported "SetDiscriminant"))
   writeDiscriminant := fun _ _ _ st =>
     (st, .error (.unsupported "SetDiscriminant"))
   storageLive := fun _ localId st =>
     let res := Miri.Interpreter.Frame.storageLive
-      (mkSingleLocalMiriFrame .dead false) () refLocalStorageHooks 0
-    match res.outcome with
-    | .error e => (st, .error (.stack e))
-    | .ok () =>
-      match MirSemantics.getElem? st.machine.locals localId with
+      (mkSingleLocalMiriFrame
+        (.dead : Miri.Interpreter.LocalValue SlotVal) false)
+      () refLocalStorageHooks 0
+    match res.outcome, st.machine.frames with
+    | .error e, _ => (st, .error (.stack e))
+    | .ok (), top :: rest =>
+      match MirSemantics.getElem? top.locals localId with
       | some ⟨_, some localTy⟩ =>
-        match MirSemantics.setElem? st.machine.locals localId
+        match MirSemantics.setElem? top.locals localId
             ⟨refLiveUninitSlot localTy, some localTy⟩ with
         | some rlocals' =>
-          ({ st with machine := { st.machine with locals := rlocals' } },
+          ({ st with machine := { st.machine with
+              frames := { top with locals := rlocals' } :: rest } },
             .ok ())
         | none => (st, .error (.unsupported "storageLive local out of bounds"))
       | _ => (st, .error (.unsupported "storageLive missing cached layout"))
+    | .ok (), [] => (st, .error (.unsupported "empty frames in storageLive"))
   storageDead := fun _ localId st =>
     let res := Miri.Interpreter.Frame.storageDead
       (mkTwoLocalMiriFrame .dead .dead) () refLocalStorageHooks
       (if Nat.beq localId 0 then 0 else 1)
-    match res.outcome with
-    | .error e => (st, .error (.stack e))
-    | .ok () =>
-      match MirSemantics.getElem? st.machine.locals localId with
+    match res.outcome, st.machine.frames with
+    | .error e, _ => (st, .error (.stack e))
+    | .ok (), top :: rest =>
+      match MirSemantics.getElem? top.locals localId with
       | some ⟨_, some localTy⟩ =>
-        match MirSemantics.setElem? st.machine.locals localId
+        match MirSemantics.setElem? top.locals localId
             ⟨.dead, some localTy⟩ with
         | some rlocals' =>
-          ({ st with machine := { st.machine with locals := rlocals' } },
+          ({ st with machine := { st.machine with
+              frames := { top with locals := rlocals' } :: rest } },
             .ok ())
         | none => (st, .error (.unsupported "storageDead local out of bounds"))
       | _ => (st, .error (.unsupported "storageDead missing cached layout"))
+    | .ok (), [] => (st, .error (.unsupported "empty frames in storageDead"))
   intrinsic := fun _ _ st => (st, .error (.unsupported "Intrinsic"))
   incrementConstEvalCounter := fun _ st => (st, .ok ())
   returnFromCurrentFrame :=
     Miri.Interpreter.ControlFlow.returnFromCurrentFrame
-      (refControlHooksFor callerMem)
+      (refControlHooksFor rp callerMem)
   beforeTerminator := fun _ st => (st, .ok ())
   terminator :=
     Miri.Interpreter.ControlFlow.evalTerminator
-      (refTerminatorHooksFor types callerMem)
+      (refTerminatorHooksFor rp callerMem)
 }
+
+/-- Bounded structural loop draining `.unwinding` Miri frames via
+`Miri.Interpreter.Step.step` (`returnFromCurrentFrame` + `unwindToBlock`) until
+unwinding reaches a cleanup block (`.mir loc`), leaves the root frame
+(`terminal = some (.done (.unwound callerMem))`), or faults (`.unreachable` UB
+or `.terminate` / malformed stack `.unsupported`).
+
+Because $M_{\text{anneal}}$ (`Trusted.MirSemantics.unwindFrame`) propagates
+across frames without `.cleanup` handlers in one small-step transition,
+`evalRefTerminator` invokes `drainRefUnwind` with `fuel := rcallers.length + 1`
+(sufficient to unwind every active frame on the stack) so both machines stay in
+exact 1-to-1 small-step lockstep. -/
+noncomputable def drainRefUnwind (rp : RefProg) (callerMem : CallerMemory) :
+    Nat →
+    Miri.Interpreter.StepState RefCallProv Miri.Interpreter.LocalLayout Unit
+      RefStepMachine →
+    StepResult RefState TerminalOut
+  | 0, _ => .fault .unsupported
+  | fuel + 1, st =>
+    match Miri.Interpreter.Step.step (refStepHooksFor rp callerMem) () st with
+    | (st', .ok true) =>
+      match st'.machine.terminal with
+      | some res => res
+      | none =>
+        match extractMirLocation? st', st'.machine.frames with
+        | some loc, top :: rest =>
+          .step {
+            frames := ({
+              top with
+              blockIdx := loc.block
+              stmtIdx := loc.statementIndex
+            } :: rest).reverse
+            callerMem
+          }
+        | none, _ => drainRefUnwind rp callerMem fuel st'
+        | _, _ => .fault .unsupported
+    | (_, .error (.undefinedBehavior _)) => .fault .undefined
+    | (_, _) => .fault .unsupported
 
 /-- Reference statement evaluator delegating outer step and statement dispatch
 to `Miri.Interpreter.Step.step` and `Miri.Interpreter.Step.evalStatement`,
@@ -3000,198 +3723,110 @@ returns `.ok ()`; see `refStepHooksFor`)
 `eval_statement` in `compiler/rustc_const_eval/src/interpret/step.rs` and
 `storage_live` / `storage_dead` in
 `compiler/rustc_const_eval/src/interpret/stack.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "pub fn eval_statement(&mut self, stmt: &mir::Statement<'tcx>)
-> -> InterpResult<'tcx> {
->   ...
->   match &stmt.kind {
->     Assign((place, rvalue)) =>
->       self.eval_rvalue_into_place(rvalue, *place)?,
->     ...
->     // Mark locals as alive
->     StorageLive(local) => {
->       self.storage_live(*local)?;
->     }
->     // Mark locals as dead
->     StorageDead(local) => {
->       self.storage_dead(*local)?;
->     }
->     ...
->   }
->   interp_ok(())
-> }"
-> (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
->
-> "assert!(local != mir::RETURN_PLACE, "Cannot make return place dead");"
-> (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
-noncomputable def evalRefStatement (types : List MirTy) (rframe : RefFrameState)
-    (callerMem : CallerMemory) (stmt : RefStatementKind) :
-    StepResult RefState TerminalOut :=
+`8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+noncomputable def evalRefStatement (rp : RefProg) (rframe : RefFrameState)
+    (rcallers : List RefFrameState) (callerMem : CallerMemory)
+    (stmt : RefStatementKind) : StepResult RefState TerminalOut :=
   match Miri.Interpreter.Step.step
-      (refStepHooksFor types callerMem) ()
-      (mkRefStmtStepState rframe.locals
+      (refStepHooksFor rp callerMem) ()
+      (mkRefStmtStepState rframe rcallers
         (toMiriStatementForDispatch stmt)) with
   | (st', .ok true) =>
-    match extractMirLocation? st' with
-    | some loc =>
+    match extractMirLocation? st', st'.machine.frames with
+    | some loc, top :: rest =>
       .step {
-        frames := [{
-          rframe with
+        frames := ({
+          top with
           stmtIdx := rframe.stmtIdx + loc.statementIndex
-          locals := st'.machine.locals
-        }]
+        } :: rest).reverse
         callerMem
       }
-    | none => .fault .unsupported
+    | _, _ => .fault .unsupported
   | (_, .error (.undefinedBehavior _)) => .fault .undefined
   | (_, _) => .fault .unsupported
 
 /-- Reference terminator evaluator delegating outer step, terminator dispatch,
-`SwitchInt` branch selection, `Assert` checking, `goToBlock` jumps, unwinding,
-and frame popping to `Miri.Interpreter.Step.step`,
-`Miri.Interpreter.ControlFlow.evalTerminator`,
-`Miri.Interpreter.ControlFlow.goToBlock`,
-`Miri.Interpreter.ControlFlow.unwindToBlock`, and
-`Miri.Interpreter.ControlFlow.returnFromCurrentFrame`
-(`vendor/lean-miri/Miri/Interpreter/{Step,ControlFlow}.lean`), matching
-`eval_terminator` in `compiler/rustc_const_eval/src/interpret/step.rs`
-(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "fn eval_terminator(&mut self, terminator: &mir::Terminator<'tcx>) ->
-> InterpResult<'tcx> {
->     ...
->     match terminator.kind {
->         Return => {
->             self.return_from_current_stack_frame(/* unwinding */ false)?
->         }
->         Goto { target, loop_hint_attrs: _ } => self.go_to_block(target),
->         SwitchInt { ref discr, ref targets } => { ... }
->         ...
->         Assert { ref cond, expected, ref msg, target, unwind } => { ... }
->         ...
->         UnwindResume => {
->             ...
->             self.return_from_current_stack_frame(/* unwinding */ true)?;
->             return interp_ok(());
->         }
->         ...
->         Unreachable => throw_ub!(Unreachable),
->         ...
->     }
->     interp_ok(())
-> }"
-> (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
-
-The terminator runs as one `Step.step` over the two-frame state
-`mkRefTermStepState`. Its result is read in this order:
-
-1. A recorded `RefStepMachine.terminal` outcome: the entry frame was popped by
-   a normal return (`.done (.returned ...)`) or, for `UnwindResume` in a
-   cleanup block, by an unwinding one (`.done (.unwound callerMem)`).
-2. Otherwise a `.mir` location of the entry frame: the terminator jumped to
-   that block (`Goto`, `SwitchInt`, a passing `Assert`, or a failing `Assert`
-   whose unwind action is a cleanup block).
-3. Otherwise the entry frame has started unwinding without a cleanup block (a
-   failing `Assert` whose unwind action is `Continue` leaves its location as
-   `.unwinding`). Miri pops such a frame on its next step, so the evaluator
-   runs `Step.step` once more: `returnFromCurrentFrame` pops the entry frame
-   and records `.done (.unwound callerMem)`. $M_{\text{anneal}}$ has no
-   unwinding frame state, so both Miri steps form one reference step, matching
-   the single `Trusted.MirSemantics.evalTerminator` step that ends in
-   `.done (.unwound callerMem)`.
-
-An error of either step is `.fault .undefined` when Miri reports UB and
-`.fault .unsupported` otherwise. -/
-noncomputable def evalRefTerminator (types : List MirTy) (rbb : RefBasicBlock)
-    (rframe : RefFrameState) (callerMem : CallerMemory) :
-    StepResult RefState TerminalOut :=
+direct crate-local calls, `CoreBuiltin` intrinsic calls, `SwitchInt` branch
+selection, `Assert` checking, `goToBlock`/`returnToBlock` jumps, multi-frame
+unwinding, and frame pushing/popping to `Miri.Interpreter.Step.step`,
+`Miri.Interpreter.ControlFlow.{evalTerminator, goToBlock, returnToBlock,
+unwindToBlock, returnFromCurrentFrame}`,
+`Miri.Interpreter.Call.evalCallTerminator`, and
+`Miri.Interpreter.Stack.{pushFrame, popFrame}`
+(`vendor/lean-miri/Miri/Interpreter/{Step,ControlFlow,Call,Stack}.lean`). -/
+noncomputable def evalRefTerminator (rp : RefProg) (rbb : RefBasicBlock)
+    (rframe : RefFrameState) (rcallers : List RefFrameState)
+    (callerMem : CallerMemory) : StepResult RefState TerminalOut :=
   match Miri.Interpreter.Step.step
-      (refStepHooksFor types callerMem) ()
-      (mkRefTermStepState rframe.locals
+      (refStepHooksFor rp callerMem) ()
+      (mkRefTermStepState rframe rcallers
         (toMiriTerminatorForDispatch rbb.terminator) rbb.cleanup) with
   | (st', .ok true) =>
     match st'.machine.terminal with
     | some res => res
     | none =>
-      match extractMirLocation? st' with
-      | some loc =>
+      match extractMirLocation? st', st'.machine.frames with
+      | some loc, top :: rest =>
         .step {
-          frames := [{
-            rframe with
+          frames := ({
+            top with
             blockIdx := loc.block
             stmtIdx := loc.statementIndex
-            locals := st'.machine.locals
-          }]
+          } :: rest).reverse
           callerMem
         }
-      | none =>
-        match Miri.Interpreter.Step.step
-            (refStepHooksFor types callerMem) () st' with
-        | (st'', .ok true) =>
-          match st''.machine.terminal with
-          | some res => res
-          | none => .fault .unsupported
-        | (_, .error (.undefinedBehavior _)) => .fault .undefined
-        | (_, _) => .fault .unsupported
+      | none, _ => drainRefUnwind rp callerMem (rcallers.length + 1) st'
+      | _, _ => .fault .unsupported
   | (_, .error (.undefinedBehavior _)) => .fault .undefined
   | (_, _) => .fault .unsupported
 
 /-- Single-step evaluator of $M_{\text{ref}}$:
 checks `rs.stepsExecuted < rs.maxSteps` first, returning `.exhaustedStepLimit`
-when the step budget is reached, and otherwise resolves the active `RefBody`
-and `RefBasicBlock` and delegates statement, terminator, and out-of-bounds
-block transitions to `Miri.Interpreter.Step.step` (`evalRefStatement`,
-`evalRefTerminator`, and `mkRefInvalidBlockStepState`), incrementing
-`stepsExecuted := rs.stepsExecuted + 1` on each running step.
-
-The stack must have the shape established by `initRefState`: a suspended
-caller sentinel (`isCallerSentinel = true`) beneath an executing frame
-(`isCallerSentinel = false`). Any other shape is `.blocked`. Each running
-step preserves the sentinel and replaces only the top frame.
-
-Adapter-owned boundary rules: (1) on an out-of-bounds `blockIdx`,
-`mkRefInvalidBlockStepState` runs `Step.step` over `basicBlocks := Array.empty`,
-so `.invalidBlock` is always returned and the `_ => .ub` branch is unreachable;
-(2) `stmtIdx > rbb.statements.length` returns `.blocked` directly to match
-`Trusted.MirSemantics.evalStep` (unreachable from `initRefState`; Miri's
-`Step.step` instead dispatches the terminator for any `statementIndex ≥
-statements.size`). -/
+when the step budget is reached, and otherwise validates the stack shape
+(`sentinel :: activeBottomToTop` with `sentinel.isCallerSentinel = true`, no
+active frame marked sentinel, and `activeBottomToTop.reverse = rframe ::
+rcallers`), resolves the active `RefBody` and `RefBasicBlock`, and delegates
+statement, terminator, and out-of-bounds block transitions to
+`Miri.Interpreter.Step.step` (`evalRefStatement`, `evalRefTerminator`, and
+`mkRefInvalidBlockStepState`), incrementing `stepsExecuted := rs.stepsExecuted
++ 1` on each running step. -/
 noncomputable def evalRefStep (rp : RefProg) (_c : Choice)
     (rs : RefState) : RefOutcome :=
   if !Nat.blt rs.stepsExecuted rs.maxSteps then
     .exhaustedStepLimit
   else
     match rs.frames with
-    | [sentinel, rframe] =>
-      if !sentinel.isCallerSentinel || rframe.isCallerSentinel then
+    | sentinel :: activeBottomToTop =>
+      if !sentinel.isCallerSentinel ||
+          activeBottomToTop.any (fun f => f.isCallerSentinel) then
         .blocked
       else
-        match MirSemantics.getElem? rp.bodies rframe.defId with
-        | none => .blocked
-        | some rbody =>
-          match MirSemantics.getElem? rbody.basicBlocks rframe.blockIdx with
-          | none =>
-            match Miri.Interpreter.Step.step
-                (refStepHooksFor rp.types rs.callerMem) ()
-                (mkRefInvalidBlockStepState rframe.locals rframe.blockIdx) with
-            | (_, .error (.invalidBlock _)) => .blocked
-            | _ => .ub
-          | some rbb =>
-            match MirSemantics.getElem? rbb.statements rframe.stmtIdx with
-            | some rstmt =>
-              stepResultToRefOutcome sentinel rs.stepsExecuted rs.maxSteps
-                (evalRefStatement rp.types rframe rs.callerMem rstmt)
+        match activeBottomToTop.reverse with
+        | rframe :: rcallers =>
+          match MirSemantics.getElem? rp.bodies rframe.defId with
+          | none => .blocked
+          | some rbody =>
+            match MirSemantics.getElem? rbody.basicBlocks rframe.blockIdx with
             | none =>
-              if Nat.beq rframe.stmtIdx rbb.statements.length then
+              match Miri.Interpreter.Step.step
+                  (refStepHooksFor rp rs.callerMem) ()
+                  (mkRefInvalidBlockStepState rframe rcallers
+                    rframe.blockIdx) with
+              | (_, .error (.invalidBlock _)) => .blocked
+              | _ => .ub
+            | some rbb =>
+              match MirSemantics.getElem? rbb.statements rframe.stmtIdx with
+              | some rstmt =>
                 stepResultToRefOutcome sentinel rs.stepsExecuted rs.maxSteps
-                  (evalRefTerminator rp.types rbb rframe rs.callerMem)
-              else
-                .blocked
-    | _ => .blocked
+                  (evalRefStatement rp rframe rcallers rs.callerMem rstmt)
+              | none =>
+                if Nat.beq rframe.stmtIdx rbb.statements.length then
+                  stepResultToRefOutcome sentinel rs.stepsExecuted rs.maxSteps
+                    (evalRefTerminator rp rbb rframe rcallers rs.callerMem)
+                else
+                  .blocked
+        | [] => .blocked
+    | [] => .blocked
 
 /-- Relational small-step transition of $M_{\text{ref}}$. -/
 def RefStep (rp : RefProg) (rs : RefState)
@@ -3264,16 +3899,29 @@ noncomputable def liftFrame (bodyLocals : List MirTy)
     blockIdx := f.blockIdx
     stmtIdx := f.stmtIdx
     locals := zipRefLocals bodyLocals f.locals
-    isCallerSentinel := false }
+    isCallerSentinel := false
+    returnCont := f.returnCont }
 
-/-- Lift an $M_{\text{anneal}}$ single-frame `StepResult` to
-$M_{\text{ref}}$. -/
-noncomputable def mapStepRes (bodyLocals : List MirTy) :
+/-- Lift a top-to-bottom stack of $M_{\text{anneal}}$ `FrameState`s to
+$M_{\text{ref}}$ `RefFrameState`s by looking up each frame's `body.locals` in
+`p.bodies`. -/
+noncomputable def liftFrames (p : Program) :
+    List FrameState → List RefFrameState
+  | [] => []
+  | f :: fs =>
+    let bodyLocals :=
+      match MirSemantics.getElem? p.bodies f.defId with
+      | some body => body.locals
+      | none => []
+    liftFrame bodyLocals f :: liftFrames p fs
+
+/-- Lift an $M_{\text{anneal}}$ `StepResult` to $M_{\text{ref}}$, converting
+the active top-to-bottom call stack `fs` into bottom-to-top order
+`(liftFrames p fs).reverse`. -/
+noncomputable def mapStepRes (p : Program) :
     StepResult State TerminalOut → StepResult RefState TerminalOut
-  | .step { frames := [f'], callerMem := cm } =>
-    .step { frames := [liftFrame bodyLocals f'], callerMem := cm }
-  | .step { frames := _, callerMem := cm } =>
-    .step { frames := [], callerMem := cm }
+  | .step { frames := fs, callerMem := cm } =>
+    .step { frames := (liftFrames p fs).reverse, callerMem := cm }
   | .done out => .done out
   | .fault k => .fault k
 
@@ -3287,6 +3935,22 @@ def FrameSimInv (p : Program) (f : FrameState)
     f.locals.length = body.locals.length ∧
     rf = liftFrame body.locals f
 
+/-- Stack-level one-to-one simulation invariant relating top-to-bottom
+$M_{\text{anneal}}$ frames `fs` and top-to-bottom $M_{\text{ref}}$ frames
+`rfs` element by element under `FrameSimInv`. -/
+def FramesSimInv (p : Program) (fs : List FrameState)
+    (rfs : List RefFrameState) : Prop :=
+  @List.rec FrameState (fun _ => List RefFrameState → Prop)
+    (fun rfs =>
+      match rfs with
+      | [] => True
+      | _ :: _ => False)
+    (fun f _ ih rfs =>
+      match rfs with
+      | [] => False
+      | rf :: rfs' => FrameSimInv p f rf ∧ ih rfs')
+    fs rfs
+
 /-- Type of the entry function's return place `_0`, which types the caller
 sentinel's destination slot (`callerSentinelFrame`). -/
 noncomputable def entryRetTy? (p : Program) : Option MirTy :=
@@ -3297,17 +3961,16 @@ noncomputable def entryRetTy? (p : Program) : Option MirTy :=
 /-- Whole-state one-to-one simulation invariant between $M_{\text{anneal}}$ and
 $M_{\text{ref}}$: constrains every field of `s` and `rs` (up to the explicit
 step counters `rs.stepsExecuted` and `rs.maxSteps`), placing the fixed caller
-sentinel for the entry function's return type beneath the lifted image of the
-single $M_{\text{anneal}}$ frame executing `p.entryDefId`. -/
+sentinel for the entry function's return type beneath the reversed (bottom-to-
+top) lifted image of `s.frames`. -/
 def SimulationInv (p : Program) (s : State) (rs : RefState) :
     Prop :=
-  ∃ f : FrameState, ∃ rf : RefFrameState, ∃ retTy : MirTy,
-    s.frames = [f] ∧
-    rs.frames = [callerSentinelFrame retTy, rf] ∧
+  ∃ rfs : List RefFrameState, ∃ retTy : MirTy,
+    s.frames ≠ [] ∧
+    rs.frames = callerSentinelFrame retTy :: rfs.reverse ∧
     rs.callerMem = s.callerMem ∧
     entryRetTy? p = some retTy ∧
-    f.defId = p.entryDefId ∧
-    FrameSimInv p f rf
+    FramesSimInv p s.frames rfs
 
 /-! ## Trusted Top-Level Correspondence and Canary Claims -/
 
@@ -3492,19 +4155,17 @@ def InitRefStateSimClaim : Prop :=
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.evalRefStep_eq`. -/
 def EvalRefStepEqClaim : Prop :=
   ∀ {rp : RefProg} {p : Program} {s : State} {rs : RefState}
-    {f : FrameState} {rf : RefFrameState} {retTy : MirTy} {body : Body},
+    {rfs : List RefFrameState} {retTy : MirTy},
     decodeProg rp = some p →
-    s.frames = [f] →
-    rs.frames = [callerSentinelFrame retTy, rf] →
+    s.frames ≠ [] →
+    rs.frames = callerSentinelFrame retTy :: rfs.reverse →
     rs.callerMem = s.callerMem →
-    MirSemantics.getElem? p.bodies f.defId = some body →
-    f.locals.length = body.locals.length →
-    rf = liftFrame body.locals f →
+    FramesSimInv p s.frames rfs →
     Nat.blt rs.stepsExecuted rs.maxSteps = true →
     ∀ (c : Choice),
       evalRefStep rp c rs =
         stepResultToRefOutcome (callerSentinelFrame retTy) rs.stepsExecuted
-          rs.maxSteps (mapStepRes body.locals (evalStep p c s))
+          rs.maxSteps (mapStepRes p (evalStep p c s))
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.sim_of_refStep`. -/
 def SimOfRefStepClaim : Prop :=
@@ -3552,7 +4213,7 @@ def DivergesIffRefDivergesClaim : Prop :=
   ∀ (p : Program) (q : Query),
     Diverges p q ↔ RefDiverges (encodeProg p) q
 
-/-! ### Correspondence Canary Programs and Claims (`D6`–`D18`)
+/-! ### Correspondence Canary Programs and Claims (`D6`–`D24`)
 
 `D6`–`D9` are self-consistency canaries of Anneal's deliberately stricter
 move-deinitialization rule (see `evalRefMiriOperandToSlot`): `eval_operand` at
@@ -4392,5 +5053,548 @@ def CanaryD19TupleOverlapFailClosedClaim : Prop :=
   RefWellFormed (encodeProg progTupleDisjointFieldAndUnitAggD19) qPair ∧
   RefBehavior (encodeProg progTupleDisjointFieldAndUnitAggD19) qPair
     (.returned ⟨.tuple [u32Val 20, u32Val 20], ⟨[]⟩⟩)
+
+/-- `D20` (direct crate-local call and return):
+Body `0` (`fn(a: u32) -> u32`) calls body `1` (`fn(x: u32, y: u32) -> u32`)
+with `[move _1, const 10u32]`, stores the result in `_2`, and returns `_2`.
+Body `1` computes `_0 = copy _1 + copy _2; return`. -/
+noncomputable def progDirectCallD20 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 1
+      locals := [u32Ty, u32Ty, u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1
+            [.move ⟨1, []⟩, .constant ⟨u32Ty, .scalar (BitVec.ofNat 128 10)⟩]
+            ⟨2, []⟩ (some 1) .continue_
+        },
+        {
+          statements := [.assign ⟨0, []⟩ (.use (.copy ⟨2, []⟩))]
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      argumentCount := 2
+      locals := [u32Ty, u32Ty, u32Ty]
+      basicBlocks := [{
+        statements := [
+          .assign ⟨0, []⟩ (.binaryOp .add (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))
+        ]
+        terminator := .return_
+      }]
+    }
+  ]
+
+/-- `D20` (left-to-right move deinitialization across call arguments):
+Body `0` calls body `1` with `[move _1, copy _1]`. Argument `0` deinitializes
+`_1`, so argument `1` (`copy _1`) faults with `.undefined` / `.ub` during
+argument validation in both $M_{\text{anneal}}$ and $M_{\text{ref}}$. -/
+noncomputable def progCallUseAfterMoveArgD20 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 1
+      locals := [u32Ty, u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [.move ⟨1, []⟩, .copy ⟨1, []⟩]
+            ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      argumentCount := 2
+      locals := [u32Ty, u32Ty, u32Ty]
+      basicBlocks := [{
+        statements := [
+          .assign ⟨0, []⟩ (.binaryOp .add (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))
+        ]
+        terminator := .return_
+      }]
+    }
+  ]
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D20_direct_call_and_return`: exercises
+direct crate-local `TerminatorKind.call` argument evaluation, move
+deinitialization, callee frame push/return, and caller destination writeback in
+both $M_{\text{anneal}}$ and $M_{\text{ref}}$
+(`Miri.Interpreter.Call.evalCallTerminator`). -/
+def CanaryD20DirectCallAndReturnClaim : Prop :=
+  let q32 : Query := { args := [u32Val 32] }
+  WellFormed progDirectCallD20 q32 ∧
+  Behavior progDirectCallD20 q32 (.returned ⟨u32Val 42, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg progDirectCallD20) q32 ∧
+  RefBehavior (encodeProg progDirectCallD20) q32 (.returned ⟨u32Val 42, ⟨[]⟩⟩) ∧
+  ReachesResult progCallUseAfterMoveArgD20 q32 (.fault .undefined) ∧
+  ¬ ReachesResult progCallUseAfterMoveArgD20 q32 (.fault .unsupported) ∧
+  ¬ WellFormed progCallUseAfterMoveArgD20 q32 ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progCallUseAfterMoveArgD20)
+    q32 maxSteps .ub)
+
+/-- `D21` (multi-frame call and unwind propagation):
+Body `0` calls body `1` with unwind action `callerUnwind`, while body `1` runs
+a checked `usize` increment (`usize::MAX + 1`) that panics into its own cleanup
+block (`bb2: nop; unwindResume`) and unwinds back into body `0`. -/
+noncomputable def mkMultiFrameUnwindProgD21 (callerUnwind : UnwindAction) :
+    Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 1
+      locals := [usizeTy, usizeTy]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [.copy ⟨1, []⟩] ⟨0, []⟩ (some 1) callerUnwind
+        },
+        {
+          statements := []
+          terminator := .return_
+        },
+        {
+          statements := [.nop]
+          terminator := .unwindResume
+          cleanup := true
+        }
+      ]
+    },
+    {
+      argumentCount := 1
+      locals := [usizeTy, usizeTy, usizeBoolPairTy]
+      basicBlocks := [
+        {
+          statements := [
+            .assign ⟨2, []⟩
+              (.binaryOp .addWithOverflow (.copy ⟨1, []⟩)
+                (.constant ⟨usizeTy, .scalar (BitVec.ofNat 128 1)⟩))
+          ]
+          terminator := .assert (.move ⟨2, [.field 1 .bool]⟩) false
+            (.overflow .add) 1 (.cleanup 2)
+        },
+        {
+          statements := [
+            .assign ⟨0, []⟩ (.use (.move ⟨2, [.field 0 usizeTy]⟩))
+          ]
+          terminator := .return_
+        },
+        {
+          statements := [.nop]
+          terminator := .unwindResume
+          cleanup := true
+        }
+      ]
+    }
+  ]
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D21_multi_frame_unwind`: exercises
+multi-frame panic unwind propagation from callee cleanup through caller cleanup
+(`.cleanup 2`), directly through caller (`.continue_`), and into UB at a
+non-unwinding call boundary (`.unreachable`) in both $M_{\text{anneal}}$ and
+$M_{\text{ref}}$. -/
+def CanaryD21MultiFrameUnwindClaim : Prop :=
+  WellFormed (mkMultiFrameUnwindProgD21 (.cleanup 2)) queryUsizeMax ∧
+  Behavior (mkMultiFrameUnwindProgD21 (.cleanup 2)) queryUsizeMax
+    (.unwound ⟨[]⟩) ∧
+  RefWellFormed (encodeProg (mkMultiFrameUnwindProgD21 (.cleanup 2)))
+    queryUsizeMax ∧
+  RefBehavior (encodeProg (mkMultiFrameUnwindProgD21 (.cleanup 2)))
+    queryUsizeMax (.unwound ⟨[]⟩) ∧
+  WellFormed (mkMultiFrameUnwindProgD21 .continue_) queryUsizeMax ∧
+  Behavior (mkMultiFrameUnwindProgD21 .continue_) queryUsizeMax
+    (.unwound ⟨[]⟩) ∧
+  RefWellFormed (encodeProg (mkMultiFrameUnwindProgD21 .continue_))
+    queryUsizeMax ∧
+  RefBehavior (encodeProg (mkMultiFrameUnwindProgD21 .continue_))
+    queryUsizeMax (.unwound ⟨[]⟩) ∧
+  ReachesResult (mkMultiFrameUnwindProgD21 .unreachable) queryUsizeMax
+    (.fault .undefined) ∧
+  ¬ ReachesResult (mkMultiFrameUnwindProgD21 .unreachable) queryUsizeMax
+    (.fault .unsupported) ∧
+  ¬ WellFormed (mkMultiFrameUnwindProgD21 .unreachable) queryUsizeMax ∧
+  (∃ maxSteps, RefReachesOutcome
+    (encodeProg (mkMultiFrameUnwindProgD21 .unreachable))
+    queryUsizeMax maxSteps .ub)
+
+/-- Single-body unary `CoreBuiltin` harness (`_0 = builtin(copy _1); return`).
+-/
+noncomputable def mkUnaryBuiltinProgD22 (builtin : CoreBuiltin)
+    (retTy argTy : MirTy) : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [retTy, argTy]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .callBuiltin builtin [.copy ⟨1, []⟩]
+          ⟨0, []⟩ (some 1) .continue_
+      },
+      {
+        statements := []
+        terminator := .return_
+      }
+    ]
+  }]
+
+/-- Single-body binary `CoreBuiltin` harness
+(`_0 = builtin(copy _1, copy _2); return`). -/
+noncomputable def mkBinaryBuiltinProgD22 (builtin : CoreBuiltin)
+    (retTy arg1Ty arg2Ty : MirTy) : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 2
+    locals := [retTy, arg1Ty, arg2Ty]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .callBuiltin builtin [.copy ⟨1, []⟩, .copy ⟨2, []⟩]
+          ⟨0, []⟩ (some 1) .continue_
+      },
+      {
+        statements := []
+        terminator := .return_
+      }
+    ]
+  }]
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D22_core_builtins`: exercises
+`TerminatorKind.callBuiltin` across `saturatingSub`, `saturatingAdd`,
+`leadingZeros`, `trailingZeros`, `wrappingAdd`, `wrappingShl`,
+`overflowingAdd`, `isMultipleOf`, `cmpMin`, and `cmpMax` (plus fail-closed
+ill-typed signed `isMultipleOf`) in both $M_{\text{anneal}}$ and
+$M_{\text{ref}}$. -/
+def CanaryD22CoreBuiltinsClaim : Prop :=
+  let u32PairTy : MirTy := .tuple [u32Ty, .bool]
+  let i32Ty : MirTy := .int .i32 true
+  let pSatSub := mkBinaryBuiltinProgD22 .saturatingSub u32Ty u32Ty u32Ty
+  let pSatAdd := mkBinaryBuiltinProgD22 .saturatingAdd i8Ty i8Ty i8Ty
+  let pClz := mkUnaryBuiltinProgD22 .leadingZeros u32Ty u32Ty
+  let pCtz := mkUnaryBuiltinProgD22 .trailingZeros u32Ty u32Ty
+  let pWrapAdd := mkBinaryBuiltinProgD22 .wrappingAdd u32Ty u32Ty u32Ty
+  let pWrapShl := mkBinaryBuiltinProgD22 .wrappingShl u32Ty u32Ty u32Ty
+  let pOvfAdd := mkBinaryBuiltinProgD22 .overflowingAdd u32PairTy u32Ty u32Ty
+  let pMult := mkBinaryBuiltinProgD22 .isMultipleOf .bool u32Ty u32Ty
+  let pMultBad := mkBinaryBuiltinProgD22 .isMultipleOf .bool i32Ty i32Ty
+  let pMin := mkBinaryBuiltinProgD22 .cmpMin i8Ty i8Ty i8Ty
+  let pMax := mkBinaryBuiltinProgD22 .cmpMax i8Ty i8Ty i8Ty
+  Behavior pSatSub { args := [u32Val 3, u32Val 10] }
+    (.returned ⟨u32Val 0, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pSatSub) { args := [u32Val 3, u32Val 10] }
+    (.returned ⟨u32Val 0, ⟨[]⟩⟩) ∧
+  Behavior pSatAdd { args := [i8Val 100, i8Val 50] }
+    (.returned ⟨i8Val 127, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pSatAdd) { args := [i8Val 100, i8Val 50] }
+    (.returned ⟨i8Val 127, ⟨[]⟩⟩) ∧
+  Behavior pClz { args := [u32Val 0] } (.returned ⟨u32Val 32, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pClz) { args := [u32Val 0] }
+    (.returned ⟨u32Val 32, ⟨[]⟩⟩) ∧
+  Behavior pClz { args := [u32Val 12] } (.returned ⟨u32Val 28, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pClz) { args := [u32Val 12] }
+    (.returned ⟨u32Val 28, ⟨[]⟩⟩) ∧
+  Behavior pCtz { args := [u32Val 0] } (.returned ⟨u32Val 32, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pCtz) { args := [u32Val 0] }
+    (.returned ⟨u32Val 32, ⟨[]⟩⟩) ∧
+  Behavior pCtz { args := [u32Val 12] } (.returned ⟨u32Val 2, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pCtz) { args := [u32Val 12] }
+    (.returned ⟨u32Val 2, ⟨[]⟩⟩) ∧
+  Behavior pWrapAdd queryU32MaxPlusOne (.returned ⟨u32Val 0, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pWrapAdd) queryU32MaxPlusOne
+    (.returned ⟨u32Val 0, ⟨[]⟩⟩) ∧
+  Behavior pWrapShl { args := [u32Val 1, u32Val 33] }
+    (.returned ⟨u32Val 2, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pWrapShl) { args := [u32Val 1, u32Val 33] }
+    (.returned ⟨u32Val 2, ⟨[]⟩⟩) ∧
+  Behavior pOvfAdd queryU32MaxPlusOne
+    (.returned ⟨.tuple [u32Val 0, .bool true], ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pOvfAdd) queryU32MaxPlusOne
+    (.returned ⟨.tuple [u32Val 0, .bool true], ⟨[]⟩⟩) ∧
+  Behavior pMult { args := [u32Val 12, u32Val 4] }
+    (.returned ⟨.bool true, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pMult) { args := [u32Val 12, u32Val 4] }
+    (.returned ⟨.bool true, ⟨[]⟩⟩) ∧
+  Behavior pMult { args := [u32Val 0, u32Val 0] }
+    (.returned ⟨.bool true, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pMult) { args := [u32Val 0, u32Val 0] }
+    (.returned ⟨.bool true, ⟨[]⟩⟩) ∧
+  Behavior pMult { args := [u32Val 5, u32Val 0] }
+    (.returned ⟨.bool false, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pMult) { args := [u32Val 5, u32Val 0] }
+    (.returned ⟨.bool false, ⟨[]⟩⟩) ∧
+  Behavior pMin { args := [i8Val 251, i8Val 3] }
+    (.returned ⟨i8Val 251, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pMin) { args := [i8Val 251, i8Val 3] }
+    (.returned ⟨i8Val 251, ⟨[]⟩⟩) ∧
+  Behavior pMax { args := [i8Val 251, i8Val 3] }
+    (.returned ⟨i8Val 3, ⟨[]⟩⟩) ∧
+  RefBehavior (encodeProg pMax) { args := [i8Val 251, i8Val 3] }
+    (.returned ⟨i8Val 3, ⟨[]⟩⟩) ∧
+  ReachesResult pMultBad
+    { args := [scalarNatVal .i32 true 4, scalarNatVal .i32 true 2] }
+    (.fault .unsupported) ∧
+  ¬ WellFormed pMultBad
+    { args := [scalarNatVal .i32 true 4, scalarNatVal .i32 true 2] } ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg pMultBad)
+    { args := [scalarNatVal .i32 true 4, scalarNatVal .i32 true 2] }
+    maxSteps .blocked)
+
+/-- `D23` (diverging direct call returning normally is UB):
+Body `0` calls body `1` with `target := none`, and body `1` executes `.return_`.
+Returning into a diverging call site faults with `.undefined` / `.ub`
+(`Miri.Interpreter.ControlFlow.returnToBlock none`). -/
+noncomputable def progDivergingCallReturnD23 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [{
+        statements := []
+        terminator := .call 1 [] ⟨0, []⟩ none .continue_
+      }]
+    },
+    {
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [{
+        statements := [
+          .assign ⟨0, []⟩
+            (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 0)⟩))
+        ]
+        terminator := .return_
+      }]
+    }
+  ]
+
+/-- `D23` (diverging `CoreBuiltin` call with `target := none` is UB):
+Body `0` invokes `.callBuiltin .wrappingAdd` with `target := none`, faulting
+with `.undefined` / `.ub` (`Miri.Interpreter.ControlFlow.returnToBlock none`).
+-/
+noncomputable def progDivergingBuiltinD23 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u32Ty]
+    basicBlocks := [{
+      statements := []
+      terminator := .callBuiltin .wrappingAdd
+        [.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩,
+         .constant ⟨u32Ty, .scalar (BitVec.ofNat 128 2)⟩]
+        ⟨0, []⟩ none .continue_
+    }]
+  }]
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D23_diverging_call_return_ub`: exercises
+normal return to a `target := none` diverging call continuation for both direct
+`.call` and `.callBuiltin`, faulting with `.fault .undefined` / `.ub` via
+`Miri.Interpreter.ControlFlow.returnToBlock none`. -/
+def CanaryD23DivergingCallReturnUbClaim : Prop :=
+  ReachesResult progDivergingCallReturnD23 queryEmpty (.fault .undefined) ∧
+  ¬ ReachesResult progDivergingCallReturnD23 queryEmpty (.fault .unsupported) ∧
+  ¬ WellFormed progDivergingCallReturnD23 queryEmpty ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progDivergingCallReturnD23)
+    queryEmpty maxSteps .ub) ∧
+  ReachesResult progDivergingBuiltinD23 queryEmpty (.fault .undefined) ∧
+  ¬ ReachesResult progDivergingBuiltinD23 queryEmpty (.fault .unsupported) ∧
+  ¬ WellFormed progDivergingBuiltinD23 queryEmpty ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progDivergingBuiltinD23)
+    queryEmpty maxSteps .ub)
+
+/-- `D24` (call-entry destination deinitialization observed on unwind):
+Body `0` initializes `_1 = 7u32` and calls unwinding body `1` with destination
+`_1` and `.cleanup 2`. Call entry deinitializes `_1`, so when body `1` panics
+and unwinds into cleanup block `2`, reading `_1` faults with `.undefined` /
+`.ub` rather than reading the stale `7u32`. -/
+noncomputable def progCallDeinitUnwindReadD24 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 0
+      locals := [u32Ty, u32Ty]
+      basicBlocks := [
+        {
+          statements := [
+            .assign ⟨1, []⟩
+              (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 7)⟩))
+          ]
+          terminator := .call 1 [] ⟨1, []⟩ (some 1) (.cleanup 2)
+        },
+        {
+          statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+          terminator := .return_
+        },
+        {
+          statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+          terminator := .unwindResume
+          cleanup := true
+        }
+      ]
+    },
+    {
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [{
+        statements := []
+        terminator := .assert
+          (.constant ⟨.bool, .scalar (BitVec.ofNat 128 0)⟩) true
+          (.overflow .add) 0 .continue_
+      }]
+    }
+  ]
+
+/-- `D24` (direct `.call` with `.move` argument overlapping `dst`):
+Body `0` executes `_1 = callee(move _1)`. Because `rustc`/Miri rejects
+overlapping moved arguments and destinations under Tree Borrows / Stacked
+Borrows protectors, both $M_{\text{anneal}}$ and $M_{\text{ref}}$ fail closed
+with `.fault .unsupported` / `.blocked`. -/
+noncomputable def progCallMoveOverlapDstD24 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 1
+      locals := [u32Ty, u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [.move ⟨1, []⟩] ⟨1, []⟩ (some 1) .continue_
+        },
+        {
+          statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      argumentCount := 1
+      locals := [u32Ty, u32Ty]
+      basicBlocks := [{
+        statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+        terminator := .return_
+      }]
+    }
+  ]
+
+/-- `D24` (`.callBuiltin` with `.move` argument overlapping `dst`):
+Body `0` executes `_1 = wrapping_add(move _1, 1u32)` and fails closed with
+`.fault .unsupported` / `.blocked`. -/
+noncomputable def progBuiltinMoveOverlapDstD24 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [u32Ty, u32Ty]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .callBuiltin .wrappingAdd
+          [.move ⟨1, []⟩, .constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩]
+          ⟨1, []⟩ (some 1) .continue_
+      },
+      {
+        statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+        terminator := .return_
+      }
+    ]
+  }]
+
+/-- `D24` positive contrast: `.copy` arguments overlapping `dst` remain
+admitted for both direct `.call` and `.callBuiltin`
+(`_1 = id(copy _1); _1 = wrapping_add(copy _1, 1); _0 = copy _1`). -/
+noncomputable def progCallAndBuiltinCopyOverlapDstD24 : Program where
+  entryDefId := 0
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 1
+      locals := [u32Ty, u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [.copy ⟨1, []⟩] ⟨1, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .callBuiltin .wrappingAdd
+            [.copy ⟨1, []⟩, .constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩]
+            ⟨1, []⟩ (some 2) .continue_
+        },
+        {
+          statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      argumentCount := 1
+      locals := [u32Ty, u32Ty]
+      basicBlocks := [{
+        statements := [.assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))]
+        terminator := .return_
+      }]
+    }
+  ]
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D24_call_deinit_and_overlap`: exercises
+(1) call-entry `dst` deinitialization observed as `.undefined`/`.ub` when a
+caller cleanup block reads `dst` after callee unwind, (2) fail-closed
+`.unsupported`/`.blocked` on `.move` arguments overlapping `dst` for both
+direct `.call` and `.callBuiltin`, and (3) positive contrast admitting `.copy`
+arguments overlapping `dst` for both `.call` and `.callBuiltin`. -/
+def CanaryD24CallDeinitAndOverlapClaim : Prop :=
+  let q9 : Query := { args := [u32Val 9] }
+  ReachesResult progCallDeinitUnwindReadD24 queryEmpty (.fault .undefined) ∧
+  ¬ ReachesResult progCallDeinitUnwindReadD24 queryEmpty (.fault .unsupported) ∧
+  ¬ WellFormed progCallDeinitUnwindReadD24 queryEmpty ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progCallDeinitUnwindReadD24)
+    queryEmpty maxSteps .ub) ∧
+  ReachesResult progCallMoveOverlapDstD24 q9 (.fault .unsupported) ∧
+  ¬ ReachesResult progCallMoveOverlapDstD24 q9 (.fault .undefined) ∧
+  ¬ WellFormed progCallMoveOverlapDstD24 q9 ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progCallMoveOverlapDstD24)
+    q9 maxSteps .blocked) ∧
+  ReachesResult progBuiltinMoveOverlapDstD24 q9 (.fault .unsupported) ∧
+  ¬ ReachesResult progBuiltinMoveOverlapDstD24 q9 (.fault .undefined) ∧
+  ¬ WellFormed progBuiltinMoveOverlapDstD24 q9 ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progBuiltinMoveOverlapDstD24)
+    q9 maxSteps .blocked) ∧
+  WellFormed progCallAndBuiltinCopyOverlapDstD24 q9 ∧
+  Behavior progCallAndBuiltinCopyOverlapDstD24 q9
+    (.returned ⟨u32Val 10, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg progCallAndBuiltinCopyOverlapDstD24) q9 ∧
+  RefBehavior (encodeProg progCallAndBuiltinCopyOverlapDstD24) q9
+    (.returned ⟨u32Val 10, ⟨[]⟩⟩)
 
 end Trusted.Correspondence

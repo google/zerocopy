@@ -821,6 +821,52 @@ inductive AssertKind where
   | nullPtrDeref
   | unsupported
 
+/-- Core scalar and tuple-returning `core::num` and `core::cmp` builtins
+recognized directly at `TerminatorKind::Call` sites without capturing the
+inlined `core` body (`library/core/src/num/{int_macros,uint_macros}.rs`,
+`library/core/src/intrinsics/mod.rs`, and `library/core/src/cmp.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+- `.wrappingAdd`, `.wrappingSub`, `.wrappingMul`: two same-type integers
+  `T::wrapping_{add,sub,mul}(self, rhs: T) -> T` (wrapping two's-complement /
+  modular arithmetic).
+- `.wrappingShl`, `.wrappingShr`: `T::wrapping_{shl,shr}(self, rhs: u32) -> T`,
+  masking `rhs` modulo `T::BITS` (`rhs & (Self::BITS - 1)`), logical right
+  shift for unsigned `T` and arithmetic right shift for signed `T`.
+- `.overflowingAdd`, `.overflowingSub`, `.overflowingMul`: two same-type
+  integers `T::overflowing_{add,sub,mul}(self, rhs: T) -> (T, bool)`,
+  returning `(wrapped, overflowed)`.
+- `.saturatingAdd`, `.saturatingSub`: two same-type integers
+  `T::saturating_{add,sub}(self, rhs: T) -> T`
+  (`core::intrinsics::saturating_add` and `saturating_sub`), clamping on
+  overflow to `T::MIN` or `T::MAX`.
+- `.leadingZeros`, `.trailingZeros`: single integer
+  `T::{leading_zeros,trailing_zeros}(self) -> u32` (`core::intrinsics::ctlz`
+  and `core::intrinsics::cttz`), counting zero bits at the width of `T`
+  regardless of signedness.
+- `.isMultipleOf`: two same-type unsigned integers
+  `uN::is_multiple_of(self, rhs: uN) -> bool`, returning `self == 0` when
+  `rhs == 0` and `self % rhs == 0` otherwise.
+- `.cmpMin`, `.cmpMax`: two same-type integers
+  `core::cmp::{min,max}(v1: T, v2: T) -> T`, ordering signed integers by
+  two's-complement value and unsigned integers by unsigned value. -/
+inductive CoreBuiltin where
+  | wrappingAdd
+  | wrappingSub
+  | wrappingMul
+  | wrappingShl
+  | wrappingShr
+  | overflowingAdd
+  | overflowingSub
+  | overflowingMul
+  | saturatingAdd
+  | saturatingSub
+  | leadingZeros
+  | trailingZeros
+  | isMultipleOf
+  | cmpMin
+  | cmpMax
+
 /-- A MIR basic-block terminator (`rustc_middle::mir::TerminatorKind` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -887,8 +933,24 @@ Constructor correspondence:
   (since `rustc` evaluates `cond` before checking `ignored`); lowering an
   ignored `Assert` to `.assert` would model a panic where the compiled program
   continues.
-- `.call callee args dst target unwind` corresponds to direct `FnDef`
-  `TerminatorKind::Call`.
+- `.call callee args dst target unwind` corresponds to direct crate-local
+  `FnDef` `TerminatorKind::Call` (`compiler/rustc_middle/src/mir/syntax.rs` and
+  `compiler/rustc_const_eval/src/interpret/call.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "Block ends with the call of a function."
+  > "The location in memory that the return value should be written to."
+  > "The destination for the return value. If some, the call returns normally
+  > to that block; if none, the call diverges."
+
+  Evaluates `args` left-to-right, pushes a callee stack frame with
+  `ReturnContinuation ⟨dst, target, unwind⟩`, and transfers control to block `0`
+  of `callee`.
+- `.callBuiltin builtin args dst target unwind` corresponds to a direct
+  `TerminatorKind::Call` to one of the recognized `CoreBuiltin` `core::num` /
+  `core::cmp` functions or intrinsics, evaluated directly in one step, written
+  to `dst`, and returning to `target` (or faulting with `.undefined` when
+  `target = none`).
 - `.unsupported` represents all other `TerminatorKind` variants
   (`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,
   `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and `InlineAsm`). -/
@@ -901,6 +963,8 @@ inductive TerminatorKind where
   | assert (cond : Operand) (expected : Bool) (msg : AssertKind)
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List Operand) (dst : Place)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | callBuiltin (builtin : CoreBuiltin) (args : List Operand) (dst : Place)
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 
