@@ -9385,6 +9385,60 @@
         "verification/safety-standards"
       ]
     },
+    "av1-cdef-wiener-sgrproj-film-grain-superres-and-cross-tile-loop-restoration": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/videolan/dav1d",
+            "revision": "9af5ae4eb5204706c7f381ec62635237179f172e"
+          },
+          "name": "dav1d"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/imazen/rav1d-safe",
+            "revision": "19327e174e738785cd4155711bbb9ce3d4a467ce"
+          },
+          "name": "rav1d-safe"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/AOMediaCodec/av1-spec",
+            "revision": "5e04f3f75e73a5898d7616c47c52f032144b8f80",
+            "version": "1.0.0-errata1"
+          },
+          "name": "AV1 Bitstream & Decoding Process Specification v1.0.0-errata1"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICASSP.2018.8462141",
+            "url": "https://arxiv.org/abs/1602.05975"
+          },
+          "name": "The AV1 Constrained Directional Enhancement Filter (CDEF)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICIP.2017.8296504"
+          },
+          "name": "A switchable loop-restoration with side-information framework for the emerging AV1 video codec"
+        }
+      ],
+      "topics": [
+        "domains/video-codecs",
+        "domains/av1-restoration",
+        "isa/simd-media",
+        "rust/borrow-checking",
+        "verification/fixed-point-dsp"
+      ]
+    },
     "av1-vp9-dav1d-rav1d-clean-room-rust-rewrite-and-performance-parity-anatomy": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -75982,6 +76036,50 @@
         "compilers/shader-languages",
         "security/gpu-sandboxing",
         "verification/memory-models"
+      ]
+    },
+    "vvc-h266-qtbt-mtt-lfnst-alf-lmcs-and-scoreboard-ctu-dag-anatomy": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/fraunhoferhhi/vvdec",
+            "revision": "8909ff880412629bdd31e87a9f68d652db89479c"
+          },
+          "name": "Fraunhofer VVdeC"
+        },
+        {
+          "identity": {
+            "standard": "ITU-T H.266 (V3, 2023-09) | ISO/IEC 23090-3:2024",
+            "url": "https://www.itu.int/rec/T-REC-H.266"
+          },
+          "name": "ITU-T Rec. H.266 | ISO/IEC 23090-3 (Versatile Video Coding)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TCSVT.2021.3101953"
+          },
+          "name": "Overview of the Versatile Video Coding (VVC) Standard and its Applications"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICIP40778.2020.9191199"
+          },
+          "name": "Towards A Live Software Decoder Implementation For The Upcoming Versatile Video Coding (VVC) Codec"
+        }
+      ],
+      "topics": [
+        "domains/video-codecs",
+        "domains/vvc-h266",
+        "isa/simd-media",
+        "verification/concurrency"
       ]
     },
     "wasm-component-model-truffle-graal-and-polyglot-interop-platforms": {

@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "domains/video-codecs",
+    "domains/vvc-h266",
+    "isa/simd-media",
+    "verification/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "https://github.com/FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Fraunhofer VVdeC",
+      "identity": {
+        "repository": "https://github.com/fraunhoferhhi/vvdec",
+        "revision": "8909ff880412629bdd31e87a9f68d652db89479c"
+      }
+    },
+    {
+      "name": "ITU-T Rec. H.266 | ISO/IEC 23090-3 (Versatile Video Coding)",
+      "identity": {
+        "standard": "ITU-T H.266 (V3, 2023-09) | ISO/IEC 23090-3:2024",
+        "url": "https://www.itu.int/rec/T-REC-H.266"
+      }
+    },
+    {
+      "name": "Overview of the Versatile Video Coding (VVC) Standard and its Applications",
+      "identity": {
+        "doi": "10.1109/TCSVT.2021.3101953"
+      }
+    },
+    {
+      "name": "Towards A Live Software Decoder Implementation For The Upcoming Versatile Video Coding (VVC) Codec",
+      "identity": {
+        "doi": "10.1109/ICIP40778.2020.9191199"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
