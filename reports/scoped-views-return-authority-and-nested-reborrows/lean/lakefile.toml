@@ -1,0 +1,6 @@
+name = "toy-views"
+version = "0.1.0"
+defaultTargets = ["ToyViews"]
+
+[[lean_lib]]
+name = "ToyViews"

@@ -1,0 +1,1461 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Views.ActivityStable": [
+      "propext"
+    ],
+    "Toy.Views.Addr": [],
+    "Toy.Views.Byte": [],
+    "Toy.Views.Cell": [],
+    "Toy.Views.Cell.byteOf": [
+      "propext"
+    ],
+    "Toy.Views.Cell.casesOn": [],
+    "Toy.Views.Cell.ctorElim": [],
+    "Toy.Views.Cell.ctorElimType": [],
+    "Toy.Views.Cell.ctorIdx": [],
+    "Toy.Views.Cell.depth?": [],
+    "Toy.Views.Cell.depth?.eq_1": [],
+    "Toy.Views.Cell.depth?.eq_2": [],
+    "Toy.Views.Cell.isOwn": [
+      "propext"
+    ],
+    "Toy.Views.Cell.isOwn.match_1": [
+      "propext"
+    ],
+    "Toy.Views.Cell.isWritable": [
+      "propext"
+    ],
+    "Toy.Views.Cell.isWritable.match_1": [
+      "propext"
+    ],
+    "Toy.Views.Cell.loaned": [],
+    "Toy.Views.Cell.loaned.elim": [],
+    "Toy.Views.Cell.loaned.inj": [],
+    "Toy.Views.Cell.loaned.injEq": [
+      "propext"
+    ],
+    "Toy.Views.Cell.loaned.noConfusion": [],
+    "Toy.Views.Cell.loaned.sizeOf_spec": [],
+    "Toy.Views.Cell.noConfusion": [],
+    "Toy.Views.Cell.noConfusionType": [],
+    "Toy.Views.Cell.own": [],
+    "Toy.Views.Cell.own.elim": [],
+    "Toy.Views.Cell.own.inj": [],
+    "Toy.Views.Cell.own.injEq": [
+      "propext"
+    ],
+    "Toy.Views.Cell.own.noConfusion": [],
+    "Toy.Views.Cell.own.sizeOf_spec": [],
+    "Toy.Views.Cell.rec": [],
+    "Toy.Views.Cell.recOn": [],
+    "Toy.Views.ClosedViews": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.activity": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.domains": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.fresh": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.mk": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.parents": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.rec": [
+      "propext"
+    ],
+    "Toy.Views.ClosedViews.recOn": [
+      "propext"
+    ],
+    "Toy.Views.DepthCounts": [
+      "propext"
+    ],
+    "Toy.Views.DomainsStable": [
+      "propext"
+    ],
+    "Toy.Views.Ex.aS0": [],
+    "Toy.Views.Ex.access_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.activityStable_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.borrow_s0": [
+      "propext"
+    ],
+    "Toy.Views.Ex.borrow_s1": [
+      "propext"
+    ],
+    "Toy.Views.Ex.borrow_s1_A_none": [
+      "propext"
+    ],
+    "Toy.Views.Ex.borrow_scope_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Views.Ex.borrow_t1_B_none": [
+      "propext"
+    ],
+    "Toy.Views.Ex.byteIncoherent": [],
+    "Toy.Views.Ex.canWrite_iff_needs_depthCounts": [
+      "propext"
+    ],
+    "Toy.Views.Ex.canWrite_iff_needs_isActive": [
+      "propext"
+    ],
+    "Toy.Views.Ex.canWrite_iff_needs_own": [
+      "propext"
+    ],
+    "Toy.Views.Ex.canWrite_iff_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_does_not_preserve_end_enabledness": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_does_not_preserve_loanTreeInv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_example_neg": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_example_pos": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_ignores_modes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_not_necessary_for_returnAuthority": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_of_borrow_scope_needs_inner_closed": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_of_scopedRun_needs_scopedRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_of_share_scope_needs_inner_closed": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_trans_needs_both": [
+      "propext"
+    ],
+    "Toy.Views.Ex.closedViews_trans_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Views.Ex.count_domain_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.cxDepthCounts": [],
+    "Toy.Views.Ex.cxExclChildLoaned": [],
+    "Toy.Views.Ex.cxParentCoversActive": [],
+    "Toy.Views.Ex.cxParentLt": [],
+    "Toy.Views.Ex.cxRootsDisjoint": [],
+    "Toy.Views.Ex.cxSharedChildBelowOwn": [],
+    "Toy.Views.Ex.cxSharedChildrenShared": [],
+    "Toy.Views.Ex.depthCounts_survives_naive_shared_end_while_writeExclusive_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.domainsStable_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.e2": [],
+    "Toy.Views.Ex.e3": [],
+    "Toy.Views.Ex.eS0": [],
+    "Toy.Views.Ex.eS0open": [],
+    "Toy.Views.Ex.eS1": [],
+    "Toy.Views.Ex.endRaw_inv_counterexamples_fail_localReturnCheck": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_needs_depthCounts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_needs_exclChildLoaned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_needs_parentCoversActive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_needs_returnAuthority": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_needs_sharedChildBelowOwn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_needs_sharedChildrenShared": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_nonvacuous_nested": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_inv_nonvacuous_shared": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_s1_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_s2_A_none": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_s2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_s2_C": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_t1_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_t2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_u2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_writeExclusive_needs_parentLt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.endRaw_writeExclusive_needs_rootsDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.fresh_scope_needs_end_of_fresh_view": [
+      "propext"
+    ],
+    "Toy.Views.Ex.fresh_scope_needs_open_step": [
+      "propext"
+    ],
+    "Toy.Views.Ex.g1": [],
+    "Toy.Views.Ex.g1r": [],
+    "Toy.Views.Ex.laws_hold_on_intended_states": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.loanTreeInv_allows_reader_byte_disagreement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.loanTree_laws_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_end_needs_sharedChildBelowOwn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_end_needs_sharedChildrenShared": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_needs_depthCounts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_needs_exclChildLoaned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_needs_localReturnCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_needs_parentCoversActive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localCheck_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localLoanLaws_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.localReturnCheck_does_not_enable_end": [
+      "propext"
+    ],
+    "Toy.Views.Ex.localReturnCheck_examples_neg": [
+      "propext"
+    ],
+    "Toy.Views.Ex.localReturnCheck_examples_pos": [
+      "propext"
+    ],
+    "Toy.Views.Ex.localReturnCheck_strictly_stronger_than_returnAuthority": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.naiveAuthority_s2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.naiveAuthority_t2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.naive_end_breaks_safety_of_nested_exclusive_reborrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.naive_end_breaks_safety_of_nested_shared_reborrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.naive_end_safe_without_nested_reborrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.naive_end_safe_without_nested_shared_reborrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.naive_shared_end_hidden_by_sibling_reader": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.newViewsInactive_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.noResurrection_s1_end_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_naiveAuthority_aS0_C": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_naiveAuthority_s2_A": [
+      "propext"
+    ],
+    "Toy.Views.Ex.not_naiveAuthority_s3_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_naiveAuthority_s3_C": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_naiveAuthority_t2flat_C": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_naiveAuthority_weExclChildLoaned_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_noResurrection_s2_end_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.not_properDesc_s2_A_C": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.not_returnAuthority_s2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.not_returnAuthority_t2_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.openScopeShape_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.parent_counter_zero_means_no_reader_without_nesting": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.parentsExist_example_neg": [
+      "propext"
+    ],
+    "Toy.Views.Ex.parentsStable_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.properDesc_s2_C_A": [
+      "propext"
+    ],
+    "Toy.Views.Ex.rdDepthCounts": [],
+    "Toy.Views.Ex.rdExclChildLoaned": [],
+    "Toy.Views.Ex.rdParentCoversActive": [],
+    "Toy.Views.Ex.read_s1_A_none": [
+      "propext"
+    ],
+    "Toy.Views.Ex.read_s1_B": [
+      "propext"
+    ],
+    "Toy.Views.Ex.read_s1e_B_none": [
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_closedViews_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_ignores_active_empty_descendants": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_lost_without_activityStable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_lost_without_domainsStable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_lost_without_newViewsInactive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_lost_without_parentsExist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_lost_without_parentsStable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_needed_before_scope": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_s1_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_s2_C": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.returnAuthority_t2_C": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.runEnd": [],
+    "Toy.Views.Ex.runMid": [],
+    "Toy.Views.Ex.s0": [],
+    "Toy.Views.Ex.s1": [],
+    "Toy.Views.Ex.s1e": [],
+    "Toy.Views.Ex.s1w": [],
+    "Toy.Views.Ex.s2": [],
+    "Toy.Views.Ex.s2e": [],
+    "Toy.Views.Ex.s2ee": [],
+    "Toy.Views.Ex.s2open": [],
+    "Toy.Views.Ex.s2w": [],
+    "Toy.Views.Ex.s3": [],
+    "Toy.Views.Ex.scopedRun_authority_tightness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.scopedRun_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.scopedRun_example_pos": [
+      "propext"
+    ],
+    "Toy.Views.Ex.scopedRun_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.scoped_end_needs_local_laws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.scoped_end_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.share_s0": [
+      "propext"
+    ],
+    "Toy.Views.Ex.share_s1_A_none": [
+      "propext"
+    ],
+    "Toy.Views.Ex.share_scope_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Views.Ex.share_t1": [
+      "propext"
+    ],
+    "Toy.Views.Ex.t1": [],
+    "Toy.Views.Ex.t1e": [],
+    "Toy.Views.Ex.t2": [],
+    "Toy.Views.Ex.t2e": [],
+    "Toy.Views.Ex.t2ee": [],
+    "Toy.Views.Ex.t2flat": [],
+    "Toy.Views.Ex.t2open": [],
+    "Toy.Views.Ex.t3": [],
+    "Toy.Views.Ex.u2": [],
+    "Toy.Views.Ex.u2e": [],
+    "Toy.Views.Ex.v2": [],
+    "Toy.Views.Ex.v2e1": [],
+    "Toy.Views.Ex.v2e2": [],
+    "Toy.Views.Ex.w2": [],
+    "Toy.Views.Ex.weDepthCounts": [],
+    "Toy.Views.Ex.weExclChildLoaned": [],
+    "Toy.Views.Ex.weParentCoversActive": [],
+    "Toy.Views.Ex.weParentLt": [],
+    "Toy.Views.Ex.weRootsDisjoint": [],
+    "Toy.Views.Ex.weSharedChildBelowOwn": [],
+    "Toy.Views.Ex.weSharedChildrenShared": [],
+    "Toy.Views.Ex.writeExclusive_examples": [
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_depthCounts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_exclChildLoaned": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_parentCoversActive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_parentLt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_rootsDisjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_sharedChildBelowOwn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.writeExclusive_needs_sharedChildrenShared": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.Ex.write_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Views.Ex.write_t1_A_none": [
+      "propext"
+    ],
+    "Toy.Views.ExclChildLoaned": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.depthCounts": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.exclChildLoaned": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.mk": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.parentCoversActive": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.parentLt": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.rec": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.recOn": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.rootsDisjoint": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.sharedChildBelowOwn": [
+      "propext"
+    ],
+    "Toy.Views.LoanTreeInv.sharedChildrenShared": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.depthCounts": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.exclChildLoaned": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.mk": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.parentCoversActive": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.rec": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.recOn": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.sharedChildBelowOwn": [
+      "propext"
+    ],
+    "Toy.Views.LocalLoanLaws.sharedChildrenShared": [
+      "propext"
+    ],
+    "Toy.Views.LocalReturnCheck": [
+      "propext"
+    ],
+    "Toy.Views.Mode": [],
+    "Toy.Views.Mode.baseline": [],
+    "Toy.Views.Mode.baseline.eq_1": [],
+    "Toy.Views.Mode.baseline.eq_2": [],
+    "Toy.Views.Mode.casesOn": [],
+    "Toy.Views.Mode.ctorElim": [],
+    "Toy.Views.Mode.ctorElimType": [],
+    "Toy.Views.Mode.ctorIdx": [],
+    "Toy.Views.Mode.excl": [],
+    "Toy.Views.Mode.excl.elim": [],
+    "Toy.Views.Mode.excl.sizeOf_spec": [],
+    "Toy.Views.Mode.noConfusion": [],
+    "Toy.Views.Mode.noConfusionType": [],
+    "Toy.Views.Mode.ofNat": [],
+    "Toy.Views.Mode.ofNat_ctorIdx": [],
+    "Toy.Views.Mode.rec": [],
+    "Toy.Views.Mode.recOn": [],
+    "Toy.Views.Mode.shared": [],
+    "Toy.Views.Mode.shared.elim": [],
+    "Toy.Views.Mode.shared.sizeOf_spec": [],
+    "Toy.Views.NaiveAuthority": [
+      "propext"
+    ],
+    "Toy.Views.NewViewsInactive": [
+      "propext"
+    ],
+    "Toy.Views.NoResurrection": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.activity": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.domains": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.isActive_old": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.mk": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.parents": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.rec": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.recOn": [
+      "propext"
+    ],
+    "Toy.Views.OpenScopeShape.size_eq": [
+      "propext"
+    ],
+    "Toy.Views.ParentCoversActive": [
+      "propext"
+    ],
+    "Toy.Views.ParentLt": [
+      "propext"
+    ],
+    "Toy.Views.ParentsExist": [
+      "propext"
+    ],
+    "Toy.Views.ParentsStable": [
+      "propext"
+    ],
+    "Toy.Views.ParentsStable.size_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.activeSharedChildren_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.ancestor_trichotomy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.covers_of_depth?_eq_some": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.endRaw_preserves_localLoanLaws_and_noResurrection": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.endRaw_preserves_localLoanLaws_and_noResurrection.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.endRaw_preserves_localLoanLaws_and_noResurrection.match_1_14": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.endRaw_preserves_localLoanLaws_and_noResurrection.match_1_3": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.excl_chain_to_ancestor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.excl_chain_to_ancestor.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.exists_root_ancestor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.exists_root_ancestor.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.filter_length_eq_of_eq": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.filter_length_erase_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.filter_length_two_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.old_of_active_of_closedViews": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.properDesc_congr_parentOf": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.properDesc_first_child": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.properDesc_first_child.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.range_nodup_check": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.range_nodup_check.match_1_1": [],
+    "Toy.Views.ProofLemmas.restoreCells_at_covered_excl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.restoreCells_at_covered_shared": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.restoreCells_at_uncovered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.returnAuthority_of_localReturnCheck_proved": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.returnAuthority_of_localReturnCheck_proved.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.view?_isSome_of_lt_size": [
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.writeExclusive_of_loanTree_laws_proved": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ProofLemmas.writeExclusive_of_loanTree_laws_proved.match_1_11": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.below": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.below.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.below.child": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.below.rec": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.below.step": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.brecOn": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.child": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.mem_of_closed": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.rec": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.recOn": [
+      "propext"
+    ],
+    "Toy.Views.ProperDesc.step": [
+      "propext"
+    ],
+    "Toy.Views.ReturnAuthority": [
+      "propext"
+    ],
+    "Toy.Views.RootsDisjoint": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.borrowScope": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.rec": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.refl": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.seq": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.shareScope": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.below.write": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.borrowScope": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.brecOn": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.casesOn": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.isActive_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.rec": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.recOn": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.refl": [],
+    "Toy.Views.ScopedRun.seq": [],
+    "Toy.Views.ScopedRun.shareScope": [
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.size_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.ScopedRun.write": [
+      "propext"
+    ],
+    "Toy.Views.SharedChildBelowOwn": [
+      "propext"
+    ],
+    "Toy.Views.SharedChildrenShared": [
+      "propext"
+    ],
+    "Toy.Views.State": [],
+    "Toy.Views.State.activeSharedChildren": [
+      "propext"
+    ],
+    "Toy.Views.State.baselineOf": [
+      "propext"
+    ],
+    "Toy.Views.State.canRead": [
+      "propext"
+    ],
+    "Toy.Views.State.canWrite": [
+      "propext"
+    ],
+    "Toy.Views.State.casesOn": [],
+    "Toy.Views.State.cell?": [
+      "propext"
+    ],
+    "Toy.Views.State.covers": [
+      "propext"
+    ],
+    "Toy.Views.State.covers_lt_width": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.State.ctorIdx": [],
+    "Toy.Views.State.depth?": [
+      "propext"
+    ],
+    "Toy.Views.State.isActive": [
+      "propext"
+    ],
+    "Toy.Views.State.isActive_lt_size": [
+      "propext"
+    ],
+    "Toy.Views.State.length_le_foldr_max": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.State.level": [
+      "propext"
+    ],
+    "Toy.Views.State.lt_size_of_parentOf": [
+      "propext"
+    ],
+    "Toy.Views.State.lt_size_of_view?_eq_some": [
+      "propext"
+    ],
+    "Toy.Views.State.mk": [],
+    "Toy.Views.State.mk.inj": [],
+    "Toy.Views.State.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Views.State.mk.noConfusion": [],
+    "Toy.Views.State.mk.sizeOf_spec": [],
+    "Toy.Views.State.modeOf": [
+      "propext"
+    ],
+    "Toy.Views.State.noConfusion": [],
+    "Toy.Views.State.noConfusionType": [],
+    "Toy.Views.State.parentOf": [
+      "propext"
+    ],
+    "Toy.Views.State.rec": [],
+    "Toy.Views.State.recOn": [],
+    "Toy.Views.State.setView": [],
+    "Toy.Views.State.size": [],
+    "Toy.Views.State.size.eq_1": [],
+    "Toy.Views.State.view?": [
+      "propext"
+    ],
+    "Toy.Views.State.views": [],
+    "Toy.Views.State.width": [],
+    "Toy.Views.View": [],
+    "Toy.Views.View.active": [],
+    "Toy.Views.View.casesOn": [],
+    "Toy.Views.View.cell?": [
+      "propext"
+    ],
+    "Toy.Views.View.cells": [],
+    "Toy.Views.View.ctorIdx": [],
+    "Toy.Views.View.domain": [
+      "propext"
+    ],
+    "Toy.Views.View.domain.eq_1": [
+      "propext"
+    ],
+    "Toy.Views.View.mapCells": [
+      "propext"
+    ],
+    "Toy.Views.View.mapCells.eq_1": [
+      "propext"
+    ],
+    "Toy.Views.View.mk": [],
+    "Toy.Views.View.mk.inj": [],
+    "Toy.Views.View.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Views.View.mk.noConfusion": [],
+    "Toy.Views.View.mk.sizeOf_spec": [],
+    "Toy.Views.View.mode": [],
+    "Toy.Views.View.noConfusion": [],
+    "Toy.Views.View.noConfusionType": [],
+    "Toy.Views.View.parent": [],
+    "Toy.Views.View.rec": [],
+    "Toy.Views.View.recOn": [],
+    "Toy.Views.ViewId": [],
+    "Toy.Views.WriteExclusive": [
+      "propext"
+    ],
+    "Toy.Views.borrow": [
+      "propext"
+    ],
+    "Toy.Views.borrow.match_1": [],
+    "Toy.Views.borrow_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.canWrite_iff_excl_and_no_active_shared_children_of_depthCounts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.cell?_eq_none_of_ge": [
+      "propext"
+    ],
+    "Toy.Views.cell?_mapCells": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.closedViews_of_borrow_scope": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.closedViews_of_fresh_scope": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.closedViews_of_scopedRun": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.closedViews_of_share_scope": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.closedViews_of_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.closedViews_refl": [
+      "propext"
+    ],
+    "Toy.Views.closedViews_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.decExistsEqSomeSucc": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.decExistsEqSomeSucc.match_1": [],
+    "Toy.Views.decExistsEqSomeSucc.match_3": [],
+    "Toy.Views.decExistsEqSomeSucc.match_5": [],
+    "Toy.Views.decExistsEqSomeSucc.match_7": [],
+    "Toy.Views.decForallEqSome": [],
+    "Toy.Views.decForallEqSome.match_1": [],
+    "Toy.Views.decForallEqSome.match_3": [],
+    "Toy.Views.endRaw": [
+      "propext"
+    ],
+    "Toy.Views.endRaw.match_1": [],
+    "Toy.Views.endRaw_baselineOf": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_eq_none_of_closedViews_of_ge_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_eq_none_of_parentOf_eq_none": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_isActive": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_isSome_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_modeOf": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_parentOf": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_loanTreeInv_and_noResurrection_of_returnAuthority": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_loanTreeInv_and_noResurrection_of_returnAuthority.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_localLoanLaws_and_noResurrection_of_localReturnCheck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority_before_closedViews": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_parentLt": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_preserves_rootsDisjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_size": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_unpack": [
+      "propext"
+    ],
+    "Toy.Views.endRaw_writeExclusive_of_loanTree_laws_of_returnAuthority": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.endRaw_writeExclusive_of_loanTree_laws_of_returnAuthority.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableActivityStable": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableClosedViews": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableClosedViews.match_1": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableClosedViews.match_3": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableDepthCounts": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableDomainsStable": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableEqCell": [],
+    "Toy.Views.instDecidableEqCell.decEq": [],
+    "Toy.Views.instDecidableEqCell.decEq.match_1": [],
+    "Toy.Views.instDecidableEqMode": [],
+    "Toy.Views.instDecidableEqState": [],
+    "Toy.Views.instDecidableEqState.decEq": [],
+    "Toy.Views.instDecidableEqState.decEq.match_1": [],
+    "Toy.Views.instDecidableEqView": [],
+    "Toy.Views.instDecidableEqView.decEq": [],
+    "Toy.Views.instDecidableEqView.decEq.match_1": [],
+    "Toy.Views.instDecidableExclChildLoaned": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableLoanTreeInv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.instDecidableLoanTreeInv.match_1": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableLoanTreeInv.match_3": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableLocalLoanLaws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.instDecidableLocalLoanLaws.match_1": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableLocalLoanLaws.match_3": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableLocalReturnCheck": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableNewViewsInactive": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableOpenScopeShape": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableOpenScopeShape.match_1": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableOpenScopeShape.match_3": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableParentCoversActive": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableParentLt": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableParentsExist": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableParentsStable": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableRootsDisjoint": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableSharedChildBelowOwn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.instDecidableSharedChildrenShared": [
+      "propext"
+    ],
+    "Toy.Views.instDecidableWriteExclusive": [
+      "propext"
+    ],
+    "Toy.Views.instReprCell": [],
+    "Toy.Views.instReprCell.repr": [],
+    "Toy.Views.instReprCell.repr.match_1": [],
+    "Toy.Views.instReprMode": [],
+    "Toy.Views.instReprMode.repr": [],
+    "Toy.Views.instReprMode.repr.match_1": [],
+    "Toy.Views.instReprState": [
+      "propext"
+    ],
+    "Toy.Views.instReprState.repr": [
+      "propext"
+    ],
+    "Toy.Views.instReprView": [
+      "propext"
+    ],
+    "Toy.Views.instReprView.repr": [
+      "propext"
+    ],
+    "Toy.Views.loanTreeInv_iff_local": [
+      "propext"
+    ],
+    "Toy.Views.loanTreeInv_iff_local.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.lt_length_of_cell?_isSome": [
+      "propext"
+    ],
+    "Toy.Views.mem_domain_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.mem_domain_iff.match_1_3": [
+      "propext"
+    ],
+    "Toy.Views.noResurrection_of_closed": [
+      "propext"
+    ],
+    "Toy.Views.openScopeShape_of_borrow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.openScopeShape_of_share": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.openScopeShape_of_share.match_1_2": [
+      "propext"
+    ],
+    "Toy.Views.parentsExist_of_parentLt_of_parentsStable": [
+      "propext"
+    ],
+    "Toy.Views.read": [
+      "propext"
+    ],
+    "Toy.Views.read_isSome_imp_isActive": [
+      "propext"
+    ],
+    "Toy.Views.restoreCells": [
+      "propext"
+    ],
+    "Toy.Views.restoreCells.match_1": [
+      "propext"
+    ],
+    "Toy.Views.restoreCells_domain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.restoreCells_isSome_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentCoversActive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentCoversActive.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentCoversActive.match_1_3": [
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentCoversActive.match_1_5": [
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentsExist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentsExist.match_1_1": [
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_closedViews_of_parentsExist.match_1_3": [
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_localReturnCheck_of_parentCoversActive_exclChildLoaned_depthCounts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_of_scopedRun_of_parentCoversActive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.returnAuthority_vacuous_of_ge_size": [
+      "propext"
+    ],
+    "Toy.Views.returnable": [
+      "propext"
+    ],
+    "Toy.Views.returnable.match_1": [
+      "propext"
+    ],
+    "Toy.Views.returnable.match_4": [],
+    "Toy.Views.returnable_parent_active": [
+      "propext"
+    ],
+    "Toy.Views.returnable_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.setView_size": [
+      "propext"
+    ],
+    "Toy.Views.share": [
+      "propext"
+    ],
+    "Toy.Views.share_size": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.view?_setView": [
+      "propext"
+    ],
+    "Toy.Views.view?_setView_isSome": [
+      "propext"
+    ],
+    "Toy.Views.write": [
+      "propext"
+    ],
+    "Toy.Views.writeExclusive_iff_unbounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.writeExclusive_of_loanTree_laws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Views.write_isActive": [
+      "propext"
+    ],
+    "Toy.Views.write_isSome_imp_isActive": [
+      "propext"
+    ],
+    "Toy.Views.write_size": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

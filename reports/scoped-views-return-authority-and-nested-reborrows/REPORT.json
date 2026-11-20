@@ -1,0 +1,97 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/memory-models",
+    "verification/invariants",
+    "pl/borrowing",
+    "pl/ownership",
+    "pl/permission-accounting"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust",
+      "identity": {
+        "doi": "10.1145/3371109"
+      }
+    },
+    {
+      "name": "Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680v2"
+      }
+    },
+    {
+      "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code",
+      "identity": {
+        "doi": "10.1145/3519939.3523704"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1145/3656422"
+      }
+    },
+    {
+      "name": "A Lightweight Formalism for Reference Lifetimes and Borrowing in Rust",
+      "identity": {
+        "doi": "10.1145/3443420"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "arxiv": "1903.00982v4",
+        "url": "https://arxiv.org/abs/1903.00982v4"
+      }
+    },
+    {
+      "name": "Permission Accounting in Separation Logic",
+      "identity": {
+        "doi": "10.1145/1040305.1040327"
+      }
+    },
+    {
+      "name": "Checking Interference with Fractional Permissions",
+      "identity": {
+        "doi": "10.1007/3-540-44898-5_4"
+      }
+    },
+    {
+      "name": "A Fresh Look at Separation Algebras and Share Accounting",
+      "identity": {
+        "doi": "10.1007/978-3-642-10672-9_13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

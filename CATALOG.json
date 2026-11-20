@@ -70229,6 +70229,103 @@
         "verification/compiler-verification"
       ]
     },
+    "scoped-views-return-authority-and-nested-reborrows": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.07185v2",
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.02680v2",
+            "doi": "10.1145/3674640"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704"
+          },
+          "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3443420"
+          },
+          "name": "A Lightweight Formalism for Reference Lifetimes and Borrowing in Rust"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.00982v4",
+            "url": "https://arxiv.org/abs/1903.00982v4"
+          },
+          "name": "Oxide: The Essence of Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040327"
+          },
+          "name": "Permission Accounting in Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-44898-5_4"
+          },
+          "name": "Checking Interference with Fractional Permissions"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-10672-9_13"
+          },
+          "name": "A Fresh Look at Separation Algebras and Share Accounting"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/memory-models",
+        "verification/invariants",
+        "pl/borrowing",
+        "pl/ownership",
+        "pl/permission-accounting"
+      ]
+    },
     "secure-compilation-robust-hyperproperty-preservation-and-entropy-preserving-refinement": {
       "observed_at": "2026-11-19",
       "subjects": [
