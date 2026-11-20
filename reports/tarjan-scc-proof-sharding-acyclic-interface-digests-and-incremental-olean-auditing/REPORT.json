@@ -1,0 +1,69 @@
+{
+  "topics": [
+    "verification/lean4",
+    "verification/audit",
+    "rust/compilers",
+    "lean/kernel-replay",
+    "lean/olean",
+    "compilers/tarjan-scc"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 C++ kernel and Kernel.Environment.replay",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5b6d9d25edb59b0f9264ecd3136c44cca7cfafe0"
+      }
+    },
+    {
+      "name": "Lean 4 standalone .olean environment replay checker (lean4checker)",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "Nanoda external Rust kernel typechecker for Lean 4 (nanoda_lib)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+      }
+    },
+    {
+      "name": "Lean4Lean formalized Lean 4 typechecker in Lean 4",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "Rocq standalone compiled-library verifier (coqchk / rocqchk)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "ddb69e5c5cff459fc2b0dfe3ec4ed0c968720c76"
+      }
+    },
+    {
+      "name": "Lean FRO exported-environment proof judge (comparator)",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "SafeVerify Lean 4 environment replay and target auditor",
+      "identity": {
+        "repository": "GasStationManager/SafeVerify",
+        "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+      }
+    },
+    {
+      "name": "Tarjan depth-first strongly connected components algorithm",
+      "identity": {
+        "doi": "10.1137/0201010",
+        "publication": "SIAM Journal on Computing 1(2):146-160 (1972)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
