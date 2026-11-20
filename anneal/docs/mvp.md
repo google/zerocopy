@@ -224,6 +224,41 @@ declared file. Unused declared files remain in the receipt’s source inventory.
 The shortcut does not infer a smaller set by parsing `mod`, `include!` or other
 macros, and does not include every package file as a potential compiler input.
 
+Build systems such as Bazel or GN that already know the crate root, Rust source
+files, and Lean module mappings can invoke the direct `rustc` subcommand instead
+of assembling a temporary `request.json`:
+
+```sh
+cargo anneal verify rustc /path/to/src/lib.rs \
+  --crate-name scalar --edition 2024 \
+  --source-file /path/to/src/helper.rs \
+  --spec-file Spec=/path/to/spec/Spec.lean \
+  --proof-file Proof=/path/to/proof/Proof.lean \
+  --spec-decl Spec:Spec.specs --theorem Proof:Proof.verify \
+  --select module::function \
+  --artifacts /path/to/new-verification-evidence
+```
+
+Direct `rustc` mode dereferences symlinks when staging regular source files (so
+Bazel runfiles symlink forests work directly) while still rejecting FIFOs,
+devices, and TOCTOU swaps. Host-level verification flags (`--capture`,
+`--sysroot`, `--lean`, `--artifacts`, `--export-lean-lib`,
+`--allow-unpinned-lean`, `--lean-memory-mb`) are accepted either before or after
+`rustc`. `--export-lean-lib` requires `--artifacts` and copies compiled target
+`.olean*` artifacts into `<artifacts>/lean-lib/` (even when proof checking fails,
+so interactive editors can inspect partial builds). `--lean-memory-mb <MB>`
+overrides Lean's `-M<MB>` memory limit (with a 4096 MiB floor for
+`resolve-imports`).
+
+When verifying against a Lean installation other than the locked `v4.34.1`
+toolchain (for example, a build system's centrally managed Lean distribution),
+pass `--allow-unpinned-lean` together with an explicit `--lean <PATH>`. Unpinned
+runs print a `TAINTED` banner on stderr, skip `foundation-lock.json` and
+`library-lock.json` matching, dynamically discover and hash the minimal `Init.*`
+/ `Std.*` sysroot import closure, record it in the receipt's `unpinned_lean`
+object, set `taint_reasons: ["unpinned_lean"]`, and mark `correspondence_provenance`
+inapplicable.
+
 ## Author specifications and proofs
 
 Each Lean source starts with `prelude` and declares its imports explicitly.
@@ -367,12 +402,16 @@ environment variable through `env!` or `option_env!`, even an absent one, is
 refused because the environment is not part of the bound inputs. Broader
 memory, concurrency and full Starnix verification remain further work.
 
-Verification returns a JSON receipt with one of these statuses:
+Verification returns a Receipt schema v2 (`"schema_version": 2`) JSON receipt
+with `"taint_reasons"` (`[]` for pinned runs, `["unpinned_lean"]` when
+`--allow-unpinned-lean` is active) and one of these statuses:
 
 | Status | Meaning | Exit code |
 | :--- | :--- | :--- |
-| `crate_verified` | The requested whole crate passed. | 0 |
-| `selected_unit_verified` | The requested selected scope passed. | 0 |
+| `crate_verified` | The requested whole crate passed with the pinned Lean toolchain. | 0 |
+| `selected_unit_verified` | The requested selected scope passed with the pinned Lean toolchain. | 0 |
+| `tainted_crate_verified` | The requested whole crate passed with `--allow-unpinned-lean`. | 0 |
+| `tainted_selected_unit_verified` | The requested selected scope passed with `--allow-unpinned-lean`. | 0 |
 | `unsupported` | A required input or obligation is outside the implemented fragment. | 1 |
 | `proof_failed` | The frontend reported a source rejection, or acceptance policy rejected the proof. | 1 |
 | `compiler_failed` | The configured Rust compilation failed. | 2 |

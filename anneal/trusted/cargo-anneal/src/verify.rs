@@ -13,12 +13,16 @@
 //! staged independently and passed to the compiled-environment auditor.
 
 use cargo_anneal::{
-    Checker, TargetAuditRequest, TargetBindings, TargetModule, TargetRole, sha256_bytes,
+    Checker, TOOLCHAIN, TargetAuditRequest, TargetBindings, TargetModule, TargetRole,
+    read_regular_file_deref, read_regular_file_strict, sha256_bytes,
 };
-use clap::Args;
+use clap::builder::{OsStringValueParser, TypedValueParser as _};
+use clap::error::ErrorKind;
+use clap::{Args, Subcommand};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
+use std::ffi::{OsStr, OsString};
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, ExitCode};
@@ -34,25 +38,23 @@ include!("bundled_resources.rs");
 
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 3;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
+const RECEIPT_SCHEMA_VERSION: u32 = 2;
 
 /// Arguments of the build-neutral verification command.
 #[derive(Args)]
+#[command(subcommand_negates_reqs = true)]
 pub struct VerifyArgs {
     /// JSON compilation/proof request, with paths relative to its directory.
-    #[arg(
-        long,
-        conflicts_with = "manifest_path",
-        required_unless_present = "manifest_path"
-    )]
+    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "select"])]
     request: Option<PathBuf>,
     /// A feature-free library for the x86_64-unknown-linux-gnu scalar profile.
-    #[arg(long, required_unless_present = "request")]
+    #[arg(long, conflicts_with = "request", requires = "proof_dir")]
     manifest_path: Option<PathBuf>,
     /// Directory containing Spec.lean and Proof.lean, for the Cargo shortcut.
-    #[arg(long, requires = "manifest_path")]
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     proof_dir: Option<PathBuf>,
     /// Select a function by its compiler path; omit to require the whole crate.
-    #[arg(long, requires = "manifest_path")]
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     select: Vec<String>,
     /// Capture driver; defaults to the installed bundle, then a sibling. The
     /// receipt records its SHA-256, which no lock pins.
@@ -60,11 +62,12 @@ pub struct VerifyArgs {
         not(feature = "setup"),
         arg(
             long,
+            global = true,
             help = "Capture driver; required when built without the `setup` \
                     feature. The receipt records its SHA-256, which no lock pins."
         )
     )]
-    #[cfg_attr(feature = "setup", arg(long))]
+    #[cfg_attr(feature = "setup", arg(long, global = true))]
     capture: Option<PathBuf>,
     /// Lean executable; defaults to the installed bundle, cached toolchain, or
     /// pinned elan installation. Its SHA-256 must match the foundation lock,
@@ -73,12 +76,13 @@ pub struct VerifyArgs {
         not(feature = "setup"),
         arg(
             long,
+            global = true,
             help = "Lean executable; required when built without the `setup` \
                     feature. Its SHA-256 must match the foundation lock, which \
                     does not cover the shared libraries it loads."
         )
     )]
-    #[cfg_attr(feature = "setup", arg(long))]
+    #[cfg_attr(feature = "setup", arg(long, global = true))]
     lean: Option<PathBuf>,
     /// Compiler sysroot; defaults to the installed bundle when present.
     /// Capture checks its reported rustc commit but does not hash it.
@@ -86,17 +90,267 @@ pub struct VerifyArgs {
         not(feature = "setup"),
         arg(
             long,
+            global = true,
             help = "Compiler sysroot; required when built without the `setup` \
                     feature. Capture checks its reported rustc commit but does \
                     not hash it."
         )
     )]
-    #[cfg_attr(feature = "setup", arg(long))]
+    #[cfg_attr(feature = "setup", arg(long, global = true))]
     sysroot: Option<PathBuf>,
     /// New UTF-8 directory path for retained capture, sources and audit
     /// evidence.
-    #[arg(long)]
+    #[arg(long, global = true)]
     artifacts: Option<PathBuf>,
+    /// Export compiled `.olean*` files to `<artifacts>/lean-lib/`.
+    #[arg(long, global = true)]
+    export_lean_lib: bool,
+    /// Allow unpinned Lean with explicit `--lean` (taints receipt).
+    #[arg(long, global = true)]
+    allow_unpinned_lean: bool,
+    /// Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces
+    /// a 4096 MiB floor).
+    #[arg(
+        long,
+        global = true,
+        value_name = "MB",
+        value_parser = clap::value_parser!(u32).range(1..)
+    )]
+    lean_memory_mb: Option<u32>,
+    /// Direct rustc-style verification subcommand.
+    #[command(subcommand)]
+    command: Option<VerifySubcommand>,
+}
+
+#[derive(Subcommand)]
+enum VerifySubcommand {
+    /// Verify a crate from explicit rustc inputs and Lean module mappings.
+    Rustc(RustcArgs),
+}
+
+#[derive(Args)]
+struct RustcArgs {
+    /// Crate root Rust source file.
+    crate_root: PathBuf,
+    /// Crate name passed to rustc capture.
+    #[arg(long)]
+    crate_name: String,
+    /// Rust edition (`2015`, `2018`, `2021`, or `2024`).
+    #[arg(
+        long,
+        default_value = "2024",
+        value_parser = ["2015", "2018", "2021", "2024"]
+    )]
+    edition: String,
+    /// Target triple for the verification profile.
+    #[arg(long, default_value = "x86_64-unknown-linux-gnu")]
+    target: String,
+    /// Conditional compilation `cfg` flag passed to capture.
+    #[arg(long)]
+    cfg: Vec<String>,
+    /// Additional Rust source file in the crate.
+    #[arg(long)]
+    source_file: Vec<PathBuf>,
+    /// Reviewed specification module mapping (`<MOD>=<PATH>`).
+    #[arg(
+        long,
+        required = true,
+        value_name = "MOD=PATH",
+        value_parser = OsStringValueParser::new().try_map(|v| parse_module_file_arg(&v))
+    )]
+    spec_file: Vec<ModuleFileArg>,
+    /// Authored proof module mapping (`<MOD>=<PATH>`).
+    #[arg(
+        long,
+        required = true,
+        value_name = "MOD=PATH",
+        value_parser = OsStringValueParser::new().try_map(|v| parse_module_file_arg(&v))
+    )]
+    proof_file: Vec<ModuleFileArg>,
+    /// Specification declaration (`[MODULE:]DECL`).
+    #[arg(
+        long,
+        default_value = "Spec:Spec.specs",
+        value_name = "[MODULE:]DECL",
+        value_parser = parse_decl_spec
+    )]
+    spec_decl: DeclSpec,
+    /// Proof theorem declaration (`[MODULE:]DECL`).
+    #[arg(
+        long,
+        default_value = "Proof:Proof.verify",
+        value_name = "[MODULE:]DECL",
+        value_parser = parse_decl_spec
+    )]
+    theorem: DeclSpec,
+    /// Select a function by its compiler path; omit to require the whole crate.
+    #[arg(long)]
+    select: Vec<String>,
+}
+
+#[derive(Clone, Debug)]
+struct ModuleFileArg {
+    module: String,
+    path: PathBuf,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct DeclSpec {
+    module: Option<String>,
+    decl: String,
+}
+
+fn parse_module_file_arg(raw: &OsStr) -> std::result::Result<ModuleFileArg, String> {
+    let bytes = raw.as_encoded_bytes();
+    let Some(eq_pos) = bytes.iter().position(|&b| b == b'=') else {
+        return Err("expected <MOD>=<PATH>".to_owned());
+    };
+    let mod_bytes = &bytes[..eq_pos];
+    let path_bytes = &bytes[eq_pos + 1..];
+    let Ok(module) = std::str::from_utf8(mod_bytes) else {
+        return Err("Lean module name must be UTF-8".to_owned());
+    };
+    if module.is_empty() || !identifier(module) {
+        return Err(format!("invalid Lean module identifier: {module:?}"));
+    }
+    if path_bytes.is_empty() {
+        return Err(format!("missing file path for module {module}"));
+    }
+    #[cfg(unix)]
+    let path = {
+        use std::os::unix::ffi::OsStrExt as _;
+        PathBuf::from(OsStr::from_bytes(path_bytes))
+    };
+    #[cfg(not(unix))]
+    let path = {
+        let s = std::str::from_utf8(path_bytes)
+            .map_err(|_| format!("non-UTF-8 path for module {module}"))?;
+        PathBuf::from(s)
+    };
+    Ok(ModuleFileArg {
+        module: module.to_owned(),
+        path,
+    })
+}
+
+fn parse_decl_spec(raw: &str) -> std::result::Result<DeclSpec, String> {
+    if let Some((module, decl)) = raw.split_once(':') {
+        if decl.contains(':') || module.is_empty() || decl.is_empty() {
+            return Err(format!(
+                "invalid declaration {raw:?}; expected [MODULE:]DECL"
+            ));
+        }
+        if !identifier(module) {
+            return Err(format!("invalid Lean module identifier: {module:?}"));
+        }
+        if !identifier(decl) {
+            return Err(format!("invalid Lean declaration identifier: {decl:?}"));
+        }
+        Ok(DeclSpec {
+            module: Some(module.to_owned()),
+            decl: decl.to_owned(),
+        })
+    } else {
+        if !identifier(raw) || !raw.contains('.') {
+            return Err(format!(
+                "expected a qualified Lean declaration name: {raw:?}"
+            ));
+        }
+        Ok(DeclSpec {
+            module: None,
+            decl: raw.to_owned(),
+        })
+    }
+}
+
+impl VerifyArgs {
+    /// Enforce mode exclusivity and host policy before `verify::main`
+    /// so invalid combinations exit `2` on stderr with empty stdout.
+    pub fn validate(&self, mut cmd: clap::Command) -> std::result::Result<(), clap::Error> {
+        if let Some(VerifySubcommand::Rustc(rustc)) = &self.command {
+            if self.request.is_some()
+                || self.manifest_path.is_some()
+                || self.proof_dir.is_some()
+                || !self.select.is_empty()
+            {
+                return Err(cmd.error(
+                    ErrorKind::ArgumentConflict,
+                    "--request, --manifest-path, --proof-dir, and parent --select \
+                     cannot be used with the `rustc` subcommand",
+                ));
+            }
+            if rustc.crate_name.is_empty() {
+                return Err(cmd.error(ErrorKind::InvalidValue, "--crate-name must not be empty"));
+            }
+            let mut seen_modules = BTreeSet::new();
+            for entry in rustc.spec_file.iter().chain(rustc.proof_file.iter()) {
+                if !seen_modules.insert(entry.module.as_str()) {
+                    return Err(cmd.error(
+                        ErrorKind::ArgumentConflict,
+                        format!(
+                            "duplicate Lean module `{}` across --spec-file/--proof-file",
+                            entry.module
+                        ),
+                    ));
+                }
+            }
+        } else {
+            if self.request.is_none() && self.manifest_path.is_none() {
+                return Err(cmd.error(
+                    ErrorKind::MissingRequiredArgument,
+                    "specify one of `--request <JSON>`, `--manifest-path <Cargo.toml> \
+                     --proof-dir <DIR>`, or `rustc <CRATE_ROOT> ...`",
+                ));
+            }
+            if self.manifest_path.is_some() && self.proof_dir.is_none() {
+                return Err(cmd.error(
+                    ErrorKind::MissingRequiredArgument,
+                    "`--proof-dir <DIR>` is required with `--manifest-path`",
+                ));
+            }
+        }
+
+        if self.export_lean_lib && self.artifacts.is_none() {
+            return Err(cmd.error(
+                ErrorKind::MissingRequiredArgument,
+                "`--export-lean-lib` requires `--artifacts <DIR>`",
+            ));
+        }
+        if self.capture.is_some() != self.sysroot.is_some() {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--capture` and `--sysroot` are ABI-paired and must be passed together",
+            ));
+        }
+        if self.allow_unpinned_lean && self.lean.is_none() {
+            return Err(cmd.error(
+                ErrorKind::MissingRequiredArgument,
+                "`--allow-unpinned-lean` requires an explicit `--lean <BIN>` path",
+            ));
+        }
+        #[cfg(not(feature = "setup"))]
+        if self.capture.is_none() || self.sysroot.is_none() || self.lean.is_none() {
+            let mut missing = Vec::new();
+            if self.capture.is_none() {
+                missing.push("--capture");
+            }
+            if self.sysroot.is_none() {
+                missing.push("--sysroot");
+            }
+            if self.lean.is_none() {
+                missing.push("--lean");
+            }
+            return Err(cmd.error(
+                ErrorKind::MissingRequiredArgument,
+                format!(
+                    "missing {}; explicit --capture, --sysroot, and --lean tool paths \
+                     are required when built without the `setup` feature",
+                    missing.join(", ")
+                ),
+            ));
+        }
+        Ok(())
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -155,10 +409,12 @@ impl Scope {
         }
     }
 
-    const fn verified_status(&self) -> &'static str {
-        match self {
-            Self::Crate {} => "crate_verified",
-            Self::SelectedUnit { .. } => "selected_unit_verified",
+    const fn verified_status(&self, unpinned_lean: bool) -> &'static str {
+        match (self, unpinned_lean) {
+            (Self::Crate {}, false) => "crate_verified",
+            (Self::SelectedUnit { .. }, false) => "selected_unit_verified",
+            (Self::Crate {}, true) => "tainted_crate_verified",
+            (Self::SelectedUnit { .. }, true) => "tainted_selected_unit_verified",
         }
     }
 }
@@ -272,6 +528,7 @@ fn parse_capture_receipt(bytes: &[u8]) -> Result<CaptureReceipt> {
 #[derive(Serialize)]
 struct FailureReceipt<'a> {
     schema_version: u32,
+    taint_reasons: &'a [&'a str],
     status: &'a str,
     phase: &'a str,
     detail: &'a str,
@@ -281,6 +538,7 @@ struct FailureReceipt<'a> {
     artifacts: Option<Option<&'a str>>,
 }
 
+#[derive(Debug)]
 struct Error {
     status: &'static str,
     phase: &'static str,
@@ -327,6 +585,36 @@ fn reserved_proof_module(module: &str) -> bool {
     matches!(module, "Expected" | "Captured" | "Trusted" | "Anneal")
         || module.starts_with("Trusted.")
         || module.starts_with("Anneal.")
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SymlinkPolicy {
+    Reject,
+    DereferenceRegular,
+}
+
+fn read_input_file(
+    path: &Path,
+    expected_canon: Option<&Path>,
+    policy: SymlinkPolicy,
+    phase: &'static str,
+) -> Result<(Vec<u8>, String)> {
+    let res = match policy {
+        SymlinkPolicy::Reject => read_regular_file_strict(path, expected_canon, phase),
+        SymlinkPolicy::DereferenceRegular => read_regular_file_deref(path, phase),
+    };
+    res.map_err(|failure| {
+        if failure.code == 1 {
+            let msg = if matches!(policy, SymlinkPolicy::Reject) {
+                format!("not a declared regular file: {}", path.display())
+            } else {
+                failure.message
+            };
+            error("unsupported", phase, msg)
+        } else {
+            error("tool_failed", phase, failure.message)
+        }
+    })
 }
 
 /// Require a declared regular file beneath an already canonical root.
@@ -621,13 +909,262 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
 fn load_request(args: &VerifyArgs) -> Result<(Request, PathBuf)> {
     if let Some(path) = &args.request {
         let path = fs::canonicalize(path).map_err(|e| io("request", e))?;
-        let bytes = fs::read(&path).map_err(|e| io("request", e))?;
+        let (bytes, _) = read_regular_file_deref(&path, "request")
+            .map_err(|e| error("tool_failed", "request", e.message))?;
         let request: Request =
             serde_json::from_slice(&bytes).map_err(|e| error("unsupported", "request", e))?;
         Ok((request, path.parent().unwrap().to_path_buf()))
     } else {
         cargo_request(args, args.manifest_path.as_ref().unwrap())
     }
+}
+
+fn normalize_lexical(path: &Path) -> Result<(bool, Vec<OsString>)> {
+    if path.as_os_str().is_empty() {
+        return Err(error(
+            "unsupported",
+            "inputs",
+            "Rust source path must not be empty",
+        ));
+    }
+    let mut is_abs = false;
+    let mut comps = Vec::new();
+    for comp in path.components() {
+        match comp {
+            Component::Prefix(_) => {
+                return Err(error("unsupported", "inputs", "unsupported path prefix"));
+            }
+            Component::RootDir => is_abs = true,
+            Component::CurDir => {}
+            Component::ParentDir => {
+                return Err(error(
+                    "unsupported",
+                    "inputs",
+                    format!("source path must not contain '..': {}", path.display()),
+                ));
+            }
+            Component::Normal(part) => comps.push(part.to_os_string()),
+        }
+    }
+    if comps.is_empty() {
+        return Err(error(
+            "unsupported",
+            "inputs",
+            format!("source path must name a file: {}", path.display()),
+        ));
+    }
+    Ok((is_abs, comps))
+}
+
+fn stage_rustc_rust_inputs(
+    rustc: &RustcArgs,
+    rust_stage: &Path,
+    originals: &mut Vec<(PathBuf, String)>,
+) -> Result<(PathBuf, Vec<PathBuf>, Vec<SourceIdentity>)> {
+    let (root_abs, root_comps) = normalize_lexical(&rustc.crate_root)?;
+    let mut entries = vec![(rustc.crate_root.clone(), root_comps.clone())];
+    let mut seen = BTreeSet::from([root_comps.clone()]);
+    for path in &rustc.source_file {
+        let (src_abs, src_comps) = normalize_lexical(path)?;
+        if src_abs != root_abs {
+            return Err(error(
+                "unsupported",
+                "inputs",
+                "cannot mix relative and absolute Rust source paths",
+            ));
+        }
+        if seen.insert(src_comps.clone()) {
+            entries.push((path.clone(), src_comps));
+        }
+    }
+    let mut common_dir: Vec<OsString> = entries[0].1[..entries[0].1.len() - 1].to_vec();
+    for (_, comps) in &entries[1..] {
+        let parent = &comps[..comps.len() - 1];
+        let shared = common_dir
+            .iter()
+            .zip(parent.iter())
+            .take_while(|(a, b)| a == b)
+            .count();
+        common_dir.truncate(shared);
+    }
+    if root_abs && common_dir.is_empty() {
+        return Err(error(
+            "unsupported",
+            "inputs",
+            "absolute Rust source paths must share a non-root common directory prefix",
+        ));
+    }
+
+    let prefix_len = common_dir.len();
+    let mut crate_root_rel = None;
+    let mut staged = Vec::with_capacity(entries.len());
+    for (idx, (orig_path, comps)) in entries.into_iter().enumerate() {
+        let mut rel = PathBuf::new();
+        for comp in &comps[prefix_len..] {
+            rel.push(comp);
+        }
+        if rel.as_os_str().is_empty()
+            || rel
+                .components()
+                .any(|part| !matches!(part, Component::Normal(_)))
+        {
+            return Err(error(
+                "unsupported",
+                "inputs",
+                "staged Rust path must be a clean relative path",
+            ));
+        }
+        if idx == 0 {
+            crate_root_rel = Some(rel.clone());
+        }
+        let (bytes, sha256) = read_input_file(
+            &orig_path,
+            None,
+            SymlinkPolicy::DereferenceRegular,
+            "inputs",
+        )?;
+        write(&rust_stage.join(&rel), &bytes)?;
+        originals.push((orig_path, sha256.clone()));
+        staged.push((
+            rel.clone(),
+            SourceIdentity {
+                relative_path: rel,
+                sha256,
+            },
+        ));
+    }
+    staged.sort_by(|a, b| a.0.cmp(&b.0));
+    let source_files = staged.iter().map(|(rel, _)| rel.clone()).collect();
+    let sources = staged.into_iter().map(|(_, id)| id).collect();
+    Ok((
+        crate_root_rel.expect("crate_root included"),
+        source_files,
+        sources,
+    ))
+}
+
+struct StagedAuthored {
+    module: String,
+    source: PathBuf,
+    sha256: String,
+    role: AuthoredRole,
+}
+
+struct PreparedRustcRequest {
+    request: Request,
+    sources: Vec<SourceIdentity>,
+    authored: Vec<StagedAuthored>,
+}
+
+fn prepare_rustc_request(
+    rustc: &RustcArgs,
+    work: &Path,
+    originals: &mut Vec<(PathBuf, String)>,
+) -> Result<PreparedRustcRequest> {
+    let rust_stage = work.join("rust");
+    fs::create_dir_all(&rust_stage).map_err(|e| io("staging", e))?;
+    let (crate_root, source_files, sources) =
+        stage_rustc_rust_inputs(rustc, &rust_stage, originals)?;
+
+    let mut seen_modules = BTreeSet::new();
+    let mut authored = Vec::new();
+    let mut proof_sources = Vec::new();
+    for (entry, role) in rustc
+        .spec_file
+        .iter()
+        .map(|e| (e, AuthoredRole::Specification))
+        .chain(rustc.proof_file.iter().map(|e| (e, AuthoredRole::Proof)))
+    {
+        if !identifier(&entry.module)
+            || reserved_proof_module(&entry.module)
+            || !seen_modules.insert(entry.module.clone())
+        {
+            return Err(error(
+                "unsupported",
+                "proof",
+                "invalid, duplicate or reserved proof module",
+            ));
+        }
+        let rel_path = PathBuf::from(format!("{}.lean", entry.module.replace('.', "/")));
+        let (bytes, sha256) = read_input_file(
+            &entry.path,
+            None,
+            SymlinkPolicy::DereferenceRegular,
+            "proof",
+        )?;
+        let staged_path = work.join("authored").join(&rel_path);
+        write(&staged_path, &bytes)?;
+        originals.push((entry.path.clone(), sha256.clone()));
+        proof_sources.push(ProofSource {
+            module: entry.module.clone(),
+            path: rel_path,
+            role: role.clone(),
+        });
+        authored.push(StagedAuthored {
+            module: entry.module.clone(),
+            source: staged_path,
+            sha256,
+            role,
+        });
+    }
+    proof_sources.sort_by(|a, b| a.module.cmp(&b.module));
+    authored.sort_by(|a, b| a.module.cmp(&b.module));
+
+    let spec_module = match &rustc.spec_decl.module {
+        Some(module) => module.clone(),
+        None => module_of(&rustc.spec_decl.decl)?,
+    };
+    let theorem_module = match &rustc.theorem.module {
+        Some(module) => module.clone(),
+        None => module_of(&rustc.theorem.decl)?,
+    };
+    if !authored
+        .iter()
+        .any(|m| m.module == spec_module && matches!(m.role, AuthoredRole::Specification))
+        || !authored
+            .iter()
+            .any(|m| m.module == theorem_module && matches!(m.role, AuthoredRole::Proof))
+    {
+        return Err(error(
+            "unsupported",
+            "proof",
+            "specification and theorem must have their declared source roles",
+        ));
+    }
+
+    let scope = if rustc.select.is_empty() {
+        Scope::Crate {}
+    } else {
+        Scope::SelectedUnit {
+            roots: rustc.select.iter().cloned().collect(),
+        }
+    };
+    let request = Request {
+        schema_version: 1,
+        compilation: Compilation {
+            source_root: PathBuf::from("rust"),
+            crate_root,
+            crate_name: rustc.crate_name.clone(),
+            edition: rustc.edition.clone(),
+            target: rustc.target.clone(),
+            cfg: rustc.cfg.iter().cloned().collect(),
+            source_files,
+        },
+        scope,
+        proof: Proof {
+            source_root: PathBuf::from("authored"),
+            specification: rustc.spec_decl.decl.clone(),
+            theorem: rustc.theorem.decl.clone(),
+            specification_module: rustc.spec_decl.module.clone(),
+            theorem_module: rustc.theorem.module.clone(),
+            sources: proof_sources,
+        },
+    };
+    Ok(PreparedRustcRequest {
+        request,
+        sources,
+        authored,
+    })
 }
 
 struct SelectedTools {
@@ -691,7 +1228,21 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
 
 fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     let start = Instant::now();
-    let (request, base) = load_request(args)?;
+    let mut originals = Vec::new();
+    let (request, base, pre_staged_rust, pre_staged_lean, symlink_policy) =
+        if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
+            let prepared = prepare_rustc_request(rustc, work, &mut originals)?;
+            (
+                prepared.request,
+                work.to_path_buf(),
+                Some(prepared.sources),
+                Some(prepared.authored),
+                SymlinkPolicy::DereferenceRegular,
+            )
+        } else {
+            let (request, base) = load_request(args)?;
+            (request, base, None, None, SymlinkPolicy::Reject)
+        };
     if request.schema_version != 1 || request.compilation.source_files.is_empty() {
         return Err(error(
             "unsupported",
@@ -733,33 +1284,37 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // Rust and Lean consume private snapshots, not paths they can resolve
     // back into the caller's live checkout. Record the original bytes too:
     // the final identity check must still bind the receipt to those inputs.
-    let source_root = root(&base, &request.compilation.source_root)?;
     let rust_stage = work.join("rust");
-    fs::create_dir_all(&rust_stage).map_err(|e| io("staging", e))?;
-    let mut originals = Vec::new();
-    let mut sources = Vec::new();
-    let mut paths = BTreeSet::new();
-    for relative in &request.compilation.source_files {
-        if !paths.insert(relative.clone()) {
-            return Err(error("unsupported", "inputs", "duplicate source input"));
+    let sources = if let Some(sources) = pre_staged_rust {
+        sources
+    } else {
+        let source_root = root(&base, &request.compilation.source_root)?;
+        fs::create_dir_all(&rust_stage).map_err(|e| io("staging", e))?;
+        let mut sources = Vec::new();
+        let mut paths = BTreeSet::new();
+        for relative in &request.compilation.source_files {
+            if !paths.insert(relative.clone()) {
+                return Err(error("unsupported", "inputs", "duplicate source input"));
+            }
+            let original = declared_file(&source_root, relative)?;
+            let (bytes, sha256) =
+                read_input_file(&original, Some(&original), symlink_policy, "inputs")?;
+            write(&rust_stage.join(relative), &bytes)?;
+            originals.push((original, sha256.clone()));
+            sources.push(SourceIdentity {
+                relative_path: relative.clone(),
+                sha256,
+            });
         }
-        let original = declared_file(&source_root, relative)?;
-        let bytes = fs::read(&original).map_err(|e| io("inputs", e))?;
-        let sha256 = sha256_bytes(&bytes);
-        write(&rust_stage.join(relative), &bytes)?;
-        originals.push((original, sha256.clone()));
-        sources.push(SourceIdentity {
-            relative_path: relative.clone(),
-            sha256,
-        });
-    }
-    if !paths.contains(&request.compilation.crate_root) {
-        return Err(error(
-            "unsupported",
-            "inputs",
-            "crate_root is not a declared source",
-        ));
-    }
+        if !paths.contains(&request.compilation.crate_root) {
+            return Err(error(
+                "unsupported",
+                "inputs",
+                "crate_root is not a declared source",
+            ));
+        }
+        sources
+    };
     // The invocation owns tool selection; target requests cannot name a
     // compiler executable. Adapter correctness is a stated TCB assumption.
     // Its digest identifies the selected build and detects later changes, but
@@ -772,9 +1327,17 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // `default_lean_path` when unavailable. When built without `setup`, all
     // three tool paths must be passed explicitly.
     let tools = select_tools(args)?;
-    let capture = fs::canonicalize(tools.capture).map_err(|e| io("capture-tool", e))?;
-    let capture_binary_sha256 =
-        sha256_bytes(&fs::read(&capture).map_err(|e| io("capture-tool", e))?);
+    let capture_tool_path = tools.capture.clone();
+    let capture = fs::canonicalize(&capture_tool_path).map_err(|e| {
+        error(
+            "tool_failed",
+            "capture-tool",
+            format!("cannot inspect {}: {e}", capture_tool_path.display()),
+        )
+    })?;
+    let (_, capture_binary_sha256) =
+        read_regular_file_strict(&capture, Some(&capture), "capture-tool")
+            .map_err(|e| error("tool_failed", "capture-tool", e.message))?;
     let capture_dir = work.join("capture");
     // Capture reserves and publishes a new output directory itself; precreating
     // it here would violate its create-only publication contract.
@@ -800,6 +1363,16 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         .current_dir(&rust_stage);
     if let Some(sysroot) = &tools.sysroot {
         let sysroot = fs::canonicalize(sysroot).map_err(|e| io("sysroot", e))?;
+        if !fs::metadata(&sysroot)
+            .map_err(|e| io("sysroot", e))?
+            .is_dir()
+        {
+            return Err(error(
+                "tool_failed",
+                "sysroot",
+                format!("sysroot path is not a directory: {}", sysroot.display()),
+            ));
+        }
         // The library search path belongs to the explicitly selected compiler
         // installation, never to a target crate's ambient environment.
         command.env("LD_LIBRARY_PATH", sysroot.join("lib"));
@@ -937,42 +1510,70 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // Module names choose destinations in the private stage. Reserve the
     // runner-owned names before writing anything so authored files cannot
     // shadow the model, captured subject, or generated expectation.
-    let proof_root = root(&base, &request.proof.source_root)?;
     let mut module_names: BTreeSet<_> = modules.iter().map(|m| m.module.clone()).collect();
     let mut spec_identity = Vec::new();
-    for input in &request.proof.sources {
-        if !identifier(&input.module)
-            || reserved_proof_module(&input.module)
-            || !module_names.insert(input.module.clone())
-        {
-            return Err(error(
-                "unsupported",
-                "proof",
-                "invalid, duplicate or reserved proof module",
-            ));
-        }
-        let original = declared_file(&proof_root, &input.path)?;
-        let bytes = fs::read(&original).map_err(|e| io("proof", e))?;
-        let sha256 = sha256_bytes(&bytes);
-        originals.push((original, sha256.clone()));
-        let source = work
-            .join("authored")
-            .join(input.module.replace('.', "/"))
-            .with_extension("lean");
-        write(&source, &bytes)?;
-        let role = match input.role {
-            AuthoredRole::Specification => {
-                spec_identity.push((input.module.clone(), sha256.clone()));
-                TargetRole::Specification
+    if let Some(authored) = pre_staged_lean {
+        for staged in authored {
+            if !identifier(&staged.module)
+                || reserved_proof_module(&staged.module)
+                || !module_names.insert(staged.module.clone())
+            {
+                return Err(error(
+                    "unsupported",
+                    "proof",
+                    "invalid, duplicate or reserved proof module",
+                ));
             }
-            AuthoredRole::Proof => TargetRole::Proof,
-        };
-        modules.push(TargetModule {
-            module: input.module.clone(),
-            source,
-            expected_sha256: sha256,
-            role,
-        });
+            let target_role = match staged.role {
+                AuthoredRole::Specification => {
+                    spec_identity.push((staged.module.clone(), staged.sha256.clone()));
+                    TargetRole::Specification
+                }
+                AuthoredRole::Proof => TargetRole::Proof,
+            };
+            modules.push(TargetModule {
+                module: staged.module,
+                source: staged.source,
+                expected_sha256: staged.sha256,
+                role: target_role,
+            });
+        }
+    } else {
+        let proof_root = root(&base, &request.proof.source_root)?;
+        for input in &request.proof.sources {
+            if !identifier(&input.module)
+                || reserved_proof_module(&input.module)
+                || !module_names.insert(input.module.clone())
+            {
+                return Err(error(
+                    "unsupported",
+                    "proof",
+                    "invalid, duplicate or reserved proof module",
+                ));
+            }
+            let original = declared_file(&proof_root, &input.path)?;
+            let (bytes, sha256) =
+                read_input_file(&original, Some(&original), symlink_policy, "proof")?;
+            originals.push((original, sha256.clone()));
+            let source = work
+                .join("authored")
+                .join(input.module.replace('.', "/"))
+                .with_extension("lean");
+            write(&source, &bytes)?;
+            let role = match input.role {
+                AuthoredRole::Specification => {
+                    spec_identity.push((input.module.clone(), sha256.clone()));
+                    TargetRole::Specification
+                }
+                AuthoredRole::Proof => TargetRole::Proof,
+            };
+            modules.push(TargetModule {
+                module: input.module.clone(),
+                source,
+                expected_sha256: sha256,
+                role,
+            });
+        }
     }
     if !modules
         .iter()
@@ -1030,7 +1631,15 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // report verification success. Operational failures stay distinct from
     // a successfully executed checker rejecting a proof.
     let mut checker = Checker::new(&bundle, tools.lean.as_deref()).map_err(|e| io("audit", e))?;
-    let audit = checker.run_target(&audit_request).map_err(|e| {
+    checker.set_allow_unpinned_lean(args.allow_unpinned_lean);
+    checker.set_lean_memory_limit_mb(args.lean_memory_mb);
+    let audit_result = checker.run_target(&audit_request);
+    let export_result = if args.export_lean_lib {
+        Some(checker.export_target_oleans(&work.join("lean-lib")))
+    } else {
+        None
+    };
+    let audit = audit_result.map_err(|e| {
         error(
             if e.code == 1 {
                 "proof_failed"
@@ -1041,11 +1650,15 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             e.to_string(),
         )
     })?;
+    if let Some(Err(export_err)) = export_result {
+        return Err(error("tool_failed", "export-lean-lib", export_err.message));
+    }
     let proof_ms = proof_start.elapsed().as_millis();
     // Snapshot identity is checked again at the accepting boundary. Logical
     // type equality cannot authenticate unused source or configuration hashes.
     for (path, expected) in &originals {
-        if sha256_bytes(&fs::read(path).map_err(|e| io("binding", e))?) != *expected {
+        let (_, actual_sha) = read_input_file(path, Some(path), symlink_policy, "binding")?;
+        if actual_sha != *expected {
             return Err(error(
                 "tool_failed",
                 "binding",
@@ -1053,38 +1666,64 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             ));
         }
     }
-    if sha256_bytes(&fs::read(&capture).map_err(|e| io("binding", e))?) != capture_binary_sha256 {
+    let current_capture_canon = fs::canonicalize(&capture_tool_path).map_err(|e| {
+        error(
+            "tool_failed",
+            "binding",
+            format!("cannot inspect {}: {e}", capture_tool_path.display()),
+        )
+    })?;
+    let (_, current_capture_sha) = read_regular_file_strict(
+        &current_capture_canon,
+        Some(&current_capture_canon),
+        "binding",
+    )
+    .map_err(|e| error("tool_failed", "binding", e.message))?;
+    if current_capture_sha != capture_binary_sha256 || current_capture_canon != capture {
         return Err(error(
             "tool_failed",
             "binding",
             "capture executable changed during verification",
         ));
     }
-    let status = request.scope.verified_status();
-    let correspondence_provenance: Value = serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON)
-        .map_err(|e| {
+    let status = request.scope.verified_status(args.allow_unpinned_lean);
+    let taint_reasons: &[&str] = if args.allow_unpinned_lean {
+        &["unpinned_lean"]
+    } else {
+        &[]
+    };
+    let correspondence_provenance: Value = if args.allow_unpinned_lean {
+        json!({
+            "applicable": false,
+            "reason": format!(
+                "unpinned Lean toolchain; bundled Pass 2 correspondence provenance \
+                 applies only to pinned {TOOLCHAIN}"
+            ),
+        })
+    } else {
+        serde_json::from_str(CORRESPONDENCE_PROVENANCE_JSON).map_err(|e| {
             error(
                 "tool_failed",
                 "bundle",
                 format!("corrupt bundled correspondence provenance: {e}"),
             )
-        })?;
-    // These assumptions delimit the result, including development builds
-    // selected by the operator. Identity hashes make the subject and tool
-    // choice reviewable; they do not prove the trusted adapter correct.
-    //
-    // `toolchain_identity` separates toolchain files whose SHA-256 digests
-    // verification compares with the bundled locks from the capture
-    // executable, whose digest is only recorded, and from components that
-    // verification does not hash. At most a version that the toolchain
-    // reports about itself identifies an unhashed component, so its integrity
-    // rests on the uncompromised execution environment assumed by
-    // THREAT_MODEL.md section 2.1.
-    let result = json!({
-        "schema_version": 1, "status": status, "experimental": true,
-        "request_sha256": request_sha256, "capture_sha256": capture_sha256,
-        "capture_binary_sha256": capture_binary_sha256,
-        "toolchain_identity": {
+        })?
+    };
+    let toolchain_identity = if args.allow_unpinned_lean {
+        json!({
+            "sha256_locked": [],
+            "sha256_recorded": [
+                "capture executable as capture_binary_sha256",
+                "unpinned Lean executable and admitted Init/Std sysroot modules in unpinned_lean and audit.unpinnedLean",
+            ],
+            "unhashed": [
+                "Lean shared libraries, identified by lean --version",
+                "Lean sysroot modules outside the admitted Init/Std closure",
+                "Rust compiler and sysroot, identified by their reported commit",
+            ],
+        })
+    } else {
+        json!({
             "sha256_locked": [
                 "Lean executable in foundation-lock.json",
                 "foundation-lock.json modules",
@@ -1096,7 +1735,33 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 "Lean sysroot modules outside the locks, including Lean.* and Std.*",
                 "Rust compiler and sysroot, identified by their reported commit",
             ],
-        },
+        })
+    };
+    let lean_assumption = if args.allow_unpinned_lean {
+        "unpinned Lean kernel and dynamically discovered Init/Std foundation"
+    } else {
+        "Lean kernel and admitted foundation"
+    };
+    // These assumptions delimit the result, including development builds
+    // selected by the operator. Identity hashes make the subject and tool
+    // choice reviewable; they do not prove the trusted adapter correct.
+    //
+    // `toolchain_identity` separates toolchain files whose SHA-256 digests
+    // verification compares with the bundled locks from the capture
+    // executable, whose digest is only recorded, and from components that
+    // verification does not hash. At most a version that the toolchain
+    // reports about itself identifies an unhashed component, so its integrity
+    // rests on the uncompromised execution environment assumed by
+    // THREAT_MODEL.md section 2.1.
+    let mut result = json!({
+        "schema_version": RECEIPT_SCHEMA_VERSION,
+        "status": status,
+        "taint_reasons": taint_reasons,
+        "experimental": true,
+        "request_sha256": request_sha256,
+        "capture_sha256": capture_sha256,
+        "capture_binary_sha256": capture_binary_sha256,
+        "toolchain_identity": toolchain_identity,
         "model_manifest_sha256": model_manifest_sha256,
         "specification_manifest_sha256": specification_manifest_sha256,
         "correspondence_provenance": correspondence_provenance,
@@ -1111,7 +1776,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         "assumptions": [
             "faithful pinned compiler capture",
             "experimental pointer-free MIR semantics",
-            "Lean kernel and admitted foundation",
+            lean_assumption,
             "intact compiler and verification environment",
         ],
         "deferred": [
@@ -1120,6 +1785,35 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "source-to-deployed-binary correspondence",
         ]
     });
+    if args.allow_unpinned_lean {
+        let Some(unpinned_lean) = audit.get("unpinnedLean").and_then(Value::as_object) else {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                "missing audit.unpinnedLean metadata for unpinned Lean run",
+            ));
+        };
+        let required_field = |key: &str| -> Result<Value> {
+            unpinned_lean.get(key).cloned().ok_or_else(|| {
+                error(
+                    "tool_failed",
+                    "audit",
+                    format!("missing audit.unpinnedLean.{key} metadata for unpinned Lean run"),
+                )
+            })
+        };
+        result.as_object_mut().unwrap().insert(
+            "unpinned_lean".into(),
+            json!({
+                "expected_toolchain": required_field("expectedToolchain")?,
+                "observed_version": required_field("observedVersion")?,
+                "lean_binary_sha256": required_field("leanBinarySha256")?,
+                "foundation_modules": required_field("foundationModules")?,
+                "sysroot_modules_sha256": required_field("sysrootModulesSha256")?,
+                "admitted_sysroot_module_count": required_field("admittedSysrootModuleCount")?,
+            }),
+        );
+    }
     write(&work.join("result.json"), &encoded(&result)?)?;
     Ok(result)
 }
@@ -1144,6 +1838,7 @@ fn verification_stage() -> std::io::Result<tempfile::TempDir> {
 }
 
 fn emit_failure(
+    taint_reasons: &[&str],
     status: &str,
     phase: &str,
     detail: &str,
@@ -1151,7 +1846,8 @@ fn emit_failure(
     code: u8,
 ) -> ExitCode {
     let receipt = FailureReceipt {
-        schema_version: 1,
+        schema_version: RECEIPT_SCHEMA_VERSION,
+        taint_reasons,
         status,
         phase,
         detail,
@@ -1165,6 +1861,15 @@ fn emit_failure(
 }
 
 pub fn main(args: VerifyArgs) -> ExitCode {
+    let taint_reasons: &[&str] = if args.allow_unpinned_lean {
+        eprintln!(
+            "WARNING: running with unpinned Lean (--allow-unpinned-lean); \
+             verification result is TAINTED"
+        );
+        &["unpinned_lean"]
+    } else {
+        &[]
+    };
     // Receipts encode the artifact destination as JSON text. Check its exact
     // spelling before staging or retention can create evidence, so an encoding
     // failure cannot leave an export with no receipt. Carry the checked text
@@ -1174,6 +1879,7 @@ pub fn main(args: VerifyArgs) -> ExitCode {
             Some(path) => Some(path),
             None => {
                 return emit_failure(
+                    taint_reasons,
                     "tool_failed",
                     "retention",
                     "artifact destination path must be UTF-8",
@@ -1187,7 +1893,14 @@ pub fn main(args: VerifyArgs) -> ExitCode {
     let stage = match verification_stage() {
         Ok(stage) => stage,
         Err(failure) => {
-            return emit_failure("tool_failed", "staging", &failure.to_string(), None, 2);
+            return emit_failure(
+                taint_reasons,
+                "tool_failed",
+                "staging",
+                &failure.to_string(),
+                None,
+                2,
+            );
         }
     };
     // Preserve diagnostic evidence for rejected requests as well as proved
@@ -1200,7 +1913,14 @@ pub fn main(args: VerifyArgs) -> ExitCode {
         match retain(stage.path(), Path::new(destination)) {
             Ok(()) => Some(destination),
             Err(failure) => {
-                return emit_failure("tool_failed", failure.phase, &failure.detail, None, 2);
+                return emit_failure(
+                    taint_reasons,
+                    "tool_failed",
+                    failure.phase,
+                    &failure.detail,
+                    None,
+                    2,
+                );
             }
         }
     } else {
@@ -1221,6 +1941,7 @@ pub fn main(args: VerifyArgs) -> ExitCode {
                 2
             };
             emit_failure(
+                taint_reasons,
                 failure.status,
                 failure.phase,
                 &failure.detail,
@@ -1546,23 +2267,30 @@ mod tests {
     #[test]
     fn failure_receipt_preserves_null_or_omitted_artifacts() {
         let omitted: Value = serde_json::to_value(FailureReceipt {
-            schema_version: 1,
+            schema_version: 2,
+            taint_reasons: &[],
             status: "tool_failed",
             phase: "retention",
             detail: "bad path",
             artifacts: None,
         })
         .unwrap();
+        assert_eq!(omitted["schema_version"], 2);
+        assert_eq!(omitted["taint_reasons"], json!([]));
+        assert!(omitted.get("tainted").is_none(), "{omitted}");
         assert!(omitted.get("artifacts").is_none(), "{omitted}");
 
         let explicit_null: Value = serde_json::to_value(FailureReceipt {
-            schema_version: 1,
+            schema_version: 2,
+            taint_reasons: &["unpinned_lean"],
             status: "unsupported",
             phase: "capture",
             detail: "bad item",
             artifacts: Some(None),
         })
         .unwrap();
+        assert_eq!(explicit_null["taint_reasons"], json!(["unpinned_lean"]));
+        assert!(explicit_null.get("unpinned_lean").is_none());
         assert_eq!(
             explicit_null.get("artifacts"),
             Some(&Value::Null),
@@ -1570,7 +2298,8 @@ mod tests {
         );
 
         let retained: Value = serde_json::to_value(FailureReceipt {
-            schema_version: 1,
+            schema_version: 2,
+            taint_reasons: &[],
             status: "proof_failed",
             phase: "audit",
             detail: "mismatch",
@@ -1578,6 +2307,165 @@ mod tests {
         })
         .unwrap();
         assert_eq!(retained["artifacts"], "/tmp/evidence");
+    }
+
+    #[test]
+    fn parse_module_file_arg_and_decl_spec_cover_edge_cases() {
+        let parsed = parse_module_file_arg(OsStr::new("Contract=a/b=c/file.lean")).unwrap();
+        assert_eq!(parsed.module, "Contract");
+        assert_eq!(parsed.path, PathBuf::from("a/b=c/file.lean"));
+
+        for invalid in ["NoEquals", "=path.lean", "Mod=", "7Bad=path.lean", "A..B=x"] {
+            assert!(
+                parse_module_file_arg(OsStr::new(invalid)).is_err(),
+                "{invalid}"
+            );
+        }
+
+        assert_eq!(
+            parse_decl_spec("Contract:StarnixEbpf.Contract.specs").unwrap(),
+            DeclSpec {
+                module: Some("Contract".to_owned()),
+                decl: "StarnixEbpf.Contract.specs".to_owned(),
+            }
+        );
+        assert_eq!(
+            parse_decl_spec("Spec.specs").unwrap(),
+            DeclSpec {
+                module: None,
+                decl: "Spec.specs".to_owned(),
+            }
+        );
+        for invalid in [
+            "A:B:C",
+            ":Decl",
+            "Mod:",
+            "7Bad:Decl",
+            "Mod:7Bad",
+            "Unqualified",
+            "A..B",
+        ] {
+            assert!(parse_decl_spec(invalid).is_err(), "{invalid}");
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn rustc_staging_handles_symlinks_common_prefix_roles_and_rejects_escapes() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let cas = dir.path().join("cas");
+        fs::create_dir_all(&cas).unwrap();
+        fs::write(cas.join("hash1.rs"), b"pub mod helper;\n").unwrap();
+        fs::write(cas.join("hash2.rs"), b"pub fn id(x: u64) -> u64 { x }\n").unwrap();
+        fs::write(cas.join("spec.lean"), b"-- spec\n").unwrap();
+        fs::write(cas.join("proof.lean"), b"-- proof\n").unwrap();
+
+        let runfiles = dir.path().join("runfiles/pkg/src");
+        fs::create_dir_all(runfiles.join("sub")).unwrap();
+        symlink(cas.join("hash1.rs"), runfiles.join("lib.rs")).unwrap();
+        symlink(cas.join("hash2.rs"), runfiles.join("helper.rs")).unwrap();
+        symlink(cas.join("spec.lean"), runfiles.join("SpecHelper.lean")).unwrap();
+        symlink(cas.join("proof.lean"), runfiles.join("Spec.Alias.lean")).unwrap();
+
+        let work = dir.path().join("work");
+        fs::create_dir_all(&work).unwrap();
+        let rustc = RustcArgs {
+            crate_root: runfiles.join("./lib.rs"),
+            crate_name: "sample".to_owned(),
+            edition: "2024".to_owned(),
+            target: target(),
+            cfg: vec!["foo".to_owned()],
+            source_file: vec![runfiles.join("lib.rs"), runfiles.join("helper.rs")],
+            spec_file: vec![ModuleFileArg {
+                module: "Contract".to_owned(),
+                path: runfiles.join("SpecHelper.lean"),
+            }],
+            proof_file: vec![ModuleFileArg {
+                module: "Spec.Helper".to_owned(),
+                path: runfiles.join("Spec.Alias.lean"),
+            }],
+            spec_decl: DeclSpec {
+                module: Some("Contract".to_owned()),
+                decl: "Contract.specs".to_owned(),
+            },
+            theorem: DeclSpec {
+                module: Some("Spec.Helper".to_owned()),
+                decl: "Spec.Helper.verify".to_owned(),
+            },
+            select: Vec::new(),
+        };
+        let mut originals = Vec::new();
+        let prepared = prepare_rustc_request(&rustc, &work, &mut originals).unwrap();
+        let req = prepared.request;
+        assert_eq!(req.compilation.source_root, Path::new("rust"));
+        assert_eq!(req.compilation.crate_root, Path::new("lib.rs"));
+        assert_eq!(
+            req.compilation.source_files,
+            vec![PathBuf::from("helper.rs"), PathBuf::from("lib.rs")]
+        );
+        assert_eq!(req.proof.source_root, Path::new("authored"));
+        assert_eq!(req.proof.sources.len(), 2);
+        // Roles come strictly from --spec-file vs --proof-file, never name.
+        assert_eq!(req.proof.sources[0].module, "Contract");
+        assert!(matches!(
+            req.proof.sources[0].role,
+            AuthoredRole::Specification
+        ));
+        assert_eq!(req.proof.sources[1].module, "Spec.Helper");
+        assert!(matches!(req.proof.sources[1].role, AuthoredRole::Proof));
+        assert_eq!(originals.len(), 4);
+
+        // Relative paths in the same directory do not fail root collapse.
+        let rel_work = dir.path().join("rel-work");
+        fs::create_dir_all(&rel_work).unwrap();
+        let rel_stage = rel_work.join("rust");
+        fs::create_dir_all(&rel_stage).unwrap();
+        let rel_rustc = RustcArgs {
+            crate_root: PathBuf::from("./a/lib.rs"),
+            source_file: vec![PathBuf::from("a/helper.rs")],
+            ..RustcArgs {
+                crate_root: runfiles.join("lib.rs"),
+                crate_name: "sample".to_owned(),
+                edition: "2024".to_owned(),
+                target: target(),
+                cfg: Vec::new(),
+                source_file: Vec::new(),
+                spec_file: Vec::new(),
+                proof_file: Vec::new(),
+                spec_decl: DeclSpec {
+                    module: None,
+                    decl: "Spec.specs".to_owned(),
+                },
+                theorem: DeclSpec {
+                    module: None,
+                    decl: "Proof.verify".to_owned(),
+                },
+                select: Vec::new(),
+            }
+        };
+        assert_eq!(
+            normalize_lexical(Path::new("./lib.rs")).unwrap().1,
+            vec![OsString::from("lib.rs")]
+        );
+        assert!(normalize_lexical(Path::new("../lib.rs")).is_err());
+        assert!(normalize_lexical(Path::new("a/../b.rs")).is_err());
+        assert!(normalize_lexical(Path::new("")).is_err());
+
+        // Mixed relative and absolute paths fail.
+        let mut bad_mixed = RustcArgs {
+            crate_root: PathBuf::from("lib.rs"),
+            source_file: vec![runfiles.join("helper.rs")],
+            ..rel_rustc
+        };
+        let mut orig2 = Vec::new();
+        assert!(stage_rustc_rust_inputs(&bad_mixed, &rel_stage, &mut orig2).is_err());
+
+        // Root collapse on disjoint absolute paths fails.
+        bad_mixed.crate_root = PathBuf::from("/foo/lib.rs");
+        bad_mixed.source_file = vec![PathBuf::from("/bar/helper.rs")];
+        assert!(stage_rustc_rust_inputs(&bad_mixed, &rel_stage, &mut orig2).is_err());
     }
 
     #[test]
@@ -1664,6 +2552,10 @@ mod tests {
             lean: None,
             sysroot: None,
             artifacts: None,
+            export_lean_lib: false,
+            allow_unpinned_lean: false,
+            lean_memory_mb: None,
+            command: None,
         };
 
         let cases = [
@@ -1698,6 +2590,10 @@ mod tests {
                 proof_dir: None,
                 select: Vec::new(),
                 artifacts: None,
+                export_lean_lib: false,
+                allow_unpinned_lean: false,
+                lean_memory_mb: None,
+                command: None,
             };
             let err = select_tools(&args).err().expect("missing tools must fail");
             assert_eq!(err.status, "tool_failed");
@@ -1723,5 +2619,83 @@ mod tests {
         assert_eq!(selected.capture, PathBuf::from("/tool/capture"));
         assert_eq!(selected.sysroot, Some(PathBuf::from("/tool/sysroot")));
         assert_eq!(selected.lean, Some(PathBuf::from("/tool/lean")));
+    }
+
+    #[test]
+    fn rustc_mode_sorts_authored_modules_regardless_of_flag_order() {
+        let project = tempfile::tempdir().unwrap();
+        let lib = project.path().join("lib.rs");
+        let spec_a = project.path().join("A.lean");
+        let spec_b = project.path().join("B.lean");
+        let proof = project.path().join("Proof.lean");
+        fs::write(&lib, b"pub fn zero() -> u64 { 0 }\n").unwrap();
+        fs::write(&spec_a, b"-- spec A\n").unwrap();
+        fs::write(&spec_b, b"-- spec B\n").unwrap();
+        fs::write(&proof, b"-- proof\n").unwrap();
+
+        let make_args = |spec_files: Vec<ModuleFileArg>| RustcArgs {
+            crate_root: lib.clone(),
+            crate_name: "sample".to_owned(),
+            edition: "2024".to_owned(),
+            target: "x86_64-unknown-linux-gnu".to_owned(),
+            cfg: Vec::new(),
+            source_file: Vec::new(),
+            spec_file: spec_files,
+            proof_file: vec![ModuleFileArg {
+                module: "Proof".to_owned(),
+                path: proof.clone(),
+            }],
+            spec_decl: DeclSpec {
+                module: Some("SpecA".to_owned()),
+                decl: "SpecA.specs".to_owned(),
+            },
+            theorem: DeclSpec {
+                module: Some("Proof".to_owned()),
+                decl: "Proof.verify".to_owned(),
+            },
+            select: Vec::new(),
+        };
+
+        let work1 = tempfile::tempdir().unwrap();
+        let mut orig1 = Vec::new();
+        let p1 = prepare_rustc_request(
+            &make_args(vec![
+                ModuleFileArg {
+                    module: "SpecB".to_owned(),
+                    path: spec_b.clone(),
+                },
+                ModuleFileArg {
+                    module: "SpecA".to_owned(),
+                    path: spec_a.clone(),
+                },
+            ]),
+            work1.path(),
+            &mut orig1,
+        )
+        .unwrap();
+
+        let work2 = tempfile::tempdir().unwrap();
+        let mut orig2 = Vec::new();
+        let p2 = prepare_rustc_request(
+            &make_args(vec![
+                ModuleFileArg {
+                    module: "SpecA".to_owned(),
+                    path: spec_a,
+                },
+                ModuleFileArg {
+                    module: "SpecB".to_owned(),
+                    path: spec_b,
+                },
+            ]),
+            work2.path(),
+            &mut orig2,
+        )
+        .unwrap();
+
+        let mods1: Vec<_> = p1.authored.iter().map(|m| m.module.as_str()).collect();
+        let mods2: Vec<_> = p2.authored.iter().map(|m| m.module.as_str()).collect();
+        assert_eq!(mods1, vec!["Proof", "SpecA", "SpecB"]);
+        assert_eq!(mods1, mods2);
+        assert_eq!(encoded(&p1.request).unwrap(), encoded(&p2.request).unwrap());
     }
 }

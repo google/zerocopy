@@ -37,5 +37,6 @@ pub use toolchain::{
     LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, ModuleArtifacts, OLEAN_PARTS, PARTS,
     PreflightHeader, PreflightResult, TOOLCHAIN, UNPINNED_FOUNDATION_MODULES,
     default_lean_search_bases_from_env, is_clean_relative_path, is_lean_ident, is_sha256_hex,
-    regular, sha256_bytes, sha256_file, stage_regular_file, topo_sort_modules,
+    read_regular_file_deref, read_regular_file_strict, regular, sha256_bytes, sha256_file,
+    sha256_file_deref, stage_regular_file, topo_sort_modules,
 };

@@ -2582,7 +2582,10 @@ fn verify_sandbox_with_package(
                 mir_lean,
             });
         }
-        if receipt["status"] != "crate_verified"
+        if receipt["schema_version"] != 2
+            || receipt["taint_reasons"] != serde_json::json!([])
+            || receipt.get("tainted").is_some()
+            || receipt["status"] != "crate_verified"
             || receipt["audit"]["exactType"] != true
             || receipt["audit"]["replay"] != true
         {
@@ -3830,6 +3833,9 @@ fn verifies_under_hostile_environment_and_cargo_configs() {
         "expected cargo-anneal verify to succeed under hostile env:\nstdout:\n{stdout}\nstderr:\n{stderr}"
     );
     let receipt: Value = serde_json::from_str(&stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2);
+    assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+    assert!(receipt.get("tainted").is_none());
     assert_eq!(receipt["status"], "crate_verified");
     assert_eq!(receipt["audit"]["exactType"], true);
     assert_eq!(receipt["audit"]["replay"], true);

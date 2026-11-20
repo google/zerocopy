@@ -261,19 +261,22 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         fs::create_dir(&existing).unwrap();
         fs::write(existing.join("keep"), b"caller evidence").unwrap();
         for destination in [&absent, &existing] {
-            let output = command(route, project.path())
-                .arg("verify")
+            let mut cmd = command(route, project.path());
+            cmd.arg("verify")
                 .arg("--request")
                 .arg(&request)
                 .arg("--artifacts")
-                .arg(destination)
-                .output()
-                .unwrap();
+                .arg(destination);
+            #[cfg(not(feature = "setup"))]
+            cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+            let output = cmd.output().unwrap();
             assert_result(&output, 2, "", "");
             assert!(output.stderr.is_empty(), "{output:?}");
             let receipt: serde_json::Value = serde_json::from_slice(&output.stdout)
                 .expect("invalid artifact path returns a JSON receipt");
-            assert_eq!(receipt["schema_version"], 1);
+            assert_eq!(receipt["schema_version"], 2);
+            assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+            assert!(receipt.get("tainted").is_none(), "{receipt}");
             assert_eq!(receipt["status"], "tool_failed");
             assert_eq!(receipt["phase"], "retention");
             assert_eq!(receipt["detail"], "artifact destination path must be UTF-8");
@@ -286,18 +289,20 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         // A missing temp parent would fail stage creation. The encoding check
         // must run first, without reading a request or creating either path.
         let missing_tmp = project.path().join(format!("{route:?}-missing-temp"));
-        let output = command(route, project.path())
-            .env("TMPDIR", &missing_tmp)
+        let mut cmd = command(route, project.path());
+        cmd.env("TMPDIR", &missing_tmp)
             .arg("verify")
             .arg("--request")
             .arg(project.path().join("missing-request"))
             .arg("--artifacts")
-            .arg(&absent)
-            .output()
-            .unwrap();
+            .arg(&absent);
+        #[cfg(not(feature = "setup"))]
+        cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = cmd.output().unwrap();
         assert_result(&output, 2, "", "");
         let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 1);
+        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
         assert_eq!(receipt["phase"], "retention");
         assert_eq!(receipt["detail"], "artifact destination path must be UTF-8");
         assert!(!missing_tmp.exists());
@@ -306,18 +311,20 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         // UTF-8 paths retain the normal rejected-request evidence and receipt.
         // This control needs no compiler or Lean process.
         let ordinary = project.path().join(format!("{route:?}-ordinary-evidence"));
-        let output = command(route, project.path())
-            .arg("verify")
+        let mut cmd = command(route, project.path());
+        cmd.arg("verify")
             .arg("--request")
             .arg(&request)
             .arg("--artifacts")
-            .arg(&ordinary)
-            .output()
-            .unwrap();
+            .arg(&ordinary);
+        #[cfg(not(feature = "setup"))]
+        cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = cmd.output().unwrap();
         assert_result(&output, 1, "", "");
         assert!(output.stderr.is_empty(), "{output:?}");
         let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 1);
+        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
         assert_eq!(receipt["status"], "unsupported");
         assert_eq!(receipt["phase"], "request");
         assert_eq!(receipt["artifacts"].as_str(), ordinary.to_str());
@@ -339,6 +346,8 @@ fn early_verification_failures_have_versioned_receipts() {
         for phase in ["staging", "retention"] {
             let mut child = command(route, project.path());
             child.arg("verify").arg("--request").arg(&request);
+            #[cfg(not(feature = "setup"))]
+            child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
             if phase == "staging" {
                 child.env("TMPDIR", project.path().join("missing-temp"));
             } else {
@@ -348,7 +357,9 @@ fn early_verification_failures_have_versioned_receipts() {
             assert_result(&output, 2, "", "");
             assert!(output.stderr.is_empty(), "{output:?}");
             let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-            assert_eq!(receipt["schema_version"], 1, "{receipt}");
+            assert_eq!(receipt["schema_version"], 2, "{receipt}");
+            assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+            assert!(receipt.get("tainted").is_none(), "{receipt}");
             assert_eq!(receipt["status"], "tool_failed");
             assert_eq!(receipt["phase"], phase);
             assert_eq!(fs::read(existing.join("keep")).unwrap(), b"caller evidence");
@@ -430,12 +441,17 @@ fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
             },
         );
         if expected == "explicit" {
-            child.arg("--capture").arg(bin.join("explicit"));
+            child
+                .arg("--capture")
+                .arg(bin.join("explicit"))
+                .arg("--sysroot")
+                .arg(project.path());
         }
         let output = child.output().unwrap();
         assert_result(&output, 1, "", "");
         let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 1);
+        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
         assert_eq!(receipt["phase"], "capture", "{receipt}");
         let detail: serde_json::Value =
             serde_json::from_str(receipt["detail"].as_str().unwrap()).unwrap();
@@ -502,12 +518,17 @@ fn cargo_shortcut_declares_only_its_documented_source_namespace() {
         .arg(package.join("proof"))
         .arg("--capture")
         .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path())
         .arg("--artifacts")
         .arg(&evidence);
+    #[cfg(not(feature = "setup"))]
+    child.arg("--lean").arg(project.path().join("missing-lean"));
     let output = child.output().unwrap();
     assert_result(&output, 2, "", "");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(receipt["schema_version"], 1);
+    assert_eq!(receipt["schema_version"], 2);
+    assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
     assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
     let request: serde_json::Value =
         serde_json::from_slice(&fs::read(evidence.join("request.json")).unwrap()).unwrap();
@@ -551,25 +572,403 @@ fn verify_without_setup_feature_requires_explicit_tool_paths() {
     .unwrap();
 
     for route in [Route::Direct, Route::Cargo] {
-        let output = command(route, project.path())
-            .arg("verify")
-            .arg("--request")
-            .arg(&request)
+        for extra in [
+            &[][..],
+            &["--capture", "cap", "--sysroot", "sys"],
+            &["--lean", "lean"],
+        ] {
+            let mut cmd = command(route, project.path());
+            cmd.arg("verify").arg("--request").arg(&request).args(extra);
+            let output = cmd.output().unwrap();
+            assert_result(&output, 2, "", "error:");
+            assert!(output.stdout.is_empty(), "{output:?}");
+        }
+    }
+}
+
+#[test]
+fn host_policy_conflicts_exit_2_on_stderr_with_empty_stdout() {
+    let project = tempfile::tempdir().unwrap();
+    let base_rustc = [
+        "verify",
+        "rustc",
+        "lib.rs",
+        "--crate-name",
+        "fixture",
+        "--spec-file",
+        "Spec=Spec.lean",
+        "--proof-file",
+        "Proof=Proof.lean",
+    ];
+
+    let bad_cases: Vec<Vec<&str>> = vec![
+        vec!["verify", "--request", "r.json", "--export-lean-lib"],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--lean",
+            "lean",
+        ],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+        ],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--allow-unpinned-lean",
+        ],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+            "--lean-memory-mb",
+            "0",
+        ],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+            "--select",
+            "foo",
+        ],
+        [
+            &[
+                "verify",
+                "--request",
+                "r.json",
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+            ][..],
+            &base_rustc[1..],
+        ]
+        .concat(),
+        [
+            &[
+                "verify",
+                "--manifest-path",
+                "Cargo.toml",
+                "--proof-dir",
+                "proof",
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+            ][..],
+            &base_rustc[1..],
+        ]
+        .concat(),
+        [
+            &base_rustc[..],
+            &[
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+                "--spec-file",
+                "Spec=Other.lean",
+            ],
+        ]
+        .concat(),
+        [
+            &base_rustc[..],
+            &[
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+                "--export-lean-lib",
+            ],
+        ]
+        .concat(),
+    ];
+
+    for args in bad_cases {
+        let output = command(Route::Direct, project.path())
+            .args(&args)
             .output()
             .unwrap();
-        assert_result(&output, 2, "", "");
-        assert!(output.stderr.is_empty(), "{output:?}");
-        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(receipt["schema_version"], 1);
-        assert_eq!(receipt["status"], "tool_failed");
-        assert_eq!(receipt["phase"], "capture-tool");
-        let detail = receipt["detail"].as_str().unwrap();
-        assert!(
-            detail.contains("--capture")
-                && detail.contains("--sysroot")
-                && detail.contains("--lean")
-                && detail.contains("setup"),
-            "{receipt}"
-        );
+        assert_result(&output, 2, "", "error:");
+        assert!(output.stdout.is_empty(), "{args:?}: {output:?}");
+    }
+}
+
+#[test]
+fn unpinned_policy_taint_emits_stderr_banner_and_v2_failure_receipt() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let missing_tmp = project.path().join("missing-tmp");
+
+    let mut cmd = command(Route::Direct, project.path());
+    cmd.env("TMPDIR", &missing_tmp)
+        .args(["verify", "--request"])
+        .arg(&request)
+        .args([
+            "--allow-unpinned-lean",
+            "--lean",
+            "custom-lean",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+        ]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 2, "", "TAINTED");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(
+        receipt["taint_reasons"],
+        serde_json::json!(["unpinned_lean"]),
+        "{receipt}"
+    );
+    assert!(receipt.get("tainted").is_none(), "{receipt}");
+    assert!(receipt.get("unpinned_lean").is_none(), "{receipt}");
+    assert_eq!(receipt["phase"], "staging");
+}
+
+#[cfg(feature = "setup")]
+#[test]
+fn setup_allows_independent_lean_override_without_capture_pair() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+
+    // `--lean` alone without `--capture`/`--sysroot` must pass CLI host-policy
+    // validation when `setup` is enabled and reach `verify::main`.
+    let output = command(Route::Direct, project.path())
+        .args(["verify", "--request"])
+        .arg(&request)
+        .args(["--lean", "custom-lean"])
+        .output()
+        .unwrap();
+    assert_result(&output, 1, "", "");
+    assert!(output.stderr.is_empty(), "{output:?}");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["status"], "unsupported");
+    assert_eq!(receipt["phase"], "request");
+}
+
+#[cfg(unix)]
+#[test]
+fn rustc_mode_stages_symlinks_strict_roles_and_rejects_fifos() {
+    use std::fs;
+    use std::os::unix::fs::symlink;
+
+    let project = tempfile::tempdir().unwrap();
+    let cas = project.path().join("cas");
+    fs::create_dir(&cas).unwrap();
+    fs::write(cas.join("a.rs"), b"pub mod sub;\n").unwrap();
+    fs::write(cas.join("b.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(cas.join("spec.lean"), b"-- spec\n").unwrap();
+    fs::write(cas.join("proof.lean"), b"-- proof\n").unwrap();
+
+    let runfiles = project.path().join("runfiles/crate/src");
+    fs::create_dir_all(&runfiles).unwrap();
+    symlink(cas.join("a.rs"), runfiles.join("lib.rs")).unwrap();
+    symlink(cas.join("b.rs"), runfiles.join("sub.rs")).unwrap();
+    symlink(cas.join("spec.lean"), runfiles.join("Contract.lean")).unwrap();
+    symlink(cas.join("proof.lean"), runfiles.join("Spec.Helper.lean")).unwrap();
+
+    let evidence = project.path().join("evidence");
+    // Host flags passed both BEFORE and AFTER `rustc` must work.
+    let output = command(Route::Direct, project.path())
+        .arg("verify")
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path())
+        .arg("rustc")
+        .arg(runfiles.join("lib.rs"))
+        .args(["--crate-name", "sample", "--source-file"])
+        .arg(runfiles.join("sub.rs"))
+        .arg("--spec-file")
+        .arg(format!(
+            "Contract={}",
+            runfiles.join("Contract.lean").display()
+        ))
+        .arg("--proof-file")
+        .arg(format!(
+            "Spec.Helper={}",
+            runfiles.join("Spec.Helper.lean").display()
+        ))
+        .args([
+            "--spec-decl",
+            "Contract:StarnixEbpf.Contract.specs",
+            "--theorem",
+            "Spec.Helper:Proof.custom",
+            "--lean",
+        ])
+        .arg(project.path().join("missing-lean"))
+        .arg("--artifacts")
+        .arg(&evidence)
+        .output()
+        .unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
+    let req: serde_json::Value =
+        serde_json::from_slice(&fs::read(evidence.join("request.json")).unwrap()).unwrap();
+    assert_eq!(req["compilation"]["source_root"], "rust");
+    assert_eq!(req["compilation"]["crate_root"], "lib.rs");
+    assert_eq!(
+        req["compilation"]["source_files"],
+        serde_json::json!(["lib.rs", "sub.rs"])
+    );
+    assert_eq!(req["proof"]["source_root"], "authored");
+    assert_eq!(req["proof"]["specification_module"], "Contract");
+    assert_eq!(req["proof"]["specification"], "StarnixEbpf.Contract.specs");
+    assert_eq!(req["proof"]["theorem_module"], "Spec.Helper");
+    assert_eq!(req["proof"]["theorem"], "Proof.custom");
+    assert_eq!(
+        req["proof"]["sources"],
+        serde_json::json!([
+            {"module": "Contract", "path": "Contract.lean", "role": "specification"},
+            {"module": "Spec.Helper", "path": "Spec/Helper.lean", "role": "proof"},
+        ])
+    );
+
+    // FIFO symlink target must fail immediately without hanging.
+    let fifo = project.path().join("pipe.rs");
+    assert!(
+        Command::new("mkfifo")
+            .arg(&fifo)
+            .status()
+            .unwrap()
+            .success()
+    );
+    let fifo_link = runfiles.join("fifo.rs");
+    symlink(&fifo, &fifo_link).unwrap();
+    let fifo_out = command(Route::Direct, project.path())
+        .arg("verify")
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path())
+        .arg("--lean")
+        .arg(project.path().join("missing-lean"))
+        .arg("rustc")
+        .arg(&fifo_link)
+        .args(["--crate-name", "sample", "--spec-file"])
+        .arg(format!("Spec={}", runfiles.join("Contract.lean").display()))
+        .arg("--proof-file")
+        .arg(format!(
+            "Proof={}",
+            runfiles.join("Spec.Helper.lean").display()
+        ))
+        .output()
+        .unwrap();
+    assert_result(&fifo_out, 1, "", "");
+    let fifo_receipt: serde_json::Value = serde_json::from_slice(&fifo_out.stdout).unwrap();
+    assert_eq!(fifo_receipt["status"], "unsupported");
+    assert_eq!(fifo_receipt["phase"], "inputs");
+}
+
+#[test]
+fn rustc_mode_rejects_reserved_or_mismatched_proof_modules_before_capture() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let lib = project.path().join("lib.rs");
+    let spec = project.path().join("Spec.lean");
+    let proof = project.path().join("Proof.lean");
+    fs::write(&lib, b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(&spec, b"-- spec\n").unwrap();
+    fs::write(&proof, b"-- proof\n").unwrap();
+
+    // Reserved module name (`Trusted`) must be rejected before capture.
+    let reserved_out = command(Route::Direct, project.path())
+        .args(["verify", "rustc"])
+        .arg(&lib)
+        .args(["--crate-name", "sample", "--spec-file"])
+        .arg(format!("Trusted={}", spec.display()))
+        .arg("--proof-file")
+        .arg(format!("Proof={}", proof.display()))
+        .args([
+            "--spec-decl",
+            "Trusted:Trusted.specs",
+            "--capture",
+            "missing-capture",
+            "--sysroot",
+            "missing-sysroot",
+            "--lean",
+            "missing-lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&reserved_out, 1, "", "");
+    let reserved_receipt: serde_json::Value = serde_json::from_slice(&reserved_out.stdout).unwrap();
+    assert_eq!(reserved_receipt["status"], "unsupported");
+    assert_eq!(reserved_receipt["phase"], "proof");
+
+    // Unknown `--spec-decl` module or role mismatch must be rejected early
+    // before capture runs.
+    for extra in [
+        &["--spec-decl", "Missing:Missing.specs"][..],
+        &["--theorem", "Missing:Missing.verify"][..],
+        &["--spec-decl", "Proof:Proof.specs"][..],
+        &["--theorem", "Spec:Spec.verify"][..],
+    ] {
+        let out = command(Route::Direct, project.path())
+            .args(["verify", "rustc"])
+            .arg(&lib)
+            .args(["--crate-name", "sample", "--spec-file"])
+            .arg(format!("Spec={}", spec.display()))
+            .arg("--proof-file")
+            .arg(format!("Proof={}", proof.display()))
+            .args(extra)
+            .args([
+                "--capture",
+                "missing-capture",
+                "--sysroot",
+                "missing-sysroot",
+                "--lean",
+                "missing-lean",
+            ])
+            .output()
+            .unwrap();
+        assert_result(&out, 1, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(receipt["status"], "unsupported", "{extra:?}: {receipt}");
+        assert_eq!(receipt["phase"], "proof", "{extra:?}: {receipt}");
     }
 }

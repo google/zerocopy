@@ -44,7 +44,11 @@ def verification(arguments, request, artifacts, log_prefix, expected):
                "--lean", str(arguments.lean), "--artifacts", str(artifacts)]
     code = checked_command(command, request.parent, log_prefix)
     output = json.loads(log_prefix.with_suffix(".stdout").read_text())
-    if output.get("status") != expected or code != (0 if expected.endswith("verified") else 1):
+    if (output.get("schema_version") != 2
+            or output.get("taint_reasons") != []
+            or "tainted" in output
+            or output.get("status") != expected
+            or code != (0 if expected.endswith("verified") else 1)):
         raise RuntimeError(f"unexpected {log_prefix.name}: exit {code}, "
                            f"{json.dumps(output)[:2500]}")
     return output

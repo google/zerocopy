@@ -44,12 +44,12 @@ enum Command {
         local_archive: Option<PathBuf>,
     },
     /// Capture a configured compilation and check its authored source proof.
-    Verify(verify::VerifyArgs),
+    Verify(Box<verify::VerifyArgs>),
 }
 
 enum Action {
     Print(String),
-    Verify(verify::VerifyArgs),
+    Verify(Box<verify::VerifyArgs>),
 }
 
 #[derive(Debug)]
@@ -65,7 +65,11 @@ fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
     if args.get(1).is_some_and(|arg| arg == "anneal") {
         args.remove(1);
     }
-    Cli::try_parse_from(args)
+    let cli = Cli::try_parse_from(args)?;
+    if let Some(Command::Verify(ref verify_args)) = cli.command {
+        verify_args.validate(Cli::command())?;
+    }
+    Ok(cli)
 }
 
 #[cfg(feature = "setup")]
@@ -139,7 +143,7 @@ fn main() -> ExitCode {
             print!("{output}");
             ExitCode::SUCCESS
         }
-        Ok(Action::Verify(args)) => verify::main(args),
+        Ok(Action::Verify(args)) => verify::main(*args),
         Err(Failure::Arguments(error)) => {
             eprint!("{error}");
             ExitCode::from(2)
@@ -250,10 +254,75 @@ mod tests {
                 "--manifest-path",
                 "Cargo.toml",
             ],
+            &[
+                "verify",
+                "--request",
+                "request.json",
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "c",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+            ],
+            &[
+                "verify",
+                "--manifest-path",
+                "Cargo.toml",
+                "--proof-dir",
+                "proof",
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "c",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+            ],
+            &[
+                "verify",
+                "--proof-dir",
+                "proof",
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "c",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+            ],
+            &[
+                "verify",
+                "--request",
+                "request.json",
+                "--select",
+                "subject::function",
+            ],
+            &["verify", "--request", "request.json", "--export-lean-lib"],
+            &["verify", "--request", "request.json", "--capture", "cap"],
+            &["verify", "--request", "request.json", "--sysroot", "sys"],
+            &[
+                "verify",
+                "--request",
+                "request.json",
+                "--allow-unpinned-lean",
+            ],
+            &[
+                "verify",
+                "--request",
+                "request.json",
+                "--lean-memory-mb",
+                "0",
+            ],
         ] {
             let failure = run_without_install(args(&[&["cargo-anneal"], suffix].concat()))
                 .err()
                 .expect("malformed arguments must fail");
+            #[cfg_attr(not(feature = "setup"), allow(clippy::infallible_destructuring_match))]
             let error = match failure {
                 Failure::Arguments(error) => error,
                 #[cfg(feature = "setup")]
@@ -298,8 +367,9 @@ mod tests {
     #[test]
     fn verify_dispatch_preserves_both_invocation_routes() {
         for prefix in [&["cargo-anneal"][..], &["cargo-anneal", "anneal"]] {
-            for suffix in [
-                &["verify", "--request", "request.json"][..],
+            #[cfg(feature = "setup")]
+            let cases: &[&[&str]] = &[
+                &["verify", "--request", "request.json"],
                 &[
                     "verify",
                     "--manifest-path",
@@ -309,7 +379,86 @@ mod tests {
                     "--select",
                     "subject::function",
                 ],
-            ] {
+                &[
+                    "verify",
+                    "--lean",
+                    "lean",
+                    "rustc",
+                    "src/lib.rs",
+                    "--crate-name",
+                    "foo",
+                    "--spec-file",
+                    "Spec=Spec.lean",
+                    "--proof-file",
+                    "Proof=Proof.lean",
+                ],
+                &[
+                    "verify",
+                    "rustc",
+                    "src/lib.rs",
+                    "--crate-name",
+                    "foo",
+                    "--spec-file",
+                    "Spec=Spec.lean",
+                    "--proof-file",
+                    "Proof=Proof.lean",
+                    "--lean",
+                    "lean",
+                    "--allow-unpinned-lean",
+                    "--artifacts",
+                    "out",
+                    "--export-lean-lib",
+                    "--lean-memory-mb",
+                    "4096",
+                ],
+            ];
+            #[cfg(not(feature = "setup"))]
+            let cases: &[&[&str]] = &[
+                &[
+                    "verify",
+                    "--capture",
+                    "cap",
+                    "--sysroot",
+                    "sys",
+                    "--lean",
+                    "lean",
+                    "--request",
+                    "request.json",
+                ],
+                &[
+                    "verify",
+                    "--manifest-path",
+                    "Cargo.toml",
+                    "--proof-dir",
+                    "proof",
+                    "--select",
+                    "subject::function",
+                    "--capture",
+                    "cap",
+                    "--sysroot",
+                    "sys",
+                    "--lean",
+                    "lean",
+                ],
+                &[
+                    "verify",
+                    "--capture",
+                    "cap",
+                    "--sysroot",
+                    "sys",
+                    "rustc",
+                    "src/lib.rs",
+                    "--crate-name",
+                    "foo",
+                    "--spec-file",
+                    "Spec=Spec.lean",
+                    "--proof-file",
+                    "Proof=Proof.lean",
+                    "--lean",
+                    "lean",
+                ],
+            ];
+            for suffix in cases {
                 let action = run_without_install(args(&[prefix, suffix].concat()))
                     .expect("verify arguments must parse and dispatch");
                 assert!(matches!(action, Action::Verify(_)));
