@@ -1703,13 +1703,11 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         .verify_and_stage_miri_entries(&vendor_dir, &[extra_entry], &extra_sources)
         .unwrap_err();
     assert_eq!(
-        err3.code, 1,
-        "expected policy error for extra sandbox output: {err3}"
+        err3.code, 2,
+        "expected Door 1 error for extra sandbox output: {err3}"
     );
     assert!(
-        err3.message.contains(
-            "unexpected file in sandboxed Miri output for Miri.ExtraOut: unexpected-drop.txt"
-        ),
+        err3.message.contains("unexpected compiler output unexpected-drop.txt"),
         "unexpected error message: {err3}"
     );
     assert!(
@@ -1779,16 +1777,17 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     // `olean_private_sha256` both `None`) that emits `.ir` or `.ir.sig`
     // alongside a digest-matching `.olean` must still be rejected with policy
     // exit code `1`, staging and caching nothing.
-    for (module, stem, ext) in [
-        ("Miri.ExtraIr", "Miri/ExtraIr", "ir"),
-        ("Miri.ExtraIrSig", "Miri/ExtraIrSig", "ir.sig"),
+    for (module, stem, leaf, ext) in [
+        ("Miri.ExtraIr", "Miri/ExtraIr", "ExtraIr", "ir"),
+        ("Miri.ExtraIrSig", "Miri/ExtraIrSig", "ExtraIrSig", "ir.sig"),
     ] {
         let sidecar_rel = format!("{stem}.{ext}");
+        let sidecar_leaf = format!("{leaf}.{ext}");
         let src = format!(
             "import Lean\n\
              namespace {module}\n\
              run_cmd do\n\
-               IO.FS.writeFile \"out/{sidecar_rel}\" \"fake-ir\"\n\
+               IO.FS.writeFile \"out/{sidecar_leaf}\" \"fake-ir\"\n\
              def x : Nat := 1\n\
              end {module}\n"
         );
@@ -1846,12 +1845,11 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
             .verify_and_stage_miri_entries(&vendor_dir, &[ir_entry], &ir_sources)
             .unwrap_err();
         assert_eq!(
-            err5.code, 1,
-            "expected policy error for non-module {ext} sidecar: {err5}"
+            err5.code, 2,
+            "expected Door 1 error for non-module {ext} sidecar: {err5}"
         );
-        assert_eq!(err5.phase, "miri-pin");
-        let expected_diag =
-            format!("unexpected file in sandboxed Miri output for {module}: {sidecar_rel}");
+        assert_eq!(err5.phase, "door1");
+        let expected_diag = format!("unexpected compiler output {sidecar_leaf}");
         assert!(
             err5.message.contains(&expected_diag),
             "expected `{expected_diag}`, got: {err5}"
@@ -6443,6 +6441,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // 1. `"correspondence-preflight"` runs inside `bwrap`: importing
     // `Miri.InitHost` with `loadExts := true` fails when the `[init]` hook
     // tries to write outside `/work/out`, leaving `host_victim` untouched.
+    fs::create_dir_all(prebuild.stage().join("theory-lib")).unwrap();
     let src_dir = prebuild.stage().join("src/p2-sandbox-test");
     fs::create_dir_all(src_dir.join("Trusted")).unwrap();
     let sample_src = src_dir.join("Trusted/Correspondence.lean");
@@ -6542,27 +6541,25 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
         })
         .unwrap_err();
     assert_eq!(
-        err_drop.code, 1,
-        "expected policy rejection for unexpected file in /work/out: {err_drop}"
+        err_drop.code, 2,
+        "expected Door 1 rejection for unexpected file in /work/out: {err_drop}"
     );
     assert!(
-        err_drop
-            .message
-            .contains("unexpected file in sandboxed correspondence-preflight output"),
+        err_drop.message.contains("unexpected inspector outputs"),
         "unexpected error message: {err_drop}"
     );
 
     // 3. Pass 2 module compilation (`run_correspondence_with_closure`) runs
     // inside `bwrap`: a vendored `[init]` that stays silent during
-    // `"correspondence-preflight"` (where `/work/src/pass2` is absent) and
-    // attempts to write to the host checkout during Pass 2 compilation fails
-    // inside the sandbox, leaving `compile_host_victim` untouched.
+    // `"correspondence-preflight"` (where `/work/src/corr-trusted` is absent)
+    // and attempts to write to the host checkout during Pass 2 compilation
+    // fails inside the sandbox, leaving `compile_host_victim` untouched.
     let compile_host_victim = fix.root.join("pass2-compile-escape-host.txt");
     let init_compile_host_src = format!(
         "import Lean\n\
          namespace Miri.InitCompileHost\n\
          initialize _ : Unit ← do\n\
-           if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
+           if ← System.FilePath.pathExists \"/work/src/corr-trusted\" then\n\
              IO.FS.writeFile \"{}\" \"pwned\"\n\
            pure ()\n\
          def ok : Nat := 1\n\
@@ -6662,12 +6659,12 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     );
 
     // 4. Even if a vendored `[init]` drops an extra file into `/work/out`
-    // during Pass 2 compilation, `anneal-audit` rejects it with policy exit
-    // code `1` and stages nothing into `lib/`.
+    // during Pass 2 compilation, `anneal-audit` Door 1 rejects it and stages
+    // nothing into `lib/`.
     let init_compile_drop_src = "import Lean\n\
         namespace Miri.InitCompileDrop\n\
         initialize _ : Unit ← do\n\
-          if ← System.FilePath.pathExists \"/work/src/pass2\" then\n\
+          if ← System.FilePath.pathExists \"/work/src/corr-trusted\" then\n\
             IO.FS.writeFile \"/work/out/sneaky-pass2.txt\" \"junk\"\n\
           pure ()\n\
         def ok : Nat := 1\n\
@@ -6727,13 +6724,13 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
         )
         .unwrap_err();
     assert_eq!(
-        err_compile_drop.code, 1,
-        "expected policy rejection for unexpected file in Pass 2 /work/out: {err_compile_drop}"
+        err_compile_drop.code, 2,
+        "expected Door 1 rejection for unexpected file in Pass 2 /work/out: {err_compile_drop}"
     );
     assert!(
         err_compile_drop
             .message
-            .contains("unexpected file in sandboxed Pass 2 output"),
+            .contains("unexpected compiler outputs"),
         "unexpected error message: {err_compile_drop}"
     );
     assert!(
