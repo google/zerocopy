@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "domains/target-controlled-anesthesia-pkpd",
+    "domains/pharmacometric-ode-solvers",
+    "verification/clinical-covariate-monotonicity",
+    "smt/compartmental-positivity-invariants"
+  ],
+  "subjects": [
+    {
+      "name": "mrgsolve",
+      "identity": {
+        "repository": "metrumresearchgroup/mrgsolve",
+        "revision": "c529f2decd8d5b48b11760126d68d883547932b0",
+        "version": "2.1.0.9000"
+      }
+    },
+    {
+      "name": "Torsten",
+      "identity": {
+        "repository": "metrumresearchgroup/Torsten",
+        "revision": "16a954822cf794648d2e0535aa0d877b295e90b1"
+      }
+    },
+    {
+      "name": "PKPDsim",
+      "identity": {
+        "repository": "InsightRX/PKPDsim",
+        "revision": "b5b81157c1550d2ae429aa46b59dc678f5670878",
+        "version": "1.5.0"
+      }
+    },
+    {
+      "name": "Stan Math Library",
+      "identity": {
+        "repository": "stan-dev/math",
+        "revision": "3d16e8f14e620e2cd35cc59bf92766ad98a9559b"
+      }
+    },
+    {
+      "name": "Schnider et al. (1998) Propofol PK Model",
+      "identity": {
+        "doi": "10.1097/00000542-199805000-00006",
+        "citation": "Anesthesiology 88(5):1170-1182, 1998"
+      }
+    },
+    {
+      "name": "Eleveld et al. (2018) General-Purpose Propofol PK/PD Model",
+      "identity": {
+        "doi": "10.1016/j.bja.2018.01.018",
+        "citation": "British Journal of Anaesthesia 120(5):942-959, 2018"
+      }
+    },
+    {
+      "name": "Margossian et al. (2022) Stan and Torsten Pharmacometrics Tutorial",
+      "identity": {
+        "doi": "10.1002/psp4.12812",
+        "citation": "CPT: Pharmacometrics & Systems Pharmacology 11(9):1151-1169, 2022"
+      }
+    },
+    {
+      "name": "Schuller et al. (2015) BIS Response to Neuromuscular Block in Awake Volunteers",
+      "identity": {
+        "doi": "10.1093/bja/aev072",
+        "citation": "British Journal of Anaesthesia 115(Suppl 1):i95-i103, 2015"
+      }
+    },
+    {
+      "name": "IEC 60601-2-24 Infusion Pumps and Controllers Standard",
+      "identity": {
+        "standard": "IEC 60601-2-24",
+        "edition": "2.0 (2012)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

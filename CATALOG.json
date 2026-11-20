@@ -22801,6 +22801,82 @@
         "verification/certificates"
       ]
     },
+    "eleveld-schnider-propofol-tci-allometric-paradoxes-and-torsten-odes": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "metrumresearchgroup/mrgsolve",
+            "revision": "c529f2decd8d5b48b11760126d68d883547932b0",
+            "version": "2.1.0.9000"
+          },
+          "name": "mrgsolve"
+        },
+        {
+          "identity": {
+            "repository": "metrumresearchgroup/Torsten",
+            "revision": "16a954822cf794648d2e0535aa0d877b295e90b1"
+          },
+          "name": "Torsten"
+        },
+        {
+          "identity": {
+            "repository": "InsightRX/PKPDsim",
+            "revision": "b5b81157c1550d2ae429aa46b59dc678f5670878",
+            "version": "1.5.0"
+          },
+          "name": "PKPDsim"
+        },
+        {
+          "identity": {
+            "repository": "stan-dev/math",
+            "revision": "3d16e8f14e620e2cd35cc59bf92766ad98a9559b"
+          },
+          "name": "Stan Math Library"
+        },
+        {
+          "identity": {
+            "citation": "Anesthesiology 88(5):1170-1182, 1998",
+            "doi": "10.1097/00000542-199805000-00006"
+          },
+          "name": "Schnider et al. (1998) Propofol PK Model"
+        },
+        {
+          "identity": {
+            "citation": "British Journal of Anaesthesia 120(5):942-959, 2018",
+            "doi": "10.1016/j.bja.2018.01.018"
+          },
+          "name": "Eleveld et al. (2018) General-Purpose Propofol PK/PD Model"
+        },
+        {
+          "identity": {
+            "citation": "CPT: Pharmacometrics & Systems Pharmacology 11(9):1151-1169, 2022",
+            "doi": "10.1002/psp4.12812"
+          },
+          "name": "Margossian et al. (2022) Stan and Torsten Pharmacometrics Tutorial"
+        },
+        {
+          "identity": {
+            "citation": "British Journal of Anaesthesia 115(Suppl 1):i95-i103, 2015",
+            "doi": "10.1093/bja/aev072"
+          },
+          "name": "Schuller et al. (2015) BIS Response to Neuromuscular Block in Awake Volunteers"
+        },
+        {
+          "identity": {
+            "edition": "2.0 (2012)",
+            "standard": "IEC 60601-2-24"
+          },
+          "name": "IEC 60601-2-24 Infusion Pumps and Controllers Standard"
+        }
+      ],
+      "topics": [
+        "domains/target-controlled-anesthesia-pkpd",
+        "domains/pharmacometric-ode-solvers",
+        "verification/clinical-covariate-monotonicity",
+        "smt/compartmental-positivity-invariants"
+      ]
+    },
     "embree-watertight-bvh-traversal-mis-radiance-and-ocio-aces-luts": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -27076,6 +27152,87 @@
         "pl/gradual-typing",
         "ffi/contracts",
         "tooling/verification"
+      ]
+    },
+    "gz-righting-hydrostatics-tank-sloshing-moments-and-lng-rollover-boiloff": {
+      "observed_at": "2026-11-19",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "capytaine/capytaine",
+            "revision": "b81111ae1a4e4312efbb00023b2dd0837aa312b1"
+          },
+          "name": "Capytaine"
+        },
+        {
+          "identity": {
+            "repository": "cybergalactic/MSS",
+            "revision": "22142414efa679f3926176eac36dae29e2ab93d1"
+          },
+          "name": "Marine Systems Simulator (MSS)"
+        },
+        {
+          "identity": {
+            "repository": "DualSPHysics/DualSPHysics",
+            "revision": "ef3721a861fda961f0e2f9ec4cd317b19de99086"
+          },
+          "name": "DualSPHysics"
+        },
+        {
+          "identity": {
+            "repository": "CoolProp/CoolProp",
+            "revision": "55db41ea9355b5f988f24e30518387a4597f14a8"
+          },
+          "name": "CoolProp"
+        },
+        {
+          "identity": {
+            "citation": "John Wiley & Sons, 2011",
+            "doi": "10.1002/9781119994138"
+          },
+          "name": "Fossen (2011) Handbook of Marine Craft Hydrodynamics and Motion Control"
+        },
+        {
+          "identity": {
+            "citation": "Journal of Open Source Software 4(36):1341, 2019",
+            "doi": "10.21105/joss.01341"
+          },
+          "name": "Ancellin & Dias (2019) Capytaine Linear Potential Flow Solver"
+        },
+        {
+          "identity": {
+            "standard": "IMO Resolution MSC.267(85)",
+            "year": "2008"
+          },
+          "name": "IMO 2008 Intact Stability Code"
+        },
+        {
+          "identity": {
+            "standard": "IMO MSC.1/Circ.1627",
+            "year": "2020"
+          },
+          "name": "IMO Second Generation Intact Stability Criteria Interim Guidelines"
+        },
+        {
+          "identity": {
+            "citation": "International Journal of Heat and Mass Transfer 40(8):1875-1884, 1997",
+            "doi": "10.1016/S0017-9310(96)00218-9"
+          },
+          "name": "Bates & Morrison (1997) Stratified LNG Tank Rollover Modeling"
+        },
+        {
+          "identity": {
+            "citation": "Industrial & Engineering Chemistry Research 53(6):2498-2508, 2014",
+            "doi": "10.1021/ie4033999"
+          },
+          "name": "Bell et al. (2014) CoolProp Thermophysical Property Library"
+        }
+      ],
+      "topics": [
+        "domains/maritime-hydrostatic-stability",
+        "domains/cryogenic-lng-rollover",
+        "systems/free-surface-sloshing-dynamics",
+        "verification/buoyancy-and-boiloff-envelopes"
       ]
     },
     "h264-hevc-cabac-motion-compensation-and-deblocking-clean-room-spec-anatomy": {

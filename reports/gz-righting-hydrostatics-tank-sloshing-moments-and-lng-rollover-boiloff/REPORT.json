@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "domains/maritime-hydrostatic-stability",
+    "domains/cryogenic-lng-rollover",
+    "systems/free-surface-sloshing-dynamics",
+    "verification/buoyancy-and-boiloff-envelopes"
+  ],
+  "subjects": [
+    {
+      "name": "Capytaine",
+      "identity": {
+        "repository": "capytaine/capytaine",
+        "revision": "b81111ae1a4e4312efbb00023b2dd0837aa312b1"
+      }
+    },
+    {
+      "name": "Marine Systems Simulator (MSS)",
+      "identity": {
+        "repository": "cybergalactic/MSS",
+        "revision": "22142414efa679f3926176eac36dae29e2ab93d1"
+      }
+    },
+    {
+      "name": "DualSPHysics",
+      "identity": {
+        "repository": "DualSPHysics/DualSPHysics",
+        "revision": "ef3721a861fda961f0e2f9ec4cd317b19de99086"
+      }
+    },
+    {
+      "name": "CoolProp",
+      "identity": {
+        "repository": "CoolProp/CoolProp",
+        "revision": "55db41ea9355b5f988f24e30518387a4597f14a8"
+      }
+    },
+    {
+      "name": "Fossen (2011) Handbook of Marine Craft Hydrodynamics and Motion Control",
+      "identity": {
+        "doi": "10.1002/9781119994138",
+        "citation": "John Wiley & Sons, 2011"
+      }
+    },
+    {
+      "name": "Ancellin & Dias (2019) Capytaine Linear Potential Flow Solver",
+      "identity": {
+        "doi": "10.21105/joss.01341",
+        "citation": "Journal of Open Source Software 4(36):1341, 2019"
+      }
+    },
+    {
+      "name": "IMO 2008 Intact Stability Code",
+      "identity": {
+        "standard": "IMO Resolution MSC.267(85)",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "IMO Second Generation Intact Stability Criteria Interim Guidelines",
+      "identity": {
+        "standard": "IMO MSC.1/Circ.1627",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Bates & Morrison (1997) Stratified LNG Tank Rollover Modeling",
+      "identity": {
+        "doi": "10.1016/S0017-9310(96)00218-9",
+        "citation": "International Journal of Heat and Mass Transfer 40(8):1875-1884, 1997"
+      }
+    },
+    {
+      "name": "Bell et al. (2014) CoolProp Thermophysical Property Library",
+      "identity": {
+        "doi": "10.1021/ie4033999",
+        "citation": "Industrial & Engineering Chemistry Research 53(6):2498-2508, 2014"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
