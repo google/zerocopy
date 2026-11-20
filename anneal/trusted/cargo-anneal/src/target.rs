@@ -2307,4 +2307,152 @@ mod unpinned_admission_tests {
             "unexpected axioms: {used_axioms:?}"
         );
     }
+
+    #[test]
+    fn live_demand_driven_bitvec_arith_three_axiom_proof() {
+        let lean = installed_lean();
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
+        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
+        let bitvec_path = repo_root().join("theory/Anneal/BitVec.lean");
+        let bitvec_sha = sha256_file(&bitvec_path, "fixture").unwrap();
+        let bitvec_arith_path = repo_root().join("theory/Anneal/BitVecArith.lean");
+        let bitvec_arith_sha = sha256_file(&bitvec_arith_path, "fixture").unwrap();
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-bv-arith"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.BitVec.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 64\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (w : Nat) : Prop :=\n  \
+                     (∀ (m1 m2 x1 x2 v1 v2 : BitVec w),\n    \
+                       x1 &&& ~~~m1 = v1 &&& ~~~m1 →\n    \
+                       x2 &&& ~~~m2 = v2 &&& ~~~m2 →\n    \
+                       v1 &&& m1 = 0#w →\n    \
+                       v2 &&& m2 = 0#w →\n    \
+                       let sm := m1 + m2\n    \
+                       let sv := v1 + v2\n    \
+                       let mu := ((sm + sv) ^^^ sv) ||| (m1 ||| m2)\n    \
+                       (x1 + x2) &&& ~~~mu = (sv &&& ~~~mu) &&& ~~~mu) ∧\n  \
+                     (∃ f : BitVec 64 → BitVec 64,\n    \
+                       (∀ x, f (f x) = x) ∧\n    \
+                       (∀ x y, f x = f y → x = y) ∧\n    \
+                       (∀ (x : BitVec 64) (i : Nat), i < 64 →\n      \
+                         (f x).getLsbD i = x.getLsbD (i % 8 + 8 * (7 - i / 8)))) ∧\n  \
+                     (∀ (umin x umax : BitVec w) (kmin k kmax : Nat),\n    \
+                       umin ≤ x → x ≤ umax → kmin ≤ k → k ≤ kmax →\n    \
+                       umin >>> kmax ≤ x >>> k ∧ x >>> k ≤ umax >>> kmin)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.BitVecArith\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     ⟨fun _ _ _ _ _ _ h1 h2 hc1 hc2 =>\n    \
+                       Anneal.BitVecArith.tnum_add_sound h1 h2 hc1 hc2,\n   \
+                      ⟨Anneal.BitVecArith.bswap64,\n    \
+                       Anneal.BitVecArith.bswap64_bswap64,\n    \
+                       fun _ _ h => Anneal.BitVecArith.bswap64_injective h,\n    \
+                       fun x i hi => by\n      \
+                         change Anneal.BitVec.getLsbD (Anneal.BitVecArith.bswapBytes 8 x) i =\n        \
+                           Anneal.BitVec.getLsbD x (Nat.mod i 8 + 8 * (8 - 1 - Nat.div i 8))\n      \
+                         rw [Anneal.BitVecArith.getLsbD_bswapBytes, decide_eq_true hi,\n        \
+                           Bool.true_and]⟩,\n   \
+                      fun _ _ _ _ _ _ hlo hhi hklo hkhi =>\n    \
+                       Anneal.BitVecArith.range_ushr_sound hlo hhi hklo hkhi⟩\n",
+                ),
+            ],
+        );
+        req.modules.push(TargetModule {
+            module: "Anneal.NatBitwise".to_owned(),
+            source: nat_bitwise_path,
+            expected_sha256: nat_bitwise_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.BitVec".to_owned(),
+            source: bitvec_path,
+            expected_sha256: bitvec_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.BitVecArith".to_owned(),
+            source: bitvec_arith_path,
+            expected_sha256: bitvec_arith_sha,
+            role: TargetRole::Proof,
+        });
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> = report["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(
+            used_axioms.is_subset(&allowed_axioms),
+            "unexpected axioms: {used_axioms:?}"
+        );
+        let export_dir = base.join("export-with-bv-arith");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
+        assert!(export_dir.join("Anneal/BitVec.olean").is_file());
+        assert!(export_dir.join("Anneal/BitVecArith.olean").is_file());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
 }
