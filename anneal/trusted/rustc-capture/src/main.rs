@@ -13,6 +13,7 @@
 #![feature(normalize_lexically, rustc_private)]
 
 extern crate rustc_abi;
+extern crate rustc_ast;
 extern crate rustc_data_structures;
 extern crate rustc_driver;
 extern crate rustc_hir;
@@ -24,6 +25,7 @@ extern crate rustc_span;
 mod capture;
 mod driver;
 mod extract;
+mod identity;
 mod ir;
 mod lean;
 mod publication;
@@ -31,8 +33,8 @@ mod publication;
 use std::collections::BTreeSet;
 use std::env;
 use std::ffi::OsString;
-use std::path::{Path, PathBuf};
-use std::process::{Command, ExitCode};
+use std::path::PathBuf;
+use std::process::ExitCode;
 
 use clap::{ArgGroup, Parser};
 use serde::Serialize;
@@ -132,32 +134,6 @@ impl Failure {
     }
 }
 
-/// Check both the linked compiler libraries and the binary in their sysroot.
-/// The full source commit comes from `rustc --version --verbose`; checking it
-/// does not replace authentication of the distribution by the calling host.
-/// `rustc_version_str` reports the "version string for `rustc` itself".
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_interface/src/util.rs#L688-L691
-fn check_compiler(sysroot: &Path) -> Result<(), Failure> {
-    if rustc_interface::util::rustc_version_str() != Some(ir::COMPILER_VERSION) {
-        return Err(Failure::tool(
-            "capture was linked against an unexpected rustc revision",
-        ));
-    }
-    let output = Command::new(sysroot.join("bin/rustc"))
-        .args(["--version", "--verbose"])
-        .output()
-        .map_err(Failure::io)?;
-    let text =
-        String::from_utf8(output.stdout).map_err(|error| Failure::tool(error.to_string()))?;
-    let expected = format!("commit-hash: {}", ir::COMPILER_COMMIT);
-    if !output.status.success() || !text.lines().any(|line| line == expected) {
-        return Err(Failure::tool(
-            "sysroot rustc does not match the pinned full compiler commit",
-        ));
-    }
-    Ok(())
-}
-
 fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     if args.target != "x86_64-unknown-linux-gnu" {
         return Err(Failure::unsupported(
@@ -177,16 +153,22 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     args.source_file.dedup();
     args.cfg.sort();
     args.cfg.dedup();
-    if let Some(sysroot) = &mut args.sysroot {
-        *sysroot = sysroot.canonicalize().map_err(Failure::io)?;
-        check_compiler(sysroot)?;
-    }
+    // Resolve explicit or packaged sysroot and verify compiler identity and
+    // Linux driver residency before creating publication directories or
+    // entering rustc's fatal-error handler.
+    let raw_sysroot = match args.sysroot.take() {
+        Some(sysroot) => sysroot,
+        None => driver::resolve_packaged_sysroot().map_err(Failure::tool)?,
+    };
+    let sysroot = raw_sysroot.canonicalize().map_err(Failure::io)?;
+    args.sysroot = Some(sysroot.clone());
+    identity::verify_compiler(&sysroot, &args.target)?;
     // Keep compiler side effects outside the public artifact pair. The
     // publication owner cleans up staging on every error and unwind; only its
     // completed directory rename permits a captured status below.
     let publication = publication::Publication::new(&args.out_dir).map_err(Failure::io)?;
     args.out_dir = publication.compiler_dir();
-    let manifest = capture::run(&args)?;
+    let manifest = capture::run(&args, &sysroot)?;
     let json =
         serde_json::to_vec_pretty(&manifest).map_err(|error| Failure::tool(error.to_string()))?;
     let lean = lean::render(&manifest.program);
