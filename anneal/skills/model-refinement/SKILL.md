@@ -160,12 +160,16 @@ violations where practical so that an empty or weakened contract cannot
 manufacture success.
 
 Keep discovery examples separate from reserved confirmation cases. A case
-inspected while developing the candidate is a design witness, not a held-out test.
-Use independent review when required or likely to resolve meaningful uncertainty;
-do not manufacture a multi-agent procedure merely to label a review independent.
-Treat review findings as evidence about the candidate comparison, not as votes or
-implicit vetoes. Additional reviewers strengthen or weaken a conclusion only to
-the extent their findings or corroboration change the supported comparison.
+inspected or disclosed while developing or revising the candidate is a design
+witness, not a held-out test, even if rechecked in a separate context. Use
+independent review when required or likely to resolve meaningful uncertainty;
+self-review is not independent evidence, and do not manufacture a multi-agent
+procedure merely to label a review independent. When independent review uses a
+separate context or agent, avoid anchoring the reviewer on the author's case
+for the candidate or expected verdict. Treat review findings as evidence about
+the candidate comparison, not as votes or implicit vetoes. Additional reviewers
+strengthen or weaken a conclusion only to the extent their findings or
+corroboration change the supported comparison.
 
 Keep evidence and the claims drawn from it distinct. Make conclusions only at the
 strength and scope supported by the actual checks and assumptions. When the
@@ -208,16 +212,17 @@ conceptual model, run another pass on the revised candidate. Also run another pa
 when the reread or new evidence exposes a further supportable improvement that
 justifies the work under the task's priorities and resources.
 
-When a finding appears, diagnose which affected layer the evidence supports
-changing. If the semantic model changes, re-evaluate the realizations, evidence,
-and claims whose justification depended on the changed semantics. If the problem
-is local to a realization, mapping, fixture, verifier, or other evidence source,
-repair or qualify that layer without reopening unaffected semantics. If the
-available evidence does not establish which layer owns the defect, preserve that
-uncertainty rather than compensating at an arbitrary layer. Obtain further
-supported evidence when it is required for the intended claim; if unresolved
-ownership prevents a required preservation or improvement claim, use the
-bounded-stop rule below.
+When a finding appears, diagnose which affected layer or layers the evidence
+supports changing. A single finding can implicate more than one layer. If the
+semantic model changes, re-evaluate the realizations, evidence, and claims
+whose justification depended on the changed semantics. If the problem is local
+to a realization, mapping, fixture, verifier, or other evidence source, repair
+or qualify that layer without reopening unaffected semantics, and recheck any
+claim whose support depended on that layer. If the available evidence does not
+establish which layer owns the defect, preserve that uncertainty rather than
+compensating at an arbitrary layer. Obtain further supported evidence when it
+is required for the intended claim; if unresolved ownership prevents a required
+preservation or improvement claim, use the bounded-stop rule below.
 
 Relevant downstream work can also reopen refinement. If constructing, checking,
 or using a realization already required by the task supplies a concrete reason to
@@ -235,6 +240,12 @@ result. Reuse earlier work that remains valid and do not mechanically replay
 irrelevant or unaffected responsibilities. A pass is not complete if it omits
 framing, preservation, evaluation, or another check required to support a change
 or claim merely because those responsibilities appear elsewhere in this document.
+When candidate development, checks, or reviews are delegated across multiple
+contexts or agents, those helpers supply candidate material or evidence; the
+coordinating refinement task retains the governing contract, comparative
+evaluation, layer diagnosis, required reread, stopping and delivery decisions,
+and any applicable action authority without requiring a separate convergence
+loop in each helper.
 
 The refinement sequence reaches local convergence only after a complete pass
 followed by the required reread accepts no conceptual-model change, identifies no

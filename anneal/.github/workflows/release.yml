@@ -66,6 +66,12 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # FIXME(#87): We must address all blockers listed in #87 before permitting
+      # stable releases.
+      - name: Ensure non-stable cargo-anneal version
+        if: steps.check.outputs.changed == 'true'
+        run: ./ci/check_non_stable_version.sh
+
   release:
     name: Release to crates.io and GitHub
     needs: check-version
@@ -80,6 +86,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      # FIXME(#87): We must address all blockers listed in #87 before permitting
+      # stable releases.
+      - name: Ensure non-stable cargo-anneal version
+        run: ./ci/check_non_stable_version.sh
 
       - name: Smoke-test remote exocrate toolchain installation
         run: |
