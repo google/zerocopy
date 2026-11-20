@@ -160,9 +160,9 @@ pub fn id_i32(x: i32) -> i32 {
     x
 }
 
-// === case: wrapping_add_one_capture_unsupported ===
-//@ fail(capture): "add_one: bb0 terminator: unsupported terminator"
+// === case: unmodeled_core_call_capture_unsupported ===
+//@ fail(capture): "count_bits: bb0 terminator: unsupported core::num call"
 
-pub fn add_one(x: usize) -> usize {
-    x.wrapping_add(1)
+pub fn count_bits(x: usize) -> u32 {
+    x.count_ones()
 }

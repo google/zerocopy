@@ -6,9 +6,11 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Direct translation of the admitted pointer-free MIR syntax. Unsupported
-//! variants remain errors; this adapter performs no control-flow or expression
-//! simplification.
+//! Direct translation of the admitted pointer-free Tier 1 MIR syntax.
+//! Unsupported variants remain errors; this adapter performs no control-flow
+//! or expression simplification.
+
+use std::collections::BTreeMap;
 
 use rustc_abi::{ExternAbi, Integer, Primitive, TagEncoding, Variants};
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
@@ -18,15 +20,167 @@ use rustc_middle::middle::codegen_fn_attrs::{
 use rustc_middle::mir::{self, MirPhase, RuntimePhase};
 use rustc_middle::ty::{self, TyCtxt, TypingEnv};
 use rustc_span::def_id::{DefId, LocalDefId};
+use rustc_span::sym;
 use sha2::{Digest, Sha256};
 
 use crate::ir::{self, ConstLit, IntTy, IntWidth};
 
 pub type Result<T> = std::result::Result<T, String>;
 
+/// Pre-remapping terminator produced by [`body`] before `capture.rs` assigns
+/// deterministic `Program.bodies` indices to the transitive call closure.
+#[derive(Clone, Debug)]
+pub enum RawTerminator {
+    Goto {
+        block: u32,
+    },
+    SwitchInt {
+        operand: ir::Operand,
+        targets: Vec<ir::SwitchTarget>,
+        otherwise: u32,
+    },
+    Ret,
+    Unreachable,
+    UnwindResume,
+    Assert {
+        cond: ir::Operand,
+        expected: bool,
+        msg: ir::AssertKind,
+        target: u32,
+        unwind: ir::UnwindAction,
+    },
+    Call {
+        callee: LocalDefId,
+        args: Vec<ir::Operand>,
+        destination: ir::Place,
+        target: Option<u32>,
+        unwind: ir::UnwindAction,
+    },
+    CallBuiltin {
+        builtin: ir::CoreBuiltin,
+        args: Vec<ir::Operand>,
+        destination: ir::Place,
+        target: Option<u32>,
+        unwind: ir::UnwindAction,
+    },
+}
+
+#[derive(Clone, Debug)]
+pub struct RawBlock {
+    pub statements: Vec<ir::Statement>,
+    pub terminator: RawTerminator,
+    pub cleanup: bool,
+}
+
+#[derive(Clone, Debug)]
+pub struct RawBody {
+    arg_count: usize,
+    is_unsafe: bool,
+    local_tys: Vec<ir::Ty>,
+    blocks: Vec<RawBlock>,
+    identity: String,
+}
+
+impl RawBody {
+    /// Collect every distinct direct crate-local callee in deterministic
+    /// `LocalDefId` order so `capture.rs` can resolve the transitive closure.
+    pub fn local_callees(&self) -> Vec<LocalDefId> {
+        let mut callees = BTreeMap::new();
+        for block in &self.blocks {
+            if let RawTerminator::Call { callee, .. } = block.terminator {
+                callees.insert(callee.local_def_index.as_u32(), callee);
+            }
+        }
+        callees.into_values().collect()
+    }
+
+    /// Remap direct crate-local call targets to `Program.bodies` indices and
+    /// validate all [`ir::Body`] invariants.
+    pub fn into_body(self, def_to_body_index: &BTreeMap<u32, u32>) -> Result<ir::Body> {
+        let blocks = self
+            .blocks
+            .into_iter()
+            .map(|block| {
+                let terminator = match block.terminator {
+                    RawTerminator::Goto { block } => ir::Terminator::Goto { block },
+                    RawTerminator::SwitchInt {
+                        operand,
+                        targets,
+                        otherwise,
+                    } => ir::Terminator::SwitchInt {
+                        operand,
+                        targets,
+                        otherwise,
+                    },
+                    RawTerminator::Ret => ir::Terminator::Ret,
+                    RawTerminator::Unreachable => ir::Terminator::Unreachable,
+                    RawTerminator::UnwindResume => ir::Terminator::UnwindResume,
+                    RawTerminator::Assert {
+                        cond,
+                        expected,
+                        msg,
+                        target,
+                        unwind,
+                    } => ir::Terminator::Assert {
+                        cond,
+                        expected,
+                        msg,
+                        target,
+                        unwind,
+                    },
+                    RawTerminator::Call {
+                        callee,
+                        args,
+                        destination,
+                        target,
+                        unwind,
+                    } => {
+                        let key = callee.local_def_index.as_u32();
+                        let callee_idx = *def_to_body_index.get(&key).ok_or_else(|| {
+                            format!("missing body index for local callee def {key}")
+                        })?;
+                        ir::Terminator::Call {
+                            callee: callee_idx,
+                            args,
+                            destination,
+                            target,
+                            unwind,
+                        }
+                    }
+                    RawTerminator::CallBuiltin {
+                        builtin,
+                        args,
+                        destination,
+                        target,
+                        unwind,
+                    } => ir::Terminator::CallBuiltin {
+                        builtin,
+                        args,
+                        destination,
+                        target,
+                        unwind,
+                    },
+                };
+                Ok(ir::Block {
+                    statements: block.statements,
+                    terminator,
+                    cleanup: block.cleanup,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+        ir::Body::try_new(
+            self.arg_count,
+            self.is_unsafe,
+            self.local_tys,
+            blocks,
+            self.identity,
+        )
+    }
+}
+
 /// Decode a `TyKind::Int` or `TyKind::Uint` into [`IntTy`], preserving pointer-
 /// sized `isize`/`usize` (`bit_width() == None`) as [`IntWidth::Isize`] on the
-/// separately checked 64-bit target and refusing 128-bit integers.
+/// separately checked 64-bit target.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_ast_ir/src/lib.rs#L58-L67
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_ast_ir/src/lib.rs#L134-L143
 fn int_ty(t: ty::Ty<'_>) -> Result<IntTy> {
@@ -41,11 +195,33 @@ fn int_ty(t: ty::Ty<'_>) -> Result<IntTy> {
         Some(16) => IntWidth::I16,
         Some(32) => IntWidth::I32,
         Some(64) => IntWidth::I64,
+        Some(128) => IntWidth::I128,
         Some(bits) => {
-            return Err(format!("integer width {bits} exceeds the modeled 64 bits"));
+            return Err(format!("unsupported integer width {bits}"));
         }
     };
     Ok(IntTy { width, signed })
+}
+
+/// Parse the primitive integer name printed by `rustc` inside
+/// `core::num::<impl {name}>::...`.
+fn parse_primitive_int_name(name: &str) -> Option<IntTy> {
+    let (width, signed) = match name {
+        "u8" => (IntWidth::I8, false),
+        "u16" => (IntWidth::I16, false),
+        "u32" => (IntWidth::I32, false),
+        "u64" => (IntWidth::I64, false),
+        "u128" => (IntWidth::I128, false),
+        "usize" => (IntWidth::Isize, false),
+        "i8" => (IntWidth::I8, true),
+        "i16" => (IntWidth::I16, true),
+        "i32" => (IntWidth::I32, true),
+        "i64" => (IntWidth::I64, true),
+        "i128" => (IntWidth::I128, true),
+        "isize" => (IntWidth::Isize, true),
+        _ => return None,
+    };
+    Some(IntTy { width, signed })
 }
 
 /// Extract the in-memory tag representation of a fieldless enum from `rustc`'s
@@ -86,11 +262,7 @@ fn enum_tag_repr<'tcx>(
                     Integer::I16 => IntWidth::I16,
                     Integer::I32 => IntWidth::I32,
                     Integer::I64 => IntWidth::I64,
-                    Integer::I128 => {
-                        return Err(format!(
-                            "enum tag width 128 exceeds the modeled 64 bits: {t:?}"
-                        ));
-                    }
+                    Integer::I128 => IntWidth::I128,
                 };
                 Ok(ir::EnumTagRepr::Scalar(IntTy { width, signed }))
             }
@@ -111,13 +283,19 @@ fn enum_tag_repr<'tcx>(
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/util.rs#L35-L39
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1433-L1443
 pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
-    // Every admitted value must fit the owned scalar representation. Rejecting
-    // a type is deliberate: replacing a pointer, payload, or wider integer with
-    // a machine word would assign semantics the proof model does not provide.
+    // Rejecting unmodeled types is deliberate: replacing a pointer, struct, or
+    // payload ADT with a machine word would assign semantics the model lacks.
     match *t.kind() {
         ty::Bool => Ok(ir::Ty::Bool),
         ty::Never => Ok(ir::Ty::Never),
         ty::Tuple(elements) if elements.is_empty() => Ok(ir::Ty::Unit),
+        ty::Tuple(elements) => {
+            let fields = elements
+                .iter()
+                .map(|elem| ty(tcx, elem))
+                .collect::<Result<Vec<_>>>()?;
+            Ok(ir::Ty::Tuple { fields })
+        }
         ty::Uint(_) | ty::Int(_) => Ok(ir::Ty::Int(int_ty(t)?)),
         // `Trusted.MirAst.EnumTy` keys nominal enum identity by the `u32` that
         // `enum_id` derives from the enum's semantic path, so the key does not
@@ -161,8 +339,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                     if int_ty(entry.ty)? != discr {
                         return Err("enum discriminant type disagrees with discriminant_ty".into());
                     }
-                    u64::try_from(entry.val)
-                        .map_err(|_| "enum discriminant exceeds 64 bits".to_string())
+                    Ok(entry.val)
                 })
                 .collect::<Result<Vec<_>>>()?;
             let ety = ir::EnumTy::try_new(enum_id(tcx, adt.did()), discr, tag_repr, discriminants)
@@ -173,14 +350,29 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
     }
 }
 
-/// `Place` has a local plus projections. This fragment admits the empty
-/// projection only, preserving the compiler local index without renumbering.
+/// `Place` has a local plus left-to-right projections. Tier 1 admits empty
+/// projections and tuple `Field(index, ty)` projections, preserving compiler
+/// local indices without renumbering.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1182-L1188
-fn local(place: &mir::Place<'_>) -> Result<u32> {
-    if !place.projection.is_empty() {
-        return Err(format!("place projections are unsupported: {place:?}"));
+fn place<'tcx>(tcx: TyCtxt<'tcx>, p: &mir::Place<'tcx>) -> Result<ir::Place> {
+    let mut projection = Vec::with_capacity(p.projection.len());
+    for elem in p.projection.iter() {
+        match elem {
+            mir::ProjectionElem::Field(field_idx, field_ty) => {
+                projection.push(ir::ProjectionElem::Field {
+                    index: field_idx.as_u32(),
+                    ty: ty(tcx, field_ty)?,
+                });
+            }
+            other => {
+                return Err(format!("unsupported place projection {other:?}: {p:?}"));
+            }
+        }
     }
-    Ok(place.local.as_u32())
+    Ok(ir::Place {
+        local: p.local.as_u32(),
+        projection,
+    })
 }
 
 /// Copy and move are distinct constructors. The source says a move "may
@@ -189,11 +381,11 @@ fn local(place: &mir::Place<'_>) -> Result<u32> {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1303-L1330
 fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Operand> {
     match op {
-        mir::Operand::Copy(place) => Ok(ir::Operand::Copy {
-            local: local(place)?,
+        mir::Operand::Copy(p) => Ok(ir::Operand::Copy {
+            place: place(tcx, p)?,
         }),
-        mir::Operand::Move(place) => Ok(ir::Operand::Move {
-            local: local(place)?,
+        mir::Operand::Move(p) => Ok(ir::Operand::Move {
+            place: place(tcx, p)?,
         }),
         mir::Operand::Constant(constant) => {
             let t = ty(tcx, constant.const_.ty())?;
@@ -219,6 +411,9 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                     return Err("the never type has no scalar constants".into());
                 }
                 ir::Ty::Int(ity) => ity.width.bits(),
+                ir::Ty::Tuple { .. } => {
+                    return Err("tuple constants are unsupported".into());
+                }
                 ir::Ty::Enum(ety) => match ety.tag_repr() {
                     ir::EnumTagRepr::ZeroSized => {
                         if matches!(
@@ -254,32 +449,57 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
             if value.size().bits() != u64::from(width) {
                 return Err("scalar constant width disagrees with its type".into());
             }
-            let bits = u64::try_from(value.to_bits_unchecked())
-                .map_err(|_| "scalar constant exceeds 64 bits")?;
             Ok(ir::Operand::Constant {
                 ty: t,
-                lit: ConstLit::Scalar { bits },
+                lit: ConstLit::Scalar {
+                    bits: value.to_bits_unchecked(),
+                },
             })
         }
         other => Err(format!("unsupported operand: {other:?}")),
     }
 }
 
-/// Preserve the ordinary MIR operators. In particular, ordinary shifts use
-/// "RHS.rem_euclid(LHS::BITS)"; the unchecked variants have a different UB
-/// contract and are rejected. The model interprets these operators, including
-/// signed comparisons and wrapping arithmetic, rather than the adapter.
+/// Preserve the MIR unary and binary operators modeled in
+/// `Trusted.MirSemantics.evalUnOp` and `Trusted.MirSemantics.evalBinOp`
+/// (`compiler/rustc_middle/src/mir/syntax.rs` in `rust-lang/rust`
+/// `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+///
+/// > "pub enum UnOp { Not, Neg, PtrMetadata }"
+/// > "pub enum BinOp { Add, AddUnchecked, AddWithOverflow, Sub, SubUnchecked,
+/// >  SubWithOverflow, Mul, MulUnchecked, MulWithOverflow, Div, Rem, BitXor,
+/// >  BitAnd, BitOr, Shl, ShlUnchecked, Shr, ShrUnchecked, Eq, Lt, Le, Ne,
+/// >  Ge, Gt, Cmp, Offset }"
+///
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1621-L1708
+fn un_op(op: mir::UnOp) -> Result<ir::UnOp> {
+    Ok(match op {
+        mir::UnOp::Not => ir::UnOp::Not,
+        mir::UnOp::Neg => ir::UnOp::Neg,
+        other => return Err(format!("unsupported unary operator: {other:?}")),
+    })
+}
+
 fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
     Ok(match op {
         mir::BinOp::BitAnd => ir::BinOp::BitAnd,
         mir::BinOp::BitOr => ir::BinOp::BitOr,
         mir::BinOp::BitXor => ir::BinOp::BitXor,
         mir::BinOp::Shl => ir::BinOp::Shl,
+        mir::BinOp::ShlUnchecked => ir::BinOp::ShlUnchecked,
         mir::BinOp::Shr => ir::BinOp::Shr,
+        mir::BinOp::ShrUnchecked => ir::BinOp::ShrUnchecked,
         mir::BinOp::Add => ir::BinOp::Add,
+        mir::BinOp::AddUnchecked => ir::BinOp::AddUnchecked,
+        mir::BinOp::AddWithOverflow => ir::BinOp::AddWithOverflow,
         mir::BinOp::Sub => ir::BinOp::Sub,
+        mir::BinOp::SubUnchecked => ir::BinOp::SubUnchecked,
+        mir::BinOp::SubWithOverflow => ir::BinOp::SubWithOverflow,
         mir::BinOp::Mul => ir::BinOp::Mul,
+        mir::BinOp::MulUnchecked => ir::BinOp::MulUnchecked,
+        mir::BinOp::MulWithOverflow => ir::BinOp::MulWithOverflow,
+        mir::BinOp::Div => ir::BinOp::Div,
+        mir::BinOp::Rem => ir::BinOp::Rem,
         mir::BinOp::Eq => ir::BinOp::Eq,
         mir::BinOp::Ne => ir::BinOp::Ne,
         mir::BinOp::Lt => ir::BinOp::Lt,
@@ -304,27 +524,43 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
     Ok(match value {
         // Empty tuple aggregates (`()`) lower 1:1 to `ir::Rvalue::Unit`
         // (`{"kind": "unit"}` in `capture.json`) and render 1:1 to
-        // `Trusted.MirAst.Rvalue.aggregateTuple []` in `lean.rs` (which fails
-        // closed in `Trusted.MirSemantics.evalRvalue` until tuple aggregates
-        // are given operational semantics). Aggregates other than `()`
-        // (non-empty tuples, enums, structs) remain refused fail-closed here.
+        // `Trusted.MirAst.Rvalue.aggregateTuple []`. Non-empty tuple
+        // aggregates lower to `ir::Rvalue::AggregateTuple`. Non-tuple
+        // aggregates (enums, structs, arrays) remain refused fail-closed here.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1445-L1453
-        mir::Rvalue::Aggregate(kind, operands)
-            if matches!(**kind, mir::AggregateKind::Tuple) && operands.is_empty() =>
-        {
-            ir::Rvalue::Unit
+        mir::Rvalue::Aggregate(kind, operands) if matches!(**kind, mir::AggregateKind::Tuple) => {
+            if operands.is_empty() {
+                ir::Rvalue::Unit
+            } else {
+                let translated = operands
+                    .iter()
+                    .map(|op| operand(tcx, op))
+                    .collect::<Result<Vec<_>>>()?;
+                ir::Rvalue::AggregateTuple {
+                    operands: translated,
+                }
+            }
         }
         mir::Rvalue::Use(op, with_retag) => ir::Rvalue::Use {
             operand: operand(tcx, op)?,
             with_retag: with_retag.yes(),
+        },
+        mir::Rvalue::UnaryOp(op, opnd) => ir::Rvalue::Unary {
+            op: un_op(*op)?,
+            operand: operand(tcx, opnd)?,
         },
         mir::Rvalue::BinaryOp(op, values) => ir::Rvalue::Binary {
             op: bin_op(*op)?,
             left: operand(tcx, &values.0)?,
             right: operand(tcx, &values.1)?,
         },
-        mir::Rvalue::Discriminant(place) => ir::Rvalue::Discriminant {
-            local: local(place)?,
+        mir::Rvalue::Cast(mir::CastKind::IntToInt, op, target_ty) => ir::Rvalue::Cast {
+            cast_kind: ir::CastKind::IntToInt,
+            operand: operand(tcx, op)?,
+            ty: ty(tcx, *target_ty)?,
+        },
+        mir::Rvalue::Discriminant(p) => ir::Rvalue::Discriminant {
+            place: place(tcx, p)?,
         },
         other => return Err(format!("unsupported rvalue: {other:?}")),
     })
@@ -338,7 +574,7 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
 fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result<ir::Statement> {
     Ok(match stmt {
         mir::StatementKind::Assign(value) => ir::Statement::Assign {
-            local: local(&value.0)?,
+            place: place(tcx, &value.0)?,
             value: rvalue(tcx, &value.1)?,
         },
         mir::StatementKind::StorageLive(local) => ir::Statement::StorageLive {
@@ -352,32 +588,313 @@ fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result
     })
 }
 
-/// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
-/// `Unreachable` is retained because "Executing this terminator is UB."
-/// Calls, drop, unwind, assembly and all other terminators are refused. They
-/// need interprocedural, memory, or unwinding rules absent from this syntax;
-/// an apparently unreachable occurrence is not permission to erase it.
+fn unwind_action(unwind: mir::UnwindAction) -> ir::UnwindAction {
+    match unwind {
+        mir::UnwindAction::Continue => ir::UnwindAction::Continue,
+        mir::UnwindAction::Unreachable => ir::UnwindAction::Unreachable,
+        mir::UnwindAction::Terminate(_) => ir::UnwindAction::Terminate,
+        mir::UnwindAction::Cleanup(bb) => ir::UnwindAction::Cleanup { block: bb.as_u32() },
+    }
+}
+
+/// Validate the implicit panic-handling path invoked when a MIR `Assert`
+/// fails at runtime:
+/// 1. `msg.panic_function()` must resolve to a non-local `core` lang item
+///    (blocking `#![no_core]` crates that define local `panic_const_*` lang
+///    items outside the verified call closure).
+/// 2. `LangItem::PanicImpl` (`#[panic_handler]`) must resolve to sysroot
+///    `std` (blocking `#![no_std]` crate-local panic handlers outside the
+///    verified closure and `#![no_std]` libraries whose downstream panic
+///    handler may abort or loop rather than unwinding to `.unwound`).
+///
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/terminator.rs#L948-L1005
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/block.rs#L1294-L1330
+fn validate_assert_panic_path<'tcx, O: std::fmt::Debug>(
+    tcx: TyCtxt<'tcx>,
+    msg: &mir::AssertKind<O>,
+) -> Result<()> {
+    let panic_lang_item = msg.panic_function();
+    let Some(panic_fn) = tcx.lang_items().get(panic_lang_item) else {
+        return Err(format!(
+            "missing panic lang item {panic_lang_item:?} for assert {msg:?}"
+        ));
+    };
+    if panic_fn.is_local() || tcx.crate_name(panic_fn.krate) != sym::core {
+        return Err(format!(
+            "assert panic lang item `{}` must resolve to sysroot `core`",
+            canonical_def_path(tcx, panic_fn)
+        ));
+    }
+    let Some(panic_impl) = tcx.lang_items().panic_impl() else {
+        return Err(
+            "panic asserts require sysroot `std` unwinding panic handler; \
+             `#![no_std]` libraries without `std` are unsupported for bodies \
+             containing asserts"
+                .into(),
+        );
+    };
+    if panic_impl.is_local() || tcx.crate_name(panic_impl.krate) != sym::std {
+        return Err(format!(
+            "assert panic handler `{}` must resolve to sysroot `std` \
+             (crate-local or non-std `#[panic_handler]` is unsupported)",
+            canonical_def_path(tcx, panic_impl)
+        ));
+    }
+    Ok(())
+}
+
+/// Translate an admitted operand-free `mir::AssertKind` using `rustc`'s own
+/// `is_optional_overflow_check` predicate so `-Coverflow-checks=no` never
+/// disagrees with codegen.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/terminator.rs#L938-L946
+fn assert_kind<O: std::fmt::Debug>(
+    overflow_checks: bool,
+    msg: &mir::AssertKind<O>,
+) -> Result<ir::AssertKind> {
+    if !overflow_checks && msg.is_optional_overflow_check() {
+        return Err(format!(
+            "optional overflow assert {msg:?} is ignored by rustc when overflow checks are disabled; enable --overflow-checks"
+        ));
+    }
+    match msg {
+        mir::AssertKind::Overflow(op, _, _) => {
+            let op = bin_op(*op)?;
+            if !op.is_admitted_assert_overflow_op() {
+                return Err(format!("unsupported assert overflow operator: {op:?}"));
+            }
+            Ok(ir::AssertKind::Overflow { op })
+        }
+        mir::AssertKind::OverflowNeg(_) => Ok(ir::AssertKind::OverflowNeg),
+        mir::AssertKind::DivisionByZero(_) => Ok(ir::AssertKind::DivisionByZero),
+        mir::AssertKind::RemainderByZero(_) => Ok(ir::AssertKind::RemainderByZero),
+        mir::AssertKind::NullPointerDereference => Ok(ir::AssertKind::NullPointerDereference),
+        other => Err(format!("unsupported assert kind: {other:?}")),
+    }
+}
+
+/// Canonical crate-qualified definition path with trimming and visible
+/// re-export paths disabled, so re-exports under `std::` resolve back to their
+/// defining `core::` path.
+fn canonical_def_path(tcx: TyCtxt<'_>, def: DefId) -> String {
+    rustc_middle::ty::print::with_no_trimmed_paths!(
+        rustc_middle::ty::print::with_no_visible_paths!(tcx.def_path_str(def))
+    )
+}
+
+/// Recognize an audited `core::num` or `core::cmp` builtin call and validate
+/// its exact monomorphized type arguments and argument/destination signature.
+fn recognize_core_builtin<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    callee_def_id: DefId,
+    generic_args: ty::GenericArgsRef<'tcx>,
+    arg_tys: &[&ir::Ty],
+    dst_ty: &ir::Ty,
+) -> Result<ir::CoreBuiltin> {
+    if tcx.crate_name(callee_def_id.krate) != sym::core {
+        return Err(format!(
+            "unsupported external call outside `core`: {}",
+            canonical_def_path(tcx, callee_def_id)
+        ));
+    }
+    if tcx
+        .codegen_fn_attrs(callee_def_id)
+        .flags
+        .contains(CodegenFnAttrFlags::TRACK_CALLER)
+    {
+        return Err(format!(
+            "external `#[track_caller]` call is unsupported: {}",
+            canonical_def_path(tcx, callee_def_id)
+        ));
+    }
+    let path = canonical_def_path(tcx, callee_def_id);
+    let builtin = if let Some(rest) = path.strip_prefix("core::num::<impl ") {
+        if !generic_args.is_empty() {
+            return Err(format!(
+                "unexpected generic arguments on core::num builtin `{path}`: {generic_args:?}"
+            ));
+        }
+        let Some((ty_name, method)) = rest.split_once(">::") else {
+            return Err(format!("unsupported core::num call `{path}`"));
+        };
+        let Some(self_int_ty) = parse_primitive_int_name(ty_name) else {
+            return Err(format!("unsupported core::num receiver type `{path}`"));
+        };
+        let builtin = match method {
+            "wrapping_add" => ir::CoreBuiltin::WrappingAdd,
+            "wrapping_sub" => ir::CoreBuiltin::WrappingSub,
+            "wrapping_mul" => ir::CoreBuiltin::WrappingMul,
+            "wrapping_shl" => ir::CoreBuiltin::WrappingShl,
+            "wrapping_shr" => ir::CoreBuiltin::WrappingShr,
+            "overflowing_add" => ir::CoreBuiltin::OverflowingAdd,
+            "overflowing_sub" => ir::CoreBuiltin::OverflowingSub,
+            "overflowing_mul" => ir::CoreBuiltin::OverflowingMul,
+            "saturating_add" => ir::CoreBuiltin::SaturatingAdd,
+            "saturating_sub" => ir::CoreBuiltin::SaturatingSub,
+            "leading_zeros" => ir::CoreBuiltin::LeadingZeros,
+            "trailing_zeros" => ir::CoreBuiltin::TrailingZeros,
+            "is_multiple_of" if !self_int_ty.signed => ir::CoreBuiltin::IsMultipleOf,
+            _ => return Err(format!("unsupported core::num call `{path}`")),
+        };
+        let expected_self = ir::Ty::Int(self_int_ty);
+        if arg_tys.first().copied() != Some(&expected_self) {
+            return Err(format!(
+                "core::num builtin `{path}` receiver type disagrees with argument 0"
+            ));
+        }
+        builtin
+    } else if path == "core::cmp::min" || path == "core::cmp::max" {
+        if generic_args.len() != 1 {
+            return Err(format!(
+                "expected 1 generic type argument on `{path}`, got {generic_args:?}"
+            ));
+        }
+        let Some(raw_ty) = generic_args[0].as_type() else {
+            return Err(format!(
+                "expected type generic argument on `{path}`, got {generic_args:?}"
+            ));
+        };
+        let inst_ty = ty(tcx, raw_ty)?;
+        if !matches!(inst_ty, ir::Ty::Int(_)) {
+            return Err(format!(
+                "`{path}` is only admitted for integer types, got {inst_ty:?}"
+            ));
+        }
+        if arg_tys.first().copied() != Some(&inst_ty) {
+            return Err(format!(
+                "`{path}` generic argument {inst_ty:?} disagrees with argument 0"
+            ));
+        }
+        if path == "core::cmp::min" {
+            ir::CoreBuiltin::CmpMin
+        } else {
+            ir::CoreBuiltin::CmpMax
+        }
+    } else {
+        return Err(format!("unsupported external `core` call: `{path}`"));
+    };
+    ir::validate_core_builtin_signature(builtin, arg_tys, dst_ty)?;
+    Ok(builtin)
+}
+
+fn operand_ty<'a>(local_tys: &'a [ir::Ty], op: &'a ir::Operand) -> Result<&'a ir::Ty> {
+    match op {
+        ir::Operand::Copy { place } | ir::Operand::Move { place } => {
+            ir::project_place_ty(local_tys, place, "call argument")
+        }
+        ir::Operand::Constant { ty, lit } => {
+            ir::validate_constant(ty, *lit)?;
+            Ok(ty)
+        }
+    }
+}
+
+/// Translate admitted Tier 1 terminators (`Goto`, `SwitchInt`, `Return`,
+/// `Unreachable`, `UnwindResume`, operand-free `Assert`, direct monomorphic
+/// crate-local `Call`, and audited `CoreBuiltin` `Call`).
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
-fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Result<ir::Terminator> {
+fn terminator<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    local_tys: &[ir::Ty],
+    term: &mir::TerminatorKind<'tcx>,
+) -> Result<RawTerminator> {
     Ok(match term {
-        mir::TerminatorKind::Goto { target } => ir::Terminator::Goto {
+        mir::TerminatorKind::Goto { target } => RawTerminator::Goto {
             block: target.as_u32(),
         },
-        mir::TerminatorKind::SwitchInt { discr, targets } => ir::Terminator::SwitchInt {
+        mir::TerminatorKind::SwitchInt { discr, targets } => RawTerminator::SwitchInt {
             operand: operand(tcx, discr)?,
             targets: targets
                 .iter()
-                .map(|(value, block)| {
-                    Ok((
-                        u64::try_from(value).map_err(|_| "switch value exceeds 64 bits")?,
-                        block.as_u32(),
-                    ))
+                .map(|(value, block)| ir::SwitchTarget {
+                    value,
+                    block: block.as_u32(),
                 })
-                .collect::<Result<Vec<_>>>()?,
+                .collect(),
             otherwise: targets.otherwise().as_u32(),
         },
-        mir::TerminatorKind::Return => ir::Terminator::Ret,
-        mir::TerminatorKind::Unreachable => ir::Terminator::Unreachable,
+        mir::TerminatorKind::Return => RawTerminator::Ret,
+        mir::TerminatorKind::Unreachable => RawTerminator::Unreachable,
+        mir::TerminatorKind::UnwindResume => RawTerminator::UnwindResume,
+        mir::TerminatorKind::Assert {
+            cond,
+            expected,
+            msg,
+            target,
+            unwind,
+        } => {
+            validate_assert_panic_path(tcx, msg)?;
+            RawTerminator::Assert {
+                cond: operand(tcx, cond)?,
+                expected: *expected,
+                msg: assert_kind(tcx.sess.overflow_checks(), msg)?,
+                target: target.as_u32(),
+                unwind: unwind_action(*unwind),
+            }
+        }
+        mir::TerminatorKind::Call {
+            func,
+            args,
+            destination,
+            target,
+            unwind,
+            ..
+        } => {
+            let mir::Operand::Constant(func_const) = func else {
+                return Err(format!(
+                    "indirect or non-constant call is unsupported: {func:?}"
+                ));
+            };
+            let ty::FnDef(callee_def_id, generic_args) = *func_const.const_.ty().kind() else {
+                return Err(format!(
+                    "non-FnDef call target is unsupported: {:?}",
+                    func_const.const_.ty()
+                ));
+            };
+            let translated_args = args
+                .iter()
+                .map(|arg| operand(tcx, &arg.node))
+                .collect::<Result<Vec<_>>>()?;
+            let translated_dst = place(tcx, destination)?;
+            let translated_target = target.map(|bb| bb.as_u32());
+            let translated_unwind = unwind_action(*unwind);
+            if let Some(local_callee) = callee_def_id.as_local() {
+                if !generic_args.is_empty() {
+                    return Err(format!(
+                        "generic crate-local call is unsupported: {}<{generic_args:?}>",
+                        canonical_def_path(tcx, callee_def_id)
+                    ));
+                }
+                if let Some(intrinsic) = tcx.intrinsic(callee_def_id) {
+                    return Err(format!(
+                        "call to local intrinsic `{}` is unsupported",
+                        intrinsic.name
+                    ));
+                }
+                RawTerminator::Call {
+                    callee: local_callee,
+                    args: translated_args,
+                    destination: translated_dst,
+                    target: translated_target,
+                    unwind: translated_unwind,
+                }
+            } else {
+                let arg_tys = translated_args
+                    .iter()
+                    .map(|arg| operand_ty(local_tys, arg))
+                    .collect::<Result<Vec<_>>>()?;
+                let dst_ty =
+                    ir::project_place_ty(local_tys, &translated_dst, "builtin destination")?;
+                let builtin =
+                    recognize_core_builtin(tcx, callee_def_id, generic_args, &arg_tys, dst_ty)?;
+                RawTerminator::CallBuiltin {
+                    builtin,
+                    args: translated_args,
+                    destination: translated_dst,
+                    target: translated_target,
+                    unwind: translated_unwind,
+                }
+            }
+        }
         other => return Err(format!("unsupported terminator: {other:?}")),
     })
 }
@@ -416,10 +933,7 @@ fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Resu
 /// corresponding check for the enum keys that [`enum_id`] derives from this
 /// identity.
 fn item_identity(tcx: TyCtxt<'_>, def: DefId) -> String {
-    let path = rustc_middle::ty::print::with_no_trimmed_paths!(
-        rustc_middle::ty::print::with_no_visible_paths!(tcx.def_path_str(def))
-    );
-    format!("rust-path-v1::{path}")
+    format!("rust-path-v1::{}", canonical_def_path(tcx, def))
 }
 
 /// Key a crate-local enum for `Trusted.MirAst.EnumTy.id`.
@@ -449,22 +963,16 @@ pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
 /// which may help the compiler produce better code."
 /// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L91-L92
 ///
-/// `#[track_caller]` "allows code within `f` to get a hint of the `Location`
-/// of the "topmost" tracked call", which `core` observes through "the
-/// `core::intrinsics::caller_location` intrinsic". `rustc` passes the
-/// location "by appending an implicit parameter to the function ABI", outside
-/// the MIR locals. Reading it takes a call, and the admitted fragment refuses
-/// every call and assertion terminator, so no captured body can observe it.
-/// The compiler also sets this flag when a trait method inherits the
-/// attribute from its declaration.
+/// `#[track_caller]` appends an implicit caller-location ABI parameter outside
+/// MIR locals and affects call/panic semantics; now that `Call` and `Assert`
+/// are admitted (and
+/// `Trusted.Correspondence.refCallHooks.requiresCallerLocation`
+/// returns `false`), `TRACK_CALLER` is refused fail-closed.
 /// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L763-L779
-/// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L855-L856
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L355-L358
 ///
 /// Every other flag at the pinned revision is refused; see [`codegen_attrs`].
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L156-L214
-const ADMITTED_CODEGEN_FLAGS: CodegenFnAttrFlags =
-    CodegenFnAttrFlags::COLD.union(CodegenFnAttrFlags::TRACK_CALLER);
+const ADMITTED_CODEGEN_FLAGS: CodegenFnAttrFlags = CodegenFnAttrFlags::COLD;
 
 /// Refuse code-generation attributes whose effect the model does not state.
 ///
@@ -565,16 +1073,7 @@ fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
     if !foreign_item_symbol_aliases.is_empty() {
         return Err("foreign-item symbol aliases are unsupported".into());
     }
-    // Refuse every flag outside [`ADMITTED_CODEGEN_FLAGS`]. The others carry
-    // obligations or behavior the model lacks: `NO_MANGLE`,
-    // `RUSTC_STD_INTERNAL_SYMBOL` (a "weird symbol" with "slightly different
-    // linkage, visibility, and reachability rules"), and
-    // `EXTERNALLY_IMPLEMENTABLE_ITEM` bind symbols; `NEVER_UNWIND` asserts
-    // that the "function will never unwind"; the allocator flags make claims
-    // such as "the pointer returned from this function is never null";
-    // `NAKED` omits the prologue; `OFFLOAD_KERNEL` adds "an extra ptr arg";
-    // and `NO_BUILTINS` (set for every function of a `#![no_builtins]` crate)
-    // is unreviewed. The rest apply to statics or foreign items.
+    // Refuse every flag outside [`ADMITTED_CODEGEN_FLAGS`].
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L156-L214
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L348-L353
     let unmodeled = flags.difference(ADMITTED_CODEGEN_FLAGS);
@@ -583,15 +1082,6 @@ fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
             "codegen attribute flags {unmodeled:?} are unsupported"
         ));
     }
-    // The Reference documents three inlining modes and says: "In every form
-    // the attribute is a hint. The compiler may ignore it." Forced inlining
-    // (`#[rustc_force_inline]`) is an internal attribute outside those modes,
-    // so it stays refused until reviewed. An `#[optimize]` goal (`none`,
-    // `speed` or `size`) selects optimization effort, which must preserve the
-    // captured MIR's meaning just as the optimization level must. Matching
-    // every variant makes a new mode fail to compile here.
-    // https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L65-L73
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/attrs/data_structures.rs#L108-L150
     match inline {
         InlineAttr::None | InlineAttr::Hint | InlineAttr::Always | InlineAttr::Never => {}
         InlineAttr::Force { .. } => {
@@ -604,15 +1094,6 @@ fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
         | OptimizeAttr::Speed
         | OptimizeAttr::Size => {}
     }
-    // The remaining settings have no counterpart in the model: `#[sanitize]`
-    // overrides, `#[instruction_set]`, function alignment (from
-    // `#[rustc_align]` or `-Zmin-function-alignment`, which capture does not
-    // pass), the "nops ... around the function entry" that
-    // `#[patchable_function_entry]` reserves for patching, the foreign-only
-    // `#[link_ordinal]`, and Objective-C class and selector names.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L77-L81
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L95-L111
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L305-L317
     if *sanitizers != SanitizerFnAttrs::default() {
         return Err(format!("sanitizer settings {sanitizers:?} are unsupported"));
     }
@@ -635,108 +1116,30 @@ fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
 /// "soundness-critical"; an unrepresented required constant is a refusal,
 /// independent of runtime preconditions or whether any return is reachable.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L265-L271
-pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) -> Result<ir::Body> {
-    // Refuse intrinsics before reading the body: calls to an intrinsic need
-    // not execute its fallback body. Once `#![feature(intrinsics)]` is
-    // enabled, `intrinsic_raw` "Determines whether an item is an intrinsic"
-    // from the `#[rustc_intrinsic]` attribute, even when the function has a
-    // fallback body. Calls resolve to `ty::InstanceKind::Intrinsic(def_id)`,
-    // and `LowerIntrinsics`, which runs before `Runtime(PostCleanup)`,
-    // rewrites calls by intrinsic name in this crate and downstream: a call
-    // to `unreachable` becomes `TerminatorKind::Unreachable` even when the
-    // fallback body is a benign loop. A contract verified for the fallback
-    // body therefore need not describe what callers execute.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/context.rs#L2667-L2673
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/util.rs#L1669-L1689
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_ty_utils/src/instance.rs#L35-L37
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L649-L663
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lower_intrinsics.rs#L17-L25
+pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) -> Result<RawBody> {
     if let Some(intrinsic) = tcx.intrinsic(def) {
         return Err(format!(
             "intrinsic `{}` is unsupported: calls need not execute its fallback body",
             intrinsic.name
         ));
     }
-    // The phase determines the meaning and allowed grammar of MIR. The
-    // compiler's phase field records progress through "desugaring and
-    // optimization". Refuse another phase instead of guessing how to normalize
-    // it into the syntax modeled here.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L211-L216
     if body.phase != MirPhase::Runtime(RuntimePhase::PostCleanup) {
         return Err(format!("unexpected MIR phase: {:?}", body.phase));
     }
-    // An error-tainted body is not compiler approval. Coroutine state and
-    // rust-call tuple spreading need entry/continuation rules absent from this
-    // IR. `spread_arg` passes "its individual components at the LLVM level";
-    // treating that as ordinary flat arguments would change the call contract.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L227-L257
     if body.tainted_by_errors.is_some() || body.coroutine.is_some() || body.spread_arg.is_some() {
         return Err("tainted, coroutine or spread-argument body is unsupported".into());
     }
-    // `None` means "the list has not been computed yet", not an empty set of
-    // obligations. Even a valid scalar runtime body cannot waive a missing or
-    // nonempty compile-time obligation inventory.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L265-L271
     if !matches!(body.required_consts.as_deref(), Some([])) {
         return Err("required constants are unavailable in the scalar model".into());
     }
-    // One captured body has one concrete scalar argument/type interpretation.
-    // Generic entry points would require quantified instantiation obligations;
-    // compiler completion alone does not prove every future instantiation.
-    // `Generics` describes "the formal type/lifetime parameters associated
-    // with an item or method", optionally starting with `Self`, and `count`
-    // is `self.parent_count + self.own_params.len()`. A method therefore also
-    // counts its parent's parameters, including a trait's implicit `Self`.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L112-L116
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L153-L156
     if tcx.generics_of(def).count() != 0 {
         return Err("generic functions require quantified instantiation obligations".into());
     }
-    // With generics refused, the identity instantiation is the only one.
-    // `skip_binder` "is only valid when you are either extracting data that
-    // does not reference any generic arguments": the ABI, C-variadic and
-    // safety flags read below live in `fn_sig_kind`, separately from the
-    // argument and return types that late-bound regions can reference.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/unnormalized.rs#L96-L100
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L164-L170
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L899-L904
     let signature = tcx.fn_sig(def).instantiate_identity().skip_binder();
-    // The model has ordinary Rust arguments and no foreign/variadic calling
-    // convention or hardware-feature entry conditions. Do not infer those
-    // missing preconditions merely because the body happens to use scalars.
-    // `abi` returns the ABI "including the unwind flag", `c_variadic` answers
-    // "Do the function arguments end with a C-style variadic argument?", and
-    // `ExternAbi::Rust` is the native Rust ABI ("that's us!").
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L871-L890
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L929-L935
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/extern_abi.rs#L31-L32
     if signature.abi() != ExternAbi::Rust || signature.c_variadic() {
         return Err("only non-variadic Rust ABI functions are admitted".into());
     }
-    // Codegen attributes can make calls execute another definition or add
-    // entry and link-time obligations that the signature does not record.
     codegen_attrs(tcx, def)?;
-    // A cleanup block "lies on an unwind path", and "Unwind blocks must only
-    // branch to other unwind blocks." Such blocks need an unwinding
-    // interpretation even when their ordinary edges are unreachable, and the
-    // scalar fragment has none. Checking every block before translating
-    // locals keeps this refusal reachable: holding a value with drop glue
-    // across a call that may unwind produces a cleanup block and also a
-    // non-scalar local, which local translation would otherwise report first.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L1337-L1341
-    if let Some((id, _)) = body
-        .basic_blocks
-        .iter_enumerated()
-        .find(|(_, block)| block.is_cleanup)
-    {
-        return Err(format!("cleanup block {id:?} is unsupported"));
-    }
-    // Preserve all compiler locals and blocks, including unused locals and
-    // unreachable blocks. The compiler places arguments "Starting at local 1"
-    // and block references index its basic-block vector. Filtering or
-    // renumbering would change the subject and require a separate proof.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L207-L209
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L235-L251
     let local_tys = body
         .local_decls
         .iter()
@@ -755,42 +1158,23 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
                         .map_err(|error| format!("{id:?} statement {index}: {error}"))
                 })
                 .collect::<Result<Vec<_>>>()?;
-            // The terminator "should generally ONLY be `None` during
-            // construction"; a provided body without one is malformed.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L1327-L1335
             let term = block.terminator.as_ref().ok_or("missing terminator")?;
-            let terminator = terminator(tcx, &term.kind)
+            let terminator = terminator(tcx, &local_tys, &term.kind)
                 .map_err(|error| format!("{id:?} terminator: {error}"))?;
-            Ok(ir::Block {
+            Ok(RawBlock {
                 statements,
                 terminator,
+                cleanup: block.is_cleanup,
             })
         })
         .collect::<Result<Vec<_>>>()?;
-    // fn_sig lowers ordinary declarations with "sig.header.safety()";
-    // lower_fn_ty preserves it with ".set_safety(safety)". FnSig::safety
-    // delegates to the getter documented as "Returns the safety mode."
-    // hir::Safety::is_unsafe is "!self.is_safe()", with Unsafe/Safe mapped
-    // to false/true by is_safe. Read declaration safety from that signature,
-    // not from whether this scalar MIR happens to contain unsafe operations.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_analysis/src/collect.rs#L1066-L1084
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_analysis/src/hir_ty_lowering/mod.rs#L3434-L3458
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L882-L885
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L925-L927
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/hir.rs#L4610-L4621
-    //
-    // The model uses this bit to decide whether reviewed caller requirements
-    // apply. `codegen_attrs` above excludes target-feature entry points and
-    // unsafe symbol and section attributes, whose obligations this bit does
-    // not record; pointer-free syntax alone does not authorize treating an
-    // unsafe declaration as an unrestricted safe entry point.
-    ir::Body::try_new(
-        body.arg_count,
-        signature.safety().is_unsafe(),
+    Ok(RawBody {
+        arg_count: body.arg_count,
+        is_unsafe: signature.safety().is_unsafe(),
         local_tys,
         blocks,
-        item_identity(tcx, def.to_def_id()),
-    )
+        identity: item_identity(tcx, def.to_def_id()),
+    })
 }
 
 #[cfg(test)]
@@ -807,6 +1191,15 @@ mod tests {
         assert!(ir::check_use_retag(&u64_ty, true).is_ok());
         assert!(ir::check_use_retag(&ir::Ty::Bool, true).is_ok());
         assert!(ir::check_use_retag(&ir::Ty::Unit, true).is_ok());
+        assert!(
+            ir::check_use_retag(
+                &ir::Ty::Tuple {
+                    fields: vec![u64_ty, ir::Ty::Bool]
+                },
+                true
+            )
+            .is_ok()
+        );
         let ety = ir::EnumTy::try_new(
             1,
             IntTy {
@@ -842,9 +1235,20 @@ mod tests {
             width: IntWidth::I8,
             signed: false,
         });
-        assert!(ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![u64::MAX, 0, 1]).is_ok());
+        assert!(
+            ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![u128::from(u64::MAX), 0, 1])
+                .is_ok()
+        );
         assert!(ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![7, 7]).is_err());
-        assert!(ir::EnumTy::try_new(2, isize_discr, u8_unsigned, vec![u64::MAX, 0, 1]).is_err());
+        assert!(
+            ir::EnumTy::try_new(
+                2,
+                isize_discr,
+                u8_unsigned,
+                vec![u128::from(u64::MAX), 0, 1]
+            )
+            .is_err()
+        );
         assert!(
             ir::EnumTy::try_new(
                 3,
@@ -864,6 +1268,7 @@ mod tests {
         let block = ir::Block {
             statements: vec![],
             terminator: ir::Terminator::Ret,
+            cleanup: false,
         };
         assert!(
             ir::Body::try_new(
@@ -893,6 +1298,7 @@ mod tests {
                 vec![ir::Block {
                     statements: vec![ir::Statement::StorageLive { local: 3 }],
                     terminator: ir::Terminator::Ret,
+                    cleanup: false,
                 }],
                 "rust-path-v1::oob_storage".into(),
             )
@@ -935,6 +1341,7 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::StorageDead { local: 0 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::dead_ret".into(),
         )
@@ -947,7 +1354,7 @@ mod tests {
             vec![u8_ty.clone()],
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
-                    local: 0,
+                    place: ir::Place::local(0),
                     value: ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: u8_ty.clone(),
@@ -957,6 +1364,7 @@ mod tests {
                     },
                 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::u8_overflow".into(),
         )
@@ -973,7 +1381,7 @@ mod tests {
                 width: IntWidth::I8,
                 signed: true,
             }),
-            vec![u64::MAX, 0, 1],
+            vec![u128::from(u64::MAX), 0, 1],
         )
         .unwrap();
         let enum_ty = ir::Ty::Enum(signed_enum);
@@ -983,7 +1391,7 @@ mod tests {
             vec![enum_ty.clone()],
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
-                    local: 0,
+                    place: ir::Place::local(0),
                     value: ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: enum_ty.clone(),
@@ -993,6 +1401,7 @@ mod tests {
                     },
                 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::enum_overflow".into(),
         )
@@ -1005,7 +1414,7 @@ mod tests {
             vec![enum_ty.clone()],
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
-                    local: 0,
+                    place: ir::Place::local(0),
                     value: ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: enum_ty.clone(),
@@ -1015,6 +1424,7 @@ mod tests {
                     },
                 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::enum_bad_variant".into(),
         )
@@ -1027,7 +1437,7 @@ mod tests {
             vec![enum_ty.clone()],
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
-                    local: 0,
+                    place: ir::Place::local(0),
                     value: ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: enum_ty,
@@ -1037,6 +1447,7 @@ mod tests {
                     },
                 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::enum_neg_tag".into(),
         )
@@ -1059,7 +1470,7 @@ mod tests {
             vec![zst_enum.clone()],
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
-                    local: 0,
+                    place: ir::Place::local(0),
                     value: ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: zst_enum,
@@ -1069,6 +1480,7 @@ mod tests {
                     },
                 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::enum_zst".into(),
         )
@@ -1093,14 +1505,46 @@ mod tests {
             vec![u8_ty.clone(), u8_ty],
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
-                    local: 0,
-                    value: ir::Rvalue::Discriminant { local: 1 },
+                    place: ir::Place::local(0),
+                    value: ir::Rvalue::Discriminant {
+                        place: ir::Place::local(1),
+                    },
                 }],
                 terminator: ir::Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::non_enum_discr".into(),
         )
         .unwrap_err();
-        assert!(non_enum_discr.contains("requires a fieldless enum local"));
+        assert!(non_enum_discr.contains("requires a fieldless enum place"));
+    }
+
+    #[test]
+    fn assert_kind_rejects_optional_overflow_asserts_when_overflow_checks_disabled() {
+        let add_ov: mir::AssertKind<()> = mir::AssertKind::Overflow(mir::BinOp::Add, (), ());
+        let neg_ov: mir::AssertKind<()> = mir::AssertKind::OverflowNeg(());
+        let div_ov: mir::AssertKind<()> = mir::AssertKind::Overflow(mir::BinOp::Div, (), ());
+        let div_zero: mir::AssertKind<()> = mir::AssertKind::DivisionByZero(());
+        let bounds: mir::AssertKind<()> = mir::AssertKind::BoundsCheck { len: (), index: () };
+
+        assert!(assert_kind(false, &add_ov).is_err());
+        assert!(assert_kind(false, &neg_ov).is_err());
+        assert_eq!(
+            assert_kind(true, &add_ov).unwrap(),
+            ir::AssertKind::Overflow { op: ir::BinOp::Add }
+        );
+        assert_eq!(
+            assert_kind(true, &neg_ov).unwrap(),
+            ir::AssertKind::OverflowNeg
+        );
+        assert_eq!(
+            assert_kind(false, &div_ov).unwrap(),
+            ir::AssertKind::Overflow { op: ir::BinOp::Div }
+        );
+        assert_eq!(
+            assert_kind(false, &div_zero).unwrap(),
+            ir::AssertKind::DivisionByZero
+        );
+        assert!(assert_kind(true, &bounds).is_err());
     }
 }

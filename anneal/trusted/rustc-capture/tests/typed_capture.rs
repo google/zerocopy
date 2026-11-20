@@ -189,7 +189,7 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
     assert!(output.status.success(), "{output:?}");
     assert_eq!(status(&output)["status"], "captured", "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 3);
+    assert_eq!(manifest["schema_version"], 4);
     assert!(manifest.get("scope").is_none(), "{manifest}");
     assert_eq!(manifest["program"]["scope"]["kind"], "selected_unit");
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
@@ -947,7 +947,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     assert_eq!(ty["discr_signed"], true, "{ty}");
     assert_eq!(ty["tag_repr"]["kind"], "scalar", "{ty}");
     assert_eq!(ty["tag_repr"]["width"], "i64", "{ty}");
-    assert_eq!(ty["discriminants"], serde_json::json!([7]), "{ty}");
+    assert_eq!(ty["discriminants"], serde_json::json!(["7"]), "{ty}");
 
     let zst_single =
         b"pub enum Single { Only = 42 }\npub fn selected(x: Single) -> isize { match x { Single::Only => 42 } }\n";
@@ -958,7 +958,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     let ty = &manifest["program"]["bodies"][0]["local_tys"][1];
     assert_eq!(ty["kind"], "enum", "{ty}");
     assert_eq!(ty["tag_repr"]["kind"], "zero_sized", "{ty}");
-    assert_eq!(ty["discriminants"], serde_json::json!([42]), "{ty}");
+    assert_eq!(ty["discriminants"], serde_json::json!(["42"]), "{ty}");
 
     let repr_u8 = b"#[repr(u8)]\npub enum ExplicitU8 { Ten = 10, Twenty = 20 }\npub fn selected(x: ExplicitU8) -> u8 { match x { ExplicitU8::Ten => 10, ExplicitU8::Twenty => 20 } }\n";
     let fixture = Capture::new(repr_u8);
@@ -970,7 +970,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     assert_eq!(ty["discr_width"], "i8", "{ty}");
     assert_eq!(ty["discr_signed"], false, "{ty}");
     assert_eq!(ty["tag_repr"]["width"], "i8", "{ty}");
-    assert_eq!(ty["discriminants"], serde_json::json!([10, 20]), "{ty}");
+    assert_eq!(ty["discriminants"], serde_json::json!(["10", "20"]), "{ty}");
 
     let empty_crate = Capture::new(b"");
     let output = empty_crate.command().arg("--scope=crate").output().unwrap();
@@ -1012,11 +1012,16 @@ fn negative_isize_enum_discriminants_are_captured_as_64_bit_twos_complement() {
     let discriminants = manifest["program"]["bodies"][0]["local_tys"][1]["discriminants"]
         .as_array()
         .expect("enum discriminants");
-    let values: Vec<u64> = discriminants
+    let values: Vec<u128> = discriminants
         .iter()
-        .map(|v| v.as_u64().expect("u64 discriminant"))
+        .map(|v| {
+            v.as_str()
+                .expect("decimal string discriminant")
+                .parse::<u128>()
+                .expect("u128 discriminant")
+        })
         .collect();
-    assert_eq!(values, vec![u64::MAX, 0, 1]);
+    assert_eq!(values, vec![u128::from(u64::MAX), 0, 1]);
     let lean =
         std::fs::read_to_string(fixture.output.join("Captured.lean")).expect("read Captured.lean");
     assert!(
@@ -1046,7 +1051,7 @@ fn retag_flags_are_recorded_on_scalar_use_and_reference_assignments_are_refused(
 }
 
 #[test]
-fn empty_tuple_preserves_distinct_unit_ir_and_refuses_non_empty_tuples() {
+fn empty_tuple_preserves_distinct_unit_ir_and_admits_non_empty_tuples() {
     let fixture = Capture::new(b"pub fn selected() -> () { let x = (); x }\n");
     let output = fixture.selected_command().output().unwrap();
     assert!(output.status.success(), "{output:?}");
@@ -1070,11 +1075,25 @@ fn empty_tuple_preserves_distinct_unit_ir_and_refuses_non_empty_tuples() {
         "empty tuple aggregate must render 1:1 as aggregateTuple [], not constant use:\n{lean}"
     );
 
-    let non_empty_tuple = Capture::new(b"pub fn selected(x: u64) -> (u64, u64) { (x, x) }\n");
+    let non_empty_tuple = Capture::new(
+        b"pub fn selected(x: u64, b: bool) -> (u64, bool) { let p = (x, b); (p.0, !p.1) }\n",
+    );
     let output = non_empty_tuple.selected_command().output().unwrap();
-    assert_eq!(output.status.code(), Some(1), "{output:?}");
-    assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
-    non_empty_tuple.assert_no_capture_artifacts();
+    assert!(output.status.success(), "{output:?}");
+    let lean = std::fs::read_to_string(non_empty_tuple.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("Trusted.MirAst.MirTy.tuple"), "{lean}");
+    assert!(
+        lean.contains("Trusted.MirAst.ProjectionElem.field 0"),
+        "{lean}"
+    );
+    assert!(
+        lean.contains("Trusted.MirAst.ProjectionElem.field 1"),
+        "{lean}"
+    );
+    assert!(
+        lean.contains("Trusted.MirAst.Rvalue.aggregateTuple ["),
+        "{lean}"
+    );
 }
 
 #[test]
@@ -1091,7 +1110,7 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
     let output = fixture.command().arg("--scope=crate").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 3);
+    assert_eq!(manifest["schema_version"], 4);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 2);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
@@ -1235,7 +1254,7 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
         .unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 3);
+    assert_eq!(manifest["schema_version"], 4);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(
@@ -1448,6 +1467,11 @@ fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
             "#[unsafe(link_section = \".text.custom\")]\n",
             "link section `.text.custom` is unsupported",
         ),
+        (
+            "track_caller",
+            "#[track_caller]\n",
+            "codegen attribute flags TRACK_CALLER are unsupported",
+        ),
     ];
     for (name, attributes, expected) in refused_cases {
         for scope in ["--select=selected", "--scope=crate"] {
@@ -1470,7 +1494,7 @@ fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
     // The same body is captured with no attribute and with hints that leave
     // its meaning unchanged, so each refusal above is specific to its
     // attribute rather than to the body or the scope.
-    for attributes in ["", "#[inline(always)]\n#[cold]\n#[track_caller]\n"] {
+    for attributes in ["", "#[inline(always)]\n#[cold]\n"] {
         for scope in ["--select=selected", "--scope=crate"] {
             let fixture = Capture::new(format!("{attributes}{BODY}").as_bytes());
             let output = fixture.command().arg(scope).output().unwrap();
@@ -1488,10 +1512,9 @@ fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
 }
 
 #[test]
-fn cleanup_blocks_are_refused_before_local_types() {
-    // Capture passes no `-Cpanic`, so this target unwinds and the call to
-    // `callee` keeps a cleanup edge that drops the guard. The guard's struct
-    // type is unsupported as well; checking blocks first reports the cleanup.
+fn drop_guard_struct_remains_refused_while_cleanup_blocks_are_modeled() {
+    // Tier 1 admits cleanup blocks (`BasicBlock.cleanup = true`) and
+    // `UnwindResume`, while structs and `Drop` terminators remain refused.
     let source = b"pub struct Guard;\n\
         impl Drop for Guard { fn drop(&mut self) {} }\n\
         pub fn callee() {}\n\
@@ -1502,7 +1525,7 @@ fn cleanup_blocks_are_refused_before_local_types() {
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
     assert!(
-        failure.to_string().contains("cleanup block bb"),
+        failure.to_string().contains("unsupported type: Guard"),
         "{failure}"
     );
     fixture.assert_no_capture_artifacts();
@@ -1737,7 +1760,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(fixture.manifest()["schema_version"], 3);
+    assert_eq!(fixture.manifest()["schema_version"], 4);
 
     // Replacing the driver symlink with a distinct regular file inode must fail
     // closed.
@@ -1804,7 +1827,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
     let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");
     let output = no_std_fixture.selected_command().output().unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(no_std_fixture.manifest()["schema_version"], 3);
+    assert_eq!(no_std_fixture.manifest()["schema_version"], 4);
 
     let proc_macro_fixture = Capture::new(
         b"#![crate_type = \"proc-macro\"]\n\
@@ -1857,5 +1880,246 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
         assert_eq!(output.status.code(), Some(1), "{output:?}");
         assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
         fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn tier1_ops_casts_u128_and_overflow_check_modes_capture_cleanly() {
+    let source = b"\
+        pub const fn div_ceil_usize(a: usize, b: usize) -> usize {\n\
+            if a == 0 { 0 } else { (a - 1) / b + 1 }\n\
+        }\n\
+        pub fn ops_and_casts(x: i32, y: u8, flag: bool, wide: u128) -> (i32, u64, u128) {\n\
+            let neg = -x;\n\
+            let inv = !neg;\n\
+            let rem = inv % 3;\n\
+            let widened = (y as u64) + (flag as u64);\n\
+            let sum128 = wide + 0x1_0000_0000_0000_0001_u128;\n\
+            (rem, widened, sum128)\n\
+        }\n";
+
+    // Default `-Coverflow-checks=no`: `div_ceil_usize` keeps non-optional
+    // `DivisionByZero` assert and emits no optional overflow asserts.
+    let off = Capture::new(source);
+    let output = off
+        .command()
+        .args(["--select=div_ceil_usize", "--select=ops_and_casts"])
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest_off = off.manifest();
+    assert_eq!(manifest_off["configuration"]["overflow_checks"], false);
+    let lean_off = std::fs::read_to_string(off.output.join("Captured.lean")).unwrap();
+    assert!(
+        lean_off.contains("Trusted.MirAst.AssertKind.divByZero"),
+        "{lean_off}"
+    );
+    assert!(
+        lean_off.contains("Trusted.MirAst.AssertKind.remByZero"),
+        "{lean_off}"
+    );
+    assert!(lean_off.contains("Trusted.MirAst.UnOp.neg"), "{lean_off}");
+    assert!(lean_off.contains("Trusted.MirAst.UnOp.not"), "{lean_off}");
+    assert!(lean_off.contains("Trusted.MirAst.BinOp.div"), "{lean_off}");
+    assert!(lean_off.contains("Trusted.MirAst.BinOp.rem"), "{lean_off}");
+    assert!(
+        lean_off.contains("Trusted.MirAst.CastKind.intToInt"),
+        "{lean_off}"
+    );
+    assert!(
+        lean_off.contains("Trusted.MirAst.IntWidth.i128"),
+        "{lean_off}"
+    );
+    assert!(lean_off.contains("18446744073709551617"), "{lean_off}");
+
+    // `--overflow-checks`: `-Coverflow-checks=yes` emits `*WithOverflow` and
+    // optional overflow `Assert`s, which capture admits cleanly.
+    let on = Capture::new(source);
+    let output = on
+        .command()
+        .args(["--select=div_ceil_usize", "--overflow-checks"])
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest_on = on.manifest();
+    assert_eq!(manifest_on["configuration"]["overflow_checks"], true);
+    let lean_on = std::fs::read_to_string(on.output.join("Captured.lean")).unwrap();
+    assert!(
+        lean_on.contains("Trusted.MirAst.BinOp.subWithOverflow"),
+        "{lean_on}"
+    );
+    assert!(
+        lean_on.contains("Trusted.MirAst.BinOp.addWithOverflow"),
+        "{lean_on}"
+    );
+    assert!(
+        lean_on.contains("(Trusted.MirAst.AssertKind.overflow Trusted.MirAst.BinOp.sub)"),
+        "{lean_on}"
+    );
+    assert!(
+        lean_on.contains("(Trusted.MirAst.AssertKind.overflow Trusted.MirAst.BinOp.add)"),
+        "{lean_on}"
+    );
+    assert!(
+        lean_on.contains("Trusted.MirAst.AssertKind.divByZero"),
+        "{lean_on}"
+    );
+}
+
+#[test]
+fn transitive_crate_local_call_closure_and_call_refusals() {
+    let source = b"\
+        pub struct UnusedStruct(pub u64);\n\
+        pub fn unused_bad(s: UnusedStruct) -> u64 { s.0 }\n\
+        fn leaf(x: u32) -> u32 { x + 1 }\n\
+        fn middle(x: u32) -> u32 { leaf(x) + leaf(x) }\n\
+        pub fn selected(x: u32) -> u32 { middle(x) }\n";
+    let fixture = Capture::new(source);
+    let output = fixture.selected_command().output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest = fixture.manifest();
+    let selected = manifest["selected"].as_array().expect("selected");
+    assert_eq!(selected.len(), 3, "{selected:?}");
+    assert_eq!(selected[0]["path"], "selected");
+    assert_eq!(selected[0]["body_index"], 0);
+    assert_eq!(selected[1]["path"], "middle");
+    assert_eq!(selected[1]["body_index"], 1);
+    assert_eq!(selected[2]["path"], "leaf");
+    assert_eq!(selected[2]["body_index"], 2);
+    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(
+        lean.contains("(Trusted.MirAst.TerminatorKind.call 1 "),
+        "{lean}"
+    );
+    assert!(
+        lean.contains("(Trusted.MirAst.TerminatorKind.call 2 "),
+        "{lean}"
+    );
+
+    // Indirect, generic local, and unrecognized external `core` calls refuse.
+    let refused_calls: &[(&str, &[u8], &str)] = &[
+        (
+            "indirect_fn_ptr",
+            b"pub fn selected(f: fn(u32) -> u32, x: u32) -> u32 { f(x) }\n",
+            "unsupported type",
+        ),
+        (
+            "generic_local_call",
+            b"fn id<T>(x: T) -> T { x }\npub fn selected(x: u32) -> u32 { id::<u32>(x) }\n",
+            "generic crate-local call is unsupported",
+        ),
+        (
+            "unrecognized_core_call",
+            b"pub fn selected(x: u32) -> u32 { core::hint::black_box(x) }\n",
+            "unsupported external `core` call",
+        ),
+        (
+            "cmp_min_non_integer",
+            b"pub fn selected(a: bool, b: bool) -> bool { core::cmp::min(a, b) }\n",
+            "only admitted for integer types",
+        ),
+        (
+            "float_cast",
+            b"pub fn selected(x: u32) -> f32 { x as f32 }\n",
+            "unsupported type",
+        ),
+    ];
+    for (name, bad_src, expected) in refused_calls {
+        let bad = Capture::new(bad_src);
+        let out = bad.selected_command().output().unwrap();
+        assert_eq!(out.status.code(), Some(1), "{name}: {out:?}");
+        let failure = status(&out);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        bad.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn all_fifteen_core_builtins_capture_in_std_and_no_std() {
+    let body = "\
+        pub fn selected(a: u32, b: u32, s: u32, x: i64, y: i64) -> (u32, i64, bool) {\n\
+            let w1 = a.wrapping_add(b);\n\
+            let w2 = w1.wrapping_sub(b);\n\
+            let w3 = w2.wrapping_mul(b);\n\
+            let w4 = w3.wrapping_shl(s);\n\
+            let w5 = w4.wrapping_shr(s);\n\
+            let (o1, f1) = w5.overflowing_add(b);\n\
+            let (o2, f2) = o1.overflowing_sub(b);\n\
+            let (o3, f3) = o2.overflowing_mul(b);\n\
+            let s1 = o3.saturating_add(b);\n\
+            let s2 = s1.saturating_sub(b);\n\
+            let lz = s2.leading_zeros();\n\
+            let tz = s2.trailing_zeros();\n\
+            let mult = a.is_multiple_of(b);\n\
+            let mn = core::cmp::min(lz, tz);\n\
+            let mx = core::cmp::max(x, y);\n\
+            (mn, mx, f1 ^ f2 ^ f3 ^ mult)\n\
+        }\n";
+    for (label, prefix) in [("std", ""), ("no_std", "#![no_std]\n")] {
+        let src = format!("{prefix}{body}");
+        let fixture = Capture::new(src.as_bytes());
+        let output = fixture.selected_command().output().unwrap();
+        assert!(output.status.success(), "{label}: {output:?}");
+        let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+        for builtin in [
+            "wrappingAdd",
+            "wrappingSub",
+            "wrappingMul",
+            "wrappingShl",
+            "wrappingShr",
+            "overflowingAdd",
+            "overflowingSub",
+            "overflowingMul",
+            "saturatingAdd",
+            "saturatingSub",
+            "leadingZeros",
+            "trailingZeros",
+            "isMultipleOf",
+            "cmpMin",
+            "cmpMax",
+        ] {
+            assert!(
+                lean.contains(&format!("Trusted.MirAst.CoreBuiltin.{builtin}")),
+                "{label}: missing CoreBuiltin.{builtin} in:\n{lean}"
+            );
+        }
+        assert_eq!(fixture.manifest()["configuration"]["panic"], "unwind");
+    }
+}
+
+#[test]
+fn assert_refuses_no_std_and_crate_local_panic_handler() {
+    let cases = [
+        (
+            "no_std_library_without_panic_handler",
+            "#![no_std]\n\
+             pub fn selected(a: u64, b: u64) -> u64 { a / b }\n",
+            "panic asserts require sysroot `std` unwinding panic handler",
+        ),
+        (
+            "no_std_with_crate_local_panic_handler",
+            "#![no_std]\n\
+             #[panic_handler]\n\
+             fn my_panic(_: &core::panic::PanicInfo) -> ! { loop {} }\n\
+             pub fn selected(a: u64, b: u64) -> u64 { a / b }\n",
+            "must resolve to sysroot `std`",
+        ),
+    ];
+    for (name, src, expected) in cases {
+        let bad = Capture::new(src.as_bytes());
+        let output = bad.selected_command().output().unwrap();
+        assert!(!output.status.success(), "{name} must be refused");
+        let failure: Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        let reason = failure["unsupported"][0]["reason"].as_str().unwrap_or("");
+        assert!(
+            reason.contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        bad.assert_no_capture_artifacts();
     }
 }

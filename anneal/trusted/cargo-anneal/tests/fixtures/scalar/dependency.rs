@@ -11,5 +11,7 @@ pub fn zero() -> u64 {
 }
 
 fn helper() -> u64 {
-    0
+    let value = 0;
+    let r = &value;
+    *r
 }

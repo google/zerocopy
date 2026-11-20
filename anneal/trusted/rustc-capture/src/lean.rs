@@ -10,7 +10,10 @@
 //! a numeric/Boolean literal. Function identities use numeric Unicode scalar
 //! constructors, so names never enter the emitted command or literal syntax.
 
-use crate::ir::{self, BinOp, ConstLit, Operand, Rvalue, Statement, Terminator, Ty};
+use crate::ir::{
+    self, AssertKind, BinOp, CastKind, ConstLit, Operand, Place, ProjectionElem, Rvalue, Statement,
+    Terminator, Ty, UnOp, UnwindAction,
+};
 
 const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
 -- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n\
@@ -37,6 +40,7 @@ fn ty(t: &Ty) -> String {
             ity.width.lean_name(),
             ity.signed
         ),
+        Ty::Tuple { fields } => format!("(Trusted.MirAst.MirTy.tuple {})", list(fields, ty)),
         Ty::Enum(ety) => {
             let tag_repr = match ety.tag_repr() {
                 ir::EnumTagRepr::ZeroSized => "Trusted.MirAst.EnumTagRepr.zeroSized".into(),
@@ -52,10 +56,30 @@ fn ty(t: &Ty) -> String {
                 ety.id(),
                 discr.width.lean_name(),
                 discr.signed,
-                list(ety.discriminants(), u64::to_string)
+                list(ety.discriminants(), u128::to_string)
             )
         }
     }
+}
+
+fn projection_elem(elem: &ProjectionElem) -> String {
+    match elem {
+        ProjectionElem::Field {
+            index,
+            ty: field_ty,
+        } => format!(
+            "(Trusted.MirAst.ProjectionElem.field {index} {})",
+            ty(field_ty)
+        ),
+    }
+}
+
+fn place(p: &Place) -> String {
+    format!(
+        "(Trusted.MirAst.Place.mk {} {})",
+        p.local,
+        list(&p.projection, projection_elem)
+    )
 }
 
 fn const_lit(lit: ConstLit) -> String {
@@ -69,17 +93,20 @@ fn const_lit(lit: ConstLit) -> String {
 
 fn operand(op: &Operand) -> String {
     match op {
-        Operand::Copy { local } => {
-            format!("(Trusted.MirAst.Operand.copy (Trusted.MirAst.Place.mk {local} []))")
-        }
-        Operand::Move { local } => {
-            format!("(Trusted.MirAst.Operand.move (Trusted.MirAst.Place.mk {local} []))")
-        }
+        Operand::Copy { place: p } => format!("(Trusted.MirAst.Operand.copy {})", place(p)),
+        Operand::Move { place: p } => format!("(Trusted.MirAst.Operand.move {})", place(p)),
         Operand::Constant { ty: t, lit } => format!(
             "(Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk {} {}))",
             ty(t),
             const_lit(*lit)
         ),
+    }
+}
+
+fn un_op(op: UnOp) -> &'static str {
+    match op {
+        UnOp::Not => "not",
+        UnOp::Neg => "neg",
     }
 }
 
@@ -89,10 +116,20 @@ fn bin_op(op: BinOp) -> &'static str {
         BinOp::BitOr => "bitOr",
         BinOp::BitXor => "bitXor",
         BinOp::Shl => "shl",
+        BinOp::ShlUnchecked => "shlUnchecked",
         BinOp::Shr => "shr",
+        BinOp::ShrUnchecked => "shrUnchecked",
         BinOp::Add => "add",
+        BinOp::AddUnchecked => "addUnchecked",
+        BinOp::AddWithOverflow => "addWithOverflow",
         BinOp::Sub => "sub",
+        BinOp::SubUnchecked => "subUnchecked",
+        BinOp::SubWithOverflow => "subWithOverflow",
         BinOp::Mul => "mul",
+        BinOp::MulUnchecked => "mulUnchecked",
+        BinOp::MulWithOverflow => "mulWithOverflow",
+        BinOp::Div => "div",
+        BinOp::Rem => "rem",
         BinOp::Eq => "eq",
         BinOp::Ne => "ne",
         BinOp::Lt => "lt",
@@ -102,34 +139,57 @@ fn bin_op(op: BinOp) -> &'static str {
     }
 }
 
+fn cast_kind(kind: CastKind) -> &'static str {
+    match kind {
+        CastKind::IntToInt => "intToInt",
+    }
+}
+
 fn rvalue(value: &Rvalue) -> String {
     match value {
-        // Render `Rvalue::Aggregate(Tuple, [])` 1:1 to `.aggregateTuple []`
-        // without desugaring to a constant use; `MirSemantics.evalRvalue`
-        // fails closed on `.aggregateTuple` until tuple aggregates are
-        // modeled.
+        // Render `Rvalue::Aggregate(Tuple, [])` 1:1 to `.aggregateTuple []`.
         Rvalue::Unit => "(Trusted.MirAst.Rvalue.aggregateTuple [])".into(),
         // `ir::Body::try_new` admits `with_retag == true` only when the
         // destination type satisfies `Ty::is_retag_noop()`.
         Rvalue::Use { operand: op, .. } => {
             format!("(Trusted.MirAst.Rvalue.use {})", operand(op))
         }
+        Rvalue::Unary { op, operand: opnd } => format!(
+            "(Trusted.MirAst.Rvalue.unaryOp Trusted.MirAst.UnOp.{} {})",
+            un_op(*op),
+            operand(opnd)
+        ),
         Rvalue::Binary { op, left, right } => format!(
             "(Trusted.MirAst.Rvalue.binaryOp Trusted.MirAst.BinOp.{} {} {})",
             bin_op(*op),
             operand(left),
             operand(right)
         ),
-        Rvalue::Discriminant { local } => {
-            format!("(Trusted.MirAst.Rvalue.discriminant (Trusted.MirAst.Place.mk {local} []))")
+        Rvalue::Cast {
+            cast_kind: kind,
+            operand: opnd,
+            ty: target_ty,
+        } => format!(
+            "(Trusted.MirAst.Rvalue.cast Trusted.MirAst.CastKind.{} {} {})",
+            cast_kind(*kind),
+            operand(opnd),
+            ty(target_ty)
+        ),
+        Rvalue::AggregateTuple { operands } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateTuple {})",
+            list(operands, operand)
+        ),
+        Rvalue::Discriminant { place: p } => {
+            format!("(Trusted.MirAst.Rvalue.discriminant {})", place(p))
         }
     }
 }
 
 fn statement(stmt: &Statement) -> String {
     match stmt {
-        Statement::Assign { local, value } => format!(
-            "(Trusted.MirAst.StatementKind.assign (Trusted.MirAst.Place.mk {local} []) {})",
+        Statement::Assign { place: p, value } => format!(
+            "(Trusted.MirAst.StatementKind.assign {} {})",
+            place(p),
             rvalue(value)
         ),
         Statement::StorageLive { local } => {
@@ -139,6 +199,37 @@ fn statement(stmt: &Statement) -> String {
             format!("(Trusted.MirAst.StatementKind.storageDead {local})")
         }
         Statement::Nop => "Trusted.MirAst.StatementKind.nop".into(),
+    }
+}
+
+fn unwind_action(unwind: UnwindAction) -> String {
+    match unwind {
+        UnwindAction::Continue => "Trusted.MirAst.UnwindAction.continue_".into(),
+        UnwindAction::Unreachable => "Trusted.MirAst.UnwindAction.unreachable".into(),
+        UnwindAction::Terminate => "Trusted.MirAst.UnwindAction.terminate".into(),
+        UnwindAction::Cleanup { block } => {
+            format!("(Trusted.MirAst.UnwindAction.cleanup {block})")
+        }
+    }
+}
+
+fn assert_kind(kind: AssertKind) -> String {
+    match kind {
+        AssertKind::Overflow { op } => format!(
+            "(Trusted.MirAst.AssertKind.overflow Trusted.MirAst.BinOp.{})",
+            bin_op(op)
+        ),
+        AssertKind::OverflowNeg => "Trusted.MirAst.AssertKind.overflowNeg".into(),
+        AssertKind::DivisionByZero => "Trusted.MirAst.AssertKind.divByZero".into(),
+        AssertKind::RemainderByZero => "Trusted.MirAst.AssertKind.remByZero".into(),
+        AssertKind::NullPointerDereference => "Trusted.MirAst.AssertKind.nullPtrDeref".into(),
+    }
+}
+
+fn option_block(target: Option<u32>) -> String {
+    match target {
+        Some(bb) => format!("(Option.some {bb})"),
+        None => "Option.none".into(),
     }
 }
 
@@ -154,12 +245,53 @@ fn terminator(term: &Terminator) -> String {
         } => format!(
             "(Trusted.MirAst.TerminatorKind.switchInt {} (Trusted.MirAst.SwitchTargets.mk {} {otherwise}))",
             operand(op),
-            list(targets, |(value, block)| format!(
-                "((BitVec.ofNat 128 {value}), {block})"
+            list(targets, |t| format!(
+                "((BitVec.ofNat 128 {}), {})",
+                t.value, t.block
             ))
         ),
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
+        Terminator::UnwindResume => "Trusted.MirAst.TerminatorKind.unwindResume".into(),
+        Terminator::Assert {
+            cond,
+            expected,
+            msg,
+            target,
+            unwind,
+        } => format!(
+            "(Trusted.MirAst.TerminatorKind.assert {} {expected} {} {target} {})",
+            operand(cond),
+            assert_kind(*msg),
+            unwind_action(*unwind)
+        ),
+        Terminator::Call {
+            callee,
+            args,
+            destination,
+            target,
+            unwind,
+        } => format!(
+            "(Trusted.MirAst.TerminatorKind.call {callee} {} {} {} {})",
+            list(args, operand),
+            place(destination),
+            option_block(*target),
+            unwind_action(*unwind)
+        ),
+        Terminator::CallBuiltin {
+            builtin,
+            args,
+            destination,
+            target,
+            unwind,
+        } => format!(
+            "(Trusted.MirAst.TerminatorKind.callBuiltin Trusted.MirAst.CoreBuiltin.{} {} {} {} {})",
+            builtin.lean_name(),
+            list(args, operand),
+            place(destination),
+            option_block(*target),
+            unwind_action(*unwind)
+        ),
     }
 }
 
@@ -187,9 +319,10 @@ fn body(body: &ir::Body) -> String {
         body.is_unsafe(),
         list(body.local_tys(), ty),
         list(body.blocks(), |block| format!(
-            "({{ statements := {}, terminator := {}, cleanup := false }} : Trusted.MirAst.BasicBlock)",
+            "({{ statements := {}, terminator := {}, cleanup := {} }} : Trusted.MirAst.BasicBlock)",
             list(&block.statements, statement),
-            terminator(&block.terminator)
+            terminator(&block.terminator),
+            block.cleanup
         )),
         identity(body.identity())
     )
@@ -233,7 +366,7 @@ mod tests {
 
     use super::{identity, render};
     use crate::ir::{
-        Block, Body, ConstLit, Operand, Program, Rvalue, Scope, Statement, Terminator, Ty,
+        Block, Body, ConstLit, Operand, Place, Program, Rvalue, Scope, Statement, Terminator, Ty,
     };
 
     #[test]
@@ -253,11 +386,11 @@ mod tests {
             vec![Block {
                 statements: vec![
                     Statement::Assign {
-                        local: 0,
+                        place: Place::local(0),
                         value: Rvalue::Unit,
                     },
                     Statement::Assign {
-                        local: 0,
+                        place: Place::local(0),
                         value: Rvalue::Use {
                             operand: Operand::Constant {
                                 ty: Ty::Unit,
@@ -268,6 +401,7 @@ mod tests {
                     },
                 ],
                 terminator: Terminator::Ret,
+                cleanup: false,
             }],
             "rust-path-v1::unit_fn".into(),
         )
