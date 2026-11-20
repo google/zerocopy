@@ -1,0 +1,28 @@
+pint 0.26.3.dev31+g072281c5f
+1 m + 1 s -> raises DimensionalityError: Cannot convert from 'meter' ([length]) to 'second' ([time])
+(1 m).to('kg') -> raises DimensionalityError: Cannot convert from 'meter' ([length]) to 'kilogram' ([mass])
+1 m < 1 s -> raises DimensionalityError: Cannot convert from 'meter' ([length]) to 'second' ([time])
+1 m + 1 ft -> Quantity(1.3048, "meter")
+1 Hz + 1 Bq -> Quantity(2, "hertz")
+1 Gy + 1 Sv -> Quantity(2, "gray")
+1 N*m (torque) + 1 J (energy) -> Quantity(2, "newton * meter")
+1 rad + 1 (plain number) -> Quantity(2, "dimensionless")
+1 rad/s + 1 Hz -> Quantity(2.0, "radian / second")
+math.sin(Q_(90, 'deg')) -> 1.0
+1 m + 0 (plain) -> Quantity(1, "meter")
+1 m + nan (plain) -> Quantity(nan, "meter")
+1 m + 1 (plain) -> raises DimensionalityError: Cannot convert from 'meter' to 'dimensionless'
+1 m == 1 s -> False
+0 m == 0 s -> False
+float(1 m) -> raises DimensionalityError: Cannot convert from 'meter' to 'dimensionless'
+(1 m).magnitude + 1 -> 2
+(5 km).m_as('m') -> 5000.0
+10 degC + 10 degC -> raises OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius, degree_Celsius). See https://pint.readthedocs.io/en/stab
+10 degC - 5 degC -> Quantity(5, "delta_degree_Celsius")
+(10 degC).to('degF') -> Quantity(49.999999999999936, "degree_Fahrenheit")
+2 * 10 degC -> raises OffsetUnitCalculusError: Ambiguous operation with offset unit (degree_Celsius). See https://pint.readthedocs.io/en/stable/user/nonmult.
+Q_(7, 'm') / 2 -> Quantity(3.5, "meter")
+Q_(7, 'm') // Q_(2, 'm') -> Quantity(3, "dimensionless")
+Q_(7, 'm') // 2 -> raises DimensionalityError: Cannot convert from 'meter' to 'dimensionless'
+type(Q_(7, 'm').magnitude) -> 'int'
+type((Q_(7, 'm') / Q_(2, 'm')).magnitude) -> 'float'

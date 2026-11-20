@@ -1,0 +1,20 @@
+== default
+differ same 178 {'numeral/literal type defaulting': 90, 'universe instantiation (e.g. element type defaulted)': 39, 'binder-type/argument dependency': 21, 'bound-variable (instance/hypothesis) identity': 16, 'other': 7, 'auxiliary matcher identity': 5}
+differ changed 296 {'numeral/literal type defaulting': 183, 'universe instantiation (e.g. element type defaulted)': 53, 'other': 52, 'binder-type/argument dependency': 6, 'bound-variable (instance/hypothesis) identity': 2}
+defeq same 734 {'auxiliary matcher identity': 332, 'other': 231, 'universe instantiation (e.g. element type defaulted)': 148, 'binder-type/argument dependency': 15, 'numeral/literal type defaulting': 8}
+defeq changed 75 {'binder-type/argument dependency': 32, 'numeral/literal type defaulting': 24, 'other': 19}
+== proofs
+differ same 184 {'numeral/literal type defaulting': 90, 'universe instantiation (e.g. element type defaulted)': 39, 'bound-variable (instance/hypothesis) identity': 22, 'binder-type/argument dependency': 21, 'other': 7, 'auxiliary matcher identity': 5}
+differ changed 296 {'numeral/literal type defaulting': 183, 'universe instantiation (e.g. element type defaulted)': 53, 'other': 52, 'binder-type/argument dependency': 6, 'bound-variable (instance/hypothesis) identity': 2}
+defeq same 997 {'auxiliary matcher identity': 414, 'other': 396, 'universe instantiation (e.g. element type defaulted)': 156, 'binder-type/argument dependency': 23, 'numeral/literal type defaulting': 8}
+defeq changed 78 {'binder-type/argument dependency': 34, 'numeral/literal type defaulting': 25, 'other': 19}
+== targeted
+differ same 62 {'binder-type/argument dependency': 25, 'bound-variable (instance/hypothesis) identity': 21, 'universe instantiation (e.g. element type defaulted)': 9, 'auxiliary matcher identity': 5, 'numeral/literal type defaulting': 2}
+differ changed 202 {'numeral/literal type defaulting': 123, 'other': 42, 'universe instantiation (e.g. element type defaulted)': 29, 'binder-type/argument dependency': 6, 'bound-variable (instance/hypothesis) identity': 2}
+defeq same 1038 {'other': 438, 'auxiliary matcher identity': 417, 'universe instantiation (e.g. element type defaulted)': 161, 'binder-type/argument dependency': 22}
+defeq changed 61 {'binder-type/argument dependency': 34, 'numeral/literal type defaulting': 19, 'other': 8}
+== explicit
+differ same 0 {}
+differ changed 0 {}
+defeq same 514 {'universe instantiation (e.g. element type defaulted)': 494, 'other': 18, 'binder-type/argument dependency': 2}
+defeq changed 101 {'universe instantiation (e.g. element type defaulted)': 58, 'other': 22, 'binder-type/argument dependency': 21}

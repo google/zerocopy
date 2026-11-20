@@ -1,0 +1,11 @@
+c_conversions_probe.c:31:27: runtime error: signed integer overflow: 65535 * 65535 cannot be represented in type 'int'
+sizeof(short)=2 sizeof(int)=4 sizeof(long)=8
+(-1 < 1u) = 0
+(-1L < 1u) = 1
+(unsigned short)65535 * 65535 stored in unsigned = 4294836225
+average_int(7, 2) = 3.000000
+average_fix(7, 2) = 3.500000
+-7 / 2 = -3, -7 % 2 = -1
+(float)16777217 = 16777216.0
+0u - 1 = 4294967295
+(uint8_t)(200 + 100) = 44, (x + y) as int = 300

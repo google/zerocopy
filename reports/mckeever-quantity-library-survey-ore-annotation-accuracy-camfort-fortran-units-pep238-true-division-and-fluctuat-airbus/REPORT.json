@@ -1,0 +1,145 @@
+{
+  "topics": [
+    "pl/unit-of-measure-adoption-evidence",
+    "pl/numeric-promotion-rules",
+    "verification/numeric-kind-promotion-defects",
+    "verification/units-of-measure-inference",
+    "tooling/static-floating-point-analysis-in-certification",
+    "domains/physical-unit-annotation-burden"
+  ],
+  "subjects": [
+    {
+      "name": "CamFort (Fortran refactoring and verification tool; units-of-measure analysis)",
+      "identity": {
+        "repository": "camfort/camfort",
+        "revision": "fda0f101c00bf21446433647612a112c1601a976",
+        "version": "1.2.0"
+      }
+    },
+    {
+      "name": "pint (Python run-time quantity library)",
+      "identity": {
+        "repository": "hgrecco/pint",
+        "revision": "072281c5f1b3d5fe30d097cbb0791be03ee24d45",
+        "version": "0.26.3.dev31+g072281c5f"
+      }
+    },
+    {
+      "name": "Julia base numeric promotion and conversion",
+      "identity": {
+        "repository": "JuliaLang/julia",
+        "revision": "8dda794eec3571f4776fac724629459301e3ecfd"
+      }
+    },
+    {
+      "name": "PEP 238: Changing the Division Operator",
+      "identity": {
+        "repository": "python/peps",
+        "revision": "4434e728a7db24540d581f52e96570ca1230356e",
+        "path": "peps/pep-0238.rst"
+      }
+    },
+    {
+      "name": "rust-clippy numeric cast lints",
+      "identity": {
+        "repository": "rust-lang/rust-clippy",
+        "revision": "663e7ca4f8e69efa893b816140889b4a40c65f74"
+      }
+    },
+    {
+      "name": "rustc nightly toolchain used for Rust and clippy probes",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (2026-11-11); clippy 0.1.101"
+      }
+    },
+    {
+      "name": "CPython interpreter used for Python and pint probes",
+      "identity": {
+        "implementation": "CPython",
+        "version": "3.13.15"
+      }
+    },
+    {
+      "name": "GCC C compiler used for C conversion probe",
+      "identity": {
+        "implementation": "GCC",
+        "version": "15.2.0 (Debian 15.2.0-14)"
+      }
+    },
+    {
+      "name": "Delmas et al., Towards an Industrial Use of FLUCTUAT on Safety-Critical Avionics Software (FMICS 2009)",
+      "identity": {
+        "doi": "10.1007/978-3-642-04570-7_6"
+      }
+    },
+    {
+      "name": "Dietz, Li, Regehr, Adve, Understanding Integer Overflow in C/C++ (TOSEM 2015)",
+      "identity": {
+        "doi": "10.1145/2743019"
+      }
+    },
+    {
+      "name": "Orchard, Rice, Oshmyan, Evolving Fortran Types with Inferred Units-of-Measure (J. Comput. Sci. 2015)",
+      "identity": {
+        "doi": "10.1016/j.jocs.2015.04.018"
+      }
+    },
+    {
+      "name": "Contrastin, Rice, Danish, Orchard, Units-of-Measure Correctness in Fortran Programs (CiSE 2016)",
+      "identity": {
+        "doi": "10.1109/MCSE.2016.17"
+      }
+    },
+    {
+      "name": "Ore, Elbaum, Detweiler, Dimensional Inconsistencies in Code and ROS Messages (IROS 2017)",
+      "identity": {
+        "doi": "10.1109/IROS.2017.8202229"
+      }
+    },
+    {
+      "name": "Di Franco, Guo, Rubio-Gonzalez, A Comprehensive Study of Real-World Numerical Bug Characteristics (ASE 2017)",
+      "identity": {
+        "doi": "10.1109/ASE.2017.8115662"
+      }
+    },
+    {
+      "name": "Ore, Elbaum, Detweiler, Karkazis, Assessing the Type Annotation Burden (ASE 2018)",
+      "identity": {
+        "doi": "10.1145/3238147.3238173"
+      }
+    },
+    {
+      "name": "Bennich-Bjorkman, McKeever, The Next 700 Unit of Measurement Checkers (SLE 2018)",
+      "identity": {
+        "doi": "10.1145/3276604.3276613"
+      }
+    },
+    {
+      "name": "Bezanson et al., Julia: Dynamism and Performance Reconciled by Design (PACMPL OOPSLA 2018)",
+      "identity": {
+        "doi": "10.1145/3276490"
+      }
+    },
+    {
+      "name": "McKeever, Pacaci, Bennich-Bjorkman, Quantity Checking through Unit of Measurement Libraries (MODELSWARD 2019)",
+      "identity": {
+        "doi": "10.5220/0007524704430449"
+      }
+    },
+    {
+      "name": "McKeever, Bennich-Bjorkman, Salah, Unit of Measurement Libraries, Their Popularity and Suitability (SPE 2021)",
+      "identity": {
+        "doi": "10.1002/spe.2926"
+      }
+    },
+    {
+      "name": "Ore, Detweiler, Elbaum, An Empirical Study on Type Annotations: Accuracy, Speed, and Suggestion Effectiveness (TOSEM 2021)",
+      "identity": {
+        "doi": "10.1145/3439775"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

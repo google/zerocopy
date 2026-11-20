@@ -1,0 +1,9 @@
+== debug (rustc, no -O)
+
+thread 'main' (1713792) panicked at rust_overflow_probe.rs:6:13:
+attempt to add with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+exit=101
+== release (rustc -O)
+200u8 + 100 = 44
+exit=0

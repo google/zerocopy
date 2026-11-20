@@ -1,0 +1,23 @@
+warning: casting `u64` to `u8` may truncate the value
+  --> src/main.rs:10:31
+  --> src/main.rs:3:5
+warning: casting `f64` to `i32` may truncate the value
+  --> src/main.rs:11:34
+warning: casting `f64` to `f32` may truncate the value
+  --> src/main.rs:12:32
+warning: casting `i32` to `f32` may cause a loss of precision (`i32` is 32 bits wide, but `f32`'s mantissa is only 23 bits wide)
+  --> src/main.rs:13:39
+  --> src/main.rs:4:5
+warning: casting `i64` to `f64` may cause a loss of precision (`i64` is 64 bits wide, but `f64`'s mantissa is only 52 bits wide)
+  --> src/main.rs:14:39
+warning: casts from `i32` to `f64` can be expressed infallibly using `From`
+  --> src/main.rs:15:35
+  --> src/main.rs:5:5
+warning: casts from `u8` to `u64` can be expressed infallibly using `From`
+  --> src/main.rs:16:29
+warning: casting `i32` to `u32` may lose the sign of the value
+  --> src/main.rs:17:31
+  --> src/main.rs:6:5
+warning: casting `u32` to `i32` may wrap around the value
+  --> src/main.rs:18:26
+  --> src/main.rs:7:5

@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "verification/term-anchored-statement-rendering",
+    "tooling/whole-library-formal-content-exports",
+    "agents/statement-equivalence-by-proof",
+    "lean/re-elaborated-statement-equivalence-checks"
+  ],
+  "subjects": [
+    {
+      "name": "MMT (OMDoc/MMT system with Mizar, Isabelle, PVS and Lean importers and notation-based presenters)",
+      "identity": {
+        "repository": "UniFormal/MMT",
+        "revision": "71814b0fec9c1f2dbe7d677ab65bb433bc90ec08"
+      }
+    },
+    {
+      "name": "Mizar system source (WSM/MSM/ESM XML processors)",
+      "identity": {
+        "repository": "MizarProject/system",
+        "revision": "e04ee5d40cd3ffc4c6027f41c003bc8de0a784a6"
+      }
+    },
+    {
+      "name": "BEq reference implementation and Human Equivalence Benchmark",
+      "identity": {
+        "repository": "Purewhite2019/rethinking_autoformalization",
+        "revision": "5ce3b814a5d0213429cc92244e5467425b22297a"
+      }
+    },
+    {
+      "name": "ProofNet benchmark (Lean 3 original) and evaluation scripts",
+      "identity": {
+        "repository": "zhangir-azerbayev/ProofNet",
+        "revision": "509ad79710ed4f46ff5c282ed5640c1aa9ac3f30"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain (executed for the re-elaboration probe over the Init library)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Making Isabelle Content Accessible in Knowledge Representation Formats (Kohlhase, Rabe, Wenzel)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.TYPES.2019.1",
+        "arxiv": "2005.08884"
+      }
+    },
+    {
+      "name": "The Mizar Mathematical Library in OMDoc: Translation and Applications (Iancu, Kohlhase, Rabe, Urban)",
+      "identity": {
+        "doi": "10.1007/s10817-012-9271-4"
+      }
+    },
+    {
+      "name": "A New Export of the Mizar Mathematical Library (Rothgang, Kornilowicz, Rabe)",
+      "identity": {
+        "doi": "10.1007/978-3-030-81097-9_17"
+      }
+    },
+    {
+      "name": "Experiences from Exporting Major Proof Assistant Libraries (Kohlhase, Rabe)",
+      "identity": {
+        "arxiv": "2005.03089"
+      }
+    },
+    {
+      "name": "Rethinking and Improving Autoformalization: Towards a Faithful Metric and a Dependency Retrieval-Based Approach (Liu, Zheng, Lu, Cao, Yan; ICLR 2025)",
+      "identity": {
+        "url": "https://openreview.net/forum?id=hUb2At2DsQ"
+      }
+    },
+    {
+      "name": "Autoformalization with Large Language Models (Wu et al.)",
+      "identity": {
+        "arxiv": "2205.12615"
+      }
+    },
+    {
+      "name": "ProofNet: Autoformalizing and Formally Proving Undergraduate-Level Mathematics (Azerbayev et al.)",
+      "identity": {
+        "arxiv": "2302.12433"
+      }
+    },
+    {
+      "name": "FormalAlign: Automated Alignment Evaluation for Autoformalization (Lu et al.)",
+      "identity": {
+        "arxiv": "2410.10135"
+      }
+    },
+    {
+      "name": "FormalMATH: Benchmarking Formal Mathematical Reasoning of Large Language Models (Yu et al.)",
+      "identity": {
+        "arxiv": "2505.02735"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

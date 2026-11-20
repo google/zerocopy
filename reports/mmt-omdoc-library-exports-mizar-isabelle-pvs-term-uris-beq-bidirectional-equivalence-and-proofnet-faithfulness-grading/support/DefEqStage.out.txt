@@ -1,0 +1,21 @@
+DefEqStage.lean:8:8: warning: declaration uses `sorry`
+DefEqStage.lean:9:8: warning: declaration uses `sorry`
+DefEqStage.lean:14:8: warning: declaration uses `sorry`
+DefEqStage.lean:15:8: warning: declaration uses `sorry`
+DefEqStage.lean:16:18: error: Type mismatch
+  thm_Q
+has type
+  ∀ (p q : Prop), q → p → p ∧ q
+but is expected to have type
+  ∀ (p q : Prop), p → q → p ∧ q
+DefEqStage.lean:16:30: error: Tactic `rfl` failed: The left-hand side
+  true
+is not definitionally equal to the right-hand side
+  Function.const Lean.Name () `DefEqStage.16.10.16.23.10.23._sorry._@.DefEqStage.2021293396._hygCtx._hyg.8
+
+⊢ sorry
+DefEqStage.lean:20:8: warning: declaration uses `sorry`
+DefEqStage.lean:23:8: warning: declaration uses `sorry`
+DefEqStage.lean:29:8: warning: declaration uses `sorry`
+DefEqStage.lean:30:8: warning: declaration uses `sorry`
+exit=1

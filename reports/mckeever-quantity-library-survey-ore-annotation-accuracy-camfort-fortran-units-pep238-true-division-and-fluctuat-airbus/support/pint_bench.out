@@ -1,0 +1,22 @@
+python 3.13.15 pint 0.26.3.dev31+g072281c5f
+import pint: 153.8 ms
+UnitRegistry(): 132.6 ms
+peak RSS after setup: 28.2 MiB
+float add: 21.9 ns/op
+pint add (same unit): 8655.7 ns/op
+float mul: 30.3 ns/op
+pint mul (m*s): 9498.9 ns/op
+pint to('m') from ft: 11223.8 ns/op
+ratio pint add / float add: 395x
+ratio pint mul / float mul: 313x
+python 3.13.15 pint 0.26.3.dev31+g072281c5f
+import pint: 123.8 ms
+UnitRegistry(): 356.6 ms
+peak RSS after setup: 26.8 MiB
+float add: 25.5 ns/op
+pint add (same unit): 9656.8 ns/op
+float mul: 20.7 ns/op
+pint mul (m*s): 9026.5 ns/op
+pint to('m') from ft: 13199.6 ns/op
+ratio pint add / float add: 379x
+ratio pint mul / float mul: 435x

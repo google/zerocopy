@@ -1,0 +1,4 @@
+c_conversions_probe.c: In function ‘main’:
+c_conversions_probe.c:23:42: warning: comparison of integer expressions of different signedness: ‘int’ and ‘unsigned int’ [-Wsign-compare]
+   23 |     printf("(-1 < 1u) = %d\n", minus_one < one_u);
+      |                                          ^

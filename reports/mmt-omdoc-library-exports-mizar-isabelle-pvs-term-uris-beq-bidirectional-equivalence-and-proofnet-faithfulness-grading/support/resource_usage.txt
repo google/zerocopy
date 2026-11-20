@@ -1,0 +1,16 @@
+== default
+	User time (seconds): 152.99
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:34.37
+	Maximum resident set size (kbytes): 2016688
+== proofs
+	User time (seconds): 167.07
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:48.92
+	Maximum resident set size (kbytes): 2021132
+== targeted
+	User time (seconds): 157.17
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:39.07
+	Maximum resident set size (kbytes): 2020120
+== explicit
+	User time (seconds): 149.90
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:31.88
+	Maximum resident set size (kbytes): 2027044

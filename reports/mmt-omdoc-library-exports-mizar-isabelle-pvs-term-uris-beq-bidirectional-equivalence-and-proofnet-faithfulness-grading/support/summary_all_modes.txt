@@ -1,0 +1,161 @@
+======================================================================
+out_default.tsv rows 28644 meta {'mode': [['default']], 'import_ms': [['642']], 'candidates': [['28644']], 'total_ms': [['pp=29436', 'parse=5681', 'elab=83695', 'cmp=27401', 'wall=150818']]}
+  status exact       22451  78.38%
+  status mvar         3371  11.77%
+  status elabfail     1477   5.16%
+  status defeq         809   2.82%
+  status differ        474   1.65%
+  status parsefail      62   0.22%
+  status x text-roundtrip:
+    defeq      changed      75
+    defeq      same        734
+    differ     changed     296
+    differ     same        178
+    elabfail   na         1477
+    exact      changed      10
+    exact      same      22441
+    mvar       changed    1631
+    mvar       same       1740
+    parsefail  na           62
+  per-theorem total ms: median 3.210 p90 7.711 p99 44.793 max 705.3 mean 5.105
+    pp     median 0.834 p99 4.172 max 48.8 sum 29.4s
+    parse  median 0.165 p99 0.800 max 13.6 sum 5.7s
+    elab   median 1.354 p99 40.331 max 684.3 sum 83.7s
+    cmp    median 0.793 p99 3.649 max 20.6 sum 27.4s
+  printed length chars: median 83 p90 233 max 6183 mean 121.6
+  first-difference classes for defeq: {'other': 325, 'instance path': 167, 'universe level': 148, 'proof subterm': 100, 'numeral/coercion': 33, 'bound variable': 28, 'optParam/outParam/autoParam annotation': 8}
+     with text same: {'other': 301, 'instance path': 153, 'universe level': 148, 'proof subterm': 98, 'numeral/coercion': 21, 'optParam/outParam/autoParam annotation': 8, 'bound variable': 5}
+     with text changed: {'other': 24, 'bound variable': 23, 'instance path': 14, 'numeral/coercion': 12, 'proof subterm': 2}
+  first-difference classes for differ: {'other': 280, 'universe level': 92, 'instance path': 47, 'bound variable': 43, 'numeral/coercion': 10, 'optParam/outParam/autoParam annotation': 2}
+     with text same: {'other': 101, 'universe level': 39, 'bound variable': 35, 'instance path': 3}
+     with text changed: {'other': 179, 'universe level': 53, 'instance path': 44, 'numeral/coercion': 10, 'bound variable': 8, 'optParam/outParam/autoParam annotation': 2}
+  top elabfail messages:
+      181 typeclass instance problem is stuck   Std.Iterator N Id β  Note: Lean 
+      174 failed to prove index is valid, possible solutions:   - Use `have`-exp
+      132 typeclass instance problem is stuck   Std.Iterator N m β  Note: Lean w
+       73 typeclass instance problem is stuck   LT N  Note: Lean will not try to
+       61 typeclass instance problem is stuck   LE N  Note: Lean will not try to
+       45 failed to synthesize instance of type class   Std.Commutative fun xN x
+       43 typeclass instance problem is stuck   HAdd N N N  Note: Lean will not 
+       39 typeclass instance problem is stuck   HMul N N N  Note: Lean will not 
+  mvar rows whose printed text contains the proof-elision glyph: 1565
+======================================================================
+out_proofs.tsv rows 28644 meta {'mode': [['proofs']], 'import_ms': [['616']], 'candidates': [['28644']], 'total_ms': [['pp=29755', 'parse=5516', 'elab=98978', 'cmp=27413', 'wall=165865']]}
+  status exact       23683  82.68%
+  status mvar         1840   6.42%
+  status elabfail     1500   5.24%
+  status defeq        1075   3.75%
+  status differ        480   1.68%
+  status parsefail      66   0.23%
+  status x text-roundtrip:
+    defeq      changed      78
+    defeq      same        997
+    differ     changed     296
+    differ     same        184
+    elabfail   na         1500
+    exact      changed      10
+    exact      same      23673
+    mvar       changed    1358
+    mvar       same        482
+    parsefail  na           66
+  per-theorem total ms: median 3.163 p90 7.823 p99 45.753 max 2743.3 mean 5.644
+    pp     median 0.827 p99 4.314 max 47.4 sum 29.8s
+    parse  median 0.155 p99 0.840 max 6.0 sum 5.5s
+    elab   median 1.327 p99 40.894 max 2704.5 sum 99.0s
+    cmp    median 0.782 p99 3.889 max 22.3 sum 27.4s
+  printed length chars: median 84 p90 240 max 8071 mean 124.7
+  first-difference classes for defeq: {'other': 520, 'instance path': 205, 'universe level': 156, 'proof subterm': 115, 'numeral/coercion': 33, 'bound variable': 33, 'optParam/outParam/autoParam annotation': 13}
+     with text same: {'other': 495, 'instance path': 191, 'universe level': 156, 'proof subterm': 113, 'numeral/coercion': 21, 'optParam/outParam/autoParam annotation': 13, 'bound variable': 8}
+     with text changed: {'other': 25, 'bound variable': 25, 'instance path': 14, 'numeral/coercion': 12, 'proof subterm': 2}
+  first-difference classes for differ: {'other': 280, 'universe level': 92, 'bound variable': 49, 'instance path': 47, 'numeral/coercion': 10, 'optParam/outParam/autoParam annotation': 2}
+     with text same: {'other': 101, 'bound variable': 41, 'universe level': 39, 'instance path': 3}
+     with text changed: {'other': 179, 'universe level': 53, 'instance path': 44, 'numeral/coercion': 10, 'bound variable': 8, 'optParam/outParam/autoParam annotation': 2}
+  top elabfail messages:
+      179 typeclass instance problem is stuck   Std.Iterator N Id β  Note: Lean 
+      172 failed to prove index is valid, possible solutions:   - Use `have`-exp
+      130 typeclass instance problem is stuck   Std.Iterator N m β  Note: Lean w
+       73 typeclass instance problem is stuck   LT N  Note: Lean will not try to
+       61 typeclass instance problem is stuck   LE N  Note: Lean will not try to
+       45 failed to synthesize instance of type class   Std.Commutative fun xN x
+       43 typeclass instance problem is stuck   HAdd N N N  Note: Lean will not 
+       39 typeclass instance problem is stuck   HMul N N N  Note: Lean will not 
+  mvar rows whose printed text contains the proof-elision glyph: 0
+======================================================================
+out_targeted.tsv rows 28644 meta {'mode': [['targeted']], 'import_ms': [['485']], 'candidates': [['28644']], 'total_ms': [['pp=29712', 'parse=5712', 'elab=88378', 'cmp=27896', 'wall=156049']]}
+  status exact       24451  85.36%
+  status mvar         1717   5.99%
+  status defeq        1099   3.84%
+  status elabfail     1047   3.66%
+  status differ        264   0.92%
+  status parsefail      66   0.23%
+  status x text-roundtrip:
+    defeq      changed      61
+    defeq      same       1038
+    differ     changed     202
+    differ     same         62
+    elabfail   na         1047
+    exact      changed      10
+    exact      same      24441
+    mvar       changed    1288
+    mvar       same        429
+    parsefail  na           66
+  per-theorem total ms: median 3.081 p90 7.442 p99 40.640 max 2874.6 mean 5.296
+    pp     median 0.826 p99 4.215 max 42.8 sum 29.7s
+    parse  median 0.163 p99 0.838 max 8.9 sum 5.7s
+    elab   median 1.251 p99 35.874 max 2841.7 sum 88.4s
+    cmp    median 0.783 p99 3.944 max 27.5 sum 27.9s
+  printed length chars: median 90 p90 250 max 8591 mean 130.9
+  first-difference classes for defeq: {'other': 506, 'instance path': 215, 'universe level': 161, 'proof subterm': 144, 'bound variable': 34, 'numeral/coercion': 25, 'optParam/outParam/autoParam annotation': 14}
+     with text same: {'other': 487, 'instance path': 201, 'universe level': 161, 'proof subterm': 142, 'numeral/coercion': 24, 'optParam/outParam/autoParam annotation': 14, 'bound variable': 9}
+     with text changed: {'bound variable': 25, 'other': 19, 'instance path': 14, 'proof subterm': 2, 'numeral/coercion': 1}
+  first-difference classes for differ: {'other': 128, 'bound variable': 54, 'instance path': 43, 'universe level': 38, 'numeral/coercion': 1}
+     with text same: {'bound variable': 46, 'universe level': 9, 'other': 7}
+     with text changed: {'other': 121, 'instance path': 43, 'universe level': 29, 'bound variable': 8, 'numeral/coercion': 1}
+  top elabfail messages:
+      180 typeclass instance problem is stuck   Std.Iterator N Id β  Note: Lean 
+      151 failed to prove index is valid, possible solutions:   - Use `have`-exp
+      132 typeclass instance problem is stuck   Std.Iterator N m β  Note: Lean w
+       39 typeclass instance problem is stuck   Pure N  Note: Lean will not try 
+       32 typeclass instance problem is stuck   Std.IteratorLoop N m m  Note: Le
+       29 typeclass instance problem is stuck   Max N  Note: Lean will not try t
+       28 typeclass instance problem is stuck   Min N  Note: Lean will not try t
+       27 typeclass instance problem is stuck   Std.Iterator N m γ  Note: Lean w
+  mvar rows whose printed text contains the proof-elision glyph: 0
+======================================================================
+out_explicit.tsv rows 28644 meta {'mode': [['explicit']], 'import_ms': [['508']], 'candidates': [['28644']], 'total_ms': [['pp=47088', 'parse=10731', 'elab=40730', 'cmp=46504', 'wall=149344']]}
+  status exact       27903  97.41%
+  status defeq         615   2.15%
+  status mvar          102   0.36%
+  status elabfail       18   0.06%
+  status parsefail       6   0.02%
+  status x text-roundtrip:
+    defeq      changed     101
+    defeq      same        514
+    elabfail   na           18
+    exact      changed     351
+    exact      same      27552
+    mvar       changed      51
+    mvar       same         51
+    parsefail  na            6
+  per-theorem total ms: median 3.485 p90 8.670 p99 27.567 max 571.4 mean 5.064
+    pp     median 1.177 p99 8.426 max 188.2 sum 47.1s
+    parse  median 0.254 p99 2.019 max 57.6 sum 10.7s
+    elab   median 0.889 p99 8.577 max 344.2 sum 40.7s
+    cmp    median 1.142 p99 8.943 max 169.8 sum 46.5s
+  printed length chars: median 234 p90 641 max 68530 mean 362.4
+  first-difference classes for defeq: {'universe level': 552, 'other': 24, 'bound variable': 16, 'optParam/outParam/autoParam annotation': 15, 'instance path': 5, 'proof subterm': 2, 'numeral/coercion': 1}
+     with text same: {'universe level': 494, 'optParam/outParam/autoParam annotation': 15, 'other': 3, 'proof subterm': 2}
+     with text changed: {'universe level': 58, 'other': 21, 'bound variable': 16, 'instance path': 5, 'numeral/coercion': 1}
+  first-difference classes for differ: {}
+     with text same: {}
+     with text changed: {}
+  top elabfail messages:
+        8 Application type mismatch: The argument   fun i => α i N has type   Na
+        3 Expected type must not contain free variables   @LT.lt Nat instLTNat (
+        2 stuck at solving universe constraint   max ?u.N ?u.N =?= max u_N u_N w
+        1 stuck at solving universe constraint   max ?u.N ?u.N =?= max u v while
+        1 invalid binder annotation, type is not a class instance   N  Note: Use
+        1 Application type mismatch: The argument   x_N has type   @LT.lt Nat in
+        1 Type mismatch   @dite     (Id       (Std.Shrink         (@Std.Plausibl
+        1 Type mismatch   b x has type   β x but is expected to have type   have
+  mvar rows whose printed text contains the proof-elision glyph: 0

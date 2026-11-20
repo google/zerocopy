@@ -1,0 +1,59 @@
+error[E0308]: mismatched types
+ --> rust_mixed_e0277.rs:4:5
+  |
+3 | fn mean(sum: u32, n: u32) -> f64 {
+  |                              --- expected `f64` because of return type
+4 |     sum / n            // error[E0308]: mismatched types (expected f64, f...
+  |     ^^^^^^^ expected `f64`, found `u32`
+  |
+help: you can convert a `u32` to an `f64`, producing the floating point representation of the integer
+  |
+4 |     (sum / n).into()            // error[E0308]: mismatched types (expected f64, found u32)
+  |     +       ++++++++
+
+error[E0277]: cannot add `f64` to `u32`
+   --> rust_mixed_e0277.rs:7:18
+    |
+  7 |     let a = 1u32 + 1.0f64;   // error[E0277]: cannot add `f64` to `u32`
+    |                  ^ no implementation for `u32 + f64`
+    |
+    = help: the trait `Add<f64>` is not implemented for `u32`
+help: the following other types implement trait `Add<Rhs>`
+   --> <rust-sysroot>/lib/rustlib/src/rust/library/core/src/ops/arith.rs:98:9
+    |
+ 98 |         const impl Add for $t {
+    |         ^^^^^^^^^^^^^^^^^^^^^ `u32` implements `Add`
+...
+113 | add_impl! { usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f16 f32 f64 f128 }
+    | ---------------------------------------------------------------------------------- in this macro invocation
+    |
+   ::: <rust-sysroot>/lib/rustlib/src/rust/library/core/src/internal_macros.rs:22:9
+    |
+ 22 |         const impl $imp<$u> for &$t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&u32` implements `Add<u32>`
+...
+ 33 |         const impl $imp<&$u> for $t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `u32` implements `Add<&u32>`
+...
+ 44 |         const impl $imp<&$u> for &$t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&u32` implements `Add`
+    = note: this error originates in the macro `add_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+ --> rust_mixed_e0277.rs:8:18
+  |
+8 |     let b: u64 = 1u32;       // error[E0308]: mismatched types (no implic...
+  |            ---   ^^^^ expected `u64`, found `u32`
+  |            |
+  |            expected due to this
+  |
+help: change the type of the numeric literal from `u32` to `u64`
+  |
+8 -     let b: u64 = 1u32;       // error[E0308]: mismatched types (no implicit widening)
+8 +     let b: u64 = 1u64;       // error[E0308]: mismatched types (no implicit widening)
+  |
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0277, E0308.
+For more information about an error, try `rustc --explain E0277`.

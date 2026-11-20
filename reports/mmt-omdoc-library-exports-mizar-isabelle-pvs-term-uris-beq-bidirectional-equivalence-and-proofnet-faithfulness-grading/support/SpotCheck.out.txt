@@ -1,0 +1,5 @@
+UInt64.neg_one_eq : -1 = 18446744073709551615
+UInt64.neg_one_eq : (-1 : UInt64) = (18446744073709551615 : UInt64)
+(-1 : Int) = (18446744073709551615 : Int) : Prop
+Int.one_ne_zero : 1 ≠ 0
+(1 : Nat) ≠ (0 : Nat) : Prop

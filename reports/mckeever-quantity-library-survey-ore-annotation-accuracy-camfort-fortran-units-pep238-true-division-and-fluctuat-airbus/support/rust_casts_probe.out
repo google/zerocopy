@@ -1,0 +1,17 @@
+300.7f64 as u8 = 255
+-1.5f64 as u8 = 0
+f64::NAN as i32 = 0
+1e20f64 as i64 = 9223372036854775807
+-2.9f64 as i32 = -2
+300i32 as u8 = 44
+-1i32 as u32 = 4294967295
+u32::MAX as i32 = -1
+16777217i32 as f32 = 16777216.0
+(i64::MAX as f64) as i64 == i64::MAX: true
+u8::try_from(300i32) = Err(TryFromIntError(PosOverflow))
+i64::from(7i32) = 7
+f64::from(7i32) = 7
+7 / 2 = 3, -7 / 2 = -3, (-7i32).div_euclid(2) = -4
+7.0 / 2.0 = 3.5
+200u8.checked_add(100) = None
+200u8.wrapping_add(100) = 44

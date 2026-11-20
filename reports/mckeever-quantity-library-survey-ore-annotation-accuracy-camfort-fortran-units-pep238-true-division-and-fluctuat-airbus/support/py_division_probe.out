@@ -1,0 +1,25 @@
+python 3.13.15
+7 / 2 -> 3.5 (float)
+7 // 2 -> 3 (int)
+-7 // 2 -> -4 (int)
+int(-7 / 2) -> -3 (int)
+-7 % 2 -> 1 (int)
+2 / 1 -> 2.0 (float)
+3.5 // 2.0 -> 1.0 (float)
+7.0 // 2 -> 3.0 (float)
+(2**53 + 1) / 1 -> 9007199254740992.0 (float)
+(2**53 + 1) // 1 -> 9007199254740993 (int)
+float(2**53 + 1) == 2**53 + 1 -> False (bool)
+(10**400) / (10**399) -> 10.0 (float)
+1 / (10**400) -> 0.0 (float)
+0.1 + 0.2 == 0.3 -> False (bool)
+1 == 1.0 -> True (bool)
+hash(1) == hash(1.0) -> True (bool)
+True + True -> 2 (int)
+mean_int_args: (1 + 2) / 2 -> 1.5 (float)
+float(10**400) -> raises OverflowError: int too large to convert to float
+(10**400) / 1 -> raises OverflowError: integer division result too large for a float
+(1+2j) // 1 -> raises TypeError: unsupported operand type(s) for //: 'complex' and 'int'
+int(float('nan')) -> raises ValueError: cannot convert float NaN to integer
+int(float('inf')) -> raises OverflowError: cannot convert float infinity to integer
+math.isqrt(2**64) -> 4294967296 (int)
