@@ -396,7 +396,21 @@ end
 Every variant in `BinOp` corresponds 1-to-1 with the same-named variant in
 `rustc_middle::mir::BinOp`; upstream `BinOp::Cmp` (three-way `Ordering`
 comparison, which returns the `core::cmp::Ordering` ADT) lowers at the enclosing
-`Rvalue` level to `Rvalue.unsupported`. -/
+`Rvalue` level to `Rvalue.unsupported`.
+
+`.addWithOverflow`, `.subWithOverflow`, and `.mulWithOverflow` return a
+two-field tuple `(T, bool)` rather than a scalar
+(`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "Like `Add`, but returns `(T, bool)` of both the wrapped result
+> and a bool indicating whether it overflowed."
+> (`BinOp::AddWithOverflow`)
+>
+> "The `FooWithOverflow` are like the `Foo`, but returning `(T, bool)` instead
+> of just `T`, where the `bool` is true if the result is not equal to the
+> infinite-precision result."
+> (`Rvalue::BinaryOp`) -/
 inductive BinOp where
   | add | addUnchecked | addWithOverflow
   | sub | subUnchecked | subWithOverflow
@@ -444,6 +458,46 @@ Constructors `.not`, `.neg`, and `.ptrMetadata` correspond 1-to-1 with
 `UnOp::Not`, `UnOp::Neg`, and `UnOp::PtrMetadata`. -/
 inductive UnOp where
   | not | neg | ptrMetadata
+
+/-- MIR cast kinds (`rustc_middle::mir::CastKind` in
+`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "pub enum CastKind {
+>     PointerExposeProvenance,
+>     PointerWithExposedProvenance,
+>     PointerCoercion(PointerCoercion, CoercionSource),
+>     IntToInt,
+>     FloatToInt,
+>     FloatToFloat,
+>     IntToFloat,
+>     PtrToPtr,
+>     FnPtrToPtr,
+>     Transmute,
+>     BoxDerefTransmute,
+>     Subtype,
+> }"
+
+Constructor correspondence:
+- `.intToInt` corresponds to `CastKind::IntToInt`, the cast between integer
+  types and from `bool` to an integer type (`u8 as u64`, `i64 as u64`,
+  `bool as u64`). Upstream `CastKind::IntToInt` also casts from and to `char`;
+  `MirTy` has no `char` type, so such a cast carries a `MirTy.unsupported`
+  operand or target type and fails closed.
+- `.unsupported` represents all other `CastKind` variants
+  (`PointerExposeProvenance`, `PointerWithExposedProvenance`,
+  `PointerCoercion`, `FloatToInt`, `FloatToFloat`, `IntToFloat`, `PtrToPtr`,
+  `FnPtrToPtr`, `Transmute`, `BoxDerefTransmute`, and `Subtype`), causing
+  $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
+inductive CastKind where
+  | intToInt
+  | unsupported
+
+/-- Explicit structural equality on `CastKind`. -/
+noncomputable def CastKind.beq : CastKind → CastKind → Bool
+  | .intToInt, .intToInt => true
+  | .unsupported, .unsupported => true
+  | _, _ => false
 
 /-- Place projection elements (`*p`, `p.f`, or unmodeled projection).
 
@@ -592,9 +646,10 @@ Constructor correspondence:
 
   A retag is therefore a no-op for `WithRetag::No` and for values that contain
   no references or boxes, which covers every type that $M_{\text{anneal}}$
-  executes (`.bool`, `.int`, `.unit`, `.never`, and admitted fieldless
-  `.enum`). A retagging `Use(_, WithRetag::Yes)` of any other type lowers to
-  `.unsupported` until stacked/tree-borrows retagging is modeled.
+  executes (`.bool`, `.int`, `.unit`, `.never`, admitted fieldless `.enum`,
+  and non-empty `.tuple`s of those types). A retagging `Use(_, WithRetag::Yes)`
+  of any other type lowers to `.unsupported` until stacked/tree-borrows
+  retagging is modeled.
 - `.binaryOp op lhs rhs` corresponds to `Rvalue::BinaryOp(op, (lhs, rhs))`.
 - `.unaryOp op opnd` corresponds to `Rvalue::UnaryOp(op, opnd)`.
 - `.discriminant place` corresponds to `Rvalue::Discriminant(place)`
@@ -608,10 +663,18 @@ Constructor correspondence:
 - `.ref mutability place` corresponds to `Rvalue::Ref(_, borrowKind, place)`.
 - `.addressOf mutability place` corresponds to `Rvalue::RawPtr(kind, place)`.
 - `.aggregateTuple fields` corresponds to
-  `Rvalue::Aggregate(AggregateKind::Tuple, fields)`.
+  `Rvalue::Aggregate(AggregateKind::Tuple, fields)`. An empty `fields` list
+  builds the unit value `()` of type `.unit`; a non-empty list builds a value
+  of a non-empty `.tuple` type.
+- `.cast kind op ty` corresponds to `Rvalue::Cast(kind, op, ty)`, where `ty` is
+  the cast's target type (`compiler/rustc_middle/src/mir/syntax.rs`,
+  `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "Performs essentially all of the casts that can be performed via `as`."
+  > "This allows for casts from/to a variety of types."
 - `.unsupported` represents all other `Rvalue` variants (`Repeat`,
-  `ThreadLocalRef`, `Cast`, non-tuple `Aggregate` (including direct fieldless
-  enum construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
+  `ThreadLocalRef`, non-tuple `Aggregate` (including direct fieldless enum
+  construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
   intentionally out of scope and lowers fail-closed to `.unsupported` in favor
   of constant and discriminant operations), `CopyForDeref`,
   `WrapUnsafeBinder`, `Reborrow`, and a retagging `Use(_, WithRetag::Yes)` of a
@@ -625,6 +688,7 @@ inductive Rvalue where
   | ref (mutability : Mutability) (place : Place)
   | addressOf (mutability : Mutability) (place : Place)
   | aggregateTuple (fields : List Operand)
+  | cast (kind : CastKind) (op : Operand) (ty : MirTy)
   | unsupported
 
 /-- A MIR statement inside a basic block (`rustc_middle::mir::StatementKind` in
@@ -685,11 +749,22 @@ structure SwitchTargets where
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
 > "pub enum UnwindAction {
+>     /// No action is to be taken. Continue unwinding.
+>     ...
 >     Continue,
+>     /// Triggers undefined behavior if unwind happens.
 >     Unreachable,
+>     /// Terminates the execution if unwind happens.
+>     ...
 >     Terminate(UnwindTerminateReason),
+>     /// Cleanups to be done.
 >     Cleanup(BasicBlock),
-> }" -/
+> }"
+
+Constructors `.continue_`, `.unreachable`, `.terminate`, and `.cleanup block`
+correspond 1-to-1 with `UnwindAction::Continue`, `UnwindAction::Unreachable`,
+`UnwindAction::Terminate(_)` (dropping its diagnostic
+`UnwindTerminateReason`), and `UnwindAction::Cleanup(block)`. -/
 inductive UnwindAction where
   | continue_
   | unreachable
@@ -728,7 +803,14 @@ Constructor correspondence:
   (`ResumedAfterReturn`, `ResumedAfterPanic`, `ResumedAfterDrop`,
   `NullReferenceConstructed`, and `InvalidEnumConstruction`), as well as
   `AssertKind::Overflow(BinOp::Cmp, _, _)` whose `BinOp` lowers to
-  `.unsupported`. -/
+  `.unsupported`.
+
+`AssertKind` drops the operands `O` of the upstream message. They only feed
+the panic message, and `Trusted.MirSemantics` never evaluates them: it admits
+a failing `Assert` only for the kinds whose panic function takes no operand
+(see `Trusted.MirSemantics.isOperandFreeAssertKind`) and fails closed on
+`.boundsCheck` and `.misalignedPtrDeref`, whose panic functions read their
+operands. -/
 inductive AssertKind where
   | overflow (op : BinOp)
   | overflowNeg
@@ -774,9 +856,37 @@ Constructor correspondence:
   `TerminatorKind::SwitchInt { discr, targets }`.
 - `.return_` corresponds to `TerminatorKind::Return`.
 - `.unreachable` corresponds to `TerminatorKind::Unreachable`.
-- `.unwindResume` corresponds to `TerminatorKind::UnwindResume`.
+- `.unwindResume` corresponds to `TerminatorKind::UnwindResume`
+  (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "Indicates that the landing pad is finished and that the process should
+  > continue unwinding."
+  > "Like a return, this marks the end of this invocation of the function."
+  > "Only permitted in cleanup blocks."
 - `.assert cond expected msg target unwind` corresponds to
-  `TerminatorKind::Assert { cond, expected, msg, target, unwind }`.
+  `TerminatorKind::Assert { cond, expected, msg, target, unwind }`
+  (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "Evaluates the operand, which must have type `bool`. If it is not equal to
+  > `expected`, initiates a panic. ... If the assertion does not fail,
+  > execution continues at the specified basic block."
+  >
+  > "When overflow checking is disabled and this is run-time MIR (as opposed
+  > to compile-time MIR that is used for CTFE), the following variants of this
+  > terminator behave as `goto target`:
+  > - `OverflowNeg(..)`,
+  > - `Overflow(op, ..)` if op is add, sub, mul, shl, shr, but NOT div or rem."
+
+  `Trusted.MirSemantics` always evaluates `cond` and never treats an `.assert`
+  as `goto target`. A producer that captures MIR for a session with overflow
+  checking disabled must therefore lower each `Assert` that `rustc` ignores
+  in that session to `.goto target`, preserving `cond` evaluation beforehand
+  whenever `cond` can read uninitialized storage or move a non-ZST local
+  (since `rustc` evaluates `cond` before checking `ignored`); lowering an
+  ignored `Assert` to `.assert` would model a panic where the compiled program
+  continues.
 - `.call callee args dst target unwind` corresponds to direct `FnDef`
   `TerminatorKind::Call`.
 - `.unsupported` represents all other `TerminatorKind` variants

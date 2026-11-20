@@ -2637,7 +2637,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
 /// missing correspondence directories, `verifyCorrespondenceClaims` across all
-/// 30 required claims, and `verifyRefEvaluatorIndependence` (required Miri
+/// 36 required claims, and `verifyRefEvaluatorIndependence` (required Miri
 /// primitives and rejection of named `Trusted.MirSemantics` evaluator entry
 /// points).
 #[test]
@@ -2707,6 +2707,9 @@ fn enforces_correspondence_non_backsliding() {
          def binaryBool : Nat := 0\n\
          def unary : Nat := 0\n\
          end Miri.Interpreter.IntegerOps\n\
+         namespace Miri.Interpreter.IntegerCast\n\
+         def cast : Nat := 0\n\
+         end Miri.Interpreter.IntegerCast\n\
          namespace Miri.Memory.ScalarInt\n\
          def truncateFromUInt : Nat := 0\n\
          def tryFromUInt : Nat := 0\n\
@@ -2718,6 +2721,7 @@ fn enforces_correspondence_non_backsliding() {
          def localToOp : Nat := 0\n\
          def placeWriteLocalImmediate : Nat := 0\n\
          def evalRvalueIntoPlace : Nat := 0\n\
+         def writeAggregate : Nat := 0\n\
          def runRvalue : Nat := 0\n\
          end Miri.Interpreter\n\
          namespace Miri.Interpreter.Discriminant\n\
@@ -2728,8 +2732,12 @@ fn enforces_correspondence_non_backsliding() {
          def storageLive : Nat := 0\n\
          def storageDead : Nat := 0\n\
          end Miri.Interpreter.Frame\n\
+         namespace Miri.Interpreter.Stack\n\
+         def popFrame : Nat := 0\n\
+         end Miri.Interpreter.Stack\n\
          namespace Miri.Interpreter.ControlFlow\n\
          def goToBlock : Nat := 0\n\
+         def unwindToBlock : Nat := 0\n\
          def evalTerminator : Nat := 0\n\
          def returnFromCurrentFrame : Nat := 0\n\
          end Miri.Interpreter.ControlFlow\n",
@@ -2765,6 +2773,8 @@ fn enforces_correspondence_non_backsliding() {
          def tagBitsToDiscrBits : Nat := 0\n\
          def isZstEnumTy : Nat := 0\n\
          def findDiscrVariant? : Nat := 0\n\
+         def assignHasUnsupportedOverlap : Nat := 0\n\
+         def writeAggregateTuple : Nat := 0\n\
          def evalStep : Nat := 0\n\
          end Trusted.MirSemantics\n",
     );
@@ -2825,7 +2835,7 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected error: {err_weak_claim}"
     );
 
-    // 2b. When all 30 required claims and proofs are present,
+    // 2b. When all 36 required claims and proofs are present,
     // `verifyCorrespondenceClaims` succeeds and
     // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` that omits
     // required Miri primitives or illegally references a named
@@ -2863,6 +2873,16 @@ fn enforces_correspondence_non_backsliding() {
              def progBinOpMoveThenMoveD7c : Nat := 0\n\
              def progSelfMoveD8 : Nat := 0\n\
              def progMoveUnitZstD9 : Nat := 0\n\
+             def progOverflowTupleD14 : Nat := 0\n\
+             def progTupleFieldWriteD14 : Nat := 0\n\
+             def progTupleFieldUseAfterMoveD14 : Nat := 0\n\
+             def mkCastProg : Nat := 0\n\
+             def mkCheckedIncProg : Nat := 0\n\
+             def progTupleAggregateAliasD19 : Nat := 0\n\
+             def progTupleAggregateSelfFieldD19 : Nat := 0\n\
+             def progTupleSelfUseD19 : Nat := 0\n\
+             def progTupleSubfieldSelfCopyD19 : Nat := 0\n\
+             def progTupleDisjointFieldAndUnitAggD19 : Nat := 0\n\
              def initRefState : Nat := 0\n\
              def evalRefStep : Nat := {eval_ref_step_body}\n\
              def CorrespondenceClaim : Prop :=\n\
@@ -2940,6 +2960,36 @@ fn enforces_correspondence_non_backsliding() {
                Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumUninitDiscrUb ∧\n\
                encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
+             def CanaryD14OverflowTupleFieldMovesClaim : Prop :=\n\
+               progOverflowTupleD14 = progTupleFieldWriteD14 ∧\n\
+               progTupleFieldUseAfterMoveD14 = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
+             def CanaryD15IntToIntCastClaim : Prop :=\n\
+               mkCastProg = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
+             def CanaryD16AssertPassAndUnwindContinueClaim : Prop :=\n\
+               mkCheckedIncProg = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior\n\
+             def CanaryD17AssertUnwindUnreachableUbClaim : Prop :=\n\
+               mkCheckedIncProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
+             def CanaryD18AssertCleanupAndUnwindResumeClaim : Prop :=\n\
+               mkCheckedIncProg = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
+             def CanaryD19TupleOverlapFailClosedClaim : Prop :=\n\
+               progTupleAggregateAliasD19 = progTupleAggregateSelfFieldD19 ∧\n\
+               progTupleSelfUseD19 = progTupleSubfieldSelfCopyD19 ∧\n\
+               progTupleDisjointFieldAndUnitAggD19 = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
              end Trusted.Correspondence\n"
         )
     };
@@ -2990,6 +3040,18 @@ fn enforces_correspondence_non_backsliding() {
                ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
              theorem canary_D13_enum_invalid_tag_and_uninit_ub : CanaryD13EnumInvalidTagAndUninitUbClaim :=\n\
                ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D14_overflow_tuple_field_moves : CanaryD14OverflowTupleFieldMovesClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D15_int_to_int_cast : CanaryD15IntToIntCastClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D16_assert_pass_and_unwind_ok : CanaryD16AssertPassAndUnwindContinueClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D17_assert_unwind_unreachable_ub : CanaryD17AssertUnwindUnreachableUbClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D18_assert_cleanup_and_resume : CanaryD18AssertCleanupAndUnwindResumeClaim :=\n\
+               ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D19_tuple_overlap_fail_closed : CanaryD19TupleOverlapFailClosedClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
              end Anneal.MirCorrespondenceProof\n"
         )
     };
@@ -3057,6 +3119,7 @@ fn enforces_correspondence_non_backsliding() {
         "Miri.Interpreter.IntegerOps.binary",
         "Miri.Interpreter.IntegerOps.binaryBool",
         "Miri.Interpreter.IntegerOps.unary",
+        "Miri.Interpreter.IntegerCast.cast",
         "Miri.Memory.ScalarInt.truncateFromUInt",
         "Miri.Memory.ScalarInt.tryFromUInt",
         "Miri.Memory.ScalarInt.tryToBool",
@@ -3065,17 +3128,21 @@ fn enforces_correspondence_non_backsliding() {
         "Miri.Interpreter.localToOp",
         "Miri.Interpreter.placeWriteLocalImmediate",
         "Miri.Interpreter.evalRvalueIntoPlace",
+        "Miri.Interpreter.writeAggregate",
         "Miri.Interpreter.runRvalue",
         "Miri.Interpreter.Discriminant.readDiscriminant",
         "Miri.Interpreter.Discriminant.discriminantForVariant",
         "Miri.Interpreter.Step.evalStatement",
         "Miri.Interpreter.Frame.storageLive",
         "Miri.Interpreter.Frame.storageDead",
+        "Miri.Interpreter.Stack.popFrame",
         "Miri.Interpreter.ControlFlow.goToBlock",
+        "Miri.Interpreter.ControlFlow.unwindToBlock",
         "Miri.Interpreter.ControlFlow.evalTerminator",
         "Miri.Interpreter.ControlFlow.returnFromCurrentFrame",
     ];
     for missing_miri in [
+        "Miri.Interpreter.writeAggregate",
         "Miri.Interpreter.Discriminant.readDiscriminant",
         "Miri.Interpreter.Discriminant.discriminantForVariant",
     ] {
@@ -3122,6 +3189,8 @@ fn enforces_correspondence_non_backsliding() {
         "tagBitsToDiscrBits",
         "isZstEnumTy",
         "findDiscrVariant?",
+        "assignHasUnsupportedOverlap",
+        "writeAggregateTuple",
     ] {
         let all_miri_plus_anneal_fn = format!(
             "let _ := ({}); Trusted.MirSemantics.{forbidden}",

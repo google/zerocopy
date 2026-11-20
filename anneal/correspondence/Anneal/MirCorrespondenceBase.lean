@@ -41,16 +41,22 @@ This module proves the foundational codec, simulation-uniqueness, and
    `refState_unique_of_simulationInv_base`):** Proves 1-to-1 uniqueness of
    `SimulationInv` between $M_{\text{anneal}}$ (`State`) and $M_{\text{ref}}$
    (`RefState`) up to `(stepsExecuted, maxSteps)`.
-3. **`vendor/lean-miri` arithmetic, constant, enum, and `SwitchInt` equivalence
-   (`evalRefUnOp_eq`, `evalRefBinOp_eq`, `evalRefConstLit_eq`,
-   `checkRefVal_eq`, `readDiscriminant_enum_scalar_eq`,
-   `evalRefSwitchScalarCase_eq`):** Bridges `Miri.Memory.ScalarInt`,
-   `Miri.ABI.Size`, `Miri.Interpreter.IntegerOps`, and
-   `Miri.Interpreter.Discriminant` to `Trusted.MirSemantics`.
+3. **`vendor/lean-miri` arithmetic, cast, constant, enum, and `SwitchInt`
+   equivalence (`evalRefUnOp_eq`, `evalRefBinOp_eq`,
+   `evalRefMiriIntToIntCast_eq`, `evalRefConstLit_eq`, `checkRefVal_eq`,
+   `readDiscriminant_enum_scalar_eq`, `evalRefSwitchScalarCase_eq`):** Bridges
+   `Miri.Memory.ScalarInt`, `Miri.ABI.Size`, `Miri.Interpreter.IntegerOps`,
+   `Miri.Interpreter.IntegerCast`, and `Miri.Interpreter.Discriminant` to
+   `Trusted.MirSemantics`.
+4. **Tuple field projection equivalence (`refProjectTy?_eq`,
+   `refReadSlotPath?_eq`, `refWriteSlotPath?_eq`):** The reference machine's
+   field projections over a translated `Miri.MIR` projection agree with
+   `projectTy?`, `readSlotPath?`, and `writeSlotPath?` over the decoded
+   projection.
 
 Per-step simulation (`evalRefStep_eq`), end-to-end correspondence
 (`anneal_corresponds_to_miri`, `reachesResult_fault_iff_refReachesOutcome`,
-`miri_move_deinit_wiring_claim_holds`), and non-vacuity canaries (`D6`–`D13`)
+`miri_move_deinit_wiring_claim_holds`), and non-vacuity canaries (`D6`–`D18`)
 are proved in `Anneal.MirCorrespondenceProof`.
 -/
 
@@ -356,7 +362,7 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
       dsimp only [encodeRvalue]
       rw [h_l, h_r]
   | use _ | unaryOp _ _ | discriminant _ | ref _ _ | addressOf _ _
-  | aggregateTuple _ | unsupported =>
+  | aggregateTuple _ | cast _ _ _ | unsupported =>
     constructor
     · intro h; cases h
     · intro h
@@ -381,7 +387,7 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
       dsimp only [encodeRvalue]
       rw [h_o]
   | use _ | binaryOp _ _ _ | discriminant _ | ref _ _ | addressOf _ _
-  | aggregateTuple _ | unsupported =>
+  | aggregateTuple _ | cast _ _ _ | unsupported =>
     constructor
     · intro h; cases h
     · intro h
@@ -850,6 +856,13 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     dsimp only [encodeRvalue, decodeRvalue]
     rw [h_dec ts h_s]
     rfl
+  | cast kind op ty =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc op
+    let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc op) ty
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
   | unsupported => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
 
 theorem collectStmt_spec (acc : List MirTy) (s : StatementKind) :
@@ -1022,6 +1035,9 @@ theorem collectRvalue_canonical (acc : List MirTy) (rv : Rvalue)
   | aggregateTuple ops =>
     exact foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
       collectOperand_canonical ops h
+  | cast _ op ty =>
+    exact collectTy_canonical (collectOperand acc op) ty
+      (collectOperand_canonical acc op h)
   | unsupported => exact h
 
 theorem collectStmt_canonical (acc : List MirTy) (s : StatementKind)
@@ -1290,55 +1306,64 @@ theorem setElem?_zipRefLocals_none {bodyLocals : List MirTy}
           dsimp only [zipRefLocals, MirSemantics.setElem?]
           rw [ih h_ss]
 
+theorem evalPlaceOperand_length {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot} {place : Place} {isMove : Bool}
+    {ty : MirTy} {sv : SlotVal}
+    (h : evalPlaceOperand bodyLocals locals place isMove =
+      .ok (ty, sv, locals')) :
+    locals'.length = locals.length := by
+  unfold evalPlaceOperand at h
+  cases h_ty : MirSemantics.getElem? bodyLocals place.localId with
+  | none => rw [h_ty] at h; cases h
+  | some localTy =>
+    cases h_sl : MirSemantics.getElem? locals place.localId with
+    | none => rw [h_ty, h_sl] at h; cases h
+    | some slot =>
+      rw [h_ty, h_sl] at h
+      cases slot with
+      | dead => cases h
+      | live root =>
+        dsimp only at h
+        cases h_pt : projectTy? localTy place.projection with
+        | none => rw [h_pt] at h; cases h
+        | some pty =>
+          cases h_rd : readSlotPath? root place.projection with
+          | none => rw [h_pt, h_rd] at h; cases h
+          | some psv =>
+            rw [h_pt, h_rd] at h
+            cases isMove with
+            | false =>
+              injection h with h_tup
+              injection h_tup with _ h_rest
+              injection h_rest with _ h_loc
+              subst h_loc
+              rfl
+            | true =>
+              dsimp only at h
+              cases h_w : writeSlotPath? root place.projection
+                  (uninitSlotVal pty) with
+              | none => rw [h_w] at h; cases h
+              | some root' =>
+                rw [h_w] at h
+                dsimp only at h
+                cases h_set :
+                    MirSemantics.setElem? locals place.localId (.live root') <;>
+                  rw [h_set] at h
+                · cases h
+                · injection h with h_tup
+                  injection h_tup with _ h_rest
+                  injection h_rest with _ h_loc
+                  subst h_loc
+                  exact setElem?_length h_set
+
 theorem evalOperandToSlot_length {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot}
-    {op : Operand} {ty : MirTy} {optVal : Option Val}
-    (h : evalOperandToSlot bodyLocals locals op = .ok (ty, optVal, locals')) :
+    {op : Operand} {ty : MirTy} {sv : SlotVal}
+    (h : evalOperandToSlot bodyLocals locals op = .ok (ty, sv, locals')) :
     locals'.length = locals.length := by
   cases op with
-  | copy p =>
-    dsimp only [evalOperandToSlot] at h
-    cases h_emp : p.projection.isEmpty <;> rw [h_emp] at h
-    · cases h
-    · cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
-      | none => rw [h_ty] at h; cases h
-      | some ty₀ =>
-        cases h_sl : MirSemantics.getElem? locals p.localId with
-        | none => rw [h_ty, h_sl] at h; cases h
-        | some slot =>
-        rw [h_ty, h_sl] at h
-        cases slot with
-        | dead => cases h
-        | live opt =>
-          injection h with h_tup
-          injection h_tup with _ h_rest
-          injection h_rest with _ h_loc
-          subst h_loc
-          rfl
-  | move p =>
-    dsimp only [evalOperandToSlot] at h
-    cases h_emp : p.projection.isEmpty <;> rw [h_emp] at h
-    · cases h
-    · cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
-      | none => rw [h_ty] at h; cases h
-      | some ty₀ =>
-        cases h_sl : MirSemantics.getElem? locals p.localId with
-        | none => rw [h_ty, h_sl] at h; cases h
-        | some slot =>
-        rw [h_ty, h_sl] at h
-        cases slot with
-        | dead => cases h
-        | live opt =>
-          dsimp only at h
-          cases h_set :
-              MirSemantics.setElem? locals p.localId (liveUninitSlot ty₀) <;>
-            rw [h_set] at h
-          · cases h
-          · injection h with h_tup
-            injection h_tup with _ h_rest
-            injection h_rest with _ h_loc
-            subst h_loc
-            exact setElem?_length h_set
+  | copy p => exact evalPlaceOperand_length h
+  | move p => exact evalPlaceOperand_length h
   | constant c =>
     dsimp only [evalOperandToSlot] at h
     cases h_lit : evalConstLit c.ty c.lit <;> rw [h_lit] at h
@@ -1358,14 +1383,15 @@ theorem evalPrimitiveOperand_length {bodyLocals : List MirTy}
   cases h_op : evalOperandToSlot bodyLocals locals opnd with
   | error _ => rw [h_op] at h; cases h
   | ok res =>
-    let ⟨ty, optVal, l₁⟩ := res
+    let ⟨ty, sv₀, l₁⟩ := res
     rw [h_op] at h
     dsimp only at h
     cases h_pr : isPrimitiveReadableTy ty <;> rw [h_pr] at h
     · cases h
-    · cases optVal with
-      | none => cases h
+    · cases h_v : SlotVal.toVal? sv₀ with
+      | none => rw [h_v] at h; cases h
       | some v₀ =>
+        rw [h_v] at h
         injection h with h_tup
         injection h_tup with _ h_loc
         subst h_loc
@@ -1382,14 +1408,15 @@ theorem evalRvalue_length {bodyLocals : List MirTy}
     cases h_op : evalOperandToSlot bodyLocals locals opnd with
     | error _ => rw [h_op] at h; cases h
     | ok res =>
-      let ⟨srcTy, optVal, l₁⟩ := res
+      let ⟨srcTy, sv₀, l₁⟩ := res
       rw [h_op] at h
       dsimp only at h
       cases h_eq_ty : MirTy.beq srcTy dstTy <;> rw [h_eq_ty] at h
       · cases h
-      · cases optVal with
-        | none => cases h
+      · cases h_v : SlotVal.toVal? sv₀ with
+        | none => rw [h_v] at h; cases h
         | some v₀ =>
+          rw [h_v] at h
           injection h with h_tup
           injection h_tup with _ h_loc
           subst h_loc
@@ -1449,9 +1476,9 @@ theorem evalRvalue_length {bodyLocals : List MirTy}
             · cases h_tr : ety.tagRepr <;> rw [h_tr] at h
               · cases slot with
                 | dead => cases h
-                | live opt =>
-                  cases opt with
-                  | none =>
+                | live sv₀ =>
+                  cases sv₀ with
+                  | uninit =>
                     dsimp only at h
                     cases h_d : MirSemantics.getElem? ety.discriminants 0 <;>
                       rw [h_d] at h
@@ -1460,71 +1487,154 @@ theorem evalRvalue_length {bodyLocals : List MirTy}
                       injection h_tup with _ h_loc
                       subst h_loc
                       rfl
-                  | some val =>
-                    cases val with
-                    | enumVal ety' v =>
-                      dsimp only at h
-                      cases h_chk : (EnumTy.beq ety ety' && Nat.beq v 0) <;>
-                        rw [h_chk] at h
+                  | enumVal ety' v =>
+                    dsimp only at h
+                    cases h_chk : (EnumTy.beq ety ety' && Nat.beq v 0) <;>
+                      rw [h_chk] at h
+                    · cases h
+                    · cases h_d :
+                          MirSemantics.getElem? ety.discriminants 0 <;>
+                        rw [h_d] at h
                       · cases h
-                      · cases h_d :
-                            MirSemantics.getElem? ety.discriminants 0 <;>
-                          rw [h_d] at h
-                        · cases h
-                        · injection h with h_tup
-                          injection h_tup with _ h_loc
-                          subst h_loc
-                          rfl
-                    | _ => cases h
+                      · injection h with h_tup
+                        injection h_tup with _ h_loc
+                        subst h_loc
+                        rfl
+                  | _ => cases h
               · cases slot with
                 | dead => cases h
-                | live opt =>
-                  cases opt with
-                  | none => cases h
-                  | some val =>
-                    cases val with
-                    | enumVal ety' v =>
-                      dsimp only at h
-                      cases h_chk :
-                        (EnumTy.beq ety ety' &&
-                          Nat.blt v ety.discriminants.length) <;>
-                        rw [h_chk] at h
+                | live sv₀ =>
+                  cases sv₀ with
+                  | enumVal ety' v =>
+                    dsimp only at h
+                    cases h_chk :
+                      (EnumTy.beq ety ety' &&
+                        Nat.blt v ety.discriminants.length) <;>
+                      rw [h_chk] at h
+                    · cases h
+                    · cases h_d :
+                          MirSemantics.getElem? ety.discriminants v <;>
+                        rw [h_d] at h
                       · cases h
-                      · cases h_d :
-                            MirSemantics.getElem? ety.discriminants v <;>
-                          rw [h_d] at h
-                        · cases h
-                        · injection h with h_tup
-                          injection h_tup with _ h_loc
-                          subst h_loc
-                          rfl
-                    | _ => cases h
+                      · injection h with h_tup
+                        injection h_tup with _ h_loc
+                        subst h_loc
+                        rfl
+                  | _ => cases h
         | _ => cases h
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported =>
+  | aggregateTuple _ => cases h
+  | cast kind opnd castTy =>
+    dsimp only [evalRvalue] at h
+    cases h_op : evalPrimitiveOperand bodyLocals locals opnd with
+    | error _ => rw [h_op] at h; cases h
+    | ok res =>
+      let ⟨v₀, l₁⟩ := res
+      rw [h_op] at h
+      dsimp only at h
+      cases kind with
+      | unsupported => cases h
+      | intToInt =>
+        dsimp only at h
+        cases h_ty : MirTy.beq castTy dstTy <;> rw [h_ty] at h
+        · cases h
+        · cases h_c : evalIntToIntCast v₀ castTy <;> rw [h_c] at h
+          · cases h
+          · injection h with h_tup
+            injection h_tup with _ h_loc
+            subst h_loc
+            exact evalPrimitiveOperand_length h_op
+  | ref _ _ | addressOf _ _ | unsupported =>
     cases h
 
 theorem writePlace_length {locals locals' : List LocalSlot}
-    {dstLocalId : LocalId} {dstTy : MirTy} {val : Val}
-    (h : writePlace locals dstLocalId dstTy val = .ok locals') :
+    {dst : Place} {dstTy : MirTy} {val : Val}
+    (h : writePlace locals dst dstTy val = .ok locals') :
     locals'.length = locals.length := by
   unfold writePlace at h
   cases h_chk : checkVal val dstTy <;> rw [h_chk] at h
   · cases h
-  · cases h_get : MirSemantics.getElem? locals dstLocalId with
+  · cases h_get : MirSemantics.getElem? locals dst.localId with
     | none => rw [h_get] at h; cases h
     | some slot =>
       rw [h_get] at h
       cases slot with
       | dead => cases h
-      | live _ =>
+      | live root =>
         dsimp only at h
-        cases h_set :
-            MirSemantics.setElem? locals dstLocalId (.live (some val)) <;>
-          rw [h_set] at h
+        cases h_w : writeSlotPath? root dst.projection val.toSlotVal with
+        | none => rw [h_w] at h; cases h
+        | some root' =>
+          rw [h_w] at h
+          dsimp only at h
+          cases h_set :
+              MirSemantics.setElem? locals dst.localId (.live root') <;>
+            rw [h_set] at h
+          · cases h
+          · injection h with h_eq
+            subst h_eq
+            exact setElem?_length h_set
+
+theorem writeAggregateTupleFields_length {bodyLocals : List MirTy}
+    {dst : Place} {idx : Nat} {locals locals' : List LocalSlot}
+    {ops : List Operand} {fieldTys : List MirTy}
+    (h : writeAggregateTupleFields bodyLocals dst idx locals ops fieldTys =
+      .ok locals') :
+    locals'.length = locals.length := by
+  induction ops generalizing idx locals fieldTys with
+  | nil =>
+    cases fieldTys with
+    | nil =>
+      injection h with h_loc
+      subst h_loc
+      rfl
+    | cons _ _ => cases h
+  | cons o os ih =>
+    cases fieldTys with
+    | nil => cases h
+    | cons ft fts =>
+      dsimp only [writeAggregateTupleFields] at h
+      cases h_op : evalOperandToSlot bodyLocals locals o with
+      | error _ => rw [h_op] at h; cases h
+      | ok res =>
+        let ⟨srcTy, sv₀, l₁⟩ := res
+        rw [h_op] at h
+        dsimp only at h
+        cases h_ty : MirTy.beq srcTy ft <;> rw [h_ty] at h
         · cases h
-        · injection h with h_eq
-          subst h_eq
-          exact setElem?_length h_set
+        · cases h_v : SlotVal.toVal? sv₀ with
+          | none => rw [h_v] at h; cases h
+          | some v₀ =>
+            rw [h_v] at h
+            dsimp only at h
+            cases h_wr : writePlace l₁
+                { dst with projection := dst.projection ++ [.field idx ft] }
+                ft v₀ with
+            | error _ => rw [h_wr] at h; cases h
+            | ok l₂ =>
+              rw [h_wr] at h
+              exact ((ih h).trans (writePlace_length h_wr)).trans
+                (evalOperandToSlot_length h_op)
+
+theorem writeAggregateTuple_length {bodyLocals : List MirTy}
+    {locals locals' : List LocalSlot} {dst : Place} {dstTy : MirTy}
+    {ops : List Operand}
+    (h : writeAggregateTuple bodyLocals locals dst dstTy ops = .ok locals') :
+    locals'.length = locals.length := by
+  unfold writeAggregateTuple at h
+  cases ops with
+  | nil =>
+    cases dstTy with
+    | unit => exact writePlace_length h
+    | _ => cases h
+  | cons o os =>
+    cases dstTy with
+    | tuple fieldTys =>
+      dsimp only at h
+      cases h_len : Nat.beq (o :: os).length fieldTys.length <;>
+        rw [h_len] at h
+      · cases h
+      · exact writeAggregateTupleFields_length h
+    | _ => cases h
 
 theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
     (h : decodePlace ts rp = some p) :
@@ -1538,11 +1648,178 @@ theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
     subst h_eq
     exact ⟨rfl, mapOption_isEmpty h_proj⟩
 
+/-- A decoded place keeps its local, and its projection is the element-wise
+decoding of the reference projection. -/
+theorem decodePlace_proj_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
+    (h : decodePlace ts rp = some p) :
+    rp.localId = p.localId ∧
+      mapOption (decodeProjElem ts) rp.projection = some p.projection := by
+  dsimp only [decodePlace] at h
+  cases h_proj : mapOption (decodeProjElem ts) rp.projection with
+  | none => rw [h_proj] at h; cases h
+  | some proj =>
+    rw [h_proj] at h
+    injection h with h_eq
+    subst h_eq
+    exact ⟨rfl, rfl⟩
+
+/-- Inversion of `mapOption` on a non-empty list: the head and the tail both
+decode. -/
+theorem mapOption_cons_inv {α β : Type} {f : α → Option β} {x : α}
+    {xs : List α} {ys : List β}
+    (h : mapOption f (x :: xs) = some ys) :
+    ∃ y ys', f x = some y ∧ mapOption f xs = some ys' ∧ ys = y :: ys' := by
+  dsimp only [mapOption, optMap2] at h
+  cases h_x : f x with
+  | none => rw [h_x] at h; cases h
+  | some y =>
+    cases h_xs : mapOption f xs with
+    | none => rw [h_x, h_xs] at h; cases h
+    | some ys' =>
+      rw [h_x, h_xs] at h
+      injection h with h_eq
+      exact ⟨y, ys', rfl, rfl, h_eq.symm⟩
+
+/-- The reference type projection over the translated projection agrees with
+`projectTy?` over the decoded projection. -/
+theorem refProjectTy?_eq {ts : List MirTy} {rproj : List RefProjectionElem}
+    {proj : List ProjectionElem}
+    (h : mapOption (decodeProjElem ts) rproj = some proj) (ty : MirTy) :
+    refProjectTy? ts ty (rproj.map toMiriProjElem) = projectTy? ty proj := by
+  induction rproj generalizing proj ty with
+  | nil =>
+    injection h with h_eq
+    subst h_eq
+    rfl
+  | cons e es ih =>
+    let ⟨e', es', h_e, h_es, h_eq⟩ := mapOption_cons_inv h
+    subst h_eq
+    cases e with
+    | deref =>
+      injection h_e with h_e'
+      subst h_e'
+      cases ty <;> rfl
+    | unsupported =>
+      injection h_e with h_e'
+      subst h_e'
+      cases ty <;> rfl
+    | field idx tyId =>
+      dsimp only [decodeProjElem, optMap] at h_e
+      cases h_t : MirSemantics.getElem? ts tyId with
+      | none => rw [h_t] at h_e; cases h_e
+      | some fty =>
+        rw [h_t] at h_e
+        injection h_e with h_e'
+        subst h_e'
+        cases ty with
+        | tuple fieldTys =>
+          dsimp only [List.map, toMiriProjElem, refProjectTy?, projectTy?]
+          rw [h_t]
+          cases h_f : MirSemantics.getElem? fieldTys idx with
+          | none => rfl
+          | some ft =>
+            dsimp only
+            rw [ih h_es ft]
+        | _ => rfl
+
+/-- The reference slot read over the translated projection agrees with
+`readSlotPath?` over the decoded projection. -/
+theorem refReadSlotPath?_eq {ts : List MirTy} {rproj : List RefProjectionElem}
+    {proj : List ProjectionElem}
+    (h : mapOption (decodeProjElem ts) rproj = some proj) (sv : SlotVal) :
+    refReadSlotPath? sv (rproj.map toMiriProjElem) = readSlotPath? sv proj := by
+  induction rproj generalizing proj sv with
+  | nil =>
+    injection h with h_eq
+    subst h_eq
+    rfl
+  | cons e es ih =>
+    let ⟨e', es', h_e, h_es, h_eq⟩ := mapOption_cons_inv h
+    subst h_eq
+    cases e with
+    | deref =>
+      injection h_e with h_e'
+      subst h_e'
+      cases sv <;> rfl
+    | unsupported =>
+      injection h_e with h_e'
+      subst h_e'
+      cases sv <;> rfl
+    | field idx tyId =>
+      dsimp only [decodeProjElem, optMap] at h_e
+      cases h_t : MirSemantics.getElem? ts tyId with
+      | none => rw [h_t] at h_e; cases h_e
+      | some fty =>
+        rw [h_t] at h_e
+        injection h_e with h_e'
+        subst h_e'
+        cases sv with
+        | tuple fields =>
+          dsimp only [List.map, toMiriProjElem, refReadSlotPath?,
+            readSlotPath?]
+          cases h_f : MirSemantics.getElem? fields idx with
+          | none => rfl
+          | some field =>
+            dsimp only
+            rw [ih h_es field]
+        | _ => rfl
+
+/-- The reference slot update over the translated projection agrees with
+`writeSlotPath?` over the decoded projection. -/
+theorem refWriteSlotPath?_eq {ts : List MirTy} {rproj : List RefProjectionElem}
+    {proj : List ProjectionElem}
+    (h : mapOption (decodeProjElem ts) rproj = some proj)
+    (sv new : SlotVal) :
+    refWriteSlotPath? sv (rproj.map toMiriProjElem) new =
+      writeSlotPath? sv proj new := by
+  induction rproj generalizing proj sv with
+  | nil =>
+    injection h with h_eq
+    subst h_eq
+    rfl
+  | cons e es ih =>
+    let ⟨e', es', h_e, h_es, h_eq⟩ := mapOption_cons_inv h
+    subst h_eq
+    cases e with
+    | deref =>
+      injection h_e with h_e'
+      subst h_e'
+      cases sv <;> rfl
+    | unsupported =>
+      injection h_e with h_e'
+      subst h_e'
+      cases sv <;> rfl
+    | field idx tyId =>
+      dsimp only [decodeProjElem, optMap] at h_e
+      cases h_t : MirSemantics.getElem? ts tyId with
+      | none => rw [h_t] at h_e; cases h_e
+      | some fty =>
+        rw [h_t] at h_e
+        injection h_e with h_e'
+        subst h_e'
+        cases sv with
+        | tuple fields =>
+          dsimp only [List.map, toMiriProjElem, refWriteSlotPath?,
+            writeSlotPath?]
+          cases h_f : MirSemantics.getElem? fields idx with
+          | none => rfl
+          | some field =>
+            dsimp only
+            rw [ih h_es field]
+            cases writeSlotPath? field es' new <;> rfl
+        | _ => rfl
+
+/-- The translated projection of a reference place is empty exactly when the
+reference projection is. -/
+theorem toMiriPlace_proj_toList (rp : RefPlace) :
+    (toMiriPlace rp).projection.toList =
+      rp.projection.map toMiriProjElem := rfl
+
 noncomputable def mapSlotRes (bodyLocals : List MirTy) :
-    Except FaultKind (MirTy × Option Val × List LocalSlot) →
-    Except FaultKind (MirTy × Option Val × List RefLocalState)
+    Except FaultKind (MirTy × SlotVal × List LocalSlot) →
+    Except FaultKind (MirTy × SlotVal × List RefLocalState)
   | .error k => .error k
-  | .ok (ty, optVal, slots') => .ok (ty, optVal, zipRefLocals bodyLocals slots')
+  | .ok (ty, sv, slots') => .ok (ty, sv, zipRefLocals bodyLocals slots')
 
 noncomputable def mapSlotsRes (bodyLocals : List MirTy) :
     Except FaultKind (List LocalSlot) →
@@ -2197,6 +2474,167 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
     rw [h, size_truncate_eq]
     rfl
 
+/-- Overflowing-operator counterpart of `binary_truncate_scalarResult_eq`: for
+an operator that reports overflow (`isOverflowing = true`, never unchecked),
+`Miri.Interpreter.IntegerOps`' truncation of the mathematical result `resInt`
+yields the pair `(wrapped, hostOverflow || lossy)` that
+`Trusted.MirSemantics.evalOverflowingArithOp` builds from `truncateScalar`. -/
+theorem binary_truncate_overflowResult_eq (op : BinOp) (w : IntWidth)
+    (s : Bool) (resInt : Int) (hostOverflow : Bool)
+    (h_ovf : (toMiriBinOp op).isOverflowing = true)
+    (h_unc : op.isUnchecked = false) :
+    (match bind
+        (if (toMiriIntType w s).signed then
+          let wrapped := (BitVec.ofInt 128 resInt).toInt
+          (ScalarInt.truncateFromInt wrapped
+            (toMiriIntType w s).size).mapError IntegerOpError.scalar
+        else
+          (ScalarInt.truncateFromUInt (BitVec.ofInt 128 resInt)
+            (toMiriIntType w s).size).mapError IntegerOpError.scalar)
+        (fun (value, lossy) =>
+          if (hostOverflow || lossy) && (toMiriBinOp op).isUnchecked then
+            throw (IntegerOpError.undefinedBehavior
+              (.arithmeticOverflow (toMiriBinOp op)))
+          else
+            pure (if (toMiriBinOp op).isOverflowing then
+              IntegerResult.withOverflow value (hostOverflow || lossy)
+            else
+              IntegerResult.scalar value)) with
+    | .ok (.withOverflow sc overflow) =>
+      (Except.ok (Val.tuple [.scalar ⟨w, s, sc.data⟩, .bool overflow]) :
+        Except FaultKind Val)
+    | .ok _ => .error .unsupported
+    | .error (.undefinedBehavior _) => .error .undefined
+    | .error _ => .error .unsupported) =
+    (match truncateScalar w s resInt with
+    | .error k => .error k
+    | .ok (val, lossy) =>
+      .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)])) := by
+  rw [toMiriIntType_signed, toMiriIntType_size, bitVec_ofInt_eq, h_ovf,
+      toMiriBinOp_isUnchecked, h_unc]
+  simp only [Bool.and_false]
+  cases s with
+  | true =>
+    change (match bind
+        ((ScalarInt.truncateFromInt (bvToInt (bvOfInt 128 resInt))
+          (toMiriSize w)).mapError IntegerOpError.scalar)
+        (fun (value, lossy) =>
+          if false then
+            throw (IntegerOpError.undefinedBehavior
+              (.arithmeticOverflow (toMiriBinOp op)))
+          else
+            pure (if true then
+              IntegerResult.withOverflow value (hostOverflow || lossy)
+            else
+              IntegerResult.scalar value)) with
+      | .ok (.withOverflow sc overflow) =>
+        (Except.ok (Val.tuple [.scalar ⟨w, true, sc.data⟩, .bool overflow]) :
+          Except FaultKind Val)
+      | .ok _ => .error .unsupported
+      | .error (.undefinedBehavior _) => .error .undefined
+      | .error _ => .error .unsupported) =
+      (match truncateScalar w true resInt with
+      | .error k => .error k
+      | .ok (val, lossy) =>
+        .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)]))
+    dsimp only [truncateScalar]
+    let ⟨wrapped, h_w⟩ : ∃ x, bvToInt (bvOfInt 128 resInt) = x := ⟨_, rfl⟩
+    rw [h_w]
+    cases h_oob : (decide (wrapped < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+        decide (wrapped ≥ HPow.hPow (2 : Int) 127)) with
+    | true =>
+      cases w <;> (
+        dsimp only [ScalarInt.truncateFromInt]
+        rw [h_oob]
+        rfl)
+    | false =>
+      have h : (match bind
+          ((ScalarInt.truncateFromInt wrapped (toMiriSize w)).mapError
+            IntegerOpError.scalar)
+          (fun (value, lossy) =>
+            if false then
+              throw (IntegerOpError.undefinedBehavior
+                (.arithmeticOverflow (toMiriBinOp op)))
+            else
+              pure (if true then
+                IntegerResult.withOverflow value (hostOverflow || lossy)
+              else
+                IntegerResult.scalar value)) with
+        | .ok (.withOverflow sc overflow) =>
+          (Except.ok (Val.tuple [.scalar ⟨w, true, sc.data⟩,
+            .bool overflow]) : Except FaultKind Val)
+        | .ok _ => .error .unsupported
+        | .error (.undefinedBehavior _) => .error .undefined
+        | .error _ => .error .unsupported) =
+        (match (toMiriSize w).truncate (BitVec.ofInt 128 wrapped) with
+        | .ok b =>
+          match (toMiriSize w).signExtend b with
+          | .ok dec =>
+            .ok (.tuple [.scalar ⟨w, true, b⟩,
+              .bool (hostOverflow || (dec != wrapped))])
+          | .error _ => .error .unsupported
+        | .error _ => .error .unsupported) := by
+        cases w <;> (
+          dsimp only [ScalarInt.truncateFromInt]
+          rw [h_oob]
+          rfl)
+      rw [h, bitVec_ofInt_eq, size_truncate_eq]
+      dsimp only
+      rw [size_signExtend_eq]
+      rfl
+  | false =>
+    change (match bind
+        ((ScalarInt.truncateFromUInt (bvOfInt 128 resInt)
+          (toMiriSize w)).mapError IntegerOpError.scalar)
+        (fun (value, lossy) =>
+          if false then
+            throw (IntegerOpError.undefinedBehavior
+              (.arithmeticOverflow (toMiriBinOp op)))
+          else
+            pure (if true then
+              IntegerResult.withOverflow value (hostOverflow || lossy)
+            else
+              IntegerResult.scalar value)) with
+      | .ok (.withOverflow sc overflow) =>
+        (Except.ok (Val.tuple [.scalar ⟨w, false, sc.data⟩, .bool overflow]) :
+          Except FaultKind Val)
+      | .ok _ => .error .unsupported
+      | .error (.undefinedBehavior _) => .error .undefined
+      | .error _ => .error .unsupported) =
+      (match truncateScalar w false resInt with
+      | .error k => .error k
+      | .ok (val, lossy) =>
+        .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)]))
+    dsimp only [truncateScalar]
+    let ⟨raw, h_raw⟩ : ∃ x, bvOfInt 128 resInt = x := ⟨_, rfl⟩
+    rw [h_raw]
+    have h : (match bind
+        ((ScalarInt.truncateFromUInt raw (toMiriSize w)).mapError
+          IntegerOpError.scalar)
+        (fun (value, lossy) =>
+          if false then
+            throw (IntegerOpError.undefinedBehavior
+              (.arithmeticOverflow (toMiriBinOp op)))
+          else
+            pure (if true then
+              IntegerResult.withOverflow value (hostOverflow || lossy)
+            else
+              IntegerResult.scalar value)) with
+      | .ok (.withOverflow sc overflow) =>
+        (Except.ok (Val.tuple [.scalar ⟨w, false, sc.data⟩, .bool overflow]) :
+          Except FaultKind Val)
+      | .ok _ => .error .unsupported
+      | .error (.undefinedBehavior _) => .error .undefined
+      | .error _ => .error .unsupported) =
+      (match (toMiriSize w).truncate raw with
+      | .ok b =>
+        .ok (.tuple [.scalar ⟨w, false, b⟩,
+          .bool (hostOverflow || (b != raw))])
+      | .error _ => .error .unsupported) := by
+      cases w <;> rfl
+    rw [h, size_truncate_eq]
+    rfl
+
 theorem toMiriIntType_bne_of_false {w₁ w₂ : IntWidth} {s₁ s₂ : Bool}
     (h : (IntWidth.beq w₁ w₂ && (s₁ == s₂)) = false) :
     (toMiriIntType w₁ s₁ != toMiriIntType w₂ s₂) = true := by
@@ -2667,6 +3105,176 @@ theorem evalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool)
     exact h_full
   | _ => nomatch h_op
 
+theorem overflow_after_rw_eq (op : BinOp) (w : IntWidth) (s : Bool)
+    (resInt : Int)
+    (h_ovf : (toMiriBinOp op).isOverflowing = true)
+    (h_unc : op.isUnchecked = false) :
+    (match (let hostOverflow := if s then
+          decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+            decide (resInt ≥ HPow.hPow (2 : Int) 127)
+        else
+          decide (resInt < 0) || decide (resInt ≥ HPow.hPow (2 : Int) 128)
+      bind (if s then
+          let wrapped := (BitVec.ofInt 128 resInt).toInt
+          (ScalarInt.truncateFromInt wrapped (toMiriSize w)).mapError
+            IntegerOpError.scalar
+        else
+          (ScalarInt.truncateFromUInt (BitVec.ofInt 128 resInt)
+            (toMiriSize w)).mapError IntegerOpError.scalar)
+        (fun (value, lossy) =>
+          if (hostOverflow || lossy) && (toMiriBinOp op).isUnchecked then
+            throw (IntegerOpError.undefinedBehavior
+              (.arithmeticOverflow (toMiriBinOp op)))
+          else
+            pure (if (toMiriBinOp op).isOverflowing then
+              IntegerResult.withOverflow value (hostOverflow || lossy)
+            else
+              IntegerResult.scalar value))) with
+    | .ok (.withOverflow sc overflow) =>
+      (Except.ok (Val.tuple [.scalar ⟨w, s, sc.data⟩, .bool overflow]) :
+        Except FaultKind Val)
+    | .ok _ => .error .unsupported
+    | .error (.undefinedBehavior _) => .error .undefined
+    | .error _ => .error .unsupported) =
+    (match truncateScalar w s resInt with
+    | .error k => .error k
+    | .ok (val, lossy) =>
+      .ok (.tuple [.scalar val, .bool ((if s then
+            decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+              decide (resInt ≥ HPow.hPow (2 : Int) 127)
+          else
+            decide (resInt < 0) ||
+              decide (resInt ≥ HPow.hPow (2 : Int) 128)) || lossy)])) := by
+  have h := binary_truncate_overflowResult_eq op w s resInt
+    (if s then
+      decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+        decide (resInt ≥ HPow.hPow (2 : Int) 127)
+    else
+      decide (resInt < 0) || decide (resInt ≥ HPow.hPow (2 : Int) 128))
+    h_ovf h_unc
+  rw [toMiriIntType_signed, toMiriIntType_size] at h
+  exact h
+
+theorem overflow_full_eq (op : BinOp) (w : IntWidth) (s : Bool)
+    (lInt rInt : Int)
+    (h_op : (match op with
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow => true
+      | _ => false) = true) :
+    (match
+      (let jp3 := fun (result : Int) =>
+        let hostOverflow := if (toMiriIntType w s).signed then
+            decide (result < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+              decide (result ≥ HPow.hPow (2 : Int) 127)
+          else
+            decide (result < 0) || decide (result ≥ HPow.hPow (2 : Int) 128)
+        bind (if (toMiriIntType w s).signed then
+            let wrapped := (BitVec.ofInt 128 result).toInt
+            (ScalarInt.truncateFromInt wrapped
+              (toMiriIntType w s).size).mapError IntegerOpError.scalar
+          else
+            (ScalarInt.truncateFromUInt (BitVec.ofInt 128 result)
+              (toMiriIntType w s).size).mapError IntegerOpError.scalar)
+          (fun (value, lossy) =>
+            if (hostOverflow || lossy) && (toMiriBinOp op).isUnchecked then
+              throw (IntegerOpError.undefinedBehavior
+                (.arithmeticOverflow (toMiriBinOp op)))
+            else
+              pure (if (toMiriBinOp op).isOverflowing then
+                IntegerResult.withOverflow value (hostOverflow || lossy)
+              else
+                IntegerResult.scalar value))
+      let jp2 := fun (_ : PUnit) =>
+        match toMiriBinOp op with
+        | .Add | .AddUnchecked | .AddWithOverflow =>
+          bind (pure (lInt + rInt)) jp3
+        | .Sub | .SubUnchecked | .SubWithOverflow =>
+          bind (pure (lInt - rInt)) jp3
+        | .Mul | .MulUnchecked | .MulWithOverflow =>
+          bind (pure (lInt * rInt)) jp3
+        | .Div => bind (pure (Int.tdiv lInt rInt)) jp3
+        | .Rem => bind (pure (Int.tmod lInt rInt)) jp3
+        | _ =>
+          bind (throw (IntegerOpError.invalidBinaryOperator (toMiriBinOp op)))
+            jp3
+      let jp1 := fun (_ : PUnit) =>
+        if (toMiriIntType w s).signed &&
+            (toMiriBinOp op == Miri.MIR.BinOp.Div ||
+              toMiriBinOp op == Miri.MIR.BinOp.Rem) then
+          bind (((toMiriIntType w s).size.signedIntMin).mapError
+              (Function.comp IntegerOpError.scalar ScalarIntError.sizeError))
+            (fun min =>
+              if lInt == min && rInt == Neg.neg 1 then
+                bind (throw (IntegerOpError.undefinedBehavior
+                  (if toMiriBinOp op == Miri.MIR.BinOp.Div then
+                    .divisionOverflow
+                  else
+                    .remainderOverflow))) jp2
+              else
+                jp2 PUnit.unit)
+        else
+          jp2 PUnit.unit
+      if rInt == 0 then
+        let jp0 := fun (_ : PUnit) =>
+          if toMiriBinOp op == Miri.MIR.BinOp.Rem then
+            bind (throw (IntegerOpError.undefinedBehavior .remainderByZero))
+              jp1
+          else
+            jp1 PUnit.unit
+        if toMiriBinOp op == Miri.MIR.BinOp.Div then
+          bind (throw (IntegerOpError.undefinedBehavior .divisionByZero)) jp0
+        else
+          jp0 PUnit.unit
+      else
+        jp1 PUnit.unit) with
+    | .ok (.withOverflow sc overflow) =>
+      (Except.ok (Val.tuple [.scalar ⟨w, s, sc.data⟩, .bool overflow]) :
+        Except FaultKind Val)
+    | .ok _ => .error .unsupported
+    | .error (.undefinedBehavior _) => .error .undefined
+    | .error _ => .error .unsupported) =
+    evalOverflowingArithOp op w s lInt rInt := by
+  rw [toMiriIntType_signed, toMiriIntType_size, size_signedIntMin_eq,
+      int_tdiv_eq, int_tmod_eq]
+  cases op with
+  | addWithOverflow =>
+    cases (rInt == 0) <;> cases s with
+    | false =>
+      exact overflow_after_rw_eq .addWithOverflow w false (lInt + rInt) rfl rfl
+    | true =>
+      exact overflow_after_rw_eq .addWithOverflow w true (lInt + rInt) rfl rfl
+  | subWithOverflow =>
+    cases (rInt == 0) <;> cases s with
+    | false =>
+      exact overflow_after_rw_eq .subWithOverflow w false (lInt - rInt) rfl rfl
+    | true =>
+      exact overflow_after_rw_eq .subWithOverflow w true (lInt - rInt) rfl rfl
+  | mulWithOverflow =>
+    cases (rInt == 0) <;> cases s with
+    | false =>
+      exact overflow_after_rw_eq .mulWithOverflow w false (lInt * rInt) rfl rfl
+    | true =>
+      exact overflow_after_rw_eq .mulWithOverflow w true (lInt * rInt) rfl rfl
+  | _ => nomatch h_op
+
+theorem evalOverflowingArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool)
+    (bits₁ bits₂ : BitVec 128)
+    (h_op : (match op with
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow => true
+      | _ => false) = true) :
+    evalRefBinOp op (.scalar ⟨w, s, bits₁⟩) (.scalar ⟨w, s, bits₂⟩) =
+    evalOverflowingArithOp op w s (decodeScalar ⟨w, s, bits₁⟩)
+      (decodeScalar ⟨w, s, bits₂⟩) := by
+  have h_full := overflow_full_eq op w s
+    (decodeScalar ⟨w, s, bits₁⟩) (decodeScalar ⟨w, s, bits₂⟩) h_op
+  cases op with
+  | addWithOverflow | subWithOverflow | mulWithOverflow =>
+    dsimp only [evalRefBinOp, evalRefMiriBinOp, toMiriBinOp, IntegerOps.binary]
+    rw [integerOps_decode_eq, integerOps_decode_eq]
+    dsimp only [bind, Except.bind, pure, Except.pure]
+    rw [miriIntValue_type_bne_self]
+    exact h_full
+  | _ => nomatch h_op
+
 theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
     evalRefBinOp op lhs rhs = evalBinOp op lhs rhs := by
   cases lhs with
@@ -2713,10 +3321,25 @@ theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
               have h_bne := miriIntValue_type_bne_self w₁ s₁ bits₁ bits₂
               cases op with
               | shl | shr | shlUnchecked | shrUnchecked => nomatch h_sh
-              | addWithOverflow | subWithOverflow | mulWithOverflow | offset =>
+              | offset =>
                 dsimp only [evalRefBinOp, evalRefMiriBinOp, evalBinOp]
                 rw [h_ty]
                 rfl
+              | addWithOverflow =>
+                dsimp only [evalBinOp]
+                rw [h_ty]
+                exact evalOverflowingArithOp_eq .addWithOverflow w₁ s₁ bits₁
+                  bits₂ rfl
+              | subWithOverflow =>
+                dsimp only [evalBinOp]
+                rw [h_ty]
+                exact evalOverflowingArithOp_eq .subWithOverflow w₁ s₁ bits₁
+                  bits₂ rfl
+              | mulWithOverflow =>
+                dsimp only [evalBinOp]
+                rw [h_ty]
+                exact evalOverflowingArithOp_eq .mulWithOverflow w₁ s₁ bits₁
+                  bits₂ rfl
               | eq | ne | lt | le | gt | ge =>
                 dsimp only [evalRefBinOp, evalRefMiriBinOp, evalBinOp,
                   toMiriBinOp, IntegerOps.binary]
@@ -3215,23 +3838,54 @@ theorem refIsZstEnumTy_eq (ety : EnumTy) :
   | zeroSized => exact refEnumAdmitted_eq ety
   | scalar _ _ => rfl
 
-theorem refIsSupportedLocalTy_eq (ty : MirTy) :
-    refIsSupportedLocalTy ty = isSupportedScalarOrUnitTy ty := by
-  cases ty with
-  | enum ety => exact refEnumAdmitted_eq ety
-  | _ => rfl
+mutual
+  theorem refIsSupportedLocalTy_eq : ∀ (ty : MirTy),
+      refIsSupportedLocalTy ty = isSupportedScalarOrUnitTy ty
+    | .bool | .int _ _ | .unit | .never | .ref _ _ | .rawPtr _ _
+    | .unsupported => rfl
+    | .enum ety => by
+      dsimp only [refIsSupportedLocalTy, isSupportedScalarOrUnitTy]
+      exact refEnumAdmitted_eq ety
+    | .tuple fields => by
+      dsimp only [refIsSupportedLocalTy, isSupportedScalarOrUnitTy]
+      rw [refAreSupportedFieldTys_eq fields]
+
+  theorem refAreSupportedFieldTys_eq : ∀ (tys : List MirTy),
+      refAreSupportedFieldTys tys = areSupportedFieldTys tys
+    | [] => rfl
+    | ty :: tys => by
+      dsimp only [refAreSupportedFieldTys, areSupportedFieldTys]
+      rw [refIsSupportedLocalTy_eq ty, refAreSupportedFieldTys_eq tys]
+end
 
 theorem refIsPrimitiveReadableTy_eq (ty : MirTy) :
     refIsPrimitiveReadableTy ty = isPrimitiveReadableTy ty := by
   cases ty <;> rfl
 
+mutual
+  theorem refUninitSlotVal_eq : ∀ (ty : MirTy),
+      refUninitSlotVal ty = uninitSlotVal ty
+    | .bool | .int _ _ | .unit | .never | .ref _ _ | .rawPtr _ _
+    | .unsupported => rfl
+    | .enum ety => by
+      dsimp only [refUninitSlotVal, uninitSlotVal]
+      rw [refIsZstEnumTy_eq]
+    | .tuple fields => by
+      dsimp only [refUninitSlotVal, uninitSlotVal]
+      rw [refUninitSlotVals_eq fields]
+
+  theorem refUninitSlotVals_eq : ∀ (tys : List MirTy),
+      refUninitSlotVals tys = uninitSlotVals tys
+    | [] => rfl
+    | ty :: tys => by
+      dsimp only [refUninitSlotVals, uninitSlotVals]
+      rw [refUninitSlotVal_eq ty, refUninitSlotVals_eq tys]
+end
+
 theorem refLiveUninitSlot_eq (ty : MirTy) :
     refLiveUninitSlot ty = liveUninitSlot ty := by
-  cases ty with
-  | enum ety =>
-    dsimp only [refLiveUninitSlot, liveUninitSlot]
-    rw [refIsZstEnumTy_eq]
-  | _ => rfl
+  dsimp only [refLiveUninitSlot, liveUninitSlot]
+  rw [refUninitSlotVal_eq]
 
 theorem fullRange_contains_truncateBits (w : IntWidth) (raw : BitVec 128) :
     match WrappingRange.full (toMiriSize w) with
@@ -3639,39 +4293,76 @@ theorem checkRefVal_int_aux (b : Bool) (vw w : IntWidth) (vs s : Bool) :
     | none => false) := by
   cases b <;> rfl
 
-theorem checkRefVal_eq (v : Val) (ty : MirTy) :
-    checkRefVal v ty = checkVal v ty := by
-  cases v with
-  | unit | ptr _ | tuple _ | bytes _ => cases ty <;> rfl
-  | bool b => cases ty <;> cases b <;> rfl
-  | enumVal ety v =>
-    cases ty with
-    | enum ety' =>
-      dsimp only [checkRefVal, checkVal, Val.ty?, MirTy.beq]
-      rw [refEnumAdmitted_eq]
-      cases (enumAdmitted ety && Nat.blt v ety.discriminants.length) <;> rfl
-    | _ =>
-      dsimp only [checkRefVal, checkVal, Val.ty?]
-      cases (enumAdmitted ety && Nat.blt v ety.discriminants.length) <;> rfl
-  | scalar sv =>
-    cases sv with
-    | mk vw vs vbits =>
+mutual
+  theorem checkRefVal_eq : ∀ (v : Val) (ty : MirTy),
+      checkRefVal v ty = checkVal v ty
+    | .unit, ty => by cases ty <;> rfl
+    | .ptr _, ty => by cases ty <;> rfl
+    | .bytes _, ty => by cases ty <;> rfl
+    | .bool b, ty => by cases ty <;> cases b <;> rfl
+    | .enumVal ety v, ty => by
       cases ty with
-      | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported =>
+      | enum ety' =>
+        dsimp only [checkRefVal, checkVal, Val.ty?, MirTy.beq]
+        rw [refEnumAdmitted_eq]
+        cases (enumAdmitted ety && Nat.blt v ety.discriminants.length) <;> rfl
+      | _ =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
-        cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
-      | int w s =>
-        have h_m :
-            (match ScalarInt.tryFromUInt vbits (toMiriSize vw) with
-            | .ok (some _) => IntWidth.beq vw w && (vs == s)
-            | _ => false) =
-            if truncateBits vw vbits != vbits then false
-            else IntWidth.beq vw w && (vs == s) :=
-          @match_tryFromUInt_eq Bool vw vbits
-            (fun _ => IntWidth.beq vw w && (vs == s)) false
-        exact h_m.trans
-          (checkRefVal_int_aux (truncateBits vw vbits == vbits) vw w vs s)
+        cases (enumAdmitted ety && Nat.blt v ety.discriminants.length) <;> rfl
+    | .scalar sv, ty => by
+      cases sv with
+      | mk vw vs vbits =>
+        cases ty with
+        | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
+        | unsupported =>
+          dsimp only [checkRefVal, checkVal, Val.ty?]
+          cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
+        | int w s =>
+          have h_m :
+              (match ScalarInt.tryFromUInt vbits (toMiriSize vw) with
+              | .ok (some _) => IntWidth.beq vw w && (vs == s)
+              | _ => false) =
+              if truncateBits vw vbits != vbits then false
+              else IntWidth.beq vw w && (vs == s) :=
+            @match_tryFromUInt_eq Bool vw vbits
+              (fun _ => IntWidth.beq vw w && (vs == s)) false
+          exact h_m.trans
+            (checkRefVal_int_aux (truncateBits vw vbits == vbits) vw w vs s)
+    | .tuple fields, ty => by
+      cases ty with
+      | tuple fieldTys =>
+        dsimp only [checkRefVal, checkVal, Val.ty?]
+        rw [checkRefVals_eq fields fieldTys]
+        cases fields.isEmpty with
+        | true => rfl
+        | false => cases Val.tys? fields <;> rfl
+      | _ =>
+        dsimp only [checkRefVal, checkVal, Val.ty?]
+        cases fields.isEmpty with
+        | true => rfl
+        | false => cases Val.tys? fields <;> rfl
+
+  theorem checkRefVals_eq : ∀ (vs : List Val) (tys : List MirTy),
+      checkRefVals vs tys =
+        (match Val.tys? vs with
+        | some vTys => MirTy.beqList vTys tys
+        | none => false)
+    | [], [] => rfl
+    | [], _ :: _ => rfl
+    | v :: vs, [] => by
+      dsimp only [checkRefVals, Val.tys?]
+      cases Val.ty? v <;> cases Val.tys? vs <;> rfl
+    | v :: vs, ty :: tys => by
+      dsimp only [checkRefVals, Val.tys?]
+      rw [checkRefVal_eq v ty, checkRefVals_eq vs tys]
+      dsimp only [checkVal]
+      cases Val.ty? v with
+      | none => rfl
+      | some vt =>
+        cases Val.tys? vs with
+        | none => exact Bool.and_false _
+        | some vts => rfl
+end
 
 theorem checkRefArgsMatch_eq (vs : List Val) (tys : List MirTy) :
     checkRefArgsMatch vs tys = checkArgsMatch vs tys := by
@@ -3838,6 +4529,121 @@ private theorem signExtendBits_inj (w : IntWidth) (x y : BitVec 128)
   rw [truncateBits_idem, truncateBits_idem] at h_ze
   exact h_ze
 
+/-- Wrapping the unsigned value of a 128-bit vector back into 128 bits is the
+identity. -/
+theorem bvOfInt_ofNat_toNat (x : BitVec 128) :
+    bvOfInt 128 (Int.ofNat x.toNat) = x := by
+  apply BitVec.eq_of_toNat_eq
+  dsimp only [bvOfInt, intEmod]
+  rw [BitVec.toNat_ofNat]
+  change HMod.hMod (Nat.mod x.toNat (Nat.pow 2 128)) (HPow.hPow 2 128) =
+    x.toNat
+  rw [nat_mod_eq_of_lt x.isLt]
+  exact Nat.mod_eq_of_lt x.isLt
+
+/-- `Miri.Interpreter.IntegerCast.cast` from an integer source to an integer
+target, with its private source decoding spelled out: a signed source is
+sign-extended to 128 bits, an unsigned source is zero-extended, and the result
+is truncated to the target size. -/
+theorem integerCast_int_eq (sw : IntWidth) (ss : Bool) (bits : BitVec 128)
+    (w : IntWidth) (s : Bool) :
+    IntegerCast.cast (.integer (toMiriIntType sw ss)) (miriScalar sw bits)
+        (.integer (toMiriIntType w s)) =
+      bind
+        (if ss then
+          bind (((miriScalar sw bits).toInt (toMiriSize sw)).mapError
+              IntegerCastError.scalar)
+            (fun signedValue => pure (BitVec.ofInt 128 signedValue).toNat)
+        else
+          bind (((miriScalar sw bits).toUInt (toMiriSize sw)).mapError
+              IntegerCastError.scalar)
+            (fun value => pure value.toNat))
+        (fun decoded =>
+          bind ((ScalarInt.truncateFromUInt (BitVec.ofNat 128 decoded)
+              (toMiriSize w)).mapError IntegerCastError.scalar)
+            (fun (result, _) => pure result)) := by
+  cases sw <;> cases ss <;> rfl
+
+/-- `Miri.Interpreter.IntegerCast.cast` from a `bool` source to an integer
+target: `false` is `0`, `true` is `1`, truncated to the target size. -/
+theorem integerCast_bool_eq (b : Bool) (w : IntWidth) (s : Bool) :
+    IntegerCast.cast .boolean (ScalarInt.ofBool b)
+        (.integer (toMiriIntType w s)) =
+      bind ((ScalarInt.truncateFromUInt
+          (BitVec.ofNat 128 (if b then 1 else 0))
+          (toMiriSize w)).mapError IntegerCastError.scalar)
+        (fun (result, _) => pure result) := by
+  cases b <;> rfl
+
+/-- Truncating 128-bit `x` to the target size through
+`Miri.Memory.ScalarInt.truncateFromUInt` yields `truncateBits w x`. -/
+theorem cast_truncate_eq (w : IntWidth) (s : Bool) (x : BitVec 128) :
+    (match bind ((ScalarInt.truncateFromUInt x (toMiriSize w)).mapError
+          IntegerCastError.scalar)
+        (fun (result, _) => pure result) with
+    | .ok sc => (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
+    | .error _ => .error .unsupported) =
+    .ok (.scalar ⟨w, s, truncateBits w x⟩) := by
+  have h : (match bind ((ScalarInt.truncateFromUInt x (toMiriSize w)).mapError
+          IntegerCastError.scalar)
+        (fun (result, _) => pure result) with
+      | .ok sc =>
+        (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
+      | .error _ => .error .unsupported) =
+      (match (toMiriSize w).truncate x with
+      | .ok b => .ok (.scalar ⟨w, s, b⟩)
+      | .error _ => .error .unsupported) := by
+    cases w <;> rfl
+  rw [h, size_truncate_eq]
+
+/-- The reference `IntToInt` cast (`Miri.Interpreter.IntegerCast.cast`) agrees
+with `Trusted.MirSemantics.evalIntToIntCast`. -/
+theorem evalRefMiriIntToIntCast_eq (src : Val) (castTy : MirTy) :
+    evalRefMiriIntToIntCast src castTy = evalIntToIntCast src castTy := by
+  cases castTy with
+  | int w s =>
+    cases src with
+    | scalar sv =>
+      cases sv with
+      | mk sw ss bits =>
+        dsimp only [evalRefMiriIntToIntCast, evalIntToIntCast]
+        rw [integerCast_int_eq]
+        cases ss with
+        | true =>
+          rw [miriScalar_toInt]
+          change (match bind ((ScalarInt.truncateFromUInt
+                (BitVec.ofNat 128 (BitVec.ofInt 128
+                  (signExtendBits sw (truncateBits sw bits))).toNat)
+                (toMiriSize w)).mapError IntegerCastError.scalar)
+              (fun (result, _) => pure result) with
+            | .ok sc =>
+              (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
+            | .error _ => .error .unsupported) = _
+          rw [bitVec128_ofNat_toNat, cast_truncate_eq, bitVec_ofInt_eq]
+          rfl
+        | false =>
+          rw [miriScalar_toUInt]
+          change (match bind ((ScalarInt.truncateFromUInt
+                (BitVec.ofNat 128 (truncateBits sw bits).toNat)
+                (toMiriSize w)).mapError IntegerCastError.scalar)
+              (fun (result, _) => pure result) with
+            | .ok sc =>
+              (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
+            | .error _ => .error .unsupported) = _
+          rw [bitVec128_ofNat_toNat, cast_truncate_eq]
+          change Except.ok (Val.scalar ⟨w, s,
+            truncateBits w (truncateBits sw bits)⟩) =
+            Except.ok (Val.scalar ⟨w, s, truncateBits w
+              (bvOfInt 128 (Int.ofNat (truncateBits sw bits).toNat))⟩)
+          rw [bvOfInt_ofNat_toNat]
+    | bool b =>
+      dsimp only [evalRefMiriIntToIntCast, evalIntToIntCast]
+      rw [integerCast_bool_eq]
+      exact cast_truncate_eq w s _
+    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ => rfl
+  | bool | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
+  | unsupported => rfl
+
 theorem decodeScalar_beq_eq (w : IntWidth) (s : Bool) (x y : BitVec 128) :
     (decodeScalar ⟨w, s, x⟩ == decodeScalar ⟨w, s, y⟩) =
       (truncateBits w x == truncateBits w y) := by
@@ -3864,7 +4670,7 @@ theorem decodeScalar_beq_eq (w : IntWidth) (s : Bool) (x y : BitVec 128) :
 
 theorem evalRefSwitchScalarCase_eq (ts : List MirTy)
     (callerMem : CallerMemory) (sv : ScalarVal) (caseBits : BitVec 128)
-    (st : Miri.Interpreter.StepState (Option Val) Miri.Interpreter.LocalLayout
+    (st : Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout
       Unit RefStepMachine) :
     (refTerminatorHooksFor ts callerMem).compareSwitchCase () (.scalar sv)
         caseBits.toNat st =
@@ -3900,7 +4706,7 @@ theorem evalRefSwitchScalarCase_eq (ts : List MirTy)
 
 theorem evalRefSwitchBoolCase_eq (ts : List MirTy)
     (callerMem : CallerMemory) (b : Bool) (caseBits : BitVec 128)
-    (st : Miri.Interpreter.StepState (Option Val) Miri.Interpreter.LocalLayout
+    (st : Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout
       Unit RefStepMachine) :
     (refTerminatorHooksFor ts callerMem).compareSwitchCase () (.bool b)
         caseBits.toNat st =

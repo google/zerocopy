@@ -731,7 +731,12 @@ theorem checkVal_scalar_inv {v : Val} {w : IntWidth} {s : Bool}
   | ptr _ => cases h
   | bool _ => cases h
   | unit => cases h
-  | tuple _ => cases h
+  | tuple fields =>
+    cases fields with
+    | nil => cases h
+    | cons f fs =>
+      change (match (match Val.tys? (f :: fs) with | some tys => some (MirTy.tuple tys) | none => none) with | some vTy => vTy.beq (.int w s) | none => false) = true at h
+      cases ht : Val.tys? (f :: fs) <;> rw [ht] at h <;> cases h
   | bytes _ => cases h
   | enumVal ety var =>
     change (match (if enumAdmitted ety && Nat.blt var ety.discriminants.length then some (MirTy.enum ety) else none) with | some vTy => vTy.beq (.int w s) | none => false) = true at h
@@ -918,16 +923,13 @@ theorem checkVal_enum2_inv {ety : EnumTy}
     v = .enumVal ety 0 ∨ v = .enumVal ety 1 := by
   cases v with
   | enumVal ety' var =>
+    change (match (if enumAdmitted ety' && Nat.blt var ety'.discriminants.length then some (MirTy.enum ety') else none) with | some vTy => vTy.beq (.enum ety) | none => false) = true at h
     cases h_adm : (enumAdmitted ety' && Nat.blt var ety'.discriminants.length) with
-    | false => simp [checkVal, Val.ty?, h_adm] at h
+    | false => rw [h_adm] at h; cases h
     | true =>
-      have h_ty : MirTy.beq (.enum ety') (.enum ety) = true := by
-        unfold checkVal Val.ty? at h
-        dsimp only at h
-        rw [h_adm] at h
-        exact h
-      unfold MirTy.beq at h_ty
-      have h_eq := enumTy_beq_eq h_ty
+      rw [h_adm] at h
+      change EnumTy.beq ety' ety = true at h
+      have h_eq := enumTy_beq_eq h
       subst h_eq
       rw [h_ds] at h_adm
       cases h_e : enumAdmitted ety' with
@@ -941,8 +943,15 @@ theorem checkVal_enum2_inv {ety : EnumTy}
           | zero => exact .inr rfl
           | succ m => cases h_adm
   | scalar sv =>
-    cases h_wf : sv.wf <;> simp [checkVal, Val.ty?, h_wf, MirTy.beq] at h
-  | ptr _ | bool _ | unit | tuple _ | bytes _ => cases h
+    change (match (if sv.wf then some (MirTy.int sv.width sv.signed) else none) with | some vTy => vTy.beq (.enum ety) | none => false) = true at h
+    cases h_wf : sv.wf <;> rw [h_wf] at h <;> cases h
+  | tuple fields =>
+    cases fields with
+    | nil => cases h
+    | cons f fs =>
+      change (match (match Val.tys? (f :: fs) with | some tys => some (MirTy.tuple tys) | none => none) with | some vTy => vTy.beq (.enum ety) | none => false) = true at h
+      cases ht : Val.tys? (f :: fs) <;> rw [ht] at h <;> cases h
+  | ptr _ | bool _ | unit | bytes _ => cases h
 "#;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -1939,13 +1948,19 @@ end Proof"#,
 
         match pat {
             BodyPattern::DirectId(int_ty) => {
+                let w = int_ty.width_lean;
+                let s = int_ty.signed;
                 let ty = int_ty.mir_ty_lean();
                 let _ = writeln!(
                     block,
                     r#"theorem body{i}_exec (v : Val) (hv : checkVal v {ty} = true) :
     Executes body{i} (initial body{i} [v]) v := by
-  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live (some v), .live (some v)]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v)] 0 {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 1, l'⟩], ⟨[]⟩⟩) = _
+  let ⟨bits, hb, _⟩ := checkVal_scalar_inv hv
+  subst hb
+  let v : Val := .scalar ⟨{w}, {s}, bits⟩
+  let sv : SlotVal := .scalar ⟨{w}, {s}, bits⟩
+  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live sv, .live sv]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 1, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv]; rfl
   exact .next s0 (.ret rfl)
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) :=
@@ -2025,20 +2040,26 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
                 }
             }
             BodyPattern::MoveId(int_ty) => {
+                let w = int_ty.width_lean;
+                let s = int_ty.signed;
                 let ty = int_ty.mir_ty_lean();
                 let _ = writeln!(
                     block,
                     r#"theorem body{i}_exec (v : Val) (hv : checkVal v {ty} = true) :
     Executes body{i} (initial body{i} [v]) v := by
-  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live none, .live (some v), .live none]⟩], ⟨[]⟩⟩ := rfl
-  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live none, .live (some v), .live none]⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 2, [.live none, .live (some v), .live (some v)]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v), .live none] 2 {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l'⟩], ⟨[]⟩⟩) = _
+  let ⟨bits, hb, _⟩ := checkVal_scalar_inv hv
+  subst hb
+  let v : Val := .scalar ⟨{w}, {s}, bits⟩
+  let sv : SlotVal := .scalar ⟨{w}, {s}, bits⟩
+  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live .uninit]⟩], ⟨[]⟩⟩ := rfl
+  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live .uninit]⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live sv]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv, .live .uninit] ⟨2, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv]; rfl
-  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live none, .live (some v), .live (some v)]⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 3, [.live (some v), .live (some v), .live (some v)]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v), .live (some v)] 0 {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l'⟩], ⟨[]⟩⟩) = _
+  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live sv]⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 3, [.live sv, .live sv, .live sv]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv]; rfl
-  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live (some v), .live (some v), .live (some v)]⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 4, [.live (some v), .live (some v), .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live (some v), .live (some v), .dead]⟩], ⟨[]⟩⟩ = .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
+  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live sv, .live sv, .live sv]⟩], ⟨[]⟩⟩ = .step ⟨[⟨0, 0, 4, [.live sv, .live sv, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live sv, .live sv, .dead]⟩], ⟨[]⟩⟩ = .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
   exact .next s0 (.next s1 (.next s2 (.next s3 (.ret s4))))
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) :=
   bodyVerified_of_exec1 rfl rfl rfl (fun v hv => ⟨v, body{i}_exec v hv⟩)"#
@@ -2067,32 +2088,35 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
     ∃ outVal, Executes body{i} (initial body{i} [.scalar ⟨.i32, false, bits1⟩, .scalar ⟨.i32, false, bits2⟩]) outVal := by
   let v1 : Val := .scalar ⟨.i32, false, bits1⟩
   let v2 : Val := .scalar ⟨.i32, false, bits2⟩
+  let sv1 : SlotVal := .scalar ⟨.i32, false, bits1⟩
+  let sv2 : SlotVal := .scalar ⟨.i32, false, bits2⟩
   let raw := bvOfInt 128 (decodeScalar ⟨.i32, false, bits1⟩ + decodeScalar ⟨.i32, false, bits2⟩)
   let outVal : Val := .scalar ⟨.i32, false, truncateBits .i32 raw⟩
+  let sout : SlotVal := .scalar ⟨.i32, false, truncateBits .i32 raw⟩
   have hout : checkVal outVal (.int .i32 false) = true := checkVal_u32_truncateBits raw
   refine ⟨outVal, ?_⟩
-  have s0 : step body{i} (initial body{i} [v1, v2]) = .step ⟨[⟨0, 0, 1, [.live none, .live (some v1), .live (some v2), .live none, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live none, .live (some v1), .live (some v2), .live none, .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 2, [.live none, .live (some v1), .live (some v2), .live (some v1), .dead]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v1), .live (some v2), .live none, .dead] 3 (.int .i32 false) v1 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l'⟩], ⟨[]⟩⟩) = _
+  have s0 : step body{i} (initial body{i} [v1, v2]) = .step ⟨[⟨0, 0, 1, [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv1, .live sv2, .live sv1, .dead]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv1, .live sv2, .live .uninit, .dead] ⟨3, []⟩ (.int .i32 false) v1 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 2, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv1]; rfl
-  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live none, .live (some v1), .live (some v2), .live (some v1), .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 3, [.live none, .live (some v1), .live (some v2), .live (some v1), .live none]⟩], ⟨[]⟩⟩ := rfl
-  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live none, .live (some v1), .live (some v2), .live (some v1), .live none]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 4, [.live none, .live (some v1), .live (some v2), .live (some v1), .live (some v2)]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v1), .live (some v2), .live (some v1), .live none] 4 (.int .i32 false) v2 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l'⟩], ⟨[]⟩⟩) = _
+  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv1, .live sv2, .live sv1, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 3, [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit]⟩], ⟨[]⟩⟩ := rfl
+  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 4, [.live .uninit, .live sv1, .live sv2, .live sv1, .live sv2]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv1, .live sv2, .live sv1, .live .uninit] ⟨4, []⟩ (.int .i32 false) v2 with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv2]; rfl
-  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live none, .live (some v1), .live (some v2), .live (some v1), .live (some v2)]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 5, [.live (some outVal), .live (some v1), .live (some v2), .live none, .live none]⟩], ⟨[]⟩⟩ := by
-    change (match (match evalBinOp .add v1 v2 with | .error k => Except.error k | .ok out => (Except.ok (out, [LocalSlot.live none, LocalSlot.live (some v1), LocalSlot.live (some v2), LocalSlot.live none, LocalSlot.live none]) : Except FaultKind (Val × List LocalSlot))) with | .error k => @StepResult.fault State TerminalOut k | .ok (val, l1) => match writePlace l1 0 (.int .i32 false) val with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l'⟩], ⟨[]⟩⟩) = _
+  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live .uninit, .live sv1, .live sv2, .live sv1, .live sv2]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 5, [.live sout, .live sv1, .live sv2, .live .uninit, .live .uninit]⟩], ⟨[]⟩⟩ := by
+    change (match (match evalBinOp .add v1 v2 with | .error k => Except.error k | .ok out => (Except.ok (out, [LocalSlot.live .uninit, LocalSlot.live sv1, LocalSlot.live sv2, LocalSlot.live .uninit, LocalSlot.live .uninit]) : Except FaultKind (Val × List LocalSlot))) with | .error k => @StepResult.fault State TerminalOut k | .ok (val, l1) => match writePlace l1 ⟨0, []⟩ (.int .i32 false) val with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l'⟩], ⟨[]⟩⟩) = _
     rw [evalBinOp_u32_add bits1 bits2]
-    change (match writePlace [.live none, .live (some v1), .live (some v2), .live none, .live none] 0 (.int .i32 false) outVal with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l'⟩], ⟨[]⟩⟩) = _
+    change (match writePlace [.live .uninit, .live sv1, .live sv2, .live .uninit, .live .uninit] ⟨0, []⟩ (.int .i32 false) outVal with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 5, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hout]; rfl
-  have s5 : step body{i} ⟨[⟨0, 0, 5, [.live (some outVal), .live (some v1), .live (some v2), .live none, .live none]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 6, [.live (some outVal), .live (some v1), .live (some v2), .live none, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s6 : step body{i} ⟨[⟨0, 0, 6, [.live (some outVal), .live (some v1), .live (some v2), .live none, .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 7, [.live (some outVal), .live (some v1), .live (some v2), .dead, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s7 : step body{i} ⟨[⟨0, 0, 7, [.live (some outVal), .live (some v1), .live (some v2), .dead, .dead]⟩], ⟨[]⟩⟩ =
+  have s5 : step body{i} ⟨[⟨0, 0, 5, [.live sout, .live sv1, .live sv2, .live .uninit, .live .uninit]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 6, [.live sout, .live sv1, .live sv2, .live .uninit, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s6 : step body{i} ⟨[⟨0, 0, 6, [.live sout, .live sv1, .live sv2, .live .uninit, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 7, [.live sout, .live sv1, .live sv2, .dead, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s7 : step body{i} ⟨[⟨0, 0, 7, [.live sout, .live sv1, .live sv2, .dead, .dead]⟩], ⟨[]⟩⟩ =
       .done (.returned ⟨outVal, ⟨[]⟩⟩) := rfl
   exact .next s0 (.next s1 (.next s2 (.next s3 (.next s4 (.next s5 (.next s6 (.ret s7)))))))
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) := by
@@ -2130,6 +2154,7 @@ theorem body{i}_exec_nonzero (bits : BitVec 128)
     (hne : (bits == BitVec.ofNat 128 0) = false) :
     Executes body{i} (initial body{i} [.scalar ⟨.isize, false, bits⟩]) (.scalar ⟨.isize, false, bits⟩) := by
   let v : Val := .scalar ⟨.isize, false, bits⟩
+  let sv : SlotVal := .scalar ⟨.isize, false, bits⟩
   have heq_int : (decodeScalar ⟨.isize, false, bits⟩ == decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩) = false := by
     unfold decodeScalar
     change (Int.ofNat (truncateBits .isize bits).toNat == Int.ofNat 0) = false
@@ -2142,30 +2167,30 @@ theorem body{i}_exec_nonzero (bits : BitVec 128)
       have hb : bits = BitVec.ofNat 128 0 := bitVec_eq_of_toNat_eq hn
       rw [hb] at hne
       cases hne
-  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live none, .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live none, .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 2, [.live none, .live (some v), .live none, .live none]⟩], ⟨[]⟩⟩ := rfl
-  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live none, .live (some v), .live none, .live none]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 3, [.live none, .live (some v), .live none, .live (some v)]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v), .live none, .live none] 3 (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l'⟩], ⟨[]⟩⟩) = _
+  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s1 : step body{i} ⟨[⟨0, 0, 1, [.live .uninit, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live .uninit, .live .uninit]⟩], ⟨[]⟩⟩ := rfl
+  have s2 : step body{i} ⟨[⟨0, 0, 2, [.live .uninit, .live sv, .live .uninit, .live .uninit]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 3, [.live .uninit, .live sv, .live .uninit, .live sv]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv, .live .uninit, .live .uninit] ⟨3, []⟩ (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 3, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv]; rfl
-  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live none, .live (some v), .live none, .live (some v)]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 0, 4, [.live none, .live (some v), .live (some (.bool false)), .live none]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v), .live none, .live none] 2 .bool (.bool (decodeScalar ⟨.isize, false, bits⟩ == decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩)) with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l'⟩], ⟨[]⟩⟩) = _
+  have s3 : step body{i} ⟨[⟨0, 0, 3, [.live .uninit, .live sv, .live .uninit, .live sv]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 0, 4, [.live .uninit, .live sv, .live (.bool false), .live .uninit]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv, .live .uninit, .live .uninit] ⟨2, []⟩ .bool (.bool (decodeScalar ⟨.isize, false, bits⟩ == decodeScalar ⟨.isize, false, BitVec.ofNat 128 0⟩)) with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 0, 4, l'⟩], ⟨[]⟩⟩) = _
     rw [heq_int]; rfl
-  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live none, .live (some v), .live (some (.bool false)), .live none]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 2, 0, [.live none, .live (some v), .live none, .live none]⟩], ⟨[]⟩⟩ := rfl
-  have s5 : step body{i} ⟨[⟨0, 2, 0, [.live none, .live (some v), .live none, .live none]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 2, 1, [.live none, .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s6 : step body{i} ⟨[⟨0, 2, 1, [.live none, .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 2, 2, [.live (some v), .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v), .live none, .dead] 0 (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 2, l'⟩], ⟨[]⟩⟩) = _
+  have s4 : step body{i} ⟨[⟨0, 0, 4, [.live .uninit, .live sv, .live (.bool false), .live .uninit]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 2, 0, [.live .uninit, .live sv, .live .uninit, .live .uninit]⟩], ⟨[]⟩⟩ := rfl
+  have s5 : step body{i} ⟨[⟨0, 2, 0, [.live .uninit, .live sv, .live .uninit, .live .uninit]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 2, 1, [.live .uninit, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s6 : step body{i} ⟨[⟨0, 2, 1, [.live .uninit, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 2, 2, [.live sv, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv, .live .uninit, .dead] ⟨0, []⟩ (.int .isize false) v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 2, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv]; rfl
-  have s7 : step body{i} ⟨[⟨0, 2, 2, [.live (some v), .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 3, 0, [.live (some v), .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s8 : step body{i} ⟨[⟨0, 3, 0, [.live (some v), .live (some v), .live none, .dead]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 3, 1, [.live (some v), .live (some v), .dead, .dead]⟩], ⟨[]⟩⟩ := rfl
-  have s9 : step body{i} ⟨[⟨0, 3, 1, [.live (some v), .live (some v), .dead, .dead]⟩], ⟨[]⟩⟩ =
+  have s7 : step body{i} ⟨[⟨0, 2, 2, [.live sv, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 3, 0, [.live sv, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s8 : step body{i} ⟨[⟨0, 3, 0, [.live sv, .live sv, .live .uninit, .dead]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 3, 1, [.live sv, .live sv, .dead, .dead]⟩], ⟨[]⟩⟩ := rfl
+  have s9 : step body{i} ⟨[⟨0, 3, 1, [.live sv, .live sv, .dead, .dead]⟩], ⟨[]⟩⟩ =
       .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
   exact .next s0 (.next s1 (.next s2 (.next s3 (.next s4 (.next s5 (.next s6 (.next s7 (.next s8 (.ret s9)))))))))
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) := by
@@ -2224,17 +2249,18 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
     (hne : (bits == BitVec.ofNat 128 0) = false) :
     Executes body{i} (initial body{i} [.scalar ⟨{w}, {s}, bits⟩]) (.scalar ⟨{w}, {s}, bits⟩) := by
   let v : Val := .scalar ⟨{w}, {s}, bits⟩
+  let sv : SlotVal := .scalar ⟨{w}, {s}, bits⟩
   have htr : (truncateBits {w} bits == truncateBits {w} (BitVec.ofNat 128 0)) = false := by
     rw [eq_of_beq hwf]
     exact hne
-  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 2, 0, [.live none, .live (some v)]⟩], ⟨[]⟩⟩ := by
-    change (match (if (truncateBits {w} bits == truncateBits {w} (BitVec.ofNat 128 0)) then Except.ok 1 else Except.ok 2) with | .error k => @StepResult.fault State TerminalOut k | .ok tgt => jumpToBlock ⟨0, 0, 0, [.live none, .live (some v)]⟩ ⟨[]⟩ tgt) = _
+  have s0 : step body{i} (initial body{i} [v]) = .step ⟨[⟨0, 2, 0, [.live .uninit, .live sv]⟩], ⟨[]⟩⟩ := by
+    change (match (if (truncateBits {w} bits == truncateBits {w} (BitVec.ofNat 128 0)) then Except.ok 1 else Except.ok 2) with | .error k => @StepResult.fault State TerminalOut k | .ok tgt => jumpToBlock ⟨0, 0, 0, [.live .uninit, .live sv]⟩ ⟨[]⟩ tgt) = _
     rw [htr]; rfl
-  have s1 : step body{i} ⟨[⟨0, 2, 0, [.live none, .live (some v)]⟩], ⟨[]⟩⟩ =
-      .step ⟨[⟨0, 2, 1, [.live (some v), .live (some v)]⟩], ⟨[]⟩⟩ := by
-    change (match writePlace [.live none, .live (some v)] 0 {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 1, l'⟩], ⟨[]⟩⟩) = _
+  have s1 : step body{i} ⟨[⟨0, 2, 0, [.live .uninit, .live sv]⟩], ⟨[]⟩⟩ =
+      .step ⟨[⟨0, 2, 1, [.live sv, .live sv]⟩], ⟨[]⟩⟩ := by
+    change (match writePlace [.live .uninit, .live sv] ⟨0, []⟩ {ty} v with | .error k => @StepResult.fault State TerminalOut k | .ok l' => @StepResult.step State TerminalOut ⟨[⟨0, 2, 1, l'⟩], ⟨[]⟩⟩) = _
     unfold writePlace; rw [hv]; rfl
-  have s2 : step body{i} ⟨[⟨0, 2, 1, [.live (some v), .live (some v)]⟩], ⟨[]⟩⟩ =
+  have s2 : step body{i} ⟨[⟨0, 2, 1, [.live sv, .live sv]⟩], ⟨[]⟩⟩ =
       .done (.returned ⟨v, ⟨[]⟩⟩) := rfl
   exact .next s0 (.next s1 (.ret s2))
 theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.safety body{i}.identity) := by
@@ -2258,8 +2284,8 @@ theorem body{i}_safe : BodyVerified Captured.program {i} body{i} (Spec.specs.saf
                     } else {
                         format!(
                             r#"    let ⟨finish, h_reach, h_done⟩ := h_ret
-    have s0 : step body{i} (initial body{i} [.scalar ⟨{w}, {s}, BitVec.ofNat 128 0⟩]) = .step ⟨[⟨0, 1, 0, [.live none, .live (some (.scalar ⟨{w}, {s}, BitVec.ofNat 128 0⟩))]⟩], ⟨[]⟩⟩ := rfl
-    have s1 : step body{i} ⟨[⟨0, 1, 0, [.live none, .live (some (.scalar ⟨{w}, {s}, BitVec.ofNat 128 0⟩))]⟩], ⟨[]⟩⟩ = .fault .undefined := rfl
+    have s0 : step body{i} (initial body{i} [.scalar ⟨{w}, {s}, BitVec.ofNat 128 0⟩]) = .step ⟨[⟨0, 1, 0, [.live .uninit, .live (.scalar ⟨{w}, {s}, BitVec.ofNat 128 0⟩)]⟩], ⟨[]⟩⟩ := rfl
+    have s1 : step body{i} ⟨[⟨0, 1, 0, [.live .uninit, .live (.scalar ⟨{w}, {s}, BitVec.ofNat 128 0⟩)]⟩], ⟨[]⟩⟩ = .fault .undefined := rfl
     cases reach_cases s0 h_reach with
     | inl h_eq => subst h_eq; cases s0.symm.trans h_done
     | inr h_tail =>

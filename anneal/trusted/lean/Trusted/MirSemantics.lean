@@ -143,9 +143,18 @@ Key semantic correspondence points:
    because deinitializing causes any subsequent read without re-initialization
    to fault with `.undefined`, rejecting strictly more programs than upstream
    `rustc_const_eval::interpret`. Separating `evalOperandToSlot` (which
-   resolves `(ty, optVal)` and applies this conservative `Operand.move`
+   resolves `(ty, sv)` and applies this conservative `Operand.move`
    deinitialization) from `evalPrimitiveOperand` preserves exact left-to-right
    operand evaluation and fault ordering in `Rvalue.use` and `Rvalue.binaryOp`.
+
+   A move deinitializes exactly the storage that its place selects. Each
+   field of a tuple local carries its own initialization state (`SlotVal`), so
+   `move (_8.1: bool)` deinitializes field `1` of `_8` and leaves field `0`
+   readable, as the `(T, bool)` results of `AddWithOverflow` require:
+
+   > "_8 = AddWithOverflow(copy _3, const 1_usize);
+   > assert(!move (_8.1: bool), ...) -> [success: bb4, unwind continue];
+   > bb4: _0 = move (_8.0: usize);"
 
 3. **Inhabited zero-sized local initialization (`MirTy.unit` and 1-variant
    `.zeroSized` `MirTy.enum`):**
@@ -155,11 +164,10 @@ Key semantic correspondence points:
    an admitted `.zeroSized` 1-variant fieldless enum,
    `Variants::Single { index: 0 }`, `Size.ZERO`) requires zero initialized
    bytes in memory. Consequently, any live `.unit` or admitted `.zeroSized`
-   1-variant `.enum` local slot (at frame entry, after `StorageLive`, or after
-   `Operand.move`) remains inhabited by its unique value:
-   `liveUninitSlot .unit = .live (some .unit)`, and
-   `liveUninitSlot (.enum ety) = .live (some (.enumVal ety 0))` whenever
-   `isZstEnumTy ety`.
+   1-variant `.enum` storage (at frame entry, after `StorageLive`, or after
+   `Operand.move`, whether it is a whole local or a tuple field) remains
+   inhabited by its unique value: `uninitSlotVal .unit = .unit`, and
+   `uninitSlotVal (.enum ety) = .enumVal ety 0` whenever `isZstEnumTy ety`.
 
 4. **Explicit arithmetic applications:**
    `TrustedBoundary.lean`'s closed notation allowlist admits `+`, binary `-`,
@@ -558,19 +566,42 @@ inductive Val where
 
 namespace Val
 
-/-- Intrinsic type and well-formedness of a runtime value `Val`: returns
-`some ty` iff `v` is a well-formed scalar, boolean, unit, or fieldless enum
-value of type `ty`. -/
-noncomputable def ty? : Val → Option MirTy
-  | .scalar sv => if sv.wf then some (.int sv.width sv.signed) else none
-  | .bool _ => some .bool
-  | .unit => some .unit
-  | .enumVal ety v =>
-    if enumAdmitted ety && Nat.blt v ety.discriminants.length then
-      some (.enum ety)
-    else
-      none
-  | _ => none
+mutual
+  /-- Intrinsic type and well-formedness of a runtime value `Val`: returns
+  `some ty` iff `v` is a well-formed scalar, boolean, unit, fieldless enum
+  value, or non-empty tuple of such values, of type `ty`.
+
+  A tuple value `.tuple fields` has type `.tuple tys` when `fields` is
+  non-empty and each field has the type at the same position in `tys`. The
+  empty tuple `.tuple []` has no type: the unit value `()` is `Val.unit` of
+  type `MirTy.unit` (see `Trusted.MirAst.MirTy`). -/
+  noncomputable def ty? : Val → Option MirTy
+    | .scalar sv => if sv.wf then some (.int sv.width sv.signed) else none
+    | .bool _ => some .bool
+    | .unit => some .unit
+    | .enumVal ety v =>
+      if enumAdmitted ety && Nat.blt v ety.discriminants.length then
+        some (.enum ety)
+      else
+        none
+    | .tuple fields =>
+      if fields.isEmpty then
+        none
+      else
+        match tys? fields with
+        | some tys => some (.tuple tys)
+        | none => none
+    | _ => none
+
+  /-- Intrinsic types of a list of values, in order: `some tys` iff every
+  value has a type (`Val.ty?`). -/
+  noncomputable def tys? : List Val → Option (List MirTy)
+    | [] => some []
+    | v :: vs =>
+      match ty? v, tys? vs with
+      | some ty, some tys => some (ty :: tys)
+      | _, _ => none
+end
 
 end Val
 
@@ -603,6 +634,78 @@ inductive TerminalOut where
   | returned (out : Out)
   | unwound (callerMem : CallerMemory := ⟨[]⟩)
 
+/-- Contents of a live local slot: a `Val` in which any part may be
+uninitialized.
+
+`SlotVal` has one constructor for each constructor of `Val`, plus `.uninit`
+for storage that holds no value. A tuple slot is always `.tuple fields` with
+one `SlotVal` per field, so each field carries its own initialization state:
+`move (_8.1: bool)` leaves `_8` as `.tuple [.scalar x, .uninit]`, and a later
+`move (_8.0: usize)` still reads `x`. This is the only representation of a
+live slot. A wholly uninitialized tuple is the `.tuple` of its uninitialized
+fields (`uninitSlotVal`), never a bare `.uninit`.
+
+`Val.toSlotVal` embeds every `Val` as a fully initialized `SlotVal`, and
+`SlotVal.toVal?` recovers it; `SlotVal.toVal?` returns `none` exactly when
+some part of the slot is `.uninit`. -/
+inductive SlotVal where
+  | uninit
+  | scalar (v : ScalarVal)
+  | ptr (p : PtrVal)
+  | bool (b : Bool)
+  | unit
+  | enumVal (ty : EnumTy) (variant : Nat)
+  | tuple (fields : List SlotVal)
+  | bytes (data : List AllocByte)
+
+mutual
+  /-- Embed a value as fully initialized slot contents. -/
+  noncomputable def Val.toSlotVal : Val → SlotVal
+    | .scalar v => .scalar v
+    | .ptr p => .ptr p
+    | .bool b => .bool b
+    | .unit => .unit
+    | .enumVal ty variant => .enumVal ty variant
+    | .tuple fields => .tuple (Val.toSlotVals fields)
+    | .bytes data => .bytes data
+
+  /-- Embed each value of a list as fully initialized slot contents. -/
+  noncomputable def Val.toSlotVals : List Val → List SlotVal
+    | [] => []
+    | v :: vs => Val.toSlotVal v :: Val.toSlotVals vs
+end
+
+mutual
+  /-- Read slot contents as a value: `some v` iff every part of the slot is
+  initialized, and `none` if any part is `.uninit`.
+
+  Reading a tuple slot as a whole therefore requires all of its fields to be
+  initialized, matching `rustc`, where copying a value validates it and
+  validation reports uninitialized `bool` and integer fields as UB (quoted at
+  `evalPrimitiveOperand` and `Trusted.Correspondence.refRvalueHooks`). -/
+  noncomputable def SlotVal.toVal? : SlotVal → Option Val
+    | .uninit => none
+    | .scalar v => some (.scalar v)
+    | .ptr p => some (.ptr p)
+    | .bool b => some (.bool b)
+    | .unit => some .unit
+    | .enumVal ty variant => some (.enumVal ty variant)
+    | .tuple fields =>
+      match SlotVal.toVals? fields with
+      | some vs => some (.tuple vs)
+      | none => none
+    | .bytes data => some (.bytes data)
+
+  /-- Read each slot of a list as a value: `some vs` iff every slot is fully
+  initialized. -/
+  noncomputable def SlotVal.toVals? : List SlotVal → Option (List Val)
+    | [] => some []
+    | sv :: svs =>
+      match SlotVal.toVal? sv, SlotVal.toVals? svs with
+      | some v, some vs => some (v :: vs)
+      | _, _ => none
+end
+
 /-- Local slot state in an active stack frame
 (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -615,12 +718,13 @@ inductive TerminalOut where
 > }"
 
 - `dead`: Storage is not currently allocated (`LocalValue::Dead`).
-- `live none`: Storage is allocated (`StorageLive`) but uninitialized
-  (`LocalValue::Live(Operand::Immediate(Immediate::Uninit))`).
-- `live (some val)`: Storage is allocated and holds initialized value `val`. -/
+- `live val`: Storage is allocated (`StorageLive`) and holds `val`. A scalar
+  slot that holds no value is `live .uninit`
+  (`LocalValue::Live(Operand::Immediate(Immediate::Uninit))`); see `SlotVal`
+  for tuples. -/
 inductive LocalSlot where
   | dead
-  | live (val : Option Val)
+  | live (val : SlotVal)
 
 /-- Active execution frame of $M_{\text{anneal}}$, corresponding to
 `rustc_const_eval::interpret::Frame`
@@ -714,42 +818,70 @@ noncomputable def checkArgsMatch : List Val → List MirTy → Bool
   | v :: vs, ty :: tys => checkVal v ty && checkArgsMatch vs tys
   | _, _ => false
 
-/-- Check whether `ty` belongs to the supported local-variable type fragment
-(`.bool`, `.int`, `.unit`, uninhabited `.never`, or admitted fieldless
-`.enum`). The fragment is wider than the name suggests; downstream proof
-modules refer to the predicate by this name. -/
-noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
-  | .bool | .int _ _ | .unit | .never => true
-  | .enum ety => enumAdmitted ety
-  | _ => false
+mutual
+  /-- Check whether `ty` belongs to the supported local-variable type fragment
+  (`.bool`, `.int`, `.unit`, uninhabited `.never`, admitted fieldless `.enum`,
+  or a non-empty `.tuple` whose field types all belong to the fragment). The
+  fragment is wider than the name suggests; downstream proof modules refer to
+  the predicate by this name.
 
-/-- Initial state of a newly live local slot of type `ty`:
-In `rustc_const_eval`
-(`compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`) and `lean-miri`
-(`Miri/Interpreter/Immediate.lean`, `OperandMachine.lean`, and
-`Discriminant.lean`), an inhabited 0-byte ZST (`MirTy.unit` or an admitted
-`.zeroSized` 1-variant fieldless enum `Variants::Single { index: 0 }`) requires
-zero initialized bytes in memory:
+  The empty tuple type `.tuple []` is rejected: `()` is `MirTy.unit`. -/
+  noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
+    | .bool | .int _ _ | .unit | .never => true
+    | .enum ety => enumAdmitted ety
+    | .tuple fields => !fields.isEmpty && areSupportedFieldTys fields
+    | _ => false
 
-> "Variants::Single { index } => {
->     if op.layout().is_uninhabited() {
->         ...
->         throw_ub!(UninhabitedEnumVariantRead(Some(index)));
->     }
->     ...
->     return interp_ok(index);
-> }"
+  /-- Check that every type in a tuple's field list belongs to the supported
+  local-variable type fragment (`isSupportedScalarOrUnitTy`). -/
+  noncomputable def areSupportedFieldTys : List MirTy → Bool
+    | [] => true
+    | ty :: tys => isSupportedScalarOrUnitTy ty && areSupportedFieldTys tys
+end
 
-Accordingly, live `.unit` locals start inhabited by `Val.unit` and live
-`.zeroSized` fieldless enum locals start inhabited by `Val.enumVal ety 0` (and
-`Operand.move` preserves their inhabited ZST value). All other local types
-start uninitialized (`.live none`). -/
-noncomputable def liveUninitSlot : MirTy → LocalSlot
-  | .unit => .live (some .unit)
-  | .enum ety =>
-    if isZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
-  | _ => .live none
+mutual
+  /-- Contents of a newly live slot of type `ty` that no statement has written
+  yet.
+
+  In `rustc_const_eval`
+  (`compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`) and `lean-miri`
+  (`Miri/Interpreter/Immediate.lean`, `OperandMachine.lean`, and
+  `Discriminant.lean`), an inhabited 0-byte ZST (`MirTy.unit` or an admitted
+  `.zeroSized` 1-variant fieldless enum `Variants::Single { index: 0 }`)
+  requires zero initialized bytes in memory:
+
+  > "Variants::Single { index } => {
+  >     if op.layout().is_uninhabited() {
+  >         ...
+  >         throw_ub!(UninhabitedEnumVariantRead(Some(index)));
+  >     }
+  >     ...
+  >     return interp_ok(index);
+  > }"
+
+  Accordingly, a `.unit` slot holds `SlotVal.unit` and a `.zeroSized`
+  fieldless enum slot holds `SlotVal.enumVal ety 0` from the moment it becomes
+  live (and `Operand.move` leaves that ZST value in place). A `.tuple` slot is
+  the `.tuple` of its fields' contents, so its ZST fields are inhabited and
+  its other fields are `.uninit`. Every other type starts `.uninit`. -/
+  noncomputable def uninitSlotVal : MirTy → SlotVal
+    | .unit => .unit
+    | .enum ety => if isZstEnumTy ety then .enumVal ety 0 else .uninit
+    | .tuple fields => .tuple (uninitSlotVals fields)
+    | _ => .uninit
+
+  /-- Contents of the newly live fields of a tuple slot, one per field type
+  (`uninitSlotVal`). -/
+  noncomputable def uninitSlotVals : List MirTy → List SlotVal
+    | [] => []
+    | ty :: tys => uninitSlotVal ty :: uninitSlotVals tys
+end
+
+/-- Initial state of a newly live local slot of type `ty`: allocated storage
+holding `uninitSlotVal ty`. -/
+noncomputable def liveUninitSlot (ty : MirTy) : LocalSlot :=
+  .live (uninitSlotVal ty)
 
 /-- Initialize the local slots of `body` at function entry (`idx = 0 ..
 body.locals.length - 1`), matching `Miri.Interpreter.CallMachine` (`pushRaw`,
@@ -769,7 +901,7 @@ body.locals.length - 1`), matching `Miri.Interpreter.CallMachine` (`pushRaw`,
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
 - `_0` (return place): `liveUninitSlot ty`.
-- `_1 .. _argumentCount` (parameters): `.live (some arg)`.
+- `_1 .. _argumentCount` (parameters): `.live arg.toSlotVal`.
 - `> argumentCount`: `.dead` if `hasStorageAnnotation body idx`, else
   `liveUninitSlot ty`. -/
 noncomputable def initLocalsLoop (body : Body) (args : List Val) :
@@ -781,7 +913,7 @@ noncomputable def initLocalsLoop (body : Body) (args : List Val) :
           liveUninitSlot ty
         else if Nat.ble idx body.argumentCount then
           match getElem? args (idx - 1) with
-          | some v => .live (some v)
+          | some v => .live v.toSlotVal
           | none => .dead
         else if hasStorageAnnotation body idx then
           .dead
@@ -913,6 +1045,111 @@ noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
         | none => .error .undefined
   | _, _ => .error .unsupported
 
+/-- Type of the place reached from a place of type `ty` by the projection
+`proj`, or `none` if `proj` does not apply to `ty`.
+
+Only tuple field projections are modeled. `.field idx fieldTy` applies to a
+`.tuple fieldTys` when `idx` is in bounds and the field's type equals the
+`fieldTy` that the projection states; any other projection element (`.deref`,
+`.unsupported`), a `.field` on a non-tuple type, an out-of-bounds `idx`, or a
+stated type that differs from the field's type yields `none`. Corresponds to
+the `Field` arm of `project` in
+`compiler/rustc_const_eval/src/interpret/projection.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`), applied left to right as in
+`eval_place_to_op`:
+
+> "Field(field, _) => self.project_field(base, field)?,"
+> (`compiler/rustc_const_eval/src/interpret/projection.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+>
+> "let mut op = self.local_to_op(mir_place.local, layout)?;
+> // Using `try_fold` turned out to be bad for performance, hence the loop.
+> for elem in mir_place.projection.iter() {
+>     op = self.project(&op, elem)?
+> }"
+> (`compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
+noncomputable def projectTy? : MirTy → List ProjectionElem → Option MirTy
+  | ty, [] => some ty
+  | ty, elem :: rest =>
+    match ty, elem with
+    | .tuple fieldTys, .field idx fieldTy =>
+      match getElem? fieldTys idx with
+      | some ty' =>
+        if MirTy.beq ty' fieldTy then projectTy? ty' rest else none
+      | none => none
+    | _, _ => none
+
+/-- Contents of the part of slot `sv` that the projection `proj` selects, or
+`none` if `proj` does not select a part of `sv` (a non-`.field` projection
+element, a `.field` on a non-tuple slot, or an out-of-bounds field index). -/
+noncomputable def readSlotPath? :
+    SlotVal → List ProjectionElem → Option SlotVal
+  | sv, [] => some sv
+  | sv, elem :: rest =>
+    match sv, elem with
+    | .tuple fields, .field idx _ =>
+      match getElem? fields idx with
+      | some field => readSlotPath? field rest
+      | none => none
+    | _, _ => none
+
+/-- Slot `sv` with the part that the projection `proj` selects replaced by
+`new`, leaving every other part (including sibling fields and their
+initialization state) unchanged, or `none` if `proj` does not select a part
+of `sv` (as in `readSlotPath?`). -/
+noncomputable def writeSlotPath? :
+    SlotVal → List ProjectionElem → SlotVal → Option SlotVal
+  | _, [], new => some new
+  | sv, elem :: rest, new =>
+    match sv, elem with
+    | .tuple fields, .field idx _ =>
+      match getElem? fields idx with
+      | some field =>
+        match writeSlotPath? field rest new with
+        | some field' =>
+          match setElem? fields idx field' with
+          | some fields' => some (.tuple fields')
+          | none => none
+        | none => none
+      | none => none
+    | _, _ => none
+
+/-- Read the storage at `place` for `Operand.copy` (`isMove = false`) or
+`Operand.move` (`isMove = true`), returning the place's type, its contents,
+and the updated locals.
+
+The base local must be declared and live: a dead local faults with
+`.undefined` before the projection is examined, matching `local_to_op`, which
+`eval_place_to_op` runs before it applies any projection. The projection must
+apply to both the local's declared type (`projectTy?`) and its current
+contents (`readSlotPath?`); otherwise the read faults with `.unsupported`.
+
+A move then overwrites the storage at `place` (and only that storage) with
+`uninitSlotVal ty`, where `ty` is the type of `place`: moving `(_8.1: bool)`
+deinitializes field `1` of `_8` and leaves field `0` as it was, and moving a
+whole tuple deinitializes each of its non-ZST fields. -/
+noncomputable def evalPlaceOperand (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (place : Place) (isMove : Bool) :
+    Except FaultKind (MirTy × SlotVal × List LocalSlot) :=
+  match getElem? bodyLocals place.localId, getElem? locals place.localId with
+  | some localTy, some (.live root) =>
+    match projectTy? localTy place.projection,
+        readSlotPath? root place.projection with
+    | some ty, some sv =>
+      if !isMove then
+        .ok (ty, sv, locals)
+      else
+        match writeSlotPath? root place.projection (uninitSlotVal ty) with
+        | some root' =>
+          match setElem? locals place.localId (.live root') with
+          | some locals' => .ok (ty, sv, locals')
+          | none => .error .unsupported
+        | none => .error .unsupported
+    | _, _ => .error .unsupported
+  | some _, some .dead => .error .undefined
+  | _, _ => .error .unsupported
+
 /-- Stage 1 of operand evaluation (`eval_operand` in
 `compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`, and
@@ -935,44 +1172,23 @@ Note that upstream `eval_operand` currently leaves move invalidation
 unimplemented (as recorded in the `FIXME` above). As a deliberate, conservative
 over-approximation (sound because deinitializing can only introduce faults on
 subsequent reads), `evalOperandToSlot` resolves an `Operand` to
-`(ty : MirTy, optVal : Option Val, locals' : List LocalSlot)` without yet
-requiring `optVal` to be initialized (`some v`), and deinitializes moved
-non-ZST locals:
-- `.copy place`: reads `(ty, optVal)` without mutating `locals`.
-- `.move place`: reads `(ty, optVal)` and conservatively transitions
-  `locals[place.localId]` to `liveUninitSlot ty` (preserving
-  `.live (some .unit)` on `MirTy.unit` and `.live (some (.enumVal ety 0))` on
-  admitted 1-variant `.zeroSized` `MirTy.enum`, and setting all other local
-  types to `.live none`, matching `OperandMachine.evalOperand` with opt-in
-  `deinitMovedPlace = true`).
+`(ty : MirTy, sv : SlotVal, locals' : List LocalSlot)` without yet requiring
+`sv` to be initialized, and deinitializes moved non-ZST storage:
+- `.copy place`: reads `(ty, sv)` at `place` without mutating `locals`
+  (`evalPlaceOperand` with `isMove = false`).
+- `.move place`: reads `(ty, sv)` at `place` and conservatively overwrites the
+  storage at `place` with `uninitSlotVal ty` (`evalPlaceOperand` with
+  `isMove = true`), matching `OperandMachine.evalOperand` with opt-in
+  `deinitMovedPlace = true`.
 - `.constant c`: decodes constant literal without mutating `locals`. -/
 noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
     (locals : List LocalSlot) :
-    Operand → Except FaultKind (MirTy × Option Val × List LocalSlot)
-  | .copy place =>
-    if !place.projection.isEmpty then
-      .error .unsupported
-    else
-      match getElem? bodyLocals place.localId,
-          getElem? locals place.localId with
-      | some ty, some (.live optVal) => .ok (ty, optVal, locals)
-      | some _, some .dead => .error .undefined
-      | _, _ => .error .unsupported
-  | .move place =>
-    if !place.projection.isEmpty then
-      .error .unsupported
-    else
-      match getElem? bodyLocals place.localId,
-          getElem? locals place.localId with
-      | some ty, some (.live optVal) =>
-        match setElem? locals place.localId (liveUninitSlot ty) with
-        | some locals' => .ok (ty, optVal, locals')
-        | none => .error .unsupported
-      | some _, some .dead => .error .undefined
-      | _, _ => .error .unsupported
+    Operand → Except FaultKind (MirTy × SlotVal × List LocalSlot)
+  | .copy place => evalPlaceOperand bodyLocals locals place false
+  | .move place => evalPlaceOperand bodyLocals locals place true
   | .constant c =>
     match evalConstLit c.ty c.lit with
-    | .ok v => .ok (c.ty, some v, locals)
+    | .ok v => .ok (c.ty, v.toSlotVal, locals)
     | .error k => .error k
 
 /-- Stage 2 of operand evaluation (`evalOperandToSlot` followed by
@@ -1000,20 +1216,20 @@ noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
 > (`compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
-Used by `.binaryOp`, `.unaryOp`, and `.switchInt`. Checks
+Used by `.binaryOp`, `.unaryOp`, `.cast`, `.switchInt`, and `.assert`. Checks
 `isPrimitiveReadableTy ty` on the static type first (`.unsupported` on
-non-primitives such as `.unit`), and then checks initialization (`optVal = some
-v`, faulting with `.undefined` on uninitialized storage). -/
+non-primitives such as `.unit`), and then checks initialization
+(`sv.toVal? = some v`, faulting with `.undefined` on uninitialized storage). -/
 noncomputable def evalPrimitiveOperand (bodyLocals : List MirTy)
     (locals : List LocalSlot) (opnd : Operand) :
     Except FaultKind (Val × List LocalSlot) :=
   match evalOperandToSlot bodyLocals locals opnd with
   | .error k => .error k
-  | .ok (ty, optVal, locals') =>
+  | .ok (ty, sv, locals') =>
     if !isPrimitiveReadableTy ty then
       .error .unsupported
     else
-      match optVal with
+      match sv.toVal? with
       | some v => .ok (v, locals')
       | none => .error .undefined
 
@@ -1089,6 +1305,52 @@ noncomputable def evalArithOp (op : BinOp) (w : IntWidth) (s : Bool)
         else
           .ok (.scalar val)
 
+/-- Evaluate an overflowing integer arithmetic operator (`.addWithOverflow`,
+`.subWithOverflow`, `.mulWithOverflow`) to the two-field tuple
+`(wrapped, overflowed)`, in lockstep with
+`compiler/rustc_const_eval/src/interpret/operator.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.IntegerOps.arithmetic`
+(`vendor/lean-miri/Miri/Interpreter/IntegerOps.lean`):
+
+> "let with_overflow = bin_op.is_overflowing();"
+> ...
+> "let res = ImmTy::from_scalar_int(result, left.layout);
+> return interp_ok(if with_overflow {
+>     let overflow = ImmTy::from_bool(overflow, *self.tcx);
+>     ImmTy::from_pair(res, overflow, self)
+> } else {
+>     res
+> });"
+> (`compiler/rustc_const_eval/src/interpret/operator.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+
+The first field is the mathematical result `result` wrapped to `(w, s)`. The
+second field is `true` iff `result` is not representable at `(w, s)`:
+`truncateScalar` reports this as `lossy` whenever `result` fits the 128-bit
+host integer, and `hostOverflow` covers a `result` outside that host range
+(as in `evalArithOp`). These operators never fault on overflow. -/
+noncomputable def evalOverflowingArithOp (op : BinOp) (w : IntWidth) (s : Bool)
+    (l r : Int) : Except FaultKind Val :=
+  let res? : Option Int := match op with
+    | .addWithOverflow => some (l + r)
+    | .subWithOverflow => some (l - r)
+    | .mulWithOverflow => some (l * r)
+    | _ => none
+  match res? with
+  | none => .error .unsupported
+  | some result =>
+    let hostOverflow : Bool :=
+      if s then
+        decide (result < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+          decide (result ≥ HPow.hPow (2 : Int) 127)
+      else
+        decide (result < 0) || decide (result ≥ HPow.hPow (2 : Int) 128)
+    match truncateScalar w s result with
+    | .error k => .error k
+    | .ok (val, lossy) =>
+      .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)])
+
 /-- Evaluate a binary operator across all 6 integer widths (`i8`..`i128`,
 `isize`), signedness modes, shift operators, and booleans in lockstep with
 `compiler/rustc_const_eval/src/interpret/operator.rs` (`rust-lang/rust`
@@ -1107,7 +1369,10 @@ noncomputable def evalArithOp (op : BinOp) (w : IntWidth) (s : Bool)
   fault with `.undefined` on `.shlUnchecked`/`.shrUnchecked` when `r < 0`
   or `r ≥ w.bitWidth`, and perform arithmetic right shift on signed `l`.
 - Signed `.div` and `.rem` fault with `.undefined` on `INT_MIN / -1` and
-  `INT_MIN % -1` as well as `r == 0`. -/
+  `INT_MIN % -1` as well as `r == 0`.
+- `.addWithOverflow`, `.subWithOverflow`, and `.mulWithOverflow` return the
+  tuple `.tuple [.scalar wrapped, .bool overflowed]`
+  (`evalOverflowingArithOp`) and never fault on overflow. -/
 noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
     Except FaultKind Val :=
   match lhs, rhs with
@@ -1143,6 +1408,8 @@ noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
       | .add | .sub | .mul | .div | .rem
       | .addUnchecked | .subUnchecked | .mulUnchecked =>
         evalArithOp op w s lInt rInt
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow =>
+        evalOverflowingArithOp op w s lInt rInt
       | _ => .error .unsupported
   | .bool l, .bool r =>
     match op with
@@ -1192,6 +1459,121 @@ noncomputable def evalUnOp (op : UnOp) (v : Val) : Except FaultKind Val :=
       .error .unsupported
   | _, _ => .error .unsupported
 
+/-- Evaluate a `CastKind.intToInt` cast of `src` to the integer type `castTy`,
+in lockstep with `cast_from_int_like` in
+`compiler/rustc_const_eval/src/interpret/cast.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.IntegerCast.cast`
+(`vendor/lean-miri/Miri/Interpreter/IntegerCast.lean`):
+
+> "// Let's make sure v is sign-extended *if* it has a signed type.
+> let signed = src_layout.backend_repr.is_signed();
+> ...
+> let v = match src_layout.ty.kind() {
+>     ty::Uint(_) | ty::RawPtr(..) | ty::FnPtr(..) =>
+>         scalar.to_uint(src_layout.size)?,
+>     ty::Int(_) => scalar.to_int(src_layout.size)? as u128,
+>     ty::Bool => scalar.to_bool()?.into(),
+>     ty::Char => scalar.to_char()?.into(),
+>     ...
+> };
+>
+> interp_ok(match *cast_ty.kind() {
+>     // int -> int
+>     ty::Int(_) | ty::Uint(_) => {
+>         let size = match *cast_ty.kind() { ... };
+>         let v = size.truncate(v);
+>         Scalar::from_uint(v, size)
+>     }
+>     ...
+> })"
+> (`compiler/rustc_const_eval/src/interpret/cast.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+
+- An integer source is widened to 128 bits by sign extension when its type is
+  signed and by zero extension otherwise (`bvOfInt 128 (decodeScalar sv)`).
+- A `bool` source is widened to `0` (`false`) or `1` (`true`).
+- The widened bits are truncated to the target width (`truncateBits w`), so a
+  narrowing cast keeps the low bits (`300u64 as u8 = 44u8`).
+
+A target type that is not an integer type, or a source that is neither an
+integer nor a `bool`, returns `.error .unsupported`. -/
+noncomputable def evalIntToIntCast (src : Val) (castTy : MirTy) :
+    Except FaultKind Val :=
+  match castTy with
+  | .int w s =>
+    match src with
+    | .scalar sv =>
+      .ok (.scalar ⟨w, s, truncateBits w (bvOfInt 128 (decodeScalar sv))⟩)
+    | .bool b =>
+      .ok (.scalar
+        ⟨w, s, truncateBits w (BitVec.ofNat 128 (if b then 1 else 0))⟩)
+    | _ => .error .unsupported
+  | _ => .error .unsupported
+
+/-- Return `true` iff two projection steps may alias the same subplace: two
+`.field` steps alias iff they select the same field index, and any non-`.field`
+step is treated conservatively as potentially aliasing. -/
+noncomputable def projElemMayAlias : ProjectionElem → ProjectionElem → Bool
+  | .field i _, .field j _ => Nat.beq i j
+  | _, _ => true
+
+/-- Return `true` iff projection `p` may be a prefix of projection `q`
+(`projElemMayAlias`). -/
+noncomputable def projPrefixMayAlias :
+    List ProjectionElem → List ProjectionElem → Bool
+  | [], _ => true
+  | _ :: _, [] => false
+  | a :: as, b :: bs => projElemMayAlias a b && projPrefixMayAlias as bs
+
+/-- Conservative place-overlap predicate: `true` iff `a` and `b` address the
+same local and either projection may be a prefix of the other. -/
+noncomputable def placesMayOverlap (a b : Place) : Bool :=
+  Nat.beq a.localId b.localId &&
+    (projPrefixMayAlias a.projection b.projection ||
+      projPrefixMayAlias b.projection a.projection)
+
+/-- Return `true` iff `opnd` reads a place that may overlap `dst`. -/
+noncomputable def operandMayOverlapPlace (dst : Place) : Operand → Bool
+  | .copy src => placesMayOverlap dst src
+  | .move src => placesMayOverlap dst src
+  | .constant _ => false
+
+/-- Return `true` iff any operand in `ops` reads a place that may overlap
+`dst`. -/
+noncomputable def anyOperandMayOverlapPlace (dst : Place) :
+    List Operand → Bool
+  | [] => false
+  | opnd :: rest =>
+    operandMayOverlapPlace dst opnd || anyOperandMayOverlapPlace dst rest
+
+/-- Return `true` iff `ty` is a tuple type (`MirTy.tuple _`). -/
+noncomputable def isTupleTy : MirTy → Bool
+  | .tuple _ => true
+  | _ => false
+
+/-- Fail-closed aliasing guard for `StatementKind.assign dst rvalue` at
+destination type `dstTy`:
+- `Rvalue.use opnd` on a tuple destination whose operand overlaps `dst`: in
+  `rustc@8144389c` (`place.rs:copy_op_no_validate`) and `lean-miri`
+  (`CompilerCopy.hasPadding`, `copyRuntimePlaceNoValidate`,
+  `Allocation.copyRepeatedly`), copying a `BackendRepr::Memory` or padded
+  `ScalarPair` tuple in memory runs `copy_nonoverlapping`, so self-copy or
+  self-move is UB (whereas scalar self-move such as Canary `D8` takes the
+  immediate path without overlap UB).
+- `Rvalue.aggregateTuple ops` where any operand overlaps `dst`:
+  `write_aggregate` writes each field as soon as its operand is evaluated, and
+  overlapping LHS/RHS in `StatementKind::Assign` (`rust-lang/rust#68364`) or
+  in-memory self-field copy is UB in `rustc`/Miri.
+
+Returning `true` causes `evalStatement` to fault with `.fault .unsupported`
+before evaluating any operand or writing `dst`. -/
+noncomputable def assignHasUnsupportedOverlap (dst : Place) (dstTy : MirTy) :
+    Rvalue → Bool
+  | .use opnd => isTupleTy dstTy && operandMayOverlapPlace dst opnd
+  | .aggregateTuple ops => anyOperandMayOverlapPlace dst ops
+  | _ => false
+
 /-- Evaluate an `Rvalue` for a destination of type `dstTy`, following the RHS
 cases of `eval_rvalue_into_place`
 (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
@@ -1200,14 +1582,18 @@ cases of `eval_rvalue_into_place`
 together with Anneal's conservative `Operand.move` deinitialization
 (`evalOperandToSlot`). `evalStatement` evaluates this RHS before checking
 destination liveness and writing `dst` in `writePlace`, matching `rustc` and
-`lean-miri` for unprojected sized locals (where `local_to_place` does not check
-liveness and `DeadLocal` fires at write time; an unmodeled RHS can return
+`lean-miri` for sized locals (where `local_to_place` does not check liveness
+and `DeadLocal` fires at write time; an unmodeled RHS can return
 `.unsupported` before write-time `DeadLocal`, and `.use` checks uninitialized
 input before writing while `rustc`'s `copy_op` validates after writing, with
-both producing `.undefined`):
-- `.use opnd`: resolves `(srcTy, optVal, locals₁) ← evalOperandToSlot`, checks
-  `srcTy = dstTy` (`copyRuntimePlaceNoValidate`), then checks `optVal = some v`
-  (validity check in `copy_op` / `copyRuntimePlace`).
+both producing `.undefined`). Tuple aggregates (`.aggregateTuple`) are handled
+directly by `evalStatement` via `writeAggregateTuple` so each field is written
+immediately after evaluating its operand:
+- `.use opnd`: resolves `(srcTy, sv, locals₁) ← evalOperandToSlot`, checks
+  `srcTy = dstTy` (`copyRuntimePlaceNoValidate`), then checks that `sv` is
+  fully initialized (`sv.toVal? = some v`; validity check in `copy_op` /
+  `copyRuntimePlace`). Copying or moving a whole tuple therefore requires all
+  of its fields to be initialized.
 - `.binaryOp op lhs rhs`: evaluates `lhs` and then `rhs` left-to-right via
   `evalPrimitiveOperand` (threading `locals₁` from `lhs` into `rhs`), then
   applies `evalBinOp`.
@@ -1233,20 +1619,40 @@ both producing `.undefined`):
   > interp_ok(ImmTy::from_scalar(discr_value, discr_layout))"
 
   Reading `.discriminant` from a `.dead` local or from an uninitialized
-  (`.live none`) scalar-tagged enum local faults with `.error .undefined`,
+  (`.live .uninit`) scalar-tagged enum local faults with `.error .undefined`,
   whereas an inhabited 1-variant ZST enum (`ety.tagRepr = .zeroSized`,
   `Variants::Single { index: 0 }`) returns `ety.discriminants[0]` without
-  reading tag bytes. -/
+  reading tag bytes.
+- `.cast kind opnd castTy`: evaluates `opnd` via `evalPrimitiveOperand`, then
+  requires `kind = .intToInt` and `castTy = dstTy` (`.unsupported` otherwise),
+  then applies `evalIntToIntCast`, following the `Cast` arm of
+  `eval_rvalue_into_place` and the `IntToInt` arm of `cast`
+  (`compiler/rustc_const_eval/src/interpret/{step,cast}.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "Cast(cast_kind, ref operand, cast_ty) => {
+  >     let src = self.eval_operand(operand, None)?;
+  >     let cast_ty =
+  >         self.instantiate_from_current_frame_and_normalize_erasing_regions(
+  >             cast_ty)?;
+  >     self.cast(&src, cast_kind, cast_ty, &dest)?;
+  > }"
+  >
+  > "CastKind::IntToInt | CastKind::IntToFloat => {
+  >     let src = self.read_immediate(src)?;
+  >     let res = self.int_to_int_or_float(&src, cast_layout)?;
+  >     self.write_immediate(*res, dest)?;
+  > }" -/
 noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
     (dstTy : MirTy) : Rvalue → Except FaultKind (Val × List LocalSlot)
   | .use opnd =>
     match evalOperandToSlot bodyLocals locals opnd with
     | .error k => .error k
-    | .ok (srcTy, optVal, locals₁) =>
+    | .ok (srcTy, sv, locals₁) =>
       if !(MirTy.beq srcTy dstTy) then
         .error .unsupported
       else
-        match optVal with
+        match sv.toVal? with
         | some v => .ok (v, locals₁)
         | none => .error .undefined
   | .binaryOp op lhs rhs =>
@@ -1278,17 +1684,17 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
         else
           -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
           -- (`Variants::Single { index: 0 }`) returns variant `0` without
-          -- reading tag bytes even if a slot holds `.live none` (`Uninit`),
+          -- reading tag bytes even if a slot holds `.live .uninit`,
           -- preserving universal 1-step lockstep over arbitrary `FrameState`s.
           match ety.tagRepr, slot with
           | _, .dead => .error .undefined
-          | .zeroSized, .live none =>
+          | .zeroSized, .live .uninit =>
             match getElem? ety.discriminants 0 with
             | some disc =>
               .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
                 truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
             | none => .error .unsupported
-          | .zeroSized, .live (some (.enumVal ety' v)) =>
+          | .zeroSized, .live (.enumVal ety' v) =>
             if EnumTy.beq ety ety' && Nat.beq v 0 then
               match getElem? ety.discriminants 0 with
               | some disc =>
@@ -1297,9 +1703,9 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
               | none => .error .unsupported
             else
               .error .unsupported
-          | .zeroSized, .live (some _) => .error .unsupported
-          | .scalar _ _, .live none => .error .undefined
-          | .scalar _ _, .live (some (.enumVal ety' v)) =>
+          | .zeroSized, .live _ => .error .unsupported
+          | .scalar _ _, .live .uninit => .error .undefined
+          | .scalar _ _, .live (.enumVal ety' v) =>
             if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
               match getElem? ety.discriminants v with
               | some disc =>
@@ -1308,26 +1714,119 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
               | none => .error .unsupported
             else
               .error .unsupported
-          | .scalar _ _, .live (some _) => .error .unsupported
+          | .scalar _ _, .live _ => .error .unsupported
       | _, _ => .error .unsupported
+  | .cast kind opnd castTy =>
+    match evalPrimitiveOperand bodyLocals locals opnd with
+    | .error k => .error k
+    | .ok (v, locals₁) =>
+      match kind with
+      | .unsupported => .error .unsupported
+      | .intToInt =>
+        if !(MirTy.beq castTy dstTy) then
+          .error .unsupported
+        else
+          match evalIntToIntCast v castTy with
+          | .error k => .error k
+          | .ok res => .ok (res, locals₁)
   | _ => .error .unsupported
 
-/-- Write `val` into an unprojected `dst : Place` of known `dstTy : MirTy` in
-`locals`: checks `checkVal val dstTy` first (matching
-`Rvalue.assertRvalueLayout`), then checks `dst` liveness (matching
-`Place.writePlaceImmediate`). -/
-noncomputable def writePlace (locals : List LocalSlot) (dstLocalId : LocalId)
+/-- Write `val` into the place `dst` of known type `dstTy` in `locals`: checks
+`checkVal val dstTy` first (matching `Rvalue.assertRvalueLayout`), then checks
+that the base local of `dst` is live (matching `Place.writePlaceImmediate`),
+and then replaces the storage that `dst.projection` selects with
+`val.toSlotVal` (`writeSlotPath?`).
+
+Writing a tuple field updates only that field: the other fields of the local
+keep their contents and initialization state. A projection that does not
+select a part of the local's current contents faults with `.unsupported`. -/
+noncomputable def writePlace (locals : List LocalSlot) (dst : Place)
     (dstTy : MirTy) (val : Val) : Except FaultKind (List LocalSlot) :=
   if !checkVal val dstTy then
     .error .unsupported
   else
-    match getElem? locals dstLocalId with
+    match getElem? locals dst.localId with
     | none => .error .unsupported
     | some .dead => .error .undefined
-    | some (.live _) =>
-      match setElem? locals dstLocalId (.live (some val)) with
-      | some locals' => .ok locals'
+    | some (.live root) =>
+      match writeSlotPath? root dst.projection val.toSlotVal with
       | none => .error .unsupported
+      | some root' =>
+        match setElem? locals dst.localId (.live root') with
+        | some locals' => .ok locals'
+        | none => .error .unsupported
+
+/-- Write the operands `ops` of a tuple aggregate left to right into `dst`'s
+fields `idx, idx + 1, ...` of types `fieldTys`, matching the per-field loop in
+`write_aggregate` (`compiler/rustc_const_eval/src/interpret/step.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.writeAggregate`
+(`vendor/lean-miri/Miri/Interpreter/Aggregate.lean`):
+
+> "for (field_index, operand) in operands.iter_enumerated() {
+>     let field_index = active_field_index.unwrap_or(field_index);
+>     let field_dest = self.project_field(&variant_dest, field_index)?;
+>     let op = self.eval_operand(operand, Some(field_dest.layout))?;
+>     ...
+>     self.copy_op_no_validate(&op, &field_dest, /*allow_transmute*/ false)?;
+> }
+> self.write_discriminant(variant_index, dest)?;
+> ...
+> if M::enforce_validity(self, dest.layout()) {
+>     self.validate_place(
+>         dest,
+>         M::enforce_validity_recursively(self, dest.layout()),
+>         /*reset_provenance_and_padding*/ true,
+>     )?;
+> }"
+
+Each field evaluates its operand in the locals left by prior fields, checks
+static type equality (`MirTy.beq srcTy fieldTy`), checks full initialization
+(`sv.toVal? = some v`, matching post-aggregate validity checking), and writes
+the field immediately into `dst.projection ++ [.field idx fieldTy]` via
+`writePlace`. -/
+noncomputable def writeAggregateTupleFields (bodyLocals : List MirTy)
+    (dst : Place) :
+    Nat → List LocalSlot → List Operand → List MirTy →
+      Except FaultKind (List LocalSlot)
+  | _, locals, [], [] => .ok locals
+  | idx, locals, opnd :: ops, fieldTy :: fieldTys =>
+    let fieldDst : Place :=
+      { dst with projection := dst.projection ++ [.field idx fieldTy] }
+    match evalOperandToSlot bodyLocals locals opnd with
+    | .error k => .error k
+    | .ok (srcTy, sv, locals₁) =>
+      if !(MirTy.beq srcTy fieldTy) then
+        .error .unsupported
+      else
+        match sv.toVal? with
+        | none => .error .undefined
+        | some v =>
+          match writePlace locals₁ fieldDst fieldTy v with
+          | .error k => .error k
+          | .ok locals₂ =>
+            writeAggregateTupleFields bodyLocals dst (idx + 1) locals₂ ops
+              fieldTys
+  | _, _, _, _ => .error .unsupported
+
+/-- Execute a tuple aggregate assignment `dst := (ops...)` for destination
+place `dst` of type `dstTy`:
+- `ops = []`, `dstTy = .unit`: writes `Val.unit` via `writePlace` (checking
+  destination liveness).
+- `ops = _ :: _`, `dstTy = .tuple fieldTys` with `ops.length = fieldTys.length`:
+  writes each field left to right (`writeAggregateTupleFields`).
+- Any other combination returns `.error .unsupported`. -/
+noncomputable def writeAggregateTuple (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (dst : Place) (dstTy : MirTy)
+    (ops : List Operand) : Except FaultKind (List LocalSlot) :=
+  match ops, dstTy with
+  | [], .unit => writePlace locals dst .unit .unit
+  | _ :: _, .tuple fieldTys =>
+    if !Nat.beq ops.length fieldTys.length then
+      .error .unsupported
+    else
+      writeAggregateTupleFields bodyLocals dst 0 locals ops fieldTys
+  | _, _ => .error .unsupported
 
 /-- Evaluate a single `StatementKind` in `frame`, matching `eval_statement` in
 `compiler/rustc_const_eval/src/interpret/step.rs` and `storage_live` /
@@ -1359,14 +1858,17 @@ noncomputable def writePlace (locals : List LocalSlot) (dstLocalId : LocalId)
 - `.storageDead 0` or out-of-bounds `.storageDead localId` faults with
   `.unsupported` (`StackError.cannotMakeReturnPlaceDead` /
   `StackError.invalidLocal`).
-- `.assign dst rvalue` resolves `dst`'s local bounds and `dstTy` first, then
-  evaluates `rvalue` (yielding `(val, localsAfterRval)`), then checks
-  `checkVal` and `dst` liveness in `writePlace`, matching `rustc` and
-  `lean-miri` for unprojected sized locals (where `local_to_place` does not
-  check liveness and `DeadLocal` fires at write time; an unmodeled RHS can
-  fault `.unsupported` before write-time `DeadLocal`, and `.use` checks
-  uninitialized input before writing while `rustc`'s `copy_op` validates after
-  writing, both producing `.undefined`). -/
+- `.assign dst rvalue` resolves `dst`'s local bounds and `dstTy` first
+  (`projectTy?` applied to the local's declared type and `dst.projection`),
+  checks `assignHasUnsupportedOverlap dst dstTy rvalue` (failing closed with
+  `.fault .unsupported` on tuple self-copy/self-move or destination-overlapping
+  tuple aggregates), then either writes `.aggregateTuple` field by field via
+  `writeAggregateTuple` or evaluates `rvalue` via `evalRvalue` and commits via
+  `writePlace`, matching `rustc` and `lean-miri` for sized locals (where
+  `local_to_place` does not check liveness and `DeadLocal` fires at write time;
+  an unmodeled RHS can fault `.unsupported` before write-time `DeadLocal`, and
+  `.use` checks uninitialized input before writing while `rustc`'s `copy_op`
+  validates after writing, both producing `.undefined`). -/
 noncomputable def evalStatement (body : Body) (frame : FrameState)
     (callerMem : CallerMemory) (stmt : StatementKind) :
     StepResult State TerminalOut :=
@@ -1404,26 +1906,44 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
         }
       | none => .fault .unsupported
   | .assign dst rvalue =>
-    if !dst.projection.isEmpty then
-      .fault .unsupported
-    else
-      match getElem? body.locals dst.localId with
+    match getElem? body.locals dst.localId with
+    | none => .fault .unsupported
+    | some localTy =>
+      match projectTy? localTy dst.projection with
       | none => .fault .unsupported
       | some dstTy =>
-        match evalRvalue body.locals frame.locals dstTy rvalue with
-        | .error k => .fault k
-        | .ok (val, localsAfterRval) =>
-          match writePlace localsAfterRval dst.localId dstTy val with
-          | .error k => .fault k
-          | .ok localsAfterWrite =>
-            .step {
-              frames := [{
-                frame with
-                stmtIdx := frame.stmtIdx + 1
-                locals := localsAfterWrite
-              }]
-              callerMem
-            }
+        if assignHasUnsupportedOverlap dst dstTy rvalue then
+          .fault .unsupported
+        else
+          match rvalue with
+          | .aggregateTuple ops =>
+            match writeAggregateTuple body.locals frame.locals dst dstTy
+                ops with
+            | .error k => .fault k
+            | .ok localsAfterWrite =>
+              .step {
+                frames := [{
+                  frame with
+                  stmtIdx := frame.stmtIdx + 1
+                  locals := localsAfterWrite
+                }]
+                callerMem
+              }
+          | _ =>
+            match evalRvalue body.locals frame.locals dstTy rvalue with
+            | .error k => .fault k
+            | .ok (val, localsAfterRval) =>
+              match writePlace localsAfterRval dst dstTy val with
+              | .error k => .fault k
+              | .ok localsAfterWrite =>
+                .step {
+                  frames := [{
+                    frame with
+                    stmtIdx := frame.stmtIdx + 1
+                    locals := localsAfterWrite
+                  }]
+                  callerMem
+                }
   | .unsupported => .fault .unsupported
 
 /-- Evaluate a `SwitchTargets` branch list against discriminant bits `discrBits`
@@ -1513,6 +2033,71 @@ noncomputable def jumpToBlock (frame : FrameState) (callerMem : CallerMemory)
     callerMem
   }
 
+/-- Whether a failing `Assert` with message `msg` panics through a panic
+function that takes no operand, so that $M_{\text{anneal}}$ can model the
+panic without evaluating the operands that `AssertKind` drops.
+
+`Miri`'s `assert_panic` (`src/shims/panic.rs`, `rust-lang/miri`
+`7fa591d7d4dd9af8154becbc8332f8096f8323b1`) evaluates the message operands of
+`BoundsCheck` and `MisalignedPointerDereference` and calls every other
+message's operand-free lang item:
+
+> "BoundsCheck { index, len } => {
+>     // Forward to `panic_bounds_check` lang item.
+>
+>     // First arg: index.
+>     let index = this.read_immediate(&this.eval_operand(index, None)?)?;
+>     // Second arg: len.
+>     let len = this.read_immediate(&this.eval_operand(len, None)?)?;
+>     ...
+> }
+> MisalignedPointerDereference { required, found } => { ... }
+>
+> _ => {
+>     // Call the lang item associated with this message.
+>     let fn_item =
+>         this.tcx.require_lang_item(msg.panic_function(), this.tcx.span);
+>     let instance = ty::Instance::mono(this.tcx.tcx, fn_item);
+>     this.call_function(
+>         instance,
+>         ExternAbi::Rust,
+>         &[],
+>         None,
+>         ReturnContinuation::Goto { ret: None, unwind },
+>     )?;
+> }"
+
+`AssertKind::panic_function` (`compiler/rustc_middle/src/mir/terminator.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) names that lang
+item only for the seven binary operators that can overflow:
+
+> "Overflow(BinOp::Add, _, _) => LangItem::PanicAddOverflow,
+> Overflow(BinOp::Sub, _, _) => LangItem::PanicSubOverflow,
+> Overflow(BinOp::Mul, _, _) => LangItem::PanicMulOverflow,
+> Overflow(BinOp::Div, _, _) => LangItem::PanicDivOverflow,
+> Overflow(BinOp::Rem, _, _) => LangItem::PanicRemOverflow,
+> OverflowNeg(_) => LangItem::PanicNegOverflow,
+> Overflow(BinOp::Shr, _, _) => LangItem::PanicShrOverflow,
+> Overflow(BinOp::Shl, _, _) => LangItem::PanicShlOverflow,
+> Overflow(op, _, _) => bug!("{:?} cannot overflow", op),
+> DivisionByZero(_) => LangItem::PanicDivZero,
+> RemainderByZero(_) => LangItem::PanicRemZero,
+> ...
+> NullPointerDereference => LangItem::PanicNullPointerDereference,"
+
+Accordingly this predicate holds for `.overflow op` with `op` one of `.add`,
+`.sub`, `.mul`, `.div`, `.rem`, `.shl`, and `.shr`, and for `.overflowNeg`,
+`.divByZero`, `.remByZero`, and `.nullPtrDeref`. It rejects `.boundsCheck` and
+`.misalignedPtrDeref` (whose panic functions read operands), `.overflow op`
+for any other `op`, and `.unsupported`. -/
+noncomputable def isOperandFreeAssertKind : AssertKind → Bool
+  | .overflow op =>
+    match op with
+    | .add | .sub | .mul | .div | .rem | .shl | .shr => true
+    | _ => false
+  | .overflowNeg | .divByZero | .remByZero | .nullPtrDeref => true
+  | .boundsCheck | .misalignedPtrDeref | .unsupported => false
+
 /-- Evaluate a basic block's `TerminatorKind` when
 `frame.stmtIdx == bb.statements.length`, matching `eval_terminator` in
 `compiler/rustc_const_eval/src/interpret/step.rs` (`rust-lang/rust`
@@ -1528,12 +2113,85 @@ noncomputable def jumpToBlock (frame : FrameState) (callerMem : CallerMemory)
 >         Goto { target, loop_hint_attrs: _ } => self.go_to_block(target),
 >         SwitchInt { ref discr, ref targets } => { ... }
 >         ...
+>         Assert { ref cond, expected, ref msg, target, unwind } => {
+>             let ignored =
+>                 M::ignore_optional_overflow_checks(self)
+>                     && msg.is_optional_overflow_check();
+>             let cond_val =
+>                 self.read_scalar(&self.eval_operand(cond, None)?)?.to_bool()?;
+>             if ignored || expected == cond_val {
+>                 self.go_to_block(target);
+>             } else {
+>                 M::assert_panic(self, msg, unwind)?;
+>             }
+>         }
+>         ...
+>         // When we encounter Resume, we've finished unwinding
+>         // cleanup for the current stack frame. We pop it in order
+>         // to continue unwinding the next frame
+>         UnwindResume => {
+>             ...
+>             self.return_from_current_stack_frame(/* unwinding */ true)?;
+>             return interp_ok(());
+>         }
+>         ...
 >         Unreachable => throw_ub!(Unreachable),
 >         ...
 >     }
 > }"
 > (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+
+**Panics and unwinding.** A panic is not Undefined Behavior. An execution that
+unwinds out of the entry function ends with `.done (.unwound callerMem)`, not
+with a fault, so a safe function that can panic (such as a checked division
+that panics on a zero divisor) can still satisfy `WellFormed` and
+`BodyVerified`.
+
+- `.assert cond expected msg target unwind` evaluates `cond` with
+  `evalPrimitiveOperand` (a dead local or uninitialized storage faults with
+  `.undefined`; a non-`bool` operand faults with `.unsupported`) and keeps the
+  locals that this evaluation leaves. If the condition equals `expected`, the
+  frame jumps to `target`. Otherwise the assertion fails and the frame panics:
+  1. `msg` must satisfy `isOperandFreeAssertKind`; any other message faults
+     with `.unsupported`, so the model never skips the evaluation of a message
+     operand.
+  2. The panic then unwinds along `unwind`, following `unwind_to_block`
+     (`compiler/rustc_const_eval/src/interpret/eval_context.rs`,
+     `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+     > "mir::UnwindAction::Cleanup(block) => Left(block.start_location()),
+     > mir::UnwindAction::Continue => Right(self.frame_mut().body.span),
+     > mir::UnwindAction::Unreachable => {
+     >     throw_ub_format!(
+     >         \"unwinding past a stack frame that does not allow unwinding\");
+     > }
+     > mir::UnwindAction::Terminate(reason) => {
+     >     self.frame_mut().loc = Right(self.frame_mut().body.span);
+     >     M::unwind_terminate(self, reason)?;
+     >     ...
+     > }"
+
+     - `.continue_`: the entry frame has no cleanup to run, so the unwind
+       leaves the entry function: `.done (.unwound callerMem)`.
+     - `.cleanup block`: the frame jumps to the cleanup block `block`.
+     - `.unreachable`: unwinding out of a frame that does not allow it is
+       Undefined Behavior: `.fault .undefined`.
+     - `.terminate`: aborting the process is unmodeled: `.fault .unsupported`.
+
+  The model abstracts the panic runtime between the failed assertion and the
+  start of unwinding (the call to the panic lang item, the panic hook, and the
+  payload allocation), and it assumes the `unwind` panic strategy. Under
+  `-C panic=abort` a panic aborts the process instead of unwinding; the model
+  then over-approximates by reporting `.unwound`, a cleanup jump, or (for
+  `.unreachable`) a fault where the compiled program aborts.
+  `Trusted.MirAst.TerminatorKind` records the producer obligation for sessions
+  that disable overflow checks.
+- `.unwindResume` ends a cleanup block by continuing the unwind out of the
+  entry function: `.done (.unwound callerMem)`. Outside a cleanup block
+  (`bb.cleanup = false`) it faults with `.unsupported`, matching the
+  `return_from_current_stack_frame` assertion that unwinding returns only from
+  cleanup blocks (as `.return_` faults with `.unsupported` inside one). -/
 noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
     (frame : FrameState) (callerMem : CallerMemory) :
     StepResult State TerminalOut :=
@@ -1544,9 +2202,11 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       .fault .unsupported
     else
       match getElem? frame.locals 0 with
-      | some (.live (some retVal)) =>
-        .done (.returned ⟨retVal, callerMem⟩)
-      | some (.live none) | some .dead => .fault .undefined
+      | some (.live sv) =>
+        match sv.toVal? with
+        | some retVal => .done (.returned ⟨retVal, callerMem⟩)
+        | none => .fault .undefined
+      | some .dead => .fault .undefined
       | none => .fault .unsupported
   | .unreachable =>
     .fault .undefined
@@ -1565,7 +2225,31 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       | .error k => .fault k
       | .ok target =>
         jumpToBlock { frame with locals := localsAfterDiscr } callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+  | .assert cond expected msg target unwind =>
+    match evalPrimitiveOperand body.locals frame.locals cond with
+    | .error k => .fault k
+    | .ok (condVal, localsAfterCond) =>
+      match condVal with
+      | .bool b =>
+        if expected == b then
+          jumpToBlock { frame with locals := localsAfterCond } callerMem target
+        else if !isOperandFreeAssertKind msg then
+          .fault .unsupported
+        else
+          match unwind with
+          | .continue_ => .done (.unwound callerMem)
+          | .cleanup block =>
+            jumpToBlock { frame with locals := localsAfterCond } callerMem
+              block
+          | .unreachable => .fault .undefined
+          | .terminate => .fault .unsupported
+      | _ => .fault .unsupported
+  | .unwindResume =>
+    if bb.cleanup then
+      .done (.unwound callerMem)
+    else
+      .fault .unsupported
+  | .call _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-- Total single-step evaluator of $M_{\text{anneal}}$ over running `State`s,

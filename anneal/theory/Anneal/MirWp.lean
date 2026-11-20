@@ -1068,8 +1068,13 @@ theorem canary_crate_and_body_verified_anneal :
               revert hCheck
               dsimp [checkVal, Val.ty?, MirTy.beq]
               cases sv.wf <;> intro h <;> exact Bool.noConfusion h
-            | ptr _ | bool _ | unit | tuple _ | bytes _ =>
+            | ptr _ | bool _ | unit | bytes _ =>
               exact Bool.noConfusion hCheck
+            | tuple fields =>
+              revert hCheck
+              dsimp [checkVal, Val.ty?, MirTy.beq]
+              cases fields.isEmpty <;> cases Val.tys? fields <;>
+                intro h <;> exact Bool.noConfusion h
             | enumVal ety idx =>
               revert hCheck
               dsimp [checkVal, Val.ty?, MirTy.beq]
@@ -1400,6 +1405,26 @@ theorem checkVal_iff_ty? {v : Val} {ty : MirTy} :
       subst hEq
       exact MirTy.beq_iff.mpr rfl
 
+/-- A tuple value can only have a tuple type. -/
+theorem ty?_tuple_inv {fields : List Val} {ty : MirTy}
+    (h : (Val.tuple fields).ty? = some ty) :
+    ∃ tys : List MirTy, Val.tys? fields = some tys ∧ ty = .tuple tys := by
+  dsimp only [Val.ty?] at h
+  cases hEmp : fields.isEmpty with
+  | true =>
+    rw [ite_bool_true hEmp] at h
+    cases h
+  | false =>
+    rw [ite_bool_false hEmp] at h
+    cases hTys : Val.tys? fields with
+    | none =>
+      rw [hTys] at h
+      cases h
+    | some tys =>
+      rw [hTys] at h
+      injection h with hEq
+      exact ⟨tys, rfl, hEq.symm⟩
+
 /-- Width- and signedness-parametric `checkVal` introduction for truncated
 128-bit scalar payloads across all 12 integer types. -/
 theorem checkVal_scalar_truncateBits (w : IntWidth) (s : Bool)
@@ -1451,7 +1476,10 @@ theorem checkVal_int_iff {v : Val} {w : IntWidth} {s : Bool} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | bool _ | unit | tuple _ | bytes _ => cases h
+    | tuple fields =>
+      let ⟨_, _, hEq⟩ := ty?_tuple_inv h
+      cases hEq
+    | ptr _ | bool _ | unit | bytes _ => cases h
   · intro h
     let ⟨bits, hv, hTrunc⟩ := h
     subst hv
@@ -1478,7 +1506,10 @@ theorem checkVal_bool_iff {v : Val} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | unit | tuple _ | bytes _ => cases h
+    | tuple fields =>
+      let ⟨_, _, hEq⟩ := ty?_tuple_inv h
+      cases hEq
+    | ptr _ | unit | bytes _ => cases h
   · intro h
     let ⟨b, hb⟩ := h
     subst hb
@@ -1499,7 +1530,10 @@ theorem checkVal_unit_iff {v : Val} :
       dsimp only [Val.ty?] at h
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at h <;> cases h
-    | ptr _ | bool _ | tuple _ | bytes _ => cases h
+    | tuple fields =>
+      let ⟨_, _, hEq⟩ := ty?_tuple_inv h
+      cases hEq
+    | ptr _ | bool _ | bytes _ => cases h
   · intro h
     subst h
     rfl
@@ -1518,7 +1552,10 @@ theorem checkVal_never_false (v : Val) : checkVal v .never = false := by
       dsimp only [Val.ty?] at hTy
       cases hAdm : (enumAdmitted ety && Nat.blt idx ety.discriminants.length)
         <;> rw [hAdm] at hTy <;> cases hTy
-    | ptr _ | bool _ | unit | tuple _ | bytes _ => cases hTy
+    | tuple fields =>
+      let ⟨_, _, hEq⟩ := ty?_tuple_inv hTy
+      cases hEq
+    | ptr _ | bool _ | unit | bytes _ => cases hTy
 
 /-- Exact inversion and introduction law for `checkVal` at fieldless `.enum ety`
 for arbitrary `EnumTy` and arbitrary variant count `ety.discriminants.length`.
@@ -1549,7 +1586,10 @@ theorem checkVal_enum_iff {v : Val} {ety : EnumTy} :
     | scalar sv =>
       dsimp only [Val.ty?] at h
       cases hWf : sv.wf <;> rw [hWf] at h <;> cases h
-    | ptr _ | bool _ | unit | tuple _ | bytes _ => cases h
+    | tuple fields =>
+      let ⟨_, _, hEq⟩ := ty?_tuple_inv h
+      cases hEq
+    | ptr _ | bool _ | unit | bytes _ => cases h
   · intro h
     let ⟨hAdm, ⟨idx, hEq⟩⟩ := h
     subst hEq
@@ -1632,6 +1672,99 @@ theorem not_validEntryArgs_of_never {body : Body} {args : List Val}
     (hMem : .never ∈ (body.locals.drop 1).take body.argumentCount) :
     ¬ ValidEntryArgs body args :=
   not_checkArgsMatch_of_never hMem
+
+/-- Exact boolean-to-propositional equality law for `CastKind.beq`. -/
+theorem CastKind.beq_iff {k₁ k₂ : CastKind} :
+    CastKind.beq k₁ k₂ = true ↔ k₁ = k₂ := by
+  constructor
+  · intro h
+    cases k₁ <;> cases k₂ <;> first | rfl | cases h
+  · intro h
+    subst h
+    cases k₁ <;> rfl
+
+/-! ### `Val` / `SlotVal` Bijection
+
+`Val.toSlotVal` embeds values into slot contents and `SlotVal.toVal?` reads
+them back: the two are inverse on fully initialized slots, so a slot has one
+representation for each value it can hold. -/
+
+mutual
+  /-- Reading back an embedded value recovers that value. -/
+  theorem toVal?_toSlotVal :
+      ∀ (v : Val), (Val.toSlotVal v).toVal? = some v
+    | .scalar _ => rfl
+    | .ptr _ => rfl
+    | .bool _ => rfl
+    | .unit => rfl
+    | .enumVal _ _ => rfl
+    | .tuple fields => by
+      dsimp only [Val.toSlotVal, SlotVal.toVal?]
+      rw [toVals?_toSlotVals fields]
+    | .bytes _ => rfl
+
+  /-- Reading back a list of embedded values recovers that list. -/
+  theorem toVals?_toSlotVals :
+      ∀ (vs : List Val), SlotVal.toVals? (Val.toSlotVals vs) = some vs
+    | [] => rfl
+    | v :: vs => by
+      dsimp only [Val.toSlotVals, SlotVal.toVals?]
+      rw [toVal?_toSlotVal v, toVals?_toSlotVals vs]
+end
+
+mutual
+  /-- A slot that reads as `v` is exactly the embedding of `v`. -/
+  theorem toSlotVal_of_toVal? :
+      ∀ (sv : SlotVal) (v : Val), sv.toVal? = some v → Val.toSlotVal v = sv
+    | .uninit, _, h => by cases h
+    | .scalar _, _, h => by injection h with h; subst h; rfl
+    | .ptr _, _, h => by injection h with h; subst h; rfl
+    | .bool _, _, h => by injection h with h; subst h; rfl
+    | .unit, _, h => by injection h with h; subst h; rfl
+    | .enumVal _ _, _, h => by injection h with h; subst h; rfl
+    | .tuple fields, v, h => by
+      dsimp only [SlotVal.toVal?] at h
+      cases hVs : SlotVal.toVals? fields with
+      | none =>
+        rw [hVs] at h
+        cases h
+      | some vs =>
+        rw [hVs] at h
+        injection h with h
+        subst h
+        dsimp only [Val.toSlotVal]
+        rw [toSlotVals_of_toVals? fields vs hVs]
+    | .bytes _, _, h => by injection h with h; subst h; rfl
+
+  /-- A slot list that reads as `vs` is exactly the embedding of `vs`. -/
+  theorem toSlotVals_of_toVals? :
+      ∀ (svs : List SlotVal) (vs : List Val),
+        SlotVal.toVals? svs = some vs → Val.toSlotVals vs = svs
+    | [], _, h => by injection h with h; subst h; rfl
+    | sv :: svs, vs, h => by
+      dsimp only [SlotVal.toVals?] at h
+      cases hV : sv.toVal? with
+      | none =>
+        rw [hV] at h
+        cases h
+      | some v =>
+        cases hVs : SlotVal.toVals? svs with
+        | none =>
+          rw [hV, hVs] at h
+          cases h
+        | some vs' =>
+          rw [hV, hVs] at h
+          injection h with h
+          subst h
+          dsimp only [Val.toSlotVals]
+          rw [toSlotVal_of_toVal? sv v hV, toSlotVals_of_toVals? svs vs' hVs]
+end
+
+/-- `SlotVal.toVal?` and `Val.toSlotVal` are inverse: a slot reads as `v`
+exactly when it is the embedding of `v`. -/
+theorem toVal?_eq_some_iff {sv : SlotVal} {v : Val} :
+    sv.toVal? = some v ↔ Val.toSlotVal v = sv :=
+  ⟨toSlotVal_of_toVal? sv v, fun h => by rw [← h]; exact toVal?_toSlotVal v⟩
 
 /-! ### Entry Initialization (`initState`) -/
 
@@ -2430,24 +2563,121 @@ theorem evalStatement_frame_retag (body : Body) (defId : DefId)
         exact ⟨_, rfl, h_id⟩
   | assign dst rv =>
     dsimp only
-    cases (!dst.projection.isEmpty) with
-    | true => exact ⟨(fun _ h => by cases h), rfl⟩
-    | false =>
-      cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+    cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+    | none => exact ⟨(fun _ h => by cases h), rfl⟩
+    | some localTy =>
+      dsimp only
+      cases projectTy? localTy dst.projection with
       | none => exact ⟨(fun _ h => by cases h), rfl⟩
       | some dstTy =>
         dsimp only
-        cases evalRvalue body.locals f.locals dstTy rv with
-        | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-        | ok pair =>
-          dsimp only
-          cases writePlace pair.2 dst.localId dstTy pair.1 with
-          | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-          | ok l' =>
-            refine ⟨?_, rfl⟩
-            intro s' hStep
-            injection hStep with hEq; subst hEq
-            exact ⟨_, rfl, h_id⟩
+        cases assignHasUnsupportedOverlap dst dstTy rv with
+        | true => exact ⟨(fun _ h => by cases h), rfl⟩
+        | false =>
+          cases rv with
+          | aggregateTuple ops =>
+            dsimp only
+            cases writeAggregateTuple body.locals f.locals dst dstTy ops with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok l' =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+          | use opnd =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy (.use opnd) with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | binaryOp op lhs rhs =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy (.binaryOp op lhs rhs)
+              with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | unaryOp op opnd =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy (.unaryOp op opnd) with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | discriminant p =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy (.discriminant p) with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | ref m p =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy (.ref m p) with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | addressOf m p =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy (.addressOf m p) with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | cast kind opnd castTy =>
+            dsimp only
+            cases evalRvalue body.locals f.locals dstTy
+                (.cast kind opnd castTy) with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok pair =>
+              dsimp only
+              cases writePlace pair.2 dst dstTy pair.1 with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok l' =>
+                refine ⟨?_, rfl⟩
+                intro s' hStep
+                injection hStep with hEq; subst hEq
+                exact ⟨_, rfl, h_id⟩
+          | unsupported => exact ⟨(fun _ h => by cases h), rfl⟩
   | unsupported => exact ⟨(fun _ h => by cases h), rfl⟩
 
 /-- Single-pass `evalTerminator` frame invariant and `retagDefId` commutation.
@@ -2478,8 +2708,9 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
       | some slot =>
         cases slot with
         | dead => exact ⟨(fun _ h => by cases h), rfl⟩
-        | live opt =>
-          cases opt <;> exact ⟨(fun _ h => by cases h), rfl⟩
+        | live sv =>
+          dsimp only
+          cases sv.toVal? <;> exact ⟨(fun _ h => by cases h), rfl⟩
   | unreachable => exact ⟨(fun _ h => by cases h), rfl⟩
   | switchInt discr targets =>
     dsimp only
@@ -2509,7 +2740,39 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
           exact ⟨_, rfl, h_id⟩
       | ptr _ | unit | tuple _ | bytes _ | enumVal _ _ =>
         exact ⟨(fun _ h => by cases h), rfl⟩
-  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported =>
+  | assert cond expected msg target unwind =>
+    dsimp only
+    cases evalPrimitiveOperand body.locals f.locals cond with
+    | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+    | ok pair =>
+      dsimp only
+      cases pair.1 with
+      | bool b =>
+        dsimp only
+        cases (expected == b) with
+        | true =>
+          refine ⟨?_, rfl⟩
+          intro s' hStep
+          injection hStep with hEq; subst hEq
+          exact ⟨_, rfl, h_id⟩
+        | false =>
+          cases (!isOperandFreeAssertKind msg) with
+          | true => exact ⟨(fun _ h => by cases h), rfl⟩
+          | false =>
+            cases unwind with
+            | cleanup block =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+            | continue_ | unreachable | terminate =>
+              exact ⟨(fun _ h => by cases h), rfl⟩
+      | scalar _ | ptr _ | unit | tuple _ | bytes _ | enumVal _ _ =>
+        exact ⟨(fun _ h => by cases h), rfl⟩
+  | unwindResume =>
+    dsimp only
+    cases bb.cleanup <;> exact ⟨(fun _ h => by cases h), rfl⟩
+  | call _ _ _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
 
 /-- Combined single-step `IsSingleFrame0` preservation and `retagDefId`
@@ -3097,8 +3360,8 @@ noncomputable def evalAssignVal (body : Body) (s : State) : Option Val :=
     | none => none
   | _ => none
 
-/-- Step an `.assign` statement to a `u64` local while overriding the written
-value with `overrideVal`. -/
+/-- Step an `.assign` statement to an unprojected `u64` local while overriding
+the written value with `overrideVal`. -/
 noncomputable def evalAssignWith (body : Body) (s : State)
     (overrideVal : Val) : StepResult State TerminalOut :=
   match s.frames with
@@ -3111,9 +3374,9 @@ noncomputable def evalAssignWith (body : Body) (s : State)
       | some bb =>
         match Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
         | some (.assign dst rvalue) =>
-          match dst.projection.isEmpty with
-          | false => .fault .unsupported
-          | true =>
+          match dst.projection with
+          | _ :: _ => .fault .unsupported
+          | [] =>
             match Trusted.MirSemantics.getElem? body.locals dst.localId with
             | none => .fault .unsupported
             | some dstTy =>
@@ -3129,7 +3392,7 @@ noncomputable def evalAssignWith (body : Body) (s : State)
                   | some .dead => .fault .undefined
                   | some (.live _) =>
                     match setElem? localsAfterRval dst.localId
-                        (.live (some overrideVal)) with
+                        (.live overrideVal.toSlotVal) with
                     | some localsAfterWrite =>
                       .step {
                         frames := [{
@@ -3192,11 +3455,10 @@ private theorem step_eq_evalAssignWith_of_truncate {body : Body}
               dsimp only at h_val h_next
               unfold evalStatement
               dsimp only
-              cases h_proj : dst.projection.isEmpty with
-              | false => rw [h_proj] at h_next; cases h_next
-              | true =>
+              cases h_proj : dst.projection with
+              | cons _ _ => rw [h_proj] at h_next; cases h_next
+              | nil =>
                 rw [h_proj] at h_next
-                rw [ite_bool_false (rfl : (!true) = false)]
                 dsimp only at h_next
                 cases h_dst :
                     Trusted.MirSemantics.getElem? body.locals dst.localId with
@@ -3205,6 +3467,7 @@ private theorem step_eq_evalAssignWith_of_truncate {body : Body}
                   rw [h_dst] at h_val h_next
                   dsimp only at h_val h_next
                   dsimp only
+                  dsimp only [projectTy?]
                   cases h_ty : MirTy.beq dstTy (.int .i64 false) with
                   | false => rw [h_ty] at h_next; cases h_next
                   | true =>
@@ -3218,32 +3481,59 @@ private theorem step_eq_evalAssignWith_of_truncate {body : Body}
                     | ok pair =>
                       rw [h_rv] at h_val h_next
                       dsimp only at h_val h_next
-                      dsimp only
-                      injection h_val with h_v
-                      have h_vw :
-                          pair.1 = .scalar ⟨.i64, false, bits⟩ :=
-                        h_v.trans h_eq
-                      rw [h_vw]
-                      unfold writePlace
-                      rw [ite_bool_false (by
-                        rw [checkVal_int_iff.mpr ⟨bits, rfl, h_trunc⟩]
-                        rfl)]
-                      cases h_slot :
-                          Trusted.MirSemantics.getElem? pair.2 dst.localId with
-                      | none => rw [h_slot] at h_next; cases h_next
-                      | some slot =>
-                        rw [h_slot] at h_next
-                        cases slot with
-                        | dead => cases h_next
-                        | live _ =>
-                          dsimp only at h_next
-                          dsimp only
-                          cases h_set : setElem? pair.2 dst.localId
-                              (.live (some (.scalar ⟨.i64, false, bits⟩))) with
-                          | none => rw [h_set] at h_next; cases h_next
-                          | some localsAfterWrite =>
-                            rw [h_set] at h_next
-                            exact h_next
+                      have h_no_ov :
+                          assignHasUnsupportedOverlap dst (.int .i64 false)
+                            rvalue = false := by
+                        cases rvalue with
+                        | use _ => rfl
+                        | aggregateTuple _ => cases h_rv
+                        | _ => rfl
+                      rw [ite_bool_false h_no_ov]
+                      have h_goal :
+                          (match writePlace pair.2 dst (.int .i64 false)
+                              pair.1 with
+                           | .error k => StepResult.fault k
+                           | .ok localsAfterWrite =>
+                             StepResult.step {
+                               frames := [{
+                                 frame with
+                                 stmtIdx := frame.stmtIdx + 1
+                                 locals := localsAfterWrite
+                               }]
+                               callerMem := s.callerMem
+                             }) = (StepResult.step next :
+                               StepResult State TerminalOut) := by
+                        injection h_val with h_v
+                        have h_vw :
+                            pair.1 = .scalar ⟨.i64, false, bits⟩ :=
+                          h_v.trans h_eq
+                        rw [h_vw]
+                        unfold writePlace
+                        rw [ite_bool_false (by
+                          rw [checkVal_int_iff.mpr ⟨bits, rfl, h_trunc⟩]
+                          rfl)]
+                        cases h_slot :
+                            Trusted.MirSemantics.getElem? pair.2 dst.localId with
+                        | none => rw [h_slot] at h_next; cases h_next
+                        | some slot =>
+                          rw [h_slot] at h_next
+                          cases slot with
+                          | dead => cases h_next
+                          | live _ =>
+                            dsimp only at h_next
+                            dsimp only
+                            rw [h_proj]
+                            dsimp only [writeSlotPath?, Val.toSlotVal]
+                            dsimp only [Val.toSlotVal] at h_next
+                            cases h_set : setElem? pair.2 dst.localId
+                                (.live (.scalar ⟨.i64, false, bits⟩)) with
+                            | none => rw [h_set] at h_next; cases h_next
+                            | some localsAfterWrite =>
+                              rw [h_set] at h_next
+                              exact h_next
+                      cases rvalue with
+                      | aggregateTuple _ => cases h_rv
+                      | _ => exact h_goal
 
 /-- Rewrite a symbolic `evalStep` for a `u64` assignment using an equivalent
 normalized `BitVec 64` result. -/

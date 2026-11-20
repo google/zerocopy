@@ -27,7 +27,7 @@ open Anneal.MirCorrespondenceBase
 # MIR Correspondence Proofs (`Anneal.MirCorrespondenceProof`)
 
 This module proves Anneal's per-step MIR simulation, end-to-end correspondence
-theorems, and Pass 2 non-vacuity canaries (`D6`–`D13`) on top of the codec,
+theorems, and Pass 2 non-vacuity canaries (`D6`–`D19`) on top of the codec,
 canonicality, and `vendor/lean-miri` scalar/discriminant bridge lemmas in
 `Anneal.MirCorrespondenceBase`.
 -/
@@ -64,54 +64,180 @@ theorem state_unique_of_simulationInv : StateUniqueOfSimulationInvClaim :=
 theorem refState_unique_of_simulationInv : RefStateUniqueOfSimulationInvClaim :=
   refState_unique_of_simulationInv_base
 
-private theorem evalRefPlaceOperand_dead (rlocals : List RefLocalState)
-    (localId : LocalId) (ty : MirTy) (isMove : Bool)
+private theorem evalRefPlaceOperand_dead (ts : List MirTy)
+    (rlocals : List RefLocalState) (localId : LocalId) (ty : MirTy)
+    (proj : List Miri.MIR.ProjectionElem) (isMove : Bool)
     (h_get : MirSemantics.getElem? rlocals localId = some ⟨.dead, some ty⟩) :
-    evalRefPlaceOperand rlocals localId true isMove = .error .undefined := by
-  dsimp only [evalRefPlaceOperand, Bool.not]
-  rw [ite_false_eq_true, h_get]
-  cases isMove <;> (
+    evalRefPlaceOperand ts rlocals localId proj isMove =
+      .error .undefined := by
+  dsimp only [evalRefPlaceOperand]
+  rw [h_get]
+  cases proj with
+  | nil =>
+    cases isMove <;> (
+      cases ty with
+      | enum ety =>
+        dsimp only [refLocalLayoutForTy]
+        cases refIsZstEnumTy ety <;> rfl
+      | _ => rfl)
+  | cons e es =>
     cases ty with
     | enum ety =>
       dsimp only [refLocalLayoutForTy]
       cases refIsZstEnumTy ety <;> rfl
-    | _ => rfl)
+    | _ => rfl
 
-private theorem evalRefPlaceOperand_live_copy (rlocals : List RefLocalState)
-    (localId : LocalId) (optVal : Option Val) (ty : MirTy)
+private theorem evalRefPlaceOperand_live_copy (ts : List MirTy)
+    (rlocals : List RefLocalState) (localId : LocalId) (sv : SlotVal)
+    (ty : MirTy)
     (h_get : MirSemantics.getElem? rlocals localId =
-      some ⟨.live optVal, some ty⟩) :
-    evalRefPlaceOperand rlocals localId true false =
-      .ok (ty, optVal, rlocals) := by
-  dsimp only [evalRefPlaceOperand, Bool.not]
-  rw [ite_false_eq_true, h_get]
+      some ⟨.live sv, some ty⟩) :
+    evalRefPlaceOperand ts rlocals localId [] false =
+      .ok (ty, sv, rlocals) := by
+  dsimp only [evalRefPlaceOperand]
+  rw [h_get]
   cases ty with
   | enum ety =>
     dsimp only [refLocalLayoutForTy]
     cases refIsZstEnumTy ety <;> rfl
   | _ => rfl
 
-private theorem evalRefPlaceOperand_live_move (rlocals : List RefLocalState)
-    (localId : LocalId) (optVal : Option Val) (ty : MirTy)
+private theorem evalRefPlaceOperand_live_move (ts : List MirTy)
+    (rlocals : List RefLocalState) (localId : LocalId) (sv : SlotVal)
+    (ty : MirTy)
     (h_get : MirSemantics.getElem? rlocals localId =
-      some ⟨.live optVal, some ty⟩) :
-    evalRefPlaceOperand rlocals localId true true =
+      some ⟨.live sv, some ty⟩) :
+    evalRefPlaceOperand ts rlocals localId [] true =
       match MirSemantics.setElem? rlocals localId
           ⟨liveUninitSlot ty, some ty⟩ with
-      | some rlocals' => .ok (ty, optVal, rlocals')
+      | some rlocals' => .ok (ty, sv, rlocals')
       | none => .error .unsupported := by
-  dsimp only [evalRefPlaceOperand, Bool.not]
-  rw [ite_false_eq_true, h_get]
+  dsimp only [evalRefPlaceOperand]
+  rw [h_get]
   rw [← refLiveUninitSlot_eq ty]
   cases ty with
   | enum ety =>
-    dsimp only [refLocalLayoutForTy, refLiveUninitSlot]
+    dsimp only [refLocalLayoutForTy]
+    cases refIsZstEnumTy ety <;> rfl
+  | _ => rfl
+
+/-- A projected access of a live local reads the whole local through Miri and
+then applies the adapter's field projection to its contents. -/
+private theorem evalRefPlaceOperand_live_proj (ts : List MirTy)
+    (rlocals : List RefLocalState) (localId : LocalId) (sv : SlotVal)
+    (ty : MirTy) (e : Miri.MIR.ProjectionElem)
+    (es : List Miri.MIR.ProjectionElem) (isMove : Bool)
+    (h_get : MirSemantics.getElem? rlocals localId =
+      some ⟨.live sv, some ty⟩) :
+    evalRefPlaceOperand ts rlocals localId (e :: es) isMove =
+      match refProjectTy? ts ty (e :: es), refReadSlotPath? sv (e :: es) with
+      | some pty, some psv =>
+        if !isMove then
+          .ok (pty, psv, rlocals)
+        else
+          match refWriteSlotPath? sv (e :: es) (refUninitSlotVal pty) with
+          | some root' =>
+            match MirSemantics.setElem? rlocals localId
+                ⟨.live root', some ty⟩ with
+            | some rlocals' => .ok (pty, psv, rlocals')
+            | none => .error .unsupported
+          | none => .error .unsupported
+      | _, _ => .error .unsupported := by
+  dsimp only [evalRefPlaceOperand]
+  rw [h_get]
+  cases ty with
+  | enum ety =>
+    dsimp only [refLocalLayoutForTy]
     cases refIsZstEnumTy ety <;> rfl
   | _ => rfl
 
 private theorem toMiriPlace_proj_isEmpty (rp : RefPlace) :
     (toMiriPlace rp).projection.isEmpty = rp.projection.isEmpty := by
   cases rp with | mk _ proj => cases proj <;> rfl
+
+/-- Place-operand lockstep: evaluating the translated place in the reference
+machine agrees with `evalPlaceOperand`, for unprojected and projected copies
+and moves alike. -/
+private theorem evalRefPlaceOperand_eq {ts bodyLocals : List MirTy}
+    {slots : List LocalSlot} {rp : RefPlace} {p : Place}
+    (h_pl : decodePlace ts rp = some p) (isMove : Bool) :
+    evalRefPlaceOperand ts (zipRefLocals bodyLocals slots) rp.localId
+        (rp.projection.map toMiriProjElem) isMove =
+      mapSlotRes bodyLocals (evalPlaceOperand bodyLocals slots p isMove) := by
+  let ⟨h_id, h_proj⟩ := decodePlace_proj_inv h_pl
+  rw [h_id]
+  unfold evalPlaceOperand
+  cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
+  | none =>
+    dsimp only [evalRefPlaceOperand]
+    rw [getElem?_zipRefLocals_none_left h_ty]
+    rfl
+  | some localTy =>
+    cases h_sl : MirSemantics.getElem? slots p.localId with
+    | none =>
+      dsimp only [evalRefPlaceOperand]
+      rw [getElem?_zipRefLocals_none_right h_sl]
+      rfl
+    | some slot =>
+      have h_z := getElem?_zipRefLocals_some h_ty h_sl
+      cases slot with
+      | dead =>
+        rw [evalRefPlaceOperand_dead _ _ _ _ _ _ h_z]
+        rfl
+      | live root =>
+        dsimp only
+        cases h_rproj : rp.projection with
+        | nil =>
+          rw [h_rproj] at h_proj
+          injection h_proj with h_p
+          rw [← h_p]
+          cases isMove with
+          | false =>
+            exact evalRefPlaceOperand_live_copy _ _ _ _ _ h_z
+          | true =>
+            have h_mv := evalRefPlaceOperand_live_move ts _ _ root _ h_z
+            dsimp only [List.map]
+            rw [h_mv]
+            dsimp only [projectTy?, readSlotPath?, writeSlotPath?,
+              liveUninitSlot]
+            cases h_set :
+                MirSemantics.setElem? slots p.localId
+                  (.live (uninitSlotVal localTy)) with
+            | none =>
+              rw [setElem?_zipRefLocals_none h_set]
+              rfl
+            | some slots' =>
+              rw [setElem?_zipRefLocals_some h_ty h_set]
+              rfl
+        | cons e es =>
+          rw [h_rproj] at h_proj
+          have h_map : List.map toMiriProjElem (e :: es) =
+              toMiriProjElem e :: List.map toMiriProjElem es := rfl
+          rw [h_map, evalRefPlaceOperand_live_proj _ _ _ _ _ _ _ _ h_z,
+            ← h_map, refProjectTy?_eq h_proj, refReadSlotPath?_eq h_proj]
+          cases projectTy? localTy p.projection with
+          | none => rfl
+          | some pty =>
+            cases readSlotPath? root p.projection with
+            | none => rfl
+            | some psv =>
+              cases isMove with
+              | false => rfl
+              | true =>
+                dsimp only
+                rw [refWriteSlotPath?_eq h_proj, refUninitSlotVal_eq]
+                cases writeSlotPath? root p.projection (uninitSlotVal pty) with
+                | none => rfl
+                | some root' =>
+                  dsimp only
+                  cases h_set :
+                      MirSemantics.setElem? slots p.localId (.live root') with
+                  | none =>
+                    rw [setElem?_zipRefLocals_none h_set]
+                    rfl
+                  | some slots' =>
+                    rw [setElem?_zipRefLocals_some h_ty h_set]
+                    rfl
 
 theorem evalRefMiriOperandToSlot_eq {ts bodyLocals : List MirTy}
     {slots : List LocalSlot}
@@ -129,34 +255,7 @@ theorem evalRefMiriOperandToSlot_eq {ts bodyLocals : List MirTy}
       rw [h_pl] at h_dec
       injection h_dec with h_op
       subst h_op
-      let ⟨h_id, h_emp⟩ := decodePlace_inv h_pl
-      dsimp only [toMiriOperand, evalRefMiriOperandToSlot, evalOperandToSlot]
-      rw [toMiriPlace_proj_isEmpty, h_emp]
-      change evalRefPlaceOperand (zipRefLocals bodyLocals slots) rp.localId
-          p.projection.isEmpty false = _
-      rw [h_id]
-      cases p.projection.isEmpty
-      · rfl
-      · cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
-        | none =>
-          dsimp only [evalRefPlaceOperand, Bool.not]
-          rw [ite_false_eq_true, getElem?_zipRefLocals_none_left h_ty]
-          rfl
-        | some ty =>
-          cases h_sl : MirSemantics.getElem? slots p.localId with
-          | none =>
-            dsimp only [evalRefPlaceOperand, Bool.not]
-            rw [ite_false_eq_true, getElem?_zipRefLocals_none_right h_sl]
-            rfl
-          | some slot =>
-            have h_z := getElem?_zipRefLocals_some h_ty h_sl
-            cases slot with
-            | dead =>
-              rw [evalRefPlaceOperand_dead _ _ _ _ h_z]
-              rfl
-            | live optVal =>
-              rw [evalRefPlaceOperand_live_copy _ _ _ _ h_z]
-              rfl
+      exact evalRefPlaceOperand_eq h_pl false
   | move rp =>
     dsimp only [decodeOperand, optMap] at h_dec
     cases h_pl : decodePlace ts rp with
@@ -165,42 +264,7 @@ theorem evalRefMiriOperandToSlot_eq {ts bodyLocals : List MirTy}
       rw [h_pl] at h_dec
       injection h_dec with h_op
       subst h_op
-      let ⟨h_id, h_emp⟩ := decodePlace_inv h_pl
-      dsimp only [toMiriOperand, evalRefMiriOperandToSlot, evalOperandToSlot]
-      rw [toMiriPlace_proj_isEmpty, h_emp]
-      change evalRefPlaceOperand (zipRefLocals bodyLocals slots) rp.localId
-          p.projection.isEmpty true = _
-      rw [h_id]
-      cases p.projection.isEmpty
-      · rfl
-      · cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
-        | none =>
-          dsimp only [evalRefPlaceOperand, Bool.not]
-          rw [ite_false_eq_true, getElem?_zipRefLocals_none_left h_ty]
-          rfl
-        | some ty =>
-          cases h_sl : MirSemantics.getElem? slots p.localId with
-          | none =>
-            dsimp only [evalRefPlaceOperand, Bool.not]
-            rw [ite_false_eq_true, getElem?_zipRefLocals_none_right h_sl]
-            rfl
-          | some slot =>
-            have h_z := getElem?_zipRefLocals_some h_ty h_sl
-            cases slot with
-            | dead =>
-              rw [evalRefPlaceOperand_dead _ _ _ _ h_z]
-              rfl
-            | live optVal =>
-              rw [evalRefPlaceOperand_live_move _ _ _ _ h_z]
-              dsimp only
-              cases h_set :
-                  MirSemantics.setElem? slots p.localId (liveUninitSlot ty) with
-              | none =>
-                rw [setElem?_zipRefLocals_none h_set]
-                rfl
-              | some slots' =>
-                rw [setElem?_zipRefLocals_some h_ty h_set]
-                rfl
+      exact evalRefPlaceOperand_eq h_pl true
   | constant rc =>
     dsimp only [decodeOperand, optMap] at h_dec
     cases h_ty : MirSemantics.getElem? ts rc.ty with
@@ -229,28 +293,47 @@ theorem evalRefMiriOperandToSlot_eq {ts bodyLocals : List MirTy}
           rw [evalRefConstLit_eq]
           cases evalConstLit ty .zeroSized <;> rfl
 
-private theorem readRefPrimitiveSlot_eq (ty : MirTy) (optVal : Option Val) :
-    readRefPrimitiveSlot ty optVal =
+private theorem readRefPrimitiveSlot_eq (ty : MirTy) (sv : SlotVal) :
+    readRefPrimitiveSlot ty sv =
       if !isPrimitiveReadableTy ty then
         .error .unsupported
       else
-        match optVal with
+        match sv.toVal? with
         | some v => .ok v
         | none => .error .undefined := by
   dsimp only [readRefPrimitiveSlot]
   rw [refIsPrimitiveReadableTy_eq]
   cases isPrimitiveReadableTy ty <;> rfl
 
-theorem writeRefPlace_eq {bodyLocals : List MirTy} {slots : List LocalSlot}
-    {dstLocalId : LocalId} {dstTy : MirTy} {val : Val}
-    (h_ty : MirSemantics.getElem? bodyLocals dstLocalId = some dstTy) :
-    writeRefPlace (zipRefLocals bodyLocals slots) dstLocalId dstTy val =
-      mapSlotsRes bodyLocals (writePlace slots dstLocalId dstTy val) := by
+private theorem miriImmToPayload?_roundtrip {α : Type}
+    (x : α) :
+    miriImmediateToPayload? (payloadToMiriImmediate x) = some x := rfl
+
+/-- Reading a live adapter local through Miri returns its contents. -/
+private theorem evalPlaceToOp_sized_live (sv : SlotVal) :
+    Miri.Interpreter.evalPlaceToOp (refLocalAccessHooks false)
+        (mkSingleLocalMiriFrame (slotToMiriLocalValue (.live sv)) false) ()
+        ⟨0, Array.empty⟩ (some refSizedLocalLayout) =
+      ⟨mkSingleLocalMiriFrame (slotToMiriLocalValue (.live sv)) false, (),
+        .ok ⟨.immediate (payloadToMiriImmediate sv), refSizedLocalLayout⟩⟩ :=
+  rfl
+
+/-- Place-write lockstep: writing through the translated destination in the
+reference machine agrees with `writePlace`. -/
+theorem writeRefPlace_eq {ts bodyLocals : List MirTy} {slots : List LocalSlot}
+    {rproj : List RefProjectionElem} {dst : Place} {localTy dstTy : MirTy}
+    {val : Val}
+    (h_ty : MirSemantics.getElem? bodyLocals dst.localId = some localTy)
+    (h_proj : mapOption (decodeProjElem ts) rproj = some dst.projection) :
+    writeRefPlace (zipRefLocals bodyLocals slots)
+        ⟨dst.localId, rproj.map toMiriProjElem, dstTy⟩ val =
+      mapSlotsRes bodyLocals (writePlace slots dst dstTy val) := by
   unfold writeRefPlace writePlace
+  dsimp only
   rw [checkRefVal_eq]
   cases checkVal val dstTy
   · rfl
-  · cases h_sl : MirSemantics.getElem? slots dstLocalId with
+  · cases h_sl : MirSemantics.getElem? slots dst.localId with
     | none =>
       rw [getElem?_zipRefLocals_none_right h_sl]
       rfl
@@ -258,162 +341,427 @@ theorem writeRefPlace_eq {bodyLocals : List MirTy} {slots : List LocalSlot}
       rw [getElem?_zipRefLocals_some h_ty h_sl]
       cases slot with
       | dead => rfl
-      | live _ =>
+      | live root =>
+        dsimp only [Bool.not, ite_false_eq_true]
+        rw [evalPlaceToOp_sized_live]
         dsimp only
-        cases h_set :
-            MirSemantics.setElem? slots dstLocalId (.live (some val)) with
-        | none =>
-          rw [setElem?_zipRefLocals_none h_set]
-          rfl
-        | some slots' =>
-          rw [setElem?_zipRefLocals_some h_ty h_set]
-          rfl
+        rw [miriImmToPayload?_roundtrip]
+        dsimp only
+        rw [refWriteSlotPath?_eq h_proj]
+        cases writeSlotPath? root dst.projection val.toSlotVal with
+        | none => rfl
+        | some root' =>
+          dsimp only
+          cases h_set :
+              MirSemantics.setElem? slots dst.localId (.live root') with
+          | none =>
+            rw [setElem?_zipRefLocals_none h_set]
+            rfl
+          | some slots' =>
+            rw [setElem?_zipRefLocals_some h_ty h_set]
+            rfl
 
-private theorem miriImmToPayload?_roundtrip {α : Type}
-    (x : α) :
-    miriImmediateToPayload? (payloadToMiriImmediate x) = some x := rfl
+private theorem refProjElemMayAlias_eq {ts : List MirTy}
+    {re₁ re₂ : RefProjectionElem} {e₁ e₂ : ProjectionElem}
+    (h₁ : decodeProjElem ts re₁ = some e₁)
+    (h₂ : decodeProjElem ts re₂ = some e₂) :
+    refProjElemMayAlias (toMiriProjElem re₁) (toMiriProjElem re₂) =
+      projElemMayAlias e₁ e₂ := by
+  cases re₁ with
+  | deref =>
+    injection h₁ with h₁'
+    subst h₁'
+    cases re₂ with
+    | deref => injection h₂ with h₂'; subst h₂'; rfl
+    | unsupported => injection h₂ with h₂'; subst h₂'; rfl
+    | field i tid =>
+      dsimp only [decodeProjElem, optMap] at h₂
+      cases h_t : MirSemantics.getElem? ts tid with
+      | none => rw [h_t] at h₂; cases h₂
+      | some ty => rw [h_t] at h₂; injection h₂ with h₂'; subst h₂'; rfl
+  | unsupported =>
+    injection h₁ with h₁'
+    subst h₁'
+    cases re₂ with
+    | deref => injection h₂ with h₂'; subst h₂'; rfl
+    | unsupported => injection h₂ with h₂'; subst h₂'; rfl
+    | field i tid =>
+      dsimp only [decodeProjElem, optMap] at h₂
+      cases h_t : MirSemantics.getElem? ts tid with
+      | none => rw [h_t] at h₂; cases h₂
+      | some ty => rw [h_t] at h₂; injection h₂ with h₂'; subst h₂'; rfl
+  | field i tid₁ =>
+    dsimp only [decodeProjElem, optMap] at h₁
+    cases h_t₁ : MirSemantics.getElem? ts tid₁ with
+    | none => rw [h_t₁] at h₁; cases h₁
+    | some ty₁ =>
+      rw [h_t₁] at h₁
+      injection h₁ with h₁'
+      subst h₁'
+      cases re₂ with
+      | deref => injection h₂ with h₂'; subst h₂'; rfl
+      | unsupported => injection h₂ with h₂'; subst h₂'; rfl
+      | field j tid₂ =>
+        dsimp only [decodeProjElem, optMap] at h₂
+        cases h_t₂ : MirSemantics.getElem? ts tid₂ with
+        | none => rw [h_t₂] at h₂; cases h₂
+        | some ty₂ => rw [h_t₂] at h₂; injection h₂ with h₂'; subst h₂'; rfl
+
+private theorem refProjPrefixMayAlias_eq {ts : List MirTy}
+    {rp₁ rp₂ : List RefProjectionElem} {p₁ p₂ : List ProjectionElem}
+    (h₁ : mapOption (decodeProjElem ts) rp₁ = some p₁)
+    (h₂ : mapOption (decodeProjElem ts) rp₂ = some p₂) :
+    refProjPrefixMayAlias (rp₁.map toMiriProjElem) (rp₂.map toMiriProjElem) =
+      projPrefixMayAlias p₁ p₂ := by
+  induction rp₁ generalizing rp₂ p₁ p₂ with
+  | nil =>
+    injection h₁ with h₁'
+    subst h₁'
+    rfl
+  | cons a as ih =>
+    let ⟨a', as', h_a, h_as, h_eq₁⟩ := mapOption_cons_inv h₁
+    subst h_eq₁
+    cases rp₂ with
+    | nil =>
+      injection h₂ with h₂'
+      subst h₂'
+      rfl
+    | cons b bs =>
+      let ⟨b', bs', h_b, h_bs, h_eq₂⟩ := mapOption_cons_inv h₂
+      subst h_eq₂
+      dsimp only [List.map, refProjPrefixMayAlias, projPrefixMayAlias]
+      rw [refProjElemMayAlias_eq h_a h_b, ih h_as h_bs]
+
+private theorem refPlacesMayOverlap_eq {ts : List MirTy}
+    {ra rb : RefPlace} {a b : Place}
+    (h_a : decodePlace ts ra = some a)
+    (h_b : decodePlace ts rb = some b) :
+    refPlacesMayOverlap (toMiriPlace ra) (toMiriPlace rb) =
+      placesMayOverlap a b := by
+  let ⟨h_ida, h_pa⟩ := decodePlace_proj_inv h_a
+  let ⟨h_idb, h_pb⟩ := decodePlace_proj_inv h_b
+  dsimp only [refPlacesMayOverlap, placesMayOverlap, toMiriPlace]
+  rw [h_ida, h_idb, refProjPrefixMayAlias_eq h_pa h_pb,
+    refProjPrefixMayAlias_eq h_pb h_pa]
+
+private theorem refOperandMayOverlapPlace_eq {ts : List MirTy}
+    {rdst : RefPlace} {dst : Place} {rop : RefOperand} {op : Operand}
+    (h_dst : decodePlace ts rdst = some dst)
+    (h_op : decodeOperand ts rop = some op) :
+    refOperandMayOverlapPlace (toMiriPlace rdst) (toMiriOperand rop) =
+      operandMayOverlapPlace dst op := by
+  cases rop with
+  | copy rp =>
+    dsimp only [decodeOperand, optMap] at h_op
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_op; cases h_op
+    | some p =>
+      rw [h_p] at h_op
+      injection h_op with h_eq
+      subst h_eq
+      exact refPlacesMayOverlap_eq h_dst h_p
+  | move rp =>
+    dsimp only [decodeOperand, optMap] at h_op
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_op; cases h_op
+    | some p =>
+      rw [h_p] at h_op
+      injection h_op with h_eq
+      subst h_eq
+      exact refPlacesMayOverlap_eq h_dst h_p
+  | constant rc =>
+    dsimp only [decodeOperand, optMap] at h_op
+    cases h_t : MirSemantics.getElem? ts rc.ty with
+    | none => rw [h_t] at h_op; cases h_op
+    | some ty =>
+      rw [h_t] at h_op
+      injection h_op with h_eq
+      subst h_eq
+      cases rc with | mk _ lit => cases lit <;> rfl
+
+private theorem refAnyOperandMayOverlapPlace_eq {ts : List MirTy}
+    {rdst : RefPlace} {dst : Place} {rops : List RefOperand}
+    {ops : List Operand}
+    (h_dst : decodePlace ts rdst = some dst)
+    (h_ops : mapOption (decodeOperand ts) rops = some ops) :
+    refAnyOperandMayOverlapPlace (toMiriPlace rdst) (rops.map toMiriOperand) =
+      anyOperandMayOverlapPlace dst ops := by
+  induction rops generalizing ops with
+  | nil =>
+    injection h_ops with h_eq
+    subst h_eq
+    rfl
+  | cons ro ros ih =>
+    let ⟨o, os, h_o, h_os, h_eq⟩ := mapOption_cons_inv h_ops
+    subst h_eq
+    dsimp only [List.map, refAnyOperandMayOverlapPlace,
+      anyOperandMayOverlapPlace]
+    rw [refOperandMayOverlapPlace_eq h_dst h_o, ih h_os]
+
+private theorem refIsTupleTy_eq (ty : MirTy) :
+    refIsTupleTy ty = isTupleTy ty := by
+  cases ty <;> rfl
+
+private theorem refAssignHasUnsupportedOverlap_eq {ts : List MirTy}
+    {rdst : RefPlace} {dst : Place} (dstTy : MirTy)
+    {rrv : RefRvalue} {rv : Rvalue}
+    (h_dst : decodePlace ts rdst = some dst)
+    (h_rv : decodeRvalue ts rrv = some rv) :
+    refAssignHasUnsupportedOverlap (toMiriPlace rdst) dstTy
+        (toMiriRvalue rrv) =
+      assignHasUnsupportedOverlap dst dstTy rv := by
+  cases rrv with
+  | use rop =>
+    dsimp only [decodeRvalue, optMap] at h_rv
+    cases h_op : decodeOperand ts rop with
+    | none => rw [h_op] at h_rv; cases h_rv
+    | some op =>
+      rw [h_op] at h_rv
+      injection h_rv with h_eq
+      subst h_eq
+      dsimp only [toMiriRvalue, refAssignHasUnsupportedOverlap,
+        assignHasUnsupportedOverlap]
+      rw [refIsTupleTy_eq, refOperandMayOverlapPlace_eq h_dst h_op]
+  | aggregateTuple rops =>
+    dsimp only [decodeRvalue, optMap] at h_rv
+    cases h_ops : mapOption (decodeOperand ts) rops with
+    | none => rw [h_ops] at h_rv; cases h_rv
+    | some ops =>
+      rw [h_ops] at h_rv
+      injection h_rv with h_eq
+      subst h_eq
+      dsimp only [toMiriRvalue, refAssignHasUnsupportedOverlap,
+        assignHasUnsupportedOverlap]
+      exact refAnyOperandMayOverlapPlace_eq h_dst h_ops
+  | binaryOp op lhs rhs =>
+    dsimp only [decodeRvalue, optMap2] at h_rv
+    cases h_l : decodeOperand ts lhs with
+    | none => rw [h_l] at h_rv; cases h_rv
+    | some l =>
+      cases h_r : decodeOperand ts rhs with
+      | none => rw [h_l, h_r] at h_rv; cases h_rv
+      | some r =>
+        rw [h_l, h_r] at h_rv
+        injection h_rv with h_eq
+        subst h_eq
+        rfl
+  | unaryOp op rop =>
+    dsimp only [decodeRvalue, optMap] at h_rv
+    cases h_o : decodeOperand ts rop with
+    | none => rw [h_o] at h_rv; cases h_rv
+    | some o =>
+      rw [h_o] at h_rv
+      injection h_rv with h_eq
+      subst h_eq
+      rfl
+  | discriminant rp =>
+    dsimp only [decodeRvalue, optMap] at h_rv
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_rv; cases h_rv
+    | some p =>
+      rw [h_p] at h_rv
+      injection h_rv with h_eq
+      subst h_eq
+      rfl
+  | ref m rp =>
+    dsimp only [decodeRvalue, optMap] at h_rv
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_rv; cases h_rv
+    | some p =>
+      rw [h_p] at h_rv
+      injection h_rv with h_eq
+      subst h_eq
+      cases m <;> rfl
+  | addressOf m rp =>
+    dsimp only [decodeRvalue, optMap] at h_rv
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_rv; cases h_rv
+    | some p =>
+      rw [h_p] at h_rv
+      injection h_rv with h_eq
+      subst h_eq
+      cases m <;> rfl
+  | cast kind rop tyId =>
+    dsimp only [decodeRvalue, optMap2] at h_rv
+    cases h_o : decodeOperand ts rop with
+    | none => rw [h_o] at h_rv; cases h_rv
+    | some o =>
+      cases h_t : MirSemantics.getElem? ts tyId with
+      | none => rw [h_o, h_t] at h_rv; cases h_rv
+      | some ty =>
+        rw [h_o, h_t] at h_rv
+        injection h_rv with h_eq
+        subst h_eq
+        rfl
+  | unsupported =>
+    injection h_rv with h_eq
+    subst h_eq
+    rfl
 
 private theorem evalRefMiriRvalue_use (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (rop : RefOperand)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (rop : RefOperand)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy)
+    (h_no_ov : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue (.use rop)) = false) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue (.use rop)) =
       match evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
       | .error k => .error k
-      | .ok (srcTy, optVal, rlocals₁) =>
+      | .ok (srcTy, sv, rlocals₁) =>
         if !(MirTy.beq srcTy dstTy) then
           .error .unsupported
         else
-          match optVal with
-          | some v => writeRefPlace rlocals₁ dstId dstTy v
+          match sv.toVal? with
+          | some v => writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ v
           | none => .error .undefined := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
-  dsimp only [evalRefMiriRvalue, toMiriRvalue,
-    Miri.Interpreter.evalRvalueIntoPlace,
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no_ov]
+  dsimp only [toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
     Miri.Interpreter.RvalueHooks.evalOperandAt, refRvalueHooks,
     Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
     EStateM.pure]
-  rw [h_arr, ite_false_eq_true, h_dst]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
   dsimp only
   cases evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
   | error k => cases k <;> rfl
   | ok res =>
-    let ⟨srcTy, optVal, rlocals₁⟩ := res
+    let ⟨srcTy, sv, rlocals₁⟩ := res
     dsimp only
     rw [miriImmToPayload?_roundtrip]
     dsimp only
     cases MirTy.beq srcTy dstTy
     · rfl
-    · cases optVal with
+    · cases sv.toVal? with
       | none => rfl
       | some v =>
         dsimp only
-        cases writeRefPlace rlocals₁ dstId dstTy v with
+        cases writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ v with
         | error k => cases k <;> rfl
         | ok _ => rfl
 
 private theorem evalRefMiriRvalue_binaryOp (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (op : BinOp) (lhs rhs : RefOperand)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (op : BinOp) (lhs rhs : RefOperand)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue (.binaryOp op lhs rhs)) =
       match evalRefMiriOperandToSlot ts rlocals (toMiriOperand lhs) with
       | .error k => .error k
-      | .ok (lTy, lOpt, rlocals₁) =>
-        match readRefPrimitiveSlot lTy lOpt with
+      | .ok (lTy, lSv, rlocals₁) =>
+        match readRefPrimitiveSlot lTy lSv with
         | .error k => .error k
         | .ok lVal =>
           match evalRefMiriOperandToSlot ts rlocals₁ (toMiriOperand rhs) with
           | .error k => .error k
-          | .ok (rTy, rOpt, rlocals₂) =>
-            match readRefPrimitiveSlot rTy rOpt with
+          | .ok (rTy, rSv, rlocals₂) =>
+            match readRefPrimitiveSlot rTy rSv with
             | .error k => .error k
             | .ok rVal =>
               match evalRefBinOp op lVal rVal with
               | .error k => .error k
-              | .ok v => writeRefPlace rlocals₂ dstId dstTy v := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
+              | .ok v => writeRefPlace rlocals₂ ⟨dstId, proj, dstTy⟩ v := by
   have h_step :
       Miri.Interpreter.evalRvalueIntoPlace (refRvalueHooks ts) ()
-          (toMiriRvalue (.binaryOp op lhs rhs)) ⟨dstId, Array.empty⟩
+          (toMiriRvalue (.binaryOp op lhs rhs)) ⟨dstId, Array.mk proj⟩
           rlocals =
         match evalRefMiriOperandToSlot ts rlocals (toMiriOperand lhs) with
         | .error k => .error (faultToStepError k) rlocals
-        | .ok (lTy, lOpt, rlocals₁) =>
-          match readRefPrimitiveSlot lTy lOpt with
+        | .ok (lTy, lSv, rlocals₁) =>
+          match readRefPrimitiveSlot lTy lSv with
           | .error k => .error (faultToStepError k) rlocals₁
           | .ok lVal =>
             match evalRefMiriOperandToSlot ts rlocals₁ (toMiriOperand rhs) with
             | .error k => .error (faultToStepError k) rlocals₁
-            | .ok (rTy, rOpt, rlocals₂) =>
-              match readRefPrimitiveSlot rTy rOpt with
+            | .ok (rTy, rSv, rlocals₂) =>
+              match readRefPrimitiveSlot rTy rSv with
               | .error k => .error (faultToStepError k) rlocals₂
               | .ok rVal =>
                 match evalRefBinOp op lVal rVal with
                 | .error k =>
                   .error (faultToStepError k) rlocals₂
                 | .ok v =>
-                  match writeRefPlace rlocals₂ dstId dstTy v with
+                  match writeRefPlace rlocals₂ ⟨dstId, proj, dstTy⟩ v with
                   | .error k =>
                     .error (faultToStepError k) rlocals₂
                   | .ok locals' => .ok () locals' := by
     dsimp only [toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
       Miri.Interpreter.RvalueHooks.evalOperandAt, refRvalueHooks,
       evalRefBinOp, Bind.bind, Pure.pure, EStateM.bind, EStateM.pure]
-    rw [h_arr, ite_false_eq_true, h_dst]
+    rw [h_dst]
+    dsimp only
+    rw [h_pty]
     dsimp only
     cases evalRefMiriOperandToSlot ts rlocals (toMiriOperand lhs) with
     | error _ => rfl
     | ok resL =>
-      let ⟨lTy, lOpt, rlocals₁⟩ := resL
+      let ⟨lTy, lSv, rlocals₁⟩ := resL
       dsimp only
       rw [miriImmToPayload?_roundtrip]
       dsimp only
-      cases readRefPrimitiveSlot lTy lOpt with
+      cases readRefPrimitiveSlot lTy lSv with
       | error _ => rfl
       | ok lVal =>
         dsimp only
         cases evalRefMiriOperandToSlot ts rlocals₁ (toMiriOperand rhs) with
         | error _ => rfl
         | ok resR =>
-          let ⟨rTy, rOpt, rlocals₂⟩ := resR
+          let ⟨rTy, rSv, rlocals₂⟩ := resR
           dsimp only
           rw [miriImmToPayload?_roundtrip]
           dsimp only
-          cases readRefPrimitiveSlot rTy rOpt with
+          cases readRefPrimitiveSlot rTy rSv with
           | error _ => rfl
           | ok rVal =>
             dsimp only
             rw [miriImmToPayload?_roundtrip,
               miriImmToPayload?_roundtrip]
             dsimp only
+            rw [Anneal.MirWp.toVal?_toSlotVal, Anneal.MirWp.toVal?_toSlotVal]
+            dsimp only
             cases evalRefMiriBinOp (toMiriBinOp op) lVal rVal with
             | error _ => rfl
             | ok v =>
               dsimp only
               rw [miriImmToPayload?_roundtrip]
+              dsimp only
+              rw [Anneal.MirWp.toVal?_toSlotVal]
               rfl
-  dsimp only [evalRefMiriRvalue, Miri.Interpreter.runRvalue]
+  have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue (.binaryOp op lhs rhs)) = false := rfl
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no]
+  dsimp only [Miri.Interpreter.runRvalue]
   rw [h_step]
   cases evalRefMiriOperandToSlot ts rlocals (toMiriOperand lhs) with
   | error k => cases k <;> rfl
   | ok resL =>
-    let ⟨lTy, lOpt, rlocals₁⟩ := resL
+    let ⟨lTy, lSv, rlocals₁⟩ := resL
     dsimp only
-    cases readRefPrimitiveSlot lTy lOpt with
+    cases readRefPrimitiveSlot lTy lSv with
     | error k => cases k <;> rfl
     | ok lVal =>
       dsimp only
       cases evalRefMiriOperandToSlot ts rlocals₁ (toMiriOperand rhs) with
       | error k => cases k <;> rfl
       | ok resR =>
-        let ⟨rTy, rOpt, rlocals₂⟩ := resR
+        let ⟨rTy, rSv, rlocals₂⟩ := resR
         dsimp only
-        cases readRefPrimitiveSlot rTy rOpt with
+        cases readRefPrimitiveSlot rTy rSv with
         | error k => cases k <;> rfl
         | ok rVal =>
           dsimp only
@@ -421,75 +769,89 @@ private theorem evalRefMiriRvalue_binaryOp (ts : List MirTy)
           | error k => cases k <;> rfl
           | ok v =>
             dsimp only
-            cases writeRefPlace rlocals₂ dstId dstTy v with
+            cases writeRefPlace rlocals₂ ⟨dstId, proj, dstTy⟩ v with
             | error k => cases k <;> rfl
             | ok _ => rfl
 
 private theorem evalRefMiriRvalue_unaryOp (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (op : UnOp) (rop : RefOperand)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (op : UnOp) (rop : RefOperand)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue (.unaryOp op rop)) =
       match evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
       | .error k => .error k
-      | .ok (ty, optVal, rlocals₁) =>
-        match readRefPrimitiveSlot ty optVal with
+      | .ok (ty, sv, rlocals₁) =>
+        match readRefPrimitiveSlot ty sv with
         | .error k => .error k
         | .ok v =>
           match evalRefUnOp op v with
           | .error k => .error k
-          | .ok u => writeRefPlace rlocals₁ dstId dstTy u := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
+          | .ok u => writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ u := by
   have h_step :
       Miri.Interpreter.evalRvalueIntoPlace (refRvalueHooks ts) ()
-          (toMiriRvalue (.unaryOp op rop)) ⟨dstId, Array.empty⟩
+          (toMiriRvalue (.unaryOp op rop)) ⟨dstId, Array.mk proj⟩
           rlocals =
         match evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
         | .error k => .error (faultToStepError k) rlocals
-        | .ok (ty, optVal, rlocals₁) =>
-          match readRefPrimitiveSlot ty optVal with
+        | .ok (ty, sv, rlocals₁) =>
+          match readRefPrimitiveSlot ty sv with
           | .error k => .error (faultToStepError k) rlocals₁
           | .ok v =>
             match evalRefUnOp op v with
             | .error k => .error (faultToStepError k) rlocals₁
             | .ok u =>
-              match writeRefPlace rlocals₁ dstId dstTy u with
+              match writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ u with
               | .error k => .error (faultToStepError k) rlocals₁
               | .ok locals' => .ok () locals' := by
     dsimp only [toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
       Miri.Interpreter.RvalueHooks.evalOperandAt, refRvalueHooks,
       evalRefUnOp, Bind.bind, Pure.pure, EStateM.bind, EStateM.pure]
-    rw [h_arr, ite_false_eq_true, h_dst]
+    rw [h_dst]
+    dsimp only
+    rw [h_pty]
     dsimp only
     cases evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
     | error _ => rfl
     | ok res =>
-      let ⟨ty, optVal, rlocals₁⟩ := res
+      let ⟨ty, sv, rlocals₁⟩ := res
       dsimp only
       rw [miriImmToPayload?_roundtrip]
       dsimp only
-      cases readRefPrimitiveSlot ty optVal with
+      cases readRefPrimitiveSlot ty sv with
       | error _ => rfl
       | ok v =>
         dsimp only
         rw [miriImmToPayload?_roundtrip]
+        dsimp only
+        rw [Anneal.MirWp.toVal?_toSlotVal]
         dsimp only
         cases evalRefMiriUnOp (toMiriUnOp op) v with
         | error _ => rfl
         | ok u =>
           dsimp only
           rw [miriImmToPayload?_roundtrip]
+          dsimp only
+          rw [Anneal.MirWp.toVal?_toSlotVal]
           rfl
-  dsimp only [evalRefMiriRvalue, Miri.Interpreter.runRvalue]
+  have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue (.unaryOp op rop)) = false := rfl
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no]
+  dsimp only [Miri.Interpreter.runRvalue]
   rw [h_step]
   cases evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
   | error k => cases k <;> rfl
   | ok res =>
-    let ⟨ty, optVal, rlocals₁⟩ := res
+    let ⟨ty, sv, rlocals₁⟩ := res
     dsimp only
-    cases readRefPrimitiveSlot ty optVal with
+    cases readRefPrimitiveSlot ty sv with
     | error k => cases k <;> rfl
     | ok v =>
       dsimp only
@@ -497,9 +859,656 @@ private theorem evalRefMiriRvalue_unaryOp (ts : List MirTy)
       | error k => cases k <;> rfl
       | ok u =>
         dsimp only
-        cases writeRefPlace rlocals₁ dstId dstTy u with
+        cases writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ u with
         | error k => cases k <;> rfl
         | ok _ => rfl
+
+private theorem evalRefMiriRvalue_cast (ts : List MirTy)
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (kind : CastKind) (rop : RefOperand)
+    (tyId : TyId)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
+        (toMiriRvalue (.cast kind rop tyId)) =
+      match evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
+      | .error k => .error k
+      | .ok (srcTy, sv, rlocals₁) =>
+        match readRefPrimitiveSlot srcTy sv with
+        | .error k => .error k
+        | .ok v =>
+          match kind with
+          | .unsupported => .error .unsupported
+          | .intToInt =>
+            match MirSemantics.getElem? ts tyId with
+            | none => .error .unsupported
+            | some castTy =>
+              if !(MirTy.beq castTy dstTy) then
+                .error .unsupported
+              else
+                match evalRefMiriIntToIntCast v castTy with
+                | .error k => .error k
+                | .ok res =>
+                  writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ res := by
+  have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue (.cast kind rop tyId)) = false := rfl
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no]
+  dsimp only [toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
+    Miri.Interpreter.RvalueHooks.evalOperandAt, refRvalueHooks,
+    Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
+    EStateM.pure]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  cases evalRefMiriOperandToSlot ts rlocals (toMiriOperand rop) with
+  | error k => cases k <;> rfl
+  | ok res =>
+    let ⟨srcTy, sv, rlocals₁⟩ := res
+    dsimp only
+    rw [miriImmToPayload?_roundtrip]
+    dsimp only
+    cases readRefPrimitiveSlot srcTy sv with
+    | error k => cases k <;> rfl
+    | ok v =>
+      dsimp only
+      cases kind with
+      | unsupported => rfl
+      | intToInt =>
+        dsimp only [toMiriCastKind]
+        cases MirSemantics.getElem? ts tyId with
+        | none => rfl
+        | some castTy =>
+          dsimp only
+          cases MirTy.beq castTy dstTy
+          · rfl
+          · dsimp only [Bool.not, ite_false_eq_true]
+            cases evalRefMiriIntToIntCast v castTy with
+            | error k => cases k <;> rfl
+            | ok res₂ =>
+              dsimp only
+              cases writeRefPlace rlocals₁ ⟨dstId, proj, dstTy⟩ res₂ with
+              | error k => cases k <;> rfl
+              | ok _ => rfl
+
+/-- Appending a single tuple-field projection step preserves slot-write
+agreement independently of the field type tag carried on `.Field`/`.field`. -/
+private theorem refWriteSlotPath?_append_field_eq {ts : List MirTy}
+    {rproj : List RefProjectionElem} {proj : List ProjectionElem}
+    (h : mapOption (decodeProjElem ts) rproj = some proj)
+    (sv new : SlotVal) (idx : Nat) (tyId : TyId) (fieldTy : MirTy) :
+    refWriteSlotPath? sv (rproj.map toMiriProjElem ++ [.Field idx tyId]) new =
+      writeSlotPath? sv (proj ++ [.field idx fieldTy]) new := by
+  induction rproj generalizing proj sv with
+  | nil =>
+    injection h with h_eq
+    subst h_eq
+    cases sv with
+    | tuple fields =>
+      dsimp only [List.map, List.nil_append, refWriteSlotPath?, writeSlotPath?]
+      cases MirSemantics.getElem? fields idx <;> rfl
+    | _ => rfl
+  | cons e es ih =>
+    let ⟨e', es', h_e, h_es, h_eq⟩ := mapOption_cons_inv h
+    subst h_eq
+    cases e with
+    | deref =>
+      injection h_e with h_e'
+      subst h_e'
+      cases sv <;> rfl
+    | unsupported =>
+      injection h_e with h_e'
+      subst h_e'
+      cases sv <;> rfl
+    | field i tid =>
+      dsimp only [decodeProjElem, optMap] at h_e
+      cases h_t : MirSemantics.getElem? ts tid with
+      | none => rw [h_t] at h_e; cases h_e
+      | some fty =>
+        rw [h_t] at h_e
+        injection h_e with h_e'
+        subst h_e'
+        cases sv with
+        | tuple fields =>
+          dsimp only [List.map, List.cons_append, toMiriProjElem,
+            refWriteSlotPath?, writeSlotPath?]
+          cases MirSemantics.getElem? fields i with
+          | none => rfl
+          | some field =>
+            dsimp only
+            rw [ih h_es field]
+            cases writeSlotPath? field (es' ++ [.field idx fieldTy]) new <;>
+              rfl
+        | _ => rfl
+
+/-- Writing to an appended tuple field in the reference machine agrees with
+`writePlace` on `dst.projection ++ [.field idx fieldTy]`. -/
+private theorem writeRefPlace_append_field_eq {ts bodyLocals : List MirTy}
+    {slots : List LocalSlot} {rproj : List RefProjectionElem} {dst : Place}
+    {localTy fieldTy : MirTy} {val : Val} (idx : Nat) (tyId : TyId)
+    (h_ty : MirSemantics.getElem? bodyLocals dst.localId = some localTy)
+    (h_proj : mapOption (decodeProjElem ts) rproj = some dst.projection) :
+    writeRefPlace (zipRefLocals bodyLocals slots)
+        ⟨dst.localId, rproj.map toMiriProjElem ++ [.Field idx tyId], fieldTy⟩
+        val =
+      mapSlotsRes bodyLocals
+        (writePlace slots
+          { dst with projection := dst.projection ++ [.field idx fieldTy] }
+          fieldTy val) := by
+  unfold writeRefPlace writePlace
+  dsimp only
+  rw [checkRefVal_eq]
+  cases checkVal val fieldTy
+  · rfl
+  · cases h_sl : MirSemantics.getElem? slots dst.localId with
+    | none =>
+      rw [getElem?_zipRefLocals_none_right h_sl]
+      rfl
+    | some slot =>
+      rw [getElem?_zipRefLocals_some h_ty h_sl]
+      cases slot with
+      | dead => rfl
+      | live root =>
+        dsimp only [Bool.not, ite_false_eq_true]
+        rw [evalPlaceToOp_sized_live]
+        dsimp only
+        rw [miriImmToPayload?_roundtrip]
+        dsimp only
+        rw [refWriteSlotPath?_append_field_eq h_proj]
+        cases writeSlotPath? root (dst.projection ++ [.field idx fieldTy])
+            val.toSlotVal with
+        | none => rfl
+        | some root' =>
+          dsimp only
+          cases h_set :
+              MirSemantics.setElem? slots dst.localId (.live root') with
+          | none =>
+            rw [setElem?_zipRefLocals_none h_set]
+            rfl
+          | some slots' =>
+            rw [setElem?_zipRefLocals_some h_ty h_set]
+            rfl
+
+private def stepErrorToFault : Miri.Interpreter.StepError → FaultKind
+  | .undefinedBehavior _ => .undefined
+  | .stack (.localExpectedLive _) => .undefined
+  | _ => .unsupported
+
+private theorem stepErrorToFault_faultToStepError (k : FaultKind) :
+    stepErrorToFault (faultToStepError k) = k := by
+  cases k <;> rfl
+
+private theorem getElem?_append_length {α : Type} (xs ys : List α) (y : α) :
+    MirSemantics.getElem? (xs ++ y :: ys) xs.length = some y := by
+  induction xs with
+  | nil => rfl
+  | cons _ rest ih => exact ih
+
+private theorem range_zero_size (n : Nat) (h : 0 < 1) :
+    (Std.Legacy.Range.mk 0 n 1 h).size = n := by
+  dsimp only [Std.Legacy.Range.size]
+  simp
+
+private theorem array_getElem?_map_append {α β : Type} (f : α → β)
+    (pfx rest : List α) (x : α) :
+    (Array.mk ((pfx ++ x :: rest).map f))[pfx.length]? = some (f x) := by
+  rw [List.map_append]
+  have h_len : (pfx.map f).length = pfx.length := List.length_map f
+  rw [← h_len]
+  simp
+
+private theorem rvalueM_bind_apply {σ α β : Type}
+    (m : Miri.Interpreter.RvalueM σ α)
+    (k : α → Miri.Interpreter.RvalueM σ β) (s : σ) :
+    (Bind.bind m k) s =
+      match m s with
+      | .ok a s' => k a s'
+      | .error e s' => .error e s' := by
+  dsimp only [Bind.bind, EStateM.bind]
+  cases m s <;> rfl
+
+private theorem if_bool_true {α : Type} {c : Bool} {a b : α} (h : c = true) :
+    (if c = true then a else b) = a := by
+  rw [h]; rfl
+
+private theorem if_bool_false {α : Type} {c : Bool} {a b : α} (h : c = false) :
+    (if c = true then a else b) = b := by
+  rw [h]; exact ite_eq_right (fun hc => Bool.noConfusion hc)
+
+private theorem writeAggregate_tuple_apply {Prov σ Ctx Place : Type}
+    (hooks : Miri.Interpreter.AggregateHooks Prov σ Ctx Place)
+    (c : Ctx) (ops : Array Miri.MIR.Operand) (dest : Place) (s : σ) :
+    let body : Nat → PUnit → Miri.Interpreter.RvalueM σ (ForInStep PUnit) :=
+      fun index _ =>
+        match ops[index]? with
+        | some operand =>
+          Bind.bind
+            (hooks.projectField c dest
+              ((none : Option Miri.MIR.FieldIndex).getD index))
+            (fun field =>
+              Bind.bind
+                (hooks.evalOperandAt c
+                  (Miri.Interpreter.OperandPath.aggregate index) operand
+                  (some (hooks.placeLayout field)))
+                (fun operand =>
+                  Bind.bind (hooks.copyOpNoValidate c operand field false)
+                    (fun _ => Pure.pure (ForInStep.yield PUnit.unit))))
+        | _ =>
+          Bind.bind
+            (throw
+              (Miri.Interpreter.StepError.invalidProgram
+                "aggregate operand index"))
+            (fun (_ : PUnit) => Pure.pure (ForInStep.yield PUnit.unit))
+    Miri.Interpreter.writeAggregate hooks c .Tuple ops dest s =
+      match (forIn (List.range' 0 ops.size 1) PUnit.unit body) s with
+      | .ok _ s' =>
+        (Bind.bind (hooks.writeDiscriminant c 0 dest)
+          (fun _ =>
+            Bind.bind (hooks.enforceValidity c (hooks.placeLayout dest))
+              (fun b => if b then hooks.validate c dest else Pure.pure ()))) s'
+      | .error e s' => .error e s' := by
+  intro body
+  have h_sz : (Std.Legacy.Range.mk 0 ops.size 1 (by decide)).size = ops.size :=
+    range_zero_size ops.size (by decide)
+  have h_pure : ∀ {α β : Type} (a : α) (k : α → Miri.Interpreter.RvalueM σ β),
+      (Bind.bind (Pure.pure a) k) s = k a s := fun _ _ => rfl
+  let cont : PUnit → Miri.Interpreter.RvalueM σ Unit :=
+    fun _ =>
+      Bind.bind (hooks.writeDiscriminant c 0 dest)
+        (fun _ =>
+          Bind.bind (hooks.enforceValidity c (hooks.placeLayout dest))
+            (fun b => if b then hooks.validate c dest else Pure.pure ()))
+  have h_eq : Miri.Interpreter.writeAggregate hooks c .Tuple ops dest s =
+      (Bind.bind (forIn (List.range' 0 ops.size 1) PUnit.unit body) cont) s := by
+    dsimp only [Miri.Interpreter.writeAggregate]
+    rw [h_pure]
+    dsimp only [Option.isSome, Bool.false_and]
+    rw [ite_eq_right (fun h => Bool.noConfusion h)]
+    rw [Std.Legacy.Range.forIn_eq_forIn_range', h_sz]
+    rfl
+  rw [h_eq, rvalueM_bind_apply]
+  cases (forIn (List.range' 0 ops.size 1) PUnit.unit body) s <;> rfl
+
+/-- Field-by-field loop lockstep between `Miri.Interpreter.writeAggregate`'s
+range loop over `refAggregateHooks` and `writeAggregateTupleFields`. -/
+private theorem writeAggregate_loop_eq {ts bodyLocals : List MirTy}
+    {rproj : List RefProjectionElem} {dst : Place} {localTy : MirTy}
+    (h_ty : MirSemantics.getElem? bodyLocals dst.localId = some localTy)
+    (h_proj : mapOption (decodeProjElem ts) rproj = some dst.projection)
+    (pfx rops : List RefOperand) (ops : List Operand)
+    (pfxTys fieldTys : List MirTy) (slots : List LocalSlot)
+    (h_plen : pfxTys.length = pfx.length)
+    (h_flen : rops.length = fieldTys.length)
+    (h_dec : mapOption (decodeOperand ts) rops = some ops) :
+    let allOps : Array Miri.MIR.Operand :=
+      Array.mk ((pfx ++ rops).map toMiriOperand)
+    let dest : RefDest :=
+      ⟨dst.localId, rproj.map toMiriProjElem, .tuple (pfxTys ++ fieldTys)⟩
+    let step : Nat → PUnit →
+        Miri.Interpreter.RvalueM (List RefLocalState) (ForInStep PUnit) :=
+      fun index _ =>
+        match allOps[index]? with
+        | some operand =>
+          Bind.bind
+            ((refAggregateHooks ts).projectField () dest
+              ((none : Option Miri.MIR.FieldIndex).getD index))
+            (fun field =>
+              Bind.bind
+                ((refAggregateHooks ts).evalOperandAt ()
+                  (Miri.Interpreter.OperandPath.aggregate index) operand
+                  (some ((refAggregateHooks ts).placeLayout field)))
+                (fun operand =>
+                  Bind.bind
+                    ((refAggregateHooks ts).copyOpNoValidate () operand field
+                      false)
+                    (fun _ => Pure.pure (ForInStep.yield PUnit.unit))))
+        | _ =>
+          Bind.bind
+            (throw
+              (Miri.Interpreter.StepError.invalidProgram
+                "aggregate operand index"))
+            (fun (_ : PUnit) => Pure.pure (ForInStep.yield PUnit.unit))
+    match writeAggregateTupleFields bodyLocals dst pfx.length slots ops
+        fieldTys with
+    | .ok slots' =>
+      forIn (List.range' pfx.length rops.length 1) PUnit.unit step
+        (zipRefLocals bodyLocals slots) =
+        .ok PUnit.unit (zipRefLocals bodyLocals slots')
+    | .error k =>
+      ∃ err s_err,
+        forIn (List.range' pfx.length rops.length 1) PUnit.unit step
+          (zipRefLocals bodyLocals slots) = .error err s_err ∧
+        stepErrorToFault err = k := by
+  induction rops generalizing pfx ops pfxTys fieldTys slots with
+  | nil =>
+    injection h_dec with h_ops
+    subst h_ops
+    cases fieldTys with
+    | nil => rfl
+    | cons _ _ => cases h_flen
+  | cons ro ros ih =>
+    let ⟨o, os, h_o, h_os, h_eq⟩ := mapOption_cons_inv h_dec
+    subst h_eq
+    cases fieldTys with
+    | nil => cases h_flen
+    | cons ft fts =>
+      have h_flen' : ros.length = fts.length := Nat.succ.inj h_flen
+      have h_range :
+          List.range' pfx.length (ro :: ros).length 1 =
+            pfx.length :: List.range' (pfx.length + 1) ros.length 1 := rfl
+      have h_step :
+          (match (Array.mk ((pfx ++ ro :: ros).map toMiriOperand))[pfx.length]?
+            with
+            | some operand =>
+              Bind.bind
+                ((refAggregateHooks ts).projectField ()
+                  ⟨dst.localId, rproj.map toMiriProjElem,
+                    .tuple (pfxTys ++ ft :: fts)⟩
+                  ((none : Option Miri.MIR.FieldIndex).getD pfx.length))
+                (fun field =>
+                  Bind.bind
+                    ((refAggregateHooks ts).evalOperandAt ()
+                      (Miri.Interpreter.OperandPath.aggregate pfx.length)
+                      operand
+                      (some ((refAggregateHooks ts).placeLayout field)))
+                    (fun operand =>
+                      Bind.bind
+                        ((refAggregateHooks ts).copyOpNoValidate () operand
+                          field false)
+                        (fun _ => Pure.pure (ForInStep.yield PUnit.unit))))
+            | _ =>
+              Bind.bind
+                (throw
+                  (Miri.Interpreter.StepError.invalidProgram
+                    "aggregate operand index"))
+                (fun (_ : PUnit) => Pure.pure (ForInStep.yield PUnit.unit)))
+              (zipRefLocals bodyLocals slots) =
+            match evalOperandToSlot bodyLocals slots o with
+            | .error k =>
+              .error (faultToStepError k) (zipRefLocals bodyLocals slots)
+            | .ok (srcTy, sv, slots₁) =>
+              if !(MirTy.beq srcTy ft) then
+                .error (.unsupported "aggregate field type mismatch")
+                  (zipRefLocals bodyLocals slots₁)
+              else
+                match sv.toVal? with
+                | none =>
+                  .error (.undefinedBehavior "uninit aggregate field operand")
+                    (zipRefLocals bodyLocals slots₁)
+                | some v =>
+                  match writePlace slots₁
+                      { dst with
+                        projection :=
+                          dst.projection ++ [.field pfx.length ft] }
+                      ft v with
+                  | .error k =>
+                    .error (faultToStepError k) (zipRefLocals bodyLocals slots₁)
+                  | .ok slots₂ =>
+                    .ok (ForInStep.yield PUnit.unit)
+                      (zipRefLocals bodyLocals slots₂) := by
+        rw [array_getElem?_map_append toMiriOperand pfx ros ro]
+        dsimp only [Option.getD, Miri.Interpreter.AggregateHooks.evalOperandAt,
+          refAggregateHooks, Bind.bind, Pure.pure, EStateM.bind, EStateM.pure]
+        rw [← h_plen, getElem?_append_length pfxTys fts ft, h_plen]
+        dsimp only [EStateM.bind, EStateM.pure]
+        rw [evalRefMiriOperandToSlot_eq h_o]
+        cases evalOperandToSlot bodyLocals slots o with
+        | error _ => rfl
+        | ok res =>
+          let ⟨srcTy, sv, slots₁⟩ := res
+          dsimp only [mapSlotRes]
+          rw [miriImmToPayload?_roundtrip]
+          dsimp only
+          cases MirTy.beq srcTy ft with
+          | false => rfl
+          | true =>
+            rw [ite_eq_right (fun h => Bool.noConfusion h)]
+            cases sv.toVal? with
+            | none => rfl
+            | some v =>
+              dsimp only
+              rw [writeRefPlace_append_field_eq pfx.length 0 h_ty h_proj]
+              cases writePlace slots₁
+                  { dst with
+                    projection := dst.projection ++ [.field pfx.length ft] }
+                  ft v <;> rfl
+      dsimp only [writeAggregateTupleFields]
+      rw [h_range, List.forIn_cons, rvalueM_bind_apply, h_step]
+      cases evalOperandToSlot bodyLocals slots o with
+      | error k =>
+        exact ⟨faultToStepError k, zipRefLocals bodyLocals slots, rfl,
+          stepErrorToFault_faultToStepError k⟩
+      | ok res =>
+        let ⟨srcTy, sv, slots₁⟩ := res
+        dsimp only
+        cases MirTy.beq srcTy ft with
+        | false =>
+          exact ⟨.unsupported "aggregate field type mismatch",
+            zipRefLocals bodyLocals slots₁, rfl, rfl⟩
+        | true =>
+          rw [ite_eq_right (fun h => Bool.noConfusion h)]
+          rw [ite_eq_right (fun h => Bool.noConfusion h)]
+          cases sv.toVal? with
+          | none =>
+            exact ⟨.undefinedBehavior "uninit aggregate field operand",
+              zipRefLocals bodyLocals slots₁, rfl, rfl⟩
+          | some v =>
+            dsimp only
+            cases writePlace slots₁
+                { dst with
+                  projection := dst.projection ++ [.field pfx.length ft] }
+                ft v with
+            | error k =>
+              exact ⟨faultToStepError k, zipRefLocals bodyLocals slots₁, rfl,
+                stepErrorToFault_faultToStepError k⟩
+            | ok slots₂ =>
+              dsimp only
+              have h_assoc_ops : (pfx ++ [ro]) ++ ros = pfx ++ (ro :: ros) :=
+                List.append_assoc pfx [ro] ros
+              have h_assoc_tys :
+                  (pfxTys ++ [ft]) ++ fts = pfxTys ++ (ft :: fts) :=
+                List.append_assoc pfxTys [ft] fts
+              have h_len_pfx : (pfx ++ [ro]).length = pfx.length + 1 := by
+                rw [List.length_append]
+                rfl
+              have h_plen' :
+                  (pfxTys ++ [ft]).length = (pfx ++ [ro]).length := by
+                rw [List.length_append, List.length_append, h_plen]
+                rfl
+              have h_ih := ih (pfx ++ [ro]) os (pfxTys ++ [ft]) fts slots₂
+                h_plen' h_flen' h_os
+              dsimp only at h_ih
+              rw [h_assoc_ops, h_assoc_tys, h_len_pfx] at h_ih
+              exact h_ih
+
+/-- Tuple-aggregate lockstep: evaluating `.aggregateTuple` through
+`Miri.Interpreter.evalRvalueIntoPlace` and `Miri.Interpreter.writeAggregate`
+agrees with `writeAggregateTuple`. -/
+private theorem evalRefMiriRvalue_aggregateTuple_eq {ts bodyLocals : List MirTy}
+    {slots : List LocalSlot} {rproj : List RefProjectionElem} {dst : Place}
+    {dstSlot : LocalSlot} {localTy dstTy : MirTy}
+    {rops : List RefOperand} {ops : List Operand}
+    (h_ty : MirSemantics.getElem? bodyLocals dst.localId = some localTy)
+    (h_proj : mapOption (decodeProjElem ts) rproj = some dst.projection)
+    (h_dst : MirSemantics.getElem? (zipRefLocals bodyLocals slots) dst.localId =
+      some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy (rproj.map toMiriProjElem) = some dstTy)
+    (h_ops : mapOption (decodeOperand ts) rops = some ops)
+    (h_no_ov : refAssignHasUnsupportedOverlap
+      ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩ dstTy
+      (toMiriRvalue (.aggregateTuple rops)) = false) :
+    evalRefMiriRvalue ts (zipRefLocals bodyLocals slots)
+        ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩
+        (toMiriRvalue (.aggregateTuple rops)) =
+      mapSlotsRes bodyLocals
+        (writeAggregateTuple bodyLocals slots dst dstTy ops) := by
+  have h_ev_place :
+      Miri.Interpreter.evalRvalueIntoPlace (refRvalueHooks ts) ()
+          (toMiriRvalue (.aggregateTuple rops))
+          ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩
+          (zipRefLocals bodyLocals slots) =
+        (refRvalueHooks ts).writeAggregate () .Tuple
+          (Array.mk (rops.map toMiriOperand))
+          ⟨dst.localId, rproj.map toMiriProjElem, dstTy⟩
+          (zipRefLocals bodyLocals slots) := by
+    dsimp only [toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace]
+    rw [rvalueM_bind_apply]
+    have h_ep :
+        (refRvalueHooks ts).evalPlace ()
+            ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩ true
+            (zipRefLocals bodyLocals slots) =
+          .ok ⟨dst.localId, rproj.map toMiriProjElem, dstTy⟩
+            (zipRefLocals bodyLocals slots) := by
+      dsimp only [refRvalueHooks]
+      rw [h_dst]; dsimp only; rw [h_pty]
+    rw [h_ep]
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no_ov]
+  rw [ite_eq_right (fun h => Bool.noConfusion h)]
+  cases rops with
+  | nil =>
+    injection h_ops with h_eq
+    subst h_eq
+    cases dstTy with
+    | unit =>
+      have h_ev :
+          Miri.Interpreter.evalRvalueIntoPlace (refRvalueHooks ts) ()
+              (toMiriRvalue (.aggregateTuple []))
+              ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩
+              (zipRefLocals bodyLocals slots) =
+            match writePlace slots dst .unit .unit with
+            | .error k =>
+              .error (faultToStepError k) (zipRefLocals bodyLocals slots)
+            | .ok slots' => .ok () (zipRefLocals bodyLocals slots') := by
+        rw [h_ev_place]
+        have h_v :
+            (!Nat.beq (Array.mk ([].map toMiriOperand)).size 0) = false := rfl
+        have h_w :
+            (refRvalueHooks ts).writeAggregate () .Tuple
+                (Array.mk ([].map toMiriOperand))
+                ⟨dst.localId, rproj.map toMiriProjElem, .unit⟩
+                (zipRefLocals bodyLocals slots) =
+              Miri.Interpreter.writeAggregate (refAggregateHooks ts) () .Tuple
+                (Array.mk ([].map toMiriOperand))
+                ⟨dst.localId, rproj.map toMiriProjElem, .unit⟩
+                (zipRefLocals bodyLocals slots) := by
+          dsimp only [refRvalueHooks]
+          exact if_bool_false h_v
+        rw [h_w, writeAggregate_tuple_apply]
+        have h_sz0 : (Array.mk ([].map toMiriOperand)).size = 0 := rfl
+        rw [h_sz0]
+        dsimp only [List.range']
+        rw [List.forIn_nil]
+        dsimp only [refAggregateHooks, Bind.bind, Pure.pure, EStateM.bind,
+          EStateM.pure]
+        rw [writeRefPlace_eq h_ty h_proj]
+        cases writePlace slots dst .unit .unit <;> rfl
+      dsimp only [Miri.Interpreter.runRvalue, writeAggregateTuple]
+      rw [h_ev]
+      cases writePlace slots dst .unit .unit with
+      | error k => cases k <;> rfl
+      | ok _ => rfl
+    | tuple fieldTys =>
+      dsimp only [Miri.Interpreter.runRvalue]
+      rw [h_ev_place]
+      cases fieldTys <;> rfl
+    | _ =>
+      dsimp only [Miri.Interpreter.runRvalue]
+      rw [h_ev_place]
+      rfl
+  | cons ro ros =>
+    let ⟨o, os, _, _, h_eq⟩ := mapOption_cons_inv h_ops
+    subst h_eq
+    cases dstTy with
+    | tuple fieldTys =>
+      cases fieldTys with
+      | nil =>
+        dsimp only [Miri.Interpreter.runRvalue]
+        rw [h_ev_place]
+        rfl
+      | cons ft fts =>
+        have h_len_map :
+            (Array.mk ((ro :: ros).map toMiriOperand)).size =
+              (ro :: ros).length := List.length_map toMiriOperand
+        have h_len_ops : (ro :: ros).length = (o :: os).length :=
+          mapOption_length h_ops
+        cases h_beq : Nat.beq (o :: os).length (ft :: fts).length with
+        | false =>
+          have h_ev :
+              Miri.Interpreter.evalRvalueIntoPlace (refRvalueHooks ts) ()
+                  (toMiriRvalue (.aggregateTuple (ro :: ros)))
+                  ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩
+                  (zipRefLocals bodyLocals slots) =
+                .error (.unsupported "tuple aggregate shape mismatch")
+                  (zipRefLocals bodyLocals slots) := by
+            rw [h_ev_place]
+            have h_v :
+                (!(!(ft :: fts).isEmpty &&
+                  Nat.beq (Array.mk ((ro :: ros).map toMiriOperand)).size
+                    (ft :: fts).length)) = true := by
+              rw [h_len_map, h_len_ops, h_beq]; rfl
+            dsimp only [refRvalueHooks]
+            exact if_bool_true h_v
+          dsimp only [Miri.Interpreter.runRvalue, writeAggregateTuple]
+          rw [h_ev, h_beq]
+          rfl
+        | true =>
+          have h_flen : (ro :: ros).length = (ft :: fts).length := by
+            rw [h_len_ops]
+            exact Nat.eq_of_beq_eq_true h_beq
+          have h_ev :
+              Miri.Interpreter.evalRvalueIntoPlace (refRvalueHooks ts) ()
+                  (toMiriRvalue (.aggregateTuple (ro :: ros)))
+                  ⟨dst.localId, Array.mk (rproj.map toMiriProjElem)⟩
+                  (zipRefLocals bodyLocals slots) =
+                Miri.Interpreter.writeAggregate (refAggregateHooks ts) () .Tuple
+                  (Array.mk ((ro :: ros).map toMiriOperand))
+                  ⟨dst.localId, rproj.map toMiriProjElem, .tuple (ft :: fts)⟩
+                  (zipRefLocals bodyLocals slots) := by
+            rw [h_ev_place]
+            have h_v :
+                (!(!(ft :: fts).isEmpty &&
+                  Nat.beq (Array.mk ((ro :: ros).map toMiriOperand)).size
+                    (ft :: fts).length)) = false := by
+              rw [h_len_map, h_len_ops, h_beq]; rfl
+            dsimp only [refRvalueHooks]
+            exact if_bool_false h_v
+          have h_loop := writeAggregate_loop_eq h_ty h_proj [] (ro :: ros)
+            (o :: os) [] (ft :: fts) slots rfl h_flen h_ops
+          dsimp only [List.nil_append, List.length_nil] at h_loop
+          dsimp only [Miri.Interpreter.runRvalue, writeAggregateTuple]
+          rw [h_ev, writeAggregate_tuple_apply, h_len_map, h_beq]
+          rw [ite_eq_right (fun h => Bool.noConfusion h)]
+          cases h_wf : writeAggregateTupleFields bodyLocals dst 0 slots
+              (o :: os) (ft :: fts) with
+          | ok slots' =>
+            rw [h_wf] at h_loop
+            rw [h_loop]
+            rfl
+          | error k =>
+            rw [h_wf] at h_loop
+            let ⟨err, s_err, h_err, h_k⟩ := h_loop
+            rw [h_err]
+            dsimp only
+            cases err with
+            | undefinedBehavior _ => cases h_k; rfl
+            | stack se =>
+              cases se <;> (cases h_k; rfl)
+            | _ => cases h_k; rfl
+    | _ =>
+      dsimp only [Miri.Interpreter.runRvalue]
+      rw [h_ev_place]
+      rfl
 
 private theorem list_all_of_getElem? {α : Type} {xs : List α} {p : α → Bool}
     {i : Nat} {x : α} (h_all : xs.all p = true)
@@ -643,8 +1652,8 @@ private theorem discriminantForVariant_concrete_ok {ts : List MirTy}
     ((refRvalueHooks ts).discriminantForVariant () tid variant s) =
       .ok ⟨payloadToMiriImmediate
             (.int ety.discrWidth ety.discrSigned,
-              some (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)),
+              SlotVal.scalar ⟨ety.discrWidth, ety.discrSigned,
+                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩),
           ⟨1, refScalarLayoutData ety.discrWidth ety.discrSigned⟩⟩ s := by
   let ⟨h_all, _, _⟩ := enumAdmitted_unpack h_adm
   have hd_blt : Nat.blt disc (Nat.pow 2 ety.discrWidth.bitWidth) = true :=
@@ -714,24 +1723,27 @@ private theorem evalPlaceToOp_enum_dead (tid : TyId) (ety : EnumTy) :
   | mk _ _ _ tr _ => cases tr <;> rfl
 
 private theorem evalPlaceToOp_enum_live (tid : TyId) (ety : EnumTy)
-    (optVal : Option Val) :
+    (sv : SlotVal) :
     (Miri.Interpreter.evalPlaceToOp (refLocalAccessHooks false)
-      (mkSingleLocalMiriFrameWithLayout (slotToMiriLocalValue (.live optVal))
+      (mkSingleLocalMiriFrameWithLayout (slotToMiriLocalValue (.live sv))
         ⟨tid, refEnumLayoutData ety⟩ false) () ⟨0, Array.empty⟩
       (some ⟨tid, refEnumLayoutData ety⟩)).outcome =
-    .ok ⟨.immediate (payloadToMiriImmediate optVal),
+    .ok ⟨.immediate (payloadToMiriImmediate sv),
       ⟨tid, refEnumLayoutData ety⟩⟩ := by
   cases ety with
   | mk _ _ _ tr _ => cases tr <;> rfl
 
 private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (rp : RefPlace)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩)
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (rp : RefPlace)
+    (h_dst :
+      MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy)
     (h_tys : ∀ (id : LocalId) (slot : LocalSlot) (ety : EnumTy),
       MirSemantics.getElem? rlocals id = some ⟨slot, some (.enum ety)⟩ →
       ∃ tid, MirSemantics.getElem? ts tid = some (.enum ety)) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue (.discriminant rp)) =
       if !rp.projection.isEmpty then
         .error .unsupported
@@ -743,36 +1755,36 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
           else
             match ety.tagRepr, slot with
             | _, .dead => .error .undefined
-            | .zeroSized, .live none =>
+            | .zeroSized, .live .uninit =>
               match MirSemantics.getElem? ety.discriminants 0 with
               | some disc =>
-                writeRefPlace rlocals dstId dstTy
+                writeRefPlace rlocals ⟨dstId, proj, dstTy⟩
                   (.scalar ⟨ety.discrWidth, ety.discrSigned,
                     truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
               | none => .error .unsupported
-            | .zeroSized, .live (some (.enumVal ety' v)) =>
+            | .zeroSized, .live (.enumVal ety' v) =>
               if EnumTy.beq ety ety' && Nat.beq v 0 then
                 match MirSemantics.getElem? ety.discriminants 0 with
                 | some disc =>
-                  writeRefPlace rlocals dstId dstTy
+                  writeRefPlace rlocals ⟨dstId, proj, dstTy⟩
                     (.scalar ⟨ety.discrWidth, ety.discrSigned,
                       truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
                 | none => .error .unsupported
               else
                 .error .unsupported
-            | .zeroSized, .live (some _) => .error .unsupported
-            | .scalar _ _, .live none => .error .undefined
-            | .scalar _ _, .live (some (.enumVal ety' v)) =>
+            | .zeroSized, .live _ => .error .unsupported
+            | .scalar _ _, .live .uninit => .error .undefined
+            | .scalar _ _, .live (.enumVal ety' v) =>
               if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
                 match MirSemantics.getElem? ety.discriminants v with
                 | some disc =>
-                  writeRefPlace rlocals dstId dstTy
+                  writeRefPlace rlocals ⟨dstId, proj, dstTy⟩
                     (.scalar ⟨ety.discrWidth, ety.discrSigned,
                       truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
                 | none => .error .unsupported
               else
                 .error .unsupported
-            | .scalar _ _, .live (some _) => .error .unsupported
+            | .scalar _ _, .live _ => .error .unsupported
         | _ => .error .unsupported := by
   let mapErr : Miri.Interpreter.StepError →
       Except FaultKind (List RefLocalState) :=
@@ -781,7 +1793,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
       | .undefinedBehavior _ | .stack (.localExpectedLive _) =>
         .error .undefined
       | _ => .error .unsupported
-  let finishDiscr : Miri.Interpreter.OpTy (MirTy × Option Val) →
+  let finishDiscr : Miri.Interpreter.OpTy (MirTy × SlotVal) →
       List RefLocalState → Except FaultKind (List RefLocalState) :=
     fun op s₁ =>
       match (refRvalueHooks ts).readDiscriminant () op s₁ with
@@ -792,21 +1804,34 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
         | .error err _ => mapErr err
         | .ok discr s₃ =>
           match miriImmediateToPayload? discr.imm with
-          | some (_, some v) => writeRefPlace s₃ dstId dstTy v
-          | _ => .error .unsupported
+          | some (_, sv) =>
+            match sv.toVal? with
+            | some v => writeRefPlace s₃ ⟨dstId, proj, dstTy⟩ v
+            | none => .error .unsupported
+          | none => .error .unsupported
   have h_arr :
       (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
   have h_unfold :
-      evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+      evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
           (toMiriRvalue (.discriminant rp)) =
         match evalRefEnumPlaceToOp ts (toMiriPlace rp) rlocals with
         | .error err _ => mapErr err
         | .ok op s₁ => finishDiscr op s₁ := by
-    dsimp only [evalRefMiriRvalue, toMiriRvalue,
+    have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+        (toMiriRvalue (.discriminant rp)) = false := rfl
+    dsimp only [evalRefMiriRvalue]
+    rw [h_dst]
+    dsimp only
+    rw [h_pty]
+    dsimp only
+    rw [h_no]
+    dsimp only [toMiriRvalue,
       Miri.Interpreter.evalRvalueIntoPlace, refRvalueHooks,
       Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
       EStateM.pure]
-    rw [h_arr, ite_false_eq_true, h_dst]
+    rw [h_dst]
+    dsimp only
+    rw [h_pty]
     dsimp only
     cases evalRefEnumPlaceToOp ts (toMiriPlace rp) rlocals with
     | error err s₁ =>
@@ -821,11 +1846,11 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
         | none => rfl
         | some payload =>
           cases payload with
-          | mk ty optVal =>
+          | mk ty sv₁ =>
             cases ty with
             | enum ety₁ =>
               dsimp only
-              cases encodeRefEnumTagOp ety₁ optVal with
+              cases encodeRefEnumTagOp ety₁ sv₁ with
               | error err =>
                 cases err with | stack se => cases se <;> rfl | _ => rfl
               | ok miriOp =>
@@ -859,8 +1884,8 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                             | integer sc =>
                               dsimp only
                               rw [miriImmToPayload?_roundtrip]
-                              dsimp only
-                              cases writeRefPlace s₃ dstId dstTy
+                              dsimp only [SlotVal.toVal?]
+                              cases writeRefPlace s₃ ⟨dstId, proj, dstTy⟩
                                   (.scalar ⟨ety₂.discrWidth, ety₂.discrSigned,
                                     sc.data⟩) with
                               | error k => cases k <;> rfl
@@ -950,13 +1975,13 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                     dsimp only
                     rw [evalPlaceToOp_enum_dead enumTyId ety]
                   rw [h_op]
-                | live optVal =>
+                | live sv =>
                   let layout : Miri.Interpreter.LocalLayout :=
                     ⟨enumTyId, refEnumLayoutData ety⟩
                   have h_op :
                       evalRefEnumPlaceToOp ts ⟨localId, Array.empty⟩ rlocals =
                         .ok ⟨.immediate (payloadToMiriImmediate
-                              (.enum ety, optVal)), layout⟩ rlocals := by
+                              (.enum ety, sv)), layout⟩ rlocals := by
                     dsimp only [evalRefEnumPlaceToOp]
                     rw [h_arr, ite_false_eq_true, h_get]
                     dsimp only
@@ -964,7 +1989,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                     dsimp only [Bool.not]
                     rw [ite_false_eq_true, h_idx]
                     dsimp only
-                    rw [evalPlaceToOp_enum_live enumTyId ety optVal]
+                    rw [evalPlaceToOp_enum_live enumTyId ety sv]
                     rfl
                   rw [h_op]
                   dsimp only [finishDiscr]
@@ -981,12 +2006,13 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                         dsimp only at h_tr
                         subst h_tr
                         rfl
-                    cases optVal with
-                    | none =>
+                    cases sv with
+                    | uninit =>
                       have h_rd :
                           (refRvalueHooks ts).readDiscriminant ()
                             ⟨.immediate (payloadToMiriImmediate
-                              (.enum ety, none)), layout⟩ rlocals =
+                              (MirTy.enum ety, SlotVal.uninit)), layout⟩
+                            rlocals =
                           .ok 0 rlocals := by
                         dsimp only [refRvalueHooks, encodeRefEnumTagOp]
                         rw [miriImmToPayload?_roundtrip]
@@ -1004,9 +2030,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                         rw [discriminantForVariant_concrete_ok enumTyId ety 0
                           disc rlocals h_tid h_adm h_d0]
                         rfl
-                    | some val =>
-                      cases val with
-                      | enumVal ety' v =>
+                    | enumVal ety' v =>
                         dsimp only
                         cases h_chk :
                             (EnumTy.beq ety ety' && Nat.beq v 0) with
@@ -1014,7 +2038,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                           have h_rd :
                               (refRvalueHooks ts).readDiscriminant ()
                                 ⟨.immediate (payloadToMiriImmediate
-                                  (.enum ety, some (.enumVal ety' v))),
+                                  (MirTy.enum ety, SlotVal.enumVal ety' v)),
                                   layout⟩ rlocals =
                               .error (.unsupported
                                 "mismatched ZST enum variant in slot")
@@ -1032,7 +2056,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                           have h_rd :
                               (refRvalueHooks ts).readDiscriminant ()
                                 ⟨.immediate (payloadToMiriImmediate
-                                  (.enum ety, some (.enumVal ety' v))),
+                                  (MirTy.enum ety, SlotVal.enumVal ety' v)),
                                   layout⟩ rlocals =
                               .ok 0 rlocals := by
                             dsimp only [refRvalueHooks, encodeRefEnumTagOp]
@@ -1053,18 +2077,19 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                             rw [discriminantForVariant_concrete_ok enumTyId ety
                               0 disc rlocals h_tid h_adm h_d0]
                             rfl
-                      | _ =>
+                    | _ =>
                         dsimp only [refRvalueHooks, encodeRefEnumTagOp]
                         rw [miriImmToPayload?_roundtrip]
                         dsimp only
                         rw [h_tr]
                   | scalar tagW tagS =>
-                    cases optVal with
-                    | none =>
+                    cases sv with
+                    | uninit =>
                       have h_uninit_ub :
                           (refRvalueHooks ts).readDiscriminant ()
                             ⟨.immediate (payloadToMiriImmediate
-                              (.enum ety, none)), layout⟩ rlocals =
+                              (MirTy.enum ety, SlotVal.uninit)), layout⟩
+                            rlocals =
                           .error (.undefinedBehavior
                             "InvalidUninitBytes(None)") rlocals := by
                         cases ety with
@@ -1073,9 +2098,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                           subst h_tr
                           cases tagW <;> cases tagS <;> rfl
                       rw [h_uninit_ub]
-                    | some val =>
-                      cases val with
-                      | enumVal ety' v =>
+                    | enumVal ety' v =>
                         dsimp only
                         cases h_chk :
                             (EnumTy.beq ety ety' &&
@@ -1084,7 +2107,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                           have h_rd :
                               (refRvalueHooks ts).readDiscriminant ()
                                 ⟨.immediate (payloadToMiriImmediate
-                                  (.enum ety, some (.enumVal ety' v))),
+                                  (MirTy.enum ety, SlotVal.enumVal ety' v)),
                                   layout⟩ rlocals =
                               .error (.unsupported
                                 "mismatched scalar enum variant in slot")
@@ -1106,7 +2129,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                             have h_rd :
                                 (refRvalueHooks ts).readDiscriminant ()
                                   ⟨.immediate (payloadToMiriImmediate
-                                    (.enum ety, some (.enumVal ety' v))),
+                                    (MirTy.enum ety, SlotVal.enumVal ety' v)),
                                     layout⟩ rlocals =
                                 .error (.invalidProgram
                                   "missing enum discriminant") rlocals := by
@@ -1121,7 +2144,7 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                             have h_rd_eq :
                                 (refRvalueHooks ts).readDiscriminant ()
                                   ⟨.immediate (payloadToMiriImmediate
-                                    (.enum ety, some (.enumVal ety' v))),
+                                    (MirTy.enum ety, SlotVal.enumVal ety' v)),
                                     layout⟩ rlocals =
                                 match findDiscrVariant?
                                     (tagBitsToDiscrBits tagW tagS
@@ -1208,99 +2231,111 @@ private theorem evalRefMiriRvalue_discriminant_eq {ts : List MirTy}
                             rw [discriminantForVariant_concrete_ok enumTyId ety
                               v disc rlocals h_tid h_adm h_dv]
                             rfl
-                      | _ =>
+                    | _ =>
                         dsimp only [refRvalueHooks, encodeRefEnumTagOp]
                         rw [miriImmToPayload?_roundtrip]
                         dsimp only
                         rw [h_tr]
 
 private theorem evalRefMiriRvalue_ref (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (m : Mutability) (rp : RefPlace)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (m : Mutability) (rp : RefPlace)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue (.ref m rp)) = .error .unsupported := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
+  have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue (.ref m rp)) = false := by
+    cases m <;> rfl
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no]
   cases m <;> (
-    dsimp only [evalRefMiriRvalue, toMiriRvalue,
+    dsimp only [toMiriRvalue, toMiriPlace,
       Miri.Interpreter.evalRvalueIntoPlace, refRvalueHooks,
       Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
       EStateM.pure]
-    rw [h_arr, ite_false_eq_true, h_dst]
+    rw [h_dst]
     dsimp only
-    cases rp with
-    | mk srcId srcProj =>
-      cases srcProj with
-      | cons _ _ => rfl
-      | nil =>
-        have h_p : toMiriPlace ⟨srcId, []⟩ = ⟨srcId, Array.empty⟩ := rfl
-        rw [h_p]
-        dsimp only
-        rw [h_arr, ite_false_eq_true]
-        cases MirSemantics.getElem? rlocals srcId with
+    rw [h_pty]
+    dsimp only
+    cases MirSemantics.getElem? rlocals rp.localId with
+    | none => rfl
+    | some rloc =>
+      cases rloc with
+      | mk _ optTy =>
+        cases optTy with
         | none => rfl
-        | some rloc =>
-          cases rloc with
-          | mk _ optTy => cases optTy <;> rfl)
+        | some srcTy =>
+          dsimp only
+          cases refProjectTy? ts srcTy
+              (List.map toMiriProjElem rp.projection) <;> rfl)
 
 private theorem evalRefMiriRvalue_addressOf (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (m : Mutability) (rp : RefPlace)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy) (m : Mutability) (rp : RefPlace)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue (.addressOf m rp)) = .error .unsupported := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
+  have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue (.addressOf m rp)) = false := by
+    cases m <;> rfl
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no]
   cases m <;> (
-    dsimp only [evalRefMiriRvalue, toMiriRvalue,
+    dsimp only [toMiriRvalue, toMiriPlace,
       Miri.Interpreter.evalRvalueIntoPlace, refRvalueHooks,
       Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
       EStateM.pure]
-    rw [h_arr, ite_false_eq_true, h_dst]
+    rw [h_dst]
     dsimp only
-    cases rp with
-    | mk srcId srcProj =>
-      cases srcProj with
-      | cons _ _ => rfl
-      | nil =>
-        have h_p : toMiriPlace ⟨srcId, []⟩ = ⟨srcId, Array.empty⟩ := rfl
-        rw [h_p]
-        dsimp only
-        rw [h_arr, ite_false_eq_true]
-        cases MirSemantics.getElem? rlocals srcId with
+    rw [h_pty]
+    dsimp only
+    cases MirSemantics.getElem? rlocals rp.localId with
+    | none => rfl
+    | some rloc =>
+      cases rloc with
+      | mk _ optTy =>
+        cases optTy with
         | none => rfl
-        | some rloc =>
-          cases rloc with
-          | mk _ optTy => cases optTy <;> rfl)
-
-private theorem evalRefMiriRvalue_aggregateTuple (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy) (rops : List RefOperand)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
-        (toMiriRvalue (.aggregateTuple rops)) = .error .unsupported := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
-  dsimp only [evalRefMiriRvalue, toMiriRvalue,
-    Miri.Interpreter.evalRvalueIntoPlace, refRvalueHooks,
-    Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
-    EStateM.pure]
-  rw [h_arr, ite_false_eq_true, h_dst]
+        | some srcTy =>
+          dsimp only
+          cases refProjectTy? ts srcTy
+              (List.map toMiriProjElem rp.projection) <;> rfl)
 
 private theorem evalRefMiriRvalue_unsupported (ts : List MirTy)
-    (rlocals : List RefLocalState) (dstId : LocalId) (dstSlot : LocalSlot)
-    (dstTy : MirTy)
-    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some dstTy⟩) :
-    evalRefMiriRvalue ts rlocals ⟨dstId, Array.empty⟩
+    (rlocals : List RefLocalState) (dstId : LocalId)
+    (proj : List Miri.MIR.ProjectionElem) (dstSlot : LocalSlot)
+    (localTy dstTy : MirTy)
+    (h_dst : MirSemantics.getElem? rlocals dstId = some ⟨dstSlot, some localTy⟩)
+    (h_pty : refProjectTy? ts localTy proj = some dstTy) :
+    evalRefMiriRvalue ts rlocals ⟨dstId, Array.mk proj⟩
         (toMiriRvalue .unsupported) = .error .unsupported := by
-  have h_arr :
-      (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false := rfl
-  dsimp only [evalRefMiriRvalue, toMiriRvalue,
+  have h_no : refAssignHasUnsupportedOverlap ⟨dstId, Array.mk proj⟩ dstTy
+      (toMiriRvalue .unsupported) = false := rfl
+  dsimp only [evalRefMiriRvalue]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
+  dsimp only
+  rw [h_no]
+  dsimp only [toMiriRvalue,
     Miri.Interpreter.evalRvalueIntoPlace, refRvalueHooks,
     Miri.Interpreter.runRvalue, Bind.bind, Pure.pure, EStateM.bind,
     EStateM.pure]
-  rw [h_arr, ite_false_eq_true, h_dst]
+  rw [h_dst]
+  dsimp only
+  rw [h_pty]
   rfl
 
 theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
@@ -1315,44 +2350,65 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
     evalRefMiriRvalue ts (zipRefLocals bodyLocals slots) (toMiriPlace rdst)
         (toMiriRvalue rrv) =
       mapSlotsRes bodyLocals
-        (if !dst.projection.isEmpty then
-          .error .unsupported
-        else
-          match MirSemantics.getElem? bodyLocals dst.localId with
+        (match MirSemantics.getElem? bodyLocals dst.localId with
+        | none => .error .unsupported
+        | some localTy =>
+          match projectTy? localTy dst.projection with
           | none => .error .unsupported
           | some dstTy =>
-            match evalRvalue bodyLocals slots dstTy rv with
-            | .error k => .error k
-            | .ok (val, localsAfterRval) =>
-              writePlace localsAfterRval dst.localId dstTy val) := by
-  cases rdst with
-  | mk localId proj =>
-    let ⟨h_id, h_emp⟩ := decodePlace_inv h_pl
-    cases proj with
-    | cons _ _ =>
-      have h_e : dst.projection.isEmpty = false := h_emp.symm
-      rw [h_e]
+            if assignHasUnsupportedOverlap dst dstTy rv then
+              .error .unsupported
+            else
+              match rv with
+              | .aggregateTuple ops =>
+                writeAggregateTuple bodyLocals slots dst dstTy ops
+              | _ =>
+                match evalRvalue bodyLocals slots dstTy rv with
+                | .error k => .error k
+                | .ok (val, localsAfterRval) =>
+                  writePlace localsAfterRval dst dstTy val) := by
+  let ⟨h_id, h_proj⟩ := decodePlace_proj_inv h_pl
+  have h_tp : toMiriPlace rdst =
+      ⟨dst.localId, Array.mk (rdst.projection.map toMiriProjElem)⟩ := by
+    rw [← h_id]
+    rfl
+  rw [h_tp]
+  cases h_ty : MirSemantics.getElem? bodyLocals dst.localId with
+  | none =>
+    dsimp only [evalRefMiriRvalue]
+    rw [getElem?_zipRefLocals_none_left h_ty]
+    rfl
+  | some localTy =>
+    let ⟨dstSlot, h_sl⟩ := getElem?_some_of_length_eq h_len.symm h_ty
+    have h_dst := getElem?_zipRefLocals_some h_ty h_sl
+    have h_rpt := refProjectTy?_eq h_proj localTy
+    dsimp only
+    cases h_pt : projectTy? localTy dst.projection with
+    | none =>
+      rw [h_pt] at h_rpt
+      dsimp only [evalRefMiriRvalue]
+      rw [h_dst]
+      dsimp only
+      rw [h_rpt]
       rfl
-    | nil =>
-      have h_e : dst.projection.isEmpty = true := h_emp.symm
-      have h_i : dst.localId = localId := h_id.symm
-      rw [h_e, h_i]
-      dsimp only [Bool.not, ite_false_eq_true]
-      have h_tp : toMiriPlace ⟨localId, []⟩ = ⟨localId, Array.empty⟩ := rfl
-      rw [h_tp]
-      cases h_ty : MirSemantics.getElem? bodyLocals localId with
-      | none =>
-        have h_arr :
-            (!(Array.empty : Array Miri.MIR.ProjectionElem).isEmpty) = false :=
-          rfl
-        dsimp only [evalRefMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
-          refRvalueHooks, Miri.Interpreter.runRvalue, Bind.bind, Pure.pure,
-          EStateM.bind, EStateM.pure]
-        rw [h_arr, ite_false_eq_true, getElem?_zipRefLocals_none_left h_ty]
+    | some dstTy =>
+      rw [h_pt] at h_rpt
+      dsimp only
+      have h_ov_eq := refAssignHasUnsupportedOverlap_eq dstTy h_pl h_dec
+      rw [h_tp] at h_ov_eq
+      cases h_ov : assignHasUnsupportedOverlap dst dstTy rv with
+      | true =>
+        rw [h_ov] at h_ov_eq
+        dsimp only [evalRefMiriRvalue]
+        rw [h_dst]
+        dsimp only
+        rw [h_rpt]
+        dsimp only
+        rw [h_ov_eq]
         rfl
-      | some dstTy =>
-        let ⟨dstSlot, h_sl⟩ := getElem?_some_of_length_eq h_len.symm h_ty
-        have h_dst := getElem?_zipRefLocals_some h_ty h_sl
+      | false =>
+        rw [h_ov] at h_ov_eq
+        rw [ite_eq_right (fun h => Bool.noConfusion h)]
         cases rrv with
         | use rop =>
           dsimp only [decodeRvalue, optMap] at h_dec
@@ -1362,19 +2418,20 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
             rw [h_op] at h_dec
             injection h_dec with h_eq
             subst h_eq
-            rw [evalRefMiriRvalue_use ts _ localId dstSlot dstTy rop h_dst]
+            rw [evalRefMiriRvalue_use ts _ dst.localId _ dstSlot localTy dstTy
+              rop h_dst h_rpt h_ov_eq]
             dsimp only [evalRvalue]
             rw [evalRefMiriOperandToSlot_eq h_op]
             cases evalOperandToSlot bodyLocals slots op with
             | error _ => rfl
             | ok res =>
-              let ⟨srcTy, optVal, slots₁⟩ := res
+              let ⟨srcTy, sv, slots₁⟩ := res
               dsimp only [mapSlotRes]
               cases MirTy.beq srcTy dstTy
               · rfl
-              · cases optVal with
+              · cases sv.toVal? with
                 | none => rfl
-                | some v => exact writeRefPlace_eq h_ty
+                | some v => exact writeRefPlace_eq h_ty h_proj
         | binaryOp op lhs rhs =>
           dsimp only [decodeRvalue, optMap2] at h_dec
           cases h_l : decodeOperand ts lhs with
@@ -1386,21 +2443,21 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
               rw [h_l, h_r] at h_dec
               injection h_dec with h_eq
               subst h_eq
-              rw [evalRefMiriRvalue_binaryOp ts _ localId dstSlot dstTy op lhs
-                rhs h_dst]
+              rw [evalRefMiriRvalue_binaryOp ts _ dst.localId _ dstSlot localTy
+                dstTy op lhs rhs h_dst h_rpt]
               dsimp only [evalRvalue]
               rw [evalRefMiriOperandToSlot_eq h_l]
               dsimp only [evalPrimitiveOperand]
               cases evalOperandToSlot bodyLocals slots l' with
               | error _ => rfl
               | ok resL =>
-                let ⟨lTy, lOpt, slots₁⟩ := resL
+                let ⟨lTy, lSv, slots₁⟩ := resL
                 dsimp only [mapSlotRes]
                 rw [readRefPrimitiveSlot_eq]
                 cases isPrimitiveReadableTy lTy
                 · rfl
                 · dsimp only [Bool.not, ite_false_eq_true]
-                  cases lOpt with
+                  cases lSv.toVal? with
                   | none => rfl
                   | some lVal =>
                     dsimp only
@@ -1408,20 +2465,20 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
                     cases evalOperandToSlot bodyLocals slots₁ r' with
                     | error _ => rfl
                     | ok resR =>
-                      let ⟨rTy, rOpt, slots₂⟩ := resR
+                      let ⟨rTy, rSv, slots₂⟩ := resR
                       dsimp only [mapSlotRes]
                       rw [readRefPrimitiveSlot_eq]
                       cases isPrimitiveReadableTy rTy
                       · rfl
                       · dsimp only [Bool.not, ite_false_eq_true]
-                        cases rOpt with
+                        cases rSv.toVal? with
                         | none => rfl
                         | some rVal =>
                           dsimp only
                           rw [evalRefBinOp_eq]
                           cases evalBinOp op lVal rVal with
                           | error _ => rfl
-                          | ok v => exact writeRefPlace_eq h_ty
+                          | ok v => exact writeRefPlace_eq h_ty h_proj
         | unaryOp op rop =>
           dsimp only [decodeRvalue, optMap] at h_dec
           cases h_op : decodeOperand ts rop with
@@ -1430,27 +2487,27 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
             rw [h_op] at h_dec
             injection h_dec with h_eq
             subst h_eq
-            rw [evalRefMiriRvalue_unaryOp ts _ localId dstSlot dstTy op rop
-              h_dst]
+            rw [evalRefMiriRvalue_unaryOp ts _ dst.localId _ dstSlot localTy
+              dstTy op rop h_dst h_rpt]
             dsimp only [evalRvalue, evalPrimitiveOperand]
             rw [evalRefMiriOperandToSlot_eq h_op]
             cases evalOperandToSlot bodyLocals slots op' with
             | error _ => rfl
             | ok res =>
-              let ⟨ty, optVal, slots₁⟩ := res
+              let ⟨ty, sv, slots₁⟩ := res
               dsimp only [mapSlotRes]
               rw [readRefPrimitiveSlot_eq]
               cases isPrimitiveReadableTy ty
               · rfl
               · dsimp only [Bool.not, ite_false_eq_true]
-                cases optVal with
+                cases sv.toVal? with
                 | none => rfl
                 | some v =>
                   dsimp only
                   rw [evalRefUnOp_eq]
                   cases evalUnOp op v with
                   | error _ => rfl
-                  | ok u => exact writeRefPlace_eq h_ty
+                  | ok u => exact writeRefPlace_eq h_ty h_proj
         | discriminant rp =>
           dsimp only [decodeRvalue, optMap] at h_dec
           cases h_p : decodePlace ts rp with
@@ -1481,8 +2538,8 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
                   injection h_opt with h_ty_eq
                   subst h_ty_eq
                   exact h_tys id (.enum ety) h_bty
-            rw [evalRefMiriRvalue_discriminant_eq _ localId dstSlot dstTy rp
-              h_dst h_zip_tys]
+            rw [evalRefMiriRvalue_discriminant_eq _ dst.localId _ dstSlot
+              localTy dstTy rp h_dst h_rpt h_zip_tys]
             dsimp only [evalRvalue]
             rw [h_pemp, h_pid]
             cases p.projection.isEmpty
@@ -1507,41 +2564,37 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
                       | zeroSized =>
                         cases slot with
                         | dead => rfl
-                        | live opt =>
-                          cases opt with
-                          | none =>
+                        | live sv =>
+                          cases sv with
+                          | uninit =>
                             cases MirSemantics.getElem? ety.discriminants 0 with
                             | none => rfl
-                            | some disc => exact writeRefPlace_eq h_ty
-                          | some val =>
-                            cases val with
-                            | enumVal ety' v =>
-                              dsimp only
-                              cases (EnumTy.beq ety ety' && Nat.beq v 0)
-                              · rfl
-                              · cases MirSemantics.getElem? ety.discriminants 0
-                                with
-                                | none => rfl
-                                | some disc => exact writeRefPlace_eq h_ty
-                            | _ => rfl
+                            | some disc => exact writeRefPlace_eq h_ty h_proj
+                          | enumVal ety' v =>
+                            dsimp only
+                            cases (EnumTy.beq ety ety' && Nat.beq v 0)
+                            · rfl
+                            · cases MirSemantics.getElem? ety.discriminants 0
+                              with
+                              | none => rfl
+                              | some disc => exact writeRefPlace_eq h_ty h_proj
+                          | _ => rfl
                       | scalar tagW tagS =>
                         cases slot with
                         | dead => rfl
-                        | live opt =>
-                          cases opt with
-                          | none => rfl
-                          | some val =>
-                            cases val with
-                            | enumVal ety' v =>
-                              dsimp only
-                              cases (EnumTy.beq ety ety' &&
-                                  Nat.blt v ety.discriminants.length)
-                              · rfl
-                              · cases MirSemantics.getElem? ety.discriminants v
-                                with
-                                | none => rfl
-                                | some disc => exact writeRefPlace_eq h_ty
-                            | _ => rfl
+                        | live sv =>
+                          cases sv with
+                          | uninit => rfl
+                          | enumVal ety' v =>
+                            dsimp only
+                            cases (EnumTy.beq ety ety' &&
+                                Nat.blt v ety.discriminants.length)
+                            · rfl
+                            · cases MirSemantics.getElem? ety.discriminants v
+                              with
+                              | none => rfl
+                              | some disc => exact writeRefPlace_eq h_ty h_proj
+                          | _ => rfl
                   | _ => rfl
         | ref m rp =>
           dsimp only [decodeRvalue, optMap] at h_dec
@@ -1551,7 +2604,8 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
             rw [h_p] at h_dec
             injection h_dec with h_eq
             subst h_eq
-            exact evalRefMiriRvalue_ref ts _ localId dstSlot dstTy m rp h_dst
+            exact evalRefMiriRvalue_ref ts _ dst.localId _ dstSlot localTy dstTy
+              m rp h_dst h_rpt
         | addressOf m rp =>
           dsimp only [decodeRvalue, optMap] at h_dec
           cases h_p : decodePlace ts rp with
@@ -1560,22 +2614,64 @@ theorem evalRefMiriRvalue_eq {ts bodyLocals : List MirTy}
             rw [h_p] at h_dec
             injection h_dec with h_eq
             subst h_eq
-            exact evalRefMiriRvalue_addressOf ts _ localId dstSlot dstTy m rp
-              h_dst
+            exact evalRefMiriRvalue_addressOf ts _ dst.localId _ dstSlot localTy
+              dstTy m rp h_dst h_rpt
         | aggregateTuple rops =>
           dsimp only [decodeRvalue, optMap] at h_dec
           cases h_ops : mapOption (decodeOperand ts) rops with
           | none => rw [h_ops] at h_dec; cases h_dec
-          | some _ =>
+          | some ops =>
             rw [h_ops] at h_dec
             injection h_dec with h_eq
             subst h_eq
-            exact evalRefMiriRvalue_aggregateTuple ts _ localId dstSlot dstTy
-              rops h_dst
+            exact evalRefMiriRvalue_aggregateTuple_eq h_ty h_proj h_dst h_rpt
+              h_ops h_ov_eq
+        | cast kind rop tyId =>
+          dsimp only [decodeRvalue, optMap2] at h_dec
+          cases h_op : decodeOperand ts rop with
+          | none => rw [h_op] at h_dec; cases h_dec
+          | some op' =>
+            cases h_ct : MirSemantics.getElem? ts tyId with
+            | none => rw [h_op, h_ct] at h_dec; cases h_dec
+            | some castTy =>
+              rw [h_op, h_ct] at h_dec
+              injection h_dec with h_eq
+              subst h_eq
+              rw [evalRefMiriRvalue_cast ts _ dst.localId _ dstSlot localTy
+                dstTy kind rop tyId h_dst h_rpt]
+              dsimp only [evalRvalue, evalPrimitiveOperand]
+              rw [evalRefMiriOperandToSlot_eq h_op]
+              cases evalOperandToSlot bodyLocals slots op' with
+              | error _ => rfl
+              | ok res =>
+                let ⟨srcTy, sv, slots₁⟩ := res
+                dsimp only [mapSlotRes]
+                rw [readRefPrimitiveSlot_eq]
+                cases isPrimitiveReadableTy srcTy
+                · rfl
+                · dsimp only [Bool.not, ite_false_eq_true]
+                  cases sv.toVal? with
+                  | none => rfl
+                  | some v =>
+                    dsimp only
+                    cases kind with
+                    | unsupported => rfl
+                    | intToInt =>
+                      dsimp only
+                      rw [h_ct]
+                      dsimp only
+                      cases MirTy.beq castTy dstTy
+                      · rfl
+                      · dsimp only [Bool.not, ite_false_eq_true]
+                        rw [evalRefMiriIntToIntCast_eq]
+                        cases evalIntToIntCast v castTy with
+                        | error _ => rfl
+                        | ok res₂ => exact writeRefPlace_eq h_ty h_proj
         | unsupported =>
           injection h_dec with h_eq
           subst h_eq
-          exact evalRefMiriRvalue_unsupported ts _ localId dstSlot dstTy h_dst
+          exact evalRefMiriRvalue_unsupported ts _ dst.localId _ dstSlot localTy
+            dstTy h_dst h_rpt
 
 theorem getElem?_none_of_setElem?_none {α : Type} {xs : List α} {i : Nat}
     {v : α}
@@ -1608,11 +2704,11 @@ theorem getElem?_some_of_setElem?_some {α : Type} {xs xs' : List α} {i : Nat}
       | some _ => exact ih h_r
 
 private abbrev RefStepState :=
-  Miri.Interpreter.StepState (Option Val) Miri.Interpreter.LocalLayout Unit
+  Miri.Interpreter.StepState SlotVal Miri.Interpreter.LocalLayout Unit
     RefStepMachine
 
 private abbrev RefMiriFrame :=
-  Miri.Interpreter.Frame (Option Val) Miri.Interpreter.LocalLayout Unit
+  Miri.Interpreter.Frame SlotVal Miri.Interpreter.LocalLayout Unit
 
 private theorem evalRefStatement_of_ok (ts : List MirTy)
     (rframe : RefFrameState) (callerMem : CallerMemory)
@@ -1945,20 +3041,33 @@ theorem evalRefStatement_eq {ts : List MirTy} {body : Body} {f : FrameState}
         rw [evalRefStatement_assign]
         dsimp only [evalStatement, liftFrame]
         rw [evalRefMiriRvalue_eq h_len h_tys h_pl h_rv]
-        cases dst.projection.isEmpty
-        · rfl
-        · dsimp only [Bool.not, ite_false_eq_true]
-          cases MirSemantics.getElem? body.locals dst.localId with
+        cases MirSemantics.getElem? body.locals dst.localId with
+        | none => rfl
+        | some localTy =>
+          dsimp only
+          cases projectTy? localTy dst.projection with
           | none => rfl
           | some dstTy =>
             dsimp only
-            cases evalRvalue body.locals f.locals dstTy rv with
-            | error _ => rfl
-            | ok res =>
-              cases res with
-              | mk val localsAfterRval =>
+            cases assignHasUnsupportedOverlap dst dstTy rv with
+            | true => rfl
+            | false =>
+              rw [ite_eq_right (fun h => Bool.noConfusion h)]
+              rw [ite_eq_right (fun h => Bool.noConfusion h)]
+              cases rv with
+              | aggregateTuple ops =>
                 dsimp only
-                cases writePlace localsAfterRval dst.localId dstTy val <;> rfl
+                cases writeAggregateTuple body.locals f.locals dst dstTy ops <;>
+                  rfl
+              | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _
+              | ref _ _ | addressOf _ _ | cast _ _ _ | unsupported =>
+                cases evalRvalue body.locals f.locals dstTy _ with
+                | error _ => rfl
+                | ok res =>
+                  cases res with
+                  | mk val localsAfterRval =>
+                    dsimp only
+                    cases writePlace localsAfterRval dst dstTy val <;> rfl
   | unsupported =>
     injection h_dec with h_eq
     subst h_eq
@@ -1997,7 +3106,15 @@ private theorem evalRefTerminator_eq_of_term (ts : List MirTy)
               }]
               callerMem
             }
-          | none => .fault .unsupported
+          | none =>
+            match Miri.Interpreter.Step.step
+                (refStepHooksFor ts callerMem) () st' with
+            | (st'', .ok true) =>
+              match st''.machine.terminal with
+              | some res => res
+              | none => .fault .unsupported
+            | (_, .error (.undefinedBehavior _)) => .fault .undefined
+            | (_, _) => .fault .unsupported
       | (_, .error (.undefinedBehavior _)) => .fault .undefined
       | (_, _) => .fault .unsupported := by
   unfold evalRefTerminator
@@ -2012,27 +3129,38 @@ private theorem evalRefTerminator_eq_of_term (ts : List MirTy)
     | ok u => cases u; rfl
     | error e => cases e <;> rfl
 
+/-- Caller frame beneath the entry frame in `mkRefTermStepState`. -/
+private noncomputable def refCallerMiriFrame : RefMiriFrame :=
+  mkSingleLocalMiriFrame .dead false
+
+/-- Reference state after the entry frame is popped, with terminal outcome
+`terminal`. -/
+private noncomputable def refPoppedState (rframe : RefFrameState)
+    (terminal : Option (StepResult RefState TerminalOut)) : RefStepState :=
+  { stack := ⟨Array.mk [refCallerMiriFrame]⟩
+    machine := { locals := rframe.locals, terminal := terminal } }
+
 private noncomputable def expectedReturnEval (rframe : RefFrameState)
     (callerMem : CallerMemory) :
     Option RefLocalState →
       Miri.Interpreter.StepResult RefStepState Unit
-  | some ⟨.live (some retVal), some _⟩ =>
-    ({ stack := Miri.Interpreter.Stack.empty
-       machine :=
-         { locals := rframe.locals
-           terminal := some (.done (.returned ⟨retVal, callerMem⟩)) } },
-     .ok ())
-  | some ⟨.live none, some _⟩ | some ⟨.dead, some _⟩ =>
-    ({ stack := Miri.Interpreter.Stack.empty
-       machine := { locals := rframe.locals, terminal := none } },
-     .error (.undefinedBehavior "uninit or dead return place"))
+  | some ⟨.live sv, some _⟩ =>
+    match sv.toVal? with
+    | some retVal =>
+      (refPoppedState rframe (some (.done (.returned ⟨retVal, callerMem⟩))),
+        .ok ())
+    | none =>
+      (refPoppedState rframe none,
+        .error (.undefinedBehavior "uninit return place"))
+  | some ⟨.dead, some _⟩ =>
+    (refPoppedState rframe none,
+      .error (.undefinedBehavior "dead return place"))
   | _ =>
-    ({ stack := Miri.Interpreter.Stack.empty
-       machine := { locals := rframe.locals, terminal := none } },
-     .error (.unsupported "missing return place"))
+    (refPoppedState rframe none,
+      .error (.unsupported "missing return place"))
 
 private theorem evalTerminator_return_ref
-    (hooks : Miri.Interpreter.TerminatorHooks (Option Val)
+    (hooks : Miri.Interpreter.TerminatorHooks SlotVal
       Miri.Interpreter.LocalLayout Unit RefStepMachine Unit Unit Val)
     (st₀ stPop st₁ : RefStepState) (fr frPop : RefMiriFrame)
     (blk : Miri.MIR.BasicBlock)
@@ -2047,10 +3175,13 @@ private theorem evalTerminator_return_ref
       (st₁, out))
     (h_cl : hooks.toControlHooks.cleanupFrame () false frPop st₁ =
       (st₁, .ok .normal))
-    (h_cont : frPop.returnContinuation = .stop false)
-    (h_st : st₁.stack = Miri.Interpreter.Stack.empty) :
+    (h_cont : frPop.returnContinuation = .goto (some 0) .Continue) :
     Miri.Interpreter.ControlFlow.evalTerminator hooks ()
-      (toMiriTerminatorForDispatch .return_) st₀ = (st₁, out) := by
+      (toMiriTerminatorForDispatch .return_) st₀ =
+      Except.casesOn
+        (motive := fun _ => Miri.Interpreter.StepResult RefStepState Unit) out
+        (fun e => (st₁, .error e))
+        (fun _ => Miri.Interpreter.ControlFlow.returnToBlock (some 0) st₁) := by
   cases hooks with
   | mk ch _ _ _ _ _ _ _ _ =>
     cases ch with
@@ -2075,52 +3206,54 @@ private theorem evalTerminator_return_ref
       | ok u =>
         cases u
         rw [h_cl]; dsimp only
-        rw [h_cont]; dsimp only
-        rw [h_st]
-        rfl
+        rw [h_cont]
 
 private theorem evalRefTerminator_return_false (ts : List MirTy)
     (rbb : RefBasicBlock) (rframe : RefFrameState) (callerMem : CallerMemory)
     (h_rt : rbb.terminator = .return_) (h_cl : rbb.cleanup = false) :
     evalRefTerminator ts rbb rframe callerMem =
       match MirSemantics.getElem? rframe.locals 0 with
-      | some ⟨.live (some retVal), some _⟩ =>
-        .done (.returned ⟨retVal, callerMem⟩)
-      | some ⟨.live none, some _⟩ | some ⟨.dead, some _⟩ =>
-        .fault .undefined
+      | some ⟨.live sv, some _⟩ =>
+        match sv.toVal? with
+        | some retVal => .done (.returned ⟨retVal, callerMem⟩)
+        | none => .fault .undefined
+      | some ⟨.dead, some _⟩ => .fault .undefined
       | _ => .fault .unsupported := by
   have h_case : ∀ (opt : Option RefLocalState),
       MirSemantics.getElem? rframe.locals 0 = opt →
       evalRefTerminator ts rbb rframe callerMem =
         match opt with
-        | some ⟨.live (some retVal), some _⟩ =>
-          .done (.returned ⟨retVal, callerMem⟩)
-        | some ⟨.live none, some _⟩ | some ⟨.dead, some _⟩ =>
-          .fault .undefined
+        | some ⟨.live sv, some _⟩ =>
+          match sv.toVal? with
+          | some retVal => .done (.returned ⟨retVal, callerMem⟩)
+          | none => .fault .undefined
+        | some ⟨.dead, some _⟩ => .fault .undefined
         | _ => .fault .unsupported := by
     intro opt h_get
     rw [evalRefTerminator_eq_of_term, h_rt, h_cl]
     let st₀ := mkRefTermStepState rframe.locals
       (toMiriTerminatorForDispatch .return_) false
-    let stPop : RefStepState :=
-      { stack := Miri.Interpreter.Stack.empty
-        machine := { locals := rframe.locals, terminal := none } }
+    let stPop : RefStepState := refPoppedState rframe none
     let blk : Miri.MIR.BasicBlock :=
       { refDummyMirBlock false with
         terminator := toMiriTerminatorForDispatch .return_ }
     let fr : RefMiriFrame :=
       { mkSingleLocalMiriFrame .dead false with
         body := { refDummyMirBody false with basicBlocks := Array.mk [blk] }
+        returnContinuation := .goto (some 0) .Continue
         location := .mir ⟨0, 0⟩ }
     have h_cf : st₀.stack.currentFrame? = some fr := rfl
     have h_loc : fr.location = .mir ⟨0, 0⟩ := rfl
     have h_bb : fr.body.basicBlocks[0]? = some blk := rfl
+    have h_pf :
+        (refTerminatorHooksFor ts callerMem).toControlHooks.popFrame () st₀ =
+          (stPop, .ok fr) := rfl
     have h_cp_eq :
         (refTerminatorHooksFor ts callerMem).toControlHooks.copyReturn () ()
-          (mkSingleLocalMiriFrame .dead false).returnPlace stPop =
+          fr.returnPlace stPop =
           expectedReturnEval rframe callerMem opt := by
-      dsimp only [refTerminatorHooksFor,
-        Miri.Interpreter.TerminatorHooks.toControlHooks, stPop]
+      dsimp only [refTerminatorHooksFor, refControlHooksFor, stPop,
+        refPoppedState]
       rw [h_get]
       cases opt with
       | none => rfl
@@ -2129,30 +3262,21 @@ private theorem evalRefTerminator_return_false (ts : List MirTy)
         | mk slot optTy =>
           cases slot with
           | dead => cases optTy <;> rfl
-          | live optVal =>
-            cases optVal with
-            | none => cases optTy <;> rfl
-            | some _ => cases optTy <;> rfl
-    have h_st_empty :
-        (expectedReturnEval rframe callerMem opt).1.stack =
-          Miri.Interpreter.Stack.empty := by
-      cases opt with
-      | none => rfl
-      | some rloc =>
-        cases rloc with
-        | mk slot optTy =>
-          cases slot with
-          | dead => cases optTy <;> rfl
-          | live optVal =>
-            cases optVal with
-            | none => cases optTy <;> rfl
-            | some _ => cases optTy <;> rfl
+          | live sv =>
+            cases optTy with
+            | none => rfl
+            | some _ =>
+              dsimp only [expectedReturnEval]
+              cases sv.toVal? <;> rfl
+    have h_cl_eq :
+        (refTerminatorHooksFor ts callerMem).toControlHooks.cleanupFrame ()
+          false fr (expectedReturnEval rframe callerMem opt).1 =
+          ((expectedReturnEval rframe callerMem opt).1, .ok .normal) := rfl
     have h_eval := evalTerminator_return_ref
       (refTerminatorHooksFor ts callerMem) st₀ stPop
-      (expectedReturnEval rframe callerMem opt).1 fr
-      (mkSingleLocalMiriFrame .dead false) blk
+      (expectedReturnEval rframe callerMem opt).1 fr fr blk
       (expectedReturnEval rframe callerMem opt).2
-      h_cf h_loc h_bb rfl rfl rfl h_cp_eq rfl rfl h_st_empty
+      h_cf h_loc h_bb rfl rfl h_pf h_cp_eq h_cl_eq rfl
     change (match Miri.Interpreter.ControlFlow.evalTerminator
         (refTerminatorHooksFor ts callerMem) ()
         (toMiriTerminatorForDispatch .return_) st₀ with
@@ -2171,7 +3295,15 @@ private theorem evalRefTerminator_return_false (ts : List MirTy)
               }]
               callerMem
             }
-          | none => .fault .unsupported
+          | none =>
+            match Miri.Interpreter.Step.step
+                (refStepHooksFor ts callerMem) () st' with
+            | (st'', .ok true) =>
+              match st''.machine.terminal with
+              | some res => res
+              | none => .fault .unsupported
+            | (_, .error (.undefinedBehavior _)) => .fault .undefined
+            | (_, _) => .fault .unsupported
       | (_, .error (.undefinedBehavior _)) => .fault .undefined
       | (_, _) => .fault .unsupported) = _
     rw [h_eval]
@@ -2182,10 +3314,12 @@ private theorem evalRefTerminator_return_false (ts : List MirTy)
       | mk slot optTy =>
         cases slot with
         | dead => cases optTy <;> rfl
-        | live optVal =>
-          cases optVal with
-          | none => cases optTy <;> rfl
-          | some _ => cases optTy <;> rfl
+        | live sv =>
+          cases optTy with
+          | none => rfl
+          | some _ =>
+            dsimp only [expectedReturnEval]
+            cases sv.toVal? <;> rfl
   exact h_case _ rfl
 
 private theorem evalRefTerminator_return_true (ts : List MirTy)
@@ -2195,6 +3329,98 @@ private theorem evalRefTerminator_return_true (ts : List MirTy)
   unfold evalRefTerminator
   rw [h_rt, h_cl]
   rfl
+
+/-- `UnwindResume` unwinds out of the entry frame from a cleanup block and is
+rejected outside one. -/
+private theorem evalRefTerminator_unwindResume (ts : List MirTy)
+    (rbb : RefBasicBlock) (rframe : RefFrameState) (callerMem : CallerMemory)
+    (h_rt : rbb.terminator = .unwindResume) :
+    evalRefTerminator ts rbb rframe callerMem =
+      if rbb.cleanup then .done (.unwound callerMem)
+      else .fault .unsupported := by
+  unfold evalRefTerminator
+  rw [h_rt]
+  cases rbb.cleanup <;> rfl
+
+/-- The reference check of a translated assert message agrees with
+`isOperandFreeAssertKind`. -/
+private theorem refIsOperandFreeAssertKind_eq (msg : AssertKind) :
+    refIsOperandFreeAssertKind (toMiriAssertKind msg) =
+      isOperandFreeAssertKind msg := by
+  cases msg with
+  | overflow op => cases op <;> rfl
+  | _ => rfl
+
+/-- `Assert` lockstep on the reference side: the condition is evaluated like a
+`SwitchInt` discriminant; a passing assertion jumps to its target, and a
+failing one checks the message and then follows the unwind action. -/
+private theorem evalRefTerminator_assert (ts : List MirTy)
+    (rbb : RefBasicBlock) (rframe : RefFrameState) (callerMem : CallerMemory)
+    (rcond : RefOperand) (expected : Bool) (msg : AssertKind)
+    (target : BasicBlockId) (unwind : UnwindAction)
+    (h_rt : rbb.terminator = .assert rcond expected msg target unwind) :
+    evalRefTerminator ts rbb rframe callerMem =
+      match evalRefMiriOperandToSlot ts rframe.locals
+          (toMiriOperand rcond) with
+      | .error k => .fault k
+      | .ok (ty, sv, rlocalsAfterCond) =>
+        match readRefPrimitiveSlot ty sv with
+        | .error k => .fault k
+        | .ok condVal =>
+          match condVal with
+          | .bool b =>
+            if expected == b then
+              .step {
+                frames := [{
+                  rframe with
+                  blockIdx := target
+                  stmtIdx := 0
+                  locals := rlocalsAfterCond
+                }]
+                callerMem
+              }
+            else if !isOperandFreeAssertKind msg then
+              .fault .unsupported
+            else
+              UnwindAction.casesOn
+                (motive := fun _ => StepResult RefState TerminalOut) unwind
+                (.done (.unwound callerMem))
+                (.fault .undefined)
+                (.fault .unsupported)
+                (fun block =>
+                  .step {
+                    frames := [{
+                      rframe with
+                      blockIdx := block
+                      stmtIdx := 0
+                      locals := rlocalsAfterCond
+                    }]
+                    callerMem
+                  })
+          | _ => .fault .unsupported := by
+  rw [evalRefTerminator_eq_of_term, h_rt]
+  dsimp only [Miri.Interpreter.ControlFlow.evalTerminator,
+    toMiriTerminatorForDispatch, refTerminatorHooksFor,
+    mkRefTermStepState, Id.run, Bind.bind, Pure.pure]
+  cases evalRefMiriOperandToSlot ts rframe.locals (toMiriOperand rcond) with
+  | error k => cases k <;> rfl
+  | ok res =>
+    let ⟨ty, sv, rlocalsAfterCond⟩ := res
+    dsimp only
+    cases readRefPrimitiveSlot ty sv with
+    | error k => cases k <;> rfl
+    | ok condVal =>
+      dsimp only
+      cases condVal with
+      | bool b =>
+        dsimp only
+        rw [refIsOperandFreeAssertKind_eq]
+        cases (expected == b)
+        · cases isOperandFreeAssertKind msg
+          · rfl
+          · cases unwind <;> rfl
+        · rfl
+      | scalar _ | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ => rfl
 
 private theorem forIn_list_map_congr {α β σ : Type} (l : List α) (init : σ)
     (m : α → β) (f g : β → σ → Id (ForInStep σ))
@@ -2315,13 +3541,14 @@ private theorem switchInt_forIn_cons {st : RefStepState}
 
 private theorem switchInt_forIn_scalar {ts : List MirTy}
     {callerMem : CallerMemory}
-    (rlocals : List RefLocalState) (mframe : RefMiriFrame)
+    (rlocals : List RefLocalState)
+    (stk : Miri.Interpreter.Stack SlotVal Miri.Interpreter.LocalLayout Unit)
     (sv : ScalarVal) (otherwise : BasicBlockId)
     (branches : List (BitVec 128 × BasicBlockId)) :
     forIn (m := Id)
       (branches.map (fun b => Miri.MIR.SwitchTarget.Case b.1.toNat b.2))
       ((none : Option (Miri.Interpreter.StepResult RefStepState Unit)),
-        ({ stack := ⟨Array.mk [mframe]⟩
+        ({ stack := stk
            machine := { locals := rlocals, terminal := none } } : RefStepState),
         otherwise)
       (fun case __s =>
@@ -2345,15 +3572,15 @@ private theorem switchInt_forIn_scalar {ts : List MirTy}
               pure (ForInStep.yield (none, state, target))) =
       match evalSwitchBranches sv.width sv.bits otherwise branches with
       | .error _ =>
-        (some ({ stack := ⟨Array.mk [mframe]⟩
+        (some ({ stack := stk
                  machine := { locals := rlocals, terminal := none } },
                .error (faultToStepError .unsupported)),
-         { stack := ⟨Array.mk [mframe]⟩
+         { stack := stk
            machine := { locals := rlocals, terminal := none } },
          otherwise)
       | .ok target =>
         (none,
-         { stack := ⟨Array.mk [mframe]⟩
+         { stack := stk
            machine := { locals := rlocals, terminal := none } },
          target) := by
   induction branches with
@@ -2378,13 +3605,14 @@ private theorem switchInt_forIn_scalar {ts : List MirTy}
 
 private theorem switchInt_forIn_bool {ts : List MirTy}
     {callerMem : CallerMemory}
-    (rlocals : List RefLocalState) (mframe : RefMiriFrame)
+    (rlocals : List RefLocalState)
+    (stk : Miri.Interpreter.Stack SlotVal Miri.Interpreter.LocalLayout Unit)
     (b : Bool) (otherwise : BasicBlockId)
     (branches : List (BitVec 128 × BasicBlockId)) :
     forIn (m := Id)
       (branches.map (fun b => Miri.MIR.SwitchTarget.Case b.1.toNat b.2))
       ((none : Option (Miri.Interpreter.StepResult RefStepState Unit)),
-        ({ stack := ⟨Array.mk [mframe]⟩
+        ({ stack := stk
            machine := { locals := rlocals, terminal := none } } : RefStepState),
         otherwise)
       (fun case __s =>
@@ -2408,15 +3636,15 @@ private theorem switchInt_forIn_bool {ts : List MirTy}
               pure (ForInStep.yield (none, state, target))) =
       match evalBoolSwitchBranches b otherwise branches with
       | .error k =>
-        (some ({ stack := ⟨Array.mk [mframe]⟩
+        (some ({ stack := stk
                  machine := { locals := rlocals, terminal := none } },
                .error (faultToStepError k)),
-         { stack := ⟨Array.mk [mframe]⟩
+         { stack := stk
            machine := { locals := rlocals, terminal := none } },
          otherwise)
       | .ok target =>
         (none,
-         { stack := ⟨Array.mk [mframe]⟩
+         { stack := stk
            machine := { locals := rlocals, terminal := none } },
          target) := by
   induction branches with
@@ -2451,8 +3679,8 @@ private theorem evalRefTerminator_switchInt (ts : List MirTy)
       match evalRefMiriOperandToSlot ts rframe.locals
           (toMiriOperand rdiscr) with
       | .error k => .fault k
-      | .ok (ty, optVal, rlocalsAfterDiscr) =>
-        match readRefPrimitiveSlot ty optVal with
+      | .ok (ty, sv, rlocalsAfterDiscr) =>
+        match readRefPrimitiveSlot ty sv with
         | .error k => .fault k
         | .ok discrVal =>
           let targetRes : Except FaultKind BasicBlockId :=
@@ -2489,17 +3717,18 @@ private theorem evalRefTerminator_switchInt (ts : List MirTy)
       basicBlocks := Array.mk [{ refDummyMirBlock rbb.cleanup with
         terminator := mirTerm }]
     }
+    returnContinuation := .goto (some 0) .Continue
     location := .mir ⟨0, 0⟩
   }
   dsimp only [Miri.Interpreter.ControlFlow.evalTerminator,
     toMiriTerminatorForDispatch, refTerminatorHooksFor,
-    mkRefTermStepState, mkRefStepStateWith, Id.run, Bind.bind, Pure.pure]
+    mkRefTermStepState, Id.run, Bind.bind, Pure.pure]
   cases evalRefMiriOperandToSlot ts rframe.locals (toMiriOperand rdiscr) with
   | error k => cases k <;> rfl
   | ok res =>
-    let ⟨ty, optVal, rlocalsAfterDiscr⟩ := res
+    let ⟨ty, sv₀, rlocalsAfterDiscr⟩ := res
     dsimp only
-    cases readRefPrimitiveSlot ty optVal with
+    cases readRefPrimitiveSlot ty sv₀ with
     | error k => cases k <;> rfl
     | ok discrVal =>
       dsimp only
@@ -2528,7 +3757,8 @@ private theorem evalRefTerminator_switchInt (ts : List MirTy)
               | Except.ok false =>
                 pure (ForInStep.yield (none, state, target)))]
         · rw [@switchInt_forIn_scalar ts callerMem rlocalsAfterDiscr
-            mframe sv targets.otherwise targets.branches]
+            ⟨Array.mk [mkSingleLocalMiriFrame .dead false, mframe]⟩ sv
+            targets.otherwise targets.branches]
           cases h_sw : evalSwitchBranches sv.width sv.bits targets.otherwise
               targets.branches with
           | error k =>
@@ -2568,7 +3798,8 @@ private theorem evalRefTerminator_switchInt (ts : List MirTy)
               | Except.ok false =>
                 pure (ForInStep.yield (none, state, target)))]
         · rw [@switchInt_forIn_bool ts callerMem rlocalsAfterDiscr
-            mframe b targets.otherwise targets.branches]
+            ⟨Array.mk [mkSingleLocalMiriFrame .dead false, mframe]⟩ b
+            targets.otherwise targets.branches]
           cases evalBoolSwitchBranches b targets.otherwise targets.branches with
           | error k => cases k <;> rfl
           | ok target => rfl
@@ -2612,13 +3843,13 @@ theorem evalRefTerminator_eq {ts : List MirTy} {body : Body}
       cases evalOperandToSlot body.locals f.locals discr with
       | error _ => rfl
       | ok res =>
-        let ⟨ty, optVal, localsAfterDiscr⟩ := res
+        let ⟨ty, sv₀, localsAfterDiscr⟩ := res
         dsimp only [mapSlotRes]
         rw [readRefPrimitiveSlot_eq]
         cases isPrimitiveReadableTy ty
         · rfl
         · dsimp only [Bool.not, ite_false_eq_true]
-          cases optVal with
+          cases sv₀.toVal? with
           | none => rfl
           | some discrVal =>
             dsimp only
@@ -2649,7 +3880,9 @@ theorem evalRefTerminator_eq {ts : List MirTy} {body : Body}
         rw [getElem?_zipRefLocals_some h_ty h_sl]
         cases s with
         | dead => rfl
-        | live o => cases o <;> rfl
+        | live sv₀ =>
+          dsimp only
+          cases sv₀.toVal? <;> rfl
     · rw [evalRefTerminator_return_true _ _ _ _ h_rt (h_cleanup.trans h_cl)]
       unfold evalTerminator
       rw [← h_eq, h_cl]
@@ -2663,9 +3896,10 @@ theorem evalRefTerminator_eq {ts : List MirTy} {body : Body}
   | unwindResume =>
     rw [h_rt] at h_term
     injection h_term with h_eq
-    unfold evalRefTerminator evalTerminator
-    rw [h_rt, ← h_eq]
-    rfl
+    rw [evalRefTerminator_unwindResume _ _ _ _ h_rt]
+    unfold evalTerminator
+    rw [← h_eq, h_cleanup]
+    cases bb.cleanup <;> rfl
   | assert rcond exp msg t u =>
     rw [h_rt] at h_term
     dsimp only [decodeTerminator, optMap] at h_term
@@ -2674,9 +3908,33 @@ theorem evalRefTerminator_eq {ts : List MirTy} {body : Body}
     | some c =>
       rw [h_c] at h_term
       injection h_term with h_eq
-      unfold evalRefTerminator evalTerminator
-      rw [h_rt, ← h_eq]
-      rfl
+      rw [evalRefTerminator_assert _ _ _ _ _ _ _ _ _ h_rt]
+      unfold evalTerminator
+      rw [← h_eq]
+      dsimp only [liftFrame, evalPrimitiveOperand]
+      rw [evalRefMiriOperandToSlot_eq h_c]
+      cases evalOperandToSlot body.locals f.locals c with
+      | error _ => rfl
+      | ok res =>
+        let ⟨ty, sv₀, localsAfterCond⟩ := res
+        dsimp only [mapSlotRes]
+        rw [readRefPrimitiveSlot_eq]
+        cases isPrimitiveReadableTy ty
+        · rfl
+        · dsimp only [Bool.not, ite_false_eq_true]
+          cases sv₀.toVal? with
+          | none => rfl
+          | some condVal =>
+            dsimp only
+            cases condVal with
+            | bool b =>
+              dsimp only
+              cases (exp == b)
+              · cases isOperandFreeAssertKind msg
+                · rfl
+                · cases u <;> rfl
+              · rfl
+            | scalar _ | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ => rfl
   | call callee rargs rdst t u =>
     rw [h_rt] at h_term
     dsimp only [decodeTerminator, optMap2] at h_term
@@ -2740,29 +3998,51 @@ theorem evalStatement_step_inv {body : Body} {f : FrameState}
     · cases h_step
   | assign dst rvalue =>
     dsimp only [evalStatement] at h_step
-    cases h_emp : dst.projection.isEmpty <;> rw [h_emp] at h_step
-    · cases h_step
-    · cases h_ty : MirSemantics.getElem? body.locals dst.localId with
-      | none => rw [h_ty] at h_step; cases h_step
+    cases h_ty : MirSemantics.getElem? body.locals dst.localId with
+    | none => rw [h_ty] at h_step; cases h_step
+    | some localTy =>
+      rw [h_ty] at h_step
+      dsimp only at h_step
+      cases h_pt : projectTy? localTy dst.projection with
+      | none => rw [h_pt] at h_step; cases h_step
       | some dstTy =>
-        rw [h_ty] at h_step
+        rw [h_pt] at h_step
         dsimp only at h_step
-        cases h_rv : evalRvalue body.locals f.locals dstTy rvalue with
-        | error _ => rw [h_rv] at h_step; cases h_step
-        | ok res =>
-          rw [h_rv] at h_step
-          cases res with | mk val localsAfterRval =>
-          dsimp only at h_step
-          cases h_wr : writePlace localsAfterRval dst.localId dstTy val with
-          | error _ => rw [h_wr] at h_step; cases h_step
-          | ok localsAfterWrite =>
-            rw [h_wr] at h_step
-            injection h_step with h_eq
-            have h_len₁ := (evalRvalue_length h_rv).trans h_len
-            have h_len₂ := (writePlace_length h_wr).trans h_len₁
-            refine ⟨{ f with
-                stmtIdx := f.stmtIdx + 1, locals := localsAfterWrite },
-              h_eq.symm, rfl, h_len₂⟩
+        cases h_ov : assignHasUnsupportedOverlap dst dstTy rvalue <;>
+            rw [h_ov] at h_step
+        · rw [ite_eq_right (fun h => Bool.noConfusion h)] at h_step
+          cases rvalue with
+          | aggregateTuple ops =>
+            dsimp only at h_step
+            cases h_wa : writeAggregateTuple body.locals f.locals dst dstTy
+                ops with
+            | error _ => rw [h_wa] at h_step; cases h_step
+            | ok localsAfterWrite =>
+              rw [h_wa] at h_step
+              injection h_step with h_eq
+              have h_len₁ := (writeAggregateTuple_length h_wa).trans h_len
+              refine ⟨{ f with
+                  stmtIdx := f.stmtIdx + 1, locals := localsAfterWrite },
+                h_eq.symm, rfl, h_len₁⟩
+          | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _
+          | ref _ _ | addressOf _ _ | cast _ _ _ | unsupported =>
+            cases h_rv : evalRvalue body.locals f.locals dstTy _ with
+            | error _ => rw [h_rv] at h_step; cases h_step
+            | ok res =>
+              rw [h_rv] at h_step
+              cases res with | mk val localsAfterRval =>
+              dsimp only at h_step
+              cases h_wr : writePlace localsAfterRval dst dstTy val with
+              | error _ => rw [h_wr] at h_step; cases h_step
+              | ok localsAfterWrite =>
+                rw [h_wr] at h_step
+                injection h_step with h_eq
+                have h_len₁ := (evalRvalue_length h_rv).trans h_len
+                have h_len₂ := (writePlace_length h_wr).trans h_len₁
+                refine ⟨{ f with
+                    stmtIdx := f.stmtIdx + 1, locals := localsAfterWrite },
+                  h_eq.symm, rfl, h_len₂⟩
+        · cases h_step
   | unsupported => cases h_step
 
 theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
@@ -2787,11 +4067,39 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         rw [h_sl] at h_step
         cases s with
         | dead => cases h_step
-        | live o => cases o <;> cases h_step
+        | live sv₀ =>
+          dsimp only at h_step
+          cases h_v : sv₀.toVal? <;> rw [h_v] at h_step <;> cases h_step
     · cases h_step
-  | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | unsupported =>
+  | unreachable | call _ _ _ _ _ | unsupported =>
     cases h_step
+  | unwindResume =>
+    dsimp only [evalTerminator] at h_step
+    cases cleanup <;> cases h_step
+  | assert cond expected msg target unwind =>
+    dsimp only [evalTerminator] at h_step
+    cases h_d : evalPrimitiveOperand body.locals f.locals cond with
+    | error _ => rw [h_d] at h_step; cases h_step
+    | ok res =>
+      rw [h_d] at h_step
+      cases res with | mk condVal localsAfterCond =>
+      have h_len₁ := (evalPrimitiveOperand_length h_d).trans h_len
+      dsimp only at h_step
+      cases condVal with
+      | bool b =>
+        dsimp only at h_step
+        cases h_e : (expected == b) <;> rw [h_e] at h_step
+        · cases h_m : isOperandFreeAssertKind msg <;> rw [h_m] at h_step
+          · cases h_step
+          · cases unwind with
+            | cleanup block =>
+              injection h_step with h_eq
+              refine ⟨_, h_eq.symm, rfl, h_len₁⟩
+            | continue_ | unreachable | terminate => cases h_step
+        · injection h_step with h_eq
+          refine ⟨_, h_eq.symm, rfl, h_len₁⟩
+      | scalar _ | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ =>
+        cases h_step
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_step
     cases h_d : evalPrimitiveOperand body.locals f.locals discr with
@@ -3743,7 +5051,8 @@ theorem miri_move_deinit_wiring_claim_holds : MiriMoveDeinitWiringClaim := by
   · intro P S C E Other Extern FnABI ArgABI h choice place snap
     exact ⟨rfl, rfl⟩
 
-/-! ## Move Deinitialization, Overflow, and Enum Canaries (`D6`–`D13`) -/
+/-! ## Move Deinitialization, Overflow, Enum, Tuple, Cast, and Unwind Canaries
+(`D6`–`D18`) -/
 
 open Trusted.Correspondence Anneal.MirWp
 
@@ -3822,7 +5131,7 @@ theorem canary_D7c_binop_move_then_move_ub :
 
 /-- `D8` (Self-move `_1 = move _1` preserves initialized value):
 `_1 = move _1; _0 = copy _1; return` reads `42` from `_1`, deinitializes `_1`
-to `.live none`, and then writes `42` back into `_1`, so the subsequent
+to `.live .uninit`, and then writes `42` back into `_1`, so the subsequent
 `_0 = copy _1` succeeds and returns `42`. -/
 theorem canary_D8_self_move_ok : CanaryD8SelfMoveOkClaim := by
   have h_wp : wpProg progSelfMoveD8 3 queryU32_42
@@ -3843,7 +5152,7 @@ theorem canary_D8_self_move_ok : CanaryD8SelfMoveOkClaim := by
 
 /-- `D9` (Move of 0-Byte ZST `MirTy.unit` Remains Initialized):
 `_2 = move _1; _0 = copy _1; return` where `_1 : ()` sets `_1` to
-`liveUninitSlot .unit = .live (some .unit)`, so subsequent `_0 = copy _1`
+`liveUninitSlot .unit = .live .unit`, so subsequent `_0 = copy _1`
 succeeds and returns `.unit`. -/
 theorem canary_D9_move_unit_zst_ok : CanaryD9MoveUnitZstOkClaim := by
   have h_wp : wpProg progMoveUnitZstD9 3 queryEmpty
@@ -3918,5 +5227,202 @@ theorem canary_D13_enum_invalid_tag_and_uninit_ub :
     progEnumUninitDiscrUb queryEmpty .undefined).1 h_ub₂
   exact ⟨h_ub₁, h_nunsup₁, h_nwf₁, h_ref_ub₁,
     h_ub₂, h_nunsup₂, h_nwf₂, h_ref_ub₂⟩
+
+/-- A deterministic terminating run transfers to the reference machine: the
+program is well-formed and has the terminal behavior `out` in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$. -/
+private theorem positive_ref_of_exec {p : Program} {q : Query} {fuel : Nat}
+    {out : TerminalOut}
+    (h_exec : execProg p fuel q (fun o => o = out)) :
+    WellFormed p q ∧ Behavior p q out ∧
+      RefWellFormed (encodeProg p) q ∧ RefBehavior (encodeProg p) q out := by
+  let ⟨h_wf, h_beh, _, _⟩ :=
+    spec_and_behavior_of_wp_eq (wpProg_of_execProg h_exec)
+  let ⟨h_rwf, h_rbeh, _⟩ := anneal_corresponds_to_miri p q h_wf
+  exact ⟨h_wf, h_beh, h_rwf, (h_rbeh _).1 h_beh⟩
+
+/-- A deterministic faulting run transfers to the reference machine: the
+program reaches the fault `expected` (and not `other`), is not well-formed,
+and reaches the matching reference outcome. -/
+private theorem negative_ref_of_execFault {p : Program} {q : Query}
+    {fuel : Nat} {expected other : FaultKind}
+    (h_ne : other ≠ expected)
+    (h_exec : execFaultProg p fuel q expected) :
+    ReachesResult p q (.fault expected) ∧
+      ¬ ReachesResult p q (.fault other) ∧
+      ¬ WellFormed p q ∧
+      (∃ maxSteps,
+        RefReachesOutcome (encodeProg p) q maxSteps
+          (faultToRefOutcome expected)) := by
+  let ⟨h_f, h_nf, h_nwf⟩ := negativeCanary_of_execFault h_ne h_exec
+  exact ⟨h_f, h_nf, h_nwf,
+    (reachesResult_fault_iff_refReachesOutcome p q expected).1 h_f⟩
+
+/-- `D14` (overflowing operators, sequential moves of single tuple fields, a
+tuple aggregate, a field write, and the UB of reading a moved-out field in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D14_overflow_tuple_field_moves :
+    CanaryD14OverflowTupleFieldMovesClaim := by
+  let ⟨a₁, a₂, a₃, a₄⟩ := positive_ref_of_exec
+    (p := progOverflowTupleD14 .addWithOverflow)
+    (q := { args := [usizeVal (Nat.pow 2 64 - 1), usizeVal 1] })
+    (fuel := 5) (out := .returned ⟨.tuple [usizeVal 0, .bool true], ⟨[]⟩⟩) rfl
+  let ⟨b₁, b₂, b₃, b₄⟩ := positive_ref_of_exec
+    (p := progOverflowTupleD14 .subWithOverflow)
+    (q := { args := [usizeVal 0, usizeVal 1] })
+    (fuel := 5)
+    (out := .returned
+      ⟨.tuple [usizeVal (Nat.pow 2 64 - 1), .bool true], ⟨[]⟩⟩) rfl
+  let ⟨c₁, c₂, c₃, c₄⟩ := positive_ref_of_exec
+    (p := progOverflowTupleD14 .mulWithOverflow)
+    (q := { args := [usizeVal (Nat.pow 2 63), usizeVal 2] })
+    (fuel := 5) (out := .returned ⟨.tuple [usizeVal 0, .bool true], ⟨[]⟩⟩) rfl
+  let ⟨d₁, d₂, d₃, d₄⟩ := positive_ref_of_exec
+    (p := progOverflowTupleD14 .addWithOverflow)
+    (q := { args := [usizeVal 30, usizeVal 12] })
+    (fuel := 5)
+    (out := .returned ⟨.tuple [usizeVal 42, .bool false], ⟨[]⟩⟩) rfl
+  let ⟨e₁, e₂, e₃, e₄⟩ := positive_ref_of_exec
+    (p := progTupleFieldWriteD14) (q := { args := [usizeVal 21] })
+    (fuel := 5)
+    (out := .returned ⟨.tuple [usizeVal 42, .bool true], ⟨[]⟩⟩) rfl
+  let ⟨f₁, f₂, f₃, f₄⟩ := negative_ref_of_execFault
+    (p := progTupleFieldUseAfterMoveD14) (q := { args := [usizeVal 21] })
+    (fuel := 3) (expected := .undefined) (other := .unsupported)
+    (fun h => FaultKind.noConfusion h) rfl
+  exact ⟨a₁, a₂, a₃, a₄, b₁, b₂, b₃, b₄, c₁, c₂, c₃, c₄, d₁, d₂, d₃, d₄,
+    e₁, e₂, e₃, e₄, f₁, f₂, f₃, f₄⟩
+
+/-- `D15` (`CastKind.intToInt`: signed sign extension, cross-signedness
+widening, unsigned zero extension, truncation, `bool` to integer, and the
+fail-closed `u8 as bool` and `CastKind.unsupported` cases in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D15_int_to_int_cast : CanaryD15IntToIntCastClaim := by
+  let ⟨a₁, a₂, a₃, a₄⟩ := positive_ref_of_exec
+    (p := mkCastProg .intToInt i8Ty (.int .i64 true))
+    (q := { args := [i8Val 255] }) (fuel := 2)
+    (out := .returned ⟨scalarNatVal .i64 true (Nat.pow 2 64 - 1), ⟨[]⟩⟩) rfl
+  let ⟨a₁', a₂', a₃', a₄'⟩ := positive_ref_of_exec
+    (p := mkCastProg .intToInt i8Ty (.int .i64 false))
+    (q := { args := [i8Val 255] }) (fuel := 2)
+    (out := .returned ⟨scalarNatVal .i64 false (Nat.pow 2 64 - 1), ⟨[]⟩⟩) rfl
+  let ⟨b₁', b₂', b₃', b₄'⟩ := positive_ref_of_exec
+    (p := mkCastProg .intToInt u8Ty (.int .i64 true))
+    (q := { args := [u8Val 255] }) (fuel := 2)
+    (out := .returned ⟨scalarNatVal .i64 true 255, ⟨[]⟩⟩) rfl
+  let ⟨b₁, b₂, b₃, b₄⟩ := positive_ref_of_exec
+    (p := mkCastProg .intToInt u8Ty (.int .i64 false))
+    (q := { args := [u8Val 255] }) (fuel := 2)
+    (out := .returned ⟨scalarNatVal .i64 false 255, ⟨[]⟩⟩) rfl
+  let ⟨c₁, c₂, c₃, c₄⟩ := positive_ref_of_exec
+    (p := mkCastProg .intToInt (.int .i64 false) u8Ty)
+    (q := { args := [scalarNatVal .i64 false 300] }) (fuel := 2)
+    (out := .returned ⟨u8Val 44, ⟨[]⟩⟩) rfl
+  let ⟨d₁, d₂, d₃, d₄⟩ := positive_ref_of_exec
+    (p := mkCastProg .intToInt .bool (.int .i64 false))
+    (q := { args := [.bool true] }) (fuel := 2)
+    (out := .returned ⟨scalarNatVal .i64 false 1, ⟨[]⟩⟩) rfl
+  let ⟨e₁', e₂', e₃', e₄'⟩ := negative_ref_of_execFault
+    (p := mkCastProg .intToInt u8Ty .bool)
+    (q := { args := [u8Val 1] })
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨e₁, e₂, e₃, e₄⟩ := negative_ref_of_execFault
+    (p := mkCastProg .unsupported u8Ty (.int .i64 false))
+    (q := { args := [u8Val 255] })
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  exact ⟨a₁, a₂, a₃, a₄, a₁', a₂', a₃', a₄', b₁', b₂', b₃', b₄',
+    b₁, b₂, b₃, b₄, c₁, c₂, c₃, c₄, d₁, d₂, d₃, d₄, e₁', e₂', e₃', e₄',
+    e₁, e₂, e₃, e₄⟩
+
+/-- `D16` (`Assert`: a passing assertion jumps to its target, and a failing
+assertion with `unwind continue` unwinds out of the entry function as a
+well-formed `.unwound` execution in both $M_{\text{anneal}}$ and
+$M_{\text{ref}}$). -/
+theorem canary_D16_assert_pass_and_unwind_ok :
+    CanaryD16AssertPassAndUnwindContinueClaim := by
+  let ⟨a₁, a₂, a₃, a₄⟩ := positive_ref_of_exec
+    (p := mkCheckedIncProg (.overflow .add) .continue_ true)
+    (q := { args := [usizeVal 41] }) (fuel := 4)
+    (out := .returned ⟨usizeVal 42, ⟨[]⟩⟩) rfl
+  let ⟨b₁, b₂, b₃, b₄⟩ := positive_ref_of_exec
+    (p := mkCheckedIncProg (.overflow .add) .continue_ true)
+    (q := queryUsizeMax) (fuel := 2) (out := .unwound ⟨[]⟩) rfl
+  exact ⟨a₁, a₂, a₃, a₄, b₁, b₂, b₃, b₄⟩
+
+/-- `D17` (a failing `Assert` with `unwind unreachable` is UB, and a failing
+`Assert` whose message carries operands or whose unwind action is `terminate`
+is unsupported, in both $M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D17_assert_unwind_unreachable_ub :
+    CanaryD17AssertUnwindUnreachableUbClaim := by
+  let ⟨a₁, a₂, a₃, a₄⟩ := negative_ref_of_execFault
+    (p := mkCheckedIncProg (.overflow .add) .unreachable true)
+    (q := queryUsizeMax)
+    (fuel := 2) (expected := .undefined) (other := .unsupported)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨b₁, b₂, b₃, b₄⟩ := negative_ref_of_execFault
+    (p := mkCheckedIncProg .boundsCheck .continue_ true)
+    (q := queryUsizeMax)
+    (fuel := 2) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨c₁, c₂, c₃, c₄⟩ := negative_ref_of_execFault
+    (p := mkCheckedIncProg (.overflow .add) .terminate true)
+    (q := queryUsizeMax)
+    (fuel := 2) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  exact ⟨a₁, a₂, a₃, a₄, b₁, b₂, b₃, b₄, c₁, c₂, c₃, c₄⟩
+
+/-- `D18` (a failing `Assert` with `unwind cleanup` runs the cleanup block,
+whose `UnwindResume` unwinds out of the entry function; `UnwindResume` outside
+a cleanup block is unsupported, in both $M_{\text{anneal}}$ and
+$M_{\text{ref}}$). -/
+theorem canary_D18_assert_cleanup_and_resume :
+    CanaryD18AssertCleanupAndUnwindResumeClaim := by
+  let ⟨a₁, a₂, a₃, a₄⟩ := positive_ref_of_exec
+    (p := mkCheckedIncProg (.overflow .add) (.cleanup 2) true)
+    (q := queryUsizeMax) (fuel := 4) (out := .unwound ⟨[]⟩) rfl
+  let ⟨b₁, b₂, b₃, b₄⟩ := negative_ref_of_execFault
+    (p := mkCheckedIncProg (.overflow .add) (.cleanup 2) false)
+    (q := queryUsizeMax)
+    (fuel := 4) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  exact ⟨a₁, a₂, a₃, a₄, b₁, b₂, b₃, b₄⟩
+
+/-- `D19` (destination-overlapping tuple aggregates and tuple
+self-copy/self-move fail closed with `.fault .unsupported` / `.blocked` in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$, while disjoint sibling-field copies
+and empty `.unit` aggregates succeed). -/
+theorem canary_D19_tuple_overlap_fail_closed :
+    CanaryD19TupleOverlapFailClosedClaim := by
+  let qPair : Query := { args := [.tuple [u32Val 10, u32Val 20]] }
+  let qTriple : Query := { args := [.tuple [u32Val 1, u32Val 2, u32Val 3]] }
+  let qNested : Query :=
+    { args := [.tuple [.tuple [u32Val 1, u32Val 2, u32Val 3], u32Val 4]] }
+  let ⟨a₁, a₂, a₃, a₄⟩ := negative_ref_of_execFault
+    (p := progTupleAggregateAliasD19) (q := qPair)
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨b₁, b₂, b₃, b₄⟩ := negative_ref_of_execFault
+    (p := progTupleAggregateSelfFieldD19) (q := qNested)
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨c₁, c₂, c₃, c₄⟩ := negative_ref_of_execFault
+    (p := progTupleSelfUseD19 false) (q := qTriple)
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨d₁, d₂, d₃, d₄⟩ := negative_ref_of_execFault
+    (p := progTupleSelfUseD19 true) (q := qTriple)
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨e₁, e₂, e₃, e₄⟩ := negative_ref_of_execFault
+    (p := progTupleSubfieldSelfCopyD19) (q := qNested)
+    (fuel := 1) (expected := .unsupported) (other := .undefined)
+    (fun h => FaultKind.noConfusion h) rfl
+  let ⟨f₁, f₂, f₃, f₄⟩ := positive_ref_of_exec
+    (p := progTupleDisjointFieldAndUnitAggD19) (q := qPair) (fuel := 4)
+    (out := .returned ⟨.tuple [u32Val 20, u32Val 20], ⟨[]⟩⟩) rfl
+  exact ⟨a₁, a₂, a₃, a₄, b₁, b₂, b₃, b₄, c₁, c₂, c₃, c₄, d₁, d₂, d₃, d₄,
+    e₁, e₂, e₃, e₄, f₁, f₂, f₃, f₄⟩
 
 end Anneal.MirCorrespondenceProof

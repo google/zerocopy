@@ -63,10 +63,13 @@ transformation to the authoritative post-cleanup runtime MIR syntax
    Transfer (`liftStraightLineMir`, `MirStraightLineLiftsTo`,
    `mir_pure_lift_correspondence_transfer`,
    `mir_fault_correspondence_transfer`):** proves kernel agreement theorems
-   (`mirBodyStaticAdmitted_eq`, `mirCheckVal_eq`, `mirEvalConstLit_eq`,
+   (`mirBodyStaticAdmitted_sound`, `mirCheckVal_eq`, `mirEvalConstLit_eq`,
    `mirEvalBinOpVal_eq`, `mirEvalUnOpVal_eq`, `mirLiveUninitSlot_eq`)
    certifying those computable `mir*` evaluators against
-   `Trusted.MirSemantics` (the lifter's other mirrors—`mirTyBeq`,
+   `Trusted.MirSemantics` on the tuple-free fragment that the lifter models
+   (the mirrors reject tuple values, tuple-typed locals, and the
+   `*WithOverflow` operators that `Trusted.MirSemantics` admits; the lifter's
+   other mirrors—`mirTyBeq`,
    `mirIsPrimitiveReadableTy`, `mirHasStorageAnnotation`, and
    `mirEvalDiscrVal`—have no agreement theorem; every transfer still checks
    the run against `Trusted.MirSemantics` through `hSim` or `MirRunsFault`),
@@ -1904,7 +1907,8 @@ def mirScalarWf (sv : ScalarVal) : Bool :=
   mirTruncateBits sv.width sv.bits == sv.bits
 
 /-- Computable intrinsic runtime type check matching
-`Trusted.MirSemantics.Val.ty?`. -/
+`Trusted.MirSemantics.Val.ty?` on every value except tuples, which this mirror
+rejects with `none` (the straight-line lifter does not model tuples). -/
 def mirValTy? : Val → Option MirTy
   | .scalar sv =>
     if mirScalarWf sv then some (.int sv.width sv.signed) else none
@@ -1917,14 +1921,16 @@ def mirValTy? : Val → Option MirTy
       none
   | _ => none
 
-/-- Computable value-type check matching `Trusted.MirSemantics.checkVal`. -/
+/-- Computable value-type check matching `Trusted.MirSemantics.checkVal` on
+every value except tuples, which this mirror rejects with `false`. -/
 def mirCheckVal (v : Val) (ty : MirTy) : Bool :=
   match mirValTy? v with
   | some vTy => mirTyBeq vTy ty
   | none => false
 
 /-- Computable local-type support check matching
-`Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
+`Trusted.MirSemantics.isSupportedScalarOrUnitTy` on every type except tuples,
+which this mirror rejects with `false`. -/
 def mirIsSupportedScalarOrUnitTy : MirTy → Bool
   | .bool | .int _ _ | .unit | .never => true
   | .enum ety => mirEnumAdmitted ety
@@ -1937,12 +1943,21 @@ def mirIsPrimitiveReadableTy : MirTy → Bool
   | _ => false
 
 /-- Computable initial live-uninitialized slot state matching
-`Trusted.MirSemantics.liveUninitSlot`. -/
+`Trusted.MirSemantics.liveUninitSlot` on every type except tuples, which this
+mirror treats as a single uninitialized slot. -/
 def mirLiveUninitSlot : MirTy → LocalSlot
-  | .unit => .live (some .unit)
+  | .unit => .live .unit
   | .enum ety =>
-    if mirIsZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
-  | _ => .live none
+    if mirIsZstEnumTy ety then .live (.enumVal ety 0) else .live .uninit
+  | _ => .live .uninit
+
+/-- Computable read of the zero-sized value that a newly live slot holds:
+`some v` for `SlotVal.unit` and `SlotVal.enumVal`, and `none` for an
+uninitialized (or any other) slot. -/
+def mirSlotZstVal? : LocalSlot → Option Val
+  | .live .unit => some .unit
+  | .live (.enumVal ety v) => some (.enumVal ety v)
+  | _ => none
 
 /-- Computable storage-marker check for a single `StatementKind`. -/
 def mirStmtHasStorageMarker (localId : LocalId) : StatementKind → Bool
@@ -1970,8 +1985,9 @@ def mirStorageAnnotationsInBounds (body : Body) : Bool :=
         bb.statements)
     body.basicBlocks
 
-/-- Computable static body admission check matching the 2-argument
-`Trusted.MirSemantics.BodyStaticAdmitted`. -/
+/-- Computable static body admission check implying the 2-argument
+`Trusted.MirSemantics.BodyStaticAdmitted` (`mirBodyStaticAdmitted_sound`). It
+rejects bodies with tuple-typed locals, which `BodyStaticAdmitted` admits. -/
 def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
@@ -2206,6 +2222,23 @@ theorem mirListAll_eq {α : Type} (p q : α → Bool)
     change (p x && mirListAll p xs) = (q x && xs.all q)
     rw [hpq x, mirListAll_eq p q hpq xs]
 
+/-- `mirListAll p xs` implies `xs.all q` whenever `p` implies `q`. -/
+theorem all_of_mirListAll {α : Type} (p q : α → Bool)
+    (hpq : ∀ x, p x = true → q x = true) :
+    ∀ (xs : List α), mirListAll p xs = true → xs.all q = true
+  | [], _ => rfl
+  | x :: xs, h => by
+    change (p x && mirListAll p xs) = true at h
+    change (q x && xs.all q) = true
+    cases hp : p x with
+    | false =>
+      rw [hp] at h
+      cases h
+    | true =>
+      rw [hp] at h
+      rw [hpq x hp, all_of_mirListAll p q hpq xs h]
+      rfl
+
 theorem mirIntWidthBeq_eq (w₁ w₂ : IntWidth) :
     mirIntWidthBeq w₁ w₂ = IntWidth.beq w₁ w₂ := by
   cases w₁ <;> cases w₂ <;> rfl
@@ -2346,7 +2379,13 @@ theorem mirScalarWf_eq (sv : ScalarVal) :
   unfold mirScalarWf ScalarVal.wf
   rw [mirTruncateBits_eq_truncateBits]
 
-theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
+/-- Exact agreement between `mirValTy?` and `Trusted.MirSemantics.Val.ty?` on
+every non-tuple `Val`; `mirValTy?` rejects tuples. -/
+theorem mirValTy?_eq (v : Val) :
+    mirValTy? v =
+      match v with
+      | .tuple _ => none
+      | _ => v.ty? := by
   cases v with
   | scalar sv =>
     dsimp only [mirValTy?, Val.ty?]
@@ -2356,10 +2395,14 @@ theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
     rw [mirEnumAdmitted_eq ety]
   | ptr _ | bool _ | unit | tuple _ | bytes _ => rfl
 
-/-- Exact unconditional agreement between `mirCheckVal` and
-`Trusted.MirSemantics.checkVal` across all runtime `Val`s and all `MirTy`s. -/
+/-- Exact agreement between `mirCheckVal` and `Trusted.MirSemantics.checkVal`
+across all non-tuple runtime `Val`s and all `MirTy`s; `mirCheckVal` rejects
+tuples. -/
 theorem mirCheckVal_eq (v : Val) (ty : MirTy) :
-    mirCheckVal v ty = checkVal v ty := by
+    mirCheckVal v ty =
+      match v with
+      | .tuple _ => false
+      | _ => checkVal v ty := by
   unfold mirCheckVal checkVal
   rw [mirValTy?_eq v]
   cases v with
@@ -2392,19 +2435,42 @@ theorem mirCheckVal_eq (v : Val) (ty : MirTy) :
       | unsupported => rfl
   | ptr _ | tuple _ | bytes _ => rfl
 
+/-- Exact agreement between `mirIsSupportedScalarOrUnitTy` and
+`Trusted.MirSemantics.isSupportedScalarOrUnitTy` on every non-tuple type;
+`mirIsSupportedScalarOrUnitTy` rejects tuple types. -/
 theorem mirIsSupportedScalarOrUnitTy_eq (ty : MirTy) :
-    mirIsSupportedScalarOrUnitTy ty = isSupportedScalarOrUnitTy ty := by
+    mirIsSupportedScalarOrUnitTy ty =
+      match ty with
+      | .tuple _ => false
+      | _ => isSupportedScalarOrUnitTy ty := by
   cases ty with
   | enum ety => exact mirEnumAdmitted_eq ety
   | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
   | unsupported => rfl
 
+/-- Every type that `mirIsSupportedScalarOrUnitTy` admits is admitted by
+`Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
+theorem mirIsSupportedScalarOrUnitTy_sound {ty : MirTy}
+    (h : mirIsSupportedScalarOrUnitTy ty = true) :
+    isSupportedScalarOrUnitTy ty = true := by
+  rw [mirIsSupportedScalarOrUnitTy_eq ty] at h
+  cases ty with
+  | tuple _ => cases h
+  | bool | int _ _ | unit | never | enum _ | ref _ _ | rawPtr _ _
+  | unsupported => exact h
+
+/-- Exact agreement between `mirLiveUninitSlot` and
+`Trusted.MirSemantics.liveUninitSlot` on every non-tuple type. -/
 theorem mirLiveUninitSlot_eq (ty : MirTy) :
-    mirLiveUninitSlot ty = liveUninitSlot ty := by
+    mirLiveUninitSlot ty =
+      match ty with
+      | .tuple _ => .live .uninit
+      | _ => liveUninitSlot ty := by
   cases ty with
   | enum ety =>
-    dsimp only [mirLiveUninitSlot, liveUninitSlot]
+    dsimp only [mirLiveUninitSlot, liveUninitSlot, uninitSlotVal]
     rw [mirIsZstEnumTy_eq ety]
+    cases isZstEnumTy ety <;> rfl
   | bool | int _ _ | unit | never | tuple _ | ref _ _ | rawPtr _ _
   | unsupported => rfl
 
@@ -2415,11 +2481,14 @@ theorem mirStorageAnnotationsInBounds_eq (body : Body) :
     (fun bb => mirListAll_eq _ _ (fun _ => rfl) bb.statements)
     body.basicBlocks
 
-/-- Exact kernel agreement between computable `mirBodyStaticAdmitted` and
-`Trusted.MirSemantics.BodyStaticAdmitted`. -/
-theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
-    mirBodyStaticAdmitted p body = BodyStaticAdmitted p body := by
-  unfold mirBodyStaticAdmitted BodyStaticAdmitted
+/-- Soundness of computable `mirBodyStaticAdmitted` against
+`Trusted.MirSemantics.BodyStaticAdmitted`: the two checks agree except that
+`mirBodyStaticAdmitted` also rejects tuple-typed locals. -/
+theorem mirBodyStaticAdmitted_sound {p : Program} {body : Body}
+    (h : mirBodyStaticAdmitted p body = true) :
+    BodyStaticAdmitted p body = true := by
+  unfold mirBodyStaticAdmitted at h
+  unfold BodyStaticAdmitted
   have hStr :
       body.identity.toByteArray.data.toList.isEmpty =
       stringBeq body.identity "" := by
@@ -2427,8 +2496,21 @@ theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
     have hEmpty : "".toByteArray.data.toList = [] := rfl
     rw [hEmpty]
     cases body.identity.toByteArray.data.toList <;> rfl
-  rw [hStr, mirStorageAnnotationsInBounds_eq body,
-      mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
+  rw [hStr, mirStorageAnnotationsInBounds_eq body] at h
+  cases hPre : (Nat.beq p.pointerWidthBits 64 &&
+      Nat.beq p.mirProfileVersion 1 &&
+      !stringBeq body.identity "" &&
+      !body.basicBlocks.isEmpty &&
+      Nat.blt body.argumentCount body.locals.length &&
+      storageAnnotationsInBounds body) with
+  | false =>
+    rw [hPre] at h
+    cases h
+  | true =>
+    rw [hPre] at h
+    rw [all_of_mirListAll _ _
+      (fun _ hTy => mirIsSupportedScalarOrUnitTy_sound hTy) body.locals h]
+    rfl
 
 theorem mirFindDiscrVariantAux_eq (discrBits : BitVec 128) :
     ∀ (ds : List Nat) (idx : Nat),
@@ -2638,8 +2720,15 @@ theorem mirEvalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
       cases (s && false && (l == signedMinInt w && r == Neg.neg 1)) <;> rfl
 
 /-- Success/failure agreement between computable `mirEvalBinOpVal` and
-`Trusted.MirSemantics.evalBinOp` (collapsing error fault kinds to `none`). -/
-theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val) :
+`Trusted.MirSemantics.evalBinOp` (collapsing error fault kinds to `none`) on
+every operator except `.addWithOverflow`, `.subWithOverflow`, and
+`.mulWithOverflow`. `mirEvalBinOpVal` rejects those three operators with
+`none`, because the straight-line lifter does not model their tuple results.
+-/
+theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val)
+    (hOp : (match op with
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow => false
+      | _ => true) = true) :
     mirEvalBinOpVal op lhs rhs =
       match evalBinOp op lhs rhs with
       | .ok res => some res
@@ -2673,7 +2762,8 @@ theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val) :
           | addUnchecked | subUnchecked | mulUnchecked =>
             rw [mirEvalArithOp_eq]
             rfl
-          | addWithOverflow | subWithOverflow | mulWithOverflow
+          | addWithOverflow | subWithOverflow | mulWithOverflow =>
+            cases hOp
           | shl | shlUnchecked | shr | shrUnchecked | offset => rfl
     | ptr _ | bool _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
   | bool l =>
@@ -2700,9 +2790,10 @@ directly inside `PureLift`'s loan graph:
 - `Operand.copy ⟨l, []⟩` unconditionally reads `*mirInitCap L l`, failing with
   `.fail` if `l` is dead or uninitialized.
 - `Operand.move ⟨l, []⟩` unconditionally reads `*mirInitCap L l` and, for
-  non-ZST types (`mirLiveUninitSlot ty = .live none`), ends `mirInitCap L l` via
-  `.endLoanAtLocal` so any subsequent read before reassignment fails with
-  `.fail` (matching `Trusted.MirSemantics.evalOperandToSlot`).
+  non-ZST types (`mirLiveUninitSlot ty = .live .uninit`), ends
+  `mirInitCap L l` via `.endLoanAtLocal` so any subsequent read before
+  reassignment fails with `.fail` (matching
+  `Trusted.MirSemantics.evalOperandToSlot`).
 -/
 
 /-- Merge adjacent pairs from the right via `List.foldr` (turning even-length
@@ -2807,14 +2898,13 @@ def retireSlotCapActions (numLocals l : Nat) (caps : List SlotCapState) :
 `Trusted.MirSemantics.liveUninitSlot ty`. -/
 def allocLiveUninitActions (argCnt numLocals l : Nat) (ty : MirTy) :
     List (PrimAction Val) × SlotCapState :=
-  match mirLiveUninitSlot ty with
-  | .live (some zstVal) =>
+  match mirSlotZstVal? (mirLiveUninitSlot ty) with
+  | some zstVal =>
     ([ .assign (.localSub (mirValSlot argCnt l) []) (.constVal zstVal),
        .borrow (mirInitCap numLocals l) .mutBorrow
          (.localSub (mirValSlot argCnt l) []) ],
      ⟨true, true⟩)
-  | .live none => ([], ⟨true, false⟩)
-  | .dead => ([], ⟨false, false⟩)
+  | none => ([], ⟨true, false⟩)
 
 /-- Initialize storage and initialization capabilities for all MIR locals at
 entry in lockstep with `Trusted.MirSemantics.initLocalsLoop` (enforcing
@@ -2885,13 +2975,13 @@ def liftMirOperand (bodyLocals : List MirTy) (numLocals scratch : Nat)
           let readAct : PrimAction Val :=
             .assign (.localSub scratch [])
               (.use (.derefSub (mirInitCap numLocals place.localId) []))
-          match mirLiveUninitSlot ty with
-          | .live (some zstVal) =>
+          match mirSlotZstVal? (mirLiveUninitSlot ty) with
+          | some zstVal =>
             let reinitAct : PrimAction Val :=
               .assign (.derefSub (mirInitCap numLocals place.localId) [])
                 (.constVal zstVal)
             some (ty, [readAct, reinitAct], caps)
-          | _ =>
+          | none =>
             let c := getSlotCap caps place.localId
             let endActs : List (PrimAction Val) :=
               if c.hasInit then
@@ -3084,7 +3174,7 @@ def liftedPlanOrSkip (p : Program) : FlowPlan Val × RvalOp Val :=
 `params` aligns with `(p, q)` via `MirArgsMatch` (including `q.callerMem = ⟨[]⟩`
 and `ValidEntryArgs body q.args`) and `(plan, retExpr)` is the exact `FlowPlan`
 produced by `liftStraightLineMir p` (which implies `BodyStaticAdmitted p body =
-true` via `mirBodyStaticAdmitted_eq`). -/
+true` via `mirBodyStaticAdmitted_sound`). -/
 def MirStraightLineLiftsTo (p : Program) (q : Query)
     (params : List (ParamInput Val))
     (plan : FlowPlan Val) (retExpr : RvalOp Val) : Prop :=
@@ -3114,8 +3204,7 @@ theorem bodyStaticAdmitted_of_liftStraightLineMir
       nomatch hLift
     | true =>
       rw [mirListGet?_eq_getElem?] at hGet
-      rw [mirBodyStaticAdmitted_eq] at hAdm
-      exact ⟨body, hGet, hAdm⟩
+      exact ⟨body, hGet, mirBodyStaticAdmitted_sound hAdm⟩
 
 /-- Every `MirStraightLineLiftsTo p q params plan retExpr` guarantees successful
 entry initialization `initState p q = .ok s₀`, so an entry-validation error from
