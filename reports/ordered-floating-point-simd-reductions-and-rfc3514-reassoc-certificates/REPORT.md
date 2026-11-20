@@ -1,5 +1,14 @@
 # Ordered Floating-Point SIMD Reductions (`OrderedSimdFoldCert`) and RFC 3514 `reassoc` Certificates (`FloatReassocCert`)
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** OrderedSimdFoldCert achieves 2.04x-3.85x and FloatReassocCert 5.82x across 16 FP kernels (O3_); portable SIMD cost certs achieve 0 short-loop regressions with +18.4% on znver4 and +64.2% on znver5 (O4_).
+> - **Forensic finding (`support/`):** O3_ (run_fp_reduction_experiment.py L150-280) only emits LLVM IR/asm; ALL 16 kernels' throughput_n*_gbps dicts are 100% hardcoded Python literals (never executed; Lean orderedSimdFold_bit_exact_sound is a generic List.foldl lemma). O4_ (multi_arch_simd_cost_eval.py L343-348) literally hardcodes 18.4, 64.2, and 0 with zero execution on Zen 4, Zen 5, or Neoverse.
+> - **Honest epistemic classification:** `[conjecture] + [real measurement] (static asm only)`
+> - **Required disposition:** Retract all FP GB/s and Zen4/Zen5 speedup numbers; run real benchmarks on available CPUs and explicitly mark unavailable microarchitectures [blocked].
+
+
 ## Summary
 
 The six-schema `HybridTrace` vectorization library in `hybridtrace-vectorization-slp-and-loop-certificate-library` (`Schema 5: SIMD-ReductionMonoid`) requires the reduction operator $\oplus$ to form an associative, commutative monoid (`add`, `mul`, `bitXor`, `bitOr`, `umin`, `umax` over `BitVec w`). Because IEEE-754 floating-point addition and multiplication (`f32`/`f64`) are neither associative nor signed-zero neutral (`-0.0 + +0.0`), `Schema 5` cannot certify vectorized floating-point reductions (`Iterator::sum::<f64>()`, dot products, L2 norms, or softmax denominators). Extending the `HybridTrace` library in Lean `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`) with **`OrderedSimdFoldCert` (`Schema 5a`)**, **`FloatReassocCert` (`Schema 5b`)**, and **`FloatContractCert`** and benchmarking 16 floating-point reduction kernels on `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) (`support/fp_reduction_probe.rs`, `support/run_fp_reduction_experiment.py`, `support/fp_reduction_results.json`, `support/lean/OrderedAndFastFloatSimd.lean`) establishes:

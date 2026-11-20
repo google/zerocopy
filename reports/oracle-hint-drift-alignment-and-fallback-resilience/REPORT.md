@@ -1,5 +1,14 @@
 # Oracle Disagreement, Source/CFG Drift Alignment, and Graceful Fallback Resilience
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Oracle hint drift alignment and verified fallback retain 91.4% of -O3 speedup even under 36% hint corruption/fault injection.
+> - **Forensic finding (`support/`):** test_oracle_fault_injection.py L182-242 draws rng.random() < 0.36 over hardcoded U2 timings (12818.18, 1987.40, 1407.83) via linear interpolation t_o3 + (t_naive - t_o3)*frac. Zero corrupted hints were ever passed to a compiler.
+> - **Honest epistemic classification:** `[conjecture]`
+> - **Required disposition:** Discard synthetic RNG interpolation; test actual hint-perturbation resilience against a real replay driver.
+
+
 ## Summary
 
 When a verified `MiniSSA`/`MiniMach` backend queries untrusted LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) on `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) as an optimization oracle (`untrusted-llvm-optimization-oracle-and-certificate-replay-architecture`), semantic and structural differences between the two pipelines cause raw LLVM `%ssa_id` and `bb_index` identifiers to diverge on **`96.9%` (`95 / 98`)** of hints across divergent functions. Designing and evaluating the 3-level representation-independent `AnchorKey` alignment protocol and 3-tier graceful fallback hierarchy (`support/test_oracle_fault_injection.py`, `support/drift_alignment_dataset.json`, `support/fault_injection_curve.csv`) establishes:

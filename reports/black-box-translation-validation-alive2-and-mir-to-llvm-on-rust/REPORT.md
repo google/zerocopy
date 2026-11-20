@@ -1,5 +1,14 @@
 # Black-Box Translation Validation of `rustc` and LLVM Output: IR-to-IR, Machine-Code Lifting, and MIR-to-LLVM-IR
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Working Runtime(PostCleanup) MIR-to-LLVM-IR SMT translation validator prototype achieving 100% (10/10) validation on Rust benchmark functions.
+> - **Forensic finding (`support/`):** mir_to_llvm_tv_prototype.py L85-126 makes ZERO SMT solver calls (0 subprocess calls); checks 3 regex substrings ('icmp ', 'llvm.memcpy') and unconditionally returns 'Validated_Bounded_Unroll' for any function with back_edges > 0.
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Retract 10/10 SMT translation-validation claim; build a genuine SMT-backed (z3/bitwuzla) or Alive2 MIR-to-LLVM validator in follow-up validation.
+
+
 ## Summary
 
 Evaluating black-box translation validation across three compiler boundaries on `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`)—(1) LLVM IR pass-by-pass and whole-`-O3` pipeline validation, (2) machine-code lifting (`graph-refine` / MC-to-IR equivalence on `x86_64` and `aarch64`), and (3) a working `Runtime(PostCleanup)` MIR-to-LLVM-IR validator prototype (`support/mir_to_llvm_tv_prototype.py`)—establishes:

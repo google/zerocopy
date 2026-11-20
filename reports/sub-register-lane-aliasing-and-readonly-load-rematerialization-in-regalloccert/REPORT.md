@@ -1,5 +1,14 @@
 # Sub-Register Lane Aliasing (`ArchRegLaneSemantics`) and Read-Only Load Rematerialization (`RematLoadCert`) in `RegAllocCert`
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `UNSUPPORTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Sub-register lane-aliasing BitVec proofs and readonly-load rematerialization cut spill stores by 66.46% on high-pressure workloads.
+> - **Forensic finding (`support/`):** libcore llvm-objdump sub-register census, x86_64/AArch64 QEMU probes, and BitVec sub-register Lean proofs are genuine, BUT the 66.46% spill-store reduction (evaluate_subreg_and_remat.py L199) is pure arithmetic on hardcoded HIGH_PRESSURE_WORKLOADS tuples.
+> - **Honest epistemic classification:** `[real measurement] (census) + [Lean proof] + [conjecture]`
+> - **Required disposition:** Keep sub-register census and BitVec lane proofs (feed into parmove_lane); retract 66.46% until measured on a real register allocator.
+
+
 ## Summary
 
 Extends the post-allocation register-allocator translation-validation certificate checker (`RegAllocCert`) to width-indexed physical sub-register lanes (`ArchRegLaneSemantics`: x86 8/16/32/64-bit GPRs including high-byte `%ah..%dh` vs. `REX` prefix constraints, legacy SSE vs. VEX/EVEX vector upper-lane zeroing, and AArch64 `wN`/`xN` + NEON lane inserts) and five verified rematerialization origins (`RematLoadCert`: `constI`, `frameAddr`, `rodataLoad`, `immutableArgLoad`, and `unmodifiedSpillSlot`), mechanized in `294` lines of self-contained Lean `v4.34.1` (`343` total lines, `0` `sorry`, `0` `native_decide`) and evaluated across `66,249` disassembled `libcore` instructions and `8` high-register-pressure workloads (`66.46%` additional spill-store reduction over constant-only rematerialization).

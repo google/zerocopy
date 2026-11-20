@@ -1,5 +1,14 @@
 # Untrusted LLVM as an Optimization and Profitability Oracle: Extraction Channels, Hint Schema, and Certificate Replay Architecture
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `UNSUPPORTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** OracleHintV1 channel comparison: Channel A (56.5% coverage), Channel B (96.9%), Channel C C++ plugin (100% in +4.8 ms, 740 C++ LOC), Channel D hybrid (99.1%, 310 LOC).
+> - **Forensic finding (`support/`):** extract_llvm_oracle.py genuinely parses Channel A YAML remarks and Channel B IR snapshots on a small function list, BUT L581-663 hardcodes EVERY pass_group coverage percentage, Channel C's '+4.8 ms' overhead, and both C++ LOC figures (740, 310); zero C++ plugin was ever built or timed.
+> - **Honest epistemic classification:** `[real measurement] (A/B parse) + [conjecture]`
+> - **Required disposition:** Strip unbuilt Channel C/D timing and coverage estimates; build and measure an actual LLVM PassInstrumentation plugin or remark extractor in follow-up validation.
+
+
 ## Summary
 
 A proof-producing compiler backend (`MiniSSA` and `MiniMach` emitting machine-checkable `HybridTrace` certificates) can harvest the profitability heuristics of bundled LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) in `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) as an **untrusted optimization oracle** without placing a single line of LLVM into the Trusted Computing Base (TCB) or maintaining invasive C++ pass instrumentation (`46,500–65,500` C++ lines of code in `llvm-derivation-emission-instrumentation-architecture-and-cost`). Evaluating four non-invasive oracle extraction channels and formalizing the `OracleHintV1` schedule schema (`support/oracle_hint_v1.schema.json`, `support/extract_llvm_oracle.py`, `support/channel_comparison.json`) establishes:

@@ -1,5 +1,14 @@
 # MIR, LLVM IR, and Per-Pass Transformation Volume Statistics Across Tier 1 Targets for Estimating Full-Build Derivation Cost
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `UNSUPPORTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** 12-crate build volume (core+alloc+std+9 crates: 56,405->13,683 fns, 2.06M pre-opt LLVM insts, 2.85 steps/inst = 5.86M steps) yields 138.47 MB raw / 67.30 MB zstd / 12.90 ms Rust check.
+> - **Forensic finding (`support/`):** collect_ir_volume.py genuinely compiles a 15-function micro-benchmark across 8 targets, but collect_pass_remarks.py (0 subprocess calls) L28-124 hardcodes SHARED_12_CRATES, steps_per_pre_opt_inst = 2.85, pass_step_breakdown_pct, and multiplies by W5's refuted W5_FORMAT_COSTS.
+> - **Honest epistemic classification:** `[real measurement] (15 fns) + [conjecture]`
+> - **Required disposition:** Keep only the 15-function 8-target IR ratio; replace SHARED_12_CRATES and step multipliers with real rustc 1.99.1 builds of core/alloc/std and held-out crates.
+
+
 ## Summary
 
 Collecting exact MIR statement/terminator counts, pre-optimization (`-C opt-level=0 -C no-prepopulate-passes`) and post-`-O3` LLVM IR function/block/instruction counts, inlining call-site reduction ratios, sysroot (`core`, `alloc`, `std`) machine instruction counts across all **8 Tier 1 targets** (`support/ir_volume_by_target.json`), and structured YAML optimization remarks (`RUSTC_BOOTSTRAP=1 -C remark=all -Z remark-dir=...`, `support/volume_projection.json`) on `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) establishes the following build-scale derivation budgets:

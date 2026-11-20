@@ -1,5 +1,14 @@
 # End-to-End Prototype and Parity Coverage Experiment for Oracle-Guided `MiniSSA`/`MiniMach` Replay
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** OracleReplayDriver replays MiniSSA/MiniMach from LLVM hints to capture 100.01% of native LLVM -O3 speedup (11.71x) and -74.8% .text size.
+> - **Forensic finding (`support/`):** oracle_replay_driver.py L345-435 contains ZERO MiniSSA/MiniMach compiler or replayer code! CONFIG_PIPELINES['Oracle_Guided_HybridTrace'] literally invokes LLVM's own `opt -passes='...cgscc(devirt<4>(inline,...)),...,loop-vectorize,slp-vectorizer...'` + `llc -O3`—a circular proxy benchmarking LLVM against LLVM.
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Retract the 100.01% / 11.71x parity claim completely; build an actual non-LLVM MiniSSA/MiniMach replay prototype and measure real parity gap in follow-up validation.
+
+
 ## Summary
 
 Evaluating an end-to-end oracle-guided transformation replay prototype (`support/oracle_replay_driver.py`) across `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`, and `i686-unknown-linux-gnu` on `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and bundled LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) demonstrates that a verified `MiniSSA`/`MiniMach` backend with **zero custom profitability heuristics** captures **99.98% to 100.01%** of native LLVM `-O3` runtime speedup (`9.10x` composite speedup across 9 kernel suites, `11.51x` on `run_ablation_kernel`) by replaying `OracleHintV1` schedules (`untrusted-llvm-optimization-oracle-and-certificate-replay-architecture`) while emitting `HybridTrace` certificates (`support/parity_ablation_results.csv`, `support/oracle_replay_summary.json`):

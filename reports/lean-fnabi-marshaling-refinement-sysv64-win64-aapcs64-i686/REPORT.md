@@ -1,5 +1,14 @@
 # Mechanized `FnAbi` Classification and Bidirectional Caller/Callee Marshaling Refinement in Lean 4
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Mechanized Lean FnAbi classifier achieves 100.0% agreement across all 2,048 Tier 1 target-signature pairs (8 x 256).
+> - **Forensic finding (`support/`):** verify_fnabi_oracle.py L133-138 literally hardcodes 'total_target_signature_pairs_verified': 2048 and 'agreement_rate_pct': 100.0 while evaluating Lean checkAll on only ~16 hardcoded TyLayouts and NEVER invoking rustc.
+> - **Honest epistemic classification:** `[conjecture] + [toy model]`
+> - **Required disposition:** Retract 2,048-pair / 100% claim; run Lean FnAbi oracle differentially against all 2,048 real rustc signatures from B6.
+
+
 ## Summary
 
 Generalizing the single-register `sysvEntryState` boundary (`SEAM-4`) into the `731`-line (`680` code lines, `4,265,352`-byte `.olean`, `247.18 ms` build time, `0` `sorry`, `0` `native_decide`) Lean `v4.34.1` mechanization [`support/LeanFnAbiRefinement/LeanFnAbiRefinement.lean`](support/LeanFnAbiRefinement/LeanFnAbiRefinement.lean) and cross-validating its executable `#eval` classifiers against `rustc 1.99.1` across all `8` Tier 1 targets (`2,048` procedural target-signature pairs in [`support/verify_fnabi_oracle.py`](support/verify_fnabi_oracle.py) and [`support/fnabi_refinement_metrics.json`](support/fnabi_refinement_metrics.json)) establishes:

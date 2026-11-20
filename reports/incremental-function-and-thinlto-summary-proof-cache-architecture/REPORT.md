@@ -1,5 +1,14 @@
 # Fine-Grained Function- and Summary-Indexed Incremental Proof and Certificate Caching Under ThinLTO
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `UNSUPPORTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Merkle-DAG incremental function/summary proof cache limits re-verification after local edits to 0.0042% across the 12-crate corpus (5.86M steps).
+> - **Forensic finding (`support/`):** Runs one genuine 2-crate rustc edit probe, BUT merkle_cache_simulator.py L20-31 simulates the 0.0042% / 5.86M-step result purely in Python over W7's hardcoded CRATE_CORPUS_12 dictionary.
+> - **Honest epistemic classification:** `[real measurement] (2-crate) + [conjecture]`
+> - **Required disposition:** Measure real Merkle invalidation rates on a real 12-crate Cargo workspace with git-history commits in follow-up validation.
+
+
 Created: 2026-11-14
 Updated: 2026-11-14
 

@@ -1,5 +1,14 @@
 # Decidable Machine-Code Well-Formedness, Stack-Discipline, and Errata Byte-Level Validator Across the 8 Tier 1 Targets
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Decidable byte-level binary validator checks 128.25 MB of Tier 1 sysroot .rlib objects at 78.67 MB/s with 0 violations across 8 machine-code safety invariants.
+> - **Forensic finding (`support/`):** validate_tier1_binaries.py L79, L106 unpacks .rlib archives via llvm-ar, BUT only runs llvm-objdump on libcore-, estimates instruction counts for all other crates via `size // 14` without inspecting a byte, and HARDCODES 0 violations for 6 of the 8 invariants (wf_decode_cfg, wf_sp_align_16, wf_stack_probe, wf_red_zone, wf_vzeroupper, wf_cfi_unwind_cfa) while dividing the uninspected 128.25 MB by wall time!
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Retract 128.25 MB / 78.67 MB/s / 0-violation claim; implement and time real full-byte decoding across all 8 invariants on 100% of sysroot objects.
+
+
 ## Summary
 
 Designing and mechanizing a decidable, linear-time binary well-formedness checker `checkBinaryWF : ObjectFile → Bool` in Lean `4.34.1` ([`support/DecidableBinaryValidator/DecidableBinaryValidator.lean`](support/DecidableBinaryValidator/DecidableBinaryValidator.lean), `199` lines, `0` `sorry`, `0` `native_decide`) and auditing all `2,494` `.o` object files (`128,250,973` bytes / `122.31 MiB`, `8,711,201` instructions) across the 8 Tier 1 prebuilt `core`, `alloc`, `std`, and `compiler_builtins` `.rlib` archives in `rustc 1.99.1` (`58cf8f9c35`) ([`support/validate_tier1_binaries.py`](support/validate_tier1_binaries.py), [`support/tier1_binary_wf_audit.json`](support/tier1_binary_wf_audit.json)) establishes:

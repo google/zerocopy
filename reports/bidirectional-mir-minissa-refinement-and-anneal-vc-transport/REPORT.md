@@ -1,5 +1,14 @@
 # Bidirectional `Runtime(PostCleanup)` MIR ↔ `MiniSSA` Refinement and Backward VC Transport via `HybridTrace`
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Mechanized bidirectional Runtime(PostCleanup) MIR <-> MiniSSA bisimulation proving sound VC transport for Anneal's Trusted.VerificationResult and StatefulVerificationResult.
+> - **Forensic finding (`support/`):** BidirectionalMirMiniSsaTransportProbe.lean has IMPORTS: [] and declares a fake 'namespace Trusted' with toy Nat registers. Live joshlf/anneal HEAD (c131b320e) Trusted/MirSemantics.lean L949-976 sets deinitMovedPlace = true (Operand.move mutates moved non-ZST locals to liveUninitSlot), completely absent from N1.
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Remove fake 'namespace Trusted'; re-formalize MIR<->MiniSSA transport directly against real joshlf/anneal Trusted.MirSemantics with deinitMovedPlace = true.
+
+
 Created: 2026-11-14
 Updated: 2026-11-14
 

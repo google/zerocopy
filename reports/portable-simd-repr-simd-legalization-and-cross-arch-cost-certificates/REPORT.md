@@ -1,5 +1,14 @@
 # Portable SIMD (`#[repr(simd)]`) Legalization and Cross-Architecture Cost Certificates
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** OrderedSimdFoldCert achieves 2.04x-3.85x and FloatReassocCert 5.82x across 16 FP kernels (O3_); portable SIMD cost certs achieve 0 short-loop regressions with +18.4% on znver4 and +64.2% on znver5 (O4_).
+> - **Forensic finding (`support/`):** O3_ (run_fp_reduction_experiment.py L150-280) only emits LLVM IR/asm; ALL 16 kernels' throughput_n*_gbps dicts are 100% hardcoded Python literals (never executed; Lean orderedSimdFold_bit_exact_sound is a generic List.foldl lemma). O4_ (multi_arch_simd_cost_eval.py L343-348) literally hardcodes 18.4, 64.2, and 0 with zero execution on Zen 4, Zen 5, or Neoverse.
+> - **Honest epistemic classification:** `[conjecture] + [real measurement] (static asm only)`
+> - **Required disposition:** Retract all FP GB/s and Zen4/Zen5 speedup numbers; run real benchmarks on available CPUs and explicitly mark unavailable microarchitectures [blocked].
+
+
 ## Summary
 
 Extending the vectorization and cost-model foundations of `rust-llvm-o3-loop-and-slp-vectorization-idiom-census`, `hybridtrace-vectorization-slp-and-loop-certificate-library`, `x86-avx512-short-loop-regression-and-vector-width-profitability`, and `rustc-intrinsics-simd-and-arch-semantic-sources` from compiler-synthesized scalar autovectorization to **explicit portable SIMD (`#[repr(simd)]` / `core::simd::Simd<T, N>` for $N \in \{1..64\}$ and all `81` `rustc 1.99.1` `simd_*` intrinsic declarations/handlers)** (`support/portable_simd_81_probe.rs`, `support/multi_arch_simd_cost_eval.py`, `support/simd_81_legalization_matrix.json`, `support/target_simd_cost_models.json`, `support/lean/PortableSimdLegalization.lean`) establishes:

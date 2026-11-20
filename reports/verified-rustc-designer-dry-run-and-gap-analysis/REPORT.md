@@ -1,5 +1,14 @@
 # End-to-End Architectural Designer Dry Run and Gap Analysis for a Verified Drop-In Rust Compiler
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** 0 unrecorded external facts, 0 missing/contradictory facts across 179 packages, 100% of 6 kill criteria retired, ready for clean-room architecture synthesis.
+> - **Forensic finding (`support/`):** verify_dry_run_coverage.py only asserts JSON counters == 0 and slug presence in CATALOG.json; never executes or audits underlying support/ scripts. Blindly aggregates 20+ hardcoded/fabricated tables and 6 cross-package seam contradictions.
+> - **Honest epistemic classification:** `[conjecture]`
+> - **Required disposition:** Retract '0 contradictions / 100% retired' claim; gate architecture synthesis on re-running follow-up real-compiler validation real-compiler torture targets.
+
+
 ## Summary
 
 Executing a zero-external-access architectural design dry run for a verified

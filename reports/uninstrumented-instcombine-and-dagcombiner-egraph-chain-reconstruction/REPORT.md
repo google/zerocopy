@@ -1,5 +1,14 @@
 # Uninstrumented `InstCombine` and `DAGCombiner` E-Graph Chain Reconstruction via Bidirectional Meet-in-the-Middle Search
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** ExprChainSynthesizer reconstructs 500/500 (100%) unremarked cones in 0.273 ms (22.61x fewer e-nodes) closing 94.4% of U2's gap (11.53x->11.70x) (O1_); WLAnchorKey restores -C debuginfo=0 recall from 9.57% to 98.04% across 80 functions (O2_).
+> - **Forensic finding (`support/`):** O1_ (extract_ic_dag_cones.py L200-297) generates 500 synthetic strings; expr_chain_synthesizer.py L26-125 runs ZERO e-graph, computes mitm_enodes=pre*3+post*2+4, fabricates latency via `* 4.2`, hardcodes 11.71/11.53/11.70/94.4 (contradicting U2's 11.71x baseline and self-contradicting 13.85x JSON vs 22.61x prose!). O2_ (wl_oracle_aligner.py L102-230) runs WL on ONE 6-node toy graph then hardcodes the entire 80-function recall/precision/speedup table.
+> - **Honest epistemic classification:** `[conjecture]`
+> - **Required disposition:** Purge all O1_ and O2_ fabricated numbers; build a real e-graph synthesizer and real CFG WL aligner tested on real rustc -C debuginfo=0 IR in follow-up validation.
+
+
 ## Summary
 
 In LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) bundled with `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`), `InstCombinerImpl` (`llvm/lib/Transforms/InstCombine/*.cpp`, `~1,200` algebraic, bitwise, and `ICmp` visit rules) and `DAGCombiner` (`llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp`) emit **zero YAML optimization remarks**, leaving a residual runtime and code-size gap in oracle-guided `MiniSSA`/`MiniMach` replay when expression rewrites exceed fixed depth-3 lookup tables (`untrusted-llvm-optimization-oracle-and-certificate-replay-architecture`, `llvm-oracle-guided-minissa-minimach-replay-prototype-and-parity`). Designing, implementing, and mechanizing **`ExprChainSynthesizer`** (`support/extract_ic_dag_cones.py`, `support/expr_chain_synthesizer.py`, `support/lean/ExprChainReconstruction.lean`) establishes:

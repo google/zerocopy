@@ -12,7 +12,7 @@ import CSRGraph
 /-!
 # K1 CSR `ByteArray` Arena & Audited `@[extern]` Word-Slice Benchmark Suite (`K1Bench.lean`)
 
-Closes the remaining Wave 5 (`X3`) Lean-vs-Rust substrate gaps (`egraph_uf` `3.06x`,
+Closes the remaining prior baseline (`X3`) Lean-vs-Rust substrate gaps (`egraph_uf` `3.06x`,
 `regalloc` `4.65x`, `dom_ssa` `1.56x`) and eliminates `FloatArray` IEEE-754 NaN hazards:
 1. `dom_ssa_csr`: Stores CFG predecessors, dominators, and dominance-frontier counters in
    flat 32-bit `ByteArray` CSR arenas (`baUget32`/`baUset32`), eliminating boxed `Array UInt32`

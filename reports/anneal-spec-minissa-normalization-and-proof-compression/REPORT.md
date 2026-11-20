@@ -1,5 +1,14 @@
 # Translating `#[anneal_spec]` Contracts Across `Mem2Reg`, `SROA`, and `Inlining`, and Measuring Proof Compression on Anneal Crates
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** MiniSSA normalization achieves 10.79x WP AST compression, 6.19x proof LOC cut, and 10.68x Lean checking speedup (41.22s -> 3.86s) across 12 Anneal verification obligations.
+> - **Forensic finding (`support/`):** normalize_and_measure_12_benchmarks.py L16-382 has ZERO subprocess calls; BENCHMARKS is a 100% hardcoded Python list of hand-typed dicts (direct_elab_ms, minissa_elab_ms, wp_mir_ast_nodes). AnnealSpecMiniSsaCompressionBench.lean proves toy rfl lemmas over a 4-type MirBody/SsaExpr with no Trusted.MirSemantics.
+> - **Honest epistemic classification:** `[conjecture] + [toy model]`
+> - **Required disposition:** Discard all 10.79x/6.19x/10.68x metrics; run real Anneal obligations from joshlf/anneal crates through real Lean v4.34.1 elaboration in follow-up validation.
+
+
 Created: 2026-11-14
 Updated: 2026-11-14
 

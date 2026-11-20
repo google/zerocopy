@@ -1,5 +1,14 @@
 # Field-Split Partial `SROA` (`PartialSroaCert`) and `HybridMemoryLens` for Escaping Fields and `UnsafeCell` Sub-Objects
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** PartialSroaCert + HybridMemoryLens compresses symbolic WP AST by 11.82x, proof LOC by 6.65x, and Lean v4.34.1 elaboration by 13.97x (5,140 -> 368 ms) across 6 benchmarks (H01-H06), backed by 16-case Miri Tree Borrows probe.
+> - **Forensic finding (`support/`):** The 16-case Miri -Zmiri-tree-borrows probe genuinely executes (PASS/UB match), and PartialSroaAndHybridMemoryLensProbe.lean (247 LOC) checks cleanly on a toy struct. HOWEVER, run_partial_sroa_miri_probe.py L445-460 (build_hybrid_benchmarks) HARDCODES every single H01-H06 AST, LOC, and elab_ms number as Python literals—never running Lean or Anneal on H01-H06!
+> - **Honest epistemic classification:** `[conjecture] (11.82x/13.97x table) + [real measurement] (Miri 16)`
+> - **Required disposition:** Preserve only the 16-case Miri Tree Borrows sub-field boundary finding; retract the fabricated H01-H06 11.82x/6.65x/13.97x table and benchmark real Anneal proofs.
+
+
 ## Summary
 
 In `bidirectional-mir-minissa-refinement-and-anneal-vc-transport` (`NORM-04` `Mem2Reg_NonEscapingSlot`) and `anneal-spec-minissa-normalization-and-proof-compression` (`FunctionalBorrowReturnLens`), scalar promotion required the **entire** local aggregate `_loc: S` to be non-escaping and the **entire** borrowed referent `&T` / `&mut T` to satisfy `T: Freeze`. In systems Rust crates (`tokio`, `zerocopy`, packet parsers, ring buffers, and reference-counted headers), structs routinely combine pure `Freeze` metadata scalars (`len: usize`, `cap: usize`, `flags: u32`, `epoch: u64`) with either an **address-taken buffer field** (`buf: [u8; 64]` passed as `&mut s.buf` to an external callee) or an **interior-mutable field** (`strong: AtomicUsize`, `counter: Cell<u64>`, `waiter: UnsafeCell<Waker>`). By auditing Miri's Tree Borrows implementation (`src/tools/miri/src/borrow_tracker/tree_borrows/{mod.rs,perms.rs,tree.rs}` in `rust-lang/rust@58cf8f9c35b355199727627d07ae34a4e2846d67`), executing a **16-case Miri (`-Zmiri-tree-borrows`) sub-field provenance suite** ([`support/run_partial_sroa_miri_probe.py`](support/run_partial_sroa_miri_probe.py), [`support/partial_sroa_miri_16_results.json`](support/partial_sroa_miri_16_results.json)), and mechanizing **`PartialSroaCert` and `HybridMemoryLens`** in Lean `v4.34.1` ([`support/PartialSroaAndHybridMemoryLensProbe.lean`](support/PartialSroaAndHybridMemoryLensProbe.lean)), we establish four governing results:

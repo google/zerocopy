@@ -1,5 +1,14 @@
 # Hardware LBR AutoFDO Sample Profile Ingestion (`.anneal_site_map` / `anneal-profgen`), Machine-Branch Polarity Un-Flipping, and Minimum-Cost Circulation Flow Smoothing
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** anneal-profgen resolves 99.64% (4,982/5,000) hardware LBR indirect-call samples and retains 99.5%-100.0% PGO speedup (+78.7%) across mutations M0-M4 vs -8.6%..17.3% for stock -Z profile-sample-use.
+> - **Forensic finding (`support/`):** RIGGED BENCHMARK: anneal_profgen_sim.py L782-808 passes `--cfg feature='anneal_specialized'` UNCONDITIONALLY to bin_anneal (passing NO profile file to rustc!), while passing that flag to bin_llvm ONLY on M0 (llvm_keeps_icp=True) and stripping it on M1-M4! Also hardcodes 4,982/5,000 (99.64%) in main() L840-859 with zero `perf record -b` LBR capture.
+> - **Honest epistemic classification:** `[conjecture] (rigged proxy)`
+> - **Required disposition:** Retract O5_ mutation retention and LBR resolution numbers entirely; run genuine hardware LBR capture and fair profile ingestion without `--cfg` rigging in follow-up validation.
+
+
 ## Summary
 
 While deterministic instrumentation-based Profile-Guided Optimization (`-C profile-generate` / `.anneal-prof` in `mutation-resilient-polarity-safe-ir-portable-pgo`) eliminates stale-profile cliffs for staged benchmark builds, production fleet deployments rely on zero-overhead hardware PMU Last Branch Record (LBR) and Arm Statistical Profiling Extension (SPE) sample profiles (`perf record -b` $\rightarrow$ `llvm-profgen` $\rightarrow$ `rustc -Z profile-sample-use=<path>`, implemented in `compiler/rustc_session/src/options.rs:2773-2774` and `compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp:686-695`). In `rustc` 1.99.1 (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and bundled LLVM 23.1.1 (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), standard sample-based AutoFDO suffers three structural failure modes (`support/anneal_profgen_sim.py`, `support/lbr_skid_and_mutation_results.json`):

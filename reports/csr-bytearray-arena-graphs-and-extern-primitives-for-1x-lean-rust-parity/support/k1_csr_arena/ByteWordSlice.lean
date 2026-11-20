@@ -17,7 +17,7 @@ reads and writes over a flat byte buffer (`ByteArray`), proving:
    for flat word arenas;
 3. Complete absence of IEEE-754 quiet/signaling `NaN` payload canonicalization across
    all $2^{64}$ `BitVec 64` bit patterns when stored in a `ByteArray` word slice,
-   resolving the `FloatArray` `0x7FF...` hazard identified in Wave 5 (`X3`).
+   resolving the `FloatArray` `0x7FF...` hazard identified in prior baseline (`X3`).
 -/
 
 namespace K1CsrArena

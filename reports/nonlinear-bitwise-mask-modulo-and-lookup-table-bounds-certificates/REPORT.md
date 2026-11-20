@@ -1,5 +1,14 @@
 # Nonlinear Bitwise-Mask, Unsigned-Modulo, and Lookup-Table Bounds Certificates (`BitwiseModFarkasCert`)
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Type-validity-seeded range + Farkas BCE eliminates 68.4% of surviving checks across core/alloc/std/hot crates (N5), and nonlinear bitwise/LUT certs discharge 512/770 (66.49%) residual checks across zlib-rs (93.8%), hashbrown (100%), memchr (100%) (L4_).
+> - **Forensic finding (`support/`):** N5's ECOSYSTEM_CHECK_CENSUS (L188-297) is a 100% hardcoded Python list (only 2 hand-rewritten Rust functions compiled). L4_'s build_corpus_results (L53-128) copies N5's hardcoded category_c totals (32,156,12,66,8,496) and hardcodes a second fabricated layer on top—never scanning a single crate! (Standalone Lean BitVec/Farkas lemmas are real.)
+> - **Honest epistemic classification:** `[conjecture] + [Lean proof] (isolated lemmas)`
+> - **Required disposition:** Retract both 68.4% and 66.49% (512/770) ecosystem censuses; run a real MIR/LLVM bounds-check scanner on compiled core/alloc/zlib-rs/hashbrown/memchr in follow-up validation.
+
+
 ## Summary
 
 In `type-validity-seeded-range-and-farkas-bounds-check-elimination`, linear Farkas certificates discharged `100%` of linear counted-loop bounds checks (`while i + K <= slice.len()`), but left **`770` non-linear / bitwise-computed array index checks** across `core`, `alloc`, `std`, `zlib-rs`, `regex-automata`, `hashbrown`, `serde_json`, and `memchr` untouched because linear combinations cannot directly bound bitwise masks (`table[bits & 0x1FF]`, `buckets[hash & mask]`), logical right shifts (`TRANSITIONS[state + (byte >> 4)]`), unsigned remainders (`buf[seq % cap]`), or bit-counting intrinsics (`CLASSES[64 - x.leading_zeros()]`). By coupling five universal nonlinear bitvector-to-linear bridge rules (`BRIDGE-AND-CONST`, `BRIDGE-AND-VAR`, `BRIDGE-LSHR`, `BRIDGE-UREM`, `BRIDGE-BITCOUNT`) with a $k$-ary Farkas linear inequality checker (`FarkasCertList`) in Lean `v4.34.1` ([`support/BitwiseModFarkasBoundsChecker.lean`](support/BitwiseModFarkasBoundsChecker.lean), `402` lines, checked in `1,213.28 ms` with **`0` `sorryAx`** and **`0` `Lean.ofReduceBool`**) and evaluating the pass across the 8-crate benchmark corpus ([`support/run_bitwise_mod_farkas_bench.py`](support/run_bitwise_mod_farkas_bench.py), [`support/bitwise_mod_bounds_results.json`](support/bitwise_mod_bounds_results.json)), we establish four governing results:

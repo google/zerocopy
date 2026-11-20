@@ -1,5 +1,14 @@
 # Automated Toolchain Table Regeneration and Differential PostCleanup MIR-to-MiniSSA Equivalence Validation Across Toolchain Upgrades
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Automated toolchain-table regeneration and Anneal-compliant Lean cross-release MIR-to-MiniSSA upgrade equivalence validator (1.99.1 -> 1.100.0).
+> - **Forensic finding (`support/`):** regen_toolchain_tables.py genuinely extracts target specs/intrinsic deltas, BUT CrossReleaseEquiv_bv.lean violates Anneal's TrustedBoundary.lean by invoking forbidden `bv_decide` 4 times (Lean.ofReduceBool), proves tautological `transmute_box_ref_u64_equiv : heap_val = heap_val := by rfl`, and cross_release_mir_minissa_validator.py L323 silently falls back to a static comment on i686 CalledProcessError.
+> - **Honest epistemic classification:** `[toy model] (TCB violation) + [real measurement] (table extract)`
+> - **Required disposition:** Remove all 4 `bv_decide` calls and the tautological `rfl` theorem; fix fail-open i686 fallback to fail closed.
+
+
 Created: 2026-11-14
 Updated: 2026-11-14
 

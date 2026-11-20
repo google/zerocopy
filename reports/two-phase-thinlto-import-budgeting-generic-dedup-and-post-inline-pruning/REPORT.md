@@ -1,5 +1,14 @@
 # Two-Phase ThinLTO Import Budgeting, COMDAT Generic Monomorphization Deduplication (`ComdatEquivCert`), and Post-Inlining `LiveClosed` Pruning
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Mutual-recursion SCC fixpoint summary certs yield 339.46x speedup (O7_); Two-Phase ThinLTO cuts MiniMach verification functions by -84.52% and verification time by 4.78x (O8_).
+> - **Forensic finding (`support/`):** O8_ (two_phase_thinlto_eval.py L213-244) hardcodes c1=168, c4=26, c1_ms=168*0.245, c4_ms=26*0.245+70*0.032 (while its own real rustc run showed ThinLTO was SLOWER: 69.47 us vs 68.67 us!). O7_ hardcodes a 30-fn call graph and manually hoists eval_expr out of a 20,000-iter loop in Rust source to manufacture 339.46x.
+> - **Honest epistemic classification:** `[conjecture] + [toy model]`
+> - **Required disposition:** Discard 339.46x and -84.52%/4.78x numbers; measure real SCC summaries and real ThinLTO import/dedup savings on a multi-crate workspace in follow-up validation.
+
+
 ## Summary
 
 In multi-codegen-unit (`-C codegen-units=16`) and cross-crate `ThinLTO` builds on `rustc` 1.99.1 (`58cf8f9c35b355199727627d07ae34a4e2846d67`), `compiler/rustc_monomorphize/src/partitioning.rs:220-282` duplicates `InstantiationMode::LocalCopy` items (`#[inline]` generics, drop glue, and cross-crate generic instantiations) as `Linkage::Internal` copies inside **every** referencing Codegen Unit (CGU), while `LLVMRustCreateThinLTOData` (`compiler/rustc_llvm/llvm-wrapper/PassWrapper.cpp:1320-1379`) imports foreign function bodies as `available_externally` definitions for cross-module inlining. In a proof-producing `MiniSSA` $\rightarrow$ `MiniMach` backend (`cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay`, `incremental-function-and-thinlto-summary-proof-cache-architecture`), verifying every CGU's pre-inlining function table naively incurs two severe redundancies (`support/two_phase_thinlto_eval.py`, `support/two_phase_thinlto_results.json`):

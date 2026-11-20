@@ -1,5 +1,14 @@
 # Scoped `ExportList` Invalidation Slicing (`ScopedExportCert`) and Procedural-Macro Determinism Sandbox
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Scoped ExportList differential invalidation cuts incremental proof re-verification latency to 0.11-1.35 ms across multi-crate workspaces.
+> - **Forensic finding (`support/`):** CASCADING FABRICATION: scoped_export_simulator.py L220 computes re-check latency by dividing synthetic invalidated step counts by X4's fabricated `4,190,000,000.0` steps/s (from the fake 140-LOC dummy Rust loop)!
+> - **Honest epistemic classification:** `[conjecture]`
+> - **Required disposition:** Discard 0.11-1.35 ms latency claims entirely; recompute using measured real-certificate Lean/nanoda throughput from T03 and real workspace diffs from T11.
+
+
 ## Summary
 
 Two caching and build-reproducibility boundaries remained open after the prior baseline's

@@ -1,5 +1,14 @@
 # Tarjan SCC Greatest-Fixpoint (`SccGfpCert`) and Lexicographic Ranking (`SccRankingCert`) Summary Certificates for Mutually Recursive ThinLTO
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Mutual-recursion SCC fixpoint summary certs yield 339.46x speedup (O7_); Two-Phase ThinLTO cuts MiniMach verification functions by -84.52% and verification time by 4.78x (O8_).
+> - **Forensic finding (`support/`):** O8_ (two_phase_thinlto_eval.py L213-244) hardcodes c1=168, c4=26, c1_ms=168*0.245, c4_ms=26*0.245+70*0.032 (while its own real rustc run showed ThinLTO was SLOWER: 69.47 us vs 68.67 us!). O7_ hardcodes a 30-fn call graph and manually hoists eval_expr out of a 20,000-iter loop in Rust source to manufacture 339.46x.
+> - **Honest epistemic classification:** `[conjecture] + [toy model]`
+> - **Required disposition:** Discard 339.46x and -84.52%/4.78x numbers; measure real SCC summaries and real ThinLTO import/dedup savings on a multi-crate workspace in follow-up validation.
+
+
 ## Summary
 
 Bottom-up interprocedural summary propagation over directed acyclic call graphs (`propagate_summary_attrs_sound` in `cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay`) cannot infer `nounwind`, memory-effect bounds (`readnone`, `readonly`, `argmemonly`), or `willreturn` across self-recursive ($|S| = 1$ with self-loop) or mutually recursive ($|S| \ge 2$) Strongly Connected Components (SCCs) such as recursive-descent JSON/AST parsers, DOM sanitizers, state-machine dispatchers, and recursive tree/slice algorithms. Furthermore, live probing of `rustc` 1.99.1 (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and bundled LLVM 23.1.1 (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) (`support/scc_thinlto_synthesizer.py`, `support/scc_summary_comparison.json`) shows that while LLVM 23.1.1's `PostOrderFunctionAttrsPass` (`llvm/lib/Transforms/IPO/FunctionAttrs.cpp`) computes `nounwind` and `memory(...)` over Tarjan SCCs, **LLVM 23.1.1 fails to infer `willreturn` on `26 / 26` (`100%` miss rate) of bounded recursive and mutually recursive Rust functions** because `FunctionAttrs.cpp` (`checkNoCycles`) unconditionally abandons `willreturn` inference whenever a call-graph SCC contains a cycle!

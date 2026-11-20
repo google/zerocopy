@@ -1,5 +1,14 @@
 # Cross-Release `AbiCompatHash` Fingerprinting and Verified Caller/Callee ABI Marshaling Thunk Synthesis (`AbiBridgeThunk`)
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** 100% .rlib ABI preservation on x86_64/aarch64 and 97.81% + 26-byte trampolines on i686 across 13,683 post-O3 functions (rustc 1.99.1 -> 1.100.0).
+> - **Forensic finding (`support/`):** run_abi_bridge_probe.py L142-254 copies W7/X6's hardcoded CRATE_ABI_PROFILE_12 (13,683 fns), hashes two identical hardcoded Python lists, compiles ONE host x86_64 C mock (`struct StackFloatFrame`), hardcodes `synthesized_thunk_size_bytes: 26`, and NEVER runs rustc 1.100.0 or i686!
+> - **Honest epistemic classification:** `[conjecture] + [toy model]`
+> - **Required disposition:** Retract 100%/97.81%/26-byte ABI bridge claims; run real cross-release rustc 1.99.1 vs 1.100.0 i686 ABI fingerprinting and actual i686 thunk assembly/execution.
+
+
 ## Summary
 
 In the prior baseline (`rustc-multi-release-mir-abi-drift-and-version-isolated-adapter` and

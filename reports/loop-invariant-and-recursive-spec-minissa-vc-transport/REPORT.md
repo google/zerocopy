@@ -1,5 +1,14 @@
 # Loop-Invariant, Affine-Fuel, and Recursive-Spec VC Transport Across `Runtime(PostCleanup)` MIR and `MiniSSA`
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Loop-invariant & recursive MiniSSA VC transport achieves 13.61x AST compression and 15.48x Lean checking speedup, eliminating 100% of manual fuel inductions.
+> - **Forensic finding (`support/`):** run_loop_recursive_minissa_bench.py L56-201 hardcodes ALL direct_mir_ast_nodes, minissa_ast_nodes, direct_mir_elab_ms, and minissa_elab_ms! In LoopAndRecursiveMiniSsaBench.lean L305, `evalMiniSsaCountedLoop := acc0 + trips*stepVal` defines MiniSSA semantics as the closed-form answer so proofs collapse to rfl; transport probe reuses N1's fake `namespace Trusted` without deinitMovedPlace.
+> - **Honest epistemic classification:** `[conjecture] + [toy model]`
+> - **Required disposition:** Discard 13.61x/15.48x metrics and closed-form cheating semantics; prove genuine loop-CFG operational semantics against real Trusted.MirSemantics.
+
+
 ## Summary
 
 In `bidirectional-mir-minissa-refinement-and-anneal-vc-transport` and `anneal-spec-minissa-normalization-and-proof-compression`, straight-line `Runtime(PostCleanup) MIR → Canonical MiniSSA` normalization transported functional correctness and safety proofs backward to `Trusted.VerificationResult` using a constant additive fuel slack $\Delta(\text{cert}) = c_2$ ($k_{\text{mir}} \le k_{\text{ssa}} + c_2$). That constant-slack bound holds only when every eliminated `Runtime(PostCleanup)` MIR statement (`StorageLive`, `StorageDead`, `&mut` reborrows, `CopyProp` moves, and merged `Goto` blocks) executes at most once. By mechanizing the **Per-Backedge Affine and Lexicographic Loop Normalization Bridge (`LoopNormCert`, `checkLoopNormBisim`, `verifyMirLoopViaMiniSSA_sound`, `verifyNestedLoopLexicographic_sound`, and `verifyMirRecViaMiniSSA_sound`)** in Lean `v4.34.1` ([`support/LoopAndRecursiveMiniSsaTransportProbe.lean`](support/LoopAndRecursiveMiniSsaTransportProbe.lean)) and benchmarking **8 representative loop and recursive verification obligations (`L01`–`L08`)** ([`support/LoopAndRecursiveMiniSsaBench.lean`](support/LoopAndRecursiveMiniSsaBench.lean), [`support/loop_recursive_compression_metrics.json`](support/loop_recursive_compression_metrics.json)), we establish four governing results:

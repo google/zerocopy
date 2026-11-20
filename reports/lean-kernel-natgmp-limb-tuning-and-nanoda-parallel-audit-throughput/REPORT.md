@@ -1,5 +1,14 @@
 # Accelerating Kernel-Checked `ReflPacked_NatGMP` and Parallel External Safe-Rust Checkers (`nanoda_lib` / `lean4export`)
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Packed GMP Nat reflection checks 534,633 steps/s single-core; 16-shard parallel checking audits libcore (1.75M steps) in 0.676s (2.58M steps/s) in Lean C++ and 0.416 ms (4.19B steps/s) in safe-Rust nanoda_lib.
+> - **Forensic finding (`support/`):** Origin bug in K2 (gen_k2_benchmarks.py L332-336): natStep50 unpacks 10 bytes + literal `+ 50` (5x fake step inflation). X4 (LibcoreAudit/Common.lean L21-24) escalates this to leaf512 unpacking 8 bytes + literal `a1 + 250` (31.25x fake step inflation, ZERO derivation logic!). Worse, nanoda_audit_bench.rs is NOT nanoda_lib—it is a 140-LOC dummy Rust for-loop with zero lean4export parsing or typechecking!
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Quarantine and purge all 534k / 2.58M / 4.19B steps/s and 0.416 ms numbers across K2, X4, K2_, K5_, and P7; benchmark real lean4export + real nanoda_lib on real IR certificates in follow-up validation.
+
+
 ## Summary
 
 Empirical benchmarking across Lean `v4.34.1` (`5045d0056413266e57c625dcd7c365b10e377c52`), `leanchecker` (`v4.34.1`), `nanoda_lib` (`v0.4.32`), and `lean4lean` resolves the three kernel-WHNF throughput bottlenecks identified in `lean-kernel-derivation-scale-checking-and-reflection-throughput` (`K2`) and `rustc-build-ir-and-pass-transformation-volume-statistics` (`W7`) (`support/run_x4_benchmarks.py`, `support/results.json`):

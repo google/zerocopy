@@ -1,5 +1,14 @@
 # Unwind-Table-Preserving, PIC-Safe Machine Outlining (`VerifiedMachineOutliner`) Across All 8 Tier 1 Targets
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Mechanized VerifiedMachineOutliner.lean proves tail-call frame simulation and achieves cross-target -Oz code-size parity across 8 Tier 1 targets.
+> - **Forensic finding (`support/`):** VerifiedMachineOutliner.lean proves `outline_tailcall_frame_sim : runSlice slice st = runSlice slice st := rfl` (literally x = x!). Meanwhile verified_outliner_8targets.py regex-rewrites rustc -Oz asm on 8 synthetic identical functions (outline_cand_1..8) and shells out to llvm-mc (contradicting B3/M2_'s zero-assembler TCB claim).
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Replace tautological rfl theorem with non-trivial caller/callee stack-frame simulation (F1-4 / cfg_unwind_reloc) and eliminate regex asm + llvm-mc patching.
+
+
 ## Summary
 
 In LLVM 23.1.1 (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`), enabling `MachineOutliner` (`-enable-machine-outliner=always`) at `-Oz + FatLTO` fails or degrades on **6 of the 8 Rust Tier 1 targets**: it aborts during object emission on 4 targets (`x86_64-pc-windows-msvc` and `x86_64-pc-windows-gnu` with `error: Missing .seh_endepilogue`, `i686-pc-windows-msvc` with `error: missing .cv_fpo_endprologue`, and `i686-unknown-linux-gnu` PIC with `error: expected relocatable expression`), is a silent no-op (`0` outlined functions) on a 5th (`aarch64-pc-windows-msvc`), and inflates ELF `.eh_frame` unwind tables by **`+58.9%` (`+17,440 B`)** on `x86_64-unknown-linux-gnu` (erasing `80.0%` of the `.text` reduction). Auditing the upstream C++ implementation (`X86InstrInfo.cpp` and `AArch64InstrInfo.cpp`), mechanizing the outlining frame and unwind invariants in Lean `v4.34.1` (`support/VerifiedMachineOutliner.lean`), and prototyping `VerifiedMachineOutliner` (`support/verified_outliner_8targets.py`) resolves every one of these defects across all **8 Tier 1 targets**:

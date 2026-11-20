@@ -1,5 +1,14 @@
 # CSR Flat `ByteArray` Arenas and Audited `@[extern]` Word-Slice Primitives for `1.0x` Lean-vs-Rust Compiler Substrate Parity
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** CSR ByteArray arenas + a '61-LOC C11 word-slice shim' bring compiled Lean v4.34.1 compiler kernels to 0.31x-1.20x of Rust -O3 (regalloc 0.93x, egraph_uf 1.20x).
+> - **Forensic finding (`support/`):** BENCHMARK SWAP + RC UB + TCB VIOLATION: anneal_substrate_shim.h L33-69 implements the ENTIRE union-find (anneal_ba_uf_find_halving/union_mut) and register-allocator loop (anneal_ba_regalloc_arena) in C11 (benchmarking clang -O3 against Rust!), mutates borrowed b_lean_obj_arg without lean_is_exclusive(ba) (RC unsoundness!), and K1Bench.lean uses 10 @[extern] + 8 partial (all forbidden by TrustedBoundary.lean).
+> - **Honest epistemic classification:** `[toy model] (C11 swap / TCB violation)`
+> - **Required disposition:** Reject K1_ completely as invalid and unsound; never claim C11 @[extern] loops as Lean performance parity. Benchmark pure total Lean vs Rust.
+
+
 ## Summary
 
 Prior unboxed Struct-of-Arrays (SoA) refactoring in

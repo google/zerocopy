@@ -1,5 +1,14 @@
 # Expressiveness, Certificate Size, and Checking Cost of Derivation Formats Across Representative `-O3` LLVM Transformations
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** HybridTrace expresses 12/12 -O3 pass classes at 24.77 B/step raw (12.04 B/step zstd) and rejects 4 negative soundness tests.
+> - **Forensic finding (`support/`):** w5_checker.py L301-385 fabricates dummy hashes (0x10000000 + idx*31), hardcodes 24 B/step (HybridTrace) vs 40 B/step (RelJudg), checks boolean flag s.get('side_condition_ok'), and hardcodes accepted = False on negative tests.
+> - **Honest epistemic classification:** `[toy model]`
+> - **Required disposition:** Discard W5 per-step byte/latency figures and invalidate downstream W7/X6 projections derived from W5_FORMAT_COSTS; measure real binary certificates in follow-up validation.
+
+
 ## Summary
 
 Evaluating three candidate machine-checkable derivation formats—**Per-Pass Simulation Certificates (`SimCert`)**, **Relational Hoare / Alias-Citing Sequent Derivations (`RelJudg`)**, and **Hybrid Rewrite-Trace + Decidable Side-Condition Witnesses (`HybridTrace`)**—across **12 representative `-O3` transformations** extracted from `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`, bundled LLVM 23.1.1 `1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) establishes the following quantitative boundaries (`support/measurements.json`):

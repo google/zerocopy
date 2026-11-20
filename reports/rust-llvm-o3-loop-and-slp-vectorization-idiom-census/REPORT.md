@@ -1,5 +1,14 @@
 # Census of Real-World LLVM `-O3` Loop and SLP Vectorization Idioms on Rust (`x86_64` and `aarch64`)
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `UNSUPPORTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Pareto vectorization census identifies 412 real-world sites across core/alloc/std/P2 (U4), and HybridTrace vectorization certs validate 22/22 LLVM loops where Alive2 times out at 0.38 us/step (U5).
+> - **Forensic finding (`support/`):** U4 compiles 20 inline Rust functions across 6 CPUs (real), but pareto_schemas (L378-439, 412 ecosystem sites) is 100% hardcoded. U5's Lean stripMine_sound is genuine over abstract Int lists, but check_vectorization_certs.py L21-112 hardcodes BENCHMARK_CASES (22/22 VALIDATED vs TIMEOUT) and computes cert_bytes=8+n*24, lean_refl_us=n*0.38.
+> - **Honest epistemic classification:** `[real measurement] (20 fns) + [Lean proof] (toy) + [conjecture]`
+> - **Required disposition:** Replace U4's hardcoded 412-site dict with an actual IR census of core/alloc/crates.io, and run real Alive2 vs real vector-cert validation on those loops.
+
+
 ## Summary
 
 Extracting and classifying `LoopVectorize` and `SLPVectorizer` transformation sites across the Rust standard library (`core`, `alloc`, `std`), hot ecosystem crates (`hashbrown`, `memchr`, `zerocopy`, `syn`), and the 20-archetype vectorization benchmark suite (`support/census_vectorization.py`, `support/rust_vectorization_census.csv`, `support/rust_vectorization_census.json`) on `rustc 1.99.1` (`58cf8f9c35b355199727627d07ae34a4e2846d67`) and LLVM `23.1.1` (`1b9c0d5ff9bbe7634aead059efe6b11a7eeba145`) across six target-CPU levels (`x86-64`, `x86-64-v2`, `x86-64-v3`, `x86-64-v4`, `aarch64 generic`, and `aarch64 neoverse-v1`) establishes:

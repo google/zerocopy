@@ -1,5 +1,14 @@
 # Direct Verified DWARF v5 and CodeView Debug-Section Emitter (`MiniMach` to `.debug_*` and `.debug$S`/`.debug$T`)
 
+<!-- epistemic-audit-erratum-2026-11-20 -->
+> **Epistemic Audit Erratum (2026-11-20 — Verdict: `REFUTED`):**
+> A line-by-line forensic inspection of the accompanying `support/` scripts and Lean proofs against live `joshlf/anneal` (`c131b320e`) found that headline quantitative or soundness claims in this report do not hold as stated:
+> - **Audited claim:** Direct assembler-free DWARF v5 / CodeView emitter passes llvm-dwarfdump/pdbutil/gdb across 8 Tier 1 targets AND boosts -O3 local-variable coverage from 74.0% to 96.4% (+22.4 pp).
+> - **Forensic finding (`support/`):** emit_direct_debuginfo.py genuinely emits valid DWARF v5 / CodeView .o files (0 llvm-mc) for ONE hardcoded 2-line function passing dwarfdump/pdbutil/gdb. HOWEVER, L1033-1037 literally HARDCODES 74.0, 96.4, and 22.4 without ever measuring stock rustc -O3 debug coverage!
+> - **Honest epistemic classification:** `[conjecture] (coverage gain) + [real measurement] (1-fn emitter)`
+> - **Required disposition:** Retract 74.0% -> 96.4% debug-coverage claim; measure real `llvm-dwarfdump --statistics` on compiled rustc -O3 vs MiniMach crates.
+
+
 ## Summary
 
 A formally verified drop-in replacement for `rustc 1.99.1` that emits relocatable
