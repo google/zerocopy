@@ -35401,6 +35401,95 @@
         "verification"
       ]
     },
+    "ieee754-dynamic-rounding-modes-sticky-exception-csrs-and-stateful-floating-point-verification": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Sail RISC-V normative floating-point and vector ISA specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-elf-psabi-doc",
+            "revision": "56561cb3e7330fe99a98fd27457229707b2786ae"
+          },
+          "name": "RISC-V ELF psABI calling-convention specification"
+        },
+        {
+          "identity": {
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+          },
+          "name": "Arm AArch64 Procedure Call Standard (AAPCS64)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1163b5496994b8c5a8ef3377faa8858283fad39c"
+          },
+          "name": "LLVM compiler infrastructure (FPEnv, constrained FP intrinsics, RISC-V and x86 backends)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "Rust compiler inline-assembly and LLVM codegen backend"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFC 3514 Floating-Point Semantics"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler and Flocq IEEE-754 library"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified compiler floating-point and L3 target backends"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "aee6a90d9856a842f4cbd2bfc44efb7067a141e4"
+          },
+          "name": "HOL4 IEEE-754 binary and machine floating-point theories"
+        },
+        {
+          "identity": {
+            "compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+            "standard": "ISO/IEC 9899:2024 (C23)",
+            "target": "x86_64-linux-gnu"
+          },
+          "name": "GNU Compiler Collection C23 floating-point environment probe"
+        }
+      ],
+      "topics": [
+        "verification/floating-point",
+        "isa/riscv",
+        "rust/compilers",
+        "isa/x86-64",
+        "isa/aarch64",
+        "rust/floating-point",
+        "rust/inline-asm",
+        "ffi",
+        "llvm/ir-semantics",
+        "verification/compcert",
+        "verification/cakeml"
+      ]
+    },
     "ieee754-softfloat-dyadic-interval-gappa-certificates-and-nan-choice-refinement": {
       "observed_at": "2026-11-20",
       "subjects": [
