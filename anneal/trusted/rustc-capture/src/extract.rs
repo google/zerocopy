@@ -302,18 +302,6 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1410-L1443
 fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rvalue> {
     Ok(match value {
-        // Empty tuple aggregates (`()`) lower 1:1 to `ir::Rvalue::Unit`
-        // (`{"kind": "unit"}` in `capture.json`) and render 1:1 to
-        // `Trusted.MirAst.Rvalue.aggregateTuple []` in `lean.rs` (which fails
-        // closed in `Trusted.MirSemantics.evalRvalue` until tuple aggregates
-        // are given operational semantics). Aggregates other than `()`
-        // (non-empty tuples, enums, structs) remain refused fail-closed here.
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1445-L1453
-        mir::Rvalue::Aggregate(kind, operands)
-            if matches!(**kind, mir::AggregateKind::Tuple) && operands.is_empty() =>
-        {
-            ir::Rvalue::Unit
-        }
         mir::Rvalue::Use(op, with_retag) => ir::Rvalue::Use {
             operand: operand(tcx, op)?,
             with_retag: with_retag.yes(),
@@ -326,6 +314,8 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
         mir::Rvalue::Discriminant(place) => ir::Rvalue::Discriminant {
             local: local(place)?,
         },
+        // This also refuses `Aggregate(Tuple, [])`. The model supports unit
+        // constants via `Use`, but it has no tuple aggregate semantics.
         other => return Err(format!("unsupported rvalue: {other:?}")),
     })
 }
@@ -665,9 +655,9 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
     if body.phase != MirPhase::Runtime(RuntimePhase::PostCleanup) {
         return Err(format!("unexpected MIR phase: {:?}", body.phase));
     }
-    // The compiler records injected bodies separately from ordinary lowering,
-    // even if both reach the same runtime phase.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_build/src/builder/custom/mod.rs#L45-L73
+    // For injected bodies, "Everything that comes before this `MirPhase`
+    // should be skipped." The phase alone cannot establish ordinary lowering.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L302-L309
     if body.injection_phase.is_some() {
         return Err("compiler-injected MIR is unsupported".into());
     }

@@ -420,22 +420,19 @@ fn open_and_hash_if_dev_ino_matches(
 }
 
 #[cfg(target_os = "linux")]
-fn verify_driver_residency(sysroot: &Path, host: &str) -> Result<Option<String>, Failure> {
+fn verify_driver_residency(sysroot: &Path, host: &str) -> Result<(), Failure> {
     let driver_addr = rustc_driver::run_compiler as *const () as usize;
     let maps_bytes = fs::read("/proc/self/maps").map_err(Failure::io)?;
     let loaded_dev_ino = resolve_driver_mapping_dev_ino(&maps_bytes, driver_addr)?;
-    let driver_sha256 = match_and_hash_sysroot_driver(sysroot, host, loaded_dev_ino)?;
-    Ok(Some(driver_sha256))
+    match_and_hash_sysroot_driver(sysroot, host, loaded_dev_ino)?;
+    Ok(())
 }
 
 #[cfg(not(target_os = "linux"))]
-fn verify_driver_residency(_sysroot: &Path, _host: &str) -> Result<Option<String>, Failure> {
-    // On macOS (`#[cfg(target_os = "macos")]`) and other non-Linux hosts,
-    // System Integrity Protection (SIP) and platform loader constraints prevent
-    // Linux `/proc/self/maps` residency parity without FFI. Driver validation
-    // on non-Linux hosts is best-effort developer-only, relying on the
-    // sanitized `<sysroot>/bin/rustc --version --verbose` check.
-    Ok(None)
+fn verify_driver_residency(_sysroot: &Path, _host: &str) -> Result<(), Failure> {
+    Err(Failure::unsupported(
+        "typed MIR capture requires Linux to authenticate the loaded rustc driver",
+    ))
 }
 
 /// Verify sysroot layout, pinned linked driver version, sanitized
@@ -533,8 +530,7 @@ pub(crate) fn verify_compiler(sysroot: &Path, target: &str) -> Result<(), Failur
         ));
     }
 
-    let _driver_sha256 = verify_driver_residency(sysroot, &verbose.host)?;
-    Ok(())
+    verify_driver_residency(sysroot, &verbose.host)
 }
 
 #[cfg(test)]

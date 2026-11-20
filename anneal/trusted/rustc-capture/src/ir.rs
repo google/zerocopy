@@ -341,7 +341,6 @@ pub enum BinOp {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Rvalue {
-    Unit,
     Use {
         operand: Operand,
         with_retag: bool,
@@ -392,7 +391,7 @@ pub struct Block {
 ///
 /// Most checks in [`Body::try_new`] (static `BodyStaticAdmitted` conditions,
 /// constant/index/storage bounds, and direct destination-type agreement for
-/// `Rvalue::Unit`, `Rvalue::Use`, and `Rvalue::Discriminant`) mirror
+/// `Rvalue::Use` and `Rvalue::Discriminant`) mirror
 /// `BodyStaticAdmitted` and `WellFormed` in `Trusted.MirSemantics` for
 /// fail-fast defense in depth; full runtime operand and terminator typing is
 /// enforced by `WellFormed`. By contrast, [`check_use_retag`] is the sole
@@ -463,13 +462,6 @@ impl Body {
                     Statement::Assign { local, value } => {
                         let dst_ty = check_local(&local_tys, *local, "assignment")?;
                         match value {
-                            Rvalue::Unit => {
-                                if *dst_ty != Ty::Unit {
-                                    return Err(
-                                        "unit aggregate requires unit destination local".into()
-                                    );
-                                }
-                            }
                             Rvalue::Use {
                                 operand,
                                 with_retag,
@@ -870,49 +862,6 @@ mod tests {
         assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 0xff }).is_ok());
         assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 1 }).is_ok());
         assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 2 }).is_err());
-    }
-
-    #[test]
-    fn rvalue_unit_validates_destination_and_serializes_distinct_kind() {
-        let u8_ty = Ty::Int(IntTy {
-            width: IntWidth::I8,
-            signed: false,
-        });
-        let err = Body::try_new(
-            0,
-            false,
-            vec![u8_ty],
-            vec![Block {
-                statements: vec![Statement::Assign {
-                    local: 0,
-                    value: Rvalue::Unit,
-                }],
-                terminator: Terminator::Ret,
-            }],
-            "rust-path-v1::unit_mismatch".into(),
-        )
-        .unwrap_err();
-        assert!(err.contains("unit aggregate requires unit destination local"));
-
-        let ok = Body::try_new(
-            0,
-            false,
-            vec![Ty::Unit],
-            vec![Block {
-                statements: vec![Statement::Assign {
-                    local: 0,
-                    value: Rvalue::Unit,
-                }],
-                terminator: Terminator::Ret,
-            }],
-            "rust-path-v1::unit_ok".into(),
-        )
-        .unwrap();
-        let json = serde_json::to_value(&ok).unwrap();
-        assert_eq!(
-            json["blocks"][0]["statements"][0]["value"],
-            serde_json::json!({"kind": "unit"})
-        );
     }
 
     #[test]

@@ -1050,35 +1050,22 @@ fn retag_flags_are_recorded_on_scalar_use_and_reference_assignments_are_refused(
 }
 
 #[test]
-fn empty_tuple_preserves_distinct_unit_ir_and_refuses_non_empty_tuples() {
+fn tuple_aggregate_empty() {
     let fixture = Capture::new(b"pub fn selected() -> () { let x = (); x }\n");
     let output = fixture.selected_command().output().unwrap();
-    assert!(output.status.success(), "{output:?}");
-    let manifest = fixture.manifest();
-    let stmts = manifest["program"]["bodies"][0]["blocks"][0]["statements"]
-        .as_array()
-        .expect("statements");
-    assert!(
-        stmts
-            .iter()
-            .any(|s| s["kind"] == "assign" && s["value"] == serde_json::json!({"kind": "unit"})),
-        "expected distinct {{\"kind\": \"unit\"}} rvalue in capture.json: {stmts:?}"
-    );
-    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
-    assert!(
-        lean.contains("(Trusted.MirAst.Rvalue.aggregateTuple [])"),
-        "{lean}"
-    );
-    assert!(
-        !lean.contains("(Trusted.MirAst.Rvalue.use (Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk Trusted.MirAst.MirTy.unit Trusted.MirAst.ConstLit.zeroSized)))"),
-        "empty tuple aggregate must render 1:1 as aggregateTuple [], not constant use:\n{lean}"
-    );
-
-    let non_empty_tuple = Capture::new(b"pub fn selected(x: u64) -> (u64, u64) { (x, x) }\n");
-    let output = non_empty_tuple.selected_command().output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
-    non_empty_tuple.assert_no_capture_artifacts();
+    assert!(stdout(&output).contains("unsupported rvalue"), "{output:?}");
+    fixture.assert_no_capture_artifacts();
+}
+
+#[test]
+fn tuple_aggregate_non_empty() {
+    let fixture = Capture::new(b"pub fn selected(x: u64) -> (u64, u64) { (x, x) }\n");
+    let output = fixture.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
+    fixture.assert_no_capture_artifacts();
 }
 
 #[test]

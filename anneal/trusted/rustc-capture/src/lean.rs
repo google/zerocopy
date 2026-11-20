@@ -104,11 +104,6 @@ fn bin_op(op: BinOp) -> &'static str {
 
 fn rvalue(value: &Rvalue) -> String {
     match value {
-        // Render `Rvalue::Aggregate(Tuple, [])` 1:1 to `.aggregateTuple []`
-        // without desugaring to a constant use; `MirSemantics.evalRvalue`
-        // fails closed on `.aggregateTuple` until tuple aggregates are
-        // modeled.
-        Rvalue::Unit => "(Trusted.MirAst.Rvalue.aggregateTuple [])".into(),
         // `ir::Body::try_new` admits `with_retag == true` only when the
         // destination type satisfies `Ty::is_retag_noop()`.
         Rvalue::Use { operand: op, .. } => {
@@ -251,22 +246,16 @@ mod tests {
             false,
             vec![Ty::Unit],
             vec![Block {
-                statements: vec![
-                    Statement::Assign {
-                        local: 0,
-                        value: Rvalue::Unit,
-                    },
-                    Statement::Assign {
-                        local: 0,
-                        value: Rvalue::Use {
-                            operand: Operand::Constant {
-                                ty: Ty::Unit,
-                                lit: ConstLit::ZeroSized,
-                            },
-                            with_retag: true,
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::Constant {
+                            ty: Ty::Unit,
+                            lit: ConstLit::ZeroSized,
                         },
+                        with_retag: true,
                     },
-                ],
+                }],
                 terminator: Terminator::Ret,
             }],
             "rust-path-v1::unit_fn".into(),
@@ -280,13 +269,6 @@ mod tests {
         assert!(rendered.contains("entryDefId := 0"), "{rendered}");
         assert!(
             rendered.contains("Trusted.MirAst.VerificationScope.crate"),
-            "{rendered}"
-        );
-        assert_eq!(
-            rendered
-                .matches("(Trusted.MirAst.Rvalue.aggregateTuple [])")
-                .count(),
-            1,
             "{rendered}"
         );
         assert_eq!(

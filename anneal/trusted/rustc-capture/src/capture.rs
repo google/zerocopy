@@ -634,7 +634,8 @@ fn collect(
         ));
     }
     verify_sysroot_only_crates(tcx, verified_sysroot, &args.target)?;
-    // The compiler's language-item table must resolve to the pinned sysroot.
+    // "Defined lang items can come from the current crate or its dependencies."
+    // Only the pinned sysroot may supply them for the scalar profile.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L24-L67
     if tcx.lang_items().iter().any(|(_, def)| def.is_local()) {
         return Err(Failure::unsupported(
