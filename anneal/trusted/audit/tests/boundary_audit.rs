@@ -19,12 +19,11 @@ use std::path::{Path, PathBuf};
 use serde_json::json;
 
 use anneal_audit::{
-    Checker, Failure, ImportEdge, InspectorRequest, Json, ModuleArtifacts,
-    PARTS, TrustTier, check_cargo_boundary, default_lean_path, sha256_file,
+    Checker, Failure, ImportEdge, InspectorRequest, Json, ModuleArtifacts, PARTS, TrustTier,
+    check_cargo_boundary, default_lean_path, sha256_file,
 };
 
-const HEADER: &str =
-    "-- anneal-trust-tier: vetted\nprelude\nimport Init.NotationExtra\n";
+const HEADER: &str = "-- anneal-trust-tier: vetted\nprelude\nimport Init.NotationExtra\n";
 
 struct TempFixture {
     _dir: tempfile::TempDir,
@@ -132,7 +131,10 @@ fn copy_dir_all(src: &Path, dst: &Path) -> io::Result<()> {
 fn audits_empty_inventory_and_foundation_replay() {
     let mut fix = TempFixture::new(Some(HEADER));
     let rep = fix.check_expected(None, None, None).unwrap();
-    assert_eq!(rep.get("kernelDeclarations").and_then(Json::as_i64), Some(0));
+    assert_eq!(
+        rep.get("kernelDeclarations").and_then(Json::as_i64),
+        Some(0)
+    );
     assert_eq!(rep.get("axioms"), Some(&json!([])));
     assert_eq!(rep.get("replay"), Some(&json!(true)));
 }
@@ -144,8 +146,7 @@ fn audits_empty_inventory_and_foundation_replay() {
 /// closure.
 #[test]
 fn audits_positive_fixture_under_hostile_ambient_paths() {
-    let positive_path =
-        Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/positive.lean");
+    let positive_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/positive.lean");
     let positive = fs::read_to_string(positive_path).unwrap();
     let fix = TempFixture::new(Some(&positive));
     let stale = fix.root.join("stale");
@@ -161,12 +162,14 @@ fn audits_positive_fixture_under_hostile_ambient_paths() {
         "LEAN_SYSROOT".to_string(),
         stale.to_string_lossy().into_owned(),
     ));
-    let mut checker =
-        Checker::new_with_env(&fix.root, None, hostile_env).unwrap();
+    let mut checker = Checker::new_with_env(&fix.root, None, hostile_env).unwrap();
     let rep = checker.run().unwrap();
 
     let decls = rep.get("declarations").and_then(Json::as_array).unwrap();
-    let k_decls = rep.get("kernelDeclarations").and_then(Json::as_i64).unwrap();
+    let k_decls = rep
+        .get("kernelDeclarations")
+        .and_then(Json::as_i64)
+        .unwrap();
     assert_eq!(k_decls, decls.len() as i64);
     assert!(decls.len() > 30);
 
@@ -189,7 +192,9 @@ fn audits_positive_fixture_under_hostile_ambient_paths() {
         .collect();
     assert!(sealed_deps.contains(helper.as_str()));
     assert_eq!(
-        decl_map["Outside.sealed"].get("kind").and_then(Json::as_str),
+        decl_map["Outside.sealed"]
+            .get("kind")
+            .and_then(Json::as_str),
         Some("opaque")
     );
     assert!(decl_map.contains_key("Outside.Box.rec"));
@@ -217,10 +222,9 @@ fn audits_positive_fixture_under_hostile_ambient_paths() {
         .iter()
         .filter_map(Json::as_str)
         .collect();
-    let expected_axioms: BTreeSet<&str> =
-        ["Classical.choice", "Quot.sound", "propext"]
-            .into_iter()
-            .collect();
+    let expected_axioms: BTreeSet<&str> = ["Classical.choice", "Quot.sound", "propext"]
+        .into_iter()
+        .collect();
     assert!(inferred_deps.iter().any(|n| n.contains("instWrap")));
     assert!(coerced_deps.contains("Outside.Box.value"));
     assert!(decl_map.keys().any(|n| n.contains("instCoe")));
@@ -242,8 +246,7 @@ fn admits_lock_only_foundation_growth() {
     );
     let mut fix = TempFixture::new(Some(&src));
     let lock_path = fix.root.join("trusted/lean/foundation-lock.json");
-    let mut lock: Json =
-        serde_json::from_str(&fs::read_to_string(&lock_path).unwrap()).unwrap();
+    let mut lock: Json = serde_json::from_str(&fs::read_to_string(&lock_path).unwrap()).unwrap();
     let extra = "Init.Data.PLift";
     lock["modules"].as_object_mut().unwrap().remove(extra);
     lock["graph"].as_object_mut().unwrap().remove(extra);
@@ -264,11 +267,8 @@ fn admits_lock_only_foundation_growth() {
             extra_parts.insert(part.to_string(), Json::Null);
         }
     }
-    let src_digest = sha256_file(
-        &prefix.join("src/lean/Init/Data/PLift.lean"),
-        "foundation",
-    )
-    .unwrap();
+    let src_digest =
+        sha256_file(&prefix.join("src/lean/Init/Data/PLift.lean"), "foundation").unwrap();
     lock["modules"][extra] = json!({
         "sourceSha256": src_digest,
         "parts": extra_parts,
@@ -319,14 +319,11 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
     let full_run_negatives: Vec<(&str, String)> = vec![
         (
             "implicit default Init",
-            "-- anneal-trust-tier: vetted\nimport Init.Core\ndef x : Nat := 0\n"
-                .to_string(),
+            "-- anneal-trust-tier: vetted\nimport Init.Core\ndef x : Nat := 0\n".to_string(),
         ),
         (
             "foreign namespace spoof",
-            format!(
-                "{HEADER}import Foreign\nnamespace Trusted\ndef x : Nat := 0\nend Trusted\n"
-            ),
+            format!("{HEADER}import Foreign\nnamespace Trusted\ndef x : Nat := 0\nend Trusted\n"),
         ),
         (
             "Std import",
@@ -599,9 +596,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
 /// unimported `Trusted/Unused.lean` module discovered by `scan_lean_tree`.
 #[test]
 fn rejects_sorry_and_unreferenced_module_with_sorry() {
-    let mut f_sorry = TempFixture::new(Some(&format!(
-        "{HEADER}theorem bad : False := by sorry\n"
-    )));
+    let mut f_sorry = TempFixture::new(Some(&format!("{HEADER}theorem bad : False := by sorry\n")));
     let _ = f_sorry.check_expected(Some(1), Some("preflight"), Some(false));
 
     let mut f_sorry_ax = TempFixture::new(Some(&format!(
@@ -613,8 +608,7 @@ fn rejects_sorry_and_unreferenced_module_with_sorry() {
     fs::create_dir_all(f_unused.root.join("trusted/lean/Trusted")).unwrap();
     fs::write(
         f_unused.root.join("trusted/lean/Trusted/Unused.lean"),
-        format!("{HEADER}theorem unreferenced : False := sorryAx False true\n")
-            .as_bytes(),
+        format!("{HEADER}theorem unreferenced : False := sorryAx False true\n").as_bytes(),
     )
     .unwrap();
     let _ = f_unused.check_expected(Some(1), Some("audit"), Some(true));
@@ -624,8 +618,7 @@ fn rejects_sorry_and_unreferenced_module_with_sorry() {
 /// `"preflight"` before compilation begins.
 #[test]
 fn rejects_source_import_cycles() {
-    let mut fix =
-        TempFixture::new(Some(&format!("{HEADER}import Trusted.Other\n")));
+    let mut fix = TempFixture::new(Some(&format!("{HEADER}import Trusted.Other\n")));
     fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
     fs::write(
         fix.root.join("trusted/lean/Trusted/Other.lean"),
@@ -649,26 +642,19 @@ fn rejects_symlinks_stale_oleans_and_unexpected_foundation_companions() {
     let _ = f_sym.check_expected(Some(1), Some("snapshot"), Some(false));
 
     let mut f_stale = TempFixture::new(None);
-    fs::write(f_stale.root.join("trusted/lean/Trusted.olean"), b"stale")
-        .unwrap();
+    fs::write(f_stale.root.join("trusted/lean/Trusted.olean"), b"stale").unwrap();
     let _ = f_stale.check_expected(Some(1), Some("snapshot"), Some(false));
 
     let mut f_companion = TempFixture::new(None);
     let lp = f_companion.root.join("trusted/lean/foundation-lock.json");
-    let mut l: Json =
-        serde_json::from_str(&fs::read_to_string(&lp).unwrap()).unwrap();
+    let mut l: Json = serde_json::from_str(&fs::read_to_string(&lp).unwrap()).unwrap();
     l["modules"]["Init.Prelude"]["parts"]["olean.private"] = Json::Null;
     fs::write(&lp, serde_json::to_vec(&l).unwrap()).unwrap();
-    let _ = f_companion.check_expected(
-        Some(2),
-        Some("foundation"),
-        Some(false),
-    );
+    let _ = f_companion.check_expected(Some(2), Some("foundation"), Some(false));
 
     let mut f_bad_sha = TempFixture::new(None);
     let lp_sha = f_bad_sha.root.join("trusted/lean/foundation-lock.json");
-    let mut l_sha: Json =
-        serde_json::from_str(&fs::read_to_string(&lp_sha).unwrap()).unwrap();
+    let mut l_sha: Json = serde_json::from_str(&fs::read_to_string(&lp_sha).unwrap()).unwrap();
     l_sha["modules"]["Init.Prelude"]["parts"]["olean"] =
         json!("0000000000000000000000000000000000000000000000000000000000000000");
     fs::write(&lp_sha, serde_json::to_vec(&l_sha).unwrap()).unwrap();
@@ -683,10 +669,8 @@ fn rejects_symlinks_stale_oleans_and_unexpected_foundation_companions() {
     );
 
     let mut f_missing_root = TempFixture::new(None);
-    fs::remove_file(f_missing_root.root.join("trusted/lean/Trusted.lean"))
-        .unwrap();
-    fs::create_dir_all(f_missing_root.root.join("trusted/lean/Trusted"))
-        .unwrap();
+    fs::remove_file(f_missing_root.root.join("trusted/lean/Trusted.lean")).unwrap();
+    fs::create_dir_all(f_missing_root.root.join("trusted/lean/Trusted")).unwrap();
     fs::write(
         f_missing_root.root.join("trusted/lean/Trusted/Sub.lean"),
         HEADER.as_bytes(),
@@ -703,8 +687,11 @@ fn rejects_symlinks_stale_oleans_and_unexpected_foundation_companions() {
     );
 
     let mut f_non_lean = TempFixture::new(None);
-    fs::write(f_non_lean.root.join("trusted/lean/notes.txt"), b"unexpected")
-        .unwrap();
+    fs::write(
+        f_non_lean.root.join("trusted/lean/notes.txt"),
+        b"unexpected",
+    )
+    .unwrap();
     let err_non_lean = f_non_lean
         .check_expected(Some(1), Some("snapshot"), Some(false))
         .unwrap_err();
@@ -795,10 +782,7 @@ fn rejects_unused_compiled_axiom() {
         .inspect(InspectorRequest::Audit {
             trusted: vec!["Trusted".to_string()],
             theory: Vec::new(),
-            module_tiers: BTreeMap::from([(
-                "Trusted".to_string(),
-                TrustTier::Vetted,
-            )]),
+            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
         })
         .unwrap_err();
     assert_eq!(ax_err.code, 1);
@@ -863,11 +847,9 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     let err_dep = fix
         .check_expected(Some(1), Some("cargo-boundary"), Some(false))
         .unwrap_err();
-    assert!(
-        err_dep.message.contains(
-            "trusted/rustc-capture path dependency points outside trusted/: crates/untrusted-helper"
-        )
-    );
+    assert!(err_dep.message.contains(
+        "trusted/rustc-capture path dependency points outside trusted/: crates/untrusted-helper"
+    ));
 
     fs::copy(
         checkout.join("trusted/rustc-capture/Cargo.toml"),
@@ -1044,9 +1026,9 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .check_expected(Some(1), Some("audit"), Some(true))
         .unwrap_err();
     assert!(
-        err_spoof
-            .message
-            .contains("non-Trusted module Anneal cannot declare constant Trusted.Spoof in Trusted namespace"),
+        err_spoof.message.contains(
+            "non-Trusted module Anneal cannot declare constant Trusted.Spoof in Trusted namespace"
+        ),
         "unexpected error: {err_spoof}"
     );
 
@@ -1061,9 +1043,9 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         .check_expected(Some(1), Some("audit"), Some(true))
         .unwrap_err();
     assert!(
-        err_opaque
-            .message
-            .contains("opaque declaration Anneal.badOpaque in Anneal is not allowed outside Trusted"),
+        err_opaque.message.contains(
+            "opaque declaration Anneal.badOpaque in Anneal is not allowed outside Trusted"
+        ),
         "unexpected error: {err_opaque}"
     );
 }

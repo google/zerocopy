@@ -218,7 +218,3 @@ was requested. Do not append a ritual scorecard.
 Editorial judgment is not fact-checking, and writing authority is not publication
 authority. Domain evidence, repository rules, citation and authorship-disclosure
 requirements, and tool permissions continue to govern.
-
-See [sources and provenance](references/SOURCES.md) for the intellectual basis and
-the distinction between Williams-inspired principles and this agent-specific
-workflow.

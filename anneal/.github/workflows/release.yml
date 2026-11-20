@@ -72,19 +72,24 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         run: ./ci/check_non_stable_version.sh
 
-  release:
-    name: Release to crates.io and GitHub
+  validate-cli-release:
+    name: Validate CLI release
     needs: check-version
     if: needs.check-version.outputs.changed == 'true'
     runs-on: ubuntu-latest
-    environment: release
+    # Validation has no repository-write or OIDC authority. Keep workflow
+    # cache and artifact credentials away from repository helpers as well.
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
     permissions:
-      contents: write
-      id-token: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
 
       # FIXME(#87): We must address all blockers listed in #87 before permitting
@@ -95,9 +100,65 @@ jobs:
       - name: Smoke-test remote exocrate toolchain installation
         run: |
           set -euo pipefail
-          cargo run --locked -p cargo-anneal -- setup
-          cargo test --workspace --locked
+          install_cache="$(mktemp -d "$RUNNER_TEMP/anneal-release-cache.XXXXXX")"
+          export XDG_CACHE_HOME="$install_cache"
+          cargo run --locked --jobs 2 -p cargo-anneal -- setup
 
+          # Exocrate installs below anneal/toolchain. The cache was empty, so
+          # exactly one root must identify this run's downloaded installation.
+          install_root="$(python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          parent = Path(os.environ["XDG_CACHE_HOME"]) / "anneal/toolchain"
+          roots = [path for path in parent.iterdir() if path.is_dir()]
+          if len(roots) != 1 or roots[0].is_symlink():
+              raise SystemExit("setup must produce exactly one fresh installation")
+          root = roots[0].resolve()
+          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture"):
+              tool = root / relative
+              if not tool.is_file() or not os.access(tool, os.X_OK):
+                  raise SystemExit(f"installed executable is missing: {tool}")
+          for relative in ("share/anneal/trusted/lean/foundation-lock.json", "share/anneal/trusted/lean/lean-toolchain"):
+              if not (root / relative).is_file():
+                  raise SystemExit(f"installed foundation metadata is missing: {relative}")
+          print(root)
+          PY
+          )"
+          bash ci/probe_toolchain.sh "$install_root"
+
+          export RUSTC="$install_root/rust/bin/rustc"
+          export RUSTDOC="$install_root/rust/bin/rustdoc"
+          export LD_LIBRARY_PATH="$install_root/rust/lib"
+          export RUSTFLAGS="-Lnative=$install_root/rust/lib -Clink-arg=-Wl,-rpath,$install_root/rust/lib"
+          export ANNEAL_TEST_RUST_SYSROOT="$install_root/rust"
+          cargo test --workspace --locked --jobs 2 -- --test-threads=2
+
+  release:
+    name: Release to crates.io and GitHub
+    needs: [check-version, validate-cli-release]
+    if: needs.check-version.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    environment: release
+    # This fresh publisher runs audited release control and owned Rust
+    # publishing code, including its dependencies. Cargo publication still
+    # performs its normal verification; this is an explicit trusted build
+    # boundary, not a sandbox for arbitrary code.
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      # Validation runs on a separate runner without publication authority.
       - name: Authenticate with crates.io
         uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
         id: auth
@@ -160,16 +221,21 @@ jobs:
           echo "base_sha=${BASE_SHA}" >> "$GITHUB_OUTPUT"
           echo "tag_name=${TAG_NAME}" >> "$GITHUB_OUTPUT"
 
-  publish-artifacts:
-    name: Publish toolchain artifact (${{ matrix.target }})
+  # Artifact build and probe jobs have read-only repository permissions. The
+  # publisher receives their archives on separate GitHub-hosted runners, so
+  # build-written shell state cannot reach a later release-write token.
+  build-artifacts:
+    name: Build and probe toolchain artifact (${{ matrix.target }})
     needs: create-release
     if: github.event_name == 'workflow_dispatch'
     permissions:
-      contents: write
+      contents: read
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
-      matrix:
+      # Both jobs use this workflow-defined target table. The publisher uses
+      # a fixed Linux runner, independently of each target's build platform.
+      matrix: &toolchain-targets
         include:
           - os: ubuntu-latest
             target: linux-x86_64
@@ -197,11 +263,13 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@e847f25223456b3058e12f7fc9d777b6a6f25060 # v3.23.2
 
-      - name: Build and publish toolchain artifact
+      # Keep artifact-service credentials away from repository helpers.
+      # The pinned artifact action below needs them to transfer the result.
+      - name: Build and probe toolchain artifact
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
           TARGET: ${{ matrix.target }}
           NIX_SYSTEM: ${{ matrix.nix_system }}
         run: |
@@ -213,15 +281,95 @@ jobs:
           cp -f "$(readlink -f "target/link-${ARCHIVE_NAME}")" "target/${ARCHIVE_NAME}"
           rm -f "target/link-${ARCHIVE_NAME}"
 
+          # Probe the extracted payload: a successful Nix build alone can
+          # miss runtime libraries or paths absent from the shipped archive.
+          # These probes gate this target's archive upload.
+          install_root="$(mktemp -d "$RUNNER_TEMP/anneal-release-install.XXXXXX")"
+          nix shell --inputs-from . nixpkgs#zstd --command \
+            zstd -dc "target/${ARCHIVE_NAME}" | tar -xf - -C "$install_root"
+          bash ci/probe_toolchain.sh "$install_root"
+
+      - name: Hand off probed toolchain archive
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: anneal-toolchain-${{ matrix.target }}
+          path: target/anneal-toolchain-${{ matrix.target }}.tar.zst
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+  # A fresh job keeps probe-written shell hooks and environment changes off
+  # the write-token runner. Do not check out or execute repository code here,
+  # and do not unpack or execute the toolchain archive. Artifact transport
+  # does not establish that the archive's contents are correct or safe.
+  publish-artifacts:
+    name: Publish toolchain artifact (${{ matrix.target }})
+    # Wait for every target to pass its probes before publishing any target.
+    needs: [create-release, build-artifacts]
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: *toolchain-targets
+    steps:
+      - name: Download probed toolchain archive
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: anneal-toolchain-${{ matrix.target }}
+          path: target
+
+      - name: Upload toolchain artifact
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          set -euo pipefail
+          ARCHIVE_NAME="anneal-toolchain-${TARGET}.tar.zst"
           gh release upload "$TAG_NAME" "target/${ARCHIVE_NAME}" --repo "$GH_REPO" --clobber
 
-  open-release-pr:
-    name: Open Anneal release PR
+  # Trusted control finalizes the draft before manifest generation, then
+  # passes only the API's asset data to the read-only preparation runner.
+  finalize-release:
+    name: Publish toolchain release and collect asset metadata
     needs: [create-release, publish-artifacts]
     if: github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
-      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish toolchain release and read asset metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          gh release edit "$TAG_NAME" --repo "$GH_REPO" --draft=false
+          gh api "repos/$GH_REPO/releases/tags/$TAG_NAME" --jq '.assets' > assets.json
+
+      - name: Hand off published asset metadata
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: anneal-release-assets
+          path: assets.json
+          if-no-files-found: error
+          retention-days: 1
+
+  # Manifest helpers and Cargo's dry run execute without repository-write or
+  # OIDC authority. Their result is proposed as three data-file changes.
+  prepare-release-pr:
+    name: Prepare Anneal release PR
+    needs: [create-release, finalize-release]
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -230,16 +378,22 @@ jobs:
           ref: ${{ needs.create-release.outputs.base_sha }}
           persist-credentials: false
 
-      - name: Publish toolchain artifact release and update manifest
+      - name: Download published asset metadata
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: anneal-release-assets
+          path: ${{ runner.temp }}/anneal-release-assets
+
+      - name: Update and check release manifests
         env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ASSETS_PATH: ${{ runner.temp }}/anneal-release-assets/assets.json
           VERSION: ${{ github.event.inputs.version }}
         run: |
           set -euo pipefail
-          gh release edit "$TAG_NAME" --repo "$GH_REPO" --draft=false
-          ASSETS_JSON="$(gh api "repos/$GH_REPO/releases/tags/$TAG_NAME" --jq '.assets')"
+          ASSETS_JSON="$(cat "$ASSETS_PATH")"
           ASSETS_JSON="$ASSETS_JSON" python3 - <<'EOF'
           import json, os, pathlib, re, tomllib
 
@@ -282,7 +436,74 @@ jobs:
           EOF
 
           cargo update -p cargo-anneal --precise "$VERSION"
+          python3 -B ci/update_root_manifest.py
           cargo publish --dry-run -p cargo-anneal --allow-dirty
+
+      - name: Hand off prepared release files
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: anneal-release-pr-files
+          path: |
+            Cargo.lock
+            trusted/cargo-anneal/Cargo.toml
+            trusted/root-manifest.sha256
+          if-no-files-found: error
+          retention-days: 1
+
+  # This fresh runner executes no preparation helper or transferred code.
+  # Only the three known data files can enter the reviewed release PR.
+  open-release-pr:
+    name: Open Anneal release PR
+    needs: [create-release, prepare-release-pr]
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.create-release.outputs.base_sha }}
+          persist-credentials: false
+
+      - name: Download prepared release files
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: anneal-release-pr-files
+          path: ${{ runner.temp }}/anneal-release-pr-files
+
+      # Check both trees: regular artifact files alone do not stop cp from
+      # following a link tracked on the selected release branch. Such a link
+      # could redirect these data into Git configuration before the PR action.
+      # Validate every known directory and leaf before copying any file.
+      # Existing regular destinations retain their checkout modes; artifact
+      # paths, modes and other runner state are not restored.
+      #
+      # The fresh hosted checkout and pinned downloader must keep both trees
+      # stable during these checks and copies. This is not a defense against
+      # another process mutating the filesystem on the privileged runner.
+      # Keep each check separate: errexit ignores a failed left operand of
+      # &&, which could otherwise let a special file reach cp.
+      - name: Restore prepared release files
+        env:
+          PREPARED_RELEASE: ${{ runner.temp }}/anneal-release-pr-files
+          RELEASE_CHECKOUT: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          for directory in "$PREPARED_RELEASE" "$PREPARED_RELEASE/trusted" "$PREPARED_RELEASE/trusted/cargo-anneal" "$RELEASE_CHECKOUT" "$RELEASE_CHECKOUT/trusted" "$RELEASE_CHECKOUT/trusted/cargo-anneal"; do
+            test -d "$directory"
+            test ! -L "$directory"
+          done
+          for path in Cargo.lock trusted/cargo-anneal/Cargo.toml trusted/root-manifest.sha256; do
+            test -f "$PREPARED_RELEASE/$path"
+            test ! -L "$PREPARED_RELEASE/$path"
+            test -f "$RELEASE_CHECKOUT/$path"
+            test ! -L "$RELEASE_CHECKOUT/$path"
+          done
+          for path in Cargo.lock trusted/cargo-anneal/Cargo.toml trusted/root-manifest.sha256; do
+            cp "$PREPARED_RELEASE/$path" "$RELEASE_CHECKOUT/$path"
+          done
 
       - name: Create release pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
@@ -294,4 +515,5 @@ jobs:
           add-paths: |
             Cargo.lock
             trusted/cargo-anneal/Cargo.toml
+            trusted/root-manifest.sha256
           token: ${{ github.token }}

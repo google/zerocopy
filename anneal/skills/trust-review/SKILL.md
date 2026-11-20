@@ -98,16 +98,20 @@ intentional or accidental enforcement bypasses:
      identifier names.
 3. **Lean syntax, elaborator, or attribute blind spots in `theory/`:**
    - Verify that `.lean` files in `theory/` use only pure declarations and
-     tactics. Flag any construct that attempts to run metaprograms, read files
-     or environment variables, or alter elaboration or compiler behavior—even if
+     tactics (and that `trusted/lean/` remains tactic-free). Flag any construct
+     that attempts to run metaprograms, read files or environment variables, or
+     alter elaboration or compiler behavior—even if
      [`TrustedBoundary.lean`](../../trusted/audit/TrustedBoundary.lean)'s
-     syntactic preflight does not yet reject that specific syntax node.
+     syntactic preflight (`allowedTrustedSyntaxKinds`,
+     `allowedTheoryTacticKinds`, and `inspectNodeKind`) failed to reject that
+     specific syntax shape.
    - Confirm that code outside `trusted/lean/` never declares constants in the
      `Trusted` root namespace, never includes `-- anneal-trust-tier:`
      directives, and never introduces `axiom`, `sorry`, `unsafe`, `partial`,
-     `noncomputable`, `opaque`, `native_decide`, `by_elab`, `#eval`,
-     `set_option`, `initialize`, `@[implemented_by]`, `@[extern]`, or
-     `@[csimp]`.
+     `noncomputable`, `opaque`, `native_decide`, `decide!`, `bv_decide`,
+     `rfl'`, `grind`, tactic `configItem` flags (`+native`, `+kernel`),
+     `by_elab`, `#eval`, `set_option`, `initialize`, `@[implemented_by]`,
+     `@[extern]`, or `@[csimp]`.
 4. **Vacuous or misleading specifications at the `trusted/`–`theory/` seam:**
    - Check that lowering passes (`Abstracts`), weakest-precondition rules, and
      specification helpers in `theory/` do not discharge obligations via
@@ -168,9 +172,10 @@ affected components against these requirements:
   [`TrustedBoundary.lean`](../../trusted/audit/TrustedBoundary.lean). Flag any
   change that:
   - expands `allowedCommandKinds`, `allowedDeclarationKinds`,
-    `allowedAttributeNames`, or the foundation axiom allowlist without a sound
-    justification;
-  - narrows `forbiddenSyntaxKinds` or `forbiddenAtomKeywords`;
+    `allowedAttributeNames`, `allowedTrustedSyntaxKinds`,
+    `allowedTheoryTacticKinds`, or the foundation axiom allowlist without a
+    sound justification;
+  - relaxes structural node checks in `inspectNodeKind` or `inspectSyntax`;
   - relaxes Cargo workspace containment (`check_cargo_boundary`), source-tree
     regular-file checks (`scan_lean_tree`), or environment variable stripping;
   - weakens synchronous compilation flags (`-DElab.async=false`,
