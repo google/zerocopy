@@ -1,0 +1,166 @@
+{
+  "topics": [
+    "agents/methodology/model-refinement",
+    "agents/methodology/multi-agent-systems",
+    "agents/methodology/swarm-orchestration",
+    "agents/methodology/adversarial-falsification",
+    "agents/methodology/test-time-compute-scaling",
+    "agents/methodology/evolutionary-program-search",
+    "verification/held-out-evaluation-validity",
+    "verification/specification-adequacy"
+  ],
+  "subjects": [
+    {
+      "name": "FunSearch (google-deepmind/funsearch and Nature 625:468-475)",
+      "identity": {
+        "doi": "10.1038/s41586-023-06924-6",
+        "repository": "google-deepmind/funsearch",
+        "revision": "cc53f274237d7ab05c19df939edbc1f9616a7c19",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Alexander Novikov et al., AlphaEvolve: A coding agent for scientific and algorithmic discovery",
+      "identity": {
+        "arxiv": "2506.13131v1",
+        "doi": "10.48550/arXiv.2506.13131",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Fei Liu et al., Evolution of Heuristics (EoH), and Qingyan Guo et al., EvoPrompt",
+      "identity": {
+        "arxiv": "2401.02051v3; 2309.08532v3",
+        "venue": "ICML 2024; ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "OpenEvolve (algorithmicsuperintelligence/openevolve)",
+      "identity": {
+        "repository": "algorithmicsuperintelligence/openevolve",
+        "revision": "4167db4325727138215c55470fdd5cd302f74b66"
+      }
+    },
+    {
+      "name": "Robert Tjarko Lange, Yuki Imajuku, and Edoardo Cetin, ShinkaEvolve",
+      "identity": {
+        "arxiv": "2509.19349v1",
+        "repository": "SakanaAI/ShinkaEvolve",
+        "revision": "1bf7113e97dd89349f1a337babe48d98c92d7e10",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Valentin Khrulkov et al., GigaEvo: An Open Source Optimization Framework Powered By LLMs And Evolution Algorithms",
+      "identity": {
+        "arxiv": "2511.17592v1",
+        "repository": "AIRI-Institute/gigaevo-core",
+        "revision": "9b8687ebaf1708962370ea82b4cf2480d74874e5",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar, Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters",
+      "identity": {
+        "arxiv": "2408.03314v1",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Bradley Brown et al., Large Language Monkeys: Scaling Inference Compute with Repeated Sampling",
+      "identity": {
+        "arxiv": "2407.21787v3",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Shunyu Yao et al., Tree of Thoughts, and Maciej Besta et al., Graph of Thoughts",
+      "identity": {
+        "arxiv": "2305.10601v2; 2308.09687v4",
+        "venue": "NeurIPS 2023; AAAI 2024",
+        "year": "2023; 2024"
+      }
+    },
+    {
+      "name": "Aman Madaan et al., Self-Refine, and Noah Shinn et al., Reflexion",
+      "identity": {
+        "arxiv": "2303.17651v2; 2303.11366v4",
+        "venue": "NeurIPS 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Jie Huang et al., Large Language Models Cannot Self-Correct Reasoning Yet, and Ryo Kamoi et al., When Can LLMs Actually Correct Their Own Mistakes?",
+      "identity": {
+        "arxiv": "2310.01798v2; 2406.01297v3",
+        "venue": "ICLR 2024; TACL 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Yilun Du et al., Multiagent Debate (ICML 2024), and Tian Liang et al., Encouraging Divergent Thinking in LLMs through Multi-Agent Debate (EMNLP 2024)",
+      "identity": {
+        "arxiv": "2305.14325v1; 2305.19118v4",
+        "venue": "ICML 2024; EMNLP 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Andrew Estornell and Yang Liu, Multi-LLM Debate: Framework, Principals, and Interventions",
+      "identity": {
+        "openreview": "sy7eSEXdPC",
+        "proceedings": "NeurIPS 37:28938-28964",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Hyeong Kyu Choi, Xiaojin Zhu, and Sharon Li, Debate or Vote: Which Yields Better Decisions in Multi-Agent Large Language Models?",
+      "identity": {
+        "arxiv": "2508.17536",
+        "venue": "NeurIPS 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Andries Smit et al., Should we be going MAD? (ICML 2024), and Mingqian Zheng et al., Personas in System Prompts Do Not Improve Performances of LLMs (EMNLP 2024)",
+      "identity": {
+        "arxiv": "2311.17371; 2311.10054v3",
+        "venue": "ICML 2024; EMNLP 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Mahmood Hegazy (2024) and Hangfan Zhang et al., Stop Overvaluing Multi-Agent Debate: Embrace Model Heterogeneity (2025)",
+      "identity": {
+        "arxiv": "2410.12853; 2502.08788v3",
+        "year": "2024; 2025"
+      }
+    },
+    {
+      "name": "Andrea Wynn, Harsh Satija, and Gillian K. Hadfield, Talk Isn't Always Cheap: Failure Modes in Multi-Agent Debate, and Binwei Yao et al., How Sycophancy Shapes Multi-Agent Debate",
+      "identity": {
+        "arxiv": "2509.05396; 2509.23055",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Arjun Panickssery, Samuel R. Bowman, and Shi Feng, LLM Evaluators Recognize and Favor Their Own Generations, and Samuel Arnesen, David Rein, and Julian Michael, Self-Play Debate",
+      "identity": {
+        "arxiv": "2404.13076; 2409.16636v1",
+        "venue": "NeurIPS 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Mert Cemri et al., Why Do Multi-Agent LLM Systems Fail? (MAST)",
+      "identity": {
+        "arxiv": "2503.13657v3",
+        "venue": "NeurIPS 2025",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

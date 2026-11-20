@@ -41702,6 +41702,172 @@
         "verification"
       ]
     },
+    "llm-evolutionary-search-test-time-scaling-multi-agent-debate-and-refinement-taxonomy": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1038/s41586-023-06924-6",
+            "repository": "google-deepmind/funsearch",
+            "revision": "cc53f274237d7ab05c19df939edbc1f9616a7c19",
+            "year": "2024"
+          },
+          "name": "FunSearch (google-deepmind/funsearch and Nature 625:468-475)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.13131v1",
+            "doi": "10.48550/arXiv.2506.13131",
+            "year": "2025"
+          },
+          "name": "Alexander Novikov et al., AlphaEvolve: A coding agent for scientific and algorithmic discovery"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.02051v3; 2309.08532v3",
+            "venue": "ICML 2024; ICLR 2024",
+            "year": "2024"
+          },
+          "name": "Fei Liu et al., Evolution of Heuristics (EoH), and Qingyan Guo et al., EvoPrompt"
+        },
+        {
+          "identity": {
+            "repository": "algorithmicsuperintelligence/openevolve",
+            "revision": "4167db4325727138215c55470fdd5cd302f74b66"
+          },
+          "name": "OpenEvolve (algorithmicsuperintelligence/openevolve)"
+        },
+        {
+          "identity": {
+            "arxiv": "2509.19349v1",
+            "repository": "SakanaAI/ShinkaEvolve",
+            "revision": "1bf7113e97dd89349f1a337babe48d98c92d7e10",
+            "year": "2025"
+          },
+          "name": "Robert Tjarko Lange, Yuki Imajuku, and Edoardo Cetin, ShinkaEvolve"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.17592v1",
+            "repository": "AIRI-Institute/gigaevo-core",
+            "revision": "9b8687ebaf1708962370ea82b4cf2480d74874e5",
+            "year": "2025"
+          },
+          "name": "Valentin Khrulkov et al., GigaEvo: An Open Source Optimization Framework Powered By LLMs And Evolution Algorithms"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.03314v1",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "Charlie Snell, Jaehoon Lee, Kelvin Xu, and Aviral Kumar, Scaling LLM Test-Time Compute Optimally can be More Effective than Scaling Model Parameters"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.21787v3",
+            "year": "2024"
+          },
+          "name": "Bradley Brown et al., Large Language Monkeys: Scaling Inference Compute with Repeated Sampling"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.10601v2; 2308.09687v4",
+            "venue": "NeurIPS 2023; AAAI 2024",
+            "year": "2023; 2024"
+          },
+          "name": "Shunyu Yao et al., Tree of Thoughts, and Maciej Besta et al., Graph of Thoughts"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.17651v2; 2303.11366v4",
+            "venue": "NeurIPS 2023",
+            "year": "2023"
+          },
+          "name": "Aman Madaan et al., Self-Refine, and Noah Shinn et al., Reflexion"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.01798v2; 2406.01297v3",
+            "venue": "ICLR 2024; TACL 2024",
+            "year": "2024"
+          },
+          "name": "Jie Huang et al., Large Language Models Cannot Self-Correct Reasoning Yet, and Ryo Kamoi et al., When Can LLMs Actually Correct Their Own Mistakes?"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.14325v1; 2305.19118v4",
+            "venue": "ICML 2024; EMNLP 2024",
+            "year": "2024"
+          },
+          "name": "Yilun Du et al., Multiagent Debate (ICML 2024), and Tian Liang et al., Encouraging Divergent Thinking in LLMs through Multi-Agent Debate (EMNLP 2024)"
+        },
+        {
+          "identity": {
+            "openreview": "sy7eSEXdPC",
+            "proceedings": "NeurIPS 37:28938-28964",
+            "year": "2024"
+          },
+          "name": "Andrew Estornell and Yang Liu, Multi-LLM Debate: Framework, Principals, and Interventions"
+        },
+        {
+          "identity": {
+            "arxiv": "2508.17536",
+            "venue": "NeurIPS 2025",
+            "year": "2025"
+          },
+          "name": "Hyeong Kyu Choi, Xiaojin Zhu, and Sharon Li, Debate or Vote: Which Yields Better Decisions in Multi-Agent Large Language Models?"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.17371; 2311.10054v3",
+            "venue": "ICML 2024; EMNLP 2024",
+            "year": "2024"
+          },
+          "name": "Andries Smit et al., Should we be going MAD? (ICML 2024), and Mingqian Zheng et al., Personas in System Prompts Do Not Improve Performances of LLMs (EMNLP 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.12853; 2502.08788v3",
+            "year": "2024; 2025"
+          },
+          "name": "Mahmood Hegazy (2024) and Hangfan Zhang et al., Stop Overvaluing Multi-Agent Debate: Embrace Model Heterogeneity (2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2509.05396; 2509.23055",
+            "year": "2025"
+          },
+          "name": "Andrea Wynn, Harsh Satija, and Gillian K. Hadfield, Talk Isn't Always Cheap: Failure Modes in Multi-Agent Debate, and Binwei Yao et al., How Sycophancy Shapes Multi-Agent Debate"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.13076; 2409.16636v1",
+            "venue": "NeurIPS 2024",
+            "year": "2024"
+          },
+          "name": "Arjun Panickssery, Samuel R. Bowman, and Shi Feng, LLM Evaluators Recognize and Favor Their Own Generations, and Samuel Arnesen, David Rein, and Julian Michael, Self-Play Debate"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.13657v3",
+            "venue": "NeurIPS 2025",
+            "year": "2025"
+          },
+          "name": "Mert Cemri et al., Why Do Multi-Agent LLM Systems Fail? (MAST)"
+        }
+      ],
+      "topics": [
+        "agents/methodology/model-refinement",
+        "agents/methodology/multi-agent-systems",
+        "agents/methodology/swarm-orchestration",
+        "agents/methodology/adversarial-falsification",
+        "agents/methodology/test-time-compute-scaling",
+        "agents/methodology/evolutionary-program-search",
+        "verification/held-out-evaluation-validity",
+        "verification/specification-adequacy"
+      ]
+    },
     "llvm-compiled-rust-instruction-and-addressing-mode-frequencies": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -49493,6 +49659,200 @@
         "security/silent-data-corruption",
         "smt",
         "smt/proof-checking"
+      ]
+    },
+    "nonconvex-optimization-set-based-dse-cegis-and-stopping-criteria": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CMA-ES/pycma",
+            "revision": "5846f6ea3ac709014f78779182fd01db3c508550",
+            "version": "4.4.0"
+          },
+          "name": "CMA-ES/pycma (evolution_strategy.py and options_parameters.py, v4.4.0)"
+        },
+        {
+          "identity": {
+            "issn": "1330-1136",
+            "journal": "Journal of Computing and Information Technology 7(1):33-47",
+            "year": "1999"
+          },
+          "name": "Darrell Whitley, Soraya Rana, and Robert B. Heckendorn, The Island Model Genetic Algorithm: On Separability, Population Size and Convergence"
+        },
+        {
+          "identity": {
+            "doi": "10.1023/A:1011375326814",
+            "journal": "Journal of Heuristics 7(4):311-334",
+            "year": "2001"
+          },
+          "name": "Erick Cantu-Paz, Migration Policies, Selection Pressure, and Parallel Evolutionary Algorithms"
+        },
+        {
+          "identity": {
+            "arxiv": "1004.4541",
+            "doi": "10.1016/j.parco.2010.04.002",
+            "journal": "Parallel Computing 36(10-11):555-571",
+            "year": "2010"
+          },
+          "name": "Marek Rucinski, Dario Izzo, and Francesco Biscani, On the Impact of the Migration Topology on the Island Model"
+        },
+        {
+          "identity": {
+            "arxiv": "1109.1766; 1206.3522",
+            "doi": "10.1162/EVCO_a_00114",
+            "journal": "Evolutionary Computation 22(3):405-437",
+            "year": "2014"
+          },
+          "name": "Jorg Lassig and Dirk Sudholt, Analysis of Speedups in Parallel Evolutionary Algorithms for Combinatorial Optimization and General Upper Bounds on the Runtime of Parallel Evolutionary Algorithms"
+        },
+        {
+          "identity": {
+            "arxiv": "1109.6441",
+            "companion_doi": "10.1016/j.artint.2020.103345",
+            "doi": "10.1016/j.tcs.2009.03.003",
+            "journal": "Theoretical Computer Science 410(26):2511-2528; Artificial Intelligence 287:103345",
+            "year": "2009; 2020"
+          },
+          "name": "Dirk Sudholt, The Impact of Parametrization in Memetic Evolutionary Algorithms, and Phan Trung Hai Nguyen and Dirk Sudholt, Memetic Algorithms Outperform Evolutionary Algorithms in Multimodal Optimisation"
+        },
+        {
+          "identity": {
+            "arxiv": "cond-mat/9512035; cond-mat/0602085",
+            "companion_doi": "10.1088/1742-5468/2006/03/P03018",
+            "doi": "10.1143/JPSJ.65.1604",
+            "year": "1996; 2006"
+          },
+          "name": "Koji Hukushima and Koji Nemoto, Exchange Monte Carlo Method and Application to Spin Glass Simulations, and Helmut G. Katzgraber, Simon Trebst, David A. Huse, and Matthias Troyer, Feedback-Optimized Parallel Tempering Monte Carlo"
+        },
+        {
+          "identity": {
+            "arxiv": "1504.04909",
+            "doi": "10.1162/EVCO_a_00025",
+            "journal": "Evolutionary Computation 19(2):189-223",
+            "year": "2011; 2015"
+          },
+          "name": "Joel Lehman and Kenneth O. Stanley, Abandoning Objectives: Evolution Through the Search for Novelty Alone, and Jean-Baptiste Mouret and Jeff Clune, Illuminating Search Spaces by Mapping Elites"
+        },
+        {
+          "identity": {
+            "arxiv": "1610.05729",
+            "companion_doi": "10.1109/TEVC.2017.2735550",
+            "doi": "10.3389/frobt.2016.00040",
+            "year": "2016; 2018"
+          },
+          "name": "Justin K. Pugh, Lisa B. Soros, and Kenneth O. Stanley, Quality Diversity: A New Frontier for Evolutionary Computation, and Vassilis Vassiliades, Konstantinos Chatzilygeroudis, and Jean-Baptiste Mouret, CVT-MAP-Elites"
+        },
+        {
+          "identity": {
+            "arxiv": "math/0102188",
+            "doi": "10.1016/S0305-0548(97)00031-2",
+            "tabu_dois": "10.1287/ijoc.1.3.190; 10.1287/ijoc.2.1.4",
+            "year": "1989; 1990; 1997; 2003"
+          },
+          "name": "Nenad Mladenovic and Pierre Hansen, Variable Neighborhood Search; Helena R. Lourenco, Olivier C. Martin, and Thomas Stutzle, Iterated Local Search; and Fred Glover, Tabu Search Parts I and II"
+        },
+        {
+          "identity": {
+            "companion_reprint": "Sloan Management Review 40(2):67-83 (Reprint 4025)",
+            "doi": "10.1111/j.1559-3584.2009.00226.x",
+            "journal": "Naval Engineers Journal 121(4):31-43",
+            "year": "1999; 2009"
+          },
+          "name": "Durward K. Sobek II, Allen C. Ward, and Jeffrey K. Liker, Toyota's Principles of Set-Based Concurrent Engineering, and David J. Singer, Norbert Doerry, and Michael E. Buckley, What Is Set-Based Design?"
+        },
+        {
+          "identity": {
+            "arxiv": "1502.07943; 1603.06560v4",
+            "journal": "PMLR 51:240-248; JMLR 18(185):1-52",
+            "year": "2016; 2018"
+          },
+          "name": "Kevin Jamieson and Ameet Talwalkar, Non-stochastic Best Arm Identification and Hyperparameter Optimization, and Lisha Li et al., Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.01774; 1603.06288v4; 1703.06240v2",
+            "doi": "10.1613/jair.1.11288",
+            "year": "2016; 2017; 2018; 2019"
+          },
+          "name": "Stefan Falkner, Aaron Klein, and Frank Hutter, BOHB, and Kirthevasan Kandasamy et al., Multi-fidelity Gaussian Process Bandit Optimisation (MF-GP-UCB and BOCA)"
+        },
+        {
+          "identity": {
+            "arxiv": "1806.10761",
+            "companion_doi": "10.1137/15M1046472",
+            "doi": "10.1137/16M1082469",
+            "journal": "SIAM Review 60(3):550-591",
+            "year": "2018"
+          },
+          "name": "Benjamin Peherstorfer, Karen Willcox, and Max Gunzburger, Survey of Multifidelity Methods in Uncertainty Propagation, Inference, and Optimization"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01197559",
+            "isbn": "978-0-7923-8278-2",
+            "journal": "Structural Optimization 14(1):63-69",
+            "year": "1997; 1999"
+          },
+          "name": "Indraneel Das and J. E. Dennis, Drawbacks of Minimizing Weighted Sums of Objectives, and Kaisa Miettinen, Nonlinear Multiobjective Optimization"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/4235.996017",
+            "moead_doi": "10.1109/TEVC.2007.892759",
+            "nsga3_doi": "10.1109/TEVC.2013.2281535",
+            "year": "2002; 2007; 2014"
+          },
+          "name": "Kalyanmoy Deb et al., NSGA-II and NSGA-III, and Qingfu Zhang and Hui Li, MOEA/D"
+        },
+        {
+          "identity": {
+            "blast_doi": "10.1145/964001.964021",
+            "doi": "10.1145/876638.876643",
+            "ic3_doi": "10.1007/978-3-642-18275-4_7",
+            "year": "2003; 2004; 2011"
+          },
+          "name": "Edmund Clarke et al., Counterexample-Guided Abstraction Refinement; Thomas A. Henzinger et al., Abstractions from Proofs; and Aaron R. Bradley, SAT-Based Model Checking without Unrolling (IC3)"
+        },
+        {
+          "identity": {
+            "arxiv": "1505.03953; 1905.07457v3",
+            "doi": "10.1007/s00236-017-0294-5",
+            "padhi_doi": "10.1007/978-3-030-25540-4_17",
+            "sketch_doi": "10.1145/1168857.1168907",
+            "year": "2006; 2017; 2019"
+          },
+          "name": "Armando Solar-Lezama et al., Combinatorial Sketching; Susmit Jha and Sanjit A. Seshia, A Theory of Formal Synthesis via Inductive Learning (OGIS); and Saswat Padhi et al., Overfitting in Synthesis: Theory and Practice"
+        },
+        {
+          "identity": {
+            "arxiv": "1604.00772v4; 2604.25458v1",
+            "doi": "10.1109/72.265964",
+            "year": "1994; 2023; 2026"
+          },
+          "name": "Gunter Rudolph, Convergence Analysis of Canonical Genetic Algorithms; Nikolaus Hansen, The CMA Evolution Strategy Tutorial; and Kenji Kitamura and Ryoji Tanabe, Benchmarking Stopping Criteria for EMO"
+        },
+        {
+          "identity": {
+            "briand_doi": "10.1109/32.852741",
+            "chao_doi": "10.2307/2531532",
+            "doi": "10.1093/biomet/65.3.625",
+            "petersson_doi": "10.1016/S0164-1212(03)00090-6",
+            "year": "1978; 1987; 2000; 2004"
+          },
+          "name": "Kenneth P. Burnham and W. Scott Overton (M_h Jackknife); Anne Chao (M_h/M_th Lower Bounds); Lionel C. Briand et al. (IEEE TSE 2000); and Hakan Petersson et al. (JSS 2004)"
+        }
+      ],
+      "topics": [
+        "agents/methodology/optimization-and-search",
+        "agents/methodology/design-space-exploration",
+        "agents/methodology/stopping-criteria",
+        "verification/cegar-and-cegis",
+        "verification/synthesis-overfitting",
+        "verification/held-out-evaluation-validity",
+        "smt/interpolation-and-ic3",
+        "tooling/capture-recapture-defect-estimation",
+        "domains/multi-objective-optimization"
       ]
     },
     "nonlinear-bitwise-mask-modulo-and-lookup-table-bounds-certificates": {

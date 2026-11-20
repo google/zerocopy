@@ -1,0 +1,194 @@
+{
+  "topics": [
+    "agents/methodology/optimization-and-search",
+    "agents/methodology/design-space-exploration",
+    "agents/methodology/stopping-criteria",
+    "verification/cegar-and-cegis",
+    "verification/synthesis-overfitting",
+    "verification/held-out-evaluation-validity",
+    "smt/interpolation-and-ic3",
+    "tooling/capture-recapture-defect-estimation",
+    "domains/multi-objective-optimization"
+  ],
+  "subjects": [
+    {
+      "name": "CMA-ES/pycma (evolution_strategy.py and options_parameters.py, v4.4.0)",
+      "identity": {
+        "repository": "CMA-ES/pycma",
+        "revision": "5846f6ea3ac709014f78779182fd01db3c508550",
+        "version": "4.4.0"
+      }
+    },
+    {
+      "name": "Darrell Whitley, Soraya Rana, and Robert B. Heckendorn, The Island Model Genetic Algorithm: On Separability, Population Size and Convergence",
+      "identity": {
+        "issn": "1330-1136",
+        "journal": "Journal of Computing and Information Technology 7(1):33-47",
+        "year": "1999"
+      }
+    },
+    {
+      "name": "Erick Cantu-Paz, Migration Policies, Selection Pressure, and Parallel Evolutionary Algorithms",
+      "identity": {
+        "doi": "10.1023/A:1011375326814",
+        "journal": "Journal of Heuristics 7(4):311-334",
+        "year": "2001"
+      }
+    },
+    {
+      "name": "Marek Rucinski, Dario Izzo, and Francesco Biscani, On the Impact of the Migration Topology on the Island Model",
+      "identity": {
+        "arxiv": "1004.4541",
+        "doi": "10.1016/j.parco.2010.04.002",
+        "journal": "Parallel Computing 36(10-11):555-571",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "Jorg Lassig and Dirk Sudholt, Analysis of Speedups in Parallel Evolutionary Algorithms for Combinatorial Optimization and General Upper Bounds on the Runtime of Parallel Evolutionary Algorithms",
+      "identity": {
+        "arxiv": "1109.1766; 1206.3522",
+        "doi": "10.1162/EVCO_a_00114",
+        "journal": "Evolutionary Computation 22(3):405-437",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Dirk Sudholt, The Impact of Parametrization in Memetic Evolutionary Algorithms, and Phan Trung Hai Nguyen and Dirk Sudholt, Memetic Algorithms Outperform Evolutionary Algorithms in Multimodal Optimisation",
+      "identity": {
+        "arxiv": "1109.6441",
+        "companion_doi": "10.1016/j.artint.2020.103345",
+        "doi": "10.1016/j.tcs.2009.03.003",
+        "journal": "Theoretical Computer Science 410(26):2511-2528; Artificial Intelligence 287:103345",
+        "year": "2009; 2020"
+      }
+    },
+    {
+      "name": "Koji Hukushima and Koji Nemoto, Exchange Monte Carlo Method and Application to Spin Glass Simulations, and Helmut G. Katzgraber, Simon Trebst, David A. Huse, and Matthias Troyer, Feedback-Optimized Parallel Tempering Monte Carlo",
+      "identity": {
+        "arxiv": "cond-mat/9512035; cond-mat/0602085",
+        "companion_doi": "10.1088/1742-5468/2006/03/P03018",
+        "doi": "10.1143/JPSJ.65.1604",
+        "year": "1996; 2006"
+      }
+    },
+    {
+      "name": "Joel Lehman and Kenneth O. Stanley, Abandoning Objectives: Evolution Through the Search for Novelty Alone, and Jean-Baptiste Mouret and Jeff Clune, Illuminating Search Spaces by Mapping Elites",
+      "identity": {
+        "arxiv": "1504.04909",
+        "doi": "10.1162/EVCO_a_00025",
+        "journal": "Evolutionary Computation 19(2):189-223",
+        "year": "2011; 2015"
+      }
+    },
+    {
+      "name": "Justin K. Pugh, Lisa B. Soros, and Kenneth O. Stanley, Quality Diversity: A New Frontier for Evolutionary Computation, and Vassilis Vassiliades, Konstantinos Chatzilygeroudis, and Jean-Baptiste Mouret, CVT-MAP-Elites",
+      "identity": {
+        "arxiv": "1610.05729",
+        "companion_doi": "10.1109/TEVC.2017.2735550",
+        "doi": "10.3389/frobt.2016.00040",
+        "year": "2016; 2018"
+      }
+    },
+    {
+      "name": "Nenad Mladenovic and Pierre Hansen, Variable Neighborhood Search; Helena R. Lourenco, Olivier C. Martin, and Thomas Stutzle, Iterated Local Search; and Fred Glover, Tabu Search Parts I and II",
+      "identity": {
+        "arxiv": "math/0102188",
+        "doi": "10.1016/S0305-0548(97)00031-2",
+        "tabu_dois": "10.1287/ijoc.1.3.190; 10.1287/ijoc.2.1.4",
+        "year": "1989; 1990; 1997; 2003"
+      }
+    },
+    {
+      "name": "Durward K. Sobek II, Allen C. Ward, and Jeffrey K. Liker, Toyota's Principles of Set-Based Concurrent Engineering, and David J. Singer, Norbert Doerry, and Michael E. Buckley, What Is Set-Based Design?",
+      "identity": {
+        "companion_reprint": "Sloan Management Review 40(2):67-83 (Reprint 4025)",
+        "doi": "10.1111/j.1559-3584.2009.00226.x",
+        "journal": "Naval Engineers Journal 121(4):31-43",
+        "year": "1999; 2009"
+      }
+    },
+    {
+      "name": "Kevin Jamieson and Ameet Talwalkar, Non-stochastic Best Arm Identification and Hyperparameter Optimization, and Lisha Li et al., Hyperband: A Novel Bandit-Based Approach to Hyperparameter Optimization",
+      "identity": {
+        "arxiv": "1502.07943; 1603.06560v4",
+        "journal": "PMLR 51:240-248; JMLR 18(185):1-52",
+        "year": "2016; 2018"
+      }
+    },
+    {
+      "name": "Stefan Falkner, Aaron Klein, and Frank Hutter, BOHB, and Kirthevasan Kandasamy et al., Multi-fidelity Gaussian Process Bandit Optimisation (MF-GP-UCB and BOCA)",
+      "identity": {
+        "arxiv": "1807.01774; 1603.06288v4; 1703.06240v2",
+        "doi": "10.1613/jair.1.11288",
+        "year": "2016; 2017; 2018; 2019"
+      }
+    },
+    {
+      "name": "Benjamin Peherstorfer, Karen Willcox, and Max Gunzburger, Survey of Multifidelity Methods in Uncertainty Propagation, Inference, and Optimization",
+      "identity": {
+        "arxiv": "1806.10761",
+        "companion_doi": "10.1137/15M1046472",
+        "doi": "10.1137/16M1082469",
+        "journal": "SIAM Review 60(3):550-591",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Indraneel Das and J. E. Dennis, Drawbacks of Minimizing Weighted Sums of Objectives, and Kaisa Miettinen, Nonlinear Multiobjective Optimization",
+      "identity": {
+        "doi": "10.1007/BF01197559",
+        "isbn": "978-0-7923-8278-2",
+        "journal": "Structural Optimization 14(1):63-69",
+        "year": "1997; 1999"
+      }
+    },
+    {
+      "name": "Kalyanmoy Deb et al., NSGA-II and NSGA-III, and Qingfu Zhang and Hui Li, MOEA/D",
+      "identity": {
+        "doi": "10.1109/4235.996017",
+        "moead_doi": "10.1109/TEVC.2007.892759",
+        "nsga3_doi": "10.1109/TEVC.2013.2281535",
+        "year": "2002; 2007; 2014"
+      }
+    },
+    {
+      "name": "Edmund Clarke et al., Counterexample-Guided Abstraction Refinement; Thomas A. Henzinger et al., Abstractions from Proofs; and Aaron R. Bradley, SAT-Based Model Checking without Unrolling (IC3)",
+      "identity": {
+        "blast_doi": "10.1145/964001.964021",
+        "doi": "10.1145/876638.876643",
+        "ic3_doi": "10.1007/978-3-642-18275-4_7",
+        "year": "2003; 2004; 2011"
+      }
+    },
+    {
+      "name": "Armando Solar-Lezama et al., Combinatorial Sketching; Susmit Jha and Sanjit A. Seshia, A Theory of Formal Synthesis via Inductive Learning (OGIS); and Saswat Padhi et al., Overfitting in Synthesis: Theory and Practice",
+      "identity": {
+        "arxiv": "1505.03953; 1905.07457v3",
+        "doi": "10.1007/s00236-017-0294-5",
+        "padhi_doi": "10.1007/978-3-030-25540-4_17",
+        "sketch_doi": "10.1145/1168857.1168907",
+        "year": "2006; 2017; 2019"
+      }
+    },
+    {
+      "name": "Gunter Rudolph, Convergence Analysis of Canonical Genetic Algorithms; Nikolaus Hansen, The CMA Evolution Strategy Tutorial; and Kenji Kitamura and Ryoji Tanabe, Benchmarking Stopping Criteria for EMO",
+      "identity": {
+        "arxiv": "1604.00772v4; 2604.25458v1",
+        "doi": "10.1109/72.265964",
+        "year": "1994; 2023; 2026"
+      }
+    },
+    {
+      "name": "Kenneth P. Burnham and W. Scott Overton (M_h Jackknife); Anne Chao (M_h/M_th Lower Bounds); Lionel C. Briand et al. (IEEE TSE 2000); and Hakan Petersson et al. (JSS 2004)",
+      "identity": {
+        "briand_doi": "10.1109/32.852741",
+        "chao_doi": "10.2307/2531532",
+        "doi": "10.1093/biomet/65.3.625",
+        "petersson_doi": "10.1016/S0164-1212(03)00090-6",
+        "year": "1978; 1987; 2000; 2004"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
