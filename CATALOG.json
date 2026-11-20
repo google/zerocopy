@@ -12362,6 +12362,133 @@
         "zerocopy/succinct-serialization"
       ]
     },
+    "byte-level-separation-logic-typed-points-to-and-transmute-view-changes": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "spec/lang/representation.md",
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification, representation relation"
+        },
+        {
+          "identity": {
+            "crate": "zerocopy",
+            "crate_sha256": "e5fe1f8f1b06191a00962174c61aa5005e0bb391a6d80d07e24d115c01a92ed8",
+            "repository": "google/zerocopy",
+            "revision": "c55af491426ef53f35fb8c6e83f220fa07712e66",
+            "tag": "v0.8.63",
+            "version": "0.8.63"
+          },
+          "name": "zerocopy crate"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+          },
+          "name": "Verified Software Toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1190216.1190234"
+          },
+          "name": "Types, bytes, and separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45931-6_28"
+          },
+          "name": "A semantic basis for local reasoning"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2007.30"
+          },
+          "name": "Local action and abstract separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS.2002.1029817"
+          },
+          "name": "Separation logic: a logic for shared mutable data structures"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: securing the foundations of the Rust programming language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: a type system for high-assurance verification of Rust programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571194"
+          },
+          "name": "CN: verifying systems C code with separation-logic refinement types"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704879"
+          },
+          "name": "Fulminate: testing CN separation-logic specifications in C"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-44898-5_4"
+          },
+          "name": "Checking interference with fractional permissions"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040327"
+          },
+          "name": "Permission accounting in separation logic"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-10672-9_13"
+          },
+          "name": "A fresh look at separation algebras and share accounting"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-32347-8_22"
+          },
+          "name": "Mechanised separation algebra"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3437992.3439930"
+          },
+          "name": "Contextual refinement of the Michael-Scott queue (proof pearl)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/separation-logic",
+        "verification/frame-rule",
+        "verification/program-logics",
+        "pl/memory-models",
+        "pl/value-representation",
+        "pl/transmute"
+      ]
+    },
     "byte-representation-galois-laws-and-transmute-composition": {
       "observed_at": "2026-11-20",
       "subjects": [

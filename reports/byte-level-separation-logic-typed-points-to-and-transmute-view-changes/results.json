@@ -1,0 +1,709 @@
+[
+  {
+    "id": "R1a-encode-based-entails-decode-based-iff-decodeEncode",
+    "lean": "Toy.ByteSL.ptsEnc_entails_ptsDec_iff_decodeEncode",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "The direction 'DecodeEncode gives encode-based => decode-based' is the typed-points-to form of the round-trip law (Tuch-Klein-Norrish 2007 state from-bytes (to-bytes v) = Some v); the converse is immediate. A re-derivation in this vocabulary, kept as a definitional reference point.",
+    "plain_claim": "For every representation r of n-byte values (no law assumed), the encode-based typed points-to (the n bytes at a are exactly r.encode v) entails the decode-based one (the n bytes at a are some x with r.decode x = some v), at every permission, address, value and heap, exactly when r satisfies DecodeEncode.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "u8PadRep (modeling a u8 followed by one padding byte) satisfies DecodeEncode, and the block holding its encoding [init 5, uninit] satisfies the encode-based points-to of 5.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsEnc_entails_ptsDec_iff_decodeEncode_nonvacuous",
+    "non_claims": [
+      "Says nothing about the converse entailment (decode-based => encode-based); see R1b and R1c.",
+      "R1a is the special case rA = rB = r, b = v (quantified over all v) of R3a; it is kept as a separate card only as the single-type reference point.",
+      "The left-hand side quantifies over all permissions, addresses, values and heaps; failure of DecodeEncode at one value v only shows the entailment fails at that v (Toy.ByteSL.ptsEnc_entails_ptsDec_fails_noneRep), not at every v.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Tuch, H., Klein, G. & Norrish, M., 'Types, Bytes, and Separation Logic', POPL 2007, pp. 97-108, doi:10.1145/1190216.1190234 (author PDF https://trustworthy.systems/publications/nicta_full_text/134.pdf): a byte-level heap heap-mem; typed reads h-val h p = from-bytes (heap-list h (size-of TYPE('a)) (ptr-val p)) and the law from-bytes (to-bytes v) = Some v; a heap type description kept as an additional state component; separation logic embedded on top, with singleton assertion p |->g v = (lambda s. lift-typ-heap g s p = Some v and dom s = {ptr-val p ..+ size-of TYPE('a)}), where lift-typ-heap is defined only at pointers satisfying the guard and heap type description (s, g |=s p); i.e. a decode-based typed points-to with an exact byte footprint, guarded by alignment and type-description conditions that this package does not model.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "Krebbers, R., 'A Formal C Memory Model for Separation Logic', Journal of Automated Reasoning 57(4), pp. 319-387, 2016, doi:10.1007/s10817-016-9369-1: a Coq-formalized memory model for (non-concurrent) C11 with a permission model designed for separation logic, covering typed and byte-level (untyped) views of memory (cited as related byte-level-with-permissions work, no specific statement relied on).",
+      "AeneasVerif/aeneas pull request #1551, 'Separation logic over the byte heap' (open and unmerged as observed on 2026-11-20; head commit 1d8f9aa0121faca8ff113c1b9b742b333e3e1519; commits authored by Cezar Andrici; base branch cezar/sl-extraction). Unmerged prototype, described here only as its public source states: backends/lean/Aeneas/SepLogic/Bytes.lean ('The byte contents of the heap as fragments (from fournet/wip-memory-model)') defines pointsTo (the cells hold some admissible encoding of the value, at a sharing depth) and readable (the cells hold some bytes that decode to the value) and proves pointsTo_readable from the representation's encode_decode law; SepLogic/PCM.lean defines a class PartialCommMonoid and the order Subheap ('is a part of': h' is h extended with a compatible part), on which, its header comment says, the separation-logic assertions are upward closed (upward closure under heap extension, not the byte-definedness closure byteUpClose of this package). Not relied on for any formal claim here.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R1b-decode-based-equals-byte-upward-closure-iff-three-laws",
+    "lean": "Toy.ByteSL.ptsDec_eq_byteUpClose_ptsEnc_iff_decodeMono_decodeEncode_encodeLeast",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "The byte-level fact behind it (the three laws hold iff decode x = some v <-> encode v <= x) is MiniRust's 'Galois connection' remark and R1a of the published representation package; lifting it to heap assertions as a byte-definedness upward closure is folklore made precise here.",
+    "plain_claim": "For every representation r of n-byte values (no law assumed): the decode-based typed points-to of r equals the byte-definedness upward closure of the encode-based one at every permission p, address a, value v and heap h (h satisfies the decode-based points-to of v at a iff h is obtained from the block holding r.encode v at a by initializing zero or more of its uninit bytes, keeping the same cells and permissions), if and only if r satisfies all three laws DecodeMono, DecodeEncode and EncodeLeast.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "u8PadRep satisfies all three laws (both sides of R1b hold); the block [init 5, init 7] (padding initialized) is in the byte-definedness upward closure of the encode-based points-to of 5, satisfies the decode-based one, and is not the encoding itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsDec_eq_byteUpClose_nonvacuous",
+    "non_claims": [
+      "byteUpClose is upward closure in the byte-definedness order with a fixed domain: it keeps addresses and permissions and only turns uninit bytes into initialized ones (it does not change initialized bytes, add or remove cells, or change permissions). It is not the upward closure under heap extension (P * True) of intuitionistic separation logic (Reynolds 2002), which is the sense of 'upward closed' in the cited Aeneas prototype's PCM.lean; no result here is about that closure.",
+      "Not a statement about any program step: it does not claim that real memory ever spontaneously becomes more defined; it characterizes which heaps the decode-based assertion admits.",
+      "Each law is independently needed: Toy.ByteSL.ptsDec_eq_byteUpClose_fails_exactUnitRep, Toy.ByteSL.ptsDec_eq_byteUpClose_fails_noneRep and Toy.ByteSL.ptsDec_eq_byteUpClose_fails_boolNZRep each satisfy the other two laws and violate the coincidence. Finer directional facts (for a fixed r, the inclusion of the decode-based points-to in the closure follows from EncodeLeast alone, and the reverse inclusion from DecodeMono and DecodeEncode) are not stated as separate theorems.",
+      "With a non-flat value order (e.g. pointers with and without provenance) DecodeMono is a different law; not examined.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "Tuch, H., Klein, G. & Norrish, M., 'Types, Bytes, and Separation Logic', POPL 2007, pp. 97-108, doi:10.1145/1190216.1190234 (author PDF https://trustworthy.systems/publications/nicta_full_text/134.pdf): a byte-level heap heap-mem; typed reads h-val h p = from-bytes (heap-list h (size-of TYPE('a)) (ptr-val p)) and the law from-bytes (to-bytes v) = Some v; a heap type description kept as an additional state component; separation logic embedded on top, with singleton assertion p |->g v = (lambda s. lift-typ-heap g s p = Some v and dom s = {ptr-val p ..+ size-of TYPE('a)}), where lift-typ-heap is defined only at pointers satisfying the guard and heap type description (s, g |=s p); i.e. a decode-based typed points-to with an exact byte footprint, guarded by alignment and type-description conditions that this package does not model.",
+      "Reynolds, J. C., 'Separation Logic: A Logic for Shared Mutable Data Structures', LICS 2002, pp. 55-74, doi:10.1109/LICS.2002.1029817: the standard reference for separation logic and its vocabulary, including the distinction between exact assertions and assertions closed under heap extension (intuitionistic assertions); cited for the contrast with this package's byte-definedness closure.",
+      "AeneasVerif/aeneas pull request #1551, 'Separation logic over the byte heap' (open and unmerged as observed on 2026-11-20; head commit 1d8f9aa0121faca8ff113c1b9b742b333e3e1519; commits authored by Cezar Andrici; base branch cezar/sl-extraction). Unmerged prototype, described here only as its public source states: backends/lean/Aeneas/SepLogic/Bytes.lean ('The byte contents of the heap as fragments (from fournet/wip-memory-model)') defines pointsTo (the cells hold some admissible encoding of the value, at a sharing depth) and readable (the cells hold some bytes that decode to the value) and proves pointsTo_readable from the representation's encode_decode law; SepLogic/PCM.lean defines a class PartialCommMonoid and the order Subheap ('is a part of': h' is h extended with a compatible part), on which, its header comment says, the separation-logic assertions are upward closed (upward closure under heap extension, not the byte-definedness closure byteUpClose of this package). Not relied on for any formal claim here."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R1c-two-typed-points-to-coincide-iff-intoBytes",
+    "lean": "Toy.ByteSL.ptsDec_iff_ptsEnc_iff_intoBytes_of_decodeMono_decodeEncode_encodeLeast_nonempty",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Informally known (padding is what separates 'the bytes a store writes' from 'the bytes a load accepts'); stated and tightness-checked here.",
+    "plain_claim": "If a representation r satisfies DecodeMono, DecodeEncode and EncodeLeast and the byte payload type is nonempty, then the decode-based and encode-based typed points-to of r coincide (at every permission, address, value and heap) exactly when r is IntoBytes, i.e. no encoding of r contains an uninit byte.",
+    "hypotheses": [
+      {
+        "name": "hM : r.DecodeMono",
+        "purpose": "Lets an encoding with an uninit byte be made more defined while still decoding (left-to-right).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_iff_ptsEnc_iff_intoBytes_tight_hM"
+      },
+      {
+        "name": "hDE : r.DecodeEncode",
+        "purpose": "The encode-based points-to entails the decode-based one.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_iff_ptsEnc_iff_intoBytes_tight_hDE"
+      },
+      {
+        "name": "hEL : r.EncodeLeast",
+        "purpose": "Every byte vector decoding to v lies above the (fully initialized, hence maximal) encoding (right-to-left).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_iff_ptsEnc_iff_intoBytes_tight_hEL"
+      },
+      {
+        "name": "hD : Nonempty D",
+        "purpose": "Supplies an initialized byte to put where an encoding has uninit.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_iff_ptsEnc_iff_intoBytes_tight_hD"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "All hypotheses hold for u8Rep (IntoBytes; the two coincide) and for u8PadRep (not IntoBytes; they differ, see R1d).",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsDec_iff_ptsEnc_iff_intoBytes_nonvacuous",
+    "non_claims": [
+      "IntoBytes here is the semantic predicate of the published representation package (no encoding contains uninit), not zerocopy's IntoBytes trait; for provenance-carrying bytes the two differ (see that package).",
+      "For types that are not IntoBytes the result says only that the two assertions differ somewhere; R1b says exactly how (byte-definedness upward closure) and R1d gives a concrete heap.",
+      "Does not say which of the two definitions a verifier should adopt; the recommendation in the summary of this package rests on R1b, R2 and R3 together, not on R1c alone.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "Verified Software Toolchain, PrincetonUniversity/VST commit d50ac1969f9f6586621895eb043ccf08a165f731: veric/mapsto_memory_block.v, Definition mapsto (sh : Share.t) (t : type) (v1 v2 : val): with a readable share, either a value v2 with tc_val t v2 is stored at v1, or v2 = Vundef and some value is stored there (mapsto_ sh t v1 := mapsto sh t v1 Vundef); Definition memory_block sh n v: ownership of n bytes with arbitrary contents. floyd/mapsto_memory_block.v: spacer sh be ed := memory_block sh (ed - be) at offset be, and withspacer sh be ed P p := P p * spacer sh be ed p. floyd/field_at.v: nested_sfieldlist_at wraps each struct field's field_at in withspacer, and Lemma field_at_Tstruct (line 518) equates field_at of a struct with nested_sfieldlist_at of its members, so a struct's data_at owns its padding as memory_block (arbitrary contents) at the same share; Lemma data_at_conflict_glb (line 2196): two data_at at the same address whose shares have a non-identity greatest lower bound entail False (for sizeof t > 0). VST's shares form a cancellative share algebra, not the idempotent read-only permission used here.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R1d-initialized-padding-separates-the-two-definitions",
+    "lean": [
+      "Toy.ByteSL.u8PadRep_laws_and_ptsDec_not_ptsEnc_of_init_padding",
+      "Toy.ByteSL.u8PadRep_uninit_padding_ptsDec_and_ptsEnc"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard padding example; its byte-level content (u8PadRep satisfies the three laws, is not IntoBytes, and decodes [init 5, init 7] to 5) is already mechanized in the published representation package. Restated here as heap assertions.",
+    "plain_claim": "For u8PadRep (modeling a u8 followed by one padding byte, encoded with uninit padding), which satisfies DecodeMono, DecodeEncode and EncodeLeast, the block [init 5, init 7] (padding byte initialized) satisfies the decode-based but not the encode-based typed points-to of 5; with the padding byte uninit both hold.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The counterexample itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.u8PadRep_laws_and_ptsDec_not_ptsEnc_of_init_padding",
+    "non_claims": [
+      "Does not show that the encode-based points-to is unsound or useless: it remains exactly the postcondition of a typed store, which writes uninit padding. It shows only that once the padding byte is initialized (by whatever means) the two assertions disagree; how real Rust operations initialize padding bytes is not modeled.",
+      "R1b gives the general relationship (the block here is in the byte-definedness upward closure of the encoding) and R1c the exact condition (IntoBytes) under which no such heap exists.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R2a-decode-based-struct-split-with-padding-any",
+    "lean": "Toy.ByteSL.ptsDec_struct_iff_sep_fields_padAny_of_nonOverlap",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "VST mechanizes this split (floyd/field_at.v, Lemma field_at_Tstruct: a struct's field_at equals the separating conjunction of its members' field_at, each wrapped in a spacer owning the following padding as memory_block with arbitrary contents), and CN splits struct ownership into members and padding bytes. Restated here for abstract, lawless field representations; that parameterization is not claimed as new.",
+    "plain_claim": "For every two-field layout L (field 1 at offset 0, field 2 at offset off2, both within the struct) whose fields do not overlap (L.NonOverlap: size1 <= off2), all field representations r1, r2 (no laws assumed), permission p, base a, values v1, v2 and heap h: h satisfies the decode-based points-to of (v1, v2) at the struct representation structRep L r1 r2 (which decodes each field from its own byte range and never reads padding) with permission p iff h splits into the decode-based points-to of v1 at a, the decode-based points-to of v2 at a + off2, and ownership of the padding cells with arbitrary contents, all three with the same permission p.",
+    "hypotheses": [
+      {
+        "name": "hL : L.NonOverlap",
+        "purpose": "The two field footprints are disjoint, so at permission full they can be separated (right-hand side) whenever the struct block exists (left-hand side).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_struct_split_tight_hL"
+      },
+      {
+        "name": "Layout2 fields fits1 : size1 <= size, fits : off2 + size2 <= size",
+        "purpose": "In-bounds invariants of a layout, needed for structRep to be well typed (the field slices must exist); every layout of a real struct satisfies them. They are fields of the structure Layout2, not hypotheses of the theorem.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "layoutS (#[repr(C)] struct S { a: u8, b: u16 }: a at 0, one padding byte at 1, b at 2..3) is non-overlapping; for structS = structRep layoutS u8Rep pairRep, the block [init 1, init 9, init 2, init 3] (padding initialized to 9) satisfies both sides for (1, (2, 3)).",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsDec_struct_iff_sep_fields_padAny_nonvacuous",
+    "non_claims": [
+      "Only two-field layouts with field 1 at offset 0 and both fields within the struct are covered; offsets are given, not computed by a layout algorithm, and alignment is not modeled. More fields, nested structs, enums, unions (overlapping fields, excluded by NonOverlap) and layouts with leading padding are not examined.",
+      "The struct representation is structRep, which decodes each field from its own range and never reads padding (MiniRust's struct representation); a representation whose decoder reads padding is not covered.",
+      "The struct assertion and the three pieces all carry the same permission p; splitting into pieces with different permissions (e.g. one field read-only, the other full) is not stated.",
+      "With permission ro the separating conjunction allows overlapping read-only pieces; the equivalence still holds because the three footprints are disjoint, but nothing is claimed about splitting a struct into overlapping read-only views.",
+      "Does not say that padding ownership may be dropped: the right-hand side owns the padding cells, and a struct points-to cannot be reassembled without them.",
+      "NonOverlap is tight only through permission full (Toy.ByteSL.ptsDec_struct_split_tight_hL uses full); whether the equivalence holds for overlapping layouts at permission ro is not stated.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Verified Software Toolchain, PrincetonUniversity/VST commit d50ac1969f9f6586621895eb043ccf08a165f731: veric/mapsto_memory_block.v, Definition mapsto (sh : Share.t) (t : type) (v1 v2 : val): with a readable share, either a value v2 with tc_val t v2 is stored at v1, or v2 = Vundef and some value is stored there (mapsto_ sh t v1 := mapsto sh t v1 Vundef); Definition memory_block sh n v: ownership of n bytes with arbitrary contents. floyd/mapsto_memory_block.v: spacer sh be ed := memory_block sh (ed - be) at offset be, and withspacer sh be ed P p := P p * spacer sh be ed p. floyd/field_at.v: nested_sfieldlist_at wraps each struct field's field_at in withspacer, and Lemma field_at_Tstruct (line 518) equates field_at of a struct with nested_sfieldlist_at of its members, so a struct's data_at owns its padding as memory_block (arbitrary contents) at the same share; Lemma data_at_conflict_glb (line 2196): two data_at at the same address whose shares have a non-identity greatest lower bound entail False (for sizeof t > 0). VST's shares form a cancellative share algebra, not the idempotent read-only permission used here.",
+      "Published references for VST: Appel, A. W., Dockins, R., Hobor, A., Beringer, L., Dodds, J., Stewart, G., Blazy, S. & Leroy, X., 'Program Logics for Certified Compilers', Cambridge University Press, 2014, doi:10.1017/CBO9781107256552; Cao, Q., Beringer, L., Gruetter, S., Dodds, J. & Appel, A. W., 'VST-Floyd: A Separation Logic Tool to Verify Correctness of C Programs', Journal of Automated Reasoning 61, pp. 367-422, 2018, doi:10.1007/s10817-018-9457-5. Cited for the program logic whose source files are described under the VST entry; no specific statement of these publications is relied on.",
+      "Pulte, C., Makwana, D. C., Sewell, T., Memarian, K., Sewell, P. & Krishnaswami, N., 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', PACMPL 7(POPL), Article 1, 2023, doi:10.1145/3571194. Section 2.6: Owned<tau>(p)(v) asserts ownership of the memory pointed to by p with value v, 'equivalent to a separation logic points-to resource p |->tau v, indexed by a C-type tau to capture its memory layout'. Section 2.8: resource inference splits a struct resource into resources for the members 'and of padding bytes, where appropriate', and recombining them 'for a padded struct ... would also consume ownership of padding bytes'.",
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Gaeher, L., Sammler, M., Jung, R., Krebbers, R. & Dreyer, D., 'RefinedRust: A Type System for High-Assurance Verification of Rust Programs', PACMPL 8(PLDI), Article 192, 2024, doi:10.1145/3656422. Section 4 (Radium): values are lists of memory bytes, each a normal byte (0-255), a location fragment, or poison (e.g. for uninitialized memory); the heap maps locations to memory bytes; loads and stores are parameterized by a layout. Section 4.1 and Fig. 7: struct layouts list explicit unnamed fields for padding, and verification is parametric in a layout algorithm. Section 4.2: unlike lambda-Rust, Radium represents padding, and reading padding bytes as an integer is undefined behavior. Section 5.1 and Fig. 8: value types include uninit st (uninitialized memory of syntactic type st) and maybe_init T.",
+      "Sammler, M., Lepigre, R., Krebbers, R., Memarian, K., Dreyer, D. & Garg, D., 'RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types', PLDI 2021, pp. 158-174, doi:10.1145/3453483.3454036: the system whose Caesium operational semantics RefinedRust's Radium is based on (as stated in the RefinedRust paper, Sections 1 and 4).",
+      "Krebbers, R., 'A Formal C Memory Model for Separation Logic', Journal of Automated Reasoning 57(4), pp. 319-387, 2016, doi:10.1007/s10817-016-9369-1: a Coq-formalized memory model for (non-concurrent) C11 with a permission model designed for separation logic, covering typed and byte-level (untyped) views of memory (cited as related byte-level-with-permissions work, no specific statement relied on).",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R2b-encode-based-struct-split-with-padding-uninit",
+    "lean": "Toy.ByteSL.ptsEnc_struct_iff_sep_fields_padUninit_of_nonOverlap",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Immediate from the struct encoder writing uninit padding (MiniRust); stated here as the encode-based companion of R2a.",
+    "plain_claim": "For every two-field layout L (field 1 at offset 0, field 2 at offset off2, both within the struct) whose fields do not overlap (L.NonOverlap: size1 <= off2), all field representations r1, r2 (no laws assumed), permission p, base a, values v1, v2 and heap h: h satisfies the encode-based points-to of (v1, v2) at the struct representation structRep L r1 r2 (which encodes each field at its offset and writes uninit padding) with permission p iff h splits into the encode-based points-to of v1 at a, the encode-based points-to of v2 at a + off2, and ownership of the padding cells all holding uninit, all three with the same permission p.",
+    "hypotheses": [
+      {
+        "name": "hL : L.NonOverlap",
+        "purpose": "The two field footprints are disjoint, so at permission full they can be separated whenever the struct block exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsEnc_struct_split_tight_hL"
+      },
+      {
+        "name": "Layout2 fields fits1 : size1 <= size, fits : off2 + size2 <= size",
+        "purpose": "In-bounds invariants of a layout, needed for structRep to be well typed; fields of the structure Layout2, not hypotheses of the theorem.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "layoutS is non-overlapping, and for structS the block [init 1, uninit, init 2, init 3] (its encoding of (1, (2, 3))) satisfies both sides.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsEnc_struct_iff_sep_fields_padUninit_nonvacuous",
+    "non_claims": [
+      "Only two-field layouts with field 1 at offset 0 and both fields within the struct are covered; offsets are given, not computed by a layout algorithm, and alignment is not modeled. More fields, nested structs, enums, unions (overlapping fields, excluded by NonOverlap) and layouts with leading padding are not examined.",
+      "The struct representation is structRep, whose encoder writes uninit padding; a struct encoder that writes initialized padding (e.g. zero padding, as u8PadInitRep in the published representation package) is not covered, and for it the padding piece would not be padUninit.",
+      "The struct assertion and the three pieces all carry the same permission p; splitting into pieces with different permissions (e.g. one field read-only, the other full) is not stated.",
+      "With permission ro the separating conjunction allows overlapping read-only pieces; the equivalence still holds because the three footprints are disjoint, but nothing is claimed about splitting a struct into overlapping read-only views.",
+      "Does not say that padding ownership may be dropped: the right-hand side owns the padding cells, and a struct points-to cannot be reassembled without them.",
+      "Both pairings (decode-based with arbitrary padding, R2a; encode-based with uninit padding, R2b) are exact laws in this model; R2c shows only that the mixed pairings fail. The preference for the decode-based pairing rests on robustness (R1b, R1d, R3) and is argued in prose, not proved as an impossibility.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "Pulte, C., Makwana, D. C., Sewell, T., Memarian, K., Sewell, P. & Krishnaswami, N., 'CN: Verifying Systems C Code with Separation-Logic Refinement Types', PACMPL 7(POPL), Article 1, 2023, doi:10.1145/3571194. Section 2.6: Owned<tau>(p)(v) asserts ownership of the memory pointed to by p with value v, 'equivalent to a separation logic points-to resource p |->tau v, indexed by a C-type tau to capture its memory layout'. Section 2.8: resource inference splits a struct resource into resources for the members 'and of padding bytes, where appropriate', and recombining them 'for a padded struct ... would also consume ownership of padding bytes'.",
+      "Banerjee, R., Memarian, K., Makwana, D., Pulte, C., Krishnaswami, N. & Sewell, P., 'Fulminate: Testing CN Separation-Logic Specifications in C', PACMPL 9(POPL), Article 43, 2025, doi:10.1145/3704879: CN's built-in resources Owned (points-to indexed by C types) and Block (points-to for uninitialised memory); Section 2.3: runtime ownership checking keeps ghost state giving, for each byte of memory, the C stack depth of the function that owns it (per-byte ownership)."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R2c-mixed-struct-padding-pairings-fail",
+    "lean": [
+      "Toy.ByteSL.ptsEnc_struct_join_padAny_fails",
+      "Toy.ByteSL.ptsDec_struct_split_padUninit_fails"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Small but instructive instances of the padding problem at the level of heap assertions.",
+    "plain_claim": "For structS = structRep layoutS u8Rep pairRep (modeling #[repr(C)] struct S { a: u8, b: u16 } with one interior padding byte) and the heap heapS9 holding a = 1, b = (2, 3) with the padding byte initialized to 9: (join) heapS9 satisfies the encode-based field points-to of both fields separated from padding ownership with arbitrary contents, but not the encode-based struct points-to; (split) heapS9 satisfies the decode-based struct points-to of (1, (2, 3)) but does not split into decode-based field points-to separated from uninit padding. Hence the join law fails for 'encode-based fields + arbitrary padding' and the split law fails for 'decode-based fields + uninit padding'.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The counterexamples themselves.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsEnc_struct_join_padAny_fails",
+    "non_claims": [
+      "The other directions of the mixed pairings (split for encode-based fields with arbitrary padding, join for decode-based fields with uninit padding) are not stated here.",
+      "Shown for one layout, one pair of field representations and one heap; it is a refutation of the general laws, not a classification of when mixed pairings work.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Verified Software Toolchain, PrincetonUniversity/VST commit d50ac1969f9f6586621895eb043ccf08a165f731: veric/mapsto_memory_block.v, Definition mapsto (sh : Share.t) (t : type) (v1 v2 : val): with a readable share, either a value v2 with tc_val t v2 is stored at v1, or v2 = Vundef and some value is stored there (mapsto_ sh t v1 := mapsto sh t v1 Vundef); Definition memory_block sh n v: ownership of n bytes with arbitrary contents. floyd/mapsto_memory_block.v: spacer sh be ed := memory_block sh (ed - be) at offset be, and withspacer sh be ed P p := P p * spacer sh be ed p. floyd/field_at.v: nested_sfieldlist_at wraps each struct field's field_at in withspacer, and Lemma field_at_Tstruct (line 518) equates field_at of a struct with nested_sfieldlist_at of its members, so a struct's data_at owns its padding as memory_block (arbitrary contents) at the same share; Lemma data_at_conflict_glb (line 2196): two data_at at the same address whose shares have a non-identity greatest lower bound entail False (for sizeof t > 0). VST's shares form a cancellative share algebra, not the idempotent read-only permission used here."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R3a-encode-based-source-view-change-iff-transmute",
+    "lean": "Toy.ByteSL.ptsEnc_entails_ptsDec_iff_transmute_eq_some",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "MiniRust defines transmute as encode at the source type and decode at the target; this restates it as an entailment of typed points-to.",
+    "plain_claim": "For representations rA, rB of the same size (no laws assumed), values v and b: the encode-based points-to of v at A entails the decode-based points-to of b at B, at every permission, address and heap, exactly when transmute rA rB v = some b.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "transmute u8Rep boolRep 1 = some true, and the block [init 1] satisfies the encode-based points-to of 1 at u8Rep.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsEnc_entails_ptsDec_iff_transmute_eq_some_nonvacuous",
+    "non_claims": [
+      "The target is decode-based; an entailment into the encode-based points-to of B additionally requires the two encodings to be the same bytes, which is not stated here.",
+      "Totality (a b for every v) is a separate question; see R3f.",
+      "R1a is the special case rA = rB, b = v of this card.",
+      "At permission full the entailment is a consuming, one-way view change: afterwards only the B view is asserted. It does not justify temporarily reborrowing &mut A as &mut B, which must leave a valid A behind after arbitrary writes through the B view and so needs conditions in both directions (zerocopy 0.8.63's transmute_mut! requires both types to be FromBytes and IntoBytes); the reverse view change fails in general (R3d, R3e).",
+      "In-place reinterpretation in Rust additionally requires the address to be aligned for B (zerocopy's transmute_ref! and transmute_mut! require align_of::<Src>() >= align_of::<Dst>()) and, for shared references &A to &B, the absence of interior mutability (zerocopy's Immutable bound on both types). Neither alignment nor interior mutability is modeled; by-value transmute (which copies the bytes) is a different operation.",
+      "Only representations of equal size at the same address are covered; transmutes between different sizes, reference casts beyond the two points above, and pointer-integer casts with provenance are not examined.",
+      "MiniRust's transmute also runs check_value on the result; machine-state-dependent validity is not modeled.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here.",
+      "zerocopy crate, version 0.8.63, documentation at https://docs.rs/zerocopy/0.8.63/zerocopy/: macro transmute_mut! behaves like a function from &'src mut Src to &'dst mut Dst with bounds Src: FromBytes + IntoBytes, Dst: FromBytes + IntoBytes, align_of::<Src>() >= align_of::<Dst>() and size compatibility; macro transmute_ref! behaves like a function from &'src Src to &'dst Dst with bounds Src: IntoBytes + Immutable, Dst: FromBytes + Immutable, and the same alignment and size conditions. Cited only for these bounds."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R3b-decode-based-source-view-change-iff-transmute-under-laws",
+    "lean": "Toy.ByteSL.ptsDec_entails_ptsDec_iff_transmute_eq_some_of_decodeEncode_encodeLeast_decodeMono",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "The byte-level ingredient (validity-set inclusion under the laws) is R5b of the published representation package; stating it pointwise as an entailment of decode-based points-to, with the value b exposed, is new in form but folklore in content.",
+    "plain_claim": "For representations rA, rB of the same size, if A satisfies DecodeEncode and EncodeLeast and B satisfies DecodeMono, then for all values v, b: the decode-based points-to of v at A entails the decode-based points-to of b at B, at every permission, address and heap, exactly when transmute rA rB v = some b.",
+    "hypotheses": [
+      {
+        "name": "hDE_A : rA.DecodeEncode",
+        "purpose": "The block holding the A-encoding of v satisfies the decode-based points-to of v (left-to-right).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_entails_ptsDec_tight_hDE_A"
+      },
+      {
+        "name": "hEL_A : rA.EncodeLeast",
+        "purpose": "Every byte vector decoding to v at A lies above the A-encoding of v (right-to-left).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_entails_ptsDec_tight_hEL_A"
+      },
+      {
+        "name": "hM_B : rB.DecodeMono",
+        "purpose": "Bytes above the A-encoding still decode at B to b (right-to-left).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_entails_ptsDec_tight_hM_B"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A = pairRep (two-byte integer), B = u8PadRep (padded u8): all laws hold and transmute (5, 7) = some 5.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsDec_entails_ptsDec_iff_transmute_eq_some_nonvacuous",
+    "non_claims": [
+      "The witness b is the transmute result; nothing is claimed about the transmute being injective, invertible, or value-preserving in any semantic sense.",
+      "Statement is per value v. Under R3b's laws its all-values form is immediate (not separately stated): TransmuteTotal rA rB holds iff for every v there is a b with the decode-based points-to of v at A entailing that of b at B. R3c and R3f are different results: one-way sufficient conditions (IntoBytes and EncodeLeast of A, plus FromBytes of B for R3f) that assume nothing about B's laws, whereas R3b is an exact condition that assumes DecodeMono of B and also covers padded or niche-carrying sources and targets.",
+      "At permission full the entailment is a consuming, one-way view change: afterwards only the B view is asserted. It does not justify temporarily reborrowing &mut A as &mut B, which must leave a valid A behind after arbitrary writes through the B view and so needs conditions in both directions (zerocopy 0.8.63's transmute_mut! requires both types to be FromBytes and IntoBytes); the reverse view change fails in general (R3d, R3e).",
+      "In-place reinterpretation in Rust additionally requires the address to be aligned for B (zerocopy's transmute_ref! and transmute_mut! require align_of::<Src>() >= align_of::<Dst>()) and, for shared references &A to &B, the absence of interior mutability (zerocopy's Immutable bound on both types). Neither alignment nor interior mutability is modeled; by-value transmute (which copies the bytes) is a different operation.",
+      "Only representations of equal size at the same address are covered; transmutes between different sizes, reference casts beyond the two points above, and pointer-integer casts with provenance are not examined.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here.",
+      "zerocopy crate, version 0.8.63, documentation at https://docs.rs/zerocopy/0.8.63/zerocopy/: macro transmute_mut! behaves like a function from &'src mut Src to &'dst mut Dst with bounds Src: FromBytes + IntoBytes, Dst: FromBytes + IntoBytes, align_of::<Src>() >= align_of::<Dst>() and size compatibility; macro transmute_ref! behaves like a function from &'src Src to &'dst Dst with bounds Src: IntoBytes + Immutable, Dst: FromBytes + Immutable, and the same alignment and size conditions. Cited only for these bounds."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R3c-view-change-from-intoBytes-encodeLeast-source-to-any-target",
+    "lean": "Toy.ByteSL.ptsDec_entails_ptsDec_of_transmute_eq_some_of_intoBytes_encodeLeast",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The observation that, for an IntoBytes source satisfying EncodeLeast, the decode-based points-to pins the bytes to the encoding, so the view change needs no law on the target, is folklore made precise here; the byte-level facts are those of the published representation package.",
+    "plain_claim": "For representations rA, rB of the same size: if A is IntoBytes (no encoding contains uninit) and satisfies EncodeLeast, then for every v and every b with transmute rA rB v = some b, the decode-based points-to of v at A entails the decode-based points-to of b at B at every permission, address and heap. Nothing is assumed about B: none of DecodeMono, DecodeEncode, EncodeLeast or FromBytes.",
+    "hypotheses": [
+      {
+        "name": "hIB_A : rA.IntoBytes",
+        "purpose": "With EncodeLeast, the only byte vector decoding to v at A is the encoding of v (an initialized vector is maximal), so the heap holds exactly the bytes transmute decodes.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_entails_ptsDec_of_transmute_tight_hIB_A"
+      },
+      {
+        "name": "hEL_A : rA.EncodeLeast",
+        "purpose": "Byte vectors decoding to v at A lie above (hence, being initialized, equal) the encoding of v.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_entails_ptsDec_of_transmute_tight_hEL_A"
+      },
+      {
+        "name": "ht : transmute rA rB v = some b",
+        "purpose": "Fixes the target value to the transmute result.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.ptsDec_entails_ptsDec_of_transmute_tight_ht"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A = u8Rep (IntoBytes, EncodeLeast); transmute succeeds both into nonMonoBoolRep (FromBytes, not DecodeMono) and into boolRep (not FromBytes) at 1, and the decode-based points-to of 1 at u8Rep is inhabited.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.ptsDec_entails_ptsDec_of_transmute_eq_some_nonvacuous",
+    "non_claims": [
+      "IntoBytes and EncodeLeast of A are sufficient, not necessary: R3b gives the exact per-value condition under other laws, and padded or niche-carrying sources can still have view changes.",
+      "DecodeEncode of A is not assumed, so for a source whose decoder accepts nothing (e.g. noneRep with the u8 encoder) all hypotheses hold and the entailment is vacuous (Toy.ByteSL.viewChange_hyps_hold_and_source_ptsDec_empty_noneRep); the non-vacuity witness uses a lawful source.",
+      "Existence of b for every v is R3f (it needs FromBytes of B or another totality argument).",
+      "At permission full the entailment is a consuming, one-way view change: afterwards only the B view is asserted. It does not justify temporarily reborrowing &mut A as &mut B, which must leave a valid A behind after arbitrary writes through the B view and so needs conditions in both directions (zerocopy 0.8.63's transmute_mut! requires both types to be FromBytes and IntoBytes); the reverse view change fails in general (R3d, R3e).",
+      "In-place reinterpretation in Rust additionally requires the address to be aligned for B (zerocopy's transmute_ref! and transmute_mut! require align_of::<Src>() >= align_of::<Dst>()) and, for shared references &A to &B, the absence of interior mutability (zerocopy's Immutable bound on both types). Neither alignment nor interior mutability is modeled; by-value transmute (which copies the bytes) is a different operation.",
+      "IntoBytes and FromBytes are the semantic predicates of the published representation package, not zerocopy's traits (see that package for the divergences, e.g. provenance).",
+      "Only representations of equal size at the same address are covered; transmutes between different sizes, reference casts beyond the two points above, and pointer-integer casts with provenance are not examined.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here.",
+      "zerocopy crate, version 0.8.63, documentation at https://docs.rs/zerocopy/0.8.63/zerocopy/: macro transmute_mut! behaves like a function from &'src mut Src to &'dst mut Dst with bounds Src: FromBytes + IntoBytes, Dst: FromBytes + IntoBytes, align_of::<Src>() >= align_of::<Dst>() and size compatibility; macro transmute_ref! behaves like a function from &'src Src to &'dst Dst with bounds Src: IntoBytes + Immutable, Dst: FromBytes + Immutable, and the same alignment and size conditions. Cited only for these bounds."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R3f-total-view-change-from-intoBytes-encodeLeast-to-fromBytes",
+    "lean": "Toy.ByteSL.exists_ptsDec_viewChange_of_intoBytes_encodeLeast_fromBytes",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Combines the published package's totality condition (IntoBytes source, FromBytes target, its R2a, copied here with proof) with R3c; zerocopy-style conditions are folklore, the observation that no law is needed on the target is made precise here.",
+    "plain_claim": "For representations rA, rB of the same size: if A is IntoBytes and satisfies EncodeLeast and B is FromBytes (every fully initialized byte vector decodes), then for every v there is a b, namely the result of transmute rA rB v, such that the decode-based points-to of v at A entails the decode-based points-to of b at B at every permission, address and heap. None of DecodeMono, DecodeEncode, EncodeLeast is assumed for B.",
+    "hypotheses": [
+      {
+        "name": "hIB_A : rA.IntoBytes",
+        "purpose": "Every A-encoding is fully initialized, so FromBytes B makes transmute succeed; with EncodeLeast it pins the heap to the encoding (as in R3c).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.exists_ptsDec_viewChange_tight_hIB_A"
+      },
+      {
+        "name": "hEL_A : rA.EncodeLeast",
+        "purpose": "Byte vectors decoding to v at A equal the encoding of v (as in R3c).",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.exists_ptsDec_viewChange_tight_hEL_A"
+      },
+      {
+        "name": "hFB_B : rB.FromBytes",
+        "purpose": "Every fully initialized byte vector decodes at B, so a target value exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.exists_ptsDec_viewChange_tight_hFB_B"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A = pairRep (IntoBytes, EncodeLeast), B = u8PadRep (FromBytes): transmute (5, 7) = some 5 and the source points-to is inhabited; also u8Rep -> nonMonoBoolRep satisfies all hypotheses with a target violating DecodeMono.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.exists_ptsDec_viewChange_nonvacuous",
+    "non_claims": [
+      "IntoBytes and FromBytes are sufficient, not necessary: R3b gives the exact per-value condition under the other laws (and its all-values form under those laws), and padded or niche-carrying types can still have total transmutes and view changes.",
+      "DecodeEncode of A is not assumed, so for a source whose decoder accepts nothing (e.g. noneRep with the u8 encoder, with target u8Rep, which is FromBytes) all hypotheses hold, transmute is total, and the entailment is vacuous for every v because the source decode-based points-to holds for no heap (Toy.ByteSL.viewChange_hyps_hold_and_source_ptsDec_empty_noneRep); the non-vacuity witness uses a lawful source.",
+      "The reverse direction (B back to A) is a separate question; it needs the conditions with roles swapped, and R3d, R3e show it fails for the niche and padding examples.",
+      "At permission full the entailment is a consuming, one-way view change: afterwards only the B view is asserted. It does not justify temporarily reborrowing &mut A as &mut B, which must leave a valid A behind after arbitrary writes through the B view and so needs conditions in both directions (zerocopy 0.8.63's transmute_mut! requires both types to be FromBytes and IntoBytes); the reverse view change fails in general (R3d, R3e).",
+      "In-place reinterpretation in Rust additionally requires the address to be aligned for B (zerocopy's transmute_ref! and transmute_mut! require align_of::<Src>() >= align_of::<Dst>()) and, for shared references &A to &B, the absence of interior mutability (zerocopy's Immutable bound on both types). Neither alignment nor interior mutability is modeled; by-value transmute (which copies the bytes) is a different operation.",
+      "IntoBytes and FromBytes are the semantic predicates of the published representation package, not zerocopy's traits (see that package for the divergences, e.g. provenance).",
+      "Only representations of equal size at the same address are covered; transmutes between different sizes, reference casts beyond the two points above, and pointer-integer casts with provenance are not examined.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here.",
+      "zerocopy crate, version 0.8.63, documentation at https://docs.rs/zerocopy/0.8.63/zerocopy/: macro transmute_mut! behaves like a function from &'src mut Src to &'dst mut Dst with bounds Src: FromBytes + IntoBytes, Dst: FromBytes + IntoBytes, align_of::<Src>() >= align_of::<Dst>() and size compatibility; macro transmute_ref! behaves like a function from &'src Src to &'dst Dst with bounds Src: IntoBytes + Immutable, Dst: FromBytes + Immutable, and the same alignment and size conditions. Cited only for these bounds."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R3d-niche-view-change-is-one-directional",
+    "lean": "Toy.ByteSL.niche_viewChange_one_directional",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard niche example; its byte-level content (boolRep is not FromBytes; the byte 2 does not decode) is mechanized in the published representation package. Restated as entailments.",
+    "plain_claim": "Viewing boolRep (a bool-like type: only the bytes 0 and 1 decode) as u8Rep is a view change for every value (the boolRep value v becomes the byte boolEnc v), but viewing u8Rep as boolRep is not: the block [init 2] satisfies the decode-based points-to of 2 at u8Rep and of no value at boolRep.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.niche_viewChange_one_directional",
+    "non_claims": [
+      "boolRep uses only the bytes 0 and 1; Rust's bool has the same validity, but other niche-carrying types (references, NonZero integers, enums) are not examined.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R3e-padding-view-change-is-one-directional",
+    "lean": "Toy.ByteSL.padding_viewChange_one_directional",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard 'padding read as data' example; its byte-level content (u8PadRep is not IntoBytes; pairRep rejects an uninit byte) is mechanized in the published representation package. Restated as entailments.",
+    "plain_claim": "Viewing pairRep (a two-byte integer (x, y), both bytes initialized) as u8PadRep (a u8 followed by a padding byte) is a view change for every value (the padded struct holds x), but the reverse is not: the block [init 5, uninit] satisfies the decode-based points-to of 5 at u8PadRep and of no value at pairRep.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.padding_viewChange_one_directional",
+    "non_claims": [
+      "When the padding byte happens to be initialized (e.g. [init 5, init 9]) the reverse reinterpretation does decode, to a value that depends on the padding byte; the counterexample shows only that the entailment fails for the heap with uninit padding, because the decode-based struct assertion does not constrain the padding byte.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "Gaeher, L., Sammler, M., Jung, R., Krebbers, R. & Dreyer, D., 'RefinedRust: A Type System for High-Assurance Verification of Rust Programs', PACMPL 8(PLDI), Article 192, 2024, doi:10.1145/3656422. Section 4 (Radium): values are lists of memory bytes, each a normal byte (0-255), a location fragment, or poison (e.g. for uninitialized memory); the heap maps locations to memory bytes; loads and stores are parameterized by a layout. Section 4.1 and Fig. 7: struct layouts list explicit unnamed fields for padding, and verification is parametric in a layout algorithm. Section 4.2: unlike lambda-Rust, Radium represents padding, and reading padding bytes as an integer is undefined behavior. Section 5.1 and Fig. 8: value types include uninit st (uninitialized memory of syntactic type st) and maybe_init T."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R4a-read-only-views-coexist-iff-common-bytes",
+    "lean": [
+      "Toy.ByteSL.sep_ro_ptsDec_iff_block_decodes",
+      "Toy.ByteSL.sep_ro_ptsDec_satisfiable_iff_common_bytes",
+      "Toy.ByteSL.sep_ro_ptsEnc_satisfiable_iff_encode_eq"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Read-only (fractional or idempotent) sharing is standard (Boyland 2003; Bornat et al. 2005; COY 2007's {R, RW}); the characterization for two typed views over the same bytes is folklore made precise.",
+    "plain_claim": "For representations rA, rB of the same size, address a and values v, w: (1) a heap h satisfies the separating conjunction of the read-only decode-based points-to of v at A and of w at B, both at a, iff h is the read-only block at a of some byte vector x with rA.decode x = some v and rB.decode x = some w; (2) hence that conjunction is satisfiable iff such an x exists; (3) the separating conjunction of the read-only encode-based points-to of v at A and of w at B is satisfiable iff the two encodings are the same byte vector (a separate statement, not a consequence of (1)).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The byte 1 viewed read-only as the u8Rep value 1 and as the boolRep value true; and no read-only boolRep view coexists with the u8Rep view of 2.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.sep_ro_ptsDec_nonvacuous",
+    "non_claims": [
+      "Interior mutability is not modeled: a read-only cell here can never be written (R5e shows a write through it breaks the frame property). In Rust, &T for a type containing UnsafeCell permits mutation through shared references (RustBelt models this with a type-specific sharing predicate), so coexisting shared typed views of such bytes need not be stable; nothing here applies to them.",
+      "Only two views of the same size at the same address are covered; overlapping views of different sizes or offsets are not examined.",
+      "Says nothing about how read-only views are obtained from full ownership (no 'share' or freeze step is modeled) or whether full ownership can be recovered (it cannot in this permission algebra).",
+      "Idempotent read-only sharing violates the disjointness axiom of Dockins, Hobor and Appel (2009): a separating conjunction of read-only assertions does not imply that their footprints are disjoint (two read-only views of the same cells separate, R4a). Inductive predicates built with * at permission ro (lists, trees) therefore admit sharing and cycles (DAGs instead of trees); nothing here supports reading ro-separation as address disjointness.",
+      "Permissions are the two-point permission algebra full | read-only (read-only cells combine idempotently with equal cells, full cells with nothing); there are no fractions, so nothing here addresses splitting full ownership into read-only pieces or recombining them.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Jung, R., Jourdan, J.-H., Krebbers, R. & Dreyer, D., 'RustBelt: Securing the Foundations of the Rust Programming Language', PACMPL 2(POPL), Article 66, 2018, doi:10.1145/3158154. Section 3.2: following Lee et al. 2017, freshly allocated memory holds a poison value; the only safe operations on it are loads and stores. Section 3.3: the type of 'arbitrary sequences of n base values' represents uninitialized memory. Sections 4.1-4.2: a type is interpreted by a predicate [[tau]].own(t, vs) on lists of values with |vs| = [[tau]].size, and [[tau1 x tau2]].own splits vs = vs1 ++ vs2 (memory locations hold values, not bytes; products have no padding). Section 4.3: shared references are interpreted by a separate, type-specific sharing predicate [[tau]].shr(kappa, t, l); Section 6 uses it for Cell and Mutex (interior mutability).",
+      "Verified Software Toolchain, PrincetonUniversity/VST commit d50ac1969f9f6586621895eb043ccf08a165f731: veric/mapsto_memory_block.v, Definition mapsto (sh : Share.t) (t : type) (v1 v2 : val): with a readable share, either a value v2 with tc_val t v2 is stored at v1, or v2 = Vundef and some value is stored there (mapsto_ sh t v1 := mapsto sh t v1 Vundef); Definition memory_block sh n v: ownership of n bytes with arbitrary contents. floyd/mapsto_memory_block.v: spacer sh be ed := memory_block sh (ed - be) at offset be, and withspacer sh be ed P p := P p * spacer sh be ed p. floyd/field_at.v: nested_sfieldlist_at wraps each struct field's field_at in withspacer, and Lemma field_at_Tstruct (line 518) equates field_at of a struct with nested_sfieldlist_at of its members, so a struct's data_at owns its padding as memory_block (arbitrary contents) at the same share; Lemma data_at_conflict_glb (line 2196): two data_at at the same address whose shares have a non-identity greatest lower bound entail False (for sizeof t > 0). VST's shares form a cancellative share algebra, not the idempotent read-only permission used here.",
+      "Boyland, J., 'Checking Interference with Fractional Permissions', SAS 2003, LNCS 2694, pp. 55-72, doi:10.1007/3-540-44898-5_4: introduces fractional permissions (writing needs the whole permission, reading any fraction; fractions recombine). Cited as the origin of fractional permissions; the two-point full / read-only algebra here is a non-fractional, non-recombinable variant.",
+      "Bornat, R., Calcagno, C., O'Hearn, P. W. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327: brings fractional (and counting) permissions into separation logic; cited by COY 2007 as the source of heaps with permissions.",
+      "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf): Section 3 recalls Safety Monotonicity and the Frame Property for relations and states that 'a relation R satisfies Safety Monotonicity and the Frame Property iff the frame rule is sound for it'. Definition 1 takes a separation algebra to be a cancellative partial commutative monoid; its Example 2 (heaps with permissions, HPerm, over a permission algebra required to be cancellative) mentions the permission algebra {R, RW} with R o R = R and RW o p undefined, remarking that it does not allow converting a total (RW) permission into several read permissions or back. That two-point algebra is the permission algebra of this package; the heap algebra it induces with the empty heap as unit is not cancellative (R5f), so this instance lies outside Definition 1.",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13 (author PDF https://www.cs.princeton.edu/~appel/papers/fresh-sa.pdf): revisits the separation-algebra axioms; its disjointness axiom (a + a = b implies a = b: no nonempty share joins with itself) is motivated by the remark that without disjointness 'the obvious definition of a formula to describe binary trees in fact describes directed acyclic graphs'. The idempotent read-only cells of this package violate that axiom.",
+      "Vindum, S. F. & Birkedal, L., 'Contextual Refinement of the Michael-Scott Queue (Proof Pearl)', CPP 2021, pp. 76-90, doi:10.1145/3437992.3439930: introduces discardable fractions for Iris points-to assertions, where a fraction can be irrevocably discarded to obtain persistent, freely duplicable read-only ownership; Iris itself is described in Jung, R., Krebbers, R., Jourdan, J.-H., Bizjak, A., Birkedal, L. & Dreyer, D., 'Iris from the ground up', Journal of Functional Programming 28, e20, 2018, doi:10.1017/S0956796818000151. The read-only permission of this package behaves like a discarded fraction without the fractional part.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R4b-full-permission-view-excludes-any-second-view",
+    "lean": "Toy.ByteSL.not_sep_ptsDec_of_full_of_pos_size",
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Exclusivity of full (write) permission is textbook separation logic and mechanized (e.g. VST's data_at_conflict_glb); restated here for two typed views of possibly different types.",
+    "plain_claim": "For representations rA, rB of the same nonzero size, if at least one of the two permissions is full, no heap satisfies the separating conjunction of the decode-based typed points-to of v at A and of w at B at the same address.",
+    "hypotheses": [
+      {
+        "name": "hn : 0 < n",
+        "purpose": "Views of size 0 own no cell and always coexist.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.not_sep_ptsDec_tight_hn"
+      },
+      {
+        "name": "hpq : p = full or q = full",
+        "purpose": "With read-only permission on both sides the views can coexist.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.not_sep_ptsDec_tight_hpq"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "u8Rep and boolRep at size 1 with p = full and q = ro: all hypotheses hold and each view alone is satisfiable.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.not_sep_ptsDec_nonvacuous",
+    "non_claims": [
+      "An impossibility for the separating conjunction only: an ordinary conjunction of a full view with another typed view of the same bytes is satisfiable whenever the bytes decode under both.",
+      "Escape hatches: drop either hypothesis (size 0, or read-only on both sides) and the views coexist.",
+      "Says nothing about time: holding full permission now does not rule out later lending the bytes out as two shared views (e.g. via fractional permissions or a lifetime logic) and recovering full permission when the loan ends; no such protocol is modeled.",
+      "Only equal-size views at the same address are stated; views of different sizes or at overlapping offsets are not covered by the statement.",
+      "Interior mutability is not modeled: a read-only cell here can never be written (R5e shows a write through it breaks the frame property). In Rust, &T for a type containing UnsafeCell permits mutation through shared references (RustBelt models this with a type-specific sharing predicate), so coexisting shared typed views of such bytes need not be stable; nothing here applies to them.",
+      "Permissions are the two-point permission algebra full | read-only (read-only cells combine idempotently with equal cells, full cells with nothing); there are no fractions, so nothing here addresses splitting full ownership into read-only pieces or recombining them.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Jung, R., Jourdan, J.-H., Krebbers, R. & Dreyer, D., 'RustBelt: Securing the Foundations of the Rust Programming Language', PACMPL 2(POPL), Article 66, 2018, doi:10.1145/3158154. Section 3.2: following Lee et al. 2017, freshly allocated memory holds a poison value; the only safe operations on it are loads and stores. Section 3.3: the type of 'arbitrary sequences of n base values' represents uninitialized memory. Sections 4.1-4.2: a type is interpreted by a predicate [[tau]].own(t, vs) on lists of values with |vs| = [[tau]].size, and [[tau1 x tau2]].own splits vs = vs1 ++ vs2 (memory locations hold values, not bytes; products have no padding). Section 4.3: shared references are interpreted by a separate, type-specific sharing predicate [[tau]].shr(kappa, t, l); Section 6 uses it for Cell and Mutex (interior mutability).",
+      "Verified Software Toolchain, PrincetonUniversity/VST commit d50ac1969f9f6586621895eb043ccf08a165f731: veric/mapsto_memory_block.v, Definition mapsto (sh : Share.t) (t : type) (v1 v2 : val): with a readable share, either a value v2 with tc_val t v2 is stored at v1, or v2 = Vundef and some value is stored there (mapsto_ sh t v1 := mapsto sh t v1 Vundef); Definition memory_block sh n v: ownership of n bytes with arbitrary contents. floyd/mapsto_memory_block.v: spacer sh be ed := memory_block sh (ed - be) at offset be, and withspacer sh be ed P p := P p * spacer sh be ed p. floyd/field_at.v: nested_sfieldlist_at wraps each struct field's field_at in withspacer, and Lemma field_at_Tstruct (line 518) equates field_at of a struct with nested_sfieldlist_at of its members, so a struct's data_at owns its padding as memory_block (arbitrary contents) at the same share; Lemma data_at_conflict_glb (line 2196): two data_at at the same address whose shares have a non-identity greatest lower bound entail False (for sizeof t > 0). VST's shares form a cancellative share algebra, not the idempotent read-only permission used here.",
+      "Boyland, J., 'Checking Interference with Fractional Permissions', SAS 2003, LNCS 2694, pp. 55-72, doi:10.1007/3-540-44898-5_4: introduces fractional permissions (writing needs the whole permission, reading any fraction; fractions recombine). Cited as the origin of fractional permissions; the two-point full / read-only algebra here is a non-fractional, non-recombinable variant.",
+      "Bornat, R., Calcagno, C., O'Hearn, P. W. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327: brings fractional (and counting) permissions into separation logic; cited by COY 2007 as the source of heaps with permissions."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these.",
+    "positive_control_lean": "Toy.ByteSL.not_sep_ptsDec_positive_control"
+  },
+  {
+    "id": "R5a-frame-rule-iff-locality-in-every-separation-structure",
+    "lean": "Toy.ByteSL.frameRuleSound_iff_safetyMono_and_frameProp",
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Stated by Calcagno-O'Hearn-Yang 2007 (Section 3: a relation satisfies Safety Monotonicity and the Frame Property iff the frame rule is sound for it), building on Yang-O'Hearn 2002 (Lemmas 1-2, Theorem 1, and the abstract partial-commutative-monoid setting of Section 4.1). A re-derivation for the relational commands of this package, with no algebraic law.",
+    "plain_claim": "In every separation structure (a carrier with a disjointness relation and a union operation, no algebraic law assumed; in particular on the byte heap with read-only sharing, which is not cancellative), for every command c: the frame rule is sound for c (for all assertions P, Q, R, {P} c {Q} implies {P * R} c {Q * R}) iff c is safety-monotone and has the frame property.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "On the byte heap, {0 |-> uninit} [0] := init 1 {0 |-> init 1} holds for the byte store, so the frame rule has non-trivial premises.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.byteHeap_frameRule_nonvacuous",
+    "non_claims": [
+      "Uses no property of the separation structure: it holds for every SepStruct, including lawless ones. So it says nothing about which compositional rules survive non-cancellative read-only sharing; rules that depend on cancellativity or precision (the conjunction rule, reasoning with precise assertions) are not examined.",
+      "Single commands only: no sequencing, choice or loops, so locality of compound commands is not examined.",
+      "No variable store: the Hoare-logic side condition of the frame rule (the command modifies no variable free in the frame) is absent only for that reason; nothing here addresses frame rules with stores.",
+      "Partial correctness with fault avoidance only; nothing about termination.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (soundness of the Frame Rule, with the side condition that the command modifies no variable free in the frame). Section 4.1: an operation that traps memory faults would let a program branch on whether a cell is active, contradicting Safety Monotonicity; and an abstract setting is sketched in which an arbitrary partial commutative monoid replaces heaps, with a local action defined as a relation satisfying Safety and Termination Monotonicity and the Frame Property, for which 'the Frame Rule is sound for every local action' (no cancellativity is required).",
+      "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf): Section 3 recalls Safety Monotonicity and the Frame Property for relations and states that 'a relation R satisfies Safety Monotonicity and the Frame Property iff the frame rule is sound for it'. Definition 1 takes a separation algebra to be a cancellative partial commutative monoid; its Example 2 (heaps with permissions, HPerm, over a permission algebra required to be cancellative) mentions the permission algebra {R, RW} with R o R = R and RW o p undefined, remarking that it does not allow converting a total (RW) permission into several read permissions or back. That two-point algebra is the permission algebra of this package; the heap algebra it induces with the empty heap as unit is not cancellative (R5f), so this instance lies outside Definition 1.",
+      "Klein, G., Kolanski, R. & Boyton, A., 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22, with the Archive of Formal Proofs entry 'Separation Algebra' (May 2012): an Isabelle/HOL type-class library of separation algebras based on COY 2007 in which cancellativity is a separate subclass (cancellative_sep_algebra, assumption sep_add_cancelD: x + z = y + z with x ## z and y ## z implies x = y), the right-cancellation law RightCancel of this package.",
+      "Published package 'frame-rule-locality-and-precise-assertions' of this corpus (google/zerocopy branch reference, commit 8ff18039787575ce7f24066acdc7600918ad8185). Its definitions of separation structures, commands, outcomes, assertions, separating conjunction, fault-avoiding triples, SafetyMono, FrameProp, Local and FrameRuleSound (support file lean/Toy/Sep/Basic.lean, namespace Toy.Sep) are the source of this package's lean/Toy/ByteSL/SepBasic.lean, which consists of a subset of that file's declarations, their code copied unchanged and the namespace renamed to Toy.ByteSL. Its R2b (Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp: in any separation structure, no laws, FrameRuleSound c <-> SafetyMono c and FrameProp c) is the same statement as R5a here; its R5 shows lookup, mutation, allocation and deallocation local in a finite-heap model with arbitrary cell values, address-disjoint union and no permissions; its R3a-R3d exhibit non-local heap commands (an allocation test, fixed-address allocation that faults, least-free-address allocation, predictable allocation)."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R5b-byte-and-typed-commands-are-local",
+    "lean": [
+      "Toy.ByteSL.byte_commands_local",
+      "Toy.ByteSL.typed_commands_local",
+      "Toy.ByteSL.readBytes_frame_stable"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Locality of loads and stores is standard (Yang-O'Hearn 2002) and mechanized in byte-level program logics (e.g. VST); here restated for typed loads and stores over abstract, lawless representations on a heap with read-only sharing.",
+    "plain_claim": "For every byte payload type and every representation r (no laws assumed), each of the following commands is safety-monotone and has the frame property on the byte heap with read-only sharing: the byte store bstore a b and the typed store tstore r a v (fault unless every written cell is held with full permission; then write the byte, resp. r.encode v); the byte copy bcopy src dst (fault unless the source cell is allocated with any permission and the destination cell is held with full permission; copies one abstract byte, uninit included); the typed copy tcopy r src dst (fault unless the n source cells are allocated with any permission and decode, and the n destination cells are held with full permission; then write r.encode of the decoded value); and the typed load tload r a (fault unless the n cells are allocated with any permission and decode; it leaves the heap unchanged and returns nothing). Moreover (readBytes_frame_stable) the bytes such a read sees, hence the value it decodes, are the same in every disjoint extension of the heap, with the frame on either side.",
+    "hypotheses": [
+      {
+        "name": "hd : disj h h' (premise of readBytes_frame_stable only; the two locality theorems have no hypotheses)",
+        "purpose": "The frame must be disjoint from the heap. Because union is left-biased on overlapping cells, the left-framed conjunct readBytes (union h h') a n = some x holds even without it; the hypothesis is needed for the right-framed conjunct readBytes (union h' h) a n = some x. Disjointness allows overlap on read-only cells holding equal bytes, so the frame may share the cells being read at permission ro.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.readBytes_frame_stable_tight_hd"
+      },
+      {
+        "name": "hr : readBytes h a n = some x (premise of readBytes_frame_stable only)",
+        "purpose": "The cells read must be allocated in h (with any permission) and hold the bytes x.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.readBytes_frame_stable_tight_hr"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Each command has a normal outcome from a concrete heap (e.g. the typed copy at u8Rep from cell 0 to cell 1). For readBytes_frame_stable: the heap union hDst hRO1, where hDst := block full 1 [uninit] (cell 1 fully owned, holding an uninit byte) and hRO1 := block ro 0 [init 1] (cell 0 read-only, holding the byte 1), and the frame hRO1 overlap on the read-only cell 0 and are disjoint; the read of cell 0 returns [init 1] with the frame on either side, and tcopy and tload at u8Rep from address 0 run in the framed heap.",
+    "nonvacuity_witness_lean": [
+      "Toy.ByteSL.byte_and_typed_commands_nonvacuous",
+      "Toy.ByteSL.readBytes_frame_stable_shared_ro_nonvacuous"
+    ],
+    "non_claims": [
+      "Reads require ownership (any permission) of every byte read, padding included; a typed copy whose footprint omits bytes it reads is the loose variant of R5c, which needs DecodeMono.",
+      "Writes require full permission; a write through a read-only cell is not local (R5e).",
+      "Commands have no variable store: a loaded value is observable only by writing its encoding into the heap (tcopy) or not at all (tload); tcopy observes the decoded value v only through r.encode v, which need not determine v because no DecodeEncode is assumed.",
+      "No allocation or deallocation commands; no concurrency.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (soundness of the Frame Rule, with the side condition that the command modifies no variable free in the frame). Section 4.1: an operation that traps memory faults would let a program branch on whether a cell is active, contradicting Safety Monotonicity; and an abstract setting is sketched in which an arbitrary partial commutative monoid replaces heaps, with a local action defined as a relation satisfying Safety and Termination Monotonicity and the Frame Property, for which 'the Frame Rule is sound for every local action' (no cancellativity is required).",
+      "Tuch, H., Klein, G. & Norrish, M., 'Types, Bytes, and Separation Logic', POPL 2007, pp. 97-108, doi:10.1145/1190216.1190234 (author PDF https://trustworthy.systems/publications/nicta_full_text/134.pdf): a byte-level heap heap-mem; typed reads h-val h p = from-bytes (heap-list h (size-of TYPE('a)) (ptr-val p)) and the law from-bytes (to-bytes v) = Some v; a heap type description kept as an additional state component; separation logic embedded on top, with singleton assertion p |->g v = (lambda s. lift-typ-heap g s p = Some v and dom s = {ptr-val p ..+ size-of TYPE('a)}), where lift-typ-heap is defined only at pointers satisfying the guard and heap type description (s, g |=s p); i.e. a decode-based typed points-to with an exact byte footprint, guarded by alignment and type-description conditions that this package does not model.",
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Verified Software Toolchain, PrincetonUniversity/VST commit d50ac1969f9f6586621895eb043ccf08a165f731: veric/mapsto_memory_block.v, Definition mapsto (sh : Share.t) (t : type) (v1 v2 : val): with a readable share, either a value v2 with tc_val t v2 is stored at v1, or v2 = Vundef and some value is stored there (mapsto_ sh t v1 := mapsto sh t v1 Vundef); Definition memory_block sh n v: ownership of n bytes with arbitrary contents. floyd/mapsto_memory_block.v: spacer sh be ed := memory_block sh (ed - be) at offset be, and withspacer sh be ed P p := P p * spacer sh be ed p. floyd/field_at.v: nested_sfieldlist_at wraps each struct field's field_at in withspacer, and Lemma field_at_Tstruct (line 518) equates field_at of a struct with nested_sfieldlist_at of its members, so a struct's data_at owns its padding as memory_block (arbitrary contents) at the same share; Lemma data_at_conflict_glb (line 2196): two data_at at the same address whose shares have a non-identity greatest lower bound entail False (for sizeof t > 0). VST's shares form a cancellative share algebra, not the idempotent read-only permission used here.",
+      "Banerjee, R., Memarian, K., Makwana, D., Pulte, C., Krishnaswami, N. & Sewell, P., 'Fulminate: Testing CN Separation-Logic Specifications in C', PACMPL 9(POPL), Article 43, 2025, doi:10.1145/3704879: CN's built-in resources Owned (points-to indexed by C types) and Block (points-to for uninitialised memory); Section 2.3: runtime ownership checking keeps ghost state giving, for each byte of memory, the C stack depth of the function that owns it (per-byte ownership).",
+      "Published package 'frame-rule-locality-and-precise-assertions' of this corpus (google/zerocopy branch reference, commit 8ff18039787575ce7f24066acdc7600918ad8185). Its definitions of separation structures, commands, outcomes, assertions, separating conjunction, fault-avoiding triples, SafetyMono, FrameProp, Local and FrameRuleSound (support file lean/Toy/Sep/Basic.lean, namespace Toy.Sep) are the source of this package's lean/Toy/ByteSL/SepBasic.lean, which consists of a subset of that file's declarations, their code copied unchanged and the namespace renamed to Toy.ByteSL. Its R2b (Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp: in any separation structure, no laws, FrameRuleSound c <-> SafetyMono c and FrameProp c) is the same statement as R5a here; its R5 shows lookup, mutation, allocation and deallocation local in a finite-heap model with arbitrary cell values, address-disjoint union and no permissions; its R3a-R3d exhibit non-local heap commands (an allocation test, fixed-address allocation that faults, least-free-address allocation, predictable allocation)."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R5c-loose-typed-copy-is-local-under-decodeMono",
+    "lean": "Toy.ByteSL.tcopyLoose_local_of_decodeMono",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Combines two standard ingredients (decode is monotone: MiniRust's generic properties and the published representation package's DecodeMono; locality: Yang-O'Hearn 2002). Folklore made precise; no novelty is claimed and no novelty search was run.",
+    "plain_claim": "For every representation r satisfying DecodeMono and all addresses src, dst, the loose typed copy tcopyLoose r src dst is safety-monotone and has the frame property. This command, instead of faulting, reads each unallocated source cell as uninit; it faults if the n bytes so read do not decode or the destination is not held with full permission, and otherwise writes the encoding of the decoded value at dst. In a disjoint extension the unowned source cells may be present with any bytes, which are at least as defined as uninit, so a monotone decoder still succeeds with the same value: the unowned bytes matter only if decoding already succeeds with uninit in their place, and then they do not change the result.",
+    "hypotheses": [
+      {
+        "name": "hM : r.DecodeMono",
+        "purpose": "Bytes supplied by a frame are more defined than uninit, so a monotone decoder gives the same result and does not start failing.",
+        "tightness": "tight",
+        "counterexample": "Toy.ByteSL.tcopyLoose_not_local_exactUnitRep"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "u8PadRep is DecodeMono and the loose typed copy runs from a heap owning the source data byte but not the source padding byte.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.tcopyLoose_local_nonvacuous",
+    "non_claims": [
+      "Not a license for a verifier to omit padding (or any other bytes a load reads) from a typed load's footprint in general. The result holds for an operational semantics in which reading memory one does not own neither faults nor has any other effect. In Rust and MiniRust a typed load requires the whole range to be dereferenceable, and in a concurrent or aliasing-aware semantics reading bytes that another party holds exclusively is undefined behavior or a data race; Toy.ByteSL.tcopyLoose_reads_frame_owned_full_cell shows the loose copy reading a byte that the frame holds with full permission. Omitting padding from a footprint is safe only where the operation does not read it at all (e.g. field-by-field copies).",
+      "Locality is not preservation of typed points-to: which assertion holds at the destination afterwards is not stated.",
+      "No variable store: the loaded value is observable only through r.encode v written at the destination, which need not determine v (DecodeEncode is not assumed).",
+      "The byte-level analogue is not local (R5d): copying the raw bytes exposes what a monotone decoder hides.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (soundness of the Frame Rule, with the side condition that the command modifies no variable free in the frame). Section 4.1: an operation that traps memory faults would let a program branch on whether a cell is active, contradicting Safety Monotonicity; and an abstract setting is sketched in which an arbitrary partial commutative monoid replaces heaps, with a local action defined as a relation satisfying Safety and Termination Monotonicity and the Frame Property, for which 'the Frame Rule is sound for every local action' (no cancellativity is required).",
+      "MiniRust specification, file spec/lang/representation.md at minirust/minirust commit 063d784186d3252bee242217f218223205c0b568: struct decode 'ignores the bytes which are before, between, or after the fields (usually called padding)' and encode 'always and deterministically makes those bytes Uninit'; section 'Generic properties': encode and decode are monotone, decode(encode(val)) == Some(val), and decode(bytes) == Some(val) implies encode(val) <= bytes ('an adjoint relationship, or a Galois connection'); the self-assignment discussion (a typed copy decodes and re-encodes, resetting padding to Uninit); section 'Transmutation': Machine::transmute encodes at type1, decodes at type2 (undefined behavior if decoding fails) and then checks the decoded value with check_value, a machine-state-dependent well-formedness check that is not modeled here.",
+      "Published package 'byte-representation-galois-laws-and-transmute-composition' of this corpus (google/zerocopy branch reference, commit c659d187a4f73e59451f321e013b722eb14b8439): abstract bytes, the definedness order, the laws DecodeMono, DecodeEncode, EncodeLeast (its R1a: together they are equivalent to the lower-adjoint form encode v <= x <-> decode x = some v), IntoBytes/FromBytes and totality of transmute (its R2a: IntoBytes A and FromBytes B make transmute A -> B total; its R5b: under DecodeEncode A, EncodeLeast A and DecodeMono B, totality is inclusion of validity sets), and the concrete representations u8Rep, boolRep, boolNZRep, padUnitRep, exactUnitRep, u8PadRep, pairRep, noneRep with their byte-level law lemmas. This package copies its definitions and examples (support files lean/ToyRepr/Basic.lean and lean/ToyRepr/Examples.lean) and restates no result of it as proved here except its R2a, copied with its proof.",
+      "AeneasVerif/aeneas pull request #1497, 'Fournet/wip memory model' (open and unmerged as observed on 2026-11-20; head branch fournet/wip-memory-model at commit d17ca83fc07d712d1785f650840cb2073c259e69; commit authors as recorded: 'fournet', Cezar Andrici, Son Ho). Unmerged prototype, described here only as its public source states: its README describes an experimental concrete-address heap model for unsafe Rust with bytes uninit | data U8 | pointer and cells shared Nat Byte | borrowed (two shared cells are compatible when both depths are positive and the bytes are equal); Heap/Repr.lean's Repr has a relational encoder with encode_decode and a decode_mono law ('Decoding does not depend on uninitialized bytes'); Heap/Resources.lean defines pointsTo (an admissible encoding, 'including any permitted uninitialized padding') and readable (decode-based); Heap/TRANSMUTE.md records a more permissive proposal (CompatibleAt / Transmutes) and adopts the stricter exact-result fragment ExactAt(S, T, x, expected) := S.size = T.size and, for all bytes, S.decode(bytes) = Some(x) => T.decode(bytes) = Some(expected), i.e. a decode-based entailment between byte vectors, the shape of R3b/R3c here. Not relied on for any formal claim here."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R5d-loose-byte-copy-is-not-local",
+    "lean": "Toy.ByteSL.bcopyLoose_safetyMono_and_not_frameProp",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "An instance of Yang-O'Hearn's observation (2002, Section 4.1) that letting a program observe whether a cell is active breaks locality.",
+    "plain_claim": "The byte copy that reads an unallocated source cell as uninit (bcopyLoose 0 1) is safety-monotone but violates the frame property, and the frame rule fails for it: the triple {1 |-> uninit} bcopyLoose 0 1 {cell 1 holds uninit} holds, but its framing with {0 |-> init 5} does not.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.bcopyLoose_safetyMono_and_not_frameProp",
+    "non_claims": [
+      "Shows failure for one command at one pair of addresses; does not classify all non-local commands.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (soundness of the Frame Rule, with the side condition that the command modifies no variable free in the frame). Section 4.1: an operation that traps memory faults would let a program branch on whether a cell is active, contradicting Safety Monotonicity; and an abstract setting is sketched in which an arbitrary partial commutative monoid replaces heaps, with a local action defined as a relation satisfying Safety and Termination Monotonicity and the Frame Property, for which 'the Frame Rule is sound for every local action' (no cancellativity is required).",
+      "Published package 'frame-rule-locality-and-precise-assertions' of this corpus (google/zerocopy branch reference, commit 8ff18039787575ce7f24066acdc7600918ad8185). Its definitions of separation structures, commands, outcomes, assertions, separating conjunction, fault-avoiding triples, SafetyMono, FrameProp, Local and FrameRuleSound (support file lean/Toy/Sep/Basic.lean, namespace Toy.Sep) are the source of this package's lean/Toy/ByteSL/SepBasic.lean, which consists of a subset of that file's declarations, their code copied unchanged and the namespace renamed to Toy.ByteSL. Its R2b (Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp: in any separation structure, no laws, FrameRuleSound c <-> SafetyMono c and FrameProp c) is the same statement as R5a here; its R5 shows lookup, mutation, allocation and deallocation local in a finite-heap model with arbitrary cell values, address-disjoint union and no permissions; its R3a-R3d exhibit non-local heap commands (an allocation test, fixed-address allocation that faults, least-free-address allocation, predictable allocation)."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R5e-store-through-read-only-cell-is-not-local",
+    "lean": "Toy.ByteSL.bstoreShared_safetyMono_and_not_frameProp",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The standard reason read-only (shared) permissions must not allow writes (Bornat et al. 2005), made concrete.",
+    "plain_claim": "A byte store permitted with read-only permission (bstoreShared 0 (init 2)) is safety-monotone but violates the frame property: the read-only cell hRO1 = {0 |->ro 1} is disjoint from itself, yet every run of the store from hRO1 ends in {0 |->ro 2}, which is not disjoint from the frame hRO1. The frame rule fails for it: {0 |->ro 1} bstoreShared 0 (init 2) {0 |->ro 2} holds, but its framing with {0 |->ro 1} does not.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.bstoreShared_safetyMono_and_not_frameProp",
+    "non_claims": [
+      "Interior mutability is not modeled: a read-only cell here can never be written (R5e shows a write through it breaks the frame property). In Rust, &T for a type containing UnsafeCell permits mutation through shared references (RustBelt models this with a type-specific sharing predicate), so coexisting shared typed views of such bytes need not be stable; nothing here applies to them.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Jung, R., Jourdan, J.-H., Krebbers, R. & Dreyer, D., 'RustBelt: Securing the Foundations of the Rust Programming Language', PACMPL 2(POPL), Article 66, 2018, doi:10.1145/3158154. Section 3.2: following Lee et al. 2017, freshly allocated memory holds a poison value; the only safe operations on it are loads and stores. Section 3.3: the type of 'arbitrary sequences of n base values' represents uninitialized memory. Sections 4.1-4.2: a type is interpreted by a predicate [[tau]].own(t, vs) on lists of values with |vs| = [[tau]].size, and [[tau1 x tau2]].own splits vs = vs1 ++ vs2 (memory locations hold values, not bytes; products have no padding). Section 4.3: shared references are interpreted by a separate, type-specific sharing predicate [[tau]].shr(kappa, t, l); Section 6 uses it for Cell and Mutex (interior mutability).",
+      "Bornat, R., Calcagno, C., O'Hearn, P. W. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327: brings fractional (and counting) permissions into separation logic; cited by COY 2007 as the source of heaps with permissions.",
+      "Yang, H. & O'Hearn, P. W., 'A Semantic Basis for Local Reasoning', FoSSaCS 2002, LNCS 2303, pp. 402-416, doi:10.1007/3-540-45931-6_28 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/basis.pdf). Section 4: Lemma 1 (Safety and Termination Monotonicity), Lemma 2 (Frame Property), Theorem 1 (soundness of the Frame Rule, with the side condition that the command modifies no variable free in the frame). Section 4.1: an operation that traps memory faults would let a program branch on whether a cell is active, contradicting Safety Monotonicity; and an abstract setting is sketched in which an arbitrary partial commutative monoid replaces heaps, with a local action defined as a relation satisfying Safety and Termination Monotonicity and the Frame Property, for which 'the Frame Rule is sound for every local action' (no cancellativity is required).",
+      "Published package 'frame-rule-locality-and-precise-assertions' of this corpus (google/zerocopy branch reference, commit 8ff18039787575ce7f24066acdc7600918ad8185). Its definitions of separation structures, commands, outcomes, assertions, separating conjunction, fault-avoiding triples, SafetyMono, FrameProp, Local and FrameRuleSound (support file lean/Toy/Sep/Basic.lean, namespace Toy.Sep) are the source of this package's lean/Toy/ByteSL/SepBasic.lean, which consists of a subset of that file's declarations, their code copied unchanged and the namespace renamed to Toy.ByteSL. Its R2b (Toy.Sep.frameRuleSound_iff_safetyMono_and_frameProp: in any separation structure, no laws, FrameRuleSound c <-> SafetyMono c and FrameProp c) is the same statement as R5a here; its R5 shows lookup, mutation, allocation and deallocation local in a finite-heap model with arbitrary cell values, address-disjoint union and no permissions; its R3a-R3d exhibit non-local heap commands (an allocation test, fixed-address allocation that faults, least-free-address allocation, predictable allocation)."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  },
+  {
+    "id": "R5f-byte-heap-with-read-only-sharing-is-not-cancellative",
+    "lean": "Toy.ByteSL.byteHeap_isSepAlgebra_and_not_rightCancel",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The permission algebra is COY 2007's {R, RW} (Definition 1, Example 2); that idempotent sharing makes the induced heap algebra non-cancellative is immediate (h * h = h * emp) and is why later treatments keep cancellativity separate (Klein-Kolanski-Boyton's Isabelle library has a separate cancellative subclass). Restated here.",
+    "plain_claim": "For every byte payload type D, the byte heap with read-only sharing is a partial commutative monoid with unit (symmetric disjointness, commutativity, partial associativity, the empty heap as unit) but is not right-cancellative: the read-only cell 0 |-> uninit is disjoint from itself and from the empty heap, and combined with itself gives the same heap as the empty heap combined with it, although it is not the empty heap.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample itself.",
+    "nonvacuity_witness_lean": "Toy.ByteSL.byteHeap_isSepAlgebra_and_not_rightCancel",
+    "non_claims": [
+      "Does not affect R5a, which needs no algebraic law; results that depend on cancellativity (for example relating precision to the conjunction rule) do not transfer to this heap without further argument.",
+      "Idempotent read-only sharing violates the disjointness axiom of Dockins, Hobor and Appel (2009): a separating conjunction of read-only assertions does not imply that their footprints are disjoint (two read-only views of the same cells separate, R4a). Inductive predicates built with * at permission ro (lists, trees) therefore admit sharing and cycles (DAGs instead of trees); nothing here supports reading ro-separation as address disjointness.",
+      "Permissions are the two-point permission algebra full | read-only (read-only cells combine idempotently with equal cells, full cells with nothing); there are no fractions, so nothing here addresses splitting full ownership into read-only pieces or recombining them.",
+      "Toy model: one flat byte heap with natural-number addresses, no allocation, no alignment, no provenance in the examples, no lifetimes or borrows, no concurrency; a representation's decoder depends on the bytes only."
+    ],
+    "prior_art": [
+      "Calcagno, C., O'Hearn, P. W. & Yang, H., 'Local Action and Abstract Separation Logic', LICS 2007, pp. 366-378, doi:10.1109/LICS.2007.30 (author PDF http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/asl-short.pdf): Section 3 recalls Safety Monotonicity and the Frame Property for relations and states that 'a relation R satisfies Safety Monotonicity and the Frame Property iff the frame rule is sound for it'. Definition 1 takes a separation algebra to be a cancellative partial commutative monoid; its Example 2 (heaps with permissions, HPerm, over a permission algebra required to be cancellative) mentions the permission algebra {R, RW} with R o R = R and RW o p undefined, remarking that it does not allow converting a total (RW) permission into several read permissions or back. That two-point algebra is the permission algebra of this package; the heap algebra it induces with the empty heap as unit is not cancellative (R5f), so this instance lies outside Definition 1.",
+      "Bornat, R., Calcagno, C., O'Hearn, P. W. & Parkinson, M., 'Permission Accounting in Separation Logic', POPL 2005, pp. 259-270, doi:10.1145/1040305.1040327: brings fractional (and counting) permissions into separation logic; cited by COY 2007 as the source of heaps with permissions.",
+      "Klein, G., Kolanski, R. & Boyton, A., 'Mechanised Separation Algebra', ITP 2012, LNCS 7406, pp. 332-337, doi:10.1007/978-3-642-32347-8_22, with the Archive of Formal Proofs entry 'Separation Algebra' (May 2012): an Isabelle/HOL type-class library of separation algebras based on COY 2007 in which cancellativity is a separate subclass (cancellative_sep_algebra, assumption sep_add_cancelD: x + z = y + z with x ## z and y ## z implies x = y), the right-cancellation law RightCancel of this package.",
+      "Gotsman, A., Berdine, J. & Cook, B., 'Precision and the Conjunction Rule in Concurrent Separation Logic', Electronic Notes in Theoretical Computer Science 276 (MFPS XXVII), pp. 171-190, 2011, doi:10.1016/j.entcs.2011.09.021: studies the interplay of precision and the conjunction rule in separation logic, the kind of result that does not transfer to non-cancellative models without further argument (cited for its topic only).",
+      "Dockins, R., Hobor, A. & Appel, A. W., 'A Fresh Look at Separation Algebras and Share Accounting', APLAS 2009, LNCS 5904, pp. 161-177, doi:10.1007/978-3-642-10672-9_13 (author PDF https://www.cs.princeton.edu/~appel/papers/fresh-sa.pdf): revisits the separation-algebra axioms; its disjointness axiom (a + a = b implies a = b: no nonempty share joins with itself) is motivated by the remark that without disjointness 'the obvious definition of a formula to describe binary trees in fact describes directed acyclic graphs'. The idempotent read-only cells of this package violate that axiom.",
+      "Vindum, S. F. & Birkedal, L., 'Contextual Refinement of the Michael-Scott Queue (Proof Pearl)', CPP 2021, pp. 76-90, doi:10.1145/3437992.3439930: introduces discardable fractions for Iris points-to assertions, where a fraction can be irrevocably discarded to obtain persistent, freely duplicable read-only ownership; Iris itself is described in Jung, R., Krebbers, R., Jourdan, J.-H., Bizjak, A., Birkedal, L. & Dreyer, D., 'Iris from the ground up', Journal of Functional Programming 28, e20, 2018, doi:10.1017/S0956796818000151. The read-only permission of this package behaves like a discarded fraction without the fractional part.",
+      "Boyland, J., 'Checking Interference with Fractional Permissions', SAS 2003, LNCS 2694, pp. 55-72, doi:10.1007/3-540-44898-5_4: introduces fractional permissions (writing needs the whole permission, reading any fraction; fractions recombine). Cited as the origin of fractional permissions; the two-point full / read-only algebra here is a non-fractional, non-recombinable variant."
+    ],
+    "design_question": "A verifier for low-level Rust wants byte-level ownership (padding, uninitialized memory, reinterpretation) together with typed reasoning: which typed points-to to build from byte points-to, when struct ownership splits into field ownership with padding, when a transmute is a pure view change, and how read-only views interact with these."
+  }
+]
