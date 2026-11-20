@@ -53303,6 +53303,216 @@
         "lean/mechanization"
       ]
     },
+    "refinement-and-hyperproperties-noninterference-and-randomness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "conference_doi": "10.1109/CSF.2008.7",
+            "dblp": "journals/jcs/ClarksonS10",
+            "doi": "10.3233/JCS-2009-0393"
+          },
+          "name": "Hyperproperties (Clarkson and Schneider, JCS 2010)"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.04603v6",
+            "coq_repository": "secure-compilation/exploring-robust-property-preservation",
+            "coq_revision": "c68187cbaba763d88cbb3509df4ca9cf49cc6338",
+            "dblp": "conf/csfw/AbateB0HPT19",
+            "doi": "10.1109/CSF.2019.00025"
+          },
+          "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (Abate et al., CSF 2019)"
+        },
+        {
+          "identity": {
+            "conference_doi": "10.1007/978-3-030-44914-8_1",
+            "dblp": "journals/toplas/AbateBCDGHPTT21",
+            "doi": "10.1145/3460860"
+          },
+          "name": "An Extended Account of Trace-relating Compiler Correctness and Secure Compilation (Abate et al., TOPLAS 2021 / ESOP 2020)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/sp/McLean90",
+            "doi": "10.1109/RISP.1990.63849"
+          },
+          "name": "Security Models and Information Flow (McLean, IEEE S&P 1990)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/sp/McLean94",
+            "doi": "10.1109/RISP.1994.296590",
+            "journal_doi": "10.1109/32.481534"
+          },
+          "name": "A general theory of composition for trace sets closed under selective interleaving functions (McLean, IEEE S&P 1994 / TSE 1996)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/esorics/RoscoeWW94",
+            "doi": "10.1007/3-540-58618-0_55",
+            "journal_doi": "10.3233/JCS-1996-4103"
+          },
+          "name": "Non-Interference Through Determinism (Roscoe, Woodcock, and Wulf, ESORICS 1994 / JCS 1996)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/sp/Roscoe95",
+            "doi": "10.1109/SECPRI.1995.398927"
+          },
+          "name": "CSP and determinism in security modelling (Roscoe, IEEE S&P 1995)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/csfw/ZdancewicM03",
+            "doi": "10.1109/CSFW.2003.1212703"
+          },
+          "name": "Observational Determinism for Concurrent Program Security (Zdancewic and Myers, CSFW 2003)"
+        },
+        {
+          "identity": {
+            "dblp": "series/mcs/McIverM05",
+            "doi": "10.1007/b138392"
+          },
+          "name": "Abstraction, Refinement and Proof for Probabilistic Systems (McIver and Morgan, Springer 2005)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/icalp/AlurCZ06",
+            "doi": "10.1007/11787006_10"
+          },
+          "name": "Preserving Secrecy Under Refinement (Alur, Cerny, and Zdancewic, ICALP 2006)"
+        },
+        {
+          "identity": {
+            "conference_dblp": "conf/mpc/Morgan06",
+            "conference_doi": "10.1007/11783596_21",
+            "journal_dblp": "journals/scp/Morgan09",
+            "journal_doi": "10.1016/j.scico.2007.09.003",
+            "technical_report": "UNSW-CSE-TR-0522"
+          },
+          "name": "The Shadow Knows: Refinement of Ignorance in Sequential Programs (Morgan, UNSW-CSE-TR-0522 2005 / MPC 2006; journal version SCP 2009)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/fossacs/Smith09",
+            "doi": "10.1007/978-3-642-00596-1_21"
+          },
+          "name": "On the Foundations of Quantitative Information Flow (Smith, FoSSaCS 2009)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/stoc/GolabHW11",
+            "doi": "10.1145/1993636.1993687"
+          },
+          "name": "Linearizable implementations do not suffice for randomized distributed computation (Golab, Higham, and Woelfel, STOC 2011)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/sp/MurrayMBGBSLGK13",
+            "doi": "10.1109/SP.2013.35"
+          },
+          "name": "seL4: From General Purpose to a Proof of Information Flow Enforcement (Murray et al., IEEE S&P 2013)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/calco/0001HN13",
+            "doi": "10.1007/978-3-642-40206-7_18"
+          },
+          "name": "Noninterfering Schedulers - When Possibilistic Noninterference Implies Probabilistic Noninterference (Popescu, Holzl, and Nipkow, CALCO 2013)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/pldi/CostanzoSG16",
+            "doi": "10.1145/2908080.2908100"
+          },
+          "name": "End-to-end verification of information-flow security for C and assembly programs (Costanzo, Shao, and Gu, PLDI 2016)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/cav/FinkbeinerHLST18",
+            "doi": "10.1007/978-3-319-96145-3_16"
+          },
+          "name": "Synthesizing Reactive Systems from Hyperproperties (Finkbeiner et al., CAV 2018)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/cav/CoenenFST19",
+            "doi": "10.1007/978-3-030-25540-4_7"
+          },
+          "name": "Verifying Hyperliveness (Coenen, Finkbeiner, Sanchez, and Tentrup, CAV 2019)"
+        },
+        {
+          "identity": {
+            "dblp": "conf/wdag/AttiyaE19",
+            "doi": "10.4230/LIPIcs.DISC.2019.2"
+          },
+          "name": "Putting Strong Linearizability in Context: Preserving Hyperproperties in Programs that Use Concurrent Objects (Attiya and Enea, DISC 2019)"
+        },
+        {
+          "identity": {
+            "dblp": "journals/pacmpl/BartheBGHLPT20",
+            "doi": "10.1145/3371075"
+          },
+          "name": "Formal verification of a constant-time preserving C compiler (Barthe et al., PACMPL / POPL 2020)"
+        },
+        {
+          "identity": {
+            "afp_release": "Isabelle2026 (2026-10-26)",
+            "release_archive": "https://www.isa-afp.org/release/afp-Noninterference_CSP-2026-10-26.tar.gz",
+            "theory_source_file": "thys/Noninterference_CSP/GeneralizedNoninterference.thy",
+            "theory_source_file_sha256": "72ff118128a5f40e08817d012123fa77cc23893bdadaa0eba7ea4315ff315ad9",
+            "theory_source_repository": "isabelle-prover/mirror-afp-devel",
+            "theory_source_revision": "2e7a917337578454a9525c4a3e182cc3e6eb0b4f",
+            "url": "https://www.isa-afp.org/entries/Noninterference_CSP.html"
+          },
+          "name": "Noninterference Security in Communicating Sequential Processes (Noce, Archive of Formal Proofs 2014)"
+        },
+        {
+          "identity": {
+            "afp_release": "Isabelle2026 (2026-10-26)",
+            "release_archive": "https://www.isa-afp.org/release/afp-HyperCTL-2026-10-26.tar.gz",
+            "url": "https://www.isa-afp.org/entries/HyperCTL.html"
+          },
+          "name": "A shallow embedding of HyperCTL* (Rabe, Lammich, and Popescu, Archive of Formal Proofs 2014)"
+        },
+        {
+          "identity": {
+            "afp_release": "Isabelle2026 (2026-10-26)",
+            "doi": "10.4230/LIPIcs.ITP.2021.3",
+            "release_archive": "https://www.isa-afp.org/release/afp-Bounded_Deducibility_Security-2026-10-26.tar.gz",
+            "url": "https://www.isa-afp.org/entries/Bounded_Deducibility_Security.html"
+          },
+          "name": "Bounded-Deducibility Security (Popescu, Bauereiss, and Lammich, Archive of Formal Proofs 2014 / ITP 2021)"
+        },
+        {
+          "identity": {
+            "afp_release": "Isabelle2026 (2026-10-26)",
+            "doi": "10.1145/3656437",
+            "release_archive": "https://www.isa-afp.org/release/afp-HyperHoareLogic-2026-10-26.tar.gz",
+            "url": "https://www.isa-afp.org/entries/HyperHoareLogic.html"
+          },
+          "name": "Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties (Dardinier and Muller, Archive of Formal Proofs 2023 / PLDI 2024)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/hyperproperties",
+        "security/noninterference",
+        "security/quantitative-information-flow",
+        "compilers/secure-compilation"
+      ]
+    },
     "regalloc2-symbolic-checker-stacking-and-quantitative-stack-bounds-2026": {
       "observed_at": "2026-10-30",
       "subjects": [

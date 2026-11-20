@@ -1,0 +1,517 @@
+[
+  {
+    "id": "subset-closed-iff-refinement-preserved",
+    "lean": "Toy.Hyper.subsetClosed_iff_preservedByAllRefiningCompilers",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any trace type Trace and hyperproperty H over System Trace, H is subset-closed if and only if every semantic whole-program refining compiler (C : System Trace -> System Trace satisfying C S \u2291 S for all S, including transformations that delete arbitrary behaviors) preserves H.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "On Trace = Bool, LiftTraceProp (fun b => b = false) is subset-closed, accepts constFalseBoolSystem, and rejects fullBoolSystem, while NonEmptySystem is not subset-closed.",
+    "nonvacuity_witness_lean": "Toy.Hyper.subsetClosed_char_nonvacuity",
+    "non_claims": [
+      "The 'only if' direction quantifies over transformations that may delete arbitrary behaviours, including all of them (C S = S \u2229 S\u2080 via intersectCompiler). It does not characterize what is preserved by refinements that must keep a behaviour for every input: that class preserves strictly more (derived: InputTotal itself is not subset-closed, since emptyIOSystem \u2291 fullIOSystem with InputTotal fullIOSystem and \u00ac InputTotal emptyIOSystem by Toy.Hyper.inputTotal_neg_example, yet InputTotal is tautologically preserved by input-totality-preserving compilers), and for a deterministic input-total source it preserves every hyperproperty, because an input-total refinement of a deterministic system is the system itself (Toy.Hyper.inputTotal_refinement_of_deterministic_eq).",
+      "Says which hyperproperties survive all refinements, not which relations preserve a given class. The companion fact is: S' \u2291 S holds iff every subset-closed hyperproperty of S holds of S' (Toy.Hyper.refines_iff_preserves_all_subsetClosed).",
+      "Does not formalize separate source and target languages, trace relations across languages (see Abate et al., ESOP 2020 / TOPLAS 2021), syntactic compilers, or linking with adversarial contexts (contrast robust subset-closed hyperproperty preservation RSCHP in Abate et al., CSF 2019).",
+      "Does not restrict C to computable transformations; the reverse direction uses intersectCompiler S' together with propext and funext.",
+      "Does not claim that non-subset-closed hyperproperties are never preserved by a specific compiler; it characterizes preservation across all trace-inclusion refinements."
+    ],
+    "prior_art": [
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 (earlier version: IEEE CSF 2008, pp. 51-65, DOI: 10.1109/CSF.2008.7) \u2014 Section 2.6 defines subset-closed hyperproperties (SSC) and proves the satisfaction/refinement agreement law (2.8) holds iff H is subset-closed.",
+      "Carmine Abate, Roberto Blanco, Deepak Garg, Catalin Hritcu, Marco Patrignani, and Jeremy Thibault, 'Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation', IEEE CSF 2019, pp. 256-271, DOI: 10.1109/CSF.2019.00025 (extended version: arXiv:1807.04603v6) \u2014 Section 3.2 and Appendix C.2.2 Theorem C.18 establish the dual context-aware compiler criterion RSCHP <-> RSCHC, mechanized in Coq (github.com/secure-compilation/exploring-robust-property-preservation, Properties.v: SSC, SSC_iff; Criteria.v: RSCHC_RSCHP).",
+      "Carmine Abate, Roberto Blanco, Stefan Ciobaca, Adrien Durier, Deepak Garg, Catalin Hritcu, Marco Patrignani, Eric Tanter, and Jeremy Thibault, 'Trace-Relating Compiler Correctness and Secure Compilation', ESOP 2020, pp. 1-28, DOI: 10.1007/978-3-030-44914-8_1 (journal: ACM TOPLAS 43(4):14:1-14:48, 2021, DOI: 10.1145/3460860) \u2014 generalizes trace-inclusion compiler correctness to distinct source and target trace sets linked by a trace relation.",
+      "Related Isabelle/HOL mechanizations of hyperproperty logics (not subset-closure under refinement): Markus N. Rabe, Peter Lammich, and Andrei Popescu, 'A shallow embedding of HyperCTL*', Archive of Formal Proofs, 2014, https://www.isa-afp.org/entries/HyperCTL.html; Thibault Dardinier, 'Formalization of Hyper Hoare Logic', Archive of Formal Proofs, 2023, https://www.isa-afp.org/entries/HyperHoareLogic.html (paper: Dardinier and Muller, PLDI 2024, DOI: 10.1145/3656437). Web search found no Lean or Mathlib mechanization of subset-closed hyperproperties (the Mathlib source tree itself was not exhaustively searched)."
+    ],
+    "design_question": "Which security properties automatically survive a compiler proved correct purely via trace-inclusion refinement?"
+  },
+  {
+    "id": "refines-iff-preserves-all-subset-closed",
+    "lean": "Toy.Hyper.refines_iff_preserves_all_subsetClosed",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any trace type Trace and systems S', S : System Trace, S' refines S (Refines S' S) if and only if every subset-closed hyperproperty satisfied by S is also satisfied by S'.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "On Bool, constFalseBoolSystem \u2291 fullBoolSystem satisfies both sides, while fullBoolSystem and constFalseBoolSystem refute both sides (via LiftTraceProp (fun b => b = false)).",
+    "nonvacuity_witness_lean": "Toy.Hyper.refines_iff_preserves_all_subsetClosed_nonvacuity",
+    "non_claims": [
+      "Does not model linking with adversarial contexts or distinct source/target trace types; it is the whole-program, shared-trace-type counterpart of the RSCHP <-> RSCHC criterion in Abate et al. (CSF 2019).",
+      "Does not characterize preservation of any single non-subset-closed hyperproperty (such as GNI); it characterizes preservation of the entire class of subset-closed hyperproperties."
+    ],
+    "prior_art": [
+      "Carmine Abate, Roberto Blanco, Deepak Garg, Catalin Hritcu, Marco Patrignani, and Jeremy Thibault, 'Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation', IEEE CSF 2019, pp. 256-271, DOI: 10.1109/CSF.2019.00025 (extended version: arXiv:1807.04603v6) \u2014 Section 3.2 and Appendix C.2.2 Theorem C.18 prove the context-aware version RSCHP <-> RSCHC (mechanized in Coq in Criteria.v: RSCHC_RSCHP).",
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 2.6 introduces subset-closed hyperproperties (SSC)."
+    ],
+    "design_question": "What semantic correctness relation between compiled and source trace sets is both necessary and sufficient to preserve every subset-closed hyperproperty?"
+  },
+  {
+    "id": "trace-property-lift-subset-closed",
+    "lean": "Toy.Hyper.liftTraceProp_subsetClosed",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any trace type Trace and trace property P : Trace -> Prop, its hyperproperty lifting LiftTraceProp P (requiring every trace of S to satisfy P) is subset-closed (corollary of universalKHyperprop_subsetClosed at k = 1 via liftTraceProp_iff_universal1Hyperprop).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "On Trace = Bool, LiftTraceProp (fun b => b = false) accepts constFalseBoolSystem and rejects fullBoolSystem.",
+    "nonvacuity_witness_lean": "Toy.Hyper.liftTraceProp_subsetClosed_nonvacuity",
+    "non_claims": [
+      "Corollary of universalKHyperprop_subsetClosed at k = 1 (via Toy.Hyper.liftTraceProp_iff_universal1Hyperprop); not an independent theorem.",
+      "Does not claim that every subset-closed hyperproperty arises from lifting a trace property (observational determinism is a 2-trace counterexample; see Toy.Hyper.obsDet_not_liftTraceProp).",
+      "Does not cover relational or multi-trace properties directly; it applies only to single-trace predicates."
+    ],
+    "prior_art": [
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 2.6 states that lifted trace properties are members of SSC.",
+      "Carmine Abate, Roberto Blanco, Deepak Garg, Catalin Hritcu, Marco Patrignani, and Jeremy Thibault, 'Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation', IEEE CSF 2019, pp. 256-271, DOI: 10.1109/CSF.2019.00025 \u2014 Section 3.2 states lifted trace properties are subset-closed; mechanized in Coq (Properties.v: lifting, Union_Lift_SSC). Web search found no Lean or Mathlib mechanization."
+    ],
+    "design_question": "Which security properties automatically survive a compiler proved correct purely via trace-inclusion refinement?"
+  },
+  {
+    "id": "universal-k-hyperprop-subset-closed",
+    "lean": "Toy.Hyper.universalKHyperprop_subsetClosed",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any trace type Trace, arity k : Nat, and k-ary trace relation Rel : (Fin k -> Trace) -> Prop, the universal k-trace hyperproperty UniversalKHyperprop k Rel is subset-closed.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "On Trace = Bool, the 2-ary equality hyperproperty UniversalKHyperprop 2 (fun ts => ts 0 = ts 1) accepts constFalseBoolSystem and rejects fullBoolSystem.",
+    "nonvacuity_witness_lean": "Toy.Hyper.universalKHyperprop_subsetClosed_nonvacuity",
+    "non_claims": [
+      "Does not claim that every subset-closed hyperproperty has the form UniversalKHyperprop k Rel. Over an infinite trace type, 'the system has finitely many traces' (BoundedNatSystem over Nat) is subset-closed and is not of that form for any k (Toy.Hyper.boundedNatSystem_subsetClosed_not_universalKHyperprop).",
+      "Does not formalize the finite-prefix Vietoris-topology safety condition of Clarkson and Schneider's k-hypersafety for infinite traces; UniversalKHyperprop captures universal k-ary trace quantification over complete traces.",
+      "Does not apply to quantifier-alternating (forall-exists) hyperproperties such as generalized noninterference or hyperliveness properties."
+    ],
+    "prior_art": [
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 3 Theorem 1 proves SHP \u2282 SSC (hypersafety is strictly contained in subset-closed hyperproperties); Section 4 discusses k-safety.",
+      "Tachio Terauchi and Alex Aiken, 'Secure Information Flow as a Safety Problem', SAS 2005, LNCS 3672, pp. 352-367, DOI: 10.1007/11547662_24 \u2014 introduces the 2-safety formulation of information-flow properties.",
+      "Isabella Mastroeni and Michele Pasqua, 'Verifying Bounded Subset-Closed Hyperproperties', SAS 2018, LNCS 11002, pp. 263-283, DOI: 10.1007/978-3-319-99725-4_17 \u2014 formalizes bounded (k-tuple) subset-closed hyperproperties.",
+      "Carmine Abate et al., IEEE CSF 2019, DOI: 10.1109/CSF.2019.00025 \u2014 Coq development (Properties.v: twoSC_SSC, twoSC_H2Safe) mechanizes subset-closure of 2-trace universal hyperproperties. Web search found no Lean or Mathlib mechanization.",
+      "Gilles Barthe, Pedro R. D'Argenio, and Tamara Rezk, 'Secure Information Flow by Self-Composition', IEEE CSFW 2004, pp. 100-114, DOI: 10.1109/CSFW.2004.1310735 (legacy IEEE CS DOI: 10.1109/CSFW.2004.17; journal: MSCS 21(6):1207-1252, 2011, DOI: 10.1017/S0960129511000193) \u2014 background on verifying 2-trace relational properties via self-composition (does not state subset-closure)."
+    ],
+    "design_question": "Which security properties automatically survive a compiler proved correct purely via trace-inclusion refinement?"
+  },
+  {
+    "id": "obs-det-preserved-by-refinement",
+    "lean": "Toy.Hyper.obsDet_preserved_by_refinement",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any trace types L, H, O and systems S, S' over IOTrace L H O, if S' refines S (Refines S' S) and S is observationally deterministic (ObsDet S), then S' is observationally deterministic (ObsDet S') (corollary of universalKHyperprop_subsetClosed at k = 2 via obsDet_iff_universal2Hyperprop).",
+    "hypotheses": [
+      {
+        "name": "hRef",
+        "purpose": "Requires every trace of S' to be a trace of S so that ObsDet on S constrains all pairs of traces in S'.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.obsDet_refinement_counterexample_no_refines"
+      },
+      {
+        "name": "hOD",
+        "purpose": "Requires the source system S to satisfy observational determinism.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.obsDet_refinement_counterexample_no_obsDet"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "echoLowHighFalseSystem strictly refines echoLowSystem, and echoLowSystem satisfies ObsDet.",
+    "nonvacuity_witness_lean": "Toy.Hyper.obsDet_refinement_nonvacuity",
+    "non_claims": [
+      "Corollary of universalKHyperprop_subsetClosed at k = 2 (via Toy.Hyper.obsDet_iff_universal2Hyperprop).",
+      "ObsDet forbids every low-observable nondeterminism, not only nondeterminism that depends on the secret: each public input has at most one public output (Toy.Hyper.obsDet_at_most_one_output). A system whose public output comes from a randomness source modelled as internal choice fails ObsDet. This result offers no way to keep both secrecy and output unpredictability under trace inclusion.",
+      "Preservation holds because no observable nondeterminism is left to resolve; verified systems that use this style (Murray et al., S&P 2013; Costanzo et al., PLDI 2016) report having to remove nondeterminism from their specifications.",
+      "Does not prevent a refinement from deleting inputs or introducing an acceptance/termination covert channel: ObsDet can hold on systems that reject some secrets (echoLowHighFalseSystem, Toy.Hyper.gni_and_rectangularDomain_allow_secret_filtered_acceptance), and it holds trivially on the empty system (derived: secret-filtered partial systems do not automatically satisfy ObsDet: highFalseFullSystem rejects highIn = true yet permits both outputs false and true, violating ObsDet).",
+      "Does not model microarchitectural timing, cache, or speculative side channels (for constant-time compilation preservation, see Barthe et al., POPL 2020).",
+      "Does not cover concurrent interleaving traces or low-equivalence up to stuttering as in Zdancewic and Myers (CSFW 2003); traces here are single-step (lowIn, highIn, lowOut) records."
+    ],
+    "prior_art": [
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 2.6 explicitly states that observational determinism OD (2.6) is subset-closed.",
+      "A. W. Roscoe, 'CSP and determinism in security modelling', IEEE S&P 1995, pp. 114-127, DOI: 10.1109/SECPRI.1995.398927 \u2014 Section 8.1 shows determinism-based security properties are closed under refinement because deterministic processes are maximal under refinement.",
+      "John McLean, 'Proving Noninterference and Functional Correctness Using Traces', Journal of Computer Security 1(1):37-58, 1992, DOI: 10.3233/JCS-1992-1103 \u2014 early trace-based determinism formulation of noninterference.",
+      "Steve Zdancewic and Andrew C. Myers, 'Observational Determinism for Concurrent Program Security', IEEE CSFW 2003, pp. 29-43, DOI: 10.1109/CSFW.2003.1212703 \u2014 formulates observational determinism for concurrent programs and shows immunity to refinement attacks.",
+      "Toby C. Murray et al., 'seL4: From General Purpose to a Proof of Information Flow Enforcement', IEEE S&P 2013, pp. 415-429, DOI: 10.1109/SP.2013.35; and David Costanzo, Zhong Shao, and Ronghui Gu, 'End-to-end verification of information-flow security for C and assembly programs', PLDI 2016, pp. 648-664, DOI: 10.1145/2908080.2908100 \u2014 obtain refinement preservation by eliminating user/domain-visible nondeterminism from specifications and report that specification cost.",
+      "Gilles Barthe, Sandrine Blazy, Benjamin Gregoire, Remi Hutin, Vincent Laporte, David Pichardie, and Alix Trieu, 'Formal verification of a constant-time preserving C compiler', Proc. ACM Program. Lang. 4(POPL):7:1-7:30, 2020, DOI: 10.1145/3371075 \u2014 cited in non-claims for timing/constant-time preservation."
+    ],
+    "design_question": "Which security properties automatically survive a compiler proved correct purely via trace-inclusion refinement, and at what cost to allowed nondeterminism?"
+  },
+  {
+    "id": "gni-refinement-paradox-input-total",
+    "lean": "Toy.Hyper.gni_not_preserved_by_inputTotal_refinement",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "Generalized noninterference is not preserved by trace-inclusion refinement even when both systems are input-total and the refinement is deterministic: on IOTrace Unit Bool Bool, fullIOSystem satisfies GNI and InputTotal, leakHighSystem refines fullIOSystem and satisfies InputTotal and Deterministic, yet leakHighSystem violates GNI.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The theorem directly exhibits the concrete pair (fullIOSystem, leakHighSystem) on IOTrace Unit Bool Bool.",
+    "nonvacuity_witness_lean": "Toy.Hyper.gni_not_preserved_by_inputTotal_refinement",
+    "positive_control_lean": [
+      "Toy.Hyper.gni_preserved_by_lowViewRestrict",
+      "Toy.Hyper.lowViewRestrict_proper_gni_control_instance"
+    ],
+    "non_claims": [
+      "An input-total refinement of a deterministic system is that system (Toy.Hyper.inputTotal_refinement_of_deterministic_eq), so Toy.Hyper.gni_preserved_by_inputTotal_refinement_of_deterministic is not a preservation theorem for a class of proper refinements; it says only that nothing changes when there is no nondeterminism to resolve.",
+      "Does not say that every proper refinement of a GNI system violates GNI. constFalseIOSystem is a proper, input-total, deterministic refinement of fullIOSystem that satisfies GNI; restricting a GNI system by any predicate on (lowIn, lowOut) keeps GNI (Toy.Hyper.gni_preserved_by_lowViewRestrict, Toy.Hyper.lowViewRestrict_proper_gni_control_instance).",
+      "GNI quantifies over the secrets that occur in the system. A system that accepts only some secrets (for example only highIn = false, as in echoLowHighFalseSystem) can satisfy GNI; the definition does not treat a restricted acceptance domain as a leak (Toy.Hyper.gni_and_rectangularDomain_allow_secret_filtered_acceptance).",
+      "Traces have one step and no high outputs. In this shape GNI is the condition that every occurring low view is compatible with every occurring secret (Toy.Hyper.gni_iff_low_view_compatible_with_every_secret), and the distinctions among generalized noninterference, nondeducibility and separability made for interleaved event systems are not visible.",
+      "No secrecy-preserving refinement relation from the literature (such as Mantel 2001, Alur-Cerny-Zdancewic 2006, or Attiya-Enea 2019 strong observational refinement) is formalized here.",
+      "The source system fullIOSystem and failing refinement leakHighSystem coincide with SpecOf xorSpecFn and secretIndepDeterminize xorSpecFn (fun _ => false) in xor-presentation-secret-indep-choice-fails-gni (Toy.Hyper.specOf_xor_eq_full, Toy.Hyper.leakHigh_eq_secretIndep_xor).",
+      "Does not address probabilistic or quantitative noninterference."
+    ],
+    "prior_art": [
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 1 presents this exact refinement counterexample (outputting 0, 1, or secret bit h refined to always outputting h), Section 2 gives McLean's GNI formulation (2.5), and Section 3 notes GNI is not subset-closed.",
+      "Steve Zdancewic and Andrew C. Myers, 'Observational Determinism for Concurrent Program Security', IEEE CSFW 2003, pp. 29-43, DOI: 10.1109/CSFW.2003.1212703 \u2014 gives the same counterexample (l := true | l := false | l := h) and introduces the term 'refinement attacks'.",
+      "Daryl McCullough, 'Specifications for Multi-Level Security and a Hook-Up Property', IEEE S&P 1987, pp. 161-166, DOI: 10.1109/SP.1987.10009; and 'Noninterference and the composability of security properties', IEEE S&P 1988, pp. 177-186, DOI: 10.1109/SECPRI.1988.8110 \u2014 introduces generalized noninterference and notes non-preservation under refinement (per McLean 1994 footnote 2).",
+      "Jeremy Jacob, 'Security specifications', IEEE S&P 1988, pp. 14-23, DOI: 10.1109/SECPRI.1988.8094 (cited by Morgan 2005/2009 for the term 'Refinement Paradox'); and 'On the Derivation of Secure Components', IEEE S&P 1989, pp. 242-247, DOI: 10.1109/SECPRI.1989.36298 (cited by McLean 1994 footnote 2).",
+      "John Graham-Cumming and Jeff W. Sanders, 'On the Refinement of Non-Interference', IEEE CSFW 1991, pp. 35-42, DOI: 10.1109/CSFW.1991.151567 \u2014 early work addressing refinement of noninterference (cited by McLean 1994 footnote 2).",
+      "John McLean, 'A general theory of composition for trace sets closed under selective interleaving functions', IEEE S&P 1994, pp. 79-93, DOI: 10.1109/RISP.1994.296590 (journal version: 'A General Theory of Composition for a Class of \"Possibilistic\" Properties', IEEE Trans. Software Eng. 22(1):53-67, 1996, DOI: 10.1109/32.481534) \u2014 gives the selective-interleaving GNI formulation adopted here and proves non-preservation under general trace-inclusion refinement.",
+      "Heiko Mantel, 'Preserving Information Flow Properties under Refinement', IEEE S&P 2001, pp. 78-91, DOI: 10.1109/SECPRI.2001.924289 \u2014 stronger refinement operators preserving information-flow properties (not formalized here).",
+      "Rajeev Alur, Pavol Cerny, and Steve Zdancewic, 'Preserving Secrecy Under Refinement', ICALP 2006, LNCS 4052, pp. 107-118, DOI: 10.1007/11787006_10 \u2014 strengthens trace refinement to secrecy-preserving refinement with simulation proof rules (not formalized here).",
+      "Hagit Attiya and Constantin Enea, 'Putting Strong Linearizability in Context: Preserving Hyperproperties in Programs that Use Concurrent Objects', DISC 2019, pp. 2:1-2:17, DOI: 10.4230/LIPIcs.DISC.2019.2 \u2014 defines strong observational refinement preserving hyperproperties and proves equivalence to forward simulations (not formalized here).",
+      "Toby C. Murray et al., 'seL4: From General Purpose to a Proof of Information Flow Enforcement', IEEE S&P 2013, pp. 415-429, DOI: 10.1109/SP.2013.35; and David Costanzo, Zhong Shao, and Ronghui Gu, 'End-to-end verification of information-flow security for C and assembly programs', PLDI 2016, pp. 648-664, DOI: 10.1145/2908080.2908100 \u2014 avoid the paradox by removing user/domain-visible nondeterminism from abstract specifications."
+    ],
+    "design_question": "Does trace-inclusion refinement preserve possibilistic noninterference (GNI), and what stronger condition restores preservation?"
+  },
+  {
+    "id": "gni-preserved-by-low-view-restrict",
+    "lean": "Toy.Hyper.gni_preserved_by_lowViewRestrict",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For any trace types L, H, O, system S over IOTrace L H O, and public-view predicate P : L -> O -> Prop, if S satisfies GNI then its trace-inclusion refinement lowViewRestrict S P (retaining traces t of S with P t.lowIn t.lowOut) also satisfies GNI.",
+    "hypotheses": [
+      {
+        "name": "hGNI",
+        "purpose": "Requires the source system S to satisfy GNI so that any low view retained by P remains compatible with every occurring secret.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.gni_lowViewRestrict_counterexample_no_gni"
+      },
+      {
+        "name": "P",
+        "purpose": "Exposes the arbitrary predicate on public inputs and outputs (lowIn, lowOut) governing which behaviors the refinement keeps.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "On fullIOSystem (which satisfies GNI), lowViewRestrict fullIOSystem (fun _ o => o = false) equals constFalseIOSystem, yielding a proper, input-total, deterministic GNI refinement.",
+    "nonvacuity_witness_lean": "Toy.Hyper.lowViewRestrict_proper_gni_control_instance",
+    "non_claims": [
+      "Does not automatically preserve InputTotal: filtering by an unsatisfiable low-view predicate yields the empty system (Toy.Hyper.lowViewRestrict_need_not_preserve_inputTotal). Preserving InputTotal additionally requires that every (l, h) retains at least one output o with S \u27e8l, h, o\u27e9 and P l o.",
+      "Does not formalize general multi-step secrecy-preserving refinement relations from the literature (Mantel 2001; Alur, Cerny, and Zdancewic 2006; Attiya and Enea 2019), nor does it handle nondeterministic choices that must be resolved using internal state or probabilistic sampling.",
+      "Gives a sufficient class, not a characterization. Among input-total refinements the class is exact (every input-total GNI refinement of S is lowViewRestrict S P for some P; Toy.Hyper.inputTotal_gni_refinement_is_lowViewRestrict). Partial refinements outside it can also preserve GNI, for example restricting fullIOSystem to highIn = false (Toy.Hyper.highFalseFullSystem, Toy.Hyper.secretFiltered_refinement_preserves_gni_not_lowViewRestrict). Membership is a property of the trace set, not of how a choice was resolved: determinize xorSpecFn (fun _ h => h) consults highIn through its choice index and is in the class (Toy.Hyper.same_secure_refinement_two_presentations, Toy.Hyper.lowViewRestrict_full_eq_constFalse)."
+    ],
+    "prior_art": [
+      "Elementary consequence of the single-step definitions (tier T1: no consulted source states it in this form).",
+      "Heiko Mantel, 'Preserving Information Flow Properties under Refinement', IEEE S&P 2001, pp. 78-91, DOI: 10.1109/SECPRI.2001.924289 \u2014 defines restricted refinement operators that preserve information-flow properties.",
+      "Rajeev Alur, Pavol Cerny, and Steve Zdancewic, 'Preserving Secrecy Under Refinement', ICALP 2006, LNCS 4052, pp. 107-118, DOI: 10.1007/11787006_10 \u2014 secrecy-preserving refinement via simulation.",
+      "Hagit Attiya and Constantin Enea, 'Putting Strong Linearizability in Context: Preserving Hyperproperties in Programs that Use Concurrent Objects', DISC 2019, pp. 2:1-2:17, DOI: 10.4230/LIPIcs.DISC.2019.2 \u2014 strong observational refinement and forward simulations for hyperproperty preservation."
+    ],
+    "design_question": "Which stronger (non-identity) refinement disciplines preserve generalized noninterference, and at what cost to the compilers they admit?"
+  },
+  {
+    "id": "full-range-const-refinement-not-ranges-over-all",
+    "lean": "Toy.Hyper.fullRange_const_refinement_not_rangesOverAll_of_pos",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For any k > 0 and any chosen constant value v : Fin (2^k), FullRangeSystem k ranges over all 2^k values, yet the nonempty constant-output system ConstSystem k v is a trace-inclusion refinement of FullRangeSystem k that fails RangesOverAll (2^k).",
+    "hypotheses": [
+      {
+        "name": "hk",
+        "purpose": "Ensures 2^k >= 2 so that a constant output excludes at least one value of Fin (2^k) (see also negated-conjunction form Toy.Hyper.fullRange_const_refinement_not_conclusion_at_zero).",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.fullRange_const_refinement_counterexample_k_zero"
+      },
+      {
+        "name": "v",
+        "purpose": "Exposes the arbitrary constant value selected by the refinement; Fin (2^k) is always inhabited.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "At k = 1 and v = 0 : Fin 2, 0 < 1 holds and ConstSystem 1 0 is a nonempty refinement of FullRangeSystem 1 failing RangesOverAll 2.",
+    "nonvacuity_witness_lean": "Toy.Hyper.fullRange_const_refinement_nonvacuity",
+    "positive_control_lean": "Toy.Hyper.rangesOverAll_preserved_by_traceEquiv",
+    "non_claims": [
+      "The collapse depends on modelling the randomness source as a choice made by the system, which a refinement may resolve. If random values are inputs supplied by the environment and the refinement must accept every input, or if the source semantics is probabilistic and correctness is stated on distributions, trace inclusion does not license replacing the source by a constant. The result is about that modelling choice, not about what a refinement-correct compiler does with calls to an external randomness source (Roscoe 1995, Section 8.1).",
+      "RangesOverAll is surjectivity onto the output type. It is not a security definition of unpredictability: there is no adversary, no side information and no computational bound.",
+      "The positive control rangesOverAll_preserved_by_traceEquiv uses TraceEquiv (extensional equality of trace sets), which admits no proper refinement.",
+      "Does not model probability distributions or entropy; it models only the possibilistic set of reachable outputs.",
+      "Derived (modeling bridge): the support/trace-set abstraction models a source semantics that specifies a randomness source merely as 'may return any value of Fin (2^k)' via internal demonic nondeterminism rather than as an external input or a fixed distribution."
+    ],
+    "prior_art": [
+      "A. W. Roscoe, 'CSP and determinism in security modelling', IEEE S&P 1995, pp. 114-127, DOI: 10.1109/SECPRI.1995.398927 \u2014 Section 8.1 distinguishes probabilistic nondeterminism from under-specification nondeterminism and notes that a completely determined probabilistic process cannot be refined.",
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 2.6 and Section 7.2.4 show non-subset-closed liveness-like and probabilistic properties are not preserved by subset refinement.",
+      "Wojciech M. Golab, Lisa Higham, and Philipp Woelfel, 'Linearizable implementations do not suffice for randomized distributed computation', STOC 2011, pp. 373-382, DOI: 10.1145/1993636.1993687 \u2014 shows trace-based linearizability does not preserve randomized properties."
+    ],
+    "design_question": "Does trace-inclusion refinement preserve unpredictability of outputs drawn from a randomness source when that source is modeled as internal nondeterminism?"
+  },
+  {
+    "id": "uniform-support-const-refinement-loses-min-entropy",
+    "lean": "Toy.Hyper.uniform_support_refined_by_const_loses_minEntropy_of_pos",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For every k > 0, uniformDist k over Fin (2^k) has exact integer min-entropy k (at least k and not k + 1), while constDist k satisfies support trace inclusion (Refines (support (constDist k)) (support (uniformDist k))), has exact integer min-entropy 0 (at least 0 and not 1), and fails min-entropy k.",
+    "hypotheses": [
+      {
+        "name": "hk",
+        "purpose": "Ensures k >= 1 so that collapsing min-entropy to 0 strictly violates the source's min-entropy bound k (see also negated-conjunction form Toy.Hyper.uniform_support_const_refinement_not_conclusion_at_zero).",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.uniform_support_const_refinement_counterexample_k_zero"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At k = 1, 0 < 1 holds, uniformDist 1 has exact integer min-entropy 1, and constDist 1 refines its support with min-entropy 0.",
+    "nonvacuity_witness_lean": "Toy.Hyper.uniform_support_const_refinement_nonvacuity",
+    "positive_control_lean": "Toy.Hyper.scaledUniform_preserves_minEntropy",
+    "non_claims": [
+      "The collapse depends on modelling the randomness source as a choice made by the system, which a refinement may resolve, or abstracting a probabilistic system to its support before taking refinement. If random values are inputs supplied by the environment and the refinement must accept every input, or if the source semantics is probabilistic and correctness is stated on distributions, trace inclusion does not license replacing the source by a constant. The result is about that modelling choice, not about what a refinement-correct compiler does with calls to an external randomness source (Roscoe 1995, Section 8.1).",
+      "Equality of supports does not preserve min-entropy either: weights (3,1) and (1,1) have the same support and different min-entropy (Toy.Hyper.same_support_different_minEntropy), and min-entropy is not a Hyperprop of the support (Toy.Hyper.minEntropy_not_a_hyperprop_of_support). Derived: because support skewedFullSupportDist = support (uniformDist 1), any reflexive relation R on possibilistic trace sets relates support skewedFullSupportDist to support (uniformDist 1) and therefore fails to preserve HasMinEntropyAtLeast at k = 1 (the empty relation preserves it only vacuously).",
+      "'Exact integer min-entropy k' means the bound holds at k and fails at k + 1. For the two distributions in the statement the min-entropy is an integer.",
+      "The positive control scaledUniform_preserves_minEntropy uses SameDist (equality of distributions), which is an equivalence relation and admits no change in output probabilities.",
+      "Does not model continuous distributions, infinite output spaces, or computational pseudorandomness; distributions are finite Nat-weighted probability mass tables over Fin (2^k).",
+      "Does not rule out probabilistic relations under which the largest outcome probability does not increase (which keep every min-entropy bound); it shows only that support-level trace inclusion fails to preserve min-entropy.",
+      "Derived (modeling bridge): support-level trace inclusion models a specification or compiler-correctness theorem that forgets probabilities and checks only that every possible target output was a possible source output."
+    ],
+    "prior_art": [
+      "Geoffrey Smith, 'On the Foundations of Quantitative Information Flow', FoSSaCS 2009, LNCS 5504, pp. 288-302, DOI: 10.1007/978-3-642-00596-1_21 \u2014 defines vulnerability and Renyi min-entropy as the measure of one-try guessing uncertainty (does not treat refinement).",
+      "A. W. Roscoe, 'CSP and determinism in security modelling', IEEE S&P 1995, pp. 114-127, DOI: 10.1109/SECPRI.1995.398927 \u2014 Section 8.1 contrasts probabilistic nondeterminism with demonic under-specification.",
+      "Michael R. Clarkson and Fred B. Schneider, 'Hyperproperties', Journal of Computer Security 18(6):1157-1210, 2010, DOI: 10.3233/JCS-2009-0393 \u2014 Section 7.2.4 observes that probabilistic properties are not subset-closed under stepwise refinement.",
+      "Annabelle McIver and Carroll Morgan, 'Abstraction, Refinement and Proof for Probabilistic Systems', Monographs in Computer Science, Springer, 2005, DOI: 10.1007/b138392 \u2014 Part I Ch. 1 ('Introduction to pGCL: Its logic and its model', pp. 3-36) and Part II Ch. 5 ('Theory for the demonic model', pp. 129-164) combine probabilistic and demonic choice in refinement (only the published publisher overview and chapter table of contents were inspected, not the book text).",
+      "Wojciech M. Golab, Lisa Higham, and Philipp Woelfel, 'Linearizable implementations do not suffice for randomized distributed computation', STOC 2011, pp. 373-382, DOI: 10.1145/1993636.1993687 \u2014 shows standard trace-based linearizability breaks properties of randomized algorithms.",
+      "Hagit Attiya and Constantin Enea, 'Putting Strong Linearizability in Context: Preserving Hyperproperties in Programs that Use Concurrent Objects', DISC 2019, pp. 2:1-2:17, DOI: 10.4230/LIPIcs.DISC.2019.2 \u2014 characterizes strong observational refinement preserving hyperproperties and output distributions via forward simulations (not formalized here)."
+    ],
+    "design_question": "Does support-level trace-inclusion refinement preserve min-entropy of a randomness source, and can any reflexive relation on possibilistic trace sets preserve it?"
+  },
+  {
+    "id": "same-dist-preserves-min-entropy",
+    "lean": "Toy.Hyper.sameDist_preserves_minEntropy",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any valid finite discrete distributions d, d' : FinDist n and bound k : Nat, if d' and d represent the same probability distribution (SameDist d' d) and d has min-entropy at least k (HasMinEntropyAtLeast d k), then d' has min-entropy at least k (well-definedness of the min-entropy bound under weight rescaling, derived from proportionalWeights_preserves_minEntropy_of_valid_source).",
+    "hypotheses": [
+      {
+        "name": "hSame",
+        "purpose": "Requires d' and d to have proportional weight tables (identical probability distributions); cannot simply be dropped for arbitrary distributions, though it is sufficient rather than necessary (see minEntropy_kept_without_sameDist).",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.sameDist_minEntropy_counterexample_no_sameDist"
+      },
+      {
+        "name": "hEnt",
+        "purpose": "Requires the source distribution d to satisfy the min-entropy bound k.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.sameDist_minEntropy_counterexample_no_ent"
+      },
+      {
+        "name": "d.valid (ValidWeights d.weight, bundled in FinDist)",
+        "purpose": "Requires strictly positive total weight for the source table d; in the unbundled raw-table core proportionalWeights_preserves_minEntropy_of_valid_source, dropping ValidWeights w allows the all-zero source (0,0) to relate to (1,0) and fail RawMinEnt at k = 1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.proportionalWeights_minEntropy_counterexample_source_not_valid"
+      },
+      {
+        "name": "d'.valid (ValidWeights d'.weight, bundled in FinDist)",
+        "purpose": "Bundled by FinDist n so that d' denotes a well-defined probability distribution (and required for the converse direction in sameDist_minEntropy_iff), but unused in the forward direction: rawMinEnt_zero_target shows an all-zero target table satisfies RawMinEnt for every k.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "scaledUniformDist 1 (weights 2, 2) and uniformDist 1 (weights 1, 1) are distinct FinDist 2 values satisfying SameDist and HasMinEntropyAtLeast at k = 1.",
+    "nonvacuity_witness_lean": "Toy.Hyper.sameDist_preserves_minEntropy_nonvacuity",
+    "non_claims": [
+      "SameDist is an equivalence relation, not a refinement order. It admits no resolution of choice, and the bound transfers in both directions (Toy.Hyper.sameDist_minEntropy_iff via Toy.Hyper.sameDist_symm).",
+      "SameDist is sufficient, not necessary. Weights (1,1,0) are supported inside (2,1,1), are not the same distribution, and keep the bound (Toy.Hyper.minEntropy_kept_without_sameDist). Any distribution whose largest probability does not exceed that of d keeps every bound of d.",
+      "The result says that the bound is well defined on distributions, that is, invariant under rescaling of weights. It is not evidence about any compiler-correctness notion.",
+      "Of the two validity conditions bundled in FinDist, only the positive total weight of d is used in this direction (Toy.Hyper.proportionalWeights_preserves_minEntropy_of_valid_source; Toy.Hyper.rawMinEnt_zero_target).",
+      "Does not model conditional min-entropy given attacker observations or joint input-output distributions."
+    ],
+    "prior_art": [
+      "Geoffrey Smith, 'On the Foundations of Quantitative Information Flow', FoSSaCS 2009, LNCS 5504, pp. 288-302, DOI: 10.1007/978-3-642-00596-1_21 \u2014 defines min-entropy as a function of the probability distribution (independent of unnormalized weight scaling).",
+      "Annabelle McIver and Carroll Morgan, 'Abstraction, Refinement and Proof for Probabilistic Systems', Monographs in Computer Science, Springer, 2005, DOI: 10.1007/b138392 \u2014 Part I Ch. 1 and Part II Ch. 5 treat probabilistic refinement beyond exact distribution equality (not formalized here; only published overview and chapter table of contents inspected).",
+      "Hagit Attiya and Constantin Enea, 'Putting Strong Linearizability in Context: Preserving Hyperproperties in Programs that Use Concurrent Objects', DISC 2019, pp. 2:1-2:17, DOI: 10.4230/LIPIcs.DISC.2019.2 \u2014 strong observational refinement preserving probability distributions of events (not formalized here)."
+    ],
+    "design_question": "Is min-entropy preserved by equal-distribution equivalence (SameDist), and what is the cost of requiring exact distribution equality?",
+    "lean_names": [
+      "Toy.Hyper.proportionalWeights_preserves_minEntropy_of_valid_source"
+    ]
+  },
+  {
+    "id": "xor-presentation-secret-indep-choice-fails-gni",
+    "lean": "Toy.Hyper.secretIndepDeterminize_fails_gni_on_xorPresentation",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "On the XOR choice presentation xorSpecFn (_ h c => xor h c) (whose trace set SpecOf xorSpecFn equals fullIOSystem), SpecOf xorSpecFn satisfies GNI and InputTotal, yet every secret-independent choice function g : Unit -> Bool yields a deterministic, input-total refinement violating GNI (equivalently, corollary xorPresentation_gni_choice_not_secretIndependent proves every GNI-preserving choice index r on xorSpecFn fails SecretIndependent r).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Directly proved for xorSpecFn : Unit -> Bool -> Bool -> Bool across all g : Unit -> Bool (and corollary witness r _ h = h in xorPresentation_gni_choice_nonvacuity).",
+    "nonvacuity_witness_lean": "Toy.Hyper.secretIndepDeterminize_fails_gni_on_xorPresentation",
+    "positive_control_lean": [
+      "Toy.Hyper.constLowPresentation_admits_secretIndep_gni_choice",
+      "Toy.Hyper.xorPresentation_admits_secretDependent_gni_choice"
+    ],
+    "non_claims": [
+      "SpecOf xorSpecFn and SpecOf constLowSpecFn are the same trace set (every trace; Toy.Hyper.specOf_xor_eq_specOf_constLow). The failure of secret-independent determinization is a property of the function f, that is, of which internal choice an implementation is allowed to fix. It is not a property of the specification as a set of traces (Toy.Hyper.secret_dependence_is_presentation_dependent).",
+      "The choice function is the index c in the presentation out = highIn xor c. Every GNI determinization of xorSpecFn is a constant system ofFn (fun _ _ => b) that does not depend on the secret (Toy.Hyper.xor_gni_determinization_is_constant), and r _ h = h yields constFalseIOSystem (Toy.Hyper.same_secure_refinement_two_presentations). Derived: by Toy.Hyper.determinize_gni_iff_resolvedOutput_secretIndependent, xor false (r () false) = xor true (r () true) on Bool iff r () true = !(r () false), so the exhaustive GNI choice functions on xorSpecFn are r _ h = h (giving lowOut = false) and r _ h = !h (giving lowOut = true). The result does not say that a secure implementation must read the secret.",
+      "Ways out: (i) present the same trace set as out = c (constLowSpecFn), where a constant choice is secure (Toy.Hyper.constLowPresentation_admits_secretIndep_gni_choice); (ii) do not resolve the choice but sample c uniformly, which is outside the possibilistic model; (iii) do not require the implementation to be obtained by fixing c (e.g., use a low-view restriction Toy.Hyper.gni_preserved_by_lowViewRestrict).",
+      "The two failing refinements are lowOut = highIn and lowOut = not highIn. The first is the refinement used in the refinement-paradox counterexample (Toy.Hyper.leakHigh_eq_secretIndep_xor); this result adds no new failing system.",
+      "Does not contradict results stating that secret-independent schedulers preserve noninterference (Popescu, Holzl, and Nipkow, CALCO 2013): those concern scheduler choice in multi-threaded programs and a different possibilistic notion, not GNI with a data choice.",
+      "Proved by exhausting the functions Unit -> Bool (and Unit -> Bool -> Bool in the corollary xorPresentation_gni_choice_not_secretIndependent). Nothing is claimed for other presentations or larger types."
+    ],
+    "prior_art": [
+      "Carroll Morgan, 'The Shadow Knows: Refinement of Ignorance in Sequential Programs', Technical Report UNSW-CSE-TR-0522 (30 Nov 2005) and MPC 2006, LNCS 4014, pp. 359-378, DOI: 10.1007/11783596_21 (extended journal version under the title 'The Shadow Knows: Refinement and security in sequential programs', Science of Computer Programming 74(8):629-653, 2009, DOI: 10.1016/j.scico.2007.09.003) \u2014 Section 1 (Refinement Paradox) and Section 7 ('The Encryption Lemma', publishing secret xor hidden key) verified in UNSW-CSE-TR-0522 (journal text not directly inspected).",
+      "Andrei Popescu, Johannes Holzl, and Tobias Nipkow, 'Noninterfering Schedulers - When Possibilistic Noninterference Implies Probabilistic Noninterference', CALCO 2013, LNCS 8089, pp. 236-252, DOI: 10.1007/978-3-642-40206-7_18 \u2014 contrasting positive result showing noninterfering (secret-independent) schedulers preserve a different strong possibilistic noninterference for multi-threaded scheduler choice (abstract verified; does not contain an XOR counterexample)."
+    ],
+    "design_question": "Can fixing a nondeterministic choice variable independently of the secret always preserve GNI for a given choice presentation f, and does failure reflect a property of the trace set or of the presentation?"
+  },
+  {
+    "id": "gni-and-det-iff-obs-det-and-rectangular-domain",
+    "lean": "Toy.Hyper.gni_and_deterministic_iff_obsDet_and_rectangularDomain",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any trace types L, H, O and any (possibly partial) system S over IOTrace L H O, S satisfies both GNI and Deterministic if and only if S satisfies both ObsDet and RectangularDomain (with equivalent conditional corollary gni_iff_obsDet_and_rectangularDomain_of_deterministic and minimal directional lemmas gni_imp_rectangularDomain, obsDet_of_gni_of_deterministic, gni_of_obsDet_of_rectangularDomain).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "On genuinely partial deterministic systems (failing InputTotal), echoLowHighFalseSystem satisfies both sides (GNI \u2227 Deterministic and ObsDet \u2227 RectangularDomain), while diagonalPartialSystem is deterministic and refutes both sides.",
+    "nonvacuity_witness_lean": "Toy.Hyper.gni_obsDet_rectangularDomain_nonvacuity",
+    "non_claims": [
+      "Does not claim GNI S <-> ObsDet S without a domain condition. On deterministic systems, what GNI adds to ObsDet is exactly that the accepted (lowIn, highIn) pairs form a product set (RectangularDomain). Neither property forbids a system that accepts only some secrets: echoLowHighFalseSystem accepts exactly when highIn = false and satisfies GNI, ObsDet and RectangularDomain (Toy.Hyper.gni_and_rectangularDomain_allow_secret_filtered_acceptance); neither notion is termination-sensitive in the secret.",
+      "The equivalence is specific to single-step traces with one public output. For multi-step process models the relation is different: Pasquale Noce's Archive of Formal Proofs entry ('Noninterference Security in Communicating Sequential Processes', 2014, https://www.isa-afp.org/entries/Noninterference_CSP.html) shows McCullough's generalized noninterference to be weaker than classical noninterference for processes representing deterministic state machines.",
+      "Deterministic S cannot be omitted from the left-hand side (or from the conditional corollary gni_iff_obsDet_and_rectangularDomain_of_deterministic): fullIOSystem satisfies GNI and violates ObsDet (Toy.Hyper.gni_obsDet_rectangularDomain_counterexample_no_det). Only GNI S -> ObsDet S uses Deterministic S; GNI S -> RectangularDomain S and ObsDet S -> RectangularDomain S -> GNI S hold without Deterministic S."
+    ],
+    "prior_art": [
+      "Elementary consequence of the single-step definitions (tier T1: no consulted source states this exact equivalence with RectangularDomain in this form).",
+      "Joseph A. Goguen and Jose Meseguer, 'Security Policies and Security Models', IEEE S&P 1982, pp. 11-20, DOI: 10.1109/SP.1982.10014 \u2014 defines classical noninterference for deterministic systems.",
+      "Daryl McCullough, 'Specifications for Multi-Level Security and a Hook-Up Property', IEEE S&P 1987, pp. 161-166, DOI: 10.1109/SP.1987.10009; and John McLean, 'Security Models and Information Flow', IEEE S&P 1990, pp. 180-189, DOI: 10.1109/RISP.1990.63849 \u2014 introduce and formulate generalized noninterference as an extension of noninterference to nondeterministic systems.",
+      "A. W. Roscoe, Jim Woodcock, and Lars Wulf, 'Non-Interference Through Determinism', ESORICS 1994, LNCS 875, pp. 33-53, DOI: 10.1007/3-540-58618-0_55 (journal: Journal of Computer Security 4(1):27-54, 1996, DOI: 10.3233/JCS-1996-4103) \u2014 formulates determinism-based security preserved under refinement.",
+      "Pasquale Noce, 'Noninterference Security in Communicating Sequential Processes', Archive of Formal Proofs, 2014, https://www.isa-afp.org/entries/Noninterference_CSP.html \u2014 contrasting multi-step CSP mechanization where McCullough's GNI is weaker than classical noninterference even for processes representing deterministic state machines."
+    ],
+    "design_question": "How do generalized noninterference and observational determinism relate on deterministic implementations, including partial ones?",
+    "lean_names": [
+      "Toy.Hyper.gni_iff_obsDet_and_rectangularDomain_of_deterministic"
+    ]
+  },
+  {
+    "id": "gni-iff-obs-det-of-deterministic-input-total",
+    "lean": "Toy.Hyper.gni_iff_obsDet_of_deterministic_inputTotal",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any trace types L, H, O and any deterministic, input-total single-step system S over IOTrace L H O (Deterministic S and InputTotal S), generalized noninterference (GNI S) holds if and only if observational determinism (ObsDet S) holds (corollary of gni_and_deterministic_iff_obsDet_and_rectangularDomain).",
+    "hypotheses": [
+      {
+        "name": "hDet",
+        "purpose": "Needed for GNI S -> ObsDet S; nondeterministic input-total systems can satisfy GNI without ObsDet.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.gni_obsDet_total_counterexample_no_det"
+      },
+      {
+        "name": "hTot",
+        "purpose": "Ensures a rectangular acceptance domain so that ObsDet S -> GNI S holds (can be weakened to AcceptanceIgnoresHigh S or RectangularDomain S, but cannot be dropped).",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.gni_obsDet_total_counterexample_no_inputTotal"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "echoLowSystem is deterministic and input-total with both GNI and ObsDet true; leakHighSystem is deterministic and input-total with both GNI and ObsDet false.",
+    "nonvacuity_witness_lean": "Toy.Hyper.gni_obsDet_total_nonvacuity",
+    "non_claims": [
+      "Corollary of gni_and_deterministic_iff_obsDet_and_rectangularDomain (via inputTotal_imp_rectangularDomain).",
+      "The equivalence is specific to single-step traces with one public output. For multi-step process models the relation is different: Pasquale Noce's Archive of Formal Proofs entry ('Noninterference Security in Communicating Sequential Processes', 2014, https://www.isa-afp.org/entries/Noninterference_CSP.html) shows McCullough's generalized noninterference to be weaker than classical noninterference for processes representing deterministic state machines.",
+      "Does not claim InputTotal is the weakest possible domain hypothesis: AcceptanceIgnoresHigh S (Toy.Hyper.gni_iff_obsDet_of_deterministic_acceptanceIgnoresHigh) and RectangularDomain S (Toy.Hyper.gni_and_deterministic_iff_obsDet_and_rectangularDomain) both suffice, while InputTotal models total terminating implementations.",
+      "Does not imply that Deterministic is needed for ObsDet S -> GNI S: obsDet_imp_deterministic proves ObsDet S -> Deterministic S unconditionally, and gni_of_obsDet_of_rectangularDomain requires no separate Deterministic hypothesis."
+    ],
+    "prior_art": [
+      "Elementary consequence of the single-step definitions (tier T1: no consulted source states this exact equivalence in this form).",
+      "Joseph A. Goguen and Jose Meseguer, 'Security Policies and Security Models', IEEE S&P 1982, pp. 11-20, DOI: 10.1109/SP.1982.10014 \u2014 classical noninterference for deterministic systems.",
+      "A. W. Roscoe, Jim Woodcock, and Lars Wulf, 'Non-Interference Through Determinism', ESORICS 1994, LNCS 875, pp. 33-53, DOI: 10.1007/3-540-58618-0_55 (journal: Journal of Computer Security 4(1):27-54, 1996, DOI: 10.3233/JCS-1996-4103); and Steve Zdancewic and Andrew C. Myers, 'Observational Determinism for Concurrent Program Security', IEEE CSFW 2003, pp. 29-43, DOI: 10.1109/CSFW.2003.1212703 \u2014 determinism-based security preserved under refinement.",
+      "Pasquale Noce, 'Noninterference Security in Communicating Sequential Processes', Archive of Formal Proofs, 2014, https://www.isa-afp.org/entries/Noninterference_CSP.html \u2014 contrasting multi-step CSP mechanization cited in non-claims."
+    ],
+    "design_question": "When a compiler resolves nondeterminism into a total deterministic single-step implementation, do GNI and observational determinism coincide?",
+    "lean_names": [
+      "Toy.Hyper.gni_iff_obsDet_of_deterministic_acceptanceIgnoresHigh"
+    ]
+  },
+  {
+    "id": "gni-of-fn-iff-secret-independent",
+    "lean": "Toy.Hyper.gni_ofFn_iff_secretIndependent",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any total single-step function g : L -> H -> O, its trace graph ofFn g satisfies GNI if and only if g is independent of the secret input h (SecretIndependent g) (corollary of gni_iff_obsDet_of_deterministic_inputTotal; instantiating g := fun l h => f l h (r l h) yields determinize_gni_iff_resolvedOutput_secretIndependent).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "fun l _ => l (echoLowSystem) satisfies both GNI (ofFn g) and SecretIndependent g, while fun _ h => h (leakHighSystem) refutes both sides.",
+    "nonvacuity_witness_lean": "Toy.Hyper.gni_ofFn_iff_secretIndependent_nonvacuity",
+    "non_claims": [
+      "Corollary of gni_iff_obsDet_of_deterministic_inputTotal specialized to total function graphs ofFn g (with obsDet_ofFn_iff_secretIndependent).",
+      "The statement in determinize_gni_iff_resolvedOutput_secretIndependent depends on f and r only through fun l h => f l h (r l h). It is the fact that the graph of a function satisfies GNI iff the function ignores the secret.",
+      "Does not claim that SecretIndependent (fun l h => f l h (r l h)) implies SecretIndependent r: relative to a choice presentation f, the choice index r may depend on h while the resolved output function ignores h.",
+      "Applies to single-step total function graphs ofFn g, not stateful multi-step interactive systems."
+    ],
+    "prior_art": [
+      "Elementary consequence of single-step GNI on total function graphs (tier T1).",
+      "Norine Coenen, Bernd Finkbeiner, Cesar Sanchez, and Leander Tentrup, 'Verifying Hyperliveness', CAV 2019, LNCS 11561, pp. 121-139, DOI: 10.1007/978-3-030-25540-4_7; and Bernd Finkbeiner, Christopher Hahn, Philip Lukert, Marvin Stenger, and Leander Tentrup, 'Synthesizing Reactive Systems from Hyperproperties', CAV 2018, LNCS 10981, pp. 289-306, DOI: 10.1007/978-3-319-96145-3_16 \u2014 background on choice functions as strategies in hyperproperty verification and synthesis."
+    ],
+    "design_question": "Under what exact condition does a total function (and in particular a choice-function resolution determinize f r) satisfy single-step GNI?"
+  },
+  {
+    "id": "exists-input-total-gni-refinement-iff-exists-choice",
+    "lean": "Toy.Hyper.exists_inputTotal_gni_refinement_iff_exists_choice",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For any choice presentation f : L -> H -> C -> O, SpecOf f admits an input-total refinement S' satisfying GNI (deterministic or not \u2014 determinism adds nothing, see exists_inputTotal_gni_refinement_iff_det) if and only if there exists a choice function r : L -> H -> C making the resolved output (fun l h => f l h (r l h)) independent of highIn (equivalently, for nonempty H, a public-only function g : L -> O whose graph lies inside SpecOf f for every secret).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "xorSpecFn satisfies both sides (via determinize xorSpecFn (fun _ h => h) and r _ h = h), while leakSpecFn refutes both sides.",
+    "nonvacuity_witness_lean": "Toy.Hyper.exists_inputTotal_gni_refinement_nonvacuity",
+    "non_claims": [
+      "For a nonempty secret type, the right-hand side is equivalent to the existence of a function of the public input alone whose graph lies inside the specification for every secret (Toy.Hyper.exists_choice_iff_exists_low_function; Toy.Hyper.emptyHigh_no_low_function_edge_case shows [Nonempty H] is needed). The choice function r may depend on the secret relative to the presentation f; the implementation it yields does not.",
+      "Requiring the refinement to be deterministic adds nothing: if any input-total GNI refinement exists, a deterministic one exists (Toy.Hyper.exists_det_inputTotal_gni_refinement_iff, Toy.Hyper.exists_inputTotal_gni_refinement_iff_det).",
+      "A statement of existence. It does not say that a refinement-correct compiler produces the secure refinement.",
+      "Does not hold if InputTotal S' is dropped from the existential on the left-hand side: Toy.Hyper.partial_det_gni_refinement_exists_without_choice proves that SpecOf leakSpecFn admits a nonempty deterministic GNI partial refinement while admitting no choice function r making the output secret-independent.",
+      "Does not guarantee that r is secret-independent (g : L -> C) or computable: extracting r uses Classical.choice, and Toy.Hyper.xorPresentation_gni_choice_not_secretIndependent proves r may depend on highIn relative to the presentation f even when the resulting system is constant (Toy.Hyper.xor_gni_determinization_is_constant).",
+      "Does not require SpecOf f itself to satisfy GNI: Toy.Hyper.nonGNI_spec_with_secure_determinization proves SpecOf falseOrHighFn violates GNI yet admits a deterministic GNI refinement (matching the choice-free common-output criterion Toy.Hyper.exists_choice_iff_common_output).",
+      "Does not extend directly to multi-step reactive systems without causality or prophecy constraints."
+    ],
+    "prior_art": [
+      "Bernd Finkbeiner, Christopher Hahn, Philip Lukert, Marvin Stenger, and Leander Tentrup, 'Synthesizing Reactive Systems from Hyperproperties', CAV 2018, LNCS 10981, pp. 289-306, DOI: 10.1007/978-3-319-96145-3_16 \u2014 background on realizability and synthesis from hyperproperties (does not state this single-step choice-function equivalence).",
+      "Norine Coenen, Bernd Finkbeiner, Cesar Sanchez, and Leander Tentrup, 'Verifying Hyperliveness', CAV 2019, LNCS 11561, pp. 121-139, DOI: 10.1007/978-3-030-25540-4_7 \u2014 background on reducing existential trace quantification to strategic choice functions.",
+      "Rajeev Alur, Pavol Cerny, and Steve Zdancewic, 'Preserving Secrecy Under Refinement', ICALP 2006, LNCS 4052, pp. 107-118, DOI: 10.1007/11787006_10 \u2014 secrecy-preserving refinement for transition systems.",
+      "Carroll Morgan, 'The Shadow Knows: Refinement of Ignorance in Sequential Programs', Technical Report UNSW-CSE-TR-0522 (30 Nov 2005) and MPC 2006, LNCS 4014, pp. 359-378, DOI: 10.1007/11783596_21 (journal version 'The Shadow Knows: Refinement and security in sequential programs', Science of Computer Programming 74(8):629-653, 2009, DOI: 10.1016/j.scico.2007.09.003) \u2014 analyzes the refinement paradox and XOR encryption in sequential refinement (inspected in UNSW-CSE-TR-0522).",
+      "Andrei Popescu, Peter Lammich, and Thomas Bauereiss, 'Bounded-Deducibility Security', Archive of Formal Proofs, 2014 (revised 2021), https://www.isa-afp.org/entries/Bounded_Deducibility_Security.html (paper: Popescu, Bauereiss, and Lammich, ITP 2021, pp. 3:1-3:20, DOI: 10.4230/LIPIcs.ITP.2021.3) \u2014 background mechanization of trace-based confidentiality."
+    ],
+    "design_question": "When does a choice-indexed specification SpecOf f admit a secure (GNI) input-total refinement, and how does the choice-function condition relate to the underlying trace set?",
+    "lean_names": [
+      "Toy.Hyper.exists_det_inputTotal_gni_refinement_iff"
+    ]
+  },
+  {
+    "id": "gni-input-total-spec-admits-det-gni-refinement",
+    "lean": "Toy.Hyper.gni_inputTotal_spec_admits_det_gni_refinement",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For any choice presentation f : L -> H -> C -> O, if SpecOf f satisfies GNI and InputTotal (the latter is independent of f and equivalent to Nonempty (L -> H -> C)), then there exists a choice function r : L -> H -> C such that determinize f r satisfies GNI (and automatically satisfies Refines, Deterministic, and InputTotal; corollary of exists_inputTotal_gni_refinement_iff_exists_choice at S' := SpecOf f).",
+    "hypotheses": [
+      {
+        "name": "hGNI",
+        "purpose": "Ensures that for each lowIn, every output achievable under one secret is achievable under every other secret, so a secret-independent resolved output exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.gni_inputTotal_spec_counterexample_no_gni"
+      },
+      {
+        "name": "hTot",
+        "purpose": "Ensures SpecOf f accepts every (lowIn, highIn) pair; independent of f and equivalent to Nonempty (L -> H -> C) (Toy.Hyper.inputTotal_specOf_iff_nonempty_choiceFn), preventing an empty choice space C from making GNI hold vacuously while no choice function r exists.",
+        "tightness": "tight",
+        "counterexample": "Toy.Hyper.gni_inputTotal_spec_counterexample_no_inputTotal"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "xorSpecFn satisfies both GNI (SpecOf xorSpecFn) and InputTotal (SpecOf xorSpecFn).",
+    "nonvacuity_witness_lean": "Toy.Hyper.gni_inputTotal_spec_admits_nonvacuity",
+    "non_claims": [
+      "Instance S' := SpecOf f of the forward direction of exists_inputTotal_gni_refinement_iff_exists_choice. Three properties of determinize f r (Refines, Deterministic, InputTotal) hold unconditionally for every choice function r; only GNI (determinize f r) carries content.",
+      "The refinement need not be related operationally to f; for the xor presentation it is a constant function (Toy.Hyper.xor_gni_determinization_is_constant). The choice function is obtained by the axiom of choice (Classical.choice).",
+      "Existence of a secure refinement does not make trace inclusion a sufficient correctness notion: other refinements of the same specification violate GNI (Toy.Hyper.gni_not_preserved_by_inputTotal_refinement).",
+      "Does not guarantee that r is secret-independent relative to the presentation f (Toy.Hyper.xorPresentation_gni_choice_not_secretIndependent) or computable.",
+      "Does not extend to multi-step reactive systems where earlier outputs must be committed before later secret inputs arrive.",
+      "Does not imply that GNI (SpecOf f) is necessary for a deterministic GNI refinement to exist (only sufficient given InputTotal; see Toy.Hyper.nonGNI_spec_with_secure_determinization).",
+      "Does not hold without InputTotal (SpecOf f): a GNI specification without an input-total refinement has no total deterministic realization (Toy.Hyper.gni_inputTotal_spec_counterexample_no_inputTotal; derived: likewise, the nonempty partial GNI system echoLowHighFalseSystem rejects highIn = true and therefore admits no InputTotal refinement at all)."
+    ],
+    "prior_art": [
+      "Bernd Finkbeiner, Christopher Hahn, Philip Lukert, Marvin Stenger, and Leander Tentrup, 'Synthesizing Reactive Systems from Hyperproperties', CAV 2018, LNCS 10981, pp. 289-306, DOI: 10.1007/978-3-319-96145-3_16 \u2014 background on hyperproperty realizability.",
+      "Norine Coenen, Bernd Finkbeiner, Cesar Sanchez, and Leander Tentrup, 'Verifying Hyperliveness', CAV 2019, LNCS 11561, pp. 121-139, DOI: 10.1007/978-3-030-25540-4_7 \u2014 background on strategic choice functions.",
+      "Heiko Mantel, 'Preserving Information Flow Properties under Refinement', IEEE S&P 2001, pp. 78-91, DOI: 10.1109/SECPRI.2001.924289 \u2014 background on refining information-flow specifications."
+    ],
+    "design_question": "Does every input-total single-step GNI choice presentation admit a deterministic GNI refinement, and why does existence of one secure refinement fail to make trace inclusion sufficient?"
+  }
+]

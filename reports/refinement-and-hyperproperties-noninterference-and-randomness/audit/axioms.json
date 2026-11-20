@@ -1,0 +1,676 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Hyper.AcceptanceIgnoresHigh": [],
+    "Toy.Hyper.BoundedNatSystem": [],
+    "Toy.Hyper.ConstSystem": [],
+    "Toy.Hyper.Deterministic": [],
+    "Toy.Hyper.FinDist": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.casesOn": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.ctorIdx": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.mk": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.mk.congr_simp": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.mk.inj": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.mk.noConfusion": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.mk.sizeOf_spec": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.noConfusion": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.noConfusionType": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.rec": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.recOn": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.valid": [
+      "propext"
+    ],
+    "Toy.Hyper.FinDist.weight": [
+      "propext"
+    ],
+    "Toy.Hyper.FullRangeSystem": [],
+    "Toy.Hyper.GNI": [],
+    "Toy.Hyper.HasMinEntropyAtLeast": [
+      "propext"
+    ],
+    "Toy.Hyper.Hyperprop": [],
+    "Toy.Hyper.IOTrace": [],
+    "Toy.Hyper.IOTrace.casesOn": [],
+    "Toy.Hyper.IOTrace.ctorIdx": [],
+    "Toy.Hyper.IOTrace.highIn": [],
+    "Toy.Hyper.IOTrace.lowIn": [],
+    "Toy.Hyper.IOTrace.lowOut": [],
+    "Toy.Hyper.IOTrace.mk": [],
+    "Toy.Hyper.IOTrace.mk.inj": [],
+    "Toy.Hyper.IOTrace.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Hyper.IOTrace.mk.noConfusion": [],
+    "Toy.Hyper.IOTrace.mk.sizeOf_spec": [],
+    "Toy.Hyper.IOTrace.noConfusion": [],
+    "Toy.Hyper.IOTrace.noConfusionType": [],
+    "Toy.Hyper.IOTrace.rec": [],
+    "Toy.Hyper.IOTrace.recOn": [],
+    "Toy.Hyper.InputTotal": [],
+    "Toy.Hyper.LiftTraceProp": [],
+    "Toy.Hyper.NonEmptySystem": [],
+    "Toy.Hyper.ObsDet": [],
+    "Toy.Hyper.PreservedByAllRefiningCompilers": [],
+    "Toy.Hyper.ProportionalWeights": [
+      "propext"
+    ],
+    "Toy.Hyper.RangesOverAll": [],
+    "Toy.Hyper.RawMinEnt": [
+      "propext"
+    ],
+    "Toy.Hyper.RectangularDomain": [],
+    "Toy.Hyper.Refines": [],
+    "Toy.Hyper.RefiningCompiler": [],
+    "Toy.Hyper.SameDist": [
+      "propext"
+    ],
+    "Toy.Hyper.SecretIndependent": [],
+    "Toy.Hyper.SpecOf": [],
+    "Toy.Hyper.SubsetClosed": [],
+    "Toy.Hyper.System": [],
+    "Toy.Hyper.TraceEquiv": [],
+    "Toy.Hyper.TraceProp": [],
+    "Toy.Hyper.UniversalKHyperprop": [],
+    "Toy.Hyper.ValidWeights": [
+      "propext"
+    ],
+    "Toy.Hyper.acceptanceIgnoresHigh_imp_rectangularDomain": [],
+    "Toy.Hyper.acceptanceIgnoresHigh_neg_example": [],
+    "Toy.Hyper.acceptanceIgnoresHigh_not_imp_inputTotal": [],
+    "Toy.Hyper.acceptanceIgnoresHigh_pos_example": [],
+    "Toy.Hyper.acceptanceIgnoresHigh_pos_example.match_1_1": [],
+    "Toy.Hyper.boundedNatSystem_subsetClosed_not_universalKHyperprop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.boundedNatSystem_subsetClosed_not_universalKHyperprop.match_1_1": [],
+    "Toy.Hyper.constDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.constDist.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.constDist_exact_minEntropy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.constFalseBoolSystem": [],
+    "Toy.Hyper.constFalseIOSystem": [],
+    "Toy.Hyper.constFullBoolCompiler": [],
+    "Toy.Hyper.constLowPresentation_admits_secretIndep_gni_choice": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.constLowSpecFn": [],
+    "Toy.Hyper.constLow_secretIndependent_determinization_eq_constFalse": [],
+    "Toy.Hyper.deterministic_neg_example": [],
+    "Toy.Hyper.deterministic_pos_example": [],
+    "Toy.Hyper.determinize": [],
+    "Toy.Hyper.determinize_deterministic": [],
+    "Toy.Hyper.determinize_gni_iff_resolvedOutput_secretIndependent": [],
+    "Toy.Hyper.determinize_inputTotal": [],
+    "Toy.Hyper.determinize_neg_example": [],
+    "Toy.Hyper.determinize_pos_example": [],
+    "Toy.Hyper.determinize_refines_specOf": [],
+    "Toy.Hyper.diagonalPartialSystem": [],
+    "Toy.Hyper.dist110": [
+      "propext"
+    ],
+    "Toy.Hyper.dist211": [
+      "propext"
+    ],
+    "Toy.Hyper.echoLowHighFalseSystem": [],
+    "Toy.Hyper.echoLowOnlyLowFalseSystem": [],
+    "Toy.Hyper.echoLowSystem": [],
+    "Toy.Hyper.emptyChoiceSpecFn": [],
+    "Toy.Hyper.emptyHigh_no_low_function_edge_case": [],
+    "Toy.Hyper.emptyHigh_no_low_function_edge_case.match_1_1": [],
+    "Toy.Hyper.emptyIOSystem": [],
+    "Toy.Hyper.exists_choice_iff_common_output": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.exists_choice_iff_exists_low_function": [
+      "Classical.choice"
+    ],
+    "Toy.Hyper.exists_det_inputTotal_gni_refinement_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.exists_inputTotal_gni_refinement_iff_det": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.exists_inputTotal_gni_refinement_iff_exists_choice": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.exists_inputTotal_gni_refinement_nonvacuity": [],
+    "Toy.Hyper.exists_inputTotal_gni_refinement_nonvacuity.match_1_1": [],
+    "Toy.Hyper.falseOrHighFn": [],
+    "Toy.Hyper.falseOrHighFn.eq_1": [],
+    "Toy.Hyper.fullBoolSystem": [],
+    "Toy.Hyper.fullIOSystem": [],
+    "Toy.Hyper.fullRange_const_refinement_counterexample_k_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.fullRange_const_refinement_counterexample_k_zero.match_1_1": [],
+    "Toy.Hyper.fullRange_const_refinement_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.fullRange_const_refinement_not_conclusion_at_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.fullRange_const_refinement_not_rangesOverAll_of_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.gni_and_det_iff_equiv_conditional": [],
+    "Toy.Hyper.gni_and_deterministic_iff_obsDet_and_rectangularDomain": [],
+    "Toy.Hyper.gni_and_deterministic_iff_obsDet_and_rectangularDomain.match_1_1": [],
+    "Toy.Hyper.gni_and_deterministic_iff_obsDet_and_rectangularDomain.match_1_3": [],
+    "Toy.Hyper.gni_and_rectangularDomain_allow_secret_filtered_acceptance": [],
+    "Toy.Hyper.gni_and_rectangularDomain_allow_secret_filtered_acceptance.match_1_1": [],
+    "Toy.Hyper.gni_iff_low_view_compatible_with_every_secret": [],
+    "Toy.Hyper.gni_iff_obsDet_and_rectangularDomain_of_deterministic": [],
+    "Toy.Hyper.gni_iff_obsDet_and_rectangularDomain_of_deterministic.match_1_1": [],
+    "Toy.Hyper.gni_iff_obsDet_of_deterministic_acceptanceIgnoresHigh": [],
+    "Toy.Hyper.gni_iff_obsDet_of_deterministic_inputTotal": [],
+    "Toy.Hyper.gni_imp_rectangularDomain": [],
+    "Toy.Hyper.gni_inputTotal_spec_admits_det_gni_refinement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.gni_inputTotal_spec_admits_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Hyper.gni_inputTotal_spec_counterexample_no_gni": [],
+    "Toy.Hyper.gni_inputTotal_spec_counterexample_no_gni.match_1_1": [],
+    "Toy.Hyper.gni_inputTotal_spec_counterexample_no_inputTotal": [],
+    "Toy.Hyper.gni_inputTotal_spec_counterexample_no_inputTotal.match_1_1": [],
+    "Toy.Hyper.gni_inputTotal_spec_counterexample_no_inputTotal.match_1_3": [],
+    "Toy.Hyper.gni_lowViewRestrict_counterexample_no_gni": [],
+    "Toy.Hyper.gni_neg_example": [],
+    "Toy.Hyper.gni_not_preserved_by_inputTotal_refinement": [],
+    "Toy.Hyper.gni_not_subsetClosed": [],
+    "Toy.Hyper.gni_obsDet_rectangularDomain_counterexample_no_det": [],
+    "Toy.Hyper.gni_obsDet_rectangularDomain_counterexample_no_det.match_1_1": [],
+    "Toy.Hyper.gni_obsDet_rectangularDomain_nonvacuity": [],
+    "Toy.Hyper.gni_obsDet_total_counterexample_no_det": [],
+    "Toy.Hyper.gni_obsDet_total_counterexample_no_inputTotal": [],
+    "Toy.Hyper.gni_obsDet_total_nonvacuity": [],
+    "Toy.Hyper.gni_ofFn_iff_secretIndependent": [],
+    "Toy.Hyper.gni_ofFn_iff_secretIndependent_nonvacuity": [],
+    "Toy.Hyper.gni_of_obsDet_of_rectangularDomain": [],
+    "Toy.Hyper.gni_pos_example": [],
+    "Toy.Hyper.gni_preserved_by_inputTotal_refinement_of_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.gni_preserved_by_lowViewRestrict": [],
+    "Toy.Hyper.hasMinEntropyAtLeast_mono": [
+      "propext"
+    ],
+    "Toy.Hyper.hasMinEntropyAtLeast_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.hasMinEntropyAtLeast_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.highFalseFullSystem": [],
+    "Toy.Hyper.inputTotal_gni_refinement_is_lowViewRestrict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.inputTotal_imp_acceptanceIgnoresHigh": [],
+    "Toy.Hyper.inputTotal_imp_rectangularDomain": [],
+    "Toy.Hyper.inputTotal_neg_example": [],
+    "Toy.Hyper.inputTotal_pos_example": [],
+    "Toy.Hyper.inputTotal_refinement_of_deterministic_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.inputTotal_refinement_of_deterministic_is_traceEquiv": [],
+    "Toy.Hyper.inputTotal_refinement_of_deterministic_is_traceEquiv.match_1_1": [],
+    "Toy.Hyper.inputTotal_specOf_iff_nonempty_choiceFn": [
+      "Classical.choice"
+    ],
+    "Toy.Hyper.instDecidableEqIOTrace": [],
+    "Toy.Hyper.instDecidableEqIOTrace.decEq": [],
+    "Toy.Hyper.instDecidableEqIOTrace.decEq.match_1": [],
+    "Toy.Hyper.instReprIOTrace": [],
+    "Toy.Hyper.instReprIOTrace.repr": [],
+    "Toy.Hyper.intersectCompiler": [],
+    "Toy.Hyper.le_maxFin": [
+      "propext"
+    ],
+    "Toy.Hyper.le_sumFin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.leakHighSystem": [],
+    "Toy.Hyper.leakHigh_eq_secretDep_constLow": [],
+    "Toy.Hyper.leakHigh_eq_secretIndep_xor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.leakSpecFn": [],
+    "Toy.Hyper.liftTraceProp_iff_universal1Hyperprop": [
+      "propext"
+    ],
+    "Toy.Hyper.liftTraceProp_neg_example": [],
+    "Toy.Hyper.liftTraceProp_pos_example": [],
+    "Toy.Hyper.liftTraceProp_subsetClosed": [],
+    "Toy.Hyper.liftTraceProp_subsetClosed_nonvacuity": [],
+    "Toy.Hyper.lowViewRestrict": [],
+    "Toy.Hyper.lowViewRestrict_full_eq_constFalse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.lowViewRestrict_need_not_preserve_inputTotal": [],
+    "Toy.Hyper.lowViewRestrict_neg_example": [],
+    "Toy.Hyper.lowViewRestrict_neg_example.match_1_1": [],
+    "Toy.Hyper.lowViewRestrict_pos_example": [],
+    "Toy.Hyper.lowViewRestrict_proper_gni_control_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.lowViewRestrict_refines": [],
+    "Toy.Hyper.maxFin": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin.eq_1": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin.eq_2": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin.eq_def": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin_congr": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin_const_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.maxFin_le_iff": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin_le_iff.match_1_5": [
+      "propext"
+    ],
+    "Toy.Hyper.maxFin_point": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.maxFin_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.maxWeight": [
+      "propext"
+    ],
+    "Toy.Hyper.maxWeight_pointDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.maxWeight_scaledUniformDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.maxWeight_uniformDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.minEntropy_kept_without_sameDist": [
+      "propext"
+    ],
+    "Toy.Hyper.minEntropy_not_a_hyperprop_of_support": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.nonGNI_spec_with_secure_determinization": [
+      "propext"
+    ],
+    "Toy.Hyper.obsDet_at_most_one_output": [],
+    "Toy.Hyper.obsDet_iff_universal2Hyperprop": [
+      "propext"
+    ],
+    "Toy.Hyper.obsDet_iff_universal2Hyperprop.match_1_1": [],
+    "Toy.Hyper.obsDet_iff_universal2Hyperprop.match_1_3": [
+      "propext"
+    ],
+    "Toy.Hyper.obsDet_imp_deterministic": [],
+    "Toy.Hyper.obsDet_neg_example": [],
+    "Toy.Hyper.obsDet_not_liftTraceProp": [],
+    "Toy.Hyper.obsDet_ofFn_iff_secretIndependent": [],
+    "Toy.Hyper.obsDet_of_gni_of_deterministic": [],
+    "Toy.Hyper.obsDet_pos_example": [],
+    "Toy.Hyper.obsDet_preserved_by_refinement": [],
+    "Toy.Hyper.obsDet_refinement_counterexample_no_obsDet": [],
+    "Toy.Hyper.obsDet_refinement_counterexample_no_refines": [],
+    "Toy.Hyper.obsDet_refinement_nonvacuity": [],
+    "Toy.Hyper.ofFn": [],
+    "Toy.Hyper.ofFn_neg_example": [],
+    "Toy.Hyper.ofFn_pos_example": [],
+    "Toy.Hyper.partial_det_gni_refinement_exists_without_choice": [],
+    "Toy.Hyper.partial_det_gni_refinement_exists_without_choice.match_1_1": [],
+    "Toy.Hyper.pointDist": [
+      "propext"
+    ],
+    "Toy.Hyper.pointDist.eq_1": [
+      "propext"
+    ],
+    "Toy.Hyper.preservedByAllRefiningCompilers_neg_example": [],
+    "Toy.Hyper.preservedByAllRefiningCompilers_pos_example": [],
+    "Toy.Hyper.proportionalWeights_minEntropy_counterexample_source_not_valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.proportionalWeights_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.proportionalWeights_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.proportionalWeights_preserves_minEntropy_of_valid_source": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.proportionalWeights_without_valid_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.rangesOverAll_neg_example": [],
+    "Toy.Hyper.rangesOverAll_pos_example": [],
+    "Toy.Hyper.rangesOverAll_preserved_by_traceEquiv": [],
+    "Toy.Hyper.rawMinEnt_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.rawMinEnt_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.rawMinEnt_zero_target": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.rectangularDomain_iff_product": [],
+    "Toy.Hyper.rectangularDomain_neg_example": [],
+    "Toy.Hyper.rectangularDomain_pos_example": [],
+    "Toy.Hyper.refines_iff_preserves_all_subsetClosed": [],
+    "Toy.Hyper.refines_iff_preserves_all_subsetClosed_nonvacuity": [],
+    "Toy.Hyper.refines_neg_example": [],
+    "Toy.Hyper.refines_pos_example": [],
+    "Toy.Hyper.refiningCompiler_neg_example": [],
+    "Toy.Hyper.refiningCompiler_pos_example": [],
+    "Toy.Hyper.sameDist_imp_support_refines": [
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_minEntropy_counterexample_no_ent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_minEntropy_counterexample_no_sameDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_minEntropy_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_preserves_minEntropy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_preserves_minEntropy_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_refl": [
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_symm": [
+      "propext"
+    ],
+    "Toy.Hyper.sameDist_trans": [
+      "propext"
+    ],
+    "Toy.Hyper.same_secure_refinement_two_presentations": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.same_support_different_minEntropy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.scaledUniformDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.scaledUniform_preserves_minEntropy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.secretFiltered_refinement_preserves_gni_not_lowViewRestrict": [],
+    "Toy.Hyper.secretIndepDeterminize": [],
+    "Toy.Hyper.secretIndepDeterminize_fails_gni_on_xorPresentation": [
+      "propext"
+    ],
+    "Toy.Hyper.secretIndepDeterminize_gni_iff_resolvedOutput_secretIndependent": [],
+    "Toy.Hyper.secretIndepDeterminize_neg_example": [],
+    "Toy.Hyper.secretIndepDeterminize_pos_example": [],
+    "Toy.Hyper.secretIndepDeterminize_refines_specOf": [],
+    "Toy.Hyper.secretIndependent_neg_example": [],
+    "Toy.Hyper.secretIndependent_pos_example": [],
+    "Toy.Hyper.secret_dependence_is_presentation_dependent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.singleFalseTraceSystem": [],
+    "Toy.Hyper.skewedFullSupportDist": [
+      "propext"
+    ],
+    "Toy.Hyper.specOf_constLow_eq_full": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.specOf_neg_example": [],
+    "Toy.Hyper.specOf_neg_example.match_1_1": [],
+    "Toy.Hyper.specOf_pos_example": [],
+    "Toy.Hyper.specOf_xor_eq_full": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.specOf_xor_eq_specOf_constLow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.subsetClosed_char_nonvacuity": [],
+    "Toy.Hyper.subsetClosed_iff_preservedByAllRefiningCompilers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.subsetClosed_neg_example": [],
+    "Toy.Hyper.subsetClosed_pos_example": [],
+    "Toy.Hyper.sumFin": [
+      "propext"
+    ],
+    "Toy.Hyper.sumFin.eq_1": [
+      "propext"
+    ],
+    "Toy.Hyper.sumFin.eq_2": [
+      "propext"
+    ],
+    "Toy.Hyper.sumFin.eq_def": [
+      "propext"
+    ],
+    "Toy.Hyper.sumFin.match_1": [],
+    "Toy.Hyper.sumFin_congr": [
+      "propext"
+    ],
+    "Toy.Hyper.sumFin_const": [
+      "propext"
+    ],
+    "Toy.Hyper.sumFin_point": [
+      "propext"
+    ],
+    "Toy.Hyper.support": [
+      "propext"
+    ],
+    "Toy.Hyper.support_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.support_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.totalWeight": [
+      "propext"
+    ],
+    "Toy.Hyper.totalWeight_pointDist": [
+      "propext"
+    ],
+    "Toy.Hyper.totalWeight_scaledUniformDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.totalWeight_uniformDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.traceEquiv_neg_example": [],
+    "Toy.Hyper.traceEquiv_pos_example": [],
+    "Toy.Hyper.traceEquiv_preserves_hyperprop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.two_pow_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniformDist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniformDist.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniformDist_exact_minEntropy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniform_support_const_refinement_counterexample_k_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniform_support_const_refinement_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniform_support_const_refinement_not_conclusion_at_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.uniform_support_refined_by_const_loses_minEntropy_of_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.universalKHyperprop_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.universalKHyperprop_pos_example": [
+      "propext"
+    ],
+    "Toy.Hyper.universalKHyperprop_subsetClosed": [],
+    "Toy.Hyper.universalKHyperprop_subsetClosed_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.validWeights_neg_example": [
+      "propext"
+    ],
+    "Toy.Hyper.validWeights_pos_example": [
+      "propext"
+    ],
+    "Toy.Hyper.xorPresentation_admits_secretDependent_gni_choice": [],
+    "Toy.Hyper.xorPresentation_gni_choice_counterexample_no_gni": [
+      "propext"
+    ],
+    "Toy.Hyper.xorPresentation_gni_choice_nonvacuity": [],
+    "Toy.Hyper.xorPresentation_gni_choice_not_secretIndependent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.xorSpecFn": [],
+    "Toy.Hyper.xor_gni_determinization_is_constant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.xor_secretDependent_determinization_eq_constFalse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Hyper.\u00abterm_\u2291_\u00bb": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

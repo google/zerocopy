@@ -1,0 +1,6 @@
+name = "toy_hyper"
+version = "0.1.0"
+defaultTargets = ["ToyHyper"]
+
+[[lean_lib]]
+name = "ToyHyper"
