@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "anneal",
+    "build",
+    "build/incremental",
+    "cargo",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/incremental-compilation",
+    "llvm",
+    "llvm/codegen",
+    "llvm/passes",
+    "rustc",
+    "rustc/codegen",
+    "rustc/incremental",
+    "rustc/mir",
+    "verification",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler (-O3 LLVM IR emission and -C incremental compilation)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Rust 1.102.0-nightly compiler (-Z dump-mir Runtime(PostCleanup) and Runtime(Optimized) dumps)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "miniz_oxide 0.9.1 crate (production DEFLATE/zlib implementation)",
+      "identity": {
+        "repository": "Frommi/miniz_oxide",
+        "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38",
+        "subpath": "miniz_oxide",
+        "version": "0.9.1"
+      }
+    },
+    {
+      "name": "serde_json 1.0.154 crate (production JSON serializer and deserializer)",
+      "identity": {
+        "repository": "serde-rs/json",
+        "revision": "20572a6d066958542d79cdd6cf1a7cd9f0c8e1f8",
+        "version": "1.0.154"
+      }
+    },
+    {
+      "name": "Anneal verified Rust verification framework (Runtime(PostCleanup) MIR capture boundary)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,683 @@
+{
+  "rustc_1_99_1_vv": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+  "library_root_scanned_rs_files": 1666,
+  "const_eval_select": {
+    "total_call_sites": 32,
+    "by_crate": {
+      "alloc": 5,
+      "core": 26,
+      "stdarch": 1
+    },
+    "sites": [
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 424,
+        "is_macro": false,
+        "snippet": "( (layout, zeroed), Global::alloc_impl_const, Global::alloc_impl_runtime, )"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 436,
+        "is_macro": false,
+        "snippet": "( (ptr, layout), Global::deallocate_impl_const, Global::deallocate_impl_runtime, )"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 454,
+        "is_macro": false,
+        "snippet": "( (self, ptr, old_layout, new_layout, zeroed), Global::grow_shrink_impl_const, Global::grow_impl_runtime, )"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 471,
+        "is_macro": false,
+        "snippet": "( (self, ptr, old_layout, new_layout, false), Global::grow_shrink_impl_const, Global::shrink_impl_runtime, )"
+      },
+      {
+        "crate": "alloc",
+        "file": "alloc/src/alloc.rs",
+        "line": 649,
+        "is_macro": false,
+        "snippet": "((layout,), ct_error, rt_error)"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ffi/c_str.rs",
+        "line": 390,
+        "is_macro": true,
+        "snippet": "( @capture { bytes: &[u8] } -> &CStr: if const { let mut i = bytes.len().saturating_sub(1); assert!(!bytes.is_empty() && bytes[i] == 0, \"input was not nul-terminated\"); while i != 0 { i -= 1; let byte = bytes[i]; assert!(byte != 0, \"input contained interior nu"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ffi/c_str.rs",
+        "line": 754,
+        "is_macro": true,
+        "snippet": "( @capture { s: *const c_char = ptr } -> usize: if const { let mut len = 0; while unsafe { *s.add(len) } != 0 { len += 1; } len } else { unsafe extern \"C\" { fn strlen(s: *const c_char) -> usize; } unsafe { strlen(s) } } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2636,
+        "is_macro": false,
+        "snippet": "(($($val,)*), compiletime, runtime)"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2647,
+        "is_macro": true,
+        "snippet": "( @capture$([$($binders)*])? { $($arg : $ty = $arg),* } $(-> $ret)? : if const $(#[$compiletime_attr])* $compiletime else $(#[$runtime_attr])* $runtime )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2875,
+        "is_macro": true,
+        "snippet": "( @capture[C: Fn() -> bool + Copy] { cond: C } : if const { } else { if !cond() { crate::panicking::panic_nounwind(\"failed requires check\"); } } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 2907,
+        "is_macro": true,
+        "snippet": "( @capture[C: Fn(&Ret) -> bool + Copy, Ret] { cond: Option<C>, ret: Ret } -> Ret : if const { ret } else { match cond { crate::option::Option::Some(cond) => { if !cond(&ret) { crate::panicking::panic_nounwind(\"failed ensures check\"); } }, crate::option::Option"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/intrinsics/mod.rs",
+        "line": 3828,
+        "is_macro": true,
+        "snippet": "( @capture { ptr: *const (), align: usize}: if const { } else { unsafe { miri_promise_symbolic_alignment(ptr, align); } } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/panic.rs",
+        "line": 167,
+        "is_macro": true,
+        "snippet": "( @capture { $($arg: $ty = $arg),* } -> !: if const #[track_caller] { $crate::panic!($const_msg) } else #[track_caller] { $crate::panic!($runtime_msg) } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/panicking.rs",
+        "line": 96,
+        "is_macro": true,
+        "snippet": "( @capture { fmt: fmt::Arguments<'_>, force_no_backtrace: bool } -> !: if const #[track_caller] { panic_fmt(fmt) } else #[track_caller] { if cfg!(panic = \"immediate-abort\") { super::intrinsics::abort() } unsafe extern \"Rust\" { #[lang = \"panic_impl\"] fn panic_i"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 26,
+        "is_macro": true,
+        "snippet": "( @capture { ptr: *const u8 } -> bool: if const #[rustc_allow_const_fn_unstable(const_raw_ptr_comparison)] { match (ptr).guaranteed_eq(null_mut()) { Some(res) => res, None => panic!(\"null-ness of this pointer cannot be determined in const context\"), } } else {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 362,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), count: isize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size as isize) else { return false; }; let (_, overflow) = this.addr().overflowing_add_signed(byte_offset); !overflow } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 711,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), origin: *const () } -> bool: if const { true } else { this >= origin } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 845,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; let (_, overflow) = this.addr().overflowing_add(byte_offset); byte_offset <= (isize::MAX as usiz"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/const_ptr.rs",
+        "line": 924,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; byte_offset <= (isize::MAX as usize) && this.addr() >= byte_offset } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mod.rs",
+        "line": 1421,
+        "is_macro": true,
+        "snippet": "( @capture[T] { x: *mut T, y: *mut T, count: usize }: if const { unsafe { swap_nonoverlapping_const(x, y, count) } } else { let slice = slice_from_raw_parts_mut(x, count); let bytes = unsafe { mem::size_of_val_raw::<[T]>(slice) }; if let Some(bytes) = NonZero:"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mut_ptr.rs",
+        "line": 364,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), count: isize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size as isize) else { return false; }; let (_, overflow) = this.addr().overflowing_add_signed(byte_offset); !overflow } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mut_ptr.rs",
+        "line": 944,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; let (_, overflow) = this.addr().overflowing_add(byte_offset); byte_offset <= (isize::MAX as usiz"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ptr/mut_ptr.rs",
+        "line": 1023,
+        "is_macro": true,
+        "snippet": "( @capture { this: *const (), count: usize, size: usize } -> bool: if const { true } else { let Some(byte_offset) = count.checked_mul(size) else { return false; }; byte_offset <= (isize::MAX as usize) && this.addr() >= byte_offset } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/ascii.rs",
+        "line": 468,
+        "is_macro": true,
+        "snippet": "( @capture { s: &[u8] } -> bool: if const { is_ascii_simple(s) } else { const fn contains_nonascii(v: usize) -> bool { const NONASCII_MASK: usize = usize::repeat_u8(0x80); (NONASCII_MASK & v) != 0 } const USIZE_SIZE: usize = size_of::<usize>(); let len = s.len"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/ascii.rs",
+        "line": 662,
+        "is_macro": true,
+        "snippet": "( @capture { bytes: &[u8] } -> bool: if const { is_ascii_simple(bytes) } else { if bytes.len() < SIMD_MIN_LEN { let chunks = bytes.chunks_exact(USIZE_SIZE); let remainder = chunks.remainder(); for chunk in chunks { let word = usize::from_ne_bytes(chunk.try_int"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/memchr.rs",
+        "line": 56,
+        "is_macro": true,
+        "snippet": "( @capture { x: u8, text: &[u8] } -> Option<usize>: if const { memchr_naive(x, text) } else { let len = text.len(); let ptr = text.as_ptr(); let mut offset = ptr.align_offset(USIZE_BYTES); if offset > 0 { offset = offset.min(len); let slice = &text[..offset]; "
+      },
+      {
+        "crate": "core",
+        "file": "core/src/str/mod.rs",
+        "line": 70,
+        "is_macro": false,
+        "snippet": "((s, begin, end), slice_error_fail_ct, slice_error_fail_rt)"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/str/validations.rs",
+        "line": 136,
+        "is_macro": true,
+        "snippet": "( @capture { v: &[u8] } -> usize: if const { usize::MAX } else { v.as_ptr().align_offset(USIZE_BYTES) } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ub_checks.rs",
+        "line": 98,
+        "is_macro": true,
+        "snippet": "( @capture { } -> bool: if const { false } else { !cfg!(miri) } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ub_checks.rs",
+        "line": 136,
+        "is_macro": true,
+        "snippet": "( @capture { ptr: *const (), align: usize } -> bool: if const { true } else { ptr.is_aligned_to(align) } )"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/ub_checks.rs",
+        "line": 166,
+        "is_macro": true,
+        "snippet": "( @capture { src: *const (), dst: *const (), size: usize, count: usize } -> bool: if const { true } else { let src_usize = src.addr(); let dst_usize = dst.addr(); let Some(size) = size.checked_mul(count) else { crate::panicking::panic_nounwind( \"is_nonoverlapp"
+      },
+      {
+        "crate": "stdarch",
+        "file": "stdarch/crates/core_arch/src/test.rs",
+        "line": 18,
+        "is_macro": false,
+        "snippet": "((&$a, &$b), assert_eq_ct, $crate::core_arch::test::assert_eq_rt)"
+      }
+    ]
+  },
+  "is_val_statically_known": {
+    "total_call_sites": 11,
+    "by_crate": {
+      "core": 11
+    },
+    "sites": [
+      {
+        "crate": "core",
+        "file": "core/src/fmt/mod.rs",
+        "line": 898,
+        "line_text": "if core::intrinsics::is_val_statically_known(s.is_some()) { s } else { None }"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/int_macros.rs",
+        "line": 1844,
+        "line_text": "if intrinsics::is_val_statically_known(base) && base.unsigned_abs().is_power_of_two() {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/int_macros.rs",
+        "line": 1858,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/int_macros.rs",
+        "line": 3072,
+        "line_text": "if intrinsics::is_val_statically_known(base) && base.unsigned_abs().is_power_of_two() {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/int_macros.rs",
+        "line": 3085,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 1871,
+        "line_text": "if core::intrinsics::is_val_statically_known(base) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 2403,
+        "line_text": "if intrinsics::is_val_statically_known(base) && base.is_power_of_two() {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 2418,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 3568,
+        "line_text": "if intrinsics::is_val_statically_known(base) && base.is_power_of_two() {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/num/uint_macros.rs",
+        "line": 3585,
+        "line_text": "if intrinsics::is_val_statically_known(exp) {"
+      },
+      {
+        "crate": "core",
+        "file": "core/src/slice/specialize.rs",
+        "line": 55,
+        "line_text": "if (cfg!(miri) && self.len() > 32) || crate::intrinsics::is_val_statically_known(value) {"
+      }
+    ]
+  },
+  "other_verification_relevant_intrinsics": {
+    "unlikely": 37,
+    "cold_path": 28,
+    "select_unpredictable": 14,
+    "likely": 8,
+    "assert_inhabited": 4,
+    "assert_zero_valid": 1,
+    "assert_mem_uninitialized_valid": 1,
+    "ub_checks": 1
+  },
+  "inline_and_global_asm": {
+    "total_invocations": 330,
+    "by_kind": {
+      "naked_asm": 29,
+      "asm": 272,
+      "global_asm": 29
+    },
+    "by_crate": {
+      "compiler-builtins": 94,
+      "core": 2,
+      "std": 30,
+      "std_detect": 6,
+      "stdarch": 197,
+      "unwind": 1
+    },
+    "by_inferred_arch": {
+      "aarch64": 14,
+      "multi_cfg": 31,
+      "arm": 20,
+      "hexagon": 29,
+      "sparc|sparc64|x86_64": 1,
+      "x86": 5,
+      "avr": 1,
+      "x86_64": 18,
+      "x86|x86_64": 2,
+      "x86_32": 4,
+      "x86_and_x86_64": 40,
+      "x86_32_nosse2": 2,
+      "arm|x86|x86_64": 1,
+      "aarch64|arm|arm64ec": 1,
+      "loongarch": 4,
+      "s390x": 1,
+      "arm_or_aarch64": 4,
+      "riscv64": 5,
+      "riscv32_or_riscv64": 146,
+      "wasm": 1
+    },
+    "by_os_env": {
+      "any": 299,
+      "linux": 3,
+      "sgx": 7,
+      "xous": 17,
+      "vexos": 1,
+      "windows": 3
+    },
+    "options_frequency": {
+      "nostack": 251,
+      "preserves_flags": 103,
+      "raw": 26,
+      "pure": 141,
+      "nomem": 139,
+      "readonly": 25,
+      "att_syntax": 19,
+      "noreturn": 4
+    },
+    "core_only_sites": [
+      {
+        "crate": "core",
+        "kind": "asm",
+        "arch": "x86_32_nosse2",
+        "os": "any",
+        "file": "core/src/num/imp/dec2flt/fpu.rs",
+        "line": 50,
+        "options": [
+          "nostack"
+        ],
+        "template_strings": [
+          "fldcw word ptr [{}]"
+        ]
+      },
+      {
+        "crate": "core",
+        "kind": "asm",
+        "arch": "x86_32_nosse2",
+        "os": "any",
+        "file": "core/src/num/imp/dec2flt/fpu.rs",
+        "line": 74,
+        "options": [
+          "nostack"
+        ],
+        "template_strings": [
+          "fnstcw word ptr [{}]"
+        ]
+      }
+    ],
+    "std_detect_sites": [
+      {
+        "crate": "std_detect",
+        "kind": "asm",
+        "arch": "aarch64",
+        "os": "any",
+        "file": "std_detect/src/detect/os/aarch64.rs",
+        "line": 31,
+        "options": [
+          "pure",
+          "nomem",
+          "preserves_flags",
+          "nostack"
+        ],
+        "template_strings": [
+          "mrs {}, ID_AA64ISAR0_EL1"
+        ]
+      },
+      {
+        "crate": "std_detect",
+        "kind": "asm",
+        "arch": "aarch64",
+        "os": "any",
+        "file": "std_detect/src/detect/os/aarch64.rs",
+        "line": 41,
+        "options": [
+          "pure",
+          "nomem",
+          "preserves_flags",
+          "nostack"
+        ],
+        "template_strings": [
+          "mrs {}, ID_AA64ISAR1_EL1"
+        ]
+      },
+      {
+        "crate": "std_detect",
+        "kind": "asm",
+        "arch": "aarch64",
+        "os": "any",
+        "file": "std_detect/src/detect/os/aarch64.rs",
+        "line": 51,
+        "options": [
+          "pure",
+          "nomem",
+          "preserves_flags",
+          "nostack"
+        ],
+        "template_strings": [
+          "mrs {}, ID_AA64MMFR2_EL1"
+        ]
+      },
+      {
+        "crate": "std_detect",
+        "kind": "asm",
+        "arch": "aarch64",
+        "os": "any",
+        "file": "std_detect/src/detect/os/aarch64.rs",
+        "line": 61,
+        "options": [
+          "pure",
+          "nomem",
+          "preserves_flags",
+          "nostack"
+        ],
+        "template_strings": [
+          "mrs {}, ID_AA64PFR0_EL1"
+        ]
+      },
+      {
+        "crate": "std_detect",
+        "kind": "asm",
+        "arch": "loongarch",
+        "os": "linux",
+        "file": "std_detect/src/detect/os/linux/loongarch.rs",
+        "line": 24,
+        "options": [
+          "pure",
+          "nomem",
+          "preserves_flags",
+          "nostack"
+        ],
+        "template_strings": [
+          "cpucfg {}, {}",
+          "cpucfg {}, {}",
+          "cpucfg {}, {}"
+        ]
+      },
+      {
+        "crate": "std_detect",
+        "kind": "asm",
+        "arch": "s390x",
+        "os": "linux",
+        "file": "std_detect/src/detect/os/linux/s390x.rs",
+        "line": 78,
+        "options": [
+          "nostack"
+        ],
+        "template_strings": [
+          "stfle 0({})",
+          "r0"
+        ]
+      }
+    ],
+    "x86_64_linux_active_total": 58,
+    "x86_64_linux_active_by_crate": {
+      "compiler-builtins": 19,
+      "stdarch": 39
+    },
+    "aarch64_linux_active_total": 18,
+    "aarch64_linux_active_by_crate": {
+      "compiler-builtins": 9,
+      "std": 1,
+      "std_detect": 4,
+      "stdarch": 4
+    }
+  },
+  "llvm_mc_full_length_direct_encoder_audit": {
+    "x86_64": {
+      "total_unique_instantiated_lines": 56,
+      "llvm_mc_assemblable": 23,
+      "direct_exact_full_match": 18,
+      "direct_mismatch": 0,
+      "unhandled_mnemonics": {
+        "jb": 1,
+        "lea": 1,
+        "mov": 1,
+        "test": 1,
+        "xchg": 1
+      },
+      "matched_examples": [
+        {
+          "inst": "add rdi, 7",
+          "hex": "4883c707"
+        },
+        {
+          "inst": "add rsi, 7",
+          "hex": "4883c607"
+        },
+        {
+          "inst": "cmp    rax, 0x1000",
+          "hex": "483d00100000"
+        },
+        {
+          "inst": "cpuid",
+          "hex": "0fa2"
+        },
+        {
+          "inst": "mov rax, rbx",
+          "hex": "4889d8"
+        },
+        {
+          "inst": "mov rcx, rax",
+          "hex": "4889c1"
+        },
+        {
+          "inst": "push   rax",
+          "hex": "50"
+        },
+        {
+          "inst": "push   rcx",
+          "hex": "51"
+        },
+        {
+          "inst": "rep movsb",
+          "hex": "f3a4"
+        },
+        {
+          "inst": "rep movsb [rdi], [rsi]",
+          "hex": "f3a4"
+        },
+        {
+          "inst": "rep movsq",
+          "hex": "f348a5"
+        },
+        {
+          "inst": "rep stosb",
+          "hex": "f3aa"
+        },
+        {
+          "inst": "rep stosb [rdi], al",
+          "hex": "f3aa"
+        },
+        {
+          "inst": "rep stosq",
+          "hex": "f348ab"
+        },
+        {
+          "inst": "std",
+          "hex": "fd"
+        },
+        {
+          "inst": "sub    rcx, 0x1000",
+          "hex": "4881e900100000"
+        },
+        {
+          "inst": "sub rdi, 7",
+          "hex": "4883ef07"
+        },
+        {
+          "inst": "sub rsi, 7",
+          "hex": "4883ee07"
+        }
+      ]
+    },
+    "aarch64": {
+      "total_unique_instantiated_lines": 23,
+      "llvm_mc_assemblable": 16,
+      "direct_exact_full_match": 5,
+      "direct_mismatch": 0,
+      "unhandled_mnemonics": {
+        "fmadd": 2,
+        "frintn": 2,
+        "fsqrt": 2,
+        "ldr": 1,
+        "lsl": 1,
+        "mov": 1,
+        "sub": 1,
+        "subs": 1
+      },
+      "matched_examples": [
+        {
+          "inst": "mrs x0, ID_AA64ISAR0_EL1",
+          "hex": "000638d5"
+        },
+        {
+          "inst": "mrs x0, ID_AA64ISAR1_EL1",
+          "hex": "200638d5"
+        },
+        {
+          "inst": "mrs x0, ID_AA64MMFR2_EL1",
+          "hex": "400738d5"
+        },
+        {
+          "inst": "mrs x0, ID_AA64PFR0_EL1",
+          "hex": "000438d5"
+        },
+        {
+          "inst": "nop",
+          "hex": "1f2003d5"
+        }
+      ]
+    }
+  },
+  "mir_lowering_probe_rustc_1_99_1": {
+    "rustc_vv": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "dumped_mir_files": [
+      "ces_probe.CTFE_WITNESS.runtime-post-cleanup.after.mir",
+      "ces_probe.ctfe_sum_bytes.runtime-optimized.after.mir",
+      "ces_probe.ctfe_sum_bytes.runtime-post-cleanup.after.mir",
+      "ces_probe.rt_sum_u64_chunks.runtime-optimized.after.mir",
+      "ces_probe.rt_sum_u64_chunks.runtime-post-cleanup.after.mir",
+      "ces_probe.stat_known_probe.runtime-optimized.after.mir",
+      "ces_probe.stat_known_probe.runtime-post-cleanup.after.mir",
+      "ces_probe.sum_dispatch.runtime-optimized.after.mir",
+      "ces_probe.sum_dispatch.runtime-post-cleanup.after.mir",
+      "ces_probe.ub_checks_probe.runtime-optimized.after.mir",
+      "ces_probe.ub_checks_probe.runtime-post-cleanup.after.mir"
+    ],
+    "ctfe_witness_evaluated_to_55": true,
+    "sum_dispatch_postcleanup_has_const_eval_select": true,
+    "sum_dispatch_postcleanup_mentions_ctfe_arm": true,
+    "sum_dispatch_postcleanup_mentions_rt_arm": true,
+    "sum_dispatch_optimized_has_const_eval_select": false,
+    "sum_dispatch_optimized_mentions_ctfe_arm": false,
+    "sum_dispatch_optimized_mentions_rt_arm": true,
+    "stat_known_postcleanup_has_intrinsic": true,
+    "stat_known_optimized_has_intrinsic": true,
+    "stat_known_ll_has_is_constant": false,
+    "ub_checks_postcleanup_has_ub_checks_or_const": true,
+    "ub_checks_postcleanup_snippet": "// MIR for `ub_checks_probe` after runtime-post-cleanup\n\nfn ub_checks_probe(_1: *const u64) -> u64 {\n    debug ptr => _1;\n    let mut _0: u64;\n    let _2: ();\n    let mut _3: bool;\n    let _4: ();\n    let mut _5: bool;\n    let mut _6: usize;\n    let mut _7: usize;\n    let mut _8: *const u64;\n    let mut _9: bool;\n    let mut _10: !;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = UbChecks;\n        switchInt(move _3) -> [0: bb5, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_4);\n        StorageLive(_5);\n        StorageLive(_6);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _1;\n        _7 = move _8 as usize (PointerExposeProvenance);",
+    "sum_dispatch_postcleanup_snippet": "// MIR for `sum_dispatch` after runtime-post-cleanup\n\nfn sum_dispatch(_1: *const u8, _2: usize) -> u64 {\n    debug ptr => _1;\n    debug len => _2;\n    let mut _0: u64;\n    let mut _3: (*const u8, usize);\n    let mut _4: *const u8;\n    let mut _5: usize;\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = (move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        _0 = const_eval_select::<(*const u8, usize), fn(*const u8, usize) -> u64 {ctfe_sum_bytes}, fn(*const u8, usize) -> u64 {rt_sum_u64_chunks}, u64>(move _3, ctfe_sum_bytes, rt_sum_u64_chunks) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        return;\n    }\n}",
+    "sum_dispatch_optimized_snippet": "// MIR for `sum_dispatch` after runtime-optimized\n\nfn sum_dispatch(_1: *const u8, _2: usize) -> u64 {\n    debug ptr => _1;\n    debug len => _2;\n    let mut _0: u64;\n\n    bb0: {\n        _0 = rt_sum_u64_chunks(move _1, move _2) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+    "stat_known_postcleanup_snippet": "// MIR for `stat_known_probe` after runtime-post-cleanup\n\nfn stat_known_probe(_1: usize) -> usize {\n    debug x => _1;\n    let mut _0: usize;\n    let mut _2: bool;\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: usize;\n    let mut _7: usize;\n    let mut _8: usize;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = is_val_statically_known::<usize>(move _3) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        switchInt(move _2) -> [0: bb4, otherwise: bb2];\n    }\n\n    bb2: {\n        StorageDead(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _0 = core::num::<impl usize>::wrapping_mul(move _4, const 3_usize) -> [return: bb3, unwind continue];\n    }",
+    "stat_known_optimized_snippet": "// MIR for `stat_known_probe` after runtime-optimized\n\nfn stat_known_probe(_1: usize) -> usize {\n    debug x => _1;\n    let mut _0: usize;\n    let mut _2: bool;\n    let mut _3: usize;\n    scope 1 (inlined core::num::<impl usize>::wrapping_mul) {\n    }\n    scope 2 (inlined core::num::<impl usize>::wrapping_add) {\n    }\n    scope 3 (inlined core::num::<impl usize>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = is_val_statically_known::<usize>(copy _1) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        switchInt(move _2) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _0 = Mul(copy _1, const 3_usize);\n        goto -> bb4;\n    }\n\n    bb3: {\n        StorageLive(_3);"
+  }
+}

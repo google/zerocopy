@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/intrinsics-and-asm",
+    "isa",
+    "isa/aarch64",
+    "isa/x86-64",
+    "llvm",
+    "llvm/mc",
+    "rust",
+    "rust/intrinsics",
+    "rust/standard-library",
+    "rustc",
+    "rustc/const-eval",
+    "rustc/mir",
+    "verification",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust 1.99.1 compiler and standard library (library/ source tree and MIR phase pipeline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR syntax and operational semantics (Trusted.MirAst and Trusted.MirSemantics)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

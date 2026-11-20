@@ -1,0 +1,1242 @@
+{
+  "title": "Real rustc Surgical-Edit Invalidation Blast Radius & Canonical MIR Early-Cutoff Measurement",
+  "toolchains": {
+    "rustc_stable_1_99_1": {
+      "raw": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.1",
+      "binary": "rustc",
+      "commit-hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "commit-date": "2026-10-13",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.99.1",
+      "LLVM version": "23.1.1"
+    },
+    "rustc_nightly_1_102_0": {
+      "raw": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+      "binary": "rustc",
+      "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "commit-date": "2026-11-11",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.102.0-nightly",
+      "LLVM version": "23.1.5"
+    }
+  },
+  "methodology": {
+    "scratch_dir": "/tmp/vrustc_e2_4",
+    "mir_dump_flags": [
+      "-C opt-level=3",
+      "-Z mir-include-spans=true",
+      "-Z dump-mir=runtime-post-cleanup | runtime-optimized"
+    ],
+    "mir_canonicalization": "Strips full-line `//` comments, trailing `// [return place ]in scope ...`, `// scope ... at ...`, `// mir::...`, `// + ...` comments, and embedded `{closure@file:l1:c1: l2:c2}` / `<impl at file:l1:c1: l2:c2>` span coordinates while preserving 100% of basic blocks, local types, statements, rvalues, constants, and terminators. Also computes transitive `Const::Unevaluated` dependency cone on PostCleanup MIR.",
+    "llvm_ir_flags": [
+      "-C opt-level=3",
+      "-C debuginfo=0",
+      "--emit=llvm-ir",
+      "tested at both -C codegen-units=1 and -C codegen-units=16"
+    ],
+    "incremental_timing_protocol": "Median of 3 clean cold `-O3 -C codegen-units=16` builds vs. median of 3 incremental `E0 -> Ei` rebuilds (`-C incremental=...`), resetting the incremental cache via a full independent directory copy (`shutil.copytree`) of `E0` before every single trial, pinning `E0`'s `.o` inodes in a side directory (`os.link`, verified immutable by SHA-256) so `rustc` session GC / `tmpfs` inode reuse never distort `.o` hardlink-reuse counts, and comparing both `.o` and `.pre-lto.bc` SHA-256 digests against `E0`."
+  },
+  "crates": {
+    "miniz_oxide": {
+      "crate": "miniz_oxide",
+      "version": "0.9.1",
+      "registry_source": "$CARGO_HOME/registry/src/index.crates.io-1949cf8c6b5b557f/miniz_oxide-0.9.1",
+      "central_edited_file": "src/inflate/core.rs",
+      "edited_file_baseline_lines": 2381,
+      "mir_pass_names": {
+        "pre_optimization": "3-2-000.runtime-post-cleanup.after.mir",
+        "post_optimization": "3-3-000.runtime-optimized.after.mir"
+      },
+      "edits": {
+        "E0_baseline": {
+          "n_postcleanup": 358,
+          "n_precodegen": 280,
+          "n_llvm_o3_cgu1_unique_fns": 38,
+          "n_llvm_o3_cgu1_total_defs": 38,
+          "n_llvm_o3_cgu16_unique_fns": 63,
+          "n_llvm_o3_cgu16_total_defs": 63,
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1264.29,
+              1303.95,
+              1086.79
+            ],
+            "clean_o3_median_ms": 1264.29,
+            "incr_seed_build_ms": 1401.91,
+            "rcgu_o_total": 16,
+            "pre_lto_bc_total": 16
+          }
+        },
+        "E1_top_comment_shift": {
+          "description": "Insert 6 comment lines above `pub const TINFL_LZ_DICT_SIZE` at top of `src/inflate/core.rs`.",
+          "postcleanup_mir": {
+            "n_baseline": 358,
+            "n_current": 358,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 80,
+            "span_stripped_changed_count": 0,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [],
+            "span_stripped_plus_const_cone_changed_count": 0,
+            "span_stripped_plus_const_cone_changed_items": []
+          },
+          "precodegen_mir": {
+            "n_baseline": 280,
+            "n_current": 280,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 63,
+            "span_stripped_changed_count": 0,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": []
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 38,
+            "n_unique_fns_current": 38,
+            "n_total_defs_baseline": 38,
+            "n_total_defs_current": 38,
+            "llvm_o3_fn_changed": 3,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::apply_match",
+              "miniz_oxide::inflate::core::decompress_with_limit",
+              "miniz_oxide::inflate::core::transfer"
+            ],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 63,
+            "n_unique_fns_current": 63,
+            "n_total_defs_baseline": 63,
+            "n_total_defs_current": 63,
+            "llvm_o3_fn_changed": 3,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::apply_match",
+              "miniz_oxide::inflate::core::decompress_with_limit",
+              "miniz_oxide::inflate::core::transfer"
+            ],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1444.44,
+              1115.08,
+              1023.89
+            ],
+            "clean_o3_median_ms": 1115.08,
+            "incr_o3_samples_ms": [
+              479.85,
+              571.03,
+              556.82
+            ],
+            "incr_o3_median_ms": 556.82,
+            "incr_speedup_vs_clean": 2.003,
+            "incr_fraction_of_clean": 0.4994,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 12,
+            "rcgu_o_reemitted": 4,
+            "rcgu_o_bytes_changed": 2,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 14,
+            "pre_lto_bc_changed_bytes": 2
+          }
+        },
+        "E2_private_noninline_leaf": {
+          "description": "Change `table.tree.fill(0)` -> `table.tree.fill(1)` in private non-generic non-inlined `inflate::core::init_tree`.",
+          "postcleanup_mir": {
+            "n_baseline": 358,
+            "n_current": 358,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "inflate::core::init_tree"
+            ],
+            "span_stripped_plus_const_cone_changed_count": 1,
+            "span_stripped_plus_const_cone_changed_items": [
+              "inflate::core::init_tree"
+            ]
+          },
+          "precodegen_mir": {
+            "n_baseline": 280,
+            "n_current": 280,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "inflate::core::init_tree"
+            ]
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 38,
+            "n_unique_fns_current": 38,
+            "n_total_defs_baseline": 38,
+            "n_total_defs_current": 38,
+            "llvm_o3_fn_changed": 1,
+            "llvm_o3_alloc_location_erased_changed": 1,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 1,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::init_tree"
+            ],
+            "alloc_erased_changed_demangled": [
+              "miniz_oxide::inflate::core::init_tree"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 63,
+            "n_unique_fns_current": 63,
+            "n_total_defs_baseline": 63,
+            "n_total_defs_current": 63,
+            "llvm_o3_fn_changed": 1,
+            "llvm_o3_alloc_location_erased_changed": 1,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 1,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::init_tree"
+            ],
+            "alloc_erased_changed_demangled": [
+              "miniz_oxide::inflate::core::init_tree"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1022.87,
+              792.47,
+              889.27
+            ],
+            "clean_o3_median_ms": 889.27,
+            "incr_o3_samples_ms": [
+              528.34,
+              744.19,
+              479.66
+            ],
+            "incr_o3_median_ms": 528.34,
+            "incr_speedup_vs_clean": 1.683,
+            "incr_fraction_of_clean": 0.5941,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 13,
+            "rcgu_o_reemitted": 3,
+            "rcgu_o_bytes_changed": 1,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 15,
+            "pre_lto_bc_changed_bytes": 1
+          }
+        },
+        "E3_widely_inlined_helper": {
+          "description": "Change `bit_buf & ...` -> `(bit_buf ^ 1) & ...` in `#[inline] const fn HuffmanTable::fast_lookup`.",
+          "postcleanup_mir": {
+            "n_baseline": 358,
+            "n_current": 358,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "inflate::core::<impl at /tmp/vrustc_e2_4/crates/miniz_oxide/src/inflate/core.rs:61:1: 61:18>::fast_lookup"
+            ],
+            "span_stripped_plus_const_cone_changed_count": 1,
+            "span_stripped_plus_const_cone_changed_items": [
+              "inflate::core::<impl at /tmp/vrustc_e2_4/crates/miniz_oxide/src/inflate/core.rs:61:1: 61:18>::fast_lookup"
+            ]
+          },
+          "precodegen_mir": {
+            "n_baseline": 280,
+            "n_current": 280,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 4,
+            "span_stripped_changed_count": 4,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "inflate::core::decode_huffman_code",
+              "inflate::core::decompress_fast",
+              "inflate::core::<impl at /tmp/vrustc_e2_4/crates/miniz_oxide/src/inflate/core.rs:61:1: 61:18>::fast_lookup",
+              "inflate::core::<impl at /tmp/vrustc_e2_4/crates/miniz_oxide/src/inflate/core.rs:61:1: 61:18>::lookup"
+            ]
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 38,
+            "n_unique_fns_current": 38,
+            "n_total_defs_baseline": 38,
+            "n_total_defs_current": 38,
+            "llvm_o3_fn_changed": 5,
+            "llvm_o3_alloc_location_erased_changed": 5,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 5,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit",
+              "miniz_oxide::inflate::core::transfer",
+              "miniz_oxide::inflate::core::init_tree",
+              "miniz_oxide::inflate::stream::inflate"
+            ],
+            "alloc_erased_changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit",
+              "miniz_oxide::inflate::core::transfer",
+              "miniz_oxide::inflate::core::init_tree",
+              "miniz_oxide::inflate::stream::inflate"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 63,
+            "n_unique_fns_current": 63,
+            "n_total_defs_baseline": 63,
+            "n_total_defs_current": 63,
+            "llvm_o3_fn_changed": 3,
+            "llvm_o3_alloc_location_erased_changed": 3,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 3,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit",
+              "miniz_oxide::inflate::core::transfer"
+            ],
+            "alloc_erased_changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit",
+              "miniz_oxide::inflate::core::transfer"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1544.16,
+              1186.01,
+              1047.98
+            ],
+            "clean_o3_median_ms": 1186.01,
+            "incr_o3_samples_ms": [
+              431.63,
+              531.57,
+              667.07
+            ],
+            "incr_o3_median_ms": 531.57,
+            "incr_speedup_vs_clean": 2.231,
+            "incr_fraction_of_clean": 0.4482,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 12,
+            "rcgu_o_reemitted": 4,
+            "rcgu_o_bytes_changed": 2,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 14,
+            "pre_lto_bc_changed_bytes": 2
+          }
+        },
+        "E4_internal_const": {
+          "description": "Change `const BASE_EXTRA_MASK: usize = 32 - 1` -> `16 - 1` (referenced as `Const::Unevaluated` in `decompress_fast` and `decompress_with_limit`).",
+          "postcleanup_mir": {
+            "n_baseline": 358,
+            "n_current": 358,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "inflate::core::BASE_EXTRA_MASK"
+            ],
+            "span_stripped_plus_const_cone_changed_count": 3,
+            "span_stripped_plus_const_cone_changed_items": [
+              "inflate::core::BASE_EXTRA_MASK",
+              "inflate::core::decompress_fast",
+              "inflate::core::decompress_with_limit"
+            ]
+          },
+          "precodegen_mir": {
+            "n_baseline": 280,
+            "n_current": 280,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 2,
+            "span_stripped_changed_count": 2,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "inflate::core::decompress_fast",
+              "inflate::core::decompress_with_limit"
+            ]
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 38,
+            "n_unique_fns_current": 38,
+            "n_total_defs_baseline": 38,
+            "n_total_defs_current": 38,
+            "llvm_o3_fn_changed": 2,
+            "llvm_o3_alloc_location_erased_changed": 2,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 2,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit"
+            ],
+            "alloc_erased_changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 63,
+            "n_unique_fns_current": 63,
+            "n_total_defs_baseline": 63,
+            "n_total_defs_current": 63,
+            "llvm_o3_fn_changed": 2,
+            "llvm_o3_alloc_location_erased_changed": 2,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 2,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit"
+            ],
+            "alloc_erased_changed_demangled": [
+              "miniz_oxide::inflate::core::decompress_fast",
+              "miniz_oxide::inflate::core::decompress_with_limit"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1571.39,
+              1302.58,
+              1874.55
+            ],
+            "clean_o3_median_ms": 1571.39,
+            "incr_o3_samples_ms": [
+              392.95,
+              390.6,
+              425.99
+            ],
+            "incr_o3_median_ms": 392.95,
+            "incr_speedup_vs_clean": 3.999,
+            "incr_fraction_of_clean": 0.2501,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 13,
+            "rcgu_o_reemitted": 3,
+            "rcgu_o_bytes_changed": 1,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 15,
+            "pre_lto_bc_changed_bytes": 1
+          }
+        },
+        "E5_append_new_pub_fn": {
+          "description": "Append `pub fn __vrustc_probe_added(x: u64) -> u64 { x.wrapping_add(1) }` at EOF of `src/inflate/core.rs`.",
+          "postcleanup_mir": {
+            "n_baseline": 358,
+            "n_current": 359,
+            "added_count": 1,
+            "removed_count": 0,
+            "raw_changed_count": 2,
+            "span_stripped_changed_count": 0,
+            "added_items": [
+              "inflate::core::__vrustc_probe_added"
+            ],
+            "removed_items": [],
+            "span_stripped_changed_items": [],
+            "span_stripped_plus_const_cone_changed_count": 0,
+            "span_stripped_plus_const_cone_changed_items": []
+          },
+          "precodegen_mir": {
+            "n_baseline": 280,
+            "n_current": 281,
+            "added_count": 1,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 0,
+            "added_items": [
+              "inflate::core::__vrustc_probe_added"
+            ],
+            "removed_items": [],
+            "span_stripped_changed_items": []
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 38,
+            "n_unique_fns_current": 38,
+            "n_total_defs_baseline": 38,
+            "n_total_defs_current": 38,
+            "llvm_o3_fn_changed": 0,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 63,
+            "n_unique_fns_current": 63,
+            "n_total_defs_baseline": 63,
+            "n_total_defs_current": 63,
+            "llvm_o3_fn_changed": 0,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              831.7,
+              890.41,
+              876.17
+            ],
+            "clean_o3_median_ms": 876.17,
+            "incr_o3_samples_ms": [
+              420.3,
+              399.96,
+              416.59
+            ],
+            "incr_o3_median_ms": 416.59,
+            "incr_speedup_vs_clean": 2.103,
+            "incr_fraction_of_clean": 0.4755,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 13,
+            "rcgu_o_reemitted": 3,
+            "rcgu_o_bytes_changed": 1,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 15,
+            "pre_lto_bc_changed_bytes": 1
+          }
+        }
+      }
+    },
+    "serde_json": {
+      "crate": "serde_json",
+      "version": "1.0.154",
+      "registry_source": "$CARGO_HOME/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.154",
+      "central_edited_file": "src/ser.rs",
+      "edited_file_baseline_lines": 2285,
+      "mir_pass_names": {
+        "pre_optimization": "3-2-000.runtime-post-cleanup.after.mir",
+        "post_optimization": "3-3-000.runtime-optimized.after.mir"
+      },
+      "edits": {
+        "E0_baseline": {
+          "n_postcleanup": 1105,
+          "n_precodegen": 1121,
+          "n_llvm_o3_cgu1_unique_fns": 184,
+          "n_llvm_o3_cgu1_total_defs": 184,
+          "n_llvm_o3_cgu16_unique_fns": 271,
+          "n_llvm_o3_cgu16_total_defs": 274,
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1288.82,
+              1261.04,
+              1317.01
+            ],
+            "clean_o3_median_ms": 1288.82,
+            "incr_seed_build_ms": 1553.36,
+            "rcgu_o_total": 16,
+            "pre_lto_bc_total": 16
+          }
+        },
+        "E1_top_comment_shift": {
+          "description": "Insert 6 comment lines above `pub struct Serializer` at line 15 of `src/ser.rs` (199 fns below it).",
+          "postcleanup_mir": {
+            "n_baseline": 1105,
+            "n_current": 1105,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 148,
+            "span_stripped_changed_count": 0,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [],
+            "span_stripped_plus_const_cone_changed_count": 0,
+            "span_stripped_plus_const_cone_changed_items": []
+          },
+          "precodegen_mir": {
+            "n_baseline": 1121,
+            "n_current": 1121,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 143,
+            "span_stripped_changed_count": 0,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": []
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 184,
+            "n_unique_fns_current": 184,
+            "n_total_defs_baseline": 184,
+            "n_total_defs_current": 184,
+            "llvm_o3_fn_changed": 0,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 271,
+            "n_unique_fns_current": 271,
+            "n_total_defs_baseline": 274,
+            "n_total_defs_current": 274,
+            "llvm_o3_fn_changed": 0,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1348.92,
+              1127.74,
+              1249.05
+            ],
+            "clean_o3_median_ms": 1249.05,
+            "incr_o3_samples_ms": [
+              473.39,
+              518.41,
+              573.6
+            ],
+            "incr_o3_median_ms": 518.41,
+            "incr_speedup_vs_clean": 2.409,
+            "incr_fraction_of_clean": 0.415,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 15,
+            "rcgu_o_reemitted": 1,
+            "rcgu_o_bytes_changed": 0,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 16,
+            "pre_lto_bc_changed_bytes": 0
+          }
+        },
+        "E2_private_noninline_leaf": {
+          "description": "Change `(0, 0)` -> `(0, 1)` in private non-generic non-inlined `ser::key_must_be_a_string`.",
+          "postcleanup_mir": {
+            "n_baseline": 1105,
+            "n_current": 1105,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "ser::key_must_be_a_string"
+            ],
+            "span_stripped_plus_const_cone_changed_count": 1,
+            "span_stripped_plus_const_cone_changed_items": [
+              "ser::key_must_be_a_string"
+            ]
+          },
+          "precodegen_mir": {
+            "n_baseline": 1121,
+            "n_current": 1121,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "ser::key_must_be_a_string"
+            ]
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 184,
+            "n_unique_fns_current": 185,
+            "n_total_defs_baseline": 184,
+            "n_total_defs_current": 185,
+            "llvm_o3_fn_changed": 31,
+            "llvm_o3_alloc_location_erased_changed": 30,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 30,
+            "llvm_o3_fn_added": 1,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 1,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "serde_json::ser::key_must_be_a_string",
+              "<serde_json::value::Value as core::fmt::Debug>::fmt",
+              "<serde_json::value::Value as core::convert::From<f32>>::from",
+              "<serde_json::map::Map<alloc::string::String, serde_json::value::Value> as core::str::traits::FromStr>::from_str",
+              "<alloc::string::String as serde_json::value::index::Index>::index_into",
+              "<alloc::string::String as serde_json::value::index::Index>::index_into_mut",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::serialize_str",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::serialize_str",
+              "<&alloc::string::String as core::fmt::Debug>::fmt",
+              "<serde_json::error::Error as core::fmt::Display>::fmt",
+              "<serde_json::number::Number as core::str::traits::FromStr>::from_str",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::ignore_str",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str_raw",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::decode_hex_escape",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str",
+              "<serde_json::error::Error as core::fmt::Debug>::fmt",
+              "<serde_json::value::ser::MapKeySerializer as serde_core::ser::Serializer>::serialize_i8",
+              "<serde_json::value::ser::MapKeySerializer as serde_core::ser::Serializer>::serialize_u8",
+              "<serde_json::value::ser::SerializeMap as serde_core::ser::SerializeStruct>::end",
+              "<serde_json::read::StrRead as serde_json::read::Read>::peek_position",
+              "<serde_json::read::StrRead as serde_json::read::Read>::position",
+              "<serde_json::read::StrRead as serde_json::read::Read>::parse_str",
+              "<alloc::string::String as core::fmt::Write>::write_char",
+              "<alloc::string::String as core::fmt::Write>::write_str",
+              "<serde_json::value::ser::Serializer as serde_core::ser::Serializer>::serialize_tuple"
+            ],
+            "alloc_erased_changed_demangled": [
+              "serde_json::ser::key_must_be_a_string",
+              "<serde_json::value::Value as core::fmt::Debug>::fmt",
+              "<serde_json::value::Value as core::convert::From<f32>>::from",
+              "<serde_json::map::Map<alloc::string::String, serde_json::value::Value> as core::str::traits::FromStr>::from_str",
+              "<alloc::string::String as serde_json::value::index::Index>::index_into",
+              "<alloc::string::String as serde_json::value::index::Index>::index_into_mut",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::serialize_str",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::serialize_str",
+              "<&alloc::string::String as core::fmt::Debug>::fmt",
+              "<serde_json::error::Error as core::fmt::Display>::fmt",
+              "<serde_json::number::Number as core::str::traits::FromStr>::from_str",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::ignore_str",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str_raw",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::decode_hex_escape",
+              "<serde_json::read::SliceRead as serde_json::read::Read>::parse_str",
+              "<serde_json::error::Error as core::fmt::Debug>::fmt",
+              "<serde_json::value::ser::MapKeySerializer as serde_core::ser::Serializer>::serialize_i8",
+              "<serde_json::value::ser::MapKeySerializer as serde_core::ser::Serializer>::serialize_u8",
+              "<serde_json::value::ser::SerializeMap as serde_core::ser::SerializeStruct>::end",
+              "<serde_json::read::StrRead as serde_json::read::Read>::peek_position",
+              "<serde_json::read::StrRead as serde_json::read::Read>::position",
+              "<serde_json::read::StrRead as serde_json::read::Read>::parse_str",
+              "<alloc::string::String as core::fmt::Write>::write_char",
+              "<alloc::string::String as core::fmt::Write>::write_str",
+              "<serde_json::value::ser::Serializer as serde_core::ser::Serializer>::serialize_tuple"
+            ],
+            "added_demangled": [
+              "serde_json::value::ser::key_must_be_a_string"
+            ],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 271,
+            "n_unique_fns_current": 271,
+            "n_total_defs_baseline": 274,
+            "n_total_defs_current": 274,
+            "llvm_o3_fn_changed": 11,
+            "llvm_o3_alloc_location_erased_changed": 11,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 1,
+            "llvm_o3_fn_added": 4,
+            "llvm_o3_fn_removed": 4,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "serde_json::ser::key_must_be_a_string"
+            ],
+            "alloc_erased_changed_demangled": [
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "serde_json::ser::key_must_be_a_string"
+            ],
+            "added_demangled": [
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>>> (.llvm.8968351992519068916)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>> (.llvm.8968351992519068916)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter>> (.llvm.8968351992519068916)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>> (.llvm.8968351992519068916)"
+            ],
+            "removed_demangled": [
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>> (.llvm.14736115641352483984)"
+            ]
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1107.02,
+              999.97,
+              1004.63
+            ],
+            "clean_o3_median_ms": 1004.63,
+            "incr_o3_samples_ms": [
+              471.32,
+              460.37,
+              494.88
+            ],
+            "incr_o3_median_ms": 471.32,
+            "incr_speedup_vs_clean": 2.132,
+            "incr_fraction_of_clean": 0.4691,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 0,
+            "rcgu_o_reemitted": 16,
+            "rcgu_o_bytes_changed": 9,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 15,
+            "pre_lto_bc_changed_bytes": 1
+          }
+        },
+        "E3_widely_inlined_helper": {
+          "description": "Modify slice expression in `#[inline] <&mut Serializer<W, F> as serde::Serializer>::serialize_str`.",
+          "postcleanup_mir": {
+            "n_baseline": 1105,
+            "n_current": 1105,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 130,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_str"
+            ],
+            "span_stripped_plus_const_cone_changed_count": 1,
+            "span_stripped_plus_const_cone_changed_items": [
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_str"
+            ]
+          },
+          "precodegen_mir": {
+            "n_baseline": 1121,
+            "n_current": 1121,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 127,
+            "span_stripped_changed_count": 6,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:800:1: 803:18>::serialize_char",
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_char",
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_newtype_variant",
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_str",
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_struct_variant",
+              "ser::<impl at /tmp/vrustc_e2_4/crates/serde_json/src/ser.rs:63:1: 66:18>::serialize_tuple_variant"
+            ]
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 184,
+            "n_unique_fns_current": 184,
+            "n_total_defs_baseline": 184,
+            "n_total_defs_current": 184,
+            "llvm_o3_fn_changed": 2,
+            "llvm_o3_alloc_location_erased_changed": 2,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 2,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::serialize_str",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::serialize_str"
+            ],
+            "alloc_erased_changed_demangled": [
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::serialize_str",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::serialize_str"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 271,
+            "n_unique_fns_current": 271,
+            "n_total_defs_baseline": 274,
+            "n_total_defs_current": 274,
+            "llvm_o3_fn_changed": 20,
+            "llvm_o3_alloc_location_erased_changed": 20,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 10,
+            "llvm_o3_fn_added": 7,
+            "llvm_o3_fn_removed": 7,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter>",
+              "<serde_json::value::Value as serde_core::de::Deserializer>::deserialize_unit::<serde_core::de::impls::UnitVisitor>",
+              "<&serde_json::value::Value as serde_core::de::Deserializer>::deserialize_unit::<serde_core::de::impls::UnitVisitor>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "serde_json::__vrustc_exerciser::exercise_all",
+              "<serde_json::value::Value as core::convert::From<f32>>::from",
+              "<<serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter as core::io::write::Write>::write",
+              "<serde_json::value::de::VariantDeserializer as serde_core::de::VariantAccess>::unit_variant",
+              "<serde_json::value::Value as core::fmt::Display>::fmt",
+              "<serde_json::value::Value as core::convert::From<f64>>::from",
+              "<serde_json::value::de::VariantRefDeserializer as serde_core::de::VariantAccess>::unit_variant",
+              "<<serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter as core::io::write::Write>::write_all"
+            ],
+            "alloc_erased_changed_demangled": [
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter>",
+              "<serde_json::value::Value as serde_core::de::Deserializer>::deserialize_unit::<serde_core::de::impls::UnitVisitor>",
+              "<&serde_json::value::Value as serde_core::de::Deserializer>::deserialize_unit::<serde_core::de::impls::UnitVisitor>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "serde_json::__vrustc_exerciser::exercise_all",
+              "<serde_json::value::Value as core::convert::From<f32>>::from",
+              "<<serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter as core::io::write::Write>::write",
+              "<serde_json::value::de::VariantDeserializer as serde_core::de::VariantAccess>::unit_variant",
+              "<serde_json::value::Value as core::fmt::Display>::fmt",
+              "<serde_json::value::Value as core::convert::From<f64>>::from",
+              "<serde_json::value::de::VariantRefDeserializer as serde_core::de::VariantAccess>::unit_variant",
+              "<<serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter as core::io::write::Write>::write_all"
+            ],
+            "added_demangled": [
+              "<serde_json::value::Value>::invalid_type::<serde_json::error::Error> (.llvm.9371301109714252664)",
+              "core::ptr::drop_glue::<serde_json::value::Value> (.llvm.9371301109714252664)",
+              "core::ptr::drop_glue::<core::io::error::Error> (.llvm.9371301109714252664)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>>> (.llvm.2420068073084239359)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>> (.llvm.2420068073084239359)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter>> (.llvm.2420068073084239359)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>> (.llvm.2420068073084239359)"
+            ],
+            "removed_demangled": [
+              "<serde_json::value::Value>::invalid_type::<serde_json::error::Error> (.llvm.14319355984660928712)",
+              "core::ptr::drop_glue::<serde_json::value::Value> (.llvm.14319355984660928712)",
+              "core::ptr::drop_glue::<core::io::error::Error> (.llvm.14319355984660928712)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>> (.llvm.14736115641352483984)"
+            ]
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1069.5,
+              1136.43,
+              1060.95
+            ],
+            "clean_o3_median_ms": 1069.5,
+            "incr_o3_samples_ms": [
+              491.2,
+              480.19,
+              534.05
+            ],
+            "incr_o3_median_ms": 491.2,
+            "incr_speedup_vs_clean": 2.177,
+            "incr_fraction_of_clean": 0.4593,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 8,
+            "rcgu_o_reemitted": 8,
+            "rcgu_o_bytes_changed": 4,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 13,
+            "pre_lto_bc_changed_bytes": 3
+          }
+        },
+        "E4_internal_const": {
+          "description": "Change `const BB: u8 = b'b'` -> `b'x'` in `src/ser.rs` (referenced in `static ESCAPE` and `SwitchInt` pattern in `format_escaped_str_contents`).",
+          "postcleanup_mir": {
+            "n_baseline": 1105,
+            "n_current": 1105,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "ser::format_escaped_str_contents"
+            ],
+            "span_stripped_plus_const_cone_changed_count": 1,
+            "span_stripped_plus_const_cone_changed_items": [
+              "ser::format_escaped_str_contents"
+            ]
+          },
+          "precodegen_mir": {
+            "n_baseline": 1121,
+            "n_current": 1121,
+            "added_count": 0,
+            "removed_count": 0,
+            "raw_changed_count": 1,
+            "span_stripped_changed_count": 1,
+            "added_items": [],
+            "removed_items": [],
+            "span_stripped_changed_items": [
+              "ser::format_escaped_str_contents"
+            ]
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 184,
+            "n_unique_fns_current": 184,
+            "n_total_defs_baseline": 184,
+            "n_total_defs_current": 184,
+            "llvm_o3_fn_changed": 2,
+            "llvm_o3_alloc_location_erased_changed": 2,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 2,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::serialize_str",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::serialize_str"
+            ],
+            "alloc_erased_changed_demangled": [
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::serialize_str",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::serialize_str"
+            ],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 271,
+            "n_unique_fns_current": 271,
+            "n_total_defs_baseline": 274,
+            "n_total_defs_current": 274,
+            "llvm_o3_fn_changed": 12,
+            "llvm_o3_alloc_location_erased_changed": 12,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 4,
+            "llvm_o3_fn_added": 4,
+            "llvm_o3_fn_removed": 4,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [
+              "serde_json::ser::format_escaped_str::<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>"
+            ],
+            "alloc_erased_changed_demangled": [
+              "serde_json::ser::format_escaped_str::<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>",
+              "serde_json::ser::format_escaped_str::<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut alloc::vec::Vec<u8>, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<serde_json::ser::Compound<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::CompactFormatter> as serde_core::ser::SerializeMap>::serialize_entry::<alloc::string::String, serde_json::value::Value>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>",
+              "<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter> as serde_core::ser::Serializer>::collect_seq::<&alloc::vec::Vec<serde_json::value::Value>>"
+            ],
+            "added_demangled": [
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>>> (.llvm.2188345749930565128)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>> (.llvm.2188345749930565128)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter>> (.llvm.2188345749930565128)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>> (.llvm.2188345749930565128)"
+            ],
+            "removed_demangled": [
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut alloc::vec::Vec<u8>, serde_json::ser::PrettyFormatter>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter>> (.llvm.14736115641352483984)",
+              "<serde_json::value::Value as serde_core::ser::Serialize>::serialize::<&mut serde_json::ser::Serializer<&mut <serde_json::value::Value as core::fmt::Display>::fmt::WriterFormatter, serde_json::ser::PrettyFormatter>> (.llvm.14736115641352483984)"
+            ]
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1206.23,
+              1199.64,
+              1219.9
+            ],
+            "clean_o3_median_ms": 1206.23,
+            "incr_o3_samples_ms": [
+              589.05,
+              589.13,
+              587.97
+            ],
+            "incr_o3_median_ms": 589.05,
+            "incr_speedup_vs_clean": 2.048,
+            "incr_fraction_of_clean": 0.4883,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 0,
+            "rcgu_o_reemitted": 16,
+            "rcgu_o_bytes_changed": 10,
+            "pre_lto_bc_total": 16,
+            "pre_lto_bc_unchanged_bytes": 14,
+            "pre_lto_bc_changed_bytes": 2
+          }
+        },
+        "E5_append_new_pub_fn": {
+          "description": "Append `pub fn __vrustc_probe_added(x: u64) -> u64 { x.wrapping_add(1) }` at EOF of `src/ser.rs`.",
+          "postcleanup_mir": {
+            "n_baseline": 1105,
+            "n_current": 1106,
+            "added_count": 1,
+            "removed_count": 0,
+            "raw_changed_count": 17,
+            "span_stripped_changed_count": 0,
+            "added_items": [
+              "ser::__vrustc_probe_added"
+            ],
+            "removed_items": [],
+            "span_stripped_changed_items": [],
+            "span_stripped_plus_const_cone_changed_count": 0,
+            "span_stripped_plus_const_cone_changed_items": []
+          },
+          "precodegen_mir": {
+            "n_baseline": 1121,
+            "n_current": 1122,
+            "added_count": 1,
+            "removed_count": 0,
+            "raw_changed_count": 3,
+            "span_stripped_changed_count": 0,
+            "added_items": [
+              "ser::__vrustc_probe_added"
+            ],
+            "removed_items": [],
+            "span_stripped_changed_items": []
+          },
+          "llvm_o3_cgu1": {
+            "n_unique_fns_baseline": 184,
+            "n_unique_fns_current": 184,
+            "n_total_defs_baseline": 184,
+            "n_total_defs_current": 184,
+            "llvm_o3_fn_changed": 0,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "llvm_o3_cgu16": {
+            "n_unique_fns_baseline": 271,
+            "n_unique_fns_current": 271,
+            "n_total_defs_baseline": 274,
+            "n_total_defs_current": 274,
+            "llvm_o3_fn_changed": 0,
+            "llvm_o3_alloc_location_erased_changed": 0,
+            "llvm_o3_alloc_and_cgu_hash_erased_changed": 0,
+            "llvm_o3_fn_added": 0,
+            "llvm_o3_fn_removed": 0,
+            "llvm_o3_cgu_hash_erased_added": 0,
+            "llvm_o3_cgu_hash_erased_removed": 0,
+            "changed_demangled": [],
+            "alloc_erased_changed_demangled": [],
+            "added_demangled": [],
+            "removed_demangled": []
+          },
+          "rustc_1_99_1_incremental_o3": {
+            "clean_o3_samples_ms": [
+              1241.81,
+              1259.6,
+              1108.2
+            ],
+            "clean_o3_median_ms": 1241.81,
+            "incr_o3_samples_ms": [
+              694.33,
+              621.33,
+              699.06
+            ],
+            "incr_o3_median_ms": 694.33,
+            "incr_speedup_vs_clean": 1.789,
+            "incr_fraction_of_clean": 0.5591,
+            "rcgu_o_total": 16,
+            "rcgu_o_reused": 0,
+            "rcgu_o_reemitted": 16,
+            "rcgu_o_bytes_changed": 11,
+            "pre_lto_bc_total": 19,
+            "pre_lto_bc_unchanged_bytes": 16,
+            "pre_lto_bc_changed_bytes": 3
+          }
+        }
+      }
+    }
+  }
+}
