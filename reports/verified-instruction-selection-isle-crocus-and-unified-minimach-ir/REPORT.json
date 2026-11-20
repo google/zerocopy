@@ -1,0 +1,134 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/instruction-selection",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/backend",
+    "isa",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/sail",
+    "isa/x86-64",
+    "lean",
+    "lean/mechanization",
+    "llvm",
+    "llvm/codegen",
+    "verification",
+    "verification/compcert"
+  ],
+  "subjects": [
+    {
+      "name": "Wasmtime Cranelift ISLE, VeriISLE/Arrival (cranelift/isle/veri), and MachInst/VCode/MachBuffer backend",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "4eec6994d538397a5170c782548631483fbbb87b",
+        "paths": "Cargo.toml, cranelift/isle/veri/veri/{Cargo.toml,src/{lib.rs,expand.rs,solver.rs,runner.rs,veri.rs}}, cranelift/isle/veri/isaspec/{Cargo.toml,src/{lib.rs,instructions.rs,semantics.rs}}, cranelift/isle/veri/aslp/Cargo.toml, cranelift/codegen/src/machinst/{mod.rs,vcode.rs,buffer.rs,reg.rs}, cranelift/codegen/src/isa/{unwind.rs,x64/inst/emit.rs,aarch64/inst/emit.rs}"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler (Selection, Selectionproof, Mach, x86/Asm, aarch64/Asm)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc",
+        "paths": "driver/Compiler.v, backend/{Selection.v,Selectionproof.v,Mach.v}, x86/Asm.v, aarch64/Asm.v"
+      }
+    },
+    {
+      "name": "CakeML verified compiler backend (word_to_stack, labLang, lab_to_target, targetSem)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb",
+        "paths": "compiler/backend/{word_to_stackScript.sml,labLangScript.sml,lab_to_targetScript.sml,semantics/targetSemScript.sml}"
+      }
+    },
+    {
+      "name": "Lean-MLIR SSA dialect and heterogeneous refinement framework",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+        "paths": "lakefile.lean, lakefile.toml, LeanMLIR/LeanMLIR/Framework.lean, LeanMLIR/LeanMLIR/Framework/Refinement.lean"
+      }
+    },
+    {
+      "name": "RISC-V bitblastable Lean 4 ISA semantics bridged to Sail",
+      "identity": {
+        "repository": "opencompl/riscv-lean",
+        "revision": "0e3365ac7b670d79d70e9b4a8b7fba782607c44f",
+        "paths": "lake-manifest.json, RISCV/Instructions.lean, RISCV/SailToRV64.lean"
+      }
+    },
+    {
+      "name": "Sail ISA specification language Lean backend",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2",
+        "paths": "src/sail_lean_backend/{pretty_print_lean.ml,sail_plugin_lean.ml}"
+      }
+    },
+    {
+      "name": "LLVM SelectionDAG, GlobalISel, MachineInstr, and MachineOperand backend infrastructure",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "27825e751662497914dac447753f6d8daca974ff",
+        "paths": "llvm/include/llvm/CodeGen/{MachineInstr.h,MachineOperand.h,SelectionDAGISel.h}, llvm/include/llvm/CodeGen/GlobalISel/{InstructionSelector.h,LegalizerInfo.h,GenericMachineInstrs.h,RegBankSelect.h}"
+      }
+    },
+    {
+      "name": "Rust compiler inline assembly lowering and LLVM backend adapter",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "560abf7946ae41fd210edac5dfe829d7eff86eec",
+        "paths": "compiler/rustc_codegen_ssa/src/traits/asm.rs, compiler/rustc_codegen_llvm/src/asm.rs"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and standalone kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal TrustedBoundary syntactic and kernel axiom inspector",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "paths": "trusted/audit/TrustedBoundary.lean"
+      }
+    },
+    {
+      "name": "Crocus / VeriISLE modular instruction-selection verifier paper",
+      "identity": {
+        "doi": "10.1145/3617232.3624862",
+        "title": "Lightweight, Modular Verification for WebAssembly-to-Native Instruction Selection",
+        "venue": "ASPLOS 2024"
+      }
+    },
+    {
+      "name": "Arrival authoritative ISA instruction-selection verifier paper",
+      "identity": {
+        "doi": "10.1145/3764383",
+        "title": "Scaling Instruction-Selection Verification against Authoritative ISA Semantics",
+        "venue": "PACMPL / OOPSLA2 2025"
+      }
+    },
+    {
+      "name": "Chamois-CompCert BTL superblock simulation paper",
+      "identity": {
+        "doi": "10.1145/3622799",
+        "title": "Formally Verifying Optimizations with Block Simulations",
+        "venue": "PACMPL / OOPSLA2 2023"
+      }
+    },
+    {
+      "name": "CakeML verified compiler backend paper",
+      "identity": {
+        "doi": "10.1017/S0956796818000229",
+        "title": "The verified CakeML compiler backend",
+        "venue": "Journal of Functional Programming 2019"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

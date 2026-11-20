@@ -1,0 +1,136 @@
+{
+  "toolchains": {
+    "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "rustc_host": "x86_64-unknown-linux-gnu",
+    "readelf_version": "GNU readelf (GNU Binutils for Debian) 2.47",
+    "objdump_version": "GNU objdump (GNU Binutils for Debian) 2.47"
+  },
+  "rustc_compile": {
+    "elapsed_ms": 173.22,
+    "object_size_bytes": 2704,
+    "text_bytes": 116,
+    "eh_frame_bytes": 176,
+    "eh_frame_cies": 2,
+    "eh_frame_fdes": 5,
+    "gcc_except_table_bytes": 12,
+    "rela_text_count": 3,
+    "rela_text_types": [
+      4,
+      9
+    ],
+    "rela_text_addends": [
+      -4
+    ],
+    "rela_eh_frame_count": 7
+  },
+  "specimens": {
+    "asm_alu_subreg": {
+      "section": ".text.asm_alu_subreg",
+      "size_bytes": 9,
+      "raw_hex": "4889f84801f031f0c3",
+      "decoded_instructions": [
+        {
+          "offset": 0,
+          "op": "mov64_rr",
+          "dst": "rax",
+          "src": "rdi",
+          "raw_hex": "4889f8",
+          "reencoded_hex": "4889f8",
+          "exact_roundtrip": true
+        },
+        {
+          "offset": 3,
+          "op": "add64_rr",
+          "dst": "rax",
+          "src": "rsi",
+          "raw_hex": "4801f0",
+          "reencoded_hex": "4801f0",
+          "exact_roundtrip": true
+        },
+        {
+          "offset": 6,
+          "op": "xor32_rr_zext",
+          "dst": "eax",
+          "src": "esi",
+          "raw_hex": "31f0",
+          "reencoded_hex": "31f0",
+          "exact_roundtrip": true
+        },
+        {
+          "offset": 8,
+          "op": "ret",
+          "dst": "rax",
+          "src": "rax",
+          "raw_hex": "c3",
+          "reencoded_hex": "c3",
+          "exact_roundtrip": true
+        }
+      ],
+      "all_roundtrip_matched": true,
+      "observed_add64_and_xor32_zext": true,
+      "direct_encoder_exact_subsequence_match": true
+    },
+    "unwind_call_lsda_size_bytes": 51,
+    "subreg_lanes_size_bytes": 19,
+    "stack_frame_probe_size_bytes": 27
+  },
+  "v1_mutants": {
+    "total": 6,
+    "killed": 6,
+    "cases": [
+      {
+        "id": "mutant1_lo32_zext_upper_preserve",
+        "caught": true,
+        "witness": "actual=0x0000000000000001 vs buggy_upper_preserve=0x1234567800000001"
+      },
+      {
+        "id": "mutant2_lo8_keep_clobbers_hi",
+        "caught": true,
+        "witness": "AH preserved=0xde, buggy=0x00"
+      },
+      {
+        "id": "mutant3_missing_rex_r8_alias",
+        "caught": true,
+        "witness": "good=4d01c8 (dst=r8) vs buggy=4801c8 (dst=rax)"
+      },
+      {
+        "id": "mutant4_jcc_rel8_plus_128_overflow",
+        "caught": true,
+        "witness": "disp=128 outside [-128, 127]; requires relaxation to jcc_rel32"
+      },
+      {
+        "id": "mutant5_outliner_unshifted_sp_load",
+        "caught": true,
+        "witness": "inline=0x7fff00001010, fixed=0x7fff00001010, buggy=0x7fff00001008"
+      },
+      {
+        "id": "mutant6_missing_plt32_addend_minus4",
+        "caught": true,
+        "witness": "correct_rel32=284 vs buggy_no_addend=288"
+      }
+    ]
+  },
+  "lean_verification": {
+    "executed": true,
+    "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+    "returncode": 0,
+    "elapsed_ms": 15720.93,
+    "axiom_reports": [
+      "'MiniMachProbe.srai_equiv_no_bv_decide' depends on axioms: [propext]",
+      "'MiniMachProbe.readLane_writeLane_lo32Zext' depends on axioms: [propext, Quot.sound]",
+      "'MiniMachProbe.writeLane_lo32Zext_clears_upper' depends on axioms: [propext, Quot.sound]",
+      "'MiniMachProbe.disjoint_lo8_writes_preserve_hi8' depends on axioms: [propext, Quot.sound]",
+      "'MiniMachProbe.disjoint_hi8_writes_preserve_lo8' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'MiniMachProbe.lo32Zext_clobbers_upper_canary' depends on axioms: [propext, Quot.sound]",
+      "'MiniMachProbe.decodeOne_encodeInst_append' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'MiniMachProbe.decodeStream_encodeStream_id' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'MiniMachProbe.relaxPassAux_size_ge' depends on axioms: [propext, Quot.sound]",
+      "'MiniMachProbe.relaxLoop_converges_valid' depends on axioms: [propext, Quot.sound]",
+      "'MiniMachProbe.outlined_thunk_simulates_inline' depends on axioms: [propext, Classical.choice, Quot.sound]",
+      "'MiniMachProbe.fde_unwind_restores_caller' depends on axioms: [propext, Classical.choice, Quot.sound]"
+    ],
+    "axiom_count": 12,
+    "forbidden_axioms_detected": false
+  },
+  "objdump_asm_alu_subreg_excerpt": "   0:\t48 8b 07             \tmov    (%rdi),%rax\n   3:\tc7 00 01 00 00 00    \tmovl   $0x1,(%rax)\n   9:\tc3                   \tret\nDisassembly of section .text.asm_alu_subreg:\n0000000000000000 <asm_alu_subreg>:\n   0:\t48 89 f8             \tmov    %rdi,%rax\n   3:\t48 01 f0             \tadd    %rsi,%rax\n   6:\t31 f0                \txor    %esi,%eax\n   8:\tc3                   \tret\n   0:\t48 31 f7             \txor    %rsi,%rdi\n   3:\t48 89 7c 24 f0       \tmov    %rdi,-0x10(%rsp)\n   8:\t48 01 f2             \tadd    %rsi,%rdx\n   b:\t48 89 54 24 f8       \tmov    %rdx,-0x8(%rsp)\n  10:\t48 8b 44 24 f8       \tmov    -0x8(%rsp),%rax\n  15:\t48 03 44 24 f0       \tadd    -0x10(%rsp),%rax\n  1a:\tc3                   \tret\n   0:\t8d 04 37             \tlea    (%rdi,%rsi,1),%eax\n   3:\t48 81 e7 00 ff ff ff \tand    $0xfffffff"
+}
