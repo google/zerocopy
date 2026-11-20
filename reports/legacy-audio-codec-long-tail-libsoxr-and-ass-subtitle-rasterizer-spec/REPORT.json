@@ -1,0 +1,76 @@
+{
+  "topics": [
+    "domains/multimedia-codecs",
+    "domains/media-filters",
+    "verification/fixed-point-dsp",
+    "security/media-codecs",
+    "systems/ffmpeg",
+    "verification/equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg libavcodec long-tail audio decoders and libswresample soxr wrapper",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "SoX Resampler Library (libsoxr)",
+      "identity": {
+        "repository": "chirlu/soxr",
+        "revision": "945b592b70470e29f917f4de89b4281fbbd540c0",
+        "version": "0.1.3"
+      }
+    },
+    {
+      "name": "libass ASS/SSA subtitle renderer",
+      "identity": {
+        "repository": "libass/libass",
+        "revision": "a6613d2554daff9e1b5ddf2dbfb3fc31b61b9448"
+      }
+    },
+    {
+      "name": "Fontations OpenType/TrueType Rust font parsing and outline workspace",
+      "identity": {
+        "repository": "googlefonts/fontations",
+        "revision": "7eec1e18b6dcb2cbb77a805f280825c075a388c6"
+      }
+    },
+    {
+      "name": "HarfRust (harfruzz) pure-Rust OpenType text shaping engine",
+      "identity": {
+        "repository": "harfbuzz/harfruzz",
+        "revision": "afca863838d515241d45ab0f49b1bafc03a9b93e"
+      }
+    },
+    {
+      "name": "ITU-T Speech and ADPCM Coding Recommendations (G.711, G.722, G.723.1, G.726, G.728, G.729)",
+      "identity": {
+        "standard": "ITU-T Rec. G.711 / G.722 / G.723.1 / G.726 / G.728 / G.729",
+        "url": "https://www.itu.int/rec/T-REC-G/e"
+      }
+    },
+    {
+      "name": "3GPP Adaptive Multi-Rate Narrowband and Wideband Speech Specifications",
+      "identity": {
+        "standard": "3GPP TS 26.090 / TS 26.104 (AMR-NB) and TS 26.190 / TS 26.204 (AMR-WB)"
+      }
+    },
+    {
+      "name": "Xiph.Org Vorbis I Specification",
+      "identity": {
+        "standard": "Vorbis I Specification",
+        "version": "1.3.7",
+        "url": "https://xiph.org/vorbis/doc/Vorbis_I_spec.html"
+      }
+    },
+    {
+      "name": "Apple Lossless Audio Codec (ALAC) / ISO/IEC 14496-14",
+      "identity": {
+        "standard": "ISO/IEC 14496-14 / Apple ALAC 1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
