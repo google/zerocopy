@@ -30894,6 +30894,69 @@
         "verification/compiler-verification"
       ]
     },
+    "incremental-smt-proof-repair-certificate-diffing-and-modular-proof-caching": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "819f30914665019898cbad7e09d3962053b6f97a",
+            "version": "1.1.0"
+          },
+          "name": "Carcara Alethe proof checker, slicer, and elaborator"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus Rust verifier (buckets and VIR context pruning)"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+          },
+          "name": "Dafny verifier (ProofDependencyManager and Boogie checksum caching)"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+          },
+          "name": "F* compiler (SolverState lazy context pruning, goal_tree, and Solver.Cache)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "7438ab3d3f79465e36114caa82254540fa007fc7"
+          },
+          "name": "Lean 4 incremental command/tactic SnapshotTree and BVDecide LRAT checker"
+        },
+        {
+          "identity": {
+            "repository": "seahorn/crab",
+            "revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c"
+          },
+          "name": "Crab abstract-interpretation library (SplitDBM potential and unstable sets)"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/pumpkin-pi",
+            "revision": "a7743d4665d8c7a0ebfd9d39e1247ee7804d402b"
+          },
+          "name": "PUMPKIN Pi proof repair plugin for Coq"
+        }
+      ],
+      "topics": [
+        "verification/automation",
+        "verification/proof-engineering",
+        "smt/certificates",
+        "anneal/theory",
+        "lean/elaboration",
+        "build/incremental-computation"
+      ]
+    },
     "independent-proof-checkers-and-smaller-trusted-computing-bases": {
       "observed_at": "2026-11-13",
       "subjects": [
@@ -62745,6 +62808,77 @@
         "verification/algorithms",
         "lean/mechanization",
         "security/malleability"
+      ]
+    },
+    "simd-gather-scatter-table-lookups-bounds-proofs-and-vectorized-dfa-verification": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+          },
+          "name": "Rust compiler and core::intrinsics::simd"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/portable-simd",
+            "revision": "3df387e8fa3cd542aaec2a0b7f771e0515584ef7"
+          },
+          "name": "Rust portable-simd (core_simd)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "5b99fdad636668442f94e15054a6b9fb3a80f613"
+          },
+          "name": "Miri Rust operational interpreter"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "d75e8d27c052458bd263004ce02378b857e9239a"
+          },
+          "name": "LLVM Language Reference (@llvm.masked.gather / @llvm.masked.scatter)"
+        },
+        {
+          "identity": {
+            "repository": "simdutf/simdutf",
+            "revision": "177945073a2e44f6ef252aa2b9cf1ecb8e4d2ab0"
+          },
+          "name": "simdutf vectorized UTF-8 lookup4 validator"
+        },
+        {
+          "identity": {
+            "repository": "hsivonen/encoding_rs",
+            "revision": "e89b7c3371bffe0c260c76a11f32b8a7b6adad4a"
+          },
+          "name": "encoding_rs UTF-8 DFA and SIMD transcoding kernels"
+        },
+        {
+          "identity": {
+            "repository": "trifectatechfoundation/zlib-rs",
+            "revision": "a7f9c02c1f48b8962b46c5428828573e9cbac152"
+          },
+          "name": "zlib-rs DEFLATE Huffman table builder and PCLMULQDQ/PSHUFB CRC-32"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "b28c237471f63efebe152bddd962dc57bbb531eb"
+          },
+          "name": "miniz_oxide two-level DEFLATE Huffman decoder"
+        }
+      ],
+      "topics": [
+        "rust/simd",
+        "verification/algorithms",
+        "verification/rust",
+        "anneal/theory",
+        "isa/x86-64",
+        "isa/aarch64",
+        "rust/miri",
+        "rustc/intrinsics"
       ]
     },
     "simdjson-carryless-quote-masks-structural-tapes-and-vector-utf8": {

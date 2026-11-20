@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "verification/automation",
+    "verification/proof-engineering",
+    "smt/certificates",
+    "anneal/theory",
+    "lean/elaboration",
+    "build/incremental-computation"
+  ],
+  "subjects": [
+    {
+      "name": "Carcara Alethe proof checker, slicer, and elaborator",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "819f30914665019898cbad7e09d3962053b6f97a",
+        "version": "1.1.0"
+      }
+    },
+    {
+      "name": "Verus Rust verifier (buckets and VIR context pruning)",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Dafny verifier (ProofDependencyManager and Boogie checksum caching)",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+      }
+    },
+    {
+      "name": "F* compiler (SolverState lazy context pruning, goal_tree, and Solver.Cache)",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+      }
+    },
+    {
+      "name": "Lean 4 incremental command/tactic SnapshotTree and BVDecide LRAT checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "7438ab3d3f79465e36114caa82254540fa007fc7"
+      }
+    },
+    {
+      "name": "Crab abstract-interpretation library (SplitDBM potential and unstable sets)",
+      "identity": {
+        "repository": "seahorn/crab",
+        "revision": "b1eeb1a9402ab0664e962f26f89d923f8514284c"
+      }
+    },
+    {
+      "name": "PUMPKIN Pi proof repair plugin for Coq",
+      "identity": {
+        "repository": "uwplse/pumpkin-pi",
+        "revision": "a7743d4665d8c7a0ebfd9d39e1247ee7804d402b"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "rust/simd",
+    "verification/algorithms",
+    "verification/rust",
+    "anneal/theory",
+    "isa/x86-64",
+    "isa/aarch64",
+    "rust/miri",
+    "rustc/intrinsics"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and core::intrinsics::simd",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4b5350e87e487aed08ab2f9f0160a4b2616438bc"
+      }
+    },
+    {
+      "name": "Rust portable-simd (core_simd)",
+      "identity": {
+        "repository": "rust-lang/portable-simd",
+        "revision": "3df387e8fa3cd542aaec2a0b7f771e0515584ef7"
+      }
+    },
+    {
+      "name": "Miri Rust operational interpreter",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "5b99fdad636668442f94e15054a6b9fb3a80f613"
+      }
+    },
+    {
+      "name": "LLVM Language Reference (@llvm.masked.gather / @llvm.masked.scatter)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "d75e8d27c052458bd263004ce02378b857e9239a"
+      }
+    },
+    {
+      "name": "simdutf vectorized UTF-8 lookup4 validator",
+      "identity": {
+        "repository": "simdutf/simdutf",
+        "revision": "177945073a2e44f6ef252aa2b9cf1ecb8e4d2ab0"
+      }
+    },
+    {
+      "name": "encoding_rs UTF-8 DFA and SIMD transcoding kernels",
+      "identity": {
+        "repository": "hsivonen/encoding_rs",
+        "revision": "e89b7c3371bffe0c260c76a11f32b8a7b6adad4a"
+      }
+    },
+    {
+      "name": "zlib-rs DEFLATE Huffman table builder and PCLMULQDQ/PSHUFB CRC-32",
+      "identity": {
+        "repository": "trifectatechfoundation/zlib-rs",
+        "revision": "a7f9c02c1f48b8962b46c5428828573e9cbac152"
+      }
+    },
+    {
+      "name": "miniz_oxide two-level DEFLATE Huffman decoder",
+      "identity": {
+        "repository": "Frommi/miniz_oxide",
+        "revision": "b28c237471f63efebe152bddd962dc57bbb531eb"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
