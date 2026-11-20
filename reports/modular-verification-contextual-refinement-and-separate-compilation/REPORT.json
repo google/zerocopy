@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/refinement",
+    "verification/contextual-refinement",
+    "verification/modular-verification",
+    "verification/assume-guarantee",
+    "verification/hoare-logic",
+    "compilers/separate-compilation",
+    "compilers/compiler-correctness",
+    "pl/linking",
+    "pl/contextual-equivalence"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Procedures and parameters: An axiomatic approach (Hoare, 1971)",
+      "identity": {
+        "doi": "10.1007/BFb0059696"
+      }
+    },
+    {
+      "name": "An axiomatic basis for computer programming (Hoare, 1969)",
+      "identity": {
+        "doi": "10.1145/363235.363259"
+      }
+    },
+    {
+      "name": "Hoare Logics for Recursive Procedures and Unbounded Nondeterminism (Nipkow, CSL 2002)",
+      "identity": {
+        "doi": "10.1007/3-540-45793-3_8"
+      }
+    },
+    {
+      "name": "Countable nondeterminism and random assignment (Apt and Plotkin, JACM 1986)",
+      "identity": {
+        "doi": "10.1145/6490.6494"
+      }
+    },
+    {
+      "name": "A Sequential Imperative Programming Language: Syntax, Semantics, Hoare Logics and Verification Environment (Schirmer, Archive of Formal Proofs, 2008)",
+      "identity": {
+        "url": "https://www.isa-afp.org/entries/Simpl.html"
+      }
+    },
+    {
+      "name": "Conjoining specifications (Abadi and Lamport, TOPLAS 1995)",
+      "identity": {
+        "doi": "10.1145/203095.201069"
+      }
+    },
+    {
+      "name": "Programming from Specifications, 2nd ed. (Morgan, Prentice Hall International, 1994)",
+      "identity": {
+        "isbn": "978-0-13-123274-7"
+      }
+    },
+    {
+      "name": "A behavioral notion of subtyping (Liskov and Wing, TOPLAS 1994)",
+      "identity": {
+        "doi": "10.1145/197320.197383"
+      }
+    },
+    {
+      "name": "Lambda-calculus models of programming languages (J. H. Morris Jr., PhD thesis, MIT)",
+      "identity": {
+        "handle": "1721.1/64850"
+      }
+    },
+    {
+      "name": "Advice on structuring compilers and proving them correct (F. L. Morris, POPL 1973)",
+      "identity": {
+        "doi": "10.1145/512927.512941"
+      }
+    },
+    {
+      "name": "Formal verification of a realistic compiler (Leroy, CACM 2009)",
+      "identity": {
+        "doi": "10.1145/1538788.1538814"
+      }
+    },
+    {
+      "name": "Certificate translation for optimizing compilers (Barthe, Gregoire, Kunz, Rezk, TOPLAS 2009)",
+      "identity": {
+        "doi": "10.1145/1538917.1538919"
+      }
+    },
+    {
+      "name": "Compositional CompCert (Stewart, Beringer, Cuellar, Appel, POPL 2015)",
+      "identity": {
+        "doi": "10.1145/2676726.2676985"
+      }
+    },
+    {
+      "name": "Lightweight verification of separate compilation (Kang, Kim, Hur, Dreyer, Vafeiadis, POPL 2016)",
+      "identity": {
+        "doi": "10.1145/2837614.2837642"
+      }
+    },
+    {
+      "name": "The next 700 compiler correctness theorems (functional pearl) (Patterson and Ahmed, ICFP 2019)",
+      "identity": {
+        "doi": "10.1145/3341689"
+      }
+    },
+    {
+      "name": "CompCertM: CompCert with C-assembly linking and lightweight modular verification (Song et al., POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371091"
+      }
+    },
+    {
+      "name": "CompCertO: compiling certified open C components (Koenig and Shao, PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454097"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

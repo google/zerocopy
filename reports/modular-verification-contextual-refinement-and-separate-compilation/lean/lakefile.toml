@@ -1,0 +1,9 @@
+name = "toy-link"
+defaultTargets = ["ToyLink"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[lean_lib]]
+name = "ToyLink"

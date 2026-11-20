@@ -1,0 +1,675 @@
+[
+  {
+    "id": "ctx-refines-refl",
+    "lean": "Toy.Link.ctxRefines_refl",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Reference point: reflexivity of contextual approximation is immediate from its definition (contextual equivalence originates with J. H. Morris Jr. 1968).",
+    "plain_claim": "Every module contextually refines itself (`CtxRefines M M`); this is a reference point, immediate from the definition.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "The identity map on `HasBehavior entry (link C M) fuel arg out`.",
+    "nonvacuity_witness": "The open module `openCallerMod` (`0` calls the import `1`) contextually refines itself.",
+    "nonvacuity_witness_lean": "Toy.Link.Examples.nonvacuous_ctxRefines_refl",
+    "non_claims": [
+      "`CtxRefines`/`EntryRefines` compare outcome sets at the same call-depth fuel, and `outOfFuel` is one of the compared outcomes. They therefore do constrain divergence: a target that may fail to terminate where the source terminates does not refine it (`Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence`). They imply inclusion of may-divergence in the sense of `MayDiverge` (`Toy.Link.ctxRefines_reflects_mayDiverge`; with binary `choose`, `MayDiverge` coincides with the existence of an infinite call chain, an equivalence not formalized here), and they are strictly finer than inclusion of eventual results or of divergence-sensitive behaviour because they also fix call depth (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`). 'Divergence is not observed' applies only to the partial-correctness results.",
+      "Every function a module defines is exported and can be called by a context, and `CtxRefines M M'` implies `SameDom M M'` (`Toy.Link.ctxRefines_sameDom`). So contextual refinement here forbids adding, removing or renaming any function, including compiler-introduced helpers (clones, outlined code) and dead internal helpers. The model has no private or static symbols, so it says nothing about transformations of non-exported code.",
+      "Does not make `CtxRefines` symmetric: `choose01Mod ⊑ const0Mod` holds while the converse fails (`Toy.Link.Examples.cex_ctxRefines_not_symm`).",
+      "Toy model: stateless first-order functions of one unbounded integer argument, modules as finite association lists, no memory and no concurrency; says nothing directly about C, Rust, or assembly linking."
+    ],
+    "prior_art": [
+      "James Hiram Morris Jr., 'Lambda-calculus models of programming languages', PhD thesis, Massachusetts Institute of Technology (MIT Project MAC report MAC-TR-57, 1968; the MIT DSpace record, hdl:1721.1/64850, dates the degree 1969): origin of contextual (observational) equivalence. The thesis record and secondary accounts were checked; the page of the definition was not."
+    ],
+    "design_question": "Which per-module guarantees compose into whole-program guarantees under linking, which apparently natural per-module notions do not, and what extra structure (fuel or a well-founded measure, spec refinement, interface-only assumptions) is genuinely needed? (Reference point.)",
+    "lean_names": [
+      "Toy.Link.Examples.cex_ctxRefines_not_symm"
+    ]
+  },
+  {
+    "id": "ctx-refines-trans",
+    "lean": "Toy.Link.ctxRefines_trans",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Transitivity of contextual approximation; the only non-immediate step is that `Linkable C M₂` follows from `Linkable C M₁` because `CtxRefines` forces equal domains (`ctxRefines_sameDom`).",
+    "plain_claim": "If `CtxRefines M₁ M₂` and `CtxRefines M₂ M₃`, then `CtxRefines M₁ M₃`, with no extra domain or linkability hypothesis on the middle module `M₂`.",
+    "hypotheses": [
+      {
+        "name": "CtxRefines M₁ M₂",
+        "purpose": "first refinement step; also gives `SameDom M₁ M₂`, so every context disjoint from `M₁` is disjoint from `M₂`. Tightness is immediate for any relation that is not total (the counterexample takes `M₂ = M₃`).",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ctxRefines_trans_without_first"
+      },
+      {
+        "name": "CtxRefines M₂ M₃",
+        "purpose": "second refinement step",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ctxRefines_trans_without_second"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Derives `Linkable C M₂` via `ctxRefines_sameDom`, then chains the two outcome inclusions.",
+    "nonvacuity_witness": "Strict chain `choose {0,1,2}` (`choose012Mod`) ⊑ `choose {0,1}` (`choose01Mod`) ⊑ `0` (`const0Mod`).",
+    "nonvacuity_witness_lean": "Toy.Link.Examples.nonvacuous_ctxRefines_trans",
+    "non_claims": [
+      "`CtxRefines` compares outcome sets at the same call-depth fuel, including `outOfFuel`; it constrains divergence and fixes call depth (`Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence`, `Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`). Transformations that add or remove a call on some path fail `CtxRefines` even when they compute the same results.",
+      "Every defined function is exported; `CtxRefines` forces equal domains (`Toy.Link.ctxRefines_sameDom`). The model has no private symbols.",
+      "Unlike Patterson and Ahmed's discussion of vertical compositionality (which they distinguish from transitivity), this result relates modules of one language only; it says nothing about multi-pass compilers between different languages."
+    ],
+    "prior_art": [
+      "Daniel Patterson and Amal Ahmed, 'The next 700 compiler correctness theorems (functional pearl)', PACMPL 3(ICFP), Article 85, 29 pp., 2019, doi:10.1145/3341689 (§5.4, p. 85:18, 'Digression: Vertical Compositionality vs. Transitivity').",
+      "Youngju Song, Minki Cho, Dongjoo Kim, Yonghyun Kim, Jeehoon Kang, and Chung-Kil Hur, 'CompCertM: CompCert with C-assembly linking and lightweight modular verification', PACMPL 4(POPL), Article 23, 31 pp., 2020, doi:10.1145/3371091 (§2.3, Theorem 2.1, `VerComp`: vertical composition of refinement).",
+      "Jérémie Koenig and Zhong Shao, 'CompCertO: compiling certified open C components', PLDI '21, pp. 1095-1109, 2021, doi:10.1145/3453483.3454097 (§3.3, Theorem 3.7: open forward simulations compose vertically)."
+    ],
+    "design_question": "Which per-module guarantees compose into whole-program guarantees under linking, which apparently natural per-module notions do not, and what extra structure (fuel or a well-founded measure, spec refinement, interface-only assumptions) is genuinely needed?"
+  },
+  {
+    "id": "ctx-refines-precongruence-link",
+    "lean": [
+      "Toy.Link.ctxRefines_link_congr",
+      "Toy.Link.ctxRefines_link_left",
+      "Toy.Link.ctxRefines_link_right"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Contextual approximation is a precongruence by construction: a context for `link M₁ M₂` is re-associated as a context for each component.",
+    "plain_claim": "If `CtxRefines M₁ M₁'`, `CtxRefines M₂ M₂'`, and `Linkable M₁ M₂`, then `CtxRefines (link M₁ M₂) (link M₁' M₂')`; `Linkable M₁' M₂'` is derived, not assumed.",
+    "hypotheses": [
+      {
+        "name": "CtxRefines M₁ M₁'",
+        "purpose": "contextual refinement of the left module (also gives `SameDom M₁ M₁'`)",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_link_congr_without_first_refines"
+      },
+      {
+        "name": "CtxRefines M₂ M₂'",
+        "purpose": "contextual refinement of the right module (also gives `SameDom M₂ M₂'`)",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_link_congr_without_second_refines"
+      },
+      {
+        "name": "Linkable M₁ M₂",
+        "purpose": "disjointness: without it, `M₁` can shadow a name that `M₂` uses internally (symbol interposition), and `CtxRefines M₂ M₂'` only quantifies over disjoint contexts",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_link_congr_without_linkable"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Re-associates and commutes the disjoint contexts `link C M₂'` and `link C M₁` (`lookup_link_assoc`, `lookup_link_comm`) and applies each hypothesis once.",
+    "nonvacuity_witness": "Caller `[(0, call 1 var)]` linked with `[(1, choose (lit 0) (lit 1))]`, refined to the same caller linked with `[(1, lit 0)]`.",
+    "nonvacuity_witness_lean": "Toy.Link.Examples.nonvacuous_ctxRefines_link_congr",
+    "non_claims": [
+      "Precongruence is close to definitional here: contexts are stateless first-order modules and compose by linking. Unlike CompCertO Theorem 3.4 and CompCertM HorComp (which needs self-related modules), it says nothing about simulation-based compiler correctness, where horizontal composition is a substantive theorem about memory and rely/guarantee conventions.",
+      "Does not hold for non-disjoint (shadowing) linking (`Toy.Link.Cex.cex_link_congr_without_linkable`).",
+      "`CtxRefines` constrains divergence and fixes call depth (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`); per-module passes that add or remove calls are not contextual refinements, so this theorem does not cover them. Specification-based separate compilation (`separate-compilation-preserves-verifiability`) admits such passes but gives no behavioural relation.",
+      "Every defined function is exported; `CtxRefines` forces equal domains. The model has no private symbols."
+    ],
+    "prior_art": [
+      "Daniel Patterson and Amal Ahmed, 'The next 700 compiler correctness theorems (functional pearl)', PACMPL 3(ICFP), Article 85, 29 pp., 2019, doi:10.1145/3341689 (§5.2, p. 85:14, 'Digression: Horizontal Compositionality vs. Source-Independent Linking').",
+      "Youngju Song et al., 'CompCertM', PACMPL 4(POPL), Article 23, 2020, doi:10.1145/3371091 (§2.3, Theorem 2.1, `HorComp`, stated for self-related modules).",
+      "Jérémie Koenig and Zhong Shao, 'CompCertO', PLDI '21, pp. 1095-1109, 2021, doi:10.1145/3453483.3454097 (§3.3, Theorem 3.4: horizontal composition of simulations)."
+    ],
+    "design_question": "Which per-module guarantees compose into whole-program guarantees under linking, which apparently natural per-module notions do not, and what extra structure (fuel or a well-founded measure, spec refinement, interface-only assumptions) is genuinely needed?"
+  },
+  {
+    "id": "ctx-refines-forces-same-domain",
+    "lean": "Toy.Link.ctxRefines_sameDom",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (contextual equivalence presupposes a common interface) made precise: here equal domains are derived, because a call to an undefined name is observable as `undefinedCall` even with the empty context.",
+    "plain_claim": "If `CtxRefines M M'`, then `M` and `M'` define exactly the same function names (`SameDom M M'`); hence adding, deleting, or renaming any function breaks contextual refinement in this model.",
+    "hypotheses": [
+      {
+        "name": "CtxRefines M M'",
+        "purpose": "the empty context at fuel `1` distinguishes a defined from an undefined name",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Probe each name with the empty context at fuel `1` (`eval_one_undefinedCall_iff`).",
+    "nonvacuity_witness": "`CtxRefines choose01Mod const0Mod`.",
+    "nonvacuity_witness_lean": "Toy.Link.Examples.nonvacuous_ctxRefines_sameDom",
+    "non_claims": [
+      "Depends on two modelling choices: `undefinedCall` is an ordinary observable outcome, and contexts need not close the program (the entry may be any name, including one neither module defines). Linking never fails: unresolved references are allowed and fail only at run time, so deleting an exported function is modelled as a change of run-time behaviour, whereas in real toolchains it is typically a link-time error. A source `undefinedCall` does not license arbitrary target behaviour (contrast Leroy 2009, §2.1).",
+      "The model has no private or static symbols: every definition is an export. The result says nothing about adding or removing non-exported helpers in a language with symbol hiding.",
+      "Does not say that equal domains suffice for contextual refinement."
+    ],
+    "prior_art": [
+      "Xavier Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814 (§2.1: whole-program semantic preservation; going-wrong source behaviours relax preservation, unlike here)."
+    ],
+    "design_question": "Which apparently natural per-module transformations (deleting unused exports, introducing helpers) fail contextual refinement, and why?"
+  },
+  {
+    "id": "cex-add-or-delete-function-not-contextual",
+    "lean": [
+      "Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines",
+      "Toy.Link.Cex.cex_add_fresh_helper_not_ctxRefines"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Instances of `ctxRefines_sameDom`; no source states these particular transformations, so labelled folklore made precise.",
+    "plain_claim": "Deleting an exported function that no in-module code calls, or adding an unused helper function, preserves refinement (both directions) at the designated entry `0` of a closed module, yet fails `CtxRefines` because the domain changes; this is domain observability, not a context-interaction phenomenon.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Entry-0 refinement by fuel case split; `¬ SameDom` by `decide`; `¬ CtxRefines` from `ctxRefines_sameDom`.",
+    "nonvacuity_witness": "`deadSrc = [(0, lit 42), (1, lit 7)]` vs `deadTgt = [(0, lit 42)]`; `[(0, lit 0)]` vs `[(0, lit 0), (7, lit 0)]`.",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines",
+    "positive_control_lean": "Toy.Link.Examples.positive_control_in_place_export_optimization",
+    "non_claims": [
+      "This is an immediate consequence of `ctxRefines_sameDom`; calling the deleted function with the empty context already separates the pair. It does not exhibit callbacks, shared memory, or pointer leakage.",
+      "The model has no private symbols. In a language where the helper or the deleted function is static (not exported), these transformations may well be contextual refinements; nothing here speaks to that.",
+      "`undefinedCall` is observable and linking never fails; in real toolchains deleting a referenced export is typically a link-time error."
+    ],
+    "prior_art": [
+      "Daniel Patterson and Amal Ahmed, 'The next 700 compiler correctness theorems (functional pearl)', PACMPL 3(ICFP), Article 85, 2019, doi:10.1145/3341689 (§2, p. 85:3: the whole-program theorem 'says absolutely nothing about what (if anything) the compiler does for partial programs')."
+    ],
+    "design_question": "Which apparently natural per-module transformations fail contextual refinement, and is the failure due to contexts or merely to the interface?"
+  },
+  {
+    "id": "ctx-refines-closed-collapse",
+    "lean": "Toy.Link.ctxRefines_iff_standaloneRefines_of_closed_source_or_target",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore that contexts matter only through the interactions they can have with a module, made precise for stateless first-order modules; no source states this exact equivalence.",
+    "plain_claim": "If the source module or the target module is closed (`ClosedModule M ∨ ClosedModule M'`), then contextual refinement coincides with standalone refinement at every entry point (`CtxRefines M M' ↔ StandaloneRefines M M'`); contexts can only matter when both modules are open.",
+    "hypotheses": [
+      {
+        "name": "ClosedModule M ∨ ClosedModule M'",
+        "purpose": "if the target is closed, a disjoint context neither changes the target's own functions nor removes any outcome of the source other than `undefinedCall`; if the source is closed, standalone refinement forces the target never to reach an unresolved name from a defined entry, so the context cannot affect it. Either disjunct alone suffices.",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_collapse_without_closed_side"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on fuel over the context's entries, using `eval_link_closed`, `eval_link_right_of_no_undefinedCall`, `closedModule_no_undefinedCall` and the monotonicity lemma `eval_link_superset_non_undefinedCall`.",
+    "nonvacuity_witness": "Open source `[(0, choose (lit 1) (call 5 var))]` and closed target `const1Mod`: standalone refinement holds, so the theorem yields `CtxRefines` (removing a branch that calls an import). Closed-source disjunct: closed source `const1Mod = [(0, lit 1)]` and syntactically open target `deadImportTgt = [(0, ifLe (lit 1) (lit 0) (call 5 var) (lit 1))]` (the external call is dead): standalone refinement holds, and so `CtxRefines` holds.",
+    "nonvacuity_witness_lean": [
+      "Toy.Link.Examples.nonvacuous_collapse_closed_target",
+      "Toy.Link.Examples.closed_source_open_target_collapse_witness"
+    ],
+    "non_claims": [
+      "For closed modules the only gap between refinement at a designated entry and contextual refinement is the other exported entries (`Toy.Link.Cex.cex_closed_main_entry_refines_not_ctxRefines`); no context is needed to exhibit it.",
+      "Relies on the absence of state, memory, and pointers: contexts can interact with a module only through calls and return values. In languages with shared state or address-taking, closed modules can still be distinguished by contexts.",
+      "`CtxRefines` compares outcomes in lockstep call depth and every definition is exported (`Toy.Link.ctxRefines_sameDom`); so does `StandaloneRefines` (by `sameDom_of_standaloneRefines`).",
+      "With both modules open the equivalence fails (`Toy.Link.Cex.cex_collapse_without_closed_side`)."
+    ],
+    "prior_art": [
+      "Gordon Stewart, Lennart Beringer, Santiago Cuellar, and Andrew W. Appel, 'Compositional CompCert', POPL '15, pp. 275-287, 2015, doi:10.1145/2676726.2676985 (§1: CompCert's original correctness statement is limited to whole programs; §3, Definition 1: contextual equivalence as equitermination under all contexts).",
+      "Daniel Patterson and Amal Ahmed, 'The next 700 compiler correctness theorems (functional pearl)', PACMPL 3(ICFP), Article 85, 2019, doi:10.1145/3341689 (§2, p. 85:3)."
+    ],
+    "design_question": "When does a whole-program (closed) refinement check suffice for contextual refinement, and when is genuine context quantification needed?"
+  },
+  {
+    "id": "cex-closed-main-entry-refinement-not-contextual",
+    "lean": "Toy.Link.Cex.cex_closed_main_entry_refines_not_ctxRefines",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore that whole-program refinement at `main` says nothing about other exported entries, made precise; the cited sources state the general gap, not this transformation.",
+    "plain_claim": "Specializing an exported function `1` of a closed module to the argument `5` used by its only in-module caller preserves refinement in both directions at the designated entry `0` (with equal domains), but already fails refinement at entry `1` with no context, so it is not a contextual refinement.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Fuel case split for entry `0`; `decide` at entry `1`, fuel `1`; `¬ CtxRefines` via `standaloneRefines_of_ctxRefines`.",
+    "nonvacuity_witness": "`specSrc = [(0, call 1 (lit 5)), (1, var)]`, `specTgt = [(0, call 1 (lit 5)), (1, lit 5)]`; entry `1` on argument `9` returns `9` vs `5`.",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_closed_main_entry_refines_not_ctxRefines",
+    "positive_control_lean": "Toy.Link.Examples.positive_control_in_place_export_optimization",
+    "non_claims": [
+      "For closed modules, contextual refinement in this model coincides with standalone refinement at every entry point (`Toy.Link.ctxRefines_iff_standaloneRefines_of_closed_source_or_target`). This counterexample is already witnessed by calling function `1` directly with the empty context. It shows only that refinement at one designated entry does not imply refinement at all exported entries. It does not exhibit any context-interaction phenomenon such as callbacks, shared memory or pointer leakage; for a counterexample in which the context supplies behaviour, see `cex-open-specialization-standalone-refinement-not-contextual`.",
+      "Every definition is exported; specialization via a fresh private clone cannot be expressed (a clone is a new export and fails `CtxRefines` by `Toy.Link.ctxRefines_sameDom`).",
+      "Does not claim that every optimization of an exported body fails: an in-place `x + 0 ↦ x` rewrite is a contextual refinement (`Toy.Link.Examples.positive_control_in_place_export_optimization`)."
+    ],
+    "prior_art": [
+      "F. Lockwood Morris, 'Advice on structuring compilers and proving them correct', POPL '73, pp. 144-152, 1973, doi:10.1145/512927.512941 (whole-program semantics-preservation diagram, as summarized by Patterson and Ahmed 2019, §2, pp. 85:3-85:4; primary text not checked).",
+      "Xavier Leroy, 'Formal verification of a realistic compiler', CACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814 (§2.1: semantic preservation for whole programs).",
+      "Daniel Patterson and Amal Ahmed, PACMPL 3(ICFP), Article 85, 2019, doi:10.1145/3341689 (§2, p. 85:3)."
+    ],
+    "design_question": "Which per-module guarantees compose into whole-program guarantees under linking, and which apparently natural per-module notions do not?"
+  },
+  {
+    "id": "cex-open-specialization-standalone-refinement-not-contextual",
+    "lean": "Toy.Link.Cex.cex_open_specialization_standalone_refines_not_ctxRefines",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore (refinement checked in one program, or with imports unresolved, does not survive other linking contexts) made precise with an open module whose import is supplied by the context.",
+    "plain_claim": "For open modules `openSpecSrc = [(0, call 1 (lit 3)), (1, call 5 var)]` and its specialization `openSpecTgt` (`1` forwards the constant `3` used by its only in-module caller to the import `5`), refinement holds in both directions at every entry when the modules run standalone, and at the designated entry `0` of the program `link identityImport _` they ship in; yet in that program calling `1(9)` separates them, a context whose import `5` calls back into `1` separates them even at entry `0`, and `CtxRefines` fails.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Equal evaluation lists by fuel case analysis; separating behaviours by `decide` at fuel `2` (entry `1`) and fuel `5` (callback context, entry `0`).",
+    "nonvacuity_witness": "Identity import `[(5, var)]`: entry `1` on `9` returns `9` vs `3`. Callback import `[(5, ifLe var (lit 3) (call 1 (lit 9)) var)]`: entry `0` at fuel `5` returns `9` vs out of fuel (the specialized module loops through the callback).",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_open_specialization_standalone_refines_not_ctxRefines",
+    "positive_control_lean": "Toy.Link.Examples.collapse_closed_target_ctxRefines",
+    "non_claims": [
+      "Both modules are open, and this is necessary: if either were closed, standalone refinement would imply `CtxRefines` (`Toy.Link.ctxRefines_iff_standaloneRefines_of_closed_source_or_target`).",
+      "Does not show that refinement at entry `0` fails under every context: in the shipped program it holds. It shows that neither standalone refinement at all entries nor refinement at the designated entry of one particular program implies contextual refinement.",
+      "The interaction is first-order (calls and return values, including callbacks); there is no shared memory or pointer leakage in the model.",
+      "`CtxRefines` constrains divergence: the callback separation at entry `0` is a newly introduced divergence."
+    ],
+    "prior_art": [
+      "Gordon Stewart, Lennart Beringer, Santiago Cuellar, and Andrew W. Appel, 'Compositional CompCert', POPL '15, pp. 275-287, 2015, doi:10.1145/2676726.2676985 (§1; §3, Definition 1).",
+      "Daniel Patterson and Amal Ahmed, PACMPL 3(ICFP), Article 85, 2019, doi:10.1145/3341689 (§2, p. 85:3)."
+    ],
+    "design_question": "Which per-module guarantees compose into whole-program guarantees under linking, which apparently natural per-module notions do not, and when is quantification over contexts genuinely needed?"
+  },
+  {
+    "id": "ctx-refines-reflects-may-divergence",
+    "lean": "Toy.Link.ctxRefines_reflects_mayDiverge",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (fuel-indexed refinement observes non-termination) made precise for this definition.",
+    "plain_claim": "If `CtxRefines M M'` and the context `C` is disjoint from `M`, then whenever `link C M'` may diverge at an entry and argument (`outOfFuel` at every fuel), so may `link C M`.",
+    "hypotheses": [
+      {
+        "name": "CtxRefines M M'",
+        "purpose": "outcomes, including `outOfFuel`, are compared at every fuel",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence"
+      },
+      {
+        "name": "Linkable C M",
+        "purpose": "`CtxRefines` quantifies only over disjoint contexts; an overlapping context can shadow a name that one module uses. (`Linkable C M'` is derived from it via `ctxRefines_sameDom`.)",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_reflects_mayDiverge_without_linkable"
+      }
+    ],
+    "depth": "definitional",
+    "depth_justification": "Instantiate `CtxRefines` with the outcome `outOfFuel` at each fuel.",
+    "nonvacuity_witness": "`chooseLoopMod = [(0, choose (call 0 var) (lit 0))]` ⊑ `selfLoopMod = [(0, call 0 var)]` with the empty context; the target may diverge.",
+    "nonvacuity_witness_lean": "Toy.Link.Examples.nonvacuous_ctxRefines_reflects_mayDiverge",
+    "non_claims": [
+      "`MayDiverge` is 'out of fuel at every fuel'. That this coincides with an infinite execution relies on finite (binary) branching and is not formalized here.",
+      "Does not say `CtxRefines` is a divergence-sensitive refinement in the usual sense: it is strictly finer, because it also fixes call depth (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`).",
+      "Partial-correctness notions (`FnPartialCorrect`, `ProgramPartialCorrect`) accept `outOfFuel` and therefore do not observe divergence; this theorem is about the refinement relations only."
+    ],
+    "prior_art": [
+      "Tobias Nipkow, 'Hoare logics for recursive procedures and unbounded nondeterminism', CSL 2002, LNCS 2471, pp. 103-119, Springer, 2002, doi:10.1007/3-540-45793-3_8 (§2: semantics indexed by 'at most n nested procedure invocations', the same call-depth index as the fuel here)."
+    ],
+    "design_question": "What exactly does fuel-indexed contextual refinement observe about non-termination and call structure?"
+  },
+  {
+    "id": "cex-ctx-refines-fixes-call-depth",
+    "lean": "Toy.Link.Cex.cex_ctxRefines_fixes_call_depth",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore consequence of lockstep fuel indexing, made precise.",
+    "plain_claim": "`directMod = [(0, lit 0), (1, lit 0)]` and `viaCallMod = [(0, call 1 var), (1, lit 0)]` have equal domains and evaluate identically at every entry and argument once fuel is at least `2`, yet neither contextually refines the other: `CtxRefines` forbids both adding and removing a call on a path.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Evaluation at fuel `n + 2` by `simp`; separations at fuel `1` by `decide`.",
+    "nonvacuity_witness": "At fuel `1`, `viaCallMod` is out of fuel at entry `0` and `directMod` returns `0`.",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_ctxRefines_fixes_call_depth",
+    "positive_control_lean": "Toy.Link.Examples.passCtxRefines_pos",
+    "non_claims": [
+      "Shows that `CtxRefines` is strictly finer than inclusion of eventual results; it does not claim that real compilers must preserve call depth. A refinement relation insensitive to call depth (e.g. comparing outcomes for some sufficiently large fuel) is a different design not studied here.",
+      "Passes that keep the call structure, such as constant folding of `x + 0`, are contextual refinements (`Toy.Link.Examples.passCtxRefines_pos`)."
+    ],
+    "prior_art": [
+      "Tobias Nipkow, CSL 2002, LNCS 2471, pp. 103-119, doi:10.1007/3-540-45793-3_8 (§2: call-depth-indexed semantics)."
+    ],
+    "design_question": "What exactly does fuel-indexed contextual refinement observe, and which optimizations does it therefore exclude?"
+  },
+  {
+    "id": "ag-partial-correctness",
+    "lean": "Toy.Link.ag_partial_correctness",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The rule of recursive invocation for partial correctness (Hoare 1971), proved sound by induction on call depth as in Nipkow 2002 §§2-3; mechanized in Isabelle/HOL by Nipkow and in Schirmer's Simpl.",
+    "plain_claim": "If every function with a satisfiable precondition is defined in `P` (`SpecsImplemented P S`) and every body satisfies its contract assuming all callees satisfy theirs (`ModuleVerifiedPartial P S S`), then `P` is partially correct for `S`, with no termination measure.",
+    "hypotheses": [
+      {
+        "name": "SpecsImplemented P S",
+        "purpose": "rules out `undefinedCall` at calls permitted by `S`",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ag_partial_without_specsImplemented"
+      },
+      {
+        "name": "ModuleVerifiedPartial P S S",
+        "purpose": "each body establishes its postcondition under `wpPartial S`, assuming callees satisfy `S`",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ag_partial_without_moduleVerified"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on fuel lifting the already proved one-frame soundness lemma `wpPartial_sound_evalExprWith`; about fifteen lines.",
+    "nonvacuity_witness": "Mutually recursive `even`/`odd` program `evenOddProg` with parity contract `evenOddSpec`. Applying the theorem yields `ProgramPartialCorrect evenOddProg evenOddSpec` (`Toy.Link.Examples.evenOddProg_partial_correct`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Link.Examples.nonvacuous_ag_partial_correctness",
+      "Toy.Link.Examples.evenOddProg_partial_correct"
+    ],
+    "non_claims": [
+      "Partial correctness only: `outOfFuel` is always accepted, so divergence is not observed; a diverging loop is partially correct for any postcondition (`Toy.Link.Cex.cex_ag_total_unsound_without_measure`).",
+      "Contracts are on a single integer argument and result; no state, frames, auxiliary variables or adaptation rules are modelled; integers are unbounded.",
+      "Each call is assumed independently via `(S fn).post`, so cross-call facts (e.g. `f(x) - f(x) = 0`) are not available unless the postcondition determines the result."
+    ],
+    "prior_art": [
+      "C. A. R. Hoare, 'Procedures and parameters: An axiomatic approach', Symposium on Semantics of Algorithmic Languages, LNM 188, pp. 102-116, Springer, 1971, doi:10.1007/BFb0059696 (rule of recursive invocation; the page of the rule was not checked).",
+      "Tobias Nipkow, 'Hoare logics for recursive procedures and unbounded nondeterminism', CSL 2002, LNCS 2471, pp. 103-119, Springer, 2002, doi:10.1007/3-540-45793-3_8 (§2: semantics with 'at most n nested procedure invocations'; §3: soundness of partial correctness proved by induction on the call depth; mechanized in Isabelle/HOL; checked against the author's preprint, whose pagination differs from the LNCS pages).",
+      "Norbert Schirmer, 'A Sequential Imperative Programming Language: Syntax, Semantics, Hoare Logics and Verification Environment', Archive of Formal Proofs, 2008 (Simpl: sound and complete Hoare logics for partial and total correctness with mutually recursive procedures, in Isabelle/HOL).",
+      "Martín Abadi and Leslie Lamport, 'Conjoining specifications', ACM TOPLAS 17(3):507-535, 1995, doi:10.1145/203095.201069 (analogy only: circular assume-guarantee composition is sound for safety, where the guarantee must hold one step longer than the assumption (§2.2, p. 513; §5.2, p. 529); here the fuel decrement at calls plays that role)."
+    ],
+    "design_question": "What extra structure (fuel or a well-founded measure) is genuinely needed for circular modular verification to compose?",
+    "lean_names": [
+      "Toy.Link.link_ag_partial_correctness"
+    ]
+  },
+  {
+    "id": "cex-ag-total-circular-unsound",
+    "lean": "Toy.Link.Cex.cex_ag_total_unsound_without_measure",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The classical failure of the circular rule for termination, in the procedure-contract setting; Abadi and Lamport give the analogous failure of circular assume-guarantee for liveness.",
+    "plain_claim": "The closed module `selfLoopMod = [(0, call 0 var)]` implements `zeroOutSpec` and satisfies the circular partial-correctness obligation (verified to return `0` assuming it returns `0`), yet is not totally correct.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "`eval fuel selfLoopMod 0 0 = [outOfFuel]` for every fuel, by induction.",
+    "nonvacuity_witness": "`selfLoopMod` with `zeroOutSpec` (`pre = True`, `post = (v = 0)`).",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_ag_total_unsound_without_measure",
+    "positive_control_lean": "Toy.Link.Examples.positive_control_ag_total_with_wf_measure",
+    "non_claims": [
+      "Does not refute the circular rule for partial correctness (`ag-partial-correctness`).",
+      "Escape hatch: a well-founded measure decreasing across every call restores total correctness (`Toy.Link.Examples.positive_control_ag_total_with_wf_measure`, `ag-total-correctness-wf-measure`).",
+      "Non-termination appears as `outOfFuel` at every fuel; there is no separate infinite-trace semantics."
+    ],
+    "prior_art": [
+      "Martín Abadi and Leslie Lamport, 'Conjoining specifications', ACM TOPLAS 17(3):507-535, 1995, doi:10.1145/203095.201069 (§2.2, 'Composing Open Systems', pp. 510-513: circular composition succeeds for the safety example 'c always equals 0' and fails for the liveness example 'c eventually equals 1'; an analogy in TLA over reactive systems, not a statement about procedures)."
+    ],
+    "design_question": "What extra structure (a well-founded measure) is genuinely needed for circular modular verification of total correctness?"
+  },
+  {
+    "id": "ag-total-correctness-wf-measure",
+    "lean": "Toy.Link.ag_total_correctness_of_wf_call_measure",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Soundness of the total-correctness rule for mutually recursive procedures with a well-founded relation (Nipkow 2002, §§4-5), here with finite branching.",
+    "plain_claim": "If `rel` is well-founded, `P` implements all satisfiable preconditions of `S`, and every body establishes its contract in `wpCallDec rel μ S` (every call strictly decreases the call measure `μ` and meets the callee precondition), then `P` is totally correct for `S` (a uniform finite fuel bound per argument).",
+    "hypotheses": [
+      {
+        "name": "WellFounded rel",
+        "purpose": "forbids infinite descending call chains",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ag_total_without_wf"
+      },
+      {
+        "name": "SpecsImplemented P S",
+        "purpose": "rules out `undefinedCall` at calls permitted by `S`",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ag_total_without_specsImplemented"
+      },
+      {
+        "name": "ModuleVerifiedTotal rel μ P S S",
+        "purpose": "each body meets its postcondition while every call decreases `μ` and meets the callee precondition",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_ag_total_without_moduleVerifiedTotal"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Well-founded induction on `μ fn x` with an inner structural induction on bodies, fuel stabilization (`eval_stabilizes_of_no_outOfFuel`) and a maximum over finitely many branches.",
+    "nonvacuity_witness": "`evenOddProg` with `WellFounded Nat.lt` and `μ _ x := x.toNat`. Applying the theorem yields `ProgramTotalCorrect evenOddProg evenOddSpec` (`Toy.Link.Examples.evenOddProg_total_correct`); the empty module with the unsatisfiable `falseSpec` is a degenerate instance (`Toy.Link.Examples.empty_module_ag_total`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Link.Examples.nonvacuous_ag_total_correctness",
+      "Toy.Link.Examples.evenOddProg_total_correct"
+    ],
+    "non_claims": [
+      "The uniform fuel bound per argument depends on finite (binary) branching; with unbounded nondeterminism a uniform finite bound can fail even when every execution terminates, and total-correctness proofs need countable ordinals (Apt and Plotkin 1986).",
+      "Contracts are on a single integer argument and result; no state, frames, auxiliary variables or adaptation rules are modelled; integers are unbounded; every call (recursive or not) must decrease the measure, which depends only on the callee and its argument.",
+      "If `S` is too weak to establish the measure decrease for a later call, `wpCallDec` is unprovable even for terminating code (incompleteness of this particular rule is not studied).",
+      "One measure `(rel, μ)` must be shared by every function of the program, including across linked modules (`Toy.Link.link_ag_total_correctness_of_wf_call_measure` takes the same `rel` and `μ` for both modules). Modules verified separately with their own well-founded measures do not compose: `pingMod = [(0, call 1 var)]` and `pongMod = [(1, call 0 var)]` are each verified for total correctness over `Nat.lt` with measures `μ₁ fn _ = if fn = 0 then 1 else 0` and `μ₂ fn _ = if fn = 1 then 1 else 0`, their link implements the interface, and the linked program is not totally correct (`Toy.Link.Cex.independent_measures_do_not_compose`)."
+    ],
+    "prior_art": [
+      "Tobias Nipkow, 'Hoare logics for recursive procedures and unbounded nondeterminism', CSL 2002, LNCS 2471, pp. 103-119, Springer, 2002, doi:10.1007/3-540-45793-3_8 (§4: total correctness with well-founded relations; §5.2: CALL rule with a well-founded relation for mutually recursive procedures; mechanized in Isabelle/HOL).",
+      "K. R. Apt and G. D. Plotkin, 'Countable nondeterminism and random assignment', Journal of the ACM 33(4):724-767, 1986, doi:10.1145/6490.6494 (countable nondeterminism breaks continuity; total-correctness proofs need countable ordinals).",
+      "Norbert Schirmer, Simpl, Archive of Formal Proofs, 2008 (total-correctness Hoare logic with recursive procedures and unbounded nondeterminism, in Isabelle/HOL)."
+    ],
+    "design_question": "What extra structure (a well-founded measure) is genuinely needed for circular modular verification of total correctness?",
+    "lean_names": [
+      "Toy.Link.link_ag_total_correctness_of_wf_call_measure",
+      "Toy.Link.Cex.independent_measures_do_not_compose",
+      "Toy.Link.Examples.empty_module_ag_total"
+    ]
+  },
+  {
+    "id": "spec-refinement-link-composition",
+    "lean": "Toy.Link.verified_recursive_caller_links_with_refined_callee",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The rule of recursive invocation for the caller's own functions combined with the consequence rule (refinement-calculus ordering) for imports.",
+    "plain_claim": "If a caller module `M` is verified for its guarantee `G` assuming `G` for calls to its own functions and `S` for all other calls (`ModuleVerifiedPartial M (mixEnv M G S) G`), and a disjoint callee module `N` is partially correct for a spec `S'` that refines `S` at every name `M` does not define (weaker precondition, postcondition strengthened under the precondition), then every function of `M` is partially correct for `G` in `link M N`; `M` may be recursive.",
+    "hypotheses": [
+      {
+        "name": "Linkable M N",
+        "purpose": "without disjointness, a call inside `N` can be captured by `M`'s definition of the same name (symbol interposition)",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_spec_refinement_without_linkable"
+      },
+      {
+        "name": "ModuleVerifiedPartial M (mixEnv M G S) G",
+        "purpose": "`M`'s bodies satisfy `G`, assuming `G` for internal calls and `S` for external calls",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_spec_refinement_without_caller_verified"
+      },
+      {
+        "name": "ProgramPartialCorrect N S'",
+        "purpose": "`N` satisfies `S'` on its own (and therefore implements every name with a satisfiable `S'` precondition)",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_spec_refinement_without_callee_correct"
+      },
+      {
+        "name": "∀ g, ¬ M.Defines g → WeakensPre (S g) (S' g)",
+        "purpose": "every external call argument allowed by the assumed precondition is allowed by the callee's precondition",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_spec_refinement_without_weakensPre"
+      },
+      {
+        "name": "∀ g, ¬ M.Defines g → StrengthensPostUnderPre (S g) (S' g)",
+        "purpose": "every result the callee may return (under the assumed precondition) satisfies the assumed postcondition",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_spec_refinement_without_strengthensPost"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on fuel; internal calls use the induction hypothesis at `G`, external calls use `eval_link_right_of_no_undefinedCall` and the refinement of `S` by `S'`; one-frame soundness `wpPartial_sound_evalExprWith`.",
+    "nonvacuity_witness": "Recursive caller `recCaller = [(0, ifLe var (lit 0) (call 1 var) (call 0 (sub var (lit 1))))]` (reachable internal call to `0`, external call to `1`) with guarantee `v ≥ 10`, assuming `1` returns at least `10` on `x ≤ 0`, linked with `tenLib = [(1, lit 10)]` satisfying the strictly stronger spec `pre True, post v = 10`. Applying the theorem yields `FnPartialCorrect (link recCaller tenLib) 0 (recGuar 0)` (`Toy.Link.Examples.positive_control_spec_refinement_link`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Link.Examples.nonvacuous_recursive_spec_refinement",
+      "Toy.Link.Examples.positive_control_spec_refinement_link"
+    ],
+    "non_claims": [
+      "The callee `N` must be partially correct for `S'` on its own: it may not call back into `M` (an unresolved call is `undefinedCall`, which `ProgramPartialCorrect` forbids). Mutually recursive caller/callee pairs need `link_ag_partial_correctness` with a shared interface.",
+      "The flat variant `Toy.Link.verified_flat_caller_links_with_refined_callee` (assumptions `S` for every call, refinement at every name) follows from this theorem but applies only to callers that make no verifiable call to their own functions: its hypotheses force `(S f).pre` to be unsatisfiable at every `f` that `M` defines (`Toy.Link.caller_spec_unsat_on_own_symbols`, `Toy.Link.Cex.flat_spec_refinement_inapplicable_to_recursive_caller`).",
+      "Partial correctness only: divergence is not observed; no termination or behavioural refinement is established.",
+      "Contracts are on a single integer argument and result; no state, frames, auxiliary variables or adaptation rules are modelled; integers are unbounded."
+    ],
+    "prior_art": [
+      "C. A. R. Hoare, 'Procedures and parameters: An axiomatic approach', LNM 188, pp. 102-116, Springer, 1971, doi:10.1007/BFb0059696 (rule of recursive invocation; the page of the rule was not checked).",
+      "C. A. R. Hoare, 'An axiomatic basis for computer programming', Communications of the ACM 12(10):576-580, 1969, doi:10.1145/363235.363259 (rule of consequence).",
+      "Carroll Morgan, Programming from Specifications, 2nd ed., Prentice Hall International, 1994 (checked in the author's 1998 reissue): Law 1.2 'weaken precondition' and Law 5.1 'strengthen postcondition' (if pre[w\\w0] ∧ post' ⇛ post then w:[pre, post] ⊑ w:[pre, post']), which is exactly the `WeakensPre` / `StrengthensPostUnderPre` ordering.",
+      "Barbara H. Liskov and Jeannette M. Wing, 'A behavioral notion of subtyping', ACM TOPLAS 16(6):1811-1841, 1994, doi:10.1145/197320.197383 (Fig. 4, p. 1823: precondition rule and an unconditional postcondition rule, a stricter precursor of the ordering used here)."
+    ],
+    "design_question": "What spec-refinement structure lets a verified caller, including one with internal recursive calls, be linked with any callee implementation satisfying a refining spec?",
+    "lean_names": [
+      "Toy.Link.verified_flat_caller_links_with_refined_callee",
+      "Toy.Link.caller_spec_unsat_on_own_symbols",
+      "Toy.Link.Cex.flat_spec_refinement_inapplicable_to_recursive_caller"
+    ]
+  },
+  {
+    "id": "cex-spec-refinement-incomparable-callee",
+    "lean": "Toy.Link.Cex.cex_link_fails_for_incomparable_callee_spec",
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Direct instance showing that a callee spec better on the precondition side but not refining on the postcondition side does not protect the caller.",
+    "plain_claim": "The caller `incCaller = [(0, call 1 (lit 0))]`, verified for `v = 10` assuming `1` satisfies `pre x ≥ 0, post v = 10`, linked with `incCallee = [(1, lit 11)]`, which satisfies the incomparable spec `pre True, post v ≥ 10` (the precondition side refines, the postcondition side does not, and the assumed spec does not refine it either), violates the caller's guarantee.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Concrete evaluation at fuel `2` by `decide`; spec facts by `simp`.",
+    "nonvacuity_witness": "`link incCaller incCallee` returns `11` at entry `0`.",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_link_fails_for_incomparable_callee_spec",
+    "positive_control_lean": "Toy.Link.Examples.positive_control_spec_refinement_link",
+    "non_claims": [
+      "The failure here is due to the postcondition side alone (`WeakensPre` holds at every external name). The precondition side is witnessed separately by `Toy.Link.Cex.cex_spec_refinement_without_weakensPre`.",
+      "Does not claim that every incomparable spec causes a failure: only a caller that relies on the part of `S` that `S'` does not guarantee is unprotected.",
+      "Partial correctness only; toy contracts on one integer argument and result."
+    ],
+    "prior_art": [
+      "Carroll Morgan, Programming from Specifications, 2nd ed., Prentice Hall International, 1994 (Law 5.1 'strengthen postcondition').",
+      "Barbara H. Liskov and Jeannette M. Wing, ACM TOPLAS 16(6):1811-1841, 1994, doi:10.1145/197320.197383 (Fig. 4, p. 1823, postcondition rule)."
+    ],
+    "design_question": "Which spec relations between assumed and actual callee specs are needed for linking a verified caller?"
+  },
+  {
+    "id": "separate-compilation-preserves-verifiability",
+    "lean": "Toy.Link.separate_compilation_partial_correct_of_preserves_verified",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "A corollary of the assume-guarantee rule (`ag-partial-correctness`) applied to compiled modules: specification preservation in the sense of Leroy 2009, §2.1, property (4), at module granularity; compare certificate translation (Barthe et al. 2009). Semantic separate-compilation results (CompCertM, CompCertO, Patterson and Ahmed) are a contrast, not the source.",
+    "plain_claim": "If `M₁` and `M₂` are verified against the interface `S`, `link M₁ M₂` implements `S`, and a per-module pass `compile` preserves verification against `S` (`PreservesVerifiedPartial`) and keeps every defined name (`PreservesDefines`), then the separately compiled linked program `link (compile M₁) (compile M₂)` is partially correct for `S`; no behavioural relation to the source is claimed.",
+    "hypotheses": [
+      {
+        "name": "ModuleVerifiedPartial M₁ S S",
+        "purpose": "first module verified against `S` before compilation",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_without_first_verified"
+      },
+      {
+        "name": "ModuleVerifiedPartial M₂ S S",
+        "purpose": "second module verified against `S` before compilation",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_without_second_verified"
+      },
+      {
+        "name": "SpecsImplemented (link M₁ M₂) S",
+        "purpose": "every name with a satisfiable precondition exists in the source link",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_without_specsImplemented"
+      },
+      {
+        "name": "PreservesVerifiedPartial compile S",
+        "purpose": "the pass maps `S`-verified modules to `S`-verified modules, looking at no other module. Only its instances at `M₁` and `M₂` are used; the universal pass property is stronger than needed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_without_preservesVerified"
+      },
+      {
+        "name": "PreservesDefines compile",
+        "purpose": "the pass keeps the names that `SpecsImplemented` needs. Only its instances at `M₁` and `M₂` are used.",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_without_preservesDefines"
+      }
+    ],
+    "depth": "definitional",
+    "depth_justification": "Definitional given `ag_partial_correctness`: it is `link_ag_partial_correctness` applied to `compile M₁` and `compile M₂`, with the two pass hypotheses producing its premises.",
+    "nonvacuity_witness": "`sepMod1 = [(0, add (call 1 var) (lit 0))]` and `sepMod2 = [(1, add (lit 0) var)]`, verified against `sepSpec` (functions `0` and `1` accept every argument and return it; every other name has an unsatisfiable precondition), compiled by the non-identity constant folder `constFoldPass` (which rewrites `e + 0` and `0 + e` to `e`). The three helper definitions are `private` in the Lean source and are printed in REPORT.md.",
+    "nonvacuity_witness_lean": "Toy.Link.Examples.nonvacuous_separate_compilation",
+    "non_claims": [
+      "The theorem relates no behaviour of the compiled program to the source program. `PreservesVerifiedPartial compile S` mentions only `S`, so a pass satisfying both preservation hypotheses may replace every body by any code meeting `S`. Example: with interface `v ≥ 0`, the pass `zeroBodies` rewrites `1` to `0`, satisfies both hypotheses, but breaks `EntryRefines` with the source (`Toy.Link.Cex.cex_verifiability_preservation_not_behavioural`). The guarantee is `S`-correctness of the compiled program, not semantic preservation; for behavioural refinement see `separate-compilation-behavioural-refinement`.",
+      "This result is `link_ag_partial_correctness` applied to the compiled modules; `compile` enters only through the two preservation hypotheses.",
+      "Partial correctness only: not total correctness, timing, or divergence behaviour.",
+      "Does not assume `Linkable M₁ M₂`: `moduleVerifiedPartial_link` only checks bodies reachable via `lookup (link M₁ M₂)`, although real linkers reject duplicate definitions.",
+      "A pass whose correctness depends on another module's implementation, not just on `S`, violates `PreservesVerifiedPartial` (`Toy.Link.Cex.inlPass_not_preservesVerified`)."
+    ],
+    "prior_art": [
+      "Xavier Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814 (§2.1, property (4): the compiler preserves the fact that the source satisfies a specification; stated for whole programs).",
+      "Gilles Barthe, Benjamin Grégoire, César Kunz, and Tamara Rezk, 'Certificate translation for optimizing compilers', ACM TOPLAS 31(5), 45 pp., 2009, doi:10.1145/1538917.1538919 (transforming proofs of source-program properties into certificates for the compiled program).",
+      "Youngju Song et al., 'CompCertM', PACMPL 4(POPL), Article 23, 2020, doi:10.1145/3371091 (§4.2, verification against specification modules; contrast: semantic refinement, not established here)."
+    ],
+    "design_question": "What does separate compilation preserve when passes are only required to preserve per-module verifiability against interface specs?",
+    "lean_names": [
+      "Toy.Link.Cex.inlPass_not_preservesVerified"
+    ]
+  },
+  {
+    "id": "separate-compilation-behavioural-refinement",
+    "lean": [
+      "Toy.Link.separate_compilation_ctxRefines_of_pass_ctxRefines",
+      "Toy.Link.separate_compilation_preserves_partial_correctness_of_pass_ctxRefines"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Separate compilation correctness from per-module contextual refinement, in the shape of Patterson and Ahmed's Corollary 4.3, here immediate from the precongruence of `CtxRefines`.",
+    "plain_claim": "If a per-module pass is a contextual refinement on every module (`PassCtxRefines compile`, behaviour relation `CtxRefines`) and `M₁`, `M₂` are disjoint, then `link (compile M₁) (compile M₂)` contextually refines `link M₁ M₂`; in particular partial correctness of the source link transfers to the compiled link.",
+    "hypotheses": [
+      {
+        "name": "PassCtxRefines compile",
+        "purpose": "explicit behaviour relation: each compiled module contextually refines its source (only the instances at `M₁` and `M₂` are used); used by both theorems; the named counterexample refutes the conclusion `CtxRefines (link M₁ M₂) (link (compile M₁) (compile M₂))` of the primary theorem `separate_compilation_ctxRefines_of_pass_ctxRefines`, not the corollary's conclusion `ProgramPartialCorrect (link (compile M₁) (compile M₂)) S` (its other conjuncts discharge every hypothesis of `separate_compilation_partial_correct_of_preserves_verified`, so its compiled link is partially correct for `zSpec`); the package does not exhibit a counterexample to the corollary without this premise",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_verifiability_preservation_not_behavioural"
+      },
+      {
+        "name": "Linkable M₁ M₂",
+        "purpose": "disjointness, as in the precongruence theorem; an overlapping module can shadow names the other relies on; used by both theorems; the named counterexample refutes the conclusion `CtxRefines (link M₁ M₂) (link (compile M₁) (compile M₂))` of the primary theorem, not the corollary's partial-correctness conclusion; the package does not exhibit a counterexample to the corollary without this premise",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_ctx_without_linkable"
+      },
+      {
+        "name": "ProgramPartialCorrect (link M₁ M₂) S",
+        "purpose": "third premise (`hSrc`) of the corollary `separate_compilation_preserves_partial_correctness_of_pass_ctxRefines` only: the property that is transferred to the compiled link; the corollary produces no correctness fact that the source link does not already have",
+        "tightness": "tight",
+        "counterexample": "Toy.Link.Cex.cex_sep_comp_behavioural_corollary_without_hSrc"
+      }
+    ],
+    "depth": "definitional",
+    "depth_justification": "Definitional given `ctxRefines_link_congr`; the corollary uses `entryRefines_preserves_fnPartialCorrect`.",
+    "nonvacuity_witness": "The constant folder `constFoldPass` is a contextual refinement on every module (it does not change any outcome list), with the disjoint modules `sepMod1 = [(0, add (call 1 var) (lit 0))]` and `sepMod2 = [(1, add (lit 0) var)]` (`Toy.Link.Examples.nonvacuous_separate_compilation_ctxRefines`). For all three premises of the corollary: the same pass with the public copies `scMod1 = [(0, add (call 1 var) (lit 0))]`, `scMod2 = [(1, add (lit 0) var)]` and the interface `scSpec` (functions `0` and `1` return their argument), whose source link is partially correct; the corollary then gives partial correctness of the compiled link (`Toy.Link.Examples.nonvacuous_sep_comp_behavioural_corollary`).",
+    "nonvacuity_witness_lean": [
+      "Toy.Link.Examples.nonvacuous_separate_compilation_ctxRefines",
+      "Toy.Link.Examples.nonvacuous_sep_comp_behavioural_corollary"
+    ],
+    "non_claims": [
+      "The behaviour relation is `CtxRefines`, which compares outcomes in lockstep call depth, includes `outOfFuel`, and forces equal domains; passes that add or remove calls, inline, or introduce helpers are not covered (`Toy.Link.Cex.cex_ctxRefines_fixes_call_depth`, `Toy.Link.ctxRefines_sameDom`).",
+      "Same-language, stateless, first-order modules only: unlike CompCertO Theorem 3.8 or Patterson and Ahmed's Corollary 4.3, there is no change of language, memory model, or calling convention.",
+      "Behavioural refinement preserves partial correctness for the same specs; verifiability preservation does not imply behavioural refinement (`Toy.Link.Cex.cex_verifiability_preservation_not_behavioural`)."
+    ],
+    "prior_art": [
+      "Daniel Patterson and Amal Ahmed, 'The next 700 compiler correctness theorems (functional pearl)', PACMPL 3(ICFP), Article 85, 2019, doi:10.1145/3341689 (§4.1, Theorem 4.1 (CCC), p. 85:8; §4.2, Corollary 4.3 'CCC Implies Correct Separate Compilation', p. 85:9).",
+      "Jérémie Koenig and Zhong Shao, 'CompCertO', PLDI '21, pp. 1095-1109, 2021, doi:10.1145/3453483.3454097 (§3.4, Theorem 3.8: compositional correctness of CompCertO).",
+      "Jeehoon Kang, Yoonseung Kim, Chung-Kil Hur, Derek Dreyer, and Viktor Vafeiadis, 'Lightweight verification of separate compilation', POPL '16, pp. 178-190, 2016, doi:10.1145/2837614.2837642 (separate compilation correctness for modules compiled by the same compiler)."
+    ],
+    "design_question": "What does separate compilation preserve when passes are required to be per-module behavioural refinements?"
+  },
+  {
+    "id": "cex-verifiability-preservation-not-behavioural",
+    "lean": "Toy.Link.Cex.cex_verifiability_preservation_not_behavioural",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore distinction between specification preservation and semantic preservation, made precise with a two-line pass.",
+    "plain_claim": "The pass `zeroBodies` (replace every body by `lit 0`) preserves verification against the interface `zSpec` (`0` returns a non-negative value) and keeps every name, and all hypotheses of `separate-compilation-preserves-verifiability` hold for `const1Mod` and the empty module; yet the compiled program returns `0` where the source returns `1`, so it neither refines the source at entry `0` nor contextually, and `zeroBodies` is not a contextually refining pass.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Pass properties by a lookup lemma for `zeroBodies`; separation by `decide` at fuel `1`.",
+    "nonvacuity_witness": "Source `const1Mod = [(0, lit 1)]` returns `1`; compiled `[(0, lit 0)]` returns `0`.",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_verifiability_preservation_not_behavioural",
+    "positive_control_lean": "Toy.Link.Examples.positive_control_constFold_verifiable_and_behavioural",
+    "non_claims": [
+      "Does not say verifiability-preserving passes are useless: the compiled program is still `S`-correct. It says that `S`-correctness is all they guarantee.",
+      "A pass may satisfy both properties (`Toy.Link.Examples.positive_control_constFold_verifiable_and_behavioural`)."
+    ],
+    "prior_art": [
+      "Xavier Leroy, CACM 52(7):107-115, 2009, doi:10.1145/1538788.1538814 (§2.1: semantic preservation versus property (4), preservation of specifications)."
+    ],
+    "design_question": "What does separate compilation preserve when passes are only required to preserve per-module verifiability?"
+  },
+  {
+    "id": "cex-separate-compilation-callee-dependent-rewrite",
+    "lean": "Toy.Link.Cex.cex_callee_dependent_rewrite_breaks_under_spec_callee_replacement",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore hazard (a per-module optimization justified by another module's body rather than its interface) made into a minimal mechanized witness; no mechanized witness of this kind was found.",
+    "plain_claim": "Rewriting the caller `inlCaller = [(0, call 1 var)]` to `inlCallerOpt = [(0, (call 1 var + call 1 var) - 2)]` is a contextual equivalence in the whole program with `inlCallee1 = [(1, lit 2)]`, but it is not a per-module contextual refinement and not verifiable against the shared interface `inlSpec`; replacing `inlCallee1` by `inlCallee2 = [(1, lit 1)]`, which also satisfies `inlSpec` and keeps the original program correct, makes the rewritten program return `0`, violating `inlSpec` and refinement.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Contextual equivalence under `inlCallee1` by fuel induction; separations by `decide` at fuel `2`.",
+    "nonvacuity_witness": "With `1 ↦ 2`: `2 + 2 - 2 = 2`; with `1 ↦ 1`: `1 + 1 - 2 = 0 < 1`.",
+    "nonvacuity_witness_lean": "Toy.Link.Cex.cex_callee_dependent_rewrite_breaks_under_spec_callee_replacement",
+    "positive_control_lean": "Toy.Link.Examples.positive_control_interface_only_optimization_survives_replacement",
+    "non_claims": [
+      "The transformation is not inlining; it is an algebraic rewrite valid only for the specific callee body, and it keeps both calls.",
+      "Does not invalidate link-time optimization when all participating bodies are fixed together; it shows that a per-module rewrite justified by another module's body is neither a per-module contextual refinement nor verification-preserving (`Toy.Link.Cex.inlPass_not_preservesVerified`), so neither separate-compilation theorem covers it.",
+      "The positive control covers two concrete spec-compliant callees; the statement for every spec-compliant callee is `link_ag_partial_correctness`."
+    ],
+    "prior_art": [
+      "Jeehoon Kang, Yoonseung Kim, Chung-Kil Hur, Derek Dreyer, and Viktor Vafeiadis, 'Lightweight verification of separate compilation', POPL '16, pp. 178-190, 2016, doi:10.1145/2837614.2837642 (§5.3: intra-module inlining stays valid after linking because the inlined definitions remain in the linked environment; contrast with a rewrite that depends on another module).",
+      "Daniel Patterson and Amal Ahmed, PACMPL 3(ICFP), Article 85, 2019, doi:10.1145/3341689 (§3: compiler correctness theorems differ in what code a compiled module may be linked with)."
+    ],
+    "design_question": "Which per-module transformations are compatible with interface-only (spec-based) separate compilation?",
+    "lean_names": [
+      "Toy.Link.Cex.inlPass_not_preservesVerified"
+    ]
+  }
+]

@@ -1,0 +1,1191 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Link.BodyVerifiedPartial": [],
+    "Toy.Link.BodyVerifiedTotal": [],
+    "Toy.Link.Cex.callbackImport": [],
+    "Toy.Link.Cex.cex_add_fresh_helper_not_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ag_partial_without_moduleVerified": [
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ag_partial_without_specsImplemented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ag_total_unsound_without_measure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ag_total_without_moduleVerifiedTotal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ag_total_without_specsImplemented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ag_total_without_wf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_callee_dependent_rewrite_breaks_under_spec_callee_replacement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_closed_main_entry_refines_not_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_collapse_without_closed_side": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ctxRefines_fixes_call_depth": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ctxRefines_rejects_new_divergence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ctxRefines_trans_without_first": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_ctxRefines_trans_without_second": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_delete_unused_export_not_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_link_congr_without_first_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_link_congr_without_linkable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_link_congr_without_second_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_link_fails_for_incomparable_callee_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_open_specialization_standalone_refines_not_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_reflects_mayDiverge_without_linkable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_behavioural_corollary_without_hSrc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_ctx_without_linkable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_without_first_verified": [
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_without_preservesDefines": [
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_without_preservesVerified": [
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_without_second_verified": [
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_sep_comp_without_specsImplemented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_spec_refinement_without_callee_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_spec_refinement_without_caller_verified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_spec_refinement_without_linkable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_spec_refinement_without_strengthensPost": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_spec_refinement_without_weakensPre": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.cex_verifiability_preservation_not_behavioural": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.deadSrc": [],
+    "Toy.Link.Cex.deadTgt": [],
+    "Toy.Link.Cex.directMod": [],
+    "Toy.Link.Cex.directMod.eq_1": [],
+    "Toy.Link.Cex.divTgt": [],
+    "Toy.Link.Cex.divTgt.eq_1": [],
+    "Toy.Link.Cex.flat_spec_refinement_inapplicable_to_recursive_caller": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.identityImport": [],
+    "Toy.Link.Cex.identityImport.eq_1": [],
+    "Toy.Link.Cex.incActual": [],
+    "Toy.Link.Cex.incActual.eq_1": [],
+    "Toy.Link.Cex.incAssumed": [],
+    "Toy.Link.Cex.incAssumed.eq_1": [],
+    "Toy.Link.Cex.incCallee": [],
+    "Toy.Link.Cex.incCallee.eq_1": [],
+    "Toy.Link.Cex.incCaller": [],
+    "Toy.Link.Cex.incCaller.eq_1": [],
+    "Toy.Link.Cex.incGuar": [],
+    "Toy.Link.Cex.incGuar.eq_1": [],
+    "Toy.Link.Cex.independent_measures_do_not_compose": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.inlCallee1": [],
+    "Toy.Link.Cex.inlCallee1.eq_1": [],
+    "Toy.Link.Cex.inlCallee2": [],
+    "Toy.Link.Cex.inlCallee2.eq_1": [],
+    "Toy.Link.Cex.inlCaller": [],
+    "Toy.Link.Cex.inlCaller.eq_1": [],
+    "Toy.Link.Cex.inlCallerOpt": [],
+    "Toy.Link.Cex.inlCallerOpt.eq_1": [],
+    "Toy.Link.Cex.inlCallerOpt_not_verified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.inlCaller_not_ctxRefines_inlCallerOpt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.inlPass": [],
+    "Toy.Link.Cex.inlPass.eq_1": [],
+    "Toy.Link.Cex.inlPass_not_preservesVerified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Cex.inlSpec": [],
+    "Toy.Link.Cex.inlSpec.eq_1": [],
+    "Toy.Link.Cex.openSpecSrc": [],
+    "Toy.Link.Cex.openSpecSrc.eq_1": [],
+    "Toy.Link.Cex.openSpecTgt": [],
+    "Toy.Link.Cex.openSpecTgt.eq_1": [],
+    "Toy.Link.Cex.pingMod": [],
+    "Toy.Link.Cex.pingMod.eq_1": [],
+    "Toy.Link.Cex.pingPongSpec": [],
+    "Toy.Link.Cex.pingPongSpec.eq_1": [],
+    "Toy.Link.Cex.pongMod": [],
+    "Toy.Link.Cex.pongMod.eq_1": [],
+    "Toy.Link.Cex.specSrc": [],
+    "Toy.Link.Cex.specSrc.eq_1": [],
+    "Toy.Link.Cex.specTgt": [],
+    "Toy.Link.Cex.specTgt.eq_1": [],
+    "Toy.Link.Cex.termSrc": [],
+    "Toy.Link.Cex.termSrc.eq_1": [],
+    "Toy.Link.Cex.viaCallMod": [],
+    "Toy.Link.Cex.viaCallMod.eq_1": [],
+    "Toy.Link.Cex.zSpec": [],
+    "Toy.Link.Cex.zSpec.eq_1": [],
+    "Toy.Link.ClosedModule": [],
+    "Toy.Link.CtxRefines": [
+      "propext"
+    ],
+    "Toy.Link.EntryRefines": [
+      "propext"
+    ],
+    "Toy.Link.Examples.addTenMod": [],
+    "Toy.Link.Examples.bodyVerifiedPartial_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.bodyVerifiedPartial_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.bodyVerifiedTotal_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.bodyVerifiedTotal_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.calleesInBool_neg": [],
+    "Toy.Link.Examples.calleesInBool_pos": [],
+    "Toy.Link.Examples.calleesIn_neg": [],
+    "Toy.Link.Examples.calleesIn_pos": [],
+    "Toy.Link.Examples.cex_ctxRefines_not_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.choose012Mod": [],
+    "Toy.Link.Examples.choose012Mod.eq_1": [],
+    "Toy.Link.Examples.choose01Mod": [],
+    "Toy.Link.Examples.choose01Mod.eq_1": [],
+    "Toy.Link.Examples.chooseLoopMod": [],
+    "Toy.Link.Examples.chooseLoopMod.eq_1": [],
+    "Toy.Link.Examples.chooseLoop_ctxRefines_selfLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.closedModuleBool_neg": [],
+    "Toy.Link.Examples.closedModuleBool_pos": [],
+    "Toy.Link.Examples.closedModule_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.closedModule_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.closed_source_open_target_collapse_witness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.collapse_closed_target_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.const0Mod": [],
+    "Toy.Link.Examples.const0Mod.eq_1": [],
+    "Toy.Link.Examples.const1Mod": [],
+    "Toy.Link.Examples.const1Mod.eq_1": [],
+    "Toy.Link.Examples.constFoldExpr": [],
+    "Toy.Link.Examples.constFoldExpr.eq_1": [],
+    "Toy.Link.Examples.constFoldExpr.eq_2": [],
+    "Toy.Link.Examples.constFoldExpr.eq_3": [],
+    "Toy.Link.Examples.constFoldExpr.eq_4": [],
+    "Toy.Link.Examples.constFoldExpr.eq_5": [],
+    "Toy.Link.Examples.constFoldExpr.eq_6": [],
+    "Toy.Link.Examples.constFoldExpr.eq_7": [],
+    "Toy.Link.Examples.constFoldExpr.eq_8": [],
+    "Toy.Link.Examples.constFoldExpr.eq_def": [],
+    "Toy.Link.Examples.constFoldExpr.match_1": [],
+    "Toy.Link.Examples.constFoldExpr_evalExprWith": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.constFoldPass": [],
+    "Toy.Link.Examples.constFoldPass.eq_1": [],
+    "Toy.Link.Examples.constFoldPass.match_1": [],
+    "Toy.Link.Examples.countdownMod": [],
+    "Toy.Link.Examples.countdownMod.eq_1": [],
+    "Toy.Link.Examples.ctxRefines_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.ctxRefines_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.deadImportTgt": [],
+    "Toy.Link.Examples.deadImportTgt.eq_1": [],
+    "Toy.Link.Examples.defines_neg": [],
+    "Toy.Link.Examples.defines_pos": [],
+    "Toy.Link.Examples.empty_module_ag_total": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.entryRefines_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.entryRefines_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.evalExprWith_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.evalExprWith_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.eval_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.eval_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.evenMod": [],
+    "Toy.Link.Examples.evenMod.eq_1": [],
+    "Toy.Link.Examples.evenOddProg": [],
+    "Toy.Link.Examples.evenOddProg.eq_1": [],
+    "Toy.Link.Examples.evenOddProg_partial_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.evenOddProg_total_correct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.evenOddSpec": [],
+    "Toy.Link.Examples.evenOddSpec.eq_1": [],
+    "Toy.Link.Examples.evenOdd_moduleVerifiedPartial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.evenOdd_specsImplemented": [
+      "propext"
+    ],
+    "Toy.Link.Examples.extra_call_changes_fuel_one_outcome": [
+      "propext"
+    ],
+    "Toy.Link.Examples.falseSpec": [],
+    "Toy.Link.Examples.fnPartialCorrect_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.fnPartialCorrect_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.fnTotalCorrect_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.fnTotalCorrect_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.foldAdd": [],
+    "Toy.Link.Examples.foldAdd.eq_1": [],
+    "Toy.Link.Examples.hasBehavior_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.hasBehavior_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.idMod": [],
+    "Toy.Link.Examples.idMod.eq_1": [],
+    "Toy.Link.Examples.idZeroSpec": [],
+    "Toy.Link.Examples.idZeroSpec.eq_1": [],
+    "Toy.Link.Examples.link_neg": [],
+    "Toy.Link.Examples.link_pos": [],
+    "Toy.Link.Examples.linkableBool_neg": [],
+    "Toy.Link.Examples.linkableBool_pos": [],
+    "Toy.Link.Examples.linkable_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.linkable_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.lookup_neg": [],
+    "Toy.Link.Examples.lookup_pos": [],
+    "Toy.Link.Examples.mayDiverge_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.mayDiverge_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.mixEnv_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.mixEnv_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.mixEnv_pos_external": [
+      "propext"
+    ],
+    "Toy.Link.Examples.moduleVerifiedPartial_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.moduleVerifiedPartial_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.moduleVerifiedTotal_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.moduleVerifiedTotal_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ag_partial_correctness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ag_total_correctness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_collapse_closed_target": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ctxRefines_link_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ctxRefines_refl": [
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ctxRefines_reflects_mayDiverge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ctxRefines_sameDom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_ctxRefines_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_recursive_spec_refinement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_sep_comp_behavioural_corollary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_separate_compilation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.nonvacuous_separate_compilation_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.oddMod": [],
+    "Toy.Link.Examples.oddMod.eq_1": [],
+    "Toy.Link.Examples.openCallerMod": [],
+    "Toy.Link.Examples.openCallerMod.eq_1": [],
+    "Toy.Link.Examples.openChooseMod": [],
+    "Toy.Link.Examples.openChooseMod.eq_1": [],
+    "Toy.Link.Examples.passCtxRefines_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.passCtxRefines_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.positive_control_ag_total_with_wf_measure": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.positive_control_constFold_verifiable_and_behavioural": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.positive_control_in_place_export_optimization": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.positive_control_interface_only_optimization_survives_replacement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.positive_control_spec_refinement_link": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.positive_control_spec_refinement_link.match_1_1": [
+      "propext"
+    ],
+    "Toy.Link.Examples.preservesDefines_neg": [],
+    "Toy.Link.Examples.preservesDefines_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.preservesVerifiedPartial_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.preservesVerifiedPartial_pos": [],
+    "Toy.Link.Examples.programPartialCorrect_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.programPartialCorrect_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.programTotalCorrect_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.programTotalCorrect_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.recAssumed": [],
+    "Toy.Link.Examples.recAssumed.eq_1": [],
+    "Toy.Link.Examples.recCaller": [],
+    "Toy.Link.Examples.recCaller.eq_1": [],
+    "Toy.Link.Examples.recCaller_verified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.recGuar": [],
+    "Toy.Link.Examples.recGuar.eq_1": [],
+    "Toy.Link.Examples.sameDom_neg": [],
+    "Toy.Link.Examples.sameDom_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.scMod1": [],
+    "Toy.Link.Examples.scMod1.eq_1": [],
+    "Toy.Link.Examples.scMod2": [],
+    "Toy.Link.Examples.scMod2.eq_1": [],
+    "Toy.Link.Examples.scSpec": [],
+    "Toy.Link.Examples.scSpec.eq_1": [],
+    "Toy.Link.Examples.selfLoopMod": [],
+    "Toy.Link.Examples.selfLoopMod.eq_1": [],
+    "Toy.Link.Examples.specsImplemented_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.specsImplemented_pos": [
+      "propext"
+    ],
+    "Toy.Link.Examples.standaloneRefines_neg": [
+      "propext"
+    ],
+    "Toy.Link.Examples.standaloneRefines_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.strengthensPostUnderPre_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.strengthensPostUnderPre_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.tenActual": [],
+    "Toy.Link.Examples.tenActual.eq_1": [],
+    "Toy.Link.Examples.tenLib": [],
+    "Toy.Link.Examples.tenLib.eq_1": [],
+    "Toy.Link.Examples.tenLib_correct": [
+      "propext"
+    ],
+    "Toy.Link.Examples.trivZeroSpec": [],
+    "Toy.Link.Examples.trivZeroSpec.eq_1": [],
+    "Toy.Link.Examples.twoFnMod": [],
+    "Toy.Link.Examples.weakensPre_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.weakensPre_pos": [],
+    "Toy.Link.Examples.wpCallDec_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.wpCallDec_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.wpPartial_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.wpPartial_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.Examples.zeroBodies": [],
+    "Toy.Link.Examples.zeroBodies.eq_1": [],
+    "Toy.Link.Examples.zeroOutSpec": [],
+    "Toy.Link.Examples.zeroOutSpec.eq_1": [],
+    "Toy.Link.Expr": [],
+    "Toy.Link.Expr.CalleesIn": [],
+    "Toy.Link.Expr.CalleesIn.eq_1": [],
+    "Toy.Link.Expr.CalleesIn.eq_2": [],
+    "Toy.Link.Expr.CalleesIn.eq_3": [],
+    "Toy.Link.Expr.CalleesIn.eq_4": [],
+    "Toy.Link.Expr.CalleesIn.eq_5": [],
+    "Toy.Link.Expr.CalleesIn.eq_6": [],
+    "Toy.Link.Expr.CalleesIn.eq_7": [],
+    "Toy.Link.Expr.CalleesIn.eq_8": [],
+    "Toy.Link.Expr.CalleesIn.eq_def": [],
+    "Toy.Link.Expr.add": [],
+    "Toy.Link.Expr.add.elim": [],
+    "Toy.Link.Expr.add.inj": [],
+    "Toy.Link.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.add.noConfusion": [],
+    "Toy.Link.Expr.add.sizeOf_spec": [],
+    "Toy.Link.Expr.below": [],
+    "Toy.Link.Expr.brecOn": [],
+    "Toy.Link.Expr.brecOn.eq": [],
+    "Toy.Link.Expr.brecOn.go": [],
+    "Toy.Link.Expr.call": [],
+    "Toy.Link.Expr.call.elim": [],
+    "Toy.Link.Expr.call.inj": [],
+    "Toy.Link.Expr.call.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.call.noConfusion": [],
+    "Toy.Link.Expr.call.sizeOf_spec": [],
+    "Toy.Link.Expr.calleesInBool": [],
+    "Toy.Link.Expr.calleesInBool.eq_1": [],
+    "Toy.Link.Expr.calleesInBool.eq_2": [],
+    "Toy.Link.Expr.calleesInBool.eq_3": [],
+    "Toy.Link.Expr.calleesInBool.eq_4": [],
+    "Toy.Link.Expr.calleesInBool.eq_5": [],
+    "Toy.Link.Expr.calleesInBool.eq_6": [],
+    "Toy.Link.Expr.calleesInBool.eq_7": [],
+    "Toy.Link.Expr.calleesInBool.eq_8": [],
+    "Toy.Link.Expr.calleesInBool.eq_def": [],
+    "Toy.Link.Expr.calleesIn_iff_bool": [
+      "propext"
+    ],
+    "Toy.Link.Expr.casesOn": [],
+    "Toy.Link.Expr.choose": [],
+    "Toy.Link.Expr.choose.elim": [],
+    "Toy.Link.Expr.choose.inj": [],
+    "Toy.Link.Expr.choose.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.choose.noConfusion": [],
+    "Toy.Link.Expr.choose.sizeOf_spec": [],
+    "Toy.Link.Expr.ctorElim": [],
+    "Toy.Link.Expr.ctorElimType": [],
+    "Toy.Link.Expr.ctorIdx": [],
+    "Toy.Link.Expr.ifLe": [],
+    "Toy.Link.Expr.ifLe.elim": [],
+    "Toy.Link.Expr.ifLe.inj": [],
+    "Toy.Link.Expr.ifLe.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.ifLe.noConfusion": [],
+    "Toy.Link.Expr.ifLe.sizeOf_spec": [],
+    "Toy.Link.Expr.lit": [],
+    "Toy.Link.Expr.lit.elim": [],
+    "Toy.Link.Expr.lit.inj": [],
+    "Toy.Link.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.lit.noConfusion": [],
+    "Toy.Link.Expr.lit.sizeOf_spec": [],
+    "Toy.Link.Expr.mul": [],
+    "Toy.Link.Expr.mul.elim": [],
+    "Toy.Link.Expr.mul.inj": [],
+    "Toy.Link.Expr.mul.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.mul.noConfusion": [],
+    "Toy.Link.Expr.mul.sizeOf_spec": [],
+    "Toy.Link.Expr.noConfusion": [],
+    "Toy.Link.Expr.noConfusionType": [],
+    "Toy.Link.Expr.rec": [],
+    "Toy.Link.Expr.recOn": [],
+    "Toy.Link.Expr.sub": [],
+    "Toy.Link.Expr.sub.elim": [],
+    "Toy.Link.Expr.sub.inj": [],
+    "Toy.Link.Expr.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Expr.sub.noConfusion": [],
+    "Toy.Link.Expr.sub.sizeOf_spec": [],
+    "Toy.Link.Expr.var": [],
+    "Toy.Link.Expr.var.elim": [],
+    "Toy.Link.Expr.var.sizeOf_spec": [],
+    "Toy.Link.FnPartialCorrect": [
+      "propext"
+    ],
+    "Toy.Link.FnSpec": [],
+    "Toy.Link.FnSpec.casesOn": [],
+    "Toy.Link.FnSpec.ctorIdx": [],
+    "Toy.Link.FnSpec.mk": [],
+    "Toy.Link.FnSpec.mk.inj": [],
+    "Toy.Link.FnSpec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Link.FnSpec.mk.noConfusion": [],
+    "Toy.Link.FnSpec.mk.sizeOf_spec": [],
+    "Toy.Link.FnSpec.noConfusion": [],
+    "Toy.Link.FnSpec.noConfusionType": [],
+    "Toy.Link.FnSpec.post": [],
+    "Toy.Link.FnSpec.pre": [],
+    "Toy.Link.FnSpec.rec": [],
+    "Toy.Link.FnSpec.recOn": [],
+    "Toy.Link.FnTotalCorrect": [
+      "propext"
+    ],
+    "Toy.Link.Fname": [],
+    "Toy.Link.HasBehavior": [
+      "propext"
+    ],
+    "Toy.Link.HasBehavior.eq_1": [
+      "propext"
+    ],
+    "Toy.Link.Linkable": [],
+    "Toy.Link.MayDiverge": [
+      "propext"
+    ],
+    "Toy.Link.Module": [],
+    "Toy.Link.Module.Defines": [],
+    "Toy.Link.Module.Defines.eq_1": [],
+    "Toy.Link.Module.lookup": [],
+    "Toy.Link.Module.lookup.eq_1": [],
+    "Toy.Link.Module.lookup.eq_2": [],
+    "Toy.Link.Module.lookup.eq_def": [],
+    "Toy.Link.Module.lookup.match_1": [],
+    "Toy.Link.ModuleVerifiedPartial": [],
+    "Toy.Link.ModuleVerifiedTotal": [],
+    "Toy.Link.Outcome": [],
+    "Toy.Link.Outcome.casesOn": [],
+    "Toy.Link.Outcome.ctorElim": [],
+    "Toy.Link.Outcome.ctorElimType": [],
+    "Toy.Link.Outcome.ctorIdx": [],
+    "Toy.Link.Outcome.noConfusion": [],
+    "Toy.Link.Outcome.noConfusionType": [],
+    "Toy.Link.Outcome.outOfFuel": [],
+    "Toy.Link.Outcome.outOfFuel.elim": [],
+    "Toy.Link.Outcome.outOfFuel.sizeOf_spec": [],
+    "Toy.Link.Outcome.rec": [],
+    "Toy.Link.Outcome.recOn": [],
+    "Toy.Link.Outcome.undefinedCall": [],
+    "Toy.Link.Outcome.undefinedCall.elim": [],
+    "Toy.Link.Outcome.undefinedCall.sizeOf_spec": [],
+    "Toy.Link.Outcome.val": [],
+    "Toy.Link.Outcome.val.elim": [],
+    "Toy.Link.Outcome.val.inj": [],
+    "Toy.Link.Outcome.val.injEq": [
+      "propext"
+    ],
+    "Toy.Link.Outcome.val.noConfusion": [],
+    "Toy.Link.Outcome.val.sizeOf_spec": [],
+    "Toy.Link.PassCtxRefines": [
+      "propext"
+    ],
+    "Toy.Link.PreservesDefines": [],
+    "Toy.Link.PreservesVerifiedPartial": [],
+    "Toy.Link.ProgramPartialCorrect": [
+      "propext"
+    ],
+    "Toy.Link.ProgramTotalCorrect": [
+      "propext"
+    ],
+    "Toy.Link.SameDom": [],
+    "Toy.Link.SpecEnv": [],
+    "Toy.Link.SpecsImplemented": [],
+    "Toy.Link.StandaloneRefines": [
+      "propext"
+    ],
+    "Toy.Link.StrengthensPostUnderPre": [],
+    "Toy.Link.Unfolded.ag_partial_correctness_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ag_partial_correctness_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ag_total_correctness_of_wf_call_measure_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ag_total_correctness_of_wf_call_measure_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_iff_standaloneRefines_of_closed_source_or_target_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_iff_standaloneRefines_of_closed_source_or_target_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_link_congr_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_link_congr_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_refl_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_refl_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_reflects_mayDiverge_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_reflects_mayDiverge_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_sameDom_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_sameDom_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_trans_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.ctxRefines_trans_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.separate_compilation_ctxRefines_of_pass_ctxRefines_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.separate_compilation_ctxRefines_of_pass_ctxRefines_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.separate_compilation_partial_correct_of_preserves_verified_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.separate_compilation_partial_correct_of_preserves_verified_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.verified_recursive_caller_links_with_refined_callee_unfolded": [
+      "propext"
+    ],
+    "Toy.Link.Unfolded.verified_recursive_caller_links_with_refined_callee_unfolded_iff": [
+      "propext"
+    ],
+    "Toy.Link.WeakensPre": [],
+    "Toy.Link.ag_partial_correctness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ag_total_correctness_of_wf_call_measure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.caller_spec_unsat_on_own_symbols": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.closedModuleBool": [],
+    "Toy.Link.closedModuleBool.eq_1": [],
+    "Toy.Link.closedModuleBool.match_1": [],
+    "Toy.Link.closedModule_iff_bool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.closedModule_no_undefinedCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_iff_standaloneRefines_of_closed_source_or_target": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_link_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_link_congr.linkable_symm_iff": [],
+    "Toy.Link.ctxRefines_link_left": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_link_right": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_of_pointwise_body_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_refl": [
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_reflects_mayDiverge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_sameDom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.ctxRefines_sameDom.match_1_1": [],
+    "Toy.Link.ctxRefines_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.defines_link_iff": [
+      "propext"
+    ],
+    "Toy.Link.defines_of_lookup_some": [
+      "propext"
+    ],
+    "Toy.Link.entryRefines_of_lookup_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.entryRefines_preserves_fnPartialCorrect": [
+      "propext"
+    ],
+    "Toy.Link.eval": [
+      "propext"
+    ],
+    "Toy.Link.eval.eq_1": [
+      "propext"
+    ],
+    "Toy.Link.eval.eq_2": [
+      "propext"
+    ],
+    "Toy.Link.eval.eq_def": [
+      "propext"
+    ],
+    "Toy.Link.eval.match_1": [],
+    "Toy.Link.eval.match_3": [],
+    "Toy.Link.evalExprWith": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_1": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_2": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_3": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_4": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_5": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_6": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_7": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_8": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.eq_def": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith.match_1": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_congr_on": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_mono_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_mono_non_outOfFuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_mono_non_undefinedCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_no_undefinedCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_nonempty": [
+      "propext"
+    ],
+    "Toy.Link.evalExprWith_zero_no_undefinedCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_congr_lookup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_link_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_link_right_of_no_undefinedCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_link_superset_non_undefinedCall": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_mono_non_outOfFuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_nonempty": [
+      "propext"
+    ],
+    "Toy.Link.eval_one_undefinedCall_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.eval_stabilizes_of_no_outOfFuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.fnTotalCorrect_implies_fnPartialCorrect": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.instDecidableClosedModule": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.instDecidableDefines": [],
+    "Toy.Link.instDecidableEqExpr": [],
+    "Toy.Link.instDecidableEqExpr.decEq": [],
+    "Toy.Link.instDecidableEqExpr.decEq.match_1": [],
+    "Toy.Link.instDecidableEqOutcome": [],
+    "Toy.Link.instDecidableEqOutcome.decEq": [],
+    "Toy.Link.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.Link.instDecidableHasBehavior": [
+      "propext"
+    ],
+    "Toy.Link.instDecidableLinkable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.instReprExpr": [
+      "propext"
+    ],
+    "Toy.Link.instReprExpr.repr": [
+      "propext"
+    ],
+    "Toy.Link.instReprExpr.repr.match_1": [],
+    "Toy.Link.instReprOutcome": [
+      "propext"
+    ],
+    "Toy.Link.instReprOutcome.repr": [
+      "propext"
+    ],
+    "Toy.Link.instReprOutcome.repr.match_1": [],
+    "Toy.Link.link": [],
+    "Toy.Link.link.eq_1": [],
+    "Toy.Link.link_ag_partial_correctness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.link_ag_total_correctness_of_wf_call_measure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.linkableBool": [],
+    "Toy.Link.linkableBool.eq_1": [],
+    "Toy.Link.linkable_iff_linkableBool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.linkable_iff_linkableBool.match_1_4": [],
+    "Toy.Link.linkable_iff_of_sameDom": [],
+    "Toy.Link.linkable_link_iff": [
+      "propext"
+    ],
+    "Toy.Link.linkable_link_iff.match_1_1": [],
+    "Toy.Link.linkable_nil": [
+      "propext"
+    ],
+    "Toy.Link.linkable_nil.match_1_1": [],
+    "Toy.Link.linkable_of_sameDom_both": [],
+    "Toy.Link.linkable_of_sameDom_both.match_1_1": [],
+    "Toy.Link.linkable_of_sameDom_right": [],
+    "Toy.Link.linkable_of_sameDom_right.match_1_1": [],
+    "Toy.Link.linkable_symm": [],
+    "Toy.Link.linkable_symm.match_1_1": [],
+    "Toy.Link.lookup_link": [
+      "propext"
+    ],
+    "Toy.Link.lookup_link.match_1": [],
+    "Toy.Link.lookup_link_assoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.lookup_link_comm": [
+      "propext"
+    ],
+    "Toy.Link.lookup_none_of_not_defines": [
+      "propext"
+    ],
+    "Toy.Link.mixEnv": [],
+    "Toy.Link.mixEnv.eq_1": [],
+    "Toy.Link.moduleVerifiedPartial_link": [
+      "propext"
+    ],
+    "Toy.Link.moduleVerifiedPartial_mono_assume": [],
+    "Toy.Link.programPartialCorrect_implies_specsImplemented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.programTotalCorrect_implies_programPartialCorrect": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.sameDom_link_congr": [
+      "propext"
+    ],
+    "Toy.Link.sameDom_of_standaloneRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.separate_compilation_ctxRefines_of_pass_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.separate_compilation_partial_correct_of_preserves_verified": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.separate_compilation_preserves_partial_correctness_of_pass_ctxRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.specsImplemented_link_compile": [
+      "propext"
+    ],
+    "Toy.Link.standaloneRefines_of_ctxRefines": [
+      "propext"
+    ],
+    "Toy.Link.verified_flat_caller_links_with_refined_callee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.verified_recursive_caller_links_with_refined_callee": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Link.wpCallDec": [],
+    "Toy.Link.wpCallDec.eq_1": [],
+    "Toy.Link.wpCallDec.eq_2": [],
+    "Toy.Link.wpCallDec.eq_3": [],
+    "Toy.Link.wpCallDec.eq_4": [],
+    "Toy.Link.wpCallDec.eq_5": [],
+    "Toy.Link.wpCallDec.eq_6": [],
+    "Toy.Link.wpCallDec.eq_7": [],
+    "Toy.Link.wpCallDec.eq_8": [],
+    "Toy.Link.wpCallDec.eq_def": [],
+    "Toy.Link.wpPartial": [],
+    "Toy.Link.wpPartial.eq_1": [],
+    "Toy.Link.wpPartial.eq_2": [],
+    "Toy.Link.wpPartial.eq_3": [],
+    "Toy.Link.wpPartial.eq_4": [],
+    "Toy.Link.wpPartial.eq_5": [],
+    "Toy.Link.wpPartial.eq_6": [],
+    "Toy.Link.wpPartial.eq_7": [],
+    "Toy.Link.wpPartial.eq_8": [],
+    "Toy.Link.wpPartial.eq_def": [],
+    "Toy.Link.wpPartial.match_1": [],
+    "Toy.Link.wpPartial_mono_assume": [],
+    "Toy.Link.wpPartial_mono_assume.match_1_1": [],
+    "Toy.Link.wpPartial_mono_assume.match_1_3": [],
+    "Toy.Link.wpPartial_mono_post": [],
+    "Toy.Link.wpPartial_mono_post.match_1_1": [],
+    "Toy.Link.wpPartial_mono_post.match_1_3": [],
+    "Toy.Link.wpPartial_sound_evalExprWith": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
