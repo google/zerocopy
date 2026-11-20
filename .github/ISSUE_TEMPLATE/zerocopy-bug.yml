@@ -1,0 +1,49 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Zerocopy bug report
+description: >-
+  Report a bug, soundness issue, or regression in zerocopy or zerocopy-derive
+type: Bug
+labels:
+  - zerocopy
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected area
+      description: Which part of zerocopy is affected?
+      options:
+        - zerocopy (core crate)
+        - zerocopy-derive (procedural macros)
+        - Both zerocopy and zerocopy-derive
+        - Documentation or CI
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: >-
+        Describe the unexpected behavior and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: >-
+        Include a minimal Rust snippet, compiler error, or Miri output.
+      render: rust
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: >-
+        zerocopy version, rustc version, and target triple (if relevant).
+      placeholder: e.g. zerocopy 0.8.63, rustc 1.85.0, x86_64-unknown-linux-gnu

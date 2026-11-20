@@ -24,6 +24,10 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output
 EXCLUDE_FILES=(
+    "./.github/ISSUE_TEMPLATE/anneal.yml"
+    "./.github/ISSUE_TEMPLATE/customer-request.yml"
+    "./.github/ISSUE_TEMPLATE/zerocopy-bug.yml"
+    "./.github/ISSUE_TEMPLATE/zerocopy-feature.yml"
     "./.github/dependabot.yml"
     "./.github/release.yml"
 )

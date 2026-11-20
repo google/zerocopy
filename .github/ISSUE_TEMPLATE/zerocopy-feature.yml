@@ -1,0 +1,38 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Zerocopy feature request
+description: Propose a new API, trait impl, or derive capability in zerocopy
+type: Feature
+labels:
+  - zerocopy
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Target area
+      options:
+        - zerocopy (core crate)
+        - zerocopy-derive (procedural macros)
+        - Both zerocopy and zerocopy-derive
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: >-
+        What are you trying to accomplish, and what prevents doing it today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API or behavior
+      description: >-
+        Sketch the desired API, trait bounds, or derive behavior (optional).
