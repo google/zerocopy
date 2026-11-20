@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "systems/usbpd-epr-power-negotiation",
+    "isa/pcie6-flit-credit-flow-control",
+    "systems/i2c-smbus-timeout-recovery",
+    "verification/hardware-link-deadlock-freedom"
+  ],
+  "subjects": [
+    {
+      "name": "Zephyr RTOS (USB-C subsystem and I2C bit-bang library)",
+      "identity": {
+        "repository": "zephyrproject-rtos/zephyr",
+        "revision": "fbe7a22abedfb04820714736a8038bb6af8c9751"
+      }
+    },
+    {
+      "name": "Linux kernel (TCPM/TCPCI, I2C core, PCIe flit register definitions)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "8dac6df92a2e66e2098bbc69061964cfe7e8375b"
+      }
+    },
+    {
+      "name": "LitePCIe (soft LTSSM and Data Link Layer flow control)",
+      "identity": {
+        "repository": "enjoy-digital/litepcie",
+        "revision": "270ea39d8cd6bf7a5b62371cad0a95eb55ca8933"
+      }
+    },
+    {
+      "name": "Corundum (PCIe requester credit gating and completion accounting)",
+      "identity": {
+        "repository": "corundum/corundum",
+        "revision": "1ca0151b97af85aa5dd306d74b6bcec65904d2ce"
+      }
+    },
+    {
+      "name": "System Management Bus (SMBus) Specification",
+      "identity": {
+        "standard": "SMBus Specification, System Management Interface Forum",
+        "version": "3.2",
+        "date": "2022-01-12",
+        "url": "https://smbus.org/specs/SMBus_3_2_20220112.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

@@ -1,0 +1,55 @@
+{
+  "topics": [
+    "systems/crush-straw2-erasure-placement",
+    "systems/scrub-bitrot-and-lrc-repair",
+    "systems/nfsv4-smb3-delegation-leases",
+    "verification/lease-fencing-and-quorum-scrub"
+  ],
+  "subjects": [
+    {
+      "name": "Ceph (CRUSH mapper and builder, erasure-code backends, scrub and checksum defaults)",
+      "identity": {
+        "repository": "ceph/ceph",
+        "revision": "97fcfa4cf9275628d83119f60e6c526f4145f979"
+      }
+    },
+    {
+      "name": "MinIO (per-shard bit-rot verification and erasure decode path)",
+      "identity": {
+        "repository": "minio/minio",
+        "revision": "7aac2a2c5b7c882e68c1ce017d8256be2feea27f"
+      }
+    },
+    {
+      "name": "klauspost/reedsolomon (GF(2^8) Reed-Solomon erasure coding library)",
+      "identity": {
+        "repository": "klauspost/reedsolomon",
+        "revision": "25e5c5227103dc948f3e1888a8c9d62be1bafd1e"
+      }
+    },
+    {
+      "name": "NFS-Ganesha (NFSv4 leases, delegation recall and revocation)",
+      "identity": {
+        "repository": "nfs-ganesha/nfs-ganesha",
+        "revision": "f7a6811d936f776261bce0fd08570e214fe0b061",
+        "version": "V15.12"
+      }
+    },
+    {
+      "name": "Samba (SMB2/3 lease breaks, lease epochs, persistent handles)",
+      "identity": {
+        "repository": "samba-team/samba",
+        "revision": "380971e84f8136e46448f880a421b4b57a15619c"
+      }
+    },
+    {
+      "name": "RFC 8881: Network File System (NFS) Version 4 Minor Version 1 Protocol",
+      "identity": {
+        "standard": "RFC 8881",
+        "date": "2020-08",
+        "url": "https://www.rfc-editor.org/rfc/rfc8881.txt"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
