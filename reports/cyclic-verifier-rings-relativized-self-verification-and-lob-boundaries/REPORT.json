@@ -1,0 +1,154 @@
+{
+  "topics": [
+    "verification",
+    "verification/proof-checker-soundness",
+    "verification/self-verification",
+    "lean",
+    "lean/kernel",
+    "pl",
+    "pl/provability-logic",
+    "compilers",
+    "compilers/diverse-double-compiling",
+    "security",
+    "security/trusted-computing-base"
+  ],
+  "subjects": [
+    {
+      "name": "MetaRocq (PCUIC metatheory and verified safe checker, formerly MetaCoq)",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+      }
+    },
+    {
+      "name": "Lean4Lean (Lean 4 kernel in Lean with partial correctness proof)",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "con-leche (Lean checker with a set-model consistency proof in Lean)",
+      "identity": {
+        "repository": "leanprover/con-leche",
+        "revision": "cd2eceab2e9b10404c663b468639c8aa99d0d1f2"
+      }
+    },
+    {
+      "name": "CakeML (Candle: verified HOL Light implementation, proofs in HOL4)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+      }
+    },
+    {
+      "name": "HOL Light (kernel, CHANGES log, Model/ self-consistency proof)",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "1a0c0e6b182cd9e271946ba8d78f7942619f4acb"
+      }
+    },
+    {
+      "name": "HOL4 (Milawa/Jitawa soundness proof under examples/theorem-prover; kernel issue tracker)",
+      "identity": {
+        "repository": "HOL-Theorem-Prover/HOL",
+        "revision": "0c30bdb71aafd4e6a354f5b0b43fffbff6fa8d47"
+      }
+    },
+    {
+      "name": "ACL2 community books (Milawa sources under books/projects/milawa)",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "08bec1884997560686932229dbfe458c1bba34bf"
+      }
+    },
+    {
+      "name": "Metamath Zero (mm0-c verifier, verifier.mm0 goal theorem)",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "Lean 4 (C++ kernel under src/kernel; issue and pull-request record)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5a82f1a47fbc2323ad6be6b11a7c0522dd4f3e68"
+      }
+    },
+    {
+      "name": "Lean Kernel Arena (checker registry, tests/bugs catalogue, published results)",
+      "identity": {
+        "repository": "leanprover/lean-kernel-arena",
+        "revision": "0ddd55b91d6bc604ae0d14833bad60cc27e51268"
+      }
+    },
+    {
+      "name": "Rocq (dev/doc/critical-bugs.md)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "Agda (issue tracker, label 'false')",
+      "identity": {
+        "repository": "agda/agda",
+        "revision": "11f7300c8303608196e620714100a056e8c1ed0f"
+      }
+    },
+    {
+      "name": "The Lean Language Reference, section 'Validating a Lean Proof'",
+      "identity": {
+        "url": "https://lean-lang.org/doc/reference/latest/ValidatingProofs/",
+        "retrieved": "2026-11-20"
+      }
+    },
+    {
+      "name": "M. H. Loeb, Solution of a problem of Leon Henkin, Journal of Symbolic Logic 20(2):115-118, 1955",
+      "identity": {
+        "doi": "10.2307/2266895"
+      }
+    },
+    {
+      "name": "M. Carneiro, Lean4Lean: Verifying a Typechecker for Lean, in Lean",
+      "identity": {
+        "arxiv": "2403.14064",
+        "version": "v3"
+      }
+    },
+    {
+      "name": "D. A. Wheeler, Fully Countering Trusting Trust through Diverse Double-Compiling (PhD dissertation, 2009)",
+      "identity": {
+        "arxiv": "1004.5534",
+        "version": "v1",
+        "doi": "10.48550/arXiv.1004.5534"
+      }
+    },
+    {
+      "name": "J. Davis and M. O. Myreen, The Reflective Milawa Theorem Prover is Sound (Down to the Machine Code that Runs it), Journal of Automated Reasoning 55:117-183, 2015",
+      "identity": {
+        "doi": "10.1007/s10817-015-9324-6"
+      }
+    },
+    {
+      "name": "J. Harrison, Towards Self-verification of HOL Light, IJCAR 2006",
+      "identity": {
+        "doi": "10.1007/11814771_17"
+      }
+    },
+    {
+      "name": "O. Kuncar and A. Popescu, A Consistent Foundation for Isabelle/HOL, ITP 2015",
+      "identity": {
+        "doi": "10.1007/978-3-319-22102-1_16"
+      }
+    },
+    {
+      "name": "A. Abel and T. Coquand, Failure of Normalization in Impredicative Type Theory with Proof-Irrelevant Propositional Equality, LMCS 16(2), 2020",
+      "identity": {
+        "arxiv": "1911.08174"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

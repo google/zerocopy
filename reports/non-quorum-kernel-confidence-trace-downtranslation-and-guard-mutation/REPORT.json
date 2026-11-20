@@ -1,0 +1,224 @@
+{
+  "topics": [
+    "verification",
+    "verification/proof-certificates",
+    "verification/checker-testing",
+    "lean",
+    "lean/kernel",
+    "lean/export-format",
+    "compilers",
+    "compilers/translation-validation",
+    "tooling",
+    "tooling/mutation-testing",
+    "security",
+    "security/silent-data-corruption",
+    "smt",
+    "smt/proof-checking"
+  ],
+  "subjects": [
+    {
+      "name": "lean4export (Lean 4 NDJSON export format 3.1.0)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "lean4checker (same-kernel replay of .olean files; deprecated in favour of the built-in leanchecker)",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "comparator (statement-pinning judge for Lean proofs)",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "nanoda_lib (independent Lean 4 type checker in Rust)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+      }
+    },
+    {
+      "name": "Lean4Lean (Lean 4 kernel in Lean)",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "con-leche (Lean checker with consistency proof; PERF.md measurements)",
+      "identity": {
+        "repository": "leanprover/con-leche",
+        "revision": "cd2eceab2e9b10404c663b468639c8aa99d0d1f2"
+      }
+    },
+    {
+      "name": "Lean Kernel Arena (checker registry, test suite, published results)",
+      "identity": {
+        "repository": "leanprover/lean-kernel-arena",
+        "revision": "0ddd55b91d6bc604ae0d14833bad60cc27e51268"
+      }
+    },
+    {
+      "name": "Lean 4 (C++ kernel; issue and pull-request record)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5a82f1a47fbc2323ad6be6b11a7c0522dd4f3e68"
+      }
+    },
+    {
+      "name": "lean2dk (Lean to Dedukti translation)",
+      "identity": {
+        "repository": "Deducteam/lean2dk",
+        "revision": "471208f18c29420e25750503648469fc95d2ac8f"
+      }
+    },
+    {
+      "name": "DRAT-trim and lrat-check",
+      "identity": {
+        "repository": "marijnheule/drat-trim",
+        "revision": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985"
+      }
+    },
+    {
+      "name": "cake_lpr (verified LRAT/LPR checker binaries built with CakeML)",
+      "identity": {
+        "repository": "tanyongkiam/cake_lpr",
+        "revision": "033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2"
+      }
+    },
+    {
+      "name": "cvc5 (proof production documentation: CPC and Alethe)",
+      "identity": {
+        "repository": "cvc5/cvc5",
+        "revision": "4cc4e66310f82f49f2e99e722bc74e0bfee41ffb"
+      }
+    },
+    {
+      "name": "Carcara (Alethe proof checker)",
+      "identity": {
+        "repository": "ufmg-smite/carcara",
+        "revision": "819f30914665019898cbad7e09d3962053b6f97a"
+      }
+    },
+    {
+      "name": "Ethos (Eunoia-based proof checker for cvc5 CPC proofs)",
+      "identity": {
+        "repository": "cvc5/ethos",
+        "revision": "b02afbe66a4f796043ed3c5b9790cb6e7f00b9cc"
+      }
+    },
+    {
+      "name": "Metamath Zero (mm0-c verifier)",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "mmverify.py (Metamath verifier in Python; subject of the guard-mutation and bit-flip experiments)",
+      "identity": {
+        "repository": "david-a-wheeler/mmverify.py",
+        "revision": "63a2aa3815cd5bf67892dbfc7f2048cbb177524c"
+      }
+    },
+    {
+      "name": "metamath-test (positive and negative test databases for Metamath verifiers)",
+      "identity": {
+        "repository": "david-a-wheeler/metamath-test",
+        "revision": "5758bf781bab662d4b31c7f72ac4dedea74fcb0f"
+      }
+    },
+    {
+      "name": "Rocq (dev/doc/critical-bugs.md)",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "25f5b18a320e4796f181f938d3b74bebe7db4dc4"
+      }
+    },
+    {
+      "name": "MetaRocq (canonicity and normalization statements)",
+      "identity": {
+        "repository": "MetaRocq/metarocq",
+        "revision": "51b14e4bb5f4580f00f60208ff8dbf31f3ad6f56"
+      }
+    },
+    {
+      "name": "The Lean Language Reference, section 'Validating a Lean Proof'",
+      "identity": {
+        "url": "https://lean-lang.org/doc/reference/latest/ValidatingProofs/",
+        "retrieved": "2026-11-20"
+      }
+    },
+    {
+      "name": "M. Blum and S. Kannan, Designing programs that check their work, Journal of the ACM 42(1):269-291, 1995",
+      "identity": {
+        "doi": "10.1145/200836.200880"
+      }
+    },
+    {
+      "name": "P. H. Hochschild et al., Cores that don't count, HotOS 2021",
+      "identity": {
+        "doi": "10.1145/3458336.3465297"
+      }
+    },
+    {
+      "name": "H. D. Dixit et al., Silent Data Corruptions at Scale",
+      "identity": {
+        "arxiv": "2102.11245"
+      }
+    },
+    {
+      "name": "L. Cruz-Filipe, M. Heule, W. Hunt, M. Kaufmann, P. Schneider-Kamp, Efficient Certified RAT Verification",
+      "identity": {
+        "arxiv": "1612.02353"
+      }
+    },
+    {
+      "name": "M. Heule, O. Kullmann, V. Marek, Solving and Verifying the Boolean Pythagorean Triples problem via Cube-and-Conquer",
+      "identity": {
+        "arxiv": "1605.00723"
+      }
+    },
+    {
+      "name": "D. Winterer, C. Zhang, Z. Su, On the unusual effectiveness of type-aware operator mutations for testing SMT solvers, OOPSLA 2020",
+      "identity": {
+        "doi": "10.1145/3428261",
+        "arxiv": "2004.08799"
+      }
+    },
+    {
+      "name": "M. Carneiro, Metamath Zero: The Cartesian Theorem Prover",
+      "identity": {
+        "arxiv": "1910.10703",
+        "version": "v3"
+      }
+    },
+    {
+      "name": "M. Carneiro, Lean4Lean: Verifying a Typechecker for Lean, in Lean",
+      "identity": {
+        "arxiv": "2403.14064",
+        "version": "v3"
+      }
+    },
+    {
+      "name": "N. Lopes, D. Menendez, S. Nagarakatte, J. Regehr, Provably correct peephole optimizations with Alive, PLDI 2015",
+      "identity": {
+        "doi": "10.1145/2737924.2737965"
+      }
+    },
+    {
+      "name": "A. Abel and T. Coquand, Failure of Normalization in Impredicative Type Theory with Proof-Irrelevant Propositional Equality, LMCS 16(2), 2020",
+      "identity": {
+        "arxiv": "1911.08174"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
