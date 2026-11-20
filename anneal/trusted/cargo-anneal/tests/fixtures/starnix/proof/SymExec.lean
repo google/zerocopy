@@ -52,23 +52,32 @@ def SVal.val (x : Word) : SVal → Val
 /-- A local slot whose value may depend on the input. -/
 inductive SSlot where
   | dead
-  | live (v : Option SVal)
+  | live (sv : SlotVal)
+  | word (s : Sym)
 
 /-- The slot denoted when the input is `x`. -/
-def SSlot.slot (x : Word) : SSlot → LocalSlot
+noncomputable def SSlot.slot (x : Word) : SSlot → LocalSlot
   | .dead => .dead
-  | .live v => .live (v.map (SVal.val x))
+  | .live sv => .live sv
+  | .word s => .live (u64Val (s.eval x)).toSlotVal
 
 /-- Embed a concrete slot. -/
 def SSlot.ofSlot : LocalSlot → SSlot
   | .dead => .dead
-  | .live v => .live (v.map .conc)
+  | .live sv => .live sv
 
 theorem SSlot.slot_ofSlot (x : Word) (s : LocalSlot) :
     (SSlot.ofSlot s).slot x = s := by
-  cases s with
-  | dead => rfl
-  | live v => cases v <;> rfl
+  cases s <;> rfl
+
+/-- Embed a symbolic or concrete value into a live slot. -/
+noncomputable def SSlot.ofSVal : SVal → SSlot
+  | .conc v => .live v.toSlotVal
+  | .word s => .word s
+
+theorem SSlot.slot_ofSVal (x : Word) (v : SVal) :
+    (SSlot.ofSVal v).slot x = .live (v.val x).toSlotVal := by
+  cases v <;> rfl
 
 /-- A single-frame state of body `0` whose locals may depend on the input. -/
 structure SState where
@@ -77,12 +86,12 @@ structure SState where
   slots : List SSlot
 
 /-- The frame denoted when the input is `x`. -/
-def SState.frame (x : Word) (s : SState) : FrameState :=
+noncomputable def SState.frame (x : Word) (s : SState) : FrameState :=
   { defId := 0, blockIdx := s.block, stmtIdx := s.stmt,
     locals := s.slots.map (SSlot.slot x) }
 
 /-- The state denoted when the input is `x`. -/
-def SState.state (x : Word) (s : SState) : State :=
+noncomputable def SState.state (x : Word) (s : SState) : State :=
   mkState s.block s.stmt (s.slots.map (SSlot.slot x))
 
 /-- Outcome of one symbolic step. -/
@@ -116,63 +125,99 @@ theorem setElem?_map {α β : Type} (f : α → β) :
 
 /-! ### Operands and values -/
 
-/-- Mirror of `evalOperandToSlot`; `none` marks anything unsupported. -/
+/-- Mirror of `evalOperandToSlot` for initialized non-projected reads;
+`none` marks anything unsupported or uninitialized. -/
 noncomputable def sOperand (tys : List MirTy) (ls : List SSlot) :
-    Operand → Option (MirTy × Option SVal × List SSlot)
+    Operand → Option (MirTy × SVal × List SSlot)
   | .copy p =>
-    if p.projection.isEmpty then
+    match p.projection with
+    | [] =>
       match Trusted.MirSemantics.getElem? tys p.localId,
           Trusted.MirSemantics.getElem? ls p.localId with
-      | some ty, some (.live v) => some (ty, v, ls)
+      | some ty, some (.live sv) =>
+        sv.toVal?.map fun v => (ty, .conc v, ls)
+      | some ty, some (.word s) => some (ty, .word s, ls)
       | _, _ => none
-    else none
+    | _ :: _ => none
   | .move p =>
-    if p.projection.isEmpty then
+    match p.projection with
+    | [] =>
       match Trusted.MirSemantics.getElem? tys p.localId,
           Trusted.MirSemantics.getElem? ls p.localId with
-      | some ty, some (.live v) =>
+      | some ty, some (.live sv) =>
+        match sv.toVal? with
+        | some v =>
+          (setElem? ls p.localId (SSlot.ofSlot (liveUninitSlot ty))).map
+            fun ls' => (ty, .conc v, ls')
+        | none => none
+      | some ty, some (.word s) =>
         (setElem? ls p.localId (SSlot.ofSlot (liveUninitSlot ty))).map
-          fun ls' => (ty, v, ls')
+          fun ls' => (ty, .word s, ls')
       | _, _ => none
-    else none
+    | _ :: _ => none
   | .constant c =>
     match evalConstLit c.ty c.lit with
-    | .ok v => some (c.ty, some (.conc v), ls)
+    | .ok v => some (c.ty, .conc v, ls)
     | .error _ => none
 
 theorem sOperand_sound {tys : List MirTy} {ls ls' : List SSlot}
-    {op : Operand} {ty : MirTy} {v : Option SVal} (x : Word)
+    {op : Operand} {ty : MirTy} {v : SVal} (x : Word)
     (h : sOperand tys ls op = some (ty, v, ls')) :
     evalOperandToSlot tys (ls.map (SSlot.slot x)) op =
-      .ok (ty, v.map (SVal.val x), ls'.map (SSlot.slot x)) := by
+      .ok (ty, (v.val x).toSlotVal, ls'.map (SSlot.slot x)) := by
   cases op with
   | copy p =>
-    simp only [sOperand] at h
-    split at h
-    · rename_i hp
+    obtain ⟨lid, proj⟩ := p
+    cases proj with
+    | cons _ _ => cases h
+    | nil =>
+      simp only [sOperand] at h
       split at h
-      · rename_i ty0 v0 ht hs
+      · rename_i ty0 sv ht hs
+        obtain ⟨v0, hv0, he⟩ := Option.map_eq_some_iff.mp h
+        cases he
+        have hsv : Val.toSlotVal v0 = sv := toSlotVal_of_toVal? sv v0 hv0
+        simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
+          Option.map, SSlot.slot, projectTy?, readSlotPath?, SVal.val, hsv]
+        rfl
+      · rename_i ty0 s ht hs
         cases h
-        simp only [evalOperandToSlot, hp, Bool.not_true, getElem?_map, ht, hs]
+        simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
+          Option.map, SSlot.slot, projectTy?, readSlotPath?, SVal.val]
         rfl
       · cases h
-    · cases h
   | move p =>
-    simp only [sOperand] at h
-    split at h
-    · rename_i hp
+    obtain ⟨lid, proj⟩ := p
+    cases proj with
+    | cons _ _ => cases h
+    | nil =>
+      simp only [sOperand] at h
       split at h
-      · rename_i ty0 v0 ht hs
+      · rename_i ty0 sv ht hs
+        split at h
+        · rename_i v0 hv0
+          obtain ⟨l1, hset, he⟩ := Option.map_eq_some_iff.mp h
+          have hmap := setElem?_map (SSlot.slot x) ls lid
+            (SSlot.ofSlot (liveUninitSlot ty0))
+          rw [SSlot.slot_ofSlot, hset] at hmap
+          dsimp only [liveUninitSlot, Option.map] at hmap
+          cases he
+          have hsv : Val.toSlotVal v0 = sv := toSlotVal_of_toVal? sv v0 hv0
+          simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
+            Option.map, SSlot.slot, projectTy?, readSlotPath?, writeSlotPath?,
+            SVal.val, hsv, hmap, Bool.not_true, Bool.false_eq_true, ↓reduceIte]
+        · cases h
+      · rename_i ty0 s ht hs
         obtain ⟨l1, hset, he⟩ := Option.map_eq_some_iff.mp h
-        have hmap := setElem?_map (SSlot.slot x) ls p.localId
+        have hmap := setElem?_map (SSlot.slot x) ls lid
           (SSlot.ofSlot (liveUninitSlot ty0))
         rw [SSlot.slot_ofSlot, hset] at hmap
+        dsimp only [liveUninitSlot, Option.map] at hmap
         cases he
-        simp only [evalOperandToSlot, hp, Bool.not_true, getElem?_map, ht, hs,
-          Option.map, SSlot.slot, hmap]
-        rfl
+        simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
+          Option.map, SSlot.slot, projectTy?, readSlotPath?, writeSlotPath?,
+          SVal.val, hmap, Bool.not_true, Bool.false_eq_true, ↓reduceIte]
       · cases h
-    · cases h
   | constant c =>
     simp only [sOperand] at h
     split at h
@@ -186,9 +231,9 @@ theorem sOperand_sound {tys : List MirTy} {ls ls' : List SSlot}
 noncomputable def sPrim (tys : List MirTy) (ls : List SSlot) (op : Operand) :
     Option (SVal × List SSlot) :=
   match sOperand tys ls op with
-  | some (ty, some v, ls') =>
+  | some (ty, v, ls') =>
     if isPrimitiveReadableTy ty then some (v, ls') else none
-  | _ => none
+  | none => none
 
 theorem sPrim_sound {tys : List MirTy} {ls ls' : List SSlot} {op : Operand}
     {v : SVal} (x : Word) (h : sPrim tys ls op = some (v, ls')) :
@@ -201,7 +246,7 @@ theorem sPrim_sound {tys : List MirTy} {ls ls' : List SSlot} {op : Operand}
     · rename_i hty
       cases h
       simp only [evalPrimitiveOperand, sOperand_sound x ho, hty, Bool.not_true,
-        Option.map]
+        toVal?_toSlotVal]
       rfl
     · cases h
   · cases h
@@ -368,8 +413,8 @@ noncomputable def sRvalue (tys : List MirTy) (ls : List SSlot) (dst : MirTy) :
     Rvalue → Option (SVal × List SSlot)
   | .use op =>
     match sOperand tys ls op with
-    | some (ty, some v, ls') => if MirTy.beq ty dst then some (v, ls') else none
-    | _ => none
+    | some (ty, v, ls') => if MirTy.beq ty dst then some (v, ls') else none
+    | none => none
   | .binaryOp bop a b =>
     match sPrim tys ls a with
     | some (va, l1) =>
@@ -381,7 +426,7 @@ noncomputable def sRvalue (tys : List MirTy) (ls : List SSlot) (dst : MirTy) :
     if p.projection.isEmpty then
       match Trusted.MirSemantics.getElem? tys p.localId,
           Trusted.MirSemantics.getElem? ls p.localId with
-      | some (.enum ety), some (.live (some (.conc (.enumVal ety' n)))) =>
+      | some (.enum ety), some (.live (.enumVal ety' n)) =>
         (sDiscr ety ety' n).map fun d => (.conc d, ls)
       | _, _ => none
     else none
@@ -401,7 +446,7 @@ theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
       · rename_i hty
         cases h
         simp only [evalRvalue, sOperand_sound x ho, hty, Bool.not_true,
-          Option.map]
+          toVal?_toSlotVal]
         rfl
       · cases h
     · cases h
@@ -441,7 +486,7 @@ theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
         · cases hd
       · cases h
     · cases h
-  | unaryOp | ref | addressOf | aggregateTuple | unsupported => cases h
+  | unaryOp | ref | addressOf | aggregateTuple | cast | unsupported => cases h
 
 /-- Whether `writePlace` accepts this value at type `ty`. -/
 noncomputable def SVal.check (ty : MirTy) : SVal → Bool
@@ -462,24 +507,30 @@ noncomputable def sWrite (ls : List SSlot) (dst : LocalId) (ty : MirTy)
     (v : SVal) : Option (List SSlot) :=
   if v.check ty then
     match Trusted.MirSemantics.getElem? ls dst with
-    | some (.live _) => setElem? ls dst (.live (some v))
+    | some (.live _) | some (.word _) => setElem? ls dst (SSlot.ofSVal v)
     | _ => none
   else none
 
 theorem sWrite_sound {ls ls' : List SSlot} {dst : LocalId} {ty : MirTy}
     {v : SVal} (x : Word) (h : sWrite ls dst ty v = some ls') :
-    writePlace (ls.map (SSlot.slot x)) dst ty (v.val x) =
+    writePlace (ls.map (SSlot.slot x)) ⟨dst, []⟩ ty (v.val x) =
       .ok (ls'.map (SSlot.slot x)) := by
   simp only [sWrite] at h
   split at h
   · rename_i hc
     split at h
-    · rename_i o hs
-      have hmap := setElem?_map (SSlot.slot x) ls dst (.live (some v))
-      rw [h] at hmap
-      simp only [SSlot.slot, Option.map] at hmap
+    · rename_i sv hs
+      have hmap := setElem?_map (SSlot.slot x) ls dst (SSlot.ofSVal v)
+      rw [h, SSlot.slot_ofSVal] at hmap
       simp only [writePlace, SVal.check_sound x hc, Bool.not_true, getElem?_map,
-        hs, Option.map, SSlot.slot, hmap, Bool.false_eq_true, ↓reduceIte]
+        hs, Option.map, SSlot.slot, writeSlotPath?, hmap, Bool.false_eq_true,
+        ↓reduceIte]
+    · rename_i s hs
+      have hmap := setElem?_map (SSlot.slot x) ls dst (SSlot.ofSVal v)
+      rw [h, SSlot.slot_ofSVal] at hmap
+      simp only [writePlace, SVal.check_sound x hc, Bool.not_true, getElem?_map,
+        hs, Option.map, SSlot.slot, writeSlotPath?, hmap, Bool.false_eq_true,
+        ↓reduceIte]
     · cases h
   · cases h
 
@@ -501,17 +552,20 @@ noncomputable def sStatement (body : Body) (s : SState) : StatementKind → SRes
       | some ls => .step { s with stmt := s.stmt + 1, slots := ls }
       | none => .stuck
   | .assign dst rv =>
-    if dst.projection.isEmpty then
+    match dst.projection with
+    | [] =>
       match Trusted.MirSemantics.getElem? body.locals dst.localId with
       | some ty =>
-        match sRvalue body.locals s.slots ty rv with
-        | some (v, l1) =>
-          match sWrite l1 dst.localId ty v with
-          | some l2 => .step { s with stmt := s.stmt + 1, slots := l2 }
+        if assignHasUnsupportedOverlap dst ty rv then .stuck
+        else
+          match sRvalue body.locals s.slots ty rv with
+          | some (v, l1) =>
+            match sWrite l1 dst.localId ty v with
+            | some l2 => .step { s with stmt := s.stmt + 1, slots := l2 }
+            | none => .stuck
           | none => .stuck
-        | none => .stuck
       | none => .stuck
-    else .stuck
+    | _ :: _ => .stuck
   | .unsupported => .stuck
 
 theorem sStatement_sound {body : Body} {s s' : SState} {stmt : StatementKind}
@@ -552,24 +606,31 @@ theorem sStatement_sound {body : Body} {s s' : SState} {stmt : StatementKind}
         rfl
       · cases h
   | assign dst rv =>
-    simp only [sStatement] at h
-    split at h
-    · rename_i hp
+    obtain ⟨lid, proj⟩ := dst
+    cases proj with
+    | cons _ _ => cases h
+    | nil =>
+      simp only [sStatement] at h
       split at h
       · rename_i ty ht
         split at h
-        · rename_i v l1 hr
-          split at h
-          · rename_i l2 hw
-            cases h
-            simp only [evalStatement, hp, Bool.not_true, ht, SState.frame,
-              sRvalue_sound x hr, sWrite_sound x hw, Bool.false_eq_true,
-              ↓reduceIte]
-            rfl
-          · cases h
         · cases h
+        · rename_i hov
+          split at h
+          · rename_i v l1 hr
+            split at h
+            · rename_i l2 hw
+              cases h
+              cases rv with
+              | aggregateTuple _ => cases hr
+              | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _
+              | ref _ _ | addressOf _ _ | cast _ _ _ | unsupported =>
+                simp only [evalStatement, ht, projectTy?, SState.frame, hov,
+                  ↓reduceIte, sRvalue_sound x hr, sWrite_sound x hw]
+                rfl
+            · cases h
+          · cases h
       · cases h
-    · cases h
   | unsupported => cases h
 
 theorem sStatement_ne_ret {body : Body} {s : SState} {stmt : StatementKind}
@@ -584,9 +645,13 @@ theorem sStatement_ne_ret {body : Body} {s : SState} {stmt : StatementKind}
     simp only [sStatement] at h
     split at h <;> (try split at h) <;> cases h
   | assign dst rv =>
-    simp only [sStatement] at h
-    split at h <;> (try split at h) <;> (try split at h) <;>
-      (try split at h) <;> cases h
+    obtain ⟨lid, proj⟩ := dst
+    cases proj with
+    | cons _ _ => cases h
+    | nil =>
+      simp only [sStatement] at h
+      split at h <;> (try split at h) <;> (try split at h) <;>
+        (try split at h) <;> cases h
   | unsupported => cases h
 
 /-- Mirror of `evalTerminator`; switches need concrete operands. -/
@@ -597,7 +662,11 @@ noncomputable def sTerminator (body : Body) (bb : BasicBlock) (s : SState) :
   | .return_ =>
     if bb.cleanup then .stuck else
       match Trusted.MirSemantics.getElem? s.slots 0 with
-      | some (.live (some v)) => .ret v
+      | some (.live sv) =>
+        match sv.toVal? with
+        | some v => .ret (.conc v)
+        | none => .stuck
+      | some (.word w) => .ret (.word w)
       | _ => .stuck
   | .switchInt d targets =>
     match sPrim body.locals s.slots d with
@@ -624,7 +693,10 @@ theorem sTerminator_step {body : Body} {bb : BasicBlock} {s s' : SState}
     rfl
   · split at h
     · cases h
-    · split at h <;> cases h
+    · split at h
+      · split at h <;> cases h
+      · cases h
+      · cases h
   · rename_i d targets hterm
     split at h
     · rename_i sv ls hd
@@ -658,10 +730,19 @@ theorem sTerminator_ret {body : Body} {bb : BasicBlock} {s : SState}
     · cases h
     · rename_i hcl
       split at h
-      · rename_i v0 hs
+      · rename_i sv hs
+        split at h
+        · rename_i v0 hv0
+          cases h
+          simp only [evalTerminator, hterm, hcl, SState.frame, getElem?_map, hs,
+            Option.map, SSlot.slot, hv0, SVal.val, Bool.false_eq_true,
+            ↓reduceIte]
+        · cases h
+      · rename_i w hs
         cases h
         simp only [evalTerminator, hterm, hcl, SState.frame, getElem?_map, hs,
-          Option.map, SSlot.slot, Bool.false_eq_true, ↓reduceIte]
+          Option.map, SSlot.slot, SVal.val, toVal?_toSlotVal,
+          Bool.false_eq_true, ↓reduceIte]
       · cases h
   · split at h
     · split at h <;> cases h
@@ -767,7 +848,7 @@ noncomputable def sInit (body : Body) (args : List SVal) :
     (if Nat.beq idx 0 then SSlot.ofSlot (liveUninitSlot ty)
       else if Nat.ble idx body.argumentCount then
         match Trusted.MirSemantics.getElem? args (idx - 1) with
-        | some v => .live (some v)
+        | some v => SSlot.ofSVal v
         | none => .dead
       else if hasStorageAnnotation body idx then .dead
       else SSlot.ofSlot (liveUninitSlot ty)) :: sInit body args (idx + 1) rest
@@ -784,11 +865,15 @@ theorem sInit_map (body : Body) (args : List SVal) (x : Word) :
     cases Nat.beq idx 0
     · cases Nat.ble idx body.argumentCount
       · cases hasStorageAnnotation body idx
-        · exact SSlot.slot_ofSlot x _
+        · simp only [Bool.false_eq_true, ↓reduceIte]
+          exact SSlot.slot_ofSlot x _
         · rfl
-      · simp only [getElem?_map]
-        cases Trusted.MirSemantics.getElem? args (idx - 1) <;> rfl
-    · exact SSlot.slot_ofSlot x _
+      · simp only [Bool.false_eq_true, ↓reduceIte, getElem?_map]
+        cases Trusted.MirSemantics.getElem? args (idx - 1) with
+        | none => rfl
+        | some v => exact SSlot.slot_ofSVal x v
+    · simp only [↓reduceIte]
+      exact SSlot.slot_ofSlot x _
 
 /-- The entry state on symbolic arguments. -/
 noncomputable def sEntry (body : Body) (args : List SVal) : SState :=

@@ -17,11 +17,11 @@ open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
 def body : Body := Captured.program.bodies[0]
 
-def s0 : State := mkState 0 0 [.live none, .dead, .live (some .unit)]
-def s1 : State := mkState 0 1 [.live none, .live none, .live (some .unit)]
-def s2 : State := mkState 1 0 [.live none, .live none, .live (some .unit)]
-def s3 : State := mkState 1 1 [.live none, .live none, .live (some .unit)]
-def s4 : State := mkState 1 0 [.live none, .live none, .live (some .unit)]
+def s0 : State := mkState 0 0 [.live .uninit, .dead, .live .unit]
+def s1 : State := mkState 0 1 [.live .uninit, .live .uninit, .live .unit]
+def s2 : State := mkState 1 0 [.live .uninit, .live .uninit, .live .unit]
+def s3 : State := mkState 1 1 [.live .uninit, .live .uninit, .live .unit]
+def s4 : State := mkState 1 0 [.live .uninit, .live .uninit, .live .unit]
 
 theorem step0 : evalStep (bodyProg body) 0 s0 = .step s1 := rfl
 theorem step1 : evalStep (bodyProg body) 0 s1 = .step s2 := rfl

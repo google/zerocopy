@@ -157,7 +157,7 @@ pub enum InspectorRequest {
     /// authenticated sysroot base on every run (cold compile and cache hit
     /// alike), kernel-replays all correspondence declarations onto that
     /// replayed vendor kernel environment, and verifies constant-cone purity,
-    /// all 30 correspondence/wiring/canary claims, and reference-evaluator
+    /// all 35 correspondence/wiring/canary claims, and reference-evaluator
     /// independence.
     CorrespondenceAudit {
         search_path: Vec<PathBuf>,
