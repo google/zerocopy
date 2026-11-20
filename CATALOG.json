@@ -33647,6 +33647,86 @@
         "verification/memory-safety"
       ]
     },
+    "hardware-asid-width-discovery-conditional-satp-switch-fencing-and-boot-pt-barriers": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Privileged ISA Specification (satp WARL ASIDLEN and SFENCE.VMA)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384",
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Sail RISC-V Formal Architecture Model (satp Legalization and VMem)"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Sail RISC-V Lean 4 Mechanized VMem and TLB Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2560537",
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel RISC-V and AArch64 VSpace and Boot Subsystems"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-03359-9_20",
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Isabelle/HOL Abstract and Machine VSpace Specifications"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel RISC-V and ARM64 ASID Allocators and Early MMU Bootstrap"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/xv6-riscv",
+            "revision": "fa2ddcb7ca87a77af579380a6eafd5aff163b44f"
+          },
+          "name": "xv6-riscv Virtual Memory Initialization and Trampoline Switching"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1007/978-3-319-94821-8_32",
+            "doi": "10.1007/s10817-019-09539-7",
+            "venue": "Journal of Automated Reasoning"
+          },
+          "name": "Formal Reasoning Under Cached Address Translation (Syeda and Klein)"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.00642",
+            "doi": "10.1007/978-3-030-99336-8_6",
+            "venue": "ESOP 2022"
+          },
+          "name": "Relaxed Virtual Memory in Armv8-A (Simner et al.)"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "isa/aarch64",
+        "verification/os-kernels",
+        "verification/concurrency",
+        "systems/os-kernels"
+      ]
+    },
     "hardware-description-languages-timing-semantics-and-hw-sw-co-design": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -65039,6 +65119,102 @@
         "isa/sv39",
         "systems/os-kernels",
         "systems/sel4"
+      ]
+    },
+    "riscv-zicsr-trap-entry-exit-sscratch-swaps-and-assembly-handler-verification": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Unprivileged and Privileged ISA Specifications (Zicsr, Zalrsc, Supervisor Trap Handling)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384",
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Sail RISC-V Authoritative Architecture Model"
+        },
+        {
+          "identity": {
+            "repository": "opencompl/sail-riscv-lean",
+            "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+          },
+          "name": "Sail RISC-V Lean 4 Mechanized ISA Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523434",
+            "repository": "rems-project/islaris",
+            "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9"
+          },
+          "name": "Islaris: Verification of Machine Code Against Authoritative Sail ISA Semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2560537",
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel RISC-V Trap Entry and Context Restore"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2499370.2462183",
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Isabelle/HOL Formal Specification and Translation Validation Foundations"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel RISC-V Trap Entry and Return Assembly"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132786",
+            "repository": "tock/tock",
+            "revision": "b336e170cd1d6f15daeb332b5e51ca20e4fc3c0f"
+          },
+          "name": "Tock Embedded Operating System RISC-V Trap Architecture"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/xv6-riscv",
+            "revision": "fa2ddcb7ca87a77af579380a6eafd5aff163b44f"
+          },
+          "name": "xv6-riscv Operating System Trap Trampoline and Kernel Vector"
+        },
+        {
+          "identity": {
+            "repository": "oxidecomputer/hubris",
+            "revision": "969bac2bf47c98710842eb232fdd4a9c54e7dd7f"
+          },
+          "name": "Oxide Hubris Microkernel Architecture Abstraction"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2908080.2908101",
+            "repository": "uw-unsat/serval",
+            "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+          },
+          "name": "Serval Automated RISC-V Verifier and CertiKOS Interrupt-Layer Foundations"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "isa/zicsr",
+        "isa/sail",
+        "verification/os-kernels",
+        "verification/assembly",
+        "systems/os-kernels"
       ]
     },
     "riscv-zkvms-risc0-sp1-jolt-lasso-lookup-arguments-and-air-underconstraint-bugs": {

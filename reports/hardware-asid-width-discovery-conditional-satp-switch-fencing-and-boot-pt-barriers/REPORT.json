@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "isa/riscv",
+    "isa/aarch64",
+    "verification/os-kernels",
+    "verification/concurrency",
+    "systems/os-kernels"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Privileged ISA Specification (satp WARL ASIDLEN and SFENCE.VMA)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal Architecture Model (satp Legalization and VMem)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e",
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 Mechanized VMem and TLB Model",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "seL4 Microkernel RISC-V and AArch64 VSpace and Boot Subsystems",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+        "doi": "10.1145/2560537"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL Abstract and Machine VSpace Specifications",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e",
+        "doi": "10.1007/978-3-642-03359-9_20"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V and ARM64 ASID Allocators and Early MMU Bootstrap",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "xv6-riscv Virtual Memory Initialization and Trampoline Switching",
+      "identity": {
+        "repository": "mit-pdos/xv6-riscv",
+        "revision": "fa2ddcb7ca87a77af579380a6eafd5aff163b44f"
+      }
+    },
+    {
+      "name": "Formal Reasoning Under Cached Address Translation (Syeda and Klein)",
+      "identity": {
+        "doi": "10.1007/s10817-019-09539-7",
+        "companion_doi": "10.1007/978-3-319-94821-8_32",
+        "venue": "Journal of Automated Reasoning"
+      }
+    },
+    {
+      "name": "Relaxed Virtual Memory in Armv8-A (Simner et al.)",
+      "identity": {
+        "doi": "10.1007/978-3-030-99336-8_6",
+        "arxiv": "2203.00642",
+        "venue": "ESOP 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,96 @@
+{
+  "topics": [
+    "isa/riscv",
+    "isa/zicsr",
+    "isa/sail",
+    "verification/os-kernels",
+    "verification/assembly",
+    "systems/os-kernels"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Unprivileged and Privileged ISA Specifications (Zicsr, Zalrsc, Supervisor Trap Handling)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "Sail RISC-V Authoritative Architecture Model",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e",
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 Mechanized ISA Model",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Islaris: Verification of Machine Code Against Authoritative Sail ISA Semantics",
+      "identity": {
+        "repository": "rems-project/islaris",
+        "revision": "c978e10f50db5c40f0fdf113f5f76a779782c6f9",
+        "doi": "10.1145/3519939.3523434"
+      }
+    },
+    {
+      "name": "seL4 Microkernel RISC-V Trap Entry and Context Restore",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+        "doi": "10.1145/2560537"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL Formal Specification and Translation Validation Foundations",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e",
+        "doi": "10.1145/2499370.2462183"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V Trap Entry and Return Assembly",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "Tock Embedded Operating System RISC-V Trap Architecture",
+      "identity": {
+        "repository": "tock/tock",
+        "revision": "b336e170cd1d6f15daeb332b5e51ca20e4fc3c0f",
+        "doi": "10.1145/3132747.3132786"
+      }
+    },
+    {
+      "name": "xv6-riscv Operating System Trap Trampoline and Kernel Vector",
+      "identity": {
+        "repository": "mit-pdos/xv6-riscv",
+        "revision": "fa2ddcb7ca87a77af579380a6eafd5aff163b44f"
+      }
+    },
+    {
+      "name": "Oxide Hubris Microkernel Architecture Abstraction",
+      "identity": {
+        "repository": "oxidecomputer/hubris",
+        "revision": "969bac2bf47c98710842eb232fdd4a9c54e7dd7f"
+      }
+    },
+    {
+      "name": "Serval Automated RISC-V Verifier and CertiKOS Interrupt-Layer Foundations",
+      "identity": {
+        "repository": "uw-unsat/serval",
+        "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05",
+        "doi": "10.1145/2908080.2908101"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
