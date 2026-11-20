@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "lean/kernel",
+    "anneal/theory",
+    "lean/mechanization",
+    "rustc/mir",
+    "lean/elaboration",
+    "anneal/trusted-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 (C++ kernel type_checker, runtime memory and recursion-depth guards, and tactic/equation elaborators)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal (Trusted.MirAst, Trusted.MirSemantics, TrustedBoundary, and Anneal.MirWp)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}

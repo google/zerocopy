@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "systems/os-verification",
+    "verification/relational",
+    "anneal/theory",
+    "verification/semantics",
+    "isa/riscv64",
+    "security/information-flow-control"
+  ],
+  "subjects": [
+    {
+      "name": "seL4 formal verification repository (proof/infoflow, proof/access-control, and spec/abstract/RISCV64)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Sail RISC-V Lean 4 model (LeanRV64D ISA, Sv39 Vmem/VmemTlb, and Step semantics)",
+      "identity": {
+        "repository": "opencompl/sail-riscv-lean",
+        "revision": "51c635c460125ac87955d061fcd902ce03b8011f"
+      }
+    },
+    {
+      "name": "Serval SOSP 2019 verification framework (CertiKOS and Komodo state-machine noninterference)",
+      "identity": {
+        "repository": "uw-unsat/serval-sosp19",
+        "revision": "175c42660fad84b44e4c9f6f723fd3c9450d65d4"
+      }
+    },
+    {
+      "name": "Komodo verified ARM TrustZone enclave monitor (Dafny hardware/software specifications)",
+      "identity": {
+        "repository": "microsoft/komodo",
+        "revision": "de1865c8bd0d85cdfd9a980ad7131448acfaf136"
+      }
+    },
+    {
+      "name": "Anneal (Trusted.MirSemantics, TrustedBoundary, and Pass-1 3-axiom theory envelope)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-19"
+}
