@@ -135,6 +135,13 @@ pub struct TargetAuditRequest {
     pub subject_declaration: String,
     /// Exact reviewed specification declaration.
     pub specification_declaration: String,
+    /// When `true`, Phase 2 of `"target-audit"` admits `sorryAx` strictly on
+    /// outgoing edges from `TargetRole::Proof` declarations outside the
+    /// Phase 1 claim/specification closure, reporting them in
+    /// `"sorryDeclarations"`. Phase 1 always enforces the strict 3-axiom
+    /// ceiling.
+    #[serde(default)]
+    pub allow_sorry_in_proof: bool,
     /// Holds the subject identities reported with acceptance.
     pub bindings: TargetBindings,
 }
@@ -206,6 +213,7 @@ struct InspectorTargetAuditRequest<'a> {
     canonical_root: &'a str,
     subject_declaration: &'a str,
     specification_declaration: &'a str,
+    allow_sorry_in_proof: bool,
     bindings: &'a TargetBindings,
 }
 
@@ -236,6 +244,7 @@ impl<'a> From<&'a TargetAuditRequest> for InspectorTargetAuditRequest<'a> {
             canonical_root: &request.canonical_root,
             subject_declaration: &request.subject_declaration,
             specification_declaration: &request.specification_declaration,
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
             bindings: &request.bindings,
         }
     }
@@ -256,6 +265,55 @@ impl Checker {
             })
         };
         self.invoke_inspector("headers", &req)
+    }
+
+    /// Run batched fail-closed `"spec-preflight"` across
+    /// `TargetRole::Specification` sources against the authenticated `Init` +
+    /// `Std` parser environment (zero target `.olean`s loaded).
+    #[doc(hidden)]
+    pub fn inspect_spec_preflight(
+        &mut self,
+        sources: &[(String, PathBuf)],
+    ) -> Result<Json, Failure> {
+        self.inspect_spec_preflight_with_libraries(sources, None)
+    }
+
+    fn inspect_spec_preflight_with_libraries(
+        &mut self,
+        sources: &[(String, PathBuf)],
+        allowed_libraries: Option<&BTreeSet<String>>,
+    ) -> Result<Json, Failure> {
+        let req = {
+            let adm = self.admitted()?;
+            let lib_set = allowed_libraries.unwrap_or(&adm.library_modules);
+            let arts_arr: Vec<Json> = adm
+                .artifacts
+                .iter()
+                .filter(|(k, _)| adm.foundation_graph.contains_key(*k) || lib_set.contains(*k))
+                .map(|(k, parts)| json!([k, parts.to_wire()]))
+                .collect();
+            let libraries: Vec<&str> = lib_set
+                .iter()
+                .filter(|m| adm.library_modules.contains(*m))
+                .map(String::as_str)
+                .collect();
+            let graph: BTreeMap<&str, &[ImportEdge]> = adm
+                .graph
+                .iter()
+                .filter(|(k, _)| adm.foundation_graph.contains_key(*k) || lib_set.contains(*k))
+                .map(|(k, v)| (k.as_str(), v.as_slice()))
+                .collect();
+            json!({
+                "mode": "spec-preflight",
+                "sysroot": adm.prefix.to_string_lossy(),
+                "artifacts": arts_arr,
+                "foundation": adm.foundation_modules(),
+                "libraries": libraries,
+                "graph": graph,
+                "sources": sources,
+            })
+        };
+        self.invoke_inspector("spec-preflight", &req)
     }
 
     /// Run `"target-audit"` mode over compiled target artifacts.
@@ -581,6 +639,7 @@ impl Checker {
             canonical_root: request.canonical_root.clone(),
             subject_declaration: request.subject_declaration.clone(),
             specification_declaration: request.specification_declaration.clone(),
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
             bindings: request.bindings.clone(),
         };
         if self.admitted()?.unpinned {
@@ -595,7 +654,20 @@ impl Checker {
             self.admit_libraries(imports.values().flatten().map(|e| e.module.clone()))?;
         }
         for (module, edges) in &imports {
+            let has_non_meta_init = edges.iter().any(|e| e.module == "Init" && !e.is_meta);
             for edge in edges {
+                if edge.import_all || !edge.is_exported {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("import modifiers are unsupported in {module}"),
+                    ));
+                }
+                if edge.is_meta && !(edge.module == "Init" && has_non_meta_init) {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("meta import {} is unsupported in {module}", edge.module),
+                    ));
+                }
                 if let Some(dep) = roles.get(&edge.module) {
                     if !roles[module].allows(*dep) {
                         return Err(Failure::policy(
@@ -619,6 +691,63 @@ impl Checker {
             &imports,
             "target import cycle",
         )?;
+        // Run batched fail-closed `"spec-preflight"` across all retained
+        // `TargetRole::Specification` modules over strictly the specification
+        // import closure's authenticated `Init` + `Std` parser environment
+        // (excluding proof-only library imports) before compiling any target
+        // module.
+        let spec_sources: Vec<(String, PathBuf)> = staged
+            .iter()
+            .filter(|(m, _)| roles.get(*m) == Some(&TargetRole::Specification))
+            .map(|(m, p)| (m.clone(), p.clone()))
+            .collect();
+        let spec_libraries: BTreeSet<String> = {
+            let adm = self.admitted()?;
+            let mut visited_mods: BTreeSet<String> = BTreeSet::new();
+            let mut libs: BTreeSet<String> = BTreeSet::new();
+            let mut queue: VecDeque<String> = spec_sources.iter().map(|(m, _)| m.clone()).collect();
+            while let Some(curr) = queue.pop_front() {
+                if !visited_mods.insert(curr.clone()) {
+                    continue;
+                }
+                if adm.library_modules.contains(&curr) {
+                    libs.insert(curr.clone());
+                }
+                let edges = imports
+                    .get(&curr)
+                    .map(Vec::as_slice)
+                    .or_else(|| adm.graph.get(&curr).map(Vec::as_slice));
+                if let Some(edges) = edges {
+                    for edge in edges {
+                        if !visited_mods.contains(&edge.module) {
+                            queue.push_back(edge.module.clone());
+                        }
+                    }
+                }
+            }
+            libs
+        };
+        let spec_pf =
+            self.inspect_spec_preflight_with_libraries(&spec_sources, Some(&spec_libraries))?;
+        let checked_specs: BTreeSet<&str> = spec_pf
+            .get("checked")
+            .and_then(Json::as_array)
+            .ok_or_else(|| {
+                Failure::operational("spec-preflight", "missing checked specification inventory")
+            })?
+            .iter()
+            .filter_map(Json::as_str)
+            .collect();
+        if checked_specs.len() != spec_sources.len()
+            || !spec_sources
+                .iter()
+                .all(|(m, _)| checked_specs.contains(m.as_str()))
+        {
+            return Err(Failure::operational(
+                "spec-preflight",
+                "incomplete specification preflight inventory",
+            ));
+        }
         // Compilation consumes authenticated private copies and explicit
         // imported artifacts inside `ExecSeal`.
         for module in order {
@@ -999,6 +1128,7 @@ mod admission_tests {
                 canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
                 subject_declaration: "Captured.program".to_owned(),
                 specification_declaration: "Spec.specs".to_owned(),
+                allow_sorry_in_proof: false,
                 bindings: TargetBindings {
                     request_sha256: digest.clone(),
                     capture_sha256: digest.clone(),
@@ -1310,6 +1440,7 @@ mod unpinned_admission_tests {
             canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
             subject_declaration: "Captured.program".to_owned(),
             specification_declaration: "Spec.specs".to_owned(),
+            allow_sorry_in_proof: false,
             bindings: TargetBindings {
                 request_sha256: digest.clone(),
                 capture_sha256: digest.clone(),
@@ -1507,15 +1638,26 @@ mod unpinned_admission_tests {
         checker.set_allow_unpinned_lean(true);
         checker.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
 
-        // Reject Lean.* and Lake.* imports before compilation.
+        // Reject Lean.* and Lake.* imports at `"headers"` before compilation,
+        // and verify `admit_unpinned_sysroot` independently enforces the same
+        // Init/Std-only boundary as defense-in-depth.
         for forbidden in ["Lean.Elab", "Lake.Build"] {
             let bad_req = minimal_request(&base.join(format!("bad-{forbidden}")), Some(forbidden));
             let err = checker.run_target(&bad_req).unwrap_err();
             assert_eq!(err.code, 1, "{forbidden}: {err}");
-            assert_eq!(err.phase, "target-import", "{forbidden}: {err}");
+            assert_eq!(err.phase, "headers", "{forbidden}: {err}");
             assert!(
-                err.message.contains("only Init and Std"),
+                err.message.contains("disallowed sysroot import"),
                 "{forbidden}: {err}"
+            );
+            let adm_err = checker
+                .admit_unpinned_sysroot([forbidden.to_owned()])
+                .unwrap_err();
+            assert_eq!(adm_err.code, 1, "{forbidden}: {adm_err}");
+            assert_eq!(adm_err.phase, "target-import", "{forbidden}: {adm_err}");
+            assert!(
+                adm_err.message.contains("only Init and Std"),
+                "{forbidden}: {adm_err}"
             );
         }
 

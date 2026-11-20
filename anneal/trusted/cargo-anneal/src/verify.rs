@@ -1642,6 +1642,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         canonical_root: format!("Trusted.MirSemantics.{root_name}"),
         subject_declaration: "Captured.program".to_owned(),
         specification_declaration: request.proof.specification.clone(),
+        allow_sorry_in_proof: false,
         bindings: TargetBindings {
             request_sha256: request_sha256.clone(),
             capture_sha256: capture_sha256.clone(),
