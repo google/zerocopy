@@ -1,0 +1,122 @@
+{
+  "topics": [
+    "systems/measured-multicore-interference-bounds",
+    "verification/measurement-based-probabilistic-timing-soundness",
+    "isa/interference-channel-characterization",
+    "tooling/resource-stressing-benchmark-generation"
+  ],
+  "subjects": [
+    {
+      "name": "IsolBench interference micro-benchmarks",
+      "identity": {
+        "repository": "CSL-KU/IsolBench",
+        "revision": "682680ebf7cdadaee7443ca9246dc424a05e60fa"
+      }
+    },
+    {
+      "name": "multicore-test-harness (auto-tuned enemy processes)",
+      "identity": {
+        "repository": "mc-imperial/multicore-test-harness",
+        "revision": "38d7eddff9444cd114f4fb391f19f4bc4414bcb1"
+      }
+    },
+    {
+      "name": "chronovise MBPTA framework",
+      "identity": {
+        "repository": "federeghe/chronovise",
+        "revision": "4b332f10669af73f33e00f8749040eed9601bfb2"
+      }
+    },
+    {
+      "name": "statsmodels BDS reference implementation",
+      "identity": {
+        "repository": "statsmodels/statsmodels",
+        "revision": "32bd3137bd45e763d22802ecfa99be3f02ad03f2",
+        "path": "statsmodels/tsa/_bds.py"
+      }
+    },
+    {
+      "name": "Radojkovic et al., Impact of shared resources in multithreaded COTS processors (ACM TACO 2012)",
+      "identity": {
+        "doi": "10.1145/2086696.2086713"
+      }
+    },
+    {
+      "name": "Fernandez et al., Assessing the suitability of the NGMP multi-core processor in the space domain (EMSOFT 2012)",
+      "identity": {
+        "doi": "10.1145/2380356.2380389"
+      }
+    },
+    {
+      "name": "Valsan, Yun and Farshchi, Taming non-blocking caches (RTAS 2016)",
+      "identity": {
+        "doi": "10.1109/RTAS.2016.7461361"
+      }
+    },
+    {
+      "name": "Bechtel and Yun, Denial-of-service attacks on shared cache in multicore (RTAS 2019)",
+      "identity": {
+        "doi": "10.1109/RTAS.2019.00037"
+      }
+    },
+    {
+      "name": "Iorga, Sorensen, Wickerson and Donaldson, Slow and Steady (RTAS 2020)",
+      "identity": {
+        "doi": "10.1109/RTAS48715.2020.000-6"
+      }
+    },
+    {
+      "name": "VanderLeest and Thompson, Measuring the impact of interference channels on multicore avionics (DASC 2020)",
+      "identity": {
+        "doi": "10.1109/DASC50938.2020.9256647",
+        "arxiv": "2101.02204"
+      }
+    },
+    {
+      "name": "Davis and Cucu-Grosjean, A survey of probabilistic timing analysis techniques (LITES 2019)",
+      "identity": {
+        "doi": "10.4230/LITES-v006-i001-a003"
+      }
+    },
+    {
+      "name": "Cazorla et al., Probabilistic worst-case timing analysis: taxonomy and comprehensive survey (ACM CSUR 2019)",
+      "identity": {
+        "doi": "10.1145/3301283"
+      }
+    },
+    {
+      "name": "Maiza et al., A survey of timing verification techniques for multi-core real-time systems (ACM CSUR 2019)",
+      "identity": {
+        "doi": "10.1145/3323212"
+      }
+    },
+    {
+      "name": "Abella et al., Measurement-based WCET estimation using the coefficient of variation (ACM TODAES 2017)",
+      "identity": {
+        "doi": "10.1145/3065924"
+      }
+    },
+    {
+      "name": "CAST-32A Multi-core Processors position paper",
+      "identity": {
+        "standard": "CAST-32A",
+        "version": "Rev 0, November 2016"
+      }
+    },
+    {
+      "name": "EASA AMC 20-193 Use of multi-core processors",
+      "identity": {
+        "standard": "AMC 20-193",
+        "version": "Annex I to ED Decision 2022/001/R"
+      }
+    },
+    {
+      "name": "FAA AC 20-193 Use of Multi-Core Processors",
+      "identity": {
+        "standard": "AC 20-193",
+        "version": "1/8/24"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,39 @@
+== dtype=float64 n=200 kappa=1e+04 u=1.11e-16 ||b||=3.975e+00
+ k     ||r_k||/||b||   ||b-Ax_k||/||b||   gap/||b||    u*||A||*max_j||x_j||/||b||
+   0     1.000e+00      1.000e+00      0.000e+00      0.000e+00
+  91     3.176e-04      3.176e-04      7.457e-16      4.184e-16
+ 182     2.713e-05      2.713e-05      7.979e-16      4.242e-16
+ 273     1.625e-06      1.625e-06      1.069e-15      4.242e-16
+ 364     2.931e-08      2.931e-08      1.342e-15      4.242e-16
+ 455     8.154e-10      8.154e-10      1.340e-15      4.242e-16
+ 546     2.044e-10      2.044e-10      1.426e-15      4.242e-16
+ 637     2.150e-12      2.150e-12      1.490e-15      4.242e-16
+ 728     1.794e-13      1.797e-13      1.520e-15      4.242e-16
+ 819     1.203e-15      2.082e-15      1.568e-15      4.242e-16
+ 910     1.716e-17      1.338e-15      1.340e-15      4.242e-16
+1001     6.063e-19      1.323e-15      1.323e-15      4.242e-16
+1092     5.483e-21      1.323e-15      1.323e-15      4.242e-16
+1100     4.978e-21      1.323e-15      1.323e-15      4.242e-16
+tau=1e-05: updated residual passes at k=201; true relative residual there = 9.500e-06
+tau=1e-08: updated residual passes at k=392; true relative residual there = 8.366e-09
+tau=1e-12: updated residual passes at k=647; true relative residual there = 9.776e-13
+final: updated=4.978e-21 true=1.323e-15 ratio true/updated=2.658e+05
+== dtype=float32 n=200 kappa=1e+04 u=5.96e-08 ||b||=3.975e+00
+ k     ||r_k||/||b||   ||b-Ax_k||/||b||   gap/||b||    u*||A||*max_j||x_j||/||b||
+   0     1.000e+00      1.000e+00      0.000e+00      0.000e+00
+  50     1.597e-03      1.597e-03      3.442e-07      2.100e-07
+ 100     4.825e-04      4.824e-04      4.118e-07      2.244e-07
+ 150     1.567e-04      1.567e-04      4.482e-07      2.272e-07
+ 200     3.305e-05      3.296e-05      4.709e-07      2.277e-07
+ 250     1.758e-05      1.773e-05      5.141e-07      2.278e-07
+ 300     2.699e-06      2.792e-06      5.923e-07      2.278e-07
+ 350     6.251e-07      7.655e-07      6.049e-07      2.278e-07
+ 400     2.975e-07      7.004e-07      6.448e-07      2.278e-07
+ 450     8.190e-08      5.837e-07      5.950e-07      2.278e-07
+ 500     1.528e-08      6.443e-07      6.446e-07      2.278e-07
+ 550     3.960e-09      6.843e-07      6.848e-07      2.278e-07
+ 600     9.380e-10      7.728e-07      7.728e-07      2.278e-07
+tau=1e-05: updated residual passes at k=248; true relative residual there = 9.451e-06
+tau=1e-08: updated residual passes at k=512; true relative residual there = 6.361e-07
+tau=1e-12: updated residual never passes within 600 iterations
+final: updated=9.380e-10 true=7.728e-07 ratio true/updated=8.239e+02

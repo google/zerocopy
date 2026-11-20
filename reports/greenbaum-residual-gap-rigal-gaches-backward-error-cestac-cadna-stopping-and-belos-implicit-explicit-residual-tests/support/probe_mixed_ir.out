@@ -1,0 +1,5 @@
+ kappa_2   kappa_inf*u32   iters  accepted  eta_inf(A only)     fwd err_inf
+   1e+02       1.35e-04       1  True            1.26e-15         1.23e-13
+   1e+05       7.21e-02       2  True            1.05e-16         4.35e-12
+   1e+07       5.96e+00       3  True            8.11e-16         2.55e-09
+   1e+09       5.30e+02      30  False           3.75e-09         1.24e+10

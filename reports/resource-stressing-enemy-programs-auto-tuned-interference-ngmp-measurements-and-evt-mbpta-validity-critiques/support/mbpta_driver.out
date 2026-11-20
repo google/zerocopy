@@ -1,0 +1,41 @@
+file=s_iid.txt n=20000 max_observed=1101.15 block=50
+ sample tests (alpha=0.05):
+  Ljung-Box(lags=20)     stat=      15.005 crit=       31.41 reject=no
+  KPSS(level,lags=20)    stat=    0.018174 crit=     0.46111 reject=no
+  R/S                    stat=      1.0109 crit=       1.747 reject=no
+  BDS                    skipped (O(n^2) cost; n>5000)
+ GEV(PWM) on 200 block maxima: loc=1045.81 scale=7.95648 shape(xi)=-0.03536
+ post-EVT tests on 200 held-out block maxima (alpha=0.05):
+  KS                     stat=    0.073249 crit=    0.096032 reject=no
+  CvM                    stat=     0.20074 crit=     0.46091 reject=no
+  AD                     stat=      1.5367 crit=      2.4973 reject=no
+ pWCET at per-block exceedance 1.0e-09 : 1162.68
+  [driver wall 4.00 s, maxrss 6268 KB]
+file=s_ar1.txt n=20000 max_observed=1118.22 block=50
+ sample tests (alpha=0.05):
+  Ljung-Box(lags=20)     stat=       35960 crit=       31.41 reject=YES
+  KPSS(level,lags=20)    stat=     0.10882 crit=     0.46111 reject=no
+  R/S                    stat=      3.7279 crit=       1.747 reject=YES
+  BDS                    skipped (O(n^2) cost; n>5000)
+ GEV(PWM) on 200 block maxima: loc=1048.19 scale=12.2952 shape(xi)=-0.07827
+ post-EVT tests on 200 held-out block maxima (alpha=0.05):
+  KS                     stat=    0.084752 crit=    0.096032 reject=no
+  CvM                    stat=     0.55007 crit=     0.46091 reject=YES
+  AD                     stat=      2.5853 crit=      2.4819 reject=YES
+ pWCET at per-block exceedance 1.0e-09 : 1174.25
+  [driver wall 4.75 s, maxrss 7100 KB]
+file=s_campaign.txt n=20000 max_observed=1080.89 block=50
+ sample tests (alpha=0.05):
+  Ljung-Box(lags=20)     stat=      14.627 crit=       31.41 reject=no
+  KPSS(level,lags=20)    stat=    0.014382 crit=     0.46111 reject=no
+  R/S                    stat=     0.88397 crit=       1.747 reject=no
+  BDS                    skipped (O(n^2) cost; n>5000)
+ GEV(PWM) on 200 block maxima: loc=1045.62 scale=7.4275 shape(xi)=-0.05901
+ post-EVT tests on 200 held-out block maxima (alpha=0.05):
+  KS                     stat=    0.060626 crit=    0.096032 reject=no
+  CvM                    stat=     0.06322 crit=     0.46091 reject=no
+  AD                     stat=     0.47029 crit=       2.481 reject=no
+ pWCET at per-block exceedance 1.0e-09 : 1134.43
+  [driver wall 3.60 s, maxrss 6220 KB]
+Command terminated by signal 15
+  [driver wall 154.70 s, maxrss 3908 KB]

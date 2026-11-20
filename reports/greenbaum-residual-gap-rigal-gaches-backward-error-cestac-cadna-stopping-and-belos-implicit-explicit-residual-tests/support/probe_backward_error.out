@@ -1,0 +1,9 @@
+A. Rigal-Gaches: eta(y) = 3.825e-07 ; ||dA||/||A|| = 3.825e-07 ; ||db||/||b|| = 3.825e-07 ; ||(A+dA)y-(b+db)|| = 9.4e-15
+B. x0 = 1e6*randn, tol=1e-8, test ||r||<=tol*||r0||  stops at k= 136: ||b-Ax||/||b|| = 8.37e-03, eta_normwise = 1.53e-03, fwd err = 8.15e-01
+B. x0 = 1e6*randn, tol=1e-8, test ||r||<=tol*||b||   stops at k= 230: ||b-Ax||/||b|| = 9.34e-09, eta_normwise = 2.14e-09, fwd err = 2.47e-07
+C. left-Jacobi GMRES, rtol=1e-5 on ||M^-1 r||/||M^-1 b||: its=4, preconditioned rel = 6.41e-06, unpreconditioned ||r||/||b|| = 2.42e-01, eta_normwise = 1.22e-06, kappa(M)=1e+06
+D. row-scaled tridiagonal (odd rows x1e-10), GMRES stopped at ||r||/||b|| = 8.25e-11 (its=1)
+   normwise eta = 3.89e-11 ; componentwise omega = 1.00e+00 ; fwd err = 7.31e-01
+   after 1 step(s) of fixed-precision refinement: eta = 4.04e-17 ; omega = 1.05e-15 ; fwd err = 1.95e-16
+   after 2 step(s) of fixed-precision refinement: eta = 3.10e-17 ; omega = 1.79e-16 ; fwd err = 1.30e-16
+E. Hilbert n=12: kappa_2 = 1.78e+16 ; eta_normwise = 6.67e-17 ; omega = 1.02e-16 ; fwd err = 1.81e-01 ; first-order bound 2*kappa*eta = 2.37e+00

@@ -1,0 +1,24 @@
+upstream unit-test sample: W=0.4098 reject=no
+upstream gamma n=100 reps=400 rejections=353 rate=0.882 mean|W|=3.478
+upstream normal n=100 reps=400 rejections=158 rate=0.395 mean|W|=1.679
+upstream normal1000 n=100 reps=400 rejections=355 rate=0.887 mean|W|=3.641
+patched unit-test sample: W=2.7677 reject=YES
+patched gamma n=100 reps=400 rejections=47 rate=0.117 mean|W|=0.998
+patched normal n=100 reps=400 rejections=184 rate=0.460 mean|W|=1.921
+patched normal1000 n=100 reps=400 rejections=42 rate=0.105 mean|W|=0.991
+patched2 unit-test sample: W=1.4209 reject=no
+patched2 gamma n=100 reps=400 rejections=47 rate=0.117 mean|W|=0.998
+patched2 normal n=100 reps=400 rejections=42 rate=0.105 mean|W|=0.991
+patched2 normal1000 n=100 reps=400 rejections=42 rate=0.105 mean|W|=0.991
+upstream gamma n=250 reps=200 rejections=115 rate=0.575 mean|W|=2.089
+upstream   [upstream n=250 gamma: wall 25.75 s]
+upstream normal n=250 reps=200 rejections=28 rate=0.140 mean|W|=1.090
+upstream   [upstream n=250 normal: wall 27.10 s]
+upstream gamma n=500 reps=60 rejections=20 rate=0.333 mean|W|=1.677
+upstream   [upstream n=500 gamma: wall 60.60 s]
+patched2 gamma n=250 reps=200 rejections=15 rate=0.075 mean|W|=0.930
+patched2   [patched2 n=250 gamma: wall 25.62 s]
+patched2 normal n=250 reps=200 rejections=20 rate=0.100 mean|W|=0.861
+patched2   [patched2 n=250 normal: wall 25.69 s]
+patched2 gamma n=500 reps=60 rejections=7 rate=0.117 mean|W|=0.956
+patched2   [patched2 n=500 gamma: wall 59.01 s]

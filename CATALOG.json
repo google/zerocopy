@@ -31735,6 +31735,110 @@
         "tooling/verification"
       ]
     },
+    "greenbaum-residual-gap-rigal-gaches-backward-error-cestac-cadna-stopping-and-belos-implicit-explicit-residual-tests": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "petsc/petsc",
+            "revision": "a78a7628566ecd590e0aaab6176b0f93422bab63"
+          },
+          "name": "PETSc (KSP and SNES default convergence tests)"
+        },
+        {
+          "identity": {
+            "path": "packages/belos/src",
+            "repository": "trilinos/Trilinos",
+            "revision": "59703d7d03c88652d111c902535b0a4fb57f7cce"
+          },
+          "name": "Trilinos Belos (residual status tests and GMRES/CG solver managers)"
+        },
+        {
+          "identity": {
+            "repository": "ginkgo-project/ginkgo",
+            "revision": "796a388db0e8fb8c2a2d9918c658858bcab9c798"
+          },
+          "name": "Ginkgo (residual-norm stopping criteria and CG)"
+        },
+        {
+          "identity": {
+            "path": "scipy/sparse/linalg/_isolve/iterative.py",
+            "repository": "scipy/scipy",
+            "revision": "5a63b65045f80b5a2198f0d7c00d9935efe9a676"
+          },
+          "name": "SciPy sparse iterative solvers"
+        },
+        {
+          "identity": {
+            "repository": "Reference-LAPACK/lapack",
+            "revision": "b458ca66c8f828f246bae508888b4b79a3244900"
+          },
+          "name": "Reference LAPACK (DGERFS and DSGESV refinement stopping rules)"
+        },
+        {
+          "identity": {
+            "repository": "verificarlo/verificarlo",
+            "revision": "5142c8f7a86106bce1800e433a49ec22c594f175"
+          },
+          "name": "Verificarlo (Monte Carlo arithmetic backends and significant-digit estimation)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/321406.321416"
+          },
+          "name": "Rigal and Gaches, On the compatibility of a given solution with the data of a linear system (1967)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01386090"
+          },
+          "name": "Oettli and Prager, Compatibility of approximate solution of linear equations (1964)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/0610013"
+          },
+          "name": "Arioli, Demmel and Duff, Solving sparse linear systems with sparse backward error (1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/S0895479895284944"
+          },
+          "name": "Greenbaum, Estimating the attainable accuracy of recursively computed residual methods (1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/0917003"
+          },
+          "name": "Eisenstat and Walker, Choosing the forcing terms in an inexact Newton method (1996)"
+        },
+        {
+          "identity": {
+            "doi": "10.1137/17M1140819"
+          },
+          "name": "Carson and Higham, Iterative refinement in three precisions (2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.cpc.2008.02.003"
+          },
+          "name": "Jezequel and Chesneaux, CADNA: a library for estimating round-off error propagation (2008)"
+        },
+        {
+          "identity": {
+            "arxiv": "1509.01347v4",
+            "doi": "10.1109/ARITH.2016.31"
+          },
+          "name": "Denis, de Oliveira Castro and Petit, Verificarlo (ARITH 2016)"
+        }
+      ],
+      "topics": [
+        "verification/iterative-solver-stopping-criteria",
+        "verification/backward-error-acceptance-tests",
+        "tooling/stochastic-arithmetic-accuracy-estimation",
+        "runtimes/sparse-solver-convergence-tests"
+      ]
+    },
     "group-sequential-alpha-spending-graphical-multiplicity-rpact-gsdesign-and-recovery-platform-trials": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -61420,6 +61524,128 @@
         "verification/program-logics",
         "pl/resource-algebras",
         "pl/ownership"
+      ]
+    },
+    "resource-stressing-enemy-programs-auto-tuned-interference-ngmp-measurements-and-evt-mbpta-validity-critiques": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "CSL-KU/IsolBench",
+            "revision": "682680ebf7cdadaee7443ca9246dc424a05e60fa"
+          },
+          "name": "IsolBench interference micro-benchmarks"
+        },
+        {
+          "identity": {
+            "repository": "mc-imperial/multicore-test-harness",
+            "revision": "38d7eddff9444cd114f4fb391f19f4bc4414bcb1"
+          },
+          "name": "multicore-test-harness (auto-tuned enemy processes)"
+        },
+        {
+          "identity": {
+            "repository": "federeghe/chronovise",
+            "revision": "4b332f10669af73f33e00f8749040eed9601bfb2"
+          },
+          "name": "chronovise MBPTA framework"
+        },
+        {
+          "identity": {
+            "path": "statsmodels/tsa/_bds.py",
+            "repository": "statsmodels/statsmodels",
+            "revision": "32bd3137bd45e763d22802ecfa99be3f02ad03f2"
+          },
+          "name": "statsmodels BDS reference implementation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2086696.2086713"
+          },
+          "name": "Radojkovic et al., Impact of shared resources in multithreaded COTS processors (ACM TACO 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2380356.2380389"
+          },
+          "name": "Fernandez et al., Assessing the suitability of the NGMP multi-core processor in the space domain (EMSOFT 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RTAS.2016.7461361"
+          },
+          "name": "Valsan, Yun and Farshchi, Taming non-blocking caches (RTAS 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RTAS.2019.00037"
+          },
+          "name": "Bechtel and Yun, Denial-of-service attacks on shared cache in multicore (RTAS 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RTAS48715.2020.000-6"
+          },
+          "name": "Iorga, Sorensen, Wickerson and Donaldson, Slow and Steady (RTAS 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2101.02204",
+            "doi": "10.1109/DASC50938.2020.9256647"
+          },
+          "name": "VanderLeest and Thompson, Measuring the impact of interference channels on multicore avionics (DASC 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LITES-v006-i001-a003"
+          },
+          "name": "Davis and Cucu-Grosjean, A survey of probabilistic timing analysis techniques (LITES 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3301283"
+          },
+          "name": "Cazorla et al., Probabilistic worst-case timing analysis: taxonomy and comprehensive survey (ACM CSUR 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3323212"
+          },
+          "name": "Maiza et al., A survey of timing verification techniques for multi-core real-time systems (ACM CSUR 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3065924"
+          },
+          "name": "Abella et al., Measurement-based WCET estimation using the coefficient of variation (ACM TODAES 2017)"
+        },
+        {
+          "identity": {
+            "standard": "CAST-32A",
+            "version": "Rev 0, November 2016"
+          },
+          "name": "CAST-32A Multi-core Processors position paper"
+        },
+        {
+          "identity": {
+            "standard": "AMC 20-193",
+            "version": "Annex I to ED Decision 2022/001/R"
+          },
+          "name": "EASA AMC 20-193 Use of multi-core processors"
+        },
+        {
+          "identity": {
+            "standard": "AC 20-193",
+            "version": "1/8/24"
+          },
+          "name": "FAA AC 20-193 Use of Multi-Core Processors"
+        }
+      ],
+      "topics": [
+        "systems/measured-multicore-interference-bounds",
+        "verification/measurement-based-probabilistic-timing-soundness",
+        "isa/interference-channel-characterization",
+        "tooling/resource-stressing-benchmark-generation"
       ]
     },
     "reusable-holdout-thresholdout-ladder-leaderboards-and-clopper-pearson-zero-numerators": {

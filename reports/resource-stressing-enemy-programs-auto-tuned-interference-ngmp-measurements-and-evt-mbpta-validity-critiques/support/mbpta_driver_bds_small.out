@@ -1,0 +1,39 @@
+file=s_iid_250.txt n=250 max_observed=1066.91 block=50
+ sample tests (alpha=0.05):
+  Ljung-Box(lags=20)     stat=      22.511 crit=       31.41 reject=no
+  KPSS(level,lags=20)    stat=    0.054967 crit=      0.4287 reject=no
+  R/S                    stat=      1.0137 crit=       1.747 reject=no
+  BDS                    stat=      3.0535 crit=        1.96 reject=YES
+ GEV(PWM) on 3 block maxima: loc=1045.28 scale=0.380266 shape(xi)=0.9352
+ post-EVT tests on 3 held-out block maxima (alpha=0.05):
+  KS                     EXCEPTION: The number of samples is too low for this test.
+  CvM                    stat=     0.77117 crit=     0.43939 reject=YES
+  AD                     EXCEPTION: The number of samples is too low for this test.
+ pWCET at per-block exceedance 1.0e-09 : 1.06097e+08
+  [driver wall 0.11 s, user 0.11 s, maxrss 4748 KB]
+file=s_iid_500.txt n=500 max_observed=1082.82 block=50
+ sample tests (alpha=0.05):
+  Ljung-Box(lags=20)     stat=      20.733 crit=       31.41 reject=no
+  KPSS(level,lags=20)    stat=    0.027852 crit=     0.44411 reject=no
+  R/S                    stat=      1.1854 crit=       1.747 reject=no
+  BDS                    stat=      2.5666 crit=        1.96 reject=YES
+ GEV(PWM) on 5 block maxima: loc=1046.33 scale=11.4049 shape(xi)=-0.08741
+ post-EVT tests on 5 held-out block maxima (alpha=0.05):
+  KS                     EXCEPTION: The number of samples is too low for this test.
+  CvM                    stat=     0.14638 crit=     0.44697 reject=no
+  AD                     EXCEPTION: The number of samples is too low for this test.
+ pWCET at per-block exceedance 1.0e-09 : 1155.48
+  [driver wall 0.91 s, user 0.90 s, maxrss 4716 KB]
+file=s_iid_1000.txt n=1000 max_observed=1082.82 block=50
+ sample tests (alpha=0.05):
+  Ljung-Box(lags=20)     stat=      7.9102 crit=       31.41 reject=no
+  KPSS(level,lags=20)    stat=     0.15168 crit=      0.4526 reject=no
+  R/S                    stat=      1.3589 crit=       1.747 reject=no
+  BDS                    stat=     0.64018 crit=        1.96 reject=no
+ GEV(PWM) on 10 block maxima: loc=1043.43 scale=10.476 shape(xi)=0.1484
+ post-EVT tests on 10 held-out block maxima (alpha=0.05):
+  KS                     EXCEPTION: The number of samples is too low for this test.
+  CvM                    stat=     0.72959 crit=      0.4542 reject=YES
+  AD                     stat=      2.2409 crit=      2.5013 reject=no
+ pWCET at per-block exceedance 1.0e-09 : 2501.49
+  [driver wall 9.68 s, user 9.65 s, maxrss 3948 KB]

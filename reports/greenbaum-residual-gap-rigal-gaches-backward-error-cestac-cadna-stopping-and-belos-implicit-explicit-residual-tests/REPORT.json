@@ -1,0 +1,104 @@
+{
+  "topics": [
+    "verification/iterative-solver-stopping-criteria",
+    "verification/backward-error-acceptance-tests",
+    "tooling/stochastic-arithmetic-accuracy-estimation",
+    "runtimes/sparse-solver-convergence-tests"
+  ],
+  "subjects": [
+    {
+      "name": "PETSc (KSP and SNES default convergence tests)",
+      "identity": {
+        "repository": "petsc/petsc",
+        "revision": "a78a7628566ecd590e0aaab6176b0f93422bab63"
+      }
+    },
+    {
+      "name": "Trilinos Belos (residual status tests and GMRES/CG solver managers)",
+      "identity": {
+        "repository": "trilinos/Trilinos",
+        "revision": "59703d7d03c88652d111c902535b0a4fb57f7cce",
+        "path": "packages/belos/src"
+      }
+    },
+    {
+      "name": "Ginkgo (residual-norm stopping criteria and CG)",
+      "identity": {
+        "repository": "ginkgo-project/ginkgo",
+        "revision": "796a388db0e8fb8c2a2d9918c658858bcab9c798"
+      }
+    },
+    {
+      "name": "SciPy sparse iterative solvers",
+      "identity": {
+        "repository": "scipy/scipy",
+        "revision": "5a63b65045f80b5a2198f0d7c00d9935efe9a676",
+        "path": "scipy/sparse/linalg/_isolve/iterative.py"
+      }
+    },
+    {
+      "name": "Reference LAPACK (DGERFS and DSGESV refinement stopping rules)",
+      "identity": {
+        "repository": "Reference-LAPACK/lapack",
+        "revision": "b458ca66c8f828f246bae508888b4b79a3244900"
+      }
+    },
+    {
+      "name": "Verificarlo (Monte Carlo arithmetic backends and significant-digit estimation)",
+      "identity": {
+        "repository": "verificarlo/verificarlo",
+        "revision": "5142c8f7a86106bce1800e433a49ec22c594f175"
+      }
+    },
+    {
+      "name": "Rigal and Gaches, On the compatibility of a given solution with the data of a linear system (1967)",
+      "identity": {
+        "doi": "10.1145/321406.321416"
+      }
+    },
+    {
+      "name": "Oettli and Prager, Compatibility of approximate solution of linear equations (1964)",
+      "identity": {
+        "doi": "10.1007/BF01386090"
+      }
+    },
+    {
+      "name": "Arioli, Demmel and Duff, Solving sparse linear systems with sparse backward error (1989)",
+      "identity": {
+        "doi": "10.1137/0610013"
+      }
+    },
+    {
+      "name": "Greenbaum, Estimating the attainable accuracy of recursively computed residual methods (1997)",
+      "identity": {
+        "doi": "10.1137/S0895479895284944"
+      }
+    },
+    {
+      "name": "Eisenstat and Walker, Choosing the forcing terms in an inexact Newton method (1996)",
+      "identity": {
+        "doi": "10.1137/0917003"
+      }
+    },
+    {
+      "name": "Carson and Higham, Iterative refinement in three precisions (2018)",
+      "identity": {
+        "doi": "10.1137/17M1140819"
+      }
+    },
+    {
+      "name": "Jezequel and Chesneaux, CADNA: a library for estimating round-off error propagation (2008)",
+      "identity": {
+        "doi": "10.1016/j.cpc.2008.02.003"
+      }
+    },
+    {
+      "name": "Denis, de Oliveira Castro and Petit, Verificarlo (ARITH 2016)",
+      "identity": {
+        "doi": "10.1109/ARITH.2016.31",
+        "arxiv": "1509.01347v4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

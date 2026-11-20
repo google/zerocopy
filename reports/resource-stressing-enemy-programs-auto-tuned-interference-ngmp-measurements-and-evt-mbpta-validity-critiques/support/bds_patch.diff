@@ -1,0 +1,20 @@
+--- src/statistical/test_bds.cpp
++++ src/statistical/test_bds.cpp (patched: both changes)
+@@ -56,7 +56,7 @@
+ 
+     double sum = 0;
+ 
+-    for (unsigned long s = 1; s <= size; s++) {
++    for (unsigned long s = m; s <= size; s++) {  // patched: skip incomplete embedding vectors
+         for (unsigned long t = s+1; t <= size; t++) {
+             sum += indicator_function(s, t, m, epsilon);
+         }
+@@ -72,7 +72,7 @@
+ 
+     const size_t size = measures_save->size();
+ 
+-    double coeff = 2./((size-m+1.)*(size - m));
++    double coeff = 2./(size*(size - 1.));  // patched: normaliser of the all-pairs sum
+ 
+     double sum = 0;
+ 
