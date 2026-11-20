@@ -48565,6 +48565,43 @@
         "verification/physical-unit-consistency-checking"
       ]
     },
+    "non-llvm-btl-superblock-symbolic-validation-over-real-rustc-mir": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1 MIR corpora)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/google/zerocopy",
+            "revision": "1962a9c0e3eda8a3a58387f61c70ddd2c396b118"
+          },
+          "name": "google/zerocopy (Runtime(PostCleanup) and Optimized MIR)"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirSemantics deinitMovedPlace = true)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/translation-validation",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/translation-validation",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/compcert"
+      ]
+    },
     "non-quorum-kernel-confidence-trace-downtranslation-and-guard-mutation": {
       "observed_at": "2026-11-19",
       "subjects": [

@@ -1,0 +1,19 @@
+{
+  "benchmark": "E2-1c_real_memver_switchint_ebb_btl",
+  "bug7_load_cse_across_store_rejected": true,
+  "corpora": [
+    {"file": "zerocopy_postcleanup.mir", "total_bbs": 12298, "admitted_bbs": 12280, "admitted_pct": 99.85, "superblocks": 11746, "multi_bb": 519, "max_chain": 4, "ops_before": 38779, "ops_after": 38393, "moves_demoted": 1287, "copies_prop": 216, "gvn_pure": 0, "gvn_memread": 0, "path_bce_elim": 0, "dead_elim": 386, "validated_ok": 11746, "validated_fail": 0, "opt_ms": 16.10, "val_ms": 15.91},
+    {"file": "core.mir", "total_bbs": 39711, "admitted_bbs": 38233, "admitted_pct": 96.28, "superblocks": 32733, "multi_bb": 4355, "max_chain": 13, "ops_before": 159109, "ops_after": 152537, "moves_demoted": 15952, "copies_prop": 7188, "gvn_pure": 15, "gvn_memread": 8, "path_bce_elim": 57, "dead_elim": 6515, "validated_ok": 32733, "validated_fail": 0, "opt_ms": 82.78, "val_ms": 73.77},
+    {"file": "zerocopy-1d9b641a4817cd80.mir", "total_bbs": 13693, "admitted_bbs": 13240, "admitted_pct": 96.69, "superblocks": 11898, "multi_bb": 1266, "max_chain": 4, "ops_before": 42913, "ops_after": 42218, "moves_demoted": 2710, "copies_prop": 734, "gvn_pure": 1, "gvn_memread": 1, "path_bce_elim": 2, "dead_elim": 693, "validated_ok": 11898, "validated_fail": 0, "opt_ms": 24.60, "val_ms": 21.24},
+    {"file": "anneal_audit-7beda83da10ce6a8.mir", "total_bbs": 430, "admitted_bbs": 395, "admitted_pct": 91.86, "superblocks": 382, "multi_bb": 13, "max_chain": 2, "ops_before": 1967, "ops_after": 1963, "moves_demoted": 141, "copies_prop": 4, "gvn_pure": 4, "gvn_memread": 0, "path_bce_elim": 0, "dead_elim": 4, "validated_ok": 382, "validated_fail": 0, "opt_ms": 1.18, "val_ms": 1.06},
+    {"file": "cargo_anneal-a159cbf311c93d0c.mir", "total_bbs": 306, "admitted_bbs": 277, "admitted_pct": 90.52, "superblocks": 262, "multi_bb": 15, "max_chain": 2, "ops_before": 1615, "ops_after": 1580, "moves_demoted": 117, "copies_prop": 37, "gvn_pure": 8, "gvn_memread": 0, "path_bce_elim": 0, "dead_elim": 35, "validated_ok": 262, "validated_fail": 0, "opt_ms": 0.93, "val_ms": 0.86}
+  ],
+  "bailouts": {"other_term": 72, "switch_complex_discr": 779, "term_drop": 180, "unparsed_stmt": 982},
+  "totals": {
+    "total_bbs": 66438, "admitted_bbs": 64425, "admitted_pct": 96.97,
+    "superblocks": 57021, "multi_bb": 6168, "max_chain": 13,
+    "ops_before": 244383, "ops_after": 236691, "reduction_pct": 3.15,
+    "moves_demoted": 20207, "copies_prop": 8179, "gvn_pure": 28, "gvn_memread": 9, "path_bce_elim": 59, "dead_elim": 7633,
+    "validated_ok": 57021, "validated_fail": 0, "opt_ms": 125.593, "val_ms": 112.844, "val_ops_per_sec": 2165678.7
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "benchmark": "E2-1b_real_multi_bb_ebb_superblocks",
+  "corpora": [
+    {"file": "zerocopy_postcleanup.mir", "superblocks": 7749, "multi_bb": 0, "max_chain": 1, "chained_bbs": 7749, "ops_before": 15975, "ops_after": 15905, "moves_demoted": 40, "copies_prop": 21, "gvn_hits": 0, "path_bce_elim": 0, "dead_elim": 70, "validated_ok": 7749, "validated_fail": 0, "opt_ms": 4.92, "val_ms": 5.19},
+    {"file": "core.mir", "superblocks": 21875, "multi_bb": 7, "max_chain": 2, "chained_bbs": 21882, "ops_before": 52598, "ops_after": 51161, "moves_demoted": 1824, "copies_prop": 1667, "gvn_hits": 0, "path_bce_elim": 0, "dead_elim": 1437, "validated_ok": 21875, "validated_fail": 0, "opt_ms": 19.23, "val_ms": 20.59},
+    {"file": "zerocopy-1d9b641a4817cd80.mir", "superblocks": 6408, "multi_bb": 0, "max_chain": 1, "chained_bbs": 6408, "ops_before": 6234, "ops_after": 6208, "moves_demoted": 353, "copies_prop": 15, "gvn_hits": 0, "path_bce_elim": 0, "dead_elim": 26, "validated_ok": 6408, "validated_fail": 0, "opt_ms": 1.85, "val_ms": 2.35},
+    {"file": "anneal_audit-7beda83da10ce6a8.mir", "superblocks": 221, "multi_bb": 0, "max_chain": 1, "chained_bbs": 221, "ops_before": 336, "ops_after": 336, "moves_demoted": 0, "copies_prop": 0, "gvn_hits": 0, "path_bce_elim": 0, "dead_elim": 0, "validated_ok": 221, "validated_fail": 0, "opt_ms": 0.12, "val_ms": 0.14},
+    {"file": "cargo_anneal-a159cbf311c93d0c.mir", "superblocks": 144, "multi_bb": 0, "max_chain": 1, "chained_bbs": 144, "ops_before": 326, "ops_after": 326, "moves_demoted": 5, "copies_prop": 0, "gvn_hits": 0, "path_bce_elim": 0, "dead_elim": 0, "validated_ok": 144, "validated_fail": 0, "opt_ms": 0.08, "val_ms": 0.10}
+  ],
+  "totals": {
+    "superblocks": 36397, "multi_bb_superblocks": 7, "max_chain_len": 2, "total_chained_bbs": 36404,
+    "ops_before": 75469, "ops_after": 73936, "reduction_pct": 2.03,
+    "moves_demoted": 2222, "copies_prop": 1703, "gvn_hits": 0, "path_bce_elim": 0, "dead_elim": 1533,
+    "validated_ok": 36397, "validated_fail": 0, "opt_ms": 26.206, "val_ms": 28.372, "val_ops_per_sec": 2659994.4
+  }
+}
