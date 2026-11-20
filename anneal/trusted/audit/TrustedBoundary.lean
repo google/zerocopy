@@ -9,15 +9,23 @@
 import Lean.Elab.Import
 import Lean.Parser.Tactic
 import Lean.Replay
+import Lean.Compiler.ImplementedByAttr
+import Lean.Compiler.ExternAttr
+import Lean.Compiler.CSimpAttr
 
 /-!
 # Trusted Boundary and Kernel Environment Inspector (`TrustedBoundary.lean`)
 
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
-(`trusted/audit/`) invokes this file across four JSON IPC modes (`run` and
-`main`):
+(`trusted/audit/`) and `cargo-anneal verify` (`trusted/cargo-anneal/`) invoke
+this file across six JSON IPC modes (`run` and `main`):
 
+- **`"headers"` (target import discovery before elaboration):**
+  Parses only module `prelude`/`import` headers via `Parser.parseHeader` so
+  `cargo-anneal verify` can validate target module roles, admit the requested
+  `library-lock.json` closure, and reject import cycles before compiling any
+  target source.
 - **`"preflight"` (foundation-parser syntactic admission before compilation):**
   Lean elaboration is Turing-complete and effectful: commands such as `#eval`
   and tactics/terms such as `run_tac`, `by_elab`, `native_decide`, and
@@ -101,6 +109,24 @@ Pinned to Lean 4.34.1, commit
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
   `opaque`, and unapproved axioms, and verifies all 30 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
+- **`"target-audit"` (external target crate verification):**
+  Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
+  `.library` from `library-lock.json`, and `.source role` across `TargetRole`:
+  `.model`, `.specification`, `.capture`, `.expected`, `.proof`) with
+  `trustLevel := 0`, `plugins := #[]`, and `loadExts := false` for every
+  import, and it never calls `enableInitializersExecution`. Therefore no
+  imported `[init]` declaration (such as a target `initialize` block) or
+  extension import callback runs inside the inspector. It verifies
+  `TargetOrigin.allows` over compiled declaration edges, reconciles diamond
+  theorem exports across `library-lock.json`, replays all logically reached
+  declarations and alternate proofs onto `foundation-lock.json`, checks
+  definitional equality of both `Expected` and the submitted proof theorem
+  against the canonical `CrateTheorem`/`UnitTheorem` kernel application, and
+  rejects `@[implemented_by]`, `@[extern]`, and `@[csimp]` metadata on logically
+  reached declarations that differs from the authenticated foundation and
+  library metadata. Those comparisons read serialized attribute entries, which
+  the importer attaches even without `loadExts`: `getParam?` for
+  `@[implemented_by]` and `@[extern]`, and `csimpEntries` for `@[csimp]`.
 
 ## Module origin partitions and authority relations
 
@@ -110,15 +136,20 @@ compiler-generated constructors, recursors (`rec`, `casesOn`, `recOn`,
 `noConfusion`, `below`, `brecOn`), projections, pattern matchers (`match_1`),
 equation lemmas (`eq_1`), and `where`/`private` helpers. Each audit pass maps
 defining modules into a closed origin sum type equipped with an explicit, total,
-pure authority check over kernel declaration edges (`RepoOrigin.edgeViolation?`
-and `CorrOrigin.edgeViolation?`), and checks compiled `.olean` header imports
-with `RepoOrigin.importViolation?` and `CorrOrigin.importViolation?`:
+pure authority check over kernel declaration edges (`RepoOrigin.edgeViolation?`,
+`CorrOrigin.edgeViolation?`, and `TargetOrigin.edgeViolation?`). The repository
+passes also check compiled `.olean` header imports with
+`RepoOrigin.importViolation?` and `CorrOrigin.importViolation?`:
 
 - **Pass 1 (`RepoOrigin`):** `.foundation` (`foundation-lock.json`) and
   `.repo (.trusted .vetted | .trusted (.candidate f) | .theory)`.
+  `library-lock.json` is never admitted in repository audits.
 - **Pass 2 (`CorrOrigin`):** `.foundation`, `.sysrootFoundation` (authenticated
   sysroot `{Init,Std,Lean}*`), `.vendorMiri` (`UPSTREAM_PIN.json`), and
   `.repo role`.
+- **Target Pass (`TargetOrigin`):** `.foundation`, `.library`
+  (`library-lock.json`, replayed onto `foundation` when logically reached), and
+  `.source role` (`TargetRole`).
 -/
 
 open Lean
@@ -173,8 +204,9 @@ inductive SourceRole where
   | theory
   deriving BEq, DecidableEq
 
-/-- Partitions every loaded module in Pass 1 (`"audit"`), making
-`.sysrootFoundation` and `.vendorMiri` unrepresentable in Pass 1. -/
+/-- Partitions every loaded module in Pass 1 (`"audit"`). `library-lock.json`
+applies exclusively to `targetAudit`, making `.library`, `.sysrootFoundation`,
+and `.vendorMiri` unrepresentable in Pass 1. -/
 inductive RepoOrigin where
   | foundation
   | repo (role : SourceRole)
@@ -312,6 +344,61 @@ def CorrOrigin.importViolation? (m : Name) (src : CorrOrigin) (imp : Name)
   | .repo .theory, .foundation | .repo .theory, .sysrootFoundation
   | .repo .theory, .vendorMiri | .repo .theory, .repo _ => none
 
+/-- Represents the authority of an authenticated target source, independent of
+its namespace. -/
+inductive TargetRole where
+  | model | specification | capture | expected | proof
+  deriving BEq, DecidableEq
+
+/-- Parse the closed role vocabulary shared with the Rust runner. -/
+def TargetRole.parse? : String → Option TargetRole
+  | "model" => some .model
+  | "specification" => some .specification
+  | "capture" => some .capture
+  | "expected" => some .expected
+  | "proof" => some .proof
+  | _ => none
+
+/-- Return `true` when a target source with `role` may depend on a source with
+role `dep`. Model and specification meanings cannot depend on unreviewed proof
+helpers. Capture is independent of specifications, and Expected may use all
+reviewed roles. The Rust runner enforces the same rule on parsed imports. -/
+def TargetRole.allows (role dep : TargetRole) : Bool :=
+  match role with
+  | .model => dep == .model
+  | .specification => dep == .model || dep == .specification
+  | .capture => dep == .model || dep == .capture
+  | .expected => dep != .proof
+  | .proof => true
+
+/-- Partitions every loaded module during external target verification
+(`"target-audit"`): foundation, checked libraries, and target sources. -/
+inductive TargetOrigin where
+  | foundation | library | source (role : TargetRole)
+  deriving BEq, DecidableEq
+
+/-- Return `none` when Target Pass permits a constant `cName` in `src` to
+reference `dep` in `dst`, or `some message` when forbidden. Installed libraries
+never reference target sources, and target sources obey `TargetRole.allows`. -/
+def TargetOrigin.edgeViolation? (cName : Name) (src : TargetOrigin)
+    (dep : Name) (dst : TargetOrigin) : Option String :=
+  match src, dst with
+  | .foundation, .foundation => none
+  | .foundation, .library | .foundation, .source _ =>
+    some s!"target authority violation {cName} references {dep}"
+  | .library, .source _ =>
+    some s!"installed library {cName} references target source {dep}"
+  | .library, .foundation | .library, .library => none
+  | .source r, .source d =>
+    if r.allows d then none
+    else some s!"target authority violation {cName} references {dep}"
+  | .source _, .foundation | .source _, .library => none
+
+/-- Return `true` when Target Pass permits a constant in `src` to reference
+`dst`. -/
+def TargetOrigin.allows (src dst : TargetOrigin) : Bool :=
+  (src.edgeViolation? .anonymous .anonymous dst).isNone
+
 /-! ## JSON IPC and environment-loading helpers -/
 
 /-- Throw a policy-rejection error prefixed with `"policy:"` (exit code 1). -/
@@ -382,10 +469,17 @@ with `level := .private`.
 - In `"preflight"`, `extensions := true` loads the authenticated foundation's
   parser extensions and initializers. Parsing source commands does not elaborate
   them, but this imported runtime code is trusted.
-- In `"audit"`, `extensions := false` skips module initializers and persistent
-  extension-state reconstruction callbacks. Raw serialized extension entries
-  remain in module data; every repository declaration still undergoes kernel
-  replay.
+- In `"audit"` and `"target-audit"`, `extensions := false` skips module
+  initializers and persistent extension-state reconstruction callbacks. Raw
+  serialized extension entries remain in module data; logically reached
+  declarations still undergo kernel replay.
+- `"target-audit"` must never pass `extensions := true`; its compiler-attribute
+  checks read those raw entries. The pinned `finalizeImport` attaches each
+  module's serialized entries to every registered extension before, and
+  regardless of, its `loadExts` branch. That branch calls each extension's
+  import callback and requires `enableInitializersExecution` to run every
+  imported `[init]` declaration, such as a target `initialize` block.
+  https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2376-L2404
 
 The pinned importer warns that loading extensions "may use the interpreter"
 and requires `enableInitializersExecution`. These are runtime effects, distinct
@@ -428,7 +522,7 @@ def importCorrEnv (roots : Array Name) (extensions := false) :
   finalizeImportedEnv env
 
 /-- Verify that the import DAG recorded in the `.olean` headers of `env` is
-identical to the admitted `"graph"` from `"preflight"`. -/
+identical to the admitted `"graph"` from `"preflight"` or `"headers"`. -/
 def validateGraph (j : Json) (env : Environment) : IO Unit := do
   let expected ← field (α := Json) j "graph"
   unless graph env == expected do
@@ -992,6 +1086,20 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
     ("module", toJson moduleName),
     ("imports", toJson imports),
     ("trustTier", toJson role.renderTier?)]
+
+/-- Read only a source header (`"headers"`). Target elaboration is deliberately
+separate from repository command admission: authored macros and tactics may use
+arbitrary syntax, while their final logical dependencies must pass kernel
+replay. -/
+def inspectHeader (moduleName : Name) (path : System.FilePath) : IO Json := do
+  let text ← IO.FS.readFile path
+  let ctx := Parser.mkInputContext text path.toString
+  let (header, state, messages) ← Parser.parseHeader ctx
+  if messages.hasErrors || state.recovering then
+    fail s!"header parser error in {moduleName}"
+  return Json.mkObj [
+    ("module", toJson moduleName),
+    ("imports", toJson (Elab.HeaderSyntax.imports header))]
 
 /-! ## Shared kernel-environment combinators -/
 
@@ -2272,13 +2380,300 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
     ("correspondenceReachableDeclarations", toJson corrVisitedSize),
     ("correspondenceAxioms", toJson corrAxioms)]
 
-/-- Dispatch `"preflight"`, `"correspondence-preflight"`, `"audit"`, or
-`"correspondence-audit"` from the JSON request `j`. -/
+/-! ## Phase 4: External target verification (`"target-audit"`) -/
+
+/-- Collect every serialized `@[csimp]` entry of `env` under the declaration it
+replaces, as `(scope, toDeclName, thmName)` in module and entry order. `scope`
+names the namespace of a scoped entry and is `none` for a global entry.
+
+Target-audit imports keep `loadExts := false`, so `CSimp.ext` keeps its initial
+state: the pinned importer says "every extension will have its initial value
+as its state". The serialized module entries remain readable. With
+`loadExts := true`, the pinned import callback would map each global entry's
+`fromDeclName` to its last entry and apply a scoped entry only where its
+namespace is opened. Comparing every entry is stricter than comparing that map.
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2427-L2431
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/ScopedEnvExtension.lean#L61-L74
+https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Compiler/CSimpAttr.lean#L33-L38 -/
+def csimpEntries (env : Environment) :
+    NameMap (Array (Option Name × Name × Name)) := Id.run do
+  let mut entries : NameMap (Array (Option Name × Name × Name)) := {}
+  for modIdx in Array.range env.header.moduleData.size do
+    for entry in Compiler.CSimp.ext.ext.getModuleEntries env modIdx do
+      let e := match entry with
+        | .global e | .scoped _ e => e
+      let scope : Option Name := match entry with
+        | .global _ => none
+        | .scoped ns _ => some ns
+      let previous := (entries.find? e.fromDeclName).getD #[]
+      entries := entries.insert e.fromDeclName
+        (previous.push (scope, e.toDeclName, e.thmName))
+  return entries
+
+/-- Execute Phase 4 (`"target-audit"`) on compiled target artifacts.
+
+Target auditing checks actual stored declarations, including private helpers
+and generated inductive members. It imports no unvalidated declaration into the
+replay base. Every import uses `loadExts := false`, including those for the
+compiler-metadata comparison, so no target `[init]` declaration or extension
+import callback runs in this process. -/
+def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
+  let target ← field (α := Json) j "target"
+  let libraries ← names j "libraries"
+  let modules ← field (α := Array Json) target "modules"
+  let mut roles : Std.HashMap Name TargetOrigin := {}
+  for m in foundation do roles := roles.insert m .foundation
+  for m in libraries do
+    roles ← insertRole roles m .library "overlapping target module"
+  let mut roots := foundation ++ libraries
+  for item in modules do
+    let m := (← field (α := String) item "module").toName
+    let rawRole ← field (α := String) item "role"
+    let some role := TargetRole.parse? rawRole
+      | fail s!"unknown target role {rawRole}"
+    roles ← insertRole roles m (.source role) "overlapping target module"
+    roots := roots.push m
+  let env ← importEnv j roots
+  validateGraph j env
+  let provenance n := constProvenance env roles n "target module"
+  let lookup n := lookupConst env n "target dependency"
+  -- Cross-check source inventory and the environment's actual stored values.
+  -- Library declarations are checked when reached, so irrelevant metaprogram
+  -- implementation constants do not become restrictions on authored proofs.
+  let mut sourceInventory : NameSet := {}
+  let mut libraryInventories : Std.HashMap Name NameSet := {}
+  let mut libraryExports : Std.HashMap Name (Array ConstantInfo) := {}
+  for m in env.header.modules, data in env.header.moduleData do
+    let some role := roles.get? m.module
+      | fail s!"foreign target module {m.module}"
+    if let .library := role then
+      -- Record all exports, including repeats whose selected origin belongs
+      -- to another pinned module. Only logically reached names are compared
+      -- below; unused tactic implementation constants remain unrestricted.
+      unless data.constNames == data.constants.map ConstantInfo.name do
+        fail s!"invalid target library inventory {m.module}"
+      libraryInventories := libraryInventories.insert m.module
+        (.ofList data.constNames.toList)
+      for ci in data.constants do
+        libraryExports := libraryExports.insert ci.name
+          ((libraryExports.getD ci.name #[]).push ci)
+    if let .source _ := role then
+      unless data.constNames == data.constants.map ConstantInfo.name do
+        fail s!"invalid target inventory {m.module}"
+      for ci in data.constants do
+        if sourceInventory.contains ci.name then
+          fail s!"duplicate target declaration {ci.name}"
+        unless (← origin env ci.name) == m.module do
+          fail s!"target inventory origin mismatch {ci.name}"
+        let stored ← lookup ci.name
+        unless stored.type == ci.type && stored.value? true == ci.value? true do
+          fail s!"stored target declaration differs {ci.name}"
+        sourceInventory := sourceInventory.insert ci.name
+  let theoremName := (← field (α := String) target "theoremName").toName
+  let theoremModule := (← field (α := String) target "theoremModule").toName
+  let expectedName :=
+    (← field (α := String) target "expectedDeclaration").toName
+  let expectedModule := (← field (α := String) target "expectedModule").toName
+  match roles.get? theoremModule, roles.get? expectedModule with
+  | some (.source .proof), some (.source .expected) => pure ()
+  | _, _ => fail "incorrect target/expected authority roles"
+  let theoremInfo ← lookup theoremName
+  let expectedInfo ← lookup expectedName
+  unless (← origin env theoremName) == theoremModule &&
+      (← origin env expectedName) == expectedModule do
+    fail "incorrect target/expected declaration origin"
+  -- Names and namespaces do not establish authority or the kind of claim.
+  -- The later canonical comparison covers the entire submitted type, including
+  -- any binders, after these declarations have passed origin checks and replay.
+  unless theoremInfo matches .thmInfo _ do fail "target root must be a theorem"
+  unless expectedInfo matches .defnInfo _ do
+    fail "Expected must be a definition"
+  unless theoremInfo.levelParams.isEmpty && expectedInfo.levelParams.isEmpty do
+    fail "target and Expected must have no universe parameters"
+  unless expectedInfo.type == .sort .zero do fail "Expected must have type Prop"
+  let canonicalRoot := (← field (α := String) target "canonicalRoot").toName
+  let crateCtor : Name := `Trusted.MirSemantics.Crate.mk
+  let subjectName := (← field (α := String) target "subjectDeclaration").toName
+  let specName :=
+    (← field (α := String) target "specificationDeclaration").toName
+  for (n, requiredRole) in [(canonicalRoot, TargetRole.model),
+      (crateCtor, TargetRole.model),
+      (subjectName, TargetRole.capture),
+      (specName, TargetRole.specification)] do
+    let (_, role) ← provenance n
+    match role with
+    | .source actual =>
+      unless actual == requiredRole do
+        fail s!"incorrect canonical input origin {n}"
+    | _ => fail s!"incorrect canonical input origin {n}"
+    unless (← lookup n).levelParams.isEmpty do
+      fail s!"canonical input has universe parameters {n}"
+  -- Build the proposition directly from authenticated kernel names. Imported
+  -- syntax, namespaces and elaborators may change the compiled Expected body;
+  -- that convenience definition is therefore checked against this expression.
+  let canonical := mkApp (mkConst canonicalRoot)
+    (mkApp2 (mkConst crateCtor) (mkConst subjectName) (mkConst specName))
+  -- The request cannot widen the logical foundation by listing more axioms.
+  -- Checked libraries contribute replayed declarations, not new assumptions.
+  let axiomPolicy ← field (α := Array (String × String)) j "axioms"
+  unless axiomPolicy == #[("Classical.choice", "Init.Prelude"),
+      ("Quot.sound", "Init.Prelude"), ("propext", "Init.Core")] do
+    fail "target axiom policy differs from the original foundation"
+  -- A library name can occur in several serialized inventories while the
+  -- imported environment selects only one value. Reconcile every reached
+  -- variant before replay. Alternate proofs can introduce further logical
+  -- dependencies, so extend the same closure until no new roots remain.
+  let mut pending := [
+    theoremName, expectedName, canonicalRoot, crateCtor, subjectName, specName]
+  let mut axioms : Array Name := #[]
+  let mut reached : NameSet := {}
+  let mut alternateProofs : Array ConstantInfo := #[]
+  repeat
+    let previous := reached
+    let (allAxioms, allReached) ← closure lookup provenance axiomPolicy
+      pending (visited := reached) (reachedAxioms := .ofList axioms.toList)
+    axioms := allAxioms
+    reached := allReached
+    pending := []
+    for n in reached do
+      unless previous.contains n do
+        let (orig, role) ← provenance n
+        if let .library := role then
+          unless (libraryInventories.getD orig {}).contains n do
+            fail s!"uninventoried target library dependency {n}"
+        for ci in libraryExports.getD n #[] do
+          match role with
+          | .foundation | .library => pure ()
+          | .source _ => fail s!"target library inventory origin mismatch {n}"
+          let alternatives ← inventoryAlternates (← lookup n) ci true
+          for proof in alternatives do
+            let deps ← declarationEdges proof
+            -- A discarded proof is still a library export. Its own edges
+            -- cannot acquire target-source authority merely because the
+            -- selected body has no such dependency.
+            for dep in deps do
+              let (_, depRole) ← provenance dep
+              if let some msg :=
+                  TargetOrigin.edgeViolation? n .library dep depRole then
+                fail msg
+            pending := deps.toList ++ pending
+          alternateProofs := alternateProofs ++ alternatives
+    if pending.isEmpty then break
+  -- Meaning surfaces follow the canonical claim's dependencies, independently
+  -- of which proof helpers establish it. Those helpers still belong to reached
+  -- and undergo replay, but editing them must not redefine the reviewed claim.
+  let (_, expectedReached) ← closure lookup provenance axiomPolicy
+    [canonicalRoot, crateCtor, subjectName, specName]
+  let mut replayMap : Std.HashMap Name ConstantInfo := {}
+  let mut modelRoots : List Name := []
+  let mut specRoots : List Name := []
+  for n in reached do
+    let ci ← lookup n
+    let (_, role) ← provenance n
+    match role with
+    | .foundation => pure ()
+    | .library | .source _ =>
+      ensureReplayableConstant "logical dependency" "" ci
+      if let .source _ := role then
+        unless sourceInventory.contains n do
+          fail s!"uninventoried target dependency {n}"
+      -- Parsed imports are only the early authority gate. Recheck the actual
+      -- type/body edges, including private and generated helpers, so the stored
+      -- declarations' meanings obey the same authority boundary.
+      for dep in ← declarationEdges ci do
+        let (_, depRole) ← provenance dep
+        if let some msg := role.edgeViolation? n dep depRole then
+          fail msg
+      replayMap := replayMap.insert n ci
+    if expectedReached.contains n then
+      match role with
+      | .source .model => modelRoots := n :: modelRoots
+      | .source .specification => specRoots := n :: specRoots
+      | _ => pure ()
+  -- Rebuild from the original foundation before comparing the root, so neither
+  -- the proof nor its specification is validated using unchecked target data.
+  let base ← importEnv j foundation
+  let replayed ← replayOntoBase base replayMap alternateProofs
+    "kernel replay rejected target dependency"
+  let checkedEnv := Environment.ofKernelEnv replayed
+  let canonicalType ← kernelResult "canonical root type check"
+    (Kernel.check checkedEnv {} canonical)
+  unless canonicalType == .sort .zero do
+    fail "canonical root application must have type Prop"
+  let some expectedBody := expectedInfo.value? true
+    | fail "Expected has no stored body"
+  requireKernelEquality "compiled Expected comparison"
+    "compiled Expected body differs from the canonical root"
+    (Kernel.isDefEq checkedEnv {} expectedBody canonical)
+  requireKernelEquality "target theorem type comparison"
+    "target theorem type differs from Expected"
+    (Kernel.isDefEq checkedEnv {} theoremInfo.type canonical)
+  -- Compiler replacement attributes do not affect logical reduction. Reject
+  -- authored changes nevertheless, including changes to an imported helper.
+  -- Compare against authenticated toolchain metadata so ordinary pinned extern
+  -- implementations of Nat/BitVec operations remain available.
+  --
+  -- Keep both metadata environments at loadExts := false; env is the target
+  -- import above. With loadExts, the pinned importer runs every imported
+  -- [init] declaration, after runInitAttrs checks that initializers are
+  -- enabled: "`enableInitializersExecution` must be run before calling
+  -- `importModules (loadExts := true)`". Builtin import callbacks also
+  -- evaluate imported declarations; KeyedDeclsAttribute's ofOLeanEntry calls
+  -- evalConstCheck. That code would run in the process whose result file the
+  -- runner accepts. The implemented_by and extern lookups need no callback:
+  -- the pinned ParametricAttribute import callback is
+  -- `fun _ => pure ([], {})`, and getParam? reads an imported declaration's
+  -- `ext.getModuleEntries env modIdx`. csimpEntries reads csimp entries the
+  -- same way.
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Compiler/InitAttr.lean#L198-L203
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/KeyedDeclsAttribute.lean#L118-L127
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L263-L281
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L306-L321
+  let fixedMetadata ← importEnv j (foundation ++ libraries)
+  let fixedCSimp := csimpEntries fixedMetadata
+  let targetCSimp := csimpEntries env
+  for n in reached do
+    unless Compiler.getImplementedBy? fixedMetadata n ==
+        Compiler.getImplementedBy? env n &&
+        getExternAttrData? fixedMetadata n == getExternAttrData? env n do
+      fail s!"unchecked compiler override on logical dependency {n}"
+    unless fixedCSimp.find? n == targetCSimp.find? n do
+      fail s!"authored compiler replacement on logical dependency {n}"
+  -- Subject helpers can determine captured program data without appearing in
+  -- the model or specification. Report their own logical closure as well, so
+  -- those installed artifacts receive identities without including proof-only
+  -- helpers or every imported module. declarationEdges follows stored values:
+  -- Lean's value? "Returns the value of a definition."
+  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Declaration.lean#L479-L488
+  let (_, subjectClosure) ← closure lookup provenance axiomPolicy [subjectName]
+  let (_, modelClosure) ← closure lookup provenance axiomPolicy modelRoots
+  let (_, specClosure) ← closure lookup provenance axiomPolicy specRoots
+  let describe (nodes : NameSet) :=
+    nodes.toArray.qsort Name.lt |>.mapM fun n => do
+      return Json.mkObj [("name", toJson n),
+        ("module", toJson (← origin env n))]
+  return Json.mkObj [("theorem", toJson theoremName),
+    ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),
+    ("specification", toJson specName), ("graph", graph env),
+    ("expected", toJson expectedName), ("axioms", toJson axioms),
+    ("replay", toJson true), ("exactType", toJson true),
+    ("replayedDeclarations", toJson replayMap.size),
+    ("checkedAlternateProofs", toJson alternateProofs.size),
+    ("subjectClosure", .arr (← describe subjectClosure)),
+    ("modelClosure", .arr (← describe modelClosure)),
+    ("specificationClosure", .arr (← describe specClosure))]
+
+/-- Dispatch a repository or target inspection request. -/
 def run (j : Json) : IO Json := do
   let mode ← field (α := String) j "mode"
   let sysrootStr ← field (α := String) j "sysroot"
   let foundation ← names j "foundation"
   match mode with
+  | "headers" =>
+    initSearchPath sysrootStr
+    let sources ← field (α := Array (String × String)) j "sources"
+    let headers ← sources.mapM fun (n, p) => inspectHeader n.toName p
+    return Json.mkObj [("headers", .arr headers)]
   | "preflight" =>
     initSearchPath sysrootStr
     let env ← importEnv j foundation true
@@ -2300,6 +2695,9 @@ def run (j : Json) : IO Json := do
     let theory ← names j "theory"
     let env ← importEnv j (foundation ++ trusted ++ theory)
     audit j env foundation trusted theory
+  | "target-audit" =>
+    initSearchPath sysrootStr
+    targetAudit j foundation
   | "correspondence-audit" =>
     let spRaw ← field (α := Array String) j "searchPath"
     initSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)

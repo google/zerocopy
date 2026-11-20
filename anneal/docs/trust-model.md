@@ -9,9 +9,10 @@ those terms. -->
 # Trust Model and Boundary Enforcement
 
 > **Note:** Anneal is under active development. Parts of the design and
-> architecture described in this document are not yet implemented or may be
-> implemented differently; this document may be aspirational or stale relative
-> to the codebase.
+> architecture described in this document are experimental (for example,
+> host-level OS sandboxing of untrusted target Lean elaborators and complete
+> review-surface reporting remain deferred, as recorded in `cargo-anneal
+> verify` receipts).
 
 [`META_PRINCIPLES.md`](../META_PRINCIPLES.md),
 [`PRINCIPLES.md`](../PRINCIPLES.md), and [`THREAT_MODEL.md`](../THREAT_MODEL.md)
@@ -21,103 +22,135 @@ audit log is correct, its assumptions are valid, and Anneal emits no errors in
 an uncompromised execution environment, then the verified code is sound and
 satisfies any stated specifications.
 
-A modern verification tool needs tens of thousands of lines of intermediate
-representation (IR) lowering passes, weakest-precondition (WP) rules,
-correspondence proofs, separation-logic lemmas, and proof automation—much of
-it written by untrusted AI agents. To keep the human audit surface small,
-Anneal isolates all first-party trusted code inside [`trusted/`](../trusted)
-and places all lowering passes, program logics, tactics, and correspondence
-proofs outside the TCB in `theory/` and `correspondence/`. To ensure that
-adversarial or buggy code in `theory/` or `correspondence/` cannot use side
-effects, OS APIs, or custom axioms to undermine the guarantees established by
-`trusted/`, Anneal runs a standalone boundary auditor
-([`trusted/audit/`](../trusted/audit)) **in Anneal's own repository CI**.
+A practical Rust verification framework needs substantial weakest-precondition
+(WP) rules, program logics, correspondence proofs, and proof automation—much of
+it written by untrusted contributors or AI coding agents. To keep the human
+audit surface small, Anneal isolates all first-party trusted code inside
+[`trusted/`](../trusted), places program logics and correspondence proofs
+outside the TCB in `theory/` and `correspondence/`, and enforces boundary
+invariants mechanically across **three audit passes** driven by
+[`TrustedBoundary.lean`](../trusted/audit/TrustedBoundary.lean).
 
 For related architectural details, see:
 
 - [`docs/design.md`](design.md) for an overview of Anneal's verification
   workflow and specification modes.
 - [`docs/architecture.md`](architecture.md) for the three-stage MIR pipeline
-  and how untrusted lowering passes in `theory/` connect to `trusted/lean/`.
+  and how untrusted program logics in `theory/` connect to `trusted/lean/`.
 - [`docs/mir-correspondence-design.md`](mir-correspondence-design.md) for how
   Pass 2 anchors `Trusted.MirSemantics` against `vendor/lean-miri/`.
 
-## 1. The `trusted/` boundary and how verification stays sound
+## 1. Repository zones and the three verification contexts
 
-Anneal divides its repository into three zones with strictly separated roles:
+Anneal divides its repository into three strictly separated zones:
 
 | Zone | Directory | Role | Trust status |
 | :--- | :--- | :--- | :--- |
-| **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
-| **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
-| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta ([`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (38,728 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
+| **Trusted foundation** | [`trusted/`](../trusted) | Extracts `Runtime(PostCleanup)` MIR into `Captured.lean` (`trusted/rustc-capture/`), defines MIR syntax and operational semantics (`trusted/lean/`), states MIR correspondence claims (`trusted/correspondence/`), orchestrates toolchain setup and target verification (`trusted/cargo-anneal/`), and audits Anneal's repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by SHA-256 manifests inside `trusted/`). |
+| **Proof theory & correspondence** | `theory/`, `correspondence/` | Provides fuel-bounded MIR WP and adequacy lemmas (`theory/Anneal/MirWp.lean`), `PureLift` program logics (`theory/Anneal/PureLift/`), and MIR correspondence proofs and canaries (`correspondence/`). | **Outside the TCB.** Treated as untrusted; verified in Anneal's CI by `anneal-audit` (`trusted/audit/`) and checked by the Lean 4 kernel (`correspondence/` runs in CI only and is not shipped to users). |
+| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta ([`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive or `cargo-anneal`. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (38,728 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
 
-### How CI auditing and user-machine verification fit together
+### How repository CI auditing and target verification fit together
 
-A key design question is how Anneal guarantees soundness without requiring a
-human to audit `theory/` and without running a heavy repository auditor on
-every user's machine.
-
-Anneal splits the enforcement across **Anneal's repository CI** and **the
-user's machine**:
+Anneal splits mechanical boundary enforcement across **Anneal's repository CI**
+(`anneal-audit`) and **external target verification** (`cargo-anneal verify`):
 
 ```mermaid
 flowchart TD
-    subgraph RepoCI ["In Anneal's Repository CI (before shipping)"]
-        THEORY["Untrusted theory/ (.lean) & trusted/lean/"] --> AUDIT["anneal-audit (trusted/audit/)\nEnforces pure, effect-free, axiom-free theory/\nand vetted vs. candidate:<feature> module-tier separation"]
-        AUDIT --> ARCHIVE["Packaged Anneal Toolchain Archive"]
+    subgraph RepoCI ["Repository CI: anneal-audit"]
+        PASS1["Pass 1: trusted/lean and theory"]
+        PASS2["Pass 2: lean-miri and correspondence"]
     end
+    SHIPPED["Released cargo-anneal with bundled_resources.rs"]
+    PASS1 -->|"gates merges"| SHIPPED
+    PASS2 -->|"gates merges"| SHIPPED
 
-    subgraph UserMachine ["On a User's Machine (cargo anneal)"]
-        CRATE["Target Rust Crate + inline annotations"] --> CAPTURE["trusted/rustc-capture/ (TCB)\nGenerates Mir.lean (Mir.crate : Trusted.Crate)\nand pure Proof.lean (Proof.verify_crate : Trusted.CrateTheorem Mir.crate)"]
-        CAPTURE --> KERNEL["Lean 4 Kernel\nChecks Proof.verify_crate against Trusted.CrateTheorem Mir.crate\nusing CI-audited theory/"]
-        ARCHIVE --> CAPTURE & KERNEL
+    subgraph TargetVerify ["Target verification: cargo-anneal verify"]
+        CAPTURE["Captured.lean from anneal-rustc-capture"]
+        SPEC["Reviewed Spec.lean"]
+        PROOF["Untrusted Proof.lean"]
+        STAGE["Private stage with bundled sources and Expected.lean"]
+        AUDIT["TrustedBoundary.lean headers and target-audit"]
+        CAPTURE --> STAGE
+        SPEC --> STAGE
+        PROOF --> STAGE
+        STAGE --> AUDIT
     end
+    SHIPPED --> STAGE
 ```
 
-1. **On the user's machine (`trusted/rustc-capture/` + Lean 4 kernel):**
-   - Users do not write raw Lean files that could spoof the theorem statement or
-     introduce `sorry`. Instead, users annotate their Rust source code, and
-     `trusted/rustc-capture/` (which is part of the human-audited TCB)
-     deterministically generates both `Mir.lean` (defining
-     `Mir.crate : Trusted.Crate`) and `Proof.lean` (a pure proof script that
-     states `theorem Proof.verify_crate : Trusted.CrateTheorem Mir.crate` for
-     whole-crate `.crate` captures, or the corresponding `Trusted.UnitTheorem`
-     obligation for selected proof-unit `.unit` captures, and calls into
-     `theory/` to prove it).
-   - Because `trusted/rustc-capture/` generates `Mir.lean` and `Proof.lean`
-     directly, the theorem *statement* (`ConstantInfo.type`) is guaranteed to
-     be `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`
-     for `.unit` captures) over the extracted artifact, and `Proof.lean` is
-     guaranteed to contain no axioms or effectful code.
-   - The Lean 4 kernel on the user's machine then typechecks `Proof.lean`,
-     verifying that the proof term (`ConstantInfo.value?`) constructed by
-     `theory/` is a valid proof of that trusted obligation.
-2. **In Anneal's repository CI (`trusted/audit/`):**
-   - For the Lean 4 kernel check on the user's machine to be sufficient, the
-     `theory/` library shipped with Anneal must not be able to cheat the kernel
-     or subvert the host process when `lean` imports and elaborates `theory/`.
-   - In raw Lean 4, an unrestricted `.lean` file in `theory/` could execute
-     arbitrary OS and filesystem operations during elaboration (`#eval`,
-     `run_cmd`, `initialize`), attach compiler overrides (`@[implemented_by]`,
-     `@[extern]`, `@[csimp]`), introduce custom `axiom`s or `sorryAx`, or
-     inject spoofed definitions into the `Trusted` namespace. Similarly, a Rust
-     crate outside `trusted/` could run arbitrary code via `build.rs` or
-     procedural macros.
-   - Therefore, **Anneal's CI runs `anneal-audit` (`trusted/audit/`)** on the
-     Anneal repository before any commit can merge or be packaged into the
-     toolchain archive. `anneal-audit` does **not** run on a user's machine; its
-     job is to verify in CI that all first-party Lean code outside `trusted/`
-     (`theory/` and `correspondence/`) is pure, effect-free, and within the
-     locked foundation axiom allowlist (and that no Rust crate resides outside
-     `trusted/`). Vendored reference-model sources under `vendor/lean-miri/` are
-     never packaged into the user toolchain archive and are admitted under Pass
-     2 by content-addressed SHA-256 pinning, human semantic and compile-time
-     review of upstream pin diffs and local patches, OS-sandboxed compilation
-     and Pass 2 preflight, standalone kernel replay, and cone-purity
-     enforcement, while `ci/` and `.github/` are human-audited CI configuration.
+1. **In Anneal's repository CI (`anneal-audit` in `trusted/audit/`):**
+   - Before any change to Anneal merges or ships, `anneal-audit` verifies that
+     every Rust crate lives inside `trusted/`, that root build files and
+     `bundled_resources.rs` match their canonical sources, that `trusted/lean/`,
+     `theory/`, `trusted/correspondence/`, and `correspondence/` obey closed
+     syntactic preflight rules (preventing `#eval`, `run_tac`, `by_elab`,
+     `native_decide`, `sorry`, custom `axiom`s, and compiler overrides during CI
+     compilation), and that Pass 1 (`"audit"`) and Pass 2
+     (`"correspondence-audit"`) pass fresh kernel replay (`toKernelEnv.replay`).
+   - `anneal-audit` itself is a repository-only CI binary (`publish = false`);
+     its repository policies (`Cargo.toml` containment, `UPSTREAM_PIN.json`, and
+     Pass 1 / Pass 2 orchestration) are never shipped in `cargo-anneal`.
+     Vendored reference-model sources under `vendor/lean-miri/` are never
+     packaged into the user toolchain archive and are admitted under Pass 2 by
+     content-addressed SHA-256 pinning, OS-sandboxed compilation and Pass 2
+     preflight, standalone kernel replay, and cone-purity enforcement, while
+     `ci/` and `.github/` are human-audited CI configuration.
+2. **During target verification (`cargo-anneal verify` in
+   `trusted/cargo-anneal/`):**
+   - Unlike repository CI, target verification accepts Lean specifications
+     (`Spec.lean`) and Lean proofs (`Proof.lean`) authored by external users or
+     untrusted AI coding agents (under [`THREAT_MODEL.md`](../THREAT_MODEL.md)
+     Section 2.1's uncompromised-environment assumption, such as an isolated CI
+     runner).
+   - Compiling target sources elaborates authored tactics, macros, and other
+     metaprograms as ordinary code on the host, and the `lean` frontend also
+     runs the initializers of imported target modules. The acceptance
+     inspector (`"target-audit"`) runs no target-provided Lean code: it imports
+     every environment with `loadExts := false` and never calls
+     `enableInitializersExecution`, so neither imported `[init]` declarations
+     nor extension import callbacks (including builtin callbacks that would
+     evaluate imported declarations) execute inside it. It compares
+     `@[implemented_by]`, `@[extern]`, and `@[csimp]` metadata using the
+     serialized extension entries that the pinned Lean 4.34.1 importer
+     attaches regardless of `loadExts`. The inspector still parses the
+     compiled `.olean` artifacts with the pinned importer, so its verdict also
+     depends on the compilation phase not having been subverted.
+     `cargo-anneal verify` stages and authenticates its inputs but does not
+     sandbox compilation at the OS level, so run it only in an environment
+     that satisfies that assumption.
+   - Toolchain admission authenticates only part of the selected toolchain. It
+     hashes the selected `lean` executable against `foundation-lock.json`,
+     every `foundation-lock.json` module, and each `library-lock.json` module
+     in the target's import closure, and the receipt records the capture
+     executable's SHA-256 (`capture_binary_sha256`). It does not hash the Lean
+     shared libraries (such as `libleanshared.so`, which holds the kernel and
+     elaborator), the `Lean.*` and `Std.*` sysroot modules that the inspector
+     loads, or the Rust compiler and sysroot; only `lean --version` and the
+     compiler commit that capture checks identify them. These components
+     rely on [`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1's intact-host
+     assumption, and the receipt's `toolchain_identity` field lists them as
+     `unhashed`.
+   - `anneal-rustc-capture` extracts the Rust crate's MIR into `Captured.lean`
+     (`Captured.program : Trusted.MirAst.Program`). `cargo-anneal verify` stages
+     its compiled-in `BUNDLE` (`Trusted.*`, `Anneal.MirWp`,
+     `foundation-lock.json`, `library-lock.json`, and `TrustedBoundary.lean`)
+     into a private `0o700` directory so target checkouts cannot shadow TCB
+     files, generates `Expected.lean` (`Expected.claim`), compiles the module
+     DAG with `-DElab.async=false -Ddebug.skipKernelTC=false`, and invokes
+     `TrustedBoundary.lean` in `"headers"` and `"target-audit"` modes.
+   - Because `TrustedBoundary.lean` runs `"target-audit"` on the compiled
+     `.olean` artifacts, authored proofs may freely use tactics, macros, and
+     standard-library modules from `library-lock.json` while remaining unable
+     (assuming an intact host) to introduce `sorryAx` or custom `axiom`s, leak
+     `Proof` definitions into `Specification` meaning, or spoof
+     `Expected.claim`. `"target-audit"` also rejects any `@[implemented_by]`,
+     `@[extern]`, or `@[csimp]` metadata on a logically reached declaration that
+     differs from the authenticated foundation and library metadata. This
+     comparison covers only declarations reached from the checked theorem,
+     `Expected`, and the canonical inputs.
 
-### Statement-Origin Separation (`ConstantInfo.type` vs. `ConstantInfo.value?`)
+### Statement-origin and role-authority separation
 
 Within the Lean 4 kernel environment, every compiled theorem
 (`ConstantInfo.thmInfo`) has two distinct components:
@@ -127,38 +160,51 @@ Within the Lean 4 kernel environment, every compiled theorem
 - **The proof term (`ConstantInfo.value?`):** The lambda term explaining *why*
   that proposition holds.
 
-Anneal's architecture enforces **Statement-Origin Separation** between the two:
+Anneal enforces strict origin separation across both repository CI and target
+verification:
 
-- Every constant referenced in the *statement* (`ConstantInfo.type`) of
-  `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`)
-  originates in `Trusted.*` (or the allowlisted Lean `Init.*` foundation) and
-  the generated `Mir.crate`. No definition from `theory/` ever appears in the
-  theorem statement.
-- Declarations from `theory/` appear only inside the *proof term*
-  (`ConstantInfo.value?`). Because `anneal-audit` verifies in CI that `theory/`
-  is pure, effect-free, and free of custom axioms, and the Lean 4 kernel checks
-  that `ConstantInfo.value?` inhabits `ConstantInfo.type`, `theory/` can supply
-  arbitrarily rich lowering passes and tactics without being able to weaken the
-  theorem statement.
+- **In repository CI (`RepoOrigin` and `CorrOrigin`):** Modules in `trusted/`
+  may never import modules from `theory/` or `correspondence/` (`Anneal.*`),
+  and constants in `trusted/` may never reference their constants.
+  `anneal-audit` checks imports in Rust preflight and again in compiled `.olean`
+  headers (`RepoOrigin.importViolation?` and `CorrOrigin.importViolation?`),
+  and checks constant references over kernel declaration edges
+  (`RepoOrigin.edgeViolation?` and `CorrOrigin.edgeViolation?`). Declarations
+  in `theory/` therefore appear only inside proof terms, never inside primitive
+  `Trusted.*` obligation definitions.
+- **In target verification (`TargetRole` and `TargetOrigin`):** Every target
+  source module is assigned an explicit `TargetRole` governed by
+  `TargetRole.allows`, which the runner checks on parsed `import` headers
+  before compilation and `"target-audit"` checks again on compiled kernel
+  `declarationEdges`:
+
+  - `Model` (`Trusted.*` from `bundled_resources.rs`): depends only on `Model`
+    (plus `foundation`/`library`).
+  - `Capture` (`Captured.lean` from `anneal-rustc-capture`): depends only on
+    `Model` and `Capture` (never `Specification` or `Proof`).
+  - `Specification` (human-reviewed `Spec.lean` and helpers): depends only on
+    `Model` and `Specification` (never `Capture` or `Proof`, defeating indirect
+    specification tampering from proof helpers).
+  - `Expected` (runner-generated `Expected.lean`): depends on `Model`,
+    `Capture`, `Specification`, and `Expected` (never `Proof`).
+  - `Proof` (unreviewed `Proof.lean`, helpers, and bundled `Anneal.MirWp`): the
+    strict top of the role lattice; may depend on all roles, while no reviewed
+    or runner-owned role may depend on `Proof`.
+
+  Finally, `"target-audit"` builds the canonical kernel application of
+  `Trusted.MirSemantics.CrateTheorem` or `UnitTheorem` to
+  `Crate.mk Captured.program Spec.specs` directly from authenticated kernel
+  names, verifies `Kernel.isDefEq` against both `Expected.claim`'s body and the
+  submitted proof theorem's type after fresh kernel replay onto
+  `foundation-lock.json`, and reports exact `modelClosure`,
+  `specificationClosure`, and `subjectClosure` identities.
 
 ### Staging TCB changes (`vetted` vs. `candidate:<feature>` modules)
 
 Auditing a new semantic rule in `trusted/lean/` to full TCB standards—including
 line-by-line Rust Reference citations and human review—takes deliberate effort.
-If `trusted/lean/` treated all merged code as equally trusted, contributors
-would face an unproductive tradeoff when adding support for a new Rust feature:
-
-- **Block downstream work:** Hold back the `trusted/lean/` definitions until
-  full human auditing is complete, blocking contributors and agents from
-  building the corresponding lowering passes and WP lemmas in `theory/` or
-  testing the feature on real crates; or
-- **Dilute the TCB guarantee:** Merge unreviewed definitions into
-  `trusted/lean/` immediately, making it impossible to tell whether a
-  verification result depends only on audited rules or also on work-in-progress
-  semantics.
-
-Anneal resolves this by assigning every module in `trusted/lean/` an explicit
-module-level trust tier via a leading header comment directive:
+Anneal assigns every `Trusted.*` module an explicit module-level trust tier via
+a leading header comment directive:
 
 - **`-- anneal-trust-tier: vetted`:** Modules whose definitions have completed
   full Rust Reference auditing.
@@ -167,24 +213,19 @@ module-level trust tier via a leading header comment directive:
   `step_result`, `memory`, `mir_ast`, `mir_semantics`, or `rustc_capture`) that
   have not yet completed human auditing.
 
-Assigning trust tiers at the module boundary rather than via per-declaration
-attributes keeps `trusted/lean/` completely free of custom attribute macros or
-metaprogramming: every constant compiled into a `Trusted` module's `.olean`
+Assigning trust tiers at the module boundary keeps `trusted/` free of custom
+attribute macros: every constant compiled into a `Trusted` module's `.olean`
 file—including constructors, recursors (`rec`, `casesOn`), pattern matchers
-(`match_1`), equational lemmas (`eq_1`), and `where`/`private` helpers—
-automatically inherits its defining module's trust tier via
-`Environment.getModuleIdxFor?`.
-
-To prevent unreviewed candidate modules from contaminating audited definitions,
-`TrustedBoundary.lean` enforces a strict one-way dependency rule across both
-Pass 1 (`RepoOrigin.edgeViolation?`) and Pass 2 (`CorrOrigin.edgeViolation?`):
-constants in a `vetted` module may reference only the locked `Init.*`
-foundation and other `vetted` modules, never a `candidate:<feature>`,
-`vendorMiri`, or `sysrootFoundation` module.
+(`match_1`), equation lemmas (`eq_1`), and `where`/`private` helpers—inherits
+its defining module's trust tier via `Environment.getModuleIdxFor?`. Across both
+Pass 1 (`RepoOrigin.edgeViolation?`) and Pass 2 (`CorrOrigin.edgeViolation?`),
+constants in a `vetted` module may reference only `foundation-lock.json` and
+other `vetted` modules—never a `candidate:<feature>`, `vendorMiri`, or
+`sysrootFoundation` module.
 
 ## 2. Repository CI boundary enforcement (`anneal-audit`)
 
-[`trusted/audit/`](../trusted/audit) implements the CI gatekeeper
+[`trusted/audit/`](../trusted/audit) implements the repository CI gatekeeper
 (`anneal-audit` and
 [`TrustedBoundary.lean`](../trusted/audit/TrustedBoundary.lean)) that audits
 the Anneal repository over an isolated `0o700` staging directory. It enforces
@@ -192,14 +233,32 @@ the boundary controls detailed below across Pass 1 (core repository
 `trusted/lean/` and `theory/`) and Pass 2 (vendored `lean-miri`,
 `trusted/correspondence/`, and `correspondence/`).
 
-### Cargo workspace containment
+### Cargo workspace, pin, and bundle containment
 
-Before inspecting Lean files, `anneal-audit` verifies the repository's root
-manifests against [`root-manifest.sha256`](../trusted/root-manifest.sha256)
-(`trusted/root-manifest.sha256`) and checks that every Cargo workspace member
-and `path` dependency resides under `trusted/`. Because Rust code (including
-`build.rs` scripts and proc-macros) is effectful and not checked by the Lean
-kernel, no Rust crate is permitted outside `trusted/`.
+Before inspecting Lean files, `anneal-audit` verifies the following whenever
+the checkout contains a Cargo workspace, root manifest, or `vendor/` tree:
+
+1. **Cargo DAG containment (`check_cargo_boundary`):** Rejects `.cargo*`,
+   `rust-toolchain*`, and `.gitmodules` overrides at the repository root,
+   verifies `trusted/root-manifest.sha256`, requires every Cargo workspace
+   member and `path` dependency to reside under `trusted/` with no `build.rs`
+   scripts, and checks that every external package in `Cargo.lock` comes from
+   `crates.io-index` with a SHA-256 checksum. This check reads only Cargo
+   manifests, `Cargo.lock`, `trusted/root-manifest.sha256`, and the root build
+   files that the root manifest pins.
+2. **Vendored reference pin (`verify_upstream_pin`):** Verifies
+   `vendor/lean-miri/` against `UPSTREAM_PIN.json` (Section 2 Pass 2).
+3. **Embedded bundle parity (`verify_bundled_resources`):** When
+   `require_mir_wp` is enabled (the default for `anneal-audit`), verifies that
+   `trusted/cargo-anneal/src/bundled_resources.rs` and every canonical
+   `trusted/`, `theory/`, `trusted/correspondence/`, and `correspondence/`
+   source in `cargo_anneal::bundle` are regular files under regular directories,
+   that the scanned `.lean` files under `trusted/correspondence/` and
+   `correspondence/` match the provenance inventory exactly, and that the bundle
+   matches the exact deterministic rendering (`cargo_anneal::bundle`) of those
+   sources. The source inventory lives in `cargo_anneal::bundle` rather than
+   in `examples/regenerate_bundle.rs`, so deleting the generator together
+   with its output still fails closed.
 
 ### Syntactic source preflight (`"preflight"` & `"correspondence-preflight"`)
 
@@ -250,10 +309,9 @@ environment:
 
 - **`SourceRole.trusted` (`trusted/lean/` and `trusted/correspondence/`):**
   Restricted to `allowedTrustedSyntaxKinds`—pure declarations, types, and
-  term-mode proofs only, excluding `byTactic` and all tactic syntax so TCB
-  specifications remain direct, tactic-free definitions—and required to carry
-  exactly one valid `-- anneal-trust-tier: vetted` or
-  `-- anneal-trust-tier: candidate:<feature>` directive.
+  term-mode proofs only, excluding `byTactic` so TCB specifications remain
+  tactic-free—and required to declare one valid `-- anneal-trust-tier:`
+  directive.
 - **`SourceRole.theory` (`theory/` and `correspondence/`):** Restricted to
   `allowedTheorySyntaxKinds`, which extends `allowedTrustedSyntaxKinds` with a
   closed allowlist of pure proof tactics (`allowedTheoryTacticKinds`) while
@@ -272,46 +330,33 @@ environment:
 
 ### Pass 1: Core repository kernel replay (`"audit"` JSON IPC mode)
 
-After compiling the staged `trusted/lean/` and `theory/` modules synchronously
-with kernel checking enabled (`-t0 -DElab.async=false
--Ddebug.skipKernelTC=false`), `anneal-audit` loads the resulting `.olean` files
-with `trustLevel := 0`, `plugins := #[]`, and `loadExts := false` (so no
-`[init]` initializers or persistent environment extensions from audited modules
-are deserialized or executed), partitions every loaded module into `RepoOrigin`
-(`.foundation` or `.repo (.trusted tier | .theory)`), and performs a full
-kernel-level audit:
+After compiling `trusted/lean/` and `theory/` synchronously via `lean --setup`
+with `-t0 -DElab.async=false -Ddebug.skipKernelTC=false`, `anneal-audit` loads
+the `.olean` files with `trustLevel := 0`, `plugins := #[]`, and
+`loadExts := false`, partitions every module into `RepoOrigin` (`.foundation` or
+`.repo role`, with `library-lock.json` excluded), and enforces:
 
 1. **Inventory, imports, namespace, and constant safety
-   (`verifyAndCollectLocals`):** Verifies that only allowlisted modules are
-   loaded; rejects compiled `.olean` header imports violating
-   `RepoOrigin.importViolation?` (for example, a `Trusted` module importing a
-   `theory/` module); verifies that every constant's recorded module origin
-   (`env.getModuleIdxFor?`) matches its module's `RepoOrigin`; forbids
-   non-`Trusted` modules from declaring constants in the `Trusted` root
-   namespace (`(privateToUserName ci.name).getRoot == `Trusted`) or `opaque`
-   definitions; rejects any `unsafe`, `partial`, `axiom`, or quotient primitive
-   (`.quotInfo`) across repository declarations; and checks that the transitive
-   dependency closure reaches only the locked foundation axiom allowlist
-   (`{Classical.choice, Quot.sound, propext}`).
-2. **Origin and trust-tier separation (`checkDeclarationEdges`):** Traverses
-   every kernel dependency edge (`declarationEdges`) across repository
-   constants and enforces `RepoOrigin.edgeViolation?`:
-   - **Origin rule:** A `.trusted _` constant may reference only `.foundation`
-     or `.trusted _` constants (never `.theory`).
-   - **Vetted rule:** A `.trusted .vetted` constant may reference only
-     `.foundation` or `.trusted .vetted` constants (never
-     `.trusted (.candidate _)`).
+   (`verifyAndCollectLocals`):** Checks `.olean` inventory completeness across
+   `env.checked.get.constants`, rejects compiled `.olean` header imports that
+   violate `RepoOrigin.importViolation?` (for example, a `Trusted` module
+   importing a `theory/` module), forbids non-`Trusted` constants in the
+   `Trusted` root namespace and non-`Trusted` `opaque` declarations, and
+   rejects `unsafe`, `partial`, `axiom`, and quotient declarations across all
+   repository modules.
+2. **Origin and tier separation (`checkDeclarationEdges`):** Enforces
+   `RepoOrigin.edgeViolation?` across every kernel dependency edge.
 3. **MIR WP non-backsliding (`verifyMirWpCoreTheorems`):** Enabled by default
-   (`require_mir_wp = true`); requires `Trusted.MirAst`,
-   `Trusted.MirSemantics`, and `Anneal.MirWp` to be present and verifies that
-   `wpProg` soundness, `wpFaultProg` soundness, and all 19 Pass 1 canaries
-   prove their exact `Trusted.MirSemantics` `*Claim` propositions.
-4. **Fresh kernel replay (`replayOntoBase`):** Constructs a clean kernel
-   environment containing only the pinned `Init.*` foundation (`base`),
-   replays every non-foundation constant (`Trusted.*` and `theory/`) through
-   the standalone Lean 4 kernel typechecker (`base.toKernelEnv.replay`) from
-   scratch, and checks any alternate foundation theorem proofs under fresh
-   names.
+   (`require_mir_wp = true`); requires `Trusted.MirAst`, `Trusted.MirSemantics`,
+   and `Anneal.MirWp` to be present and verifies that `wpProg` soundness,
+   `wpFaultProg` soundness, and all 19 Pass 1 canaries prove the exact
+   `Trusted.MirSemantics` claims.
+4. **Axiom closure and fresh kernel replay (`closure` and `replayOntoBase`):**
+   Checks that every reachable axiom belongs to `foundation-lock.json`'s
+   `{Classical.choice, Quot.sound, propext}`, replays all repository constants
+   from scratch onto a clean `foundation-lock.json` kernel environment
+   (`base.toKernelEnv.replay`), and checks any alternate foundation theorem
+   bodies under fresh names.
 
 ### Pass 2: MIR correspondence and `lean-miri` cone audit
 
@@ -320,13 +365,14 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
 (`"correspondence-preflight"` and `"correspondence-audit"` JSON IPC modes):
 
 1. **Pin and sysroot authentication (`verify_upstream_pin`,
-   `ensure_sysroot_foundation`):** `trusted/audit` hashes
-   `vendor/lean-miri/UPSTREAM_PIN.json` against `LOCKED_UPSTREAM_PIN_SHA256`,
-   verifies its `commit` against `LOCKED_MIRI_COMMIT`, `build_lean_toolchain`
-   against Anneal's locked `leanprover/lean4:v4.34.1`, and `patched_files`
-   against `LOCKED_PATCHED_MIRI_FILES`. It verifies all 616 vendored files
-   (608 `.lean` files in `vendor_tree`, including `Miri.Input.NativeMathHost`,
-   plus 8 auxiliary files in `vendor_aux_files`) and `UPSTREAM_PIN.json` itself
+   `ensure_sysroot_foundation`):** `trusted/audit` reads
+   `vendor/lean-miri/UPSTREAM_PIN.json` once and verifies its SHA-256 digest
+   against `LOCKED_UPSTREAM_PIN_SHA256` before JSON parsing, then checks its
+   `commit` against `LOCKED_MIRI_COMMIT`, `build_lean_toolchain` against
+   Anneal's locked `leanprover/lean4:v4.34.1`, and `patched_files` against
+   `LOCKED_PATCHED_MIRI_FILES`. It verifies all 616 vendored files (608 `.lean`
+   files in `vendor_tree`, including `Miri.Input.NativeMathHost`, plus 8
+   auxiliary files in `vendor_aux_files`) and `UPSTREAM_PIN.json` itself
    against their SHA-256 digests (rejecting symlinks, missing or unlisted files,
    and pre-existing `.olean`/`.ir` artifacts); `Miri.Input.NativeMathHost` is
    excluded only from the 160-module compiled `execution_machine_closure`.
@@ -336,9 +382,9 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    `proofs-rs/lean-miri` targets `leanprover/lean4:v4.35.0`
    (`upstream_lean_toolchain`), whereas Anneal compiles and pins `.olean`
    digests under its locked `leanprover/lean4:v4.34.1` (`build_lean_toolchain`):
-   upstream's `v4.35.0` test results therefore do not automatically carry over
-   to Anneal's `v4.34.1` build, and correspondence proofs validate
-   reference-model behavior under the `v4.34.1` toolchain.
+   upstream's `v4.35.0` test results do not automatically carry over to
+   Anneal's `v4.34.1` build, and correspondence proofs validate reference-model
+   behavior under `v4.34.1`.
 2. **Digest-gated cache restore or OS-sandboxed cold compilation:** Every
    closure source file is staged and re-hashed against its pinned SHA-256
    digest before use. For each of the 160 modules in
@@ -456,125 +502,80 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    rejection of 25 named `Trusted.MirSemantics` evaluator entry points, with
    human review of `trusted/correspondence/` remaining the semantic boundary).
 
-### Pass 2 governance and remaining correspondence controls (`trusted/correspondence/` and `correspondence/`)
+## 3. Cryptographic lock manifests and embedded bundle resources
 
-To mechanically anchor `Trusted.MirSemantics` against `vendor/lean-miri/`
-without expanding the user-machine TCB or weakening Pass 1's pure `theory/`
-gate, Anneal's Pass 2 correspondence audit (detailed in
-[`docs/architecture.md`](architecture.md) and
-[`docs/mir-correspondence-design.md`](mir-correspondence-design.md)) governs
-five controls—four active in Pass 2 above and one remaining planned control
-tracked for a follow-up PR:
-
-1. **Content-addressed vendor pinning, semantic diff review, and OS-level
-   sandboxing (active):** Pin authentication, sysroot locking, external
-   `.olean` caching, OS-level `bwrap` process sandboxing of cold vendor
-   elaboration, `"correspondence-preflight"`, and Pass 2 module compilation
-   (with fail-closed isolation on platforms without bubblewrap), and cold
-   builds on `merge_group`, `push` to `main`, `workflow_dispatch`, and
-   `UPSTREAM_PIN.json`/`lean-toolchain` changes are active in Pass 2 above.
-   Every future `vendor/lean-miri/` pin update must expose and receive human
-   semantic review of the resolved old-to-new reference-model diff—not only
-   compile-time metaprograms and local patches—so pure, well-typed upstream
-   semantic regressions cannot pass silently through hash checks and kernel
-   replay.
-2. **Pass 2 syntactic preflight and isolation (active):** Foundation
-   `"preflight"`, sandboxed union-parser `"correspondence-preflight"` with
-   decoy-resistant scoped-namespace rejection, and `LEAN_PATH` isolation are
-   active in Pass 2 above.
-3. **Standalone vendor and correspondence kernel replay plus cone purity
-   (active):** Full standalone kernel replay over all 160 vendored closure
-   modules plus all Pass 1 and Pass 2 repository modules and 21-root cone
-   purity checks are active in Pass 2 above.
-4. **Correspondence witness locks and evaluator independence (active):**
-   Universe-monomorphic claim/proof checking with non-empty required-constants
-   lists (`verifyCorrespondenceClaims`) and `verifyRefEvaluatorIndependence`
-   are active in Pass 2 above.
-5. **Archive-embedded correspondence provenance and fail-closed digest
-   verification *(planned)*:** To uphold [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s
-   bounded human-review guarantee without shipping `vendor/lean-miri/` or
-   `correspondence/` in user toolchain archives, every packaged user toolchain
-   archive and `cargo-anneal` bundle will embed a compact, CI-checked,
-   digest-bound **correspondence provenance record** (pinned Anneal revision,
-   `trusted/lean/` source and `.olean` digests, `vendor/lean-miri/` upstream
-   commit, `UPSTREAM_PIN.json` SHA-256, `patched_files` allowlist and digests,
-   `Trusted/Correspondence.lean` digest, and Pass 2 attestation metadata).
-   Archive construction and `cargo anneal verify` will hash the actual packaged
-   `trusted/lean/` artifacts and fail closed unless those computed digests
-   exactly match the attested provenance record (as well as failing closed if
-   the embedded provenance is missing or malformed), and `cargo anneal verify`
-   will surface the verified provenance record in every verification result's
-   TCB audit log so an auditor inspecting only stated specifications and the
-   TCB audit log can identify and audit every certifying Pass 2 artifact.
-
-Introducing `vendor/lean-miri/` and (later) `correspondence/` into the
-repository—and later treating Pass 2 correspondence certification as a
-substitute for human semantic audit of `initState` and `evalStep` inside
-`trusted/lean/` (which otherwise remains governed by standard `trusted/lean/`
-semantic-review rules)—requires updating `AGENTS.md`, `.gemini/styleguide.md`,
-and `skills/trust-review/SKILL.md` in lockstep with `trusted/audit/` so
-code-review and TCB rules reflect both the active Pass 2 roots and the exact
-boundary between human-audited definitions and Pass 2-certified step rules.
-
-### Including external files in the `trusted/` boundary via hashes
-
-The invariant of [`trusted/`](../trusted) is that an auditor only needs to
-inspect `trusted/` to verify that Anneal upholds
-[`META_PRINCIPLES.md`](../META_PRINCIPLES.md),
-[`PRINCIPLES.md`](../PRINCIPLES.md), and
-[`THREAT_MODEL.md`](../THREAT_MODEL.md). However, some files that belong to the
-effective TCB cannot practically reside inside the `trusted/` subdirectory:
-
-- Standard tooling expects workspace and environment manifests (`Cargo.toml`,
-  `Cargo.lock`, `flake.nix`, and `flake.lock`) to sit at the current verifier's workspace root;
-  moving them into `trusted/` would require symlinks or custom wrapper flags
-  for every Cargo and Nix command.
-- Pre-built upstream toolchain artifacts (the `lean` binary and its `Init.*`,
-  `Std.*`, and `Lean.*` libraries) live outside the repository altogether.
-
-To include these files in `trusted/`'s effective TCB without relocating them,
-`trusted/` stores their SHA-256 digests in checked-in lock manifests:
+To keep external root files, pre-built toolchain binaries, and self-contained
+verifier inputs inside `trusted/`'s effective audit boundary, `trusted/` pins
+them via six non-overlapping pins:
 
 - **[`trusted/root-manifest.sha256`](../trusted/root-manifest.sha256):** Pins
-  the SHA-256 digests of the repository's root build files (`Cargo.toml`,
-  `Cargo.lock`, `flake.nix`, and `flake.lock`), verified by CI and
+  the SHA-256 digests of `Cargo.toml`, `Cargo.lock`, `flake.nix`, and
+  `flake.lock`, verified by CI (`sha256sum --check --strict`) and
   `anneal-audit`.
 - **[`foundation-lock.json`](../trusted/lean/foundation-lock.json)**
   (`trusted/lean/foundation-lock.json`): Pins the SHA-256 digests of the `lean`
-  executable and all `Init.*` prelude source and `.olean` companion files,
-  verified by both the Nix toolchain build (`flake.nix`) and `anneal-audit`.
-- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`**
-  (`trusted/audit/src/lib.rs`): Pins one SHA-256 digest over the sorted
-  `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
-  `.olean.server`, and `.olean.private` file in the pinned toolchain's
-  `lib/lean/`, verified by Pass 2 before compiling or loading `.vendorMiri`
-  and `.sysrootFoundation` modules.
+  4.34.1 executable across all four supported platforms (the executable file
+  only, not the Lean shared libraries it loads), the 3 permitted foundation
+  axioms, and all 51 core `Init.*` prelude source and `.olean`/`.ir` companion
+  files. These files are the whole unreplayed logical base of Pass 1
+  and Target Pass, and (together with `.sysrootFoundation`) Pass 2's unreplayed
+  base (Section 2). A `null` companion digest means that the companion must be
+  absent; both `cargo-anneal` and `flake.nix` (when it unpacks the Lean
+  toolchain for the omnibus archive) enforce these digests and absences.
+- **[`library-lock.json`](../trusted/audit/library-lock.json)**
+  (`trusted/audit/library-lock.json`): Pins the SHA-256 digests of additional
+  `Init.*` standard-library modules admitted **exclusively** during external
+  target verification (`targetAudit`). Repository Pass 1 and Pass 2 modules
+  cannot import `library-lock.json` modules; target proofs that import them have
+  every logically reached declaration (and any diamond alternate theorem proof)
+  replayed onto `foundation-lock.json` without adding axioms.
 - **[`UPSTREAM_PIN.json`](../vendor/lean-miri/UPSTREAM_PIN.json)**
-  (`vendor/lean-miri/UPSTREAM_PIN.json`):
-  Pins the upstream commit and SHA-256 digest of every file in
+  (`vendor/lean-miri/UPSTREAM_PIN.json`): Pins the upstream
+  `proofs-rs/lean-miri` commit, every `.lean` and auxiliary file digest in
   `vendor/lean-miri/`, the human-audited 10-file `deinitMovedPlace` patch
   records (`upstream_sha256`/`patched_sha256` in `patched_files`, closed by
-  `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/src/lib.rs`), and the
-  160-module `Miri.Interpreter.ExecutionMachine` `.olean` digests, verified
-  against `LOCKED_UPSTREAM_PIN_SHA256` inside `trusted/audit/src/lib.rs`.
+  `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/src/miri_pin.rs`), and the
+  160-module `ExecutionMachine` `.olean` digests, locked by
+  `LOCKED_UPSTREAM_PIN_SHA256` in `trusted/audit/src/miri_pin.rs`.
+- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`** (defined in
+  `trusted/cargo-anneal/src/toolchain.rs` and re-exported in
+  `trusted/audit/src/miri_pin.rs`): Pins one SHA-256 digest over the sorted
+  `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
+  `.olean.server`, and `.olean.private` file in the pinned toolchain's
+  `lib/lean/`. Pass 2 verifies it before loading the `.sysrootFoundation`
+  modules that `vendor/lean-miri/` imports beyond `foundation-lock.json`, and
+  it must be updated alongside `foundation-lock.json` and `UPSTREAM_PIN.json`
+  (plus `LOCKED_UPSTREAM_PIN_SHA256`) on any Lean toolchain bump.
+- **[`bundled_resources.rs`](../trusted/cargo-anneal/src/bundled_resources.rs)**
+  (`trusted/cargo-anneal/src/bundled_resources.rs`): Embeds canonical UTF-8
+  copies of `TrustedBoundary.lean`, `library-lock.json`, `foundation-lock.json`,
+  `lean-toolchain`, `Trusted.lean`, `Trusted/MirAst.lean`,
+  `Trusted/MirSemantics.lean`, and `Anneal/MirWp.lean`—plus a digest-bound
+  `CORRESPONDENCE_PROVENANCE_JSON` record emitted into every `cargo-anneal
+  verify` receipt (`result.json`) and copied verbatim from
+  `bundled_resources.rs` into `share/anneal/correspondence-provenance.json` by
+  `flake.nix` (checked for JSON equality by `mvp_e2e.rs`)—directly into the
+  `cargo-anneal` binary. It is maintained via `examples/regenerate_bundle.rs`
+  and verified fail-closed by both CI (`--check`) and `anneal-audit`
+  (`verify_bundled_resources`). `cargo_anneal::bundle` defines the single
+  inventory (`BUNDLE_SOURCES` and `PROVENANCE_SOURCES`, selecting `trusted_lean`
+  by the `trusted/lean/` prefix), and rendering fails closed if the scanned
+  `.lean` files under `trusted/correspondence/` or `correspondence/` differ from
+  that inventory. Of `theory/`, it embeds only `Anneal/MirWp.lean`, which target
+  verification stages with the `Proof` role; the repository's `Anneal.PureLift`
+  libraries are not embedded, so target proofs cannot import them from the
+  installed verifier.
 
-Because CI and `anneal-audit` reject any mismatch against these files, changing
-a root manifest or toolchain artifact requires a corresponding diff inside
-`trusted/`, ensuring an auditor inspecting `trusted/` sees every change to the
-effective TCB.
-
-## 3. External dependencies and commenting in `trusted/`
+## 4. External dependencies and commenting in `trusted/`
 
 Because every file in [`trusted/`](../trusted) must be auditable by humans,
 Anneal optimizes `trusted/` for **human comprehension and review accuracy**, not
 merely minimum dependency count:
 
 - **Standard libraries over hand-rolled plumbing:** `trusted/` uses widely
-  audited Rust ecosystem crates (such as `serde`, `clap`, and `sha2`, all
-  pinned with SHA-256 checksums in `Cargo.lock`) for generic utilities like
-  serialization, CLI parsing, and hashing. Hand-rolling bespoke parsers or
-  cryptographic primitives inside `trusted/` would add hundreds of lines of
-  security-critical code and increase audit burden.
+  audited Rust ecosystem crates (such as `serde`, `clap`, `toml`, and `sha2`,
+  all pinned with SHA-256 checksums in `Cargo.lock`) for serialization, CLI
+  parsing, and hashing rather than hand-rolling security-critical parsers.
 - **Mandatory provenance citations:** Any code in `trusted/` that models Rust
   semantics or extracts `rustc` internal structures must explain the
   correspondence in its comments and both quote and cite the relevant Rust

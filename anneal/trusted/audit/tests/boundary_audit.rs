@@ -87,7 +87,8 @@ impl TempFixture {
                 }
                 if let Some(exp_exec) = expected_executed {
                     assert_eq!(
-                        checker.execution_began, exp_exec,
+                        checker.execution_began(),
+                        exp_exec,
                         "unexpected execution_began for {err}"
                     );
                 }
@@ -606,7 +607,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
     let mut checker = Checker::new(&base_fix.root, None).unwrap();
     checker.tool_admission().unwrap();
     for (idx, (label, src)) in inspector_negatives.iter().enumerate() {
-        let neg_path = checker.stage.join(format!("neg-{idx}.lean"));
+        let neg_path = checker.stage().join(format!("neg-{idx}.lean"));
         fs::write(&neg_path, src.as_bytes()).unwrap();
         let err = checker
             .inspect(InspectorRequest::Preflight {
@@ -621,7 +622,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
     // (`native_decide`, `decide +native`, `decide +kernel`, `decide!`,
     // `bv_decide`, `rfl'`, `grind`, `sorry`).
     let theory_header = "prelude\nimport Init.NotationExtra\n";
-    let theory_pos_path = checker.stage.join("theory-pos.lean");
+    let theory_pos_path = checker.stage().join("theory-pos.lean");
     fs::write(
         &theory_pos_path,
         format!("{theory_header}theorem ok : Eq 0 0 := by rfl\n").as_bytes(),
@@ -674,7 +675,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
         ),
     ];
     for (idx, (label, src)) in theory_negatives.iter().enumerate() {
-        let neg_path = checker.stage.join(format!("theory-neg-{idx}.lean"));
+        let neg_path = checker.stage().join(format!("theory-neg-{idx}.lean"));
         fs::write(&neg_path, src.as_bytes()).unwrap();
         let err = checker
             .inspect(InspectorRequest::Preflight {
@@ -812,15 +813,15 @@ fn rejects_symlinks_stale_oleans_and_unexpected_foundation_companions() {
         ],
     )
     .unwrap();
-    assert!(!chk_env.environment.contains_key("LD_PRELOAD"));
-    assert!(!chk_env.environment.contains_key("LD_LIBRARY_PATH"));
-    assert!(!chk_env.environment.contains_key("RUSTC_WRAPPER"));
+    assert!(!chk_env.environment().contains_key("LD_PRELOAD"));
+    assert!(!chk_env.environment().contains_key("LD_LIBRARY_PATH"));
+    assert!(!chk_env.environment().contains_key("RUSTC_WRAPPER"));
     assert_eq!(
-        chk_env.environment.get("HOME").map(String::as_str),
+        chk_env.environment().get("HOME").map(String::as_str),
         Some("/tmp/home")
     );
     assert_eq!(
-        chk_env.environment.get("PATH").map(String::as_str),
+        chk_env.environment().get("PATH").map(String::as_str),
         Some("/usr/bin:/bin")
     );
 }
@@ -842,13 +843,13 @@ fn rejects_unused_compiled_axiom() {
         is_meta: false,
     }];
     let setup_path = checker.write_setup_json("Trusted", &imports).unwrap();
-    let unchecked = checker.stage.join("UnusedAxiom.lean");
+    let unchecked = checker.stage().join("UnusedAxiom.lean");
     fs::write(
         &unchecked,
         b"prelude\nimport Init.Core\nnamespace AnyNamespace\naxiom unused : True\nend AnyNamespace\n",
     )
     .unwrap();
-    let out = checker.stage.join("Trusted.olean");
+    let out = checker.stage().join("Trusted.olean");
     checker
         .process(
             "axiom-fixture",
@@ -1324,9 +1325,11 @@ fn verifies_upstream_pin_and_rejects_tampering() {
         fs::remove_file(&link_path).unwrap();
     }
 
-    // 5. Modifying `UPSTREAM_PIN.json` (structured edits or malformed JSON)
-    // without updating `LOCKED_UPSTREAM_PIN_SHA256` fails closed on the digest
-    // check before JSON parsing.
+    // 5. Modifying `UPSTREAM_PIN.json` without updating
+    // `LOCKED_UPSTREAM_PIN_SHA256` is rejected before JSON parsing (both for
+    // structured edits and malformed JSON). Structural pin-bytes checks
+    // (`patched_files`, `vendor_tree`, `execution_machine_closure`) are
+    // covered directly via `verify_upstream_pin_bytes` in `miri_pin.rs`.
     let pin_path = vendor_copy.join("UPSTREAM_PIN.json");
     let orig_pin_bytes = fs::read(&pin_path).unwrap();
     let mut pin_notes_json: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
@@ -1345,13 +1348,13 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     );
 
     fs::write(&pin_path, b"{not valid json").unwrap();
-    let err_malformed_pin_sha = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
-    assert_eq!(err_malformed_pin_sha.code, 1);
+    let err_bad_json_sha = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_bad_json_sha.code, 1);
     assert!(
-        err_malformed_pin_sha
+        err_bad_json_sha
             .message
             .contains("UPSTREAM_PIN.json SHA-256 differs from locked digest"),
-        "expected digest check before JSON parse, got: {err_malformed_pin_sha}"
+        "unexpected error: {err_bad_json_sha}"
     );
 
     // 6. Missing `UPSTREAM_PIN.json` is rejected with policy exit code `1`.
@@ -1380,9 +1383,9 @@ fn rejects_vendor_constants_in_reserved_namespaces() {
     let mut checker = Checker::new(&fix.root, None).unwrap();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
-    let trusted_lib = checker.stage.join("lib");
-    let vendor_src = checker.stage.join("src/fake-miri");
-    let vendor_lib = checker.stage.join("fake-miri-lib");
+    let trusted_lib = checker.stage().join("lib");
+    let vendor_src = checker.stage().join("src/fake-miri");
+    let vendor_lib = checker.stage().join("fake-miri-lib");
     let cases: [(&str, &str, Option<&str>); 12] = [
         (
             "Miri.SpoofTrusted",
@@ -1594,8 +1597,8 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     let mut c2 = Checker::new(&fix.root, None).unwrap();
     c2.set_require_mir_wp(false);
     c2.run().unwrap();
-    let stage_victim = c2.stage.join("sandbox-escape-stage.txt");
-    let ro_lib_victim = c2.stage.join("miri-lib/sandbox-escape-ro.txt");
+    let stage_victim = c2.stage().join("sandbox-escape-stage.txt");
+    let ro_lib_victim = c2.stage().join("miri-lib/sandbox-escape-ro.txt");
     let escape_stage_src = format!(
         "import Lean\n\
          namespace Miri.EscapeStage\n\
@@ -1645,7 +1648,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
     let mut probe = Checker::new(&fix.root, None).unwrap();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
-    let probe_out_dir = probe.stage.join("out");
+    let probe_out_dir = probe.stage().join("out");
     fs::create_dir_all(probe_out_dir.join("Miri")).unwrap();
     probe
         .process(
@@ -1710,7 +1713,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         "unexpected error message: {err3}"
     );
     assert!(
-        !c3.stage.join("miri-lib/Miri/ExtraOut.olean").exists()
+        !c3.stage().join("miri-lib/Miri/ExtraOut.olean").exists()
             && !cache_dir.path().join("Miri/ExtraOut.olean").exists(),
         "rejected sandbox output must not be staged or cached"
     );
@@ -1796,7 +1799,7 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
         let mut ir_probe = Checker::new(&fix.root, None).unwrap();
         ir_probe.set_require_mir_wp(false);
         ir_probe.run().unwrap();
-        let ir_probe_out = ir_probe.stage.join("out");
+        let ir_probe_out = ir_probe.stage().join("out");
         fs::create_dir_all(ir_probe_out.join("Miri")).unwrap();
         let olean_rel = format!("{stem}.olean");
         ir_probe
@@ -1854,8 +1857,8 @@ fn sandboxes_cold_miri_compilation_against_host_and_stage_writes() {
             "expected `{expected_diag}`, got: {err5}"
         );
         assert!(
-            !c5.stage.join("miri-lib").join(&olean_rel).exists()
-                && !c5.stage.join("miri-lib").join(&sidecar_rel).exists()
+            !c5.stage().join("miri-lib").join(&olean_rel).exists()
+                && !c5.stage().join("miri-lib").join(&sidecar_rel).exists()
                 && !ir_cache.path().join(&olean_rel).exists()
                 && !ir_cache.path().join(&sidecar_rel).exists(),
             "rejected non-module {ext} output must not be staged or cached"
@@ -2145,7 +2148,7 @@ impl MirWpSyntheticSpec {
         assert_eq!(err.code, 1, "expected exit code 1, got: {err}");
         assert_eq!(err.phase, "audit", "expected audit phase, got: {err}");
         assert!(
-            checker.execution_began,
+            checker.execution_began(),
             "expected Lean execution before audit failure: {err}"
         );
         assert!(
@@ -2665,11 +2668,11 @@ fn enforces_correspondence_non_backsliding() {
     let mut checker_pass2 = Checker::new(&fix_pass2.root, None).unwrap();
     checker_pass2.set_require_mir_wp(false);
     checker_pass2.run().unwrap();
-    let trusted_lib = checker_pass2.stage.join("lib");
-    let corr_src = checker_pass2.stage.join("src/fake-corr");
-    let corr_lib = checker_pass2.stage.join("fake-corr-lib");
-    let vendor_src = checker_pass2.stage.join("src/fake-vendor");
-    let vendor_lib = checker_pass2.stage.join("fake-vendor-lib");
+    let trusted_lib = checker_pass2.stage().join("lib");
+    let corr_src = checker_pass2.stage().join("src/fake-corr");
+    let corr_lib = checker_pass2.stage().join("fake-corr-lib");
+    let vendor_src = checker_pass2.stage().join("src/fake-vendor");
+    let vendor_lib = checker_pass2.stage().join("fake-vendor-lib");
     let search_paths = vec![trusted_lib.clone(), vendor_lib.clone(), corr_lib.clone()];
 
     compile_forged_module(
@@ -3185,7 +3188,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
     let mut probe = Checker::new(&fix.root, None).unwrap();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
-    let probe_out = probe.stage.join("probe-lib/Miri/Tiny.olean");
+    let probe_out = probe.stage().join("probe-lib/Miri/Tiny.olean");
     fs::create_dir_all(probe_out.parent().unwrap()).unwrap();
     probe
         .process(
@@ -3205,11 +3208,11 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
         )
         .unwrap();
     let expected_olean = sha256_file(&probe_out, "test").unwrap();
-    let probe_server = probe.stage.join("probe-lib/Miri/Tiny.olean.server");
+    let probe_server = probe.stage().join("probe-lib/Miri/Tiny.olean.server");
     let expected_server = probe_server
         .exists()
         .then(|| sha256_file(&probe_server, "test").unwrap());
-    let probe_private = probe.stage.join("probe-lib/Miri/Tiny.olean.private");
+    let probe_private = probe.stage().join("probe-lib/Miri/Tiny.olean.private");
     let expected_private = probe_private
         .exists()
         .then(|| sha256_file(&probe_private, "test").unwrap());
@@ -3383,7 +3386,7 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
         sha256_bytes(mod_src.as_bytes()),
     )]);
     fs::write(&mod_path, mod_src).unwrap();
-    let probe_mod_out = probe.stage.join("probe-lib/Miri/WithSidecar.olean");
+    let probe_mod_out = probe.stage().join("probe-lib/Miri/WithSidecar.olean");
     probe
         .process(
             "probe-miri-sidecar",
@@ -3402,8 +3405,12 @@ fn verifies_miri_cache_and_rejects_unverified_oleans() {
         )
         .unwrap();
     let mod_olean = sha256_file(&probe_mod_out, "test").unwrap();
-    let mod_server = probe.stage.join("probe-lib/Miri/WithSidecar.olean.server");
-    let mod_private = probe.stage.join("probe-lib/Miri/WithSidecar.olean.private");
+    let mod_server = probe
+        .stage()
+        .join("probe-lib/Miri/WithSidecar.olean.server");
+    let mod_private = probe
+        .stage()
+        .join("probe-lib/Miri/WithSidecar.olean.private");
     assert!(
         mod_server.exists(),
         "Lean `module` fixture must emit .olean.server to exercise sidecar checks"
@@ -3549,7 +3556,7 @@ fn rejects_miri_cache_dir_inside_checkout() {
             bad.display()
         );
         assert!(
-            !checker.execution_began,
+            !checker.execution_began(),
             "Lean execution must not begin when cache dir is inside checkout: {}",
             bad.display()
         );
@@ -3625,8 +3632,8 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
     let mut checker = Checker::new(&fix.root, None).unwrap();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
-    let trusted_lib = checker.stage.join("lib");
-    let aux_src = checker.stage.join("src/corr-neg");
+    let trusted_lib = checker.stage().join("lib");
+    let aux_src = checker.stage().join("src/corr-neg");
     let aux_path = env::join_paths([&trusted_lib]).unwrap();
 
     let compile_aux = |chk: &mut Checker, module: &str, body: &str| {
@@ -3912,7 +3919,7 @@ fn rejects_compiled_trusted_header_import_of_theory() {
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     compile_forged_module(
         &mut checker,
         &stage.join("src/forged"),
@@ -3967,7 +3974,7 @@ fn rejects_forged_trusted_constant_referencing_theory() {
 
     // `Trusted.*` modules must share the search-path entry holding
     // `Trusted.olean`, so the forged module goes into the staged `lib/`.
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let trusted_lib = stage.join("lib");
     let forged_module = "Trusted.ForgedRef";
     let forged_out = trusted_lib.join("Trusted/ForgedRef.olean");
@@ -4087,6 +4094,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
     )
     .unwrap();
     for rel in [
+        "trusted/audit/library-lock.json",
         "trusted/lean/Trusted.lean",
         "trusted/lean/Trusted/MirAst.lean",
         "trusted/lean/Trusted/MirSemantics.lean",
@@ -4111,8 +4119,20 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
     fs::create_dir_all(fix.root.join("correspondence/Anneal")).unwrap();
     fs::write(
         fix.root
+            .join("correspondence/Anneal/MirCorrespondenceBase.lean"),
+        b"prelude\nimport Trusted.Correspondence\n",
+    )
+    .unwrap();
+    fs::write(
+        fix.root
             .join("correspondence/Anneal/MirCorrespondenceProof.lean"),
         b"prelude\nimport Trusted.Correspondence\n",
+    )
+    .unwrap();
+    let canonical_bundle = anneal_audit::bundle::render_bundled_resources(&fix.root).unwrap();
+    fs::write(
+        fix.root.join(anneal_audit::bundle::BUNDLE_DESTINATION),
+        canonical_bundle.as_bytes(),
     )
     .unwrap();
 
@@ -4139,7 +4159,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_correspondence_audit() {
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let src = stage.join("src/forged-corr");
     let trusted_lib = stage.join("lib");
     let corr_lib = stage.join("forged-corr-lib");
@@ -4215,14 +4235,10 @@ fn rejects_vendor_miri_skip_kernel_tc_during_replay() {
     let mut checker = Checker::new(&fix.root, None).unwrap();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
-    checker
-        .admitted_mut()
-        .unwrap()
-        .ensure_sysroot_foundation()
-        .unwrap();
-    let trusted_lib = checker.stage.join("lib");
-    let vendor_src = checker.stage.join("src/skip-tc-miri");
-    let vendor_lib = checker.stage.join("skip-tc-miri-lib");
+    checker.ensure_sysroot_foundation().unwrap();
+    let trusted_lib = checker.stage().join("lib");
+    let vendor_src = checker.stage().join("src/skip-tc-miri");
+    let vendor_lib = checker.stage().join("skip-tc-miri-lib");
 
     // 1. Compile a vendor module whose scoped `set_option debug.skipKernelTC
     // true` overrides CLI `-Ddebug.skipKernelTC=false` to emit an ill-typed
@@ -4425,7 +4441,7 @@ fn rejects_forged_ill_typed_correspondence_declaration_during_replay() {
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let corr_lib = stage.join("forged-corr-lib");
     let forged_out = corr_lib.join("Anneal/MirCorrespondenceProof.olean");
     fs::create_dir_all(forged_out.parent().unwrap()).unwrap();
@@ -4505,7 +4521,7 @@ fn rejects_repository_constant_shadowing_sysroot_declaration() {
 
     // `Trusted.*` modules must share the search-path entry holding
     // `Trusted.olean`, so the forged umbrella goes into the staged `lib/`.
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let prefix = checker.admitted().unwrap().prefix.clone();
     let trusted_lib = stage.join("lib");
     let corr_lib = stage.join("shadow-corr-lib");
@@ -4591,15 +4607,11 @@ fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
     let mut checker = Checker::new(&fix.root, None).unwrap();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
-    checker
-        .admitted_mut()
-        .unwrap()
-        .ensure_sysroot_foundation()
-        .unwrap();
+    checker.ensure_sysroot_foundation().unwrap();
 
-    let trusted_lib = checker.stage.join("lib");
-    let vendor_src = checker.stage.join("src/lean-ext-miri");
-    let vendor_lib = checker.stage.join("lean-ext-miri-lib");
+    let trusted_lib = checker.stage().join("lib");
+    let vendor_src = checker.stage().join("src/lean-ext-miri");
+    let vendor_lib = checker.stage().join("lean-ext-miri-lib");
     let miri_src = vendor_src.join("Miri/ImportLean.lean");
     let miri_out = vendor_lib.join("Miri/ImportLean.olean");
     fs::create_dir_all(miri_src.parent().unwrap()).unwrap();
@@ -4627,7 +4639,7 @@ fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
         )
         .unwrap();
 
-    let corr_src = checker.stage.join("src/corr-preflight-test");
+    let corr_src = checker.stage().join("src/corr-preflight-test");
     fs::create_dir_all(corr_src.join("Anneal")).unwrap();
     fs::create_dir_all(corr_src.join("Trusted")).unwrap();
 
@@ -4767,16 +4779,12 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
     let mut checker = Checker::new(&fix.root, None).unwrap();
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
-    checker
-        .admitted_mut()
-        .unwrap()
-        .ensure_sysroot_foundation()
-        .unwrap();
+    checker.ensure_sysroot_foundation().unwrap();
 
-    let trusted_lib = checker.stage.join("lib");
-    let theory_lib = checker.stage.join("theory-lib");
-    let vendor_src = checker.stage.join("src/scoped-miri");
-    let vendor_lib = checker.stage.join("scoped-miri-lib");
+    let trusted_lib = checker.stage().join("lib");
+    let theory_lib = checker.stage().join("theory-lib");
+    let vendor_src = checker.stage().join("src/scoped-miri");
+    let vendor_lib = checker.stage().join("scoped-miri-lib");
     let miri_src = vendor_src.join("Miri/ScopedExt.lean");
     let miri_out = vendor_lib.join("Miri/ScopedExt.olean");
     fs::create_dir_all(miri_src.parent().unwrap()).unwrap();
@@ -4815,7 +4823,7 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
         )
         .unwrap();
 
-    let src_dir = checker.stage.join("src/scoped-tests");
+    let src_dir = checker.stage().join("src/scoped-tests");
     fs::create_dir_all(src_dir.join("Anneal")).unwrap();
     fs::create_dir_all(src_dir.join("Trusted")).unwrap();
 
@@ -5061,12 +5069,8 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
     let mut probe = Checker::new(&fix.root, None).unwrap();
     probe.set_require_mir_wp(false);
     probe.run().unwrap();
-    probe
-        .admitted_mut()
-        .unwrap()
-        .ensure_sysroot_foundation()
-        .unwrap();
-    let probe_out = probe.stage.join("probe-lib/Miri/ImportLean.olean");
+    probe.ensure_sysroot_foundation().unwrap();
+    let probe_out = probe.stage().join("probe-lib/Miri/ImportLean.olean");
     fs::create_dir_all(probe_out.parent().unwrap()).unwrap();
     probe
         .process(
@@ -5085,8 +5089,10 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
             ],
         )
         .unwrap();
-    let probe_server = probe.stage.join("probe-lib/Miri/ImportLean.olean.server");
-    let probe_private = probe.stage.join("probe-lib/Miri/ImportLean.olean.private");
+    let probe_server = probe.stage().join("probe-lib/Miri/ImportLean.olean.server");
+    let probe_private = probe
+        .stage()
+        .join("probe-lib/Miri/ImportLean.olean.private");
     let miri_entry = MiriClosureEntry {
         module: "Miri.ImportLean".to_string(),
         path: miri_rel.to_string(),
@@ -5211,14 +5217,14 @@ fn rejects_pass2_syntax_and_scoped_extensions_in_run_correspondence_pipeline() {
         );
         assert!(
             !checker
-                .stage
+                .stage()
                 .join("lib/Trusted/Correspondence.olean")
                 .exists(),
             "Pass 2 Trusted.Correspondence must not compile before correspondence-preflight"
         );
         assert!(
             !checker
-                .stage
+                .stage()
                 .join("theory-lib/Anneal/MirCorrespondenceProof.olean")
                 .exists(),
             "Pass 2 Anneal.MirCorrespondenceProof must not compile before correspondence-preflight"
@@ -5293,7 +5299,7 @@ fn rejects_universe_polymorphic_claims_and_proofs() {
     checker.run().unwrap();
     checker.set_require_mir_wp(true);
 
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let src = stage.join("src/univ-poly");
     let lib = stage.join("lib");
     let theory_lib = stage.join("theory-lib");
@@ -5591,7 +5597,7 @@ fn validates_and_rejects_alternate_foundation_theorem_proofs() {
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let src = stage.join("src/alt-proofs");
     let lib = stage.join("alt-lib");
     let core_edge = vec![ImportEdge {
@@ -5802,7 +5808,7 @@ fn rejects_external_origin_header_imports_and_foreign_imports() {
     checker.set_require_mir_wp(false);
     checker.run().unwrap();
 
-    let stage = checker.stage.clone();
+    let stage = checker.stage().to_path_buf();
     let trusted_lib = stage.join("lib");
     let ext_src = stage.join("src/ext-imp");
     let ext_path = env::join_paths([&trusted_lib]).unwrap();
@@ -5895,10 +5901,12 @@ fn rejects_external_origin_header_imports_and_foreign_imports() {
     );
 
     // 2. `.sysrootFoundation` importing `.vendorMiri`.
-    checker.admitted_mut().unwrap().sysroot_foundation = Some(vec![
-        "FakeSysrootMiri".to_string(),
-        "FakeSysrootRepo".to_string(),
-    ]);
+    checker
+        .set_sysroot_foundation_for_test(vec![
+            "FakeSysrootMiri".to_string(),
+            "FakeSysrootRepo".to_string(),
+        ])
+        .unwrap();
     let err_sys_miri = checker
         .inspect(InspectorRequest::CorrespondenceAudit {
             search_path: search.clone(),
@@ -6225,12 +6233,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     let mut prebuild = Checker::new(&fix.root, None).unwrap();
     prebuild.set_require_mir_wp(false);
     prebuild.run().unwrap();
-    prebuild
-        .admitted_mut()
-        .unwrap()
-        .ensure_sysroot_foundation()
-        .unwrap();
-    let probe_lib = prebuild.stage.join("probe-miri-lib");
+    prebuild.ensure_sysroot_foundation().unwrap();
+    let probe_lib = prebuild.stage().join("probe-miri-lib");
     fs::create_dir_all(probe_lib.join("Miri")).unwrap();
     // Compile `Miri.InitHost` into a temporary `.olean` for digest capture
     // (the `initialize` hook does not execute while compiling its own module,
@@ -6266,7 +6270,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     // 1. `"correspondence-preflight"` runs inside `bwrap`: importing
     // `Miri.InitHost` with `loadExts := true` fails when the `[init]` hook
     // tries to write outside `/work/out`, leaving `host_victim` untouched.
-    let src_dir = prebuild.stage.join("src/p2-sandbox-test");
+    let src_dir = prebuild.stage().join("src/p2-sandbox-test");
     fs::create_dir_all(src_dir.join("Trusted")).unwrap();
     let sample_src = src_dir.join("Trusted/Correspondence.lean");
     fs::write(
@@ -6279,8 +6283,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     let err_pf = prebuild
         .inspect(InspectorRequest::CorrespondencePreflight {
             search_path: vec![
-                prebuild.stage.join("lib"),
-                prebuild.stage.join("theory-lib"),
+                prebuild.stage().join("lib"),
+                prebuild.stage().join("theory-lib"),
                 probe_lib.clone(),
             ],
             trusted: vec!["Trusted".to_string()],
@@ -6353,8 +6357,8 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
     let err_drop = prebuild
         .inspect(InspectorRequest::CorrespondencePreflight {
             search_path: vec![
-                prebuild.stage.join("lib"),
-                prebuild.stage.join("theory-lib"),
+                prebuild.stage().join("lib"),
+                prebuild.stage().join("theory-lib"),
                 probe_lib.clone(),
             ],
             trusted: vec!["Trusted".to_string()],
@@ -6560,7 +6564,216 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
         "unexpected error message: {err_compile_drop}"
     );
     assert!(
-        !c4.stage.join("lib/Trusted/Correspondence.olean").exists(),
+        !c4.stage().join("lib/Trusted/Correspondence.olean").exists(),
         "rejected Pass 2 output must not be staged into lib/"
     );
+}
+
+/// Repository auditing (`Checker::run`) restricts imports in `trusted/lean/`
+/// and `theory/` to `foundation-lock.json` even when
+/// `trusted/audit/library-lock.json` is present (`library-lock.json` applies
+/// exclusively to `targetAudit`).
+#[test]
+fn rejects_library_lock_imports_in_repository_audit() {
+    let checkout = repo_root();
+    let mut fix = TempFixture::new(Some(
+        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Data.BitVec.Lemmas\n",
+    ));
+    fs::copy(
+        checkout.join("trusted/audit/library-lock.json"),
+        fix.root.join("trusted/audit/library-lock.json"),
+    )
+    .unwrap();
+    let err = fix
+        .check_expected(Some(1), Some("preflight"), Some(false))
+        .unwrap_err();
+    assert!(
+        err.message
+            .contains("foreign/missing import Init.Data.BitVec.Lemmas in Trusted"),
+        "unexpected error: {err}"
+    );
+}
+
+/// Default `Checker::new` (`require_mir_wp == true`) rejects Pass 1 fail-closed
+/// even if *every* MIR and PureLift module (`Trusted.MirAst`,
+/// `Trusted.MirSemantics`, `Anneal.MirWp`, `Anneal.PureLift`) is deleted at
+/// once, leaving only `Trusted.lean`.
+#[test]
+fn default_checker_rejects_complete_mir_wp_deletion() {
+    let fix = TempFixture::new(None);
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let err = checker.run().unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "audit", "unexpected phase: {err}");
+    assert!(
+        err.message
+            .contains("missing required trusted module Trusted.MirAst"),
+        "unexpected error: {err}"
+    );
+}
+
+/// `verify_bundled_resources` accepts the real repository checkout and rejects
+/// tampered, deleted, or symlinked `bundled_resources.rs` files, symlinked
+/// destination parents, missing or symlinked `BUNDLE_SOURCES` and
+/// `PROVENANCE_SOURCES` files and parent directories, and untracked `.lean`
+/// files under `correspondence/` or `trusted/correspondence/` with policy exit
+/// code `1`. Each symlink fixture points at byte-identical content, so only
+/// the regular-file checks can reject it.
+#[test]
+fn enforces_bundled_resources_parity_and_regular_files() {
+    use anneal_audit::bundle::{
+        BUNDLE_DESTINATION, BUNDLE_SOURCES, PROVENANCE_SOURCES, render_bundled_resources,
+    };
+    use anneal_audit::verify_bundled_resources;
+
+    let checkout = repo_root();
+    verify_bundled_resources(&checkout).unwrap();
+
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path().join("repo");
+    for rel in BUNDLE_SOURCES.iter().chain(PROVENANCE_SOURCES.iter()) {
+        let dst = root.join(rel);
+        fs::create_dir_all(dst.parent().unwrap()).unwrap();
+        fs::copy(checkout.join(rel), dst).unwrap();
+    }
+    let dest = root.join(BUNDLE_DESTINATION);
+    fs::create_dir_all(dest.parent().unwrap()).unwrap();
+    let canonical = render_bundled_resources(&root).unwrap();
+    fs::write(&dest, canonical.as_bytes()).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    let expect_policy = |needle: &str| {
+        let err = verify_bundled_resources(&root).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        assert_eq!(err.phase, "bundle-manifest", "{err}");
+        assert!(err.message.contains(needle), "expected {needle:?}: {err}");
+    };
+
+    // 1. Stale/tampered bytes -> policy rejection (code 1).
+    fs::write(&dest, format!("{canonical}// tampered\n")).unwrap();
+    expect_policy("differs from canonical bundled sources");
+
+    // 2. Missing `bundled_resources.rs` -> policy rejection (code 1).
+    fs::remove_file(&dest).unwrap();
+    expect_policy("missing bundled_resources.rs");
+
+    // 3. Symlinked `bundled_resources.rs` -> policy rejection (code 1).
+    let outside = tmp.path().join("outside.rs");
+    fs::write(&outside, canonical.as_bytes()).unwrap();
+    symlink(&outside, &dest).unwrap();
+    expect_policy("bundle destination must be a regular file");
+    fs::remove_file(&dest).unwrap();
+
+    // 4. Symlinked parent directory of `bundled_resources.rs` -> policy
+    // rejection (code 1).
+    let dest_dir = dest.parent().unwrap().to_path_buf();
+    let outside_dest_dir = tmp.path().join("outside-src");
+    fs::rename(&dest_dir, &outside_dest_dir).unwrap();
+    fs::write(
+        outside_dest_dir.join("bundled_resources.rs"),
+        canonical.as_bytes(),
+    )
+    .unwrap();
+    symlink(&outside_dest_dir, &dest_dir).unwrap();
+    expect_policy("bundle parent must be a regular directory");
+    fs::remove_file(&dest_dir).unwrap();
+    fs::rename(&outside_dest_dir, &dest_dir).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 5. Symlinked `BUNDLE_SOURCES` file -> policy rejection (code 1).
+    let source = root.join("theory/Anneal/MirWp.lean");
+    let outside_source = tmp.path().join("outside-MirWp.lean");
+    fs::rename(&source, &outside_source).unwrap();
+    symlink(&outside_source, &source).unwrap();
+    expect_policy("bundle source must be a regular file");
+    fs::remove_file(&source).unwrap();
+    fs::rename(&outside_source, &source).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 6. Symlinked parent directory of a `BUNDLE_SOURCES` file -> policy
+    // rejection (code 1).
+    let source_dir = root.join("theory/Anneal");
+    let outside_source_dir = tmp.path().join("outside-Anneal");
+    fs::rename(&source_dir, &outside_source_dir).unwrap();
+    symlink(&outside_source_dir, &source_dir).unwrap();
+    expect_policy("bundle source parent must be a regular directory");
+    fs::remove_file(&source_dir).unwrap();
+    fs::rename(&outside_source_dir, &source_dir).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 7. Missing `BUNDLE_SOURCES` file -> policy rejection (code 1).
+    fs::remove_file(&source).unwrap();
+    expect_policy("missing canonical bundle source: theory/Anneal/MirWp.lean");
+    fs::copy(checkout.join("theory/Anneal/MirWp.lean"), &source).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 8. Symlinked `PROVENANCE_SOURCES` file -> policy rejection (code 1).
+    let prov = root.join("trusted/correspondence/Trusted/Correspondence.lean");
+    let outside_prov = tmp.path().join("outside-Correspondence.lean");
+    fs::rename(&prov, &outside_prov).unwrap();
+    symlink(&outside_prov, &prov).unwrap();
+    expect_policy("bundle source must be a regular file");
+    fs::remove_file(&prov).unwrap();
+    fs::rename(&outside_prov, &prov).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 9. Extra untracked `.lean` file in `correspondence/` -> policy rejection
+    // (code 1) so Pass 2 certified files cannot silently drift out of the
+    // provenance inventory.
+    let extra_corr = root.join("correspondence/Anneal/ExtraProof.lean");
+    fs::write(&extra_corr, b"prelude\n").unwrap();
+    expect_policy("correspondence provenance inventory mismatch");
+    fs::remove_file(&extra_corr).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 10. Extra untracked `.lean` file in `trusted/correspondence/` -> policy
+    // rejection (code 1).
+    let extra_trusted_corr = root.join("trusted/correspondence/Trusted/ExtraAdapter.lean");
+    fs::write(&extra_trusted_corr, b"prelude\n").unwrap();
+    expect_policy("correspondence provenance inventory mismatch");
+    fs::remove_file(&extra_trusted_corr).unwrap();
+    verify_bundled_resources(&root).unwrap();
+
+    // 11. Missing `PROVENANCE_SOURCES` file -> policy rejection (code 1).
+    fs::remove_file(&prov).unwrap();
+    expect_policy(
+        "missing canonical bundle source: trusted/correspondence/Trusted/Correspondence.lean",
+    );
+}
+
+/// `anneal-audit` rejects a checkout from which both
+/// `examples/regenerate_bundle.rs` and `src/bundled_resources.rs` were deleted.
+/// `verify_bundled_resources` reads its source inventory from
+/// `cargo_anneal::bundle`, not from either deleted file, so deleting the
+/// generator cannot disable the parity check.
+#[test]
+fn rejects_dual_deletion_of_bundle_generator_and_output() {
+    let checkout = repo_root();
+    let fix = TempFixture::new(None);
+    copy_cargo_workspace(&fix.root);
+    copy_dir_all(
+        &checkout.join("vendor/lean-miri"),
+        &fix.root.join("vendor/lean-miri"),
+    )
+    .unwrap();
+    fs::remove_file(
+        fix.root
+            .join("trusted/cargo-anneal/examples/regenerate_bundle.rs"),
+    )
+    .unwrap();
+    fs::remove_file(
+        fix.root
+            .join("trusted/cargo-anneal/src/bundled_resources.rs"),
+    )
+    .unwrap();
+
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    let err = checker.run().unwrap_err();
+    assert_eq!(err.code, 1, "unexpected code: {err}");
+    assert_eq!(err.phase, "bundle-manifest", "unexpected phase: {err}");
+    assert!(
+        err.message.contains("missing bundled_resources.rs"),
+        "unexpected error: {err}"
+    );
+    assert!(!checker.execution_began());
 }
