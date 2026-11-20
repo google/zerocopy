@@ -17127,6 +17127,93 @@
         "anneal/rustc-capture"
       ]
     },
+    "const-generics-ctfe-packed-provenance-extern-types-and-array-init-cursors": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust compiler and core library (ty::Const, Rvalue::Repeat, CtfeProvenance, extern types, array::from_fn)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri CTFE provenance, dynamic foreign layout, Repeat, and Tree Borrows retagging"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs 1861 (extern-types), 2000 (const-generics), and 2580 (ptr-meta)"
+        },
+        {
+          "identity": {
+            "repository": "RustCrypto/utils",
+            "revision": "0feca06cf87e61567033a333feb79ecf3c427fea"
+          },
+          "name": "RustCrypto zeroize memory-scrubbing crate (volatile, optimization_barrier, bulk as_chunks_mut)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verifier and TrustedBoundary kernel audit"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290380"
+          },
+          "name": "Exploring C Semantics and Pointer Provenance (Memarian et al., PACMPL POPL 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language (Jung et al., PACMPL POPL 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows (Villani, Hostert, Dreyer, and Jung, PACMPL PLDI 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/EuroSP.2018.00009"
+          },
+          "name": "What You Get is What You C: Controlling Side Effects in Mainstream C Compilers (Simon, Chisnall, and Anderson, IEEE EuroS&P 2018)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64",
+            "interpreter": "CPython 3.13.15"
+          },
+          "name": "Python 3.13 CtfeProvenance, extern-type footprint, and InitPrefixCursor probe environment (Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "rust/types",
+        "rust/semantics",
+        "verification/rust",
+        "anneal/theory",
+        "rustc/ctfe",
+        "lean/mechanization"
+      ]
+    },
     "constraint-programming-modelling-and-pseudo-boolean-mip-proof-logging": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -72348,6 +72435,87 @@
         "zerocopy/transmute",
         "rust/layout",
         "verification/refinement"
+      ]
+    },
+    "zerocopy-knownlayout-slicedst-rounding-phase-and-split-at-padding-overlap": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ec133ce4d7993775413d852f91c9e3eb2a2a0897"
+          },
+          "name": "zerocopy slice-DST layout, KnownLayout, SplitAt, and suffix alignment fix"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "312cb70a655ab25936fefb4d1b8c1787c782876e"
+          },
+          "name": "zerocopy pre-validation-before-split Ref::from_*_with_elems baseline"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri runtime ABI and dynamic layout semantics"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "Rust standard library and compiler layout computation"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verifier, PureLift, and TrustedBoundary kernel gate"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows (Villani, Hostert, Dreyer, and Jung, PACMPL PLDI 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust (Jung, Dang, Kang, and Dreyer, PACMPL POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (G\u00e4her, Sammler, Jung, Krebbers, and Dreyer, PACMPL PLDI 2024)"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64",
+            "interpreter": "CPython 3.13.15"
+          },
+          "name": "Python 3.13 slice-DST rounding-phase, split_at overlap, and suffix-alignment probe environment (Linux x86_64)"
+        }
+      ],
+      "topics": [
+        "rust/layout",
+        "rust/unsafe",
+        "verification/rust",
+        "anneal/theory",
+        "zerocopy/layout",
+        "lean/mechanization"
       ]
     },
     "zerocopy-validity-predicates-projection-layout-and-ffi-intrinsics": {
