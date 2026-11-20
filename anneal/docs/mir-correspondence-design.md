@@ -288,11 +288,14 @@ Placing `Trusted.Correspondence`, `Anneal.MirCorrespondenceBase`, and
      repository checkout. In CI, the cache lives in
      `${{ runner.temp }}/anneal-miri-olean-cache` keyed on OS, architecture,
      `trusted/lean/lean-toolchain`, and `vendor/lean-miri/UPSTREAM_PIN.json`
-     (so any pin or toolchain change misses and compiles cold), and blocking
-     merge-queue (`merge_group`), `main`-branch (`push`), and manual
-     (`workflow_dispatch`) runs skip the cache action and omit
-     `--miri-cache-dir` so every landed revision and manual dispatch performs a
-     cold from-source build as well as standalone kernel replay. Per
+     (so any pin or toolchain change misses and compiles cold), blocking
+     merge-queue (`merge_group`), manual (`workflow_dispatch`), and
+     non-`main`/fork `push` runs skip the cache action and omit
+     `--miri-cache-dir`, and canonical `main`-branch (`push`) runs use
+     `lookup-only: true` plus `rm -rf` before invoking `anneal-audit` so every
+     landed revision and manual dispatch performs a cold from-source build as
+     well as standalone kernel replay while canonical `main` still seeds a
+     missing default-branch cache entry for pull requests. Per
      [`docs/trust-model.md`](trust-model.md), cold compilation and any
      metaprogram-executing Pass 2 step over unmerged candidate
      `vendor/lean-miri/` code must be confined to an OS-level isolated sandbox

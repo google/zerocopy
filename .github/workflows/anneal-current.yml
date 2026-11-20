@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 env:
-  CARGO_BUILD_JOBS: '2'
+  CARGO_BUILD_JOBS: '4'
   RUST_TEST_THREADS: '2'
 
 jobs:
@@ -131,15 +131,16 @@ jobs:
           done
           printf 'source_revision=%s\n' "$(git rev-parse HEAD)"
 
+      # Keep the unsigned `?trusted=1` local Nix binary cache restricted
+      # strictly to post-merge `main` pushes so neither pull requests nor
+      # pre-merge `merge_group` gates restore an unsigned substituter.
       - name: Restore Nix binary cache
-        if: github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main'
         id: restore_nix_cache
+        if: github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main'
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/anneal-nix-cache
-          key: anneal-current-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/audit/**', 'anneal/trusted/rustc-capture/**', 'anneal/theory/**') }}
-          restore-keys: |
-            anneal-current-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-
+          key: anneal-current-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/rustc-capture/**', 'anneal/theory/**') }}
 
       - name: Install Nix
         id: nix
@@ -156,7 +157,7 @@ jobs:
             nix_args+=(--extra-substituters "file://$RUNNER_TEMP/anneal-nix-cache/?trusted=1")
           fi
 
-          nix build --max-jobs 1 --cores 2 "${nix_args[@]}" \
+          nix build --max-jobs 1 --cores 4 "${nix_args[@]}" \
             .#omnibus-archive --out-link target/omnibus-link
           cp -f "$(readlink -f target/omnibus-link)" target/anneal-exocrate.tar.zst
           rm -f target/omnibus-link
@@ -167,6 +168,7 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_BUILD_DIAGNOSTICS/nix-copy.log") 2>&1
+          rm -rf "$RUNNER_TEMP/anneal-nix-cache"
           mkdir -p "$RUNNER_TEMP/anneal-nix-cache"
           nix copy .#omnibus-archive \
             --to "file://$RUNNER_TEMP/anneal-nix-cache/?compression=zstd&compression-level=1&trusted=1"
@@ -227,7 +229,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Toolchain setup & workspace tests
     needs: [build-exocrate]
-    timeout-minutes: 45
+    timeout-minutes: 90
     env:
       CARGO_TARGET_DIR: ${{ github.workspace }}/anneal/target
       ANNEAL_TEST_INSPECTOR: ${{ github.workspace }}/anneal/trusted/audit/TrustedBoundary.lean
@@ -280,18 +282,21 @@ jobs:
           printf 'ANNEAL_TEST_SOURCE_REVISION=%s\n' "$revision" >> "$GITHUB_ENV"
           printf 'source_revision=%s\n' "$revision"
 
-      # Store the Miri `.olean` cache outside `${{ github.workspace }}` and skip
-      # it on `merge_group`, `push`, and `workflow_dispatch` runs so PRs cannot
-      # supply pre-committed `.olean` files in the checkout and merge-queue,
-      # `main`-branch, and manual workflow-dispatch runs always compile cold
-      # from source.
-      - name: Cache lean-miri closure .olean artifacts
+      # Store the Miri `.olean` cache outside `${{ github.workspace }}`, allow
+      # restoration only on `pull_request` (or `lookup-only: true` on trusted
+      # `main` pushes), and skip it completely on `merge_group`,
+      # `workflow_dispatch`, and all other events so `main`-branch,
+      # merge-queue, and manual runs always compile cold from source while
+      # trusted `main` pushes still seed the default-branch cache when missing
+      # for pull requests.
+      - name: Restore lean-miri closure .olean cache
         id: miri_olean_cache
-        if: ${{ github.event_name != 'merge_group' && github.event_name != 'push' && github.event_name != 'workflow_dispatch' }}
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main') }}
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/anneal-miri-olean-cache
           key: anneal-current-miri-olean-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/trusted/lean/lean-toolchain', 'anneal/vendor/lean-miri/UPSTREAM_PIN.json') }}
+          lookup-only: ${{ github.event_name == 'push' }}
 
       - name: Download exocrate toolchain archive
         id: archive
@@ -306,8 +311,12 @@ jobs:
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/install-cli.log") 2>&1
           tools_root="$(mktemp -d "$RUNNER_TEMP/anneal-tools.XXXXXX")"
+          bootstrap_target="$(mktemp -d "$RUNNER_TEMP/anneal-bootstrap-target.XXXXXX")"
+          # Build the bootstrap `setup` binary outside `CARGO_TARGET_DIR` before
+          # `setup` switches `RUSTC` and `RUSTFLAGS` to the extracted toolchain.
           cargo install --locked --debug --path trusted/cargo-anneal \
-            --root "$tools_root"
+            --target-dir "$bootstrap_target" --root "$tools_root"
+          rm -rf "$bootstrap_target"
           printf 'ANNEAL_TEST_CARGO_ANNEAL=%s/bin/cargo-anneal\n' \
             "$tools_root" >> "$GITHUB_ENV"
           printf 'ANNEAL_TEST_TOOLS_ROOT=%s\n' "$tools_root" >> "$GITHUB_ENV"
@@ -435,6 +444,9 @@ jobs:
         id: audit
         env:
           CI_EVENT_NAME: ${{ github.event_name }}
+          CI_REPOSITORY: ${{ github.repository }}
+          CI_REF: ${{ github.ref }}
+          MIRI_CACHE_HIT: ${{ steps.miri_olean_cache.outputs.cache-hit }}
           MIRI_OLEAN_CACHE_DIR: ${{ runner.temp }}/anneal-miri-olean-cache
         run: |
           set -euo pipefail
@@ -444,10 +456,23 @@ jobs:
             --lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"
             --require-correspondence
           )
-          if [ "$CI_EVENT_NAME" != "merge_group" ] && [ "$CI_EVENT_NAME" != "push" ] && [ "$CI_EVENT_NAME" != "workflow_dispatch" ]; then
+          if [ "$CI_EVENT_NAME" = "push" ]; then
+            rm -rf "$MIRI_OLEAN_CACHE_DIR"
+            if [ "$CI_REPOSITORY" = "google/zerocopy" ] && [ "$CI_REF" = "refs/heads/main" ] && [ "$MIRI_CACHE_HIT" != "true" ]; then
+              audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
+            fi
+          elif [ "$CI_EVENT_NAME" = "pull_request" ]; then
             audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
           fi
           cargo run --locked -p anneal-audit -- "${audit_args[@]}"
+
+      - name: Save lean-miri closure .olean cache
+        id: save_miri_olean_cache
+        if: ${{ steps.miri_olean_cache.outputs.cache-hit != 'true' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main')) }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/anneal-miri-olean-cache
+          key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
 
       - name: Test Rust workspace
         id: workspace
