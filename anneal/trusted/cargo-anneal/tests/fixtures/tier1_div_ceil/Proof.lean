@@ -221,15 +221,17 @@ private theorem done_execState {p : Program} {fuel : Nat} {s : State}
   rw [h_done]
   exact h_post
 
-private theorem writePlace_ok {locals locals' : List LocalSlot} {dst : Place}
+private theorem writePlace_ok {localTy : MirTy}
+    {locals locals' : List LocalSlot} {dst : Place}
     {dstTy : MirTy} {val : Val} {root root' : SlotVal}
     (h_chk : checkVal val dstTy = true)
     (h_get : Trusted.MirSemantics.getElem? locals dst.localId =
       some (.live root))
-    (h_path : writeSlotPath? root dst.projection val.toSlotVal = some root')
+    (h_path : writePlaceSlotPath? (.ty localTy) root dst.projection
+      val.toSlotVal = some root')
     (h_set : setElem? locals dst.localId (.live root') = some locals') :
-    writePlace locals dst dstTy val = .ok locals' := by
-  unfold writePlace
+    writePlaceWithLocalTy localTy locals dst dstTy val = .ok locals' := by
+  unfold writePlaceWithLocalTy
   rw [ite_bool_false (by rw [h_chk]; rfl), h_get]
   dsimp only
   rw [h_path]
@@ -271,21 +273,21 @@ private theorem step_frame {p : Program} {fuel : Nat}
 private theorem evalStep_assign {p : Program} {body : Body} {bb : BasicBlock}
     {d b i : Nat} {ls : List LocalSlot} {rc : Option ReturnContinuation}
     {callers : List FrameState} {callerMem : CallerMemory}
-    {dst : Place} {rvalue : Rvalue} {localTy dstTy : MirTy}
+    {dstId : LocalId} {rvalue : Rvalue} {localTy dstTy : MirTy}
     {val : Val} {localsAfterRval localsAfterWrite : List LocalSlot}
     (h_body : Trusted.MirSemantics.getElem? p.bodies d = some body)
     (h_bb : Trusted.MirSemantics.getElem? body.basicBlocks b = some bb)
     (h_stmt : Trusted.MirSemantics.getElem? bb.statements i =
-      some (.assign dst rvalue))
-    (h_notAgg : match rvalue with | .aggregateTuple _ => False | _ => True)
-    (h_local : Trusted.MirSemantics.getElem? body.locals dst.localId =
+      some (.assign ⟨dstId, []⟩ rvalue))
+    (h_notAgg : match rvalue with | .aggregate _ _ => False | _ => True)
+    (h_local : Trusted.MirSemantics.getElem? body.locals dstId =
       some localTy)
-    (h_proj : projectTy? localTy dst.projection = some dstTy)
-    (h_noOverlap : assignHasUnsupportedOverlap dst dstTy rvalue = false)
+    (h_proj : projectTy? localTy [] = some dstTy)
+    (h_noOverlap : assignHasUnsupportedOverlap ⟨dstId, []⟩ dstTy rvalue = false)
     (h_rval : evalRvalue body.locals ls dstTy rvalue =
       .ok (val, localsAfterRval))
-    (h_write : writePlace localsAfterRval dst dstTy val =
-      .ok localsAfterWrite) :
+    (h_write : writePlaceWithLocalTy localTy localsAfterRval ⟨dstId, []⟩ dstTy
+      val = .ok localsAfterWrite) :
     evalStep p 0
         { frames := ⟨d, b, i, ls, rc⟩ :: callers, callerMem := callerMem } =
       .step {
@@ -306,11 +308,11 @@ private theorem evalStep_assign {p : Program} {body : Body} {bb : BasicBlock}
   dsimp only
   rw [ite_bool_false h_noOverlap]
   cases rvalue with
-  | aggregateTuple _ => exact False.elim h_notAgg
+  | aggregate _ _ => exact False.elim h_notAgg
   | _ =>
     dsimp only
     rw [h_rval]
-    dsimp only
+    dsimp only [resolveProjPath]
     rw [h_write]
 
 private theorem exec_div_ceil_usize (a b : Nat)

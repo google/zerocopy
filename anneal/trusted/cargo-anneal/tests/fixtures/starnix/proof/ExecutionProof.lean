@@ -44,20 +44,21 @@ theorem verify : Expected.claim := by
       have same : sourceBody = body := Option.some.inj found
       subst body
       refine bodyVerified_of_safe found rfl (fun args valid _ => ?_)
-      apply validArgs3_elim sourceBody _ rfl rfl
+      apply validArgs3_elim sourceBody _ rfl rfl rfl rfl
         (Safe sourceBody) _ args valid
       intro flag width value
       exact (completed flag width value).1
     | succ id => cases found
   · refine ⟨sourceBody, rfl, ?_⟩
-    apply validArgs3_elim sourceBody _ rfl rfl
+    apply validArgs3_elim sourceBody _ rfl rfl rfl rfl
       (fun args => ∃ output,
         Behavior (entryProgForBody Captured.program 0) { args := args }
           (.returned ⟨output, ⟨[]⟩⟩))
     intro flag width value
     let ⟨output, h_ret⟩ := (completed flag width value).2
     exact ⟨output, behavior_of_returns rfl rfl
-      (validEntryArgs_bodyEndianArgs sourceBody _ rfl rfl rfl flag width value)
+      (validEntryArgs_bodyEndianArgs sourceBody _ rfl rfl rfl rfl rfl flag width
+        value)
       h_ret⟩
 
 end ExecutionProof

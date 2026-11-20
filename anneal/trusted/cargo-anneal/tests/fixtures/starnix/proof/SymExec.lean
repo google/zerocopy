@@ -178,12 +178,14 @@ theorem sOperand_sound {tys : List MirTy} {ls ls' : List SSlot}
         cases he
         have hsv : Val.toSlotVal v0 = sv := toSlotVal_of_toVal? sv v0 hv0
         simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
-          Option.map, SSlot.slot, projectTy?, readSlotPath?, SVal.val, hsv]
+          Option.map, SSlot.slot, projectTy?, projectPlaceTy?, resolveProjPath,
+          readPlaceSlotPath?, SVal.val, hsv]
         rfl
       · rename_i ty0 s ht hs
         cases h
         simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
-          Option.map, SSlot.slot, projectTy?, readSlotPath?, SVal.val]
+          Option.map, SSlot.slot, projectTy?, projectPlaceTy?, resolveProjPath,
+          readPlaceSlotPath?, SVal.val]
         rfl
       · cases h
   | move p =>
@@ -204,8 +206,9 @@ theorem sOperand_sound {tys : List MirTy} {ls ls' : List SSlot}
           cases he
           have hsv : Val.toSlotVal v0 = sv := toSlotVal_of_toVal? sv v0 hv0
           simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
-            Option.map, SSlot.slot, projectTy?, readSlotPath?, writeSlotPath?,
-            SVal.val, hsv, hmap, Bool.not_true, Bool.false_eq_true, ↓reduceIte]
+            Option.map, SSlot.slot, projectTy?, projectPlaceTy?,
+            resolveProjPath, readPlaceSlotPath?, writePlaceSlotPath?, SVal.val,
+            hsv, hmap, Bool.not_true, Bool.false_eq_true, ↓reduceIte]
         · cases h
       · rename_i ty0 s ht hs
         obtain ⟨l1, hset, he⟩ := Option.map_eq_some_iff.mp h
@@ -215,8 +218,9 @@ theorem sOperand_sound {tys : List MirTy} {ls ls' : List SSlot}
         dsimp only [liveUninitSlot, Option.map] at hmap
         cases he
         simp only [evalOperandToSlot, evalPlaceOperand, getElem?_map, ht, hs,
-          Option.map, SSlot.slot, projectTy?, readSlotPath?, writeSlotPath?,
-          SVal.val, hmap, Bool.not_true, Bool.false_eq_true, ↓reduceIte]
+          Option.map, SSlot.slot, projectTy?, projectPlaceTy?, resolveProjPath,
+          readPlaceSlotPath?, writePlaceSlotPath?, SVal.val, hmap,
+          Bool.not_true, Bool.false_eq_true, ↓reduceIte]
       · cases h
   | constant c =>
     simp only [sOperand] at h
@@ -401,12 +405,13 @@ noncomputable def sDiscr (ety ety' : EnumTy) (n : Nat) : Option Val :=
   match ety.tagRepr with
   | .scalar _ _ =>
     if enumAdmitted ety &&
-        (EnumTy.beq ety ety' && Nat.blt n ety.discriminants.length) then
+        (EnumTy.beq ety ety' && Nat.blt n ety.discriminants.length) &&
+        !isVariantUninhabited ety n then
       (Trusted.MirSemantics.getElem? ety.discriminants n).map fun disc =>
         .scalar ⟨ety.discrWidth, ety.discrSigned,
           truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩
     else none
-  | .zeroSized => none
+  | _ => none
 
 /-- Mirror of `evalRvalue` for `use`, binary operations and discriminants. -/
 noncomputable def sRvalue (tys : List MirTy) (ls : List SSlot) (dst : MirTy) :
@@ -423,13 +428,14 @@ noncomputable def sRvalue (tys : List MirTy) (ls : List SSlot) (dst : MirTy) :
       | none => none
     | none => none
   | .discriminant p =>
-    if p.projection.isEmpty then
+    match p.projection with
+    | [] =>
       match Trusted.MirSemantics.getElem? tys p.localId,
           Trusted.MirSemantics.getElem? ls p.localId with
-      | some (.enum ety), some (.live (.enumVal ety' n)) =>
+      | some (.enum ety), some (.live (.enumVal ety' n [])) =>
         (sDiscr ety ety' n).map fun d => (.conc d, ls)
       | _, _ => none
-    else none
+    | _ :: _ => none
   | _ => none
 
 theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
@@ -463,9 +469,11 @@ theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
       · cases h
     · cases h
   | discriminant p =>
-    simp only [sRvalue] at h
-    split at h
-    · rename_i hp
+    obtain ⟨lid, proj⟩ := p
+    cases proj with
+    | cons _ _ => cases h
+    | nil =>
+      simp only [sRvalue] at h
       split at h
       · rename_i ety ety' n ht hs
         obtain ⟨d, hd, he⟩ := Option.map_eq_some_iff.mp h
@@ -475,18 +483,20 @@ theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
         · rename_i tw ts htag
           split at hd
           · rename_i hc
-            simp only [Bool.and_eq_true] at hc
-            obtain ⟨hadm, hbeq, hlt⟩ := hc
+            simp only [Bool.and_eq_true, Bool.not_eq_true'] at hc
+            obtain ⟨⟨hadm, hbeq, hlt⟩, huninh⟩ := hc
             obtain ⟨disc, hg, hdisc⟩ := Option.map_eq_some_iff.mp hd
             cases hdisc
-            simp only [evalRvalue, hp, Bool.not_true, getElem?_map, ht, hs,
-              Option.map, SSlot.slot, SVal.val, hadm, htag, hbeq, hlt, hg,
+            simp only [evalRvalue, evalPlaceOperand, evalReadDiscriminantVariant,
+              getElem?_map, ht, hs, Option.map, SSlot.slot, projectTy?,
+              projectPlaceTy?, resolveProjPath, readPlaceSlotPath?, SVal.val,
+              hadm, htag, hbeq, hlt, huninh, hg, Bool.not_true, Bool.not_false,
               Bool.and_self, Bool.false_eq_true, ↓reduceIte]
           · cases hd
         · cases hd
       · cases h
-    · cases h
-  | unaryOp | ref | addressOf | aggregateTuple | cast | unsupported => cases h
+  | unaryOp | ref | addressOf | aggregate | repeat_ | cast | unsupported =>
+    cases h
 
 /-- Whether `writePlace` accepts this value at type `ty`. -/
 noncomputable def SVal.check (ty : MirTy) : SVal → Bool
@@ -513,7 +523,7 @@ noncomputable def sWrite (ls : List SSlot) (dst : LocalId) (ty : MirTy)
 
 theorem sWrite_sound {ls ls' : List SSlot} {dst : LocalId} {ty : MirTy}
     {v : SVal} (x : Word) (h : sWrite ls dst ty v = some ls') :
-    writePlace (ls.map (SSlot.slot x)) ⟨dst, []⟩ ty (v.val x) =
+    writePlaceWithLocalTy ty (ls.map (SSlot.slot x)) ⟨dst, []⟩ ty (v.val x) =
       .ok (ls'.map (SSlot.slot x)) := by
   simp only [sWrite] at h
   split at h
@@ -522,15 +532,15 @@ theorem sWrite_sound {ls ls' : List SSlot} {dst : LocalId} {ty : MirTy}
     · rename_i sv hs
       have hmap := setElem?_map (SSlot.slot x) ls dst (SSlot.ofSVal v)
       rw [h, SSlot.slot_ofSVal] at hmap
-      simp only [writePlace, SVal.check_sound x hc, Bool.not_true, getElem?_map,
-        hs, Option.map, SSlot.slot, writeSlotPath?, hmap, Bool.false_eq_true,
-        ↓reduceIte]
+      simp only [writePlaceWithLocalTy, SVal.check_sound x hc, Bool.not_true,
+        getElem?_map, hs, Option.map, SSlot.slot, writePlaceSlotPath?, hmap,
+        Bool.false_eq_true, ↓reduceIte]
     · rename_i s hs
       have hmap := setElem?_map (SSlot.slot x) ls dst (SSlot.ofSVal v)
       rw [h, SSlot.slot_ofSVal] at hmap
-      simp only [writePlace, SVal.check_sound x hc, Bool.not_true, getElem?_map,
-        hs, Option.map, SSlot.slot, writeSlotPath?, hmap, Bool.false_eq_true,
-        ↓reduceIte]
+      simp only [writePlaceWithLocalTy, SVal.check_sound x hc, Bool.not_true,
+        getElem?_map, hs, Option.map, SSlot.slot, writePlaceSlotPath?, hmap,
+        Bool.false_eq_true, ↓reduceIte]
     · cases h
   · cases h
 
@@ -566,7 +576,7 @@ noncomputable def sStatement (body : Body) (s : SState) : StatementKind → SRes
           | none => .stuck
       | none => .stuck
     | _ :: _ => .stuck
-  | .unsupported => .stuck
+  | .setDiscriminant _ _ | .unsupported => .stuck
 
 theorem sStatement_sound {body : Body} {s s' : SState} {stmt : StatementKind}
     (x : Word) (h : sStatement body s stmt = .step s') :
@@ -622,16 +632,18 @@ theorem sStatement_sound {body : Body} {s s' : SState} {stmt : StatementKind}
             · rename_i l2 hw
               cases h
               cases rv with
-              | aggregateTuple _ => cases hr
+              | aggregate _ _ => cases hr
               | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _
-              | ref _ _ | addressOf _ _ | cast _ _ _ | unsupported =>
-                simp only [evalStatement, ht, projectTy?, SState.frame, hov,
+              | ref _ _ | addressOf _ _ | repeat_ _ _ | cast _ _ _
+              | unsupported =>
+                simp only [evalStatement, ht, projectTy?, projectPlaceTy?,
+                  resolveProjPath, SState.frame, hov, Bool.false_eq_true,
                   ↓reduceIte, sRvalue_sound x hr, sWrite_sound x hw]
                 rfl
             · cases h
           · cases h
       · cases h
-  | unsupported => cases h
+  | setDiscriminant _ _ | unsupported => cases h
 
 theorem sStatement_ne_ret {body : Body} {s : SState} {stmt : StatementKind}
     {v : SVal} : sStatement body s stmt ≠ .ret v := by
@@ -652,7 +664,7 @@ theorem sStatement_ne_ret {body : Body} {s : SState} {stmt : StatementKind}
       simp only [sStatement] at h
       split at h <;> (try split at h) <;> (try split at h) <;>
         (try split at h) <;> cases h
-  | unsupported => cases h
+  | setDiscriminant _ _ | unsupported => cases h
 
 /-- Mirror of `evalTerminator`; switches need concrete operands. -/
 noncomputable def sTerminator (body : Body) (bb : BasicBlock) (s : SState) :

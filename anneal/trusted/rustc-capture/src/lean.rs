@@ -51,12 +51,14 @@ fn ty(t: &Ty) -> String {
                 ),
             };
             let discr = ety.discr();
+            let variant_fields: Vec<&str> = vec!["[]"; ety.discriminants().len()];
             format!(
-                "(Trusted.MirAst.MirTy.enum {{ id := {}, discrWidth := Trusted.MirAst.IntWidth.{}, discrSigned := {}, tagRepr := {tag_repr}, discriminants := {} }})",
+                "(Trusted.MirAst.MirTy.enum {{ id := {}, discrWidth := Trusted.MirAst.IntWidth.{}, discrSigned := {}, tagRepr := {tag_repr}, discriminants := {}, variantFields := {} }})",
                 ety.id(),
                 discr.width.lean_name(),
                 discr.signed,
-                list(ety.discriminants(), u128::to_string)
+                list(ety.discriminants(), u128::to_string),
+                list(&variant_fields, |s| (*s).to_string())
             )
         }
     }

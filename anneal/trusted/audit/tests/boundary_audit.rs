@@ -1979,6 +1979,12 @@ const SYNTHETIC_CANARIES: &[(&str, &str, &str, &str)] = &[
         "And CrateTheorem (And UnitTheorem BodyVerified)",
         "And.intro True.intro (And.intro True.intro True.intro)",
     ),
+    (
+        "CanaryTier2AdtArrayAndBuiltinsAnnealClaim",
+        "canary_tier2_adt_array_and_builtins_anneal",
+        "And PositiveCanaryClaim NegativeCanaryClaim",
+        "And.intro True.intro True.intro",
+    ),
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
@@ -2725,17 +2731,38 @@ fn enforces_correspondence_non_backsliding() {
          def tryFromUInt : Nat := 0\n\
          def tryToBool : Nat := 0\n\
          end Miri.Memory.ScalarInt\n\
+         namespace Miri.Memory.Allocation\n\
+         def fromBytes : Nat := 0\n\
+         def writeScalar : Nat := 0\n\
+         def getBytesStripProvenance : Nat := 0\n\
+         def readScalar : Nat := 0\n\
+         end Miri.Memory.Allocation\n\
+         namespace Miri.ABI.WrappingRange\n\
+         def contains : Nat := 0\n\
+         end Miri.ABI.WrappingRange\n\
          namespace Miri.Interpreter\n\
          def evalOperand : Nat := 0\n\
          def evalPlaceToOp : Nat := 0\n\
          def localToOp : Nat := 0\n\
          def placeWriteLocalImmediate : Nat := 0\n\
+         def project : Nat := 0\n\
+         def projectField : Nat := 0\n\
+         def projectDowncast : Nat := 0\n\
+         def projectIndex : Nat := 0\n\
+         def projectConstantIndex : Nat := 0\n\
+         def projectArrayFields : Nat := 0\n\
          def evalRvalueIntoPlace : Nat := 0\n\
          def writeAggregate : Nat := 0\n\
+         def writeRepeat : Nat := 0\n\
          def runRvalue : Nat := 0\n\
          end Miri.Interpreter\n\
+         namespace Miri.Interpreter.ProjectionArrayIterator\n\
+         def next : Nat := 0\n\
+         end Miri.Interpreter.ProjectionArrayIterator\n\
          namespace Miri.Interpreter.Discriminant\n\
+         def tagForVariant : Nat := 0\n\
          def readDiscriminant : Nat := 0\n\
+         def writeDiscriminant : Nat := 0\n\
          def discriminantForVariant : Nat := 0\n\
          end Miri.Interpreter.Discriminant\n\
          namespace Miri.Interpreter.Frame\n\
@@ -2755,47 +2782,66 @@ fn enforces_correspondence_non_backsliding() {
          end Miri.Interpreter.ControlFlow\n",
     );
 
+    // Parse the full `forbiddenAnneal` list from `TrustedBoundary.lean` so the
+    // forged `Trusted.MirSemantics` stub stays synchronized with the audited
+    // existence check and every forbidden entry is covered.
+    let tb_src = fs::read_to_string(repo_root().join("trusted/audit/TrustedBoundary.lean")).unwrap();
+    let forb_start = tb_src
+        .find("for forbiddenAnneal in [")
+        .expect("TrustedBoundary.lean must contain forbiddenAnneal list");
+    let forb_block = &tb_src[forb_start..];
+    let forb_end = forb_block
+        .find("] do")
+        .expect("forbiddenAnneal list must end with `] do`");
+    let forbidden_anneal_names: Vec<String> = forb_block[..forb_end]
+        .lines()
+        .filter_map(|line| {
+            let trimmed = line.trim().trim_end_matches(',');
+            trimmed
+                .strip_prefix("`Trusted.MirSemantics.")
+                .map(str::to_string)
+        })
+        .collect();
+    assert!(
+        forbidden_anneal_names.len() >= 100,
+        "expected full forbiddenAnneal list, parsed only {}",
+        forbidden_anneal_names.len()
+    );
+    let build_forged_mir_semantics = |omit: Option<&str>| {
+        let mut src = String::from(
+            "prelude\nimport Init.Core\n\
+             namespace Trusted.MirSemantics\n\
+             def WellFormed : Prop := True\n\
+             def Behavior : Prop := True\n\
+             def Diverges : Prop := True\n\
+             def ReachesResult : Prop := True\n\
+             def Step : Prop := True\n\
+             def Reaches : Prop := True\n\
+             def progAddUncheckedU32 : Nat := 0\n\
+             def progAddU32 : Nat := 0\n\
+             def progEnumExplicitReprU8 : Nat := 0\n\
+             def progEnumSignedTagIsize : Nat := 0\n\
+             def progZstSingleEnumImplicitRet : Nat := 0\n\
+             def progZstSingleEnumMoveAndDiscr : Nat := 0\n\
+             def progEnumInvalidTagConstUb : Nat := 0\n\
+             def progEnumUninitDiscrUb : Nat := 0\n",
+        );
+        for name in &forbidden_anneal_names {
+            if omit == Some(name.as_str()) {
+                continue;
+            }
+            src.push_str(&format!("def {name} : Nat := 0\n"));
+        }
+        src.push_str("end Trusted.MirSemantics\n");
+        src
+    };
     compile_forged_module(
         &mut checker_pass2,
         &corr_src,
         &trusted_lib,
         &[],
         "Trusted.MirSemantics",
-        "prelude\nimport Init.Core\n\
-         namespace Trusted.MirSemantics\n\
-         def WellFormed : Prop := True\n\
-         def Behavior : Prop := True\n\
-         def Diverges : Prop := True\n\
-         def ReachesResult : Prop := True\n\
-         def initState : Nat := 0\n\
-         def Step : Prop := True\n\
-         def Reaches : Prop := True\n\
-         def progAddUncheckedU32 : Nat := 0\n\
-         def progAddU32 : Nat := 0\n\
-         def progEnumExplicitReprU8 : Nat := 0\n\
-         def progEnumSignedTagIsize : Nat := 0\n\
-         def progZstSingleEnumImplicitRet : Nat := 0\n\
-         def progZstSingleEnumMoveAndDiscr : Nat := 0\n\
-         def progEnumInvalidTagConstUb : Nat := 0\n\
-         def progEnumUninitDiscrUb : Nat := 0\n\
-         def evalShiftOp : Nat := 0\n\
-         def evalArithOp : Nat := 0\n\
-         def jumpToBlock : Nat := 0\n\
-         def enumAdmitted : Nat := 0\n\
-         def tagBitsToDiscrBits : Nat := 0\n\
-         def isZstEnumTy : Nat := 0\n\
-         def findDiscrVariant? : Nat := 0\n\
-         def assignHasUnsupportedOverlap : Nat := 0\n\
-         def anyMoveOperandMayOverlapPlace : Nat := 0\n\
-         def deinitPlace : Nat := 0\n\
-         def writeAggregateTuple : Nat := 0\n\
-         def bodyEntryAdmitted : Nat := 0\n\
-         def evalCallArgs : Nat := 0\n\
-         def validateCallArgs : Nat := 0\n\
-         def evalCoreBuiltin : Nat := 0\n\
-         def unwindFrame : Nat := 0\n\
-         def evalStep : Nat := 0\n\
-         end Trusted.MirSemantics\n",
+        &build_forged_mir_semantics(None),
     );
 
     // 2a. Weakened `CorrespondenceClaim` (missing
@@ -2854,7 +2900,7 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected error: {err_weak_claim}"
     );
 
-    // 2b. When all 41 required claims and proofs are present,
+    // 2b. When all 44 required claims and proofs are present,
     // `verifyCorrespondenceClaims` succeeds and
     // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` that omits
     // required Miri primitives or illegally references a named
@@ -2913,6 +2959,20 @@ fn enforces_correspondence_non_backsliding() {
              def progCallMoveOverlapDstD24 : Nat := 0\n\
              def progBuiltinMoveOverlapDstD24 : Nat := 0\n\
              def progCallAndBuiltinCopyOverlapDstD24 : Nat := 0\n\
+             def progStructAddAndRewriteD25 : Nat := 0\n\
+             def progStructFieldUseAfterMoveD25 : Nat := 0\n\
+             def progStructOverlapAliasD25 : Nat := 0\n\
+             def progOptionU64SetDiscrDowncastD26 : Nat := 0\n\
+             def progOptionBoolNicheDiscrD26 : Nat := 0\n\
+             def progUninitDowncastReadBeforeSetDiscrUbD26 : Nat := 0\n\
+             def progNicheSetDiscrUntaggedOnUninitUbD26 : Nat := 0\n\
+             def progUnitSetDiscrNoopD26 : Nat := 0\n\
+             def progUnitSetDiscrBadVariantUbD26 : Nat := 0\n\
+             def progUninhabitedVariantSetDiscrUbD26 : Nat := 0\n\
+             def progArrayAggregateAndIndexD27 : Nat := 0\n\
+             def progArrayDynamicIndexOobUbD27 : Nat := 0\n\
+             def progConstIndexFromEndGtMinLenBlockedD27 : Nat := 0\n\
+             def progConstIndexFromEndLtMinLenUbD27 : Nat := 0\n\
              def initRefState : Nat := 0\n\
              def evalRefStep : Nat := {eval_ref_step_body}\n\
              def CorrespondenceClaim : Prop :=\n\
@@ -3049,6 +3109,28 @@ fn enforces_correspondence_non_backsliding() {
                Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
                RefWellFormed ∧ RefBehavior ∧\n\
                Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
+             def CanaryD25StructAndFieldClaim : Prop :=\n\
+               progStructAddAndRewriteD25 = progStructFieldUseAfterMoveD25 ∧\n\
+               progStructOverlapAliasD25 = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
+             def CanaryD26PayloadNicheEnumAndCheckedArithClaim : Prop :=\n\
+               progOptionU64SetDiscrDowncastD26 = progOptionBoolNicheDiscrD26 ∧\n\
+               mkBinaryBuiltinProgD22 = progUninitDowncastReadBeforeSetDiscrUbD26 ∧\n\
+               progNicheSetDiscrUntaggedOnUninitUbD26 = progUnitSetDiscrNoopD26 ∧\n\
+               progUnitSetDiscrBadVariantUbD26 = progUninhabitedVariantSetDiscrUbD26 ∧\n\
+               progUninhabitedVariantSetDiscrUbD26 = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
+             def CanaryD27ArrayIndexingAndLeBytesClaim : Prop :=\n\
+               progArrayAggregateAndIndexD27 = progArrayDynamicIndexOobUbD27 ∧\n\
+               progConstIndexFromEndGtMinLenBlockedD27 = progConstIndexFromEndLtMinLenUbD27 ∧\n\
+               mkUnaryBuiltinProgD22 = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               RefWellFormed ∧ RefBehavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome\n\
              end Trusted.Correspondence\n"
         )
     };
@@ -3121,6 +3203,12 @@ fn enforces_correspondence_non_backsliding() {
                ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro⟩\n\
              theorem canary_D24_call_deinit_and_overlap : CanaryD24CallDeinitAndOverlapClaim :=\n\
                ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D25_struct_and_field : CanaryD25StructAndFieldClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D26_payload_niche_enum_and_checked_arith : CanaryD26PayloadNicheEnumAndCheckedArithClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D27_array_indexing_and_le_bytes : CanaryD27ArrayIndexingAndLeBytesClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
              end Anneal.MirCorrespondenceProof\n"
         )
     };
@@ -3178,12 +3266,13 @@ fn enforces_correspondence_non_backsliding() {
     assert_eq!(err_missing_miri.phase, "correspondence-audit");
     assert!(
         err_missing_miri.message.contains(
-            "reference evaluator cone is missing required Miri primitive Miri.Interpreter.Step.step"
+            "reference evaluator cone is missing required Miri primitive Miri.ABI.WrappingRange.contains"
         ),
         "unexpected error: {err_missing_miri}"
     );
 
     let required_miri_primitives = [
+        "Miri.ABI.WrappingRange.contains",
         "Miri.Interpreter.Step.step",
         "Miri.Interpreter.IntegerOps.binary",
         "Miri.Interpreter.IntegerOps.binaryBool",
@@ -3194,14 +3283,28 @@ fn enforces_correspondence_non_backsliding() {
         "Miri.Memory.ScalarInt.truncateFromUInt",
         "Miri.Memory.ScalarInt.tryFromUInt",
         "Miri.Memory.ScalarInt.tryToBool",
+        "Miri.Memory.Allocation.fromBytes",
+        "Miri.Memory.Allocation.writeScalar",
+        "Miri.Memory.Allocation.getBytesStripProvenance",
+        "Miri.Memory.Allocation.readScalar",
         "Miri.Interpreter.evalOperand",
         "Miri.Interpreter.evalPlaceToOp",
         "Miri.Interpreter.localToOp",
         "Miri.Interpreter.placeWriteLocalImmediate",
+        "Miri.Interpreter.project",
+        "Miri.Interpreter.projectField",
+        "Miri.Interpreter.projectDowncast",
+        "Miri.Interpreter.projectIndex",
+        "Miri.Interpreter.projectConstantIndex",
+        "Miri.Interpreter.projectArrayFields",
+        "Miri.Interpreter.ProjectionArrayIterator.next",
         "Miri.Interpreter.evalRvalueIntoPlace",
         "Miri.Interpreter.writeAggregate",
+        "Miri.Interpreter.writeRepeat",
         "Miri.Interpreter.runRvalue",
+        "Miri.Interpreter.Discriminant.tagForVariant",
         "Miri.Interpreter.Discriminant.readDiscriminant",
+        "Miri.Interpreter.Discriminant.writeDiscriminant",
         "Miri.Interpreter.Discriminant.discriminantForVariant",
         "Miri.Interpreter.Step.evalStatement",
         "Miri.Interpreter.Frame.storageLive",
@@ -3221,8 +3324,23 @@ fn enforces_correspondence_non_backsliding() {
         "Miri.Interpreter.Call.run",
     ];
     for missing_miri in [
+        "Miri.ABI.WrappingRange.contains",
+        "Miri.Memory.Allocation.fromBytes",
+        "Miri.Memory.Allocation.writeScalar",
+        "Miri.Memory.Allocation.getBytesStripProvenance",
+        "Miri.Memory.Allocation.readScalar",
+        "Miri.Interpreter.project",
+        "Miri.Interpreter.projectField",
+        "Miri.Interpreter.projectDowncast",
+        "Miri.Interpreter.projectIndex",
+        "Miri.Interpreter.projectConstantIndex",
+        "Miri.Interpreter.projectArrayFields",
+        "Miri.Interpreter.ProjectionArrayIterator.next",
         "Miri.Interpreter.writeAggregate",
+        "Miri.Interpreter.writeRepeat",
+        "Miri.Interpreter.Discriminant.tagForVariant",
         "Miri.Interpreter.Discriminant.readDiscriminant",
+        "Miri.Interpreter.Discriminant.writeDiscriminant",
         "Miri.Interpreter.Discriminant.discriminantForVariant",
         "Miri.Interpreter.IntegerIntrinsic.run",
         "Miri.Interpreter.IntegerArithmeticIntrinsic.saturatingArith",
@@ -3269,25 +3387,7 @@ fn enforces_correspondence_non_backsliding() {
         );
     }
 
-    for forbidden in [
-        "evalStep",
-        "evalArithOp",
-        "evalShiftOp",
-        "jumpToBlock",
-        "enumAdmitted",
-        "tagBitsToDiscrBits",
-        "isZstEnumTy",
-        "findDiscrVariant?",
-        "assignHasUnsupportedOverlap",
-        "anyMoveOperandMayOverlapPlace",
-        "deinitPlace",
-        "writeAggregateTuple",
-        "bodyEntryAdmitted",
-        "evalCallArgs",
-        "validateCallArgs",
-        "evalCoreBuiltin",
-        "unwindFrame",
-    ] {
+    for forbidden in &forbidden_anneal_names {
         let all_miri_plus_anneal_fn = format!(
             "let _ := ({}); Trusted.MirSemantics.{forbidden}",
             required_miri_primitives.join(", ")
@@ -3318,6 +3418,43 @@ fn enforces_correspondence_non_backsliding() {
             "unexpected error for {forbidden}: {err_forbidden_anneal}"
         );
     }
+
+    // Existence check: omitting a listed `forbiddenAnneal` helper from
+    // `Trusted.MirSemantics` fails closed so renames cannot silently void it.
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &[],
+        "Trusted.MirSemantics",
+        &build_forged_mir_semantics(Some("replicateSlotVal")),
+    );
+    let all_miri_only = format!("let _ := ({}); 0", required_miri_primitives.join(", "));
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &corr_deps,
+        "Trusted.Correspondence",
+        &all_claims_src(&all_miri_only, None),
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &corr_lib,
+        &proof_deps,
+        "Anneal.MirCorrespondenceProof",
+        &all_proofs_src(d6_valid_proof),
+    );
+    let err_missing_forb = run_corr_audit(&mut checker_pass2).unwrap_err();
+    assert_eq!(err_missing_forb.code, 1);
+    assert_eq!(err_missing_forb.phase, "correspondence-audit");
+    assert!(
+        err_missing_forb.message.contains(
+            "forbiddenAnneal entry Trusted.MirSemantics.replicateSlotVal is missing from environment"
+        ),
+        "unexpected missing-forbiddenAnneal error: {err_missing_forb}"
+    );
 }
 
 /// Verifies the vendored `.olean` cache and compilation pipeline in

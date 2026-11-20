@@ -186,8 +186,9 @@ inductive Mutability where
   | shared
   | mut
 
-/-- In-memory tag representation of a fieldless Rust enum, corresponding to
-`rustc_abi::Variants` (`compiler/rustc_abi/src/lib.rs`, `rust-lang/rust`
+/-- In-memory tag representation of a Rust enum, corresponding to
+`rustc_abi::Variants` and `rustc_abi::TagEncoding`
+(`compiler/rustc_abi/src/lib.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
 > "pub enum Variants<FieldIdx: Idx, VariantIdx: Idx> {
@@ -213,112 +214,136 @@ Constructor correspondence:
   stored in memory and `ConstValue::ZeroSized` represents the unique variant).
   Note that `#[repr(C)]` and `#[repr(int)]` 1-variant enums retain an explicit
   tag scalar (`Variants::Multiple` / `.scalar`) rather than `.zeroSized`.
+- `.single variant` corresponds to `Variants::Single { index: variant }` on an
+  enum with a single inhabited variant `variant` (such as a 1-variant payload
+  enum or `Result<T, !>` where all other variants are uninhabited).
 - `.scalar width signed` corresponds to `Variants::Multiple { tag,
   tag_encoding: TagEncoding::Direct, tag_field: 0, .. }` where `tag` has
   primitive integer representation `(width, signed)` (`tag.primitive()` in
-  `compiler/rustc_abi/src/lib.rs`). (Uninhabited 0-variant enums
-  `Variants::Empty` have no admitted `EnumTagRepr` and are rejected by
+  `compiler/rustc_abi/src/lib.rs`).
+- `.niche width signed validStart validEnd nichePath untagged start last
+  nicheStart` corresponds to `Variants::Multiple { tag, tag_encoding:
+  TagEncoding::Niche { untagged_variant, niche_variants, niche_start },
+  tag_field, .. }`, where `tag` has integer representation `(width, signed)`
+  and wrapping validity range `[validStart, validEnd]`, and `nichePath` selects
+  the niche scalar inside `untagged`'s payload fields. (Uninhabited 0-variant
+  enums `Variants::Empty` have no admitted `EnumTagRepr` and are rejected by
   `Trusted.MirSemantics.enumAdmitted`.) -/
 inductive EnumTagRepr where
   | zeroSized
+  | single (variant : Nat)
   | scalar (width : IntWidth) (signed : Bool)
+  | niche
+      (width : IntWidth)
+      (signed : Bool)
+      (validStart : BitVec 128)
+      (validEnd : BitVec 128)
+      (nichePath : List Nat)
+      (untagged : Nat)
+      (start : Nat)
+      (last : Nat)
+      (nicheStart : BitVec 128)
 
-/-- Structural descriptor for a fieldless Rust enum (`TyKind::Adt(def, _)` with
-`def.is_enum()` and zero fields on every variant), carrying its nominal
-type-identity key `id`, its `Ty::discriminant_ty` integer representation
-`(discrWidth, discrSigned)`, its in-memory tag representation `tagRepr`, and
-its declaration-indexed discriminant bit-pattern table `discriminants`.
+mutual
+  /-- Structural descriptor for a Rust struct (`TyKind::Adt(def, _)` with
+  `def.is_struct()`), carrying its nominal type-identity key `id` and its
+  monomorphized field types `fields` (`fields = []` for ZST unit/empty structs;
+  nested structs, tuples, arrays, and enums are carried recursively). -/
+  structure StructTy where
+    id : Nat
+    fields : List MirTy
 
-Corresponds to `rustc_middle::ty::util::Discr`
-(`compiler/rustc_middle/src/ty/util.rs`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`), `Ty::discriminant_ty`
-(`compiler/rustc_middle/src/ty/sty.rs:1717`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`), and the Rust Reference
-(`src/items/enumerations.md`, `rust-lang/reference`
-`a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
+  /-- Structural descriptor for a Rust enum (`TyKind::Adt(def, _)` with
+  `def.is_enum()`), carrying its nominal type-identity key `id`, its
+  `Ty::discriminant_ty` integer representation `(discrWidth, discrSigned)`, its
+  in-memory tag representation `tagRepr`, its declaration-indexed discriminant
+  bit-pattern table `discriminants`, and its explicit per-variant payload field
+  types `variantFields` (one `List MirTy` per variant matching
+  `discriminants.length`, with no default).
 
-> "pub struct Discr<'tcx> {
->     /// Bit representation of the discriminant (e.g., `-1i8` is `0xFF_u128`).
->     pub val: u128,
->     pub ty: Ty<'tcx>,
-> }"
-> (`compiler/rustc_middle/src/ty/util.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
->
-> "Enums without a [primitive representation] have discriminants of type
-> `isize`."
-> "Enums with a [primitive representation] have discriminants of the type named
-> by the representation."
-> (`src/items/enumerations.md`, `rust-lang/reference`
-> `a286e1ecb8ce193d50056e4bb042eea9b23876ef`)
+  Corresponds to `rustc_middle::ty::util::Discr`
+  (`compiler/rustc_middle/src/ty/util.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`), `Ty::discriminant_ty`
+  (`compiler/rustc_middle/src/ty/sty.rs:1717`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`), and the Rust Reference
+  (`src/items/enumerations.md`, `rust-lang/reference`
+  `a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
 
-Each entry `d ∈ discriminants` stores the unsigned bit pattern `Discr.val`
-truncated to `discrWidth` (`d < Nat.pow 2 discrWidth.bitWidth`; e.g., `-1i8` is
-`255` and `-1isize` on 64-bit targets is `2^64 - 1`).
+  > "pub struct Discr<'tcx> {
+  >   /// Bit representation of the discriminant (e.g., `-1i8` is `0xFF_u128`).
+  >   pub val: u128,
+  >   pub ty: Ty<'tcx>,
+  > }"
+  > (`compiler/rustc_middle/src/ty/util.rs`, `rust-lang/rust`
+  > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
-All five fields (`id` plus the four discriminant and tag layout fields) are
-required explicitly (with no defaults) so a producer cannot silently inherit an
-`isize` discriminant or tag layout that disagrees with `rustc`. Direct
-`Rvalue::Aggregate(AggregateKind::Adt, [])` enum construction is intentionally
-out of scope and fails closed as `Rvalue.unsupported` (fieldless enum values
-are modeled via constant and `Rvalue.discriminant` operations). -/
-structure EnumTy where
-  id : Nat
-  discrWidth : IntWidth
-  discrSigned : Bool
-  tagRepr : EnumTagRepr
-  discriminants : List Nat
+  Each entry `d ∈ discriminants` stores the unsigned bit pattern `Discr.val`
+  truncated to `discrWidth` (`d < Nat.pow 2 discrWidth.bitWidth`; e.g., `-1i8`
+  is `255` and `-1isize` on 64-bit targets is `2^64 - 1`). All six fields are
+  required with no defaults so producers cannot silently omit tag or payload
+  metadata. -/
+  structure EnumTy where
+    id : Nat
+    discrWidth : IntWidth
+    discrSigned : Bool
+    tagRepr : EnumTagRepr
+    discriminants : List Nat
+    variantFields : List (List MirTy)
 
-/-- Structural MIR type descriptors carried directly by value in
-`Trusted.MirAst`.
+  /-- Structural MIR type descriptors carried directly by value in
+  `Trusted.MirAst`.
 
-Corresponds to monomorphized `rustc_type_ir::TyKind` in
-`compiler/rustc_type_ir/src/ty_kind.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+  Corresponds to monomorphized `rustc_type_ir::TyKind` in
+  `compiler/rustc_type_ir/src/ty_kind.rs` (`rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
-> "pub enum TyKind<I: Interner> { Bool, Char, Int(IntTy), Uint(UintTy),
-> Float(FloatTy), Adt(I::AdtDef, I::GenericArgs), Foreign(I::ForeignId),
-> Str, Array(I::Ty, Const<I>), Pat(I::Ty, I::Pat), Slice(I::Ty),
-> RawPtr(I::Ty, Mutability), Ref(Region<I>, I::Ty, Mutability),
-> FnDef(I::FunctionId, ty::Binder<I, I::GenericArgs>),
-> FnPtr(ty::Binder<I, FnSigTys<I>>, FnHeader<I>),
-> UnsafeBinder(UnsafeBinderInner<I>), Dynamic(...), Closure(...),
-> CoroutineClosure(...), Coroutine(...), CoroutineWitness(...), Never,
-> Tuple(I::Tys), ... }"
+  > "pub enum TyKind<I: Interner> { Bool, Char, Int(IntTy), Uint(UintTy),
+  > Float(FloatTy), Adt(I::AdtDef, I::GenericArgs), Foreign(I::ForeignId),
+  > Str, Array(I::Ty, Const<I>), Pat(I::Ty, I::Pat), Slice(I::Ty),
+  > RawPtr(I::Ty, Mutability), Ref(Region<I>, I::Ty, Mutability),
+  > FnDef(I::FunctionId, ty::Binder<I, I::GenericArgs>),
+  > FnPtr(ty::Binder<I, FnSigTys<I>>, FnHeader<I>),
+  > UnsafeBinder(UnsafeBinderInner<I>), Dynamic(...), Closure(...),
+  > CoroutineClosure(...), Coroutine(...), CoroutineWitness(...), Never,
+  > Tuple(I::Tys), ... }"
 
-Constructor correspondence:
-- `.bool` corresponds to `TyKind::Bool`.
-- `.int width true` corresponds to `TyKind::Int(width)` (`i8`, `i16`, `i32`,
-  `i64`, `i128`, `isize`).
-- `.int width false` corresponds to `TyKind::Uint(width)` (`u8`, `u16`, `u32`,
-  `u64`, `u128`, `usize`).
-- `.unit` corresponds to the 0-element unit tuple `TyKind::Tuple([])` (`()`).
-- `.never` corresponds to the uninhabited never type `TyKind::Never` (`!`).
-- `.enum ty` corresponds to a fieldless `TyKind::Adt(def, _)` enum
-  (`def.is_enum()` where every variant has zero fields), carrying `ty : EnumTy`
-  with its nominal `id`, `Ty::discriminant_ty` `(discrWidth, discrSigned)`,
-  in-memory `tagRepr` (`Variants::Single` ZST vs. direct `Variants::Multiple`
-  scalar tag), and variant `discriminants` bit patterns.
-- `.tuple fields` corresponds to non-empty `TyKind::Tuple(fields)` (empty
-  `TyKind::Tuple([])` corresponds to `.unit`).
-- `.ref mutability pointee` corresponds to `TyKind::Ref(_, pointee, mutability)`
-  (regions are erased at runtime).
-- `.rawPtr mutability pointee` corresponds to
-  `TyKind::RawPtr(pointee, mutability)`.
-- `.unsupported` represents all other `TyKind` variants (`Char`, `Float`,
-  non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `Slice`, `FnDef`,
-  `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
-  $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
-inductive MirTy where
-  | bool
-  | int (width : IntWidth) (signed : Bool)
-  | unit
-  | never
-  | enum (ty : EnumTy)
-  | tuple (fields : List MirTy)
-  | ref (mutability : Mutability) (pointee : MirTy)
-  | rawPtr (mutability : Mutability) (pointee : MirTy)
-  | unsupported
+  Constructor correspondence:
+  - `.bool` corresponds to `TyKind::Bool`.
+  - `.int width true` corresponds to `TyKind::Int(width)` (`i8`, `i16`, `i32`,
+    `i64`, `i128`, `isize`).
+  - `.int width false` corresponds to `TyKind::Uint(width)` (`u8`, `u16`, `u32`,
+    `u64`, `u128`, `usize`).
+  - `.unit` corresponds to the 0-element unit tuple `TyKind::Tuple([])` (`()`).
+  - `.never` corresponds to the uninhabited never type `TyKind::Never` (`!`).
+  - `.adtStruct sty` corresponds to a `TyKind::Adt(def, _)` struct
+    (`def.is_struct()`).
+  - `.enum ty` corresponds to a `TyKind::Adt(def, _)` enum (`def.is_enum()`),
+    fieldless or payload-carrying (including direct and niche tag layouts).
+  - `.tuple fields` corresponds to non-empty `TyKind::Tuple(fields)` (empty
+    `TyKind::Tuple([])` corresponds to `.unit`).
+  - `.array elemTy len` corresponds to fixed-length array
+    `TyKind::Array(elemTy, len)` (`[T; N]`).
+  - `.ref mutability pointee` corresponds to
+    `TyKind::Ref(_, pointee, mutability)` (regions are erased at runtime).
+  - `.rawPtr mutability pointee` corresponds to
+    `TyKind::RawPtr(pointee, mutability)`.
+  - `.unsupported` represents all other `TyKind` variants (`Char`, `Float`,
+    union `Adt`, `Foreign`, `Str`, `Pat`, `Slice`, `FnDef`, `FnPtr`, `Dynamic`,
+    `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
+    $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
+  inductive MirTy where
+    | bool
+    | int (width : IntWidth) (signed : Bool)
+    | unit
+    | never
+    | adtStruct (sty : StructTy)
+    | enum (ty : EnumTy)
+    | tuple (fields : List MirTy)
+    | array (elemTy : MirTy) (len : Nat)
+    | ref (mutability : Mutability) (pointee : MirTy)
+    | rawPtr (mutability : Mutability) (pointee : MirTy)
+    | unsupported
+end
 
 /-- Explicit structural equality on `IntWidth` (avoiding `deriving BEq` inside
 `Trusted.*` so `TrustedBoundary.lean` sees only pure kernel definitions). -/
@@ -346,16 +371,20 @@ noncomputable def natListBeq : List Nat → List Nat → Bool
 /-- Explicit structural equality on `EnumTagRepr`. -/
 noncomputable def EnumTagRepr.beq : EnumTagRepr → EnumTagRepr → Bool
   | .zeroSized, .zeroSized => true
+  | .single v₁, .single v₂ => Nat.beq v₁ v₂
   | .scalar w₁ s₁, .scalar w₂ s₂ => IntWidth.beq w₁ w₂ && (s₁ == s₂)
+  | .niche w₁ s₁ vs₁ ve₁ np₁ u₁ st₁ l₁ ns₁,
+      .niche w₂ s₂ vs₂ ve₂ np₂ u₂ st₂ l₂ ns₂ =>
+    IntWidth.beq w₁ w₂ &&
+      (s₁ == s₂) &&
+      (vs₁ == vs₂) &&
+      (ve₁ == ve₂) &&
+      natListBeq np₁ np₂ &&
+      Nat.beq u₁ u₂ &&
+      Nat.beq st₁ st₂ &&
+      Nat.beq l₁ l₂ &&
+      (ns₁ == ns₂)
   | _, _ => false
-
-/-- Explicit structural equality on `EnumTy`. -/
-noncomputable def EnumTy.beq (a b : EnumTy) : Bool :=
-  Nat.beq a.id b.id &&
-    IntWidth.beq a.discrWidth b.discrWidth &&
-    (a.discrSigned == b.discrSigned) &&
-    EnumTagRepr.beq a.tagRepr b.tagRepr &&
-    natListBeq a.discriminants b.discriminants
 
 mutual
   /-- Explicit structural equality on `MirTy`. -/
@@ -364,8 +393,19 @@ mutual
     | .int w₁ s₁, .int w₂ s₂ => IntWidth.beq w₁ w₂ && (s₁ == s₂)
     | .unit, .unit => true
     | .never, .never => true
-    | .enum ety₁, .enum ety₂ => EnumTy.beq ety₁ ety₂
+    | .adtStruct ⟨id₁, fs₁⟩, .adtStruct ⟨id₂, fs₂⟩ =>
+      Nat.beq id₁ id₂ && MirTy.beqList fs₁ fs₂
+    | .enum ⟨id₁, dw₁, ds₁, tr₁, d₁, vf₁⟩,
+        .enum ⟨id₂, dw₂, ds₂, tr₂, d₂, vf₂⟩ =>
+      Nat.beq id₁ id₂ &&
+        IntWidth.beq dw₁ dw₂ &&
+        (ds₁ == ds₂) &&
+        EnumTagRepr.beq tr₁ tr₂ &&
+        natListBeq d₁ d₂ &&
+        MirTy.beqListList vf₁ vf₂
     | .tuple fs₁, .tuple fs₂ => MirTy.beqList fs₁ fs₂
+    | .array elem₁ len₁, .array elem₂ len₂ =>
+      MirTy.beq elem₁ elem₂ && Nat.beq len₁ len₂
     | .ref m₁ p₁, .ref m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .rawPtr m₁ p₁, .rawPtr m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .unsupported, .unsupported => true
@@ -376,7 +416,28 @@ mutual
     | [], [] => true
     | x :: xs, y :: ys => MirTy.beq x y && MirTy.beqList xs ys
     | _, _ => false
+
+  /-- Elementwise structural equality on `List (List MirTy)`. -/
+  noncomputable def MirTy.beqListList :
+      List (List MirTy) → List (List MirTy) → Bool
+    | [], [] => true
+    | xs :: xss, ys :: yss =>
+      MirTy.beqList xs ys && MirTy.beqListList xss yss
+    | _, _ => false
 end
+
+/-- Explicit structural equality on `StructTy`. -/
+noncomputable def StructTy.beq (a b : StructTy) : Bool :=
+  Nat.beq a.id b.id && MirTy.beqList a.fields b.fields
+
+/-- Explicit structural equality on `EnumTy`. -/
+noncomputable def EnumTy.beq (a b : EnumTy) : Bool :=
+  Nat.beq a.id b.id &&
+    IntWidth.beq a.discrWidth b.discrWidth &&
+    (a.discrSigned == b.discrSigned) &&
+    EnumTagRepr.beq a.tagRepr b.tagRepr &&
+    natListBeq a.discriminants b.discriminants &&
+    MirTy.beqListList a.variantFields b.variantFields
 
 /-- MIR binary operators (`rustc_middle::mir::BinOp` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
@@ -499,7 +560,8 @@ noncomputable def CastKind.beq : CastKind → CastKind → Bool
   | .unsupported, .unsupported => true
   | _, _ => false
 
-/-- Place projection elements (`*p`, `p.f`, or unmodeled projection).
+/-- Place projection elements (`*p`, `p.f`, `p as Variant`, `p[i]`,
+`p[const_idx]`, or unmodeled projection).
 
 Corresponds to `rustc_middle::mir::ProjectionElem` in
 `compiler/rustc_middle/src/mir/syntax.rs` (`rust-lang/rust`
@@ -520,12 +582,20 @@ Corresponds to `rustc_middle::mir::ProjectionElem` in
 Constructor correspondence:
 - `.deref` corresponds to `ProjectionElem::Deref`.
 - `.field fieldIdx ty` corresponds to `ProjectionElem::Field(fieldIdx, ty)`.
-- `.unsupported` represents all other `ProjectionElem` variants (`Index`,
-  `ConstantIndex`, `Subslice`, `Downcast`, `OpaqueCast`, `UnwrapUnsafeBinder`,
-  and `PhantomDeref`). -/
+- `.downcast variantIdx` corresponds to
+  `ProjectionElem::Downcast(_, variantIdx)`.
+- `.index idxLocal` corresponds to `ProjectionElem::Index(idxLocal)` (dynamic
+  array indexing by a `usize` local variable).
+- `.constantIndex offset minLength fromEnd` corresponds to
+  `ProjectionElem::ConstantIndex { offset, min_length, from_end }`.
+- `.unsupported` represents all other `ProjectionElem` variants (`Subslice`,
+  `OpaqueCast`, `UnwrapUnsafeBinder`, and `PhantomDeref`). -/
 inductive ProjectionElem where
   | deref
   | field (fieldIdx : FieldIdx) (ty : MirTy)
+  | downcast (variantIdx : Nat)
+  | index (idxLocal : LocalId)
+  | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
   | unsupported
 
 /-- A MIR place (`rustc_middle::mir::Place` in
@@ -613,6 +683,43 @@ inductive Operand where
   | move (place : Place)
   | constant (c : ConstOperand)
 
+/-- Aggregate construction kinds for `Rvalue.aggregate`, corresponding to the
+modeled subset of `rustc_middle::mir::AggregateKind`
+(`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "pub enum AggregateKind<'tcx> {
+>     Array(Ty<'tcx>),
+>     Tuple,
+>     Adt(DefId, VariantIdx, GenericArgsRef<'tcx>,
+>         Option<UserTypeAnnotationIndex>, Option<FieldIdx>),
+>     Closure(DefId, GenericArgsRef<'tcx>),
+>     Coroutine(DefId, GenericArgsRef<'tcx>),
+>     CoroutineClosure(DefId, GenericArgsRef<'tcx>),
+>     RawPtr(Ty<'tcx>, Mutability),
+> }"
+
+Constructor correspondence:
+- `.tuple` corresponds to `AggregateKind::Tuple`.
+- `.adtStruct sty` corresponds to `AggregateKind::Adt` on a struct (`sty`,
+  `variantIdx = 0`, `activeField = none`).
+- `.adtEnum ety variantIdx` corresponds to `AggregateKind::Adt` on an enum
+  (`ety`, `variantIdx`, `activeField = none`).
+- `.array elemTy` corresponds to `AggregateKind::Array(elemTy)`. -/
+inductive AggregateKind where
+  | tuple
+  | adtStruct (sty : StructTy)
+  | adtEnum (ety : EnumTy) (variantIdx : Nat)
+  | array (elemTy : MirTy)
+
+/-- Explicit structural equality on `AggregateKind`. -/
+noncomputable def AggregateKind.beq : AggregateKind → AggregateKind → Bool
+  | .tuple, .tuple => true
+  | .adtStruct s₁, .adtStruct s₂ => StructTy.beq s₁ s₂
+  | .adtEnum e₁ v₁, .adtEnum e₂ v₂ => EnumTy.beq e₁ e₂ && Nat.beq v₁ v₂
+  | .array t₁, .array t₂ => MirTy.beq t₁ t₂
+  | _, _ => false
+
 /-- A MIR right-hand-side expression (`rustc_middle::mir::Rvalue` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -646,10 +753,10 @@ Constructor correspondence:
 
   A retag is therefore a no-op for `WithRetag::No` and for values that contain
   no references or boxes, which covers every type that $M_{\text{anneal}}$
-  executes (`.bool`, `.int`, `.unit`, `.never`, admitted fieldless `.enum`,
-  and non-empty `.tuple`s of those types). A retagging `Use(_, WithRetag::Yes)`
-  of any other type lowers to `.unsupported` until stacked/tree-borrows
-  retagging is modeled.
+  executes (`.bool`, `.int`, `.unit`, `.never`, admitted `.adtStruct`, `.enum`,
+  non-empty `.tuple`, and fixed `.array` of those types). A retagging
+  `Use(_, WithRetag::Yes)` of any other type lowers to `.unsupported` until
+  stacked/tree-borrows retagging is modeled.
 - `.binaryOp op lhs rhs` corresponds to `Rvalue::BinaryOp(op, (lhs, rhs))`.
 - `.unaryOp op opnd` corresponds to `Rvalue::UnaryOp(op, opnd)`.
 - `.discriminant place` corresponds to `Rvalue::Discriminant(place)`
@@ -662,21 +769,20 @@ Constructor correspondence:
   > variant index; use [`discriminant_for_variant`] to convert."
 - `.ref mutability place` corresponds to `Rvalue::Ref(_, borrowKind, place)`.
 - `.addressOf mutability place` corresponds to `Rvalue::RawPtr(kind, place)`.
-- `.aggregateTuple fields` corresponds to
-  `Rvalue::Aggregate(AggregateKind::Tuple, fields)`. An empty `fields` list
-  builds the unit value `()` of type `.unit`; a non-empty list builds a value
-  of a non-empty `.tuple` type.
+- `.aggregate kind fields` corresponds to `Rvalue::Aggregate(kind, fields)` for
+  tuples (`.tuple`, with `[]` building `.unit` and non-empty `fields` building
+  `.tuple`), structs (`.adtStruct sty`), enums (`.adtEnum ety variantIdx`), and
+  fixed arrays (`.array elemTy`).
+- `.repeat_ op count` corresponds to `Rvalue::Repeat(op, count)` (array repeat
+  `[op; count]`, matching `Miri.Interpreter.writeRepeat`).
 - `.cast kind op ty` corresponds to `Rvalue::Cast(kind, op, ty)`, where `ty` is
   the cast's target type (`compiler/rustc_middle/src/mir/syntax.rs`,
   `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
   > "Performs essentially all of the casts that can be performed via `as`."
   > "This allows for casts from/to a variety of types."
-- `.unsupported` represents all other `Rvalue` variants (`Repeat`,
-  `ThreadLocalRef`, non-tuple `Aggregate` (including direct fieldless enum
-  construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
-  intentionally out of scope and lowers fail-closed to `.unsupported` in favor
-  of constant and discriminant operations), `CopyForDeref`,
+- `.unsupported` represents all other `Rvalue` variants (`ThreadLocalRef`,
+  union/closure/coroutine/raw-pointer `Aggregate`, `CopyForDeref`,
   `WrapUnsafeBinder`, `Reborrow`, and a retagging `Use(_, WithRetag::Yes)` of a
   type that contains references or boxes).
 -/
@@ -687,9 +793,15 @@ inductive Rvalue where
   | discriminant (place : Place)
   | ref (mutability : Mutability) (place : Place)
   | addressOf (mutability : Mutability) (place : Place)
-  | aggregateTuple (fields : List Operand)
+  | aggregate (kind : AggregateKind) (fields : List Operand)
+  | repeat_ (op : Operand) (count : Nat)
   | cast (kind : CastKind) (op : Operand) (ty : MirTy)
   | unsupported
+
+/-- Backward-compatible tuple aggregate constructor alias (`Rvalue.aggregate
+.tuple fields`), kept computable for `anneal-rustc-capture` program literals. -/
+abbrev Rvalue.aggregateTuple (fields : List Operand) : Rvalue :=
+  Rvalue.aggregate .tuple fields
 
 /-- A MIR statement inside a basic block (`rustc_middle::mir::StatementKind` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
@@ -712,14 +824,17 @@ inductive Rvalue where
 
 Constructor correspondence:
 - `.assign dst rvalue` corresponds to `StatementKind::Assign((dst, rvalue))`.
+- `.setDiscriminant place variantIdx` corresponds to
+  `StatementKind::SetDiscriminant { place, variant_index }`.
 - `.storageLive localId` corresponds to `StatementKind::StorageLive(localId)`.
 - `.storageDead localId` corresponds to `StatementKind::StorageDead(localId)`.
 - `.nop` corresponds to `StatementKind::Nop`.
 - `.unsupported` represents all other `StatementKind` variants (`FakeRead`,
-  `SetDiscriminant`, `PlaceMention`, `AscribeUserType`, `Coverage`, `Intrinsic`,
+  `PlaceMention`, `AscribeUserType`, `Coverage`, `Intrinsic`,
   `ConstEvalCounter`, and `BackwardIncompatibleDropHint`). -/
 inductive StatementKind where
   | assign (dst : Place) (rvalue : Rvalue)
+  | setDiscriminant (place : Place) (variantIdx : Nat)
   | storageLive (localId : LocalId)
   | storageDead (localId : LocalId)
   | nop
@@ -840,6 +955,9 @@ inlined `core` body (`library/core/src/num/{int_macros,uint_macros}.rs`,
   `T::saturating_{add,sub}(self, rhs: T) -> T`
   (`core::intrinsics::saturating_add` and `saturating_sub`), clamping on
   overflow to `T::MIN` or `T::MAX`.
+- `.checkedAdd`, `.checkedSub`, `.checkedMul`: two same-type integers
+  `T::checked_{add,sub,mul}(self, rhs: T) -> Option<T>`, returning `None`
+  (variant `0`) on overflow and `Some(wrapped)` (variant `1`) otherwise.
 - `.leadingZeros`, `.trailingZeros`: single integer
   `T::{leading_zeros,trailing_zeros}(self) -> u32` (`core::intrinsics::ctlz`
   and `core::intrinsics::cttz`), counting zero bits at the width of `T`
@@ -847,6 +965,12 @@ inlined `core` body (`library/core/src/num/{int_macros,uint_macros}.rs`,
 - `.isMultipleOf`: two same-type unsigned integers
   `uN::is_multiple_of(self, rhs: uN) -> bool`, returning `self == 0` when
   `rhs == 0` and `self % rhs == 0` otherwise.
+- `.toLeBytes`: single integer `T::to_le_bytes(self) -> [u8; N]` (`N =
+  width.byteSize`), decomposing the two's-complement bit pattern of `self` into
+  little-endian bytes (`Anneal.LeBytes.toLeBytesAux`).
+- `.fromLeBytes`: fixed byte array `T::from_le_bytes(bytes: [u8; N]) -> T`
+  (`N = width.byteSize`), reassembling `N` little-endian bytes into `T`
+  (`Anneal.LeBytes.fromLeBytes`).
 - `.cmpMin`, `.cmpMax`: two same-type integers
   `core::cmp::{min,max}(v1: T, v2: T) -> T`, ordering signed integers by
   two's-complement value and unsigned integers by unsigned value. -/
@@ -861,9 +985,14 @@ inductive CoreBuiltin where
   | overflowingMul
   | saturatingAdd
   | saturatingSub
+  | checkedAdd
+  | checkedSub
+  | checkedMul
   | leadingZeros
   | trailingZeros
   | isMultipleOf
+  | toLeBytes
+  | fromLeBytes
   | cmpMin
   | cmpMax
 
@@ -1107,7 +1236,13 @@ caller safety preconditions, and `identity := ""` is rejected by
 `Place::projection`). Likewise, when `scope = .crate`, completeness of `bodies`
 (ensuring every executable body and reachable callee in the crate is included)
 is an external producer obligation, not checked by `Trusted.MirSemantics`
-alone. -/
+alone. For Tier 2 ADTs, producers MUST additionally supply faithful nominal
+`StructTy.id` and `EnumTy.id` keys (distinct for distinct monomorphized ADTs),
+exact per-variant `EnumTy.variantFields` matching `discriminants.length`, and
+exact `tcx.layout_of(...)` tag layouts (`EnumTagRepr.single` only when `rustc`
+assigns `Variants::Single`, and `EnumTagRepr.niche`'s `nichePath`,
+`validStart`, `validEnd`, `untagged`, `start`, `last`, and `nicheStart`
+matching `Variants::Multiple { tag_encoding: Niche { .. } }`). -/
 structure Program where
   bodies : List Body
   entryDefId : DefId := 0

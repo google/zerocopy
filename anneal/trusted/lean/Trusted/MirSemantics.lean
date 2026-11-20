@@ -33,7 +33,7 @@ and `FaultEquivalenceClaim` in `Trusted.Correspondence`, the per-body,
 program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
 `BodyVerified`, `Specs`, `Crate`, `ProgramVerified`, `CrateTheorem`, and
 `UnitTheorem`), and the Pass 1 audited claim propositions (`WpSoundnessClaim`,
-`WpFaultSoundnessClaim`, and the 19 `Canary*Claim` propositions).
+`WpFaultSoundnessClaim`, and the 20 `Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
 definition in this module:
@@ -477,61 +477,271 @@ noncomputable def tagBitsToDiscrBits (tagW : IntWidth) (tagS : Bool)
       truncateBits tagW tagBits
   truncateBits discrW extended
 
-/-- Check that a fieldless enum descriptor `ety : EnumTy` is statically
-well-formed:
-1. `ety.discriminants` is non-empty and has fewer than $2^{32}$ variants,
-   matching `lean-miri`'s `< 2^32` variant-index bound (used on `Niche`
-   paths in `vendor/lean-miri/Miri/Interpreter/Discriminant.lean`). In `rustc`,
-   `rustc_abi::VariantIdx` (`rustc_index::newtype_index!` in
-   `compiler/rustc_abi/src/layout.rs`, with default `max` value `0xFFFF_FF00`
-   supplied by `compiler/rustc_index_macros/src/newtype.rs:98`,
-   `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) caps variant
-   indices at `0xFFFF_FF00`; the small extra admitted range
-   `[0xFFFF_FF01, 2^32)` cannot occur in real `rustc` MIR:
+/-- Inclusive wrapping-range membership check matching
+`Miri.ABI.WrappingRange.contains`
+(`vendor/lean-miri/Miri/ABI/WrappingRange.lean`). -/
+noncomputable def wrappingRangeContains (start end_ value : BitVec 128) :
+    Bool :=
+  if Nat.ble start.toNat end_.toNat then
+    Nat.ble start.toNat value.toNat && Nat.ble value.toNat end_.toNat
+  else
+    Nat.ble start.toNat value.toNat || Nat.ble value.toNat end_.toNat
 
-   > "rustc_index::newtype_index! {
-   >     ...
-   >     pub struct VariantIdx {
-   >         /// Equivalent to `VariantIdx(0)`.
-   >         const FIRST_VARIANT = 0;
-   >     }
-   > }"
+/-- Per-variant payload field types of `ety` at 0-based variant index `v`. -/
+noncomputable def fieldsForVariant? (ety : EnumTy) (v : Nat) :
+    Option (List MirTy) :=
+  if !Nat.blt v ety.discriminants.length ||
+      !Nat.beq ety.variantFields.length ety.discriminants.length then
+    none
+  else
+    getElem? ety.variantFields v
 
-2. Every entry `d ∈ ety.discriminants` fits unsigned in `ety.discrWidth`
-   (`d < Nat.pow 2 ety.discrWidth.bitWidth`, matching `Discr.val` in
-   `compiler/rustc_middle/src/ty/util.rs`).
-3. All entries in `ety.discriminants` are pairwise distinct, matching the Rust
-   Reference (`src/items/enumerations.md`, `rust-lang/reference`
-   `a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
+/-- True iff `ety` declares at least one variant with a non-empty payload field
+list. -/
+noncomputable def hasEnumPayloadFields (ety : EnumTy) : Bool :=
+  ety.variantFields.any (fun fs => !fs.isEmpty)
 
-   > "It is an error when two variants share the same discriminant."
+mutual
+  /-- Structural uninhabitedness predicate matching `LayoutData.isUninhabited`
+  in `compiler/rustc_abi/src/layout.rs` and `Miri.ABI.LayoutData`:
+  - `.never` (`!`) is uninhabited;
+  - `.adtStruct` and `.tuple` are uninhabited iff any field is uninhabited;
+  - `.array elemTy len` is uninhabited iff `len > 0` and `elemTy` is
+    uninhabited (`[!; 0]` is inhabited);
+  - `.enum` is uninhabited iff it has zero variants or every variant has an
+    uninhabited field. -/
+  noncomputable def isTypeUninhabited : MirTy → Bool
+    | .bool | .int _ _ | .unit => false
+    | .never => true
+    | .adtStruct ⟨_, fs⟩ => anyFieldUninhabited fs
+    | .enum ⟨_, _, _, _, ds, vf⟩ =>
+      if ds.isEmpty || !Nat.beq vf.length ds.length then
+        true
+      else
+        allVariantsUninhabited vf
+    | .tuple fs => anyFieldUninhabited fs
+    | .array elemTy len => !Nat.beq len 0 && isTypeUninhabited elemTy
+    | _ => true
 
-4. `ety.tagRepr` accurately encodes every declared discriminant:
-   - `.zeroSized` requires exactly 1 variant (`Variants::Single { index: 0 }`);
-   - `.scalar tagW tagS` requires that truncating each `d` to `tagW` and
-     re-extending via `tagBitsToDiscrBits tagW tagS ety.discrWidth` recovers
-     `d` losslessly (`TagEncoding::Direct` in `tag_for_variant` /
-     `read_discriminant`). -/
-noncomputable def enumAdmitted (ety : EnumTy) : Bool :=
+  /-- True iff at least one type in `tys` is uninhabited. -/
+  noncomputable def anyFieldUninhabited : List MirTy → Bool
+    | [] => false
+    | ty :: tys => isTypeUninhabited ty || anyFieldUninhabited tys
+
+  /-- True iff every variant field list in `vss` contains an uninhabited
+  field. -/
+  noncomputable def allVariantsUninhabited : List (List MirTy) → Bool
+    | [] => true
+    | fs :: fss => anyFieldUninhabited fs && allVariantsUninhabited fss
+end
+
+/-- True iff variant `v` of `ety` is out of bounds or contains an uninhabited
+field, matching `LayoutData.isVariantUninhabited`
+(`vendor/lean-miri/Miri/ABI/Layout.lean`). -/
+noncomputable def isVariantUninhabited (ety : EnumTy) (v : Nat) : Bool :=
+  match fieldsForVariant? ety v with
+  | none => true
+  | some fs => anyFieldUninhabited fs
+
+mutual
+  /-- Structural 0-byte ZST predicate (`Size::ZERO` in `rustc_abi`): `.unit`,
+  `.never`, 0-length arrays, arrays of ZSTs, structs/tuples of ZSTs,
+  `.zeroSized` fieldless enums, and `.single v` enums whose active variant `v`
+  has only ZST fields. -/
+  noncomputable def isZeroSizedTy : MirTy → Bool
+    | .unit | .never => true
+    | .bool | .int _ _ => false
+    | .adtStruct ⟨_, fs⟩ => areAllZeroSizedTys fs
+    | .enum ⟨_, _, _, tagRepr, ds, vf⟩ =>
+      let zstFlags := variantZeroSizedFlags vf
+      match tagRepr with
+      | .zeroSized =>
+        Nat.beq ds.length 1 && Nat.beq vf.length 1 &&
+          !(zstFlags.any (fun b => !b))
+      | .single v =>
+        if !Nat.blt v ds.length || !Nat.beq vf.length ds.length then
+          false
+        else
+          match getElem? zstFlags v with
+          | some b => b
+          | none => false
+      | .scalar _ _ | .niche _ _ _ _ _ _ _ _ _ => false
+    | .tuple fs => areAllZeroSizedTys fs
+    | .array elemTy len => Nat.beq len 0 || isZeroSizedTy elemTy
+    | _ => false
+
+  /-- True iff every type in `tys` is a 0-byte ZST. -/
+  noncomputable def areAllZeroSizedTys : List MirTy → Bool
+    | [] => true
+    | ty :: tys => isZeroSizedTy ty && areAllZeroSizedTys tys
+
+  /-- Per-variant ZST flag list (`areAllZeroSizedTys` mapped structurally). -/
+  noncomputable def variantZeroSizedFlags : List (List MirTy) → List Bool
+    | [] => []
+    | fs :: fss => areAllZeroSizedTys fs :: variantZeroSizedFlags fss
+end
+
+/-- Follow a field/element index path `path` inside a `MirTy` to resolve the
+leaf scalar type of an `EnumTagRepr.niche` layout. -/
+noncomputable def nicheResolveFromTy : MirTy → List Nat → Option MirTy
+  | ty, [] => some ty
+  | .adtStruct sty, idx :: rest =>
+    match getElem? sty.fields idx with
+    | some fTy => nicheResolveFromTy fTy rest
+    | none => none
+  | .tuple fs, idx :: rest =>
+    match getElem? fs idx with
+    | some fTy => nicheResolveFromTy fTy rest
+    | none => none
+  | .array elemTy len, idx :: rest =>
+    if Nat.blt idx len then nicheResolveFromTy elemTy rest else none
+  | _, _ :: _ => none
+
+/-- Resolve a non-empty `nichePath` starting from the payload fields of an
+`untagged` enum variant. -/
+noncomputable def nicheLeafTy? (nichePath : List Nat) (varFields : List MirTy) :
+    Option MirTy :=
+  match nichePath with
+  | [] => none
+  | idx :: rest =>
+    match getElem? varFields idx with
+    | some fTy => nicheResolveFromTy fTy rest
+    | none => none
+
+/-- Check that the leaf type reached by `nichePath` carries a scalar tag with
+primitive integer representation `(tagW, tagS)`. -/
+noncomputable def nicheLeafMatchesTag (tagW : IntWidth) (tagS : Bool) :
+    MirTy → Bool
+  | .bool => IntWidth.beq tagW .i8 && !tagS
+  | .int w s => IntWidth.beq w tagW && (s == tagS)
+  | .enum innerEty =>
+    match innerEty.tagRepr with
+    | .scalar w s =>
+      !hasEnumPayloadFields innerEty && IntWidth.beq w tagW && (s == tagS)
+    | _ => false
+  | _ => false
+
+/-- Check via `@Nat.rec` that every niche tag `nicheStart + k` (`0 ≤ k < count`)
+truncated to `tagW` lies inside the wrapping valid range `[vs, ve]`. -/
+noncomputable def allNicheTagsInValidRange (tagW : IntWidth)
+    (vs ve nicheStart : BitVec 128) (count : Nat) : Bool :=
+  @Nat.rec (fun _ => Bool)
+    true
+    (fun k ih =>
+      ih &&
+        wrappingRangeContains vs ve
+          (truncateBits tagW (BitVec.ofNat 128 k + nicheStart)))
+    count
+
+/-- Check via `@Nat.rec` that every variant `k < total` with `k ≠ singleVar` is
+uninhabited (`Variants::Single { index: singleVar }`). -/
+noncomputable def otherVariantsUninhabited (ety : EnumTy) (singleVar : Nat)
+    (total : Nat) : Bool :=
+  @Nat.rec (fun _ => Bool)
+    true
+    (fun k ih => ih && (Nat.beq k singleVar || isVariantUninhabited ety k))
+    total
+
+/-- Check via `@Nat.rec` that every variant `k < total` with `k ≠ untagged` is
+either uninhabited or niche-encoded (`start ≤ k ≤ last` with ZST-only fields).
+-/
+noncomputable def otherVariantsValidForNiche (ety : EnumTy)
+    (untagged start last total : Nat) : Bool :=
+  @Nat.rec (fun _ => Bool)
+    true
+    (fun k ih =>
+      let okK : Bool :=
+        if Nat.beq k untagged then
+          true
+        else if isVariantUninhabited ety k then
+          true
+        else
+          Nat.ble start k &&
+            Nat.ble k last &&
+            match fieldsForVariant? ety k with
+            | some fs => areAllZeroSizedTys fs
+            | none => false
+      ih && okK)
+    total
+
+/-- Core non-recursive layout and discriminant invariant of `ety : EnumTy`
+(paired with recursive field-type admission in `enumAdmitted`). -/
+noncomputable def enumAdmittedCore (ety : EnumTy) : Bool :=
   !ety.discriminants.isEmpty &&
     Nat.blt ety.discriminants.length (Nat.pow 2 32) &&
-    ety.discriminants.all
-      (fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth)) &&
+    Nat.beq ety.variantFields.length ety.discriminants.length &&
+    ety.discriminants.all (fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth)) &&
     natListPairwiseNe ety.discriminants &&
     match ety.tagRepr with
-    | .zeroSized => Nat.beq ety.discriminants.length 1
+    | .zeroSized =>
+      Nat.beq ety.discriminants.length 1 && !hasEnumPayloadFields ety
+    | .single v =>
+      Nat.blt v ety.discriminants.length &&
+        otherVariantsUninhabited ety v ety.discriminants.length
     | .scalar tagW tagS =>
       ety.discriminants.all (fun d =>
         let dBits := BitVec.ofNat 128 d
         tagBitsToDiscrBits tagW tagS ety.discrWidth
           (truncateBits tagW dBits) == dBits)
+    | .niche tagW tagS vs ve nichePath untagged start last nicheStart =>
+      !nichePath.isEmpty &&
+        Nat.blt untagged ety.discriminants.length &&
+        Nat.blt last ety.discriminants.length &&
+        Nat.ble start last &&
+        (truncateBits tagW vs == vs) &&
+        (truncateBits tagW ve == ve) &&
+        (truncateBits tagW nicheStart == nicheStart) &&
+        Nat.blt (last - start) (Nat.pow 2 tagW.bitWidth) &&
+        allNicheTagsInValidRange tagW vs ve nicheStart (last - start + 1) &&
+        otherVariantsValidForNiche ety untagged start last
+          ety.discriminants.length &&
+        match fieldsForVariant? ety untagged with
+        | none => false
+        | some uFields =>
+          match nicheLeafTy? nichePath uFields with
+          | some leafTy => nicheLeafMatchesTag tagW tagS leafTy
+          | none => false
+
+mutual
+  /-- Check whether `ty` belongs to the supported local-variable type fragment
+  (`.bool`, `.int`, `.unit`, `.never`, `.adtStruct`, admitted `.enum`,
+  non-empty `.tuple`, or fixed `.array` with `len < 2^64`). -/
+  noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
+    | .bool | .int _ _ | .unit | .never => true
+    | .adtStruct ⟨_, fs⟩ => areSupportedFieldTys fs
+    | .enum ⟨id, dw, ds, tr, d, vf⟩ =>
+      enumAdmittedCore ⟨id, dw, ds, tr, d, vf⟩ &&
+        areSupportedVariantFieldLists vf
+    | .tuple fields => !fields.isEmpty && areSupportedFieldTys fields
+    | .array elemTy len =>
+      Nat.blt len (Nat.pow 2 64) && isSupportedScalarOrUnitTy elemTy
+    | _ => false
+
+  /-- Check that every type in a field list belongs to the supported
+  local-variable type fragment (`isSupportedScalarOrUnitTy`). -/
+  noncomputable def areSupportedFieldTys : List MirTy → Bool
+    | [] => true
+    | ty :: tys => isSupportedScalarOrUnitTy ty && areSupportedFieldTys tys
+
+  /-- Check that every variant's field list belongs to the supported
+  local-variable type fragment. -/
+  noncomputable def areSupportedVariantFieldLists : List (List MirTy) → Bool
+    | [] => true
+    | fs :: fss =>
+      areSupportedFieldTys fs && areSupportedVariantFieldLists fss
+end
+
+/-- Check that an enum descriptor `ety : EnumTy` is statically well-formed and
+every payload field type belongs to the supported type fragment. -/
+noncomputable def enumAdmitted (ety : EnumTy) : Bool :=
+  enumAdmittedCore ety && areSupportedVariantFieldLists ety.variantFields
 
 /-- Check whether `ety` is an admitted 0-byte ZST 1-variant fieldless enum
 (`Variants::Single { index: 0 }`). -/
 noncomputable def isZstEnumTy (ety : EnumTy) : Bool :=
   match ety.tagRepr with
   | .zeroSized => enumAdmitted ety
-  | .scalar _ _ => false
+  | _ => false
 
 /-- Linear search from `idx` for the unique variant index whose declared
 discriminant bit pattern equals `discrBits`. -/
@@ -553,6 +763,31 @@ noncomputable def findDiscrVariant? (discrBits : BitVec 128)
     (ds : List Nat) : Option Nat :=
   findDiscrVariantAux 0 discrBits ds
 
+/-- Decode a niche-encoded tag bit pattern `bits` at width `tagW` into a
+variant index, matching the `TagEncoding::Niche` arm of
+`Miri.Interpreter.Discriminant.readDiscriminant`
+(`vendor/lean-miri/Miri/Interpreter/Discriminant.lean`). -/
+noncomputable def decodeNicheTagBits (tagW : IntWidth)
+    (validStart validEnd : BitVec 128) (untagged start last : Nat)
+    (nicheStart : BitVec 128) (variantCount : Nat)
+    (bits : BitVec 128) : Except FaultKind Nat :=
+  let cleanBits := truncateBits tagW bits
+  let relative := truncateBits tagW (cleanBits - nicheStart)
+  if Nat.ble relative.toNat (last - start) then
+    let index := start + relative.toNat
+    if !Nat.blt index (Nat.pow 2 32) || !Nat.blt index variantCount then
+      .error .unsupported
+    else if !wrappingRangeContains validStart validEnd cleanBits then
+      .error .unsupported
+    else if Nat.beq index untagged then
+      .error .undefined
+    else
+      .ok index
+  else if !wrappingRangeContains validStart validEnd cleanBits then
+    .error .undefined
+  else
+    .ok untagged
+
 /-- Canonical boundary value used in `Query`, `Out`, and `TerminalOut` of
 $M_{\text{anneal}}$. -/
 inductive Val where
@@ -560,30 +795,97 @@ inductive Val where
   | ptr (p : PtrVal)
   | bool (b : Bool)
   | unit
-  | enumVal (ty : EnumTy) (variant : Nat)
+  | structVal (sty : StructTy) (fields : List Val)
+  | enumVal (ty : EnumTy) (variant : Nat) (fields : List Val)
   | tuple (fields : List Val)
+  | array (elemTy : MirTy) (elems : List Val)
   | bytes (data : List AllocByte)
+
+/-- Extract the raw scalar bits at `path` inside a `Val` for niche tag
+validation. -/
+noncomputable def extractValNicheBits : Val → List Nat → Option (BitVec 128)
+  | .bool b, [] => some (BitVec.ofNat 128 (if b then 1 else 0))
+  | .scalar sv, [] => some (truncateBits sv.width sv.bits)
+  | .enumVal innerEty innerVar [], [] =>
+    match innerEty.tagRepr, getElem? innerEty.discriminants innerVar with
+    | .scalar w _, some d => some (truncateBits w (BitVec.ofNat 128 d))
+    | _, _ => none
+  | .structVal _ fs, idx :: rest =>
+    match getElem? fs idx with
+    | some fVal => extractValNicheBits fVal rest
+    | none => none
+  | .tuple fs, idx :: rest =>
+    match getElem? fs idx with
+    | some fVal => extractValNicheBits fVal rest
+    | none => none
+  | .array _ elems, idx :: rest =>
+    match getElem? elems idx with
+    | some eVal => extractValNicheBits eVal rest
+    | none => none
+  | _, _ => none
+
+/-- Extract the raw scalar bits along non-empty `nichePath` inside `fields :
+List Val`. -/
+noncomputable def extractValNicheBitsFromFields (nichePath : List Nat)
+    (fields : List Val) : Option (BitVec 128) :=
+  match nichePath with
+  | [] => none
+  | idx :: rest =>
+    match getElem? fields idx with
+    | some fVal => extractValNicheBits fVal rest
+    | none => none
+
+/-- Check whether `fields : List Val` satisfies any niche-tag validity
+constraint of `ety` at `variant`. -/
+noncomputable def enumValNicheValid (ety : EnumTy) (variant : Nat)
+    (fields : List Val) : Bool :=
+  match ety.tagRepr with
+  | .niche tagW _ vs ve nichePath untagged start last nicheStart =>
+    if Nat.beq variant untagged then
+      match extractValNicheBitsFromFields nichePath fields with
+      | none => false
+      | some bits =>
+        match decodeNicheTagBits tagW vs ve untagged start last nicheStart
+            ety.discriminants.length bits with
+        | .ok decoded => Nat.beq decoded untagged
+        | .error _ => false
+    else
+      Nat.ble start variant && Nat.ble variant last
+  | .single v => Nat.beq variant v
+  | .zeroSized => Nat.beq variant 0
+  | .scalar _ _ => true
 
 namespace Val
 
 mutual
   /-- Intrinsic type and well-formedness of a runtime value `Val`: returns
-  `some ty` iff `v` is a well-formed scalar, boolean, unit, fieldless enum
-  value, or non-empty tuple of such values, of type `ty`.
-
-  A tuple value `.tuple fields` has type `.tuple tys` when `fields` is
-  non-empty and each field has the type at the same position in `tys`. The
-  empty tuple `.tuple []` has no type: the unit value `()` is `Val.unit` of
-  type `MirTy.unit` (see `Trusted.MirAst.MirTy`). -/
+  `some ty` iff `v` is a well-formed scalar, boolean, unit, struct, enum,
+  non-empty tuple, or fixed array value of supported type `ty`. -/
   noncomputable def ty? : Val → Option MirTy
     | .scalar sv => if sv.wf then some (.int sv.width sv.signed) else none
     | .bool _ => some .bool
     | .unit => some .unit
-    | .enumVal ety v =>
-      if enumAdmitted ety && Nat.blt v ety.discriminants.length then
-        some (.enum ety)
-      else
+    | .structVal sty fields =>
+      if !areSupportedFieldTys sty.fields || isTypeUninhabited (.adtStruct sty)
+      then
         none
+      else
+        match tys? fields with
+        | some tys =>
+          if MirTy.beqList tys sty.fields then some (.adtStruct sty) else none
+        | none => none
+    | .enumVal ety v fields =>
+      if !enumAdmitted ety || isVariantUninhabited ety v ||
+          !enumValNicheValid ety v fields then
+        none
+      else
+        match fieldsForVariant? ety v, tys? fields with
+        | some expectedTys, some actualTys =>
+          if MirTy.beqList actualTys expectedTys then
+            some (.enum ety)
+          else
+            none
+        | _, _ => none
     | .tuple fields =>
       if fields.isEmpty then
         none
@@ -591,6 +893,15 @@ mutual
         match tys? fields with
         | some tys => some (.tuple tys)
         | none => none
+    | .array elemTy elems =>
+      if !isSupportedScalarOrUnitTy elemTy ||
+          !Nat.blt elems.length (Nat.pow 2 64) ||
+          (!Nat.beq elems.length 0 && isTypeUninhabited elemTy) then
+        none
+      else if !checkElemsHaveTy elemTy elems then
+        none
+      else
+        some (.array elemTy elems.length)
     | _ => none
 
   /-- Intrinsic types of a list of values, in order: `some tys` iff every
@@ -601,6 +912,14 @@ mutual
       match ty? v, tys? vs with
       | some ty, some tys => some (ty :: tys)
       | _, _ => none
+
+  /-- Check that every element of `elems` has intrinsic type `elemTy`. -/
+  noncomputable def checkElemsHaveTy (elemTy : MirTy) : List Val → Bool
+    | [] => true
+    | v :: vs =>
+      match ty? v with
+      | some vTy => MirTy.beq vTy elemTy && checkElemsHaveTy elemTy vs
+      | none => false
 end
 
 end Val
@@ -654,8 +973,11 @@ inductive SlotVal where
   | ptr (p : PtrVal)
   | bool (b : Bool)
   | unit
-  | enumVal (ty : EnumTy) (variant : Nat)
+  | structVal (sty : StructTy) (fields : List SlotVal)
+  | enumVal (ty : EnumTy) (variant : Nat) (fields : List SlotVal)
+  | enumUntagged (ty : EnumTy) (variant : Nat) (fields : List SlotVal)
   | tuple (fields : List SlotVal)
+  | array (elemTy : MirTy) (elems : List SlotVal)
   | bytes (data : List AllocByte)
 
 mutual
@@ -665,8 +987,11 @@ mutual
     | .ptr p => .ptr p
     | .bool b => .bool b
     | .unit => .unit
-    | .enumVal ty variant => .enumVal ty variant
+    | .structVal sty fields => .structVal sty (Val.toSlotVals fields)
+    | .enumVal ty variant fields =>
+      .enumVal ty variant (Val.toSlotVals fields)
     | .tuple fields => .tuple (Val.toSlotVals fields)
+    | .array elemTy elems => .array elemTy (Val.toSlotVals elems)
     | .bytes data => .bytes data
 
   /-- Embed each value of a list as fully initialized slot contents. -/
@@ -677,22 +1002,30 @@ end
 
 mutual
   /-- Read slot contents as a value: `some v` iff every part of the slot is
-  initialized, and `none` if any part is `.uninit`.
-
-  Reading a tuple slot as a whole therefore requires all of its fields to be
-  initialized, matching `rustc`, where copying a value validates it and
-  validation reports uninitialized `bool` and integer fields as UB (quoted at
-  `evalPrimitiveOperand` and `Trusted.Correspondence.refRvalueHooks`). -/
+  initialized (and, for enums, has an active discriminant tag rather than
+  `enumUntagged`), and `none` if any part is `.uninit` or untagged. -/
   noncomputable def SlotVal.toVal? : SlotVal → Option Val
     | .uninit => none
+    | .enumUntagged _ _ _ => none
     | .scalar v => some (.scalar v)
     | .ptr p => some (.ptr p)
     | .bool b => some (.bool b)
     | .unit => some .unit
-    | .enumVal ty variant => some (.enumVal ty variant)
+    | .structVal sty fields =>
+      match SlotVal.toVals? fields with
+      | some vs => some (.structVal sty vs)
+      | none => none
+    | .enumVal ty variant fields =>
+      match SlotVal.toVals? fields with
+      | some vs => some (.enumVal ty variant vs)
+      | none => none
     | .tuple fields =>
       match SlotVal.toVals? fields with
       | some vs => some (.tuple vs)
+      | none => none
+    | .array elemTy elems =>
+      match SlotVal.toVals? elems with
+      | some vs => some (.array elemTy vs)
       | none => none
     | .bytes data => some (.bytes data)
 
@@ -836,26 +1169,15 @@ noncomputable def checkArgsMatch : List Val → List MirTy → Bool
   | v :: vs, ty :: tys => checkVal v ty && checkArgsMatch vs tys
   | _, _ => false
 
-mutual
-  /-- Check whether `ty` belongs to the supported local-variable type fragment
-  (`.bool`, `.int`, `.unit`, uninhabited `.never`, admitted fieldless `.enum`,
-  or a non-empty `.tuple` whose field types all belong to the fragment). The
-  fragment is wider than the name suggests; downstream proof modules refer to
-  the predicate by this name.
+/-- Replicate `v : Val` `n` times via `@Nat.rec` (avoiding `_unsafe_rec`
+helpers). -/
+noncomputable def replicateVal (n : Nat) (v : Val) : List Val :=
+  @Nat.rec (fun _ => List Val) [] (fun _ ih => v :: ih) n
 
-  The empty tuple type `.tuple []` is rejected: `()` is `MirTy.unit`. -/
-  noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
-    | .bool | .int _ _ | .unit | .never => true
-    | .enum ety => enumAdmitted ety
-    | .tuple fields => !fields.isEmpty && areSupportedFieldTys fields
-    | _ => false
-
-  /-- Check that every type in a tuple's field list belongs to the supported
-  local-variable type fragment (`isSupportedScalarOrUnitTy`). -/
-  noncomputable def areSupportedFieldTys : List MirTy → Bool
-    | [] => true
-    | ty :: tys => isSupportedScalarOrUnitTy ty && areSupportedFieldTys tys
-end
+/-- Replicate `sv : SlotVal` `n` times via `@Nat.rec` (avoiding `_unsafe_rec`
+helpers). -/
+noncomputable def replicateSlotVal (n : Nat) (sv : SlotVal) : List SlotVal :=
+  @Nat.rec (fun _ => List SlotVal) [] (fun _ ih => sv :: ih) n
 
 mutual
   /-- Contents of a newly live slot of type `ty` that no statement has written
@@ -865,35 +1187,47 @@ mutual
   (`compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
   `8144389c895da997dbdecaa635e41d6a50be6ffd`) and `lean-miri`
   (`Miri/Interpreter/Immediate.lean`, `OperandMachine.lean`, and
-  `Discriminant.lean`), an inhabited 0-byte ZST (`MirTy.unit` or an admitted
-  `.zeroSized` 1-variant fieldless enum `Variants::Single { index: 0 }`)
-  requires zero initialized bytes in memory:
-
-  > "Variants::Single { index } => {
-  >     if op.layout().is_uninhabited() {
-  >         ...
-  >         throw_ub!(UninhabitedEnumVariantRead(Some(index)));
-  >     }
-  >     ...
-  >     return interp_ok(index);
-  > }"
-
-  Accordingly, a `.unit` slot holds `SlotVal.unit` and a `.zeroSized`
-  fieldless enum slot holds `SlotVal.enumVal ety 0` from the moment it becomes
-  live (and `Operand.move` leaves that ZST value in place). A `.tuple` slot is
-  the `.tuple` of its fields' contents, so its ZST fields are inhabited and
-  its other fields are `.uninit`. Every other type starts `.uninit`. -/
+  `Discriminant.lean`), an inhabited 0-byte ZST (`MirTy.unit`, a ZST struct,
+  `[T; 0]`, or an admitted `.zeroSized` / ZST `.single` enum) requires zero
+  initialized bytes in memory. Compound struct, tuple, array, and `.single`
+  enum slots recursively initialize their subfields with `uninitSlotVal` so
+  ZST subfields start inhabited while non-ZST subfields start `.uninit`. -/
   noncomputable def uninitSlotVal : MirTy → SlotVal
     | .unit => .unit
-    | .enum ety => if isZstEnumTy ety then .enumVal ety 0 else .uninit
+    | .adtStruct ⟨id, fs⟩ => .structVal ⟨id, fs⟩ (uninitSlotVals fs)
+    | .enum ⟨id, dw, ds, tr, d, vf⟩ =>
+      let ety : EnumTy := ⟨id, dw, ds, tr, d, vf⟩
+      let initVfs := uninitVariantSlotLists vf
+      match tr with
+      | .zeroSized =>
+        if enumAdmittedCore ety && areSupportedVariantFieldLists vf then
+          .enumVal ety 0 []
+        else
+          .uninit
+      | .single v =>
+        if !(enumAdmittedCore ety && areSupportedVariantFieldLists vf) ||
+            isTypeUninhabited (.enum ety) then
+          .uninit
+        else
+          match getElem? initVfs v with
+          | some initFs => .enumVal ety v initFs
+          | none => .uninit
+      | _ => .uninit
     | .tuple fields => .tuple (uninitSlotVals fields)
+    | .array elemTy len =>
+      .array elemTy (replicateSlotVal len (uninitSlotVal elemTy))
     | _ => .uninit
 
-  /-- Contents of the newly live fields of a tuple slot, one per field type
-  (`uninitSlotVal`). -/
+  /-- Contents of newly live fields, one per field type (`uninitSlotVal`). -/
   noncomputable def uninitSlotVals : List MirTy → List SlotVal
     | [] => []
     | ty :: tys => uninitSlotVal ty :: uninitSlotVals tys
+
+  /-- Contents of newly live variant field lists (`uninitSlotVals`). -/
+  noncomputable def uninitVariantSlotLists :
+      List (List MirTy) → List (List SlotVal)
+    | [] => []
+    | fs :: fss => uninitSlotVals fs :: uninitVariantSlotLists fss
 end
 
 /-- Initial state of a newly live local slot of type `ty`: allocated storage
@@ -1051,90 +1385,468 @@ noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
       else
         .error .undefined
   | .unit, .zeroSized => .ok .unit
+  | .adtStruct sty, .zeroSized =>
+    if areSupportedFieldTys sty.fields && areAllZeroSizedTys sty.fields &&
+        !isTypeUninhabited (.adtStruct sty) then
+      match (uninitSlotVal (.adtStruct sty)).toVal? with
+      | some v => .ok v
+      | none => .error .unsupported
+    else
+      .error .unsupported
+  | .array elemTy 0, .zeroSized =>
+    if isSupportedScalarOrUnitTy elemTy then
+      .ok (.array elemTy [])
+    else
+      .error .unsupported
   | .enum ety, .zeroSized =>
-    if isZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
+    if isZstEnumTy ety then
+      .ok (.enumVal ety 0 [])
+    else
+      match ety.tagRepr with
+      | .single v₀ =>
+        if enumAdmitted ety && !isVariantUninhabited ety v₀ then
+          match fieldsForVariant? ety v₀ with
+          | some [] => .ok (.enumVal ety v₀ [])
+          | _ => .error .unsupported
+        else
+          .error .unsupported
+      | _ => .error .unsupported
   | .enum ety, .scalar bits =>
-    match ety.tagRepr with
-    | .zeroSized => .error .unsupported
-    | .scalar tagW tagS =>
-      if !enumAdmitted ety || truncateBits tagW bits != bits then
-        .error .unsupported
-      else
-        let discrBits := tagBitsToDiscrBits tagW tagS ety.discrWidth bits
-        match findDiscrVariant? discrBits ety.discriminants with
-        | some v => .ok (.enumVal ety v)
-        | none => .error .undefined
+    if !enumAdmitted ety then
+      .error .unsupported
+    else
+      match ety.tagRepr with
+      | .scalar tagW tagS =>
+        if truncateBits tagW bits != bits then
+          .error .unsupported
+        else
+          let discrBits := tagBitsToDiscrBits tagW tagS ety.discrWidth bits
+          match findDiscrVariant? discrBits ety.discriminants with
+          | some v =>
+            if isVariantUninhabited ety v then
+              .error .undefined
+            else
+              match fieldsForVariant? ety v with
+              | some [] => .ok (.enumVal ety v [])
+              | _ => .error .unsupported
+          | none => .error .undefined
+      | .niche tagW _ vs ve _ untagged start last nicheStart =>
+        if truncateBits tagW bits != bits then
+          .error .unsupported
+        else
+          match decodeNicheTagBits tagW vs ve untagged start last nicheStart
+              ety.discriminants.length bits with
+          | .error k => .error k
+          | .ok v =>
+            if isVariantUninhabited ety v then
+              .error .undefined
+            else
+              match fieldsForVariant? ety v with
+              | some [] => .ok (.enumVal ety v [])
+              | _ => .error .unsupported
+      | _ => .error .unsupported
   | _, _ => .error .unsupported
 
-/-- Type of the place reached from a place of type `ty` by the projection
-`proj`, or `none` if `proj` does not apply to `ty`.
+/-- Intermediate projected place type matching `rustc_middle::mir::tcx::PlaceTy`
+(`compiler/rustc_middle/src/mir/tcx.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`): either a standalone type `.ty t`
+or a downcasted enum variant `.variant ety variantIdx` awaiting `.field`. -/
+inductive PlaceTy where
+  | ty (t : MirTy)
+  | variant (ety : EnumTy) (variantIdx : Nat)
 
-Only tuple field projections are modeled. `.field idx fieldTy` applies to a
-`.tuple fieldTys` when `idx` is in bounds and the field's type equals the
-`fieldTy` that the projection states; any other projection element (`.deref`,
-`.unsupported`), a `.field` on a non-tuple type, an out-of-bounds `idx`, or a
-stated type that differs from the field's type yields `none`. Corresponds to
-the `Field` arm of `project` in
-`compiler/rustc_const_eval/src/interpret/projection.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`), applied left to right as in
-`eval_place_to_op`:
-
-> "Field(field, _) => self.project_field(base, field)?,"
-> (`compiler/rustc_const_eval/src/interpret/projection.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
->
-> "let mut op = self.local_to_op(mir_place.local, layout)?;
-> // Using `try_fold` turned out to be bad for performance, hence the loop.
-> for elem in mir_place.projection.iter() {
->     op = self.project(&op, elem)?
-> }"
-> (`compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
-noncomputable def projectTy? : MirTy → List ProjectionElem → Option MirTy
-  | ty, [] => some ty
-  | ty, elem :: rest =>
-    match ty, elem with
-    | .tuple fieldTys, .field idx fieldTy =>
-      match getElem? fieldTys idx with
+/-- Step-by-step static type projection over `PlaceTy` for `.field`,
+`.downcast`, `.constantIndex`, and `.index`. -/
+noncomputable def projectPlaceTy? :
+    PlaceTy → List ProjectionElem → Option PlaceTy
+  | pty, [] => some pty
+  | .ty (.tuple fieldTys), .field idx fieldTy :: rest =>
+    match getElem? fieldTys idx with
+    | some ty' =>
+      if MirTy.beq ty' fieldTy then projectPlaceTy? (.ty ty') rest else none
+    | none => none
+  | .ty (.adtStruct sty), .field idx fieldTy :: rest =>
+    match getElem? sty.fields idx with
+    | some ty' =>
+      if MirTy.beq ty' fieldTy then projectPlaceTy? (.ty ty') rest else none
+    | none => none
+  | .variant ety v, .field idx fieldTy :: rest =>
+    match fieldsForVariant? ety v with
+    | some varFields =>
+      match getElem? varFields idx with
       | some ty' =>
-        if MirTy.beq ty' fieldTy then projectTy? ty' rest else none
+        if MirTy.beq ty' fieldTy then projectPlaceTy? (.ty ty') rest else none
       | none => none
-    | _, _ => none
+    | none => none
+  | .ty (.enum ety), .downcast v :: rest =>
+    if enumAdmitted ety && Nat.blt v ety.discriminants.length then
+      projectPlaceTy? (.variant ety v) rest
+    else
+      none
+  | .ty (.array elemTy len), .constantIndex _ _ _ :: rest =>
+    if Nat.blt len (Nat.pow 2 64) then
+      projectPlaceTy? (.ty elemTy) rest
+    else
+      none
+  | .ty (.array elemTy len), .index _ :: rest =>
+    if Nat.blt len (Nat.pow 2 64) then
+      projectPlaceTy? (.ty elemTy) rest
+    else
+      none
+  | _, _ :: _ => none
 
-/-- Contents of the part of slot `sv` that the projection `proj` selects, or
-`none` if `proj` does not select a part of `sv` (a non-`.field` projection
-element, a `.field` on a non-tuple slot, or an out-of-bounds field index). -/
-noncomputable def readSlotPath? :
-    SlotVal → List ProjectionElem → Option SlotVal
-  | sv, [] => some sv
-  | sv, elem :: rest =>
-    match sv, elem with
-    | .tuple fields, .field idx _ =>
-      match getElem? fields idx with
-      | some field => readSlotPath? field rest
+/-- Static type of the place reached from `ty` by `proj`, or `none` if `proj`
+is ill-typed or ends in a bare `.downcast` without a subsequent `.field`. -/
+noncomputable def projectTy? (ty : MirTy) (proj : List ProjectionElem) :
+    Option MirTy :=
+  match projectPlaceTy? (.ty ty) proj with
+  | some (.ty resTy) => some resTy
+  | _ => none
+
+/-- Evaluate `ProjectionElem.constantIndex offset minLength fromEnd` on an
+array of length `len` (`len < 2^64`), matching `Miri.Interpreter.project` and
+`Miri.Interpreter.projectConstantIndex`
+(`vendor/lean-miri/Miri/Interpreter/Projection.lean`):
+- `offset >= 2^64` or `minLength >= 2^64`: `.error .unsupported`;
+- `len < minLength`: `.error .undefined` (`ProjectionError.bounds`);
+- `fromEnd = true`: checks `offset > 0` and `offset <= minLength`
+  (`.unsupported` otherwise) and `offset <= len` (`.undefined` otherwise)
+  before subtracting `len - offset` (preventing `Nat` subtraction saturation);
+- `fromEnd = false`: checks `offset < minLength` (`.unsupported` otherwise) and
+  `offset < len` (`.undefined` otherwise). -/
+noncomputable def evalConstantIndex (len offset minLength : Nat)
+    (fromEnd : Bool) : Except FaultKind Nat :=
+  if !Nat.blt offset (Nat.pow 2 64) ||
+      !Nat.blt minLength (Nat.pow 2 64) then
+    .error .unsupported
+  else if Nat.blt len minLength then
+    .error .undefined
+  else if fromEnd then
+    if Nat.beq offset 0 || Nat.blt minLength offset then
+      .error .unsupported
+    else if Nat.blt len offset then
+      .error .undefined
+    else
+      .ok (len - offset)
+  else if !Nat.blt offset minLength then
+    .error .unsupported
+  else if !Nat.blt offset len then
+    .error .undefined
+  else
+    .ok offset
+
+/-- Validate and canonicalize an already-static projection path (without
+dynamic `.index` elements) against `pty : PlaceTy`, used when writing a callee
+return value into a `ReturnContinuation.dst` whose dynamic indices were already
+resolved at call entry. -/
+noncomputable def resolveStaticProjPath :
+    PlaceTy → List ProjectionElem → Except FaultKind (List ProjectionElem)
+  | .ty _, [] => .ok []
+  | .variant _ _, [] => .error .unsupported
+  | .ty (.tuple fieldTys), .field idx fieldTy :: rest =>
+    match getElem? fieldTys idx with
+    | some ty' =>
+      if MirTy.beq ty' fieldTy then
+        match resolveStaticProjPath (.ty ty') rest with
+        | .ok rest' => .ok (.field idx fieldTy :: rest')
+        | .error k => .error k
+      else
+        .error .unsupported
+    | none => .error .unsupported
+  | .ty (.adtStruct sty), .field idx fieldTy :: rest =>
+    match getElem? sty.fields idx with
+    | some ty' =>
+      if MirTy.beq ty' fieldTy then
+        match resolveStaticProjPath (.ty ty') rest with
+        | .ok rest' => .ok (.field idx fieldTy :: rest')
+        | .error k => .error k
+      else
+        .error .unsupported
+    | none => .error .unsupported
+  | .variant ety v, .field idx fieldTy :: rest =>
+    match fieldsForVariant? ety v with
+    | some varFields =>
+      match getElem? varFields idx with
+      | some ty' =>
+        if MirTy.beq ty' fieldTy then
+          match resolveStaticProjPath (.ty ty') rest with
+          | .ok rest' => .ok (.field idx fieldTy :: rest')
+          | .error k => .error k
+        else
+          .error .unsupported
+      | none => .error .unsupported
+    | none => .error .unsupported
+  | .ty (.enum ety), .downcast v :: rest =>
+    if enumAdmitted ety && Nat.blt v ety.discriminants.length then
+      match resolveStaticProjPath (.variant ety v) rest with
+      | .ok rest' => .ok (.downcast v :: rest')
+      | .error k => .error k
+    else
+      .error .unsupported
+  | .ty (.array elemTy len), .constantIndex offset minLength fromEnd :: rest =>
+    if !Nat.blt len (Nat.pow 2 64) then
+      .error .unsupported
+    else
+      match evalConstantIndex len offset minLength fromEnd with
+      | .error k => .error k
+      | .ok idx =>
+        match resolveStaticProjPath (.ty elemTy) rest with
+        | .ok rest' => .ok (.constantIndex idx (idx + 1) false :: rest')
+        | .error k => .error k
+  | _, _ :: _ => .error .unsupported
+
+/-- Resolve dynamic `.index` and `.constantIndex` steps along `proj` into
+canonical in-bounds `.constantIndex idx (idx + 1) false` steps, reading each
+`idxLocal` as a `usize` without moving it (matching `Miri.Interpreter.project`
+in `vendor/lean-miri/Miri/Interpreter/Projection.lean`). -/
+noncomputable def resolveProjPath (bodyLocals : List MirTy)
+    (locals : List LocalSlot) :
+    PlaceTy → List ProjectionElem → Except FaultKind (List ProjectionElem)
+  | .ty _, [] => .ok []
+  | .variant _ _, [] => .error .unsupported
+  | .ty (.tuple fieldTys), .field idx fieldTy :: rest =>
+    match getElem? fieldTys idx with
+    | some ty' =>
+      if MirTy.beq ty' fieldTy then
+        match resolveProjPath bodyLocals locals (.ty ty') rest with
+        | .ok rest' => .ok (.field idx fieldTy :: rest')
+        | .error k => .error k
+      else
+        .error .unsupported
+    | none => .error .unsupported
+  | .ty (.adtStruct sty), .field idx fieldTy :: rest =>
+    match getElem? sty.fields idx with
+    | some ty' =>
+      if MirTy.beq ty' fieldTy then
+        match resolveProjPath bodyLocals locals (.ty ty') rest with
+        | .ok rest' => .ok (.field idx fieldTy :: rest')
+        | .error k => .error k
+      else
+        .error .unsupported
+    | none => .error .unsupported
+  | .variant ety v, .field idx fieldTy :: rest =>
+    match fieldsForVariant? ety v with
+    | some varFields =>
+      match getElem? varFields idx with
+      | some ty' =>
+        if MirTy.beq ty' fieldTy then
+          match resolveProjPath bodyLocals locals (.ty ty') rest with
+          | .ok rest' => .ok (.field idx fieldTy :: rest')
+          | .error k => .error k
+        else
+          .error .unsupported
+      | none => .error .unsupported
+    | none => .error .unsupported
+  | .ty (.enum ety), .downcast v :: rest =>
+    if enumAdmitted ety && Nat.blt v ety.discriminants.length then
+      match resolveProjPath bodyLocals locals (.variant ety v) rest with
+      | .ok rest' => .ok (.downcast v :: rest')
+      | .error k => .error k
+    else
+      .error .unsupported
+  | .ty (.array elemTy len), .constantIndex offset minLength fromEnd :: rest =>
+    if !Nat.blt len (Nat.pow 2 64) then
+      .error .unsupported
+    else
+      match evalConstantIndex len offset minLength fromEnd with
+      | .error k => .error k
+      | .ok idx =>
+        match resolveProjPath bodyLocals locals (.ty elemTy) rest with
+        | .ok rest' => .ok (.constantIndex idx (idx + 1) false :: rest')
+        | .error k => .error k
+  | .ty (.array elemTy len), .index idxLocal :: rest =>
+    if !Nat.blt len (Nat.pow 2 64) then
+      .error .unsupported
+    else
+      match getElem? bodyLocals idxLocal, getElem? locals idxLocal with
+      | some (.int .isize false), some (.live (.scalar sv)) =>
+        let idx := (truncateBits .isize sv.bits).toNat
+        if Nat.blt idx len then
+          match resolveProjPath bodyLocals locals (.ty elemTy) rest with
+          | .ok rest' => .ok (.constantIndex idx (idx + 1) false :: rest')
+          | .error k => .error k
+        else
+          .error .undefined
+      | some (.int .isize false), some (.live .uninit) => .error .undefined
+      | some (.int .isize false), some .dead => .error .undefined
+      | _, _ => .error .unsupported
+  | _, _ :: _ => .error .unsupported
+
+/-- Read the subslot of `sv` selected by a canonicalized projection `proj`
+starting at `pty : PlaceTy`. -/
+noncomputable def readPlaceSlotPath? :
+    PlaceTy → SlotVal → List ProjectionElem → Option SlotVal
+  | .ty _, sv, [] => some sv
+  | .variant _ _, _, [] => none
+  | .ty (.tuple fieldTys), .tuple fields, .field idx _ :: rest =>
+    match getElem? fieldTys idx, getElem? fields idx with
+    | some fTy, some field => readPlaceSlotPath? (.ty fTy) field rest
+    | _, _ => none
+  | .ty (.adtStruct sty), .structVal sty' fields, .field idx _ :: rest =>
+    if !StructTy.beq sty sty' then
+      none
+    else
+      match getElem? sty.fields idx, getElem? fields idx with
+      | some fTy, some field => readPlaceSlotPath? (.ty fTy) field rest
+      | _, _ => none
+  | .ty (.enum ety), sv, .downcast v :: rest =>
+    if Nat.blt v ety.discriminants.length then
+      readPlaceSlotPath? (.variant ety v) sv rest
+    else
+      none
+  | .variant ety v, sv, .field idx _ :: rest =>
+    match fieldsForVariant? ety v with
+    | none => none
+    | some varFields =>
+      match getElem? varFields idx with
       | none => none
-    | _, _ => none
+      | some fTy =>
+        match sv with
+        | .uninit =>
+          readPlaceSlotPath? (.ty fTy) (uninitSlotVal fTy) rest
+        | .enumVal ety' v' fields =>
+          if !EnumTy.beq ety ety' then
+            none
+          else if Nat.beq v' v then
+            match getElem? fields idx with
+            | some field => readPlaceSlotPath? (.ty fTy) field rest
+            | none => none
+          else
+            match fieldsForVariant? ety v' with
+            | some activeFieldTys =>
+              if areAllZeroSizedTys activeFieldTys then
+                readPlaceSlotPath? (.ty fTy) (uninitSlotVal fTy) rest
+              else
+                none
+            | none => none
+        | .enumUntagged ety' v' fields =>
+          if EnumTy.beq ety ety' && Nat.beq v' v then
+            match getElem? fields idx with
+            | some field => readPlaceSlotPath? (.ty fTy) field rest
+            | none => none
+          else
+            none
+        | _ => none
+  | .ty (.array elemTy len), .array elemTy' elems,
+      .constantIndex idx _ false :: rest =>
+    if !MirTy.beq elemTy elemTy' || !Nat.beq elems.length len then
+      none
+    else
+      match getElem? elems idx with
+      | some elem => readPlaceSlotPath? (.ty elemTy) elem rest
+      | none => none
+  | _, _, _ :: _ => none
 
-/-- Slot `sv` with the part that the projection `proj` selects replaced by
-`new`, leaving every other part (including sibling fields and their
-initialization state) unchanged, or `none` if `proj` does not select a part
-of `sv` (as in `readSlotPath?`). -/
-noncomputable def writeSlotPath? :
-    SlotVal → List ProjectionElem → SlotVal → Option SlotVal
-  | _, [], new => some new
-  | sv, elem :: rest, new =>
-    match sv, elem with
-    | .tuple fields, .field idx _ =>
-      match getElem? fields idx with
-      | some field =>
-        match writeSlotPath? field rest new with
-        | some field' =>
-          match setElem? fields idx field' with
-          | some fields' => some (.tuple fields')
-          | none => none
+/-- Update the subslot of `sv` selected by a canonicalized projection `proj`
+starting at `pty : PlaceTy` with `new`, leaving sibling fields and array
+elements untouched. Writing through `.downcast v` into `.uninit` or a
+different active `enumVal` initializes a partial `.enumUntagged ety v` shell
+for variant `v`; writing through `.downcast v` into a mismatched
+`.enumUntagged ety v'` (`v' ≠ v`) fails closed (`none`). -/
+noncomputable def writePlaceSlotPath? :
+    PlaceTy → SlotVal → List ProjectionElem → SlotVal → Option SlotVal
+  | .ty _, _, [], new => some new
+  | .variant _ _, _, [], _ => none
+  | .ty (.tuple fieldTys), .tuple fields, .field idx _ :: rest, new =>
+    match getElem? fieldTys idx, getElem? fields idx with
+    | some fTy, some field =>
+      match writePlaceSlotPath? (.ty fTy) field rest new with
+      | some field' =>
+        match setElem? fields idx field' with
+        | some fields' => some (.tuple fields')
         | none => none
       | none => none
     | _, _ => none
+  | .ty (.adtStruct sty), .structVal sty' fields, .field idx _ :: rest, new =>
+    if !StructTy.beq sty sty' then
+      none
+    else
+      match getElem? sty.fields idx, getElem? fields idx with
+      | some fTy, some field =>
+        match writePlaceSlotPath? (.ty fTy) field rest new with
+        | some field' =>
+          match setElem? fields idx field' with
+          | some fields' => some (.structVal sty fields')
+          | none => none
+        | none => none
+      | _, _ => none
+  | .ty (.enum ety), sv, .downcast v :: rest, new =>
+    if Nat.blt v ety.discriminants.length then
+      writePlaceSlotPath? (.variant ety v) sv rest new
+    else
+      none
+  | .variant ety v, sv, .field idx _ :: rest, new =>
+    match fieldsForVariant? ety v with
+    | none => none
+    | some varFields =>
+      match getElem? varFields idx with
+      | none => none
+      | some fTy =>
+        match sv with
+        | .uninit =>
+          let initFields := uninitSlotVals varFields
+          match getElem? initFields idx with
+          | none => none
+          | some field =>
+            match writePlaceSlotPath? (.ty fTy) field rest new with
+            | some field' =>
+              match setElem? initFields idx field' with
+              | some fields' => some (.enumUntagged ety v fields')
+              | none => none
+            | none => none
+        | .enumUntagged ety' v' fields =>
+          if !(EnumTy.beq ety ety' && Nat.beq v' v) then
+            none
+          else
+            match getElem? fields idx with
+            | none => none
+            | some field =>
+              match writePlaceSlotPath? (.ty fTy) field rest new with
+              | some field' =>
+                match setElem? fields idx field' with
+                | some fields' => some (.enumUntagged ety v fields')
+                | none => none
+              | none => none
+        | .enumVal ety' v' fields =>
+          if !EnumTy.beq ety ety' then
+            none
+          else if Nat.beq v' v then
+            match getElem? fields idx with
+            | none => none
+            | some field =>
+              match writePlaceSlotPath? (.ty fTy) field rest new with
+              | some field' =>
+                match setElem? fields idx field' with
+                | some fields' => some (.enumVal ety v fields')
+                | none => none
+              | none => none
+          else
+            let initFields := uninitSlotVals varFields
+            match getElem? initFields idx with
+            | none => none
+            | some field =>
+              match writePlaceSlotPath? (.ty fTy) field rest new with
+              | some field' =>
+                match setElem? initFields idx field' with
+                | some fields' => some (.enumUntagged ety v fields')
+                | none => none
+              | none => none
+        | _ => none
+  | .ty (.array elemTy len), .array elemTy' elems,
+      .constantIndex idx _ false :: rest, new =>
+    if !MirTy.beq elemTy elemTy' || !Nat.beq elems.length len then
+      none
+    else
+      match getElem? elems idx with
+      | some elem =>
+        match writePlaceSlotPath? (.ty elemTy) elem rest new with
+        | some elem' =>
+          match setElem? elems idx elem' with
+          | some elems' => some (.array elemTy elems')
+          | none => none
+        | none => none
+      | none => none
+  | _, _, _ :: _, _ => none
 
 /-- Read the storage at `place` for `Operand.copy` (`isMove = false`) or
 `Operand.move` (`isMove = true`), returning the place's type, its contents,
@@ -1142,32 +1854,36 @@ and the updated locals.
 
 The base local must be declared and live: a dead local faults with
 `.undefined` before the projection is examined, matching `local_to_op`, which
-`eval_place_to_op` runs before it applies any projection. The projection must
-apply to both the local's declared type (`projectTy?`) and its current
-contents (`readSlotPath?`); otherwise the read faults with `.unsupported`.
-
-A move then overwrites the storage at `place` (and only that storage) with
-`uninitSlotVal ty`, where `ty` is the type of `place`: moving `(_8.1: bool)`
-deinitializes field `1` of `_8` and leaves field `0` as it was, and moving a
-whole tuple deinitializes each of its non-ZST fields. -/
+`eval_place_to_op` runs before it applies any projection. Dynamic `.index` and
+`.constantIndex` projections are then resolved via `resolveProjPath` (faulting
+with `.undefined` on out-of-bounds indices or dead/uninitialized index locals),
+and `readPlaceSlotPath?` reads the projected subslot. When `isMove = true`,
+only that subslot is overwritten with `uninitSlotVal ty`. -/
 noncomputable def evalPlaceOperand (bodyLocals : List MirTy)
     (locals : List LocalSlot) (place : Place) (isMove : Bool) :
     Except FaultKind (MirTy × SlotVal × List LocalSlot) :=
   match getElem? bodyLocals place.localId, getElem? locals place.localId with
   | some localTy, some (.live root) =>
-    match projectTy? localTy place.projection,
-        readSlotPath? root place.projection with
-    | some ty, some sv =>
-      if !isMove then
-        .ok (ty, sv, locals)
-      else
-        match writeSlotPath? root place.projection (uninitSlotVal ty) with
-        | some root' =>
-          match setElem? locals place.localId (.live root') with
-          | some locals' => .ok (ty, sv, locals')
-          | none => .error .unsupported
+    match projectTy? localTy place.projection with
+    | none => .error .unsupported
+    | some ty =>
+      match resolveProjPath bodyLocals locals (.ty localTy)
+          place.projection with
+      | .error k => .error k
+      | .ok resolvedProj =>
+        match readPlaceSlotPath? (.ty localTy) root resolvedProj with
         | none => .error .unsupported
-    | _, _ => .error .unsupported
+        | some sv =>
+          if !isMove then
+            .ok (ty, sv, locals)
+          else
+            match writePlaceSlotPath? (.ty localTy) root resolvedProj
+                (uninitSlotVal ty) with
+            | some root' =>
+              match setElem? locals place.localId (.live root') with
+              | some locals' => .ok (ty, sv, locals')
+              | none => .error .unsupported
+            | none => .error .unsupported
   | some _, some .dead => .error .undefined
   | _, _ => .error .unsupported
 
@@ -1532,19 +2248,27 @@ noncomputable def evalIntToIntCast (src : Val) (castTy : MirTy) :
     | _ => .error .unsupported
   | _ => .error .unsupported
 
-/-- Return `true` iff two projection steps may alias the same subplace: two
-`.field` steps alias iff they select the same field index, and any non-`.field`
-step is treated conservatively as potentially aliasing. -/
+/-- Return `true` iff two non-downcast projection steps may alias the same
+subplace: two `.field` steps alias iff they select the same field index, two
+`.constantIndex` steps with matching `fromEnd` polarity alias iff their offsets
+match, and any other pair is treated conservatively as potentially aliasing. -/
 noncomputable def projElemMayAlias : ProjectionElem → ProjectionElem → Bool
   | .field i _, .field j _ => Nat.beq i j
+  | .constantIndex o₁ _ false, .constantIndex o₂ _ false => Nat.beq o₁ o₂
+  | .constantIndex o₁ _ true, .constantIndex o₂ _ true => Nat.beq o₁ o₂
   | _, _ => true
 
 /-- Return `true` iff projection `p` may be a prefix of projection `q`
-(`projElemMayAlias`). -/
+(`projElemMayAlias`, treating distinct `.downcast` variants as overlapping in
+memory). -/
 noncomputable def projPrefixMayAlias :
     List ProjectionElem → List ProjectionElem → Bool
   | [], _ => true
   | _ :: _, [] => false
+  | .downcast v₁ :: as, .downcast v₂ :: bs =>
+    if Nat.beq v₁ v₂ then projPrefixMayAlias as bs else true
+  | .downcast _ :: _, _ :: _ => true
+  | _ :: _, .downcast _ :: _ => true
   | a :: as, b :: bs => projElemMayAlias a b && projPrefixMayAlias as bs
 
 /-- Conservative place-overlap predicate: `true` iff `a` and `b` address the
@@ -1594,27 +2318,155 @@ noncomputable def isTupleTy : MirTy → Bool
   | .tuple _ => true
   | _ => false
 
+/-- Return `true` iff `ty` is a compound destination type whose `Rvalue.use`
+rejects overlapping source/destination places (`.tuple`, non-ZST `.adtStruct`,
+non-ZST payload `.enum`, or non-ZST `.array`). -/
+noncomputable def isCompoundOverlapProtectedTy (ty : MirTy) : Bool :=
+  match ty with
+  | .tuple _ => true
+  | .adtStruct _ | .array _ _ => !isZeroSizedTy ty
+  | .enum ety => !isZeroSizedTy (.enum ety) && hasEnumPayloadFields ety
+  | _ => false
+
 /-- Fail-closed aliasing guard for `StatementKind.assign dst rvalue` at
 destination type `dstTy`:
-- `Rvalue.use opnd` on a tuple destination whose operand overlaps `dst`: in
-  `rustc@8144389c` (`place.rs:copy_op_no_validate`) and `lean-miri`
-  (`CompilerCopy.hasPadding`, `copyRuntimePlaceNoValidate`,
-  `Allocation.copyRepeatedly`), copying a `BackendRepr::Memory` or padded
-  `ScalarPair` tuple in memory runs `copy_nonoverlapping`, so self-copy or
-  self-move is UB (whereas scalar self-move such as Canary `D8` takes the
-  immediate path without overlap UB).
-- `Rvalue.aggregateTuple ops` where any operand overlaps `dst`:
-  `write_aggregate` writes each field as soon as its operand is evaluated, and
-  overlapping LHS/RHS in `StatementKind::Assign` (`rust-lang/rust#68364`) or
-  in-memory self-field copy is UB in `rustc`/Miri.
+- `Rvalue.use opnd` on a compound non-ZST destination (`.tuple`, non-ZST
+  `.adtStruct`, non-ZST payload `.enum`, or non-ZST `.array`) whose operand
+  overlaps `dst`.
+- `Rvalue.aggregate _ ops` where any operand overlaps `dst` (across all
+  aggregate kinds: `.tuple`, `.adtStruct`, `.adtEnum`, and `.array`).
 
 Returning `true` causes `evalStatement` to fault with `.fault .unsupported`
 before evaluating any operand or writing `dst`. -/
 noncomputable def assignHasUnsupportedOverlap (dst : Place) (dstTy : MirTy) :
     Rvalue → Bool
-  | .use opnd => isTupleTy dstTy && operandMayOverlapPlace dst opnd
-  | .aggregateTuple ops => anyOperandMayOverlapPlace dst ops
+  | .use opnd =>
+    isCompoundOverlapProtectedTy dstTy && operandMayOverlapPlace dst opnd
+  | .aggregate _ ops => anyOperandMayOverlapPlace dst ops
+  | .repeat_ opnd _ => operandMayOverlapPlace dst opnd
   | _ => false
+
+/-- Extract the raw scalar bits at `path` inside a `SlotVal` for niche-tag
+discriminant reading (`Except FaultKind (BitVec 128)`, faulting with
+`.undefined` when the niche scalar is `.uninit`). -/
+noncomputable def extractSlotNicheBits :
+    SlotVal → List Nat → Except FaultKind (BitVec 128)
+  | .uninit, _ => .error .undefined
+  | .enumUntagged _ _ _, _ => .error .undefined
+  | .bool b, [] => .ok (BitVec.ofNat 128 (if b then 1 else 0))
+  | .scalar sv, [] => .ok (truncateBits sv.width sv.bits)
+  | .enumVal innerEty innerVar [], [] =>
+    match innerEty.tagRepr, getElem? innerEty.discriminants innerVar with
+    | .scalar w _, some d => .ok (truncateBits w (BitVec.ofNat 128 d))
+    | _, _ => .error .unsupported
+  | .structVal _ fs, idx :: rest =>
+    match getElem? fs idx with
+    | some fSv => extractSlotNicheBits fSv rest
+    | none => .error .unsupported
+  | .tuple fs, idx :: rest =>
+    match getElem? fs idx with
+    | some fSv => extractSlotNicheBits fSv rest
+    | none => .error .unsupported
+  | .array _ elems, idx :: rest =>
+    match getElem? elems idx with
+    | some eSv => extractSlotNicheBits eSv rest
+    | none => .error .unsupported
+  | _, _ => .error .unsupported
+
+/-- Extract the raw scalar bits along non-empty `nichePath` inside `fields :
+List SlotVal`. -/
+noncomputable def extractSlotNicheBitsFromFields (nichePath : List Nat)
+    (fields : List SlotVal) : Except FaultKind (BitVec 128) :=
+  match nichePath with
+  | [] => .error .unsupported
+  | idx :: rest =>
+    match getElem? fields idx with
+    | some fSv => extractSlotNicheBits fSv rest
+    | none => .error .unsupported
+
+/-- Read the active 0-based variant index of an admitted enum `ety` from slot
+contents `sv`, matching `Miri.Interpreter.Discriminant.readDiscriminant`
+(`vendor/lean-miri/Miri/Interpreter/Discriminant.lean`). -/
+noncomputable def evalReadDiscriminantVariant (ety : EnumTy) (sv : SlotVal) :
+    Except FaultKind Nat :=
+  match ety.tagRepr with
+  | .zeroSized =>
+    let res : Except FaultKind Nat :=
+      if isTypeUninhabited (.enum ety) then .error .undefined else .ok 0
+    match sv with
+    | .uninit => res
+    | .enumVal ety' v [] =>
+      if EnumTy.beq ety ety' && Nat.beq v 0 then
+        res
+      else
+        .error .unsupported
+    | _ => .error .unsupported
+  | .single v₀ =>
+    let res : Except FaultKind Nat :=
+      if isTypeUninhabited (.enum ety) then .error .undefined else .ok v₀
+    match sv with
+    | .uninit => res
+    | .enumVal ety' v _ | .enumUntagged ety' v _ =>
+      if EnumTy.beq ety ety' && Nat.beq v v₀ then
+        res
+      else
+        .error .unsupported
+    | _ => .error .unsupported
+  | .scalar _ _ =>
+    match sv with
+    | .uninit | .enumUntagged _ _ _ => .error .undefined
+    | .enumVal ety' v _ =>
+      if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
+        if isVariantUninhabited ety v then
+          .error .undefined
+        else
+          .ok v
+      else
+        .error .unsupported
+    | _ => .error .unsupported
+  | .niche tagW _ vs ve nichePath untagged start last nicheStart =>
+    match sv with
+    | .uninit => .error .undefined
+    | .enumVal ety' v fields =>
+      if !EnumTy.beq ety ety' then
+        .error .unsupported
+      else if Nat.beq v untagged then
+        match extractSlotNicheBitsFromFields nichePath fields with
+        | .error k => .error k
+        | .ok bits =>
+          match decodeNicheTagBits tagW vs ve untagged start last nicheStart
+              ety.discriminants.length bits with
+          | .error k => .error k
+          | .ok idx =>
+            if isVariantUninhabited ety idx then
+              .error .undefined
+            else
+              .ok idx
+      else if Nat.ble start v && Nat.ble v last then
+        if isVariantUninhabited ety v then
+          .error .undefined
+        else
+          .ok v
+      else
+        .error .unsupported
+    | .enumUntagged ety' v fields =>
+      if !EnumTy.beq ety ety' then
+        .error .unsupported
+      else if Nat.beq v untagged then
+        match extractSlotNicheBitsFromFields nichePath fields with
+        | .error k => .error k
+        | .ok bits =>
+          match decodeNicheTagBits tagW vs ve untagged start last nicheStart
+              ety.discriminants.length bits with
+          | .error k => .error k
+          | .ok idx =>
+            if isVariantUninhabited ety idx then
+              .error .undefined
+            else
+              .ok idx
+      else
+        .error .undefined
+    | _ => .error .unsupported
 
 /-- Evaluate an `Rvalue` for a destination of type `dstTy`, following the RHS
 cases of `eval_rvalue_into_place`
@@ -1622,69 +2474,9 @@ cases of `eval_rvalue_into_place`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
 `Miri.Interpreter.Rvalue.evalRvalueIntoPlace` (`Miri/Interpreter/Rvalue.lean`),
 together with Anneal's conservative `Operand.move` deinitialization
-(`evalOperandToSlot`). `evalStatement` evaluates this RHS before checking
-destination liveness and writing `dst` in `writePlace`, matching `rustc` and
-`lean-miri` for sized locals (where `local_to_place` does not check liveness
-and `DeadLocal` fires at write time; an unmodeled RHS can return
-`.unsupported` before write-time `DeadLocal`, and `.use` checks uninitialized
-input before writing while `rustc`'s `copy_op` validates after writing, with
-both producing `.undefined`). Tuple aggregates (`.aggregateTuple`) are handled
-directly by `evalStatement` via `writeAggregateTuple` so each field is written
-immediately after evaluating its operand:
-- `.use opnd`: resolves `(srcTy, sv, locals₁) ← evalOperandToSlot`, checks
-  `srcTy = dstTy` (`copyRuntimePlaceNoValidate`), then checks that `sv` is
-  fully initialized (`sv.toVal? = some v`; validity check in `copy_op` /
-  `copyRuntimePlace`). Copying or moving a whole tuple therefore requires all
-  of its fields to be initialized.
-- `.binaryOp op lhs rhs`: evaluates `lhs` and then `rhs` left-to-right via
-  `evalPrimitiveOperand` (threading `locals₁` from `lhs` into `rhs`), then
-  applies `evalBinOp`.
-- `.unaryOp op opnd`: evaluates `opnd` via `evalPrimitiveOperand`, then applies
-  `evalUnOp`.
-- `.discriminant place`: reads the active variant of an unprojected local of
-  admitted fieldless enum type `.enum ety` and returns its declared
-  discriminant as a scalar of `(ety.discrWidth, ety.discrSigned)`, matching
-  `read_discriminant` and `discriminant_for_variant` in
-  `compiler/rustc_const_eval/src/interpret/discriminant.rs` (`rust-lang/rust`
-  `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
-  `Miri.Interpreter.Discriminant`:
-
-  > "let discr_layout = self.layout_of(ty.discriminant_ty(*self.tcx))?;
-  > let discr_value = match ty.discriminant_for_variant(*self.tcx, variant) {
-  >     Some(discr) => {
-  >         ...
-  >         assert_eq!(discr.ty, discr_layout.ty);
-  >         Scalar::from_uint(discr.val, discr_layout.size)
-  >     }
-  >     ...
-  > };
-  > interp_ok(ImmTy::from_scalar(discr_value, discr_layout))"
-
-  Reading `.discriminant` from a `.dead` local or from an uninitialized
-  (`.live .uninit`) scalar-tagged enum local faults with `.error .undefined`,
-  whereas an inhabited 1-variant ZST enum (`ety.tagRepr = .zeroSized`,
-  `Variants::Single { index: 0 }`) returns `ety.discriminants[0]` without
-  reading tag bytes.
-- `.cast kind opnd castTy`: evaluates `opnd` via `evalPrimitiveOperand`, then
-  requires `kind = .intToInt` and `castTy = dstTy` (`.unsupported` otherwise),
-  then applies `evalIntToIntCast`, following the `Cast` arm of
-  `eval_rvalue_into_place` and the `IntToInt` arm of `cast`
-  (`compiler/rustc_const_eval/src/interpret/{step,cast}.rs`, `rust-lang/rust`
-  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-  > "Cast(cast_kind, ref operand, cast_ty) => {
-  >     let src = self.eval_operand(operand, None)?;
-  >     let cast_ty =
-  >         self.instantiate_from_current_frame_and_normalize_erasing_regions(
-  >             cast_ty)?;
-  >     self.cast(&src, cast_kind, cast_ty, &dest)?;
-  > }"
-  >
-  > "CastKind::IntToInt | CastKind::IntToFloat => {
-  >     let src = self.read_immediate(src)?;
-  >     let res = self.int_to_int_or_float(&src, cast_layout)?;
-  >     self.write_immediate(*res, dest)?;
-  > }" -/
+(`evalOperandToSlot`). Aggregates (`.aggregate`) are handled directly by
+`evalStatement` via `writeAggregate` so each field is written immediately after
+evaluating its operand. -/
 noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
     (dstTy : MirTy) : Rvalue → Except FaultKind (Val × List LocalSlot)
   | .use opnd =>
@@ -1715,49 +2507,41 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
       | .error k => .error k
       | .ok res => .ok (res, locals₁)
   | .discriminant place =>
-    if !place.projection.isEmpty then
-      .error .unsupported
-    else
-      match getElem? bodyLocals place.localId,
-          getElem? locals place.localId with
-      | some (.enum ety), some slot =>
+    match evalPlaceOperand bodyLocals locals place false with
+    | .error k => .error k
+    | .ok (srcTy, sv, locals₁) =>
+      match srcTy with
+      | .enum ety =>
         if !enumAdmitted ety then
           .error .unsupported
         else
-          -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
-          -- (`Variants::Single { index: 0 }`) returns variant `0` without
-          -- reading tag bytes even if a slot holds `.live .uninit`,
-          -- preserving universal 1-step lockstep over arbitrary `FrameState`s.
-          match ety.tagRepr, slot with
-          | _, .dead => .error .undefined
-          | .zeroSized, .live .uninit =>
-            match getElem? ety.discriminants 0 with
+          match evalReadDiscriminantVariant ety sv with
+          | .error k => .error k
+          | .ok v =>
+            match getElem? ety.discriminants v with
             | some disc =>
               .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
+                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals₁)
             | none => .error .unsupported
-          | .zeroSized, .live (.enumVal ety' v) =>
-            if EnumTy.beq ety ety' && Nat.beq v 0 then
-              match getElem? ety.discriminants 0 with
-              | some disc =>
-                .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
-              | none => .error .unsupported
-            else
-              .error .unsupported
-          | .zeroSized, .live _ => .error .unsupported
-          | .scalar _ _, .live .uninit => .error .undefined
-          | .scalar _ _, .live (.enumVal ety' v) =>
-            if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
-              match getElem? ety.discriminants v with
-              | some disc =>
-                .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
-              | none => .error .unsupported
-            else
-              .error .unsupported
-          | .scalar _ _, .live _ => .error .unsupported
-      | _, _ => .error .unsupported
+      | _ => .error .unsupported
+  | .repeat_ opnd count =>
+    match dstTy with
+    | .array elemTy len =>
+      if !Nat.beq count len || !Nat.blt len (Nat.pow 2 64) then
+        .error .unsupported
+      else
+        match evalOperandToSlot bodyLocals locals opnd with
+        | .error k => .error k
+        | .ok (srcTy, sv, locals₁) =>
+          if !(MirTy.beq srcTy elemTy) then
+            .error .unsupported
+          else if Nat.beq count 0 then
+            .ok (.array elemTy [], locals₁)
+          else
+            match sv.toVal? with
+            | none => .error .undefined
+            | some v => .ok (.array elemTy (replicateVal count v), locals₁)
+    | _ => .error .unsupported
   | .cast kind opnd castTy =>
     match evalPrimitiveOperand bodyLocals locals opnd with
     | .error k => .error k
@@ -1773,17 +2557,12 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
           | .ok res => .ok (res, locals₁)
   | _ => .error .unsupported
 
-/-- Write `val` into the place `dst` of known type `dstTy` in `locals`: checks
-`checkVal val dstTy` first (matching `Rvalue.assertRvalueLayout`), then checks
-that the base local of `dst` is live (matching `Place.writePlaceImmediate`),
-and then replaces the storage that `dst.projection` selects with
-`val.toSlotVal` (`writeSlotPath?`).
-
-Writing a tuple field updates only that field: the other fields of the local
-keep their contents and initialization state. A projection that does not
-select a part of the local's current contents faults with `.unsupported`. -/
-noncomputable def writePlace (locals : List LocalSlot) (dst : Place)
-    (dstTy : MirTy) (val : Val) : Except FaultKind (List LocalSlot) :=
+/-- Write `val` into a canonicalized `dst` of type `dstTy` whose base local has
+declared type `localTy`: checks `checkVal val dstTy`, checks base-local
+liveness, and updates the subslot via `writePlaceSlotPath?`. -/
+noncomputable def writePlaceWithLocalTy (localTy : MirTy)
+    (locals : List LocalSlot) (dst : Place) (dstTy : MirTy) (val : Val) :
+    Except FaultKind (List LocalSlot) :=
   if !checkVal val dstTy then
     .error .unsupported
   else
@@ -1791,50 +2570,126 @@ noncomputable def writePlace (locals : List LocalSlot) (dst : Place)
     | none => .error .unsupported
     | some .dead => .error .undefined
     | some (.live root) =>
-      match writeSlotPath? root dst.projection val.toSlotVal with
+      match writePlaceSlotPath? (.ty localTy) root dst.projection
+          val.toSlotVal with
       | none => .error .unsupported
       | some root' =>
         match setElem? locals dst.localId (.live root') with
         | some locals' => .ok locals'
         | none => .error .unsupported
 
-/-- Write the operands `ops` of a tuple aggregate left to right into `dst`'s
-fields `idx, idx + 1, ...` of types `fieldTys`, matching the per-field loop in
-`write_aggregate` (`compiler/rustc_const_eval/src/interpret/step.rs`,
-`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+/-- Update the active discriminant tag of a resolved destination place
+`resolvedDst` (of type `dstTy` inside base local of type `localTy`) to
+`variantIdx`, matching `Miri.Interpreter.Discriminant.writeDiscriminant`
+(`vendor/lean-miri/Miri/Interpreter/Discriminant.lean`):
+- For non-enum `dstTy` (`Variants::Single { index: 0 }`), writing `variantIdx =
+  0` on a live inhabited place is a no-op, while uninhabited types, dead
+  locals, or `variantIdx ≠ 0` fault with `.error .undefined`
+  (`UninhabitedEnumVariantWritten`).
+- For enum `dstTy`, uninhabited or out-of-bounds `variantIdx` faults with
+  `.error .undefined` (`UninhabitedEnumVariantWritten`).
+- On `EnumTagRepr.niche`, setting `untagged` validates that the niche scalar
+  inside the current slot already decodes to `untagged` (`.error .undefined`
+  otherwise, `InvalidNichedEnumVariantWritten`).
+- Preserves payload fields when `curSv` already targets `variantIdx`, and
+  initializes `uninitSlotVals varFields` when switching from `.uninit` or a
+  different variant. -/
+noncomputable def evalSetDiscriminantResolved (localTy : MirTy)
+    (locals : List LocalSlot) (resolvedDst : Place) (dstTy : MirTy)
+    (variantIdx : Nat) : Except FaultKind (List LocalSlot) :=
+  match dstTy with
+  | .enum ety =>
+    if !enumAdmitted ety then
+      .error .unsupported
+    else if isVariantUninhabited ety variantIdx then
+      match getElem? locals resolvedDst.localId with
+      | none => .error .unsupported
+      | some _ => .error .undefined
+    else
+      match getElem? locals resolvedDst.localId with
+      | none => .error .unsupported
+      | some .dead => .error .undefined
+      | some (.live root) =>
+        match readPlaceSlotPath? (.ty localTy) root resolvedDst.projection,
+            fieldsForVariant? ety variantIdx with
+        | some curSv, some varFields =>
+          let nextFields? : Option (List SlotVal) :=
+            match curSv with
+            | .uninit => some (uninitSlotVals varFields)
+            | .enumUntagged ety' v' fs =>
+              if EnumTy.beq ety ety' && Nat.beq v' variantIdx then
+                some fs
+              else
+                none
+            | .enumVal ety' v' fs =>
+              if !EnumTy.beq ety ety' then
+                none
+              else if Nat.beq v' variantIdx then
+                some fs
+              else
+                some (uninitSlotVals varFields)
+            | _ => none
+          match nextFields? with
+          | none => .error .unsupported
+          | some nextFields =>
+            let tagCheck : Except FaultKind Unit :=
+              match ety.tagRepr with
+              | .zeroSized =>
+                if Nat.beq variantIdx 0 then .ok () else .error .undefined
+              | .single v₀ =>
+                if Nat.beq variantIdx v₀ then .ok () else .error .undefined
+              | .scalar _ _ => .ok ()
+              | .niche _ _ _ _ _ untagged start last _ =>
+                if Nat.beq variantIdx untagged then
+                  match evalReadDiscriminantVariant ety curSv with
+                  | .error k => .error k
+                  | .ok actual =>
+                    if Nat.beq actual variantIdx then
+                      .ok ()
+                    else
+                      .error .undefined
+                else if Nat.ble start variantIdx &&
+                    Nat.ble variantIdx last then
+                  .ok ()
+                else
+                  .error .unsupported
+            match tagCheck with
+            | .error k => .error k
+            | .ok () =>
+              let newEnumSv : SlotVal := .enumVal ety variantIdx nextFields
+              match writePlaceSlotPath? (.ty localTy) root
+                  resolvedDst.projection newEnumSv with
+              | none => .error .unsupported
+              | some root' =>
+                match setElem? locals resolvedDst.localId (.live root') with
+                | some locals' => .ok locals'
+                | none => .error .unsupported
+        | _, _ => .error .unsupported
+  | _ =>
+    match getElem? locals resolvedDst.localId with
+    | none => .error .unsupported
+    | some .dead => .error .undefined
+    | some (.live root) =>
+      match readPlaceSlotPath? (.ty localTy) root resolvedDst.projection with
+      | none => .error .unsupported
+      | some _ =>
+        if isTypeUninhabited dstTy || !Nat.beq variantIdx 0 then
+          .error .undefined
+        else
+          .ok locals
+
+/-- Write the operands `ops` of a tuple, struct, or enum aggregate left to
+right into `baseProj ++ [.field idx fieldTy]`, matching the per-field loop in
 `Miri.Interpreter.writeAggregate`
-(`vendor/lean-miri/Miri/Interpreter/Aggregate.lean`):
-
-> "for (field_index, operand) in operands.iter_enumerated() {
->     let field_index = active_field_index.unwrap_or(field_index);
->     let field_dest = self.project_field(&variant_dest, field_index)?;
->     let op = self.eval_operand(operand, Some(field_dest.layout))?;
->     ...
->     self.copy_op_no_validate(&op, &field_dest, /*allow_transmute*/ false)?;
-> }
-> self.write_discriminant(variant_index, dest)?;
-> ...
-> if M::enforce_validity(self, dest.layout()) {
->     self.validate_place(
->         dest,
->         M::enforce_validity_recursively(self, dest.layout()),
->         /*reset_provenance_and_padding*/ true,
->     )?;
-> }"
-
-Each field evaluates its operand in the locals left by prior fields, checks
-static type equality (`MirTy.beq srcTy fieldTy`), checks full initialization
-(`sv.toVal? = some v`, matching post-aggregate validity checking), and writes
-the field immediately into `dst.projection ++ [.field idx fieldTy]` via
-`writePlace`. -/
-noncomputable def writeAggregateTupleFields (bodyLocals : List MirTy)
-    (dst : Place) :
+(`vendor/lean-miri/Miri/Interpreter/Aggregate.lean`). -/
+noncomputable def writeAggregateFields (bodyLocals : List MirTy)
+    (localTy : MirTy) (dstLocal : LocalId) (baseProj : List ProjectionElem) :
     Nat → List LocalSlot → List Operand → List MirTy →
       Except FaultKind (List LocalSlot)
   | _, locals, [], [] => .ok locals
   | idx, locals, opnd :: ops, fieldTy :: fieldTys =>
     let fieldDst : Place :=
-      { dst with projection := dst.projection ++ [.field idx fieldTy] }
+      { localId := dstLocal, projection := baseProj ++ [.field idx fieldTy] }
     match evalOperandToSlot bodyLocals locals opnd with
     | .error k => .error k
     | .ok (srcTy, sv, locals₁) =>
@@ -1844,73 +2699,102 @@ noncomputable def writeAggregateTupleFields (bodyLocals : List MirTy)
         match sv.toVal? with
         | none => .error .undefined
         | some v =>
-          match writePlace locals₁ fieldDst fieldTy v with
+          match writePlaceWithLocalTy localTy locals₁ fieldDst fieldTy v with
           | .error k => .error k
           | .ok locals₂ =>
-            writeAggregateTupleFields bodyLocals dst (idx + 1) locals₂ ops
-              fieldTys
+            writeAggregateFields bodyLocals localTy dstLocal baseProj
+              (idx + 1) locals₂ ops fieldTys
   | _, _, _, _ => .error .unsupported
 
-/-- Execute a tuple aggregate assignment `dst := (ops...)` for destination
-place `dst` of type `dstTy`:
-- `ops = []`, `dstTy = .unit`: writes `Val.unit` via `writePlace` (checking
-  destination liveness).
-- `ops = _ :: _`, `dstTy = .tuple fieldTys` with `ops.length = fieldTys.length`:
-  writes each field left to right (`writeAggregateTupleFields`).
-- Any other combination returns `.error .unsupported`. -/
-noncomputable def writeAggregateTuple (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (dst : Place) (dstTy : MirTy)
-    (ops : List Operand) : Except FaultKind (List LocalSlot) :=
-  match ops, dstTy with
-  | [], .unit => writePlace locals dst .unit .unit
-  | _ :: _, .tuple fieldTys =>
-    if !Nat.beq ops.length fieldTys.length then
+/-- Write the operands `ops` of a fixed-array aggregate left to right into
+`baseProj ++ [.constantIndex idx (idx + 1) false]`. -/
+noncomputable def writeAggregateArrayElems (bodyLocals : List MirTy)
+    (localTy : MirTy) (dstLocal : LocalId) (baseProj : List ProjectionElem)
+    (elemTy : MirTy) :
+    Nat → List LocalSlot → List Operand → Except FaultKind (List LocalSlot)
+  | _, locals, [] => .ok locals
+  | idx, locals, opnd :: ops =>
+    let elemDst : Place := {
+      localId := dstLocal
+      projection := baseProj ++ [.constantIndex idx (idx + 1) false]
+    }
+    match evalOperandToSlot bodyLocals locals opnd with
+    | .error k => .error k
+    | .ok (srcTy, sv, locals₁) =>
+      if !(MirTy.beq srcTy elemTy) then
+        .error .unsupported
+      else
+        match sv.toVal? with
+        | none => .error .undefined
+        | some v =>
+          match writePlaceWithLocalTy localTy locals₁ elemDst elemTy v with
+          | .error k => .error k
+          | .ok locals₂ =>
+            writeAggregateArrayElems bodyLocals localTy dstLocal baseProj
+              elemTy (idx + 1) locals₂ ops
+
+/-- Execute an aggregate assignment `dst := Aggregate(kind, ops)` for canonical
+destination `resolvedDst` of type `dstTy` (inside base local of type
+`localTy`), matching `Miri.Interpreter.writeAggregate`
+(`vendor/lean-miri/Miri/Interpreter/Aggregate.lean`). -/
+noncomputable def writeAggregate (bodyLocals : List MirTy) (localTy : MirTy)
+    (locals : List LocalSlot) (resolvedDst : Place) (dstTy : MirTy)
+    (kind : AggregateKind) (ops : List Operand) :
+    Except FaultKind (List LocalSlot) :=
+  match kind, dstTy with
+  | .tuple, .unit =>
+    if !ops.isEmpty then
       .error .unsupported
     else
-      writeAggregateTupleFields bodyLocals dst 0 locals ops fieldTys
+      writePlaceWithLocalTy localTy locals resolvedDst .unit .unit
+  | .tuple, .tuple fieldTys =>
+    if fieldTys.isEmpty || !Nat.beq ops.length fieldTys.length then
+      .error .unsupported
+    else
+      writeAggregateFields bodyLocals localTy resolvedDst.localId
+        resolvedDst.projection 0 locals ops fieldTys
+  | .adtStruct sty, .adtStruct dstSty =>
+    if !StructTy.beq sty dstSty || !Nat.beq ops.length sty.fields.length ||
+        !areSupportedFieldTys sty.fields || isTypeUninhabited (.adtStruct sty)
+    then
+      .error .unsupported
+    else if ops.isEmpty then
+      writePlaceWithLocalTy localTy locals resolvedDst dstTy
+        (.structVal sty [])
+    else
+      writeAggregateFields bodyLocals localTy resolvedDst.localId
+        resolvedDst.projection 0 locals ops sty.fields
+  | .adtEnum ety variantIdx, .enum dstEty =>
+    if !EnumTy.beq ety dstEty || !enumAdmitted ety then
+      .error .unsupported
+    else
+      match fieldsForVariant? ety variantIdx with
+      | none => .error .unsupported
+      | some varFieldTys =>
+        if !Nat.beq ops.length varFieldTys.length then
+          .error .unsupported
+        else
+          let variantProj := resolvedDst.projection ++ [.downcast variantIdx]
+          match writeAggregateFields bodyLocals localTy resolvedDst.localId
+              variantProj 0 locals ops varFieldTys with
+          | .error k => .error k
+          | .ok locals₁ =>
+            evalSetDiscriminantResolved localTy locals₁ resolvedDst (.enum ety)
+              variantIdx
+  | .array elemTy, .array dstElemTy len =>
+    if !MirTy.beq elemTy dstElemTy || !Nat.beq ops.length len ||
+        !isSupportedScalarOrUnitTy elemTy || !Nat.blt len (Nat.pow 2 64) then
+      .error .unsupported
+    else if ops.isEmpty then
+      writePlaceWithLocalTy localTy locals resolvedDst dstTy (.array elemTy [])
+    else
+      writeAggregateArrayElems bodyLocals localTy resolvedDst.localId
+        resolvedDst.projection elemTy 0 locals ops
   | _, _ => .error .unsupported
 
 /-- Evaluate a single `StatementKind` in `frame`, matching `eval_statement` in
-`compiler/rustc_const_eval/src/interpret/step.rs` and `storage_live` /
-`storage_dead` in `compiler/rustc_const_eval/src/interpret/stack.rs`
-(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "pub fn eval_statement(&mut self, stmt: &mir::Statement<'tcx>) ->
-> InterpResult<'tcx> {
->     ...
->     match &stmt.kind {
->         Assign((place, rvalue)) => self.eval_rvalue_into_place(rvalue,
->             *place)?,
->         ...
->         StorageLive(local) => { self.storage_live(*local)?; }
->         StorageDead(local) => { self.storage_dead(*local)?; }
->         ...
->     }
-> }"
-> (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
->
-> "assert!(local != mir::RETURN_PLACE, \"Cannot make return place dead\");"
-> (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
-
-- `.storageLive localId` sets `locals[localId] := liveUninitSlot localTy` for
-  any in-bounds `localId < frame.locals.length` (and faults with `.unsupported`
-  on out-of-bounds `localId`).
-- `.storageDead 0` or out-of-bounds `.storageDead localId` faults with
-  `.unsupported` (`StackError.cannotMakeReturnPlaceDead` /
-  `StackError.invalidLocal`).
-- `.assign dst rvalue` resolves `dst`'s local bounds and `dstTy` first
-  (`projectTy?` applied to the local's declared type and `dst.projection`),
-  checks `assignHasUnsupportedOverlap dst dstTy rvalue` (failing closed with
-  `.fault .unsupported` on tuple self-copy/self-move or destination-overlapping
-  tuple aggregates), then either writes `.aggregateTuple` field by field via
-  `writeAggregateTuple` or evaluates `rvalue` via `evalRvalue` and commits via
-  `writePlace`, matching `rustc` and `lean-miri` for sized locals (where
-  `local_to_place` does not check liveness and `DeadLocal` fires at write time;
-  an unmodeled RHS can fault `.unsupported` before write-time `DeadLocal`, and
-  `.use` checks uninitialized input before writing while `rustc`'s `copy_op`
-  validates after writing, both producing `.undefined`). -/
+`compiler/rustc_const_eval/src/interpret/step.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and `Miri.Interpreter.Step`. -/
 noncomputable def evalStatement (body : Body) (frame : FrameState)
     (callers : List FrameState) (callerMem : CallerMemory)
     (stmt : StatementKind) : StepResult State TerminalOut :=
@@ -1950,6 +2834,29 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
           callerMem
         }
       | none => .fault .unsupported
+  | .setDiscriminant place variantIdx =>
+    match getElem? body.locals place.localId with
+    | none => .fault .unsupported
+    | some localTy =>
+      match projectTy? localTy place.projection with
+      | none => .fault .unsupported
+      | some dstTy =>
+        match resolveProjPath body.locals frame.locals (.ty localTy)
+            place.projection with
+        | .error k => .fault k
+        | .ok resolvedProj =>
+          match evalSetDiscriminantResolved localTy frame.locals
+              ⟨place.localId, resolvedProj⟩ dstTy variantIdx with
+          | .error k => .fault k
+          | .ok localsAfterWrite =>
+            .step {
+              frames := {
+                frame with
+                stmtIdx := frame.stmtIdx + 1
+                locals := localsAfterWrite
+              } :: callers
+              callerMem
+            }
   | .assign dst rvalue =>
     match getElem? body.locals dst.localId with
     | none => .fault .unsupported
@@ -1960,25 +2867,15 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
         if assignHasUnsupportedOverlap dst dstTy rvalue then
           .fault .unsupported
         else
-          match rvalue with
-          | .aggregateTuple ops =>
-            match writeAggregateTuple body.locals frame.locals dst dstTy
-                ops with
-            | .error k => .fault k
-            | .ok localsAfterWrite =>
-              .step {
-                frames := {
-                  frame with
-                  stmtIdx := frame.stmtIdx + 1
-                  locals := localsAfterWrite
-                } :: callers
-                callerMem
-              }
-          | _ =>
-            match evalRvalue body.locals frame.locals dstTy rvalue with
-            | .error k => .fault k
-            | .ok (val, localsAfterRval) =>
-              match writePlace localsAfterRval dst dstTy val with
+          match resolveProjPath body.locals frame.locals (.ty localTy)
+              dst.projection with
+          | .error k => .fault k
+          | .ok resolvedProj =>
+            let resolvedDst : Place := ⟨dst.localId, resolvedProj⟩
+            match rvalue with
+            | .aggregate kind ops =>
+              match writeAggregate body.locals localTy frame.locals resolvedDst
+                  dstTy kind ops with
               | .error k => .fault k
               | .ok localsAfterWrite =>
                 .step {
@@ -1989,6 +2886,22 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
                   } :: callers
                   callerMem
                 }
+            | _ =>
+              match evalRvalue body.locals frame.locals dstTy rvalue with
+              | .error k => .fault k
+              | .ok (val, localsAfterRval) =>
+                match writePlaceWithLocalTy localTy localsAfterRval resolvedDst
+                    dstTy val with
+                | .error k => .fault k
+                | .ok localsAfterWrite =>
+                  .step {
+                    frames := {
+                      frame with
+                      stmtIdx := frame.stmtIdx + 1
+                      locals := localsAfterWrite
+                    } :: callers
+                    callerMem
+                  }
   | .unsupported => .fault .unsupported
 
 /-- Evaluate a `SwitchTargets` branch list against discriminant bits `discrBits`
@@ -2079,9 +2992,8 @@ noncomputable def jumpToBlock (frame : FrameState) (callers : List FrameState)
     callerMem
   }
 
-/-- Deinitialize `place` of type `ty` in `locals` on call entry: verifies that
-`place` resolves to a live storage slot whose shape matches `place.projection`
-and writes `uninitSlotVal ty` at that subplace (`writeSlotPath?`), matching the
+/-- Deinitialize canonicalized `place` of type `ty` (inside base local of type
+`localTy`) in `locals` on call entry (`writePlaceSlotPath?`), matching the
 `place_to_op(destination)` liveness check and
 `protect_in_place_function_argument` (`write_uninit`) in `init_stack_frame`
 (`compiler/rustc_const_eval/src/interpret/call.rs`, `rust-lang/rust`
@@ -2089,13 +3001,15 @@ and writes `uninitSlotVal ty` at that subplace (`writeSlotPath?`), matching the
 `Miri.Interpreter.Call.initStackFrame` /
 `Miri.Interpreter.MachineHooks.protectInPlaceFunctionArgument`
 (`vendor/lean-miri/Miri/Interpreter/{Call,MachineHooks}.lean`). -/
-noncomputable def deinitPlace (locals : List LocalSlot) (place : Place)
-    (ty : MirTy) : Except FaultKind (List LocalSlot) :=
+noncomputable def deinitPlaceWithLocalTy (localTy : MirTy)
+    (locals : List LocalSlot) (place : Place) (ty : MirTy) :
+    Except FaultKind (List LocalSlot) :=
   match getElem? locals place.localId with
   | none => .error .unsupported
   | some .dead => .error .undefined
   | some (.live root) =>
-    match writeSlotPath? root place.projection (uninitSlotVal ty) with
+    match writePlaceSlotPath? (.ty localTy) root place.projection
+        (uninitSlotVal ty) with
     | none => .error .unsupported
     | some root' =>
       match setElem? locals place.localId (.live root') with
@@ -2227,24 +3141,93 @@ noncomputable def countTrailingZerosNat (raw width : Nat) : Nat :=
     (fun k ih => if Nat.testBit raw (width - 1 - k) then 0 else ih + 1)
     width
 
-/-- Evaluate a recognized `CoreBuiltin` on evaluated primitive arguments,
-matching `library/core/src/num/{int_macros,uint_macros}.rs`,
-`library/core/src/intrinsics/mod.rs`, and `library/core/src/cmp.rs`
-(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+/-- Stage 2 argument reader for `CoreBuiltin` calls: `.fromLeBytes` accepts a
+single `[u8; N]` fixed byte array (`MirTy.array (.int .i8 false) _`, faulting
+with `.undefined` if any element is `.uninit`), while all other builtins
+require primitive scalar/bool arguments (`readPrimitiveArgs`). -/
+noncomputable def readBuiltinArgs (builtin : CoreBuiltin)
+    (pairs : List (MirTy × SlotVal)) : Except FaultKind (List Val) :=
+  match builtin with
+  | .fromLeBytes =>
+    match pairs with
+    | [(.array (.int .i8 false) len, sv)] =>
+      if !Nat.blt len (Nat.pow 2 64) then
+        .error .unsupported
+      else
+        match sv.toVal? with
+        | none => .error .undefined
+        | some v => .ok [v]
+    | _ => .error .unsupported
+  | _ => readPrimitiveArgs pairs
 
-- `wrappingAdd`/`wrappingSub`/`wrappingMul`: 2 same-type integers via
-  `evalBinOp` (`.add`/`.sub`/`.mul`).
-- `wrappingShl`/`wrappingShr`: integer `lhs` and `u32` `rhs`, masking `rhs`
-  modulo `lhs.width.bitWidth` via `evalBinOp` (`.shl`/`.shr`).
-- `overflowingAdd`/`overflowingSub`/`overflowingMul`: 2 same-type integers
-  returning `(wrapped, overflowed)` via `evalBinOp`.
-- `saturatingAdd`/`saturatingSub`: 2 same-type integers via `evalSaturatingOp`.
-- `leadingZeros`/`trailingZeros`: 1 integer returning `u32` zero-bit count.
-- `isMultipleOf`: 2 same-type unsigned integers returning `lhs == 0` when
-  `rhs == 0` and `lhs % rhs == 0` otherwise.
-- `cmpMin`/`cmpMax`: 2 same-type integers ordered by `decodeScalar`. -/
-noncomputable def evalCoreBuiltin (builtin : CoreBuiltin) (args : List Val) :
-    Except FaultKind Val :=
+/-- Check that `ety` has the canonical 2-variant `core::option::Option<T>`
+payload shape (`variant 0 = None` with `[]`, `variant 1 = Some(T)` with
+`[innerTy]`). -/
+noncomputable def isOptionEnumForTy (ety : EnumTy) (innerTy : MirTy) : Bool :=
+  enumAdmitted ety &&
+    Nat.beq ety.discriminants.length 2 &&
+    match fieldsForVariant? ety 0, fieldsForVariant? ety 1 with
+    | some [], some [fTy] => MirTy.beq fTy innerTy
+    | _, _ => false
+
+/-- Evaluate `checked_{add,sub,mul}` into `dstTy = .enum ety` (`Option<T>`),
+returning `None` (`.enumVal ety 0 []`) on overflow and `Some(wrapped)`
+(`.enumVal ety 1 [.scalar wrapped]`) otherwise. -/
+noncomputable def evalCheckedArithOp (op : BinOp) (dstTy : MirTy)
+    (l r : ScalarVal) : Except FaultKind Val :=
+  match dstTy with
+  | .enum ety =>
+    if !isOptionEnumForTy ety (.int l.width l.signed) then
+      .error .unsupported
+    else
+      match evalBinOp op (.scalar l) (.scalar r) with
+      | .ok (.tuple [.scalar wrapped, .bool false]) =>
+        let res : Val := .enumVal ety 1 [.scalar wrapped]
+        if checkVal res (.enum ety) then .ok res else .error .unsupported
+      | .ok (.tuple [.scalar _, .bool true]) =>
+        let res : Val := .enumVal ety 0 []
+        if checkVal res (.enum ety) then .ok res else .error .unsupported
+      | .error k => .error k
+      | .ok _ => .error .unsupported
+  | _ => .error .unsupported
+
+/-- Produce `n` little-endian `BitVec 8` bytes from the low `n * 8` bits of `v`
+using structural `@Nat.rec` (definitionally identical to
+`Anneal.LeBytes.toLeBytesAux`). -/
+noncomputable def scalarToLeBytesAux (n : Nat) (v : Nat) : List (BitVec 8) :=
+  @Nat.rec (fun _ => Nat → List (BitVec 8))
+    (fun _ => [])
+    (fun _ ih k => BitVec.ofNat 8 k :: ih (HDiv.hDiv k 256))
+    n v
+
+/-- Map a list of `BitVec 8` bytes to `u8` runtime scalar `Val`s. -/
+noncomputable def u8BytesToVals : List (BitVec 8) → List Val
+  | [] => []
+  | b :: bs => .scalar ⟨.i8, false, BitVec.ofNat 128 b.toNat⟩ :: u8BytesToVals bs
+
+/-- Extract validated `BitVec 8` bytes from a list of `u8` runtime `Val`s. -/
+noncomputable def valsToU8Bytes? : List Val → Option (List (BitVec 8))
+  | [] => some []
+  | .scalar ⟨.i8, false, bits⟩ :: rest =>
+    if truncateBits .i8 bits != bits then
+      none
+    else
+      match valsToU8Bytes? rest with
+      | some bs => some (BitVec.ofNat 8 bits.toNat :: bs)
+      | none => none
+  | _ :: _ => none
+
+/-- Reassemble a list of little-endian `BitVec 8` bytes into a `Nat` via
+`List.foldr` (definitionally identical to `Anneal.LeBytes.fromLeBytes`). -/
+noncomputable def scalarFromLeBytes (bs : List (BitVec 8)) : Nat :=
+  bs.foldr (fun b acc => b.toNat + 256 * acc) 0
+
+/-- Evaluate a recognized `CoreBuiltin` on evaluated arguments for destination
+type `dstTy`, matching `library/core/src/num/{int_macros,uint_macros}.rs`,
+`library/core/src/intrinsics/mod.rs`, and `library/core/src/cmp.rs`
+(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+noncomputable def evalCoreBuiltin (builtin : CoreBuiltin) (dstTy : MirTy)
+    (args : List Val) : Except FaultKind Val :=
   match builtin, args with
   | .wrappingAdd, [.scalar l, .scalar r] =>
     evalBinOp .add (.scalar l) (.scalar r)
@@ -2270,6 +3253,12 @@ noncomputable def evalCoreBuiltin (builtin : CoreBuiltin) (args : List Val) :
     evalBinOp .mulWithOverflow (.scalar l) (.scalar r)
   | .saturatingAdd, [lhs, rhs] => evalSaturatingOp true lhs rhs
   | .saturatingSub, [lhs, rhs] => evalSaturatingOp false lhs rhs
+  | .checkedAdd, [.scalar l, .scalar r] =>
+    evalCheckedArithOp .addWithOverflow dstTy l r
+  | .checkedSub, [.scalar l, .scalar r] =>
+    evalCheckedArithOp .subWithOverflow dstTy l r
+  | .checkedMul, [.scalar l, .scalar r] =>
+    evalCheckedArithOp .mulWithOverflow dstTy l r
   | .leadingZeros, [.scalar sv] =>
     let raw := (truncateBits sv.width sv.bits).toNat
     let count := countLeadingZerosNat raw sv.width.bitWidth
@@ -2288,6 +3277,28 @@ noncomputable def evalCoreBuiltin (builtin : CoreBuiltin) (args : List Val) :
         .ok (.bool (Nat.beq lNat 0))
       else
         .ok (.bool (Nat.beq (Nat.mod lNat rNat) 0))
+  | .toLeBytes, [.scalar sv] =>
+    match dstTy with
+    | .array (.int .i8 false) len =>
+      if !Nat.beq len sv.width.byteSize then
+        .error .unsupported
+      else
+        let raw := (truncateBits sv.width sv.bits).toNat
+        let bytes := scalarToLeBytesAux sv.width.byteSize raw
+        .ok (.array (.int .i8 false) (u8BytesToVals bytes))
+    | _ => .error .unsupported
+  | .fromLeBytes, [.array (.int .i8 false) elems] =>
+    match dstTy with
+    | .int w s =>
+      if !Nat.beq elems.length w.byteSize then
+        .error .unsupported
+      else
+        match valsToU8Bytes? elems with
+        | none => .error .unsupported
+        | some bs =>
+          let raw := scalarFromLeBytes bs
+          .ok (.scalar ⟨w, s, truncateBits w (BitVec.ofNat 128 raw)⟩)
+    | _ => .error .unsupported
   | .cmpMin, [.scalar l, .scalar r] =>
     if !(IntWidth.beq l.width r.width && (l.signed == r.signed)) then
       .error .unsupported
@@ -2495,15 +3506,16 @@ that panics on a zero divisor) can still satisfy `WellFormed` and
   in the caller, evaluates `args` left-to-right (`evalCallArgs`), checks
   `callee`'s existence, `bodyEntryAdmitted`, argument arity, and return-type
   compatibility against `dst`, deinitializes `dst` on call entry
-  (`deinitPlace`), validates `args` left-to-right (`validateCallArgs`),
-  initializes the callee locals (`initLocalsLoop`), and pushes the callee frame
-  with `returnCont = some ⟨dst, target, unwind⟩` onto the call stack above the
-  caller frame with deinitialized `dst`.
+  (`deinitPlaceWithLocalTy`), validates `args` left-to-right
+  (`validateCallArgs`), initializes the callee locals (`initLocalsLoop`), and
+  pushes the callee frame with `returnCont = some ⟨dst, target, unwind⟩` onto
+  the call stack above the caller frame with deinitialized `dst`.
 - `.callBuiltin builtin args dst target _unwind` rejects `.move` arguments that
   may overlap `dst` (`anyMoveOperandMayOverlapPlace`), resolves `dst`'s static
-  type, evaluates `args` left-to-right (`evalCallArgs` + `readPrimitiveArgs`),
-  evaluates `evalCoreBuiltin`, writes the result into `dst` (`writePlace`), and
-  jumps to `target` (or faults with `.undefined` when `target = none`). -/
+  type, evaluates `args` left-to-right (`evalCallArgs` + `readBuiltinArgs`),
+  evaluates `evalCoreBuiltin`, writes the result into `dst`
+  (`writePlaceWithLocalTy`), and jumps to `target` (or faults with `.undefined`
+  when `target = none`). -/
 noncomputable def evalTerminator (p : Program) (body : Body) (bb : BasicBlock)
     (frame : FrameState) (callers : List FrameState)
     (callerMem : CallerMemory) : StepResult State TerminalOut :=
@@ -2529,14 +3541,19 @@ noncomputable def evalTerminator (p : Program) (body : Body) (bb : BasicBlock)
                 match projectTy? localTy cont.dst.projection with
                 | none => .fault .unsupported
                 | some dstTy =>
-                  match writePlace caller.locals cont.dst dstTy retVal with
+                  match resolveStaticProjPath (.ty localTy)
+                      cont.dst.projection with
                   | .error k => .fault k
-                  | .ok callerLocals' =>
-                    match cont.target with
-                    | some nextBb =>
-                      jumpToBlock { caller with locals := callerLocals' }
-                        rest callerMem nextBb
-                    | none => .fault .undefined
+                  | .ok resolvedProj =>
+                    match writePlaceWithLocalTy localTy caller.locals
+                        ⟨cont.dst.localId, resolvedProj⟩ dstTy retVal with
+                    | .error k => .fault k
+                    | .ok callerLocals' =>
+                      match cont.target with
+                      | some nextBb =>
+                        jumpToBlock { caller with locals := callerLocals' }
+                          rest callerMem nextBb
+                      | none => .fault .undefined
           | _, _ => .fault .unsupported
         | none => .fault .undefined
       | some .dead => .fault .undefined
@@ -2589,46 +3606,54 @@ noncomputable def evalTerminator (p : Program) (body : Body) (bb : BasicBlock)
         match projectTy? localTy dst.projection with
         | none => .fault .unsupported
         | some dstTy =>
-          match evalCallArgs body.locals frame.locals args with
+          match resolveProjPath body.locals frame.locals (.ty localTy)
+              dst.projection with
           | .error k => .fault k
-          | .ok (argPairs, localsAfterArgs) =>
-            match getElem? p.bodies callee with
-            | none => .fault .unsupported
-            | some calleeBody =>
-              if !bodyEntryAdmitted calleeBody then
-                .fault .unsupported
-              else if !Nat.beq argPairs.length calleeBody.argumentCount then
-                .fault .unsupported
-              else
-                match getElem? calleeBody.locals 0 with
-                | none => .fault .unsupported
-                | some calleeRetTy =>
-                  if !MirTy.beq calleeRetTy dstTy then
-                    .fault .unsupported
-                  else
-                    match deinitPlace localsAfterArgs dst dstTy with
-                    | .error k => .fault k
-                    | .ok localsAfterDeinit =>
-                      let paramTys :=
-                        (calleeBody.locals.drop 1).take calleeBody.argumentCount
-                      match validateCallArgs argPairs paramTys with
+          | .ok resolvedProj =>
+            let resolvedDst : Place := ⟨dst.localId, resolvedProj⟩
+            match evalCallArgs body.locals frame.locals args with
+            | .error k => .fault k
+            | .ok (argPairs, localsAfterArgs) =>
+              match getElem? p.bodies callee with
+              | none => .fault .unsupported
+              | some calleeBody =>
+                if !bodyEntryAdmitted calleeBody then
+                  .fault .unsupported
+                else if !Nat.beq argPairs.length calleeBody.argumentCount then
+                  .fault .unsupported
+                else
+                  match getElem? calleeBody.locals 0 with
+                  | none => .fault .unsupported
+                  | some calleeRetTy =>
+                    if !MirTy.beq calleeRetTy dstTy then
+                      .fault .unsupported
+                    else
+                      match deinitPlaceWithLocalTy localTy localsAfterArgs
+                          resolvedDst dstTy with
                       | .error k => .fault k
-                      | .ok argVals =>
-                        let calleeLocals :=
-                          initLocalsLoop calleeBody argVals 0 calleeBody.locals
-                        let callerFrame' : FrameState :=
-                          { frame with locals := localsAfterDeinit }
-                        let calleeFrame : FrameState := {
-                          defId := callee
-                          blockIdx := 0
-                          stmtIdx := 0
-                          locals := calleeLocals
-                          returnCont := some ⟨dst, target, unwind⟩
-                        }
-                        .step {
-                          frames := calleeFrame :: callerFrame' :: callers
-                          callerMem
-                        }
+                      | .ok localsAfterDeinit =>
+                        let paramTys :=
+                          (calleeBody.locals.drop 1).take
+                            calleeBody.argumentCount
+                        match validateCallArgs argPairs paramTys with
+                        | .error k => .fault k
+                        | .ok argVals =>
+                          let calleeLocals :=
+                            initLocalsLoop calleeBody argVals 0
+                              calleeBody.locals
+                          let callerFrame' : FrameState :=
+                            { frame with locals := localsAfterDeinit }
+                          let calleeFrame : FrameState := {
+                            defId := callee
+                            blockIdx := 0
+                            stmtIdx := 0
+                            locals := calleeLocals
+                            returnCont := some ⟨resolvedDst, target, unwind⟩
+                          }
+                          .step {
+                            frames := calleeFrame :: callerFrame' :: callers
+                            callerMem
+                          }
   | .callBuiltin builtin args dst target _ =>
     if anyMoveOperandMayOverlapPlace dst args then
       .fault .unsupported
@@ -2639,23 +3664,29 @@ noncomputable def evalTerminator (p : Program) (body : Body) (bb : BasicBlock)
         match projectTy? localTy dst.projection with
         | none => .fault .unsupported
         | some dstTy =>
-          match evalCallArgs body.locals frame.locals args with
+          match resolveProjPath body.locals frame.locals (.ty localTy)
+              dst.projection with
           | .error k => .fault k
-          | .ok (argPairs, localsAfterArgs) =>
-            match readPrimitiveArgs argPairs with
+          | .ok resolvedProj =>
+            let resolvedDst : Place := ⟨dst.localId, resolvedProj⟩
+            match evalCallArgs body.locals frame.locals args with
             | .error k => .fault k
-            | .ok argVals =>
-              match evalCoreBuiltin builtin argVals with
+            | .ok (argPairs, localsAfterArgs) =>
+              match readBuiltinArgs builtin argPairs with
               | .error k => .fault k
-              | .ok resVal =>
-                match writePlace localsAfterArgs dst dstTy resVal with
+              | .ok argVals =>
+                match evalCoreBuiltin builtin dstTy argVals with
                 | .error k => .fault k
-                | .ok localsAfterWrite =>
-                  match target with
-                  | some nextBb =>
-                    jumpToBlock { frame with locals := localsAfterWrite }
-                      callers callerMem nextBb
-                  | none => .fault .undefined
+                | .ok resVal =>
+                  match writePlaceWithLocalTy localTy localsAfterArgs
+                      resolvedDst dstTy resVal with
+                  | .error k => .fault k
+                  | .ok localsAfterWrite =>
+                    match target with
+                    | some nextBb =>
+                      jumpToBlock { frame with locals := localsAfterWrite }
+                        callers callerMem nextBb
+                    | none => .fault .undefined
   | .unsupported =>
     .fault .unsupported
 
@@ -3394,6 +4425,7 @@ noncomputable def canaryReprU8EnumTy : EnumTy := {
   discrSigned := false
   tagRepr := .scalar .i8 false
   discriminants := [10, 20]
+  variantFields := [[], []]
 }
 
 /-- Signed-tag fieldless enum `enum SignedTag { Neg = -1, Pos = 1 }` with 1-byte
@@ -3405,6 +4437,7 @@ noncomputable def canarySignedTagEnumTy : EnumTy := {
   discrSigned := true
   tagRepr := .scalar .i8 true
   discriminants := [Nat.pow 2 64 - 1, 1]
+  variantFields := [[], []]
 }
 
 /-- Positive canary program decoding `const ReprU8::B` (`.scalar 20`, variant 1)
@@ -3466,6 +4499,7 @@ noncomputable def canarySingleZstEnumTy : EnumTy := {
   discrSigned := true
   tagRepr := .zeroSized
   discriminants := [42]
+  variantFields := [[]]
 }
 
 /-- Positive canary `fn() -> Single { return }` returning an inhabited ZST
@@ -3515,7 +4549,7 @@ noncomputable def progZstSingleEnumMoveAndDiscr : Program where
 /-- Trusted claim for `Anneal.MirWp.canary_positive_zst_single_enum_anneal`. -/
 noncomputable def CanaryPositiveZstSingleEnumAnnealClaim : Prop :=
   PositiveCanaryClaim progZstSingleEnumImplicitRet queryEmpty
-    (.enumVal canarySingleZstEnumTy 0) ∧
+    (.enumVal canarySingleZstEnumTy 0 []) ∧
   PositiveCanaryClaim progZstSingleEnumMoveAndDiscr queryEmpty
     (scalarNatVal .isize true 42)
 
@@ -3755,6 +4789,489 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       }
     } ∧
   ¬ UnitTheorem canaryValidCrate
+
+/-- Three-variant niche enum with `untagged = 1` strictly inside `0..=2` and
+two niche variants (`0` at tag `2`, `2` at tag `4`; `1` carries `bool`). -/
+noncomputable def canaryTriNicheEnumTy : EnumTy := {
+  id := 20
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .niche .i8 false (BitVec.ofNat 128 0) (BitVec.ofNat 128 4)
+    [0] 1 0 2 (BitVec.ofNat 128 2)
+  discriminants := [10, 20, 30]
+  variantFields := [[], [.bool], []]
+}
+
+/-- Signed `Ordering`-like enum (`Less = -1`, `Equal = 0`, `Greater = 1`). -/
+noncomputable def canaryOrderingEnumTy : EnumTy := {
+  id := 21
+  discrWidth := .i8
+  discrSigned := true
+  tagRepr := .scalar .i8 true
+  discriminants := [255, 0, 1]
+  variantFields := [[], [], []]
+}
+
+/-- `Option<Ordering>` with wrapping valid range `0xFF..=0x02` (`None = 0` at
+niche tag `2`, `Some(Ordering) = 1` untagged). -/
+noncomputable def canaryOptOrderingEnumTy : EnumTy := {
+  id := 22
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .niche .i8 true (BitVec.ofNat 128 255) (BitVec.ofNat 128 2)
+    [0] 1 0 0 (BitVec.ofNat 128 2)
+  discriminants := [0, 1]
+  variantFields := [[], [.enum canaryOrderingEnumTy]]
+}
+
+/-- Niche `Option<bool>` for Pass 1 partial-move niche-leaf UB canary. -/
+noncomputable def canaryOptBoolNicheEnumTy : EnumTy := {
+  id := 23
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .niche .i8 false (BitVec.ofNat 128 0) (BitVec.ofNat 128 2)
+    [0] 1 0 0 (BitVec.ofNat 128 2)
+  discriminants := [0, 1]
+  variantFields := [[], [.bool]]
+}
+
+/-- `.single 1` payload enum (variant `0` uninhabited `!`, variant `1` carries
+`u32`). -/
+noncomputable def canarySinglePayloadEnumTy : EnumTy := {
+  id := 24
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .single 1
+  discriminants := [7, 9]
+  variantFields := [[.never], [u32Ty]]
+}
+
+/-- Nested struct carrying a `.single` payload enum and a `u8`. -/
+noncomputable def canaryNestedWrapStructTy : StructTy := {
+  id := 25
+  fields := [.enum canarySinglePayloadEnumTy, u8Ty]
+}
+
+/-- Direct-tagged `Option<i8>` for signed checked arithmetic canaries. -/
+noncomputable def canaryOptI8EnumTy : EnumTy := {
+  id := 26
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .scalar .i8 false
+  discriminants := [0, 1]
+  variantFields := [[], [.int .i8 true]]
+}
+
+/-- Direct-tagged `Option<u64>` (`64`-bit tag) for checked ops & `None` const.
+-/
+noncomputable def canaryOptU64EnumTy : EnumTy := {
+  id := 27
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .scalar .i64 false
+  discriminants := [0, 1]
+  variantFields := [[], [.int .i64 false]]
+}
+
+/-- Pass 1 positive canary exercising `canaryTriNicheEnumTy` (`untagged` inside
+`start..=last` with `> 1` niche variants). -/
+noncomputable def progTier2TriNiche : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [
+      .tuple [.int .isize true, .int .isize true, .int .isize true],
+      .enum canaryTriNicheEnumTy,
+      .enum canaryTriNicheEnumTy,
+      .enum canaryTriNicheEnumTy,
+      .int .isize true,
+      .int .isize true,
+      .int .isize true
+    ]
+    basicBlocks := [{
+      statements := [
+        .setDiscriminant ⟨1, []⟩ 0,
+        .assign ⟨2, [.downcast 1, .field 0 .bool]⟩
+          (.use (.constant ⟨.bool, .scalar (BitVec.ofNat 128 1)⟩)),
+        .setDiscriminant ⟨2, []⟩ 1,
+        .setDiscriminant ⟨3, []⟩ 2,
+        .assign ⟨4, []⟩ (.discriminant ⟨1, []⟩),
+        .assign ⟨5, []⟩ (.discriminant ⟨2, []⟩),
+        .assign ⟨6, []⟩ (.discriminant ⟨3, []⟩),
+        .assign ⟨0, []⟩
+          (.aggregate .tuple [.move ⟨4, []⟩, .move ⟨5, []⟩, .move ⟨6, []⟩])
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 positive canary exercising wrapping valid range (`Option<Ordering>`
+`0xFF..=0x02`) and niche unit-variant constant (`None`). -/
+noncomputable def progTier2WrappingNicheAndConst : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [
+      .tuple [.int .isize true, .int .isize true],
+      .enum canaryOptOrderingEnumTy,
+      .enum canaryOptOrderingEnumTy,
+      .int .isize true,
+      .int .isize true
+    ]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨1, []⟩ (.use (.constant
+          ⟨.enum canaryOptOrderingEnumTy, .scalar (BitVec.ofNat 128 2)⟩)),
+        .assign ⟨2, [.downcast 1, .field 0 (.enum canaryOrderingEnumTy)]⟩
+          (.use (.constant
+            ⟨.enum canaryOrderingEnumTy, .scalar (BitVec.ofNat 128 255)⟩)),
+        .setDiscriminant ⟨2, []⟩ 1,
+        .assign ⟨3, []⟩ (.discriminant ⟨1, []⟩),
+        .assign ⟨4, []⟩ (.discriminant ⟨2, []⟩),
+        .assign ⟨0, []⟩ (.aggregate .tuple [.move ⟨3, []⟩, .move ⟨4, []⟩])
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 negative UB canary: partial move of a niche leaf followed by
+`Rvalue.discriminant` faults with `.undefined`. -/
+noncomputable def progTier2NicheLeafMoveDiscrUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.int .isize true, .enum canaryOptBoolNicheEnumTy, .bool]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨1, [.downcast 1, .field 0 .bool]⟩
+          (.use (.constant ⟨.bool, .scalar (BitVec.ofNat 128 1)⟩)),
+        .setDiscriminant ⟨1, []⟩ 1,
+        .assign ⟨2, []⟩ (.use (.move ⟨1, [.downcast 1, .field 0 .bool]⟩)),
+        .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 positive canary exercising `.single` payload enum nested inside a
+struct inside a fixed array `[Wrap; 2]`. -/
+noncomputable def progTier2NestedSingleEnumInArray : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [
+      u32Ty,
+      .array (.adtStruct canaryNestedWrapStructTy) 2,
+      u32Ty,
+      .int .isize true
+    ]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨1, [
+            .constantIndex 1 2 false,
+            .field 0 (.enum canarySinglePayloadEnumTy),
+            .downcast 1,
+            .field 0 u32Ty
+          ]⟩
+          (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 42)⟩)),
+        .assign ⟨2, []⟩ (.use (.copy ⟨1, [
+            .constantIndex 1 2 false,
+            .field 0 (.enum canarySinglePayloadEnumTy),
+            .downcast 1,
+            .field 0 u32Ty
+          ]⟩)),
+        .assign ⟨3, []⟩ (.discriminant ⟨1, [
+            .constantIndex 1 2 false,
+            .field 0 (.enum canarySinglePayloadEnumTy)
+          ]⟩),
+        .assign ⟨0, []⟩ (.use (.move ⟨2, []⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 positive canary exercising `[u8; 0]`, `[(); 3]`, and `Rvalue.repeat`
+(`[0u8; 4]` and `[x; 0]`). -/
+noncomputable def progTier2ZstArraysAndRepeat : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [
+      .array u8Ty 4,
+      .array u8Ty 0,
+      .array .unit 3,
+      u8Ty
+    ]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨1, []⟩ (.repeat_ (.copy ⟨3, []⟩) 0),
+        .assign ⟨2, []⟩ (.repeat_ (.constant ⟨.unit, .zeroSized⟩) 3),
+        .assign ⟨0, []⟩ (.repeat_ (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 7)⟩) 4)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 negative UB canaries for `Index` with uninit, dead, or moved index
+local and `ConstantIndex` `fromEnd` with `offset = 0`. -/
+noncomputable def progTier2IndexUninitIdxUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .array u8Ty 2, .int .isize false]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨1, []⟩
+          (.repeat_ (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) 2),
+        .assign ⟨0, []⟩ (.use (.copy ⟨1, [.index 2]⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+noncomputable def progTier2IndexDeadIdxUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .array u8Ty 2, .int .isize false]
+    basicBlocks := [{
+      statements := [
+        .storageDead 2,
+        .assign ⟨1, []⟩
+          (.repeat_ (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) 2),
+        .assign ⟨0, []⟩ (.use (.copy ⟨1, [.index 2]⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+noncomputable def progTier2IndexMovedIdxUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .array u8Ty 2, .int .isize false, .int .isize false]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨2, []⟩
+          (.use (.constant ⟨.int .isize false, .scalar (BitVec.ofNat 128 0)⟩)),
+        .assign ⟨3, []⟩ (.use (.move ⟨2, []⟩)),
+        .assign ⟨1, []⟩
+          (.repeat_ (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) 2),
+        .assign ⟨0, []⟩ (.use (.copy ⟨1, [.index 2]⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+noncomputable def progTier2FromEndZeroUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .array u8Ty 2]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨1, []⟩
+          (.repeat_ (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) 2),
+        .assign ⟨0, []⟩ (.use (.copy ⟨1, [.constantIndex 0 2 true]⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 positive canary exercising `Index` in a direct call destination. -/
+noncomputable def progTier2CallDstIndex : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      argumentCount := 0
+      locals := [.array u8Ty 2, .int .isize false]
+      basicBlocks := [
+        {
+          statements := [
+            .assign ⟨0, []⟩
+              (.repeat_ (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩) 2),
+            .assign ⟨1, []⟩
+              (.use (.constant ⟨.int .isize false, .scalar (BitVec.ofNat 128 1)⟩))
+          ]
+          terminator := .call 1 [] ⟨0, [.index 1]⟩ (some 1) .continue_
+        },
+        { statements := [], terminator := .return_ }
+      ]
+    },
+    {
+      argumentCount := 0
+      locals := [u8Ty]
+      basicBlocks := [{
+        statements := [
+          .assign ⟨0, []⟩
+            (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 9)⟩))
+        ]
+        terminator := .return_
+      }]
+    }
+  ]
+
+/-- Pass 1 positive canary helper for binary `CoreBuiltin` calls. -/
+noncomputable def mkTier2BinBuiltinProg (b : CoreBuiltin)
+    (dstTy lhsTy rhsTy : MirTy) : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 2
+    locals := [dstTy, lhsTy, rhsTy]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .callBuiltin b [.copy ⟨1, []⟩, .copy ⟨2, []⟩]
+          ⟨0, []⟩ (some 1) .continue_
+      },
+      { statements := [], terminator := .return_ }
+    ]
+  }]
+
+/-- Pass 1 positive canary helper for unary `CoreBuiltin` calls. -/
+noncomputable def mkTier2UnaryBuiltinProg (b : CoreBuiltin)
+    (dstTy argTy : MirTy) : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [dstTy, argTy]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .callBuiltin b [.copy ⟨1, []⟩] ⟨0, []⟩ (some 1) .continue_
+      },
+      { statements := [], terminator := .return_ }
+    ]
+  }]
+
+/-- Pass 1 positive canary for direct-tagged payload-enum unit constant
+(`Option<u64>::None`). -/
+noncomputable def progTier2OptionU64NoneConst : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.enum canaryOptU64EnumTy]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩ (.use (.constant
+          ⟨.enum canaryOptU64EnumTy, .scalar (BitVec.ofNat 128 0)⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Pass 1 negative UB canary: `fromLeBytes` reading an array with an
+uninitialized element faults with `.undefined`. -/
+noncomputable def progTier2FromLeBytesUninitElemUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.int .i16 false, .array u8Ty 2]
+    basicBlocks := [
+      {
+        statements := [
+          .assign ⟨1, [.constantIndex 0 2 false]⟩
+            (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 1)⟩))
+        ]
+        terminator := .callBuiltin .fromLeBytes [.copy ⟨1, []⟩]
+          ⟨0, []⟩ (some 1) .continue_
+      },
+      { statements := [], terminator := .return_ }
+    ]
+  }]
+
+/-- Trusted claim for
+`Anneal.MirWp.canary_tier2_adt_array_and_builtins_anneal`: Pass 1 coverage for
+Tier 2 niche layouts (untagged inside `start..=last`, `> 1` niche variants,
+wrapping valid range `Option<Ordering>`, niche-leaf partial-move UB), `.single`
+payload enum nested in struct/array, `[T; 0]`/`[(); N]`/`Rvalue.repeat`,
+`Index` edge cases (uninit/dead/moved idx, call dst, `fromEnd` offset `0`),
+unsigned/signed `checkedSub`/`checkedMul`/`checkedAdd`, payload-enum `None`
+constants, `toLeBytes` on negative signed/`u8`/`usize`/`i128`, and
+`fromLeBytes` uninit-element UB. -/
+noncomputable def CanaryTier2AdtArrayAndBuiltinsAnnealClaim : Prop :=
+  let i8Ty : MirTy := .int .i8 true
+  let i16Ty : MirTy := .int .i16 true
+  let i128Ty : MirTy := .int .i128 true
+  let usizeTy : MirTy := .int .isize false
+  let u64Ty : MirTy := .int .i64 false
+  let optI8Ty : MirTy := .enum canaryOptI8EnumTy
+  let optU64Ty : MirTy := .enum canaryOptU64EnumTy
+  PositiveCanaryClaim progTier2TriNiche queryEmpty
+    (.tuple [scalarNatVal .isize true 10, scalarNatVal .isize true 20,
+      scalarNatVal .isize true 30]) ∧
+  PositiveCanaryClaim progTier2WrappingNicheAndConst queryEmpty
+    (.tuple [scalarNatVal .isize true 0, scalarNatVal .isize true 1]) ∧
+  NegativeCanaryClaim progTier2NicheLeafMoveDiscrUb queryEmpty
+    .undefined .unsupported ∧
+  PositiveCanaryClaim progTier2NestedSingleEnumInArray queryEmpty (u32Val 42) ∧
+  PositiveCanaryClaim progTier2ZstArraysAndRepeat queryEmpty
+    (.array u8Ty [u8Val 7, u8Val 7, u8Val 7, u8Val 7]) ∧
+  NegativeCanaryClaim progTier2IndexUninitIdxUb queryEmpty
+    .undefined .unsupported ∧
+  NegativeCanaryClaim progTier2IndexDeadIdxUb queryEmpty
+    .undefined .unsupported ∧
+  NegativeCanaryClaim progTier2IndexMovedIdxUb queryEmpty
+    .undefined .unsupported ∧
+  NegativeCanaryClaim progTier2FromEndZeroUb queryEmpty
+    .unsupported .undefined ∧
+  PositiveCanaryClaim progTier2CallDstIndex queryEmpty
+    (.array u8Ty [u8Val 1, u8Val 9]) ∧
+  PositiveCanaryClaim
+    (mkTier2BinBuiltinProg .checkedSub optU64Ty u64Ty u64Ty)
+    { args := [scalarNatVal .i64 false 0, scalarNatVal .i64 false 1] }
+    (.enumVal canaryOptU64EnumTy 0 []) ∧
+  PositiveCanaryClaim
+    (mkTier2BinBuiltinProg .checkedMul optU64Ty u64Ty u64Ty)
+    { args := [scalarNatVal .i64 false 6, scalarNatVal .i64 false 7] }
+    (.enumVal canaryOptU64EnumTy 1 [scalarNatVal .i64 false 42]) ∧
+  PositiveCanaryClaim
+    (mkTier2BinBuiltinProg .checkedAdd optI8Ty i8Ty i8Ty)
+    { args := [scalarNatVal .i8 true 127, scalarNatVal .i8 true 1] }
+    (.enumVal canaryOptI8EnumTy 0 []) ∧
+  PositiveCanaryClaim
+    (mkTier2BinBuiltinProg .checkedSub optI8Ty i8Ty i8Ty)
+    { args := [scalarNatVal .i8 true 128, scalarNatVal .i8 true 1] }
+    (.enumVal canaryOptI8EnumTy 0 []) ∧
+  PositiveCanaryClaim
+    (mkTier2BinBuiltinProg .checkedMul optI8Ty i8Ty i8Ty)
+    { args := [scalarNatVal .i8 true 128, scalarNatVal .i8 true 255] }
+    (.enumVal canaryOptI8EnumTy 0 []) ∧
+  PositiveCanaryClaim progTier2OptionU64NoneConst queryEmpty
+    (.enumVal canaryOptU64EnumTy 0 []) ∧
+  PositiveCanaryClaim
+    (mkTier2UnaryBuiltinProg .toLeBytes (.array u8Ty 2) i16Ty)
+    { args := [scalarNatVal .i16 true 65534] }
+    (.array u8Ty [u8Val 254, u8Val 255]) ∧
+  PositiveCanaryClaim
+    (mkTier2UnaryBuiltinProg .toLeBytes (.array u8Ty 1) u8Ty)
+    { args := [u8Val 171] }
+    (.array u8Ty [u8Val 171]) ∧
+  PositiveCanaryClaim
+    (mkTier2UnaryBuiltinProg .toLeBytes (.array u8Ty 8) usizeTy)
+    { args := [scalarNatVal .isize false 0x0102030405060708] }
+    (.array u8Ty [u8Val 8, u8Val 7, u8Val 6, u8Val 5,
+      u8Val 4, u8Val 3, u8Val 2, u8Val 1]) ∧
+  PositiveCanaryClaim
+    (mkTier2UnaryBuiltinProg .toLeBytes (.array u8Ty 16) i128Ty)
+    { args := [scalarNatVal .i128 true (Nat.pow 2 128 - 1)] }
+    (.array u8Ty (replicateVal 16 (u8Val 255))) ∧
+  NegativeCanaryClaim progTier2FromLeBytesUninitElemUb queryEmpty
+    .undefined .unsupported
 
 end Trusted.MirSemantics
 
