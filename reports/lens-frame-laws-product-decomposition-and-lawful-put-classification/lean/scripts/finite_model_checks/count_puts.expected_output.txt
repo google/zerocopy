@@ -1,0 +1,2 @@
+checked 1228 getters; mismatches: 0
+fst on Bool x Bool: 2 very well-behaved puts (predicted 2)

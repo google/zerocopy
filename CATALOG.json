@@ -38353,6 +38353,130 @@
         "pl/single-use-typestate"
       ]
     },
+    "lens-frame-laws-product-decomposition-and-lawful-put-classification": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1232420.1232424"
+          },
+          "name": "Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/319628.319634"
+          },
+          "name": "Update semantics of relational views"
+        },
+        {
+          "identity": {
+            "archived_url": "https://web.archive.org/web/20040719131443/http://www.cis.upenn.edu:80/%7Ebcpierce/papers/dblenses.pdf",
+            "sha256": "1e464cbf2027f4ea88e05bf10e2c81866e1cdd8449bcc2e97021044f252bdc5a",
+            "url": "https://www.cis.upenn.edu/~bcpierce/papers/dblenses.pdf"
+          },
+          "name": "Lenses and View Update Translation (working draft of April 3, 2003)"
+        },
+        {
+          "identity": {
+            "doi": "10.3217/jucs-016-05-0729"
+          },
+          "name": "Algebras and Update Strategies"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0960129511000442"
+          },
+          "name": "Lenses, fibrations and universal translations"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/LICS52264.2021.9470613"
+          },
+          "name": "Higher Lenses"
+        },
+        {
+          "identity": {
+            "repository": "nad/dependent-lenses",
+            "revision": "c09739a91f522074c9b3508e56252013219f359c"
+          },
+          "name": "dependent-lenses Agda development"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-utp/Optics",
+            "revision": "b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc",
+            "url": "https://isa-afp.org/entries/Optics.html"
+          },
+          "name": "Optics (Archive of Formal Proofs entry)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-46750-4_17"
+          },
+          "name": "Unifying Heterogeneous State-Spaces with Lenses"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45931-6_24"
+          },
+          "name": "Notions of Computation Determine Monads"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.entcs.2004.02.041"
+          },
+          "name": "From Comodels to Coalgebras: State and Arrays"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-19797-5_10"
+          },
+          "name": "A Clear Picture of Lens Laws"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.10421v1",
+            "doi": "10.48550/arXiv.1910.10421"
+          },
+          "name": "Towards a Complete Picture of Lens Laws"
+        },
+        {
+          "identity": {
+            "arxiv": "2009.06835v1",
+            "doi": "10.4204/EPTCS.323.13"
+          },
+          "name": "Internal lenses as functors and cofunctors"
+        },
+        {
+          "identity": {
+            "doi": "10.5381/jot.2011.10.1.a6"
+          },
+          "name": "From State- to Delta-Based Bidirectional Model Transformations: the Asymmetric Case"
+        },
+        {
+          "identity": {
+            "arxiv": "1809.00738v2",
+            "doi": "10.48550/arXiv.1809.00738"
+          },
+          "name": "Categories of Optics"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/bidirectional-lenses",
+        "pl/frame-laws",
+        "pl/view-update"
+      ]
+    },
     "libavdevice-os-capture-playback-and-realtime-rtp-rtsp-rtmp-srt-whip-transports": {
       "observed_at": "2026-11-20",
       "subjects": [

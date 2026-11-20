@@ -1,0 +1,1021 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Lens": [],
+    "Toy.Lens.Equiv": [],
+    "Toy.Lens.Equiv.casesOn": [],
+    "Toy.Lens.Equiv.ctorIdx": [],
+    "Toy.Lens.Equiv.ext_of_toFun_eq": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.Equiv.injective": [],
+    "Toy.Lens.Equiv.invFun": [],
+    "Toy.Lens.Equiv.left_inv": [],
+    "Toy.Lens.Equiv.mk": [],
+    "Toy.Lens.Equiv.mk.inj": [],
+    "Toy.Lens.Equiv.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.Equiv.mk.noConfusion": [],
+    "Toy.Lens.Equiv.mk.sizeOf_spec": [],
+    "Toy.Lens.Equiv.noConfusion": [],
+    "Toy.Lens.Equiv.noConfusionType": [],
+    "Toy.Lens.Equiv.rec": [],
+    "Toy.Lens.Equiv.recOn": [],
+    "Toy.Lens.Equiv.refl": [],
+    "Toy.Lens.Equiv.right_inv": [],
+    "Toy.Lens.Equiv.toFun": [],
+    "Toy.Lens.EvFalse": [],
+    "Toy.Lens.FamJointExt": [],
+    "Toy.Lens.Fiber": [],
+    "Toy.Lens.FiberMaps": [],
+    "Toy.Lens.FiberMaps.Coherent": [],
+    "Toy.Lens.FiberMaps.Coherent.casesOn": [],
+    "Toy.Lens.FiberMaps.Coherent.leftInverse": [],
+    "Toy.Lens.FiberMaps.Coherent.map_comp": [],
+    "Toy.Lens.FiberMaps.Coherent.map_self": [],
+    "Toy.Lens.FiberMaps.Coherent.mk": [],
+    "Toy.Lens.FiberMaps.Coherent.rec": [],
+    "Toy.Lens.FiberMaps.Coherent.recOn": [],
+    "Toy.Lens.FiberMaps.toPut": [],
+    "Toy.Lens.GetFiber": [],
+    "Toy.Lens.GetPut": [],
+    "Toy.Lens.HasConstantComplement": [],
+    "Toy.Lens.HasGhostComplement": [],
+    "Toy.Lens.Intertwines": [],
+    "Toy.Lens.Intertwines.casesOn": [],
+    "Toy.Lens.Intertwines.get_eq": [],
+    "Toy.Lens.Intertwines.mk": [],
+    "Toy.Lens.Intertwines.put_eq": [],
+    "Toy.Lens.Intertwines.rec": [],
+    "Toy.Lens.Intertwines.recOn": [],
+    "Toy.Lens.IsPiDecomposition": [],
+    "Toy.Lens.IsPiDecomposition.casesOn": [],
+    "Toy.Lens.IsPiDecomposition.injective": [],
+    "Toy.Lens.IsPiDecomposition.intertwines": [],
+    "Toy.Lens.IsPiDecomposition.mk": [],
+    "Toy.Lens.IsPiDecomposition.rec": [],
+    "Toy.Lens.IsPiDecomposition.recOn": [],
+    "Toy.Lens.IsPiDecomposition.surjective": [],
+    "Toy.Lens.IsProductDecomposition": [],
+    "Toy.Lens.IsProductDecomposition.casesOn": [],
+    "Toy.Lens.IsProductDecomposition.injective": [],
+    "Toy.Lens.IsProductDecomposition.intertwines_fst": [],
+    "Toy.Lens.IsProductDecomposition.intertwines_snd": [],
+    "Toy.Lens.IsProductDecomposition.mk": [],
+    "Toy.Lens.IsProductDecomposition.rec": [],
+    "Toy.Lens.IsProductDecomposition.recOn": [],
+    "Toy.Lens.IsProductDecomposition.surjective": [],
+    "Toy.Lens.JointExt": [],
+    "Toy.Lens.JointExt.symm": [],
+    "Toy.Lens.PLens": [],
+    "Toy.Lens.PLens.GetPutOn": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.casesOn": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.get_defined": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.injective": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.mk": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.put_fst": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.put_snd": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.rec": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.recOn": [],
+    "Toy.Lens.PLens.IsProductDecompositionOn.surjective": [],
+    "Toy.Lens.PLens.JointExt": [],
+    "Toy.Lens.PLens.JointExtOn": [],
+    "Toy.Lens.PLens.PutCommOn": [],
+    "Toy.Lens.PLens.PutGetOn": [],
+    "Toy.Lens.PLens.PutIndepOn": [],
+    "Toy.Lens.PLens.PutPutOn": [],
+    "Toy.Lens.PLens.Shape": [],
+    "Toy.Lens.PLens.Shape.IsPair": [],
+    "Toy.Lens.PLens.Shape.casesOn": [],
+    "Toy.Lens.PLens.Shape.ctorElim": [],
+    "Toy.Lens.PLens.Shape.ctorElimType": [],
+    "Toy.Lens.PLens.Shape.ctorIdx": [],
+    "Toy.Lens.PLens.Shape.isPair_pair": [],
+    "Toy.Lens.PLens.Shape.nil": [],
+    "Toy.Lens.PLens.Shape.nil.elim": [],
+    "Toy.Lens.PLens.Shape.nil.sizeOf_spec": [],
+    "Toy.Lens.PLens.Shape.noConfusion": [],
+    "Toy.Lens.PLens.Shape.noConfusionType": [],
+    "Toy.Lens.PLens.Shape.not_isPair_nil": [],
+    "Toy.Lens.PLens.Shape.not_isPair_nil.match_1_1": [],
+    "Toy.Lens.PLens.Shape.pair": [],
+    "Toy.Lens.PLens.Shape.pair.elim": [],
+    "Toy.Lens.PLens.Shape.pair.inj": [],
+    "Toy.Lens.PLens.Shape.pair.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.Shape.pair.noConfusion": [],
+    "Toy.Lens.PLens.Shape.pair.sizeOf_spec": [],
+    "Toy.Lens.PLens.Shape.rec": [],
+    "Toy.Lens.PLens.Shape.recOn": [],
+    "Toy.Lens.PLens.Shape.unit": [],
+    "Toy.Lens.PLens.Shape.unit.elim": [],
+    "Toy.Lens.PLens.Shape.unit.sizeOf_spec": [],
+    "Toy.Lens.PLens.Shape3": [],
+    "Toy.Lens.PLens.Shape3.casesOn": [],
+    "Toy.Lens.PLens.Shape3.ctorElim": [],
+    "Toy.Lens.PLens.Shape3.ctorElimType": [],
+    "Toy.Lens.PLens.Shape3.ctorIdx": [],
+    "Toy.Lens.PLens.Shape3.nil": [],
+    "Toy.Lens.PLens.Shape3.nil.elim": [],
+    "Toy.Lens.PLens.Shape3.nil.sizeOf_spec": [],
+    "Toy.Lens.PLens.Shape3.noConfusion": [],
+    "Toy.Lens.PLens.Shape3.noConfusionType": [],
+    "Toy.Lens.PLens.Shape3.onlyA": [],
+    "Toy.Lens.PLens.Shape3.onlyA.elim": [],
+    "Toy.Lens.PLens.Shape3.onlyA.inj": [],
+    "Toy.Lens.PLens.Shape3.onlyA.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.Shape3.onlyA.noConfusion": [],
+    "Toy.Lens.PLens.Shape3.onlyA.sizeOf_spec": [],
+    "Toy.Lens.PLens.Shape3.pair": [],
+    "Toy.Lens.PLens.Shape3.pair.elim": [],
+    "Toy.Lens.PLens.Shape3.pair.inj": [],
+    "Toy.Lens.PLens.Shape3.pair.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.Shape3.pair.noConfusion": [],
+    "Toy.Lens.PLens.Shape3.pair.sizeOf_spec": [],
+    "Toy.Lens.PLens.Shape3.rec": [],
+    "Toy.Lens.PLens.Shape3.recOn": [],
+    "Toy.Lens.PLens.ShapeOther": [],
+    "Toy.Lens.PLens.ShapeOther.casesOn": [],
+    "Toy.Lens.PLens.ShapeOther.ctorElim": [],
+    "Toy.Lens.PLens.ShapeOther.ctorElimType": [],
+    "Toy.Lens.PLens.ShapeOther.ctorIdx": [],
+    "Toy.Lens.PLens.ShapeOther.noConfusion": [],
+    "Toy.Lens.PLens.ShapeOther.noConfusionType": [],
+    "Toy.Lens.PLens.ShapeOther.other": [],
+    "Toy.Lens.PLens.ShapeOther.other.elim": [],
+    "Toy.Lens.PLens.ShapeOther.other.inj": [],
+    "Toy.Lens.PLens.ShapeOther.other.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.ShapeOther.other.noConfusion": [],
+    "Toy.Lens.PLens.ShapeOther.other.sizeOf_spec": [],
+    "Toy.Lens.PLens.ShapeOther.pair": [],
+    "Toy.Lens.PLens.ShapeOther.pair.elim": [],
+    "Toy.Lens.PLens.ShapeOther.pair.inj": [],
+    "Toy.Lens.PLens.ShapeOther.pair.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.ShapeOther.pair.noConfusion": [],
+    "Toy.Lens.PLens.ShapeOther.pair.sizeOf_spec": [],
+    "Toy.Lens.PLens.ShapeOther.rec": [],
+    "Toy.Lens.PLens.ShapeOther.recOn": [],
+    "Toy.Lens.PLens.ShapeShared": [],
+    "Toy.Lens.PLens.ShapeShared.IsPair": [],
+    "Toy.Lens.PLens.ShapeShared.casesOn": [],
+    "Toy.Lens.PLens.ShapeShared.ctorElim": [],
+    "Toy.Lens.PLens.ShapeShared.ctorElimType": [],
+    "Toy.Lens.PLens.ShapeShared.ctorIdx": [],
+    "Toy.Lens.PLens.ShapeShared.noConfusion": [],
+    "Toy.Lens.PLens.ShapeShared.noConfusionType": [],
+    "Toy.Lens.PLens.ShapeShared.onlyB": [],
+    "Toy.Lens.PLens.ShapeShared.onlyB.elim": [],
+    "Toy.Lens.PLens.ShapeShared.onlyB.inj": [],
+    "Toy.Lens.PLens.ShapeShared.onlyB.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.ShapeShared.onlyB.noConfusion": [],
+    "Toy.Lens.PLens.ShapeShared.onlyB.sizeOf_spec": [],
+    "Toy.Lens.PLens.ShapeShared.pair": [],
+    "Toy.Lens.PLens.ShapeShared.pair.elim": [],
+    "Toy.Lens.PLens.ShapeShared.pair.inj": [],
+    "Toy.Lens.PLens.ShapeShared.pair.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.ShapeShared.pair.noConfusion": [],
+    "Toy.Lens.PLens.ShapeShared.pair.sizeOf_spec": [],
+    "Toy.Lens.PLens.ShapeShared.rec": [],
+    "Toy.Lens.PLens.ShapeShared.recOn": [],
+    "Toy.Lens.PLens.ShapeTwin": [],
+    "Toy.Lens.PLens.ShapeTwin.IsPair1": [],
+    "Toy.Lens.PLens.ShapeTwin.casesOn": [],
+    "Toy.Lens.PLens.ShapeTwin.ctorElim": [],
+    "Toy.Lens.PLens.ShapeTwin.ctorElimType": [],
+    "Toy.Lens.PLens.ShapeTwin.ctorIdx": [],
+    "Toy.Lens.PLens.ShapeTwin.noConfusion": [],
+    "Toy.Lens.PLens.ShapeTwin.noConfusionType": [],
+    "Toy.Lens.PLens.ShapeTwin.pair1": [],
+    "Toy.Lens.PLens.ShapeTwin.pair1.elim": [],
+    "Toy.Lens.PLens.ShapeTwin.pair1.inj": [],
+    "Toy.Lens.PLens.ShapeTwin.pair1.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.ShapeTwin.pair1.noConfusion": [],
+    "Toy.Lens.PLens.ShapeTwin.pair1.sizeOf_spec": [],
+    "Toy.Lens.PLens.ShapeTwin.pair2": [],
+    "Toy.Lens.PLens.ShapeTwin.pair2.elim": [],
+    "Toy.Lens.PLens.ShapeTwin.pair2.inj": [],
+    "Toy.Lens.PLens.ShapeTwin.pair2.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.ShapeTwin.pair2.noConfusion": [],
+    "Toy.Lens.PLens.ShapeTwin.pair2.sizeOf_spec": [],
+    "Toy.Lens.PLens.ShapeTwin.rec": [],
+    "Toy.Lens.PLens.ShapeTwin.recOn": [],
+    "Toy.Lens.PLens.TotalOn": [],
+    "Toy.Lens.PLens.TotalOn.casesOn": [],
+    "Toy.Lens.PLens.TotalOn.get_defined": [],
+    "Toy.Lens.PLens.TotalOn.mk": [],
+    "Toy.Lens.PLens.TotalOn.put_defined": [],
+    "Toy.Lens.PLens.TotalOn.rec": [],
+    "Toy.Lens.PLens.TotalOn.recOn": [],
+    "Toy.Lens.PLens.absent": [],
+    "Toy.Lens.PLens.absent_tight_totalOn": [],
+    "Toy.Lens.PLens.absent_tight_totalOn_right": [],
+    "Toy.Lens.PLens.casesOn": [],
+    "Toy.Lens.PLens.ctorIdx": [],
+    "Toy.Lens.PLens.emptyVariant_isProductDecompositionOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.emptyVariant_isProductDecompositionOn.match_1_1": [],
+    "Toy.Lens.PLens.emptyVariant_isProductDecompositionOn.match_1_3": [],
+    "Toy.Lens.PLens.eq_of_jointExt_of_get_eq_none": [],
+    "Toy.Lens.PLens.f5_hyps_toPLens": [],
+    "Toy.Lens.PLens.f5_hyps_toPLens.match_1_1": [],
+    "Toy.Lens.PLens.f5_hyps_toPLens.match_1_3": [],
+    "Toy.Lens.PLens.f5_tight_jointExtOn": [],
+    "Toy.Lens.PLens.f5_tight_nonempty": [],
+    "Toy.Lens.PLens.f5_tight_putGetOn_left": [],
+    "Toy.Lens.PLens.f5_tight_putGetOn_right": [],
+    "Toy.Lens.PLens.f5_tight_putIndepOn_left": [],
+    "Toy.Lens.PLens.f5_tight_putIndepOn_right": [],
+    "Toy.Lens.PLens.f5_unscoped_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.get": [],
+    "Toy.Lens.PLens.getPutOn_of_totalOn_putGetOn_putIndepOn_jointExtOn": [],
+    "Toy.Lens.PLens.instDecidableEqShape": [],
+    "Toy.Lens.PLens.instDecidableEqShape.decEq": [],
+    "Toy.Lens.PLens.instDecidableEqShape.decEq.match_1": [],
+    "Toy.Lens.PLens.instDecidableEqShape3": [],
+    "Toy.Lens.PLens.instDecidableEqShape3.decEq": [],
+    "Toy.Lens.PLens.instDecidableEqShape3.decEq.match_1": [],
+    "Toy.Lens.PLens.instDecidableEqShapeOther": [],
+    "Toy.Lens.PLens.instDecidableEqShapeOther.decEq": [],
+    "Toy.Lens.PLens.instDecidableEqShapeOther.decEq.match_1": [],
+    "Toy.Lens.PLens.instDecidableEqShapeShared": [],
+    "Toy.Lens.PLens.instDecidableEqShapeShared.decEq": [],
+    "Toy.Lens.PLens.instDecidableEqShapeShared.decEq.match_1": [],
+    "Toy.Lens.PLens.instDecidableEqShapeTwin": [],
+    "Toy.Lens.PLens.instDecidableEqShapeTwin.decEq": [],
+    "Toy.Lens.PLens.instDecidableEqShapeTwin.decEq.match_1": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty.match_1_1": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty.match_1_11": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty.match_1_3": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty.match_1_5": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty.match_1_7": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty.match_1_9": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_of_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty": [],
+    "Toy.Lens.PLens.isProductDecompositionOn_toPLens_iff": [],
+    "Toy.Lens.PLens.jointExtOn_toPLens_iff": [],
+    "Toy.Lens.PLens.jointExt_pairFst_pairSnd_equates_tags": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.jointExt_toPLens_iff": [],
+    "Toy.Lens.PLens.leaveVariant": [],
+    "Toy.Lens.PLens.mk": [],
+    "Toy.Lens.PLens.mk.inj": [],
+    "Toy.Lens.PLens.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.mk.noConfusion": [],
+    "Toy.Lens.PLens.mk.sizeOf_spec": [],
+    "Toy.Lens.PLens.noConfusion": [],
+    "Toy.Lens.PLens.noConfusionType": [],
+    "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields": [],
+    "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight": [],
+    "Toy.Lens.PLens.optFst": [],
+    "Toy.Lens.PLens.optFst.eq_1": [],
+    "Toy.Lens.PLens.optFst.match_1": [],
+    "Toy.Lens.PLens.optFst.match_3": [],
+    "Toy.Lens.PLens.optFst_optSnd_jointExt": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.optSnd": [],
+    "Toy.Lens.PLens.optWriteAll": [],
+    "Toy.Lens.PLens.otherFst": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.otherFst.match_1": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.otherFst.match_4": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.otherFst_otherSnd_not_jointExt": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.otherSnd": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairDirty": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairDirty_not_putPutOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst.match_1": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst.match_4": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFstSwitch": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFstSwitch.match_1": [],
+    "Toy.Lens.PLens.pairFstSwitch_violates_unscoped_putIndep": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFstTagSwitch": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_getPutOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_not_totalOn_univ": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairFst_not_isProductDecompositionOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairFst_not_jointExtOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairFst_not_putCommOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairFst_not_putIndepOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairSnd_isProductDecompositionOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairSnd_isProductDecompositionOn.match_1_1": [],
+    "Toy.Lens.PLens.pairFst_pairSnd_jointExtOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairSnd_jointExtOn.match_1_1": [],
+    "Toy.Lens.PLens.pairFst_pairSnd_not_jointExt": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairSnd_putCommOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairSnd_putIndepOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_pairSnd_putIndepOn.match_1_1": [],
+    "Toy.Lens.PLens.pairFst_pairSnd_satisfy_f5_hypotheses": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_putGetOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_putGetOn.match_1_1": [],
+    "Toy.Lens.PLens.pairFst_putPutOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_totalOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairFst_totalOn.match_1_1": [],
+    "Toy.Lens.PLens.pairIgnore": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairIgnore_not_putGetOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairResetSnd": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairResetSnd_not_getPutOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairSnd": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairSnd_pairFst_putIndepOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairSnd_pairFst_putIndepOn.match_1_1": [],
+    "Toy.Lens.PLens.pairSnd_putGetOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairSnd_putGetOn.match_1_1": [],
+    "Toy.Lens.PLens.pairSnd_totalOn": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.pairSnd_totalOn.match_1_1": [],
+    "Toy.Lens.PLens.presentAt": [],
+    "Toy.Lens.PLens.put": [],
+    "Toy.Lens.PLens.putCommOn_of_totalOn_putGetOn_putIndepOn_jointExtOn": [],
+    "Toy.Lens.PLens.putGetOn_toPLens_iff": [],
+    "Toy.Lens.PLens.putIndepOn_toPLens_iff": [],
+    "Toy.Lens.PLens.putPutOn_of_totalOn_putGetOn_putIndepOn_jointExtOn": [],
+    "Toy.Lens.PLens.readOnlyUnit": [],
+    "Toy.Lens.PLens.rec": [],
+    "Toy.Lens.PLens.recOn": [],
+    "Toy.Lens.PLens.scoped_decomposition_holds_but_unscoped_jointExt_fails": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.scoped_laws_admit_variant_switching_put": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.scoped_laws_admit_variant_switching_put.match_1_1": [],
+    "Toy.Lens.PLens.shape3A": [],
+    "Toy.Lens.PLens.shape3A.eq_1": [],
+    "Toy.Lens.PLens.shape3A.match_1": [],
+    "Toy.Lens.PLens.shape3A.match_3": [],
+    "Toy.Lens.PLens.shape3B": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.shape3B.eq_1": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.shape3B.match_1": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.shape3B.match_4": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.shape3_jointExt": [
+      "propext"
+    ],
+    "Toy.Lens.PLens.sharedFstSwitch": [],
+    "Toy.Lens.PLens.sharedFstSwitch.match_1": [],
+    "Toy.Lens.PLens.sharedFstSwitch.match_3": [],
+    "Toy.Lens.PLens.sharedSnd": [],
+    "Toy.Lens.PLens.totalOn_components_tight": [],
+    "Toy.Lens.PLens.totalOn_toPLens": [],
+    "Toy.Lens.PLens.twinA": [],
+    "Toy.Lens.PLens.twinA.match_1": [],
+    "Toy.Lens.PLens.twinA.match_3": [],
+    "Toy.Lens.PLens.twinB": [],
+    "Toy.Lens.PLens.twin_jointExtOn_fails_on_union": [],
+    "Toy.Lens.PLens.unscoped_laws_admit_variant_switch": [],
+    "Toy.Lens.PLens.unscoped_putIndep_admits_tag_switch": [
+      "propext"
+    ],
+    "Toy.Lens.PairwiseIndep": [],
+    "Toy.Lens.PutComm": [],
+    "Toy.Lens.PutComm.symm": [],
+    "Toy.Lens.PutGet": [],
+    "Toy.Lens.PutIndep": [],
+    "Toy.Lens.PutPut": [],
+    "Toy.Lens.VeryWellBehaved": [],
+    "Toy.Lens.WellBehaved": [],
+    "Toy.Lens.aliasing_fails_putIndep_both_directions": [],
+    "Toy.Lens.aliasing_nonvacuity_bool": [],
+    "Toy.Lens.boolEquivFin2": [
+      "propext"
+    ],
+    "Toy.Lens.card_tight_uniform_fibers": [
+      "propext"
+    ],
+    "Toy.Lens.card_tight_uniform_fibers.match_1_1": [],
+    "Toy.Lens.card_tight_uniform_fibers.match_1_3": [],
+    "Toy.Lens.card_tight_views": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.card_tight_views.match_1_1": [],
+    "Toy.Lens.card_tight_views.match_1_4": [],
+    "Toy.Lens.card_tight_views.match_1_6": [],
+    "Toy.Lens.card_veryWellBehaved_puts_empty_state_two_views": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.card_veryWellBehaved_puts_of_card_views_card_fibers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.card_veryWellBehaved_puts_of_card_views_card_fibers.match_1_1": [],
+    "Toy.Lens.card_veryWellBehaved_puts_of_card_views_card_fibers.match_1_3": [],
+    "Toy.Lens.casesOn": [],
+    "Toy.Lens.coherent_fiberMaps_correspond_veryWellBehaved_puts": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.constFalseView": [],
+    "Toy.Lens.const_fst_not_pairwiseIndep": [],
+    "Toy.Lens.coord": [],
+    "Toy.Lens.coord_bool_satisfy_f2_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.coord_famJointExt": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.coord_getPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.coord_isPiDecomposition": [],
+    "Toy.Lens.coord_pairwiseIndep": [
+      "propext"
+    ],
+    "Toy.Lens.coord_putGet": [
+      "propext"
+    ],
+    "Toy.Lens.coord_putPut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.coord_veryWellBehaved": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.copySibling": [],
+    "Toy.Lens.ctorIdx": [],
+    "Toy.Lens.derived_getPut_tight": [],
+    "Toy.Lens.derived_getPut_tight.match_1_1": [],
+    "Toy.Lens.derived_putComm_tight": [],
+    "Toy.Lens.derived_putComm_tight.match_1_1": [],
+    "Toy.Lens.derived_putComm_tight.match_1_3": [],
+    "Toy.Lens.derived_putComm_tight_mirror": [],
+    "Toy.Lens.derived_putPut_tight": [],
+    "Toy.Lens.derived_putPut_tight.match_1_1": [],
+    "Toy.Lens.derived_putPut_tight.match_1_3": [],
+    "Toy.Lens.dirtyFlag": [],
+    "Toy.Lens.dirtyFlag_getPut": [],
+    "Toy.Lens.dirtyFlag_getPut.match_1_1": [],
+    "Toy.Lens.dirtyFlag_intertwines_fst_noninjective": [],
+    "Toy.Lens.dirtyFlag_intertwines_fst_noninjective.match_1_1": [],
+    "Toy.Lens.dirtyFlag_not_hasConstantComplement": [],
+    "Toy.Lens.dirtyFlag_not_hasConstantComplement.match_1_1": [],
+    "Toy.Lens.dirtyFlag_not_putPut": [],
+    "Toy.Lens.dirtyFlag_not_veryWellBehaved": [],
+    "Toy.Lens.dirtyFlag_putGet": [],
+    "Toy.Lens.dirtyFlag_putGet.match_1_1": [],
+    "Toy.Lens.dirtyFlag_wellBehaved": [],
+    "Toy.Lens.emptyBoolLens": [],
+    "Toy.Lens.emptyFam_tight_nonempty": [],
+    "Toy.Lens.emptyFam_tight_nonempty.match_1_1": [],
+    "Toy.Lens.emptyGhost_hasGhostComplement_not_isProductDecomposition": [],
+    "Toy.Lens.emptyLens": [],
+    "Toy.Lens.emptyState_veryWellBehaved_not_surjective": [],
+    "Toy.Lens.emptyViewLens": [],
+    "Toy.Lens.emptyView_hasConstantComplement_any": [],
+    "Toy.Lens.emptyView_isProductDecomposition_without_nonempty": [],
+    "Toy.Lens.emptyView_isProductDecomposition_without_nonempty.match_1_1": [],
+    "Toy.Lens.emptyView_isProductDecomposition_without_nonempty.match_1_3": [],
+    "Toy.Lens.empty_tight_nonempty": [],
+    "Toy.Lens.empty_tight_nonempty.match_1_1": [],
+    "Toy.Lens.eq_none_of_getIsSome_false": [],
+    "Toy.Lens.eq_pairGet_of_get_eq": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.eq_pairGet_tight_left": [],
+    "Toy.Lens.eq_pairGet_tight_right": [],
+    "Toy.Lens.equivPermFin": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.equivPermFin.match_1": [],
+    "Toy.Lens.equivSymm": [],
+    "Toy.Lens.equivTrans": [],
+    "Toy.Lens.evCoord": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.evCoord_tight_finite_index": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.evCoord_veryWellBehaved_putComm_no_pi_complement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.evCoord_veryWellBehaved_putComm_no_pi_complement.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.existsUnique_put_drop_jointExt_admits_unlawful_puts": [],
+    "Toy.Lens.existsUnique_put_hsurj_not_necessary": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.existsUnique_put_putGet_putIndep_of_jointExt_surjective": [
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "Toy.Lens.existsUnique_put_tight_jointExt": [],
+    "Toy.Lens.existsUnique_put_tight_surjective": [],
+    "Toy.Lens.existsUnique_put_tight_surjective.match_1_1": [],
+    "Toy.Lens.existsUnique_put_tight_surjective.match_1_3": [],
+    "Toy.Lens.exists_put_putGet_putIndep_iff": [
+      "Classical.choice"
+    ],
+    "Toy.Lens.f1_inverse_hypotheses_do_not_imply_laws": [],
+    "Toy.Lens.f1_inverse_hypotheses_do_not_imply_laws.match_1_1": [],
+    "Toy.Lens.f1_inverse_nonvacuity_bool": [],
+    "Toy.Lens.f1_laws_bundled_tight": [],
+    "Toy.Lens.f1_nonvacuity_bool": [],
+    "Toy.Lens.f2_getPut_tight": [],
+    "Toy.Lens.f2_laws_nonvacuity_bool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.f2_putComm_tight": [],
+    "Toy.Lens.f2_putPut_tight": [],
+    "Toy.Lens.f3_laws_tight": [],
+    "Toy.Lens.f3_laws_tight.match_1_1": [],
+    "Toy.Lens.f3_laws_tight.match_1_3": [],
+    "Toy.Lens.f3_laws_tight.match_1_5": [],
+    "Toy.Lens.f3_nonvacuity_bool": [],
+    "Toy.Lens.f3_pair_nonvacuity_bool": [],
+    "Toy.Lens.f3_sharp_intertwines_tight": [],
+    "Toy.Lens.f3_sharp_nonvacuity_bool": [],
+    "Toy.Lens.f6_count_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Lens.f6_nonvacuity": [],
+    "Toy.Lens.f6_unique_nonvacuity": [],
+    "Toy.Lens.factorial": [],
+    "Toy.Lens.factorial.match_1": [],
+    "Toy.Lens.factorial_pos": [],
+    "Toy.Lens.factorial_pos.match_1_1": [],
+    "Toy.Lens.factorial_three": [],
+    "Toy.Lens.fam2": [],
+    "Toy.Lens.fam2.match_1": [],
+    "Toy.Lens.fam2_ignorePut_tight_putGet": [
+      "propext"
+    ],
+    "Toy.Lens.fam2_jointExt": [],
+    "Toy.Lens.fam2_not_jointExt": [],
+    "Toy.Lens.fam2_twist_tight_pairwiseIndep": [
+      "propext"
+    ],
+    "Toy.Lens.famGet": [],
+    "Toy.Lens.famGet_coord": [],
+    "Toy.Lens.famGet_ghostFam_not_injective": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.fiberEquiv_eq_of_equations": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.fiberFrom": [],
+    "Toy.Lens.fiberFrom_fst": [],
+    "Toy.Lens.fiberFrom_ignorePut_ne": [],
+    "Toy.Lens.fiberFstMk": [],
+    "Toy.Lens.fiberMaps_empty_of_empty_fiber": [],
+    "Toy.Lens.fiber_eq_getFiber": [],
+    "Toy.Lens.fiber_fst_true_val_ne": [],
+    "Toy.Lens.fiber_isConstantComplement_of_veryWellBehaved": [],
+    "Toy.Lens.fiber_isConstantComplement_of_veryWellBehaved.match_1_1": [],
+    "Toy.Lens.finFunEquivPow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finFunEquivPow.match_1": [],
+    "Toy.Lens.finFunEquivPow.match_3": [],
+    "Toy.Lens.finFunEquivPow.match_5": [],
+    "Toy.Lens.finPredAbove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finPredAbove.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finPredAbove_succAbove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finProdEquiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finProdEquiv.match_2": [],
+    "Toy.Lens.finProdEquiv.match_4": [],
+    "Toy.Lens.finSuccAbove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finSuccAbove_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finSuccAbove_predAbove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finSuccPermSplit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.finSuccPermSplit.match_1": [],
+    "Toy.Lens.finSuccPermSplit.match_10": [],
+    "Toy.Lens.finSuccPermSplit.match_3": [],
+    "Toy.Lens.flipPut": [],
+    "Toy.Lens.fst": [],
+    "Toy.Lens.fstB": [],
+    "Toy.Lens.fstB_fstB_not_hasGhostComplement": [],
+    "Toy.Lens.fstB_fstB_not_hasGhostComplement.match_1_1": [],
+    "Toy.Lens.fst_fst_not_isProductDecomposition": [],
+    "Toy.Lens.fst_fst_not_jointExt": [],
+    "Toy.Lens.fst_fst_not_putComm": [],
+    "Toy.Lens.fst_fst_not_putIndep": [],
+    "Toy.Lens.fst_getPut": [],
+    "Toy.Lens.fst_hasConstantComplement": [],
+    "Toy.Lens.fst_putGet": [],
+    "Toy.Lens.fst_putPut": [],
+    "Toy.Lens.fst_snd_hasGhostComplement": [],
+    "Toy.Lens.fst_snd_isProductDecomposition": [],
+    "Toy.Lens.fst_snd_jointExt": [],
+    "Toy.Lens.fst_snd_jointExt.match_1_1": [],
+    "Toy.Lens.fst_snd_putComm": [],
+    "Toy.Lens.fst_snd_putIndep": [],
+    "Toy.Lens.fst_snd_satisfy_f1_hypotheses": [],
+    "Toy.Lens.fst_twist_two_veryWellBehaved_puts": [],
+    "Toy.Lens.fst_veryWellBehaved": [],
+    "Toy.Lens.fst_wellBehaved": [],
+    "Toy.Lens.fst_xorView_not_putIndep": [],
+    "Toy.Lens.get": [],
+    "Toy.Lens.getFiberFstMk": [],
+    "Toy.Lens.getFiber_const_false_true_empty": [],
+    "Toy.Lens.getFst": [],
+    "Toy.Lens.getFstFiberEquiv": [
+      "propext"
+    ],
+    "Toy.Lens.getFstFiberEquiv.match_1": [],
+    "Toy.Lens.getFstFiberEquiv.match_3": [
+      "propext"
+    ],
+    "Toy.Lens.getIsSome": [],
+    "Toy.Lens.getIsSome_no_veryWellBehaved_put": [],
+    "Toy.Lens.getIsSome_no_veryWellBehaved_put.match_1_1": [],
+    "Toy.Lens.getPut_iff_ofPut_map_self_and_putPut_iff_ofPut_map_comp": [],
+    "Toy.Lens.getPut_of_putGet_pairwiseIndep_famJointExt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.getPut_of_putGet_putIndep_jointExt": [],
+    "Toy.Lens.ghostComplement_laws_tight": [],
+    "Toy.Lens.ghostDirty": [],
+    "Toy.Lens.ghostDirtyFam": [],
+    "Toy.Lens.ghostEquiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.ghostEquiv.match_1": [],
+    "Toy.Lens.ghostEquiv.match_5": [],
+    "Toy.Lens.ghostFam": [],
+    "Toy.Lens.ghostFam.match_1": [],
+    "Toy.Lens.ghostFam_not_famJointExt": [],
+    "Toy.Lens.ghostFam_not_isPiDecomposition": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.ghostFam_tight_famJointExt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.ghostFst": [],
+    "Toy.Lens.ghostFstB": [],
+    "Toy.Lens.ghostFst_ghostSnd_not_jointExt": [],
+    "Toy.Lens.ghostReset": [],
+    "Toy.Lens.ghostResetFam": [],
+    "Toy.Lens.ghostSnd": [],
+    "Toy.Lens.ghostSndB": [],
+    "Toy.Lens.ghostTwistFam": [],
+    "Toy.Lens.ghostTwistSnd": [],
+    "Toy.Lens.ghost_admits_unrelated_bijection": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.ghost_hasGhostComplement": [],
+    "Toy.Lens.ghost_tight_jointExt": [],
+    "Toy.Lens.ghost_veryWellBehaved_putComm": [],
+    "Toy.Lens.hasConstantComplement_iff_elementary": [],
+    "Toy.Lens.hasConstantComplement_iff_elementary.match_1_1": [],
+    "Toy.Lens.hasConstantComplement_iff_elementary.match_1_3": [],
+    "Toy.Lens.hasConstantComplement_left_of_hasGhostComplement": [],
+    "Toy.Lens.hasConstantComplement_right_of_hasGhostComplement": [],
+    "Toy.Lens.hasGhostComplement_iff_elementary": [],
+    "Toy.Lens.hasGhostComplement_iff_elementary.match_1_1": [],
+    "Toy.Lens.hasGhostComplement_iff_elementary.match_1_3": [],
+    "Toy.Lens.idB": [],
+    "Toy.Lens.ignorePut": [],
+    "Toy.Lens.ignorePutSnd": [],
+    "Toy.Lens.ignorePutSnd_tight_putGet_right": [],
+    "Toy.Lens.ignorePutSnd_tight_putGet_right.match_1_1": [],
+    "Toy.Lens.ignorePut_getPut": [],
+    "Toy.Lens.ignorePut_not_hasConstantComplement": [],
+    "Toy.Lens.ignorePut_not_hasConstantComplement.match_1_1": [],
+    "Toy.Lens.ignorePut_not_putGet": [],
+    "Toy.Lens.ignorePut_not_wellBehaved": [],
+    "Toy.Lens.ignorePut_putPut": [],
+    "Toy.Lens.ignorePut_satisfies_all_other_laws": [],
+    "Toy.Lens.ignorePut_tight_putGet_left": [],
+    "Toy.Lens.ignorePut_tight_putGet_left.match_1_1": [],
+    "Toy.Lens.intertwines_fst_iff": [],
+    "Toy.Lens.intertwines_id": [],
+    "Toy.Lens.intertwines_swap": [],
+    "Toy.Lens.isPiDecomposition_iff_elementary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.isPiDecomposition_iff_elementary.match_1_1": [],
+    "Toy.Lens.isPiDecomposition_iff_putGet_pairwiseIndep_famJointExt_imp_nonempty_of_finite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.isPiDecomposition_iff_putGet_pairwiseIndep_famJointExt_imp_nonempty_of_finite.match_1_1": [],
+    "Toy.Lens.isPiDecomposition_iff_putGet_pairwiseIndep_famJointExt_imp_nonempty_of_finite.match_1_3": [],
+    "Toy.Lens.isPiDecomposition_of_putGet_pairwiseIndep_famJointExt_finite_imp_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.isPiDecomposition_of_putGet_pairwiseIndep_famJointExt_finite_imp_nonempty.match_1_1": [],
+    "Toy.Lens.isProductDecomposition_iff_elementary": [],
+    "Toy.Lens.isProductDecomposition_iff_elementary.match_1_1": [],
+    "Toy.Lens.isProductDecomposition_iff_putGet_putIndep_jointExt_imp_nonempty": [],
+    "Toy.Lens.isProductDecomposition_iff_putGet_putIndep_jointExt_imp_nonempty.match_1_1": [],
+    "Toy.Lens.isProductDecomposition_iff_putGet_putIndep_jointExt_imp_nonempty.match_1_3": [],
+    "Toy.Lens.isProductDecomposition_of_putGet_putIndep_jointExt_imp_nonempty": [],
+    "Toy.Lens.le_foldr_add_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.le_foldr_add_of_mem.match_1_1": [],
+    "Toy.Lens.le_foldr_add_of_mem.match_1_3": [],
+    "Toy.Lens.mk": [],
+    "Toy.Lens.mk.inj": [],
+    "Toy.Lens.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Lens.mk.noConfusion": [],
+    "Toy.Lens.mk.sizeOf_spec": [],
+    "Toy.Lens.noConfusion": [],
+    "Toy.Lens.noConfusionType": [],
+    "Toy.Lens.not_equiv_bool_unit": [],
+    "Toy.Lens.not_finite_nat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.not_finite_nat.match_1_1": [],
+    "Toy.Lens.not_intertwines_id_twist_fst": [],
+    "Toy.Lens.not_lens_of_empty_view": [],
+    "Toy.Lens.not_putIndep_self_of_putGet": [],
+    "Toy.Lens.not_putIndep_self_tight": [],
+    "Toy.Lens.not_putIndep_self_tight.match_1_1": [],
+    "Toy.Lens.not_putIndep_self_tight.match_1_3": [],
+    "Toy.Lens.ofPut": [],
+    "Toy.Lens.ofPut.congr_simp": [],
+    "Toy.Lens.ofPut_dirtyFlag_not_coherent": [],
+    "Toy.Lens.ofPut_fst_coherent": [],
+    "Toy.Lens.ofPut_fst_coherent.match_1_1": [],
+    "Toy.Lens.ofPut_resetSibling_not_coherent": [],
+    "Toy.Lens.ofPut_twist_coherent": [],
+    "Toy.Lens.ofPut_twist_coherent.match_1_1": [],
+    "Toy.Lens.pairGet": [],
+    "Toy.Lens.pairGet_bijective_in_inverse_witnesses": [],
+    "Toy.Lens.pairGet_fst_fst_not_injective": [],
+    "Toy.Lens.pairGet_fst_snd": [],
+    "Toy.Lens.pairGet_pairPut_fst_fst_ne": [],
+    "Toy.Lens.pairPut": [],
+    "Toy.Lens.pairPut_fst_snd": [],
+    "Toy.Lens.pairPut_inverse_tight": [],
+    "Toy.Lens.pairPut_leftInverse_rightInverse_of_putGet_putIndep_jointExt": [],
+    "Toy.Lens.permInsertFwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.permInsertInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.permInsert_left_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.permInsert_right_inv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.put": [],
+    "Toy.Lens.putComm_of_putGet_pairwiseIndep_famJointExt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.putComm_of_putGet_putIndep_jointExt": [],
+    "Toy.Lens.putPut_of_putGet_pairwiseIndep_famJointExt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.putPut_of_putGet_putIndep_jointExt": [],
+    "Toy.Lens.rec": [],
+    "Toy.Lens.recOn": [],
+    "Toy.Lens.resetSibling": [],
+    "Toy.Lens.resetSibling_not_getPut": [],
+    "Toy.Lens.resetSibling_not_hasConstantComplement": [],
+    "Toy.Lens.resetSibling_not_hasConstantComplement.match_1_1": [],
+    "Toy.Lens.resetSibling_not_wellBehaved": [],
+    "Toy.Lens.resetSibling_putGet": [],
+    "Toy.Lens.resetSibling_putPut": [],
+    "Toy.Lens.snd": [],
+    "Toy.Lens.sndB": [],
+    "Toy.Lens.snd_fst_putIndep": [],
+    "Toy.Lens.snd_getPut": [],
+    "Toy.Lens.snd_putGet": [],
+    "Toy.Lens.snd_putPut": [],
+    "Toy.Lens.snd_twist_putIndep": [],
+    "Toy.Lens.snd_veryWellBehaved": [],
+    "Toy.Lens.surjective_of_putGet_of_nonempty": [],
+    "Toy.Lens.surjective_of_putGet_of_nonempty.match_1_1": [],
+    "Toy.Lens.toPLens": [],
+    "Toy.Lens.toPut_ofPut": [],
+    "Toy.Lens.toPut_ofPut_dirtyFlag_not_veryWellBehaved": [],
+    "Toy.Lens.toPut_ofPut_fst": [],
+    "Toy.Lens.toPut_putGet": [],
+    "Toy.Lens.twist": [],
+    "Toy.Lens.twist_hasConstantComplement": [],
+    "Toy.Lens.twist_hasConstantComplement.match_1_1": [],
+    "Toy.Lens.twist_putIndep_xorView_complement": [],
+    "Toy.Lens.twist_putIndep_xorView_complement.match_1_1": [],
+    "Toy.Lens.twist_put_park": [],
+    "Toy.Lens.twist_snd_not_hasGhostComplement": [],
+    "Toy.Lens.twist_snd_not_hasGhostComplement.match_1_1": [],
+    "Toy.Lens.twist_snd_not_putComm": [],
+    "Toy.Lens.twist_snd_not_putIndep": [],
+    "Toy.Lens.twist_snd_veryWellBehaved_not_putComm": [],
+    "Toy.Lens.twist_tight_putIndep_left": [],
+    "Toy.Lens.twist_tight_putIndep_left.match_1_1": [],
+    "Toy.Lens.twist_tight_putIndep_right": [],
+    "Toy.Lens.twist_tight_putIndep_right.match_1_1": [],
+    "Toy.Lens.twist_veryWellBehaved": [],
+    "Toy.Lens.twist_veryWellBehaved.match_1_1": [],
+    "Toy.Lens.unitLens": [],
+    "Toy.Lens.unitLensB": [],
+    "Toy.Lens.update": [],
+    "Toy.Lens.update.eq_1": [],
+    "Toy.Lens.update_ne_self": [],
+    "Toy.Lens.update_of_ne": [
+      "propext"
+    ],
+    "Toy.Lens.update_same": [
+      "propext"
+    ],
+    "Toy.Lens.veryWellBehaved_and_putComm_iff_hasGhostComplement": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.veryWellBehaved_and_putComm_iff_hasGhostComplement.match_1_1": [],
+    "Toy.Lens.veryWellBehaved_and_putComm_iff_hasGhostComplement.match_1_3": [],
+    "Toy.Lens.veryWellBehaved_and_putComm_of_putGet_putIndep_jointExt": [],
+    "Toy.Lens.veryWellBehaved_iff_hasConstantComplement": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.veryWellBehaved_iff_hasConstantComplement.match_1_1": [],
+    "Toy.Lens.veryWellBehaved_of_injective_intertwines_fst": [],
+    "Toy.Lens.veryWellBehaved_put_eq_self_of_subsingleton_view": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.veryWellBehaved_put_unique_of_isEmpty": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.veryWellBehaved_puts_equiv_baseFiber_bijections": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Lens.veryWellBehaved_puts_equiv_baseFiber_bijections.match_1_1": [],
+    "Toy.Lens.veryWellBehaved_puts_equiv_baseFiber_bijections.match_1_3": [],
+    "Toy.Lens.veryWellBehaved_puts_equiv_baseFiber_bijections.match_1_6": [],
+    "Toy.Lens.veryWellBehaved_puts_getFst_eq_fst_or_twist": [
+      "Quot.sound"
+    ],
+    "Toy.Lens.xorView": [],
+    "Toy.Lens.xorView_fst_putIndep": [],
+    "Toy.Lens.xorView_pairGet_bijective_but_not_decomposition": [],
+    "Toy.Lens.xorView_pairGet_bijective_but_not_decomposition.match_1_1": [],
+    "Toy.Lens.xorView_tight_putIndep_left": [],
+    "Toy.Lens.xorView_tight_putIndep_left.match_1_1": [],
+    "Toy.Lens.xorView_tight_putIndep_right": [],
+    "Toy.Lens.xorView_tight_putIndep_right.match_1_1": [],
+    "Toy.Lens.xorView_veryWellBehaved": [],
+    "Toy.Lens.xorView_veryWellBehaved.match_1_1": [],
+    "Toy.Lens.xorView_witness_is_twist_witness_up_to_iso": [],
+    "Toy.Lens.xorView_witness_is_twist_witness_up_to_iso.match_1_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

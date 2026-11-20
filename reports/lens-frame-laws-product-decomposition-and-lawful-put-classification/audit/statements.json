@@ -1,0 +1,505 @@
+{
+  "statements": {
+    "Toy.Lens.PLens.absent_tight_totalOn": {
+      "closure_sha256": "f572c1bb29a3c1b346ca754daf572b40eff9d0d093f13226ea76b51fb17aa932",
+      "closure_size": 18,
+      "statement_sha256": "f095a23aff37f6cc8bd8310ea3f41f2a353a3048e9cccfb8f7fba602361269dd"
+    },
+    "Toy.Lens.PLens.absent_tight_totalOn_right": {
+      "closure_sha256": "f572c1bb29a3c1b346ca754daf572b40eff9d0d093f13226ea76b51fb17aa932",
+      "closure_size": 18,
+      "statement_sha256": "a9d5d1aaa2f8759210873317291a7552f27d7ffe4a60c3c8318c6d5ce77bd0ca"
+    },
+    "Toy.Lens.PLens.eq_of_jointExt_of_get_eq_none": {
+      "closure_sha256": "c504f4df4896ef58f07302a49d890877c8c48121b159607651d41c35c8cdfd48",
+      "closure_size": 4,
+      "statement_sha256": "2b2ad69473e83db371d90b9318cfdbcaa0fb5fc149baf1281b696c8b47c01759"
+    },
+    "Toy.Lens.PLens.f5_tight_jointExtOn": {
+      "closure_sha256": "f8b4de635027d03ed60df0696cfbfde1407adc198f48be0b8a40aef300ee6233",
+      "closure_size": 20,
+      "statement_sha256": "11e67a63e83166675c62e7a1dee374c7204e4556aee125c4c399d22cee7b7bb1"
+    },
+    "Toy.Lens.PLens.f5_tight_nonempty": {
+      "closure_sha256": "dc7a36bc7c7f78f1e4e198a8fbf14338cb52faf174a6393284740794cc3623cc",
+      "closure_size": 17,
+      "statement_sha256": "8667262ece9e76cb3425602d67b83a54f848090752f4d9a8817816dbf1e1942b"
+    },
+    "Toy.Lens.PLens.f5_tight_putGetOn_left": {
+      "closure_sha256": "4c25ebe6045ecba0a828284be49e604d54cb723519b9e7060da0ede634b9b608",
+      "closure_size": 19,
+      "statement_sha256": "1d4c5ea520917a9ee4e4cbdd2d6e0d3384e1b6e81dd56a7c857bb798fd6367fe"
+    },
+    "Toy.Lens.PLens.f5_tight_putGetOn_right": {
+      "closure_sha256": "7a02b2f0685589621c0af6190869452dc007bb6e47fe5c66aea9099f8bf87e31",
+      "closure_size": 19,
+      "statement_sha256": "f47b06dca938fb3558aa62209f39b5e7fcfe995f0fcdf99073a6570000f4adab"
+    },
+    "Toy.Lens.PLens.f5_tight_putIndepOn_left": {
+      "closure_sha256": "ad675944adc1d7d431703add616bb5fec9368ceaac3d50190c06e3712c64627b",
+      "closure_size": 19,
+      "statement_sha256": "36ec8adbd986cda41431b5284eb2adbe1688b527d7d5430b87c6284be085c1c4"
+    },
+    "Toy.Lens.PLens.f5_tight_putIndepOn_right": {
+      "closure_sha256": "ad675944adc1d7d431703add616bb5fec9368ceaac3d50190c06e3712c64627b",
+      "closure_size": 19,
+      "statement_sha256": "42e45f4ba2dff75b3bcd71ae4ca89a5b71825ac3c3c6f0dfdbc8462622085f71"
+    },
+    "Toy.Lens.PLens.f5_unscoped_nonvacuity": {
+      "closure_sha256": "f56c1761ccd93830a733db96388f195bf9140434fe426629f682301718f53f08",
+      "closure_size": 15,
+      "statement_sha256": "e937bbaaaeefc2be86422eaae809a7ac8fe3c4a47d476583bf73da9f4b36b171"
+    },
+    "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty": {
+      "closure_sha256": "5c57052d7bb45917c54186f82d1b32f44f2249f372621d54d598abf974f3a77c",
+      "closure_size": 11,
+      "statement_sha256": "d1ef7874e088226941940d738146a997f433b5267858f0f071024ab81683eb81"
+    },
+    "Toy.Lens.PLens.isProductDecompositionOn_of_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty": {
+      "closure_sha256": "5c57052d7bb45917c54186f82d1b32f44f2249f372621d54d598abf974f3a77c",
+      "closure_size": 11,
+      "statement_sha256": "4073598cc542a787d63e7c214e59bfd9b01e75e1430ddc2f1e6057538840d833"
+    },
+    "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields": {
+      "closure_sha256": "c504f4df4896ef58f07302a49d890877c8c48121b159607651d41c35c8cdfd48",
+      "closure_size": 4,
+      "statement_sha256": "fda0109e8cff07c3e91f9b3d39dd9b872bb7f6acb2ef705fc0d6c2ed007c5186"
+    },
+    "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight": {
+      "closure_sha256": "3a373aea78b04b765187b727520458f0c3ccd325f437c28924a13077f7c52f85",
+      "closure_size": 6,
+      "statement_sha256": "3a84c1260cab489fd313922cb02f2cb3aa0487fc85a6350a55d4fa2348b581e6"
+    },
+    "Toy.Lens.PLens.optFst_optSnd_jointExt": {
+      "closure_sha256": "774ee60efe6f74ca35248932df2fb0d3712fb3b2fc3ff87c0d429d57bbd20e4f",
+      "closure_size": 8,
+      "statement_sha256": "01a3658dfe1c058baeb39ec48d07b23565be29b68c2ffbda20b4c021d56569de"
+    },
+    "Toy.Lens.PLens.pairFstSwitch_violates_unscoped_putIndep": {
+      "closure_sha256": "a5dca12b6df8e273b970f978f64a9cede877cf2fe612712b15f200a019c6b6aa",
+      "closure_size": 18,
+      "statement_sha256": "97fbc5043d4c8d791e19de99a12db5f515214d868bfdb8ce09db41521ec21d3b"
+    },
+    "Toy.Lens.PLens.pairFst_pairSnd_isProductDecompositionOn": {
+      "closure_sha256": "bb439e6dd72fd93d9ca49999f09a8f48ddc6e958ba1a3c8b65d0cf1c1de2b319",
+      "closure_size": 19,
+      "statement_sha256": "089a21198cf2428939784ea2334062caec4b47b5718aef59d74bcebb13f16f1c"
+    },
+    "Toy.Lens.PLens.pairFst_pairSnd_satisfy_f5_hypotheses": {
+      "closure_sha256": "a87ff05d63d42c622d99353fa50a8e45bbebb901e72c2dd0c86adfccdd57c3a2",
+      "closure_size": 22,
+      "statement_sha256": "8b6e5339f98095e84fa2f5363d0b736853d94aecc054620435220ae1800024d6"
+    },
+    "Toy.Lens.PLens.scoped_decomposition_holds_but_unscoped_jointExt_fails": {
+      "closure_sha256": "9914e51851a9bd7343a65144ee8409ae7d214773123a7b62d3e919908962aa45",
+      "closure_size": 20,
+      "statement_sha256": "cc449d9ebd22218c0f3b8c73245894017ae0d0c6daaeb94293e295b3c02987d3"
+    },
+    "Toy.Lens.PLens.scoped_laws_admit_variant_switching_put": {
+      "closure_sha256": "a73efe804881ffa0301d991b506e6a1d093d673a472c1656bef1b7c03eb87aa6",
+      "closure_size": 20,
+      "statement_sha256": "156fe69663580257c3aa10df6f152b4a030b63f3d66e34782a39b91eea459649"
+    },
+    "Toy.Lens.PLens.shape3_jointExt": {
+      "closure_sha256": "a0bcad33f40810be13c5728d56f6a64a07c9e2ad4c6c0905db7366f02c94de2b",
+      "closure_size": 18,
+      "statement_sha256": "d1dfc269b915e54e407b6ae8899bccbcb26cb686718de7fa4ae447ad2ee6c6b7"
+    },
+    "Toy.Lens.PLens.totalOn_components_tight": {
+      "closure_sha256": "6f30b5e3ca83a43410561d832b377b27ce8843b65cbaa64a509aa7dd04d7ae42",
+      "closure_size": 20,
+      "statement_sha256": "808c18743ba37f42516bef13ef626de18c9abaaeaee5a6dd865c884f49d54e77"
+    },
+    "Toy.Lens.PLens.unscoped_laws_admit_variant_switch": {
+      "closure_sha256": "345ad3d21835cfe418a9049206835e1f937749a720bddf8d08b666b7e8314b87",
+      "closure_size": 18,
+      "statement_sha256": "10dbc2dbbf169552c4045c95631533ab574a597de7426aa5f1ccef92c56ff159"
+    },
+    "Toy.Lens.PLens.unscoped_putIndep_admits_tag_switch": {
+      "closure_sha256": "4f321adb4cc7e93c6101d358ff1b3c1e0664aae96bdf7214e54a11bf48b60470",
+      "closure_size": 21,
+      "statement_sha256": "88a2cc4a9943787a487e458e8d77486247ac88692b73e30239cc96afafa2b27a"
+    },
+    "Toy.Lens.aliasing_fails_putIndep_both_directions": {
+      "closure_sha256": "1ea41047e3849e96ba485f37aebf638673ae86e788f0c3298b1045b5adf5d153",
+      "closure_size": 15,
+      "statement_sha256": "45ff2d23481d51a313996bfd5a6b93700f49ad8f2f25ac02ccc073f6cfa37e64"
+    },
+    "Toy.Lens.aliasing_nonvacuity_bool": {
+      "closure_sha256": "74aa65fbb85e93fd66259507f99b9bbaeb3898226e4fd3de3e1f97a8f9997ba1",
+      "closure_size": 7,
+      "statement_sha256": "90b9317c87f840d9307bdb37c8edeebebbe08d7b3fb19f7e0ec7076d3c69ff54"
+    },
+    "Toy.Lens.card_tight_uniform_fibers": {
+      "closure_sha256": "c915ca7f2450dea0b01f5ef90898154b2dc76f7c8e118862a0a12509c4ad2f22",
+      "closure_size": 15,
+      "statement_sha256": "f1cf1e53fa5aa8e176ee444e42871b609e0c0ccca8e408bd4c69b89cac7211f8"
+    },
+    "Toy.Lens.card_tight_views": {
+      "closure_sha256": "b79ad98ed7f81699e4380ad3f5f8d8bb6030fdd1dc65d326dcc71ce8ea11168b",
+      "closure_size": 15,
+      "statement_sha256": "1fc987548670a1082fbd61ff2668ec5b5d4e2f9eb14fa217c1c03a47a5d2912c"
+    },
+    "Toy.Lens.card_veryWellBehaved_puts_of_card_views_card_fibers": {
+      "closure_sha256": "c9a687c3952d69e3ab3e4cfb507db7fe455a77880345b2ab6a99084c7eac4a40",
+      "closure_size": 14,
+      "statement_sha256": "597045e0af618c0dd538d6927d8989f6223bbd9ee12c7cc1bbdcf6f36cb04c08"
+    },
+    "Toy.Lens.coherent_fiberMaps_correspond_veryWellBehaved_puts": {
+      "closure_sha256": "de999766235122fe679c7ee0fed351ab0d9ebaabafb4f59441eff19c1af8e6ea",
+      "closure_size": 17,
+      "statement_sha256": "b7592f2be09209d217d8d5b9ec63b4d8cf1a6bdfb6e62609c7a3be634ba21e36"
+    },
+    "Toy.Lens.coord_bool_satisfy_f2_hypotheses": {
+      "closure_sha256": "7b983e11285f9e72804a73e0f775feb98760bb83efab5d05d779928710959abf",
+      "closure_size": 10,
+      "statement_sha256": "7e158895cb430c14ed3ab457e15c09d1ea2dc7add38131093819b5d61b320100"
+    },
+    "Toy.Lens.coord_isPiDecomposition": {
+      "closure_sha256": "85172bb48586c526e3f8e5f304239f8a1bf5cfd4a291f8627f3b65d4f4744fa6",
+      "closure_size": 11,
+      "statement_sha256": "618401adcab8c50c1dc3fa86d4b22020fd3db600f2970f7867dddb18049034dd"
+    },
+    "Toy.Lens.derived_getPut_tight": {
+      "closure_sha256": "7fd49013f5f3595f2adac30c89e1374b88e2be8e6ccbd3ee3dbb73f11bc4ae50",
+      "closure_size": 15,
+      "statement_sha256": "df1d809cb15371bb130a1055db9588233c66b64f48480fe48b9fa6a1bcedefc2"
+    },
+    "Toy.Lens.derived_putComm_tight": {
+      "closure_sha256": "4cdee453b6d906f3b44ab465ee00270098e01d5dd5c962d0e3395ef6ec5b586b",
+      "closure_size": 18,
+      "statement_sha256": "74d223ffba84ced9d5b00477e87c1805d469c025f76335fa16f7fbe05f50f4aa"
+    },
+    "Toy.Lens.derived_putComm_tight_mirror": {
+      "closure_sha256": "5ec6c4abb16bc273d3580c9c211082cb4c31de274c6c6c3d2e352d276c87b31b",
+      "closure_size": 12,
+      "statement_sha256": "685a63871fe31cfaf5561484144dc5cba7fc3570fd67b43581887c25fb20817b"
+    },
+    "Toy.Lens.derived_putPut_tight": {
+      "closure_sha256": "37469747987e62b3476f62e415593a8021017b993b2a2ad2ad0d2c968990bddb",
+      "closure_size": 15,
+      "statement_sha256": "106d2943fd5677c7bbd3d585293ff159dd322d29d4d4e9520437250f78ee3704"
+    },
+    "Toy.Lens.dirtyFlag_intertwines_fst_noninjective": {
+      "closure_sha256": "44412cdad61260174f60d77d62955e1ead075062e4fa78d55121da5fa5305d5d",
+      "closure_size": 12,
+      "statement_sha256": "0a4a890bd7de7dbe79c3a915869a4a2f6527df04d01b6d98805d3adf29ac1f64"
+    },
+    "Toy.Lens.emptyFam_tight_nonempty": {
+      "closure_sha256": "8f3e3839fb6896dfeee883d1f85250a307a7c6d3074e50f2ba5948c16bb1113e",
+      "closure_size": 16,
+      "statement_sha256": "b99b0657a3659c2e9cdd53be139313a30fc489b8aaa524eaca7f78acfa7f3714"
+    },
+    "Toy.Lens.empty_tight_nonempty": {
+      "closure_sha256": "c0e7bb9728186878c7d49a0903c9a2ae0857aa9b57db09ce2c8ca19915d77b66",
+      "closure_size": 15,
+      "statement_sha256": "520274bbec294981014184dd90db54741531bca72bc6b1e6dc6651baaf0dc578"
+    },
+    "Toy.Lens.evCoord_tight_finite_index": {
+      "closure_sha256": "4754985fb9dbe4e46862f4904a2e9b26bf1d1ff40a7bb824de14c226839ea436",
+      "closure_size": 18,
+      "statement_sha256": "01f6a8b5c43439becdcf1e907c1afd188ae4ff109681b63e0faee97949a324e9"
+    },
+    "Toy.Lens.existsUnique_put_drop_jointExt_admits_unlawful_puts": {
+      "closure_sha256": "874c7d36b59f6efc7920e51a851294cebd36c74094557a154648c6e405eee474",
+      "closure_size": 13,
+      "statement_sha256": "fd673fc980f94a3d2cab520aaa5d09f3f46207476021798597280cf32a503746"
+    },
+    "Toy.Lens.existsUnique_put_putGet_putIndep_of_jointExt_surjective": {
+      "closure_sha256": "0ca14858e0f27c8d2d0b6d349b82e3586e24066a960a65e2a0f9470638023fe0",
+      "closure_size": 9,
+      "statement_sha256": "2f1512b2d2500196b671301b6e5d835493bddfba1cddfd00d0c8e5a7a039a44f"
+    },
+    "Toy.Lens.existsUnique_put_tight_jointExt": {
+      "closure_sha256": "cd3a8db120d7369bba674fe3a0d5bc2d4b07ce511894f216c1d6700fa7b8002e",
+      "closure_size": 8,
+      "statement_sha256": "77da2e73fda760103ca55ed087d5f13f6231288da0187510fb401f988c0037ee"
+    },
+    "Toy.Lens.existsUnique_put_tight_surjective": {
+      "closure_sha256": "0cbaa533067bd0924551044ac87f4caefa2ee3578026dd23bfe6344324a71fd3",
+      "closure_size": 7,
+      "statement_sha256": "ccfb41f08cddd3b9107a791a291a196fdb38336c629fa2b1e0e7b451bfb682c7"
+    },
+    "Toy.Lens.f1_inverse_nonvacuity_bool": {
+      "closure_sha256": "4b978095a9548d0e199fc3c13609d341fe6da5da47b59a9936475b56ffa356b3",
+      "closure_size": 10,
+      "statement_sha256": "f1a6cd8633d988aed4d997a96fde5f75c61d5ce0093877aca48fbdf156f4d586"
+    },
+    "Toy.Lens.f1_laws_bundled_tight": {
+      "closure_sha256": "cbddec49258393724c0f85aba9d0571e3d6f6afe21333dd9814b58e5a2208bb0",
+      "closure_size": 18,
+      "statement_sha256": "ab87b1c3743e9fefd11fae36f864d4e457332feae83b6485baf57a9644d51350"
+    },
+    "Toy.Lens.f1_nonvacuity_bool": {
+      "closure_sha256": "904fc6969ef751f3790fa8174b3d9b05d26d6aed2ae81a3fa0cb722932bc3bc9",
+      "closure_size": 11,
+      "statement_sha256": "32b60dac098aae0d02d50db5a8d41b6294e730ebaf73e231b63f01f0ca47b9fc"
+    },
+    "Toy.Lens.f2_getPut_tight": {
+      "closure_sha256": "a5495d65faeb6e4dae0c37a9bd4a8fd4ab238f1b829a1a3e62bd0c7ad3d0fcb1",
+      "closure_size": 18,
+      "statement_sha256": "d61cdae874293e03f840ab61e226a6c1730959c18408e53ee7af02934f47fa3a"
+    },
+    "Toy.Lens.f2_laws_nonvacuity_bool": {
+      "closure_sha256": "d9b27f6203f979bdd3474e5663876f4957eb4d7f666470b6dafaebbb05d5a9be",
+      "closure_size": 9,
+      "statement_sha256": "e91d35254c8f150e6615cfb990b272eacfe467cab7a3e1dfb66efd062563baf7"
+    },
+    "Toy.Lens.f2_putComm_tight": {
+      "closure_sha256": "00689abe6e2f4b3ad28eb084029e3c4a6900db999cfd76ccada1a3767ab4ae4a",
+      "closure_size": 19,
+      "statement_sha256": "d25f89b5785c801fa2f11d9b92317feb3726d988bd97416d66f7dacc92be09b3"
+    },
+    "Toy.Lens.f2_putPut_tight": {
+      "closure_sha256": "34c072e081492b80a802f941ba5baa3369557657bff59726f76a1484fd5378ae",
+      "closure_size": 18,
+      "statement_sha256": "ae5938f2682701897df6e537d6576dcff6e7851c1d25b0606937c4802fbcb474"
+    },
+    "Toy.Lens.f3_laws_tight": {
+      "closure_sha256": "aca36c9fbcc7ad08756c57b7fa8902f9d20f0f41aedb8f2384686a41b307cd81",
+      "closure_size": 19,
+      "statement_sha256": "632e24429453e479b50adfaec591f4c722d2e48b35afb748532c292378efc90b"
+    },
+    "Toy.Lens.f3_nonvacuity_bool": {
+      "closure_sha256": "ab7a84ab7bb5afa8bca6b664d881125f0126f4b1efff606be9413259639c04b6",
+      "closure_size": 16,
+      "statement_sha256": "2236a8e64504882c85a3c6aacb75b142735e94121969e01bad2157a9aad5c73c"
+    },
+    "Toy.Lens.f3_pair_nonvacuity_bool": {
+      "closure_sha256": "65500cbb8500b96f4504fa77601ff6e2bc86e8e357e2678955076981fede4a61",
+      "closure_size": 21,
+      "statement_sha256": "464b4f7f882f2f7dc5576c6085161d94055da2cd8e9d09cdca0bab8dd1d04f8c"
+    },
+    "Toy.Lens.f3_sharp_intertwines_tight": {
+      "closure_sha256": "44412cdad61260174f60d77d62955e1ead075062e4fa78d55121da5fa5305d5d",
+      "closure_size": 12,
+      "statement_sha256": "1045f498f3cf240612f9f5bcd03245667a5d13ab51f9de8c954b772187aeb3cc"
+    },
+    "Toy.Lens.f3_sharp_nonvacuity_bool": {
+      "closure_sha256": "61324bb31b482e55b457af99e691516a18a164636cd8b10f05ab0138c91be975",
+      "closure_size": 8,
+      "statement_sha256": "2c28fc1f6e7b786687bdb31363ee121c13b57be2c1c9ac50bd378362763e9825"
+    },
+    "Toy.Lens.f6_count_nonvacuity": {
+      "closure_sha256": "9d7bba88a7a25ea76727c2784e36eb63d9eab0a635e22178658a54d315ce9fb5",
+      "closure_size": 4,
+      "statement_sha256": "cfeb14c654f831da9ee95b4674e9e5e66d706ce583c91db64f45fae99be2ee51"
+    },
+    "Toy.Lens.f6_nonvacuity": {
+      "closure_sha256": "ba558f647c457ab691ecf67c34c763295c29932bd74080b5930901f2a1a632dd",
+      "closure_size": 17,
+      "statement_sha256": "7f5a8b66678bafb7e27db5c7225b0db2a69d27afcb83ece7cb2a396f55ff0788"
+    },
+    "Toy.Lens.f6_unique_nonvacuity": {
+      "closure_sha256": "6cae5d57c940929bdcda3e4d8cd05d5142b64e18b26783945685cafc082266ad",
+      "closure_size": 6,
+      "statement_sha256": "65e1bb15ed044a8e8fa2ea0fc6a712e76d6999b1692e3ba5fff8e589953a3841"
+    },
+    "Toy.Lens.fam2_ignorePut_tight_putGet": {
+      "closure_sha256": "2d47125951f564c1acaf62e0113239460b4c6042e687f49902833243707f90eb",
+      "closure_size": 20,
+      "statement_sha256": "340e092e1bd5936e59e345ac13852b582e3b85c8a4f91ff1b610aa8b0cf53d52"
+    },
+    "Toy.Lens.fam2_twist_tight_pairwiseIndep": {
+      "closure_sha256": "2f5e3dbdf5474ca67f84b20500faa8c730a5614d15f2188ea7644ec8ce16a60b",
+      "closure_size": 20,
+      "statement_sha256": "1c982fc59c4c1ac344d42db800142280390affbef1e4bdbc23289dbabb1a9b5a"
+    },
+    "Toy.Lens.fiber_isConstantComplement_of_veryWellBehaved": {
+      "closure_sha256": "85804caf227eca5fff5a3699c74109b0d3605f71a1ee9c9f9444e7eb614bc3b0",
+      "closure_size": 16,
+      "statement_sha256": "4385d6a832129fccb848db043a126c7d52725de9880f5eb532c84db19d07b263"
+    },
+    "Toy.Lens.fst_hasConstantComplement": {
+      "closure_sha256": "73caf29defd306df0df12081148595eedff569c4dd065476a4480bb28397d8e7",
+      "closure_size": 11,
+      "statement_sha256": "e1141adc91e74998443537cd326d1f19f4e73f103d85c031213289e7db59033f"
+    },
+    "Toy.Lens.fst_snd_isProductDecomposition": {
+      "closure_sha256": "47b501e8f6ddb153c51064531d5d0a684a81b42b41f13a36de589971ebc11018",
+      "closure_size": 11,
+      "statement_sha256": "f8f0149509844347695654c21dc123ed9d900b0f77cfd9fe701f9183b847be06"
+    },
+    "Toy.Lens.fst_snd_satisfy_f1_hypotheses": {
+      "closure_sha256": "34144cc3c0dde0cf869d1c44806614d2ee514e3afac80a3840cfa4e3adb0b143",
+      "closure_size": 9,
+      "statement_sha256": "0dfbfaa683aab06cb697f6d18676b2b07e0181f6ecf9d7803a442e9f5fe7da4f"
+    },
+    "Toy.Lens.getPut_iff_ofPut_map_self_and_putPut_iff_ofPut_map_comp": {
+      "closure_sha256": "5611a784968ee1941acdf9118347837e6e9cdb238271a35fa79bd43d143cdb1c",
+      "closure_size": 11,
+      "statement_sha256": "16ccf14700b4f20045e1e5474e712105131b399015f761f994c0ff8ab7046bf9"
+    },
+    "Toy.Lens.getPut_of_putGet_pairwiseIndep_famJointExt": {
+      "closure_sha256": "182645a13734018b1cdb132ff83a84cf8ad9e10b44bb1f3e66a3c7e130569394",
+      "closure_size": 8,
+      "statement_sha256": "f07d5468bd7726dad2165318cb9b1c5add68ebb090f1eb78ac95b77a55fc6e27"
+    },
+    "Toy.Lens.getPut_of_putGet_putIndep_jointExt": {
+      "closure_sha256": "4e8e562f4d9fd5ea59376d285858f1be32d9192612005d9ed091f48efa5c44d9",
+      "closure_size": 8,
+      "statement_sha256": "37a463cc945b157e9e423cf54f0dcbd1836e7665a8f8996f21b3e8af77d823dc"
+    },
+    "Toy.Lens.ghostComplement_laws_tight": {
+      "closure_sha256": "10b35e5adab9b5d5cc97e52092a82da5a005a5c86861640fc7d248ff90758c4e",
+      "closure_size": 23,
+      "statement_sha256": "0cac5584cd98ca977597eb39b35caab7f1d53a94de6013b11974bf3825e53002"
+    },
+    "Toy.Lens.ghostFam_tight_famJointExt": {
+      "closure_sha256": "c1697b581a6928ad7c0d78a55d457a410929a033d14c8222d6fac33c12da2231",
+      "closure_size": 19,
+      "statement_sha256": "8a9147346eac60729793bfcde05ca25b8aad24d3c0d0852652aff46fbe1ffc5e"
+    },
+    "Toy.Lens.ghost_admits_unrelated_bijection": {
+      "closure_sha256": "46727be3ac5e786eb5837cd46654049640dd368f94ea8df58c9a4b94ff3a4cf4",
+      "closure_size": 16,
+      "statement_sha256": "a8dd788a09c66af13e97e9020fd7bcc1c44cf9ea8412baea394858e2fda18281"
+    },
+    "Toy.Lens.ghost_hasGhostComplement": {
+      "closure_sha256": "d9fded224d9762044459535a06c1510b89974eeabe7e3e9e9f21f66f9adb06b8",
+      "closure_size": 12,
+      "statement_sha256": "ae71153b9853cc241ea695ad2e342108fd98158f50d61a264b2149c70f16e540"
+    },
+    "Toy.Lens.ghost_tight_jointExt": {
+      "closure_sha256": "de1f77c23f6a2c164f95fdc0cf0e8785f67c8fda3e66f2725624272191941e5f",
+      "closure_size": 16,
+      "statement_sha256": "cc268fd498d446759da06a09c33aec7c24dd8bb3e483f98253afcd6aeda9353a"
+    },
+    "Toy.Lens.ignorePutSnd_tight_putGet_right": {
+      "closure_sha256": "cdb7d6f125f64e3d4012474a7cff39e50cc52e79b91a7f08b28294d4a26b9a5b",
+      "closure_size": 16,
+      "statement_sha256": "6c5addcc12175f78f8dbb9d709dcfa1a9658aac6407c1a4174b30610cb4d2353"
+    },
+    "Toy.Lens.ignorePut_tight_putGet_left": {
+      "closure_sha256": "62e6f1fd053df9267b2a8445e68ee8bc54fe21dfa226db5b1657eee03c55717b",
+      "closure_size": 16,
+      "statement_sha256": "4b1072bc911fb6bf1976d855fde7094f4df3d0356c0ae413005b11d3ac477120"
+    },
+    "Toy.Lens.isPiDecomposition_iff_putGet_pairwiseIndep_famJointExt_imp_nonempty_of_finite": {
+      "closure_sha256": "7c66a7f5da2a958b2054651d6bae572097a658138b55b1bc1e196aed00daa9b6",
+      "closure_size": 15,
+      "statement_sha256": "237290cdabcc01e179b28897eb00d19712505d35bce71e8ebc84f9fc43fe47c1"
+    },
+    "Toy.Lens.isPiDecomposition_of_putGet_pairwiseIndep_famJointExt_finite_imp_nonempty": {
+      "closure_sha256": "7c66a7f5da2a958b2054651d6bae572097a658138b55b1bc1e196aed00daa9b6",
+      "closure_size": 15,
+      "statement_sha256": "c8753fa6861e073ccf4416f53bc4e9f5f1c571a305617511af00d2278a0001b0"
+    },
+    "Toy.Lens.isProductDecomposition_iff_putGet_putIndep_jointExt_imp_nonempty": {
+      "closure_sha256": "e2317a4e804d1acc9436b49eb11fd13ca5915ac78c6d2b7dd1e37322a2a868a0",
+      "closure_size": 14,
+      "statement_sha256": "87a79d3ac71472716ef90e6873ea5d9ee8ad66981ecac78afd8cb970ab787409"
+    },
+    "Toy.Lens.isProductDecomposition_of_putGet_putIndep_jointExt_imp_nonempty": {
+      "closure_sha256": "e2317a4e804d1acc9436b49eb11fd13ca5915ac78c6d2b7dd1e37322a2a868a0",
+      "closure_size": 14,
+      "statement_sha256": "49c63f45d41f10328ef44e4a5e76a33dd28bc405808438ba11ad8c13a39b5636"
+    },
+    "Toy.Lens.not_putIndep_self_of_putGet": {
+      "closure_sha256": "e6b440250e2754bc66b04be1e0d44e7f85f3dbf9551be72b8e7f079cf7dc3a33",
+      "closure_size": 6,
+      "statement_sha256": "1c065e2100733f28c8dd3e3803038488850228a62335ac6e0fc6ef490ebd3201"
+    },
+    "Toy.Lens.not_putIndep_self_tight": {
+      "closure_sha256": "1bbeac62fbbb8ff10acced195c81fd439b80ba6ec618a87f0ae027ca4e26e232",
+      "closure_size": 9,
+      "statement_sha256": "0ce638ebf09e18d971c5e1d0941c7e1c44dfa81bca64988f8f9e0af0555ba846"
+    },
+    "Toy.Lens.ofPut_twist_coherent": {
+      "closure_sha256": "16bd70a2535c4216740ee14c243f8518a458bc766e68478b8f09563118494f3a",
+      "closure_size": 17,
+      "statement_sha256": "b75a2a725110684028a86ae3e11aa69272312c249a476add57ae2ebe5f3510cb"
+    },
+    "Toy.Lens.pairPut_inverse_tight": {
+      "closure_sha256": "a3b86b7f4cabafc4c77798d0db28dba4a5bcdc9687d50eb62f5fd2d6e79afed2",
+      "closure_size": 20,
+      "statement_sha256": "2b030a458763f0c52fcfded22055f6fe7abef6e4c64a366b6070f13b2d671392"
+    },
+    "Toy.Lens.pairPut_leftInverse_rightInverse_of_putGet_putIndep_jointExt": {
+      "closure_sha256": "8698372c1a9e4f671b0877c1c71ea526bc7c1b7586dab57681b98e8146f91e4e",
+      "closure_size": 9,
+      "statement_sha256": "08b6cb971c2fa8b584ac15a19d90176ccac0553473353365e471d8a9c7f99873"
+    },
+    "Toy.Lens.putComm_of_putGet_pairwiseIndep_famJointExt": {
+      "closure_sha256": "7ab73c6ccf0d86142ce09bc5aa407b7c4ead02757f57be8f210b1aec66049c14",
+      "closure_size": 8,
+      "statement_sha256": "f3f852247b553e41eb94c0a237328ffbebe7db2a5a5249ee728f9902f2eb3502"
+    },
+    "Toy.Lens.putComm_of_putGet_putIndep_jointExt": {
+      "closure_sha256": "9d59e46b2cd19e97f48b7464e3714cdef6fcfd26ff9cf3b2e5530d07b7ad0b27",
+      "closure_size": 8,
+      "statement_sha256": "8d5fa3bd721aed32b61d3c63a83ed8e14ea5381919164574f8b627a79a36f3fa"
+    },
+    "Toy.Lens.putPut_of_putGet_pairwiseIndep_famJointExt": {
+      "closure_sha256": "783ebce7920869c9c25727cc231ca2bfab863319032e26a9e4ff31a39ddf70c5",
+      "closure_size": 8,
+      "statement_sha256": "c46b0d99a30c8aeb2a3c554e18850d0e108a3a249c29a9ee5ca10eb3de4c6cd3"
+    },
+    "Toy.Lens.putPut_of_putGet_putIndep_jointExt": {
+      "closure_sha256": "4430096ca33746ee1111575c79377d61cd953d17a1221eb5d164af81bb444294",
+      "closure_size": 8,
+      "statement_sha256": "e4e2147f35e8ab16f2aab51233dca1a851aa2d92d618bed39b0fbed32589269c"
+    },
+    "Toy.Lens.twist_hasConstantComplement": {
+      "closure_sha256": "ff6420aec628257b9758dfbd80046f4a7ee1d3b2e09b1ae3a372b8c358570729",
+      "closure_size": 12,
+      "statement_sha256": "a82b55fe36c68ffdec8bd54b07999826e0a6218ee470202aae25a2f29a1bac5b"
+    },
+    "Toy.Lens.twist_snd_not_hasGhostComplement": {
+      "closure_sha256": "45f9127a926f3f9d8ea17c4fe0f022f4e03cad5caaa5ef3d11a689741231fba1",
+      "closure_size": 14,
+      "statement_sha256": "444cbdce17052980f263eaecfcb639cfb731e5a56568baebac258456de27fe4a"
+    },
+    "Toy.Lens.twist_tight_putIndep_left": {
+      "closure_sha256": "aa56f74a77b5f26d83605c6560ef88dbd3c65910f72245b56f4b9f6f6dba8037",
+      "closure_size": 16,
+      "statement_sha256": "4ec0edc7562dd8db111e9c551e8cf71f6eb8f8d507efdce9b6537e4368a617ed"
+    },
+    "Toy.Lens.twist_tight_putIndep_right": {
+      "closure_sha256": "aa56f74a77b5f26d83605c6560ef88dbd3c65910f72245b56f4b9f6f6dba8037",
+      "closure_size": 16,
+      "statement_sha256": "f401b4e6ed5684c22b71baf8cd8812cc760a3e5cf7ecb5601c0943c74ea3159a"
+    },
+    "Toy.Lens.veryWellBehaved_and_putComm_iff_hasGhostComplement": {
+      "closure_sha256": "b765e53144e08b0b6fd9f7bda8b85a6574c5a4fdc6235c06f81f817f4db3d1bc",
+      "closure_size": 17,
+      "statement_sha256": "a50d3fe4803486706e3487d78ddacdf8591e737cef75ddd39449a285bb13ea40"
+    },
+    "Toy.Lens.veryWellBehaved_and_putComm_of_putGet_putIndep_jointExt": {
+      "closure_sha256": "98667dc8fc22f83612d4a4453b83fc90184b50936db7718140d4ca629069fa2e",
+      "closure_size": 11,
+      "statement_sha256": "a0717a5c7e35998a6c14f723837d26dff1dc078509b894c80967811333a1fdce"
+    },
+    "Toy.Lens.veryWellBehaved_iff_hasConstantComplement": {
+      "closure_sha256": "9eb8ece152ca11e0ca94293c59a2481ae8b9eadffe220cf326ef97cfe6542d95",
+      "closure_size": 15,
+      "statement_sha256": "37de5124efed6e7a2fb3e1d2d2227bf3885a3d3f9c4779ec16223b60e4c8c91e"
+    },
+    "Toy.Lens.veryWellBehaved_of_injective_intertwines_fst": {
+      "closure_sha256": "5cc01b4858553ce70f0052848712d0e2f3008a611a9a6ad6cc4f645ab4e117e2",
+      "closure_size": 11,
+      "statement_sha256": "c30d268695c262d14e192087cafa6d0e08c47f8b290629818bf69f381cecd35b"
+    },
+    "Toy.Lens.veryWellBehaved_puts_equiv_baseFiber_bijections": {
+      "closure_sha256": "0970b0db58b2cdf9392caa00308d9b1d262a6b3292f3289a675eb54de14589e8",
+      "closure_size": 12,
+      "statement_sha256": "fb5082d11c9b1a7f53b9e726af511b107485349d5b4bbbde57c06e23b1b5cbde"
+    },
+    "Toy.Lens.veryWellBehaved_puts_getFst_eq_fst_or_twist": {
+      "closure_sha256": "1dd2787dd2a0b7c5f4c809d32351dc33752471ffe471928b53a0138eb84f7826",
+      "closure_size": 12,
+      "statement_sha256": "bbe7768c873a399c4b43e3c8db39a4d4cb1a54fad9a365797c19d389b26d2bc6"
+    },
+    "Toy.Lens.xorView_tight_putIndep_left": {
+      "closure_sha256": "7fc2e4ea3e9884afa88737f4c2dba229900d2cde4843f57bf435192a05156eb5",
+      "closure_size": 16,
+      "statement_sha256": "3ad5b8600a82bbe5cce3f26a69bbb47af6a7e9c9c5afa2f6fb412131af2dde2b"
+    },
+    "Toy.Lens.xorView_tight_putIndep_right": {
+      "closure_sha256": "7fc2e4ea3e9884afa88737f4c2dba229900d2cde4843f57bf435192a05156eb5",
+      "closure_size": 16,
+      "statement_sha256": "dff26dd871e683ff0cb02b2151c84e6d54187aa5f89b5be30c9d0dcde7f17b0d"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

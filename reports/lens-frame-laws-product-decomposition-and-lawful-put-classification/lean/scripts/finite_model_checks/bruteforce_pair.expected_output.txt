@@ -1,0 +1,6 @@
+F3 pair form not refuted on {'pairs': 7136562, 'lhs': 54}
+ALL CHECKS PASSED
+
+real	0m24.544s
+user	0m24.335s
+sys	0m0.144s

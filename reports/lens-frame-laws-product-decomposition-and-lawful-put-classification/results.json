@@ -1,0 +1,1047 @@
+[
+ {
+  "id": "F1",
+  "kind": "characterization",
+  "status": "proved",
+  "module": "Toy/Lens/Decomposition.lean",
+  "lean": [
+   "Toy.Lens.isProductDecomposition_of_putGet_putIndep_jointExt_imp_nonempty",
+   "Toy.Lens.isProductDecomposition_iff_putGet_putIndep_jointExt_imp_nonempty"
+  ],
+  "tier": "T1",
+  "tier_justification": "Folklore made precise. The conclusion is the situation that FZW16 describe as 'X ⋈ Y and X ⊕ Y ∈ bij-lens' and that AFP Optics assumes in locale `sym_lens`; it is also the two-location instance of the global-state theory of PP02. None of the sources checked derives it from PutGet, get-invariance in both directions and joint injectivity of the getters, or isolates that as an equivalent and irredundant law set. Not claimed novel.",
+  "plain_claim": "For two total lenses l₁ : Lens S A and l₂ : Lens S B: if each satisfies PutGet, neither put changes the other's view (PutIndep in both directions), the two views together determine the state (JointExt), and S is nonempty whenever A × B is, then the specific map s ↦ (l₁.get s, l₂.get s) is a bijection S → A × B under which l₁.put is first-coordinate update and l₂.put is second-coordinate update; conversely, this conclusion implies all five laws and the nonemptiness condition. GetPut, PutPut and commuting puts are not assumed.",
+  "hypotheses": [
+   {
+    "name": "h₁ : PutGet l₁",
+    "purpose": "l₁.put really stores the written value: first component of 'l₁.put is first-coordinate update'.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.ignorePut_tight_putGet_left"
+   },
+   {
+    "name": "h₂ : PutGet l₂",
+    "purpose": "l₂.put really stores the written value.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.ignorePutSnd_tight_putGet_right"
+   },
+   {
+    "name": "h₁₂ : PutIndep l₁ l₂",
+    "purpose": "Frame law: writing through l₁ leaves the l₂-view alone (second component of 'l₁.put is first-coordinate update').",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.twist_tight_putIndep_left",
+     "Toy.Lens.xorView_tight_putIndep_left"
+    ]
+   },
+   {
+    "name": "h₂₁ : PutIndep l₂ l₁",
+    "purpose": "Frame law in the other direction; also what makes the base-state construction hit every pair.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.twist_tight_putIndep_right",
+     "Toy.Lens.xorView_tight_putIndep_right"
+    ]
+   },
+   {
+    "name": "hext : JointExt l₁ l₂",
+    "purpose": "No hidden state: injectivity of the pairing map.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.ghost_tight_jointExt"
+   },
+   {
+    "name": "hS : Nonempty (A × B) → Nonempty S",
+    "purpose": "A base state from which a given pair of views can be built (surjectivity of the pairing map). Exactly the nonemptiness condition of the equivalence; implied by Nonempty S (pass `fun _ => hS`), but holds also when A × B is empty, e.g. for an empty state type with an empty view (Toy.Lens.emptyView_isProductDecomposition_without_nonempty).",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.empty_tight_nonempty"
+   },
+   {
+    "name": "S A B : arbitrary types in arbitrary universes",
+    "purpose": "No finiteness or decidability is assumed, and no inhabitedness of S, A or B beyond hS; in particular the result applies when A or B is empty.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Three of the four conjuncts of the unfolded conclusion restate hypotheses: injectivity of the pairing map is JointExt, and 'l₁.put is first-coordinate update' unfolds to PutGet l₁ ∧ PutIndep l₁ l₂ (Toy.Lens.isProductDecomposition_iff_elementary). The only non-definitional content is surjectivity: from a base state, put through l₁ and then through l₂. The converse direction is unfolding.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f1_nonvacuity_bool",
+   "Toy.Lens.fst_snd_satisfy_f1_hypotheses",
+   "Toy.Lens.fst_snd_isProductDecomposition"
+  ],
+  "nonvacuity_witness": "fst and snd on Bool × Bool (and on any product) satisfy all six hypotheses and the conclusion.",
+  "non_claims": [
+   "The six hypotheses are sufficient (first Lean statement), jointly equivalent to the conclusion (second Lean statement) and irredundant (each has a counterexample in canonical form). The common stronger hypothesis `Nonempty S` implies `hS` but is not necessary: when A × B is empty the conclusion can hold on an empty state type (Toy.Lens.emptyView_isProductDecomposition_without_nonempty).",
+   "Does not constructively build an `Equiv S (A × B)` in `Type`: `hS` and `IsProductDecomposition l₁ l₂` live in `Prop`, so obtaining a computable inverse requires a concrete base state `s₀ : S` (see F1-inverse) or `Classical.choice`.",
+   "Does not apply to a proper subset of fields of a record with three or more fields (or hidden metadata/padding): `JointExt` fails whenever any unprojected state component exists; use F3-pair (with `VeryWellBehaved` and `PutComm`) or F2 over all fields instead.",
+   "Dropping `PutGet l₁`, `PutGet l₂`, `PutIndep l₁ l₂` or `PutIndep l₂ l₁` breaks the coordinate-update (`Intertwines`) part of `IsProductDecomposition`, not necessarily the bijectivity of `pairGet`: for ignorePut/snd, fst/ignorePutSnd and snd/twist (Toy.Lens.pairGet_bijective_in_inverse_witnesses) and for fst/xorView (Toy.Lens.xorView_pairGet_bijective_but_not_decomposition), `pairGet` is still a bijection.",
+   "The 'puts are coordinate updates' half of the conclusion carries no information beyond PutGet and PutIndep; see the depth note.",
+   "Attractive but inadequate weakening of the conclusion: 'some bijection S ≃ A × B exists'. A record with a ghost component admits such a bijection (Toy.Lens.ghost_admits_unrelated_bijection); the specific map must appear in the statement. Any map whose components are the two getters is `pairGet` (Toy.Lens.eq_pairGet_of_get_eq; each of its two hypotheses is needed: Toy.Lens.eq_pairGet_tight_left, Toy.Lens.eq_pairGet_tight_right).",
+   "Attractive but false variant of the hypotheses: both lenses very well-behaved, jointly extensional, and independent in one direction only (Toy.Lens.xorView_tight_putIndep_left).",
+   "Says nothing about partial lenses or sum types (see F5), about more than two fields (see F2), or about type-changing lenses.",
+   "Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge)."
+  ],
+  "prior_art": [
+   "[FZW16] S. Foster, F. Zeyda, J. Woodcock. Unifying Heterogeneous State-Spaces with Lenses. ICTAC 2016, LNCS 9965, pp. 295-314, Springer, 2016. doi:10.1007/978-3-319-46750-4_17 -- Section 3.3: Definition 4 (lens independence, bundling commuting puts with both directions of get-invariance), Definition 6 (lens sum), and the description of a source divided into two disjoint views as 'X ⊕ Y ≈ 1, or equivalently X ⊕ Y ∈ bij-lens'. The situation F1 concludes is described there, not derived from a minimal law set.",
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Laws.thy: locale `lens_indep` (assumptions `lens_put_comm`, `lens_put_irr1`, `lens_put_irr2`), lemma `lens_indep_vwb_iff`; Lens_Algebra.thy: `lens_plus` (get = pairing of the gets; put σ (u, v) = put_X (put_Y σ v) u), `plus_vwb_lens`; Lens_Symmetric.thy: locale `sym_lens` assumes vwb V, vwb C, V ⋈ C and bij_lens (V +_L C). Isabelle/HOL types are nonempty, so empty-type cases do not arise there.",
+   "[PP02] G. D. Plotkin, J. Power. Notions of Computation Determine Monads. FoSSaCS 2002, LNCS 2303, pp. 342-356, Springer, 2002. doi:10.1007/3-540-45931-6_24 (full text not consulted) -- Global state over finitely many locations: the equations relating lookup and update at equal and distinct locations are the lens laws, cross-independence and commuting puts for coordinate lenses.",
+   "[FGMPS07] J. N. Foster, M. B. Greenwald, J. T. Moore, B. C. Pierce, A. Schmitt. Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem. ACM Trans. Program. Lang. Syst. 29(3), Article 17, 2007. doi:10.1145/1232420.1232424 -- Section 3: GetPut, PutGet, PutPut for a single lens.",
+   "[BvW98] R.-J. Back, J. von Wright. Refinement Calculus: A Systematic Introduction. Springer, 1998. doi:10.1007/978-1-4612-1674-2 (not consulted; cited in AFP Optics, Lens_Laws.thy, for the same variable axioms) -- Program variables axiomatised by access/update pairs with laws for distinct variables.",
+   "[ACGMS18] F. Abou-Saleh, J. Cheney, J. Gibbons, J. McKinna, P. Stevens. Introduction to Bidirectional Transformations. In: Bidirectional Transformations, LNCS 9715, pp. 1-28, Springer, 2018. doi:10.1007/978-3-319-79108-1_1 (not consulted) -- Textbook introduction to lens laws."
+  ],
+  "design_question": "Which minimal law set for two field getters/setters of a value-algebra interface yields 'setting one field changes that field and nothing else, and there is nothing else'?"
+ },
+ {
+  "id": "F1-inverse",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Decomposition.lean",
+  "lean": "Toy.Lens.pairPut_leftInverse_rightInverse_of_putGet_putIndep_jointExt",
+  "tier": "T1",
+  "tier_justification": "In AFP Optics vocabulary the conclusion is StrongGetPut for a lens sum (bij_lens); there it follows from assumptions. That one direction of get-invariance suffices was not found in the sources checked.",
+  "plain_claim": "If both lenses satisfy PutGet, writing through l₂ does not change the l₁-view (one direction of cross-independence) and the lenses are jointly extensional, then for every base state s₀ the explicit map p ↦ l₂.put (l₁.put s₀ p.1) p.2 is a two-sided inverse of s ↦ (l₁.get s, l₂.get s).",
+  "hypotheses": [
+   {
+    "name": "h₁ : PutGet l₁",
+    "purpose": "The first write stores the first component.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.pairPut_inverse_tight"
+   },
+   {
+    "name": "h₂ : PutGet l₂",
+    "purpose": "The second write stores the second component.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.pairPut_inverse_tight"
+   },
+   {
+    "name": "h₂₁ : PutIndep l₂ l₁",
+    "purpose": "The second write must not disturb the first view.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.pairPut_inverse_tight"
+   },
+   {
+    "name": "hext : JointExt l₁ l₂",
+    "purpose": "Left-inverse half: a state is recovered from its two views.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.pairPut_inverse_tight"
+   },
+   {
+    "name": "s₀ : S",
+    "purpose": "The base state written into; any state works.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Right inverse: three rewrites. Left inverse: joint extensionality applied to the right-inverse equations.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f1_inverse_nonvacuity_bool"
+  ],
+  "nonvacuity_witness": "fst and the XOR view on Bool × Bool satisfy all hypotheses although they violate PutIndep fst xorView.",
+  "non_claims": [
+   "Does not conclude that the puts are coordinate updates: for fst/xorView the hypotheses hold but fst.put changes the XOR view (Toy.Lens.xorView_tight_putIndep_left).",
+   "Does not imply that `l₁` satisfies `GetPut` or `PutPut`, or commutes with `l₂`: the pair `(resetSibling, snd)` satisfies all hypotheses (and `pairPut` is a two-sided inverse of `pairGet` there), yet `resetSibling` violates `GetPut` and does not commute with `snd`; the pair `(dirtyFlag, snd)` satisfies all hypotheses and `dirtyFlag` violates `PutPut` (Toy.Lens.f1_inverse_hypotheses_do_not_imply_laws).",
+   "The tightness witnesses for `PutGet l₁`, `PutGet l₂` and `PutIndep l₂ l₁` show only that the specific formula `pairPut` fails to be an inverse of `pairGet`, not that `pairGet` ceases to be a bijection: in ignorePut/snd, fst/ignorePutSnd and snd/twist, `pairGet` remains a bijection (Toy.Lens.pairGet_bijective_in_inverse_witnesses).",
+   "The order of the two writes matters when only one direction of independence is assumed: pairPut writes through l₁ first and then through l₂, the reverse of the order used by the AFP Optics sum lens `X +_L Y` (which writes Y first).",
+   "Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge)."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Algebra.thy `lens_plus` (put σ (u, v) = put_X (put_Y σ v) u); Lens_Laws.thy locale `bij_lens` (PutGet and StrongGetPut).",
+   "[FZW16] S. Foster, F. Zeyda, J. Woodcock. Unifying Heterogeneous State-Spaces with Lenses. ICTAC 2016, LNCS 9965, pp. 295-314, Springer, 2016. doi:10.1007/978-3-319-46750-4_17 -- Section 3.3, lens sum and bij-lens."
+  ],
+  "design_question": "Which law is needed for the canonical 'write both fields into a base state' constructor to invert the pair of getters?"
+ },
+ {
+  "id": "F1-laws",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Decomposition.lean",
+  "lean": [
+   "Toy.Lens.veryWellBehaved_and_putComm_of_putGet_putIndep_jointExt",
+   "Toy.Lens.getPut_of_putGet_putIndep_jointExt",
+   "Toy.Lens.putPut_of_putGet_putIndep_jointExt",
+   "Toy.Lens.putComm_of_putGet_putIndep_jointExt"
+  ],
+  "tier": "T1",
+  "tier_justification": "The single-lens fact that StrongGetPut and PutGet give a very well-behaved (bijective) lens is in FHP15 and Nakano19 (and AFP Optics proves `bij_lens_vwb`). The two-lens derivation here — GetPut and PutPut of l₁ from PutGet l₁, PutIndep l₁ l₂ and JointExt, and commuting puts from the five laws — was not found in the sources checked; it is an elementary derivation and is not attributed to them.",
+  "plain_claim": "PutGet for both lenses, cross-independence in both directions and joint extensionality imply that both lenses are very well-behaved and that their puts commute; no nonemptiness assumption is needed. More precisely, GetPut l₁ and PutPut l₁ already follow from PutGet l₁, PutIndep l₁ l₂ and JointExt l₁ l₂ (no law of l₂), and commuting puts follows from the five laws.",
+  "hypotheses": [
+   {
+    "name": "h₁ : PutGet l₁ (bundled lemma)",
+    "purpose": "Read-back of l₁; used for GetPut l₁, PutPut l₁ and PutComm.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f1_laws_bundled_tight"
+   },
+   {
+    "name": "h₂ : PutGet l₂ (bundled lemma)",
+    "purpose": "Read-back of l₂; used for GetPut l₂, PutPut l₂ and PutComm.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f1_laws_bundled_tight"
+   },
+   {
+    "name": "h₁₂ : PutIndep l₁ l₂ (bundled lemma)",
+    "purpose": "Lets joint extensionality compare states after a write through l₁.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f1_laws_bundled_tight"
+   },
+   {
+    "name": "h₂₁ : PutIndep l₂ l₁ (bundled lemma)",
+    "purpose": "Same for writes through l₂.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f1_laws_bundled_tight"
+   },
+   {
+    "name": "hext : JointExt l₁ l₂ (bundled lemma)",
+    "purpose": "Turns equality of both views into equality of states.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f1_laws_bundled_tight"
+   },
+   {
+    "name": "h₁, h₁₂, hext (component lemmas for GetPut l₁ and PutPut l₁)",
+    "purpose": "The three laws used by the component lemmas; each is needed.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.derived_getPut_tight",
+     "Toy.Lens.derived_putPut_tight"
+    ]
+   },
+   {
+    "name": "h₁, h₂, h₁₂, h₂₁, hext (component lemma for PutComm)",
+    "purpose": "All five laws are used; each is needed.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.derived_putComm_tight",
+     "Toy.Lens.derived_putComm_tight_mirror"
+    ]
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Each conclusion is one application of joint extensionality to two states whose views agree by PutGet and PutIndep.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f1_nonvacuity_bool"
+  ],
+  "nonvacuity_witness": "fst and snd on Bool × Bool.",
+  "non_claims": [
+   "Under the weaker three-hypothesis component lemmas (`PutGet l₁`, `PutIndep l₁ l₂`, `JointExt l₁ l₂`), nothing is concluded about `l₂`'s laws or about `PutComm l₁ l₂`.",
+   "Does not allow dropping `GetPut`, `PutPut`, or `PutComm` from a multi-field value-algebra interface unless `FamJointExt` holds over all fields together; for any two fields of a ≥ 3-field struct, the remaining fields act as a ghost component (Toy.Lens.derived_putComm_tight, third instance).",
+   "Joint extensionality is essential: without it, two very well-behaved lenses that are cross-independent in both directions need not commute (Toy.Lens.derived_putComm_tight, third instance).",
+   "Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge)."
+  ],
+  "prior_art": [
+   "[FHP15] S. Fischer, Z. Hu, H. Pacheco. A Clear Picture of Lens Laws - Functional Pearl. MPC 2015, LNCS 9129, pp. 215-223, Springer, 2015. doi:10.1007/978-3-319-19797-5_10 (full text not consulted; characterised through Nakano 2019) -- Implications among single-lens laws; PutGet implies PutInjectivity (injectivity of put s, not of get) and StrongGetPut with PutInjectivity implies PutPut, so bijective lenses are very well-behaved.",
+   "[Nakano19] K. Nakano. Towards a Complete Picture of Lens Laws. Third Workshop on Software Foundations for Data Interoperability (SFDI2019+), Fukuoka, 2019. arXiv:1910.10421v1, doi:10.48550/arXiv.1910.10421 -- Sections 1-3: the implication web among eleven single-lens laws; no law involving the getter's injectivity and no two-lens law.",
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Laws.thy: locale `bij_lens` (PutGet + StrongGetPut) and lemma `bij_lens_vwb` (bijective lenses are very well-behaved); `lens_indep` bundles commuting puts with both get-invariance laws."
+  ],
+  "design_question": "Which of GetPut, PutPut and commuting puts may be dropped from a field interface because they follow from the others?"
+ },
+ {
+  "id": "F2",
+  "kind": "characterization",
+  "status": "proved",
+  "module": "Toy/Lens/Decomposition.lean",
+  "lean": [
+   "Toy.Lens.isPiDecomposition_of_putGet_pairwiseIndep_famJointExt_finite_imp_nonempty",
+   "Toy.Lens.isPiDecomposition_iff_putGet_pairwiseIndep_famJointExt_imp_nonempty_of_finite"
+  ],
+  "tier": "T1",
+  "tier_justification": "Same status as F1, for finitely many fields. AFP Optics assumes finite spanning families of pairwise independent lenses (and FIP26 describes such state spaces); the coordinate-lens instance is AFP `fun_lens`. The derivation from PutGet, pairwise get-invariance, joint injectivity, finiteness and the nonemptiness condition was not found. Not claimed novel.",
+  "plain_claim": "For a family of total lenses l i : Lens S (A i) indexed by a finite type ι (enumerated by a list, duplicates allowed): if every lens satisfies PutGet, writing through any lens leaves every other view unchanged, the views together determine the state, and S is nonempty whenever the product (i : ι) → A i is, then the specific map s ↦ (fun i => (l i).get s) is a bijection S → (i : ι) → A i under which each (l i).put is update of coordinate i; conversely, this conclusion implies the three laws and the nonemptiness condition.",
+  "hypotheses": [
+   {
+    "name": "hpg : ∀ i, PutGet (l i)",
+    "purpose": "Each write stores its value.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.fam2_ignorePut_tight_putGet"
+   },
+   {
+    "name": "hind : PairwiseIndep l",
+    "purpose": "Frame law for every ordered pair of distinct indices.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.fam2_twist_tight_pairwiseIndep"
+   },
+   {
+    "name": "hext : FamJointExt l",
+    "purpose": "No hidden state.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.ghostFam_tight_famJointExt"
+   },
+   {
+    "name": "elems : List ι, helems : ∀ i, i ∈ elems",
+    "purpose": "Finiteness of the index type: the target tuple is reached by finitely many writes.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.evCoord_tight_finite_index"
+   },
+   {
+    "name": "hS : Nonempty ((i : ι) → A i) → Nonempty S",
+    "purpose": "A base state from which a given tuple can be built; exactly the nonemptiness condition of the equivalence; implied by Nonempty S.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.emptyFam_tight_nonempty"
+   },
+   {
+    "name": "[DecidableEq ι]",
+    "purpose": "Needed only to state coordinate update (`update`, `coord`, `IsPiDecomposition`).",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "As for F1, all conjuncts except surjectivity restate hypotheses (Toy.Lens.isPiDecomposition_iff_elementary). Surjectivity: write the target tuple index by index along the enumeration; a list induction.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.coord_bool_satisfy_f2_hypotheses",
+   "Toy.Lens.coord_isPiDecomposition"
+  ],
+  "nonvacuity_witness": "The coordinate lenses on Bool → Bool.",
+  "non_claims": [
+   "Does not cover dependent records (telescopes) where the type of one field depends on the *value* of another field: `A : ι → Type v` depends only on the fixed index `i : ι`.",
+   "Does not cover dynamically-keyed finite maps or heaps whose set of present keys varies from state to state: the finite index type `ι` is fixed globally across all states `S`.",
+   "Does not constructively produce an `Equiv S ((i : ι) → A i)` in `Type`: the nonemptiness hypothesis and the conclusion are propositions.",
+   "Does not claim that `Nonempty S` is necessary: when `ι` is nonempty and some `A i` is empty, the product is empty and the conclusion can hold on an empty `S`; the theorem therefore uses the conditional hypothesis `hS`.",
+   "False for infinite index types: the coordinate lenses on eventually-false Boolean sequences satisfy every other hypothesis but the tuple-of-views map is not surjective (Toy.Lens.evCoord_tight_finite_index). For infinite ι only injectivity and the coordinate-update equations survive.",
+   "Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge)."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Instances.thy: `fun_lens x` (requires the value type in class `two`, i.e. at least two elements) and `fun_lens_indep`; Scene_Spaces.thy and Frames.thy in the same commit treat finite spanning families of independent scenes (not read in detail).",
+   "[PP02] G. D. Plotkin, J. Power. Notions of Computation Determine Monads. FoSSaCS 2002, LNCS 2303, pp. 342-356, Springer, 2002. doi:10.1007/3-540-45931-6_24 (full text not consulted) -- Global state over a finite set of locations generates the state monad on V^Loc.",
+   "[PSh04] A. J. Power, O. Shkaravska. From Comodels to Coalgebras: State and Arrays. CMCS 2004, ENTCS 106, pp. 297-314, 2004. doi:10.1016/j.entcs.2004.02.041 (full text not consulted) -- Comodels of global state and arrays; the finite-versus-infinite-locations distinction parallels the finiteness hypothesis.",
+   "[FIP26] S. Foster, C. Isasa, C. Pardillo Laursen. Scenes: A Meta-Logical Algebra for Mutable State. arXiv:2609.29380v1, 2026 (not consulted) -- State spaces as finite families of pairwise independent lenses whose sum is bijective."
+  ],
+  "design_question": "When do n field getters/setters with frame laws present the value as the product of the fields?"
+ },
+ {
+  "id": "F2-laws",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Decomposition.lean",
+  "lean": [
+   "Toy.Lens.getPut_of_putGet_pairwiseIndep_famJointExt",
+   "Toy.Lens.putPut_of_putGet_pairwiseIndep_famJointExt",
+   "Toy.Lens.putComm_of_putGet_pairwiseIndep_famJointExt"
+  ],
+  "tier": "T1",
+  "tier_justification": "Indexed analogue of F1-laws; not found in the sources checked.",
+  "plain_claim": "For a family of lenses and an index i: if l i satisfies PutGet, writing through l i leaves every other view unchanged, and the family is jointly extensional, then l i satisfies GetPut and PutPut; for distinct indices i ≠ j, if l i and l j satisfy PutGet, writes through either leave every other view unchanged, and the family is jointly extensional, then the puts of l i and l j commute. No decidable equality on the index type is needed.",
+  "hypotheses": [
+   {
+    "name": "hpg : PutGet (l i) (GetPut, PutPut)",
+    "purpose": "Read-back at the index concerned.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.f2_getPut_tight",
+     "Toy.Lens.f2_putPut_tight"
+    ]
+   },
+   {
+    "name": "hind : ∀ j, i ≠ j → PutIndep (l i) (l j) (GetPut, PutPut)",
+    "purpose": "Writes through l i keep the other views.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.f2_getPut_tight",
+     "Toy.Lens.f2_putPut_tight"
+    ]
+   },
+   {
+    "name": "hext : FamJointExt l (all three)",
+    "purpose": "Equal views give equal states.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.f2_getPut_tight",
+     "Toy.Lens.f2_putPut_tight",
+     "Toy.Lens.f2_putComm_tight"
+    ]
+   },
+   {
+    "name": "hij : i ≠ j (PutComm)",
+    "purpose": "Two writes through the same lens do not commute.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f2_putComm_tight"
+   },
+   {
+    "name": "hpi : PutGet (l i), hpj : PutGet (l j) (PutComm)",
+    "purpose": "Read-back at both indices.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f2_putComm_tight"
+   },
+   {
+    "name": "hindi, hindj : frame laws at i and at j (PutComm)",
+    "purpose": "Writes through l i and through l j keep the other views.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f2_putComm_tight"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "One application of joint extensionality, with a classical case split on index equality.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f2_laws_nonvacuity_bool"
+  ],
+  "nonvacuity_witness": "The coordinate lenses on Bool → Bool at the indices false and true.",
+  "non_claims": [
+   "The laws at indices other than those concerned are not used; the lemmas do not say anything about the other lenses.",
+   "Joint extensionality over the whole family is used; for a sub-family of fields it generally fails and commuting puts must then be assumed (see F3-pair)."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Laws.thy `lens_indep_vwb_iff`; Lens_Instances.thy `fun_lens_indep`."
+  ],
+  "design_question": "Which per-field laws may be dropped from an n-field interface?"
+ },
+ {
+  "id": "F3",
+  "kind": "characterization",
+  "status": "proved",
+  "module": "Toy/Lens/Complement.lean",
+  "lean": "Toy.Lens.veryWellBehaved_iff_hasConstantComplement",
+  "tier": "T0",
+  "tier_justification": "Known result restated. PS03 Theorem 2.3.9 states it with no inhabitedness assumption (via the put-orbit construction), and CDV21 mechanise it in Agda for sources that are sets (`≃Σ∥set⁻¹∥×`, no inhabitedness assumption on the source or the view). FGMPS07 footnote 9 and JRW10 Theorem 12 / Corollary 13 state it for a non-empty view set. What differs here is only the Lean formulation: the complement is required to live in the universe of S, where the quotient of S by 'put s = put t' provides one; the CDV21 complement is a subtype of the function type B → A.",
+  "plain_claim": "A total lens l : Lens S A is very well-behaved if and only if it has a constant complement: a type C in the universe of S and a bijection S ≃ A × C under which get is the first projection and put is first-coordinate update. Neither S nor A is assumed nonempty.",
+  "hypotheses": [
+   {
+    "name": "left-hand side, GetPut l",
+    "purpose": "Needed: without it no constant complement exists.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f3_laws_tight"
+   },
+   {
+    "name": "left-hand side, PutGet l",
+    "purpose": "Needed: without it no constant complement exists.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f3_laws_tight"
+   },
+   {
+    "name": "left-hand side, PutPut l",
+    "purpose": "Needed: without it no constant complement exists.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f3_laws_tight"
+   },
+   {
+    "name": "C : Type u (universe of S) inside HasConstantComplement",
+    "purpose": "Lets the forward direction use the quotient construction; for complements in other universes the backward direction is F3-sharp.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Backward: compute under the bijection and cancel it (F3-sharp). Forward: take C to be S modulo 'put s = put t', map s ↦ (get s, [s]) and (a, [s]) ↦ put s a; GetPut gives one inverse law, PutGet and PutPut the other.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f3_nonvacuity_bool",
+   "Toy.Lens.fst_hasConstantComplement",
+   "Toy.Lens.twist_hasConstantComplement"
+  ],
+  "nonvacuity_witness": "fst on Bool × Bool (complement: the second field); the state-twisting lens (complement: a xor b).",
+  "non_claims": [
+   "Does not imply that `l.get` is surjective when `S` is empty (with nonempty `A`, `VeryWellBehaved l` holds vacuously while `l.get : Empty → A` is not surjective; Toy.Lens.emptyState_veryWellBehaved_not_surjective).",
+   "The complement `C` is non-unique in two distinct senses: when `A` is inhabited, `C` is unique up to bijection (`C ≃ Fiber l a₀`) but the embedding/projection is not unique (e.g., `twist` splits with complement `a xor b` rather than `b`); when `A` is empty (hence `S` is empty), `C` is not even unique up to bijection (every `C : Type u` is a constant complement; Toy.Lens.emptyView_hasConstantComplement_any).",
+   "The backward direction of `HasConstantComplement` requires `C : Type u` (the universe of `S`); for a complement in an arbitrary universe `Type x`, use `veryWellBehaved_of_injective_intertwines_fst` (F3-sharp).",
+   "By the backward direction, any lens failing `GetPut`, `PutGet`, or `PutPut` has no constant complement at all; F3 gives no weaker decomposition for well-behaved lenses that fail `PutPut`.",
+   "Does not say that a very well-behaved put leaves a *given* sibling field alone: the complement is some type, not a prescribed field (Toy.Lens.twist_hasConstantComplement).",
+   "Says nothing about weaker put-put laws (JR12)."
+  ],
+  "prior_art": [
+   "[PS03] B. C. Pierce, A. Schmitt. Lenses and View Update Translation. Working draft of April 3, 2003, University of Pennsylvania. https://www.cis.upenn.edu/~bcpierce/papers/dblenses.pdf (full text read) -- Theorem 2.3.9: for a fully total very-well-behaved lens on C and A, the set C is isomorphic to A × {λx. put(x, c) | c ∈ C} (the set of put-orbit functions, which is in bijection with C modulo 'put s = put t', the complement used here); no inhabitedness assumption in the theorem (Lemma 2.3.8 treats C ≠ ∅ separately). Also cited as the basis of the Agda lemma `≃Σ∥set⁻¹∥×` of CDV21.",
+   "[CDV21] P. Capriotti, N. A. Danielsson, A. Vezzosi. Higher Lenses. 36th ACM/IEEE Symposium on Logic in Computer Science (LICS 2021), pp. 1-13. doi:10.1109/LICS52264.2021.9470613; Agda development https://github.com/nad/dependent-lenses commit c09739a91f522074c9b3508e56252013219f359c (abstract and src/Lens/Non-dependent/Traditional.agda read; the paper's own lemma numbering not checked) -- src/Lens/Non-dependent/Traditional.agda: `≃Σ∥set⁻¹∥×` (source a set; complement {f : B → A | f in the image of set, truncated}); the higher-lens formulation in the paper.",
+   "[FGMPS07] J. N. Foster, M. B. Greenwald, J. T. Moore, B. C. Pierce, A. Schmitt. Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem. ACM Trans. Program. Lang. Syst. 29(3), Article 17, 2007. doi:10.1145/1232420.1232424 -- Section 10 and footnote 9: very well-behaved total lenses characterise the source as isomorphic to A × B for some B; stated without proof.",
+   "[JRW10] M. Johnson, R. D. Rosebrugh, R. J. Wood. Algebras and Update Strategies. J. Univers. Comput. Sci. 16(5):729-748, 2010. doi:10.3217/jucs-016-05-0729 -- Proposition 9, Theorem 12 (non-empty view set), Corollary 13.",
+   "[BS81] F. Bancilhon, N. Spyratos. Update semantics of relational views. ACM Trans. Database Syst. 6(4):557-575, 1981. doi:10.1145/319628.319634 (full text not consulted) -- Origin of update translation under a constant complement (a complement need only make s ↦ (f s, g s) injective).",
+   "[GJ12] J. Gibbons, M. Johnson. Relating Algebraic and Coalgebraic Descriptions of Lenses. Electronic Communications of the EASST 49 (BX 2012), 2012. doi:10.14279/tuj.eceasst.49.726 (full text not consulted) -- Very well-behaved lenses as coalgebras for the store comonad.",
+   "[JR12] M. Johnson, R. D. Rosebrugh. Lens put-put laws: monotonic and mixed. Electronic Communications of the EASST 49 (BX 2012), 2012. doi:10.14279/tuj.eceasst.49.729 (abstract read; full text not consulted) -- Monotonic and mixed put-put laws, weaker than PutPut; F3 assumes the classical PutPut and says nothing about these laws.",
+   "[JRW12] M. Johnson, R. D. Rosebrugh, R. J. Wood. Lenses, fibrations and universal translations. Math. Struct. Comput. Sci. 22(1):25-42, 2012. doi:10.1017/S0960129511000442 (abstract read; full text not consulted) -- Constant-complement lenses in general categories (split opfibrations).",
+   "[HPW11] M. Hofmann, B. C. Pierce, D. Wagner. Symmetric lenses. POPL 2011, pp. 371-384. doi:10.1145/1926385.1926428 (not consulted) -- Symmetric lenses with an explicit complement.",
+   "[Mech] Other mechanisations: the Lean 4 repository fraware/lean-optics and the Coq repository bedrocksystems/coq-lens provide basic lens definitions; Mathlib has no lens library. Not inspected here; no decomposition, complement or classification theorem is known to be in them. -- Mechanised F3 found only in AFP Optics (as scenes) and in the CDV21 Agda development."
+  ],
+  "design_question": "Is 'very well-behaved' the same as 'the state splits as field × rest and the setter replaces the field'?"
+ },
+ {
+  "id": "F3-sharp",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Complement.lean",
+  "lean": "Toy.Lens.veryWellBehaved_of_injective_intertwines_fst",
+  "tier": "T0",
+  "tier_justification": "The backward direction of F3 in sharpened form (injectivity instead of bijectivity); this is the form of the constant-complement condition in BS81 as described in FGMPS07 and JRW10.",
+  "plain_claim": "If some injective map f : S → A × C (C in any universe) carries l to the first-projection lens (get is the first component and put is first-coordinate update under f), then l is very well-behaved.",
+  "hypotheses": [
+   {
+    "name": "hf : Function.Injective f",
+    "purpose": "Needed to cancel f in GetPut and PutPut.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.dirtyFlag_intertwines_fst_noninjective"
+   },
+   {
+    "name": "h : Intertwines f l fst",
+    "purpose": "The map must turn l into first-coordinate update.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f3_sharp_intertwines_tight"
+   },
+   {
+    "name": "C : Type x (any universe)",
+    "purpose": "No universe restriction.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Three short computations under f, two of them finished by injectivity.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f3_sharp_nonvacuity_bool"
+  ],
+  "nonvacuity_witness": "The identity map on Bool × Bool and fst.",
+  "non_claims": [
+   "Does not require f to be surjective, and says nothing about whether f is.",
+   "Does not identify the complement with a sibling field (Toy.Lens.twist_hasConstantComplement)."
+  ],
+  "prior_art": [
+   "[BS81] F. Bancilhon, N. Spyratos. Update semantics of relational views. ACM Trans. Database Syst. 6(4):557-575, 1981. doi:10.1145/319628.319634 (full text not consulted) -- Constant complement with injective (not necessarily bijective) pairing.",
+   "[FGMPS07] J. N. Foster, M. B. Greenwald, J. T. Moore, B. C. Pierce, A. Schmitt. Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem. ACM Trans. Program. Lang. Syst. 29(3), Article 17, 2007. doi:10.1145/1232420.1232424 -- Section 10, footnote 9."
+  ],
+  "design_question": "Is an injective field × rest representation enough to make a setter lawful?"
+ },
+ {
+  "id": "F3-fiber",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Complement.lean",
+  "lean": "Toy.Lens.fiber_isConstantComplement_of_veryWellBehaved",
+  "tier": "T0",
+  "tier_justification": "JRW10 Corollary 13; mechanised in Agda as `≃get⁻¹×` in the CDV21 development (which cites JRW10 Corollary 13).",
+  "plain_claim": "If l is very well-behaved and a base view a₀ is given, there is a bijection S ≃ A × Fiber l a₀ that turns get into the first projection and put into first-coordinate update, whose forward map sends s to (l.get s, l.put s a₀) and whose inverse sends (a, c) to l.put c a. (That these equations determine the bijection uniquely is the proved lemma Toy.Lens.fiberEquiv_eq_of_equations.)",
+  "hypotheses": [
+   {
+    "name": "hl : VeryWellBehaved l",
+    "purpose": "Each of the three laws is needed.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.f3_laws_tight"
+   },
+   {
+    "name": "a₀ : A",
+    "purpose": "A base view, used to park the field; the statement is vacuous when A is empty.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "PutPut gives put (put s a) a₀ = put s a₀; GetPut and PutGet close both inverse laws.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f3_nonvacuity_bool"
+  ],
+  "nonvacuity_witness": "fst on Bool × Bool with base view false.",
+  "non_claims": [
+   "The bijection is given by explicit formulas but is stated inside an existential in `Prop`: the equations determine it uniquely (Toy.Lens.fiberEquiv_eq_of_equations) and its inverse is the explicit map Toy.Lens.fiberFrom, but a `Type`-level `Equiv` is not extracted without proving the theorem.",
+   "Choosing a base view `a₀ : A` makes the complement a concrete subtype of `S`, not necessarily the intended sibling field: for `twist` with `a₀ = false`, `s ↦ twist.put s false` still flips the second bit whenever the first bit is `true` (Toy.Lens.twist_put_park).",
+   "The theorem holds vacuously when `A` is empty (taking `a₀ : A` as an argument), but cannot be instantiated to exhibit a complement without a term of `A`."
+  ],
+  "prior_art": [
+   "[JRW10] M. Johnson, R. D. Rosebrugh, R. J. Wood. Algebras and Update Strategies. J. Univers. Comput. Sci. 16(5):729-748, 2010. doi:10.3217/jucs-016-05-0729 -- Corollary 13: for V non-empty, v0 in V and C = g⁻¹(v0), ⟨g, p(v0, -)⟩ : S → V × C is an isomorphism inverse to p restricted to V × C.",
+   "[CDV21] P. Capriotti, N. A. Danielsson, A. Vezzosi. Higher Lenses. 36th ACM/IEEE Symposium on Logic in Computer Science (LICS 2021), pp. 1-13. doi:10.1109/LICS52264.2021.9470613; Agda development https://github.com/nad/dependent-lenses commit c09739a91f522074c9b3508e56252013219f359c (abstract and src/Lens/Non-dependent/Traditional.agda read; the paper's own lemma numbering not checked) -- src/Lens/Non-dependent/Traditional.agda: `≃get⁻¹×` (given b₀ : B, view type a set).",
+   "[Riley18] M. Riley. Categories of Optics. arXiv:1809.00738v2, doi:10.48550/arXiv.1809.00738, 2018 (full text not consulted; Proposition 4.1.3 and Section 4.10 as cited in the literature) -- Proposition 4.1.3: the categorical form of the fibre splitting."
+  ],
+  "design_question": "Given a default field value, what is the concrete 'rest of the state'?"
+ },
+ {
+  "id": "F3-pair",
+  "kind": "characterization",
+  "status": "proved",
+  "module": "Toy/Lens/Complement.lean",
+  "lean": "Toy.Lens.veryWellBehaved_and_putComm_iff_hasGhostComplement",
+  "tier": "T1",
+  "tier_justification": "A two-step corollary of known results: AFP `lens_indep_vwb_iff` (for very well-behaved lenses, independence is equivalent to commuting puts) and `plus_vwb_lens` make the sum lens very well-behaved, and F3 applied to it gives the ghost complement; it is also the two-location case of comodels of global state (PSh04). The statement itself, with an explicit ghost type and no inhabitedness assumption, was not found in the sources checked; hence T1 rather than T0.",
+  "plain_claim": "Two lenses l₁ : Lens S A and l₂ : Lens S B are both very well-behaved and have commuting puts if and only if there are a type G in the universe of S and a bijection S ≃ A × B × G under which l₁ and l₂ are the first and second field lenses and neither touches the G component.",
+  "hypotheses": [
+   {
+    "name": "left-hand side, VeryWellBehaved l₁ (GetPut, PutGet, PutPut)",
+    "purpose": "Each law of l₁ is needed (instances next to a trivial lens).",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.ghostComplement_laws_tight"
+   },
+   {
+    "name": "left-hand side, VeryWellBehaved l₂ (GetPut, PutGet, PutPut)",
+    "purpose": "Each law of l₂ is needed (mirror instances).",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.ghostComplement_laws_tight"
+   },
+   {
+    "name": "left-hand side, PutComm l₁ l₂",
+    "purpose": "Needed: two copies of fst, or twist with snd, are very well-behaved but have no ghost complement.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.ghostComplement_laws_tight",
+     "Toy.Lens.twist_snd_not_hasGhostComplement"
+    ]
+   },
+   {
+    "name": "G : Type u (universe of S) inside HasGhostComplement",
+    "purpose": "Universe of the ghost.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Forward: the sum lens s ↦ (l₁.get s, l₂.get s) is very well-behaved; apply F3 and reassociate. Backward: compute under the bijection.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f3_pair_nonvacuity_bool",
+   "Toy.Lens.ghost_hasGhostComplement"
+  ],
+  "nonvacuity_witness": "fst and snd on Bool × Bool (one-point ghost); ghostFst and ghostSnd (ghost the third component).",
+  "non_claims": [
+   "Does NOT generalize to an infinite family of pairwise-commuting very well-behaved lenses: `evCoord` on `EvFalse` satisfies `VeryWellBehaved` for every `i : Nat` and pairwise `PutComm`, yet admits no bijection `EvFalse ≃ ((i : Nat) → Bool) × G` (Toy.Lens.evCoord_veryWellBehaved_putComm_no_pi_complement).",
+   "F1 corresponds specifically to a one-point ghost (`G ≃ PUnit`), not an arbitrary 'trivial' or empty ghost: when `S = Empty` and `A × B` is inhabited, `HasGhostComplement` holds with an empty `G` while `IsProductDecomposition` fails (Toy.Lens.emptyGhost_hasGhostComplement_not_isProductDecomposition).",
+   "As in F3, the ghost complement `G` need not coincide with the syntactic remaining fields of a record (both `l₁` and `l₂` may jointly reparameterize hidden state consistently), and `G` is restricted to `Type u` (the universe of `S`).",
+   "Commuting puts cannot be replaced by cross-independence in both directions: two very well-behaved lenses can be cross-independent both ways without commuting (Toy.Lens.derived_putComm_tight, third instance)."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Laws.thy line 446, `lens_indep_vwb_iff`; Lens_Algebra.thy `plus_vwb_lens`.",
+   "[PSh04] A. J. Power, O. Shkaravska. From Comodels to Coalgebras: State and Arrays. CMCS 2004, ENTCS 106, pp. 297-314, 2004. doi:10.1016/j.entcs.2004.02.041 (full text not consulted) -- Comodels of global state with finitely many locations.",
+   "[PP02] G. D. Plotkin, J. Power. Notions of Computation Determine Monads. FoSSaCS 2002, LNCS 2303, pp. 342-356, Springer, 2002. doi:10.1007/3-540-45931-6_24 (full text not consulted) -- Equations for distinct locations (commuting updates)."
+  ],
+  "design_question": "Without assuming the listed fields are all there is, what do the frame laws for two fields guarantee, and which law must then be stated explicitly?"
+ },
+ {
+  "id": "F4-derived-putComm",
+  "kind": "counterexample",
+  "status": "proved",
+  "module": "Toy/Lens/Tightness.lean",
+  "lean": [
+   "Toy.Lens.derived_putComm_tight",
+   "Toy.Lens.derived_putComm_tight_mirror"
+  ],
+  "tier": "T1",
+  "tier_justification": "Concrete instances constructed for this package; no source located that exhibits very well-behaved, two-way cross-independent but non-commuting lenses.",
+  "plain_claim": "Without joint extensionality, commuting puts is an independent law: ghostFst and ghostTwistSnd on Bool × Bool × Bool are both very well-behaved and cross-independent in both directions, yet their puts do not commute; together with the other instances, each of the five hypotheses of putComm_of_putGet_putIndep_jointExt is needed.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "Finite case analysis on Booleans.",
+  "non_claims": [
+   "With joint extensionality, commuting puts does follow (F1-laws).",
+   "Says nothing about lenses that are not cross-independent; the instances are on Bool-valued records only."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Laws.thy `lens_indep_vwb_iff`: for very well-behaved lenses, commuting puts implies get-invariance in both directions; the converse fails by this instance."
+  ],
+  "design_question": "Must a field interface without 'no other fields' state commuting writes explicitly?"
+ },
+ {
+  "id": "F4-aliasing",
+  "kind": "impossibility",
+  "status": "proved",
+  "module": "Toy/Lens/Tightness.lean",
+  "lean": [
+   "Toy.Lens.not_putIndep_self_of_putGet",
+   "Toy.Lens.aliasing_fails_putIndep_both_directions"
+  ],
+  "tier": "T0",
+  "tier_justification": "Irreflexivity of independence for effectual lenses: AFP `lens_indep_quasi_irrefl`; FZW16 Section 3.3.",
+  "plain_claim": "A lens satisfying PutGet on an inhabited state type whose view type has two distinct values is not cross-independent of itself; in particular two aliasing copies of a field violate both directions of PutIndep at once.",
+  "hypotheses": [
+   {
+    "name": "h : PutGet l",
+    "purpose": "The write must be visible to the read.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.not_putIndep_self_tight"
+   },
+   {
+    "name": "s₀ : S",
+    "purpose": "An inhabited state type.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.not_putIndep_self_tight"
+   },
+   {
+    "name": "hne : a ≠ a'",
+    "purpose": "Two distinct view values.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.not_putIndep_self_tight"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Two applications of PutGet and PutIndep at one state.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.aliasing_nonvacuity_bool"
+  ],
+  "nonvacuity_witness": "fst on Bool × Bool.",
+  "positive_control_lean": [
+   "Toy.Lens.not_putIndep_self_tight"
+  ],
+  "positive_control": "The one-point view unitLensB satisfies PutGet on an inhabited state type and is cross-independent of itself (third instance of not_putIndep_self_tight).",
+  "non_claims": [
+   "Escape hatch 1 (subsingleton view): fails if `A` has at most one element (`unitLensB : Lens (Bool × Bool) Unit` satisfies both `PutGet` and `PutIndep unitLensB unitLensB`).",
+   "Escape hatch 2 (empty state): fails if `S` is empty (the lens on `Empty` with view `Bool` satisfies `PutGet` and `PutIndep` with itself even though `Bool` has two elements).",
+   "Escape hatch 3 (drop `PutGet`): fails without `PutGet` (`ignorePut` on `Bool × Bool` satisfies `PutIndep ignorePut ignorePut` even though `Bool` has two distinct values and `Bool × Bool` is nonempty).",
+   "Aliasing is not a single-hypothesis tightness witness for F1: it drops both directions of PutIndep together (Toy.Lens.aliasing_fails_putIndep_both_directions)."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Algebra.thy `lens_indep_quasi_irrefl`.",
+   "[FZW16] S. Foster, F. Zeyda, J. Woodcock. Unifying Heterogeneous State-Spaces with Lenses. ICTAC 2016, LNCS 9965, pp. 295-314, Springer, 2016. doi:10.1007/978-3-319-46750-4_17 -- Section 3.3: independence is irreflexive unless the lens is ineffectual."
+  ],
+  "design_question": "Do the frame laws exclude two names for the same field?"
+ },
+ {
+  "id": "F4-bare-bijection",
+  "kind": "counterexample",
+  "status": "proved",
+  "module": "Toy/Lens/Tightness.lean",
+  "lean": "Toy.Lens.ghost_admits_unrelated_bijection",
+  "tier": "T0",
+  "tier_justification": "Textbook fact (Nat × Nat × Bool and Nat × Nat are in bijection), used as a methodological warning.",
+  "plain_claim": "The ghost record Nat × Nat × Bool is in bijection with Nat × Nat although its two Nat field lenses are not jointly extensional and do not form a product decomposition; so a conclusion of the form 'some bijection S ≃ A × B exists' cannot express 'no hidden state'.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "An explicit bijection on infinite types (parity of the first number encodes the ghost bit), proved with division and remainder by 2; the failure of joint extensionality is a two-state check.",
+  "non_claims": [
+   "Does not say anything about finite types, where a bijection S ≃ A × B forces |S| = |A| · |B| but still does not relate to the getters.",
+   "The remedy is to name the pairing map in the conclusion (F1)."
+  ],
+  "prior_art": [
+   "[FZW16] S. Foster, F. Zeyda, J. Woodcock. Unifying Heterogeneous State-Spaces with Lenses. ICTAC 2016, LNCS 9965, pp. 295-314, Springer, 2016. doi:10.1007/978-3-319-46750-4_17 -- Section 3.3: bij-lens is stated for the specific sum lens, not for an arbitrary bijection."
+  ],
+  "design_question": "How must a decomposition theorem be phrased so that it excludes hidden state?"
+ },
+ {
+  "id": "F4-F2-finite",
+  "kind": "counterexample",
+  "status": "proved",
+  "module": "Toy/Lens/Tightness.lean",
+  "lean": "Toy.Lens.evCoord_tight_finite_index",
+  "tier": "T0",
+  "tier_justification": "The direct sum versus direct product phenomenon; textbook.",
+  "plain_claim": "The coordinate lenses on eventually-false Boolean sequences, indexed by Nat, satisfy PutGet, pairwise cross-independence, joint extensionality and the nonemptiness condition, Nat is not enumerated by any list, and the tuple-of-views map is not surjective; so finiteness cannot be dropped from F2.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "Infinite types: the constant-true sequence is not eventually false; the non-finiteness of Nat uses that every element of a list is at most its sum.",
+  "non_claims": [
+   "Injectivity of the tuple-of-views map and the coordinate-update equations do survive for infinite index types.",
+   "Says nothing about other infinite families; it is one instance."
+  ],
+  "prior_art": [
+   "[PSh04] A. J. Power, O. Shkaravska. From Comodels to Coalgebras: State and Arrays. CMCS 2004, ENTCS 106, pp. 297-314, 2004. doi:10.1016/j.entcs.2004.02.041 (full text not consulted) -- Finite versus infinite arrays of locations."
+  ],
+  "design_question": "Can the n-field decomposition be stated for an unbounded set of fields?"
+ },
+ {
+  "id": "F5",
+  "kind": "characterization",
+  "status": "proved",
+  "module": "Toy/Lens/Partial.lean",
+  "lean": [
+   "Toy.Lens.PLens.isProductDecompositionOn_of_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty",
+   "Toy.Lens.PLens.isProductDecompositionOn_iff_totalOn_putGetOn_putIndepOn_jointExtOn_imp_nonempty"
+  ],
+  "tier": "T1",
+  "tier_justification": "Totality of a partial lens on a subset is FGMPS07 Section 3 (Definitions 3.2-3.3); the two-lens decomposition on a variant was not found in the sources checked.",
+  "plain_claim": "For partial lenses l₁ : PLens S A and l₂ : PLens S B and a variant V : S → Prop: if both lenses are total on V (get and put succeed there and put stays in V), each satisfies PutGet on V, they are cross-independent on V in both directions, they are jointly extensional on V, and V is inhabited whenever A × B is, then on V the two lenses present the states as A × B with l₁.put and l₂.put acting as coordinate updates; conversely, this conclusion implies all these hypotheses.",
+  "hypotheses": [
+   {
+    "name": "ht₁ : TotalOn V l₁",
+    "purpose": "The first field exists and is writable on V, and writes stay in V.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.absent_tight_totalOn"
+   },
+   {
+    "name": "ht₂ : TotalOn V l₂",
+    "purpose": "Same for the second field.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.absent_tight_totalOn_right"
+   },
+   {
+    "name": "components of TotalOn (get defined; put defined; put stays in V)",
+    "purpose": "Each of the three components is needed separately.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.totalOn_components_tight"
+   },
+   {
+    "name": "h₁ : PutGetOn V l₁",
+    "purpose": "Read-back of the first field on V.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.f5_tight_putGetOn_left"
+   },
+   {
+    "name": "h₂ : PutGetOn V l₂",
+    "purpose": "Read-back of the second field on V.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.f5_tight_putGetOn_right"
+   },
+   {
+    "name": "h₁₂ : PutIndepOn V l₁ l₂",
+    "purpose": "Frame law on V.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.f5_tight_putIndepOn_left"
+   },
+   {
+    "name": "h₂₁ : PutIndepOn V l₂ l₁",
+    "purpose": "Frame law on V, other direction.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.f5_tight_putIndepOn_right"
+   },
+   {
+    "name": "hext : JointExtOn V l₁ l₂",
+    "purpose": "No hidden state within the variant.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.f5_tight_jointExtOn"
+   },
+   {
+    "name": "hV : Nonempty (A × B) → ∃ s, V s",
+    "purpose": "A base state in the variant; exactly the nonemptiness condition of the equivalence.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.f5_tight_nonempty"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Four of the five fields of IsProductDecompositionOn restate hypotheses (get_defined from TotalOn, injective is JointExtOn, put_fst and put_snd from TotalOn, PutGetOn and PutIndepOn); only surjectivity needs an argument, F1's argument with Option bookkeeping inside V.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.PLens.pairFst_pairSnd_satisfy_f5_hypotheses",
+   "Toy.Lens.PLens.pairFst_pairSnd_isProductDecompositionOn"
+  ],
+  "nonvacuity_witness": "The two fields of the pair variant of Shape (two nullary tags and one binary variant).",
+  "non_claims": [
+   "Says nothing constraining `l₁.get` or `l₂.get` outside `V`: either getter may return `some _` on states not satisfying `V` (for example, on a second variant that shares the same field name, or arbitrarily on nullary tags).",
+   "Does not apply directly to a unityped value algebra `getField : Val → Option Val`, `setField : Val → Val → Option Val` with `A = B = Val`: `TotalOn V l` requires `l.put s a` to succeed for EVERY `a : A`, whereas a typed record field rejects ill-typed `Val` inputs. Applying F5 to a unityped value algebra requires restricting `A` and `B` to typed subtypes `{v : Val // HasType v τ}` or additionally scoping `TotalOn` to valid field values.",
+   "Does not assume `V` equals `dom(l₁.get) ∩ dom(l₂.get)` — indeed, when two distinct variants share the same field names, `JointExtOn` fails on `dom(l₁.get) ∩ dom(l₂.get)` and holds only on each individual variant predicate `V` (Toy.Lens.PLens.twin_jointExtOn_fails_on_union).",
+   "Says nothing about writes outside V; such writes may switch the variant (F5-switch).",
+   "Unscoped joint extensionality must not replace JointExtOn (F5-unscoped).",
+   "The variant-scoped GetPut, PutPut and commuting puts follow from these hypotheses without the nonemptiness condition (Toy.Lens.PLens.getPutOn_of_totalOn_putGetOn_putIndepOn_jointExtOn, putPutOn_of_..., putCommOn_of_...); they are proved supporting lemmas, not part of this statement.",
+   "With V the whole state type and lenses that never fail, F5 specialises to F1 (Toy.Lens.PLens.isProductDecompositionOn_toPLens_iff and companions).",
+   "Proved only over pure total functions and Lean propositional equality `=`; it does not by itself establish properties of a real programming-language value algebra with observational equality, padding bytes, provenance, aliasing, panics, or side effects (any such transfer requires a separate modeling bridge)."
+  ],
+  "prior_art": [
+   "[FGMPS07] J. N. Foster, M. B. Greenwald, J. T. Moore, B. C. Pierce, A. Schmitt. Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem. ACM Trans. Program. Lang. Syst. 29(3), Article 17, 2007. doi:10.1145/1232420.1232424 -- Section 3, Definitions 3.2-3.3 (a partial lens total on a subset C and closed on it) and footnote 3 (an everywhere-undefined putback makes the laws trivial, which is why totality is required).",
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Lens_Laws.thy `mwb_lens` (total put, partial domain via `lens_source`); Prisms.thy `wb_prism`, which also fixes behaviour outside the variant.",
+   "[Riley18] M. Riley. Categories of Optics. arXiv:1809.00738v2, doi:10.48550/arXiv.1809.00738, 2018 (full text not consulted; Proposition 4.1.3 and Section 4.10 as cited in the literature) -- Section 4.10, affine traversals.",
+   "[PGW17] M. Pickering, J. Gibbons, N. Wu. Profunctor Optics: Modular Data Accessors. The Art, Science, and Engineering of Programming 1(2), Article 7, 2017. doi:10.22152/programming-journal.org/2017/1/7 (full text not consulted) -- Affine traversals / optionals as the composite of a lens and a prism; their setter is total.",
+   "[Clarke24] B. Clarke, D. Elkins, J. Gibbons, F. Loregian, B. Milewski, E. Pillmore, M. Román. Profunctor Optics, a Categorical Update. Compositionality 6(1), 2024. doi:10.32408/compositionality-6-1 (not consulted) -- Survey of profunctor optics, including affine traversals and prisms."
+  ],
+  "design_question": "How should frame and extensionality laws for fields of one variant of a sum-typed value be scoped?"
+ },
+ {
+  "id": "F5-unscoped",
+  "kind": "impossibility",
+  "status": "proved",
+  "module": "Toy/Lens/Partial.lean",
+  "lean": [
+   "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields",
+   "Toy.Lens.PLens.eq_of_jointExt_of_get_eq_none",
+   "Toy.Lens.PLens.scoped_decomposition_holds_but_unscoped_jointExt_fails"
+  ],
+  "tier": "T1",
+  "tier_justification": "Elementary observation; no source located that discusses unscoped joint extensionality for partial lenses.",
+  "plain_claim": "Unscoped joint extensionality for partial lenses (any two states with equal Option-valued fields are equal) identifies all states lacking both fields, so it fails as soon as two distinct states lack both fields; the intended model with two nullary tags satisfies the variant-scoped conclusion and violates it.",
+  "hypotheses": [
+   {
+    "name": "hne : s ≠ t",
+    "purpose": "Two distinct states.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight"
+   },
+   {
+    "name": "hs₁ : l₁.get s = none",
+    "purpose": "s lacks the first field.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight"
+   },
+   {
+    "name": "hs₂ : l₂.get s = none",
+    "purpose": "s lacks the second field.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight"
+   },
+   {
+    "name": "ht₁ : l₁.get t = none",
+    "purpose": "t lacks the first field.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight"
+   },
+   {
+    "name": "ht₂ : l₂.get t = none",
+    "purpose": "t lacks the second field.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.PLens.not_jointExt_of_two_states_without_fields_tight"
+   }
+  ],
+  "depth": "definitional",
+  "depth_note": "One application of the unscoped law to none = none.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.PLens.f5_unscoped_nonvacuity"
+  ],
+  "nonvacuity_witness": "The nullary tags nil and unit of Shape.",
+  "positive_control_lean": [
+   "Toy.Lens.PLens.shape3_jointExt",
+   "Toy.Lens.PLens.optFst_optSnd_jointExt"
+  ],
+  "positive_control": "On a sum type with a single field-less state (Option (Bool × Bool), or nil | onlyA a | pair a b) unscoped joint extensionality holds.",
+  "non_claims": [
+   "Escape hatch 1 (at most one field-less state): unscoped `JointExt` holds on `Option (Bool × Bool)` (`optFst_optSnd_jointExt`), and even holds on a three-variant sum type `| nil | onlyA (a : Bool) | pair (a b : Bool)` where `l₁` is defined on `onlyA` and `pair`, `l₂` on `pair`, and `nil` is the unique state lacking both fields (`shape3_jointExt`).",
+   "Escape hatch 2 (drop any single `get = none` hypothesis): if `s` and `t` differ on either `l₁.get` or `l₂.get` (e.g., `(some a, none)` vs. `(none, none)`), unscoped `JointExt` is not refuted (`not_jointExt_of_two_states_without_fields_tight`).",
+   "Conversely, failure does NOT require two nullary tags or ≥ 3 variants: even a two-variant sum type `| other (c : Bool) | pair (a b : Bool)` violates unscoped `JointExt` because `other false ≠ other true` are two distinct states lacking both fields (`otherFst_otherSnd_not_jointExt`).",
+   "Escape hatch 3 (scope to variant): replacing unscoped `JointExt` by `JointExtOn V` restores satisfiability on arbitrary multi-variant sum types (`scoped_decomposition_holds_but_unscoped_jointExt_fails`).",
+   "A law set containing unscoped joint extensionality passes tests on option-like types and fails on the first sum type with two field-less states."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Prisms.thy: sum types handled by prisms, which avoid this law."
+  ],
+  "design_question": "Must a value-algebra extensionality law be scoped to a variant?"
+ },
+ {
+  "id": "F5-switch",
+  "kind": "counterexample",
+  "status": "proved",
+  "module": "Toy/Lens/Partial.lean",
+  "lean": [
+   "Toy.Lens.PLens.scoped_laws_admit_variant_switching_put",
+   "Toy.Lens.PLens.unscoped_putIndep_admits_tag_switch",
+   "Toy.Lens.PLens.unscoped_laws_admit_variant_switch",
+   "Toy.Lens.PLens.pairFstSwitch_violates_unscoped_putIndep"
+  ],
+  "tier": "T1",
+  "tier_justification": "Concrete instances constructed for this package; no source located.",
+  "plain_claim": "The variant-scoped laws do not constrain writes outside the variant: a setter whose write on a nullary tag succeeds and produces a pair satisfies the variant-scoped conclusion; an unscoped frame law excludes that particular setter, but unscoped PutIndep in both directions still admits a write turning one nullary tag into another, and on a sum type with a one-field variant sharing a field, unscoped PutGet, GetPut, PutPut and two-way PutIndep still admit a variant-switching write.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "Case analysis on small inductive types.",
+  "non_claims": [
+   "An unscoped frame law `PutIndepOn (fun _ => True) l₁ l₂` does NOT exclude all variant-switching puts, even for a variant with two fields: a setter with `put .nil _ = some .unit` (switching between two states both lacking `l₂`) satisfies `PutIndepOn (fun _ => True) l₁ l₂` (`unscoped_putIndep_admits_tag_switch`), and on a sum type with a second variant carrying a field shared with the record variant, a setter that switches variants satisfies unscoped `PutGetOn`, `PutIndepOn` in both directions, `GetPut` and `PutPut` (`unscoped_laws_admit_variant_switch`).",
+   "To rule out all writes outside `V` uniformly (including for 1-field variants and multi-variant sum types), require `∀ s a, ¬ V s → l.put s a = none` (or `l.put s a = some s' → V s`) directly; this package does not state or prove a theorem about that law."
+  ],
+  "prior_art": [
+   "[AFP] S. Foster, C. Pardillo-Laursen, F. Zeyda. Optics. Archive of Formal Proofs, May 2017. https://isa-afp.org/entries/Optics.html; theory sources at https://github.com/isabelle-utp/Optics commit b98aa6c1bd7b11a0c6f6de1b61589f00fb148bcc -- Prisms.thy `wb_prism`: build/match laws fix behaviour outside the variant."
+  ],
+  "design_question": "Which law prevents a field setter from changing the variant of a sum-typed value?"
+ },
+ {
+  "id": "F6",
+  "kind": "characterization",
+  "status": "proved",
+  "module": "Toy/Lens/Classification.lean",
+  "lean": [
+   "Toy.Lens.coherent_fiberMaps_correspond_veryWellBehaved_puts",
+   "Toy.Lens.getPut_iff_ofPut_map_self_and_putPut_iff_ofPut_map_comp"
+  ],
+  "tier": "T1",
+  "tier_justification": "Known in other formalisms: JRW10 Proposition 9 (a very well behaved lens with getter g is exactly an algebra structure on g for a monad on Set/V, so for a fixed getter the puts are those algebra structures); Clarke20 Example 25 (a state-based lens is an internal lens between codiscrete categories whose Put part is a discrete opfibration, with GetPut and PutPut as the identity and composition laws of a functor); and CDV21 (a higher lens is a getter together with a proof that its family of fibres is coherently constant; higher lenses are equivalent to traditional lenses for types satisfying UIP). In categorical terms a coherent family of fibre maps is a functor from the codiscrete category on A to Set, whose category of elements is a discrete opfibration over that codiscrete category with object set S. The explicit set-level form with coherent fibre maps, the exposed constructions toPut/ofPut and the law-by-law correspondence, mechanised, was not found stated in the sources consulted.",
+  "plain_claim": "Fix a getter get : S → A, and call a family of maps between the fibres of get (one map for every ordered pair of views) coherent if each fibre's map to itself is the identity and maps compose. Then the construction toPut (move a state to the fibre of the written view) sends every coherent family to a very well-behaved put for get, the construction ofPut (x ↦ put x a') sends every very well-behaved put to a coherent family, and ofPut undoes toPut on every family (toPut undoes ofPut by definition, Toy.Lens.toPut_ofPut), so coherent families and very well-behaved puts correspond bijectively. Law by law, for a put with PutGet, GetPut holds iff its fibre maps satisfy the identity law and PutPut holds iff they compose. (Each map of a coherent family is a bijection: the proved lemma Toy.Lens.FiberMaps.Coherent.leftInverse.)",
+  "hypotheses": [
+   {
+    "name": "get : S → A (arbitrary)",
+    "purpose": "No inhabitedness or surjectivity assumption; for empty S or non-surjective get see the non-claims.",
+    "tightness": "harmless"
+   },
+   {
+    "name": "h : PutGet (Lens.mk get put) (law-by-law statement)",
+    "purpose": "Needed to form ofPut (the maps must land in the fibres); a put without PutGet is not of the form toPut φ (Toy.Lens.toPut_putGet).",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Both directions are computations; the only subtle step is transporting a fibre element along an equality of views (get (put s a) = a) inside the dependent family.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f6_nonvacuity",
+   "Toy.Lens.ofPut_twist_coherent"
+  ],
+  "nonvacuity_witness": "For the first projection on Bool × Bool, the fibre maps of fst (and of the state-twisting lens) are coherent.",
+  "non_claims": [
+   "Does not single out an intended put: for a fixed getter there are in general many very well-behaved puts (two for the first projection on Bool × Bool: Toy.Lens.fst_twist_two_veryWellBehaved_puts, Toy.Lens.veryWellBehaved_puts_getFst_eq_fst_or_twist); see F6-unique for the extra law that does.",
+   "Empty fibres: if one fibre is empty and another is not, there is no family of fibre maps and hence no very well-behaved put (Toy.Lens.fiberMaps_empty_of_empty_fiber); in particular, on an inhabited state type a put with PutGet forces get to be surjective (Toy.Lens.surjective_of_putGet_of_nonempty). On an empty state type there is exactly one put and it is very well-behaved, whatever A is (Toy.Lens.veryWellBehaved_put_unique_of_isEmpty).",
+   "Does not by itself say when a very well-behaved put exists; for an inhabited view type the base-fibre form (F6-count) shows that one exists exactly when every fibre is in bijection with the fibre over a base view.",
+   "The correspondence is between puts for one fixed getter; it does not classify lenses up to isomorphism of the state type.",
+   "toPut is also a bijection from all families of fibre maps (coherent or not) onto puts satisfying PutGet (third conjunct together with Toy.Lens.toPut_ofPut and Toy.Lens.toPut_putGet).",
+   "The two coherence conditions are independent and each is needed for very-well-behavedness: the fibre maps of the sibling-resetting setter satisfy map_comp (the setter satisfies PutPut, Toy.Lens.resetSibling_putPut) but not map_self (Toy.Lens.ofPut_resetSibling_not_coherent; the setter violates GetPut), and the fibre maps of the dirty-flag setter satisfy map_self (Toy.Lens.dirtyFlag_getPut) but not map_comp (Toy.Lens.ofPut_dirtyFlag_not_coherent; the induced put is not very well-behaved, Toy.Lens.toPut_ofPut_dirtyFlag_not_veryWellBehaved).",
+   "The categorical reading (coherent families as functors from the codiscrete category on A to Set, very well-behaved lenses as discrete opfibrations or delta lenses over codiscrete categories) is a correspondence with the literature, not a Lean statement of this package; no category theory is formalised here."
+  ],
+  "prior_art": [
+   "[JRW10] M. Johnson, R. D. Rosebrugh, R. J. Wood. Algebras and Update Strategies. J. Univers. Comput. Sci. 16(5):729-748, 2010. doi:10.3217/jucs-016-05-0729 -- Proposition 9: a very well behaved lens (S, V, g, p) is exactly the data for an algebra (g, p) for the monad ΔΣ on set/V.",
+   "[CDV21] P. Capriotti, N. A. Danielsson, A. Vezzosi. Higher Lenses. 36th ACM/IEEE Symposium on Logic in Computer Science (LICS 2021), pp. 1-13. doi:10.1109/LICS52264.2021.9470613; Agda development https://github.com/nad/dependent-lenses commit c09739a91f522074c9b3508e56252013219f359c (abstract and src/Lens/Non-dependent/Traditional.agda read; the paper's own lemma numbering not checked) -- Abstract: a higher lens can equivalently be formulated as a getter function and a proof that its family of fibres is coherently constant; higher lenses are equivalent to traditional ones for types that satisfy uniqueness of identity proofs.",
+   "[Clarke20] B. Clarke. Internal lenses as functors and cofunctors. In: J. Baez, B. Coecke (eds.), Applied Category Theory 2019, EPTCS 323, pp. 183-195, 2020. doi:10.4204/EPTCS.323.13, arXiv:2009.06835v1 (full text read) -- Section 4, Corollary 20 and Example 25: a state-based lens with Get f : A -> B and Put p induces an internal lens between the codiscrete categories on A and B, whose Put part is a discrete opfibration over the codiscrete category on B; PutGet is the statement that lifts are genuine lifts, and GetPut and PutPut hold because the induced functor respects identities and composition. This is the categorical form of the law-by-law statement of F6.",
+   "[JRW12] M. Johnson, R. D. Rosebrugh, R. J. Wood. Lenses, fibrations and universal translations. Math. Struct. Comput. Sci. 22(1):25-42, 2012. doi:10.1017/S0960129511000442 (abstract read; full text not consulted) -- c-lenses, lenses between categories, correspond to Grothendieck opfibrations; for codiscrete categories these reduce to state-based lenses.",
+   "[DXC11] Z. Diskin, Y. Xiong, K. Czarnecki. From State- to Delta-Based Bidirectional Model Transformations: the Asymmetric Case. Journal of Object Technology 10, pp. 6:1-25, 2011. doi:10.5381/jot.2011.10.1.a6 (abstract read; full text not consulted) -- delta lenses, in which model spaces are categories and updates are arrows, and their relationship with ordinary state-based lenses."
+  ],
+  "design_question": "For a fixed field getter, what exactly is the freedom in choosing a lawful setter?"
+ },
+ {
+  "id": "F6-count",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Classification.lean",
+  "lean": [
+   "Toy.Lens.veryWellBehaved_puts_equiv_baseFiber_bijections",
+   "Toy.Lens.card_veryWellBehaved_puts_of_card_views_card_fibers"
+  ],
+  "tier": "T1",
+  "tier_justification": "Follows from F6 by elementary counting; no source located that states the count.",
+  "plain_claim": "Fix a getter get and a base view a₀: very well-behaved puts for get correspond bijectively to families of bijections from the fibre over a₀ to each other fibre, via put ↦ (x ↦ put x a). Consequently, if the view type has exactly k elements and every fibre of get has exactly m elements, the very well-behaved puts are in bijection with Fin (k − 1) → Equiv (Fin m) (Fin m) and there are exactly (m!)^(k − 1) of them (with truncated subtraction, also correct for k = 0).",
+  "hypotheses": [
+   {
+    "name": "a₀ : A (base-fibre form)",
+    "purpose": "Base view; the base-fibre form is vacuous for empty A, which the counting form covers with k = 0.",
+    "tightness": "harmless"
+   },
+   {
+    "name": "hA : Nonempty (Equiv A (Fin k))",
+    "purpose": "The number of views.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.card_tight_views"
+   },
+   {
+    "name": "hF : ∀ a, Nonempty (Equiv (GetFiber get a) (Fin m))",
+    "purpose": "Uniform fibre size; with non-uniform fibres there is no very well-behaved put.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.card_tight_uniform_fibers"
+   }
+  ],
+  "depth": "substantive",
+  "depth_note": "Base-fibre form (shallow): from a coherent family take the maps out of the fibre over a₀; conversely compose the bijections through the base fibre. Counting form (substantive without a library of finite cardinalities): transport along the given bijections and build an explicit bijection between the self-bijections of Fin m and Fin m!.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f6_count_nonvacuity",
+   "Toy.Lens.veryWellBehaved_puts_getFst_eq_fst_or_twist"
+  ],
+  "nonvacuity_witness": "First projection on Bool × Bool: k = 2, m = 2, base view false; there are exactly 2 = 2!^1 very well-behaved puts (fst and twist).",
+  "non_claims": [
+   "Counts puts for one fixed getter, not lenses up to isomorphism.",
+   "Only for finite view types and finite, uniform fibres; for non-uniform fibres the count is 0 (Toy.Lens.card_tight_uniform_fibers).",
+   "Says nothing about which of the (m!)^(k − 1) puts is intended; see F6-unique.",
+   "Edge case m = 0, k >= 1: for the empty state type with a nonempty finite view type every fibre has 0 elements and the formula gives (0!)^(k - 1) = 1, counting the unique (empty) put, which is very well-behaved even though get is not surjective (Toy.Lens.card_veryWellBehaved_puts_empty_state_two_views, instance k = 2). The count does not require get to be surjective.",
+   "Edge case k = 1: with a one-element view type the formula gives (m!)^0 = 1 for every fibre size m; the unique very well-behaved put is the write that changes nothing, put s a = s, forced by GetPut (Toy.Lens.veryWellBehaved_put_eq_self_of_subsingleton_view).",
+   "Both conclusions are propositions: `∃ e : Equiv ...` in the base-fibre form and `Nonempty (Equiv ...)` in the counting form live in Prop. The proofs use Classical.choice (to pick the fibre bijections given by hF, and a classical decidable equality on A when A has no DecidableEq instance); no computable enumeration of the very well-behaved puts is extracted."
+  ],
+  "prior_art": [
+   "[JRW10] M. Johnson, R. D. Rosebrugh, R. J. Wood. Algebras and Update Strategies. J. Univers. Comput. Sci. 16(5):729-748, 2010. doi:10.3217/jucs-016-05-0729 -- Theorem 12 and Corollary 13 (for a non-empty view set, very well behaved lenses are product projections), from which the count follows."
+  ],
+  "design_question": "How much freedom does a lawful setter have for a given getter, quantitatively?"
+ },
+ {
+  "id": "F6-unique",
+  "kind": "theorem",
+  "status": "proved",
+  "module": "Toy/Lens/Classification.lean",
+  "lean": "Toy.Lens.existsUnique_put_putGet_putIndep_of_jointExt_surjective",
+  "tier": "T0",
+  "tier_justification": "Known: an update translation under a constant complement is unique once the complement is fixed (BS81, as recalled in FGMPS07 Section 10). Restated as a frame law against a complement view.",
+  "plain_claim": "Fix get : S → A and a second lens m : Lens S C whose view together with get determines the state and such that every pair of values is realised. Then there is exactly one put for get that satisfies PutGet and leaves the m-view unchanged (the frame law PutIndep (Lens.mk get put) m), and it is very well-behaved.",
+  "hypotheses": [
+   {
+    "name": "hext : ∀ s t, get s = get t → m.get s = m.get t → s = t",
+    "purpose": "The complement view and get together determine the state. Used for uniqueness (second conjunct) and for very-well-behavedness (third conjunct); dropping it breaks both: with a one-point complement view, fst and twist both satisfy PutGet and the frame law, and so do the dirty-flag setter (not PutPut) and the sibling-resetting setter (not GetPut).",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Lens.existsUnique_put_tight_jointExt",
+     "Toy.Lens.existsUnique_put_drop_jointExt_admits_unlawful_puts"
+    ]
+   },
+   {
+    "name": "hsurj : ∀ a c, ∃ s, get s = a ∧ m.get s = c",
+    "purpose": "Every pair of values is realised; a sufficient condition used for existence (first conjunct). It is not necessary for the conclusion: see the non-claims.",
+    "tightness": "tight",
+    "counterexample": "Toy.Lens.existsUnique_put_tight_surjective"
+   },
+   {
+    "name": "m.put",
+    "purpose": "Not used: only the getter of m matters.",
+    "tightness": "harmless"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "Existence: put s a is the state realising (a, m.get s) (choice). Uniqueness: two such states agree on both views. Very well-behaved: F1-laws' derived laws.",
+  "nonvacuity_witness_lean": [
+   "Toy.Lens.f6_unique_nonvacuity"
+  ],
+  "nonvacuity_witness": "The first projection with complement view snd on Bool × Bool.",
+  "non_claims": [
+   "PutGet, GetPut and PutPut alone do not determine the put (Toy.Lens.fst_twist_two_veryWellBehaved_puts: fst and twist have the same getter).",
+   "Which put is singled out depends on the complement view: with complement view snd it is fst.put; with the XOR view (which together with the first projection also determines the state) it is the state-twisting put, and fst.put violates the frame law (Toy.Lens.twist_putIndep_xorView_complement).",
+   "Does not assert that a complement view exists; by F3, one exists exactly for very well-behaved lenses.",
+   "With a complement view that does not determine the state (e.g. a one-point view), uniqueness fails (Toy.Lens.existsUnique_put_tight_jointExt).",
+   "Dropping hext breaks more than uniqueness: with the one-point complement view unitLensB on Bool × Bool (hsurj holds), the dirty-flag setter and the sibling-resetting setter satisfy PutGet and the frame law but violate PutPut and GetPut respectively, so the third conjunct fails too (Toy.Lens.existsUnique_put_drop_jointExt_admits_unlawful_puts).",
+   "hsurj is a sufficient condition, not a necessary one: for the identity getter on Bool with a constant complement view, hext holds and hsurj fails, yet there is exactly one put with PutGet and the frame law, and it is very well-behaved (Toy.Lens.existsUnique_put_hsurj_not_necessary). The exact existence condition, for any second view m, is `∀ s a, ∃ s', get s' = a ∧ m.get s' = m.get s` (Toy.Lens.exists_put_putGet_putIndep_iff).",
+   "The existence conjunct `∃ put, ...` lives in Prop and its proof uses Classical.choice; the theorem does not construct a computable put. A computable put needs an explicit function picking, for each (a, m.get s), the state realising it."
+  ],
+  "prior_art": [
+   "[FGMPS07] J. N. Foster, M. B. Greenwald, J. T. Moore, B. C. Pierce, A. Schmitt. Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem. ACM Trans. Program. Lang. Syst. 29(3), Article 17, 2007. doi:10.1145/1232420.1232424 -- Section 10 (Foundations of View Update): when a complement is fixed, there exists at most one update of the database that reflects a given update on the view while leaving the complement unmodified. That is the uniqueness half; existence under hsurj and very-well-behavedness are not stated there.",
+   "[BS81] F. Bancilhon, N. Spyratos. Update semantics of relational views. ACM Trans. Database Syst. 6(4):557-575, 1981. doi:10.1145/319628.319634 (full text not consulted) -- Update translation under a constant complement."
+  ],
+  "design_question": "Which law in a field interface pins down the setter once the getter is fixed?"
+ }
+]
