@@ -1,0 +1,6 @@
+name = "toy-dircc"
+version = "0.1.0"
+defaultTargets = ["ToyDirCC"]
+
+[[lean_lib]]
+name = "ToyDirCC"

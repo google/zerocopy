@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "verification",
+    "verification/formalized-results",
+    "verification/refinement",
+    "lean/mechanization",
+    "compilers/e-graphs",
+    "compilers/equality-saturation",
+    "compilers/undefined-behavior",
+    "pl/rewriting",
+    "pl/congruence-closure"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Conditional rewriting logic as a unified model of concurrency",
+      "identity": {
+        "doi": "10.1016/0304-3975(92)90182-F"
+      }
+    },
+    {
+      "name": "Semantic foundations for generalized rewrite theories",
+      "identity": {
+        "doi": "10.1016/j.tcs.2006.04.012"
+      }
+    },
+    {
+      "name": "Fast Decision Procedures Based on Congruence Closure",
+      "identity": {
+        "doi": "10.1145/322186.322198"
+      }
+    },
+    {
+      "name": "Equality saturation: a new approach to optimization",
+      "identity": {
+        "doi": "10.1145/1480881.1480915"
+      }
+    },
+    {
+      "name": "egg: Fast and Extensible Equality Saturation",
+      "identity": {
+        "doi": "10.1145/3434304"
+      }
+    },
+    {
+      "name": "Taming Undefined Behavior in LLVM",
+      "identity": {
+        "doi": "10.1145/3062341.3062343"
+      }
+    },
+    {
+      "name": "Alive2: bounded translation validation for LLVM",
+      "identity": {
+        "doi": "10.1145/3453483.3454030"
+      }
+    },
+    {
+      "name": "Refinement E-Graphs (blog post, not peer-reviewed; post source)",
+      "identity": {
+        "url": "https://www.philipzucker.com/refinement_egraph/",
+        "repository": "philzook58/philzook58.github.io",
+        "revision": "de5119da6ee25e23d419dd8c95484cf295510031",
+        "path": "_posts/2026-10-04-refinement_egraph.md"
+      }
+    },
+    {
+      "name": "refinement-microegg (refinement e-graph prototype, not peer-reviewed)",
+      "identity": {
+        "repository": "philzook58/refinement-microegg",
+        "revision": "95a098d4751fd468a874ddeb5627330240182193"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

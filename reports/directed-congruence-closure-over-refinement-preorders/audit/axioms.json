@@ -1,0 +1,1398 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.DirCC.Cert": [],
+    "Toy.DirCC.Cert.below": [],
+    "Toy.DirCC.Cert.brecOn": [],
+    "Toy.DirCC.Cert.brecOn.eq": [],
+    "Toy.DirCC.Cert.brecOn.go": [],
+    "Toy.DirCC.Cert.casesOn": [],
+    "Toy.DirCC.Cert.cong": [],
+    "Toy.DirCC.Cert.cong.elim": [],
+    "Toy.DirCC.Cert.cong.inj": [],
+    "Toy.DirCC.Cert.cong.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Cert.cong.noConfusion": [],
+    "Toy.DirCC.Cert.cong.sizeOf_spec": [],
+    "Toy.DirCC.Cert.congEq": [],
+    "Toy.DirCC.Cert.congEq.elim": [],
+    "Toy.DirCC.Cert.congEq.inj": [],
+    "Toy.DirCC.Cert.congEq.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Cert.congEq.noConfusion": [],
+    "Toy.DirCC.Cert.congEq.sizeOf_spec": [],
+    "Toy.DirCC.Cert.ctorElim": [],
+    "Toy.DirCC.Cert.ctorElimType": [],
+    "Toy.DirCC.Cert.ctorIdx": [],
+    "Toy.DirCC.Cert.fact": [],
+    "Toy.DirCC.Cert.fact.elim": [],
+    "Toy.DirCC.Cert.fact.inj": [],
+    "Toy.DirCC.Cert.fact.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Cert.fact.noConfusion": [],
+    "Toy.DirCC.Cert.fact.sizeOf_spec": [],
+    "Toy.DirCC.Cert.noConfusion": [],
+    "Toy.DirCC.Cert.noConfusionType": [],
+    "Toy.DirCC.Cert.rec": [],
+    "Toy.DirCC.Cert.recOn": [],
+    "Toy.DirCC.Cert.refl": [],
+    "Toy.DirCC.Cert.refl.elim": [],
+    "Toy.DirCC.Cert.refl.inj": [],
+    "Toy.DirCC.Cert.refl.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Cert.refl.noConfusion": [],
+    "Toy.DirCC.Cert.refl.sizeOf_spec": [],
+    "Toy.DirCC.Cert.trans": [],
+    "Toy.DirCC.Cert.trans.elim": [],
+    "Toy.DirCC.Cert.trans.inj": [],
+    "Toy.DirCC.Cert.trans.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Cert.trans.noConfusion": [],
+    "Toy.DirCC.Cert.trans.sizeOf_spec": [],
+    "Toy.DirCC.Choice": [],
+    "Toy.DirCC.ChoiceIn": [],
+    "Toy.DirCC.ChosenMono": [],
+    "Toy.DirCC.ChosenOriented": [],
+    "Toy.DirCC.Dup.DNode": [],
+    "Toy.DirCC.Dup.DNode.add": [],
+    "Toy.DirCC.Dup.DNode.add.elim": [],
+    "Toy.DirCC.Dup.DNode.add.inj": [],
+    "Toy.DirCC.Dup.DNode.add.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.DNode.add.noConfusion": [],
+    "Toy.DirCC.Dup.DNode.add.sizeOf_spec": [],
+    "Toy.DirCC.Dup.DNode.casesOn": [],
+    "Toy.DirCC.Dup.DNode.ctorElim": [],
+    "Toy.DirCC.Dup.DNode.ctorElimType": [],
+    "Toy.DirCC.Dup.DNode.ctorIdx": [],
+    "Toy.DirCC.Dup.DNode.frz": [],
+    "Toy.DirCC.Dup.DNode.frz.elim": [],
+    "Toy.DirCC.Dup.DNode.frz.inj": [],
+    "Toy.DirCC.Dup.DNode.frz.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.DNode.frz.noConfusion": [],
+    "Toy.DirCC.Dup.DNode.frz.sizeOf_spec": [],
+    "Toy.DirCC.Dup.DNode.lit": [],
+    "Toy.DirCC.Dup.DNode.lit.elim": [],
+    "Toy.DirCC.Dup.DNode.lit.inj": [],
+    "Toy.DirCC.Dup.DNode.lit.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.DNode.lit.noConfusion": [],
+    "Toy.DirCC.Dup.DNode.lit.sizeOf_spec": [],
+    "Toy.DirCC.Dup.DNode.noConfusion": [],
+    "Toy.DirCC.Dup.DNode.noConfusionType": [],
+    "Toy.DirCC.Dup.DNode.rec": [],
+    "Toy.DirCC.Dup.DNode.recOn": [],
+    "Toy.DirCC.Dup.DNode.var": [],
+    "Toy.DirCC.Dup.DNode.var.elim": [],
+    "Toy.DirCC.Dup.DNode.var.inj": [],
+    "Toy.DirCC.Dup.DNode.var.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.DNode.var.noConfusion": [],
+    "Toy.DirCC.Dup.DNode.var.sizeOf_spec": [],
+    "Toy.DirCC.Dup.FrzOut": [],
+    "Toy.DirCC.Dup.FrzOut.eq_1": [],
+    "Toy.DirCC.Dup.FrzOut.eq_2": [],
+    "Toy.DirCC.Dup.FrzOut.eq_3": [],
+    "Toy.DirCC.Dup.FrzOut.match_1": [],
+    "Toy.DirCC.Dup.LetFree": [],
+    "Toy.DirCC.Dup.LetFree.eq_1": [],
+    "Toy.DirCC.Dup.LetFree.eq_2": [],
+    "Toy.DirCC.Dup.LetFree.eq_3": [],
+    "Toy.DirCC.Dup.LetFree.eq_4": [],
+    "Toy.DirCC.Dup.LetFree.eq_5": [],
+    "Toy.DirCC.Dup.LetFree.eq_def": [],
+    "Toy.DirCC.Dup.Refines": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.Tm": [],
+    "Toy.DirCC.Dup.Tm.add": [],
+    "Toy.DirCC.Dup.Tm.add.elim": [],
+    "Toy.DirCC.Dup.Tm.add.inj": [],
+    "Toy.DirCC.Dup.Tm.add.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.Tm.add.noConfusion": [],
+    "Toy.DirCC.Dup.Tm.add.sizeOf_spec": [],
+    "Toy.DirCC.Dup.Tm.below": [],
+    "Toy.DirCC.Dup.Tm.brecOn": [],
+    "Toy.DirCC.Dup.Tm.brecOn.eq": [],
+    "Toy.DirCC.Dup.Tm.brecOn.go": [],
+    "Toy.DirCC.Dup.Tm.casesOn": [],
+    "Toy.DirCC.Dup.Tm.ctorElim": [],
+    "Toy.DirCC.Dup.Tm.ctorElimType": [],
+    "Toy.DirCC.Dup.Tm.ctorIdx": [],
+    "Toy.DirCC.Dup.Tm.frz": [],
+    "Toy.DirCC.Dup.Tm.frz.elim": [],
+    "Toy.DirCC.Dup.Tm.frz.inj": [],
+    "Toy.DirCC.Dup.Tm.frz.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.Tm.frz.noConfusion": [],
+    "Toy.DirCC.Dup.Tm.frz.sizeOf_spec": [],
+    "Toy.DirCC.Dup.Tm.letE": [],
+    "Toy.DirCC.Dup.Tm.letE.elim": [],
+    "Toy.DirCC.Dup.Tm.letE.inj": [],
+    "Toy.DirCC.Dup.Tm.letE.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.Tm.letE.noConfusion": [],
+    "Toy.DirCC.Dup.Tm.letE.sizeOf_spec": [],
+    "Toy.DirCC.Dup.Tm.lit": [],
+    "Toy.DirCC.Dup.Tm.lit.elim": [],
+    "Toy.DirCC.Dup.Tm.lit.inj": [],
+    "Toy.DirCC.Dup.Tm.lit.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.Tm.lit.noConfusion": [],
+    "Toy.DirCC.Dup.Tm.lit.sizeOf_spec": [],
+    "Toy.DirCC.Dup.Tm.noConfusion": [],
+    "Toy.DirCC.Dup.Tm.noConfusionType": [],
+    "Toy.DirCC.Dup.Tm.rec": [],
+    "Toy.DirCC.Dup.Tm.recOn": [],
+    "Toy.DirCC.Dup.Tm.var": [],
+    "Toy.DirCC.Dup.Tm.var.elim": [],
+    "Toy.DirCC.Dup.Tm.var.inj": [],
+    "Toy.DirCC.Dup.Tm.var.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.Tm.var.noConfusion": [],
+    "Toy.DirCC.Dup.Tm.var.sizeOf_spec": [],
+    "Toy.DirCC.Dup.UniqueTags": [],
+    "Toy.DirCC.Dup.UniqueTags.eq_1": [],
+    "Toy.DirCC.Dup.Val": [],
+    "Toy.DirCC.Dup.ValLe": [],
+    "Toy.DirCC.Dup.ValLe.match_1": [],
+    "Toy.DirCC.Dup.WellTagged": [],
+    "Toy.DirCC.Dup.addV": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.addV.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.addV.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.addV.match_1": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.copyRewritten": [],
+    "Toy.DirCC.Dup.copyRewritten.eq_1": [],
+    "Toy.DirCC.Dup.copy_rewrite_breaks_hashcons": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.dagSem": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.dupProg": [],
+    "Toy.DirCC.Dup.dupProg.eq_1": [],
+    "Toy.DirCC.Dup.dupProgTagged": [],
+    "Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.eq_4": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.eq_5": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.eq_def": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT.match_1": [],
+    "Toy.DirCC.Dup.evalT_inline": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalT_subst": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.eq_4": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.eq_5": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.eq_def": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.evalTbl.match_1": [],
+    "Toy.DirCC.Dup.findNode": [],
+    "Toy.DirCC.Dup.findNode.eq_1": [],
+    "Toy.DirCC.Dup.findNode.eq_2": [],
+    "Toy.DirCC.Dup.findNode.eq_def": [],
+    "Toy.DirCC.Dup.findNode.match_1": [],
+    "Toy.DirCC.Dup.frzOccs": [],
+    "Toy.DirCC.Dup.frzOccs.eq_1": [],
+    "Toy.DirCC.Dup.frzOccs.eq_2": [],
+    "Toy.DirCC.Dup.frzOccs.eq_3": [],
+    "Toy.DirCC.Dup.frzOccs.eq_4": [],
+    "Toy.DirCC.Dup.frzOccs.eq_5": [],
+    "Toy.DirCC.Dup.frzOccs.eq_def": [],
+    "Toy.DirCC.Dup.frzT": [],
+    "Toy.DirCC.Dup.frzT.eq_1": [],
+    "Toy.DirCC.Dup.frzT.eq_2": [],
+    "Toy.DirCC.Dup.frzT.match_1": [],
+    "Toy.DirCC.Dup.hashcons": [],
+    "Toy.DirCC.Dup.hashcons.eq_1": [],
+    "Toy.DirCC.Dup.hashcons.eq_2": [],
+    "Toy.DirCC.Dup.hashcons.eq_3": [],
+    "Toy.DirCC.Dup.hashcons.eq_4": [],
+    "Toy.DirCC.Dup.hashcons.eq_5": [],
+    "Toy.DirCC.Dup.hashcons.eq_def": [],
+    "Toy.DirCC.Dup.hashcons.match_1": [],
+    "Toy.DirCC.Dup.hashcons_dupProg": [],
+    "Toy.DirCC.Dup.hashcons_dupProgTagged": [],
+    "Toy.DirCC.Dup.hashcons_inline_sound_needs_uniqueTags": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hashcons_inline_sound_nonvacuous": [],
+    "Toy.DirCC.Dup.hashcons_inline_sound_of_uniqueTags": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hashcons_mixedProg": [],
+    "Toy.DirCC.Dup.hcInsert": [],
+    "Toy.DirCC.Dup.hcInsert.eq_1": [],
+    "Toy.DirCC.Dup.hcInsert.match_1": [],
+    "Toy.DirCC.Dup.hcSem": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hcSem_dupProgTagged_one": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hcSem_iff_tagSem_needs_letFree": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hcSem_iff_tagSem_needs_wellTagged": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hcSem_iff_tagSem_nonvacuous": [],
+    "Toy.DirCC.Dup.hcSem_iff_tagSem_of_letFree_wellTagged": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.hcSem_iff_tagSem_of_letFree_wellTagged.match_1_1": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.indep": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.indep.match_1": [],
+    "Toy.DirCC.Dup.indep_dupProg_one": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.indep_oneCopyRefined_one": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.inline": [],
+    "Toy.DirCC.Dup.inline.eq_1": [],
+    "Toy.DirCC.Dup.inline.eq_2": [],
+    "Toy.DirCC.Dup.inline.eq_3": [],
+    "Toy.DirCC.Dup.inline.eq_4": [],
+    "Toy.DirCC.Dup.inline.eq_5": [],
+    "Toy.DirCC.Dup.inline.eq_def": [],
+    "Toy.DirCC.Dup.inline_letProg": [],
+    "Toy.DirCC.Dup.instDecidableEqDNode": [],
+    "Toy.DirCC.Dup.instDecidableEqDNode.decEq": [],
+    "Toy.DirCC.Dup.instDecidableEqDNode.decEq.match_1": [],
+    "Toy.DirCC.Dup.instDecidableEqTm": [],
+    "Toy.DirCC.Dup.instDecidableEqTm.decEq": [],
+    "Toy.DirCC.Dup.instDecidableEqTm.decEq.match_1": [],
+    "Toy.DirCC.Dup.instDecidableUniqueTags": [],
+    "Toy.DirCC.Dup.instDecidableWellTagged": [],
+    "Toy.DirCC.Dup.instReprDNode": [],
+    "Toy.DirCC.Dup.instReprDNode.repr": [],
+    "Toy.DirCC.Dup.instReprDNode.repr.match_1": [],
+    "Toy.DirCC.Dup.instReprTm": [],
+    "Toy.DirCC.Dup.instReprTm.repr": [],
+    "Toy.DirCC.Dup.instReprTm.repr.match_1": [],
+    "Toy.DirCC.Dup.letFree_examples": [],
+    "Toy.DirCC.Dup.letFree_inline": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.letFree_subst": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.letLitProg": [],
+    "Toy.DirCC.Dup.letProg": [],
+    "Toy.DirCC.Dup.letProgPlus0": [],
+    "Toy.DirCC.Dup.mem_frzOccs_subst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.mixedProg": [],
+    "Toy.DirCC.Dup.mixedProg.eq_1": [],
+    "Toy.DirCC.Dup.not_hcSem_dupProg_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.not_indep_letProgPlus0_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.not_indep_letProg_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.not_refines_dupProg_letProg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.not_tagSem_dupProg_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.not_uniqueTags_dupProg": [],
+    "Toy.DirCC.Dup.not_wellTagged_mixed": [],
+    "Toy.DirCC.Dup.oneCopyRefined": [],
+    "Toy.DirCC.Dup.one_copy_refinement_breaks_tagged_sharing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.poisonEnv": [],
+    "Toy.DirCC.Dup.poisonEnv.eq_1": [],
+    "Toy.DirCC.Dup.refines_letProg_dupProg": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.shadowProg": [],
+    "Toy.DirCC.Dup.subst": [],
+    "Toy.DirCC.Dup.subst.eq_1": [],
+    "Toy.DirCC.Dup.subst.eq_2": [],
+    "Toy.DirCC.Dup.subst.eq_3": [],
+    "Toy.DirCC.Dup.subst.eq_4": [],
+    "Toy.DirCC.Dup.subst.eq_5": [],
+    "Toy.DirCC.Dup.subst.eq_def": [],
+    "Toy.DirCC.Dup.tagSem": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.tagSem.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.tagSem_dupProgTagged_one": [
+      "propext"
+    ],
+    "Toy.DirCC.Dup.tagSem_iff_indep_needs_uniqueTags": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.tagSem_iff_indep_nonvacuous": [],
+    "Toy.DirCC.Dup.tagSem_iff_indep_of_uniqueTags": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.tags_inline_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.uniqueTags_examples": [],
+    "Toy.DirCC.Dup.update": [],
+    "Toy.DirCC.Dup.update.eq_1": [],
+    "Toy.DirCC.Dup.wellTagged_dupProg": [],
+    "Toy.DirCC.Dup.wellTagged_inline_needs_uniqueTags": [],
+    "Toy.DirCC.Dup.wellTagged_inline_of_uniqueTags": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.Dup.xPlus0": [],
+    "Toy.DirCC.Dup.xPlus0.eq_1": [],
+    "Toy.DirCC.EGraph": [],
+    "Toy.DirCC.EGraph.casesOn": [],
+    "Toy.DirCC.EGraph.ctorIdx": [],
+    "Toy.DirCC.EGraph.mk": [],
+    "Toy.DirCC.EGraph.mk.inj": [],
+    "Toy.DirCC.EGraph.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.EGraph.mk.noConfusion": [],
+    "Toy.DirCC.EGraph.mk.sizeOf_spec": [],
+    "Toy.DirCC.EGraph.noConfusion": [],
+    "Toy.DirCC.EGraph.noConfusionType": [],
+    "Toy.DirCC.EGraph.nodes": [],
+    "Toy.DirCC.EGraph.rec": [],
+    "Toy.DirCC.EGraph.recOn": [],
+    "Toy.DirCC.ENode": [],
+    "Toy.DirCC.ENode.app": [],
+    "Toy.DirCC.ENode.app.elim": [],
+    "Toy.DirCC.ENode.app.inj": [],
+    "Toy.DirCC.ENode.app.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.ENode.app.noConfusion": [],
+    "Toy.DirCC.ENode.app.sizeOf_spec": [],
+    "Toy.DirCC.ENode.casesOn": [],
+    "Toy.DirCC.ENode.ctorElim": [],
+    "Toy.DirCC.ENode.ctorElimType": [],
+    "Toy.DirCC.ENode.ctorIdx": [],
+    "Toy.DirCC.ENode.noConfusion": [],
+    "Toy.DirCC.ENode.noConfusionType": [],
+    "Toy.DirCC.ENode.rec": [],
+    "Toy.DirCC.ENode.recOn": [],
+    "Toy.DirCC.ENode.var": [],
+    "Toy.DirCC.ENode.var.elim": [],
+    "Toy.DirCC.ENode.var.inj": [],
+    "Toy.DirCC.ENode.var.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.ENode.var.noConfusion": [],
+    "Toy.DirCC.ENode.var.sizeOf_spec": [],
+    "Toy.DirCC.FactsHold": [],
+    "Toy.DirCC.KerAt": [],
+    "Toy.DirCC.LeAntisymm": [],
+    "Toy.DirCC.LeRefl": [],
+    "Toy.DirCC.LeTrans": [],
+    "Toy.DirCC.Modality": [],
+    "Toy.DirCC.Modality.casesOn": [],
+    "Toy.DirCC.Modality.ctorElim": [],
+    "Toy.DirCC.Modality.ctorElimType": [],
+    "Toy.DirCC.Modality.ctorIdx": [],
+    "Toy.DirCC.Modality.eqOnly": [],
+    "Toy.DirCC.Modality.eqOnly.elim": [],
+    "Toy.DirCC.Modality.eqOnly.sizeOf_spec": [],
+    "Toy.DirCC.Modality.mono": [],
+    "Toy.DirCC.Modality.mono.elim": [],
+    "Toy.DirCC.Modality.mono.sizeOf_spec": [],
+    "Toy.DirCC.Modality.noConfusion": [],
+    "Toy.DirCC.Modality.noConfusionType": [],
+    "Toy.DirCC.Modality.ofNat": [],
+    "Toy.DirCC.Modality.ofNat_ctorIdx": [],
+    "Toy.DirCC.Modality.opaqueArg": [],
+    "Toy.DirCC.Modality.opaqueArg.elim": [],
+    "Toy.DirCC.Modality.opaqueArg.sizeOf_spec": [],
+    "Toy.DirCC.Modality.rec": [],
+    "Toy.DirCC.Modality.recOn": [],
+    "Toy.DirCC.Model": [],
+    "Toy.DirCC.Model.C": [],
+    "Toy.DirCC.Model.casesOn": [],
+    "Toy.DirCC.Model.ctorIdx": [],
+    "Toy.DirCC.Model.interp": [],
+    "Toy.DirCC.Model.le": [],
+    "Toy.DirCC.Model.mk": [],
+    "Toy.DirCC.Model.mk.inj": [],
+    "Toy.DirCC.Model.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Model.mk.noConfusion": [],
+    "Toy.DirCC.Model.mk.sizeOf_spec": [],
+    "Toy.DirCC.Model.noConfusion": [],
+    "Toy.DirCC.Model.noConfusionType": [],
+    "Toy.DirCC.Model.rec": [],
+    "Toy.DirCC.Model.recOn": [],
+    "Toy.DirCC.MonoAt": [],
+    "Toy.DirCC.OLe": [],
+    "Toy.DirCC.OOp": [],
+    "Toy.DirCC.OOp.add": [],
+    "Toy.DirCC.OOp.add.elim": [],
+    "Toy.DirCC.OOp.add.sizeOf_spec": [],
+    "Toy.DirCC.OOp.casesOn": [],
+    "Toy.DirCC.OOp.choose": [],
+    "Toy.DirCC.OOp.choose.elim": [],
+    "Toy.DirCC.OOp.choose.sizeOf_spec": [],
+    "Toy.DirCC.OOp.ctorElim": [],
+    "Toy.DirCC.OOp.ctorElimType": [],
+    "Toy.DirCC.OOp.ctorIdx": [],
+    "Toy.DirCC.OOp.lit": [],
+    "Toy.DirCC.OOp.lit.elim": [],
+    "Toy.DirCC.OOp.lit.inj": [],
+    "Toy.DirCC.OOp.lit.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.OOp.lit.noConfusion": [],
+    "Toy.DirCC.OOp.lit.sizeOf_spec": [],
+    "Toy.DirCC.OOp.noConfusion": [],
+    "Toy.DirCC.OOp.noConfusionType": [],
+    "Toy.DirCC.OOp.pickFirst": [],
+    "Toy.DirCC.OOp.pickFirst.elim": [],
+    "Toy.DirCC.OOp.pickFirst.sizeOf_spec": [],
+    "Toy.DirCC.OOp.pickMin": [],
+    "Toy.DirCC.OOp.pickMin.elim": [],
+    "Toy.DirCC.OOp.pickMin.sizeOf_spec": [],
+    "Toy.DirCC.OOp.rec": [],
+    "Toy.DirCC.OOp.recOn": [],
+    "Toy.DirCC.Oriented": [],
+    "Toy.DirCC.Policy": [],
+    "Toy.DirCC.Policy.AdmissibleFor": [],
+    "Toy.DirCC.Policy.casesOn": [],
+    "Toy.DirCC.Policy.cong": [],
+    "Toy.DirCC.Policy.congEq": [],
+    "Toy.DirCC.Policy.ctorIdx": [],
+    "Toy.DirCC.Policy.mk": [],
+    "Toy.DirCC.Policy.mk.inj": [],
+    "Toy.DirCC.Policy.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Policy.mk.noConfusion": [],
+    "Toy.DirCC.Policy.mk.sizeOf_spec": [],
+    "Toy.DirCC.Policy.noConfusion": [],
+    "Toy.DirCC.Policy.noConfusionType": [],
+    "Toy.DirCC.Policy.permissive": [],
+    "Toy.DirCC.Policy.rec": [],
+    "Toy.DirCC.Policy.recOn": [],
+    "Toy.DirCC.Policy.standard": [],
+    "Toy.DirCC.Policy.standard_admissibleFor": [],
+    "Toy.DirCC.PolicySound": [
+      "propext"
+    ],
+    "Toy.DirCC.Profile": [],
+    "Toy.DirCC.RelatedEitherWay": [],
+    "Toy.DirCC.Term": [],
+    "Toy.DirCC.Term.app": [],
+    "Toy.DirCC.Term.app.elim": [],
+    "Toy.DirCC.Term.app.inj": [],
+    "Toy.DirCC.Term.app.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Term.app.noConfusion": [],
+    "Toy.DirCC.Term.app.sizeOf_spec": [],
+    "Toy.DirCC.Term.below": [],
+    "Toy.DirCC.Term.below_1": [],
+    "Toy.DirCC.Term.brecOn": [],
+    "Toy.DirCC.Term.brecOn.eq": [],
+    "Toy.DirCC.Term.brecOn.go": [],
+    "Toy.DirCC.Term.brecOn_1": [],
+    "Toy.DirCC.Term.brecOn_1.eq": [],
+    "Toy.DirCC.Term.brecOn_1.go": [],
+    "Toy.DirCC.Term.casesOn": [],
+    "Toy.DirCC.Term.ctorElim": [],
+    "Toy.DirCC.Term.ctorElimType": [],
+    "Toy.DirCC.Term.ctorIdx": [],
+    "Toy.DirCC.Term.decEq": [],
+    "Toy.DirCC.Term.decEq.match_1": [],
+    "Toy.DirCC.Term.decEq.match_3": [],
+    "Toy.DirCC.Term.decEqList": [],
+    "Toy.DirCC.Term.decEqList.match_1": [],
+    "Toy.DirCC.Term.decEqList.match_3": [],
+    "Toy.DirCC.Term.noConfusion": [],
+    "Toy.DirCC.Term.noConfusionType": [],
+    "Toy.DirCC.Term.rec": [],
+    "Toy.DirCC.Term.recOn": [],
+    "Toy.DirCC.Term.rec_1": [],
+    "Toy.DirCC.Term.var": [],
+    "Toy.DirCC.Term.var.elim": [],
+    "Toy.DirCC.Term.var.inj": [],
+    "Toy.DirCC.Term.var.injEq": [
+      "propext"
+    ],
+    "Toy.DirCC.Term.var.noConfusion": [],
+    "Toy.DirCC.Term.var.sizeOf_spec": [],
+    "Toy.DirCC.Tri": [],
+    "Toy.DirCC.Tri.a": [],
+    "Toy.DirCC.Tri.a'": [],
+    "Toy.DirCC.Tri.a'.elim": [],
+    "Toy.DirCC.Tri.a'.sizeOf_spec": [],
+    "Toy.DirCC.Tri.a.elim": [],
+    "Toy.DirCC.Tri.a.sizeOf_spec": [],
+    "Toy.DirCC.Tri.b": [],
+    "Toy.DirCC.Tri.b.elim": [],
+    "Toy.DirCC.Tri.b.sizeOf_spec": [],
+    "Toy.DirCC.Tri.casesOn": [],
+    "Toy.DirCC.Tri.ctorElim": [],
+    "Toy.DirCC.Tri.ctorElimType": [],
+    "Toy.DirCC.Tri.ctorIdx": [],
+    "Toy.DirCC.Tri.noConfusion": [],
+    "Toy.DirCC.Tri.noConfusionType": [],
+    "Toy.DirCC.Tri.ofNat": [],
+    "Toy.DirCC.Tri.ofNat_ctorIdx": [],
+    "Toy.DirCC.Tri.rec": [],
+    "Toy.DirCC.Tri.recOn": [],
+    "Toy.DirCC.UOp": [],
+    "Toy.DirCC.UOp.casesOn": [],
+    "Toy.DirCC.UOp.ctorIdx": [],
+    "Toy.DirCC.UOp.noConfusion": [],
+    "Toy.DirCC.UOp.noConfusionType": [],
+    "Toy.DirCC.UOp.ofNat": [],
+    "Toy.DirCC.UOp.ofNat_ctorIdx": [],
+    "Toy.DirCC.UOp.rec": [],
+    "Toy.DirCC.UOp.recOn": [],
+    "Toy.DirCC.UOp.succ": [],
+    "Toy.DirCC.UOp.succ.sizeOf_spec": [],
+    "Toy.DirCC.WFBelow": [],
+    "Toy.DirCC.WFBelow.app": [],
+    "Toy.DirCC.WFBelow.below": [],
+    "Toy.DirCC.WFBelow.below.app": [],
+    "Toy.DirCC.WFBelow.below.casesOn": [],
+    "Toy.DirCC.WFBelow.below.rec": [],
+    "Toy.DirCC.WFBelow.below.var": [],
+    "Toy.DirCC.WFBelow.brecOn": [],
+    "Toy.DirCC.WFBelow.casesOn": [],
+    "Toy.DirCC.WFBelow.rec": [],
+    "Toy.DirCC.WFBelow.recOn": [],
+    "Toy.DirCC.WFBelow.var": [],
+    "Toy.DirCC.allEqOnly": [],
+    "Toy.DirCC.allMono": [],
+    "Toy.DirCC.allOpaque": [],
+    "Toy.DirCC.allSome": [],
+    "Toy.DirCC.allSome.eq_1": [],
+    "Toy.DirCC.allSome.eq_2": [],
+    "Toy.DirCC.allSome.eq_3": [],
+    "Toy.DirCC.allSome.eq_def": [],
+    "Toy.DirCC.allSome.match_1": [],
+    "Toy.DirCC.allSome_eq_some_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.allSome_eq_some_iff.match_1_1": [],
+    "Toy.DirCC.chAcyclic": [],
+    "Toy.DirCC.chAcyclic.eq_1": [],
+    "Toy.DirCC.chAcyclic.eq_2": [],
+    "Toy.DirCC.chAcyclic_chosenMono": [
+      "propext"
+    ],
+    "Toy.DirCC.chAcyclic_chosenMono.match_1_1": [],
+    "Toy.DirCC.chAcyclic_in_egCycle": [
+      "propext"
+    ],
+    "Toy.DirCC.chAcyclic_in_egCycle.match_1_1": [],
+    "Toy.DirCC.chChoose": [],
+    "Toy.DirCC.chChoose.eq_1": [],
+    "Toy.DirCC.chChoose.eq_2": [],
+    "Toy.DirCC.chChoose.eq_3": [],
+    "Toy.DirCC.chChoose.eq_4": [],
+    "Toy.DirCC.chChoose_chosenMono": [
+      "propext"
+    ],
+    "Toy.DirCC.chChoose_chosenMono.match_1_1": [],
+    "Toy.DirCC.chChoose_in_egUnoriented": [
+      "propext"
+    ],
+    "Toy.DirCC.chChoose_in_egUnoriented.match_1_1": [],
+    "Toy.DirCC.chChoose_not_in_egOriented": [
+      "propext"
+    ],
+    "Toy.DirCC.chCycle": [],
+    "Toy.DirCC.chCycle.eq_1": [],
+    "Toy.DirCC.chCycle.eq_2": [],
+    "Toy.DirCC.chInf": [],
+    "Toy.DirCC.chInf.eq_1": [],
+    "Toy.DirCC.chInf_acyclic_total_not_wfBelow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.chLit": [],
+    "Toy.DirCC.chLit.eq_1": [],
+    "Toy.DirCC.chLit.eq_2": [],
+    "Toy.DirCC.chLit.eq_3": [],
+    "Toy.DirCC.chLit.eq_4": [],
+    "Toy.DirCC.chLit_chosenMono": [
+      "propext"
+    ],
+    "Toy.DirCC.chLit_chosenMono.match_1_1": [],
+    "Toy.DirCC.chLit_chosenOriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.chLit_in_egOriented": [
+      "propext"
+    ],
+    "Toy.DirCC.chLit_in_egOriented.match_1_1": [],
+    "Toy.DirCC.chPick": [],
+    "Toy.DirCC.chPick.eq_1": [],
+    "Toy.DirCC.chPick.eq_2": [],
+    "Toy.DirCC.chPick.eq_3": [],
+    "Toy.DirCC.chPick.match_1": [],
+    "Toy.DirCC.chPick_chosenOriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.chPick_in_egPick": [
+      "propext"
+    ],
+    "Toy.DirCC.chPick_in_egPick.match_1_1": [],
+    "Toy.DirCC.chPick_not_chosenMono": [
+      "propext"
+    ],
+    "Toy.DirCC.chStrict": [],
+    "Toy.DirCC.chStrict.eq_1": [],
+    "Toy.DirCC.chStrict.eq_2": [],
+    "Toy.DirCC.chStrict.eq_3": [],
+    "Toy.DirCC.chStrict.eq_4": [],
+    "Toy.DirCC.chStrict_chosenMono": [
+      "propext"
+    ],
+    "Toy.DirCC.chStrict_chosenMono.match_1_1": [],
+    "Toy.DirCC.chStrict_in_egStrict": [
+      "propext"
+    ],
+    "Toy.DirCC.chStrict_in_egStrict.match_1_1": [],
+    "Toy.DirCC.chSucc": [],
+    "Toy.DirCC.chSucc.eq_1": [],
+    "Toy.DirCC.chSucc.eq_2": [],
+    "Toy.DirCC.chSucc.eq_3": [],
+    "Toy.DirCC.check": [
+      "propext"
+    ],
+    "Toy.DirCC.check.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_needs_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_needs_factsHold": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_needs_kerAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_needs_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_needs_refl": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_needs_trans": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_admissible": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_check": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_factsHold": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_kerAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_refl": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_needs_trans": [
+      "propext"
+    ],
+    "Toy.DirCC.check_sound_of_admissible_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.chosenOriented_of_oriented": [],
+    "Toy.DirCC.concl": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.eq_4": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.eq_5": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.eq_def": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.match_1": [
+      "propext"
+    ],
+    "Toy.DirCC.concl.match_4": [],
+    "Toy.DirCC.concl.match_6": [],
+    "Toy.DirCC.concl_sound_of_admissible": [
+      "propext"
+    ],
+    "Toy.DirCC.controls_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.denLit": [
+      "propext"
+    ],
+    "Toy.DirCC.denPick": [
+      "propext"
+    ],
+    "Toy.DirCC.denStrict": [
+      "propext"
+    ],
+    "Toy.DirCC.egCycle": [],
+    "Toy.DirCC.egCycle.eq_1": [],
+    "Toy.DirCC.egCycle.match_1": [],
+    "Toy.DirCC.egOriented": [],
+    "Toy.DirCC.egOriented.eq_1": [],
+    "Toy.DirCC.egOriented_oriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.egPick": [],
+    "Toy.DirCC.egPick.eq_1": [],
+    "Toy.DirCC.egPick.match_1": [],
+    "Toy.DirCC.egPick_oriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.egPick_oriented.match_1_1": [],
+    "Toy.DirCC.egStrict": [],
+    "Toy.DirCC.egStrict.eq_1": [],
+    "Toy.DirCC.egStrict.match_1": [],
+    "Toy.DirCC.egStrict_oriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.egStrict_oriented.match_1_1": [],
+    "Toy.DirCC.egSucc": [],
+    "Toy.DirCC.egSucc.eq_1": [],
+    "Toy.DirCC.egUnoriented": [],
+    "Toy.DirCC.egUnoriented.eq_1": [],
+    "Toy.DirCC.egUnoriented.match_1": [],
+    "Toy.DirCC.egUnoriented_not_oriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.egUnoriented_relatedEitherWay": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.emptyRelModel": [],
+    "Toy.DirCC.eqCong_refuted_at_opaque": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.eqCong_refuted_needs_opaque": [
+      "propext"
+    ],
+    "Toy.DirCC.eqCong_refuted_nonvacuous": [
+      "propext"
+    ],
+    "Toy.DirCC.eqCong_sound_at_nonOpaque": [
+      "propext"
+    ],
+    "Toy.DirCC.eqCong_sound_of_antisymm": [
+      "propext"
+    ],
+    "Toy.DirCC.eval": [],
+    "Toy.DirCC.eval.eq_1": [],
+    "Toy.DirCC.eval.eq_2": [],
+    "Toy.DirCC.eval.eq_def": [],
+    "Toy.DirCC.eval.match_1": [],
+    "Toy.DirCC.evalList": [],
+    "Toy.DirCC.evalList.eq_1": [],
+    "Toy.DirCC.evalList.eq_2": [],
+    "Toy.DirCC.evalList.eq_def": [],
+    "Toy.DirCC.evalList.match_1": [],
+    "Toy.DirCC.evalList_eq_map": [
+      "propext"
+    ],
+    "Toy.DirCC.eval_app": [
+      "propext"
+    ],
+    "Toy.DirCC.eval_app_hole": [
+      "propext"
+    ],
+    "Toy.DirCC.eval_hole_congr_of_eval_eq": [
+      "propext"
+    ],
+    "Toy.DirCC.extract": [],
+    "Toy.DirCC.extract.eq_1": [],
+    "Toy.DirCC.extract.eq_2": [],
+    "Toy.DirCC.extract.eq_def": [],
+    "Toy.DirCC.extract.match_1": [],
+    "Toy.DirCC.extract.match_3": [],
+    "Toy.DirCC.extractWF_needs_chosenMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extractWF_needs_chosenOriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extractWF_needs_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extractWF_needs_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extractWF_needs_wfBelow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_chChoose": [],
+    "Toy.DirCC.extract_chChoose_eq": [
+      "propext"
+    ],
+    "Toy.DirCC.extract_chChoose_eq.match_1_1": [],
+    "Toy.DirCC.extract_chCycle_none": [
+      "propext"
+    ],
+    "Toy.DirCC.extract_chPick": [],
+    "Toy.DirCC.extract_chPick_eq": [
+      "propext"
+    ],
+    "Toy.DirCC.extract_chPick_eq.match_1_1": [],
+    "Toy.DirCC.extract_chSucc_eq": [
+      "propext"
+    ],
+    "Toy.DirCC.extract_chSucc_eq.match_1_1": [],
+    "Toy.DirCC.extract_cycle_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_cycle_counterexample.match_1_1": [],
+    "Toy.DirCC.extract_cycle_counterexample.match_1_12": [],
+    "Toy.DirCC.extract_cycle_counterexample.match_1_8": [],
+    "Toy.DirCC.extract_fuel_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_fuel_mono.match_1_1": [],
+    "Toy.DirCC.extract_isSome_iff_wfBelow": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_isSome_iff_wfBelow_examples": [
+      "propext"
+    ],
+    "Toy.DirCC.extract_needs_choiceIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_needs_chosenMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_needs_extract_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_needs_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_needs_trans": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_needs_trans.match_1_1": [],
+    "Toy.DirCC.extract_needs_trans.match_1_5": [],
+    "Toy.DirCC.extract_oriented_needs_oriented": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_refines_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_refines_of_chosenOriented_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_refines_of_oriented_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_total_and_sound_of_wfBelow_oriented_mono": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_unoriented_counterexample": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.extract_wf_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.factsHold_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.firstOutcome": [],
+    "Toy.DirCC.flipModel": [
+      "propext"
+    ],
+    "Toy.DirCC.flipModel_antisymm": [
+      "propext"
+    ],
+    "Toy.DirCC.flipModel_kerAt": [
+      "propext"
+    ],
+    "Toy.DirCC.flipModel_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.flipModel_refl": [
+      "propext"
+    ],
+    "Toy.DirCC.flipModel_reversed_conclusion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.flipModel_trans": [
+      "propext"
+    ],
+    "Toy.DirCC.flipVal": [],
+    "Toy.DirCC.flipVal.eq_1": [],
+    "Toy.DirCC.getD_hole_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.getD_hole_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.instDecidableEqENode": [],
+    "Toy.DirCC.instDecidableEqENode.decEq": [],
+    "Toy.DirCC.instDecidableEqENode.decEq.match_1": [],
+    "Toy.DirCC.instDecidableEqModality": [],
+    "Toy.DirCC.instDecidableEqOOp": [],
+    "Toy.DirCC.instDecidableEqOOp.decEq": [],
+    "Toy.DirCC.instDecidableEqOOp.decEq.match_1": [],
+    "Toy.DirCC.instDecidableEqTerm": [],
+    "Toy.DirCC.instDecidableEqTri": [],
+    "Toy.DirCC.instDecidableEqUOp": [],
+    "Toy.DirCC.instDecidableOLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.instDecidableRelTriTriLe": [
+      "propext"
+    ],
+    "Toy.DirCC.instReprENode": [
+      "propext"
+    ],
+    "Toy.DirCC.instReprENode.repr": [
+      "propext"
+    ],
+    "Toy.DirCC.instReprENode.repr.match_1": [],
+    "Toy.DirCC.instReprModality": [],
+    "Toy.DirCC.instReprModality.repr": [],
+    "Toy.DirCC.instReprModality.repr.match_1": [],
+    "Toy.DirCC.instReprOOp": [],
+    "Toy.DirCC.instReprOOp.repr": [],
+    "Toy.DirCC.instReprOOp.repr.match_1": [],
+    "Toy.DirCC.instReprTri": [],
+    "Toy.DirCC.instReprTri.repr": [],
+    "Toy.DirCC.instReprTri.repr.match_1": [],
+    "Toy.DirCC.instReprUOp": [],
+    "Toy.DirCC.instReprUOp.repr": [],
+    "Toy.DirCC.instReprUOp.repr.match_1": [],
+    "Toy.DirCC.kerAt_allMono": [],
+    "Toy.DirCC.kerAt_allOpaque": [],
+    "Toy.DirCC.kerAt_of_antisymm": [],
+    "Toy.DirCC.leastOutcome": [],
+    "Toy.DirCC.leastOutcome_congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.litN": [],
+    "Toy.DirCC.mem_sums": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.monoAt_allOpaque": [],
+    "Toy.DirCC.monoAt_of_mono_imp": [],
+    "Toy.DirCC.monoCong_refuted_at_nonMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.monoCong_refuted_needs_nonMono": [
+      "propext"
+    ],
+    "Toy.DirCC.monoCong_refuted_nonvacuous": [
+      "propext"
+    ],
+    "Toy.DirCC.monoCong_sound_at_mono": [
+      "propext"
+    ],
+    "Toy.DirCC.natLeModel": [],
+    "Toy.DirCC.natLeModel_refl": [],
+    "Toy.DirCC.natLeModel_trans": [],
+    "Toy.DirCC.natLtModel": [],
+    "Toy.DirCC.natLtModel_not_refl": [],
+    "Toy.DirCC.natNearModel": [],
+    "Toy.DirCC.natNearModel_monoAt_allMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.natNearModel_not_trans": [],
+    "Toy.DirCC.nodeVal": [],
+    "Toy.DirCC.nodeVal.eq_1": [],
+    "Toy.DirCC.nodeVal.eq_2": [],
+    "Toy.DirCC.nodes_egOriented": [
+      "propext"
+    ],
+    "Toy.DirCC.nodes_egOriented.match_1_1": [],
+    "Toy.DirCC.nodes_egUnoriented": [
+      "propext"
+    ],
+    "Toy.DirCC.nodes_egUnoriented.match_1_1": [],
+    "Toy.DirCC.not_factsHold_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.not_policySound_permissive_oProfile": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.not_relatedEitherWay_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.not_wfBelow_chCycle": [
+      "propext"
+    ],
+    "Toy.DirCC.nvCert": [],
+    "Toy.DirCC.nvFacts": [],
+    "Toy.DirCC.nvFacts.eq_1": [],
+    "Toy.DirCC.oInterp": [
+      "propext"
+    ],
+    "Toy.DirCC.oInterp.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.oInterp.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.oInterp.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.oInterp.eq_4": [
+      "propext"
+    ],
+    "Toy.DirCC.oInterp.eq_5": [
+      "propext"
+    ],
+    "Toy.DirCC.oInterp.match_1": [],
+    "Toy.DirCC.oLe_nil": [
+      "propext"
+    ],
+    "Toy.DirCC.oLe_nil_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel": [
+      "propext"
+    ],
+    "Toy.DirCC.oModel_kerAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel_monoAt_oProfileEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel_not_antisymm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel_not_kerAt_oProfileEq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel_not_monoAt_allMono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.oModel_refl": [
+      "propext"
+    ],
+    "Toy.DirCC.oModel_trans": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfile": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfile.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfile.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfile.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfile.match_1": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfileEq": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfileEq.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfileEq.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.oProfileEq.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.oVal": [
+      "propext"
+    ],
+    "Toy.DirCC.oVal01": [
+      "propext"
+    ],
+    "Toy.DirCC.olE_getD_hole": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.pickFirst_eqCong_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.pickMin_monoCong_counterexample": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.policySound_iff_admissibleFor": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.policySound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.DirCC.policySound_permissive_of_empty_op": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.policySound_standard_oProfile": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.splitModel": [
+      "propext"
+    ],
+    "Toy.DirCC.splitModel_kerAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.splitModel_monoAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.splitModel_not_antisymm": [
+      "propext"
+    ],
+    "Toy.DirCC.splitModel_refl": [
+      "propext"
+    ],
+    "Toy.DirCC.splitModel_trans": [
+      "propext"
+    ],
+    "Toy.DirCC.splitVal": [],
+    "Toy.DirCC.splitVal.eq_1": [],
+    "Toy.DirCC.sums": [],
+    "Toy.DirCC.sums.eq_1": [],
+    "Toy.DirCC.term_ne_app_self_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DirCC.triLe": [
+      "propext"
+    ],
+    "Toy.DirCC.triLe.eq_1": [
+      "propext"
+    ],
+    "Toy.DirCC.triLe.eq_2": [
+      "propext"
+    ],
+    "Toy.DirCC.triLe.eq_3": [
+      "propext"
+    ],
+    "Toy.DirCC.triLe.eq_4": [
+      "propext"
+    ],
+    "Toy.DirCC.triLe.match_1": [
+      "propext"
+    ],
+    "Toy.DirCC.wfBelow_chAcyclic": [],
+    "Toy.DirCC.wfBelow_chChoose": [
+      "propext"
+    ],
+    "Toy.DirCC.wfBelow_chPick": [
+      "propext"
+    ],
+    "Toy.DirCC.wfBelow_chStrict": [
+      "propext"
+    ],
+    "Toy.DirCC.wfBelow_chSucc": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

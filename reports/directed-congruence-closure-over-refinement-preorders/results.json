@@ -1,0 +1,688 @@
+[
+  {
+    "id": "checker-soundness",
+    "lean": "Toy.DirCC.check_sound",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Soundness of reflexivity/transitivity/congruence deduction for a directed relation with monotone operators is the soundness of ground unconditional rewriting-logic deduction; frozen positions and per-argument variance are known (rewriting logic, Rocq generalized rewriting, a refinement e-graph prototype). The three-modality profile with a two-sided (mutual-refinement) congruence rule and a Boolean checker with a mechanized soundness proof are a precise, mechanized variant.",
+    "plain_claim": "For every model whose relation is reflexive (LeRefl) and transitive (LeTrans), whose operators are monotone at the positions the profile P declares mono (MonoAt P) and respect mutual refinement at the positions P declares eqOnly (KerAt P), and every valuation under which all listed directed facts hold (FactsHold), every certificate that the standard Boolean checker `check Policy.standard P facts c s t` accepts proves that t refines s (M.le (eval M ρ s) (eval M ρ t)). It is the specialization of checker-soundness-admissible-policies to the standard policy.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem check_sound [DecidableEq Op] {P : Profile Op} {M : Model Op} (hR : LeRefl M) (hT : LeTrans M) (hMono : MonoAt P M) (hKer : KerAt P M) {ρ : Nat → M.C} {facts : List (Term Op × Term Op)} (hF : FactsHold M ρ facts) {c : Cert Op} {s t : Term Op} (hc : check Policy.standard P facts c s t = true) : M.le (eval M ρ s) (eval M ρ t)",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq Op]",
+        "purpose": "needed to compute the checker (term comparison)",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hR : LeRefl M",
+        "purpose": "justifies refl certificates",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_needs_refl"
+      },
+      {
+        "name": "hT : LeTrans M",
+        "purpose": "justifies trans certificates",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_needs_trans"
+      },
+      {
+        "name": "hMono : MonoAt P M",
+        "purpose": "justifies one-sided congruence at mono positions (only the instances at positions the certificate uses are needed)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_needs_monoAt"
+      },
+      {
+        "name": "hKer : KerAt P M",
+        "purpose": "justifies two-sided congruence at eqOnly positions",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_needs_kerAt"
+      },
+      {
+        "name": "hF : FactsHold M ρ facts",
+        "purpose": "justifies fact leaves",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_needs_factsHold"
+      },
+      {
+        "name": "hc : check Policy.standard P facts c s t = true",
+        "purpose": "the certificate must be accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_needs_check"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Outcome-list model with oProfile; facts x0<=x1, x0<=x2, x2<=x0 under x0=[0,1], x1=[1], x2=[1,0]; certificate proving choose(pickMin x0, x0) <= choose(pickMin x2, x1) using trans, one-sided congruence under choose (both positions) and two-sided congruence under pickMin.",
+    "nonvacuity_witness_lean": "Toy.DirCC.check_sound_nonvacuous",
+    "non_claims": [
+      "The checker is not shown to be complete (it checks certificates; it is not a decision procedure): it is not shown to accept a certificate for every true refinement, nor for every consequence of the facts; there is no congruence-closure algorithm here, only certificate checking.",
+      "Facts are ground (used verbatim under one valuation); rewrite-rule instantiation, e-matching and conditional rules are not modelled.",
+      "Only three modalities exist; anti-monotone (contravariant) positions are not modelled, and nothing is claimed about them.",
+      "Soundness is relative to the stated model laws; nothing is claimed about which operators of a real IR satisfy MonoAt or KerAt.",
+      "Operators of a Model are functions of argument values on the carrier M.C, so at every position, opaqueArg included, arguments with equal values give equal results (Toy.DirCC.eval_hole_congr_of_eval_eq). Syntax-inspecting or optimization-sensitive operators (such as LLVM's llvm.is.constant) over carriers of semantic values are not modelled, and neither is let-shared nondeterminism (see Toy.DirCC.Dup, a separate language).",
+      "Certificates are unshared finite trees: a sub-certificate needed twice is written twice, and Cert.congEq takes separate sub-certificates for s <= t and t <= s. For a depth-d nest g(g(...g(x)...)) of an operator g whose argument is eqOnly, the direct certificate of g^d(s) <= g^d(t) from the facts s <= t and t <= s has 2^d fact leaves. No shared (DAG) certificate format is defined, and no lower bound on certificate size is proved.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "J. Meseguer. Conditional rewriting logic as a unified model of concurrency. Theoretical Computer Science 96(1):73-155, 1992. DOI 10.1016/0304-3975(92)90182-F. Deduction rules Reflexivity, Congruence (every argument), Replacement, Transitivity for directed rewrites; rules as quoted in J. Meseguer, Twenty years of rewriting logic, J. Logic and Algebraic Programming 81(7-8):721-781, 2012, DOI 10.1016/j.jlap.2012.06.003 (the 1992 full text was not consulted).",
+      "R. Bruni, J. Meseguer. Semantic foundations for generalized rewrite theories. Theoretical Computer Science 360(1-3):386-414, 2006. DOI 10.1016/j.tcs.2006.04.012. Generalized rewrite theories carry a frozenness map: argument positions under which no rewrite may be performed while equational reasoning modulo E still applies (definition as stated in Meseguer's 2012 survey, DOI 10.1016/j.jlap.2012.06.003; the 2006 full text was not consulted).",
+      "S. L. Bloom. Varieties of ordered algebras. Journal of Computer and System Sciences 13(2):200-212, 1976. DOI 10.1016/S0022-0000(76)80030-X (bibliographic record verified at Crossref; full text not consulted): algebras over ordered carriers with monotone operations, the algebraic setting of inequational (directed) reasoning with all positions monotone.",
+      "Rocq Reference Manual V9.2.0, Generalized rewriting, https://rocq-prover.org/doc/V9.2.0/refman/addendum/generalized-rewriting.html: a morphism signature gives each argument its own relation instance and n-ary morphisms are required to be monotone in every argument; the arrow --> marks a contravariant argument (covariant for the inverse relation), and ==> is the arrow the manual uses for arguments related by symmetric relation instances, where covariance and contravariance coincide; rewriting under a function that has not been declared a morphism fails. In rocq-prover/rocq at tag V9.0.0, theories/Classes/Morphisms.v defines R ++> R' and R ==> R' as the same term (respectful R R'), so over an asymmetric preorder le the signature le ==> le expresses monotonicity; respecting only mutual refinement needs a separate symmetric relation instance in that argument slot.",
+      "M. Sozeau. A New Look at Generalized Rewriting in Type Theory. Journal of Formalized Reasoning 2(1):41-62, 2009. DOI 10.6092/issn.1972-5787/1574 (bibliographic record verified at dblp; full text not consulted): the design of the typeclass-based generalized rewriting of Coq/Rocq described in the manual entry above.",
+      "P. Zucker. Refinement E-Graphs. Blog post (not peer-reviewed), dated 2026-10-04, https://www.philipzucker.com/refinement_egraph/; the post's source is preserved in the public repository philzook58/philzook58.github.io at commit de5119da6ee25e23d419dd8c95484cf295510031, file _posts/2026-10-04-refinement_egraph.md. Prototype (research software, not peer-reviewed): philzook58/refinement-microegg at commit 95a098d4751fd468a874ddeb5627330240182193. A built-in <= relation that is reflexive, transitive and collapses cycles to =; per-argument variance (monotone, anti-monotone, unknown); 'refinement closure' instead of congruence closure; extraction in <= / >= modes. Functions always respect =, so there is no opaque position kind; freeze and hash-consing of nondeterministic nodes are not discussed.",
+      "R. Nieuwenhuis, A. Oliveras. Proof-Producing Congruence Closure. RTA 2005, LNCS 3467, 453-468. DOI 10.1007/978-3-540-32033-3_33. Incremental congruence closure with an Explain operation, for equalities (the congruence relation satisfies reflexivity, symmetry, transitivity and monotonicity f(x1..xn)=f(y1..yn) whenever xi=yi).",
+      "G. Nelson, D. C. Oppen. Fast Decision Procedures Based on Congruence Closure. J. ACM 27(2):356-364, 1980. DOI 10.1145/322186.322198 (equational congruence closure; full text not consulted).",
+      "P. Chew. An improved algorithm for computing with equations. 21st Annual Symposium on Foundations of Computer Science (FOCS 1980), 108-117. DOI 10.1109/SFCS.1980.11 (bibliographic record verified at Crossref; full text not consulted). The name 'directed congruence closure' is attributed to this paper in secondary sources, for computing normal forms of terms under non-overlapping left-linear rewrite rules; that is a different notion from the refinement-preorder congruence closure of this package.",
+      "D. Selsam, L. de Moura. Congruence Closure in Intensional Type Theory. IJCAR 2016, LNCS, 99-115. DOI 10.1007/978-3-319-40229-1_8 (bibliographic record verified at Crossref; full text not consulted): equational congruence closure in a proof assistant.",
+      "L. Stevens, R. Ghidini. Simplified and Verified: A Second Look at a Proof-Producing Union-Find Algorithm. CADE-30, LNCS, 2025, 261-279. DOI 10.1007/978-3-031-99984-0_15 (abstract consulted at Crossref): an Isabelle/HOL verification of the union-find with an explain operation of Nieuwenhuis and Oliveras, a step towards verified proof-producing (equational) congruence closure.",
+      "K. Morrison, L. de Moura. grind: An SMT-Inspired Tactic for Lean 4 (short paper). Automated Reasoning, LNCS, 2026, 106-114. DOI 10.1007/978-3-032-32589-1_7 (abstract consulted at Crossref): a Lean 4 tactic combining congruence closure for dependent type theory with E-matching, producing kernel-checkable proofs (equational).",
+      "Mathlib.Tactic.GCongr.Core, leanprover-community/mathlib4 at commit 426b896108cc3d6e923ef7739a302306e0702fc0 (authors M. Carneiro, H. Macbeth, J. Gerbscheid): the gcongr ('generalized congruence') tactic reduces a relational goal between two applications to relations between their 'varying' arguments using lemmas tagged @[gcongr], with the remaining arguments fixed; per-lemma monotonicity rules for Lean's order relations."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "checker-soundness-admissible-policies",
+    "lean": "Toy.DirCC.check_sound_of_admissible",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The policy-parametric form of checker-soundness: a checker that permits fewer congruence steps than the standard one (at the modalities that occur in P) is sound for the same models. Folklore made precise.",
+    "plain_claim": "For every checker policy pol admissible for the profile P (one-sided congruence only at positions P declares mono, two-sided congruence only at positions P does not declare opaqueArg; Policy.AdmissibleFor), every model satisfying LeRefl, LeTrans, MonoAt P and KerAt P, and every valuation under which all listed facts hold, every certificate that `check pol P facts c s t` accepts proves that t refines s.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem check_sound_of_admissible [DecidableEq Op] {pol : Policy} {P : Profile Op} {M : Model Op} (hA : pol.AdmissibleFor P) (hR : LeRefl M) (hT : LeTrans M) (hMono : MonoAt P M) (hKer : KerAt P M) {ρ : Nat → M.C} {facts : List (Term Op × Term Op)} (hF : FactsHold M ρ facts) {c : Cert Op} {s t : Term Op} (hc : check pol P facts c s t = true) : M.le (eval M ρ s) (eval M ρ t)  -- where pol.AdmissibleFor P := (∀ f i, pol.cong (P f i) = true → P f i = .mono) ∧ (∀ f i, pol.congEq (P f i) = true → P f i ≠ .opaqueArg)",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq Op]",
+        "purpose": "needed to compute the checker (term comparison)",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hA : pol.AdmissibleFor P",
+        "purpose": "the policy may only permit congruence steps the model laws justify",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_admissible"
+      },
+      {
+        "name": "hR : LeRefl M",
+        "purpose": "justifies refl certificates",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_refl"
+      },
+      {
+        "name": "hT : LeTrans M",
+        "purpose": "justifies trans certificates",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_trans"
+      },
+      {
+        "name": "hMono : MonoAt P M",
+        "purpose": "justifies one-sided congruence at mono positions (only the instances at positions the certificate uses are needed)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_monoAt"
+      },
+      {
+        "name": "hKer : KerAt P M",
+        "purpose": "justifies two-sided congruence at eqOnly positions",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_kerAt"
+      },
+      {
+        "name": "hF : FactsHold M ρ facts",
+        "purpose": "justifies fact leaves",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_factsHold"
+      },
+      {
+        "name": "hc : check pol P facts c s t = true",
+        "purpose": "the certificate must be accepted",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.check_sound_of_admissible_needs_check"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "As for checker-soundness, with pol = Policy.standard, which is admissible for oProfile (indeed for every profile).",
+    "nonvacuity_witness_lean": "Toy.DirCC.check_sound_of_admissible_nonvacuous",
+    "non_claims": [
+      "Admissibility constrains a policy only at modalities that occur in P; nothing is said about policies for other profiles.",
+      "The checker is not shown to be complete (it checks certificates; it is not a decision procedure): it is not shown to accept a certificate for every true refinement, nor for every consequence of the facts; there is no congruence-closure algorithm here, only certificate checking.",
+      "Facts are ground (used verbatim under one valuation); rewrite-rule instantiation, e-matching and conditional rules are not modelled.",
+      "Operators of a Model are functions of argument values on the carrier M.C, so at every position, opaqueArg included, arguments with equal values give equal results (Toy.DirCC.eval_hole_congr_of_eval_eq). Syntax-inspecting or optimization-sensitive operators (such as LLVM's llvm.is.constant) over carriers of semantic values are not modelled, and neither is let-shared nondeterminism (see Toy.DirCC.Dup, a separate language).",
+      "Certificates are unshared finite trees: a sub-certificate needed twice is written twice, and Cert.congEq takes separate sub-certificates for s <= t and t <= s. For a depth-d nest g(g(...g(x)...)) of an operator g whose argument is eqOnly, the direct certificate of g^d(s) <= g^d(t) from the facts s <= t and t <= s has 2^d fact leaves. No shared (DAG) certificate format is defined, and no lower bound on certificate size is proved.",
+      "Only three modalities exist; anti-monotone (contravariant) positions are not modelled, and nothing is claimed about them.",
+      "Soundness is relative to the stated model laws; nothing is claimed about which operators of a real IR satisfy MonoAt or KerAt.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "J. Meseguer. Conditional rewriting logic as a unified model of concurrency. Theoretical Computer Science 96(1):73-155, 1992. DOI 10.1016/0304-3975(92)90182-F. Deduction rules Reflexivity, Congruence (every argument), Replacement, Transitivity for directed rewrites; rules as quoted in J. Meseguer, Twenty years of rewriting logic, J. Logic and Algebraic Programming 81(7-8):721-781, 2012, DOI 10.1016/j.jlap.2012.06.003 (the 1992 full text was not consulted).",
+      "R. Bruni, J. Meseguer. Semantic foundations for generalized rewrite theories. Theoretical Computer Science 360(1-3):386-414, 2006. DOI 10.1016/j.tcs.2006.04.012. Generalized rewrite theories carry a frozenness map: argument positions under which no rewrite may be performed while equational reasoning modulo E still applies (definition as stated in Meseguer's 2012 survey, DOI 10.1016/j.jlap.2012.06.003; the 2006 full text was not consulted).",
+      "S. L. Bloom. Varieties of ordered algebras. Journal of Computer and System Sciences 13(2):200-212, 1976. DOI 10.1016/S0022-0000(76)80030-X (bibliographic record verified at Crossref; full text not consulted): algebras over ordered carriers with monotone operations, the algebraic setting of inequational (directed) reasoning with all positions monotone.",
+      "Rocq Reference Manual V9.2.0, Generalized rewriting, https://rocq-prover.org/doc/V9.2.0/refman/addendum/generalized-rewriting.html: a morphism signature gives each argument its own relation instance and n-ary morphisms are required to be monotone in every argument; the arrow --> marks a contravariant argument (covariant for the inverse relation), and ==> is the arrow the manual uses for arguments related by symmetric relation instances, where covariance and contravariance coincide; rewriting under a function that has not been declared a morphism fails. In rocq-prover/rocq at tag V9.0.0, theories/Classes/Morphisms.v defines R ++> R' and R ==> R' as the same term (respectful R R'), so over an asymmetric preorder le the signature le ==> le expresses monotonicity; respecting only mutual refinement needs a separate symmetric relation instance in that argument slot.",
+      "M. Sozeau. A New Look at Generalized Rewriting in Type Theory. Journal of Formalized Reasoning 2(1):41-62, 2009. DOI 10.6092/issn.1972-5787/1574 (bibliographic record verified at dblp; full text not consulted): the design of the typeclass-based generalized rewriting of Coq/Rocq described in the manual entry above.",
+      "P. Zucker. Refinement E-Graphs. Blog post (not peer-reviewed), dated 2026-10-04, https://www.philipzucker.com/refinement_egraph/; the post's source is preserved in the public repository philzook58/philzook58.github.io at commit de5119da6ee25e23d419dd8c95484cf295510031, file _posts/2026-10-04-refinement_egraph.md. Prototype (research software, not peer-reviewed): philzook58/refinement-microegg at commit 95a098d4751fd468a874ddeb5627330240182193. A built-in <= relation that is reflexive, transitive and collapses cycles to =; per-argument variance (monotone, anti-monotone, unknown); 'refinement closure' instead of congruence closure; extraction in <= / >= modes. Functions always respect =, so there is no opaque position kind; freeze and hash-consing of nondeterministic nodes are not discussed."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "one-sided-congruence-refutable-at-non-mono-position",
+    "lean": "Toy.DirCC.monoCong_refuted_at_nonMono",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "That rewriting is unsound under a non-monotone context is the motivation for frozen positions in rewriting logic; this is the precise, signature-generic form with an explicit countermodel.",
+    "plain_claim": "For every signature with decidable equality, profile P and context f(pre, _, post) whose hole position pre.length is not declared mono, the explicit Bool model flipModel f pre.length satisfies LeRefl, LeTrans, MonoAt P and KerAt P, makes x0 <= x1 true, and makes f(pre, x0, post) <= f(pre, x1, post) false.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem monoCong_refuted_at_nonMono [DecidableEq Op] (P : Profile Op) (f : Op) (pre post : List (Term Op)) (h : P f pre.length ≠ .mono) : LeRefl (flipModel f pre.length) ∧ LeTrans (flipModel f pre.length) ∧ MonoAt P (flipModel f pre.length) ∧ KerAt P (flipModel f pre.length) ∧ (flipModel f pre.length).le (flipVal 0) (flipVal 1) ∧ ¬ (flipModel f pre.length).le (eval (flipModel f pre.length) flipVal (.app f (pre ++ .var 0 :: post))) (eval (flipModel f pre.length) flipVal (.app f (pre ++ .var 1 :: post)))  -- flipModel f i : carrier Bool, le a b := (a = true → b = true), interp g args := if g = f then !(args.getD i false) else false; flipVal n := (n != 0)",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq Op]",
+        "purpose": "the countermodel distinguishes f from other operators",
+        "tightness": "harmless"
+      },
+      {
+        "name": "h : P f pre.length ≠ .mono",
+        "purpose": "the hole position must not be declared monotone",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.monoCong_refuted_needs_nonMono"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "oProfile, operator pickMin, empty context (pickMin's argument is eqOnly).",
+    "nonvacuity_witness_lean": "Toy.DirCC.monoCong_refuted_nonvacuous",
+    "positive_control_lean": "Toy.DirCC.monoCong_sound_at_mono",
+    "non_claims": [
+      "It does not say that every rewrite under a non-mono position is false in every model; it exhibits one model (and one pair of facts) per position.",
+      "It does not say that the operators of a real IR declared equality-only are non-monotone; the countermodel is a two-point Bool model, not a compiler semantics (see pickMin_monoCong_counterexample for an outcome-set instance).",
+      "Positive control: at a position declared mono the one-sided step is sound in every model satisfying MonoAt P, in particular in every model satisfying the four laws (monoCong_sound_at_mono).",
+      "Escape hatch (two-sided rewriting at eqOnly positions): when P f pre.length = .eqOnly and the premise is strengthened from x0 <= x1 to mutual refinement (x0 <= x1 and x1 <= x0), the step is sound in every model satisfying MonoAt P and KerAt P (Toy.DirCC.eqCong_sound_at_nonOpaque).",
+      "Escape hatch (contravariance): the countermodel flipModel negates the hole argument, which is anti-monotone, and in it the reversed conclusion f(pre, x1, post) <= f(pre, x0, post) holds (Toy.DirCC.flipModel_reversed_conclusion). Anti-monotone modalities and a contravariant congruence rule are not modelled; the theorem does not rule out such a rule being sound for operators that satisfy an anti-monotonicity law.",
+      "The countermodel is antisymmetric (Toy.DirCC.flipModel_antisymm): the refutation applies within partial-order models too.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "R. Bruni, J. Meseguer. Semantic foundations for generalized rewrite theories. Theoretical Computer Science 360(1-3):386-414, 2006. DOI 10.1016/j.tcs.2006.04.012. Generalized rewrite theories carry a frozenness map: argument positions under which no rewrite may be performed while equational reasoning modulo E still applies (definition as stated in Meseguer's 2012 survey, DOI 10.1016/j.jlap.2012.06.003; the 2006 full text was not consulted).",
+      "J. Meseguer. Conditional rewriting logic as a unified model of concurrency. Theoretical Computer Science 96(1):73-155, 1992. DOI 10.1016/0304-3975(92)90182-F. Deduction rules Reflexivity, Congruence (every argument), Replacement, Transitivity for directed rewrites; rules as quoted in J. Meseguer, Twenty years of rewriting logic, J. Logic and Algebraic Programming 81(7-8):721-781, 2012, DOI 10.1016/j.jlap.2012.06.003 (the 1992 full text was not consulted).",
+      "S. Lucas. Context-sensitive computations in confluent programs. PLILP 1996, LNCS, 408-422. DOI 10.1007/3-540-61756-6_100 (bibliographic record verified at Crossref and dblp; full text not consulted): context-sensitive rewriting, where a replacement map fixes for each operator the argument positions under which rewriting is allowed.",
+      "Rocq Reference Manual V9.2.0, Generalized rewriting, https://rocq-prover.org/doc/V9.2.0/refman/addendum/generalized-rewriting.html: a morphism signature gives each argument its own relation instance and n-ary morphisms are required to be monotone in every argument; the arrow --> marks a contravariant argument (covariant for the inverse relation), and ==> is the arrow the manual uses for arguments related by symmetric relation instances, where covariance and contravariance coincide; rewriting under a function that has not been declared a morphism fails. In rocq-prover/rocq at tag V9.0.0, theories/Classes/Morphisms.v defines R ++> R' and R ==> R' as the same term (respectful R R'), so over an asymmetric preorder le the signature le ==> le expresses monotonicity; respecting only mutual refinement needs a separate symmetric relation instance in that argument slot.",
+      "M. Sozeau. A New Look at Generalized Rewriting in Type Theory. Journal of Formalized Reasoning 2(1):41-62, 2009. DOI 10.6092/issn.1972-5787/1574 (bibliographic record verified at dblp; full text not consulted): the design of the typeclass-based generalized rewriting of Coq/Rocq described in the manual entry above.",
+      "Mathlib.Tactic.GCongr.Core, leanprover-community/mathlib4 at commit 426b896108cc3d6e923ef7739a302306e0702fc0 (authors M. Carneiro, H. Macbeth, J. Gerbscheid): the gcongr ('generalized congruence') tactic reduces a relational goal between two applications to relations between their 'varying' arguments using lemmas tagged @[gcongr], with the remaining arguments fixed; per-lemma monotonicity rules for Lean's order relations."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "two-sided-congruence-refutable-at-opaque-position",
+    "lean": "Toy.DirCC.eqCong_refuted_at_opaque",
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Rewriting under an undeclared (non-morphism) position fails in generalized rewriting; this is the precise statement for mutual refinement, with an explicit three-point countermodel.",
+    "plain_claim": "For every signature with decidable equality, profile P and context f(pre, _, post) whose hole position is declared opaqueArg, the explicit three-point model splitModel f pre.length satisfies LeRefl, LeTrans, MonoAt P and KerAt P, makes both x0 <= x1 and x1 <= x0 true, and makes f(pre, x0, post) <= f(pre, x1, post) false.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem eqCong_refuted_at_opaque [DecidableEq Op] (P : Profile Op) (f : Op) (pre post : List (Term Op)) (h : P f pre.length = .opaqueArg) : LeRefl (splitModel f pre.length) ∧ LeTrans (splitModel f pre.length) ∧ MonoAt P (splitModel f pre.length) ∧ KerAt P (splitModel f pre.length) ∧ (splitModel f pre.length).le (splitVal 0) (splitVal 1) ∧ (splitModel f pre.length).le (splitVal 1) (splitVal 0) ∧ ¬ (splitModel f pre.length).le (eval (splitModel f pre.length) splitVal (.app f (pre ++ .var 0 :: post))) (eval (splitModel f pre.length) splitVal (.app f (pre ++ .var 1 :: post)))  -- splitModel f i : carrier Tri = {a, a', b}, le relates a and a' to each other and to themselves and b only to itself; interp g args := if g = f then (if args.getD i .a = .a' then .b else .a) else .a; splitVal n := if n = 0 then .a else .a'",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq Op]",
+        "purpose": "the countermodel distinguishes f from other operators",
+        "tightness": "harmless"
+      },
+      {
+        "name": "h : P f pre.length = .opaqueArg",
+        "purpose": "the hole position must be declared opaque (for eqOnly, KerAt fails in the named model; for mono, MonoAt fails)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.eqCong_refuted_needs_opaque"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "oProfile, operator pickFirst, empty context (pickFirst's argument is opaqueArg).",
+    "nonvacuity_witness_lean": "Toy.DirCC.eqCong_refuted_nonvacuous",
+    "positive_control_lean": "Toy.DirCC.eqCong_sound_at_nonOpaque",
+    "non_claims": [
+      "Escape hatch (partial-order models): the countermodel needs a relation that is not antisymmetric (splitModel_not_antisymm). In a reflexive model, two-sided congruence at an opaqueArg position can fail only if the carrier has distinct mutually refining elements: in a reflexive antisymmetric model the two-sided step is sound at every position (Toy.DirCC.eqCong_sound_of_antisymm). The theorem does not say opaque positions matter in partial-order models.",
+      "At every position, opaqueArg included, arguments with equal values give equal results in every Model (Toy.DirCC.eval_hole_congr_of_eval_eq); what an opaqueArg position blocks is only congruence for mutual refinement between distinct values.",
+      "Positive control: at a position not declared opaqueArg the two-sided step is sound in every model satisfying MonoAt P and KerAt P (eqCong_sound_at_nonOpaque).",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "Rocq Reference Manual V9.2.0, Generalized rewriting, https://rocq-prover.org/doc/V9.2.0/refman/addendum/generalized-rewriting.html: a morphism signature gives each argument its own relation instance and n-ary morphisms are required to be monotone in every argument; the arrow --> marks a contravariant argument (covariant for the inverse relation), and ==> is the arrow the manual uses for arguments related by symmetric relation instances, where covariance and contravariance coincide; rewriting under a function that has not been declared a morphism fails. In rocq-prover/rocq at tag V9.0.0, theories/Classes/Morphisms.v defines R ++> R' and R ==> R' as the same term (respectful R R'), so over an asymmetric preorder le the signature le ==> le expresses monotonicity; respecting only mutual refinement needs a separate symmetric relation instance in that argument slot.",
+      "M. Sozeau. A New Look at Generalized Rewriting in Type Theory. Journal of Formalized Reasoning 2(1):41-62, 2009. DOI 10.6092/issn.1972-5787/1574 (bibliographic record verified at dblp; full text not consulted): the design of the typeclass-based generalized rewriting of Coq/Rocq described in the manual entry above.",
+      "R. Bruni, J. Meseguer. Semantic foundations for generalized rewrite theories. Theoretical Computer Science 360(1-3):386-414, 2006. DOI 10.1016/j.tcs.2006.04.012. Generalized rewrite theories carry a frozenness map: argument positions under which no rewrite may be performed while equational reasoning modulo E still applies (definition as stated in Meseguer's 2012 survey, DOI 10.1016/j.jlap.2012.06.003; the 2006 full text was not consulted).",
+      "P. Zucker. Refinement E-Graphs. Blog post (not peer-reviewed), dated 2026-10-04, https://www.philipzucker.com/refinement_egraph/; the post's source is preserved in the public repository philzook58/philzook58.github.io at commit de5119da6ee25e23d419dd8c95484cf295510031, file _posts/2026-10-04-refinement_egraph.md. Prototype (research software, not peer-reviewed): philzook58/refinement-microegg at commit 95a098d4751fd468a874ddeb5627330240182193. A built-in <= relation that is reflexive, transitive and collapses cycles to =; per-argument variance (monotone, anti-monotone, unknown); 'refinement closure' instead of congruence closure; extraction in <= / >= modes. Functions always respect =, so there is no opaque position kind; freeze and hash-consing of nondeterministic nodes are not discussed."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "checker-policy-soundness-characterization",
+    "lean": "Toy.DirCC.policySound_iff_admissibleFor",
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Combines the soundness theorem with the two refutations into an exact boundary; folklore made precise.",
+    "plain_claim": "For every signature with decidable equality and profile P, a checker policy (which congruence rule is allowed at which modality) is sound for all models satisfying LeRefl, LeTrans, MonoAt P and KerAt P exactly when it allows one-sided congruence only at positions P declares mono and two-sided congruence only at positions P does not declare opaqueArg.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem policySound_iff_admissibleFor [DecidableEq Op] (P : Profile Op) (pol : Policy) : PolicySound Op P pol ↔ pol.AdmissibleFor P  -- where PolicySound Op P pol := ∀ (M : Model Op), LeRefl M → LeTrans M → MonoAt P M → KerAt P M → ∀ (ρ : Nat → M.C) (facts : List (Term Op × Term Op)), FactsHold M ρ facts → ∀ (c : Cert Op) (s t : Term Op), check pol P facts c s t = true → M.le (eval M ρ s) (eval M ρ t); and pol.AdmissibleFor P := (∀ f i, pol.cong (P f i) = true → P f i = .mono) ∧ (∀ f i, pol.congEq (P f i) = true → P f i ≠ .opaqueArg)",
+    "hypotheses": [
+      {
+        "name": "[DecidableEq Op]",
+        "purpose": "needed to compute the checker and build countermodels",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "For oProfile the standard policy is admissible and the permissive policy is not (Toy.DirCC.policySound_nonvacuous); stated directly on PolicySound, the standard policy is sound for oProfile (Toy.DirCC.policySound_standard_oProfile) and the permissive policy is not (Toy.DirCC.not_policySound_permissive_oProfile). Over an operator type with no operators every policy, the permissive one included, is sound (Toy.DirCC.policySound_permissive_of_empty_op).",
+    "nonvacuity_witness_lean": [
+      "Toy.DirCC.policySound_nonvacuous",
+      "Toy.DirCC.policySound_standard_oProfile",
+      "Toy.DirCC.not_policySound_permissive_oProfile",
+      "Toy.DirCC.policySound_permissive_of_empty_op"
+    ],
+    "non_claims": [
+      "Soundness quantifies over all models satisfying the four laws; a policy may be sound for one particular model while not admissible.",
+      "Admissibility depends only on modalities that occur in P; a policy allowing congruence at a modality no position has is admissible.",
+      "Only the five certificate rules of Cert are considered; richer proof systems (anti-monotone steps, conditional rewrites) are not covered.",
+      "Escape hatch (partial-order models): the necessity of forbidding two-sided congruence at opaqueArg positions rests on a non-antisymmetric countermodel (splitModel). If PolicySound quantified only over antisymmetric models, that restriction would not be necessary: in a reflexive antisymmetric model KerAt holds for every profile (Toy.DirCC.kerAt_of_antisymm) and the two-sided step is sound at every position (Toy.DirCC.eqCong_sound_of_antisymm). The restriction of one-sided congruence to mono positions stays necessary there, because the one-sided countermodel flipModel is antisymmetric (Toy.DirCC.flipModel_antisymm). Partial orders such as sets of outcomes ordered by reverse inclusion, or a flat domain with poison below every value, are examples of antisymmetric relations; they are not defined in this package.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "J. Meseguer. Conditional rewriting logic as a unified model of concurrency. Theoretical Computer Science 96(1):73-155, 1992. DOI 10.1016/0304-3975(92)90182-F. Deduction rules Reflexivity, Congruence (every argument), Replacement, Transitivity for directed rewrites; rules as quoted in J. Meseguer, Twenty years of rewriting logic, J. Logic and Algebraic Programming 81(7-8):721-781, 2012, DOI 10.1016/j.jlap.2012.06.003 (the 1992 full text was not consulted).",
+      "R. Bruni, J. Meseguer. Semantic foundations for generalized rewrite theories. Theoretical Computer Science 360(1-3):386-414, 2006. DOI 10.1016/j.tcs.2006.04.012. Generalized rewrite theories carry a frozenness map: argument positions under which no rewrite may be performed while equational reasoning modulo E still applies (definition as stated in Meseguer's 2012 survey, DOI 10.1016/j.jlap.2012.06.003; the 2006 full text was not consulted).",
+      "Rocq Reference Manual V9.2.0, Generalized rewriting, https://rocq-prover.org/doc/V9.2.0/refman/addendum/generalized-rewriting.html: a morphism signature gives each argument its own relation instance and n-ary morphisms are required to be monotone in every argument; the arrow --> marks a contravariant argument (covariant for the inverse relation), and ==> is the arrow the manual uses for arguments related by symmetric relation instances, where covariance and contravariance coincide; rewriting under a function that has not been declared a morphism fails. In rocq-prover/rocq at tag V9.0.0, theories/Classes/Morphisms.v defines R ++> R' and R ==> R' as the same term (respectful R R'), so over an asymmetric preorder le the signature le ==> le expresses monotonicity; respecting only mutual refinement needs a separate symmetric relation instance in that argument slot.",
+      "M. Sozeau. A New Look at Generalized Rewriting in Type Theory. Journal of Formalized Reasoning 2(1):41-62, 2009. DOI 10.6092/issn.1972-5787/1574 (bibliographic record verified at dblp; full text not consulted): the design of the typeclass-based generalized rewriting of Coq/Rocq described in the manual entry above."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "committed-choice-operators-in-outcome-semantics",
+    "lean": [
+      "Toy.DirCC.pickMin_monoCong_counterexample",
+      "Toy.DirCC.pickFirst_eqCong_counterexample"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Concrete instances of the refutations in a set-of-outcomes model.",
+    "plain_claim": "In the set-of-outcomes model (outcome lists ordered by reverse inclusion: t refines s iff every outcome of t is one of s), which satisfies all four laws for oProfile: committing to the least outcome (pickMin, declared eqOnly) is not monotone — [1] refines [0,1] but pickMin [1] = [1] does not refine pickMin [0,1] = [0] — and committing to the first-listed outcome (pickFirst, declared opaqueArg) does not respect mutual refinement — [0,1] and [1,0] refine each other but [1] does not refine [0]; the permissive checker accepts both steps and the standard checker rejects both.",
+    "statement": "theorem pickMin_monoCong_counterexample : LeRefl oModel ∧ LeTrans oModel ∧ MonoAt oProfile oModel ∧ KerAt oProfile oModel ∧ FactsHold oModel oVal [(.var 0, .var 1)] ∧ check Policy.permissive oProfile [(.var 0, .var 1)] (.cong .pickMin [] [] (.fact 0)) (.app .pickMin [.var 0]) (.app .pickMin [.var 1]) = true ∧ check Policy.standard oProfile [(.var 0, .var 1)] (.cong .pickMin [] [] (.fact 0)) (.app .pickMin [.var 0]) (.app .pickMin [.var 1]) = false ∧ ¬ oModel.le (eval oModel oVal (.app .pickMin [.var 0])) (eval oModel oVal (.app .pickMin [.var 1]))\ntheorem pickFirst_eqCong_counterexample : LeRefl oModel ∧ LeTrans oModel ∧ MonoAt oProfile oModel ∧ KerAt oProfile oModel ∧ FactsHold oModel oVal [(.var 0, .var 2), (.var 2, .var 0)] ∧ check Policy.permissive oProfile [(.var 0, .var 2), (.var 2, .var 0)] (.congEq .pickFirst [] [] (.fact 0) (.fact 1)) (.app .pickFirst [.var 0]) (.app .pickFirst [.var 2]) = true ∧ check Policy.standard oProfile [(.var 0, .var 2), (.var 2, .var 0)] (.congEq .pickFirst [] [] (.fact 0) (.fact 1)) (.app .pickFirst [.var 0]) (.app .pickFirst [.var 2]) = false ∧ ¬ oModel.le (eval oModel oVal (.app .pickFirst [.var 0])) (eval oModel oVal (.app .pickFirst [.var 2]))  -- oVal n := [[0, 1], [1], [1, 0]].getD n []; Policy.permissive allows both rules at every modality",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The two counterexample theorems are closed statements about concrete instances.",
+    "nonvacuity_witness_lean": [
+      "Toy.DirCC.pickMin_monoCong_counterexample",
+      "Toy.DirCC.pickFirst_eqCong_counterexample"
+    ],
+    "non_claims": [
+      "Genuine (nondeterministic) choice operators in this model — choose (union) and add (independent sums) — are monotone; the failures are for operators that commit to one outcome by a deterministic rule.",
+      "pickMin models a deterministic resolution of nondeterminism of the kind an implementation of freeze might perform; it is not LLVM's freeze, which is nondeterministic and is not modelled in this outcome model.",
+      "The outcome model has no poison, UB, memory or bit widths.",
+      "pickFirst fails two-sided congruence only because oModel represents outcome sets as lists, which are not quotiented ([0, 1] and [1, 0] refine each other but differ); over outcome sets proper, mutual refinement is equality and a representation-dependent operator such as pickFirst is not definable.",
+      "In oModel the empty list [] refines every outcome list (Toy.DirCC.oLe_nil): it is the top element (no behaviour), not a model of undefined behaviour, which in outcome-set semantics is the set of all behaviours, refined by everything, and is not representable by a finite list. Missing operator arguments are read as [].",
+      "Freeze is not an operator of oModel. In the separate language Toy.DirCC.Dup, after a let-shared freeze is inlined into copies that share a tag, refining the argument of one copy only can produce an outcome the shared program cannot (Toy.DirCC.Dup.one_copy_refinement_breaks_tagged_sharing).",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "N. P. Lopes, D. Menendez, S. Nagarakatte, J. Regehr. Provably correct peephole optimizations with Alive. PLDI 2015, 22-32. DOI 10.1145/2737924.2737965: 'The target of an Alive transformation refines the source template if all the behaviors of the target are included in the set of behaviors of the source.'",
+      "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr. Alive2: bounded translation validation for LLVM. PLDI 2021, 65-79. DOI 10.1145/3453483.3454030: 'Refinement allows a transformation to remove non-determinism, but not to add it.'",
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes. Taming Undefined Behavior in LLVM. PLDI 2017, 633-647. DOI 10.1145/3062341.3062343. 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.' Section 5.5: 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'"
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "hash-consing-nondeterministic-node-false-refinement",
+    "lean": "Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "LLVM's freeze semantics already forbids duplicating freeze; this mechanizes the hash-consing consequence for a toy freeze over poison.",
+    "plain_claim": "With x poison, `let a := frz x; a + a` inlines to `frz x + frz x`; hash-consing that term merges the two identical frz nodes into one table node, and the table cannot produce the outcome 1 while `frz x + frz x` read as a tree (independent choices) can. So reading the merged node back as the duplicated tree asserts a false refinement: `frz x + frz x` does not refine `let a := frz x; a + a`. The converse refinement holds, so merging itself only removes nondeterminism.",
+    "statement": "theorem dup_vs_let_hashcons_counterexample : inline letProg = dupProg ∧ hashcons [] dupProg = ([.var 0, .frz 0 0, .add 1 1], 2) ∧ indep poisonEnv dupProg (some 1) ∧ ¬ hcSem poisonEnv dupProg (some 1) ∧ ¬ indep poisonEnv letProg (some 1) ∧ ¬ Refines dupProg letProg ∧ Refines letProg dupProg  -- note: Refines tgt src takes the target first",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample is a closed statement about letProg, dupProg and the all-poison environment.",
+    "nonvacuity_witness_lean": "Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample",
+    "non_claims": [
+      "It does not show that hash-consing (merging) freeze nodes is wrong as a compilation step: merging removes nondeterminism, and the merged program refines the duplicated one (Refines letProg dupProg). The failure is identifying the two, i.e. reading the merged node back as the duplicated tree.",
+      "No e-graph rebuild, e-class merging or e-matching is modelled; 'e-graph' here means a hash-consed node table.",
+      "The language has only variables, literals, add, freeze over poison, and let; no undef, UB, memory or bit widths.",
+      "Argument order: Dup.Refines tgt src takes the target program first ('tgt refines src'), whereas Dup.ValLe, OLe and Model.le take the source first.",
+      "The language is a toy (variables, literals, add, freeze over poison values, let) with a set-of-outcomes semantics and a node-table hash-consing function; no result is a theorem about LLVM, Cranelift, egg, egglog, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes. Taming Undefined Behavior in LLVM. PLDI 2017, 633-647. DOI 10.1145/3062341.3062343. 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.' Section 5.5: 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'",
+      "LLVM Language Reference, llvm/llvm-project at commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, llvm/docs/LangRef.md, 'freeze' instruction: an undef or poison argument yields 'an arbitrary, but fixed, value'; 'All uses of a value returned by the same freeze instruction are guaranteed to always observe the same value, while different freeze instructions may yield different values.'",
+      "bytecodealliance/rfcs, accepted/cranelift-egraph.md (at commit b6faa4a4b7de4d0208b2ef72470b01feded00e4c): restricting union to node-creation time gives the acyclic e-graph; side-effecting Inst nodes keep the original instruction 'so that the Insts are not deduplicated: every instance is a logically separate and unique side-effect.'",
+      "bytecodealliance/wasmtime at commit 9e2a9d627d0caf56b9d0c99da1ef989971f016e3, cranelift/codegen/src/egraph/mod.rs (optimize_skeleton_inst): in the shipped implementation, as opposed to the RFC above, side-effecting 'skeleton' instructions stay in the layout rather than in the e-graph; those satisfying is_mergeable_for_egraph are still deduplicated against a dominating identical instance through a scoped GVN map, and other side-effecting instructions are always kept.",
+      "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr. Alive2: bounded translation validation for LLVM. PLDI 2021, 65-79. DOI 10.1145/3453483.3454030: 'Refinement allows a transformation to remove non-determinism, but not to add it.'"
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "hash-consing-sound-under-unique-instance-tags",
+    "lean": "Toy.DirCC.Dup.hashcons_inline_sound_of_uniqueTags",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Giving each nondeterministic instance a unique identity is the discipline LLVM's freeze semantics and Cranelift's non-deduplicated side-effect nodes follow; this states it as a semantics-preservation theorem for hash-consing.",
+    "plain_claim": "For every program t whose frz occurrences carry pairwise distinct tags (UniqueTags) and every environment, the hash-consed node table of the inlined program `inline t` has exactly the independent-choice outcomes of t.",
+    "statement": "theorem hashcons_inline_sound_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueTags t) (v : Val) : hcSem ρ (inline t) v ↔ indep ρ t v  -- where hcSem ρ t v := ∃ c : Nat → Nat, (evalTbl c ρ (hashcons [] t).1 []).getD (hashcons [] t).2 none = v (one choice per table node) and UniqueTags t := ((frzOccs t).map Prod.fst).Nodup",
+    "hypotheses": [
+      {
+        "name": "hu : UniqueTags t",
+        "purpose": "copies produced by inlining share a tag, distinct source occurrences do not",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.Dup.hashcons_inline_sound_needs_uniqueTags"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "letProg (one frz occurrence) has unique tags and inlines to frz0 x + frz0 x.",
+    "nonvacuity_witness_lean": "Toy.DirCC.Dup.hashcons_inline_sound_nonvacuous",
+    "non_claims": [
+      "Tags must be assigned to the source program before inlining; the theorem says nothing about programs whose tags were assigned after duplication.",
+      "It concerns hash-consing only; e-class merging by rewrites is not modelled.",
+      "Only freeze over poison is nondeterministic in the language; other nondeterministic or effectful operators are not covered.",
+      "hcSem evaluates each table node once and shares its value among all uses (DAG semantics). The theorem is about that table semantics and says nothing about code generated from the table. Reading the table back as a tree duplicates shared frz nodes and is unsound even when the source has unique tags: for letProg (unique tags) the table of the inlined program is that of dupProg, and dupProg read as a tree does not refine letProg (Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample). A tree-producing extractor such as Toy.DirCC.extract (on a different, Term-based e-graph type) would do exactly that.",
+      "evalTbl ignores the tag k of a frz node and keys choices by table slot; hashcons merges only syntactically identical nodes. Rewriting the argument of one copy of an inlined tagged freeze, even by an exact identity such as x0 + 0 to x0, makes the term not well-tagged, gives the copies separate slots, and lets the table produce an outcome the source cannot (Toy.DirCC.Dup.copy_rewrite_breaks_hashcons).",
+      "After inlining duplicates a tagged freeze, frz k is not refinement-monotone per copy under either the per-tag reading or the table reading: refining only the first copy's poison argument of frz0 x0 + frz0 x0 to 1 gives frz0 1 + frz0 x0, which can produce 1, while letProg produces only even numbers (Toy.DirCC.Dup.one_copy_refinement_breaks_tagged_sharing). Refinement under a tagged freeze must be applied to all copies at once; soundness of the simultaneous step is not stated here.",
+      "Toy.DirCC.Dup is a standalone expression language with no formal link to Toy.DirCC.Term, Model, Profile, Cert or EGraph.",
+      "The counterexample for UniqueTags refutes the direction indep -> hcSem (independent outcomes are lost by merging). Whether the direction hcSem -> indep holds without UniqueTags is not stated or proved here.",
+      "The language is a toy (variables, literals, add, freeze over poison values, let) with a set-of-outcomes semantics and a node-table hash-consing function; no result is a theorem about LLVM, Cranelift, egg, egglog, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes. Taming Undefined Behavior in LLVM. PLDI 2017, 633-647. DOI 10.1145/3062341.3062343. 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.' Section 5.5: 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'",
+      "LLVM Language Reference, llvm/llvm-project at commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, llvm/docs/LangRef.md, 'freeze' instruction: an undef or poison argument yields 'an arbitrary, but fixed, value'; 'All uses of a value returned by the same freeze instruction are guaranteed to always observe the same value, while different freeze instructions may yield different values.'",
+      "bytecodealliance/rfcs, accepted/cranelift-egraph.md (at commit b6faa4a4b7de4d0208b2ef72470b01feded00e4c): restricting union to node-creation time gives the acyclic e-graph; side-effecting Inst nodes keep the original instruction 'so that the Insts are not deduplicated: every instance is a logically separate and unique side-effect.'",
+      "bytecodealliance/wasmtime at commit 9e2a9d627d0caf56b9d0c99da1ef989971f016e3, cranelift/codegen/src/egraph/mod.rs (optimize_skeleton_inst): in the shipped implementation, as opposed to the RFC above, side-effecting 'skeleton' instructions stay in the layout rather than in the e-graph; those satisfying is_mergeable_for_egraph are still deduplicated against a dominating identical instance through a scoped GVN map, and other side-effecting instructions are always kept.",
+      "O. Flatt, A. Pal, Y. Zhang, R. Tjoa, K. Graham, A. Fischman, C. Nandi, E. Rosenthal, Z. Tatlock, H. Ni. Efficient Extraction for Effectful E-Graphs. arXiv:2609.31887, 2026 (preprint; abstract consulted): extraction for e-graphs of effectful programs whose memory and I/O operations must respect execution order."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "hash-consing-faithful-to-per-tag-choice",
+    "lean": "Toy.DirCC.Dup.hcSem_iff_tagSem_of_letFree_wellTagged",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Bridge lemma: hash-consing identifies identical nodes, which matches one choice per tag exactly when equal tags mark identical subterms.",
+    "plain_claim": "For every let-free term t in which frz occurrences with equal tags have identical arguments (WellTagged), the hash-consed node table of t has exactly the outcomes of t under one choice per tag.",
+    "statement": "theorem hcSem_iff_tagSem_of_letFree_wellTagged (ρ : Nat → Val) (t : Tm) (hlf : LetFree t = true) (hwt : WellTagged t) (v : Val) : hcSem ρ t v ↔ tagSem ρ t v  -- where tagSem ρ t v := ∃ σ : Nat → Nat, evalT σ ρ t = v (one choice per tag) and WellTagged t := ∀ p ∈ frzOccs t, ∀ q ∈ frzOccs t, p.1 = q.1 → p.2 = q.2",
+    "hypotheses": [
+      {
+        "name": "hlf : LetFree t = true",
+        "purpose": "hash-consing is defined on let-free terms only (letE is outside its domain)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.Dup.hcSem_iff_tagSem_needs_letFree"
+      },
+      {
+        "name": "hwt : WellTagged t",
+        "purpose": "equal tags must mark copies of one instance",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.Dup.hcSem_iff_tagSem_needs_wellTagged"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "dupProgTagged (frz0 x + frz1 x) and dupProg (frz0 x + frz0 x) are let-free and well-tagged.",
+    "nonvacuity_witness_lean": "Toy.DirCC.Dup.hcSem_iff_tagSem_nonvacuous",
+    "non_claims": [
+      "The LetFree counterexample reflects the domain of the hash-consing function, not a semantic phenomenon.",
+      "WellTagged requires syntactic equality of the arguments of frz occurrences that share a tag, not semantic equivalence: semantically equal but syntactically different copies (frz0 (x0 + 0) + frz0 x0) are not merged by hashcons, and the table and per-tag readings then differ (Toy.DirCC.Dup.copy_rewrite_breaks_hashcons).",
+      "A decomposition lemma for hash-consing-sound-under-unique-instance-tags, not an end-to-end e-graph soundness theorem.",
+      "The language is a toy (variables, literals, add, freeze over poison values, let) with a set-of-outcomes semantics and a node-table hash-consing function; no result is a theorem about LLVM, Cranelift, egg, egglog, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "bytecodealliance/rfcs, accepted/cranelift-egraph.md (at commit b6faa4a4b7de4d0208b2ef72470b01feded00e4c): restricting union to node-creation time gives the acyclic e-graph; side-effecting Inst nodes keep the original instruction 'so that the Insts are not deduplicated: every instance is a logically separate and unique side-effect.'",
+      "bytecodealliance/wasmtime at commit 9e2a9d627d0caf56b9d0c99da1ef989971f016e3, cranelift/codegen/src/egraph/mod.rs (optimize_skeleton_inst): in the shipped implementation, as opposed to the RFC above, side-effecting 'skeleton' instructions stay in the layout rather than in the e-graph; those satisfying is_mergeable_for_egraph are still deduplicated against a dominating identical instance through a scoped GVN map, and other side-effecting instructions are always kept.",
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes. Taming Undefined Behavior in LLVM. PLDI 2017, 633-647. DOI 10.1145/3062341.3062343. 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.' Section 5.5: 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'"
+    ],
+    "design_question": "Reference point: decomposition lemma for hash-consing-sound-under-unique-instance-tags. E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "per-tag-choice-equals-independent-choice-under-unique-tags",
+    "lean": "Toy.DirCC.Dup.tagSem_iff_indep_of_uniqueTags",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Bridge lemma: without loops each syntactic occurrence is evaluated at most once, so per-occurrence and per-tag choices coincide when tags are unique.",
+    "plain_claim": "For every term t whose frz occurrences carry pairwise distinct tags and every environment, the outcomes under one choice per tag are exactly the independent-choice outcomes.",
+    "statement": "theorem tagSem_iff_indep_of_uniqueTags (ρ : Nat → Val) (t : Tm) (hu : UniqueTags t) (v : Val) : tagSem ρ t v ↔ indep ρ t v",
+    "hypotheses": [
+      {
+        "name": "hu : UniqueTags t",
+        "purpose": "otherwise two occurrences sharing a tag are forced to agree",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.Dup.tagSem_iff_indep_needs_uniqueTags"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "dupProgTagged and letProg have unique tags.",
+    "nonvacuity_witness_lean": "Toy.DirCC.Dup.tagSem_iff_indep_nonvacuous",
+    "non_claims": [
+      "Relies on the language having no loops or recursion (each occurrence evaluated at most once per run); nothing is claimed for languages with iteration.",
+      "UniqueTags fails as soon as a let-bound freeze used more than once is inlined (inline letProg = dupProg, which repeats tag 0), and on such inlined programs the per-tag and independent readings can differ (Toy.DirCC.Dup.tagSem_iff_indep_needs_uniqueTags on dupProg).",
+      "A decomposition lemma for hash-consing-sound-under-unique-instance-tags.",
+      "The language is a toy (variables, literals, add, freeze over poison values, let) with a set-of-outcomes semantics and a node-table hash-consing function; no result is a theorem about LLVM, Cranelift, egg, egglog, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes. Taming Undefined Behavior in LLVM. PLDI 2017, 633-647. DOI 10.1145/3062341.3062343. 'All uses of a given freeze return the same value, but different freezes of a value may return different constants.' Section 5.5: 'Duplicating freeze instructions is not allowed, since each freeze instruction may return a different value if the input is poison.'",
+      "LLVM Language Reference, llvm/llvm-project at commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, llvm/docs/LangRef.md, 'freeze' instruction: an undef or poison argument yields 'an arbitrary, but fixed, value'; 'All uses of a value returned by the same freeze instruction are guaranteed to always observe the same value, while different freeze instructions may yield different values.'"
+    ],
+    "design_question": "Reference point: decomposition lemma for hash-consing-sound-under-unique-instance-tags. E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "oriented-extraction-sound",
+    "lean": "Toy.DirCC.extract_refines_of_chosenOriented_mono",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Oriented (<= / >=) extraction appears in a refinement e-graph prototype; this states the soundness condition precisely, including the requirement that extraction descend only through monotone positions.",
+    "plain_claim": "If the model is transitive (LeTrans) and monotone at the positions P declares mono (MonoAt P), every chosen e-node refines its class denotation when its children are read as their class denotations (ChosenOriented), and every argument position of every chosen e-node is declared mono (ChosenMono), then every term returned by `extract ch fuel c` refines the denotation of class c.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem extract_refines_of_chosenOriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hCO : ChosenOriented M ρ den ch) (hCM : ChosenMono P ch) {fuel c : Nat} {t : Term Op} (h : extract ch fuel c = some t) : M.le (den c) (eval M ρ t)  -- where ChosenOriented M ρ den ch := ∀ c n, ch c = some n → M.le (den c) (nodeVal M ρ den n); ChosenMono P ch := ∀ c f ks, ch c = some (.app f ks) → ∀ i, i < ks.length → P f i = .mono; nodeVal M ρ den (.var x) = ρ x, nodeVal M ρ den (.app f ks) = M.interp f (ks.map den)",
+    "hypotheses": [
+      {
+        "name": "hT : LeTrans M",
+        "purpose": "chains the per-position refinements",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_trans"
+      },
+      {
+        "name": "hMono : MonoAt P M",
+        "purpose": "pushes child refinements through parents",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_monoAt"
+      },
+      {
+        "name": "hCO : ChosenOriented M ρ den ch",
+        "purpose": "each chosen node must refine (not merely be related to) its class",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_unoriented_counterexample"
+      },
+      {
+        "name": "hCM : ChosenMono P ch",
+        "purpose": "extraction may only descend through mono positions",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_chosenMono"
+      },
+      {
+        "name": "h : extract ch fuel c = some t",
+        "purpose": "names the extracted term; without it t is an arbitrary term unrelated to the choice (termination is the subject of the well-founded extraction result)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_extract_some"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Outcome model, egStrict (class 0 = {choose(class 1, class 2)} with denotation [0,1,2], class 1 = {0} with [0,1], class 2 = {2} with [1,2]) and the choice of the only e-nodes; extraction at fuel 2 returns choose(0, 2) (outcomes [0,2]), which strictly refines [0,1,2]; ChosenMono is exercised at a two-argument node.",
+    "nonvacuity_witness_lean": "Toy.DirCC.extract_refines_nonvacuous",
+    "non_claims": [
+      "Extraction through eqOnly positions (even when the child class is two-sided) is not covered.",
+      "No cost model or optimality of the extracted term is considered.",
+      "The class denotation den is an input; the theorem does not say how an e-graph establishes Oriented.",
+      "The e-graph form (extract_refines_of_oriented_mono, card oriented-extraction-sound-egraph-form) additionally needs the choice to stay inside the classes (extract_needs_choiceIn).",
+      "extract unfolds the choice into an unshared Term tree: a class chosen below several parents is unfolded once per use, so the tree can be exponentially larger than the choice graph, and no shared (SSA or let-bound) output is produced. Both nodeVal and eval read a class used twice as two independent evaluations; programs whose meaning depends on sharing one nondeterministic result (such as Toy.DirCC.Dup.letProg) cannot be represented in this e-graph type, and reading a hash-consed Dup table back as a tree is unsound (Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample).",
+      "EGraph has no inter-class inequality edges and no merge or rebuild operation; Oriented requires every e-node of class c to refine the single denotation den c. Merging two classes c1, c2 after learning den c1 <= den c2 preserves Oriented in general neither with denotation den c2 (e-nodes of c1 need not refine den c2) nor with den c1 (parents that read c2 as a child would then read den c1); nothing is proved about e-graph construction or rebuilding.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "P. Zucker. Refinement E-Graphs. Blog post (not peer-reviewed), dated 2026-10-04, https://www.philipzucker.com/refinement_egraph/; the post's source is preserved in the public repository philzook58/philzook58.github.io at commit de5119da6ee25e23d419dd8c95484cf295510031, file _posts/2026-10-04-refinement_egraph.md. Prototype (research software, not peer-reviewed): philzook58/refinement-microegg at commit 95a098d4751fd468a874ddeb5627330240182193. A built-in <= relation that is reflexive, transitive and collapses cycles to =; per-argument variance (monotone, anti-monotone, unknown); 'refinement closure' instead of congruence closure; extraction in <= / >= modes. Functions always respect =, so there is no opaque position kind; freeze and hash-consing of nondeterministic nodes are not discussed.",
+      "M. Willsey, C. Nandi, Y. R. Wang, O. Flatt, Z. Tatlock, P. Panchekha. egg: Fast and Extensible Equality Saturation. Proc. ACM Program. Lang. 5(POPL), 1-29, 2021. DOI 10.1145/3434304. Rewrites add the right-hand side and merge it with the matched e-class (equalities); extraction selects a minimum-cost represented term from an e-class.",
+      "bytecodealliance/wasmtime at commit 9e2a9d627d0caf56b9d0c99da1ef989971f016e3: cranelift/codegen/src/ir/dfg.rs (Union values 'used for aegraph (acyclic egraph) representation'); cranelift/codegen/src/egraph/mod.rs (rewrites union all rewritten forms into an eclass, with an opt-in 'subsume'; side-effectful instructions are not added to the egraph); cranelift/codegen/src/egraph/elaborate.rs (best value chosen bottom-up over a topological order, minimum over Union nodes).",
+      "A. F. Ramos, D. B. Hulak, R. J. G. B. de Queiroz. Checking Equality-Saturation Merge and Extraction Certificates. Archive of Formal Proofs, July 14, 2026, https://www.isa-afp.org/entries/Equality_Saturation_Checker.html (entry abstract consulted): an Isabelle/HOL executable checker for egg 0.11.0 flat explanations and, for extraction, a bottom-up dynamic program over a finite e-graph represented as a topologically ordered e-class DAG with a proof of minimum additive cost; soundness targets the (symmetric) conversion relation of the AFP entry First-Order Rewriting."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "oriented-extraction-sound-egraph-form",
+    "lean": "Toy.DirCC.extract_refines_of_oriented_mono",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "E-graph form of oriented-extraction-sound, obtained through chosenOriented_of_oriented; folklore made precise.",
+    "plain_claim": "If the model is transitive (LeTrans) and monotone at the positions P declares mono (MonoAt P), every e-node of every class refines the class denotation when its children are read as their class denotations (Oriented), the choice picks e-nodes of their own classes (ChoiceIn), and every argument position of every chosen e-node is declared mono (ChosenMono), then every term returned by `extract ch fuel c` refines the denotation of class c.",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem extract_refines_of_oriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {G : EGraph Op} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hO : Oriented M ρ G den) (hC : ChoiceIn G ch) (hCM : ChosenMono P ch) {fuel c : Nat} {t : Term Op} (h : extract ch fuel c = some t) : M.le (den c) (eval M ρ t)  -- where Oriented M ρ G den := ∀ c n, n ∈ G.nodes c → M.le (den c) (nodeVal M ρ den n) and ChoiceIn G ch := ∀ c n, ch c = some n → n ∈ G.nodes c",
+    "hypotheses": [
+      {
+        "name": "hT : LeTrans M",
+        "purpose": "chains the per-position refinements",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_trans"
+      },
+      {
+        "name": "hMono : MonoAt P M",
+        "purpose": "pushes child refinements through parents",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_monoAt"
+      },
+      {
+        "name": "hO : Oriented M ρ G den",
+        "purpose": "every e-node must refine (not merely be related to) its class",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_oriented_needs_oriented"
+      },
+      {
+        "name": "hC : ChoiceIn G ch",
+        "purpose": "the choice must pick e-nodes of the class it unfolds",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_choiceIn"
+      },
+      {
+        "name": "hCM : ChosenMono P ch",
+        "purpose": "extraction may only descend through mono positions",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_chosenMono"
+      },
+      {
+        "name": "h : extract ch fuel c = some t",
+        "purpose": "names the extracted term; without it t is an arbitrary term unrelated to the choice (termination is the subject of the well-founded extraction result)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extract_needs_extract_some"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "As for oriented-extraction-sound: egStrict is oriented and chStrict picks inside its classes.",
+    "nonvacuity_witness_lean": "Toy.DirCC.extract_refines_nonvacuous",
+    "non_claims": [
+      "Extraction through eqOnly positions (even when the child class is two-sided) is not covered.",
+      "No cost model or optimality of the extracted term is considered.",
+      "The class denotation den is an input; the theorem does not say how an e-graph establishes Oriented.",
+      "extract unfolds the choice into an unshared Term tree: a class chosen below several parents is unfolded once per use, so the tree can be exponentially larger than the choice graph, and no shared (SSA or let-bound) output is produced. Both nodeVal and eval read a class used twice as two independent evaluations; programs whose meaning depends on sharing one nondeterministic result (such as Toy.DirCC.Dup.letProg) cannot be represented in this e-graph type, and reading a hash-consed Dup table back as a tree is unsound (Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample).",
+      "EGraph has no inter-class inequality edges and no merge or rebuild operation; Oriented requires every e-node of class c to refine the single denotation den c. Merging two classes c1, c2 after learning den c1 <= den c2 preserves Oriented in general neither with denotation den c2 (e-nodes of c1 need not refine den c2) nor with den c1 (parents that read c2 as a child would then read den c1); nothing is proved about e-graph construction or rebuilding.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "P. Zucker. Refinement E-Graphs. Blog post (not peer-reviewed), dated 2026-10-04, https://www.philipzucker.com/refinement_egraph/; the post's source is preserved in the public repository philzook58/philzook58.github.io at commit de5119da6ee25e23d419dd8c95484cf295510031, file _posts/2026-10-04-refinement_egraph.md. Prototype (research software, not peer-reviewed): philzook58/refinement-microegg at commit 95a098d4751fd468a874ddeb5627330240182193. A built-in <= relation that is reflexive, transitive and collapses cycles to =; per-argument variance (monotone, anti-monotone, unknown); 'refinement closure' instead of congruence closure; extraction in <= / >= modes. Functions always respect =, so there is no opaque position kind; freeze and hash-consing of nondeterministic nodes are not discussed.",
+      "M. Willsey, C. Nandi, Y. R. Wang, O. Flatt, Z. Tatlock, P. Panchekha. egg: Fast and Extensible Equality Saturation. Proc. ACM Program. Lang. 5(POPL), 1-29, 2021. DOI 10.1145/3434304. Rewrites add the right-hand side and merge it with the matched e-class (equalities); extraction selects a minimum-cost represented term from an e-class.",
+      "bytecodealliance/wasmtime at commit 9e2a9d627d0caf56b9d0c99da1ef989971f016e3: cranelift/codegen/src/ir/dfg.rs (Union values 'used for aegraph (acyclic egraph) representation'); cranelift/codegen/src/egraph/mod.rs (rewrites union all rewritten forms into an eclass, with an opt-in 'subsume'; side-effectful instructions are not added to the egraph); cranelift/codegen/src/egraph/elaborate.rs (best value chosen bottom-up over a topological order, minimum over Union nodes).",
+      "A. F. Ramos, D. B. Hulak, R. J. G. B. de Queiroz. Checking Equality-Saturation Merge and Extraction Certificates. Archive of Formal Proofs, July 14, 2026, https://www.isa-afp.org/entries/Equality_Saturation_Checker.html (entry abstract consulted): an Isabelle/HOL executable checker for egg 0.11.0 flat explanations and, for extraction, a bottom-up dynamic program over a finite e-graph represented as a topologically ordered e-class DAG with a proof of minimum additive cost; soundness targets the (symmetric) conversion relation of the AFP entry First-Order Rewriting."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "unoriented-extraction-counterexample",
+    "lean": "Toy.DirCC.extract_unoriented_counterexample",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "A symmetric e-class over directed facts permits extraction against the refinement direction; known in spirit (symmetric e-classes are unsound for refinements), made concrete.",
+    "plain_claim": "In the outcome model, class 0 of egUnoriented denotes [0] (the source program 0) and also contains choose(0, 1) (outcomes [0,1]), which is related to the class only in the opposite direction; every node is related to its class in some direction, the choice stays in the classes and descends only through mono positions, and the extracted choose(0, 1) does not refine [0].",
+    "statement": "theorem extract_unoriented_counterexample : LeTrans oModel ∧ MonoAt oProfile oModel ∧ RelatedEitherWay oModel (fun _ => []) egUnoriented denLit ∧ ChoiceIn egUnoriented chChoose ∧ ¬ ChosenOriented oModel (fun _ => []) denLit chChoose ∧ ChosenMono oProfile chChoose ∧ extract chChoose 2 0 = some (.app .choose [.app (.lit 0) [], .app (.lit 1) []]) ∧ ¬ oModel.le (denLit 0) (eval oModel (fun _ => []) (.app .choose [.app (.lit 0) [], .app (.lit 1) []]))  -- egUnoriented: class 0 = {lit 0, choose(1, 2)}, class 1 = {lit 0}, class 2 = {lit 1}; denLit = [[0], [0], [1]]; chChoose picks choose(1, 2) in class 0",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample is a closed statement about egUnoriented and chChoose.",
+    "nonvacuity_witness_lean": "Toy.DirCC.extract_unoriented_counterexample",
+    "non_claims": [
+      "It does not show that cost-based extractors in existing tools pick such a node; any extractor that may pick it is unsound.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "P. Zucker. Refinement E-Graphs. Blog post (not peer-reviewed), dated 2026-10-04, https://www.philipzucker.com/refinement_egraph/; the post's source is preserved in the public repository philzook58/philzook58.github.io at commit de5119da6ee25e23d419dd8c95484cf295510031, file _posts/2026-10-04-refinement_egraph.md. Prototype (research software, not peer-reviewed): philzook58/refinement-microegg at commit 95a098d4751fd468a874ddeb5627330240182193. A built-in <= relation that is reflexive, transitive and collapses cycles to =; per-argument variance (monotone, anti-monotone, unknown); 'refinement closure' instead of congruence closure; extraction in <= / >= modes. Functions always respect =, so there is no opaque position kind; freeze and hash-consing of nondeterministic nodes are not discussed.",
+      "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr. Alive2: bounded translation validation for LLVM. PLDI 2021, 65-79. DOI 10.1145/3453483.3454030: 'Refinement allows a transformation to remove non-determinism, but not to add it.'",
+      "A. F. Ramos, D. B. Hulak, R. J. G. B. de Queiroz. Checking Equality-Saturation Merge and Extraction Certificates. Archive of Formal Proofs, July 14, 2026, https://www.isa-afp.org/entries/Equality_Saturation_Checker.html (entry abstract consulted): an Isabelle/HOL executable checker for egg 0.11.0 flat explanations and, for extraction, a bottom-up dynamic program over a finite e-graph represented as a topologically ordered e-class DAG with a proof of minimum additive cost; soundness targets the (symmetric) conversion relation of the AFP entry First-Order Rewriting."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "well-founded-extraction-terminates-and-is-sound",
+    "lean": "Toy.DirCC.extract_total_and_sound_of_wfBelow_oriented_mono",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Well-founded (acyclic) extraction is standard practice (the egg implementation's cost fixpoint only costs e-nodes whose children are costed; theta-node well-formedness in PEGs; extraction over topologically ordered acyclic e-class DAGs); stated here together with refinement soundness.",
+    "plain_claim": "Under LeTrans, MonoAt P, ChosenOriented and ChosenMono, if the choice is well-founded below class c (WFBelow: every class reachable from c by unfolding the choice has a chosen e-node, and there is no infinite descending path of unfoldings — which, when only finitely many classes are reachable, amounts to the absence of cycles), then for some fuel extraction from c returns a term, and that term refines the denotation of c. WFBelow is exactly the condition for extraction from c to terminate (extract_isSome_iff_wfBelow).",
+    "statement": "(in the scope of `variable {Op : Type}`) theorem extract_total_and_sound_of_wfBelow_oriented_mono {P : Profile Op} {M : Model Op} {ρ : Nat → M.C} {den : Nat → M.C} {ch : Choice Op} (hT : LeTrans M) (hMono : MonoAt P M) (hCO : ChosenOriented M ρ den ch) (hCM : ChosenMono P ch) {c : Nat} (hW : WFBelow ch c) : ∃ fuel t, extract ch fuel c = some t ∧ M.le (den c) (eval M ρ t)  -- where WFBelow ch is the inductive predicate with constructors var : ch c = some (.var x) → WFBelow ch c and app : ch c = some (.app f ks) → (∀ k, k ∈ ks → WFBelow ch k) → WFBelow ch c",
+    "hypotheses": [
+      {
+        "name": "hT : LeTrans M",
+        "purpose": "as for oriented extraction",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extractWF_needs_trans"
+      },
+      {
+        "name": "hMono : MonoAt P M",
+        "purpose": "as for oriented extraction",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extractWF_needs_monoAt"
+      },
+      {
+        "name": "hCO : ChosenOriented M ρ den ch",
+        "purpose": "as for oriented extraction",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extractWF_needs_chosenOriented"
+      },
+      {
+        "name": "hCM : ChosenMono P ch",
+        "purpose": "as for oriented extraction",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extractWF_needs_chosenMono"
+      },
+      {
+        "name": "hW : WFBelow ch c",
+        "purpose": "termination: unfolding the choice from c must reach only classes with a choice and have no infinite descending path (no cycle, and no infinite acyclic chain over unbounded class ids: chInf_acyclic_total_not_wfBelow)",
+        "tightness": "tight",
+        "counterexample": "Toy.DirCC.extractWF_needs_wfBelow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Two instances: egStrict with chStrict (depth two, strict refinement), and the cyclic class {x0, choose(class 0, class 0)} of egCycle with the acyclic choice x0.",
+    "nonvacuity_witness_lean": "Toy.DirCC.extract_wf_nonvacuous",
+    "non_claims": [
+      "No bound on the fuel is stated beyond existence.",
+      "Cyclic e-classes are allowed; only the choice must be well-founded.",
+      "No cost model or optimality is considered.",
+      "WFBelow ch c is an assumed hypothesis: no cost function, greedy cost fixpoint or ILP extractor is modelled or proved to produce a well-founded choice. (Unproved informal remark, not formalized or proved here: with zero-cost operators, such as a choose of a class with itself, minimum-cost ties can follow a cycle unless ties are broken by a well-founded order.)",
+      "A choice with no cycle need not be well-founded when class ids are unbounded (Toy.DirCC.chInf_acyclic_total_not_wfBelow); 'no cycle' suffices only when finitely many classes are reachable.",
+      "extract unfolds the choice into an unshared Term tree: a class chosen below several parents is unfolded once per use, so the tree can be exponentially larger than the choice graph, and no shared (SSA or let-bound) output is produced. Both nodeVal and eval read a class used twice as two independent evaluations; programs whose meaning depends on sharing one nondeterministic result (such as Toy.DirCC.Dup.letProg) cannot be represented in this e-graph type, and reading a hash-consed Dup table back as a tree is unsound (Toy.DirCC.Dup.dup_vs_let_hashcons_counterexample).",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "M. Willsey, C. Nandi, Y. R. Wang, O. Flatt, Z. Tatlock, P. Panchekha. egg: Fast and Extensible Equality Saturation. Proc. ACM Program. Lang. 5(POPL), 1-29, 2021. DOI 10.1145/3434304. Rewrites add the right-hand side and merge it with the matched e-class (equalities); extraction selects a minimum-cost represented term from an e-class.",
+      "egraphs-good/egg at commit 73975c9819efb4af2f3c6c1b44fa53f8c5742574, src/extract.rs: the extractor's cost fixpoint (find_costs / make_pass) assigns a cost to an e-node only when every child class already has a cost (node_total_cost returns None otherwise). This is a property of the implementation, not a statement of the POPL 2021 paper.",
+      "R. Tate, M. Stepp, Z. Tatlock, S. Lerner. Equality saturation: a new approach to optimization. POPL 2009, 264-276, DOI 10.1145/1480881.1480915; journal version Logical Methods in Computer Science 7(1:10), 2011, DOI 10.2168/LMCS-7(1:10)2011. Optimizations are equality analyses that merge PEG nodes into equivalence classes (E-PEGs); loops are theta nodes; well-formed PEGs require every cycle to pass through a theta node's second child; global profitability is solved with a pseudo-Boolean solver.",
+      "R. Arbore, A. Cheung, M. Willsey. Optimism in Equality Saturation. Proc. ACM Program. Lang. 10(PLDI):1383-1406, 2026. DOI 10.1145/3808302 (bibliographic record verified at Crossref). Equality saturation creates cyclic represented graphs to which no concrete execution can be assigned ('ill-formed').",
+      "bytecodealliance/wasmtime at commit 9e2a9d627d0caf56b9d0c99da1ef989971f016e3: cranelift/codegen/src/ir/dfg.rs (Union values 'used for aegraph (acyclic egraph) representation'); cranelift/codegen/src/egraph/mod.rs (rewrites union all rewritten forms into an eclass, with an opt-in 'subsume'; side-effectful instructions are not added to the egraph); cranelift/codegen/src/egraph/elaborate.rs (best value chosen bottom-up over a topological order, minimum over Union nodes).",
+      "A. F. Ramos, D. B. Hulak, R. J. G. B. de Queiroz. Checking Equality-Saturation Merge and Extraction Certificates. Archive of Formal Proofs, July 14, 2026, https://www.isa-afp.org/entries/Equality_Saturation_Checker.html (entry abstract consulted): an Isabelle/HOL executable checker for egg 0.11.0 flat explanations and, for extraction, a bottom-up dynamic program over a finite e-graph represented as a topologically ordered e-class DAG with a proof of minimum additive cost; soundness targets the (symmetric) conversion relation of the AFP entry First-Order Rewriting.",
+      "F. Blanqui, A. Koprowski. CoLoR: a Coq library on well-founded rewrite relations and its application to the automated verification of termination certificates. Mathematical Structures in Computer Science 21(4):827-859, 2011. DOI 10.1017/S0960129511000120 (abstract consulted at Crossref): a mechanized library of well-founded (rewrite) relations."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  },
+  {
+    "id": "cyclic-extraction-counterexample",
+    "lean": "Toy.DirCC.extract_cycle_counterexample",
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Cycles in e-graphs representing infinitely many terms are standard; this makes the failure of cycle-following extraction concrete in a directed setting.",
+    "plain_claim": "In the outcome model, the cyclic class {x0, choose(class 0, class 0)} is oriented with denotation x0 (x0 <= choose(x0, x0) and choose(x0, x0) <= x0, since choose(S, S) has the outcomes of S), and the choice choose(class 0, class 0) stays in the class and descends through mono positions; yet extraction returns none at every fuel, the choice is not well-founded, and no finite term t satisfies t = choose(t, t).",
+    "statement": "theorem extract_cycle_counterexample (ρ : Nat → List Nat) : LeTrans oModel ∧ MonoAt oProfile oModel ∧ Oriented oModel ρ egCycle (fun _ => ρ 0) ∧ ChosenOriented oModel ρ (fun _ => ρ 0) chCycle ∧ oModel.le (nodeVal oModel ρ (fun _ => ρ 0) (.app .choose [0, 0])) (ρ 0) ∧ ChoiceIn egCycle chCycle ∧ ChosenMono oProfile chCycle ∧ ¬ WFBelow chCycle 0 ∧ (∀ fuel, extract chCycle fuel 0 = none) ∧ (∀ t : Term OOp, t ≠ .app .choose [t, t])  -- egCycle: class 0 = {var 0, choose(0, 0)}; chCycle picks choose(0, 0)",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "The counterexample holds for every valuation; it is a closed statement about egCycle and chCycle.",
+    "nonvacuity_witness_lean": "Toy.DirCC.extract_cycle_counterexample",
+    "non_claims": [
+      "It does not show that following a cycle yields a false refinement; it yields no finite term at all.",
+      "Escape hatch (cyclic IRs): the failure concerns unfolding into finite first-order Term trees. In cyclic program representations such as the PEGs of Tate et al., cycles that pass through loop operators (theta nodes) have a defined loop semantics; such representations are not modelled here.",
+      "The setting is a toy: first-order terms over an arbitrary operator type, models are a carrier with an arbitrary binary relation and list-indexed operator interpretations; no result is a theorem about egg, egglog, Cranelift, LLVM, or any production e-graph or IR."
+    ],
+    "prior_art": [
+      "M. Willsey, C. Nandi, Y. R. Wang, O. Flatt, Z. Tatlock, P. Panchekha. egg: Fast and Extensible Equality Saturation. Proc. ACM Program. Lang. 5(POPL), 1-29, 2021. DOI 10.1145/3434304. Rewrites add the right-hand side and merge it with the matched e-class (equalities); extraction selects a minimum-cost represented term from an e-class.",
+      "R. Arbore, A. Cheung, M. Willsey. Optimism in Equality Saturation. Proc. ACM Program. Lang. 10(PLDI):1383-1406, 2026. DOI 10.1145/3808302 (bibliographic record verified at Crossref). Equality saturation creates cyclic represented graphs to which no concrete execution can be assigned ('ill-formed').",
+      "R. Tate, M. Stepp, Z. Tatlock, S. Lerner. Equality saturation: a new approach to optimization. POPL 2009, 264-276, DOI 10.1145/1480881.1480915; journal version Logical Methods in Computer Science 7(1:10), 2011, DOI 10.2168/LMCS-7(1:10)2011. Optimizations are equality analyses that merge PEG nodes into equivalence classes (E-PEGs); loops are theta nodes; well-formed PEGs require every cycle to pass through a theta node's second child; global profitability is solved with a pseudo-Boolean solver."
+    ],
+    "design_question": "E-graphs and equality saturation assume rewrites are equalities; with undefined behaviour and poison, compiler rewrites are refinements (an asymmetric preorder, target refines source), and some operators (freeze, nondeterministic choice, committed choice) cannot be freely duplicated, merged, or rewritten under. Which congruence-closure, certificate-checking and extraction principles remain sound over a refinement preorder, which need operator-specific context modalities, and which fail?"
+  }
+]
