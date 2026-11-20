@@ -8,6 +8,10 @@
 
 //! Check explicit typed capture and its separation from raw compiler arguments.
 
+// The packaged compiler has only its native standard library. The typed
+// capture profile requires the x86-64 Linux standard library.
+#![cfg(all(target_os = "linux", target_arch = "x86_64"))]
+
 mod common;
 
 use std::path::PathBuf;
