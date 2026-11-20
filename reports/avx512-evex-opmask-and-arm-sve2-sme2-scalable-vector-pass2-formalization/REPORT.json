@@ -1,0 +1,136 @@
+{
+  "topics": [
+    "isa/binary-lifting",
+    "isa/simd-media",
+    "isa/x86-64",
+    "isa/aarch64",
+    "anneal/tcb-audit",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg multimedia framework",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "dav1d AV1 decoder",
+      "identity": {
+        "repository": "videolan/dav1d",
+        "revision": "2a0775ca5ea055450bdfbfe81758a3c9e001f58a"
+      }
+    },
+    {
+      "name": "Anneal two-pass verification and TCB audit framework",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Intel X86 Encoder Decoder (XED)",
+      "identity": {
+        "repository": "intelxed/xed",
+        "revision": "0bcb6237345c5066726dcc08b3d87928df3b5b26"
+      }
+    },
+    {
+      "name": "s2n-bignum HOL Light x86_64 and AArch64 formal models",
+      "identity": {
+        "repository": "awslabs/s2n-bignum",
+        "revision": "280a220986a0bc6249248187717a771153d073db"
+      }
+    },
+    {
+      "name": "ACL2 theorem prover and x86isa machine model",
+      "identity": {
+        "repository": "acl2/acl2",
+        "revision": "08bec1884997560686932229dbfe458c1bba34bf"
+      }
+    },
+    {
+      "name": "ACL2-to-Sail translator and generated Sail x86 model",
+      "identity": {
+        "repository": "rems-project/sail-x86-from-acl2",
+        "revision": "0c6c023dccc7c20d8d9dbfc481f01d9bb49d62bf"
+      }
+    },
+    {
+      "name": "Sail Armv8.5-A and Armv9.4-A ISA specifications",
+      "identity": {
+        "repository": "rems-project/sail-arm",
+        "revision": "5416ef6b43e9527c38dc71fb752259c1d01a47e1"
+      }
+    },
+    {
+      "name": "ASLp partial evaluator and Reduced ASL (rASL) lifter for Armv8/v9",
+      "identity": {
+        "repository": "UQ-PAC/ASLp",
+        "revision": "92e4fd949402056e16e3747e66922060be57ecc8"
+      }
+    },
+    {
+      "name": "LNSym native Lean 4 AArch64 operational semantics",
+      "identity": {
+        "repository": "leanprover/LNSym",
+        "revision": "49f8a1d9e46f8dcfc345f4bc15d35b0ba845ff5c"
+      }
+    },
+    {
+      "name": "Application Binary Interface for the Arm 64-bit Architecture (AAPCS64 and SME PCS)",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+      "identity": {
+        "standard": "Intel 64 and IA-32 Architectures Software Developer's Manual",
+        "document_number": "325462"
+      }
+    },
+    {
+      "name": "Arm Architecture Reference Manual for A-profile architecture",
+      "identity": {
+        "standard": "Arm Architecture Reference Manual for A-profile architecture",
+        "document_number": "ARM DDI 0487"
+      }
+    },
+    {
+      "name": "ITU-T Recommendation H.266 | ISO/IEC 23090-3 Versatile Video Coding (VVC)",
+      "identity": {
+        "standard": "ITU-T H.266 / ISO/IEC 23090-3",
+        "edition": "3.0 (2023-09)"
+      }
+    },
+    {
+      "name": "Lam and Coughlin, Lift-off: Trustworthy ARMv8 Semantics from Formal Specifications (FMCAD 2023)",
+      "identity": {
+        "doi": "10.34727/2023/isbn.978-3-85448-060-0_36"
+      }
+    },
+    {
+      "name": "Coughlin, Michael, and Lam, Sound, Precise, and Fast Partial Evaluation for ISA Semantics (SAS 2024)",
+      "identity": {
+        "doi": "10.1007/978-3-031-74776-2_4"
+      }
+    },
+    {
+      "name": "Goel, The x86isa Books: Features, Usage, and Future Plans (ACL2 2017)",
+      "identity": {
+        "doi": "10.4204/EPTCS.249.1",
+        "arxiv": "1705.01225"
+      }
+    },
+    {
+      "name": "Armstrong et al., ISA Semantics for ARMv8-a, RISC-V, and CHERI-MIPS (POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290384"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
