@@ -1,0 +1,531 @@
+{
+  "compile_metrics": {
+    "o0_abort": {
+      "bss_bytes": 0,
+      "data_bytes": 6696,
+      "ll_bytes": 839620,
+      "obj_bytes": 285600,
+      "opt_mir_bytes": 291333,
+      "rlib_bytes": 365026,
+      "rustc_peak_rss_mb": 148.33,
+      "rustc_wall_sec": 0.4301,
+      "text_bytes": 41392
+    },
+    "o0_unwind": {
+      "bss_bytes": 0,
+      "data_bytes": 6704,
+      "ll_bytes": 844961,
+      "obj_bytes": 290304,
+      "opt_mir_bytes": 289758,
+      "rlib_bytes": 369760,
+      "rustc_peak_rss_mb": 146.13,
+      "rustc_wall_sec": 0.2688,
+      "text_bytes": 41966
+    },
+    "o3_abort": {
+      "bss_bytes": 0,
+      "data_bytes": 240,
+      "ll_bytes": 293592,
+      "obj_bytes": 56776,
+      "opt_mir_bytes": 417588,
+      "rlib_bytes": 123822,
+      "rustc_peak_rss_mb": 146.16,
+      "rustc_wall_sec": 0.7009,
+      "text_bytes": 14052
+    },
+    "o3_unwind": {
+      "bss_bytes": 0,
+      "data_bytes": 240,
+      "ll_bytes": 293264,
+      "obj_bytes": 56744,
+      "opt_mir_bytes": 416865,
+      "rlib_bytes": 123790,
+      "rustc_peak_rss_mb": 146.45,
+      "rustc_wall_sec": 0.545,
+      "text_bytes": 14052
+    }
+  },
+  "crate_loc": 1155,
+  "crate_sha256": "60f74dd30b55d547bb6235a8226d5d8e70dfe5d42bec2da48a6be13b22b60f5c",
+  "crate_source": "vrustc_certcheck_seed.rs",
+  "execution_benchmarks": {
+    "driver_o0": {
+      "bin_bytes": 4486560,
+      "cold_start_median_ms": 2.433,
+      "cold_start_min_ms": 1.934,
+      "driver_compile_sec": 0.2533,
+      "idiomatic_ns_per_bundle_median": 1840.76,
+      "idiomatic_steps_per_sec_median": 6700141.0,
+      "seed_core_ns_per_bundle_median": 766.58,
+      "seed_core_steps_per_sec_median": 16088705.0,
+      "verify_pos3_neg12_ok": true,
+      "warm_peak_rss_mb": 21.5
+    },
+    "driver_o3": {
+      "bin_bytes": 4409256,
+      "cold_start_median_ms": 5.784,
+      "cold_start_min_ms": 3.137,
+      "driver_compile_sec": 1.1174,
+      "idiomatic_ns_per_bundle_median": 512.96,
+      "idiomatic_steps_per_sec_median": 24043641.0,
+      "seed_core_ns_per_bundle_median": 321.69,
+      "seed_core_steps_per_sec_median": 38338723.0,
+      "verify_pos3_neg12_ok": true,
+      "warm_peak_rss_mb": 21.62
+    }
+  },
+  "lean_defs_types": 95,
+  "lean_kernel_axioms_stdout": "'MirToMiniMachO0Seed.mirToMiniMachO0_forward_sim' depends on axioms: [propext, Classical.choice, Quot.sound]\n'MirToMiniMachO0Seed.mirToMiniMachO0_backward_sim' depends on axioms: [propext, Classical.choice, Quot.sound]\n'MirToMiniMachO0Seed.cex_m4_move_then_copy_faults_in_mir_not_mach' depends on axioms: [propext, Quot.sound]\n'MirToMiniMachO0Seed.two_step_bootstrap_sound' depends on axioms: [propext, Classical.choice, Quot.sound]\n'MirToMiniMachO0Seed.witness_bootstrap_accepts_valid_and_rejects_thompson_trojan' depends on axioms: [propext,\n Quot.sound]",
+  "lean_kernel_check_sec": 30.088,
+  "lean_kernel_peak_rss_mb": 700.93,
+  "lean_loc": 3071,
+  "lean_sha256": "2adf1fef25f29fa7b721b2dee768221f4a06c74350f9a6d9af32ad5c53f64d3f",
+  "lean_source": "MirToMiniMachO0Seed.lean",
+  "lean_theorems": 51,
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "mir_censuses": {
+    "o0_abort_runtime_post_cleanup": {
+      "all": {
+        "basic_blocks_max": 280,
+        "basic_blocks_median": 1.0,
+        "basic_blocks_total": 1344,
+        "bodies": 38,
+        "fits_core_mir_o0_bodies": 30,
+        "fits_trusted_v1_bodies": 6,
+        "locals_by_ty": {
+          "array_fixed": 31,
+          "bool": 491,
+          "closure": 1,
+          "never": 112,
+          "ref_mut_array": 24,
+          "ref_mut_other": 25,
+          "ref_shared_array": 19,
+          "ref_shared_other": 67,
+          "scalar_int_uint": 1329,
+          "std_or_result_adt": 186,
+          "tuple": 93,
+          "unit": 116,
+          "user_struct_or_enum": 20
+        },
+        "projs": {
+          "deref": 251,
+          "downcast": 54,
+          "field": 602,
+          "index": 228,
+          "unprojected_lhs": 2465
+        },
+        "rvals": {
+          "Aggregate": 101,
+          "BinaryOp": 619,
+          "Cast": 87,
+          "Discriminant": 38,
+          "Other": 54,
+          "OverflowBinaryOp": 68,
+          "Ref": 84,
+          "Repeat": 24,
+          "UnaryOp_NotNeg": 27,
+          "UnaryOp_PtrMetadata": 10,
+          "Use_Constant": 284,
+          "Use_Copy": 1009,
+          "Use_Move": 147
+        },
+        "stmts": {
+          "Assign": 2552,
+          "StorageDead": 2779,
+          "StorageLive": 1985
+        },
+        "terms": {
+          "Assert": 315,
+          "Call": 211,
+          "Goto": 507,
+          "Return": 38,
+          "SwitchInt": 269,
+          "Unreachable": 4
+        }
+      },
+      "idiomatic_safe": {
+        "basic_blocks_max": 262,
+        "basic_blocks_median": 11.0,
+        "basic_blocks_total": 650,
+        "bodies": 10,
+        "fits_core_mir_o0_bodies": 2,
+        "fits_trusted_v1_bodies": 1,
+        "locals_by_ty": {
+          "array_fixed": 15,
+          "bool": 208,
+          "closure": 1,
+          "never": 55,
+          "ref_mut_array": 4,
+          "ref_mut_other": 25,
+          "ref_shared_array": 13,
+          "ref_shared_other": 57,
+          "scalar_int_uint": 580,
+          "std_or_result_adt": 186,
+          "tuple": 25,
+          "unit": 46,
+          "user_struct_or_enum": 6
+        },
+        "projs": {
+          "deref": 95,
+          "downcast": 54,
+          "field": 302,
+          "index": 114,
+          "unprojected_lhs": 1124
+        },
+        "rvals": {
+          "Aggregate": 67,
+          "BinaryOp": 270,
+          "Cast": 10,
+          "Discriminant": 30,
+          "Other": 51,
+          "OverflowBinaryOp": 7,
+          "Ref": 48,
+          "Repeat": 8,
+          "UnaryOp_NotNeg": 11,
+          "UnaryOp_PtrMetadata": 10,
+          "Use_Constant": 107,
+          "Use_Copy": 502,
+          "Use_Move": 56
+        },
+        "stmts": {
+          "Assign": 1177,
+          "StorageDead": 1300,
+          "StorageLive": 966
+        },
+        "terms": {
+          "Assert": 132,
+          "Call": 162,
+          "Goto": 225,
+          "Return": 10,
+          "SwitchInt": 117,
+          "Unreachable": 4
+        }
+      },
+      "seed_core": {
+        "basic_blocks_max": 280,
+        "basic_blocks_median": 27.5,
+        "basic_blocks_total": 666,
+        "bodies": 8,
+        "fits_core_mir_o0_bodies": 8,
+        "fits_trusted_v1_bodies": 0,
+        "locals_by_ty": {
+          "array_fixed": 16,
+          "bool": 275,
+          "never": 57,
+          "ref_mut_array": 20,
+          "ref_shared_array": 6,
+          "ref_shared_other": 2,
+          "scalar_int_uint": 725,
+          "tuple": 68,
+          "unit": 65,
+          "user_struct_or_enum": 4
+        },
+        "projs": {
+          "deref": 122,
+          "downcast": 0,
+          "field": 292,
+          "index": 114,
+          "unprojected_lhs": 1285
+        },
+        "rvals": {
+          "Aggregate": 34,
+          "BinaryOp": 341,
+          "Cast": 77,
+          "Other": 3,
+          "OverflowBinaryOp": 61,
+          "Ref": 28,
+          "Repeat": 16,
+          "UnaryOp_NotNeg": 16,
+          "Use_Constant": 171,
+          "Use_Copy": 481,
+          "Use_Move": 91
+        },
+        "stmts": {
+          "Assign": 1319,
+          "StorageDead": 1438,
+          "StorageLive": 984
+        },
+        "terms": {
+          "Assert": 183,
+          "Call": 49,
+          "Goto": 277,
+          "Return": 8,
+          "SwitchInt": 149
+        }
+      },
+      "shared_derives": {
+        "basic_blocks_max": 9,
+        "basic_blocks_median": 1.0,
+        "basic_blocks_total": 28,
+        "bodies": 20,
+        "fits_core_mir_o0_bodies": 20,
+        "fits_trusted_v1_bodies": 5,
+        "locals_by_ty": {
+          "bool": 8,
+          "ref_shared_other": 8,
+          "scalar_int_uint": 24,
+          "unit": 5,
+          "user_struct_or_enum": 10
+        },
+        "projs": {
+          "deref": 34,
+          "downcast": 0,
+          "field": 8,
+          "unprojected_lhs": 56
+        },
+        "rvals": {
+          "BinaryOp": 8,
+          "Discriminant": 8,
+          "Ref": 8,
+          "Use_Constant": 6,
+          "Use_Copy": 26
+        },
+        "stmts": {
+          "Assign": 56,
+          "StorageDead": 41,
+          "StorageLive": 35
+        },
+        "terms": {
+          "Goto": 5,
+          "Return": 20,
+          "SwitchInt": 3
+        }
+      }
+    },
+    "o0_unwind_runtime_post_cleanup": {
+      "all": {
+        "basic_blocks_max": 280,
+        "basic_blocks_median": 1.0,
+        "basic_blocks_total": 1344,
+        "bodies": 38,
+        "fits_core_mir_o0_bodies": 30,
+        "fits_trusted_v1_bodies": 6,
+        "locals_by_ty": {
+          "array_fixed": 31,
+          "bool": 491,
+          "closure": 1,
+          "never": 112,
+          "ref_mut_array": 24,
+          "ref_mut_other": 25,
+          "ref_shared_array": 19,
+          "ref_shared_other": 67,
+          "scalar_int_uint": 1329,
+          "std_or_result_adt": 186,
+          "tuple": 93,
+          "unit": 116,
+          "user_struct_or_enum": 20
+        },
+        "projs": {
+          "deref": 251,
+          "downcast": 54,
+          "field": 602,
+          "index": 228,
+          "unprojected_lhs": 2465
+        },
+        "rvals": {
+          "Aggregate": 101,
+          "BinaryOp": 619,
+          "Cast": 87,
+          "Discriminant": 38,
+          "Other": 54,
+          "OverflowBinaryOp": 68,
+          "Ref": 84,
+          "Repeat": 24,
+          "UnaryOp_NotNeg": 27,
+          "UnaryOp_PtrMetadata": 10,
+          "Use_Constant": 284,
+          "Use_Copy": 1009,
+          "Use_Move": 147
+        },
+        "stmts": {
+          "Assign": 2552,
+          "StorageDead": 2779,
+          "StorageLive": 1985
+        },
+        "terms": {
+          "Assert": 315,
+          "Call": 211,
+          "Goto": 507,
+          "Return": 38,
+          "SwitchInt": 269,
+          "Unreachable": 4
+        }
+      },
+      "idiomatic_safe": {
+        "basic_blocks_max": 262,
+        "basic_blocks_median": 11.0,
+        "basic_blocks_total": 650,
+        "bodies": 10,
+        "fits_core_mir_o0_bodies": 2,
+        "fits_trusted_v1_bodies": 1,
+        "locals_by_ty": {
+          "array_fixed": 15,
+          "bool": 208,
+          "closure": 1,
+          "never": 55,
+          "ref_mut_array": 4,
+          "ref_mut_other": 25,
+          "ref_shared_array": 13,
+          "ref_shared_other": 57,
+          "scalar_int_uint": 580,
+          "std_or_result_adt": 186,
+          "tuple": 25,
+          "unit": 46,
+          "user_struct_or_enum": 6
+        },
+        "projs": {
+          "deref": 95,
+          "downcast": 54,
+          "field": 302,
+          "index": 114,
+          "unprojected_lhs": 1124
+        },
+        "rvals": {
+          "Aggregate": 67,
+          "BinaryOp": 270,
+          "Cast": 10,
+          "Discriminant": 30,
+          "Other": 51,
+          "OverflowBinaryOp": 7,
+          "Ref": 48,
+          "Repeat": 8,
+          "UnaryOp_NotNeg": 11,
+          "UnaryOp_PtrMetadata": 10,
+          "Use_Constant": 107,
+          "Use_Copy": 502,
+          "Use_Move": 56
+        },
+        "stmts": {
+          "Assign": 1177,
+          "StorageDead": 1300,
+          "StorageLive": 966
+        },
+        "terms": {
+          "Assert": 132,
+          "Call": 162,
+          "Goto": 225,
+          "Return": 10,
+          "SwitchInt": 117,
+          "Unreachable": 4
+        }
+      },
+      "seed_core": {
+        "basic_blocks_max": 280,
+        "basic_blocks_median": 27.5,
+        "basic_blocks_total": 666,
+        "bodies": 8,
+        "fits_core_mir_o0_bodies": 8,
+        "fits_trusted_v1_bodies": 0,
+        "locals_by_ty": {
+          "array_fixed": 16,
+          "bool": 275,
+          "never": 57,
+          "ref_mut_array": 20,
+          "ref_shared_array": 6,
+          "ref_shared_other": 2,
+          "scalar_int_uint": 725,
+          "tuple": 68,
+          "unit": 65,
+          "user_struct_or_enum": 4
+        },
+        "projs": {
+          "deref": 122,
+          "downcast": 0,
+          "field": 292,
+          "index": 114,
+          "unprojected_lhs": 1285
+        },
+        "rvals": {
+          "Aggregate": 34,
+          "BinaryOp": 341,
+          "Cast": 77,
+          "Other": 3,
+          "OverflowBinaryOp": 61,
+          "Ref": 28,
+          "Repeat": 16,
+          "UnaryOp_NotNeg": 16,
+          "Use_Constant": 171,
+          "Use_Copy": 481,
+          "Use_Move": 91
+        },
+        "stmts": {
+          "Assign": 1319,
+          "StorageDead": 1438,
+          "StorageLive": 984
+        },
+        "terms": {
+          "Assert": 183,
+          "Call": 49,
+          "Goto": 277,
+          "Return": 8,
+          "SwitchInt": 149
+        }
+      },
+      "shared_derives": {
+        "basic_blocks_max": 9,
+        "basic_blocks_median": 1.0,
+        "basic_blocks_total": 28,
+        "bodies": 20,
+        "fits_core_mir_o0_bodies": 20,
+        "fits_trusted_v1_bodies": 5,
+        "locals_by_ty": {
+          "bool": 8,
+          "ref_shared_other": 8,
+          "scalar_int_uint": 24,
+          "unit": 5,
+          "user_struct_or_enum": 10
+        },
+        "projs": {
+          "deref": 34,
+          "downcast": 0,
+          "field": 8,
+          "unprojected_lhs": 56
+        },
+        "rvals": {
+          "BinaryOp": 8,
+          "Discriminant": 8,
+          "Ref": 8,
+          "Use_Constant": 6,
+          "Use_Copy": 26
+        },
+        "stmts": {
+          "Assign": 56,
+          "StorageDead": 41,
+          "StorageLive": 35
+        },
+        "terms": {
+          "Goto": 5,
+          "Return": 20,
+          "SwitchInt": 3
+        }
+      }
+    }
+  },
+  "o0_over_o3_ratios": {
+    "idiomatic_slowdown": 3.59,
+    "seed_core_slowdown": 2.38,
+    "seed_core_vs_idiomatic_at_o0": 0.42,
+    "seed_core_vs_idiomatic_at_o3": 0.63
+  },
+  "opt_mir_sha256_diverges_o0_vs_o3_abort": true,
+  "post_cleanup_mir_sha256": {
+    "o0_abort": "9978cf2e16ed3b76909d3cbf9c1b6ab093c13e8e460388f1eb6f2f9062db25e2",
+    "o0_unwind": "0ab330f8d5a8ebae5917c05f48e6724b6792adde709e342681d5d2dba14fa7c6",
+    "o3_abort": "638ff2cc4f0d660c32ada92ca77aa70a3e1bbd392e184e3bcb485e58b3d4a18d",
+    "o3_unwind": "18f1ae565fdda3ecf4b67a5b4e08835c40fa6686fbc5824451095b8395632f07"
+  },
+  "post_cleanup_sha256_invariant_o0_vs_o3_abort": false,
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "symbol_text_bytes": {
+    "o0_abort": {
+      "idiomatic_safe": 19246,
+      "other": 4071,
+      "seed_core": 14892
+    },
+    "o3_abort": {
+      "idiomatic_safe": 7063,
+      "other": 0,
+      "seed_core": 6063
+    }
+  }
+}

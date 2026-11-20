@@ -85588,6 +85588,90 @@
         "verification/compiler-verification"
       ]
     },
+    "verified-mir-to-minimach-o0-seed-compiler-and-checker-bootstrap": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal (Trusted MIR AST, MIR semantics, and TrustedBoundary audit)"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "2874b664e10939a3ee462215b2e068c89c1f70eb"
+          },
+          "name": "CakeML verified compiler backend and x64 bootstrap"
+        },
+        {
+          "identity": {
+            "repository": "tanyongkiam/cake_lpr",
+            "revision": "033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2"
+          },
+          "name": "cake_lpr verified CakeML proof checker"
+        },
+        {
+          "identity": {
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+          },
+          "name": "Metamath Zero (mm0-c, verifier.mm0, compiler.mm0)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert verified C compiler (Linear to Mach Stacking)"
+        },
+        {
+          "identity": {
+            "repository": "CertiRocq/certirocq",
+            "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+          },
+          "name": "CertiRocq verified compiler pipeline and certirocqchk bootstrap"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/regalloc2",
+            "revision": "4eb655fa745fba271af74be8495154a4b0cac56f"
+          },
+          "name": "regalloc2 symbolic register allocation checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and CSimpAttr LCNF substitution"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc compiler and runtime-post-cleanup MIR pipeline"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/bootstrapping",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/backend",
+        "compilers/verified-rustc/tcb",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/proof-certificates"
+      ]
+    },
     "verified-pre-proof-reachability-pruning-and-address-safe-icf": {
       "observed_at": "2026-11-14",
       "subjects": [
