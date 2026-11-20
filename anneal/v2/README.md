@@ -6,13 +6,9 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -->
 
-# Anneal
+# Anneal V2
 
-Anneal is a verification framework for Rust under active development. See
-[`PRINCIPLES.md`](PRINCIPLES.md) for the current project principles and
-[`DESIGN.md`](DESIGN.md) for the durable design constraints derived from them.
-
-The implementation in this directory is the current Anneal redesign.
-[`v1/`](v1/) contains the historical V1 prototype. Documentation under `v1/`
-describes V1 and may conflict with the current principles or design contract;
-do not treat it as current Anneal design authority.
+This directory contains the historical V2 Anneal implementation and the
+Aeneas toolchain used by the [V1 prototype](../v1/). The
+[V2 principles](PRINCIPLES.md) and [design contract](DESIGN.md) describe
+that implementation. Active development lives in [Anneal](../).
