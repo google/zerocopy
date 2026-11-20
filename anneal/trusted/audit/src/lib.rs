@@ -81,10 +81,10 @@
 //!    every non-`isPartial` `.vendorMiri` declaration onto the authenticated
 //!    sysroot base on every run (cold compile and cache hit alike), kernel
 //!    replay of all correspondence declarations onto that replayed vendor
-//!    kernel environment, 21-root Miri and correspondence cone purity, all 27
+//!    kernel environment, 21-root Miri and correspondence cone purity, all 30
 //!    correspondence, wiring, and canary claims, and reference-evaluator
-//!    regression checks (reaching the 19 required `Miri.*` primitives while
-//!    rejecting the 21 named `M_anneal` evaluator entry points, with human
+//!    regression checks (reaching the 21 required `Miri.*` primitives while
+//!    rejecting the 25 named `M_anneal` evaluator entry points, with human
 //!    review of `trusted/correspondence/` remaining the semantic boundary).
 
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
@@ -378,7 +378,7 @@ pub enum InspectorRequest {
     /// authenticated sysroot base on every run (cold compile and cache hit
     /// alike), kernel-replay all correspondence declarations onto that
     /// replayed vendor kernel environment, and verify constant-cone purity,
-    /// all 27 correspondence/wiring/canary claims, and reference-evaluator
+    /// all 30 correspondence/wiring/canary claims, and reference-evaluator
     /// independence.
     CorrespondenceAudit {
         search_path: Vec<PathBuf>,

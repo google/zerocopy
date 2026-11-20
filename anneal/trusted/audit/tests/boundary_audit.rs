@@ -1954,6 +1954,30 @@ const SYNTHETIC_CANARIES: &[(&str, &str, &str, &str)] = &[
         "NegativeCanaryClaim",
         "True.intro",
     ),
+    (
+        "CanaryPositiveEnumExplicitReprAnnealClaim",
+        "canary_positive_enum_explicit_repr_anneal",
+        "PositiveCanaryClaim",
+        "True.intro",
+    ),
+    (
+        "CanaryPositiveZstSingleEnumAnnealClaim",
+        "canary_positive_zst_single_enum_anneal",
+        "PositiveCanaryClaim",
+        "True.intro",
+    ),
+    (
+        "CanaryNegativeUbEnumInvalidTagAndUninitAnnealClaim",
+        "canary_negative_ub_enum_invalid_tag_and_uninit_anneal",
+        "NegativeCanaryClaim",
+        "True.intro",
+    ),
+    (
+        "CanaryCrateAndBodyVerifiedAnnealClaim",
+        "canary_crate_and_body_verified_anneal",
+        "And CrateTheorem (And UnitTheorem BodyVerified)",
+        "And.intro True.intro (And.intro True.intro True.intro)",
+    ),
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
@@ -2033,7 +2057,10 @@ impl MirWpSyntheticSpec {
              def WellFormed : Prop := True\n\
              def PositiveCanaryClaim : Prop := True\n\
              def NegativeCanaryClaim : Prop := True\n\
-             def IntWidthBoundaryCanary : Prop := True\n",
+             def IntWidthBoundaryCanary : Prop := True\n\
+             def CrateTheorem : Prop := True\n\
+             def UnitTheorem : Prop := True\n\
+             def BodyVerified : Prop := True\n",
         );
         if let Some(decl) = &self.wp_soundness_claim {
             sem.push_str(decl);
@@ -2448,7 +2475,7 @@ fn enforces_mir_wp_param_claim_proof_rules() {
 }
 
 /// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
-/// `argName? = none`) in `TrustedBoundary.lean` across the 15 canary claims
+/// `argName? = none`) in `TrustedBoundary.lean` across the 19 canary claims
 /// (missing claim, non-definition claim, wrong-module claim, non-`Prop` claim,
 /// claim body missing required constant, missing canary theorem, non-theorem
 /// proof, wrong-module proof, and weakened/wrong-type canary theorem).
@@ -2559,12 +2586,11 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
     );
 
     let mut missing_last_canary = MirWpSyntheticSpec::valid();
-    missing_last_canary.canary_proof_overrides.insert(
-        "canary_negative_unsupported_unsigned_neg_anneal".to_string(),
-        None,
-    );
+    missing_last_canary
+        .canary_proof_overrides
+        .insert("canary_crate_and_body_verified_anneal".to_string(), None);
     missing_last_canary.expect_audit_policy_err(
-        "missing required theorem Anneal.MirWp.canary_negative_unsupported_unsigned_neg_anneal",
+        "missing required theorem Anneal.MirWp.canary_crate_and_body_verified_anneal",
     );
 
     // Non-theorem canary proof (`def` instead of `theorem`).
@@ -2608,7 +2634,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
 /// missing correspondence directories, `verifyCorrespondenceClaims` across all
-/// 27 required claims, and `verifyRefEvaluatorIndependence` (required Miri
+/// 30 required claims, and `verifyRefEvaluatorIndependence` (required Miri
 /// primitives and rejection of named `Trusted.MirSemantics` evaluator entry
 /// points).
 #[test]
@@ -2691,6 +2717,10 @@ fn enforces_correspondence_non_backsliding() {
          def evalRvalueIntoPlace : Nat := 0\n\
          def runRvalue : Nat := 0\n\
          end Miri.Interpreter\n\
+         namespace Miri.Interpreter.Discriminant\n\
+         def readDiscriminant : Nat := 0\n\
+         def discriminantForVariant : Nat := 0\n\
+         end Miri.Interpreter.Discriminant\n\
          namespace Miri.Interpreter.Frame\n\
          def storageLive : Nat := 0\n\
          def storageDead : Nat := 0\n\
@@ -2719,9 +2749,19 @@ fn enforces_correspondence_non_backsliding() {
          def Reaches : Prop := True\n\
          def progAddUncheckedU32 : Nat := 0\n\
          def progAddU32 : Nat := 0\n\
+         def progEnumExplicitReprU8 : Nat := 0\n\
+         def progEnumSignedTagIsize : Nat := 0\n\
+         def progZstSingleEnumImplicitRet : Nat := 0\n\
+         def progZstSingleEnumMoveAndDiscr : Nat := 0\n\
+         def progEnumInvalidTagConstUb : Nat := 0\n\
+         def progEnumUninitDiscrUb : Nat := 0\n\
          def evalShiftOp : Nat := 0\n\
          def evalArithOp : Nat := 0\n\
          def jumpToBlock : Nat := 0\n\
+         def enumAdmitted : Nat := 0\n\
+         def tagBitsToDiscrBits : Nat := 0\n\
+         def isZstEnumTy : Nat := 0\n\
+         def findDiscrVariant? : Nat := 0\n\
          def evalStep : Nat := 0\n\
          end Trusted.MirSemantics\n",
     );
@@ -2782,12 +2822,13 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected error: {err_weak_claim}"
     );
 
-    // 2b. When all 27 Day-1 required claims and proofs are present,
+    // 2b. When all 30 required claims and proofs are present,
     // `verifyCorrespondenceClaims` succeeds and
     // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` that omits
     // required Miri primitives or illegally references a named
     // `Trusted.MirSemantics` evaluator entry point (`evalStep`, `evalArithOp`,
-    // `evalShiftOp`, `jumpToBlock`).
+    // `evalShiftOp`, `jumpToBlock`, `enumAdmitted`, `tagBitsToDiscrBits`,
+    // `isZstEnumTy`, `findDiscrVariant?`).
     let all_claims_src = |eval_ref_step_body: &str, d6_override: Option<&str>| {
         let d6_def = d6_override.unwrap_or(
             "progUseAfterMoveD6 = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
@@ -2884,6 +2925,18 @@ fn enforces_correspondence_non_backsliding() {
                encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefBehavior\n\
+             def CanaryD11EnumDiscriminantAndConstOkClaim : Prop :=\n\
+               Trusted.MirSemantics.progEnumExplicitReprU8 = Trusted.MirSemantics.progEnumSignedTagIsize ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD12ZstEnumMoveAndDiscrOkClaim : Prop :=\n\
+               Trusted.MirSemantics.progZstSingleEnumImplicitRet = Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=\n\
+               Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumUninitDiscrUb ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
              end Trusted.Correspondence\n"
         )
     };
@@ -2928,6 +2981,12 @@ fn enforces_correspondence_non_backsliding() {
                ⟨Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
              theorem canary_D10_add_unchecked_overflow_ub : CanaryD10AddUncheckedOverflowUbClaim :=\n\
                ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D11_enum_discriminant_and_const_ok : CanaryD11EnumDiscriminantAndConstOkClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D12_zst_enum_move_and_discr_ok : CanaryD12ZstEnumMoveAndDiscrOkClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D13_enum_invalid_tag_and_uninit_ub : CanaryD13EnumInvalidTagAndUninitUbClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro⟩\n\
              end Anneal.MirCorrespondenceProof\n"
         )
     };
@@ -2990,29 +3049,80 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected error: {err_missing_miri}"
     );
 
-    for forbidden in ["evalStep", "evalArithOp", "evalShiftOp", "jumpToBlock"] {
+    let required_miri_primitives = [
+        "Miri.Interpreter.Step.step",
+        "Miri.Interpreter.IntegerOps.binary",
+        "Miri.Interpreter.IntegerOps.binaryBool",
+        "Miri.Interpreter.IntegerOps.unary",
+        "Miri.Memory.ScalarInt.truncateFromUInt",
+        "Miri.Memory.ScalarInt.tryFromUInt",
+        "Miri.Memory.ScalarInt.tryToBool",
+        "Miri.Interpreter.evalOperand",
+        "Miri.Interpreter.evalPlaceToOp",
+        "Miri.Interpreter.localToOp",
+        "Miri.Interpreter.placeWriteLocalImmediate",
+        "Miri.Interpreter.evalRvalueIntoPlace",
+        "Miri.Interpreter.runRvalue",
+        "Miri.Interpreter.Discriminant.readDiscriminant",
+        "Miri.Interpreter.Discriminant.discriminantForVariant",
+        "Miri.Interpreter.Step.evalStatement",
+        "Miri.Interpreter.Frame.storageLive",
+        "Miri.Interpreter.Frame.storageDead",
+        "Miri.Interpreter.ControlFlow.goToBlock",
+        "Miri.Interpreter.ControlFlow.evalTerminator",
+        "Miri.Interpreter.ControlFlow.returnFromCurrentFrame",
+    ];
+    for missing_miri in [
+        "Miri.Interpreter.Discriminant.readDiscriminant",
+        "Miri.Interpreter.Discriminant.discriminantForVariant",
+    ] {
+        let kept_primitives = required_miri_primitives
+            .iter()
+            .copied()
+            .filter(|prim| *prim != missing_miri)
+            .collect::<Vec<_>>()
+            .join(", ");
+        let body = format!("let _ := ({kept_primitives}); 0");
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &trusted_lib,
+            &corr_deps,
+            "Trusted.Correspondence",
+            &all_claims_src(&body, None),
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &corr_lib,
+            &proof_deps,
+            "Anneal.MirCorrespondenceProof",
+            &all_proofs_src(d6_valid_proof),
+        );
+        let err_missing_discr = run_corr_audit(&mut checker_pass2).unwrap_err();
+        assert_eq!(err_missing_discr.code, 1);
+        assert_eq!(err_missing_discr.phase, "correspondence-audit");
+        assert!(
+            err_missing_discr.message.contains(&format!(
+                "reference evaluator cone is missing required Miri primitive {missing_miri}"
+            )),
+            "unexpected error for {missing_miri}: {err_missing_discr}"
+        );
+    }
+
+    for forbidden in [
+        "evalStep",
+        "evalArithOp",
+        "evalShiftOp",
+        "jumpToBlock",
+        "enumAdmitted",
+        "tagBitsToDiscrBits",
+        "isZstEnumTy",
+        "findDiscrVariant?",
+    ] {
         let all_miri_plus_anneal_fn = format!(
-            "let _ := (\
-             Miri.Interpreter.Step.step, \
-             Miri.Interpreter.IntegerOps.binary, \
-             Miri.Interpreter.IntegerOps.binaryBool, \
-             Miri.Interpreter.IntegerOps.unary, \
-             Miri.Memory.ScalarInt.truncateFromUInt, \
-             Miri.Memory.ScalarInt.tryFromUInt, \
-             Miri.Memory.ScalarInt.tryToBool, \
-             Miri.Interpreter.evalOperand, \
-             Miri.Interpreter.evalPlaceToOp, \
-             Miri.Interpreter.localToOp, \
-             Miri.Interpreter.placeWriteLocalImmediate, \
-             Miri.Interpreter.evalRvalueIntoPlace, \
-             Miri.Interpreter.runRvalue, \
-             Miri.Interpreter.Step.evalStatement, \
-             Miri.Interpreter.Frame.storageLive, \
-             Miri.Interpreter.Frame.storageDead, \
-             Miri.Interpreter.ControlFlow.goToBlock, \
-             Miri.Interpreter.ControlFlow.evalTerminator, \
-             Miri.Interpreter.ControlFlow.returnFromCurrentFrame); \
-             Trusted.MirSemantics.{forbidden}"
+            "let _ := ({}); Trusted.MirSemantics.{forbidden}",
+            required_miri_primitives.join(", ")
         );
         compile_forged_module(
             &mut checker_pass2,

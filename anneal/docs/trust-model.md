@@ -81,15 +81,18 @@ flowchart TD
      `trusted/rustc-capture/` (which is part of the human-audited TCB)
      deterministically generates both `Mir.lean` (defining
      `Mir.crate : Trusted.Crate`) and `Proof.lean` (a pure proof script that
-     states `theorem Proof.verify_crate : Trusted.CrateTheorem Mir.crate` and
-     calls into `theory/` to prove it).
+     states `theorem Proof.verify_crate : Trusted.CrateTheorem Mir.crate` for
+     whole-crate `.crate` captures, or the corresponding `Trusted.UnitTheorem`
+     obligation for selected proof-unit `.unit` captures, and calls into
+     `theory/` to prove it).
    - Because `trusted/rustc-capture/` generates `Mir.lean` and `Proof.lean`
      directly, the theorem *statement* (`ConstantInfo.type`) is guaranteed to
-     be `Trusted.CrateTheorem Mir.crate` over the extracted crate, and
-     `Proof.lean` is guaranteed to contain no axioms or effectful code.
+     be `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`
+     for `.unit` captures) over the extracted artifact, and `Proof.lean` is
+     guaranteed to contain no axioms or effectful code.
    - The Lean 4 kernel on the user's machine then typechecks `Proof.lean`,
      verifying that the proof term (`ConstantInfo.value?`) constructed by
-     `theory/` is a valid proof of `Trusted.CrateTheorem Mir.crate`.
+     `theory/` is a valid proof of that trusted obligation.
 2. **In Anneal's repository CI (`trusted/audit/`):**
    - For the Lean 4 kernel check on the user's machine to be sufficient, the
      `theory/` library shipped with Anneal must not be able to cheat the kernel
@@ -127,9 +130,10 @@ Within the Lean 4 kernel environment, every compiled theorem
 Anneal's architecture enforces **Statement-Origin Separation** between the two:
 
 - Every constant referenced in the *statement* (`ConstantInfo.type`) of
-  `Trusted.CrateTheorem Mir.crate` originates in `Trusted.*` (or the allowlisted
-  Lean `Init.*` foundation) and the generated `Mir.crate`. No definition from
-  `theory/` ever appears in the theorem statement.
+  `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`)
+  originates in `Trusted.*` (or the allowlisted Lean `Init.*` foundation) and
+  the generated `Mir.crate`. No definition from `theory/` ever appears in the
+  theorem statement.
 - Declarations from `theory/` appear only inside the *proof term*
   (`ConstantInfo.value?`). Because `anneal-audit` verifies in CI that `theory/`
   is pure, effect-free, and free of custom axioms, and the Lean 4 kernel checks
@@ -300,7 +304,7 @@ kernel-level audit:
 3. **MIR WP non-backsliding (`verifyMirWpCoreTheorems`):** Enabled by default
    (`require_mir_wp = true`); requires `Trusted.MirAst`,
    `Trusted.MirSemantics`, and `Anneal.MirWp` to be present and verifies that
-   `wpProg` soundness, `wpFaultProg` soundness, and all 15 Pass 1 canaries
+   `wpProg` soundness, `wpFaultProg` soundness, and all 19 Pass 1 canaries
    prove their exact `Trusted.MirSemantics` `*Claim` propositions.
 4. **Fresh kernel replay (`replayOntoBase`):** Constructs a clean kernel
    environment containing only the pinned `Init.*` foundation (`base`),
@@ -444,12 +448,12 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    `Miri.Interpreter.ExecutionMachine` cone (`verifyMiriExecutionMachineCone`)
    and correspondence dependency cone (`closureCorr`) for purity (rejecting any
    reachable `unsafe`, `isPartial`, `.vendorMiri` `opaque`, or unapproved
-   axiom), verifies all 27 Day-1 correspondence, wiring, and canary (`D6`–`D10`)
+   axiom), verifies all 30 correspondence, wiring, and canary (`D6`–`D13`)
    claims (`verifyCorrespondenceClaims`, enforcing universe monomorphism on
    every claim and proof and a mechanically checked non-empty
    required-constants list on every claim), and runs
-   `verifyRefEvaluatorIndependence` (19 required `Miri.*` primitives and
-   rejection of 21 named `Trusted.MirSemantics` evaluator entry points, with
+   `verifyRefEvaluatorIndependence` (21 required `Miri.*` primitives and
+   rejection of 25 named `Trusted.MirSemantics` evaluator entry points, with
    human review of `trusted/correspondence/` remaining the semantic boundary).
 
 ### Pass 2 governance and remaining correspondence controls (`trusted/correspondence/` and `correspondence/`)

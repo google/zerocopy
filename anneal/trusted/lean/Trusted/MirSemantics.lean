@@ -28,9 +28,12 @@ open Trusted.MirAst
 `Trusted.MirSemantics` defines Anneal's small-step operational semantics
 ($M_{\text{anneal}}$), the top-level execution predicates (`initState`,
 `evalStep`, `Step`, `Reaches`, `ReachesResult`, `WellFormed`, `Behavior`,
-`Diverges`, and `SatisfiesPost`), and the Pass 1 audited claim propositions
-(`WpSoundnessClaim`, `WpFaultSoundnessClaim`, and the 15 `Canary*Claim`
-propositions).
+`Diverges`, and `SatisfiesPost`) referenced directly by `CorrespondenceClaim`
+and `FaultEquivalenceClaim` in `Trusted.Correspondence`, the per-body,
+program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
+`BodyVerified`, `Specs`, `Crate`, `ProgramVerified`, `CrateTheorem`, and
+`UnitTheorem`), and the Pass 1 audited claim propositions (`WpSoundnessClaim`,
+`WpFaultSoundnessClaim`, and the 19 `Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
 definition in this module:
@@ -39,7 +42,8 @@ definition in this module:
    execution predicate is stated directly in terms of elementary step relations
    without clever encodings, hidden fuel parameters in top-level predicates, or
    non-obvious state invariants. A human auditor reading `WellFormed`,
-   `Behavior`, `Diverges`, `SatisfiesPost`, `WpSoundnessClaim`, or
+   `Behavior`, `Diverges`, `SatisfiesPost`, `BodyVerified`, `ProgramVerified`,
+   `CrateTheorem`, `UnitTheorem`, `WpSoundnessClaim`, or
    `WpFaultSoundnessClaim` can verify immediately that each predicate means in
    mathematical terms what it means in intuitive operational terms.
 2. **Explicit fail-closed boundaries (`FaultKind`):** Any unmodeled MIR
@@ -143,13 +147,19 @@ Key semantic correspondence points:
    deinitialization) from `evalPrimitiveOperand` preserves exact left-to-right
    operand evaluation and fault ordering in `Rvalue.use` and `Rvalue.binaryOp`.
 
-3. **Inhabited zero-sized local initialization (`MirTy.unit`):**
+3. **Inhabited zero-sized local initialization (`MirTy.unit` and 1-variant
+   `.zeroSized` `MirTy.enum`):**
    In `rustc_const_eval::interpret` and `lean-miri`
-   (`Miri/Interpreter/Immediate.lean` and `ValidityVisitor.lean`), an inhabited
-   0-byte zero-sized type (`MirTy.unit`, `Size.ZERO`) requires zero initialized
-   bytes in memory. Consequently, any live `.unit` local slot (at frame entry,
-   after `StorageLive`, or after `Operand.move`) remains inhabited by its unique
-   value: `liveUninitSlot .unit = .live (some .unit)`.
+   (`Miri/Interpreter/Immediate.lean`, `ValidityVisitor.lean`, and
+   `Discriminant.lean`), an inhabited 0-byte zero-sized type (`MirTy.unit` or
+   an admitted `.zeroSized` 1-variant fieldless enum,
+   `Variants::Single { index: 0 }`, `Size.ZERO`) requires zero initialized
+   bytes in memory. Consequently, any live `.unit` or admitted `.zeroSized`
+   1-variant `.enum` local slot (at frame entry, after `StorageLive`, or after
+   `Operand.move`) remains inhabited by its unique value:
+   `liveUninitSlot .unit = .live (some .unit)`, and
+   `liveUninitSlot (.enum ety) = .live (some (.enumVal ety 0))` whenever
+   `isZstEnumTy ety`.
 
 4. **Explicit arithmetic applications:**
    `TrustedBoundary.lean`'s closed notation allowlist admits `+`, binary `-`,
@@ -413,6 +423,128 @@ inductive AllocByte where
   | uninit
   | init (byte : UInt8) (prov : Option AllocId := none)
 
+/-- Check that `x` does not occur in `ys`. -/
+noncomputable def natNotElem (x : Nat) : List Nat → Bool
+  | [] => true
+  | y :: ys => !Nat.beq x y && natNotElem x ys
+
+/-- Check that all elements of a `List Nat` are pairwise distinct. -/
+noncomputable def natListPairwiseNe : List Nat → Bool
+  | [] => true
+  | x :: xs => natNotElem x xs && natListPairwiseNe xs
+
+/-- Pure structural UTF-8 byte equality on `String`, defined over the locked
+foundation primitives (`String.toByteArray`, `Array.toList`, and `List.beq`
+over `UInt8`) without expanding `foundation-lock.json` to import
+`Init.Data.String.Basic` (`String.decEq`). -/
+noncomputable def stringBeq (a b : String) : Bool :=
+  List.beq a.toByteArray.data.toList b.toByteArray.data.toList
+
+/-- Check that `x` does not occur in `ys` under `stringBeq`. -/
+noncomputable def stringNotElem (x : String) : List String → Bool
+  | [] => true
+  | y :: ys => !stringBeq x y && stringNotElem x ys
+
+/-- Check that all strings in a `List String` are pairwise distinct. -/
+noncomputable def stringListPairwiseNe : List String → Bool
+  | [] => true
+  | x :: xs => stringNotElem x xs && stringListPairwiseNe xs
+
+/-- Extend or truncate an in-memory scalar enum tag `tagBits` of primitive
+representation `(tagW, tagS)` to the enum's discriminant bit width `discrW`,
+matching `read_discriminant` (`int_to_int_or_float`) in
+`compiler/rustc_const_eval/src/interpret/discriminant.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Discriminant.readDiscriminant`
+(`vendor/lean-miri/Miri/Interpreter/Discriminant.lean`):
+
+> "let discr_val = self.int_to_int_or_float(&tag_val, discr_layout).unwrap();
+> let discr_bits = discr_val.to_scalar().to_bits(discr_layout.size)?;" -/
+noncomputable def tagBitsToDiscrBits (tagW : IntWidth) (tagS : Bool)
+    (discrW : IntWidth) (tagBits : BitVec 128) : BitVec 128 :=
+  let extended :=
+    if tagS then
+      bvOfInt 128 (signExtendBits tagW tagBits)
+    else
+      truncateBits tagW tagBits
+  truncateBits discrW extended
+
+/-- Check that a fieldless enum descriptor `ety : EnumTy` is statically
+well-formed:
+1. `ety.discriminants` is non-empty and has fewer than $2^{32}$ variants,
+   matching `lean-miri`'s `< 2^32` variant-index bound (used on `Niche`
+   paths in `vendor/lean-miri/Miri/Interpreter/Discriminant.lean`). In `rustc`,
+   `rustc_abi::VariantIdx` (`rustc_index::newtype_index!` in
+   `compiler/rustc_abi/src/layout.rs`, with default `max` value `0xFFFF_FF00`
+   supplied by `compiler/rustc_index_macros/src/newtype.rs:98`,
+   `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) caps variant
+   indices at `0xFFFF_FF00`; the small extra admitted range
+   `[0xFFFF_FF01, 2^32)` cannot occur in real `rustc` MIR:
+
+   > "rustc_index::newtype_index! {
+   >     ...
+   >     pub struct VariantIdx {
+   >         /// Equivalent to `VariantIdx(0)`.
+   >         const FIRST_VARIANT = 0;
+   >     }
+   > }"
+
+2. Every entry `d ∈ ety.discriminants` fits unsigned in `ety.discrWidth`
+   (`d < Nat.pow 2 ety.discrWidth.bitWidth`, matching `Discr.val` in
+   `compiler/rustc_middle/src/ty/util.rs`).
+3. All entries in `ety.discriminants` are pairwise distinct, matching the Rust
+   Reference (`src/items/enumerations.md`, `rust-lang/reference`
+   `a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
+
+   > "It is an error when two variants share the same discriminant."
+
+4. `ety.tagRepr` accurately encodes every declared discriminant:
+   - `.zeroSized` requires exactly 1 variant (`Variants::Single { index: 0 }`);
+   - `.scalar tagW tagS` requires that truncating each `d` to `tagW` and
+     re-extending via `tagBitsToDiscrBits tagW tagS ety.discrWidth` recovers
+     `d` losslessly (`TagEncoding::Direct` in `tag_for_variant` /
+     `read_discriminant`). -/
+noncomputable def enumAdmitted (ety : EnumTy) : Bool :=
+  !ety.discriminants.isEmpty &&
+    Nat.blt ety.discriminants.length (Nat.pow 2 32) &&
+    ety.discriminants.all
+      (fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth)) &&
+    natListPairwiseNe ety.discriminants &&
+    match ety.tagRepr with
+    | .zeroSized => Nat.beq ety.discriminants.length 1
+    | .scalar tagW tagS =>
+      ety.discriminants.all (fun d =>
+        let dBits := BitVec.ofNat 128 d
+        tagBitsToDiscrBits tagW tagS ety.discrWidth
+          (truncateBits tagW dBits) == dBits)
+
+/-- Check whether `ety` is an admitted 0-byte ZST 1-variant fieldless enum
+(`Variants::Single { index: 0 }`). -/
+noncomputable def isZstEnumTy (ety : EnumTy) : Bool :=
+  match ety.tagRepr with
+  | .zeroSized => enumAdmitted ety
+  | .scalar _ _ => false
+
+/-- Linear search from `idx` for the unique variant index whose declared
+discriminant bit pattern equals `discrBits`. -/
+noncomputable def findDiscrVariantAux (idx : Nat) (discrBits : BitVec 128) :
+    List Nat → Option Nat
+  | [] => none
+  | d :: ds =>
+    if BitVec.ofNat 128 d == discrBits then
+      some idx
+    else
+      findDiscrVariantAux (idx + 1) discrBits ds
+
+/-- Resolve a `discrWidth`-truncated discriminant bit pattern `discrBits` to its
+0-based declaration variant index in `ds`, matching
+`adt.discriminants(*self.tcx).find(|(_, var)| var.val == discr_bits)` in
+`read_discriminant` (`compiler/rustc_const_eval/src/interpret/discriminant.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+noncomputable def findDiscrVariant? (discrBits : BitVec 128)
+    (ds : List Nat) : Option Nat :=
+  findDiscrVariantAux 0 discrBits ds
+
 /-- Canonical boundary value used in `Query`, `Out`, and `TerminalOut` of
 $M_{\text{anneal}}$. -/
 inductive Val where
@@ -420,18 +552,24 @@ inductive Val where
   | ptr (p : PtrVal)
   | bool (b : Bool)
   | unit
+  | enumVal (ty : EnumTy) (variant : Nat)
   | tuple (fields : List Val)
   | bytes (data : List AllocByte)
 
 namespace Val
 
 /-- Intrinsic type and well-formedness of a runtime value `Val`: returns
-`some ty` iff `v` is a well-formed scalar, boolean, or unit value of type
-`ty`. -/
+`some ty` iff `v` is a well-formed scalar, boolean, unit, or fieldless enum
+value of type `ty`. -/
 noncomputable def ty? : Val → Option MirTy
   | .scalar sv => if sv.wf then some (.int sv.width sv.signed) else none
   | .bool _ => some .bool
   | .unit => some .unit
+  | .enumVal ety v =>
+    if enumAdmitted ety && Nat.blt v ety.discriminants.length then
+      some (.enum ety)
+    else
+      none
   | _ => none
 
 end Val
@@ -576,19 +714,41 @@ noncomputable def checkArgsMatch : List Val → List MirTy → Bool
   | v :: vs, ty :: tys => checkVal v ty && checkArgsMatch vs tys
   | _, _ => false
 
-/-- Check whether `ty` belongs to the supported scalar/boolean/unit type
-fragment. -/
+/-- Check whether `ty` belongs to the supported local-variable type fragment
+(`.bool`, `.int`, `.unit`, uninhabited `.never`, or admitted fieldless
+`.enum`). The fragment is wider than the name suggests; downstream proof
+modules refer to the predicate by this name. -/
 noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
-  | .bool | .int _ _ | .unit => true
+  | .bool | .int _ _ | .unit | .never => true
+  | .enum ety => enumAdmitted ety
   | _ => false
 
 /-- Initial state of a newly live local slot of type `ty`:
-In `lean-miri` (`Miri/Interpreter/Immediate.lean` and `ValidityVisitor.lean`), a
-0-byte ZST (`MirTy.unit`, `Size.ZERO`) has `.immediate .uninit` as its unique
-valid representation, so any live `.unit` local is immediately inhabited by
-`Val.unit`. Non-ZST locals start uninitialized (`.live none`). -/
+In `rustc_const_eval`
+(`compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and `lean-miri`
+(`Miri/Interpreter/Immediate.lean`, `OperandMachine.lean`, and
+`Discriminant.lean`), an inhabited 0-byte ZST (`MirTy.unit` or an admitted
+`.zeroSized` 1-variant fieldless enum `Variants::Single { index: 0 }`) requires
+zero initialized bytes in memory:
+
+> "Variants::Single { index } => {
+>     if op.layout().is_uninhabited() {
+>         ...
+>         throw_ub!(UninhabitedEnumVariantRead(Some(index)));
+>     }
+>     ...
+>     return interp_ok(index);
+> }"
+
+Accordingly, live `.unit` locals start inhabited by `Val.unit` and live
+`.zeroSized` fieldless enum locals start inhabited by `Val.enumVal ety 0` (and
+`Operand.move` preserves their inhabited ZST value). All other local types
+start uninitialized (`.live none`). -/
 noncomputable def liveUninitSlot : MirTy → LocalSlot
   | .unit => .live (some .unit)
+  | .enum ety =>
+    if isZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
   | _ => .live none
 
 /-- Initialize the local slots of `body` at function entry (`idx = 0 ..
@@ -697,7 +857,29 @@ noncomputable def isPrimitiveReadableTy : MirTy → Bool
 
 A 1-byte `.bool` scalar whose value is neither `0` nor `1` triggers
 `ScalarIntError.invalidBool`, which `Miri.Interpreter.ScalarOps.scalarError`
-maps to `.undefinedBehavior`, so `evalConstLit` returns `.error .undefined`. -/
+maps to `.undefinedBehavior`, so `evalConstLit` returns `.error .undefined`.
+
+For fieldless enums (`.enum ety`), constant decoding matches `op_to_const`
+(`compiler/rustc_const_eval/src/const_eval/eval_queries.rs:258`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`read_discriminant` (`compiler/rustc_const_eval/src/interpret/discriminant.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "let discr_val = self.int_to_int_or_float(&tag_val, discr_layout).unwrap();
+> let discr_bits = discr_val.to_scalar().to_bits(discr_layout.size)?;
+> ...
+> adt.discriminants(*self.tcx).find(|(_, var)| var.val == discr_bits)
+> ...
+> .ok_or_else(|| err_ub!(InvalidTag(Scalar::from_uint(tag_bits,
+>     tag_layout.size))))?;"
+
+- Admitted 1-variant ZST enums (`ety.tagRepr = .zeroSized`) decode
+  `ConstLit.zeroSized` to `.ok (.enumVal ety 0)`.
+- Admitted direct-tagged enums (`ety.tagRepr = .scalar tagW tagS`) validate
+  that `bits` fits in `tagW`, extend/truncate `bits` to `ety.discrWidth` via
+  `tagBitsToDiscrBits`, and resolve the matching declaration index via
+  `findDiscrVariant?` (returning `.error .undefined` on an invalid tag bit
+  pattern not matching any declared discriminant). -/
 noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
   | .int w s, .scalar bits =>
     if truncateBits w bits != bits then
@@ -716,6 +898,19 @@ noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
       else
         .error .undefined
   | .unit, .zeroSized => .ok .unit
+  | .enum ety, .zeroSized =>
+    if isZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
+  | .enum ety, .scalar bits =>
+    match ety.tagRepr with
+    | .zeroSized => .error .unsupported
+    | .scalar tagW tagS =>
+      if !enumAdmitted ety || truncateBits tagW bits != bits then
+        .error .unsupported
+      else
+        let discrBits := tagBitsToDiscrBits tagW tagS ety.discrWidth bits
+        match findDiscrVariant? discrBits ety.discriminants with
+        | some v => .ok (.enumVal ety v)
+        | none => .error .undefined
   | _, _ => .error .unsupported
 
 /-- Stage 1 of operand evaluation (`eval_operand` in
@@ -746,8 +941,9 @@ non-ZST locals:
 - `.copy place`: reads `(ty, optVal)` without mutating `locals`.
 - `.move place`: reads `(ty, optVal)` and conservatively transitions
   `locals[place.localId]` to `liveUninitSlot ty` (preserving
-  `.live (some .unit)` on `MirTy.unit` and setting all other local types to
-  `.live none`, matching `OperandMachine.evalOperand` with opt-in
+  `.live (some .unit)` on `MirTy.unit` and `.live (some (.enumVal ety 0))` on
+  admitted 1-variant `.zeroSized` `MirTy.enum`, and setting all other local
+  types to `.live none`, matching `OperandMachine.evalOperand` with opt-in
   `deinitMovedPlace = true`).
 - `.constant c`: decodes constant literal without mutating `locals`. -/
 noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
@@ -1016,7 +1212,31 @@ both producing `.undefined`):
   `evalPrimitiveOperand` (threading `locals₁` from `lhs` into `rhs`), then
   applies `evalBinOp`.
 - `.unaryOp op opnd`: evaluates `opnd` via `evalPrimitiveOperand`, then applies
-  `evalUnOp`. -/
+  `evalUnOp`.
+- `.discriminant place`: reads the active variant of an unprojected local of
+  admitted fieldless enum type `.enum ety` and returns its declared
+  discriminant as a scalar of `(ety.discrWidth, ety.discrSigned)`, matching
+  `read_discriminant` and `discriminant_for_variant` in
+  `compiler/rustc_const_eval/src/interpret/discriminant.rs` (`rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+  `Miri.Interpreter.Discriminant`:
+
+  > "let discr_layout = self.layout_of(ty.discriminant_ty(*self.tcx))?;
+  > let discr_value = match ty.discriminant_for_variant(*self.tcx, variant) {
+  >     Some(discr) => {
+  >         ...
+  >         assert_eq!(discr.ty, discr_layout.ty);
+  >         Scalar::from_uint(discr.val, discr_layout.size)
+  >     }
+  >     ...
+  > };
+  > interp_ok(ImmTy::from_scalar(discr_value, discr_layout))"
+
+  Reading `.discriminant` from a `.dead` local or from an uninitialized
+  (`.live none`) scalar-tagged enum local faults with `.error .undefined`,
+  whereas an inhabited 1-variant ZST enum (`ety.tagRepr = .zeroSized`,
+  `Variants::Single { index: 0 }`) returns `ety.discriminants[0]` without
+  reading tag bytes. -/
 noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
     (dstTy : MirTy) : Rvalue → Except FaultKind (Val × List LocalSlot)
   | .use opnd =>
@@ -1046,6 +1266,50 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
       match evalUnOp op v with
       | .error k => .error k
       | .ok res => .ok (res, locals₁)
+  | .discriminant place =>
+    if !place.projection.isEmpty then
+      .error .unsupported
+    else
+      match getElem? bodyLocals place.localId,
+          getElem? locals place.localId with
+      | some (.enum ety), some slot =>
+        if !enumAdmitted ety then
+          .error .unsupported
+        else
+          -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
+          -- (`Variants::Single { index: 0 }`) returns variant `0` without
+          -- reading tag bytes even if a slot holds `.live none` (`Uninit`),
+          -- preserving universal 1-step lockstep over arbitrary `FrameState`s.
+          match ety.tagRepr, slot with
+          | _, .dead => .error .undefined
+          | .zeroSized, .live none =>
+            match getElem? ety.discriminants 0 with
+            | some disc =>
+              .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
+            | none => .error .unsupported
+          | .zeroSized, .live (some (.enumVal ety' v)) =>
+            if EnumTy.beq ety ety' && Nat.beq v 0 then
+              match getElem? ety.discriminants 0 with
+              | some disc =>
+                .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
+              | none => .error .unsupported
+            else
+              .error .unsupported
+          | .zeroSized, .live (some _) => .error .unsupported
+          | .scalar _ _, .live none => .error .undefined
+          | .scalar _ _, .live (some (.enumVal ety' v)) =>
+            if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
+              match getElem? ety.discriminants v with
+              | some disc =>
+                .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
+              | none => .error .unsupported
+            else
+              .error .unsupported
+          | .scalar _ _, .live (some _) => .error .unsupported
+      | _, _ => .error .unsupported
   | _ => .error .unsupported
 
 /-- Write `val` into an unprojected `dst : Place` of known `dstTy : MirTy` in
@@ -1410,6 +1674,138 @@ $M_{\text{anneal}}$. -/
 noncomputable def SatisfiesPost (p : Program) (q : Query)
     (post : TerminalOut → Prop) : Prop :=
   WellFormed p q ∧ ∀ out : TerminalOut, Behavior p q out → post out
+
+/-!
+## Multi-Body Program, Crate, and Proof-Unit Verification Judgments
+
+The definitions below state the top-level per-body (`BodyVerified`),
+program-wide (`ProgramVerified`), and captured-artifact (`CrateTheorem` and
+`UnitTheorem`) obligations targeted by Anneal's verification pipeline.
+
+Explicit semantic scoping notes for human auditors:
+1. **Value-only entry memory (`callerMem = ⟨[]⟩`):** `BodyVerified` and
+   `Specs.safety` quantify over value arguments `args : List Val` paired with
+   empty caller memory `{ args := args, callerMem := ⟨[]⟩ }`, matching
+   `initState`'s rejection of non-empty `callerMem` while pointer and reference
+   entry parameters remain outside the supported domain.
+2. **Interprocedural calls fail closed:** `entryProgForBody p defId` retains
+   `p.bodies` so the program environment carries all sibling definitions, while
+   any reachable `TerminatorKind.call` steps to `.fault .unsupported` and
+   therefore refutes `WellFormed` fail-closed.
+3. **Fault-freedom vs. termination (`WellFormed` vs. `Diverges`):**
+   `WellFormed` establishes absence of `.fault .undefined` (UB) and
+   `.fault .unsupported` (unmodeled constructs) across all executions while
+   permitting infinite loops (`Diverges`); termination or functional
+   input-output contracts are expressed in `Specs.property`.
+4. **Whole-crate completeness is an external producer obligation:**
+   `CrateTheorem` checks `c.program.scope = .crate` and `ProgramVerified` over
+   every body in `c.program.bodies`. Guaranteeing that `c.program.bodies`
+   actually includes every executable body and reachable callee in the compiled
+   crate is an external obligation of the capture producer (such as a future
+   `anneal-rustc-capture` emitter), not checked by `Trusted.MirSemantics`
+   alone. -/
+
+/-- Override `entryDefId` of `p` to execute body `defId` as the root function in
+`initState` / `WellFormed` / `Behavior`. -/
+noncomputable def entryProgForBody (p : Program) (defId : DefId) : Program :=
+  { p with entryDefId := defId }
+
+/-- Check that `args` matches the parameter types `locals[1..=argumentCount]` of
+`body` in length and well-formed `Val.ty?`. -/
+noncomputable def ValidEntryArgs (body : Body) (args : List Val) : Prop :=
+  checkArgsMatch args ((body.locals.drop 1).take body.argumentCount) = true
+
+/-- Check that all bodies in `bodies` carry non-empty, pairwise-distinct
+`identity` keys so two functions can never collide in `Specs.safety`. -/
+noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
+  bodies.all (fun b => !stringBeq b.identity "") &&
+    stringListPairwiseNe (bodies.map (fun b => b.identity))
+
+/-- Unconditional static admission predicate for `(p, body)`: checks 64-bit
+target layout, MIR semantic profile version 1, non-empty `body.identity`,
+non-empty basic blocks, `argumentCount < locals.length`, in-bounds storage
+annotations, and supported local types (`isSupportedScalarOrUnitTy`) even when
+`body` has uninhabited (`MirTy.never`) parameters and `ValidEntryArgs body args`
+is vacuously empty. -/
+noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+  Nat.beq p.pointerWidthBits 64 &&
+    Nat.beq p.mirProfileVersion 1 &&
+    !stringBeq body.identity "" &&
+    !body.basicBlocks.isEmpty &&
+    Nat.blt body.argumentCount body.locals.length &&
+    storageAnnotationsInBounds body &&
+    body.locals.all isSupportedScalarOrUnitTy
+
+/-- Verification judgment for a single MIR function body `body` at index `defId`
+in `p`:
+1. `getElem? p.bodies defId = some body` binds `body` to the indexed function
+   body in `p` (preventing callers from passing an unrelated `body`—such as an
+   uninhabited `MirTy.never`-parameter stub—while executing `p.bodies[defId]`);
+2. `BodyStaticAdmitted p body = true` holds unconditionally (independent of
+   whether `ValidEntryArgs body args` is inhabited); and
+3. For every well-typed argument list `args` (with empty `callerMem := ⟨[]⟩`),
+   assuming `safetyPre args` only when `body.isUnsafe = true`, executing
+   `entryProgForBody p defId` on `{ args := args }` is `WellFormed` (never
+   reaches `.fault .undefined` or `.fault .unsupported`; non-terminating loops
+   remain permitted unless ruled out by `Specs.property`). -/
+noncomputable def BodyVerified (p : Program) (defId : DefId) (body : Body)
+    (safetyPre : List Val → Prop) : Prop :=
+  getElem? p.bodies defId = some body ∧
+  BodyStaticAdmitted p body = true ∧
+  ∀ args : List Val,
+    ValidEntryArgs body args →
+    (body.isUnsafe = true → safetyPre args) →
+    WellFormed (entryProgForBody p defId) { args := args }
+
+/-- Specification bundle for a captured MIR crate or proof unit:
+- `safety identity args`: caller-obligation safety precondition (over value
+  arguments `args` with `callerMem = ⟨[]⟩`) for an `unsafe` function with
+  canonical path `identity` (ignored on safe functions, where
+  `body.isUnsafe = false`);
+- `property p`: functional correctness or termination specification over `p`. -/
+structure Specs where
+  safety : String → List Val → Prop := fun _ _ => True
+  property : Program → Prop := fun _ => True
+
+/-- Captured MIR verification subject pairing `program : Program` with its
+reviewed specification bundle `specs : Specs`, so top-level obligations
+(`CrateTheorem` and `UnitTheorem`) take a single captured `Crate` value. -/
+structure Crate where
+  program : Program
+  specs : Specs := ⟨fun _ _ => True, fun _ => True⟩
+
+/-- Verification judgment for a non-empty program `p` and `specs`:
+1. `p.pointerWidthBits = 64` and `p.mirProfileVersion = 1`;
+2. `p.bodies` is non-empty and `p.entryDefId < p.bodies.length` (preventing
+   vacuous satisfaction on empty body lists or dangling `entryDefId`s);
+3. Every body in `p.bodies` has a non-empty, pairwise-distinct `identity`
+   (`bodiesHaveUniqueIdentities p.bodies = true`);
+4. Every body `(defId, body)` in `p.bodies` satisfies `BodyVerified` under
+   `specs.safety body.identity`; and
+5. `specs.property p` holds. -/
+noncomputable def ProgramVerified (p : Program) (specs : Specs) : Prop :=
+  Nat.beq p.pointerWidthBits 64 = true ∧
+  Nat.beq p.mirProfileVersion 1 = true ∧
+  !p.bodies.isEmpty = true ∧
+  Nat.blt p.entryDefId p.bodies.length = true ∧
+  bodiesHaveUniqueIdentities p.bodies = true ∧
+  (∀ (defId : DefId) (body : Body),
+    getElem? p.bodies defId = some body →
+    BodyVerified p defId body (specs.safety body.identity)) ∧
+  specs.property p
+
+/-- Top-level one-argument verification obligation for a whole-crate capture
+(`c.program.scope = .crate`). Completeness of `c.program.bodies` with respect
+to the compiled Rust crate (including every executable body and reachable
+callee) is an external obligation of the capture producer (such as a future
+`anneal-rustc-capture` emitter), not checked by this predicate alone. -/
+noncomputable def CrateTheorem (c : Crate) : Prop :=
+  c.program.scope = .crate ∧ ProgramVerified c.program c.specs
+
+/-- Top-level one-argument verification obligation for a selected proof-unit
+capture (`c.program.scope = .unit`). -/
+noncomputable def UnitTheorem (c : Crate) : Prop :=
+  c.program.scope = .unit ∧ ProgramVerified c.program c.specs
 
 /-!
 ## Audited Pass 1 Weakest-Precondition and Non-Vacuity Canary Claims
@@ -1897,4 +2293,389 @@ noncomputable def CanaryNegativeUnsupportedUnsignedNegAnnealClaim : Prop :=
   NegativeCanaryClaim (mkUnOpProg .neg u32Ty) { args := [u32Val 1] }
     .unsupported .undefined
 
+/-- Explicit-repr fieldless enum `#[repr(u8)] enum ReprU8 { A = 10, B = 20 }`
+with non-index discriminants and `u8` discriminant/tag width. -/
+noncomputable def canaryReprU8EnumTy : EnumTy := {
+  id := 1
+  discrWidth := .i8
+  discrSigned := false
+  tagRepr := .scalar .i8 false
+  discriminants := [10, 20]
+}
+
+/-- Signed-tag fieldless enum `enum SignedTag { Neg = -1, Pos = 1 }` with 1-byte
+signed `i8` in-memory tag (`0xff = 255` for `-1`) and 64-bit signed `isize`
+discriminant (`2^64 - 1`). -/
+noncomputable def canarySignedTagEnumTy : EnumTy := {
+  id := 2
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .scalar .i8 true
+  discriminants := [Nat.pow 2 64 - 1, 1]
+}
+
+/-- Positive canary program decoding `const ReprU8::B` (`.scalar 20`, variant 1)
+and reading `Rvalue.discriminant` into a `u8` return place `_0`. -/
+noncomputable def progEnumExplicitReprU8 : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .enum canaryReprU8EnumTy]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨1, []⟩ (.use (.constant
+          ⟨.enum canaryReprU8EnumTy, .scalar (BitVec.ofNat 128 20)⟩)),
+        .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩),
+        .storageDead 1
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Positive canary program decoding `const SignedTag::Neg` (1-byte signed tag
+`0xff = 255`, sign-extended to `-1isize = 2^64 - 1`) and reading
+`Rvalue.discriminant` into an `isize` return place `_0`. -/
+noncomputable def progEnumSignedTagIsize : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.int .isize true, .enum canarySignedTagEnumTy]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨1, []⟩ (.use (.constant
+          ⟨.enum canarySignedTagEnumTy, .scalar (BitVec.ofNat 128 255)⟩)),
+        .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩),
+        .storageDead 1
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Trusted claim for
+`Anneal.MirWp.canary_positive_enum_explicit_repr_anneal`:
+exercises explicit-repr `#[repr(u8)]` non-index enum constant tag decoding and
+`u8` `Rvalue.discriminant` alongside signed `i8` -> `isize` tag sign-extension.
+-/
+noncomputable def CanaryPositiveEnumExplicitReprAnnealClaim : Prop :=
+  PositiveCanaryClaim progEnumExplicitReprU8 queryEmpty (u8Val 20) ∧
+  PositiveCanaryClaim progEnumSignedTagIsize queryEmpty
+    (scalarNatVal .isize true (Nat.pow 2 64 - 1))
+
+/-- Single-variant inhabited ZST fieldless enum `enum Single { Only = 42 }`
+(`Variants::Single { index: 0 }`, `Size::ZERO`). -/
+noncomputable def canarySingleZstEnumTy : EnumTy := {
+  id := 3
+  discrWidth := .isize
+  discrSigned := true
+  tagRepr := .zeroSized
+  discriminants := [42]
+}
+
+/-- Positive canary `fn() -> Single { return }` returning an inhabited ZST
+1-variant enum without an explicit assignment to `_0`. -/
+noncomputable def progZstSingleEnumImplicitRet : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.enum canarySingleZstEnumTy]
+    basicBlocks := [{
+      statements := []
+      terminator := .return_
+    }]
+  }]
+
+/-- Positive canary exercising `StorageLive`, `Operand.move` (non-deinitializing
+on ZST), `ConstLit.zeroSized`, and `Rvalue.discriminant` on `Single`. -/
+noncomputable def progZstSingleEnumMoveAndDiscr : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [
+      .int .isize true,
+      .enum canarySingleZstEnumTy,
+      .enum canarySingleZstEnumTy,
+      .enum canarySingleZstEnumTy
+    ]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .storageLive 2,
+        .storageLive 3,
+        .assign ⟨2, []⟩ (.use (.move ⟨1, []⟩)),
+        .assign ⟨3, []⟩ (.use (.constant
+          ⟨.enum canarySingleZstEnumTy, .zeroSized⟩)),
+        .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩),
+        .storageDead 3,
+        .storageDead 2,
+        .storageDead 1
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Trusted claim for `Anneal.MirWp.canary_positive_zst_single_enum_anneal`. -/
+noncomputable def CanaryPositiveZstSingleEnumAnnealClaim : Prop :=
+  PositiveCanaryClaim progZstSingleEnumImplicitRet queryEmpty
+    (.enumVal canarySingleZstEnumTy 0) ∧
+  PositiveCanaryClaim progZstSingleEnumMoveAndDiscr queryEmpty
+    (scalarNatVal .isize true 42)
+
+/-- Negative UB canary: `ConstLit.scalar 1` on `ReprU8 { A = 10, B = 20 }` is an
+invalid enum tag (not variant index 1!) and faults with `.undefined`. -/
+noncomputable def progEnumInvalidTagConstUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .enum canaryReprU8EnumTy]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨1, []⟩ (.use (.constant
+          ⟨.enum canaryReprU8EnumTy, .scalar (BitVec.ofNat 128 1)⟩)),
+        .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Negative UB canary: reading `Rvalue.discriminant` from an uninitialized
+scalar-tagged enum local faults with `.undefined`. -/
+noncomputable def progEnumUninitDiscrUb : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u8Ty, .enum canaryReprU8EnumTy]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Trusted claim for
+`Anneal.MirWp.canary_negative_ub_enum_invalid_tag_and_uninit_anneal`. -/
+noncomputable def CanaryNegativeUbEnumInvalidTagAndUninitAnnealClaim : Prop :=
+  NegativeCanaryClaim progEnumInvalidTagConstUb queryEmpty
+    .undefined .unsupported ∧
+  NegativeCanaryClaim progEnumUninitDiscrUb queryEmpty
+    .undefined .unsupported
+
+/-- Safe 0-arg unit body for `CanaryCrateAndBodyVerifiedAnnealClaim`. -/
+noncomputable def canarySafeUnitBody : Body := {
+  argumentCount := 0
+  locals := [.unit]
+  basicBlocks := [{ statements := [], terminator := .return_ }]
+  isUnsafe := false
+  identity := "canary::safe_unit"
+}
+
+/-- `unsafe fn(flag: bool) -> u32` body that returns `42` when `flag = true` and
+executes `unreachable` when `flag = false`. -/
+noncomputable def canaryUnsafeGuardedBody (isUnsafeFlag : Bool) : Body := {
+  argumentCount := 1
+  locals := [u32Ty, .bool]
+  basicBlocks := [
+    {
+      statements := []
+      terminator := .switchInt (.copy ⟨1, []⟩) {
+        branches := [(BitVec.ofNat 128 1, 1)]
+        otherwise := 2
+      }
+    },
+    {
+      statements := [
+        .assign ⟨0, []⟩
+          (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 42)⟩))
+      ]
+      terminator := .return_
+    },
+    {
+      statements := []
+      terminator := .unreachable
+    }
+  ]
+  isUnsafe := isUnsafeFlag
+  identity := "canary::unsafe_guarded"
+}
+
+/-- Safe `fn(x: !) -> ()` body exercising uninhabited `MirTy.never` parameter
+verification while enforcing `BodyStaticAdmitted`. -/
+noncomputable def canaryNeverParamBody (badStorage : Bool) : Body := {
+  argumentCount := 1
+  locals := [.unit, .never]
+  basicBlocks := [{
+    statements := if badStorage then [.storageLive 9] else []
+    terminator := .unreachable
+  }]
+  isUnsafe := false
+  identity := "canary::never_param"
+}
+
+/-- Valid 3-body crate combining a safe body (with `safety = False` ignored),
+an `unsafe` body guarded by `safety`, and an uninhabited `!`-parameter body. -/
+noncomputable def canaryValidCrate : Crate := {
+  program := {
+    scope := .crate
+    pointerWidthBits := 64
+    mirProfileVersion := 1
+    bodies := [
+      canarySafeUnitBody,
+      canaryUnsafeGuardedBody true,
+      canaryNeverParamBody false
+    ]
+  }
+  specs := {
+    safety := fun id args =>
+      if stringBeq id "canary::unsafe_guarded" then
+        args = [.bool true]
+      else
+        False
+    property := fun p => Nat.beq p.bodies.length 3 = true
+  }
+}
+
+/-- Trusted claim for `Anneal.MirWp.canary_crate_and_body_verified_anneal`:
+1. `CrateTheorem canaryValidCrate` and `UnitTheorem` on a valid `.unit` capture
+   both hold;
+2. Marking `canaryUnsafeGuardedBody` safe (`isUnsafe = false`) refutes
+   `BodyVerified` even under `safetyPre := fun _ => False`;
+3. An invalid `MirTy.never` body (`badStorage = true`) refutes `BodyVerified`
+   via `BodyStaticAdmitted` even though `ValidEntryArgs` is empty;
+4. Mismatching `body` against `p.bodies[defId]` (including passing an admitted
+   `MirTy.never` body against a faulty `p.bodies[0]`) refutes `BodyVerified`;
+5. Empty `bodies := []`, out-of-bounds `entryDefId`, and duplicate `identity`
+   strings each refute `CrateTheorem` / `UnitTheorem`;
+6. A crate containing a non-`BodyVerified` body (even alongside a valid body)
+   refutes `CrateTheorem`;
+7. A false `specs.property` (`fun _ => False`) refutes both `CrateTheorem` and
+   `UnitTheorem`; and
+8. `.crate` vs. `.unit` scope mismatches refute both `CrateTheorem` (on a
+   `.unit` capture) and `UnitTheorem` (on `canaryValidCrate`). -/
+noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
+  CrateTheorem canaryValidCrate ∧
+  UnitTheorem {
+      program := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      }
+      specs := {
+        property := fun p => Nat.beq p.bodies.length 1 = true
+      }
+    } ∧
+  ¬ BodyVerified {
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryUnsafeGuardedBody false]
+    } 0
+      (canaryUnsafeGuardedBody false) (fun _ => False) ∧
+  ¬ BodyVerified {
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryNeverParamBody true]
+    } 0
+      (canaryNeverParamBody true) (fun _ => True) ∧
+  ¬ BodyVerified {
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
+    } 0
+      (canaryUnsafeGuardedBody false) (fun _ => True) ∧
+  ¬ BodyVerified {
+      pointerWidthBits := 64
+      mirProfileVersion := 1
+      bodies := [canaryUnsafeGuardedBody false]
+    } 0
+      (canaryNeverParamBody false) (fun _ => True) ∧
+  ¬ CrateTheorem {
+      program := {
+        scope := .crate
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := []
+      }
+    } ∧
+  ¬ UnitTheorem {
+      program := {
+        scope := .unit
+        entryDefId := 5
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      }
+    } ∧
+  ¬ CrateTheorem {
+      program := {
+        scope := .crate
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody, canarySafeUnitBody]
+      }
+    } ∧
+  ¬ CrateTheorem {
+      program := {
+        scope := .crate
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
+      }
+    } ∧
+  ¬ CrateTheorem {
+      program := {
+        scope := .crate
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      }
+      specs := {
+        property := fun _ => False
+      }
+    } ∧
+  ¬ UnitTheorem {
+      program := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      }
+      specs := {
+        property := fun _ => False
+      }
+    } ∧
+  ¬ CrateTheorem {
+      program := {
+        scope := .unit
+        pointerWidthBits := 64
+        mirProfileVersion := 1
+        bodies := [canarySafeUnitBody]
+      }
+    } ∧
+  ¬ UnitTheorem canaryValidCrate
+
 end Trusted.MirSemantics
+
+namespace Trusted
+
+/-- Top-level captured crate + specification bundle alias (`Trusted.Crate`). -/
+abbrev Crate := Trusted.MirSemantics.Crate
+
+/-- Top-level one-argument whole-crate verification obligation
+(`Trusted.CrateTheorem`). -/
+noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem
+
+/-- Top-level one-argument proof-unit verification obligation
+(`Trusted.UnitTheorem`). -/
+noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem
+
+end Trusted
