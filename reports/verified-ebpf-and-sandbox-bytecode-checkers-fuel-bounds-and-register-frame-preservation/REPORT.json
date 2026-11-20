@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "verification/os-kernels",
+    "verification/security",
+    "isa/riscv",
+    "isa/aarch64",
+    "isa/x86-64",
+    "systems/sandboxing",
+    "systems/sfi-lfi",
+    "systems/ebpf/verifier",
+    "systems/ebpf/jit-verification",
+    "verification/abstract-interpretation",
+    "verification/compcert"
+  ],
+  "subjects": [
+    {
+      "name": "Jitterbug Linux kernel BPF JIT verification framework",
+      "identity": {
+        "repository": "uw-unsat/jitterbug",
+        "revision": "78d1e75ad506498b585fbac66985ff9d9d05952d"
+      }
+    },
+    {
+      "name": "Serval symbolic evaluation framework",
+      "identity": {
+        "repository": "uw-unsat/serval",
+        "revision": "72adc4952a1e62330aea527214a26bd0c09cbd05"
+      }
+    },
+    {
+      "name": "PREVAIL polynomial-time eBPF abstract-interpretation verifier",
+      "identity": {
+        "repository": "vbpf/ebpf-verifier",
+        "revision": "169eb5d6f48a59ffe4e902e977ae4e387f2b4e49"
+      }
+    },
+    {
+      "name": "CertrBPF / CertFC mechanized rBPF verifier and interpreter in Rocq/Coq",
+      "identity": {
+        "repository": "future-proof-iot/CertFC",
+        "revision": "75690097c946c555cc4ce1e69d13ef86dc738180"
+      }
+    },
+    {
+      "name": "CompCert verified C compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "RockSalt verified x86 Software Fault Isolation checker",
+      "identity": {
+        "repository": "gangtan/CPUmodels",
+        "revision": "a6decc3085e1f8d8d4875e67f9ad9c7663910f8a"
+      }
+    },
+    {
+      "name": "VeriWasm SFI binary verifier for native-compiled WebAssembly",
+      "identity": {
+        "repository": "PLSysSec/veriwasm",
+        "revision": "60a64d279ecb676549aab51838d52b41ec6d1360"
+      }
+    },
+    {
+      "name": "Lightweight Fault Isolation (LFI) machine-code verifier",
+      "identity": {
+        "repository": "lfi-project/lfi-verifier",
+        "revision": "8c3c47983572039b138f8fa15c12231f2655bbef"
+      }
+    },
+    {
+      "name": "Sail RISC-V normative ISA and virtual-memory specification",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL kernel and VSpace verification repository",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
