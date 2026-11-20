@@ -1,0 +1,2 @@
+$ cargo anneal setup --local-archive invalid.tar.zst
+error: failed to install Anneal toolchain: failed to iterate over archive

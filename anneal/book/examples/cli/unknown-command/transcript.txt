@@ -1,0 +1,6 @@
+$ cargo anneal unknown
+error: unrecognized subcommand 'unknown'
+
+Usage: cargo anneal [COMMAND]
+
+For more information, try '--help'.

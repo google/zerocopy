@@ -215,6 +215,20 @@ jobs:
             echo "No benchmark dashboard files found to copy."
           fi
 
+      - name: Build Anneal public documentation
+        # Strip GitHub Actions cache and artifact service credentials because
+        # `anneal/ci/check_docs.py` lives outside `anneal/trusted/`.
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          python3 -B ../anneal/ci/check_docs.py \
+            --build \
+            --mdbook-cache "$RUNNER_TEMP/anneal-mdbook-cache" \
+            --output target/doc/anneal
+
       - name: Upload Cargo doc output to GitHub Pages
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
