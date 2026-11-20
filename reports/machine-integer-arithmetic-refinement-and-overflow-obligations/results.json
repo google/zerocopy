@@ -1,0 +1,1149 @@
+[
+  {
+    "id": "evalWrap_toNat_eq_emod",
+    "lean": "Toy.MachInt.evalWrap_toNat_eq_emod",
+    "lean_names": [
+      "Toy.MachInt.ce_evalWrap_eq_not_imp_intRingIdentity"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and ring expression e : RingExpr (over +, -, *, unary -, variables, and literals), the unsigned value (evalWrap n env e).toNat equals the mathematical integer evaluation evalInt (fun i => (env i).toNat) e reduced modulo 2^n via Euclidean Int.emod, with no overflow side conditions.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8 with env = [200#8, 100#8] and e = (x₀ + x₁) - x₁, evalWrap evaluates to 200#8 and 200 = (200 + 100 - 100) % 256.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalWrap_toNat_eq_emod",
+    "non_claims": [
+      "Does not claim that checked or plain overflow-checked evaluation agrees with wrapping evaluation; intermediate overflow causes checked evaluation to return none and plain evaluation to panic (see ce_checked_add_sub_intermediate_overflow).",
+      "Does not apply to division (/ or %), remainder, shifts (<< or >>), or ordering comparisons (<); see Results 3, 4, and 5.",
+      "Only unconditional identities transfer. An equation proved over `Int` using hypotheses about the variables (ranges, signs, nonzero divisors) need not hold in wrapping arithmetic. Conversely, an equation that holds in wrapping arithmetic need not hold over `Int` (e.g. `64 * (4 * x) = 0` on `u8`/`i8` or `128 * (x + x) = 0` on `u8`; see `ce_evalWrap_eq_not_imp_intRingIdentity`).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) (wrapping_add/sub/mul/neg modulo 2^n; behavior of plain operators when overflow checks are off is implementation-defined per behavior-not-considered-unsafe.md).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "Ferrocene Language Specification (rust-lang/fls commit bca860e8dab52715effdd49a792347b262f5e539), src/expressions.rst ('Arithmetic Overflow')",
+      "Rust RFC 0560: Integer Overflow (initially written by Gábor Lehel; edited by Nicholas Matsakis), https://github.com/rust-lang/rfcs/blob/f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4/text/0560-integer-overflow.md (distinguishes intentional wrapping arithmetic via WrappingOps from overflow-as-error).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_add, toNat_sub, toNat_mul, ofInt_add, ofInt_mul, ofInt_neg, toNat_ofInt, toInt_ofInt, ofInt_toInt), Init/Data/BitVec/Bootstrap.lean (toNat_neg) and Init/GrindInstances/Ring/BitVec.lean (Lean.Grind.CommRing (BitVec w), IsCharP (BitVec w) (2 ^ w)).",
+      "CompCert C verified compiler (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc), lib/Integers.v (add_signed, mul_signed: modular ring arithmetic on machine words)."
+    ],
+    "design_question": "Identifies a fragment of machine-integer arithmetic (ring expressions under wrapping semantics) that refines modular mathematical integer arithmetic with zero overflow side conditions. Maximality is not claimed: other operations (for example unsigned bitwise operations) also need no side conditions."
+  },
+  {
+    "id": "evalWrap_toInt_eq_bmod",
+    "lean": "Toy.MachInt.evalWrap_toInt_eq_bmod",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and ring expression e : RingExpr, the signed two's-complement value (evalWrap n env e).toInt equals the mathematical integer evaluation evalInt (fun i => (env i).toInt) e reduced via balanced modulo Int.bmod · (2^n), with no overflow side conditions.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8 with env = [100#8, 50#8] and e = (x₀ + x₁) - x₁, (evalWrap 8 env e).toInt = 100 = Int.bmod (100 + 50 - 50) 256.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalWrap_toInt_eq_bmod",
+    "non_claims": [
+      "Does not claim that signed wrapping evaluation equals unreduced mathematical Int evaluation when intermediate or final results fall outside InSignedRange n.",
+      "Does not apply to C/C++ signed integer arithmetic, where signed overflow is undefined behavior rather than two's-complement wrapping.",
+      "Does not apply to division, remainder, shifts, or signed ordering (<).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) (two's complement representation for signed fixed-width integers).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "Ferrocene Language Specification (rust-lang/fls commit bca860e8dab52715effdd49a792347b262f5e539), src/expressions.rst ('Arithmetic Overflow')",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/Int/DivMod/Basic.lean, Init/Data/BitVec/Lemmas.lean (toInt_add, toInt_sub, toInt_mul, toInt_neg in terms of Int.bmod), and Init/GrindInstances/Ring/BitVec.lean (CommRing (BitVec w))."
+    ],
+    "design_question": "Gives the exact signed-integer modular refinement invariant for two's-complement wrapping arithmetic, showing balanced modulo Int.bmod plays the role that Int.emod plays for unsigned arithmetic."
+  },
+  {
+    "id": "evalWrap_eq_of_intRingIdentity",
+    "lean": "Toy.MachInt.evalWrap_eq_of_intRingIdentity",
+    "lean_names": [
+      "Toy.MachInt.ce_evalWrap_eq_not_imp_intRingIdentity"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and pair of expressions e₁ e₂ : RingExpr satisfying IntRingIdentity e₁ e₂ (agreement under every mathematical valuation ρ : Nat → Int), their wrapping evaluations coincide: evalWrap n env e₁ = evalWrap n env e₂, with no overflow side conditions.",
+    "hypotheses": [
+      {
+        "name": "hid : IntRingIdentity e₁ e₂",
+        "purpose": "Ensures e₁ and e₂ denote the same polynomial function over Int, hence agree modulo 2^n under the canonical ring homomorphism Int → BitVec n.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_evalWrap_eq_drop_intRingIdentity"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "e₁ = (x₀ + x₁) - x₁ and e₂ = x₀ satisfy IntRingIdentity e₁ e₂ and agree under evalWrap 8 [200#8, 100#8].",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalWrap_eq_of_intRingIdentity",
+    "non_claims": [
+      "Does not transfer identities under checked or plain overflow-checked evaluation: (a + b) - b panics on overflow even when a is in range (see ce_checked_add_sub_intermediate_overflow).",
+      "Only unconditional identities transfer. An equation proved over `Int` using hypotheses about the variables (ranges, signs, nonzero divisors) need not hold in wrapping arithmetic. Conversely, an equation that holds in wrapping arithmetic need not hold over `Int` (e.g. `64 * (4 * x) = 0` on `u8`/`i8` or `128 * (x + x) = 0` on `u8`; see `ce_evalWrap_eq_not_imp_intRingIdentity`).",
+      "Does not apply to expressions containing division, remainder, shifts, or comparisons.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/GrindInstances/Ring/BitVec.lean (L21 CommRing (BitVec w), L48 IsCharP (BitVec w) (2 ^ w), allowing `grind` to prove polynomial identities over BitVec w for symbolic w) and Init/Data/BitVec/Lemmas.lean (ofInt_add, ofInt_mul, ofInt_neg).",
+      "Rust RFC 0560: Integer Overflow (initially written by Gábor Lehel; edited by Nicholas Matsakis), https://github.com/rust-lang/rfcs/blob/f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4/text/0560-integer-overflow.md",
+      "CompCert C verified compiler (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc), lib/Integers.v (modular ring homomorphism on 32/64-bit words)."
+    ],
+    "design_question": "Answers which algebraic identities transfer from mathematical integers to fixed-width integers with zero side conditions: every pure ring identity transfers under wrapping semantics."
+  },
+  {
+    "id": "evalCheckedU_sound",
+    "lean": "Toy.MachInt.evalCheckedU_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, ring expression e : RingExpr, and result v : BitVec n, if checked unsigned evaluation returns some v (evalCheckedU n env e = some v, which by definition of evalPlainU coincides with evalPlainU n env e = Outcome.ok v), then (v.toNat : Int) equals the unreduced mathematical integer evaluation evalInt (fun i => (env i).toNat) e.",
+    "hypotheses": [
+      {
+        "name": "hsome : evalCheckedU n env e = some v",
+        "purpose": "Guarantees that every literal and intermediate unsigned operation succeeded without wrapping, making bitvector evaluation exact in Nat/Int.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_evalCheckedU_sound_drop_some"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, env = [200#8, 55#8], and e = (x₀ + x₁) - x₁, evalCheckedU returns some 200#8 and 200 = evalInt [200, 55] e.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalCheckedU_sound",
+    "non_claims": [
+      "Does not assert that evalCheckedU succeeds whenever only the final value evalInt ... e is in InUnsignedRange n; intermediate overflow still returns none (see ce_checked_add_sub_intermediate_overflow).",
+      "Does not model division, remainder, or shifts (see Results 4 and 5).",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/tokens.md (L518) and src/expressions/literal-expr.md (L426-429: overflowing_literals lint, negation of literal)",
+      "Ferrocene Language Specification (rust-lang/fls commit bca860e8dab52715effdd49a792347b262f5e539), src/expressions.rst ('Arithmetic Overflow')",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/uint_macros.rs (checked_add, checked_sub, checked_mul, checked_neg; https://doc.rust-lang.org/1.91.0/core/primitive.u32.html#method.checked_add).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_add_of_lt, toNat_sub_of_le, toNat_mul_of_lt)."
+    ],
+    "design_question": "Justifies backward/value-soundness in verifiers (`execution (Lean kernel check)` for the model; `derived (modeling bridge)` connecting `evalPlainU = Outcome.ok v` to Rust plain unsigned `+`, `-`, `*` under overflow checks): once checked evaluation succeeds, the machine value equals its mathematical integer evaluation without wraparound."
+  },
+  {
+    "id": "evalCheckedU_complete",
+    "lean": "Toy.MachInt.evalCheckedU_complete",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and ring expression e : RingExpr, if every subexpression of e (variables, typed constants, and every compound node) evaluates inside InUnsignedRange n under SubexprsInRange (InUnsignedRange n) (fun i => (env i).toNat) e, then evalCheckedU n env e returns some (evalWrap n env e).",
+    "hypotheses": [
+      {
+        "name": "hrange : SubexprsInRange (InUnsignedRange n) (fun i => (env i).toNat) e",
+        "purpose": "Rules out out-of-range literals and intermediate subexpression overflows even when the root expression value lies in InUnsignedRange n.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedU_add_sub_intermediate_overflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, env = [200#8, 55#8], and e = (x₀ + x₁) - x₁, all subexpressions (200, 55, 255, 200) lie in [0, 256) and evalCheckedU returns some 200#8.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalCheckedU_complete",
+    "non_claims": [
+      "Does not weaken SubexprsInRange to checking only the root value InUnsignedRange n (evalInt ... e); (200u8 + 100u8) - 100u8 refutes that weakening (ce_checkedU_add_sub_intermediate_overflow).",
+      "Does not assert that SubexprsInRange holds without verifier overflow proof obligations.",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]).",
+      "Rust RFC 0560: Integer Overflow (initially written by Gábor Lehel; edited by Nicholas Matsakis), https://github.com/rust-lang/rfcs/blob/f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4/text/0560-integer-overflow.md."
+    ],
+    "design_question": "Specifies a sufficient per-subexpression range obligation for panic-free checked unsigned ring evaluation (also shown necessary in the model by `evalCheckedU_isSome_iff_subexprsInRange`)."
+  },
+  {
+    "id": "evalCheckedU_isSome_iff_subexprsInRange",
+    "lean": "Toy.MachInt.evalCheckedU_isSome_iff_subexprsInRange",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and ring expression e : RingExpr, checked unsigned evaluation succeeds ((evalCheckedU n env e).isSome = true) if and only if SubexprsInRange (InUnsignedRange n) (fun i => (env i).toNat) e holds.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8 on (x₀ + x₁) - x₁: env = [200#8, 55#8] satisfies SubexprsInRange (InUnsignedRange 8) and gives isSome = true, while env = [200#8, 100#8] violates SubexprsInRange at the sum and gives isSome = false.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalCheckedU_isSome_iff_subexprsInRange",
+    "non_claims": [
+      "Does not claim that failing `SubexprsInRange` implies the final expression value is out of range (`ce_checkedU_add_sub_intermediate_overflow`).",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/tokens.md (L518) and src/expressions/literal-expr.md (L426-429: overflowing_literals lint, negation of literal)",
+      "Ferrocene Language Specification (rust-lang/fls commit bca860e8dab52715effdd49a792347b262f5e539), src/expressions.rst ('Arithmetic Overflow')",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/uint_macros.rs (checked_add, checked_sub, checked_mul, checked_neg)."
+    ],
+    "design_question": "Characterizes the exact necessary and sufficient per-subexpression range obligation for checked unsigned ring evaluation in the model."
+  },
+  {
+    "id": "evalCheckedS_sound",
+    "lean": "Toy.MachInt.evalCheckedS_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, ring expression e : RingExpr, and result v : BitVec n, if checked signed evaluation returns some v (evalCheckedS n env e = some v, definitionally evalPlainS n env e = Outcome.ok v), then v.toInt equals the unreduced mathematical integer evaluation evalInt (fun i => (env i).toInt) e.",
+    "hypotheses": [
+      {
+        "name": "hsome : evalCheckedS n env e = some v",
+        "purpose": "Guarantees that every literal and intermediate signed operation stays in [sMinVal n, sMaxVal n] without two's-complement wraparound.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_evalCheckedS_sound_drop_some"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, env = [100#8, 27#8], and e = (x₀ + x₁) - x₁, evalCheckedS returns some 100#8 and (100#8).toInt = 100 = evalInt [100, 27] e.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalCheckedS_sound",
+    "non_claims": [
+      "Does not assert that evalCheckedS succeeds when only the final result is in InSignedRange n.",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/tokens.md (L518) and src/expressions/literal-expr.md (L426-429: overflowing_literals lint, negation of literal)",
+      "Ferrocene Language Specification (rust-lang/fls commit bca860e8dab52715effdd49a792347b262f5e539), src/expressions.rst ('Arithmetic Overflow')",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_add, checked_sub, checked_mul, checked_neg; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.checked_add)."
+    ],
+    "design_question": "Justifies signed integer translation soundness (`execution (Lean kernel check)` for the model; `derived (modeling bridge)` connecting `evalPlainS` to Rust plain signed `+`, `-`, `*`, and non-literal unary `-` under overflow checks)."
+  },
+  {
+    "id": "evalCheckedS_complete",
+    "lean": "Toy.MachInt.evalCheckedS_complete",
+    "lean_names": [
+      "Toy.MachInt.inSignedRange_iff_two_pow_of_posWidth"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and ring expression e : RingExpr, if every subexpression of e evaluates inside InSignedRange n under SubexprsInRange (InSignedRange n) (fun i => (env i).toInt) e, then evalCheckedS n env e returns some (evalWrap n env e).",
+    "hypotheses": [
+      {
+        "name": "hrange : SubexprsInRange (InSignedRange n) (fun i => (env i).toInt) e",
+        "purpose": "Rules out out-of-range literals and intermediate signed overflows (including negating MIN) even when the root expression lies in InSignedRange n.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedS_add_sub_intermediate_overflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, env = [100#8, 27#8], and e = (x₀ + x₁) - x₁, all subexpressions (100, 27, 127, 100) lie in [-128, 127] and evalCheckedS returns some 100#8.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalCheckedS_complete",
+    "non_claims": [
+      "Does not allow substituting root-only range checks for SubexprsInRange (InSignedRange n); (100i8 + 50i8) - 50i8 refutes that weakening (ce_checkedS_add_sub_intermediate_overflow).",
+      "Does not claim signed range equals -(2^(n-1))..2^(n-1)-1 at n = 0; at n = 0, sMinVal 0 = sMaxVal 0 = 0 (see inSignedRange_iff_two_pow_of_posWidth).",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]).",
+      "Rust RFC 0560: Integer Overflow (initially written by Gábor Lehel; edited by Nicholas Matsakis), https://github.com/rust-lang/rfcs/blob/f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4/text/0560-integer-overflow.md."
+    ],
+    "design_question": "Specifies a sufficient per-subexpression two's-complement range obligation for panic-free checked signed ring evaluation (also shown necessary in the model by `evalCheckedS_isSome_iff_subexprsInRange`)."
+  },
+  {
+    "id": "evalCheckedS_isSome_iff_subexprsInRange",
+    "lean": "Toy.MachInt.evalCheckedS_isSome_iff_subexprsInRange",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, environment env : Nat → BitVec n, and ring expression e : RingExpr, checked signed evaluation succeeds ((evalCheckedS n env e).isSome = true) if and only if SubexprsInRange (InSignedRange n) (fun i => (env i).toInt) e holds.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8 on (x₀ + x₁) - x₁: env = [100#8, 27#8] satisfies SubexprsInRange (InSignedRange 8) and gives isSome = true, while env = [100#8, 50#8] violates SubexprsInRange at the sum and gives isSome = false.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_evalCheckedS_isSome_iff_subexprsInRange",
+    "non_claims": [
+      "Does not claim that failing `SubexprsInRange` implies the final expression value is out of range (`ce_checkedS_add_sub_intermediate_overflow`).",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/tokens.md (L518) and src/expressions/literal-expr.md (L426-429: overflowing_literals lint, negation of literal)",
+      "Ferrocene Language Specification (rust-lang/fls commit bca860e8dab52715effdd49a792347b262f5e539), src/expressions.rst ('Arithmetic Overflow')",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_add, checked_sub, checked_mul, checked_neg)."
+    ],
+    "design_question": "Characterizes the exact necessary and sufficient per-subexpression two's-complement range obligation for checked signed ring evaluation in the model."
+  },
+  {
+    "id": "ce_checked_add_sub_intermediate_overflow",
+    "lean": "Toy.MachInt.ce_checked_add_sub_intermediate_overflow",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For the expression (a + b) - b at 8 bits with (a, b) = (200u8, 100u8) unsigned and (100i8, 50i8) signed, the mathematical result equals a and lies in range, and wrapping evaluation recovers a, yet checked evaluation returns none and plain overflow-checked evaluation produces Outcome.panic.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Self-witnessing concrete counterexample on BitVec 8, cross-checked against rustc (program `support/rustc_semantics_checks.rs`, recorded output `support/rustc_checks_output.txt`).",
+    "nonvacuity_witness_lean": "Toy.MachInt.ce_checked_add_sub_intermediate_overflow",
+    "non_claims": [
+      "Does not claim that wrapping evaluation fails to recover a; wrapping evaluation succeeds precisely because ring identities transfer without intermediate range bounds.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "`.lit k` stands for a typed constant value, not a Rust literal token. In Rust an out-of-range literal is a compile-time error (deny-by-default `overflowing_literals` lint) or is truncated, never a runtime panic. Unary minus applied directly to a literal never overflows (`-128_i8 == i8::MIN`). Unary minus does not exist on unsigned types. The model's `none` results for these cases have no Rust counterpart, and `SubexprsInRange` over-approximates the obligation for them.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "Rust RFC 0560: Integer Overflow (initially written by Gábor Lehel; edited by Nicholas Matsakis), https://github.com/rust-lang/rfcs/blob/f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4/text/0560-integer-overflow.md",
+      "Will Dietz, Peng Li, John Regehr, Vikram Adve. Understanding Integer Overflow in C/C++. ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142 (taxonomy and empirical study of integer overflow in C/C++; cited only for the C/C++ contrast in the non-claims, not for the Rust model)."
+    ],
+    "design_question": "Demonstrates why verifiers modeling plain or checked arithmetic cannot discharge overflow obligations solely at the final result of a compound expression."
+  },
+  {
+    "id": "not_ult_allOnes_add_one",
+    "lean": "Toy.MachInt.not_ult_allOnes_add_one",
+    "lean_names": [
+      "Toy.MachInt.not_ult_add_one_uMax",
+      "Toy.MachInt.ult_add_one_iff_ne_allOnes",
+      "Toy.MachInt.ult_allOnes_add_one_allOnes_of_posWidth"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, BitVec.allOnes n + 1#n = 0#n, ¬ Ult (BitVec.allOnes n) (BitVec.allOnes n + 1#n), and ¬ (∀ x : BitVec n, Ult x (x + 1#n)). A companion lemma (ult_allOnes_add_one_allOnes_of_posWidth, not part of this statement) adds that under PosWidth n BitVec.allOnes n + 1#n wraps strictly below BitVec.allOnes n.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, 255#8 + 1#8 = 0#8, ¬ Ult 255#8 (255#8 + 1#8), Ult (255#8 + 1#8) 255#8, and ¬ (∀ x : BitVec 8, Ult x (x + 1#8)).",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_not_ult_allOnes_add_one",
+    "positive_control_lean": "Toy.MachInt.pc_ult_add_one_of_lt_uMax",
+    "non_claims": [
+      "Does not claim that x + 1#n wraps strictly below x at n = 0 (at n = 0, BitVec.allOnes 0 = 0#0 so 0 < 0 fails without wrapping strictly downward); strict wrap-below requires PosWidth n (ult_allOnes_add_one_allOnes_of_posWidth).",
+      "Does not rule out Ult x (x + 1#n) when restricted to x ≠ BitVec.allOnes n (ult_add_one_iff_ne_allOnes; see pc_ult_add_one_of_lt_uMax).",
+      "The impossibility concerns wrapping addition only. It is escaped by (i) restricting to `x < MAX` (positive control), (ii) checked or overflow-checked addition, where `x + 1` at `MAX` panics or returns `None` instead of producing a false comparison, and (iii) unbounded integers. No claim is made about how C compilers treat `x + 1 > x` for signed types (they may fold it to true because overflow is undefined).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_add, toNat_allOnes)."
+    ],
+    "design_question": "Refutes the naive mathematical-integer rule x + 1 > x under fixed-width wrapping unsigned arithmetic with the concrete u<n>::MAX witness exposed directly in the Lean statement (not_ult_add_one_uMax follows as a corollary)."
+  },
+  {
+    "id": "not_slt_intMax_add_one",
+    "lean": "Toy.MachInt.not_slt_intMax_add_one",
+    "lean_names": [
+      "Toy.MachInt.not_slt_add_one_sMax",
+      "Toy.MachInt.slt_add_one_iff_ne_intMax",
+      "Toy.MachInt.slt_intMax_add_one_intMax_of_posWidth"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "plain_claim": "For every bitwidth n, BitVec.intMax n + 1#n = BitVec.intMin n, ¬ Slt (BitVec.intMax n) (BitVec.intMax n + 1#n), and ¬ (∀ x : BitVec n, Slt x (x + 1#n)). A companion lemma (slt_intMax_add_one_intMax_of_posWidth, not part of this statement) adds that under PosWidth n BitVec.intMax n + 1#n wraps strictly below BitVec.intMax n.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, 127#8 + 1#8 = -128#8, ¬ Slt 127#8 (127#8 + 1#8), Slt (127#8 + 1#8) 127#8, and ¬ (∀ x : BitVec 8, Slt x (x + 1#8)).",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_not_slt_intMax_add_one",
+    "positive_control_lean": "Toy.MachInt.pc_slt_add_one_of_lt_sMax",
+    "non_claims": [
+      "Does not rule out Slt x (x + 1#n) when restricted to x ≠ BitVec.intMax n (slt_add_one_iff_ne_intMax; see pc_slt_add_one_of_lt_sMax, which holds even at n = 1 where -1 + 1 = 0 > -1).",
+      "The impossibility concerns wrapping addition only. It is escaped by (i) restricting to `x < MAX` (positive control), (ii) checked or overflow-checked addition, where `x + 1` at `MAX` panics or returns `None` instead of producing a false comparison, and (iii) unbounded integers. No claim is made about how C compilers treat `x + 1 > x` for signed types (they may fold it to true because overflow is undefined).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toInt_intMax, toInt_intMin_of_pos)."
+    ],
+    "design_question": "Refutes the naive mathematical-integer rule x + 1 > x under fixed-width wrapping signed arithmetic with the concrete i<n>::MAX witness exposed directly in the Lean statement (not_slt_add_one_sMax follows as a corollary)."
+  },
+  {
+    "id": "ult_add_right_of_noUAddOverflow",
+    "lean": "Toy.MachInt.ult_add_right_of_noUAddOverflow",
+    "lean_names": [
+      "Toy.MachInt.noUAddOverflow_of_ult_of_noUAddOverflow"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For bitvectors a b c : BitVec n, if Ult a b and NoUAddOverflow b c (which entails NoUAddOverflow a c), then Ult (a + c) (b + c).",
+    "hypotheses": [
+      {
+        "name": "hlt : Ult a b",
+        "purpose": "Establishes the pre-addition unsigned strict inequality a.toNat < b.toNat.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_ult_add_right_drop_hlt"
+      },
+      {
+        "name": "hnoB : NoUAddOverflow b c",
+        "purpose": "Sufficient guard preventing b + c from wrapping modulo 2^n; together with Ult a b it entails NoUAddOverflow a c (exported as `noUAddOverflow_of_ult_of_noUAddOverflow`). Tight in the sense that it cannot be dropped alone, though not necessary when both sums wrap.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_ult_add_right_drop_noUAddOverflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "10#8 < 20#8 and 20#8 + 5#8 does not overflow u8, so 15#8 < 25#8.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_ult_add_right_of_noUAddOverflow",
+    "non_claims": [
+      "Does not hold if only a + c is overflow-free while b + c wraps (ce_ult_add_right_drop_noUAddOverflow).",
+      "Does not require separately hypothesizing NoUAddOverflow a c, because Ult a b and NoUAddOverflow b c entail NoUAddOverflow a c (`noUAddOverflow_of_ult_of_noUAddOverflow`, unlike signed addition monotonicity with negative c).",
+      "The no-overflow hypotheses are sufficient, not necessary. When both sums wrap (in the same direction, for signed types), the order is still preserved, e.g. `200u8 < 250u8` and `200u8.wrapping_add(100) = 44 < 94 = 250u8.wrapping_add(100)`. Each guard is tight only in the sense that it cannot be dropped on its own.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_add_of_lt, le_add_iff_sub_le)."
+    ],
+    "design_question": "Identifies a sufficient no-overflow hypothesis (`NoUAddOverflow b c`, which cannot be dropped alone) to transfer < across unsigned addition: only the upper summand needs an overflow-freedom guard (see `ult_add_right_iff_uaddOverflow_eq` for the exact iff criterion including both-wrap cases)."
+  },
+  {
+    "id": "slt_add_right_of_noSAddOverflow",
+    "lean": "Toy.MachInt.slt_add_right_of_noSAddOverflow",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For bitvectors a b c : BitVec n, if Slt a b, NoSAddOverflow a c, and NoSAddOverflow b c, then Slt (a + c) (b + c).",
+    "hypotheses": [
+      {
+        "name": "hlt : Slt a b",
+        "purpose": "Establishes the pre-addition signed strict inequality a.toInt < b.toInt.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_slt_add_right_drop_hlt"
+      },
+      {
+        "name": "hnoA : NoSAddOverflow a c",
+        "purpose": "Sufficient guard preventing signed underflow of a + c when c is negative (not entailed by NoSAddOverflow b c). Tight (cannot be dropped alone), though not necessary when both sums wrap in the same direction.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_slt_add_right_drop_noSAddOverflow_left"
+      },
+      {
+        "name": "hnoB : NoSAddOverflow b c",
+        "purpose": "Sufficient guard preventing signed overflow of b + c when c is positive (not entailed by NoSAddOverflow a c). Tight (cannot be dropped alone), though not necessary when both sums wrap in the same direction.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_slt_add_right_drop_noSAddOverflow_right"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "-10#8 < 20#8 and neither -10#8 + 5#8 nor 20#8 + 5#8 overflows i8, yielding -5#8 < 25#8.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_slt_add_right_of_noSAddOverflow",
+    "non_claims": [
+      "Does not allow dropping either NoSAddOverflow a c (negative c can underflow a + c alone) or NoSAddOverflow b c (positive c can overflow b + c alone).",
+      "Does not claim that both sums must have the same sign, nor that monotonicity fails only at MAX.",
+      "The no-overflow hypotheses are sufficient, not necessary. When both sums wrap in the same direction, the order is still preserved, e.g. `100i8 < 120i8` and `100i8.wrapping_add(100) = -56 < -36 = 120i8.wrapping_add(100)` (`ce_slt_add_right_both_wrap` proves `Slt (100#8 + 100#8) (120#8 + 100#8)` although both sums overflow). Each guard is tight only in the sense that it cannot be dropped on its own.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean and Init/Data/BitVec/Basic.lean (saddOverflow, toInt_add)."
+    ],
+    "design_question": "Shows the asymmetry between unsigned and signed sufficient no-overflow guards for addition monotonicity: unsigned requires guarding only the upper summand, whereas signed requires guarding both summands (each cannot be dropped alone; see `slt_add_right_iff_saddOverflow_eq` for the exact iff criterion)."
+  },
+  {
+    "id": "ult_add_right_iff_uaddOverflow_eq",
+    "lean": "Toy.MachInt.ult_add_right_iff_uaddOverflow_eq",
+    "lean_names": [
+      "Toy.MachInt.ce_ult_add_right_both_wrap"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For bitvectors a b c : BitVec n with Ult a b, wrapping unsigned addition preserves order (Ult (a + c) (b + c)) if and only if BitVec.uaddOverflow a c = BitVec.uaddOverflow b c (either neither wraps, or both wrap modulo 2^n).",
+    "hypotheses": [
+      {
+        "name": "hlt : Ult a b",
+        "purpose": "Establishes the pre-addition strict unsigned inequality a.toNat < b.toNat.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_ult_add_right_iff_drop_hlt"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, Ult 200#8 250#8 holds, both sums overflow with c = 100#8, and Ult (200#8 + 100#8) (250#8 + 100#8) holds.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_ult_add_right_iff_uaddOverflow_eq",
+    "non_claims": [
+      "Does not extend to arbitrary c when `¬ Ult a b`; e.g., when a ≥ b, both sums may avoid overflow while `Ult (a + c) (b + c)` remains false (`ce_ult_add_right_iff_drop_hlt`).",
+      "Does not imply `NoUAddOverflow b c` when `Ult (a + c) (b + c)` holds; both sums may overflow together (`ce_ult_add_right_both_wrap`).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Basic.lean (uaddOverflow) and Init/Data/BitVec/Lemmas.lean (toNat_add)."
+    ],
+    "design_question": "Gives the exact necessary-and-sufficient criterion for order preservation under wrapping unsigned addition, explaining both `ult_add_right_of_noUAddOverflow` and both-wrap cases."
+  },
+  {
+    "id": "slt_add_right_iff_saddOverflow_eq",
+    "lean": "Toy.MachInt.slt_add_right_iff_saddOverflow_eq",
+    "lean_names": [
+      "Toy.MachInt.ce_slt_add_right_both_wrap"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For bitvectors a b c : BitVec n with Slt a b, wrapping signed addition preserves order (Slt (a + c) (b + c)) if and only if BitVec.saddOverflow a c = BitVec.saddOverflow b c (either neither wraps, or both wrap in the same direction).",
+    "hypotheses": [
+      {
+        "name": "hlt : Slt a b",
+        "purpose": "Establishes the pre-addition strict signed inequality a.toInt < b.toInt (which also guarantees that a + c cannot underflow while b + c overflows).",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_slt_add_right_iff_drop_hlt"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, Slt 100#8 120#8 holds, both sums overflow with c = 100#8, and Slt (100#8 + 100#8) (120#8 + 100#8) holds.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_slt_add_right_iff_saddOverflow_eq",
+    "non_claims": [
+      "Does not extend to arbitrary a, b when `¬ Slt a b` (`ce_slt_add_right_iff_drop_hlt`).",
+      "Does not imply `NoSAddOverflow a c` or `NoSAddOverflow b c` when `Slt (a + c) (b + c)` holds; both sums may overflow in the same direction (`ce_slt_add_right_both_wrap`).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Basic.lean (saddOverflow) and Init/Data/BitVec/Lemmas.lean (toInt_add)."
+    ],
+    "design_question": "Gives the exact necessary-and-sufficient criterion for order preservation under wrapping signed addition, complementing the sufficient no-overflow theorem `slt_add_right_of_noSAddOverflow`."
+  },
+  {
+    "id": "checkedUDiv_and_checkedURem_eq_nat_div_mod",
+    "lean": "Toy.MachInt.checkedUDiv_and_checkedURem_eq_nat_div_mod",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any a b : BitVec n satisfying NonZeroDiv b, both checkedUDiv a b and checkedURem a b return some q and some r with q.toNat = a.toNat / b.toNat and r.toNat = a.toNat % b.toNat.",
+    "hypotheses": [
+      {
+        "name": "hb : NonZeroDiv b",
+        "purpose": "Rules out division/remainder by zero (the sole failure mode of unsigned division and remainder).",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedUDiv_drop_nonZeroDiv"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, checkedUDiv 7#8 4#8 = some 1#8 and checkedURem 7#8 4#8 = some 3#8.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_checkedUDiv_and_checkedURem_eq_nat_div_mod",
+    "non_claims": [
+      "Does not claim that Lean's total BitVec / 0#n = 0#n agrees with Rust; Rust panics on division/remainder by zero regardless of -C overflow-checks.",
+      "Does not apply to signed division/remainder, which has an additional MIN / -1 overflow trap.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/uint_macros.rs (checked_div, checked_rem; https://doc.rust-lang.org/1.91.0/core/primitive.u32.html#method.checked_div).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_udiv, toNat_umod, toNat_div_toNat_lt)."
+    ],
+    "design_question": "Establishes that unsigned division and remainder need only NonZeroDiv b and never overflow numerically."
+  },
+  {
+    "id": "checkedSDiv_eq_some_and_toInt_eq_tdiv",
+    "lean": "Toy.MachInt.checkedSDiv_eq_some_and_toInt_eq_tdiv",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any a b : BitVec n satisfying NonZeroDiv b and NoSDivOverflow a b, checkedSDiv a b returns some q whose signed integer value q.toInt equals truncating division a.toInt.tdiv b.toInt (not Lean's default Euclidean Int /).",
+    "hypotheses": [
+      {
+        "name": "hb : NonZeroDiv b",
+        "purpose": "Guards against division by zero.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSDiv_drop_nonZeroDiv"
+      },
+      {
+        "name": "hno : NoSDivOverflow a b",
+        "purpose": "Guards against the unique two's-complement division overflow (a = intMin n ∧ b = -1#n).",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSDiv_drop_noSDivOverflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, checkedSDiv (-7#8) 4#8 = some (-1#8) and (-1#8).toInt = (-7 : Int).tdiv 4.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_checkedSDiv_eq_some_and_toInt_eq_tdiv",
+    "non_claims": [
+      "Does not match Lean's default Int division a.toInt / b.toInt (which is Int.ediv) when a is negative and b does not divide a (see ce_sdiv_srem_ne_int_ediv_emod).",
+      "Does not claim that MIN / -1 wraps silently under plain / in release mode; Rust panics on MIN / -1 even when -C overflow-checks is disabled.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_div at L868; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.checked_div).",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM TOPLAS 14(2), April 1992, pp. 127-144, DOI 10.1145/128861.128862 (distinguishes T-, F-, and E-rounding conventions).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/Int/DivMod/Basic.lean and Init/Data/BitVec/Bitblast.lean (toInt_sdiv_of_ne_or_ne L1578, Int.tdiv vs Int.ediv).",
+      "CompCert C verified compiler (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc), lib/Integers.v (divs at L196, divs_mone at L1044).",
+      "Isabelle/HOL library (isabelle-prover/mirror-isabelle commit 20d6a3f7ffbaaa82e77f341d90db5070b3428fbe), src/HOL/Library/Signed_Division.thy (signed_divide / sdiv_mult_smod_eq).",
+      "Aeneas Lean standard library (AeneasVerif/aeneas commit 2e3d4488280bb8a95411db81019a7854a784861f), backends/lean/Aeneas/Std/Scalar/Ops/Div.lean (L20-25), Ops/Rem.lean (L19-21), and CheckedOps/Rem.lean (L61-64) (IScalar.div guards (MIN, -1))."
+    ],
+    "design_question": "Specifies the exact integer operation (Int.tdiv) and side conditions (NonZeroDiv, NoSDivOverflow) for translating Rust signed / into Lean."
+  },
+  {
+    "id": "checkedSRem_eq_some_and_toInt_eq_tmod",
+    "lean": "Toy.MachInt.checkedSRem_eq_some_and_toInt_eq_tmod",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any a b : BitVec n satisfying NonZeroDiv b and NoSDivOverflow a b, checkedSRem a b returns some r whose signed integer value r.toInt equals truncating remainder a.toInt.tmod b.toInt (not Lean's default Euclidean Int %).",
+    "hypotheses": [
+      {
+        "name": "hb : NonZeroDiv b",
+        "purpose": "Guards against remainder by zero.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSRem_drop_nonZeroDiv"
+      },
+      {
+        "name": "hno : NoSDivOverflow a b",
+        "purpose": "Required even for remainder because Rust's checked_rem and % trap on (MIN, -1) alongside division.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSRem_drop_noSDivOverflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, checkedSRem (-7#8) 4#8 = some (-3#8) and (-3#8).toInt = (-7 : Int).tmod 4.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_checkedSRem_eq_some_and_toInt_eq_tmod",
+    "non_claims": [
+      "Does not match Lean's default Int remainder a.toInt % b.toInt (which is Int.emod, always nonnegative for b ≠ 0) when a is negative and not divisible by b (see ce_sdiv_srem_ne_int_ediv_emod).",
+      "Does not succeed on (MIN, -1) merely because the mathematical remainder 0 fits in InSignedRange n; checkedSRem returns none and plain % panics unconditionally (see checkedSRem_intMin_negOne_eq_none).",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*])",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_rem at L1102; strict_rem docs L1123 note MIN % -1 is 'invalid due to implementation artifacts'; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.checked_rem).",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM TOPLAS 14(2), April 1992, pp. 127-144, DOI 10.1145/128861.128862",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Bitblast.lean (toInt_srem L1832).",
+      "CompCert C verified compiler (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc), lib/Integers.v (mods at L198, mods_mone at L1062).",
+      "Aeneas Lean standard library (AeneasVerif/aeneas commit 2e3d4488280bb8a95411db81019a7854a784861f), backends/lean/Aeneas/Std/Scalar/Ops/Div.lean (L20-25), Ops/Rem.lean (L19-21), and CheckedOps/Rem.lean (L61-64) (notably, at commit 2e3d4488280b, IScalar.rem and core.num.checked_rem_IScalar_bv_spec guard only y.val != 0 and omit the (MIN, -1) failure guard, diverging from Rust's documented None)."
+    ],
+    "design_question": "Prevents a common verifier soundness bug: translating % using Int % (Int.emod) or omitting the (MIN, -1) guard on remainder because 0 is representable."
+  },
+  {
+    "id": "tdiv_not_inSignedRange_iff_intMin_negOne",
+    "lean": "Toy.MachInt.tdiv_not_inSignedRange_iff_intMin_negOne",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every positive bitwidth PosWidth n and every a b : BitVec n, the mathematical truncating quotient a.toInt.tdiv b.toInt falls outside InSignedRange n if and only if a = BitVec.intMin n and b = -1#n.",
+    "hypotheses": [
+      {
+        "name": "hn : PosWidth n",
+        "purpose": "Rules out the zero-width degeneracy n = 0 where intMin 0 = -1#0 = 0#0 yet 0.tdiv 0 = 0 ∈ InSignedRange 0.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MachInt.ce_tdiv_overflow_iff_drop_posWidth",
+          "Toy.MachInt.ce_tdiv_overflow_iff_drop_posWidth_canonical"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, (BitVec.intMin 8).toInt.tdiv (-1#8).toInt = 128, which lies outside InSignedRange 8 = [-128, 127]. Both sides false: at n = 8, 5.tdiv (-1) = -5 is in range and (5#8, -1#8) is not (MIN, -1). Width one: -1#1 = intMin 1 and (intMin 1).toInt.tdiv (-1#1).toInt = 1 lies outside InSignedRange 1 = [-1, 0].",
+    "nonvacuity_witness_lean": [
+      "Toy.MachInt.nv_tdiv_not_inSignedRange_iff_intMin_negOne",
+      "Toy.MachInt.nv_tdiv_iff_both_false",
+      "Toy.MachInt.nv_tdiv_iff_width_one"
+    ],
+    "non_claims": [
+      "Does not claim that checkedSDiv succeeds whenever a.toInt.tdiv b.toInt is in InSignedRange n: division by zero yields tdiv = 0 ∈ InSignedRange n yet checkedSDiv returns none.",
+      "Does not characterize remainder overflow: tmod never leaves InSignedRange n, yet checkedSRem still returns none at (MIN, -1).",
+      "This characterizes when the mathematical truncating quotient leaves the signed range. It is not a characterization of when Rust's `/` panics: division by zero also panics, although `Int.tdiv x 0 = 0` is in range.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (strict_div docs: 'The only case where such an overflow can occur is when one divides MIN / -1 on a signed type').",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Bitblast.lean (BitVec.sdivOverflow_eq at L1321, proved for Int.ediv; BitVec.toInt_sdiv_of_ne_or_ne at L1578) and Init/Data/BitVec/Basic.lean (sdivOverflow at L845-852, SMT-LIB bvsdivo).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toInt_ediv_toInt_lt_*, sdivOverflow_eq_negOverflow_of_eq_allOnes)."
+    ],
+    "design_question": "Establishes (alongside Lean core's `BitVec.sdivOverflow_eq`, which is phrased with `Int.ediv`) that checking a ≠ intMin n ∨ b ≠ -1#n is both necessary and sufficient for mathematical signed truncating division quotients to stay in range (`shallow` from `BitVec.toInt_sdiv_of_ne_or_ne`)."
+  },
+  {
+    "id": "checkedSRem_intMin_negOne_eq_none",
+    "lean": "Toy.MachInt.checkedSRem_intMin_negOne_eq_none",
+    "lean_names": [
+      "Toy.MachInt.checkedSRem_intMin_negOne_eq_none_unconditional"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every positive bitwidth PosWidth n, -1#n is nonzero (NonZeroDiv (-1#n)) and the mathematical truncating remainder (BitVec.intMin n).toInt.tmod (-1#n).toInt lies in InSignedRange n, yet both checkedSRem (BitVec.intMin n) (-1#n) and checkedSRemEuclid (BitVec.intMin n) (-1#n) equal none.",
+    "hypotheses": [
+      {
+        "name": "hn : PosWidth n",
+        "purpose": "Ensures -1#n ≠ 0#n for the scene-setting NonZeroDiv (-1#n) conjunct (at n = 0, -1#0 = 0#0). The = none behavioral conjuncts themselves hold unconditionally at every width n via unfolding (`checkedSRem_intMin_negOne_eq_none_unconditional`).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MachInt.ce_checkedSRem_intMin_drop_posWidth",
+          "Toy.MachInt.ce_checkedSRem_intMin_drop_posWidth_canonical"
+        ]
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "At n = 8, -1#8 ≠ 0#8 and 0 ∈ InSignedRange 8, yet checkedSRem (BitVec.intMin 8) (-1#8) = none.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_checkedSRem_intMin_negOne_eq_none",
+    "non_claims": [
+      "Does not claim that the mathematical remainder fails to fit in i<n>; the none outcome in our model reflects a documented Rust rule (core docs: 'invalid due to implementation artifacts'; Reference: 'for legacy reasons'), encoded directly in checkedSRem/checkedSRemEuclid (`derived (modeling bridge)`, cross-checked with rustc).",
+      "Does not apply to unsigned types, which have no -1 value causing division overflow.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) (using / or % with MIN and -1 panics even when -C overflow-checks is disabled, 'for legacy reasons').",
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_rem L1102, strict_rem L1123 'invalid due to implementation artifacts', checked_rem_euclid L1168; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.checked_rem).",
+      "Rust RFC 0560: Integer Overflow (initially written by Gábor Lehel; edited by Nicholas Matsakis), https://github.com/rust-lang/rfcs/blob/f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4/text/0560-integer-overflow.md (unconditional panic on INT_MIN / -1 and INT_MIN % -1 'for legacy reasons').",
+      "Aeneas Lean standard library (AeneasVerif/aeneas commit 2e3d4488280bb8a95411db81019a7854a784861f), backends/lean/Aeneas/Std/Scalar/Ops/Div.lean (L20-25), Ops/Rem.lean (L19-21), and CheckedOps/Rem.lean (L61-64) (concrete modeling pitfall: IScalar.rem / checked_rem_IScalar at commit 2e3d4488280b omit the (MIN, -1) guard, returning ok/some 0 instead of Rust's documented None)."
+    ],
+    "design_question": "Records the exact exception to 'in-range result implies no panic': verifiers cannot prove x % y panic-free from y ≠ 0 and in-range remainder alone; they must still discharge NoSDivOverflow x y."
+  },
+  {
+    "id": "checkedSDivEuclid_eq_some_and_toInt_eq_ediv",
+    "lean": "Toy.MachInt.checkedSDivEuclid_eq_some_and_toInt_eq_ediv",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any a b : BitVec n satisfying NonZeroDiv b and NoSDivOverflow a b, checkedSDivEuclid a b (modeling i<n>::checked_div_euclid) returns some q with q.toInt = a.toInt.ediv b.toInt (Lean's default Int /).",
+    "hypotheses": [
+      {
+        "name": "hb : NonZeroDiv b",
+        "purpose": "Guards against division by zero.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSDivEuclid_drop_nonZeroDiv"
+      },
+      {
+        "name": "hno : NoSDivOverflow a b",
+        "purpose": "Guards against (MIN, -1), where MIN.ediv (-1) = -MIN overflows InSignedRange n.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSDivEuclid_drop_noSDivOverflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, checkedSDivEuclid (-7#8) 4#8 = some (-2#8) and (-2#8).toInt = (-7 : Int).ediv 4.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_checkedSDivEuclid_eq_some_and_toInt_eq_ediv",
+    "non_claims": [
+      "Does not match Rust's `/` operator (which is truncating Int.tdiv, not Int.ediv).",
+      "Does not avoid the (MIN, -1) trap.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_div_euclid L935, div_euclid L3112; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.checked_div_euclid).",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM TOPLAS 14(2), April 1992, pp. 127-144, DOI 10.1145/128861.128862",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/Int/DivMod/Basic.lean (Int.ediv) and Init/Data/BitVec/Bitblast.lean (toInt_sdiv_of_ne_or_ne, toInt_srem)."
+    ],
+    "design_question": "Connects Lean's default Int.ediv directly to Rust's explicit div_euclid / checked_div_euclid rather than Rust's `/` operator."
+  },
+  {
+    "id": "checkedSRemEuclid_eq_some_and_toInt_eq_emod",
+    "lean": "Toy.MachInt.checkedSRemEuclid_eq_some_and_toInt_eq_emod",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any a b : BitVec n satisfying NonZeroDiv b and NoSDivOverflow a b, checkedSRemEuclid a b (modeling i<n>::checked_rem_euclid) returns some r with r.toInt = a.toInt.emod b.toInt (Lean's default Int %, always in [0, |b|)).",
+    "hypotheses": [
+      {
+        "name": "hb : NonZeroDiv b",
+        "purpose": "Guards against division by zero.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSRemEuclid_drop_nonZeroDiv"
+      },
+      {
+        "name": "hno : NoSDivOverflow a b",
+        "purpose": "Required because checked_rem_euclid also rejects (MIN, -1) in Rust core.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_checkedSRemEuclid_drop_noSDivOverflow"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, checkedSRemEuclid (-7#8) 4#8 = some (1#8) and (1#8).toInt = (-7 : Int).emod 4.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_checkedSRemEuclid_eq_some_and_toInt_eq_emod",
+    "non_claims": [
+      "Does not match Rust's `%` operator (which is truncating Int.tmod) when a < 0 and b does not divide a.",
+      "Does not fail when b = MIN and a = -1: (-1i8).rem_euclid (-128i8) = 127 fits in i8 via wrapping addition of b.abs.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs (checked_rem_euclid L1168, rem_euclid L3155, noting r.wrapping_add(rhs.wrapping_abs()) handles rhs == Self::MIN; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.checked_rem_euclid).",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM TOPLAS 14(2), April 1992, pp. 127-144, DOI 10.1145/128861.128862",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/Int/DivMod/Basic.lean (Int.emod) and Init/Data/BitVec/Bitblast.lean (toInt_srem)."
+    ],
+    "design_question": "Connects Lean's default Int.emod to Rust's rem_euclid / checked_rem_euclid and explains why rhs = MIN still works safely when r < 0."
+  },
+  {
+    "id": "ce_sdiv_srem_ne_int_ediv_emod",
+    "lean": "Toy.MachInt.ce_sdiv_srem_ne_int_ediv_emod",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "For (-7 : i8) and (4 : i8), Rust/bitvector truncating sdiv and srem yield (-1, -3) (Int.tdiv/Int.tmod), directly disagreeing with Lean's default Int / and % (-2, 1, matching sdivEuclid/sremEuclid); for (7 : i8) and (-4 : i8), truncating sdiv/srem coincide with Int.ediv/Int.emod (-1, 3) while differing from flooring Int.fdiv and BitVec.smod (-2, -1).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Self-witnessing concrete counterexample on BitVec 8, cross-checked against rustc (program `support/rustc_semantics_checks.rs`, recorded output `support/rustc_checks_output.txt`).",
+    "nonvacuity_witness_lean": "Toy.MachInt.ce_sdiv_srem_ne_int_ediv_emod",
+    "non_claims": [
+      "Does not claim that sdiv/srem disagree with Int.ediv/Int.emod for nonnegative dividends a ≥ 0; disagreement requires a < 0 and ¬ (b ∣ a).",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/Int/DivMod/Basic.lean (historical note: Int / and % use Int.ediv/Int.emod, not Int.tdiv/Int.tmod).",
+      "Raymond T. Boute, 'The Euclidean definition of the functions div and mod', ACM TOPLAS 14(2), 1992, DOI 10.1145/128861.128862."
+    ],
+    "design_question": "Separates T-, E-, and F-rounding conventions concretely to prevent silent semantic mismatch when translating Rust `/` and `%` to Lean `Int`."
+  },
+  {
+    "id": "wrappingShl_eq_mul_twoPow_of_shiftInBounds",
+    "lean": "Toy.MachInt.wrappingShl_eq_mul_twoPow_of_shiftInBounds",
+    "lean_names": [
+      "Toy.MachInt.ce_wrappingShl_mod_ne_and_mask_nonPowTwo",
+      "Toy.MachInt.mod_eq_and_mask_forall_iff_isPowerOfTwo",
+      "Toy.MachInt.mod_twoPow_eq_and_mask"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any x : BitVec n and shift count k satisfying ShiftInBounds n k (k < n), checkedShl x k = some (wrappingShl x k), (wrappingShl x k).toNat = (x.toNat * 2^k) % 2^n, and (wrappingShl x k).toInt = Int.bmod (x.toInt * 2^k) (2^n).",
+    "hypotheses": [
+      {
+        "name": "hk : ShiftInBounds n k",
+        "purpose": "Prevents k % n from wrapping the shift count modulo n (unlike unbounded mathematical left shift).",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MachInt.ce_wrappingShl_overshift_ne_mul_twoPow",
+          "Toy.MachInt.ce_wrappingShl_drop_shiftInBounds_canonical"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, x = 5#8, k = 3 < 8: checkedShl (5#8) 3 = some (wrappingShl (5#8) 3) = some (40#8).",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_wrappingShl_eq_mul_twoPow_of_shiftInBounds",
+    "non_claims": [
+      "Does not hold when k ≥ n: wrapping_shl masks k modulo n rather than shifting bits out to zero (see ce_wrappingShl_overshift_ne_mul_twoPow).",
+      "Does not equate wrapping_shl with Rust's unbounded_shl (which yields 0 for k ≥ n).",
+      "`ShiftInBounds n k` (equivalently, `checked_shl` returning `Some`, or `<<` not panicking under overflow checks) does not imply that no set bits are shifted out: `128u8.checked_shl(1) == Some(0)` (see `ce_checkedShl_drops_high_bits_without_none`). Replacing `x << k` by the unbounded integer `x * 2^k` additionally requires `x * 2^k < 2^n` (unsigned) or the signed analogue, which neither the operator nor `checked_shl` checks.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs and uint_macros.rs. `checked_shl` (defined at int_macros.rs L1315 and uint_macros.rs L1723) is documented as \"Checked shift left. Computes `self << rhs`, returning `None` if `rhs` is larger than or equal to the number of bits in `self`.\", and its body tests only `rhs < Self::BITS`. `wrapping_shl` (defined at int_macros.rs L2281 and uint_macros.rs L2537) is documented as \"Panic-free bitwise shift-left; yields `self << mask(rhs)`, where `mask` removes any high-order bits of `rhs` that would cause the shift to exceed the bitwidth of the type.\", followed by a note that it \"is *not* the same as a rotate-left\", and its body shifts by `rhs & (Self::BITS - 1)`. Neither doc comment describes the plain `<<` operator (see N5). https://doc.rust-lang.org/1.91.0/core/primitive.u32.html#method.checked_shl, https://doc.rust-lang.org/1.91.0/core/primitive.u32.html#method.wrapping_shl.",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) ([expr.operator.int-overflow.shift]; supersedes RFC 560's unconditional shift-masking rule).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_shiftLeft, toInt_shiftLeft) and Init/Data/Nat/Bitwise/Lemmas.lean (testBit_mod_two_pow, testBit_two_pow_sub_one).",
+      "CompCert C verified compiler (AbsInt/CompCert commit 2685140bf72c959446981fb99b5e44a8975021bc), lib/Integers.v (shl_mul at L2267)."
+    ],
+    "design_question": "Identifies the shift-count side condition (k < n) needed for `checked_shl` to return `Some` and for `wrapping_shl` to equal multiplication by 2^k modulo 2^n; neither `checked_shl` nor overflow-checked `<<` checks whether high bits are shifted out (`ce_checkedShl_drops_high_bits_without_none`)."
+  },
+  {
+    "id": "wrappingUShr_and_wrappingSShr_of_shiftInBounds",
+    "lean": "Toy.MachInt.wrappingUShr_and_wrappingSShr_of_shiftInBounds",
+    "lean_names": [
+      "Toy.MachInt.ce_sshiftRight_ne_sdiv_twoPow",
+      "Toy.MachInt.ce_wrappingShl_mod_ne_and_mask_nonPowTwo",
+      "Toy.MachInt.mod_eq_and_mask_forall_iff_isPowerOfTwo",
+      "Toy.MachInt.mod_twoPow_eq_and_mask"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any x : BitVec n and shift count k satisfying ShiftInBounds n k (k < n), checkedUShr x k = some (wrappingUShr x k) with toNat = x.toNat / 2^k, and checkedSShr x k = some (wrappingSShr x k) with toInt = x.toInt.fdiv (2^k) (flooring division, not truncating tdiv).",
+    "hypotheses": [
+      {
+        "name": "hk : ShiftInBounds n k",
+        "purpose": "Prevents k % n from masking out high bits of the shift count k.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MachInt.ce_wrappingShr_overshift",
+          "Toy.MachInt.ce_wrappingShr_drop_shiftInBounds_canonical"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, k = 2 < 8: wrappingUShr 9#8 2 = 2#8 and wrappingSShr (-7#8) 2 = -2#8 = (-7).fdiv 4.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_wrappingUShr_and_wrappingSShr_of_shiftInBounds",
+    "non_claims": [
+      "Does not equate signed arithmetic right shift `>>` with Rust's signed `/` by 2^k (which truncates toward 0, e.g. -1 >> 1 = -1 ≠ 0 = (-1).tdiv 2; see ce_sshiftRight_ne_sdiv_twoPow).",
+      "Does not hold when k ≥ n (see ce_wrappingShr_overshift).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs and uint_macros.rs (checked_shr, wrapping_shr; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.wrapping_shr).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) (arithmetic right shift on signed types; [expr.operator.int-overflow.shift] supersedes RFC 560's unconditional shift-masking rule).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_ushiftRight, sshiftRight_eq, le_toInt_shiftRight, toInt_shiftRight_lt)."
+    ],
+    "design_question": "Prevents two distinct shift bugs in specifications: overshifting (k ≥ n) and confusing arithmetic right shift (flooring fdiv) with signed division by 2^k (truncating tdiv)."
+  },
+  {
+    "id": "ce_wrappingShl_overshift_ne_mul_twoPow",
+    "lean": "Toy.MachInt.ce_wrappingShl_overshift_ne_mul_twoPow",
+    "lean_names": [
+      "Toy.MachInt.ce_wrappingShl_mod_ne_and_mask_nonPowTwo",
+      "Toy.MachInt.mod_eq_and_mask_forall_iff_isPowerOfTwo",
+      "Toy.MachInt.mod_twoPow_eq_and_mask"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "At width n = 8 with shift counts k ≥ n: checkedShl (1#8) 8 = none and checkedShl (5#8) 9 = none, while (wrappingShl (1#8) 8).toNat ≠ (1 * 2^8) % 2^8, (wrappingShl (5#8) 9).toNat ≠ (5 * 2^9) % 2^8, and (wrappingShl (-1#8) 8).toInt ≠ Int.bmod (-1 * 2^8) (2^8); so without k < n the unsigned and signed multiplication identities of wrappingShl_eq_mul_twoPow_of_shiftInBounds fail.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Self-witnessing concrete counterexample on BitVec 8, cross-checked against rustc (program `support/rustc_semantics_checks.rs`, recorded output `support/rustc_checks_output.txt`).",
+    "nonvacuity_witness_lean": "Toy.MachInt.ce_wrappingShl_overshift_ne_mul_twoPow",
+    "non_claims": [
+      "Does not assert that plain `<<` masks k as a language guarantee when overflow checks are disabled; masking in unchecked builds is rustc behaviour while the Reference permits either panic or wrapping (and RFC 560's unconditional shift-masking rule is superseded by [expr.operator.int-overflow.shift]).",
+      "The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs and uint_macros.rs (`wrapping_shl`, defined at int_macros.rs L2281 and uint_macros.rs L2537, documented as yielding `self << mask(rhs)`, where `mask` removes any high-order bits of `rhs` that would cause the shift to exceed the bitwidth of the type, and implemented as a shift by `rhs & (Self::BITS - 1)`; https://doc.rust-lang.org/1.91.0/core/primitive.i32.html#method.wrapping_shl).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) ([expr.operator.int-overflow.shift]).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/behavior-not-considered-unsafe.md (L14: non-debug overflow may panic or wrap at implementation's discretion)"
+    ],
+    "design_question": "Demonstrates why k < n cannot be omitted when modeling wrapping_shl (or unchecked rustc `<<`) as multiplication by 2^k modulo 2^n."
+  },
+  {
+    "id": "ce_checkedShl_drops_high_bits_without_none",
+    "lean": "Toy.MachInt.ce_checkedShl_drops_high_bits_without_none",
+    "lean_names": [
+      "Toy.MachInt.ce_wrappingShl_mod_ne_and_mask_nonPowTwo",
+      "Toy.MachInt.mod_eq_and_mask_forall_iff_isPowerOfTwo",
+      "Toy.MachInt.mod_twoPow_eq_and_mask"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "At n = 8 and k = 1, ShiftInBounds 8 1 holds so checkedShl (128#8) 1 = some 0#8 and checkedShl (64#8) 1 = some (-128#8) succeed despite shifting out/overflowing high bits, whereas checkedUMul (128#8) 2#8 = none and checkedSMul (64#8) 2#8 = none.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Self-witnessing concrete counterexample on BitVec 8, cross-checked against rustc (program `support/rustc_semantics_checks.rs`, recorded output `support/rustc_checks_output.txt`).",
+    "nonvacuity_witness_lean": "Toy.MachInt.ce_checkedShl_drops_high_bits_without_none",
+    "non_claims": [
+      "Does not claim `checked_shl` returns `None` when nonzero bits are shifted out; Rust's `checked_shl` checks only `rhs < BITS` (unlike the unstable `exact_shl`, feature `exact_bitshifts` at Rust 1.91.0, renamed `shl_exact` on later nightlies).",
+      "Wrapping of plain `+`, `-`, `*` and masking of `<<`/`>>` when overflow checks are disabled is `rustc` behaviour. The Rust Reference permits either a panic or a wrapped value in such builds. Only explicitly wrapping APIs (the `wrapping_*` and `overflowing_*` methods and `Wrapping<T>`) guarantee wrapping.",
+      "The model defines wrapping shifts by masking `k % n`, which equals Rust `core::num`'s bitmask `k & (BITS - 1)` for every shift count `k` if and only if `n` is a power of two (`mod_eq_and_mask_forall_iff_isPowerOfTwo`; the 'if' direction is `mod_twoPow_eq_and_mask`), and diverges at other widths, e.g. `n = 3, k = 4` (`ce_wrappingShl_mod_ne_and_mask_nonPowTwo`). All Rust fixed-width integer types have power-of-two widths. Plain shift operators (`<<`/`>>`, which panic under overflow checks and mask under `rustc` when checks are disabled) are not modeled by a separate `Outcome` evaluator.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "Rust 1.91.0 core library (rust-lang/rust tag 1.91.0, commit f8297e351a40c1439a467bbbb6879088047f50b3), library/core/src/num/int_macros.rs and uint_macros.rs (`checked_shl`, defined at int_macros.rs L1315 and uint_macros.rs L1723; both doc comments include the example `0x10.checked_shl(BITS - 1) == Some(0)`, and both bodies test only `rhs < Self::BITS`; https://doc.rust-lang.org/1.91.0/core/primitive.u32.html#method.checked_shl).",
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.operator.int-overflow.*]) ([expr.operator.int-overflow.shift])."
+    ],
+    "design_question": "Refutes the folklore rule that `x << k` under overflow checks equals unbounded `x * 2^k` whenever `k < BITS`."
+  },
+  {
+    "id": "castFromUnsigned_toNat_eq_mod",
+    "lean": "Toy.MachInt.castFromUnsigned_toNat_eq_mod",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every source width n, target width m, and x : BitVec n, (castFromUnsigned m x).toNat = x.toNat % 2^m unconditionally.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "At n = 16, m = 8, x = 0x1234#16: (castFromUnsigned 8 (0x1234#16)).toNat = 0x34 = 0x1234 % 256.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_castFromUnsigned_toNat_eq_mod",
+    "non_claims": [
+      "Does not claim that casting from a signed type via castFromSigned (m < n vs m ≥ n) agrees with unsigned zero-extension when x is negative.",
+      "Does not assert preservation of x.toInt under castFromUnsigned; e.g. 255u8 as i8 = -1.",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*]).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Bootstrap.lean (toNat_setWidth)."
+    ],
+    "design_question": "Reference point recording the exact mathematical semantics (`BitVec.toNat_setWidth`) for unsigned-source numeric `as` casts across arbitrary widths."
+  },
+  {
+    "id": "castFromUnsigned_widened_toNat_eq_mod",
+    "lean": "Toy.MachInt.castFromUnsigned_widened_toNat_eq_mod",
+    "lean_names": [
+      "Toy.MachInt.castFromUnsigned_widened_toNat_eq_mod_forall_iff",
+      "Toy.MachInt.castFromUnsigned_widened_toNat_eq_mod_of_source_le",
+      "Toy.MachInt.widened_identity_holds_without_widthLe"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any x : BitVec n and widths m, k satisfying WidthLe m k (m ≤ k), truncating/casting x to m bits and then widening/keeping to k bits satisfies (castFromUnsigned k (castFromUnsigned m x)).toNat = x.toNat % 2^m.",
+    "hypotheses": [
+      {
+        "name": "hle : WidthLe m k",
+        "purpose": "Ensures the second cast from width m to width k does not further truncate the result modulo 2^k. Tight in the sense that it cannot be dropped (counterexample below), but sufficient rather than necessary: the identity also holds whenever n ≤ k (`castFromUnsigned_widened_toNat_eq_mod_of_source_le`), and it holds for every x exactly when m ≤ k ∨ n ≤ k (`castFromUnsigned_widened_toNat_eq_mod_forall_iff`).",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_castFromUnsigned_widened_drop_widthLe"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 32, m = 8, k = 32, x = 0x12345678#32: ((x as u8) as u32).toNat = x.toNat % 256.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_castFromUnsigned_widened_toNat_eq_mod",
+    "non_claims": [
+      "Does not claim WidthLe m k is necessary: the identity also holds whenever n ≤ k, e.g. u8 → u32 → u16 (`castFromUnsigned_widened_toNat_eq_mod_of_source_le`, `widened_identity_holds_without_widthLe`); when k < m and k < n the second cast can truncate again modulo 2^k (`ce_castFromUnsigned_widened_drop_widthLe`; for every such n, m, k the value x = 2^k fails, `castFromUnsigned_widened_toNat_eq_mod_forall_iff`).",
+      "Does not apply when the intermediate cast passes through a signed type that is then widened (e.g. (x as i8) as u32 sign-extends bit 7 instead of zero-extending).",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*]).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_setWidth_of_le) and Init/Data/BitVec/Bootstrap.lean (toNat_setWidth)."
+    ],
+    "design_question": "Formalizes composed truncation-then-widening casts such as (x as u8) as u32 = x % 256 under a sufficient width constraint m ≤ k; the exact for-all-x condition is m ≤ k ∨ n ≤ k (`castFromUnsigned_widened_toNat_eq_mod_forall_iff`)."
+  },
+  {
+    "id": "cast_u32_to_u8_to_u32_eq_mod_256",
+    "lean": "Toy.MachInt.cast_u32_to_u8_to_u32_eq_mod_256",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every x : BitVec 32, casting to 8 bits and back to 32 bits yields (castFromUnsigned 32 (castFromUnsigned 8 x)).toNat = x.toNat % 256.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "At x = 0x12345678#32, (castFromUnsigned 32 (castFromUnsigned 8 x)).toNat = 0x78 = 0x12345678 % 256.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_cast_u32_to_u8_to_u32_eq_mod_256",
+    "non_claims": [
+      "Does not claim (x as i8) as i32 equals x % 256; sign extension produces values in [-128, 127].",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*])."
+    ],
+    "design_question": "Reference point instantiating `castFromUnsigned_widened_toNat_eq_mod` to record the canonical `(x as u8) as u32 = x % 256` idiom for specification reuse."
+  },
+  {
+    "id": "castFromSigned_toInt_eq_of_widthLe",
+    "lean": "Toy.MachInt.castFromSigned_toInt_eq_of_widthLe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any signed n-bit value x : BitVec n and target width m satisfying WidthLe n m (n ≤ m), sign-extending x to m bits preserves its signed integer value: (castFromSigned m x).toInt = x.toInt.",
+    "hypotheses": [
+      {
+        "name": "hle : WidthLe n m",
+        "purpose": "Ensures no high bits (including the sign bit) are discarded during the signed cast.",
+        "tightness": "tight",
+        "counterexample": "Toy.MachInt.ce_castFromSigned_drop_widthLe"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "At n = 8, m = 16, x = -17#8: (castFromSigned 16 (-17#8)).toInt = -17.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_castFromSigned_toInt_eq_of_widthLe",
+    "non_claims": [
+      "Does not preserve x.toNat for negative x (e.g. (-1i8) as u16 has toNat = 65535 ≠ 255 = (-1i8).toNat).",
+      "Does not hold when m < n; narrowing truncates bits (ce_castFromSigned_drop_widthLe).",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*]) ('Casting from a smaller integer to a larger integer will ... sign-extend if the source is signed').",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toInt_signExtend_of_le)."
+    ],
+    "design_question": "Establishes that widening signed casts are value-preserving in toInt (even when targeting an unsigned wider type, where bit-level sign extension occurs before unsigned reinterpretation)."
+  },
+  {
+    "id": "reinterpretCast_characterization",
+    "lean": "Toy.MachInt.reinterpretCast_characterization",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For any bitwidth n and x : BitVec n, same-width reinterpretation reinterpretCast x satisfies (reinterpretCast x).toNat = if x.toInt < 0 then x.toInt + 2^n else x.toInt, and (reinterpretCast x).toInt = Int.bmod x.toNat (2^n).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "At n = 8, x = -17#8: (reinterpretCast (-17#8)).toNat = 239 = -17 + 256 and (reinterpretCast (-17#8)).toInt = -17 = Int.bmod 239 256.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_reinterpretCast_characterization",
+    "non_claims": [
+      "Does not preserve numerical value across sign change unless 0 ≤ x.toInt (i.e. x.msb = false); negative signed values become x.toInt + 2^n.",
+      "Does not model casts that simultaneously change width and signedness (where source signedness determines extension before reinterpretation).",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "That same-width integer `as` casts preserve raw bit patterns without changing values is a modeling bridge (`reinterpretCast := id`, confirmed against Rust Reference [expr.as.numeric.int-same-size] and rustc), while the theorem's algebraic identities reduce definitionally to Lean core `BitVec.toInt_eq_msb_cond` and `BitVec.toInt_eq_toNat_bmod`.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*]) ('Casting between two integers of the same size (e.g. i32 -> u32) is a no-op').",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toInt_eq_msb_cond, toInt_eq_toNat_bmod)."
+    ],
+    "design_question": "Reference point giving the two-way mathematical bridge between i<n> and u<n> values under same-width `as` reinterpretation (`reinterpretCast := id`)."
+  },
+  {
+    "id": "cast_roundTrip_widen_then_narrow_of_widthLe",
+    "lean": "Toy.MachInt.cast_roundTrip_widen_then_narrow_of_widthLe",
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For any x : BitVec n and width m satisfying WidthLe n m (n ≤ m), widening then narrowing back is an exact identity for both unsigned (castFromUnsigned n (castFromUnsigned m x) = x) and signed (castFromSigned n (castFromSigned m x) = x) casts.",
+    "hypotheses": [
+      {
+        "name": "hle : WidthLe n m",
+        "purpose": "Prevents intermediate truncation when passing through width m.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.MachInt.ce_cast_roundTrip_drop_widthLe",
+          "Toy.MachInt.ce_cast_roundTrip_drop_widthLe_canonical"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "At n = 8, m = 16: (200u8 as u16) as u8 = 200u8 and (-17i8 as i16) as i8 = -17i8.",
+    "nonvacuity_witness_lean": "Toy.MachInt.nv_cast_roundTrip_widen_then_narrow_of_widthLe",
+    "non_claims": [
+      "Does not hold in the opposite order (narrowing then widening loses high bits; see ce_cast_roundTrip_narrow_then_widen).",
+      "Does not claim that cast order is irrelevant when both width and signedness change: (-1i8) as u16 = 65535 ≠ 255 = ((-1i8) as u8) as u16.",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*]).",
+      "Lean 4.34.1 core library (leanprover/lean4:v4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52), Init/Data/BitVec/Lemmas.lean (toNat_setWidth_of_le, toInt_signExtend_of_le)."
+    ],
+    "design_question": "Separates lossless cast round trips (widen-then-narrow) from lossy ones (narrow-then-widen) and mixed-signedness reordering hazards."
+  },
+  {
+    "id": "ce_cast_roundTrip_narrow_then_widen",
+    "lean": "Toy.MachInt.ce_cast_roundTrip_narrow_then_widen",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "Narrowing then widening does not preserve values, unsigned or signed: castFromUnsigned 16 (castFromUnsigned 8 256#16) ≠ 256#16 and castFromSigned 16 (castFromSigned 8 128#16) ≠ 128#16; and sign-extending a signed value differs from first reinterpreting it as unsigned and then zero-extending: castFromSigned 16 (-1#8) ≠ castFromUnsigned 16 (reinterpretCast (-1#8)).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Self-witnessing concrete counterexample on BitVec 8 and BitVec 16, cross-checked against rustc (program `support/rustc_semantics_checks.rs`, recorded output `support/rustc_checks_output.txt`).",
+    "nonvacuity_witness_lean": "Toy.MachInt.ce_cast_roundTrip_narrow_then_widen",
+    "non_claims": [
+      "Does not claim that narrowing-then-widening fails when the source value already fits in the narrower target type.",
+      "Only integer-to-integer `as` casts between fixed widths are covered. No claim is made about `bool`/`char`/enum/pointer casts, `From`/`TryFrom` conversions (which reject out-of-range values), or float casts.",
+      "No claim is made about floating-point types. Ring identities do not transfer to f32/f64, and as casts from floats to integers round toward zero and saturate (NaN becomes 0) rather than reducing modulo 2^m.",
+      "`usize`/`isize` are not modelled. Their width depends on the target; results apply to them only by instantiating `n` with a stated target's pointer width (for example treating `usize`/`isize` as `u64`/`i64` at `n = 64` on a stated 64-bit target), which these results do not fix.",
+      "No claim is made about C or C++. There, signed overflow, INT_MIN / -1, INT_MIN % -1 (C11), and shifts by at least the bit width are undefined behaviour; operands narrower than int are promoted before arithmetic; and conversions of out-of-range values to signed types are implementation-defined in C (and were in C++ before C++20). Even where C and Rust agree (e.g. truncating /), these results are stated for the Rust model only. For a taxonomy and empirical study of integer overflow in C/C++ programs, see W. Dietz, P. Li, J. Regehr, V. Adve, \"Understanding Integer Overflow in C/C++\", ICSE 2012, pp. 760-770, DOI 10.1109/ICSE.2012.6227142; it is cited only as the C/C++ contrast, not as support for any result here."
+    ],
+    "prior_art": [
+      "The Rust Reference (rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c), src/expressions/operator-expr.md ([expr.as.numeric.*])."
+    ],
+    "design_question": "Documents the concrete counterexamples where cast round trips and cast reassociations fail."
+  }
+]

@@ -1,0 +1,176 @@
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+binary: rustc
+commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1
+=== profile: debug (-C opt-level=0 -C debug-assertions=yes)
+overflow_checks_behavioral: on
+lit -128_i8 = -128; -(128_i8) = -128; -(128) = -128
+allow(overflowing_literals) 128_i8 = -128
+runtime -(MIN) via black_box = PANIC
+128u8.checked_shl(1) = Some(0)
+64i8.checked_shl(1) = Some(-128)
+128u8.checked_mul(2) = None; 64i8.checked_mul(2) = None
+128u8 << 1 (bb) = ok(0)
+64i8 << 1 (bb) = ok(-128)
+1u8 << 8 (bb) = PANIC
+1u8.checked_shl(8) = None
+wrapping_shl: 1u8,8 -> 1; 5u8,9 -> 10; -1i8,8 -> -1
+unbounded_shl: 1u8,8 -> 0
+shl_exact(nightly): 128u8,1 -> None; 64i8,1 -> None; 1u8,3 -> Some(8)
+wrapping_shr: 128u8,8 -> 128; -128i8,8 -> -128; (-1i8)>>1 -> -1; (-1i8)/2 -> 0
+-7i8 >> 2 = -2
+MIN / -1 (bb) = PANIC
+MIN % -1 (bb) = PANIC
+7 / 0 (bb) = PANIC
+MIN.checked_div(-1) = None; MIN.checked_rem(-1) = None; MIN.checked_rem_euclid(-1) = None; MIN.checked_div_euclid(-1) = None
+MIN.wrapping_rem(-1) = 0; MIN.wrapping_div(-1) = -128
+-7/4 = -1; -7%4 = -3; div_euclid = -2; rem_euclid = 1
+7/-4 = -1; 7%-4 = 3; div_euclid = -1; rem_euclid = 3
+(-1i8).rem_euclid(-128) = 127; (-1i8).div_euclid(-128) = 1
+exhaustive i8 euclid/trunc mismatches = 0
+(200u8+100)-100 (bb) = PANIC
+(100i8+50)-50 (bb) = PANIC
+200u8.checked_add(100) = None; 100i8.checked_add(50) = None
+u8::MAX.wrapping_add(1) = 0; i8::MAX.wrapping_add(1) = -128
+both-wrap u: 44 < 94; s: -56 < -36
+64*(4*x)==0 u8:true i8:true; 128*(x+x)==0 u8:true
+(256u16 as u8) as u16 = 0; (128i16 as i8) as i16 = -128; (-1i8) as u16 = 65535; ((-1i8) as u8) as u16 = 255
+(0x12345678u32 as u8) as u32 = 0x78; -17i8 as i16 = -17; -17i8 as u8 = 239; 255u8 as i8 = -1; (256u32 as u16) as u8 = 0
+(x as i8) as u32 for x=0x80u32: 4294967168
+u8 -> u32 -> u16 preserves every x (target narrower than intermediate): true
+f64 casts: 300.7 as u8 = 255; NaN as u8 = 0; -5.5 as u8 = 0
+0u8.checked_neg = Some(0); 1u8.checked_neg = None; MIN.checked_neg = None
+=== profile: release (-C opt-level=3)
+overflow_checks_behavioral: off
+lit -128_i8 = -128; -(128_i8) = -128; -(128) = -128
+allow(overflowing_literals) 128_i8 = -128
+runtime -(MIN) via black_box = ok(-128)
+128u8.checked_shl(1) = Some(0)
+64i8.checked_shl(1) = Some(-128)
+128u8.checked_mul(2) = None; 64i8.checked_mul(2) = None
+128u8 << 1 (bb) = ok(0)
+64i8 << 1 (bb) = ok(-128)
+1u8 << 8 (bb) = ok(1)
+1u8.checked_shl(8) = None
+wrapping_shl: 1u8,8 -> 1; 5u8,9 -> 10; -1i8,8 -> -1
+unbounded_shl: 1u8,8 -> 0
+shl_exact(nightly): 128u8,1 -> None; 64i8,1 -> None; 1u8,3 -> Some(8)
+wrapping_shr: 128u8,8 -> 128; -128i8,8 -> -128; (-1i8)>>1 -> -1; (-1i8)/2 -> 0
+-7i8 >> 2 = -2
+MIN / -1 (bb) = PANIC
+MIN % -1 (bb) = PANIC
+7 / 0 (bb) = PANIC
+MIN.checked_div(-1) = None; MIN.checked_rem(-1) = None; MIN.checked_rem_euclid(-1) = None; MIN.checked_div_euclid(-1) = None
+MIN.wrapping_rem(-1) = 0; MIN.wrapping_div(-1) = -128
+-7/4 = -1; -7%4 = -3; div_euclid = -2; rem_euclid = 1
+7/-4 = -1; 7%-4 = 3; div_euclid = -1; rem_euclid = 3
+(-1i8).rem_euclid(-128) = 127; (-1i8).div_euclid(-128) = 1
+exhaustive i8 euclid/trunc mismatches = 0
+(200u8+100)-100 (bb) = ok(200)
+(100i8+50)-50 (bb) = ok(100)
+200u8.checked_add(100) = None; 100i8.checked_add(50) = None
+u8::MAX.wrapping_add(1) = 0; i8::MAX.wrapping_add(1) = -128
+both-wrap u: 44 < 94; s: -56 < -36
+64*(4*x)==0 u8:true i8:true; 128*(x+x)==0 u8:true
+(256u16 as u8) as u16 = 0; (128i16 as i8) as i16 = -128; (-1i8) as u16 = 65535; ((-1i8) as u8) as u16 = 255
+(0x12345678u32 as u8) as u32 = 0x78; -17i8 as i16 = -17; -17i8 as u8 = 239; 255u8 as i8 = -1; (256u32 as u16) as u8 = 0
+(x as i8) as u32 for x=0x80u32: 4294967168
+u8 -> u32 -> u16 preserves every x (target narrower than intermediate): true
+f64 casts: 300.7 as u8 = 255; NaN as u8 = 0; -5.5 as u8 = 0
+0u8.checked_neg = Some(0); 1u8.checked_neg = None; MIN.checked_neg = None
+=== profile: release_oc (-C opt-level=3 -C overflow-checks=yes)
+overflow_checks_behavioral: on
+lit -128_i8 = -128; -(128_i8) = -128; -(128) = -128
+allow(overflowing_literals) 128_i8 = -128
+runtime -(MIN) via black_box = PANIC
+128u8.checked_shl(1) = Some(0)
+64i8.checked_shl(1) = Some(-128)
+128u8.checked_mul(2) = None; 64i8.checked_mul(2) = None
+128u8 << 1 (bb) = ok(0)
+64i8 << 1 (bb) = ok(-128)
+1u8 << 8 (bb) = PANIC
+1u8.checked_shl(8) = None
+wrapping_shl: 1u8,8 -> 1; 5u8,9 -> 10; -1i8,8 -> -1
+unbounded_shl: 1u8,8 -> 0
+shl_exact(nightly): 128u8,1 -> None; 64i8,1 -> None; 1u8,3 -> Some(8)
+wrapping_shr: 128u8,8 -> 128; -128i8,8 -> -128; (-1i8)>>1 -> -1; (-1i8)/2 -> 0
+-7i8 >> 2 = -2
+MIN / -1 (bb) = PANIC
+MIN % -1 (bb) = PANIC
+7 / 0 (bb) = PANIC
+MIN.checked_div(-1) = None; MIN.checked_rem(-1) = None; MIN.checked_rem_euclid(-1) = None; MIN.checked_div_euclid(-1) = None
+MIN.wrapping_rem(-1) = 0; MIN.wrapping_div(-1) = -128
+-7/4 = -1; -7%4 = -3; div_euclid = -2; rem_euclid = 1
+7/-4 = -1; 7%-4 = 3; div_euclid = -1; rem_euclid = 3
+(-1i8).rem_euclid(-128) = 127; (-1i8).div_euclid(-128) = 1
+exhaustive i8 euclid/trunc mismatches = 0
+(200u8+100)-100 (bb) = PANIC
+(100i8+50)-50 (bb) = PANIC
+200u8.checked_add(100) = None; 100i8.checked_add(50) = None
+u8::MAX.wrapping_add(1) = 0; i8::MAX.wrapping_add(1) = -128
+both-wrap u: 44 < 94; s: -56 < -36
+64*(4*x)==0 u8:true i8:true; 128*(x+x)==0 u8:true
+(256u16 as u8) as u16 = 0; (128i16 as i8) as i16 = -128; (-1i8) as u16 = 65535; ((-1i8) as u8) as u16 = 255
+(0x12345678u32 as u8) as u32 = 0x78; -17i8 as i16 = -17; -17i8 as u8 = 239; 255u8 as i8 = -1; (256u32 as u16) as u8 = 0
+(x as i8) as u32 for x=0x80u32: 4294967168
+u8 -> u32 -> u16 preserves every x (target narrower than intermediate): true
+f64 casts: 300.7 as u8 = 255; NaN as u8 = 0; -5.5 as u8 = 0
+0u8.checked_neg = Some(0); 1u8.checked_neg = None; MIN.checked_neg = None
+=== profile: debug_nooc (-C opt-level=0 -C debug-assertions=yes -C overflow-checks=no)
+overflow_checks_behavioral: off
+lit -128_i8 = -128; -(128_i8) = -128; -(128) = -128
+allow(overflowing_literals) 128_i8 = -128
+runtime -(MIN) via black_box = ok(-128)
+128u8.checked_shl(1) = Some(0)
+64i8.checked_shl(1) = Some(-128)
+128u8.checked_mul(2) = None; 64i8.checked_mul(2) = None
+128u8 << 1 (bb) = ok(0)
+64i8 << 1 (bb) = ok(-128)
+1u8 << 8 (bb) = ok(1)
+1u8.checked_shl(8) = None
+wrapping_shl: 1u8,8 -> 1; 5u8,9 -> 10; -1i8,8 -> -1
+unbounded_shl: 1u8,8 -> 0
+shl_exact(nightly): 128u8,1 -> None; 64i8,1 -> None; 1u8,3 -> Some(8)
+wrapping_shr: 128u8,8 -> 128; -128i8,8 -> -128; (-1i8)>>1 -> -1; (-1i8)/2 -> 0
+-7i8 >> 2 = -2
+MIN / -1 (bb) = PANIC
+MIN % -1 (bb) = PANIC
+7 / 0 (bb) = PANIC
+MIN.checked_div(-1) = None; MIN.checked_rem(-1) = None; MIN.checked_rem_euclid(-1) = None; MIN.checked_div_euclid(-1) = None
+MIN.wrapping_rem(-1) = 0; MIN.wrapping_div(-1) = -128
+-7/4 = -1; -7%4 = -3; div_euclid = -2; rem_euclid = 1
+7/-4 = -1; 7%-4 = 3; div_euclid = -1; rem_euclid = 3
+(-1i8).rem_euclid(-128) = 127; (-1i8).div_euclid(-128) = 1
+exhaustive i8 euclid/trunc mismatches = 0
+(200u8+100)-100 (bb) = ok(200)
+(100i8+50)-50 (bb) = ok(100)
+200u8.checked_add(100) = None; 100i8.checked_add(50) = None
+u8::MAX.wrapping_add(1) = 0; i8::MAX.wrapping_add(1) = -128
+both-wrap u: 44 < 94; s: -56 < -36
+64*(4*x)==0 u8:true i8:true; 128*(x+x)==0 u8:true
+(256u16 as u8) as u16 = 0; (128i16 as i8) as i16 = -128; (-1i8) as u16 = 65535; ((-1i8) as u8) as u16 = 255
+(0x12345678u32 as u8) as u32 = 0x78; -17i8 as i16 = -17; -17i8 as u8 = 239; 255u8 as i8 = -1; (256u32 as u16) as u8 = 0
+(x as i8) as u32 for x=0x80u32: 4294967168
+u8 -> u32 -> u16 preserves every x (target narrower than intermediate): true
+f64 casts: 300.7 as u8 = 255; NaN as u8 = 0; -5.5 as u8 = 0
+0u8.checked_neg = Some(0); 1u8.checked_neg = None; MIN.checked_neg = None
+=== compile-time checks
+--- ce1: fn main(){ let x: i8 = 128_i8; println!("{}", x); }
+error: literal out of range for `i8`
+  = note: `#[deny(overflowing_literals)]` on by default
+error: aborting due to 1 previous error
+--- ce2: fn main(){ let x: u8 = 256; println!("{}", x); }
+error: literal out of range for `u8`
+  = note: `#[deny(overflowing_literals)]` on by default
+error: aborting due to 1 previous error
+--- ce3: fn main(){ let x = -1u8; println!("{}", x); }
+error[E0600]: cannot apply unary operator `-` to type `u8`
+error: aborting due to 1 previous error
+For more information about this error, try `rustc --explain E0600`.
+--- ce4: fn main(){ let x: i8 = -129_i8; println!("{}", x); }
+error: literal out of range for `i8`
+  = note: `#[deny(overflowing_literals)]` on by default
+error: aborting due to 1 previous error
+--- ce5: fn main(){ let x: i8 = -(-128_i8); println!("{}", x); }
+error: this arithmetic operation will overflow
+  = note: `#[deny(arithmetic_overflow)]` on by default
+error: aborting due to 1 previous error
