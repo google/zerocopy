@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "rust/aliasing",
+    "rust/miri",
+    "verification/lean4"
+  ],
+  "subjects": [
+    {
+      "name": "Miri Tree Borrows borrow tracker, freeze-sensitive visitor, and DedupRangeMap",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+      }
+    },
+    {
+      "name": "Rust compiler interpret::ValueVisitor and standard library core::cell and core::pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "44db45ca210151a9fc25f10b8d7fa4535856680f"
+      }
+    },
+    {
+      "name": "Verus permissioned cell library vstd::cell",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+      }
+    },
+    {
+      "name": "Tree Borrows operational aliasing model and Simuliris Rocq mechanization",
+      "identity": {
+        "artifact_doi": "10.5281/zenodo.15002703",
+        "doi": "10.1145/3735592",
+        "publication": "Proceedings of the ACM on Programming Languages 9(PLDI), Article 188 (2025)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

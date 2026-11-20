@@ -34977,6 +34977,58 @@
         "lake/server-launch"
       ]
     },
+    "landins-knot-stored-closures-cantor-barriers-and-fuel-indexed-defunctionalization": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "44db45ca210151a9fc25f10b8d7fa4535856680f"
+          },
+          "name": "Lean 4 theorem prover kernel inductive positivity and universe checker"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "5540ef0110fc8f6d8e495c10c2f238c3ede14f3b"
+          },
+          "name": "Iris-Lean COFE solver and step-indexed uniform predicates in Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust standard library core::cell::RefCell, core::ops::function, and alloc::rcs::Rc"
+        },
+        {
+          "identity": {
+            "repository": "JoJoDeveloping/tiny-iris",
+            "revision": "5b18c311e746d2ae4170b0d253b5d7d36ee5d6d9"
+          },
+          "name": "Tiny-Iris step-index-free separation logic and frame-quantified adequacy"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas Rust verification backend for Lean 4"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151",
+            "publication": "Journal of Functional Programming 28:e20 (2018)"
+          },
+          "name": "Iris from the ground up modular higher-order concurrent separation logic"
+        }
+      ],
+      "topics": [
+        "verification/separation-logic",
+        "verification/lean4",
+        "rust/closures"
+      ]
+    },
     "language-integrated-query-shredding-and-multi-tier-compilation": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -66931,6 +66983,52 @@
         "agents/methodology/swarm-orchestration",
         "rust/mir-verification",
         "verification/program-verification"
+      ]
+    },
+    "slice-scaled-tree-borrows-range-permissions-and-unsafecell-freeze-visitor-soundness": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "0a0ce195cb0e91890c21ed717cca6eefef5e1ff3"
+          },
+          "name": "Miri Tree Borrows borrow tracker, freeze-sensitive visitor, and DedupRangeMap"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+          },
+          "name": "Rust compiler interpret::ValueVisitor and standard library core::cell and core::pin"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "44db45ca210151a9fc25f10b8d7fa4535856680f"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus permissioned cell library vstd::cell"
+        },
+        {
+          "identity": {
+            "artifact_doi": "10.5281/zenodo.15002703",
+            "doi": "10.1145/3735592",
+            "publication": "Proceedings of the ACM on Programming Languages 9(PLDI), Article 188 (2025)"
+          },
+          "name": "Tree Borrows operational aliasing model and Simuliris Rocq mechanization"
+        }
+      ],
+      "topics": [
+        "rust/aliasing",
+        "rust/miri",
+        "verification/lean4"
       ]
     },
     "small-scope-hypothesis-korat-feat-enumeration-and-skeletal-typechecker-fuzzing": {

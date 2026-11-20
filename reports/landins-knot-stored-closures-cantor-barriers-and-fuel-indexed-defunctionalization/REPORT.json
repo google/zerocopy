@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "verification/separation-logic",
+    "verification/lean4",
+    "rust/closures"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 theorem prover kernel inductive positivity and universe checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "44db45ca210151a9fc25f10b8d7fa4535856680f"
+      }
+    },
+    {
+      "name": "Iris-Lean COFE solver and step-indexed uniform predicates in Lean 4",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "5540ef0110fc8f6d8e495c10c2f238c3ede14f3b"
+      }
+    },
+    {
+      "name": "Rust standard library core::cell::RefCell, core::ops::function, and alloc::rcs::Rc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ec65cd52bba13d491ff65c9d218b39753755c84a"
+      }
+    },
+    {
+      "name": "Tiny-Iris step-index-free separation logic and frame-quantified adequacy",
+      "identity": {
+        "repository": "JoJoDeveloping/tiny-iris",
+        "revision": "5b18c311e746d2ae4170b0d253b5d7d36ee5d6d9"
+      }
+    },
+    {
+      "name": "Aeneas Rust verification backend for Lean 4",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+      }
+    },
+    {
+      "name": "Iris from the ground up modular higher-order concurrent separation logic",
+      "identity": {
+        "doi": "10.1017/S0956796818000151",
+        "publication": "Journal of Functional Programming 28:e20 (2018)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
