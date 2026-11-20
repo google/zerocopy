@@ -1344,44 +1344,69 @@ mod tests {
         call_for_unsigned_types!(test_max_value, NonNativeEndian);
     }
 
-    #[cfg_attr(test, test)]
-    #[cfg_attr(kani, kani::proof)]
-    fn test_endian() {
-        fn test<T: ByteOrderType>(invert: bool) {
-            let mut r = SmallRng::seed_from_u64(RNG_SEED);
-            for _ in 0..RAND_ITERS {
-                let native = T::Native::rand(&mut r);
-                let mut bytes = T::ByteArray::default();
-                bytes.as_mut_bytes().copy_from_slice(native.as_bytes());
-                if invert {
-                    bytes = bytes.invert();
-                }
-                let mut from_native = T::new(native);
-                let from_bytes = T::from_bytes(bytes);
-
-                from_native.assert_eq_or_nan(from_bytes);
-                from_native.get().assert_eq_or_nan(native);
-                from_bytes.get().assert_eq_or_nan(native);
-
-                assert_eq!(from_native.into_bytes(), bytes);
-                assert_eq!(from_bytes.into_bytes(), bytes);
-
-                let updated = T::Native::rand(&mut r);
-                from_native.set(updated);
-                from_native.get().assert_eq_or_nan(updated);
+    fn test_endian_roundtrip<T: ByteOrderType>(invert: bool) {
+        let mut r = SmallRng::seed_from_u64(RNG_SEED);
+        for _ in 0..RAND_ITERS {
+            let native = T::Native::rand(&mut r);
+            let mut bytes = T::ByteArray::default();
+            bytes.as_mut_bytes().copy_from_slice(native.as_bytes());
+            if invert {
+                bytes = bytes.invert();
             }
-        }
+            let mut from_native = T::new(native);
+            let from_bytes = T::from_bytes(bytes);
 
-        fn test_native<T: ByteOrderType>() {
-            test::<T>(false);
-        }
+            from_native.assert_eq_or_nan(from_bytes);
+            from_native.get().assert_eq_or_nan(native);
+            from_bytes.get().assert_eq_or_nan(native);
 
-        fn test_non_native<T: ByteOrderType>() {
-            test::<T>(true);
-        }
+            assert_eq!(from_native.into_bytes(), bytes);
+            assert_eq!(from_bytes.into_bytes(), bytes);
 
-        call_for_all_types!(test_native, NativeEndian);
-        call_for_all_types!(test_non_native, NonNativeEndian);
+            let updated = T::Native::rand(&mut r);
+            from_native.set(updated);
+            from_native.get().assert_eq_or_nan(updated);
+        }
+    }
+
+    fn test_endian_native<T: ByteOrderType>() {
+        test_endian_roundtrip::<T>(false);
+    }
+
+    fn test_endian_non_native<T: ByteOrderType>() {
+        test_endian_roundtrip::<T>(true);
+    }
+
+    #[cfg(test)]
+    #[test]
+    fn test_endian() {
+        call_for_all_types!(test_endian_native, NativeEndian);
+        call_for_all_types!(test_endian_non_native, NonNativeEndian);
+    }
+
+    // Under Kani, split `test_endian` by type family so CBMC does not inline
+    // all 24 integer and IEEE-754 float byte-reversal checks into a single
+    // multi-gigabyte goto-program and can verify the three families in
+    // parallel under `-j`.
+    #[cfg(kani)]
+    #[kani::proof]
+    fn test_endian_unsigned() {
+        call_for_unsigned_types!(test_endian_native, NativeEndian);
+        call_for_unsigned_types!(test_endian_non_native, NonNativeEndian);
+    }
+
+    #[cfg(kani)]
+    #[kani::proof]
+    fn test_endian_signed() {
+        call_for_signed_types!(test_endian_native, NativeEndian);
+        call_for_signed_types!(test_endian_non_native, NonNativeEndian);
+    }
+
+    #[cfg(kani)]
+    #[kani::proof]
+    fn test_endian_float() {
+        call_for_float_types!(test_endian_native, NativeEndian);
+        call_for_float_types!(test_endian_non_native, NonNativeEndian);
     }
 
     #[test]
