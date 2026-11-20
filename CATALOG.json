@@ -39780,6 +39780,110 @@
         "vcs/artifact-provenance"
       ]
     },
+    "meta-free-reflective-separation-logic-framing-view-pcms-and-step-index-free-adequacy": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "JoJoDeveloping/tiny-iris",
+            "revision": "5b18c311e746d2ae4170b0d253b5d7d36ee5d6d9"
+          },
+          "name": "tiny-iris minimalist step-index-free separation logic in Rocq"
+        },
+        {
+          "identity": {
+            "base_revision": "768a0ce985c72206a9eb482b7376b0d7f19dcda2",
+            "pull_request": "1551",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "1d8f9aa0121faca8ff113c1b9b742b333e3e1519"
+          },
+          "name": "Aeneas first-order byte-heap separation logic prototype (PR #1551)"
+        },
+        {
+          "identity": {
+            "base_revision": "de16f3cf877976e966906dc890f63dcb418884fa",
+            "pull_request": "1497",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "d17ca83fc07d712d1785f650840cb2073c259e69"
+          },
+          "name": "Aeneas concrete-address byte heap and scoped views prototype (PR #1497)"
+        },
+        {
+          "identity": {
+            "merge_revision": "df7059b918e91cd1ac37c6814f642a935948025e",
+            "pull_request": "1180",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "39075a19f64c51699ec3ddde286171fb347261c8"
+          },
+          "name": "Aeneas coinductive interaction-tree effects and WP (PR #1180)"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas mainline repository"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+          },
+          "name": "Anneal MIR verification framework and TrustedBoundary allowlist"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4.34.1 verification toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "5540ef0110fc8f6d8e495c10c2f238c3ede14f3b"
+          },
+          "name": "iris-lean higher-order separation logic port"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408998",
+            "venue": "PACMPL / ICFP 2020"
+          },
+          "name": "Separation Logic for Sequential Programs (Chargu\u00e9raud, ICFP 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3236772",
+            "venue": "PACMPL / ICFP 2018"
+          },
+          "name": "MoSeL: A General, Extensible Modal Framework for Interactive Proofs in Separation Logic (Krebbers et al., ICFP 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "venue": "PLDI 2021"
+          },
+          "name": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types (Sammler et al., PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371119",
+            "venue": "PACMPL / POPL 2020"
+          },
+          "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq (Xia et al., POPL 2020)"
+        }
+      ],
+      "topics": [
+        "verification/separation-logic",
+        "lean/mechanization",
+        "verification/rust",
+        "anneal/theory",
+        "aeneas/lean-backend",
+        "lean/tactics"
+      ]
+    },
     "metal-typechain-language-isolated-kernels-1995-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
