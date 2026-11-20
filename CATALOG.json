@@ -24483,6 +24483,55 @@
         "verification/do178c-mode-transition-freedom"
       ]
     },
+    "ffmpeg-c-abi-libav-struct-layout-callbacks-and-rust-ffi-compatibility-layer": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "libavcodec_major": "63",
+            "libavdevice_major": "63",
+            "libavfilter_major": "12",
+            "libavformat_major": "63",
+            "libavutil_major": "61",
+            "libswresample_major": "7",
+            "libswscale_major": "10",
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "repository": "memorysafety/rav1d",
+            "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+          },
+          "name": "rav1d"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "c_compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+            "cpu": "AMD EPYC 7B12",
+            "rust_compiler": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "GNU GCC and Rust Nightly Toolchains"
+        }
+      ],
+      "topics": [
+        "ffi/c-abi",
+        "systems/ffmpeg",
+        "rust/ffi",
+        "verification/safety-boundaries",
+        "zerocopy/layout"
+      ]
+    },
     "ffmpeg-codebase-architecture-cpuflags-dispatch-and-asm-corpus-census": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -24601,6 +24650,40 @@
         "domains/multimedia",
         "verification/ub-freedom",
         "rust/safety"
+      ]
+    },
+    "ffmpeg-ffprobe-ffplay-cli-pipeline-scheduler-and-fate-differential-oracle": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "FFmpeg/FFmpeg",
+            "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+          },
+          "name": "FFmpeg"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TIP.2003.819861",
+            "publication": "IEEE Transactions on Image Processing, vol. 13, no. 4, pp. 600-612 (Apr. 2004)",
+            "title": "Image Quality Assessment: From Error Visibility to Structural Similarity"
+          },
+          "name": "Wang et al. (2004) Structural Similarity (SSIM) Index Specification"
+        },
+        {
+          "identity": {
+            "compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+            "cpu": "AMD EPYC 7B12",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "GNU GCC Toolchain"
+        }
+      ],
+      "topics": [
+        "systems/ffmpeg",
+        "tooling/cli",
+        "verification/differential-testing",
+        "domains/multimedia"
       ]
     },
     "fiat-crypto-hacl-evercrypt-vale-libcrux-and-verified-crypto-synthesis": {

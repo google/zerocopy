@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "systems/ffmpeg",
+    "tooling/cli",
+    "verification/differential-testing",
+    "domains/multimedia"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80"
+      }
+    },
+    {
+      "name": "Wang et al. (2004) Structural Similarity (SSIM) Index Specification",
+      "identity": {
+        "doi": "10.1109/TIP.2003.819861",
+        "title": "Image Quality Assessment: From Error Visibility to Structural Similarity",
+        "publication": "IEEE Transactions on Image Processing, vol. 13, no. 4, pp. 600-612 (Apr. 2004)"
+      }
+    },
+    {
+      "name": "GNU GCC Toolchain",
+      "identity": {
+        "compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+        "target": "x86_64-unknown-linux-gnu",
+        "cpu": "AMD EPYC 7B12"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

@@ -1,0 +1,49 @@
+{
+  "topics": [
+    "ffi/c-abi",
+    "systems/ffmpeg",
+    "rust/ffi",
+    "verification/safety-boundaries",
+    "zerocopy/layout"
+  ],
+  "subjects": [
+    {
+      "name": "FFmpeg",
+      "identity": {
+        "repository": "FFmpeg/FFmpeg",
+        "revision": "7ddf7bc8a482cf28b4fab2e63b7093ba35cb6a80",
+        "libavcodec_major": "63",
+        "libavformat_major": "63",
+        "libavutil_major": "61",
+        "libavfilter_major": "12",
+        "libswscale_major": "10",
+        "libswresample_major": "7",
+        "libavdevice_major": "63"
+      }
+    },
+    {
+      "name": "rav1d",
+      "identity": {
+        "repository": "memorysafety/rav1d",
+        "revision": "2e7216c20ac2a75de204d6c8d7268b75a45959b4"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "GNU GCC and Rust Nightly Toolchains",
+      "identity": {
+        "c_compiler": "gcc (Debian 15.2.0-14) 15.2.0",
+        "rust_compiler": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "target": "x86_64-unknown-linux-gnu",
+        "cpu": "AMD EPYC 7B12"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
