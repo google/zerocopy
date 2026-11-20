@@ -473,6 +473,12 @@ jobs:
           path: ${{ runner.temp }}/anneal-miri-olean-cache
           key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
 
+      - name: Check the scalar alpha with the installed toolchain
+        run: |
+          set -euo pipefail
+          cargo build --locked -p cargo-anneal
+          python3 -B ci/probe_alpha.py --cli "$CARGO_TARGET_DIR/debug/cargo-anneal"
+
       - name: Check crate packaging
         id: package
         run: |
