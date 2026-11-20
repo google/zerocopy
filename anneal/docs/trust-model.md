@@ -326,8 +326,10 @@ kernel-level audit:
 3. **MIR WP non-backsliding (`verifyMirWpCoreTheorems`):** Enabled by default
    (`require_mir_wp = true`); requires `Trusted.MirAst`,
    `Trusted.MirSemantics`, and `Anneal.MirWp` to be present and verifies that
-   `wpProg` soundness, `wpFaultProg` soundness, and all 19 Pass 1 canaries
-   prove their exact `Trusted.MirSemantics` `*Claim` propositions.
+   `wpProg` soundness, `wpFaultProg` soundness, and all 20 Pass 1 canaries
+   (including `CanaryMemoryLifecycleAnnealClaim`, which exercises
+   `forceAllocation`, `.indirect` locals, and `MemoryState`) prove their exact
+   `Trusted.MirSemantics` `*Claim` propositions.
 4. **Fresh kernel replay (`replayOntoBase`):** Constructs a clean kernel
    environment containing only the pinned `Init.*` foundation (`base`),
    replays every non-foundation constant (`Trusted.*` and `theory/`) through
@@ -473,8 +475,10 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    `Miri.Interpreter.ExecutionMachine` cone (`verifyMiriExecutionMachineCone`)
    and correspondence dependency cone (`closureCorr`) for purity (rejecting any
    reachable `unsafe`, `isPartial`, `.vendorMiri` `opaque`, or unapproved
-   axiom), verifies all 33 correspondence, choice-coupled, wiring,
-   `AllowedStep` soundness, and canary (`D6`–`D13`) claims
+   axiom), verifies all 34 correspondence, choice-coupled, wiring,
+   `AllowedStep` soundness, byte-codec (`BytesCodecMatchesMiriClaim`, pinning
+   `Trusted.MirSemantics.{encodeVal,decodeVal}` against `lean-miri`'s
+   `Allocation` scalar accesses), and canary (`D6`–`D13`) claims
    (`verifyCorrespondenceClaims`, enforcing universe monomorphism on every
    claim and proof and a mechanically checked non-empty required-constants list
    on every claim), and runs `verifyRefEvaluatorIndependence` (34 required live

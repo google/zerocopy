@@ -13,6 +13,7 @@ import Init.Control.Except
 import Trusted.MirAst
 import Trusted.MirModel
 import Trusted.MirSemantics.Enum
+import Trusted.MirSemantics.Memory
 
 namespace Trusted.MirSemantics
 
@@ -36,12 +37,15 @@ structure FrameState where
   stmtIdx : Nat
   locals : List LocalSlot
 
-/-- Running machine state of $M_{\text{anneal}}$ (factored cleanly from
-`initState` so `State` carries only active execution frames and caller
-memory, with no synthetic pre-entry variant). -/
+/-- Running machine state of $M_{\text{anneal}}$: the active execution
+frames, caller-visible memory, and the byte-level memory holding the stack
+allocations of locals that have been moved into memory (`LocalSlot.indirect`).
+`initState` builds the entry state, so `State` has no synthetic pre-entry
+variant. -/
 structure State where
   frames : List FrameState
   callerMem : CallerMemory := ⟨[]⟩
+  mem : MemoryState
 
 /-- Admissible demonic choice predicate at state `s`. -/
 noncomputable def ValidChoice (_p : Program) (_s : State) (c : Choice) : Prop :=
@@ -151,7 +155,7 @@ body.locals.length - 1`), matching `Miri.Interpreter.CallMachine` (`pushRaw`,
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
 - `_0` (return place): `liveUninitSlot ty`.
-- `_1 .. _argumentCount` (parameters): `.live (some arg)`.
+- `_1 .. _argumentCount` (parameters): `.immediate (some arg)`.
 - `> argumentCount`: `.dead` if `hasStorageAnnotation body idx`, else
   `liveUninitSlot ty`. -/
 noncomputable def initLocalsLoop (body : Body) (args : List Val) :
@@ -163,7 +167,7 @@ noncomputable def initLocalsLoop (body : Body) (args : List Val) :
           liveUninitSlot ty
         else if Nat.ble idx body.argumentCount then
           match getElem? args (idx - 1) with
-          | some v => .live (some v)
+          | some v => .immediate (some v)
           | none => .dead
         else if hasStorageAnnotation body idx then
           .dead
@@ -177,7 +181,7 @@ semantic profile version (`p.mirProfileVersion = 1`; see
 `Trusted.MirAst.Program`), entry body existence, non-empty basic blocks,
 in-bounds storage annotations, supported local types, empty `callerMem`, and
 well-typed `q.args`. Returns `.error .unsupported` if any static/entry
-precondition fails. -/
+precondition fails. The entry state's memory is `entryMemory`. -/
 noncomputable def initState (p : Program) (q : Query) :
     Except FaultKind State :=
   if !Nat.beq p.pointerWidthBits 64 || !Nat.beq p.mirProfileVersion 1 then
@@ -210,6 +214,10 @@ noncomputable def initState (p : Program) (q : Query) :
             stmtIdx := 0
             locals := locals
           }
-          .ok { frames := [frame], callerMem := q.callerMem }
+          .ok {
+            frames := [frame]
+            callerMem := q.callerMem
+            mem := entryMemory
+          }
 
 end Trusted.MirSemantics

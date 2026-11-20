@@ -29,9 +29,9 @@ open Anneal.MirCorrespondence
 /-!
 # MIR Correspondence Proof Hub (`Anneal.MirCorrespondenceProof`)
 
-Thin Pass 2 entry module forwarding all 32 locked correspondence, wiring,
-codec, simulation, and non-vacuity canary (`D6`–`D13`) theorems to their modular
-proof implementations under `Anneal.MirCorrespondence.*`.
+Thin Pass 2 entry module forwarding all 34 locked correspondence, wiring,
+codec, simulation, byte-codec, and non-vacuity canary (`D6`–`D13`) theorems to
+their modular proof implementations under `Anneal.MirCorrespondence.*`.
 -/
 
 /-- Top-level correspondence witness theorem (`CorrespondenceClaim`). -/
@@ -159,5 +159,10 @@ theorem canary_D13_enum_invalid_tag_and_uninit_ub : CanaryD13EnumInvalidTagAndUn
 
 theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=
   refStep_sound_for_allowedStep_base
+
+/-- `Trusted.MirSemantics` byte-codec agreement with `lean-miri`'s `Allocation`
+scalar accesses (`BytesCodecMatchesMiriClaim`). -/
+theorem bytes_codec_matches_miri : BytesCodecMatchesMiriClaim :=
+  bytes_codec_matches_miri_base
 
 end Anneal.MirCorrespondenceProof

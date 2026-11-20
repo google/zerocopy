@@ -21,8 +21,8 @@ open Trusted.MirAst
 
 Pure boundary data types (`FaultKind`, `StepResult`, `ScalarVal`, `PtrVal`,
 `AllocByte`, `Val`, `Allocation`, `CallerMemory`, `Query`, `Out`,
-`TerminalOut`, `LocalSlot`, `Choice`) and total list lookup/update helpers
-(`getElem?`, `setElem?`) shared across $M_{\text{anneal}}$
+`TerminalOut`, `MemPlace`, `LocalSlot`, `Choice`) and total list lookup/update
+helpers (`getElem?`, `setElem?`) shared across $M_{\text{anneal}}$
 (`Trusted.MirSemantics.*`) and $M_{\text{ref}}$
 (`Trusted.Correspondence.*`).
 
@@ -98,7 +98,35 @@ inductive Val where
   | tuple (fields : List Val)
   | bytes (data : List AllocByte)
 
-/-- Caller-visible memory allocation descriptor. -/
+/-- Memory allocation: the caller-visible allocations of `CallerMemory` and the
+stack allocations of $M_{\text{anneal}}$'s `Trusted.MirSemantics.MemoryState`,
+corresponding to `rustc_middle::mir::interpret::Allocation`
+(`compiler/rustc_middle/src/mir/interpret/allocation.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "pub struct Allocation<Prov: Provenance = CtfeProvenance, Extra = (),
+>     Bytes = Box<[u8]>> {
+>     /// The actual bytes of the allocation.
+>     /// Note that the bytes of a pointer represent the offset of the pointer.
+>     bytes: Bytes,
+>     /// Maps from byte addresses to extra provenance data for each pointer.
+>     ...
+>     provenance: ProvenanceMap<Prov>,
+>     /// Denotes which part of this allocation is initialized.
+>     ...
+>     init_mask: InitMask,
+>     /// The alignment of the allocation to detect unaligned reads.
+>     /// (`Align` guarantees that this is a power of two.)
+>     pub align: Align,
+>     /// `true` if the allocation is mutable.
+>     ...
+>     pub mutability: Mutability,
+>     ..."
+
+`bytes` combines `rustc`'s `bytes`, `init_mask`, and `provenance` into one
+`AllocByte` per byte, so the allocation's size is `bytes.length`. `live` is
+`false` once the allocation has been deallocated (`rustc` removes it from
+`alloc_map`). -/
 structure Allocation where
   allocId : AllocId
   alignLog2 : Nat
@@ -127,24 +155,64 @@ inductive TerminalOut where
   | returned (out : Out)
   | unwound (callerMem : CallerMemory := ⟨[]⟩)
 
-/-- Local slot state in an active stack frame
-(`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
+/-- Place in memory: the start of the bytes of a value at byte offset `offset`
+inside allocation `allocId`, corresponding to the thin (unsized-metadata-free)
+case of `rustc_const_eval::interpret::MemPlace`
+(`compiler/rustc_const_eval/src/interpret/place.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
+> "pub(super) struct MemPlace<Prov: Provenance = CtfeProvenance> {
+>     /// The pointer can be a pure integer, with the `None` provenance.
+>     pub ptr: Pointer<Option<Prov>>,
+>     /// Metadata for unsized places. Interpretation is up to the type.
+>     ...
+>     pub meta: MemPlaceMeta<Prov>,
+>     ..."
+
+As in `rustc`, the alignment of an access comes from the layout of the
+accessed type, not from the place. -/
+structure MemPlace where
+  allocId : AllocId
+  offset : Nat
+
+/-- Local slot state in an active stack frame, corresponding to `LocalValue`
+and `Operand` (`compiler/rustc_const_eval/src/interpret/stack.rs` and
+`compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and to
+`Miri.Interpreter.LocalValue`
+(`vendor/lean-miri/Miri/Interpreter/Operand.lean`):
+
 > "pub(super) enum LocalValue<Prov: Provenance = CtfeProvenance> {
->     ...
+>     /// This local is not currently alive, and cannot be used at all.
 >     Dead,
->     ...
+>     /// A normal, live local.
+>     /// Mostly for convenience, we re-use the `Operand` type here.
+>     /// This is an optimization over just always having a pointer here;
+>     /// we can thus avoid doing an allocation when the local just stores
+>     /// immediate values *and* never has its address taken.
 >     Live(Operand<Prov>),
 > }"
+> (`compiler/rustc_const_eval/src/interpret/stack.rs`)
+>
+> "pub(super) enum Operand<Prov: Provenance = CtfeProvenance> {
+>     Immediate(Immediate<Prov>),
+>     Indirect(MemPlace<Prov>),
+> }"
+> (`compiler/rustc_const_eval/src/interpret/operand.rs`)
 
-- `dead`: Storage is not currently allocated (`LocalValue::Dead`).
-- `live none`: Storage is allocated (`StorageLive`) but uninitialized
-  (`LocalValue::Live(Operand::Immediate(Immediate::Uninit))`).
-- `live (some val)`: Storage is allocated and holds initialized value `val`. -/
+- `dead`: storage is not allocated (`LocalValue::Dead`).
+- `immediate none`: storage is live (`StorageLive`) but uninitialized
+  (`Live(Operand::Immediate(Immediate::Uninit))`).
+- `immediate (some val)`: storage is live and holds the value `val`
+  (`Live(Operand::Immediate(..))`).
+- `indirect place`: storage is live and the value's bytes are in memory at
+  `place` (`Live(Operand::Indirect(..))`), after
+  `Trusted.MirSemantics.forceAllocation` moved the local into a stack
+  allocation. -/
 inductive LocalSlot where
   | dead
-  | live (val : Option Val)
+  | immediate (val : Option Val)
+  | indirect (place : MemPlace)
 
 /-- Demonic nondeterministic choice input for a single step. -/
 abbrev Choice := Nat

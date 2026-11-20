@@ -16,6 +16,9 @@ import Trusted.MirModel
 import Trusted.MirSemantics.Ops
 import Trusted.MirSemantics.Enum
 import Trusted.MirSemantics.State
+import Trusted.MirSemantics.Layout
+import Trusted.MirSemantics.Memory
+import Trusted.MirSemantics.Bytes
 
 namespace Trusted.MirSemantics
 
@@ -27,84 +30,6 @@ open Trusted.MirAst
 Constant, operand, rvalue, place-write, statement, terminator, and single-step
 transition rules (`evalStep`) for $M_{\text{anneal}}$.
 -/
-
-/-- Decode a typed constant literal `ConstLit` into a runtime `Val`, matching
-`ScalarInt::try_from_uint` and `ScalarInt::try_to_bool` in
-`compiler/rustc_middle/src/ty/consts/int.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`) and `Miri.Memory.ScalarInt`
-(`vendor/lean-miri/Miri/Memory/ScalarInt.lean`):
-
-> "pub fn try_from_uint(i: impl Into<u128>, size: Size) -> Option<Self> {
->     let (r, overflow) = Self::truncate_from_uint(i, size);
->     if overflow { None } else { Some(r) }
-> }"
-> "pub fn try_to_bool(self) -> Result<bool, ()> {
->     match self.to_u8() {
->         0 => Ok(false),
->         1 => Ok(true),
->         _ => Err(()),
->     }
-> }"
-> (`compiler/rustc_middle/src/ty/consts/int.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
-
-A 1-byte `.bool` scalar whose value is neither `0` nor `1` triggers
-`ScalarIntError.invalidBool`, which `Miri.Interpreter.ScalarOps.scalarError`
-maps to `.undefinedBehavior`, so `evalConstLit` returns `.error .undefined`.
-
-For fieldless enums (`.enum ety`), constant decoding matches `op_to_const`
-(`compiler/rustc_const_eval/src/const_eval/eval_queries.rs:258`,
-`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
-`read_discriminant` (`compiler/rustc_const_eval/src/interpret/discriminant.rs`,
-`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "let discr_val = self.int_to_int_or_float(&tag_val, discr_layout).unwrap();
-> let discr_bits = discr_val.to_scalar().to_bits(discr_layout.size)?;
-> ...
-> adt.discriminants(*self.tcx).find(|(_, var)| var.val == discr_bits)
-> ...
-> .ok_or_else(|| err_ub!(InvalidTag(Scalar::from_uint(tag_bits,
->     tag_layout.size))))?;"
-
-- Admitted 1-variant ZST enums (`ety.tagRepr = .zeroSized`) decode
-  `ConstLit.zeroSized` to `.ok (.enumVal ety 0)`.
-- Admitted direct-tagged enums (`ety.tagRepr = .scalar tagW tagS`) validate
-  that `bits` fits in `tagW`, extend/truncate `bits` to `ety.discrWidth` via
-  `tagBitsToDiscrBits`, and resolve the matching declaration index via
-  `findDiscrVariant?` (returning `.error .undefined` on an invalid tag bit
-  pattern not matching any declared discriminant). -/
-noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
-  | .int w s, .scalar bits =>
-    if truncateBits w bits != bits then
-      .error .unsupported
-    else
-      .ok (.scalar ⟨w, s, truncateBits w bits⟩)
-  | .bool, .scalar bits =>
-    if truncateBits .i8 bits != bits then
-      .error .unsupported
-    else
-      let v := UInt8.ofNat (truncateBits .i8 bits).toNat
-      if v == 0 then
-        .ok (.bool false)
-      else if v == 1 then
-        .ok (.bool true)
-      else
-        .error .undefined
-  | .unit, .zeroSized => .ok .unit
-  | .enum ety, .zeroSized =>
-    if isZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
-  | .enum ety, .scalar bits =>
-    match ety.tagRepr with
-    | .zeroSized => .error .unsupported
-    | .scalar tagW tagS =>
-      if !enumAdmitted ety || truncateBits tagW bits != bits then
-        .error .unsupported
-      else
-        let discrBits := tagBitsToDiscrBits tagW tagS ety.discrWidth bits
-        match findDiscrVariant? discrBits ety.discriminants with
-        | some v => .ok (.enumVal ety v)
-        | none => .error .undefined
-  | _, _ => .error .unsupported
 
 /-- Stage 1 of operand evaluation (`eval_operand` and `eval_place_to_op` in
 `compiler/rustc_const_eval/src/interpret/operand.rs`, `rust-lang/rust`
@@ -140,45 +65,85 @@ projections). Note that upstream `eval_operand` currently leaves move
 invalidation unimplemented (as recorded in the `FIXME` above). As a
 deliberate, conservative over-approximation (sound because deinitializing can
 only introduce faults on subsequent reads), `evalOperandToSlot` resolves an
-`Operand` to `(ty : MirTy, optVal : Option Val, locals' : List LocalSlot)`
-without yet requiring `optVal` to be initialized (`some v`), and deinitializes
-moved non-ZST locals:
-- `.copy place`: reads `(ty, optVal)` without mutating `locals`.
-- `.move place`: reads `(ty, optVal)` and conservatively transitions
-  `locals[place.localId]` to `liveUninitSlot ty` (preserving
-  `.live (some .unit)` on `MirTy.unit` and `.live (some (.enumVal ety 0))` on
-  admitted 1-variant `.zeroSized` `MirTy.enum`, and setting all other local
-  types to `.live none`, matching `OperandMachine.evalOperand` with opt-in
-  `deinitMovedPlace = true`).
-- `.constant c`: decodes constant literal without mutating `locals`. -/
+`Operand` to `(ty : MirTy, optVal : Option Val, locals' : List LocalSlot,
+mem' : MemoryState)` without yet requiring `optVal` to be initialized
+(`some v`), and deinitializes moved non-ZST locals.
+
+An `.indirect place` local is read from memory with `loadIndirect`
+(`local_to_op` returns `Operand::Indirect`, and the caller's read checks the
+bytes). The caller's static type check `tyOk` runs before that read and before
+any move deinitialization, so an ill-typed use of an `.indirect` local faults
+with `.unsupported` even when its memory is dead, out of bounds, or holds
+invalid bytes. This matches `lean-miri`, where `OperandMachine.evalOperand`
+resolves an indirect place without touching memory, and the consumer checks
+the type (`MemoryOperand.readImmediate`'s primitive-readability check, or
+`Place.copyRuntimePlaceNoValidate`'s layout-compatibility check) before
+reading the bytes and deinitializing a moved place. Resolving an `.immediate`
+local or a constant reads no memory, so for those operands the caller checks
+the type after resolution with the same result.
+- `.copy place`: reads `(ty, optVal)` without mutating `locals` or `mem`.
+- `.move place` on an `.immediate` local: reads `(ty, optVal)` and
+  conservatively transitions `locals[place.localId]` to `liveUninitSlot ty`
+  (preserving `.immediate (some .unit)` on `MirTy.unit` and
+  `.immediate (some (.enumVal ety 0))` on admitted 1-variant `.zeroSized`
+  `MirTy.enum`, and setting all other local types to `.immediate none`,
+  matching `OperandMachine.evalOperand` with opt-in `deinitMovedPlace = true`).
+- `.move place` on an `.indirect mplace` local: reads `(ty, optVal)` and marks
+  the value's bytes at `mplace` uninitialized (`deinitIndirect`; zero-sized
+  types have no bytes, so their unique value survives as in the immediate
+  case).
+- `.constant c`: decodes constant literal without mutating `locals` or `mem`.
+-/
 noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
-    (locals : List LocalSlot) :
-    Operand → Except FaultKind (MirTy × Option Val × List LocalSlot)
+    (locals : List LocalSlot) (mem : MemoryState) (tyOk : MirTy → Bool) :
+    Operand →
+      Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState)
   | .copy place =>
     match getElem? bodyLocals place.localId,
         getElem? locals place.localId with
     | some _, some .dead => .error .undefined
-    | some ty, some (.live optVal) =>
+    | some ty, some (.immediate optVal) =>
       if !place.projection.isEmpty then
         .error .unsupported
       else
-        .ok (ty, optVal, locals)
+        .ok (ty, optVal, locals, mem)
+    | some ty, some (.indirect mplace) =>
+      if !place.projection.isEmpty then
+        .error .unsupported
+      else if !tyOk ty then
+        .error .unsupported
+      else
+        match loadIndirect mem ty mplace with
+        | .ok optVal => .ok (ty, optVal, locals, mem)
+        | .error k => .error k
     | _, _ => .error .unsupported
   | .move place =>
     match getElem? bodyLocals place.localId,
         getElem? locals place.localId with
     | some _, some .dead => .error .undefined
-    | some ty, some (.live optVal) =>
+    | some ty, some (.immediate optVal) =>
       if !place.projection.isEmpty then
         .error .unsupported
       else
         match setElem? locals place.localId (liveUninitSlot ty) with
-        | some locals' => .ok (ty, optVal, locals')
+        | some locals' => .ok (ty, optVal, locals', mem)
         | none => .error .unsupported
+    | some ty, some (.indirect mplace) =>
+      if !place.projection.isEmpty then
+        .error .unsupported
+      else if !tyOk ty then
+        .error .unsupported
+      else
+        match loadIndirect mem ty mplace with
+        | .error k => .error k
+        | .ok optVal =>
+          match deinitIndirect mem ty mplace with
+          | .ok mem' => .ok (ty, optVal, locals, mem')
+          | .error k => .error k
     | _, _ => .error .unsupported
   | .constant c =>
     match evalConstLit c.ty c.lit with
-    | .ok v => .ok (c.ty, some v, locals)
+    | .ok v => .ok (c.ty, some v, locals, mem)
     | .error k => .error k
 
 /-- Stage 2 of operand evaluation (`evalOperandToSlot` followed by
@@ -208,20 +173,82 @@ noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
 
 Used by `.binaryOp`, `.unaryOp`, and `.switchInt`. Checks
 `isPrimitiveReadableTy ty` on the static type first (`.unsupported` on
-non-primitives such as `.unit`), and then checks initialization (`optVal = some
-v`, faulting with `.undefined` on uninitialized storage). -/
+non-primitives such as `.unit`; `evalOperandToSlot` performs this check before
+reading an `.indirect` local's memory), and then checks initialization (`optVal
+= some v`, faulting with `.undefined` on uninitialized storage). -/
 noncomputable def evalPrimitiveOperand (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (opnd : Operand) :
-    Except FaultKind (Val × List LocalSlot) :=
-  match evalOperandToSlot bodyLocals locals opnd with
+    (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  match evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy opnd with
   | .error k => .error k
-  | .ok (ty, optVal, locals') =>
+  | .ok (ty, optVal, locals', mem') =>
     if !isPrimitiveReadableTy ty then
       .error .unsupported
     else
       match optVal with
-      | some v => .ok (v, locals')
+      | some v => .ok (v, locals', mem')
       | none => .error .undefined
+
+/-- Result of `Rvalue.discriminant` on a local of admitted fieldless enum type
+`ety` whose value is `optVal`: the variant's declared discriminant as a scalar
+of `(ety.discrWidth, ety.discrSigned)`, with `locals` and `mem` unchanged.
+Matches `read_discriminant` and `discriminant_for_variant` in
+`compiler/rustc_const_eval/src/interpret/discriminant.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and `Miri.Interpreter.Discriminant`:
+
+> "let discr_layout = self.layout_of(ty.discriminant_ty(*self.tcx))?;
+> let discr_value = match ty.discriminant_for_variant(*self.tcx, variant) {
+>     Some(discr) => {
+>         ...
+>         assert_eq!(discr.ty, discr_layout.ty);
+>         Scalar::from_uint(discr.val, discr_layout.size)
+>     }
+>     ...
+> };
+> interp_ok(ImmTy::from_scalar(discr_value, discr_layout))"
+
+An uninitialized (`none`) scalar-tagged enum value faults with `.error
+.undefined`, whereas an inhabited 1-variant ZST enum (`ety.tagRepr =
+.zeroSized`, `Variants::Single { index: 0 }`) returns `ety.discriminants[0]`
+without reading tag bytes. -/
+noncomputable def evalDiscriminantOfVal (ety : EnumTy) (optVal : Option Val)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  if !enumAdmitted ety then
+    .error .unsupported
+  else
+    -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
+    -- (`Variants::Single { index: 0 }`) returns variant `0` without reading
+    -- tag bytes even if a slot holds `.immediate none` (`Uninit`), preserving
+    -- universal 1-step lockstep over arbitrary `FrameState`s.
+    match ety.tagRepr, optVal with
+    | .zeroSized, none =>
+      match getElem? ety.discriminants 0 with
+      | some disc =>
+        .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+          truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals, mem)
+      | none => .error .unsupported
+    | .zeroSized, some (.enumVal ety' v) =>
+      if EnumTy.beq ety ety' && Nat.beq v 0 then
+        match getElem? ety.discriminants 0 with
+        | some disc =>
+          .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+            truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals, mem)
+        | none => .error .unsupported
+      else
+        .error .unsupported
+    | .zeroSized, some _ => .error .unsupported
+    | .scalar _ _, none => .error .undefined
+    | .scalar _ _, some (.enumVal ety' v) =>
+      if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
+        match getElem? ety.discriminants v with
+        | some disc =>
+          .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
+            truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals, mem)
+        | none => .error .unsupported
+      else
+        .error .unsupported
+    | .scalar _ _, some _ => .error .unsupported
 
 /-- Evaluate an `Rvalue` for a destination of type `dstTy`, following the RHS
 cases of `eval_rvalue_into_place`
@@ -236,115 +263,70 @@ liveness and `DeadLocal` fires at write time; an unmodeled RHS can return
 `.unsupported` before write-time `DeadLocal`, and `.use` checks uninitialized
 input before writing while `rustc`'s `copy_op` validates after writing, with
 both producing `.undefined`):
-- `.use opnd`: resolves `(srcTy, optVal, locals₁) ← evalOperandToSlot`, checks
-  `srcTy = dstTy` (`copyRuntimePlaceNoValidate`), then checks `optVal = some v`
-  (validity check in `copy_op` / `copyRuntimePlace`).
+- `.use opnd`: resolves `(srcTy, optVal, locals₁, mem₁) ← evalOperandToSlot`,
+  checks `srcTy = dstTy` (`copyRuntimePlaceNoValidate`; for an `.indirect`
+  local, `evalOperandToSlot` checks it before reading memory), then checks
+  `optVal = some v` (validity check in `copy_op` / `copyRuntimePlace`).
 - `.binaryOp op lhs rhs`: evaluates `lhs` and then `rhs` left-to-right via
-  `evalPrimitiveOperand` (threading `locals₁` from `lhs` into `rhs`), then
-  applies `evalBinOp`.
+  `evalPrimitiveOperand` (threading `locals₁` and `mem₁` from `lhs` into
+  `rhs`), then applies `evalBinOp`.
 - `.unaryOp op opnd`: evaluates `opnd` via `evalPrimitiveOperand`, then applies
   `evalUnOp`.
-- `.discriminant place`: reads the active variant of an unprojected local of
-  admitted fieldless enum type `.enum ety` and returns its declared
-  discriminant as a scalar of `(ety.discrWidth, ety.discrSigned)`, matching
-  `read_discriminant` and `discriminant_for_variant` in
-  `compiler/rustc_const_eval/src/interpret/discriminant.rs` (`rust-lang/rust`
-  `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
-  `Miri.Interpreter.Discriminant`:
-
-  > "let discr_layout = self.layout_of(ty.discriminant_ty(*self.tcx))?;
-  > let discr_value = match ty.discriminant_for_variant(*self.tcx, variant) {
-  >     Some(discr) => {
-  >         ...
-  >         assert_eq!(discr.ty, discr_layout.ty);
-  >         Scalar::from_uint(discr.val, discr_layout.size)
-  >     }
-  >     ...
-  > };
-  > interp_ok(ImmTy::from_scalar(discr_value, discr_layout))"
-
-  Reading `.discriminant` from a `.dead` local or from an uninitialized
-  (`.live none`) scalar-tagged enum local faults with `.error .undefined`,
-  whereas an inhabited 1-variant ZST enum (`ety.tagRepr = .zeroSized`,
-  `Variants::Single { index: 0 }`) returns `ety.discriminants[0]` without
-  reading tag bytes. -/
+- `.discriminant place`: reads an unprojected local of admitted fieldless enum
+  type `.enum ety` (from its `.immediate` value or, for an `.indirect` local,
+  with `loadIndirect`) and returns `evalDiscriminantOfVal ety`. Reading
+  `.discriminant` from a `.dead` local faults with `.error .undefined`. -/
 noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
-    (dstTy : MirTy) : Rvalue → Except FaultKind (Val × List LocalSlot)
+    (mem : MemoryState) (dstTy : MirTy) :
+    Rvalue → Except FaultKind (Val × List LocalSlot × MemoryState)
   | .use opnd =>
-    match evalOperandToSlot bodyLocals locals opnd with
+    match evalOperandToSlot bodyLocals locals mem
+        (fun srcTy => MirTy.beq srcTy dstTy) opnd with
     | .error k => .error k
-    | .ok (srcTy, optVal, locals₁) =>
+    | .ok (srcTy, optVal, locals₁, mem₁) =>
       if !(MirTy.beq srcTy dstTy) then
         .error .unsupported
       else
         match optVal with
-        | some v => .ok (v, locals₁)
+        | some v => .ok (v, locals₁, mem₁)
         | none => .error .undefined
   | .binaryOp op lhs rhs =>
-    match evalPrimitiveOperand bodyLocals locals lhs with
+    match evalPrimitiveOperand bodyLocals locals mem lhs with
     | .error k => .error k
-    | .ok (lVal, locals₁) =>
-      match evalPrimitiveOperand bodyLocals locals₁ rhs with
+    | .ok (lVal, locals₁, mem₁) =>
+      match evalPrimitiveOperand bodyLocals locals₁ mem₁ rhs with
       | .error k => .error k
-      | .ok (rVal, locals₂) =>
+      | .ok (rVal, locals₂, mem₂) =>
         match evalBinOp op lVal rVal with
         | .error k => .error k
-        | .ok res => .ok (res, locals₂)
+        | .ok res => .ok (res, locals₂, mem₂)
   | .unaryOp op opnd =>
-    match evalPrimitiveOperand bodyLocals locals opnd with
+    match evalPrimitiveOperand bodyLocals locals mem opnd with
     | .error k => .error k
-    | .ok (v, locals₁) =>
+    | .ok (v, locals₁, mem₁) =>
       match evalUnOp op v with
       | .error k => .error k
-      | .ok res => .ok (res, locals₁)
+      | .ok res => .ok (res, locals₁, mem₁)
   | .discriminant place =>
     match getElem? bodyLocals place.localId,
         getElem? locals place.localId with
     | some _, some .dead => .error .undefined
-    | some srcTy, some (.live optVal) =>
+    | some srcTy, some (.immediate optVal) =>
+      if !place.projection.isEmpty then
+        .error .unsupported
+      else
+        match srcTy with
+        | .enum ety => evalDiscriminantOfVal ety optVal locals mem
+        | _ => .error .unsupported
+    | some srcTy, some (.indirect mplace) =>
       if !place.projection.isEmpty then
         .error .unsupported
       else
         match srcTy with
         | .enum ety =>
-          if !enumAdmitted ety then
-            .error .unsupported
-          else
-            -- For 1-variant `.zeroSized` enums, `Miri`'s `readDiscriminant`
-            -- (`Variants::Single { index: 0 }`) returns variant `0` without
-            -- reading tag bytes even if a slot holds `.live none` (`Uninit`),
-            -- preserving universal 1-step lockstep over arbitrary
-            -- `FrameState`s.
-            match ety.tagRepr, optVal with
-            | .zeroSized, none =>
-              match getElem? ety.discriminants 0 with
-              | some disc =>
-                .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, locals)
-              | none => .error .unsupported
-            | .zeroSized, some (.enumVal ety' v) =>
-              if EnumTy.beq ety ety' && Nat.beq v 0 then
-                match getElem? ety.discriminants 0 with
-                | some disc =>
-                  .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                    truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩,
-                    locals)
-                | none => .error .unsupported
-              else
-                .error .unsupported
-            | .zeroSized, some _ => .error .unsupported
-            | .scalar _ _, none => .error .undefined
-            | .scalar _ _, some (.enumVal ety' v) =>
-              if EnumTy.beq ety ety' && Nat.blt v ety.discriminants.length then
-                match getElem? ety.discriminants v with
-                | some disc =>
-                  .ok (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                    truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩,
-                    locals)
-                | none => .error .unsupported
-              else
-                .error .unsupported
-            | .scalar _ _, some _ => .error .unsupported
+          match loadIndirect mem srcTy mplace with
+          | .error k => .error k
+          | .ok optVal => evalDiscriminantOfVal ety optVal locals mem
         | _ => .error .unsupported
     | _, _ => .error .unsupported
   | _ => .error .unsupported
@@ -352,19 +334,46 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
 /-- Write `val` into an unprojected `dst : Place` of known `dstTy : MirTy` in
 `locals`: checks `checkVal val dstTy` first (matching
 `Rvalue.assertRvalueLayout`), then checks `dst` liveness (matching
-`Place.writePlaceImmediate`). -/
-noncomputable def writePlace (locals : List LocalSlot) (dstLocalId : LocalId)
-    (dstTy : MirTy) (val : Val) : Except FaultKind (List LocalSlot) :=
+`Place.writePlaceImmediate`). An `.immediate` local takes `val` directly; an
+`.indirect mplace` local stores `val`'s bytes at `mplace` (`storeIndirect`,
+matching `write_immediate_no_validate`'s `Left(mplace)` case in
+`compiler/rustc_const_eval/src/interpret/place.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+noncomputable def writePlace (locals : List LocalSlot) (mem : MemoryState)
+    (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
+    Except FaultKind (List LocalSlot × MemoryState) :=
   if !checkVal val dstTy then
     .error .unsupported
   else
     match getElem? locals dstLocalId with
     | none => .error .unsupported
     | some .dead => .error .undefined
-    | some (.live _) =>
-      match setElem? locals dstLocalId (.live (some val)) with
-      | some locals' => .ok locals'
+    | some (.immediate _) =>
+      match setElem? locals dstLocalId (.immediate (some val)) with
+      | some locals' => .ok (locals', mem)
       | none => .error .unsupported
+    | some (.indirect mplace) =>
+      match storeIndirect mem dstTy mplace val with
+      | .ok mem' => .ok (locals, mem')
+      | .error k => .error k
+
+/-- Release the storage of the replaced local value `old`, matching
+`deallocate_local` in `compiler/rustc_const_eval/src/interpret/stack.rs`
+(`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "fn deallocate_local(&mut self, local: LocalValue<M::Provenance>) ->
+> InterpResult<'tcx> {
+>     if let LocalValue::Live(Operand::Indirect(MemPlace { ptr, .. })) = local
+>     {
+>         ...
+>         self.deallocate_ptr(ptr, None, MemoryKind::Stack)?;
+>     };
+>     interp_ok(())
+> }" -/
+noncomputable def deallocateLocal (mem : MemoryState) :
+    LocalSlot → Except FaultKind MemoryState
+  | .indirect mplace => deallocateStack mem mplace
+  | _ => .ok mem
 
 /-- Evaluate a single `StatementKind` in `frame`, matching `eval_statement` in
 `compiler/rustc_const_eval/src/interpret/step.rs` and `storage_live` /
@@ -386,60 +395,91 @@ noncomputable def writePlace (locals : List LocalSlot) (dstLocalId : LocalId)
 > (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 >
-> "assert!(local != mir::RETURN_PLACE, \"Cannot make return place dead\");"
-> (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+> "// If the local is already live, deallocate its old memory.
+> let old = mem::replace(&mut self.frame_mut().locals[local].value,
+>     local_val);
+> self.deallocate_local(old)?;"
+> (`storage_live_dyn`, `compiler/rustc_const_eval/src/interpret/stack.rs`)
+>
+> "assert!(local != mir::RETURN_PLACE, \"Cannot make return place dead\");
+> ...
+> // If the local is already dead, this is a NOP.
+> let old = mem::replace(&mut self.frame_mut().locals[local].value,
+>     LocalValue::Dead);
+> self.deallocate_local(old)?;"
+> (`storage_dead`, `compiler/rustc_const_eval/src/interpret/stack.rs`,
+> `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`)
 
 - `.storageLive localId` sets `locals[localId] := liveUninitSlot localTy` for
   any in-bounds `localId < frame.locals.length` (and faults with `.unsupported`
-  on out-of-bounds `localId`).
+  on out-of-bounds `localId`), then deallocates the old value's storage
+  (`deallocateLocal`).
 - `.storageDead 0` or out-of-bounds `.storageDead localId` faults with
   `.unsupported` (`StackError.cannotMakeReturnPlaceDead` /
-  `StackError.invalidLocal`).
+  `StackError.invalidLocal`); otherwise `.storageDead localId` sets
+  `locals[localId] := .dead` and deallocates the old value's storage.
 - `.assign dst rvalue` resolves `dst`'s local bounds and `dstTy` first, then
-  evaluates `rvalue` (yielding `(val, localsAfterRval)`), then checks
-  `checkVal` and `dst` liveness in `writePlace`, matching `rustc` and
+  evaluates `rvalue` (yielding `(val, localsAfterRval, memAfterRval)`), then
+  checks `checkVal` and `dst` liveness in `writePlace`, matching `rustc` and
   `lean-miri` for unprojected sized locals (where `local_to_place` does not
   check liveness and `DeadLocal` fires at write time; an unmodeled RHS can
   fault `.unsupported` before write-time `DeadLocal`, and `.use` checks
   uninitialized input before writing while `rustc`'s `copy_op` validates after
   writing, both producing `.undefined`). -/
 noncomputable def evalStatement (body : Body) (frame : FrameState)
-    (callerMem : CallerMemory) (stmt : StatementKind) :
+    (mem : MemoryState) (callerMem : CallerMemory) (stmt : StatementKind) :
     StepResult State TerminalOut :=
   match stmt with
   | .nop =>
-    .step { frames := [{ frame with stmtIdx := frame.stmtIdx + 1 }], callerMem }
+    .step {
+      frames := [{ frame with stmtIdx := frame.stmtIdx + 1 }]
+      callerMem
+      mem
+    }
   | .storageLive localId =>
     match getElem? body.locals localId with
     | none => .fault .unsupported
     | some localTy =>
-      match setElem? frame.locals localId (liveUninitSlot localTy) with
-      | some locals' =>
-        .step {
-          frames := [{
-            frame with
-            stmtIdx := frame.stmtIdx + 1
-            locals := locals'
-          }]
-          callerMem
-        }
+      match getElem? frame.locals localId with
       | none => .fault .unsupported
+      | some old =>
+        match setElem? frame.locals localId (liveUninitSlot localTy) with
+        | none => .fault .unsupported
+        | some locals' =>
+          match deallocateLocal mem old with
+          | .error k => .fault k
+          | .ok mem' =>
+            .step {
+              frames := [{
+                frame with
+                stmtIdx := frame.stmtIdx + 1
+                locals := locals'
+              }]
+              callerMem
+              mem := mem'
+            }
   | .storageDead localId =>
     if Nat.beq localId 0 then
       .fault .unsupported
     else
-      match setElem? frame.locals localId .dead with
-      | some locals' =>
-        .step {
-          frames := [{
-            frame with
-            stmtIdx := frame.stmtIdx + 1
-            locals := locals'
-          }]
-          callerMem
-        }
+      match getElem? frame.locals localId with
       | none => .fault .unsupported
+      | some old =>
+        match setElem? frame.locals localId .dead with
+        | none => .fault .unsupported
+        | some locals' =>
+          match deallocateLocal mem old with
+          | .error k => .fault k
+          | .ok mem' =>
+            .step {
+              frames := [{
+                frame with
+                stmtIdx := frame.stmtIdx + 1
+                locals := locals'
+              }]
+              callerMem
+              mem := mem'
+            }
   | .assign dst rvalue =>
     if !dst.projection.isEmpty then
       .fault .unsupported
@@ -447,12 +487,13 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
       match getElem? body.locals dst.localId with
       | none => .fault .unsupported
       | some dstTy =>
-        match evalRvalue body.locals frame.locals dstTy rvalue with
+        match evalRvalue body.locals frame.locals mem dstTy rvalue with
         | .error k => .fault k
-        | .ok (val, localsAfterRval) =>
-          match writePlace localsAfterRval dst.localId dstTy val with
+        | .ok (val, localsAfterRval, memAfterRval) =>
+          match writePlace localsAfterRval memAfterRval dst.localId dstTy
+              val with
           | .error k => .fault k
-          | .ok localsAfterWrite =>
+          | .ok (localsAfterWrite, memAfterWrite) =>
             .step {
               frames := [{
                 frame with
@@ -460,6 +501,7 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
                 locals := localsAfterWrite
               }]
               callerMem
+              mem := memAfterWrite
             }
   | .unsupported => .fault .unsupported
 
@@ -543,11 +585,13 @@ noncomputable def evalBoolSwitchBranches (discr : Bool)
 `Miri.Interpreter.ControlFlow.goToBlock` (`Miri/Interpreter/ControlFlow.lean`:
 target block existence is checked at the start of the next step in `evalStep` /
 `Step.step`). -/
-noncomputable def jumpToBlock (frame : FrameState) (callerMem : CallerMemory)
-    (target : BasicBlockId) : StepResult State TerminalOut :=
+noncomputable def jumpToBlock (frame : FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) (target : BasicBlockId) :
+    StepResult State TerminalOut :=
   .step {
     frames := [{ frame with blockIdx := target, stmtIdx := 0 }]
     callerMem
+    mem
   }
 
 /-- Evaluate a basic block's `TerminatorKind` when
@@ -570,27 +614,38 @@ noncomputable def jumpToBlock (frame : FrameState) (callerMem : CallerMemory)
 >     }
 > }"
 > (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+
+`Return` reads `_0`'s value (from memory with `loadIndirect` if `_0` is
+`.indirect`); an uninitialized or dead `_0` faults with `.undefined`. -/
 noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (callerMem : CallerMemory) :
+    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
     StepResult State TerminalOut :=
   match bb.terminator with
-  | .goto target => jumpToBlock frame callerMem target
+  | .goto target => jumpToBlock frame mem callerMem target
   | .return_ =>
     if bb.cleanup then
       .fault .unsupported
     else
       match getElem? frame.locals 0 with
-      | some (.live (some retVal)) =>
+      | some (.immediate (some retVal)) =>
         .done (.returned ⟨retVal, callerMem⟩)
-      | some (.live none) | some .dead => .fault .undefined
+      | some (.immediate none) | some .dead => .fault .undefined
+      | some (.indirect mplace) =>
+        match getElem? body.locals 0 with
+        | none => .fault .unsupported
+        | some retTy =>
+          match loadIndirect mem retTy mplace with
+          | .ok (some retVal) => .done (.returned ⟨retVal, callerMem⟩)
+          | .ok none => .fault .undefined
+          | .error k => .fault k
       | none => .fault .unsupported
   | .unreachable =>
     .fault .undefined
   | .switchInt discr targets =>
-    match evalPrimitiveOperand body.locals frame.locals discr with
+    match evalPrimitiveOperand body.locals frame.locals mem discr with
     | .error k => .fault k
-    | .ok (discrVal, localsAfterDiscr) =>
+    | .ok (discrVal, localsAfterDiscr, memAfterDiscr) =>
       let targetRes : Except FaultKind BasicBlockId :=
         match discrVal with
         | .scalar sv =>
@@ -601,7 +656,8 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       match targetRes with
       | .error k => .fault k
       | .ok target =>
-        jumpToBlock { frame with locals := localsAfterDiscr } callerMem target
+        jumpToBlock { frame with locals := localsAfterDiscr } memAfterDiscr
+          callerMem target
   | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
@@ -642,12 +698,93 @@ noncomputable def evalStep (p : Program) (_c : Choice) (s : State) :
       | none => .fault .unsupported
       | some bb =>
         match getElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatement body frame s.callerMem stmt
+        | some stmt => evalStatement body frame s.mem s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminator body bb frame s.callerMem
+            evalTerminator body bb frame s.mem s.callerMem
           else
             .fault .unsupported
   | _ => .fault .unsupported
+
+/-- Move the immediate local `localId` of the single active frame into a fresh
+stack allocation, returning the new state and the local's memory place.
+Matches `force_allocation` in
+`compiler/rustc_const_eval/src/interpret/place.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.forceAllocation`
+(`vendor/lean-miri/Miri/Interpreter/Place.lean`):
+
+> "let whole_local = match self.frame_mut().locals[local].access_mut()? {
+>     &mut Operand::Immediate(local_val) => {
+>         // We need to make an allocation.
+>         ...
+>         let local_layout = self.layout_of_local(&self.frame(), local, None)?;
+>         assert!(local_layout.is_sized(), \"unsized locals cannot be
+>             immediate\");
+>         let mplace = self.allocate(local_layout, MemoryKind::Stack)?;
+>         // Preserve old value. (As an optimization, we can skip this if it
+>         // was uninit.)
+>         if !matches!(local_val, Immediate::Uninit) {
+>             // We don't have to validate as we can assume the local was
+>             // already valid for its type. ...
+>             self.write_immediate_to_mplace_no_validate(
+>                 local_val,
+>                 local_layout,
+>                 mplace.mplace,
+>             )?;
+>         }
+>         M::after_local_moved_to_memory(self, local, &mplace)?;
+>         ...
+>         *self.frame_mut().locals[local].access_mut().unwrap() =
+>             Operand::Indirect(mplace.mplace);
+>         mplace.mplace
+>     }
+>     &mut Operand::Indirect(mplace) => mplace, // this already was an indirect
+>                                                // local
+> };"
+
+- A `.dead` local faults with `.undefined` (`access_mut` raises `DeadLocal`).
+- An `.indirect place` local is already in memory and is returned unchanged.
+- An `.immediate optVal` local of type `ty` gets a fresh stack allocation of
+  layout `layoutOfTy ty` (`allocateStack`). An initialized value is stored
+  without validation (`storeIndirect`); an uninitialized value leaves the
+  allocation's bytes uninitialized. The slot becomes `.indirect place`.
+
+`rustc` forces an allocation when a place expression needs the local's
+address: a projection, a reference or raw pointer to the local, or an argument
+or return place passed in memory. Profile version 1 rejects all of these
+(`.unsupported`), so no profile-version-1 `evalStep` calls `forceAllocation`;
+`CanaryMemoryLifecycleAnnealClaim` applies it between steps to exercise
+`.indirect` locals. -/
+noncomputable def forceAllocation (p : Program) (s : State)
+    (localId : LocalId) : Except FaultKind (State × MemPlace) :=
+  match s.frames with
+  | [frame] =>
+    match getElem? p.bodies frame.defId with
+    | none => .error .unsupported
+    | some body =>
+      match getElem? body.locals localId, getElem? frame.locals localId with
+      | some _, some .dead => .error .undefined
+      | some _, some (.indirect place) => .ok (s, place)
+      | some ty, some (.immediate optVal) =>
+        match layoutOfTy ty with
+        | none => .error .unsupported
+        | some layout =>
+          let (mem₁, place) := allocateStack s.mem layout
+          let stored : Except FaultKind MemoryState :=
+            match optVal with
+            | none => .ok mem₁
+            | some v => storeIndirect mem₁ ty place v
+          match stored with
+          | .error k => .error k
+          | .ok mem₂ =>
+            match setElem? frame.locals localId (.indirect place) with
+            | none => .error .unsupported
+            | some locals' =>
+              .ok ({ s with
+                frames := [{ frame with locals := locals' }]
+                mem := mem₂ }, place)
+      | _, _ => .error .unsupported
+  | _ => .error .unsupported
 
 end Trusted.MirSemantics

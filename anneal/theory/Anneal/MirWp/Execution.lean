@@ -451,11 +451,11 @@ theorem isSingleFrame0_mkState (blockIdx stmtIdx : Nat)
 
 /-- Single-pass `evalStatement` frame invariant and `retagDefId` commutation. -/
 theorem evalStatement_frame_retag (body : Body) (defId : DefId)
-    (f : FrameState) (cm : CallerMemory) (stmt : StatementKind)
-    (h_id : f.defId = 0) :
-    (∀ s', evalStatement body f cm stmt = .step s' → IsSingleFrame0 s') ∧
-    evalStatement body { f with defId := defId } cm stmt =
-      match evalStatement body f cm stmt with
+    (f : FrameState) (m : MemoryState) (cm : CallerMemory)
+    (stmt : StatementKind) (h_id : f.defId = 0) :
+    (∀ s', evalStatement body f m cm stmt = .step s' → IsSingleFrame0 s') ∧
+    evalStatement body { f with defId := defId } m cm stmt =
+      match evalStatement body f m cm stmt with
       | .step next => .step (retagDefId defId next)
       | .done out => .done out
       | .fault k => .fault k := by
@@ -472,25 +472,41 @@ theorem evalStatement_frame_retag (body : Body) (defId : DefId)
     | none => exact ⟨(fun _ h => by cases h), rfl⟩
     | some ty =>
       dsimp only
-      cases setElem? f.locals lid (liveUninitSlot ty) with
+      cases Trusted.MirSemantics.getElem? f.locals lid with
       | none => exact ⟨(fun _ h => by cases h), rfl⟩
-      | some l' =>
-        refine ⟨?_, rfl⟩
-        intro s' hStep
-        injection hStep with hEq; subst hEq
-        exact ⟨_, rfl, h_id⟩
+      | some old =>
+        dsimp only
+        cases setElem? f.locals lid (liveUninitSlot ty) with
+        | none => exact ⟨(fun _ h => by cases h), rfl⟩
+        | some l' =>
+          dsimp only
+          cases deallocateLocal m old with
+          | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+          | ok m' =>
+            refine ⟨?_, rfl⟩
+            intro s' hStep
+            injection hStep with hEq; subst hEq
+            exact ⟨_, rfl, h_id⟩
   | storageDead lid =>
     dsimp only
     cases Nat.beq lid 0 with
     | true => exact ⟨(fun _ h => by cases h), rfl⟩
     | false =>
-      cases setElem? f.locals lid .dead with
+      cases Trusted.MirSemantics.getElem? f.locals lid with
       | none => exact ⟨(fun _ h => by cases h), rfl⟩
-      | some l' =>
-        refine ⟨?_, rfl⟩
-        intro s' hStep
-        injection hStep with hEq; subst hEq
-        exact ⟨_, rfl, h_id⟩
+      | some old =>
+        dsimp only
+        cases setElem? f.locals lid .dead with
+        | none => exact ⟨(fun _ h => by cases h), rfl⟩
+        | some l' =>
+          dsimp only
+          cases deallocateLocal m old with
+          | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+          | ok m' =>
+            refine ⟨?_, rfl⟩
+            intro s' hStep
+            injection hStep with hEq; subst hEq
+            exact ⟨_, rfl, h_id⟩
   | assign dst rv =>
     dsimp only
     cases (!dst.projection.isEmpty) with
@@ -500,27 +516,33 @@ theorem evalStatement_frame_retag (body : Body) (defId : DefId)
       | none => exact ⟨(fun _ h => by cases h), rfl⟩
       | some dstTy =>
         dsimp only
-        cases evalRvalue body.locals f.locals dstTy rv with
+        cases evalRvalue body.locals f.locals m dstTy rv with
         | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-        | ok pair =>
-          dsimp only
-          cases writePlace pair.2 dst.localId dstTy pair.1 with
-          | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-          | ok l' =>
-            refine ⟨?_, rfl⟩
-            intro s' hStep
-            injection hStep with hEq; subst hEq
-            exact ⟨_, rfl, h_id⟩
+        | ok triple =>
+          cases triple with
+          | mk v rest =>
+            cases rest with
+            | mk l₁ m₁ =>
+              dsimp only
+              cases writePlace l₁ m₁ dst.localId dstTy v with
+              | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+              | ok pair =>
+                cases pair with
+                | mk l' m' =>
+                  refine ⟨?_, rfl⟩
+                  intro s' hStep
+                  injection hStep with hEq; subst hEq
+                  exact ⟨_, rfl, h_id⟩
   | unsupported => exact ⟨(fun _ h => by cases h), rfl⟩
 
 /-- Single-pass `evalTerminator` frame invariant and `retagDefId` commutation.
 -/
 theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
-    (defId : DefId) (f : FrameState) (cm : CallerMemory)
+    (defId : DefId) (f : FrameState) (m : MemoryState) (cm : CallerMemory)
     (h_id : f.defId = 0) :
-    (∀ s', evalTerminator body bb f cm = .step s' → IsSingleFrame0 s') ∧
-    evalTerminator body bb { f with defId := defId } cm =
-      match evalTerminator body bb f cm with
+    (∀ s', evalTerminator body bb f m cm = .step s' → IsSingleFrame0 s') ∧
+    evalTerminator body bb { f with defId := defId } m cm =
+      match evalTerminator body bb f m cm with
       | .step next => .step (retagDefId defId next)
       | .done out => .done out
       | .fault k => .fault k := by
@@ -541,37 +563,52 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
       | some slot =>
         cases slot with
         | dead => exact ⟨(fun _ h => by cases h), rfl⟩
-        | live opt =>
+        | immediate opt =>
           cases opt <;> exact ⟨(fun _ h => by cases h), rfl⟩
+        | indirect place =>
+          dsimp only
+          cases Trusted.MirSemantics.getElem? body.locals 0 with
+          | none => exact ⟨(fun _ h => by cases h), rfl⟩
+          | some retTy =>
+            dsimp only
+            cases loadIndirect m retTy place with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok opt =>
+              cases opt <;> exact ⟨(fun _ h => by cases h), rfl⟩
   | unreachable => exact ⟨(fun _ h => by cases h), rfl⟩
   | switchInt discr targets =>
     dsimp only
-    cases evalPrimitiveOperand body.locals f.locals discr with
+    cases evalPrimitiveOperand body.locals f.locals m discr with
     | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-    | ok pair =>
-      dsimp only
-      cases pair.1 with
-      | scalar sv =>
-        dsimp only
-        cases evalSwitchBranches sv.width sv.bits targets.otherwise
-            targets.branches with
-        | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-        | ok tgt =>
-          refine ⟨?_, rfl⟩
-          intro s' hStep
-          injection hStep with hEq; subst hEq
-          exact ⟨_, rfl, h_id⟩
-      | bool b =>
-        dsimp only
-        cases evalBoolSwitchBranches b targets.otherwise targets.branches with
-        | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
-        | ok tgt =>
-          refine ⟨?_, rfl⟩
-          intro s' hStep
-          injection hStep with hEq; subst hEq
-          exact ⟨_, rfl, h_id⟩
-      | ptr _ | unit | tuple _ | bytes _ | enumVal _ _ =>
-        exact ⟨(fun _ h => by cases h), rfl⟩
+    | ok triple =>
+      cases triple with
+      | mk dv rest =>
+        cases rest with
+        | mk l₁ m₁ =>
+          dsimp only
+          cases dv with
+          | scalar sv =>
+            dsimp only
+            cases evalSwitchBranches sv.width sv.bits targets.otherwise
+                targets.branches with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok tgt =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+          | bool b =>
+            dsimp only
+            cases evalBoolSwitchBranches b targets.otherwise
+                targets.branches with
+            | error _ => exact ⟨(fun _ h => by cases h), rfl⟩
+            | ok tgt =>
+              refine ⟨?_, rfl⟩
+              intro s' hStep
+              injection hStep with hEq; subst hEq
+              exact ⟨_, rfl, h_id⟩
+          | ptr _ | unit | tuple _ | bytes _ | enumVal _ _ =>
+            exact ⟨(fun _ h => by cases h), rfl⟩
   | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
 
@@ -590,7 +627,7 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
       | .fault k => .fault k := by
   let ⟨f, hf, h_id⟩ := h_f0
   cases s with
-  | mk frames cm =>
+  | mk frames cm mem =>
     dsimp only at hf
     subst hf
     unfold bodyProg evalStep retagDefId entryProgForBody
@@ -603,13 +640,13 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
       dsimp only
       cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
       | some stmt =>
-        exact evalStatement_frame_retag body defId f cm stmt h_id
+        exact evalStatement_frame_retag body defId f mem cm stmt h_id
       | none =>
         dsimp only
         cases Nat.beq f.stmtIdx bb.statements.length with
         | false => exact ⟨(fun _ h => by cases h), rfl⟩
         | true =>
-          exact evalTerminator_frame_retag body bb defId f cm h_id
+          exact evalTerminator_frame_retag body bb defId f mem cm h_id
 
 /-- `IsSingleFrame0` is preserved by a single-body step. -/
 theorem isSingleFrame0_of_step {body : Body} {s s' : State}

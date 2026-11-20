@@ -325,4 +325,19 @@ theorem canary_crate_and_body_verified_anneal_base :
   · intro hUnit
     exact VerificationScope.noConfusion hUnit.1
 
+/-- Memory-lifecycle canary: `forceAllocation`, `.indirect` reads, writes,
+moves, discriminant reads, and returns, `StorageLive` / `StorageDead`
+deallocation, use-after-free, uninitialized-byte reads, and type checks that
+precede memory reads, all evaluated by the kernel. -/
+theorem canary_memory_lifecycle_anneal_base :
+    CanaryMemoryLifecycleAnnealClaim :=
+  ⟨positiveCanary_of_exec (fuel := 5) rfl,
+   ⟨_, _, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩⟩
+
 end Anneal.MirWp

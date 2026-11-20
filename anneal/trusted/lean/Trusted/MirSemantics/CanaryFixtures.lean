@@ -266,6 +266,48 @@ noncomputable def progStorageDeadReadUb : Program where
     }]
   }]
 
+/-- Memory-lifecycle program (`CanaryMemoryLifecycleAnnealClaim`):
+`fn f(_1: u32) -> u32 { StorageLive(_2); _2 = copy _1; _0 = copy _2;
+StorageDead(_2); return }`. -/
+noncomputable def progMemLifecycle : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [u32Ty, u32Ty, u32Ty]
+    basicBlocks := [{
+      statements := [
+        .storageLive 2,
+        .assign ⟨2, []⟩ (.use (.copy ⟨1, []⟩)),
+        .assign ⟨0, []⟩ (.use (.copy ⟨2, []⟩)),
+        .storageDead 2
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Input query `(0x01020304u32)` for `progMemLifecycle`, whose four bytes are
+distinct so the canary pins their order in memory. -/
+noncomputable def queryMemLifecycle : Query :=
+  { args := [u32Val 16909060] }
+
+/-- Uninitialized-read program (`CanaryMemoryLifecycleAnnealClaim`):
+`fn f() -> u32 { StorageLive(_1); _0 = copy _1; return }`. -/
+noncomputable def progMemUninitRead : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u32Ty, u32Ty]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
 /-- Program executing `StatementKind.storageDead 0` on the return place `_0`. -/
 noncomputable def progStorageDeadReturnPlaceUb : Program where
   pointerWidthBits := 64
@@ -439,6 +481,62 @@ noncomputable def progEnumUninitDiscrUb : Program where
       statements := [
         .storageLive 1,
         .assign ⟨0, []⟩ (.discriminant ⟨1, []⟩)
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Indirect-operations program (`CanaryMemoryLifecycleAnnealClaim`):
+`fn f(_1: u32) -> u32 { _0 = move _1; StorageLive(_1); return }`. With `_1`
+and `_0` moved into memory, it moves out of an `.indirect` local, writes an
+`.indirect` local, re-runs `StorageLive` on an `.indirect` local, and returns
+from an `.indirect` `_0`. -/
+noncomputable def progMemIndirectOps : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 1
+    locals := [u32Ty, u32Ty]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩ (.use (.move ⟨1, []⟩)),
+        .storageLive 1
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Ill-typed copy program (`CanaryMemoryLifecycleAnnealClaim`):
+`fn f() -> u32 { StorageLive(_1); _0 = copy _1; return }` with `_1: bool`.
+The `bool` source does not match the `u32` destination. -/
+noncomputable def progMemIllTypedUse : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [u32Ty, .bool]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨0, []⟩ (.use (.copy ⟨1, []⟩))
+      ]
+      terminator := .return_
+    }]
+  }]
+
+/-- Non-primitive operand program (`CanaryMemoryLifecycleAnnealClaim`):
+`fn f() -> bool { StorageLive(_1); _0 = Not(copy _1); return }` with
+`_1: ReprU8`. An enum is not primitive-readable, so `Not` cannot read it. -/
+noncomputable def progMemNonPrimitiveUnOp : Program where
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    argumentCount := 0
+    locals := [.bool, .enum canaryReprU8EnumTy]
+    basicBlocks := [{
+      statements := [
+        .storageLive 1,
+        .assign ⟨0, []⟩ (.unaryOp .not (.copy ⟨1, []⟩))
       ]
       terminator := .return_
     }]

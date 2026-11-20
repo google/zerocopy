@@ -63,7 +63,7 @@ noncomputable def optValToMiriImm (ty : MirTy) :
   | some v => valToMiriImmediate ty v
 
 theorem slotToMiriLocalValue_live (ty : MirTy) (optVal : Option Val) :
-    slotToMiriLocalValue ty (.live optVal) =
+    slotToMiriLocalValue ty (.immediate optVal) =
       .live (.immediate (optValToMiriImm ty optVal)) := by
   cases optVal <;> rfl
 
@@ -101,7 +101,7 @@ theorem refLayoutDataForTy_isUnsized (ty : MirTy) :
     cases ety.tagRepr <;> rfl
 
 theorem refLayoutDataForTy_isZst_move_deinit (ty : MirTy)
-    (optVal : Option Val) (h_sm : SlotMatchesTy ty (.live optVal)) :
+    (optVal : Option Val) (h_sm : SlotMatchesTy ty (.immediate optVal)) :
     (if (refLayoutDataForTy ty).isZst then
         Miri.Interpreter.Operand.immediate (optValToMiriImm ty optVal)
       else Miri.Interpreter.Operand.immediate .uninit) =
@@ -353,12 +353,12 @@ theorem mkSimFrame_getLocalOperand_live (rp : RefProg) (defId : DefId)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy) (optVal : Option Val)
     (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some (.live optVal)) :
+    (h_sl : MirSemantics.getElem? slots id = some (.immediate optVal)) :
     (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots retPlace).getLocalOperand id =
       .ok (.immediate (optValToMiriImm ty optVal)) := by
   dsimp only [Miri.Interpreter.Frame.getLocalOperand, bind, Bind.bind, Except.bind]
   rw [mkSimFrame_getLocal_some rp defId rbody blockIdx stmtIdx bodyLocals slots
-    retPlace id ty (.live optVal) h_ty h_sl]
+    retPlace id ty (.immediate optVal) h_ty h_sl]
   dsimp only [refLocalStateOfSlot]
   rw [slotToMiriLocalValue_live]
   rfl
@@ -421,8 +421,8 @@ theorem mkSimFrame_setLocalOperand_some (rp : RefProg) (defId : DefId)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy) (optVal : Option Val) (optVal' : Option Val)
     (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some (.live optVal))
-    (h_set : MirSemantics.setElem? slots id (.live optVal') = some slots') :
+    (h_sl : MirSemantics.getElem? slots id = some (.immediate optVal))
+    (h_set : MirSemantics.setElem? slots id (.immediate optVal') = some slots') :
     (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots retPlace).setLocalOperand
         id (.immediate (optValToMiriImm ty optVal')) =
       .ok (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots' retPlace) := by
@@ -430,7 +430,7 @@ theorem mkSimFrame_setLocalOperand_some (rp : RefProg) (defId : DefId)
   rw [mkSimFrame_getLocalOperand_live rp defId rbody blockIdx stmtIdx bodyLocals slots
     retPlace id ty optVal h_ty h_sl]
   have h_rep := mkSimFrame_replaceLocalValue_some rp defId rbody blockIdx stmtIdx
-    bodyLocals slots slots' retPlace id ty (.live optVal) (.live optVal')
+    bodyLocals slots slots' retPlace id ty (.immediate optVal) (.immediate optVal')
     h_ty h_sl h_set
   rw [slotToMiriLocalValue_live] at h_rep
   exact h_rep
@@ -462,7 +462,7 @@ theorem operandMachine_localToOp_ok (rp : RefProg) (c : Choice)
     (cm : CallerMemory) (id : LocalId) (known : Option LocalLayout)
     (ty : MirTy) (optVal : Option Val)
     (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some (.live optVal)) :
+    (h_sl : MirSemantics.getElem? slots id = some (.immediate optVal)) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
     Miri.Interpreter.OperandMachine.localToOp
@@ -474,7 +474,7 @@ theorem operandMachine_localToOp_ok (rp : RefProg) (c : Choice)
   have h_cf := currentFrame_mkSimState rp defId rbody blockIdx stmtIdx
     bodyLocals slots retPlace mem ctrl cm
   have h_gl := mkSimFrame_getLocal_some rp defId rbody blockIdx stmtIdx
-    bodyLocals slots retPlace id ty (.live optVal) h_ty h_sl
+    bodyLocals slots retPlace id ty (.immediate optVal) h_ty h_sl
   have h_go := mkSimFrame_getLocalOperand_live rp defId rbody blockIdx stmtIdx
     bodyLocals slots retPlace id ty optVal h_ty h_sl
   dsimp only [Miri.Interpreter.OperandMachine.localToOp, bind, Bind.bind, pure, Pure.pure]
@@ -566,7 +566,8 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (rpl : RefPlace) (pl : Place)
     (known : Option LocalLayout)
-    (h_pl : decodePlace rp.types rpl = some pl) :
+    (h_pl : decodePlace rp.types rpl = some pl)
+    (h_inv : SlotsMatchTys bodyLocals slots) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
     let res := Miri.Interpreter.OperandMachine.evalPlaceToOp
@@ -576,7 +577,7 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
         MirSemantics.getElem? slots pl.localId with
     | some _, some .dead =>
       ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .undefined
-    | some ty, some (.live optVal) =>
+    | some ty, some (.immediate optVal) =>
       if !pl.projection.isEmpty then
         ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
       else
@@ -632,7 +633,8 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
           blockIdx stmtIdx bodyLocals slots retPlace mem ctrl cm pl.localId _
           ty h_ty h_sl)]
         exact ⟨_, _, rfl, rfl⟩
-      | live optVal =>
+      | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+      | immediate optVal =>
         rw [eStateM_bind_ok (operandMachine_localToOp_ok rp c defId rbody
           blockIdx stmtIdx bodyLocals slots retPlace mem ctrl cm pl.localId _
           ty optVal h_ty h_sl)]
@@ -657,13 +659,14 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
 
 theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
-    (bodyLocals : List MirTy) (slots : List LocalSlot)
+    (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (path : Miri.Interpreter.OperandPath)
-    (rop : RefOperand) (op : Operand) (known : Option LocalLayout)
+    (rop : RefOperand) (op : Operand) (tyOk : MirTy → Bool)
+    (known : Option LocalLayout)
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_op : decodeOperand rp.types rop = some op) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
@@ -671,10 +674,10 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
     let res := Miri.Interpreter.OperandMachine.evalOperandAt
       (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
       c path (toMiriOperand rp.types rop) known st
-    match evalOperandToSlot bodyLocals slots op with
+    match evalOperandToSlot bodyLocals slots amem tyOk op with
     | .error k =>
       ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
-    | .ok (ty, optVal, slots') =>
+    | .ok (ty, optVal, slots', _) =>
       res = .ok ⟨.immediate (optValToMiriImm ty optVal),
           refLocalLayoutForTy rp.types ty⟩
         (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots'
@@ -688,12 +691,12 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
     | some pl =>
       rw [h_pl] at h_op; injection h_op with h_eq; subst h_eq
       have h_ev := operandMachine_evalPlaceToOp_eq rp c defId rbody blockIdx
-        stmtIdx bodyLocals slots retPlace mem ctrl cm rpl pl known h_pl
-      change (match evalOperandToSlot bodyLocals slots (.copy pl) with
+        stmtIdx bodyLocals slots retPlace mem ctrl cm rpl pl known h_pl h_inv
+      change (match evalOperandToSlot bodyLocals slots amem tyOk (.copy pl) with
         | .error k => ∃ err st', Miri.Interpreter.OperandMachine.evalPlaceToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
             c (toMiriPlace rpl) known st = .error err st' ∧ stepErrorFaultKind err = k
-        | .ok (ty, optVal, slots') =>
+        | .ok (ty, optVal, slots', _) =>
           Miri.Interpreter.OperandMachine.evalPlaceToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
             c (toMiriPlace rpl) known st =
@@ -710,7 +713,8 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           rw [h_ty, h_sl] at h_ev
           cases slot with
           | dead => exact h_ev
-          | live optVal =>
+          | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+          | immediate optVal =>
             cases h_pe : pl.projection.isEmpty with
             | false => rw [h_pe] at h_ev; exact h_ev
             | true => rw [h_pe] at h_ev; exact h_ev
@@ -722,7 +726,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
       rw [h_pl] at h_op; injection h_op with h_eq; subst h_eq
       let ⟨h_id, h_emp⟩ := decodePlace_inv h_pl
       have h_ev := operandMachine_evalPlaceToOp_eq rp c defId rbody blockIdx
-        stmtIdx bodyLocals slots retPlace mem ctrl cm rpl pl known h_pl
+        stmtIdx bodyLocals slots retPlace mem ctrl cm rpl pl known h_pl h_inv
       have h_deinit : (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).deinitMovedPlace = true := rfl
       dsimp only [evalOperandToSlot]
       cases h_ty : MirSemantics.getElem? bodyLocals pl.localId with
@@ -757,7 +761,8 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
             rw [h_deinit]
             dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, EStateM.bind]
             rw [h_err]
-          | live optVal =>
+          | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+          | immediate optVal =>
             cases h_pe : pl.projection.isEmpty with
             | false =>
               rw [h_pe] at h_ev
@@ -786,7 +791,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
               rw [ite_not_true_eq, h_set]
               have h_rep := mkSimFrame_replaceLocalValue_some rp defId rbody
                 blockIdx stmtIdx bodyLocals slots slots' retPlace pl.localId ty
-                (.live optVal) (liveUninitSlot ty) h_ty h_sl h_set
+                (.immediate optVal) (liveUninitSlot ty) h_ty h_sl h_set
               rw [slotToMiriLocalValue_liveUninit ty] at h_rep
               have h_cf := currentFrame_mkSimState rp defId rbody blockIdx stmtIdx
                 bodyLocals slots retPlace mem ctrl cm
@@ -952,7 +957,7 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
 
 theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
-    (bodyLocals : List MirTy) (slots : List LocalSlot)
+    (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -968,10 +973,10 @@ theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
         (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
         c path (toMiriOperand rp.types rop) known)
       (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig) st
-    match evalPrimitiveOperand bodyLocals slots op with
+    match evalPrimitiveOperand bodyLocals slots amem op with
     | .error k =>
       ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
-    | .ok (v, slots') =>
+    | .ok (v, slots', _) =>
       ∃ ty : MirTy,
         checkVal v ty = true ∧
         isPrimitiveReadableTy ty = true ∧
@@ -980,9 +985,11 @@ theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
             retPlace mem ctrl cm) := by
   intro st res
   have h_ev := operandMachine_evalOperandAt_eq rp c defId rbody blockIdx stmtIdx
-    bodyLocals slots retPlace mem ctrl cm path rop op known h_inv h_op
+    bodyLocals slots amem retPlace mem ctrl cm path rop op
+    isPrimitiveReadableTy known h_inv h_op
   dsimp only [evalPrimitiveOperand]
-  cases h_es : evalOperandToSlot bodyLocals slots op with
+  cases h_es : evalOperandToSlot bodyLocals slots amem isPrimitiveReadableTy
+      op with
   | error k =>
     rw [h_es] at h_ev
     let ⟨err, st', h_err, h_fk⟩ := h_ev
@@ -990,11 +997,11 @@ theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
     rw [eStateM_bind_err h_err]
     exact ⟨err, st', rfl, h_fk⟩
   | ok tup =>
-    let ⟨ty, optVal, slots'⟩ := tup
+    let ⟨ty, optVal, slots', _⟩ := tup
     rw [h_es] at h_ev
     dsimp only [res]
     rw [eStateM_bind_ok h_ev]
-    let ⟨_, h_sm⟩ := evalOperandToSlot_slotsMatchTys h_inv h_es
+    let ⟨_, h_sm, _⟩ := evalOperandToSlot_slotsMatchTys h_inv h_es
     cases h_pr : isPrimitiveReadableTy ty with
     | false =>
       dsimp only [Bool.not, ite_true_eq]
@@ -2809,8 +2816,8 @@ private theorem writePlaceImmediateNoValidate_local_live (rp : RefProg) (c : Cho
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (id : LocalId) (ty : MirTy) (optVal optVal' : Option Val)
     (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some (.live optVal))
-    (h_set : MirSemantics.setElem? slots id (.live optVal') = some slots') :
+    (h_sl : MirSemantics.getElem? slots id = some (.immediate optVal))
+    (h_set : MirSemantics.setElem? slots id (.immediate optVal') = some slots') :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
     Miri.Interpreter.writePlaceImmediateNoValidate
@@ -2876,8 +2883,8 @@ private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (id : LocalId) (ty : MirTy) (optVal : Option Val) (v : Val)
     (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some (.live optVal))
-    (h_set : MirSemantics.setElem? slots id (.live (some v)) = some slots')
+    (h_sl : MirSemantics.getElem? slots id = some (.immediate optVal))
+    (h_set : MirSemantics.setElem? slots id (.immediate (some v)) = some slots')
     (h_cv : checkVal v ty = true)
     (h_res : resolveTy rp.types (tyIdFor rp.types ty) = some ty) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
@@ -2906,7 +2913,7 @@ private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
           (refValidityHooks rp.types) refRetagHooks 8)
         c 8 ⟨.local 0 id none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy rp.types ty⟩ false true st' := rfl
-  have h_sl' : MirSemantics.getElem? slots' id = some (.live (some v)) := by
+  have h_sl' : MirSemantics.getElem? slots' id = some (.immediate (some v)) := by
     have h_aux : ∀ (xs xs' : List LocalSlot) (i : Nat) (x : LocalSlot),
         MirSemantics.setElem? xs i x = some xs' →
         MirSemantics.getElem? xs' i = some x := by
@@ -2924,12 +2931,12 @@ private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
           | some tl' =>
             rw [h_r] at h; injection h with hx; subst hx
             exact ih tl' j x h_r
-    exact h_aux slots slots' id (.live (some v)) h_set
+    exact h_aux slots slots' id (.immediate (some v)) h_set
   have h_val := validatePlace_local_ok rp.types c id ty v
     (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots' retPlace) st'
     rfl rfl rfl
     (mkSimFrame_getLocal_some rp defId rbody blockIdx stmtIdx bodyLocals slots'
-      retPlace id ty (.live (some v)) h_ty h_sl')
+      retPlace id ty (.immediate (some v)) h_ty h_sl')
     h_cv h_res
   dsimp only [optValToMiriImm] at h_nv
   dsimp only [Miri.Interpreter.writePlaceImmediate, bind, Bind.bind, EStateM.bind]
@@ -2943,7 +2950,7 @@ private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
 
 private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
-    (bodyLocals : List MirTy) (slots : List LocalSlot)
+    (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -2955,7 +2962,8 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
     (h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy)
     (h_dst_res : resolveTy rp.types (tyIdFor rp.types dstTy) = some dstTy)
     (h_dst_supp : isSupportedScalarOrUnitTy dstTy = true)
-    (h_sm : SlotMatchesTy srcTy (.live optVal)) :
+    (h_inv : SlotsMatchTys bodyLocals slots)
+    (h_sm : SlotMatchesTy srcTy (.immediate optVal)) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
     let h := refExecCfg rp
@@ -2971,10 +2979,10 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
       | none =>
         ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .undefined
       | some v =>
-        match writePlace slots dstId dstTy v with
+        match writePlace slots amem dstId dstTy v with
         | .error k =>
           ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
-        | .ok slots' =>
+        | .ok (slots', _) =>
           res = .ok () (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals
             slots' retPlace mem ctrl cm) := by
   intro st h res
@@ -3062,8 +3070,10 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
         dsimp only [writePlace]
         rw [h_sm, ite_not_true_eq, h_dst_sl]
         exact ⟨_, _, h_res_dead, rfl⟩
-    | live dstOpt =>
-      let ⟨slots', h_set⟩ := mirSetElem?_some_of_lt slots dstId (.live optVal)
+    | indirect _ =>
+      exact False.elim (SlotsMatchTys.not_indirect h_inv h_dst_ty h_dst_sl)
+    | immediate dstOpt =>
+      let ⟨slots', h_set⟩ := mirSetElem?_some_of_lt slots dstId (.immediate optVal)
         (mirGetElem?_lt_of_some h_dst_sl)
       have h_nv_ok := writePlaceImmediateNoValidate_local_live rp c defId rbody
         blockIdx stmtIdx bodyLocals slots slots' retPlace mem ctrl cm dstId srcTy
@@ -3082,7 +3092,7 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
               (refValidityHooks rp.types) refRetagHooks 8)
             c 8 ⟨.local 0 dstId none (LocalsIdentity.ofAllocationToken 0),
               refLocalLayoutForTy rp.types srcTy⟩ false true st' := rfl
-      have h_sl' : MirSemantics.getElem? slots' dstId = some (.live optVal) := by
+      have h_sl' : MirSemantics.getElem? slots' dstId = some (.immediate optVal) := by
         have h_aux : ∀ (xs xs' : List LocalSlot) (i : Nat) (x : LocalSlot),
             MirSemantics.setElem? xs i x = some xs' →
             MirSemantics.getElem? xs' i = some x := by
@@ -3100,7 +3110,7 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
               | some tl' =>
                 rw [h_r] at h; injection h with hx; subst hx
                 exact ih tl' j x h_r
-        exact h_aux slots slots' dstId (.live optVal) h_set
+        exact h_aux slots slots' dstId (.immediate optVal) h_set
       have h_res_val :
           res =
             Miri.Interpreter.ValidityVisitor.validatePlace
@@ -3121,7 +3131,7 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
           (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots' retPlace) st'
           rfl rfl
           (mkSimFrame_getLocal_some rp defId rbody blockIdx stmtIdx bodyLocals slots'
-            retPlace dstId srcTy (.live none) h_dst_ty h_sl')
+            retPlace dstId srcTy (.immediate none) h_dst_ty h_sl')
           h_sm h_dst_supp h_dst_res
         exact ⟨_, _, h_res_val.trans h_ub, rfl⟩
       | some v =>
@@ -3131,7 +3141,7 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
           (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots' retPlace) st'
           rfl rfl rfl
           (mkSimFrame_getLocal_some rp defId rbody blockIdx stmtIdx bodyLocals slots'
-            retPlace dstId srcTy (.live (some v)) h_dst_ty h_sl')
+            retPlace dstId srcTy (.immediate (some v)) h_dst_ty h_sl')
           h_sm h_dst_res
         exact h_res_val.trans h_ok
 
@@ -3140,7 +3150,7 @@ destination local `dstId` of type `dstTy`, matching `assertRvalueLayout` +
 `writePlaceImmediate` against `writePlace`. -/
 private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
-    (bodyLocals : List MirTy) (slots : List LocalSlot)
+    (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -3151,6 +3161,7 @@ private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
     (h_dst_sl : MirSemantics.getElem? slots dstId = some dstSlot)
     (h_res_res : resolveTy rp.types (tyIdFor rp.types resTy) = some resTy)
     (h_dst_res : resolveTy rp.types (tyIdFor rp.types dstTy) = some dstTy)
+    (h_inv : SlotsMatchTys bodyLocals slots)
     (h_cv : checkVal v resTy = true) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
@@ -3163,10 +3174,10 @@ private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
             refLocalLayoutForTy rp.types dstTy⟩ st
       else
         .error (.invalidProgram "rvalue result layout mismatch") st
-    match writePlace slots dstId dstTy v with
+    match writePlace slots amem dstId dstTy v with
     | .error k =>
       ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
-    | .ok slots' =>
+    | .ok (slots', _) =>
       res = .ok () (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots'
         retPlace mem ctrl cm) := by
   intro st res
@@ -3225,8 +3236,10 @@ private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
         dsimp only [Miri.Interpreter.writePlaceImmediate, bind, Bind.bind, EStateM.bind]
         rw [h_dead]
       exact ⟨_, _, h_err, rfl⟩
-    | live optVal =>
-      let ⟨slots', h_set⟩ := mirSetElem?_some_of_lt slots dstId (.live (some v))
+    | indirect _ =>
+      exact False.elim (SlotsMatchTys.not_indirect h_inv h_dst_ty h_dst_sl)
+    | immediate optVal =>
+      let ⟨slots', h_set⟩ := mirSetElem?_some_of_lt slots dstId (.immediate (some v))
         (mirGetElem?_lt_of_some h_dst_sl)
       rw [h_set]
       exact writePlaceImmediate_local_ok rp c defId rbody blockIdx stmtIdx
@@ -3239,6 +3252,7 @@ rp) refLimits)` against `Trusted.MirSemantics.evalStatement`'s `.assign` arm. -/
 theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (body : Body)
     (blockIdx : BasicBlockId) (stmtIdx : Nat) (slots : List LocalSlot)
+    (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -3271,13 +3285,14 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
         match MirSemantics.getElem? body.locals dst.localId with
         | none => .error .unsupported
         | some dstTy =>
-          match evalRvalue body.locals slots dstTy rv with
+          match evalRvalue body.locals slots amem dstTy rv with
           | .error k => .error k
-          | .ok (val, localsAfterRval) =>
-            writePlace localsAfterRval dst.localId dstTy val : Except FaultKind (List LocalSlot)) with
+          | .ok (val, localsAfterRval, memAfterRval) =>
+            writePlace localsAfterRval memAfterRval dst.localId dstTy val :
+              Except FaultKind (List LocalSlot × MemoryState)) with
     | .error k =>
       ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
-    | .ok slots' =>
+    | .ok (slots', _) =>
       res = .ok () (mkSimState rp defId rbody blockIdx stmtIdx body.locals
         slots' retPlace mem ctrl cm) := by
   intro st res
@@ -3392,8 +3407,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
         | some op =>
           rw [h_op] at h_rv; injection h_rv with h_eq; subst h_eq
           have h_ev := operandMachine_evalOperandAt_eq rp c defId rbody blockIdx
-            stmtIdx body.locals slots retPlace mem ctrl cm
+            stmtIdx body.locals slots amem retPlace mem ctrl cm
             (Miri.Interpreter.OperandPath.rvalue "operand") rop op
+            (fun srcTy => MirTy.beq srcTy dstTy)
             (some (refLocalLayoutForTy rp.types dstTy)) h_inv h_op
           have h_res_step :
               res =
@@ -3421,17 +3437,18 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             rfl
           rw [h_res_step]
           dsimp only [evalRvalue]
-          cases h_es : evalOperandToSlot body.locals slots op with
+          cases h_es : evalOperandToSlot body.locals slots amem
+              (fun srcTy => MirTy.beq srcTy dstTy) op with
           | error k =>
             rw [h_es] at h_ev
             let ⟨err, st', h_err, h_fk⟩ := h_ev
             rw [eStateM_bind_err h_err]
             exact ⟨err, st', rfl, h_fk⟩
           | ok tup =>
-            let ⟨srcTy, optVal, slots₁⟩ := tup
+            let ⟨srcTy, optVal, slots₁, amem₁⟩ := tup
             rw [h_es] at h_ev
             rw [eStateM_bind_ok h_ev]
-            let ⟨h_inv₁, h_sm₁⟩ := evalOperandToSlot_slotsMatchTys h_inv h_es
+            let ⟨h_inv₁, h_sm₁, _⟩ := evalOperandToSlot_slotsMatchTys h_inv h_es
             have h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy := by
               cases rop with
               | copy rpl =>
@@ -3451,7 +3468,10 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                       rw [h_s'] at h_es
                       cases sl' with
                       | dead => cases h_es
-                      | live _ =>
+                      | indirect _ =>
+                        exact False.elim
+                          (SlotsMatchTys.not_indirect h_inv h_t' h_s')
+                      | immediate _ =>
                         cases h_pe' : pl'.projection.isEmpty with
                         | false => rw [h_pe'] at h_es; cases h_es
                         | true =>
@@ -3475,7 +3495,10 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                       rw [h_s'] at h_es
                       cases sl' with
                       | dead => cases h_es
-                      | live _ =>
+                      | indirect _ =>
+                        exact False.elim
+                          (SlotsMatchTys.not_indirect h_inv h_t' h_s')
+                      | immediate _ =>
                         cases h_pe' : pl'.projection.isEmpty with
                         | false => rw [h_pe'] at h_es; cases h_es
                         | true =>
@@ -3524,8 +3547,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                     retPlace mem ctrl cm) := rfl
             rw [h_wr_none]
             have h_cp := copyRuntimePlace_imm_to_local rp c defId rbody blockIdx
-              stmtIdx body.locals slots₁ retPlace mem ctrl cm dst.localId srcTy
-              dstTy optVal dstSlot₁ h_dty h_dsl₁ h_src_res h_dst_res h_dst_supp h_sm₁
+              stmtIdx body.locals slots₁ amem₁ retPlace mem ctrl cm dst.localId srcTy
+              dstTy optVal dstSlot₁ h_dty h_dsl₁ h_src_res h_dst_res h_dst_supp
+              h_inv₁ h_sm₁
             dsimp only
             cases h_b : MirTy.beq srcTy dstTy with
             | false => rw [h_b] at h_cp; exact h_cp
@@ -3594,41 +3618,41 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             rw [h_res_step, ← eStateM_bind_assoc]
             dsimp only [evalRvalue]
             have h_evL := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
-              stmtIdx body.locals slots retPlace mem ctrl cm
+              stmtIdx body.locals slots amem retPlace mem ctrl cm
               (Miri.Interpreter.OperandPath.rvalue "left") rlhs lhs
               (if (toMiriBinOp op).leftHomogeneous then
                 some (refLocalLayoutForTy rp.types dstTy) else none) h_inv h_l
-            cases h_pL : evalPrimitiveOperand body.locals slots lhs with
+            cases h_pL : evalPrimitiveOperand body.locals slots amem lhs with
             | error k =>
               rw [h_pL] at h_evL
               let ⟨err, st', h_err, h_fk⟩ := h_evL
               rw [eStateM_bind_err h_err]
               exact ⟨err, st', rfl, h_fk⟩
             | ok tupL =>
-              let ⟨lVal, slots₁⟩ := tupL
+              let ⟨lVal, slots₁, amem₁⟩ := tupL
               rw [h_pL] at h_evL
               let ⟨lTy, h_lcv, h_lpr, h_okL⟩ := h_evL
               dsimp only
               rw [eStateM_bind_ok h_okL, ← eStateM_bind_assoc]
-              have h_inv₁ := evalPrimitiveOperand_slotsMatchTys h_inv h_pL
+              have h_inv₁ := (evalPrimitiveOperand_slotsMatchTys h_inv h_pL).1
               have h_evR := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
-                stmtIdx body.locals slots₁ retPlace mem ctrl cm
+                stmtIdx body.locals slots₁ amem₁ retPlace mem ctrl cm
                 (Miri.Interpreter.OperandPath.rvalue "right") rrhs rhs
                 (if (toMiriBinOp op).rightHomogeneous then
                   some (refLocalLayoutForTy rp.types lTy) else none) h_inv₁ h_r
-              cases h_pR : evalPrimitiveOperand body.locals slots₁ rhs with
+              cases h_pR : evalPrimitiveOperand body.locals slots₁ amem₁ rhs with
               | error k =>
                 rw [h_pR] at h_evR
                 let ⟨err, st', h_err, h_fk⟩ := h_evR
                 rw [eStateM_bind_err h_err]
                 exact ⟨err, st', rfl, h_fk⟩
               | ok tupR =>
-                let ⟨rVal, slots₂⟩ := tupR
+                let ⟨rVal, slots₂, amem₂⟩ := tupR
                 rw [h_pR] at h_evR
                 let ⟨rTy, h_rcv, h_rpr, h_okR⟩ := h_evR
                 dsimp only
                 rw [eStateM_bind_ok h_okR]
-                have h_inv₂ := evalPrimitiveOperand_slotsMatchTys h_inv₁ h_pR
+                have h_inv₂ := (evalPrimitiveOperand_slotsMatchTys h_inv₁ h_pR).1
                 have h_bin := scalarOps_binary_ref_eq rp c op lTy rTy lVal rVal
                   (mkSimState rp defId rbody blockIdx stmtIdx body.locals slots₂
                     retPlace mem ctrl cm) h_lcv h_lpr h_rcv h_rpr
@@ -3645,9 +3669,10 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                   let ⟨dstSlot₂, h_dsl₂⟩ := getElem?_some_of_length_eq
                     (SlotsMatchTys.length_eq h_inv₂).symm h_dty
                   exact assertAndWrite_local_eq rp c defId rbody blockIdx stmtIdx
-                    body.locals slots₂ retPlace mem ctrl cm dst.localId resTy
+                    body.locals slots₂ amem₂ retPlace mem ctrl cm dst.localId resTy
                     dstTy v dstSlot₂ h_dty h_dsl₂
-                    (resolveTy_tyIdFor_prim rp.types resTy h_vpr) h_dst_res h_vcv
+                    (resolveTy_tyIdFor_prim rp.types resTy h_vpr) h_dst_res h_inv₂
+                    h_vcv
       | unaryOp op rop =>
         dsimp only [decodeRvalue, optMap] at h_rv
         cases h_op : decodeOperand rp.types rop with
@@ -3694,23 +3719,23 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
           rw [h_res_step, ← eStateM_bind_assoc]
           dsimp only [evalRvalue]
           have h_evO := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
-            stmtIdx body.locals slots retPlace mem ctrl cm
+            stmtIdx body.locals slots amem retPlace mem ctrl cm
             (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
             (if (toMiriUnOp op).homogeneous then
               some (refLocalLayoutForTy rp.types dstTy) else none) h_inv h_op
-          cases h_pO : evalPrimitiveOperand body.locals slots opnd with
+          cases h_pO : evalPrimitiveOperand body.locals slots amem opnd with
           | error k =>
             rw [h_pO] at h_evO
             let ⟨err, st', h_err, h_fk⟩ := h_evO
             rw [eStateM_bind_err h_err]
             exact ⟨err, st', rfl, h_fk⟩
           | ok tupO =>
-            let ⟨v, slots₁⟩ := tupO
+            let ⟨v, slots₁, amem₁⟩ := tupO
             rw [h_pO] at h_evO
             let ⟨vTy, h_vcv, h_vpr, h_okO⟩ := h_evO
             dsimp only
             rw [eStateM_bind_ok h_okO]
-            have h_inv₁ := evalPrimitiveOperand_slotsMatchTys h_inv h_pO
+            have h_inv₁ := (evalPrimitiveOperand_slotsMatchTys h_inv h_pO).1
             have h_un := scalarOps_unary_ref_eq rp c op vTy v
               (mkSimState rp defId rbody blockIdx stmtIdx body.locals slots₁
                 retPlace mem ctrl cm) h_vcv h_vpr
@@ -3727,9 +3752,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
               let ⟨dstSlot₁, h_dsl₁⟩ := getElem?_some_of_length_eq
                 (SlotsMatchTys.length_eq h_inv₁).symm h_dty
               exact assertAndWrite_local_eq rp c defId rbody blockIdx stmtIdx
-                body.locals slots₁ retPlace mem ctrl cm dst.localId resTy dstTy
+                body.locals slots₁ amem₁ retPlace mem ctrl cm dst.localId resTy dstTy
                 u dstSlot₁ h_dty h_dsl₁
-                (resolveTy_tyIdFor_prim rp.types resTy h_upr) h_dst_res h_ucv
+                (resolveTy_tyIdFor_prim rp.types resTy h_upr) h_dst_res h_inv₁ h_ucv
       | discriminant rsrc =>
         dsimp only [decodeRvalue, optMap] at h_rv
         cases h_sp : decodePlace rp.types rsrc with
@@ -3769,7 +3794,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
             rfl
           rw [h_res_step]
           have h_evS := operandMachine_evalPlaceToOp_eq rp c defId rbody blockIdx
-            stmtIdx body.locals slots retPlace mem ctrl cm rsrc src none h_sp
+            stmtIdx body.locals slots retPlace mem ctrl cm rsrc src none h_sp h_inv
           dsimp only [evalRvalue]
           cases h_sty : MirSemantics.getElem? body.locals src.localId with
           | none =>
@@ -3791,7 +3816,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                 let ⟨err, st', h_err, h_fk⟩ := h_evS
                 rw [eStateM_bind_err h_err]
                 exact ⟨err, st', rfl, h_fk⟩
-              | live srcOpt =>
+              | indirect _ =>
+                exact False.elim (SlotsMatchTys.not_indirect h_inv h_sty h_ssl)
+              | immediate srcOpt =>
                 cases h_spe : src.projection.isEmpty with
                 | false =>
                   rw [h_spe] at h_evS
@@ -3828,7 +3855,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                     rw [eStateM_bind_err (h_dl_non_enum _ trivial h_src_res)]
                     exact ⟨_, _, rfl, rfl⟩
                   | enum ety =>
-                    dsimp only
+                    dsimp only [evalDiscriminantOfVal]
                     cases h_adm : enumAdmitted ety with
                     | false =>
                       have h_ref_adm : refEnumAdmitted ety = false := by
@@ -3912,7 +3939,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                           checkVal_scalar_of_trunc ety.discrWidth ety.discrSigned _
                             (truncateBits_idem ety.discrWidth (BitVec.ofNat 128 disc))
                         have h_finish_0 :
-                            match writePlace slots dst.localId
+                            match writePlace slots amem dst.localId
                                 (.int ety.discrWidth ety.discrSigned)
                                 (.scalar ⟨ety.discrWidth, ety.discrSigned,
                                   truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩) with
@@ -3924,7 +3951,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                                   ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
                                     refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)⟩ st =
                                   .error err st' ∧ stepErrorFaultKind err = k
-                            | .ok slots' =>
+                            | .ok (slots', _) =>
                               Miri.Interpreter.writePlaceImmediate
                                 (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place c
                                 (.scalar (.fromScalarInt (miriScalar ety.discrWidth (BitVec.ofNat 128 disc))))
@@ -3933,12 +3960,12 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                                 .ok () (mkSimState rp defId rbody blockIdx stmtIdx
                                   body.locals slots' retPlace mem ctrl cm) := by
                           have h_aw := assertAndWrite_local_eq rp c defId rbody blockIdx
-                            stmtIdx body.locals slots retPlace mem ctrl cm dst.localId
+                            stmtIdx body.locals slots amem retPlace mem ctrl cm dst.localId
                             (.int ety.discrWidth ety.discrSigned)
                             (.int ety.discrWidth ety.discrSigned)
                             (.scalar ⟨ety.discrWidth, ety.discrSigned,
                               truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
-                            dstSlot h_dty h_dsl h_dst_res h_dst_res h_cv_d
+                            dstSlot h_dty h_dsl h_dst_res h_dst_res h_inv h_cv_d
                           dsimp only at h_aw
                           rw [beq_self_eq_true, ite_true_eq] at h_aw
                           dsimp only [valToMiriImmediate] at h_aw
@@ -3949,7 +3976,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                           rw [h_ms] at h_aw
                           exact h_aw
                         rw [eStateM_bind_ok h_zst_rd]
-                        change (match (_ : Except FaultKind (List LocalSlot)) with | Except.error k => ∃ err st', EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) 0) _ st = EStateM.Result.error err st' ∧ _ | Except.ok slots' => EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) 0) _ st = _)
+                        change (match (_ : Except FaultKind (List LocalSlot × MemoryState)) with | Except.error k => ∃ err st', EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) 0) _ st = EStateM.Result.error err st' ∧ _ | Except.ok (slots', _) => EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) 0) _ st = _)
                         rw [eStateM_bind_ok h_dfv]
                         cases srcOpt with
                         | none =>
@@ -3993,7 +4020,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                           have h_dfv := discrHooks_discriminantForVariant_ok rp c ety
                             v disc st h_adm h_src_res h_dv
                           rw [eStateM_bind_ok h_rd]
-                          change (match (_ : Except FaultKind (List LocalSlot)) with | Except.error k => ∃ err st', EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) v) _ st = EStateM.Result.error err st' ∧ _ | Except.ok slots' => EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) v) _ st = _)
+                          change (match (_ : Except FaultKind (List LocalSlot × MemoryState)) with | Except.error k => ∃ err st', EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) v) _ st = EStateM.Result.error err st' ∧ _ | Except.ok (slots', _) => EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) v) _ st = _)
                           rw [eStateM_bind_ok h_dfv]
                           let ⟨h_all, _, _⟩ := enumAdmitted_parts h_adm
                           have hd_blt : Nat.blt disc (Nat.pow 2 ety.discrWidth.bitWidth) = true :=
@@ -4018,12 +4045,12 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                             checkVal_scalar_of_trunc ety.discrWidth ety.discrSigned _
                               (truncateBits_idem ety.discrWidth (BitVec.ofNat 128 disc))
                           have h_aw := assertAndWrite_local_eq rp c defId rbody blockIdx
-                            stmtIdx body.locals slots retPlace mem ctrl cm dst.localId
+                            stmtIdx body.locals slots amem retPlace mem ctrl cm dst.localId
                             (.int ety.discrWidth ety.discrSigned)
                             (.int ety.discrWidth ety.discrSigned)
                             (.scalar ⟨ety.discrWidth, ety.discrSigned,
                               truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
-                            dstSlot h_dty h_dsl h_dst_res h_dst_res h_cv_d
+                            dstSlot h_dty h_dsl h_dst_res h_dst_res h_inv h_cv_d
                           dsimp only at h_aw
                           rw [beq_self_eq_true, ite_true_eq] at h_aw
                           dsimp only [valToMiriImmediate] at h_aw
@@ -4039,14 +4066,14 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                                   | some disc =>
                                     Except.ok
                                       (Val.scalar ⟨ety.discrWidth, ety.discrSigned,
-                                        truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, slots)
+                                        truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, slots, amem)
                                   | none => Except.error FaultKind.unsupported
                                 else Except.error FaultKind.unsupported) with
                                | Except.error k => Except.error k
-                               | Except.ok (val, localsAfterRval) =>
-                                 writePlace localsAfterRval dst.localId
+                               | Except.ok (val, localsAfterRval, memAfterRval) =>
+                                 writePlace localsAfterRval memAfterRval dst.localId
                                    (.int ety.discrWidth ety.discrSigned) val) =
-                              writePlace slots dst.localId (.int ety.discrWidth ety.discrSigned)
+                              writePlace slots amem dst.localId (.int ety.discrWidth ety.discrSigned)
                                 (.scalar ⟨ety.discrWidth, ety.discrSigned,
                                   truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩) := by
                             rw [EnumTy.beq_refl, Nat.blt_eq.mpr h_v_lt]

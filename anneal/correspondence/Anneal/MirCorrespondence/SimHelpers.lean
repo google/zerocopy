@@ -719,12 +719,22 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
               dsimp only [MirTy.beq]
               exact EnumTy.beq_refl ety
 
+/-- `SlotsMatchTys` excludes `.indirect` slots. -/
+theorem SlotsMatchTys.not_indirect {tys : List MirTy} {slots : List LocalSlot}
+    {i : Nat} {ty : MirTy} {place : MemPlace}
+    (h : SlotsMatchTys tys slots)
+    (h_ty : MirSemantics.getElem? tys i = some ty)
+    (h_sl : MirSemantics.getElem? slots i = some (.indirect place)) : False :=
+  SlotsMatchTys.getElem? h h_ty h_sl
+
 theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot} {op : Operand}
-    {ty : MirTy} {optVal : Option Val}
+    {locals locals' : List LocalSlot} {mem mem' : MemoryState} {op : Operand}
+    {tyOk : MirTy → Bool} {ty : MirTy} {optVal : Option Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
-    (h : evalOperandToSlot bodyLocals locals op = .ok (ty, optVal, locals')) :
-    SlotsMatchTys bodyLocals locals' ∧ SlotMatchesTy ty (.live optVal) := by
+    (h : evalOperandToSlot bodyLocals locals mem tyOk op =
+      .ok (ty, optVal, locals', mem')) :
+    SlotsMatchTys bodyLocals locals' ∧ SlotMatchesTy ty (.immediate optVal) ∧
+      mem' = mem := by
   cases op with
   | copy p =>
     dsimp only [evalOperandToSlot] at h
@@ -738,16 +748,19 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
         rw [h_sl] at h
         cases slot with
         | dead => cases h
-        | live opt =>
+        | indirect place =>
+          exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | immediate opt =>
           cases h_emp : p.projection.isEmpty with
           | false => rw [h_emp] at h; cases h
           | true =>
             rw [h_emp] at h
             injection h with h_tup
             injection h_tup with h_ty_eq h_rest
-            injection h_rest with h_opt_eq h_loc_eq
-            subst h_ty_eq; subst h_opt_eq; subst h_loc_eq
-            exact ⟨h_inv, SlotsMatchTys.getElem? h_inv h_ty h_sl⟩
+            injection h_rest with h_opt_eq h_rest₂
+            injection h_rest₂ with h_loc_eq h_mem_eq
+            subst h_ty_eq; subst h_opt_eq; subst h_loc_eq; subst h_mem_eq
+            exact ⟨h_inv, SlotsMatchTys.getElem? h_inv h_ty h_sl, rfl⟩
   | move p =>
     dsimp only [evalOperandToSlot] at h
     cases h_ty : MirSemantics.getElem? bodyLocals p.localId with
@@ -760,7 +773,9 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
         rw [h_sl] at h
         cases slot with
         | dead => cases h
-        | live opt =>
+        | indirect place =>
+          exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | immediate opt =>
           cases h_emp : p.projection.isEmpty with
           | false => rw [h_emp] at h; cases h
           | true =>
@@ -773,11 +788,12 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
               rw [h_set] at h
               injection h with h_tup
               injection h_tup with h_ty_eq h_rest
-              injection h_rest with h_opt_eq h_loc_eq
-              subst h_ty_eq; subst h_opt_eq; subst h_loc_eq
+              injection h_rest with h_opt_eq h_rest₂
+              injection h_rest₂ with h_loc_eq h_mem_eq
+              subst h_ty_eq; subst h_opt_eq; subst h_loc_eq; subst h_mem_eq
               exact ⟨SlotsMatchTys.setElem? h_inv h_ty
                 (slotMatchesTy_liveUninitSlot ty₀) h_set,
-                SlotsMatchTys.getElem? h_inv h_ty h_sl⟩
+                SlotsMatchTys.getElem? h_inv h_ty h_sl, rfl⟩
   | constant c =>
     dsimp only [evalOperandToSlot] at h
     cases h_lit : evalConstLit c.ty c.lit with
@@ -786,20 +802,24 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
       rw [h_lit] at h
       injection h with h_tup
       injection h_tup with h_ty_eq h_rest
-      injection h_rest with h_opt_eq h_loc_eq
-      subst h_ty_eq; subst h_opt_eq; subst h_loc_eq
-      exact ⟨h_inv, evalConstLit_checkVal h_lit⟩
+      injection h_rest with h_opt_eq h_rest₂
+      injection h_rest₂ with h_loc_eq h_mem_eq
+      subst h_ty_eq; subst h_opt_eq; subst h_loc_eq; subst h_mem_eq
+      exact ⟨h_inv, evalConstLit_checkVal h_lit, rfl⟩
 
 theorem evalPrimitiveOperand_slotsMatchTys {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot} {opnd : Operand} {v : Val}
+    {locals locals' : List LocalSlot} {mem mem' : MemoryState}
+    {opnd : Operand} {v : Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
-    (h : evalPrimitiveOperand bodyLocals locals opnd = .ok (v, locals')) :
-    SlotsMatchTys bodyLocals locals' := by
+    (h : evalPrimitiveOperand bodyLocals locals mem opnd =
+      .ok (v, locals', mem')) :
+    SlotsMatchTys bodyLocals locals' ∧ mem' = mem := by
   unfold evalPrimitiveOperand at h
-  cases h_op : evalOperandToSlot bodyLocals locals opnd with
+  cases h_op : evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy
+      opnd with
   | error _ => rw [h_op] at h; cases h
   | ok res =>
-    let ⟨ty, optVal, l₁⟩ := res
+    let ⟨ty, optVal, l₁, m₁⟩ := res
     rw [h_op] at h
     dsimp only at h
     cases h_pr : isPrimitiveReadableTy ty with
@@ -810,22 +830,90 @@ theorem evalPrimitiveOperand_slotsMatchTys {bodyLocals : List MirTy}
       | none => cases h
       | some v₀ =>
         injection h with h_tup
-        injection h_tup with _ h_loc
-        subst h_loc
-        exact (evalOperandToSlot_slotsMatchTys h_inv h_op).1
+        injection h_tup with _ h_rest
+        injection h_rest with h_loc h_mem
+        subst h_loc; subst h_mem
+        let ⟨h_l, _, h_m⟩ := evalOperandToSlot_slotsMatchTys h_inv h_op
+        exact ⟨h_l, h_m⟩
+
+/-- `evalDiscriminantOfVal` leaves `locals` and `mem` unchanged. -/
+theorem evalDiscriminantOfVal_ok {ety : EnumTy} {optVal : Option Val}
+    {locals locals' : List LocalSlot} {mem mem' : MemoryState} {v : Val}
+    (h : evalDiscriminantOfVal ety optVal locals mem = .ok (v, locals', mem')) :
+    locals' = locals ∧ mem' = mem := by
+  unfold evalDiscriminantOfVal at h
+  cases h_adm : enumAdmitted ety with
+  | false => rw [h_adm] at h; cases h
+  | true =>
+    rw [h_adm] at h
+    cases h_tr : ety.tagRepr with
+    | zeroSized =>
+      rw [h_tr] at h
+      cases optVal with
+      | none =>
+        dsimp only at h
+        cases h_d : MirSemantics.getElem? ety.discriminants 0 with
+        | none => rw [h_d] at h; cases h
+        | some _ =>
+          rw [h_d] at h
+          injection h with h_tup
+          injection h_tup with _ h_rest
+          injection h_rest with h_l h_m
+          exact ⟨h_l.symm, h_m.symm⟩
+      | some val =>
+        cases val with
+        | enumVal ety' idx =>
+          dsimp only at h
+          cases h_chk : (EnumTy.beq ety ety' && Nat.beq idx 0) with
+          | false => rw [h_chk] at h; cases h
+          | true =>
+            rw [h_chk] at h
+            cases h_d : MirSemantics.getElem? ety.discriminants 0 with
+            | none => rw [h_d] at h; cases h
+            | some _ =>
+              rw [h_d] at h
+              injection h with h_tup
+              injection h_tup with _ h_rest
+              injection h_rest with h_l h_m
+              exact ⟨h_l.symm, h_m.symm⟩
+        | _ => cases h
+    | scalar _ _ =>
+      rw [h_tr] at h
+      cases optVal with
+      | none => cases h
+      | some val =>
+        cases val with
+        | enumVal ety' idx =>
+          dsimp only at h
+          cases h_chk :
+              (EnumTy.beq ety ety' && Nat.blt idx ety.discriminants.length) with
+          | false => rw [h_chk] at h; cases h
+          | true =>
+            rw [h_chk] at h
+            cases h_d : MirSemantics.getElem? ety.discriminants idx with
+            | none => rw [h_d] at h; cases h
+            | some _ =>
+              rw [h_d] at h
+              injection h with h_tup
+              injection h_tup with _ h_rest
+              injection h_rest with h_l h_m
+              exact ⟨h_l.symm, h_m.symm⟩
+        | _ => cases h
 
 theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot} {dstTy : MirTy} {rv : Rvalue} {v : Val}
+    {locals locals' : List LocalSlot} {mem mem' : MemoryState}
+    {dstTy : MirTy} {rv : Rvalue} {v : Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
-    (h : evalRvalue bodyLocals locals dstTy rv = .ok (v, locals')) :
-    SlotsMatchTys bodyLocals locals' := by
+    (h : evalRvalue bodyLocals locals mem dstTy rv = .ok (v, locals', mem')) :
+    SlotsMatchTys bodyLocals locals' ∧ mem' = mem := by
   cases rv with
   | use opnd =>
     dsimp only [evalRvalue] at h
-    cases h_op : evalOperandToSlot bodyLocals locals opnd with
+    cases h_op : evalOperandToSlot bodyLocals locals mem
+        (fun srcTy => MirTy.beq srcTy dstTy) opnd with
     | error _ => rw [h_op] at h; cases h
     | ok res =>
-      let ⟨srcTy, optVal, l₁⟩ := res
+      let ⟨srcTy, optVal, l₁, m₁⟩ := res
       rw [h_op] at h
       dsimp only at h
       cases h_eq_ty : MirTy.beq srcTy dstTy with
@@ -836,21 +924,23 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
         | none => cases h
         | some v₀ =>
           injection h with h_tup
-          injection h_tup with _ h_loc
-          subst h_loc
-          exact (evalOperandToSlot_slotsMatchTys h_inv h_op).1
+          injection h_tup with _ h_rest
+          injection h_rest with h_loc h_mem
+          subst h_loc; subst h_mem
+          let ⟨h_l, _, h_m⟩ := evalOperandToSlot_slotsMatchTys h_inv h_op
+          exact ⟨h_l, h_m⟩
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalue] at h
-    cases h_l : evalPrimitiveOperand bodyLocals locals lhs with
+    cases h_l : evalPrimitiveOperand bodyLocals locals mem lhs with
     | error _ => rw [h_l] at h; cases h
     | ok resL =>
-      let ⟨lVal, l₁⟩ := resL
+      let ⟨lVal, l₁, m₁⟩ := resL
       rw [h_l] at h
       dsimp only at h
-      cases h_r : evalPrimitiveOperand bodyLocals l₁ rhs with
+      cases h_r : evalPrimitiveOperand bodyLocals l₁ m₁ rhs with
       | error _ => rw [h_r] at h; cases h
       | ok resR =>
-        let ⟨rVal, l₂⟩ := resR
+        let ⟨rVal, l₂, m₂⟩ := resR
         rw [h_r] at h
         dsimp only at h
         cases h_b : evalBinOp op lVal rVal with
@@ -858,16 +948,18 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
         | ok _ =>
           rw [h_b] at h
           injection h with h_tup
-          injection h_tup with _ h_loc
-          subst h_loc
-          exact evalPrimitiveOperand_slotsMatchTys
-            (evalPrimitiveOperand_slotsMatchTys h_inv h_l) h_r
+          injection h_tup with _ h_rest
+          injection h_rest with h_loc h_mem
+          subst h_loc; subst h_mem
+          let ⟨h_l₁, h_m₁⟩ := evalPrimitiveOperand_slotsMatchTys h_inv h_l
+          let ⟨h_l₂, h_m₂⟩ := evalPrimitiveOperand_slotsMatchTys h_l₁ h_r
+          exact ⟨h_l₂, h_m₂.trans h_m₁⟩
   | unaryOp op opnd =>
     dsimp only [evalRvalue] at h
-    cases h_op : evalPrimitiveOperand bodyLocals locals opnd with
+    cases h_op : evalPrimitiveOperand bodyLocals locals mem opnd with
     | error _ => rw [h_op] at h; cases h
     | ok res =>
-      let ⟨v₀, l₁⟩ := res
+      let ⟨v₀, l₁, m₁⟩ := res
       rw [h_op] at h
       dsimp only at h
       cases h_u : evalUnOp op v₀ with
@@ -875,8 +967,9 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
       | ok _ =>
         rw [h_u] at h
         injection h with h_tup
-        injection h_tup with _ h_loc
-        subst h_loc
+        injection h_tup with _ h_rest
+        injection h_rest with h_loc h_mem
+        subst h_loc; subst h_mem
         exact evalPrimitiveOperand_slotsMatchTys h_inv h_op
   | discriminant place =>
     dsimp only [evalRvalue] at h
@@ -890,7 +983,9 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
         rw [h_sl] at h
         cases slot with
         | dead => cases h
-        | live opt =>
+        | indirect place' =>
+          exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+        | immediate opt =>
           cases h_emp : place.projection.isEmpty with
           | false => rw [h_emp] at h; cases h
           | true =>
@@ -898,74 +993,19 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
             cases ty with
             | enum ety =>
               dsimp only at h
-              cases h_adm : enumAdmitted ety with
-              | false => rw [h_adm] at h; cases h
-              | true =>
-                rw [h_adm] at h
-                cases h_tr : ety.tagRepr with
-                | zeroSized =>
-                  rw [h_tr] at h
-                  cases opt with
-                  | none =>
-                    dsimp only at h
-                    cases h_d : MirSemantics.getElem? ety.discriminants 0 with
-                    | none => rw [h_d] at h; cases h
-                    | some _ =>
-                      rw [h_d] at h
-                      injection h with h_tup
-                      injection h_tup with _ h_loc
-                      subst h_loc
-                      exact h_inv
-                  | some val =>
-                    cases val with
-                    | enumVal ety' idx =>
-                      dsimp only at h
-                      cases h_chk : (EnumTy.beq ety ety' && Nat.beq idx 0) with
-                      | false => rw [h_chk] at h; cases h
-                      | true =>
-                        rw [h_chk] at h
-                        cases h_d : MirSemantics.getElem? ety.discriminants 0 with
-                        | none => rw [h_d] at h; cases h
-                        | some _ =>
-                          rw [h_d] at h
-                          injection h with h_tup
-                          injection h_tup with _ h_loc
-                          subst h_loc
-                          exact h_inv
-                    | _ => cases h
-                | scalar _ _ =>
-                  rw [h_tr] at h
-                  cases opt with
-                  | none => cases h
-                  | some val =>
-                    cases val with
-                    | enumVal ety' idx =>
-                      dsimp only at h
-                      cases h_chk :
-                          (EnumTy.beq ety ety' &&
-                            Nat.blt idx ety.discriminants.length) with
-                      | false => rw [h_chk] at h; cases h
-                      | true =>
-                        rw [h_chk] at h
-                        cases h_d : MirSemantics.getElem? ety.discriminants idx with
-                        | none => rw [h_d] at h; cases h
-                        | some _ =>
-                          rw [h_d] at h
-                          injection h with h_tup
-                          injection h_tup with _ h_loc
-                          subst h_loc
-                          exact h_inv
-                    | _ => cases h
+              let ⟨h_l, h_m⟩ := evalDiscriminantOfVal_ok h
+              subst h_l; subst h_m
+              exact ⟨h_inv, rfl⟩
             | _ => cases h
   | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported => cases h
 
 theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
-    {locals locals' : List LocalSlot}
+    {locals locals' : List LocalSlot} {mem mem' : MemoryState}
     {dstLocalId : LocalId} {dstTy : MirTy} {val : Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
     (h_ty : MirSemantics.getElem? bodyLocals dstLocalId = some dstTy)
-    (h : writePlace locals dstLocalId dstTy val = .ok locals') :
-    SlotsMatchTys bodyLocals locals' := by
+    (h : writePlace locals mem dstLocalId dstTy val = .ok (locals', mem')) :
+    SlotsMatchTys bodyLocals locals' ∧ mem' = mem := by
   unfold writePlace at h
   cases h_chk : checkVal val dstTy with
   | false => rw [h_chk] at h; cases h
@@ -977,17 +1017,20 @@ theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
       rw [h_get] at h
       cases slot with
       | dead => cases h
-      | live _ =>
+      | indirect place =>
+        exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_get)
+      | immediate _ =>
         dsimp only at h
         cases h_set :
-            MirSemantics.setElem? locals dstLocalId (.live (some val)) with
+            MirSemantics.setElem? locals dstLocalId (.immediate (some val)) with
         | none => rw [h_set] at h; cases h
         | some locs' =>
           rw [h_set] at h
           injection h with h_eq
-          subst h_eq
-          exact SlotsMatchTys.setElem? (slot' := .live (some val))
-            h_inv h_ty h_chk h_set
+          injection h_eq with h_loc h_mem
+          subst h_loc; subst h_mem
+          exact ⟨SlotsMatchTys.setElem? (slot' := .immediate (some val))
+            h_inv h_ty h_chk h_set, rfl⟩
 
 theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
     (h : decodePlace ts rp = some p) :
@@ -1009,9 +1052,9 @@ with `(stepsExecuted, maxSteps, control)` uniquely determines `rs`. -/
 theorem refState_unique_of_simulationInv_base :
     RefStateUniqueOfSimulationInvClaim := by
   intro rp p s rs₁ rs₂ h₁ h₂ h_steps h_max h_ctrl
-  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, _, hret₁, hrt₁, hinit₁, _,
+  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, _, _, hret₁, hrt₁, hinit₁, _,
     hmiri₁, hframe₁⟩ := h₁
-  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, _, hret₂, hrt₂, hinit₂, _,
+  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, _, _, hret₂, hrt₂, hinit₂, _,
     hmiri₂, hframe₂⟩ := h₂
   rw [hs₁] at hs₂
   injection hs₂ with h_f_eq

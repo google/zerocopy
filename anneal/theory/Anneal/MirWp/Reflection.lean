@@ -507,9 +507,9 @@ theorem not_validEntryArgs_of_never {body : Body} {args : List Val}
 /-! ### Entry Initialization (`initState`) -/
 
 /-- Single-frame running state in body `defId` (default `0`) with empty
-`callerMem`. -/
+`callerMem` and memory `mem` (default `entryMemory`). -/
 def mkState (blockIdx stmtIdx : Nat) (locals : List LocalSlot)
-    (defId : DefId := 0) : State :=
+    (defId : DefId := 0) (mem : MemoryState := entryMemory) : State :=
   {
     frames := [{
       defId := defId
@@ -518,6 +518,7 @@ def mkState (blockIdx stmtIdx : Nat) (locals : List LocalSlot)
       locals := locals
     }]
     callerMem := ⟨[]⟩
+    mem := mem
   }
 
 /-- Entry initialization equation for `initState p { args := args }` when the

@@ -107,7 +107,7 @@ this file across six JSON IPC modes (`run` and `main`):
   `correspondence/`) directly on top of that replayed vendor kernel
   environment, checks that the 36-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 33 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 34 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 - **`"target-audit"` (external target crate verification):**
   Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
@@ -1540,7 +1540,7 @@ def verifyAndCollectLocals (env : Environment)
 `.repo (.trusted _)` modules and `Anneal.MirWp` is loaded as a `.repo .theory`
 module (whenever `requireMirWp` is `true` or any MIR/`PureLift` module is
 loaded), and that the core weakest-precondition adequacy and
-fault-characterization theorems and all 19 non-vacuity and parameter-boundary
+fault-characterization theorems and all 20 non-vacuity and parameter-boundary
 canaries in `Anneal.MirWp` prove the exact `*Claim` propositions defined in
 `Trusted.MirSemantics`. -/
 def verifyMirWpCoreTheorems (env : Environment)
@@ -1622,7 +1622,13 @@ def verifyMirWpCoreTheorems (env : Environment)
           `Anneal.MirWp.canary_crate_and_body_verified_anneal,
           [`Trusted.MirSemantics.CrateTheorem,
             `Trusted.MirSemantics.UnitTheorem,
-            `Trusted.MirSemantics.BodyVerified])] do
+            `Trusted.MirSemantics.BodyVerified]),
+        (`Trusted.MirSemantics.CanaryMemoryLifecycleAnnealClaim,
+          `Anneal.MirWp.canary_memory_lifecycle_anneal,
+          [posClaim, `Trusted.MirSemantics.initState,
+            `Trusted.MirSemantics.evalStep,
+            `Trusted.MirSemantics.forceAllocation,
+            `Trusted.MirSemantics.readBytes])] do
       requireClaimProof env locals semMod wpMod claimName none proofName
         reqConsts
 
@@ -1942,12 +1948,14 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 33 Pass 2 correspondence, choice-coupled, wiring,
-`AllowedStep` soundness, and canary (`D6`–`D13`) claims—covering aggregate and
-choice-coupled correspondence and fault equivalence, `ExecutionMachine.step` /
-`OperandMachine.evalOperand` / `LocalAccess.evalOperand` `deinitMovedPlace`
-wiring, `RefStep` soundness for `RefAllowedStep`, codec round-trip, constructor
-preservation, uniqueness, simulation, and canaries—are present in
+/-- Verify that all 34 Pass 2 correspondence, choice-coupled, wiring,
+`AllowedStep` soundness, byte-codec, and canary (`D6`–`D13`) claims—covering
+aggregate and choice-coupled correspondence and fault equivalence,
+`ExecutionMachine.step` / `OperandMachine.evalOperand` /
+`LocalAccess.evalOperand` `deinitMovedPlace` wiring, `RefStep` soundness for
+`RefAllowedStep`, codec round-trip, constructor preservation, uniqueness,
+simulation, `Trusted.MirSemantics` byte encoding against `lean-miri`
+`Allocation` scalar accesses, and canaries—are present in
 `Trusted.Correspondence`, reference their required semantic definitions (so
 replacing any claim with `True` fails CI), and are proved with exact claim-type
 equality in `Anneal.MirCorrespondenceProof`. -/
@@ -2170,7 +2178,16 @@ def verifyCorrespondenceClaims (env : Environment)
        `Anneal.MirCorrespondenceProof.refStep_sound_for_allowedStep_holds,
        [`Trusted.Correspondence.RefStep,
          `Trusted.Correspondence.RefAllowedStep,
-         `Trusted.Correspondence.refReadReturnVal])] do
+         `Trusted.Correspondence.refReadReturnVal]),
+      (`Trusted.Correspondence.BytesCodecMatchesMiriClaim,
+       `Anneal.MirCorrespondenceProof.bytes_codec_matches_miri,
+       [`Trusted.MirSemantics.encodeVal,
+         `Trusted.MirSemantics.decodeVal,
+         `Trusted.MirSemantics.profileTargetEndian,
+         `Miri.Memory.Allocation.writeScalar,
+         `Miri.Memory.Allocation.getBytesUnchecked,
+         `Miri.Memory.Allocation.readScalar,
+         `Miri.Memory.Allocation.writeUninit])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
 /-- Return `true` when `modName` is an allowlisted `Trusted` module permitted in
@@ -2448,9 +2465,10 @@ def replayCorrAndVendor (sysrootStr : String)
   return (miriReplayed, corrReplayed)
 
 /-- Verify the 36-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 33 correspondence, choice-coupled,
-wiring, `AllowedStep` soundness, and canary claims, reference-evaluator
-independence, and the correspondence dependency cone in a dedicated scope. -/
+Pass 2 correspondence modules are present—all 34 correspondence, choice-coupled,
+wiring, `AllowedStep` soundness, byte-codec, and canary claims,
+reference-evaluator independence, and the correspondence dependency cone in a
+dedicated scope. -/
 def verifyCorrConesAndClaims
     (foundation allTrusted allTheory vendorMiri : Array Name)
     (roles : Std.HashMap Name CorrOrigin)

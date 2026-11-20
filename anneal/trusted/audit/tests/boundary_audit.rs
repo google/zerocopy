@@ -1771,6 +1771,13 @@ const SYNTHETIC_CANARIES: &[(&str, &str, &str, &str)] = &[
         "And CrateTheorem (And UnitTheorem BodyVerified)",
         "And.intro True.intro (And.intro True.intro True.intro)",
     ),
+    (
+        "CanaryMemoryLifecycleAnnealClaim",
+        "canary_memory_lifecycle_anneal",
+        "And PositiveCanaryClaim (And initState (And evalStep (And forceAllocation readBytes)))",
+        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
+         (And.intro True.intro True.intro)))",
+    ),
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
@@ -1853,7 +1860,11 @@ impl MirWpSyntheticSpec {
              def IntWidthBoundaryCanary : Prop := True\n\
              def CrateTheorem : Prop := True\n\
              def UnitTheorem : Prop := True\n\
-             def BodyVerified : Prop := True\n",
+             def BodyVerified : Prop := True\n\
+             def initState : Prop := True\n\
+             def evalStep : Prop := True\n\
+             def forceAllocation : Prop := True\n\
+             def readBytes : Prop := True\n",
         );
         if let Some(decl) = &self.wp_soundness_claim {
             sem.push_str(decl);
@@ -2243,7 +2254,7 @@ fn enforces_mir_wp_param_claim_proof_rules() {
 }
 
 /// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
-/// `argName? = none`) in `TrustedBoundary.lean` across the 19 canary claims
+/// `argName? = none`) in `TrustedBoundary.lean` across the 20 canary claims
 /// (missing claim, non-definition claim, wrong-module claim, non-`Prop` claim,
 /// claim body missing required constant, missing canary theorem, non-theorem
 /// proof, wrong-module proof, and weakened/wrong-type canary theorem).
@@ -2384,13 +2395,30 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         "theorem Anneal.MirWp.canary_positive_add_anneal must prove \
          Trusted.MirSemantics.CanaryPositiveAddAnnealClaim directly",
     );
+
+    // Memory-lifecycle canary claim that drops `forceAllocation` (so the
+    // `.indirect`-local path is no longer exercised).
+    let mut weak_memory_canary = MirWpSyntheticSpec::valid();
+    weak_memory_canary.canary_claim_overrides.insert(
+        "CanaryMemoryLifecycleAnnealClaim".to_string(),
+        Some(
+            "def CanaryMemoryLifecycleAnnealClaim : Prop := \
+             And PositiveCanaryClaim (And initState (And evalStep (And readBytes readBytes)))"
+                .to_string(),
+        ),
+    );
+    weak_memory_canary.expect_audit_policy_err(
+        "claim Trusted.MirSemantics.CanaryMemoryLifecycleAnnealClaim body must reference \
+         Trusted.MirSemantics.forceAllocation",
+    );
 }
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
 /// missing correspondence directories, `verifyCorrespondenceClaims` across all
-/// 33 required claims (including `CorrespondenceAtChoicesClaim`,
-/// `FaultEquivalenceAtChoicesClaim`, `OperandMachine.evalOperand` wiring, and
-/// `RefStepSoundForAllowedStepClaim`), and `verifyRefEvaluatorIndependence`
+/// 34 required claims (including `CorrespondenceAtChoicesClaim`,
+/// `FaultEquivalenceAtChoicesClaim`, `OperandMachine.evalOperand` wiring,
+/// `RefStepSoundForAllowedStepClaim`, and `BytesCodecMatchesMiriClaim`), and
+/// `verifyRefEvaluatorIndependence`
 /// (all 34 required live `ExecutionMachine` Miri primitives on
 /// `[evalRefStep, initRefState]` unmasked by `RefAllowedStep`,
 /// `ExecutionMachine.AllowedStep` on `RefAllowedStep`, module-level import
@@ -2414,7 +2442,7 @@ fn enforces_correspondence_non_backsliding() {
     );
 
     // 2. Pass 2 (`InspectorRequest::CorrespondenceAudit`) enforces
-    // `verifyCorrespondenceClaims` (required constant references across all 33
+    // `verifyCorrespondenceClaims` (required constant references across all 34
     // claims and exact claim-type proof checking) and
     // `verifyRefEvaluatorIndependence` (34 live `ExecutionMachine` Miri
     // primitives on `[evalRefStep, initRefState]` without `RefAllowedStep`
@@ -2513,7 +2541,13 @@ fn enforces_correspondence_non_backsliding() {
          namespace Miri.Interpreter.Discriminant\n\
          def readDiscriminant : Nat := 0\n\
          def discriminantForVariant : Nat := 0\n\
-         end Miri.Interpreter.Discriminant\n",
+         end Miri.Interpreter.Discriminant\n\
+         namespace Miri.Memory.Allocation\n\
+         def writeScalar : Nat := 0\n\
+         def getBytesUnchecked : Nat := 0\n\
+         def readScalar : Nat := 0\n\
+         def writeUninit : Nat := 0\n\
+         end Miri.Memory.Allocation\n",
     );
 
     compile_forged_module(
@@ -2551,6 +2585,9 @@ fn enforces_correspondence_non_backsliding() {
          def isZstEnumTy : Nat := 0\n\
          def findDiscrVariant? : Nat := 0\n\
          def evalStep : Nat := 0\n\
+         def encodeVal : Nat := 0\n\
+         def decodeVal : Nat := 0\n\
+         def profileTargetEndian : Nat := 0\n\
          def unlistedAnnealHelper : Nat := 0\n\
          end Trusted.MirSemantics\n",
     );
@@ -2665,7 +2702,7 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected error: {err_weak_claim}"
     );
 
-    // 2b. When all 33 required claims and proofs are present,
+    // 2b. When all 34 required claims and proofs are present,
     // `verifyCorrespondenceClaims` succeeds and
     // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` or
     // `initRefState` that omits any of the 34 required live `ExecutionMachine`
@@ -2817,6 +2854,11 @@ fn enforces_correspondence_non_backsliding() {
                encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
              def RefStepSoundForAllowedStepClaim : Prop := {ref_step_allowed_def}\n\
+             def BytesCodecMatchesMiriClaim : Prop :=\n\
+               Trusted.MirSemantics.encodeVal = Trusted.MirSemantics.decodeVal ∧\n\
+               Trusted.MirSemantics.profileTargetEndian = Miri.Memory.Allocation.writeScalar ∧\n\
+               Miri.Memory.Allocation.getBytesUnchecked = Miri.Memory.Allocation.readScalar ∧\n\
+               Miri.Memory.Allocation.writeUninit = Miri.Memory.Allocation.writeUninit\n\
              end Trusted.Correspondence\n"
         )
     };
@@ -2877,6 +2919,8 @@ fn enforces_correspondence_non_backsliding() {
                    ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro⟩\n\
                  theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=\n\
                    {ref_step_allowed_proof}\n\
+                 theorem bytes_codec_matches_miri : BytesCodecMatchesMiriClaim :=\n\
+                   ⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
                  end Anneal.MirCorrespondenceProof\n"
         )
     };
@@ -3109,6 +3153,71 @@ fn enforces_correspondence_non_backsliding() {
             "claim Trusted.Correspondence.RefStepSoundForAllowedStepClaim body must reference Trusted.Correspondence.RefStep"
         ),
         "unexpected weakened RefStepSoundForAllowedStepClaim error: {err_weak_ref_step_allowed}"
+    );
+
+    // Weakening `BytesCodecMatchesMiriClaim` (dropping the
+    // `Trusted.MirSemantics` byte codec it pins against `lean-miri`'s
+    // `Allocation` scalar accesses) is rejected by
+    // `verifyCorrespondenceClaims`.
+    let valid_bytes_codec_def = "def BytesCodecMatchesMiriClaim : Prop :=\n\
+               Trusted.MirSemantics.encodeVal = Trusted.MirSemantics.decodeVal ∧\n\
+               Trusted.MirSemantics.profileTargetEndian = Miri.Memory.Allocation.writeScalar ∧\n\
+               Miri.Memory.Allocation.getBytesUnchecked = Miri.Memory.Allocation.readScalar ∧\n\
+               Miri.Memory.Allocation.writeUninit = Miri.Memory.Allocation.writeUninit\n";
+    let valid_claims = all_claims_src(
+        "0",
+        "0",
+        allowed_step_valid_body,
+        None,
+        None,
+        None,
+        None,
+        None,
+    );
+    assert!(
+        valid_claims.contains(valid_bytes_codec_def),
+        "synthetic BytesCodecMatchesMiriClaim body drifted"
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &trusted_lib,
+        &corr_deps,
+        "Trusted.Correspondence",
+        &valid_claims.replace(
+            valid_bytes_codec_def,
+            "def BytesCodecMatchesMiriClaim : Prop :=\n\
+               Miri.Memory.Allocation.writeScalar = Miri.Memory.Allocation.readScalar\n",
+        ),
+    );
+    compile_forged_module(
+        &mut checker_pass2,
+        &corr_src,
+        &corr_lib,
+        &proof_deps,
+        "Anneal.MirCorrespondenceProof",
+        &all_proofs_src(
+            corr_choices_valid_proof,
+            fault_choices_valid_proof,
+            wiring_valid_proof,
+            d6_valid_proof,
+            ref_step_allowed_valid_proof,
+        )
+        .replace(
+            "⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
+                 end Anneal.MirCorrespondenceProof",
+            "Eq.refl _\n\
+                 end Anneal.MirCorrespondenceProof",
+        ),
+    );
+    let err_weak_bytes_codec = run_corr_audit(&mut checker_pass2).unwrap_err();
+    assert_eq!(err_weak_bytes_codec.code, 1);
+    assert_eq!(err_weak_bytes_codec.phase, "correspondence-audit");
+    assert!(
+        err_weak_bytes_codec.message.contains(
+            "claim Trusted.Correspondence.BytesCodecMatchesMiriClaim body must reference Trusted.MirSemantics.encodeVal"
+        ),
+        "unexpected weakened BytesCodecMatchesMiriClaim error: {err_weak_bytes_codec}"
     );
 
     compile_forged_module(

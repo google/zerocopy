@@ -1940,10 +1940,11 @@ def mirIsPrimitiveReadableTy : MirTy → Bool
 /-- Computable initial live-uninitialized slot state matching
 `Trusted.MirSemantics.liveUninitSlot`. -/
 def mirLiveUninitSlot : MirTy → LocalSlot
-  | .unit => .live (some .unit)
+  | .unit => .immediate (some .unit)
   | .enum ety =>
-    if mirIsZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
-  | _ => .live none
+    if mirIsZstEnumTy ety then .immediate (some (.enumVal ety 0))
+    else .immediate none
+  | _ => .immediate none
 
 /-- Computable storage-marker check for a single `StatementKind`. -/
 def mirStmtHasStorageMarker (localId : LocalId) : StatementKind → Bool
@@ -2811,7 +2812,7 @@ directly inside `PureLift`'s loan graph:
 - `Operand.copy ⟨l, []⟩` unconditionally reads `*mirInitCap L l`, failing with
   `.fail` if `l` is dead or uninitialized.
 - `Operand.move ⟨l, []⟩` unconditionally reads `*mirInitCap L l` and, for
-  non-ZST types (`mirLiveUninitSlot ty = .live none`), ends `mirInitCap L l` via
+  non-ZST types (`mirLiveUninitSlot ty = .immediate none`), ends `mirInitCap L l` via
   `.endLoanAtLocal` so any subsequent read before reassignment fails with
   `.fail` (matching `Trusted.MirSemantics.evalOperandToSlot`).
 -/
@@ -2919,12 +2920,12 @@ def retireSlotCapActions (numLocals l : Nat) (caps : List SlotCapState) :
 def allocLiveUninitActions (argCnt numLocals l : Nat) (ty : MirTy) :
     List (PrimAction Val) × SlotCapState :=
   match mirLiveUninitSlot ty with
-  | .live (some zstVal) =>
+  | .immediate (some zstVal) =>
     ([ .assign (.localSub (mirValSlot argCnt l) []) (.constVal zstVal),
        .borrow (mirInitCap numLocals l) .mutBorrow
          (.localSub (mirValSlot argCnt l) []) ],
      ⟨true, true⟩)
-  | .live none => ([], ⟨true, false⟩)
+  | .immediate none | .indirect _ => ([], ⟨true, false⟩)
   | .dead => ([], ⟨false, false⟩)
 
 /-- Initialize storage and initialization capabilities for all MIR locals at
@@ -2997,7 +2998,7 @@ def liftMirOperand (bodyLocals : List MirTy) (numLocals scratch : Nat)
             .assign (.localSub scratch [])
               (.use (.derefSub (mirInitCap numLocals place.localId) []))
           match mirLiveUninitSlot ty with
-          | .live (some zstVal) =>
+          | .immediate (some zstVal) =>
             let reinitAct : PrimAction Val :=
               .assign (.derefSub (mirInitCap numLocals place.localId) [])
                 (.constVal zstVal)

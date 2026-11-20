@@ -33,16 +33,25 @@ Relates $M_{\text{anneal}}$ states (`Trusted.MirSemantics.State`) to real
 /-- Well-typedness of a single $M_{\text{anneal}}$ `LocalSlot` against its
 declared `MirTy`:
 - `.dead`: always valid;
-- `.live none`: valid only for non-ZST types (0-byte ZSTs `.unit` and admitted
-  1-variant `.zeroSized` enums are always inhabited as `.live (some _)` in
-  reachable $M_{\text{anneal}}$ states);
-- `.live (some v)`: `checkVal v ty = true`. -/
+- `.immediate none`: valid only for non-ZST types (0-byte ZSTs `.unit` and
+  admitted 1-variant `.zeroSized` enums are always inhabited as
+  `.immediate (some _)` in reachable $M_{\text{anneal}}$ states);
+- `.immediate (some v)`: `checkVal v ty = true`;
+- `.indirect _`: excluded. Profile version 1 has no statement that moves a
+  local into memory (projections, address-of, and calls are `.unsupported`),
+  so neither $M_{\text{anneal}}$ (`forceAllocation`) nor `lean-miri`
+  (`Place.forceAllocation`) creates an indirect local on any execution from
+  `initState` / `initRefState`. `slotToMiriLocalValue` still lifts
+  `.indirect place` one-to-one to `.live (.indirect (memPlaceToMiri place))`;
+  the lockstep proof for indirect locals belongs to the profile that makes
+  them reachable. -/
 def SlotMatchesTy (ty : MirTy) : LocalSlot → Prop
   | .dead => True
-  | .live none =>
+  | .immediate none =>
     ty ≠ .unit ∧
     (∀ ety : EnumTy, ty = .enum ety → isZstEnumTy ety = false)
-  | .live (some v) => checkVal v ty = true
+  | .immediate (some v) => checkVal v ty = true
+  | .indirect _ => False
 
 /-- Pointwise well-typedness of a frame's local slots against `body.locals`. -/
 inductive SlotsMatchTys : List MirTy → List LocalSlot → Prop where
@@ -91,11 +100,13 @@ noncomputable def nextRefControlForStep (body : Body) (f : FrameState)
 
 /-- Lift an $M_{\text{anneal}}$ single-frame `StepResult` to $M_{\text{ref}}$,
 preserving `retTy`, `retPlace`, `memory`, `maxSteps`, advancing `control` on
-terminators, and incrementing `stepsExecuted`. -/
+terminators, and incrementing `stepsExecuted`. ($M_{\text{anneal}}$'s `mem`
+does not change on any step from a `SimulationInv` state, since only
+`.indirect` locals touch it.) -/
 noncomputable def mapStepRes (rp : RefProg) (body : Body)
     (rbody : RefBody) (f : FrameState) (rs : RefState) :
     StepResult State TerminalOut → StepResult RefState TerminalOut
-  | .step { frames := [f'], callerMem := cm } =>
+  | .step { frames := [f'], callerMem := cm, mem := _ } =>
     let rf' := mkRefMiriFrame rp.types f'.defId rbody f'.blockIdx f'.stmtIdx
       (liftLocals rp.types body.locals f'.locals) rs.retPlace
     let ctrl' := nextRefControlForStep body f rs.miri.machine.user.control
@@ -148,7 +159,13 @@ field of `s` and `rs` (including the single active `Miri.Interpreter.Frame`,
 fresh caller-owned return allocation `retPlace` in `miri.machine.memory`,
 disabled borrow/race trackers, `pendingMoveDeinit = false`, `callerMem`, and
 `RefControlValid`), unique in both directions up to `(stepsExecuted, maxSteps,
-miri.machine.user.control)`. -/
+miri.machine.user.control)`.
+
+Memory corresponds one to one: `lean-miri`'s memory holds exactly the
+caller-owned return allocation (allocation id `1`), and $M_{\text{anneal}}$'s
+memory is `entryMemory` (no allocations, allocation id `1` reserved for the
+same return place). Without indirect locals (`SlotMatchesTy`), no step of
+either machine allocates, writes, or deallocates memory before `Return`. -/
 def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
     Prop :=
   ∃ (f : FrameState)
@@ -161,6 +178,7 @@ def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit),
     decodeProg rp = some p ∧
     s.frames = [f] ∧
+    s.mem = entryMemory ∧
     f.defId = p.entryDefId ∧
     entryRetTy? p = some retTy ∧
     rs.retTy = retTy ∧

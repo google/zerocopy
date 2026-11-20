@@ -112,7 +112,7 @@ vendor/lean-miri/               Vendored lean-miri reference model
                                 `CopyNonOverlapping` move sequencing
 
 trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
-  Correspondence.lean           Hub + locked *Claim constants (32 claims:
+  Correspondence.lean           Hub + locked *Claim constants (34 claims:
   Correspondence/               Codec, State, Config, Eval, Simulation,
                                 CanaryFixtures;
                                 -- anneal-trust-tier: candidate:mir_semantics)
@@ -121,7 +121,7 @@ correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
   MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
                                 EnumEquiv, MemRoundTrip, RvalueStep,
                                 StmtTermStep, InitAndSim, Canaries)
-  MirCorrespondenceProof.lean   Public re-exports of all 33 locked witnesses
+  MirCorrespondenceProof.lean   Public re-exports of all 34 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
   TrustedBoundary.lean          Syntactic preflight, namespace and
@@ -226,8 +226,10 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
    on the human-audited `Trusted.*` surface (`Trusted.MirSemantics`), while
    only the proofs (`wellFormed_and_spec_of_wp`,
    `reaches_fault_and_exclusive_of_wpFault`, and all 15 Day-1 scalar/bool/unit
-   or 19 full Phase 1 canary theorems once fieldless enums, `!`, and crate/unit
-   scope land, including `CanaryCrateAndBodyVerifiedAnnealClaim`) live in
+   or 20 full Phase 1 canary theorems once fieldless enums, `!`, crate/unit
+   scope, and byte-level memory land, including
+   `CanaryCrateAndBodyVerifiedAnnealClaim` and
+   `CanaryMemoryLifecycleAnnealClaim`) live in
    untrusted `Anneal.MirWp` and are verified against those exact trusted
    `*Claim` propositions. Packaged user archives (`omnibus-archive`) ship
    `trusted/lean/` and, once MIR scaffolding and end-to-end packaging land,
@@ -311,7 +313,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      clean `baseEnv` containing strictly the authenticated `.foundation` and
      `.sysrootFoundation` modules from the pinned sysroot, and **replays all
      non-`isPartial` safe `.vendorMiri` constants across all 160 vendored
-     closure modules (38,603 in the unpatched closure; 38,718 once the 10-file
+     closure modules (38,603 in the unpatched closure; 38,728 once the 10-file
      `deinitMovedPlace` patch lands) from scratch in the standalone Lean kernel
      (`baseEnv.toKernelEnv.replay`)**—omitting the 75 compiler-generated
      `isPartial` (`*._unsafe_rec`) codegen helpers so replay fails with
@@ -385,7 +387,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      `.repo` and non-`isPartial` `.vendorMiri` inventories. Next,
      `replayCorrAndVendor` resets the search path strictly to the authenticated
      sysroot, replays all non-`isPartial` `.vendorMiri` constants (38,603 in
-     the unpatched closure; 38,718 once the 10-file `deinitMovedPlace` patch
+     the unpatched closure; 38,728 once the 10-file `deinitMovedPlace` patch
      lands) onto `baseEnv.toKernelEnv`, and—within the same isolated Pass 2
      staging run—replays every freshly compiled `.repo` declaration
      (`trusted/lean/`, `theory/`, `Trusted.Correspondence*`,
@@ -403,7 +405,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      all of `Miri/Input/`—is reachable), and that the only reachable axioms
      belong to `{propext, Classical.choice, Quot.sound}`. Within
      `verifyCorrConesAndClaims`, `verifyCorrespondenceClaims` enforces
-     Statement-Origin Separation by locking all 32 `(claim, proof)` pairs in
+     Statement-Origin Separation by locking all 34 `(claim, proof)` pairs in
      `Anneal.MirCorrespondenceProof` against the exact `Prop` constants defined
      in `Trusted.Correspondence` (whose referenced program, query, and
      expected-outcome fixture definitions likewise live on `Trusted.*`, with
@@ -562,7 +564,7 @@ together with every later change to those definitions:
 | | `CrateTheorem`, `UnitTheorem`, `entryProgForBody`, |
 | | `bodiesHaveUniqueIdentities` (Section 4.5) |
 | | `WpSoundnessClaim`, `WpFaultSoundnessClaim`, |
-| | `prog*`, `Canary*Claim` (15 Day-1; 19 full Phase 1) |
+| | `prog*`, `Canary*Claim` (15 Day-1; 20 with Phase 1 and memory) |
 | `Trusted.Correspondence` | Codec (`RefProg`, `encodeProg`, `decodeProg`), |
 | | reference machine & staged support gate |
 | | (`initRefState`, `refIsSupportedLocalTy`, |
@@ -573,10 +575,10 @@ together with every later change to those definitions:
 | | Reference predicates (`RefWellFormed`, |
 | | `RefBehavior`, `RefDiverges`, `RefReachesOutcome`, |
 | | `*AtChoices`, `faultToRefOutcome`), `SimulationInv` |
-| | Locked `*Claim` constants (33 locked Pass 2 |
+| | Locked `*Claim` constants (34 locked Pass 2 |
 | | claims: aggregate & choice-coupled top-level, |
 | | wiring, `AllowedStep` soundness, codec, |
-| | simulation, and `CanaryD6–D13`) |
+| | byte codec, simulation, and `CanaryD6–D13`) |
 | `vendor/lean-miri/` | Pinned 160-module `ExecutionMachine` slice and |
 | | 10-file `deinitMovedPlace` patch (`UPSTREAM_PIN.json`) |
 
@@ -589,8 +591,10 @@ together with every later change to those definitions:
   `ProgramVerified`, `CrateTheorem`, `UnitTheorem`, and helpers such as
   `entryProgForBody` and `bodiesHaveUniqueIdentities`; Section 4.5), and the
   concrete `prog*` fixtures and `*Claim` propositions enforced on
-  `Anneal.MirWp` (15 Day-1 baseline; 19 once fieldless enums, `!`, and
-  crate/unit scope land, including `CanaryCrateAndBodyVerifiedAnnealClaim`).
+  `Anneal.MirWp` (15 Day-1 baseline; 20 once fieldless enums, `!`, crate/unit
+  scope, and byte-level memory land, including
+  `CanaryCrateAndBodyVerifiedAnnealClaim` and
+  `CanaryMemoryLifecycleAnnealClaim`).
   `SatisfiesPost` is the contract that per-function specifications discharge
   through `Anneal.MirWp`. The correspondence theorems cross-check the execution
   rules inside `initState` and `evalStep` against $M_{\text{ref}}$, but they
@@ -607,11 +611,12 @@ together with every later change to those definitions:
   `RefReachesAtChoices`, `RefValidPrefixAtChoices`,
   `RefReachesOutcomeAtChoices`, `RefBehaviorAtChoices`,
   `RefDivergesAtChoices`, `faultToRefOutcome`, and `SimulationInv`); and the
-  locked `*Claim` propositions (33 locked Pass 2 claims: `CorrespondenceClaim`,
+  locked `*Claim` propositions (34 locked Pass 2 claims: `CorrespondenceClaim`,
   `FaultEquivalenceClaim`, `CorrespondenceAtChoicesClaim`,
   `FaultEquivalenceAtChoicesClaim`, `MiriMoveDeinitWiringClaim`,
-  `RefStepSoundForAllowedStepClaim`, the 6 codec claims, the 11 uniqueness and
-  simulation claims, and `CanaryD6*Claim`–`CanaryD13*Claim`).
+  `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, the 6 codec
+  claims, the 11 uniqueness and simulation claims, and
+  `CanaryD6*Claim`–`CanaryD13*Claim`).
 - **`vendor/lean-miri/`:** `Trusted.Correspondence` drives `evalRefStep`
   directly through `Miri.Interpreter.ExecutionMachine.step`, reaching all 34
   required live `ExecutionMachine` primitives (`ExecutionMachine.{step,
@@ -1329,7 +1334,8 @@ state machine (`State` and `evalStep`):
 ```lean
 inductive LocalSlot where
   | dead
-  | live (val : Option Val)
+  | immediate (val : Option Val)
+  | indirect (place : MemPlace)
 
 structure FrameState where
   defId : DefId
@@ -1340,7 +1346,12 @@ structure FrameState where
 structure State where
   frames : List FrameState
   callerMem : CallerMemory := ⟨[]⟩
+  mem : MemoryState
 ```
+
+`LocalSlot` mirrors `rustc`'s `LocalValue` / `Operand` and
+`Miri.Interpreter.LocalValue` one constructor to one constructor; Section 4.6
+describes the byte-level `MemoryState` behind `.indirect` slots.
 
 At function entry, `initState : Program → Query → Except FaultKind State`
 checks that:
@@ -1367,11 +1378,13 @@ When validation succeeds, `initState` constructs the initial `FrameState` at
 `blockIdx := 0, stmtIdx := 0`:
 
 - Return place `_0` is initialized to `liveUninitSlot body.locals[0]`.
-- Argument locals `1 .. body.argumentCount` are initialized to `.live (some
-  q.args[idx - 1])`.
+- Argument locals `1 .. body.argumentCount` are initialized to `.immediate
+  (some q.args[idx - 1])`.
 - Non-argument locals (`idx > body.argumentCount`) start as `.dead` if any
   basic block in `body` contains a `.storageLive idx` or `.storageDead idx`
   statement, and start as `liveUninitSlot body.locals[idx]` otherwise.
+- The memory is `entryMemory`: no allocations, with allocation id `1` reserved
+  for the caller-owned return place that `lean-miri`'s `callMain` allocates.
 
 ### 4.3 Three-Pole Outcome Partition, Well-Formedness, and Behavior
 
@@ -1452,14 +1465,15 @@ aligns its operational checks with `lean-miri`'s evaluation order:
 1. **Zero-sized initialization (`liveUninitSlot`):**
    ```lean
    def liveUninitSlot : MirTy → LocalSlot
-     | .unit => .live (some .unit)
+     | .unit => .immediate (some .unit)
      | .enum ety =>
-       if isZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
-     | _ => .live none
+       if isZstEnumTy ety then .immediate (some (.enumVal ety 0))
+       else .immediate none
+     | _ => .immediate none
    ```
    In `lean-miri`, a 0-byte zero-sized type (`Size.ZERO`) has `.immediate
    .uninit` as its unique valid representation. Defining `liveUninitSlot .unit =
-   .live (some .unit)` (and likewise for an admitted one-variant zero-sized
+   .immediate (some .unit)` (and likewise for an admitted one-variant zero-sized
    enum) ensures that `fn empty() { return }` (which returns `_0 :
    ()` without an explicit `_0 = const ()` assignment) succeeds in both
    machines, and that `StorageLive` and `Operand.move` on a zero-sized local
@@ -1467,11 +1481,16 @@ aligns its operational checks with `lean-miri`'s evaluation order:
 2. **Two-stage operand evaluation and move threading (`evalOperandToSlot` and
    `evalPrimitiveOperand`):**
    - **Stage 1 (`evalOperandToSlot`):** Resolves an `Operand` to `(ty : MirTy,
-     optVal : Option Val, locals' : List LocalSlot)` without yet checking
-     whether `optVal` is initialized (`some v`). If the operand is `.move
-     place` on a live unprojected local, `evalOperandToSlot` updates
-     `locals[place.localId]` to `liveUninitSlot ty` and returns the updated
-     `locals'`.
+     optVal : Option Val, locals' : List LocalSlot, mem' : MemoryState)`
+     without yet checking whether `optVal` is initialized (`some v`). If the
+     operand is `.move place` on a live unprojected `.immediate` local,
+     `evalOperandToSlot` updates `locals[place.localId]` to `liveUninitSlot
+     ty` and returns the updated `locals'`. For an `.indirect` local (Section
+     4.6), it first applies the caller's static type check (`tyOk`:
+     `isPrimitiveReadableTy` for Stage 2A, `srcTy = dstTy` for Stage 2B) and
+     only then reads the bytes (`loadIndirect`) and, for `.move`,
+     deinitializes them (`deinitIndirect`), matching `lean-miri`, whose
+     consumers check the type before touching memory.
    - **Stage 2A (`evalPrimitiveOperand`):** Used by `Rvalue.binaryOp`,
      `Rvalue.unaryOp`, and `TerminatorKind.switchInt`. Checks
      `isPrimitiveReadableTy ty` (`.bool` or `.int w s`) *before* checking
@@ -1489,9 +1508,10 @@ aligns its operational checks with `lean-miri`'s evaluation order:
 3. **Assignment evaluation order (`StatementKind.assign`):**
    `evalStatement` checks that `dst.projection` is empty and looks up `dstTy :=
    body.locals[dst.localId]?` first, then evaluates `evalRvalue` (producing
-   `(val, localsAfterRval)` with any source `.move` deinitializations applied),
-   and finally calls `writePlace localsAfterRval dst.localId dstTy val` (which
-   checks `checkVal val dstTy` and verifies that `dst` is `.live`). Because
+   `(val, localsAfterRval, memAfterRval)` with any source `.move`
+   deinitializations applied), and finally calls `writePlace localsAfterRval
+   memAfterRval dst.localId dstTy val` (which checks `checkVal val dstTy` and
+   verifies that `dst` is not `.dead`). Because
    `writePlace` runs after `evalRvalue`, self-moves (`_1 = move _1`) first
    deinitialize `_1` during `evalRvalue` and then write the extracted value back
    into `_1`.
@@ -1521,9 +1541,10 @@ aligns its operational checks with `lean-miri`'s evaluation order:
      `.unsupported` if `body.basicBlocks[frame.blockIdx]? = none`), matching
      `ControlFlow.goToBlock` and `Step.step` in `lean-miri`.
    - `.return_` faults with `.unsupported` if `bb.cleanup` is `true`, returns
-     `.done (.returned ⟨retVal, callerMem⟩)` if `frame.locals[0]` is `.live
-     (some retVal)`, and faults with `.undefined` if `_0` is `.dead` or
-     uninitialized (`.live none`).
+     `.done (.returned ⟨retVal, callerMem⟩)` if `_0` holds `retVal`
+     (`.immediate (some retVal)`, or an `.indirect` place whose bytes decode to
+     `retVal`), and faults with `.undefined` if `_0` is `.dead` or
+     uninitialized.
    - `.unreachable` faults with `.undefined`.
 
 ### 4.5 Multi-Body Program, Crate, and Proof-Unit Verification Judgments
@@ -1648,7 +1669,8 @@ These definitions pin five properties directly in the trusted theorem surface:
      body is not vacuously skipped).
 5. **Locked Pass 1 canary (`CanaryCrateAndBodyVerifiedAnnealClaim`):**
    Once fieldless enums, `!`, and crate/unit scope land (bringing Pass 1 from
-   the 15 Day-1 baseline canaries to 19), `TrustedBoundary.lean` locks
+   the 15 Day-1 baseline canaries to 19, before byte-level memory adds
+   `CanaryMemoryLifecycleAnnealClaim` as the 20th), `TrustedBoundary.lean` locks
    `Anneal.MirWp.canary_crate_and_body_verified_anneal` against the exact
    proposition below in `Trusted.MirSemantics`, pairing positive `CrateTheorem`
    and `UnitTheorem` witnesses with 12 constructive negative refutations:
@@ -1830,6 +1852,72 @@ an unverified second body alongside a valid first body, (vii) false
 
 ---
 
+### 4.6 Byte-Level Memory, Layouts, and `forceAllocation` (Option 1A)
+
+$M_{\text{anneal}}$ models memory at the byte level and represents a local
+either as an immediate value or as a place in a stack allocation, following
+Option 1A of Section 6.1:
+
+- **Type layouts (`Trusted.MirSemantics.Layout`):** `LayoutData` records the
+  size and alignment of a sized type, and `layoutOfTy` gives the layouts of the
+  Day-1 local types (`bool`, the integers with natural alignment, `()`, `!`,
+  and admitted fieldless enums, whose scalar-tagged layout is the tag
+  integer's). `TargetEndian` and `profileTargetEndian` fix the byte order of
+  MIR profile version 1 to big-endian, matching the data layout that
+  $M_{\text{ref}}$ passes to `lean-miri` (`RuntimeTargetDataLayout.default`).
+  These are $M_{\text{anneal}}$'s own choices, so they live outside
+  `Trusted.MirAst*`, which `verifyRefEvaluatorIndependence` lets the
+  reference evaluator import. $M_{\text{ref}}$ chooses alignments
+  independently: `RuntimeTargetDataLayout.default` gives `i64` and `i128`
+  4-byte alignment, and `Trusted.Correspondence` gives every local layout
+  alignment 1 (`Align.ONE`), whereas $M_{\text{anneal}}$ uses natural
+  alignment. Profile version 1 has no operation that reinterprets bytes or
+  exposes an address, so neither byte order nor alignment can affect any
+  `Behavior`.
+- **Value representations (`Trusted.MirSemantics.Bytes`):** `encodeUInt` and
+  `decodeUInt` follow `rustc`'s `write_target_uint` / `read_target_uint`.
+  `encodeVal` stores a Day-1 value as initialized, provenance-free bytes, and
+  `decodeVal` decodes bytes back through `evalConstLit`, so constant operands
+  and memory reads share the same validity checks; any uninitialized byte of a
+  non-zero-sized value decodes to `none`.
+- **Memory (`Trusted.MirSemantics.Memory`):** `MemoryState` holds a monotonic
+  allocation-id counter and a list of `Allocation`s, each with its own bytes,
+  alignment, mutability, and liveness. Allocation ids start at `1` and are
+  never reused; `entryMemory` reserves id `1` for the caller-owned return
+  place so later stack-allocation ids agree with `lean-miri`'s.
+  `allocateStack`, `deallocateStack`, `readBytes`, `writeBytes`, and
+  `writeUninit` follow `rustc`'s `allocate`, `deallocate_ptr`, and
+  `check_and_deref_ptr` (liveness, bounds, and alignment checks, with
+  zero-sized accesses always allowed).
+- **Indirect locals:** `LocalSlot.indirect place` reads and writes go through
+  `loadIndirect` and `storeIndirect`; `Operand.move` marks an indirect local's
+  bytes uninitialized; and `StorageLive` and `StorageDead` deallocate an
+  indirect local's allocation (`deallocateLocal`, matching `rustc`'s
+  `deallocate_local`).
+- **`forceAllocation`:** Moves an immediate local into a fresh stack
+  allocation, storing an initialized value without validation, exactly like
+  `rustc`'s `force_allocation` and `lean-miri`'s `Place.forceAllocation`.
+
+`rustc` forces an allocation only when a place expression needs the local's
+address (projections, references, raw pointers, or in-memory call arguments).
+Profile version 1 rejects all of these, so no profile-version-1 step creates an
+indirect local in either machine. `CanaryMemoryLifecycleAnnealClaim` therefore
+applies `forceAllocation` between steps of concrete programs and pins, by
+kernel evaluation, the allocation id, the stored big-endian bytes, the read
+back through `.indirect`, the deallocation at `StorageDead` (a later read
+through the stale place faults with `.undefined`), a write through an
+uninitialized indirect local, the `.undefined` fault on reading uninitialized
+indirect bytes, a move out of an indirect local (which deinitializes its
+bytes), `StorageLive` deallocating an indirect local, `discriminant` and
+`Return` reading indirect locals, and the precedence of static type checks
+over memory reads (an ill-typed use of an indirect local whose allocation is
+gone faults with `.unsupported`, as in `lean-miri`, rather than `.undefined`).
+`BytesCodecMatchesMiriClaim` (Pass 2) first shows that its fresh
+`lean-miri` allocation exists and then cross-checks `encodeVal` and
+`decodeVal` against `lean-miri`'s
+`Allocation.{writeScalar,getBytesUnchecked,readScalar,writeUninit}` for every
+integer width and bit pattern.
+
 ## 5. Correspondence Theorem, Step Budgets, and Verification Layer
 
 ### 5.1 Step-Budget Quantification (`maxSteps`)
@@ -1918,8 +2006,9 @@ fault equivalence (`FaultEquivalenceAtChoicesClaim`), and the vendored
 (`MiriMoveDeinitWiringClaim`, covering `ExecutionMachine.step`,
 `ExecutionMachine.{withValidation,operandHooks}`, both live
 `OperandMachine.evalOperand` and `LocalAccess.evalOperand`, `MachineHooks`, and
-`Call.deinitInPlaceArg`). All five top-level claims (together with the 6 codec
-claims, 11 uniqueness and simulation claims, and 8 `D6`–`D13` canary claims—32
+`Call.deinitInPlaceArg`). All five top-level claims (together with
+`RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, the 6 codec
+claims, 11 uniqueness and simulation claims, and 8 `D6`–`D13` canary claims—34
 locked Pass 2 claims in total) are proved with zero `sorry` in
 `Anneal.MirCorrespondenceProof` and enforced by `TrustedBoundary.lean`
 (`verifyCorrespondenceClaims`).
@@ -2115,6 +2204,7 @@ def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit),
     decodeProg rp = some p ∧
     s.frames = [f] ∧
+    s.mem = entryMemory ∧
     f.defId = p.entryDefId ∧
     entryRetTy? p = some retTy ∧
     rs.retTy = retTy ∧
@@ -2123,6 +2213,18 @@ def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
     rs.miri = mkRefMiriState rf mem ctrl s.callerMem ∧
     FrameSimInv rp p f rs.retPlace rf
 ```
+
+Memory corresponds one to one: `lean-miri`'s memory holds exactly the
+caller-owned return allocation (id `1`), and $M_{\text{anneal}}$'s memory is
+`entryMemory` (no allocations, id `1` reserved for the same place).
+`slotToMiriLocalValue` lifts every `LocalSlot` constructor to its
+`Miri.Interpreter.LocalValue` counterpart (`.indirect place` to
+`.live (.indirect (memPlaceToMiri place))`), but `SlotMatchesTy` excludes
+`.indirect` slots: no profile-version-1 step creates one in either machine
+(Section 4.6), so neither machine allocates, writes, or deallocates memory
+before `Return`. The lockstep proof for indirect locals against `lean-miri`'s
+`readScalar` / `writeScalar` belongs to the profile that makes them reachable;
+`BytesCodecMatchesMiriClaim` already pins the byte codec it will rely on.
 
 `SimulationInv` constrains every semantic field of `s` and `rs` (the single
 active `Miri.Interpreter.Frame`, the fresh caller-owned return allocation
@@ -2235,8 +2337,9 @@ target theorem statements (`CrateTheorem`/`UnitTheorem`) directly in the Lean
 kernel.
 
 The Pass 1 canaries in `Anneal.MirWp` (15 in the Day-1 scalar/bool/unit
-baseline, growing to 19 once fieldless enums, `!`, and crate/unit scope land)
-check $M_{\text{anneal}}$ directly:
+baseline, growing to 19 once fieldless enums, `!`, and crate/unit scope land,
+and to 20 with byte-level memory's `canary_memory_lifecycle_anneal`, Section
+4.6) check $M_{\text{anneal}}$ directly:
 
 - **`canary_positive_add_anneal`:** `_0 = copy _1 + copy _2; return`
   (`30u32 + 12u32`) is `WellFormed` and returns `42u32`.
@@ -2389,12 +2492,13 @@ Two candidate representations remain open for Phase 2 adjudication:
    purely structural, at the cost of a relational local-to-memory injection in
    `SimulationInv`.
 
-**Adjudication trigger:** We defer choosing between Option 1A and Option 1B
-until the first Phase 2 PR that enables `ProjectionElem.field`,
-`Rvalue.aggregateTuple`, or `Rvalue.ref` / `Rvalue.addressOf`. At that point, we
-will benchmark whether keeping non-address-taken tuples as pure `Val.tuple`
-trees simplifies `wpProg` proofs enough to repay the local-to-stack-memory
-simulation invariant.
+**Adjudication:** $M_{\text{anneal}}$ adopts Option 1A. `LocalSlot` now has
+`.immediate` and `.indirect` constructors, `State` carries a byte-level
+`MemoryState`, and `forceAllocation` mirrors `lean-miri`'s (Section 4.6).
+Indirect locals stay unreachable until the first Phase 2 PR that enables
+`ProjectionElem.field`, `Rvalue.aggregateTuple`, or `Rvalue.ref` /
+`Rvalue.addressOf`; that PR must extend `SimulationInv` to `.indirect` slots
+and allocated memory (Section 5.3).
 
 ### 6.2 Supporting Constructs Unmodeled by `lean-miri`
 
@@ -2507,20 +2611,21 @@ We also analyzed leaving `lean-miri` unmodified (so `Operand.move` does not
 deinitialize in $M_{\text{ref}}$) while deinitializing moved places in
 $M_{\text{anneal}}$ and replacing the trusted one-to-one `SimulationInv` with a
 relaxed proof-internal invariant inside `correspondence/` so that a local slot
-can be `.live none` in $M_{\text{anneal}}$ while remaining `.live (some v)` in
-$M_{\text{ref}}$.
+can be `.immediate none` in $M_{\text{anneal}}$ while remaining
+`.immediate (some v)` in $M_{\text{ref}}$.
 
 Mechanizing this approach revealed four structural flaws:
 
-1. **Ghost move sets collapse to arbitrary `.live none` slack:**
+1. **Ghost move sets collapse to arbitrary `.immediate none` slack:**
    Adding an existential ghost set `movedSet : Finset LocalId` inside a
-   proof-internal simulation invariant (allowing `annealSlot = .live none` while
-   `miriSlot = .live (some v)` only when `id ∈ movedSet`) is logically
-   equivalent (`↔`) to allowing `annealSlot = .live none` whenever `miriSlot =
-   .live (some v)`. Because such an invariant is existentially quantified inside
-   the untrusted proof, the proof can always instantiate `id ∈ movedSet` as
-   `decide (annealSlot = .live none ∧ miriSlot ≠ .live none)`, regardless of
-   whether `id` was deinitialized by `Operand.move` or by a bug.
+   proof-internal simulation invariant (allowing
+   `annealSlot = .immediate none` while `miriSlot = .immediate (some v)` only
+   when `id ∈ movedSet`) is logically equivalent (`↔`) to allowing
+   `annealSlot = .immediate none` whenever `miriSlot = .immediate (some v)`.
+   Because such an invariant is existentially quantified inside the untrusted
+   proof, the proof can always instantiate `id ∈ movedSet` as
+   `decide (annealSlot = .immediate none ∧ miriSlot ≠ .immediate none)`,
+   regardless of whether `id` was deinitialized by `Operand.move` or by a bug.
 2. **Blindness to missing move deinitialization in $M_{\text{anneal}}$:**
    Because `anneal_corresponds_to_miri` is gated on `WellFormed p q`, if a bug
    or future refactor in $M_{\text{anneal}}$ forgets to deinitialize on
@@ -2530,8 +2635,8 @@ Mechanizing this approach revealed four structural flaws:
 3. **Blindness to wrong-local deinitialization and reversed operand order:**
    If $M_{\text{anneal}}$ accidentally deinitializes local `j ≠ i` on
    `move _i`, or evaluates `BinOp(lhs, rhs)` right-to-left instead of
-   left-to-right, any execution that reads the extra `.live none` local faults
-   in $M_{\text{anneal}}$—making the premise `WellFormed p q` false and
+   left-to-right, any execution that reads the extra `.immediate none` local
+   faults in $M_{\text{anneal}}$—making the premise `WellFormed p q` false and
    vacuously satisfying `anneal_corresponds_to_miri`.
 4. **Phase 2 falsification on `MaybeUninit<T>` and padding copies:**
    In Phase 2, copying `MaybeUninit<u8>` (or struct padding bytes) copies
@@ -2611,26 +2716,27 @@ modification.
 
 ### A.4 Local Initialization and Evaluation-Order Alternatives
 
-#### Initializing `MirTy.unit` Locals to `.live none`
+#### Initializing `MirTy.unit` Locals to `.immediate none`
 
 We considered initializing all non-argument locals (including `_0 : ()`) to
-`.live none` at function entry and after `.storageLive` or `Operand.move`. We
-rejected this because `rustc` emits `fn empty() { return }` without an explicit
-`_0 = const ()` assignment, and in `lean-miri`, `.immediate .uninit` is already
-the valid runtime representation of the 0-byte unit type `()`. Initializing
-`.unit` locals to `.live none` caused `fn empty() { return }` to fault with
-`.undefined` in $M_{\text{anneal}}$ while succeeding in `lean-miri`.
+`.immediate none` at function entry and after `.storageLive` or `Operand.move`.
+We rejected this because `rustc` emits `fn empty() { return }` without an
+explicit `_0 = const ()` assignment, and in `lean-miri`, `.immediate .uninit` is
+already the valid runtime representation of the 0-byte unit type `()`.
+Initializing `.unit` locals to `.immediate none` caused `fn empty() { return }`
+to fault with `.undefined` in $M_{\text{anneal}}$ while succeeding in
+`lean-miri`.
 
 #### Single-Stage `evalOperand` Checking Initialization Before Types
 
 We considered a single `evalOperand` function that immediately faults with
-`.undefined` whenever a local slot is `.live none`, before the caller checks
-whether the operand's static type is supported by the enclosing operation. We
-rejected this because `lean-miri` evaluates operands in two stages:
-`OperandMachine.evalOperand` constructs an `OpTy` (carrying `.immediate .uninit`
-together with its static `TyAndLayout`), and the consumer then checks static
-type compatibility (`BackendRepr.Scalar` in `readImmediate` or `src.layout.ty ==
-dest.layout.ty` in `copyRuntimePlaceNoValidate`) *before* validating that the
-runtime value is initialized. Splitting operand evaluation into
-`evalOperandToSlot` and `evalPrimitiveOperand` / `evalRvalue` matches
+`.undefined` whenever a local slot is `.immediate none`, before the caller
+checks whether the operand's static type is supported by the enclosing
+operation. We rejected this because `lean-miri` evaluates operands in two
+stages: `OperandMachine.evalOperand` constructs an `OpTy` (carrying `.immediate
+.uninit` together with its static `TyAndLayout`), and the consumer then checks
+static type compatibility (`BackendRepr.Scalar` in `readImmediate` or
+`src.layout.ty == dest.layout.ty` in `copyRuntimePlaceNoValidate`) *before*
+validating that the runtime value is initialized. Splitting operand evaluation
+into `evalOperandToSlot` and `evalPrimitiveOperand` / `evalRvalue` matches
 `lean-miri`'s exact fault precedence on ill-typed uninitialized locals.

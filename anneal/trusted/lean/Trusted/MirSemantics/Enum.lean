@@ -211,12 +211,13 @@ zero initialized bytes in memory:
 Accordingly, live `.unit` locals start inhabited by `Val.unit` and live
 `.zeroSized` fieldless enum locals start inhabited by `Val.enumVal ety 0` (and
 `Operand.move` preserves their inhabited ZST value). All other local types
-start uninitialized (`.live none`). -/
+start uninitialized (`.immediate none`). -/
 noncomputable def liveUninitSlot : MirTy → LocalSlot
-  | .unit => .live (some .unit)
+  | .unit => .immediate (some .unit)
   | .enum ety =>
-    if isZstEnumTy ety then .live (some (.enumVal ety 0)) else .live none
-  | _ => .live none
+    if isZstEnumTy ety then .immediate (some (.enumVal ety 0))
+    else .immediate none
+  | _ => .immediate none
 
 /-- Check whether `ty : MirTy` has a primitive-readable `BackendRepr.Scalar`
 layout in `Miri.Interpreter.MemoryOperand.readImmediate`
