@@ -1,0 +1,6 @@
+name = "ToyParMove"
+version = "0.1.0"
+defaultTargets = ["ToyParMove"]
+
+[[lean_lib]]
+name = "ToyParMove"

@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "compilers/register-allocation",
+    "compilers/parallel-moves",
+    "compilers/out-of-ssa",
+    "compilers/sub-register-writes",
+    "pl/bidirectional-lenses"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves",
+      "identity": {
+        "doi": "10.1007/s10817-007-9096-8"
+      }
+    },
+    {
+      "name": "Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency",
+      "identity": {
+        "doi": "10.1109/CGO.2009.19"
+      }
+    },
+    {
+      "name": "Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem",
+      "identity": {
+        "doi": "10.1145/1232420.1232424"
+      }
+    },
+    {
+      "name": "CompCert parallel-move formalization (lib/Parmov.v)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "4710ec093ddea8e6eb86ad519df61c59b654e861",
+        "path": "lib/Parmov.v"
+      }
+    },
+    {
+      "name": "CakeML parallel-move formalization (parmoveScript.sml)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "4777c4b7c0aa4661994e29f97b9501c3f0b7d602",
+        "path": "compiler/backend/reg_alloc/parmoveScript.sml"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture",
+      "identity": {
+        "order_number": "253665-060US",
+        "section": "3.4.1.1 General-Purpose Registers in 64-Bit Mode"
+      }
+    },
+    {
+      "name": "Learn the architecture - A64 Instruction Set Architecture Guide",
+      "identity": {
+        "document": "102374",
+        "version": "1.4",
+        "url": "https://developer.arm.com/documentation/102374/0104/Registers-in-AArch64---general-purpose-registers"
+      }
+    },
+    {
+      "name": "Hacker's Delight, 2nd edition, Section 2-20 'Exchanging Registers'",
+      "identity": {
+        "author": "Henry S. Warren, Jr.",
+        "publisher": "Addison-Wesley",
+        "year": "2012",
+        "edition": "2",
+        "isbn": "978-0-321-84268-8",
+        "section": "2-20"
+      }
+    },
+    {
+      "name": "Optics (Archive of Formal Proofs entry)",
+      "identity": {
+        "archive": "Archive of Formal Proofs",
+        "issn": "2150-914x",
+        "entry": "Optics",
+        "authors": "Simon Foster, Christian Pardillo-Laursen, Frank Zeyda",
+        "published": "2017-05-25",
+        "url": "https://isa-afp.org/entries/Optics.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

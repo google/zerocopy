@@ -1,0 +1,1109 @@
+[
+  {
+    "id": "pmove-readings-disagree-on-repeated-destination",
+    "lean": [
+      "Toy.ParMove.pmove_readings_disagree_on_repeated_destination"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Known: a repeated destination makes a parallel move ambiguous (Rideau-Serpette-Leroy Section 2; CompCert's is_mill excludes it). Restated here as a concrete kernel-checked instance.",
+    "plain_claim": "For the move list [(0,1),(0,2)] (destination 0 listed twice with sources 1 and 2) and the identity store on Nat, the first-entry reading of the parallel move puts the old value of 1 at 0 and the last-entry reading puts the old value of 2 at 0, so the two readings disagree; the package adopts the first-entry reading pmove and intends it only for well-formed (distinct-destination) moves.",
+    "statement": "pmove [(0,1),(0,2)] (id : Nat → Nat) 0 = 1 ∧ pmoveLast [(0,1),(0,2)] (id : Nat → Nat) 0 = 2",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "non_claims": [
+      "Does not say that repeated destinations are always harmful: a list whose repeated destinations come only from exact duplicates, such as [(0,1),(0,1)], is functional and therefore order-independent on every store (pmove-order-independent-iff-functional, direction b).",
+      "The disagreement needs a store that gives sources 1 and 2 different values: at every store σ with σ 1 = σ 2 the list is FunctionalAt σ, so the two readings agree by pmove-order-independent-iff-functional (c) applied to the reordering M.reverse (pmoveLast M σ is pmove M.reverse σ by definition); pmove_readings_agree_on_equal_source_values checks one such store directly. FunctionalAt is the store-level condition (an informal analogue of Boissinot et al.'s V(b) = V(c)).",
+      "Does not say which reading a real compiler or ISA uses; real parallel moves are normally required to have distinct destinations.",
+      "Only two order-based readings are compared; a nondeterministic or 'undefined' reading is not modeled."
+    ],
+    "prior_art": [
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "CompCert, file lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861 (github.com/AbsInt/CompCert; file contents at that commit). exec_par gives the parallel semantics; parmove_correctness assumes is_mill (no destination appears twice) and move_no_temp (no temporary occurs as a source or a destination). Moves there are written (source, destination), the reverse of this package's (destination, source).",
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations)."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "pmove-order-independent-iff-functional",
+    "lean": [
+      "Toy.ParMove.pmove_perm_invariant_iff_functional_of_two_values",
+      "Toy.ParMove.pmove_perm_invariant_of_functional",
+      "Toy.ParMove.functional_of_pmove_perm_invariant_of_two_values",
+      "Toy.ParMove.pmove_perm_invariant_at_iff_functionalAt",
+      "Toy.ParMove.pmove_eq_pmoveLast_of_functional"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Order independence for distinct destinations is mechanized in HOL4 (CakeML parsem_perm); the exact characterizations here (Functional for all stores when the value type has two distinct values; FunctionalAt for one store) were not found in the sources cited here; no novelty is claimed.",
+    "plain_claim": "(a) Over a value type with two distinct values a ≠ b, the parallel-move semantics pmove M is unchanged on every store by every reordering of M if and only if M is functional (entries with the same destination have the same source location). (b) The direction 'functional implies order-independent' needs no hypothesis on the value type: if M is functional and M' is a reordering of M, then pmove M σ = pmove M' σ for every store σ; in particular the first-entry and last-entry readings coincide on functional M. (c) For one fixed store σ, pmove M σ is unchanged by every reordering of M if and only if entries with the same destination read equal values in σ (FunctionalAt σ M), with no hypothesis on the value type.",
+    "statement": "(a) (a b : V) (hab : a ≠ b) : (∀ M', M'.Perm M → ∀ σ, pmove M' σ = pmove M σ) ↔ Functional M;  (b) Functional M → M.Perm M' → ∀ σ, pmove M σ = pmove M' σ;  (a→) (a b : V) → a ≠ b → (∀ M', M'.Perm M → ∀ σ, pmove M' σ = pmove M σ) → Functional M;  (c) ∀ σ, (∀ M', M'.Perm M → pmove M' σ = pmove M σ) ↔ FunctionalAt σ M;  (b') Functional M → ∀ σ, pmove M σ = pmoveLast M σ.   Here Functional M := ∀ d s₁ s₂, (d,s₁) ∈ M → (d,s₂) ∈ M → s₁ = s₂ and FunctionalAt σ M := ∀ d s₁ s₂, (d,s₁) ∈ M → (d,s₂) ∈ M → σ s₁ = σ s₂.",
+    "hypotheses": [
+      {
+        "name": "hab : a ≠ b (two distinct values)",
+        "purpose": "lets a store distinguish two different sources of the same destination; without it a non-functional list can be order-independent (over Unit, [(0,1),(0,2)] is)",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.functional_of_pmove_perm_invariant_needs_two_values",
+        "applies_to": [
+          "pmove_perm_invariant_iff_functional_of_two_values",
+          "functional_of_pmove_perm_invariant_of_two_values"
+        ]
+      },
+      {
+        "name": "h : ∀ M', M'.Perm M → ∀ σ, pmove M' σ = pmove M σ (order independence on every store)",
+        "purpose": "the premise of the 'order independence forces functionality' direction",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.functional_of_pmove_perm_invariant_needs_perm_invariance",
+        "applies_to": [
+          "functional_of_pmove_perm_invariant_of_two_values"
+        ]
+      },
+      {
+        "name": "hF : Functional M (direction b)",
+        "purpose": "a destination with two different sources can make the result depend on which entry comes first",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.pmove_perm_invariant_needs_functional",
+        "applies_to": [
+          "pmove_perm_invariant_of_functional"
+        ]
+      },
+      {
+        "name": "hp : M.Perm M' (direction b)",
+        "purpose": "the other list must consist of the same moves",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.pmove_perm_invariant_needs_perm",
+        "applies_to": [
+          "pmove_perm_invariant_of_functional"
+        ]
+      },
+      {
+        "name": "hF : Functional M (corollary b')",
+        "purpose": "with two different sources for one destination the first-entry and last-entry readings can differ",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.pmove_eq_pmoveLast_needs_functional",
+        "applies_to": [
+          "pmove_eq_pmoveLast_of_functional"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Bool (true ≠ false), the functional swap [(0,1),(1,0)], its reordering [(1,0),(0,1)], and its order independence on every Bool store; for (c), the store with σ 1 = σ 2 = 1 and the non-functional [(0,1),(0,2)] (FunctionalAt holds) and the identity store (FunctionalAt fails).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_pmove_perm_invariant_all",
+      "Toy.ParMove.functionalAt_equal_values_example",
+      "Toy.ParMove.not_functionalAt_id_example"
+    ],
+    "non_claims": [
+      "Functional is strictly weaker than WellFormed (distinct destinations): every well-formed list is functional (functional_of_wellFormed), and the exact duplicate [(0,1),(0,1)] is functional but not well-formed (functional_duplicate_not_wellFormed, a single concrete instance). The uncarded corollary pmove_eq_pmoveLast_of_wellFormed is the WellFormed special case of (b').",
+      "Functional is a condition on source locations, required for order independence on all stores; for one given store the right condition is FunctionalAt (equal source values), which allows two different source locations holding the same value. FunctionalAt is the closest analogue here of the condition Boissinot et al. state for SSA variables (V(b) = V(c)); SSA value equality is a static property of a program rather than of one store, so the correspondence is informal.",
+      "Says nothing about sequential implementations; it is a statement about the parallel semantics only.",
+      "Order independence is about reordering the list, not about which locations are written.",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "CakeML, file compiler/backend/reg_alloc/parmoveScript.sml at commit 4777c4b7c0aa4661994e29f97b9501c3f0b7d602 (github.com/CakeML/cakeml): a HOL4 formalisation of the Rideau-Serpette-Leroy algorithm, with moves written (destination, source) as in this package. Theorem parsem_perm: 'windmill l1 ∧ PERM l1 l2 ⇒ parsem l1 = parsem l2' (order independence for distinct destinations, the WellFormed special case of Functional here); parmove_correct states correctness of the compiled move sequence for windmills.",
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations).",
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "CompCert, file lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861 (github.com/AbsInt/CompCert; file contents at that commit). exec_par gives the parallel semantics; parmove_correctness assumes is_mill (no destination appears twice) and move_no_temp (no temporary occurs as a source or a destination). Moves there are written (source, destination), the reverse of this package's (destination, source)."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "sequentialize-sound-off-scratch",
+    "lean": [
+      "Toy.ParMove.sequentialize_agrees_off_tmp"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The strategy (emit ready moves, break each remaining cycle through one scratch location) is May's, as credited by Rideau-Serpette-Leroy and Boissinot et al.; Rideau-Serpette-Leroy call one-temporary serialization 'a folklore result'. The side conditions used here (Functional instead of distinct destinations; scratch only required not to be both a destination and a source) were not found in the sources cited here; no novelty is claimed.",
+    "plain_claim": "For a functional parallel move M (in particular a well-formed one) and a scratch location tmp that is not simultaneously a destination and a source of M, running the move list sequentialize tmp M from any store σ gives, at every location other than tmp, exactly the value pmove M σ prescribes.",
+    "statement": "Functional M → (tmp ∉ dsts M ∨ tmp ∉ srcs M) → ∀ σ, ∀ l ≠ tmp, runSeq (sequentialize tmp M) σ l = pmove M σ l",
+    "hypotheses": [
+      {
+        "name": "hF : Functional M",
+        "purpose": "a destination with two different sources has no order-independent meaning; the algorithm can then follow neither reading",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.sequentialize_needs_functional"
+      },
+      {
+        "name": "htmp : tmp ∉ dsts M ∨ tmp ∉ srcs M",
+        "purpose": "if tmp is both a destination and a source it can lie on a cycle and be clobbered before it is read",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.sequentialize_needs_tmp_not_dst_or_not_src"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "[(1,2),(2,1),(3,0)] with tmp = 0 (tmp is read by 3 := 0 and is not a destination; emitted sequence 3:=0; 0:=1; 1:=2; 2:=0), and [(0,3),(1,2),(2,1)] with tmp = 0 (tmp is a destination, not a source).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_sequentialize_tmp_is_source",
+      "Toy.ParMove.nonvacuity_sequentialize_tmp_is_destination"
+    ],
+    "non_claims": [
+      "The conclusion excludes tmp, and no theorem about the final value of tmp is proved, on cyclic or on acyclic inputs (in particular, whether tmp is left unchanged on acyclic inputs is not proved). Breaking a cycle of length at least 2 can overwrite even a fresh tmp: for M = [(1,2),(2,1)], tmp = 0 (neither a source nor a destination of M) and the identity store on Nat, the emitted sequence leaves the old value of 1 at location 0, whereas pmove M keeps the old value of 0 there (sequentialize_clobbers_tmp, a single concrete instance). Self-moves (1-cycles) never cause a write to tmp, because sequentialize drops them before its loop (by definition).",
+      "Liveness is not modeled: a register that is syntactically fresh for M (neither a source nor a destination) can still be unsafe as tmp if it holds a value needed after the parallel move, because each cycle break writes tmp (by the definition of seqLoop it emits the move (tmp, m.1)); sequentialize_clobbers_tmp shows the value of a fresh tmp being changed on one input.",
+      "The two cases allowed by htmp differ in practice. If tmp is a source but not a destination, the theorem gives the parallel result at every location other than tmp, including the destinations of the moves that read tmp; nothing is proved about the value left in tmp, which can be overwritten when a cycle is broken. If tmp is a destination but not a source, the parallel move's own assignment to tmp can be lost: for [(0,3),(1,2),(2,1)] with tmp = 0 and the identity store, the emitted sequence leaves the old value of 1 at 0 instead of the old value of 3 (sequentialize_loses_tmp_destination, a single concrete instance).",
+      "htmp is tight but not necessary: for M = [(0,0),(1,2),(2,1)] with tmp = 0, where tmp is both a destination and a source only through the self-move (0,0), htmp fails and the conclusion still holds for every store Nat → Nat (sequentialize_works_with_tmp_self_move, a single concrete instance). Unproved commentary: the same appears to hold for every functional M in which tmp occurs only in self-moves (tmp, tmp), because sequentialize drops self-moves before its loop and the remaining list satisfies htmp; no theorem in this package states this.",
+      "Full scratch freshness (tmp neither a source nor a destination, as in CompCert's move_no_temp) is sufficient but not necessary for this algorithm; it IS necessary for strategies that may break a cycle while a pending move still reads tmp (see sequential-composition-of-move-blocks, counterexample runSeq_append_needs_tmp_not_src).",
+      "The algorithm drops self-moves (by definition) but does not deduplicate: on the functional input [(0,1),(0,1),(1,0)] with tmp = 9 it emits [(9,0),(0,1),(0,1),(1,9)], which contains the move (0,1) twice (sequentialize_emits_duplicates_example, a single concrete instance).",
+      "One untyped scratch location: unlike CompCert's Parmov.v and Rideau-Serpette-Leroy (a temporary chosen per register, T(r), preserving register classes such as integer versus floating-point), register classes are not modeled.",
+      "The result is about this specific ready-first algorithm, not about the Rideau-Serpette-Leroy algorithm, Boissinot et al.'s Algorithm 1, or any production implementation.",
+      "Not a move-count optimality result, and no move count for general inputs is proved. When no move is ready, the algorithm breaks a cycle through tmp (by the definition of seqLoop), even when a cycle value already has a copy elsewhere, and such a copy can make scratch unnecessary: [(3,1),(2,1),(1,2)] is realized exactly, from every store, by 3 plain moves with no scratch (cycle_with_outgoing_copy_realized_without_scratch). How the move count of sequentialize compares with Boissinot et al.'s Algorithm 1 is not examined. Only the isolated-cycle case is shown to match the lower bound, by a finite check of the cycles of length k = 2..5 on locations 0..k-1 with tmp = 9 (sequentialize_cycle_length_examples).",
+      "No claim about time complexity (the toy algorithm is quadratic).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "May. \"The Parallel Assignment Problem Redefined.\" IEEE Transactions on Software Engineering 15(6):821-824, 1989, DOI 10.1109/32.24735 (bibliographic record from dblp). Cited through the descriptions in Rideau-Serpette-Leroy Section 3 and Boissinot et al. Section III-C, which credit it with the strategy that sequentialize follows: emit moves whose destination is no longer read, then break each remaining cycle with one temporary.",
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "CompCert, file lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861 (github.com/AbsInt/CompCert; file contents at that commit). exec_par gives the parallel semantics; parmove_correctness assumes is_mill (no destination appears twice) and move_no_temp (no temporary occurs as a source or a destination). Moves there are written (source, destination), the reverse of this package's (destination, source).",
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations).",
+      "CakeML, file compiler/backend/reg_alloc/parmoveScript.sml at commit 4777c4b7c0aa4661994e29f97b9501c3f0b7d602 (github.com/CakeML/cakeml): a HOL4 formalisation of the Rideau-Serpette-Leroy algorithm, with moves written (destination, source) as in this package. Theorem parsem_perm: 'windmill l1 ∧ PERM l1 l2 ⇒ parsem l1 = parsem l2' (order independence for distinct destinations, the WellFormed special case of Functional here); parmove_correct states correctness of the compiled move sequence for windmills.",
+      "Briggs, Cooper, Harvey, Simpson. \"Practical Improvements to the Construction and Destruction of Static Single Assignment Form.\" Software: Practice and Experience 28(8):859-881, 1998 (bibliographic record from dblp). Cited, as described in Boissinot et al. Section II, for identifying the 'lost copy problem' and the 'swap problem' that parallel copies cause in out-of-SSA translation.",
+      "Sethi. \"A Note on Implementing Parallel Assignment Instructions.\" Information Processing Letters 2(4):91-95, 1973, DOI 10.1016/0020-0190(73)90024-0; Welch. \"Parallel Assignment Revisited.\" Software: Practice and Experience 13(12):1175-1180, 1983, DOI 10.1002/spe.4380131208 (bibliographic records from dblp). Background, cited through Rideau-Serpette-Leroy Section 1: Sethi shows that compiling general parallel assignments with a constant number of temporaries is NP-hard; Welch outlines the trivial scheme with n temporaries.",
+      "Sreedhar, Ju, Gillies, Santhanam. \"Translating Out of Static Single Assignment Form.\" SAS 1999, LNCS 1694, pp. 194-210, DOI 10.1007/3-540-48294-6_13 (bibliographic record from dblp). Background only: out-of-SSA translation by copy insertion; its content is not relied on."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "sequential-composition-of-move-blocks",
+    "lean": [
+      "Toy.ParMove.runSeq_append_realizes_off_tmp"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore reasoning about emitting independent sub-problems one after the other, made precise.",
+    "plain_claim": "If a move list ms1 realizes the parallel move M1 and ms2 realizes M2 (each at every location other than one shared scratch location tmp, from every store), the two blocks have disjoint destinations, no source of M2 is a destination of M1, and tmp is not a source of M2, then ms1 ++ ms2 realizes M1 ++ M2 at every location other than tmp, from every store.",
+    "statement": "(h₁ : ∀ τ, ∀ l ≠ tmp, runSeq ms₁ τ l = pmove M₁ τ l) → (h₂ : ∀ τ, ∀ l ≠ tmp, runSeq ms₂ τ l = pmove M₂ τ l) → (hdisj : ∀ x ∈ dsts M₁, x ∉ dsts M₂) → (hread : ∀ x ∈ srcs M₂, x ∉ dsts M₁) → (htmp : tmp ∉ srcs M₂) → ∀ τ, ∀ l ≠ tmp, runSeq (ms₁ ++ ms₂) τ l = pmove (M₁ ++ M₂) τ l",
+    "hypotheses": [
+      {
+        "name": "h₁ (first block realized off tmp)",
+        "purpose": "premise about the first block",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_append_needs_first_realization"
+      },
+      {
+        "name": "h₂ (second block realized off tmp)",
+        "purpose": "premise about the second block",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_append_needs_second_realization"
+      },
+      {
+        "name": "hdisj : destinations of M₁ and M₂ are disjoint",
+        "purpose": "otherwise the second block can overwrite the first block's result",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_append_needs_disjoint_dsts"
+      },
+      {
+        "name": "hread : no source of M₂ is a destination of M₁",
+        "purpose": "the first block must not overwrite what the second reads (topological emission)",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_append_needs_sources_not_overwritten"
+      },
+      {
+        "name": "htmp : tmp ∉ srcs M₂",
+        "purpose": "the first block may clobber tmp; breaking a cycle before draining a reader of tmp can be wrong",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_append_needs_tmp_not_src"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Emit 3 := 0 first, then break the cycle [(1,2),(2,1)] through 0.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_runSeq_append_realizes_off_tmp"
+    ],
+    "non_claims": [
+      "Both blocks share the single scratch location tmp; composing blocks that clobber two different scratch locations is not covered.",
+      "Does not say every correct sequentialization decomposes into such blocks.",
+      "The counterexample for htmp shows a cycle-first emission order is wrong when tmp is read; it does not show that the Rideau-Serpette-Leroy algorithm or any other published algorithm emits that order.",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations).",
+      "CompCert, file lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861 (github.com/AbsInt/CompCert; file contents at that commit). exec_par gives the parallel semantics; parmove_correctness assumes is_mill (no destination appears twice) and move_no_temp (no temporary occurs as a source or a destination). Moves there are written (source, destination), the reverse of this package's (destination, source)."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "topological-order-realizes-parallel-move",
+    "lean": [
+      "Toy.ParMove.runSeq_eq_pmove_of_topological"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (Rideau-Serpette-Leroy Section 3: a tree is serialized 'in a bottom-up topological order'), made precise.",
+    "plain_claim": "A functional list of moves in which no move overwrites the source of a later move (a topological order), executed left to right with no scratch location, produces exactly, at every location and from every store, the parallel reading of the same list.",
+    "statement": "Functional ms → ms.Pairwise (fun e l => e.1 ≠ l.2) → ∀ σ, runSeq ms σ = pmove ms σ",
+    "hypotheses": [
+      {
+        "name": "hF : Functional ms",
+        "purpose": "sequential execution lets the last write win, the adopted parallel reading lets the first entry win; they can differ on a repeated destination with two sources",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_eq_pmove_needs_functional"
+      },
+      {
+        "name": "htop : Topological ms",
+        "purpose": "a move that overwrites a later move's source makes the later move read the new value",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_eq_pmove_needs_topological"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The chain [(2,1),(1,0)] (copy 1 into 2 before overwriting 1).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_runSeq_eq_pmove_of_topological"
+    ],
+    "non_claims": [
+      "Only sufficiency is proved; the converse (every exact plain-move realization of a list in its own order is topological) is not claimed. Topological also rejects harmless orders, e.g. a self-move before a reader of its location ([(1,1),(2,1)] is not topological but runs correctly on every store: topological_rejects_benign_self_move).",
+      "Functional is needed only because the adopted reading is first-entry: for the last-entry reading, a topological list realizes pmoveLast without any functionality hypothesis (runSeq_eq_pmoveLast_of_topological).",
+      "A move list containing a cycle has no topological reordering: if every move of a duplicate-free cycle of length at least 2 occurs in M, then no reordering of M is topological, whatever other moves M contains (not_topological_of_contains_cycleMoves). This follows from the general criterion not_topological_of_dsts_read (a list is not topological if a nonempty collection of its moves has every destination read by another move of the collection); not_topological_of_perm_cycleMoves covers only reorderings of the cycle itself. This does not mean that every cyclic parallel move needs a scratch location or swaps: an isolated cycle does (cycle-without-scratch-impossible), but a cycle with an outgoing copy such as [(3,1),(2,1),(1,2)] is realized exactly, from every store, by the plain moves [(3,1),(1,2),(2,3)], which read the saved value from the already-written destination 3 and are not a reordering of the list (cycle_with_outgoing_copy_realized_without_scratch).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations).",
+      "Briggs, Cooper, Harvey, Simpson. \"Practical Improvements to the Construction and Destruction of Static Single Assignment Form.\" Software: Practice and Experience 28(8):859-881, 1998 (bibliographic record from dblp). Cited, as described in Boissinot et al. Section II, for identifying the 'lost copy problem' and the 'swap problem' that parallel copies cause in out-of-SSA translation."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "cycle-with-scratch-upper-bound",
+    "lean": [
+      "Toy.ParMove.runSeq_cycleSeqScratch",
+      "Toy.ParMove.length_cycleSeqScratch"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Classical (Rideau-Serpette-Leroy Section 3): save one value, shift the cycle, restore.",
+    "plain_claim": "For a nonempty duplicate-free cycle l0, ..., l(k-1) with k ≥ 1 (each l(i+1) receives the old value of l(i), and l0 receives the old value of l(k-1)) and a scratch location tmp outside it, the k + 1 moves tmp := l(k-1); l(k-1) := l(k-2); ...; l1 := l0; l0 := tmp realize the cycle at every location other than tmp, from every store.",
+    "statement": "(l₀ :: rest).Nodup → tmp ∉ l₀ :: rest → ∀ σ, ∀ l ≠ tmp, runSeq (cycleSeqScratch tmp (l₀ :: rest)) σ l = pmove (cycleMoves (l₀ :: rest)) σ l;  (cycleSeqScratch tmp (l₀ :: rest)).length = (l₀ :: rest).length + 1",
+    "hypotheses": [
+      {
+        "name": "hn : (l₀ :: rest).Nodup",
+        "purpose": "a repeated location can make cycleMoves a different (non-cyclic) move",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_cycleSeqScratch_needs_nodup",
+        "applies_to": [
+          "runSeq_cycleSeqScratch"
+        ]
+      },
+      {
+        "name": "htmp : tmp ∉ l₀ :: rest",
+        "purpose": "the scratch must not be a cycle location",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSeq_cycleSeqScratch_needs_tmp_fresh",
+        "applies_to": [
+          "runSeq_cycleSeqScratch"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The 3-cycle [0,1,2] with scratch 3 (4 moves).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_runSeq_cycleSeqScratch"
+    ],
+    "non_claims": [
+      "The theorem says nothing about location tmp. Unproved commentary, read off the definition of cycleSeqScratch (no theorem states it): under the theorem's hypotheses the first move copies l(k-1) into tmp and no later move writes tmp, so tmp ends holding the old value of l(k-1). Hence tmp keeps its own old value exactly when tmp and l(k-1) initially hold equal values (for example on a constant store), and changes whenever they initially hold different values.",
+      "Stated for nonempty cycles (the list l₀ :: rest); for k = 1 the list cycleSeqScratch has 2 moves although the self-move needs none, and for the empty list cycleSeqScratch tmp [] is empty (length 0, not 1).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "May. \"The Parallel Assignment Problem Redefined.\" IEEE Transactions on Software Engineering 15(6):821-824, 1989, DOI 10.1109/32.24735 (bibliographic record from dblp). Cited through the descriptions in Rideau-Serpette-Leroy Section 3 and Boissinot et al. Section III-C, which credit it with the strategy that sequentialize follows: emit moves whose destination is no longer read, then break each remaining cycle with one temporary.",
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations)."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "cycle-with-scratch-lower-bound",
+    "lean": [
+      "Toy.ParMove.cycle_length_add_one_le_of_injective_of_realizes_off_tmp",
+      "Toy.ParMove.cycle_length_add_one_le_of_two_values_of_realizes_off_tmp"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Boissinot et al. state that their sequentialization 'requires the minimum number of copies' (without proof); this mechanizes the isolated-cycle lower bound with explicit hypotheses, per injective store and uniformly over all stores.",
+    "plain_claim": "Let ls be a duplicate-free cycle of length k ≥ 2 and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.",
+    "statement": "(a) ls.Nodup → 2 ≤ ls.length → tmp ∉ ls → Function.Injective σ → (∀ l ≠ tmp, runSeq ms σ l = pmove (cycleMoves ls) σ l) → ls.length + 1 ≤ ms.length;  (b) (a b : V) → a ≠ b → ls.Nodup → 2 ≤ ls.length → tmp ∉ ls → (∀ σ : Loc → V, ∀ l ≠ tmp, runSeq ms σ l = pmove (cycleMoves ls) σ l) → ls.length + 1 ≤ ms.length",
+    "hypotheses": [
+      {
+        "name": "hn : ls.Nodup",
+        "purpose": "a repeated location can change the target into a non-cyclic move",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_lower_bound_needs_nodup",
+          "Toy.ParMove.cycle_lower_bound_uniform_needs_nodup"
+        ]
+      },
+      {
+        "name": "hk : 2 ≤ ls.length",
+        "purpose": "a 1-cycle is the identity and needs no move",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_lower_bound_needs_two",
+          "Toy.ParMove.cycle_lower_bound_uniform_needs_two"
+        ]
+      },
+      {
+        "name": "htmp : tmp ∉ ls",
+        "purpose": "if the excluded location is on the cycle, its value need not be produced",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_lower_bound_needs_tmp_fresh",
+          "Toy.ParMove.cycle_lower_bound_uniform_needs_tmp_fresh"
+        ]
+      },
+      {
+        "name": "hσ : Function.Injective σ (statement a)",
+        "purpose": "with equal values no move is needed (constant store); injectivity on the cycle and the scratch alone is not enough, since an untouched location holding a copy of a cycle value can serve as a backup (cycle_lower_bound_needs_global_injectivity)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_lower_bound_needs_injective",
+          "Toy.ParMove.cycle_lower_bound_needs_global_injectivity"
+        ],
+        "applies_to": [
+          "cycle_length_add_one_le_of_injective_of_realizes_off_tmp"
+        ]
+      },
+      {
+        "name": "hreal (statement a: ms realizes the cycle off tmp from σ)",
+        "purpose": "premise",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.cycle_lower_bound_needs_realization",
+        "applies_to": [
+          "cycle_length_add_one_le_of_injective_of_realizes_off_tmp"
+        ]
+      },
+      {
+        "name": "hab : a ≠ b (statement b)",
+        "purpose": "over a one-element value type every store is the same and the empty sequence realizes the cycle",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.cycle_lower_bound_uniform_needs_two_values",
+        "applies_to": [
+          "cycle_length_add_one_le_of_two_values_of_realizes_off_tmp"
+        ]
+      },
+      {
+        "name": "hreal (statement b: ms realizes the cycle off tmp on every store)",
+        "purpose": "premise",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.cycle_lower_bound_uniform_needs_realization",
+        "applies_to": [
+          "cycle_length_add_one_le_of_two_values_of_realizes_off_tmp"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "(a) The 2-cycle [0,1], tmp = 2, σ = id on Nat, ms = cycleSeqScratch 2 [0,1] (3 moves: the bound is attained). (b) The same with V = Bool, realized on every Bool store.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_cycle_lower_bound",
+      "Toy.ParMove.nonvacuity_cycle_lower_bound_uniform"
+    ],
+    "non_claims": [
+      "Covers one isolated cycle only (cycleMoves ls fixes every location outside ls). No bound for general parallel moves is proved. In particular the count 'moved locations + number of cycles' is not a lower bound for general parallel moves: [(3,1),(2,1),(1,2)], a 2-cycle with an outgoing copy, has 3 moves and one 2-cycle but is realized exactly by 3 plain moves with no scratch (cycle_with_outgoing_copy_realized_without_scratch); Boissinot et al. count one extra copy only per 'circuit with no tree edge'.",
+      "Function.Injective σ is injectivity on the whole location type, so an injective store exists only when the location type is no larger than the value type (a cardinality fact, not proved here); for example no store Nat → Bool is injective (no_injective_store_nat_bool, proved for every σ : Nat → Bool), and by the same cardinality argument (not proved here) no store Nat → BitVec w is injective. In such settings the injective-store statement is vacuous; use the uniform (all-stores) statement of this card, which needs only two distinct values.",
+      "Statement (a) is per store: with coinciding values fewer moves can suffice, and injectivity on the cycle locations and tmp alone does not give the bound (cycle_lower_bound_needs_global_injectivity).",
+      "Moves may use any locations, but only tmp may end with a wrong value; with more clobberable locations the statement does not apply.",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations).",
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "May. \"The Parallel Assignment Problem Redefined.\" IEEE Transactions on Software Engineering 15(6):821-824, 1989, DOI 10.1109/32.24735 (bibliographic record from dblp). Cited through the descriptions in Rideau-Serpette-Leroy Section 3 and Boissinot et al. Section III-C, which credit it with the strategy that sequentialize follows: emit moves whose destination is no longer read, then break each remaining cycle with one temporary.",
+      "Sethi. \"A Note on Implementing Parallel Assignment Instructions.\" Information Processing Letters 2(4):91-95, 1973, DOI 10.1016/0020-0190(73)90024-0; Welch. \"Parallel Assignment Revisited.\" Software: Practice and Experience 13(12):1175-1180, 1983, DOI 10.1002/spe.4380131208 (bibliographic records from dblp). Background, cited through Rideau-Serpette-Leroy Section 1: Sethi shows that compiling general parallel assignments with a constant number of temporaries is NP-hard; Welch outlines the trivial scheme with n temporaries."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "cycle-without-scratch-impossible",
+    "lean": [
+      "Toy.ParMove.runSeq_ne_pmove_cycle_of_injective",
+      "Toy.ParMove.runSeq_ne_pmove_swap_of_injective",
+      "Toy.ParMove.runSeq_ne_pmove_cycle_of_two_values"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Folklore ('a swap needs a temporary or an exchange instruction'; Rideau-Serpette-Leroy Section 1: (x1, x2) := (x2, x1) cannot operate in place), mechanized for all cycle lengths k ≥ 2 with a value-loss argument, per injective store and uniformly over all stores.",
+    "plain_claim": "Let ls be a duplicate-free cycle of length k ≥ 2 (for example a parallel swap [(a,b),(b,a)] with a ≠ b). (a) For a given injective store σ, no sequence of plain moves, over any locations, turns σ exactly (at every location) into the cycle's target. (b) Over any location type and any value type with two distinct values, no single sequence of plain moves turns every store exactly into the cycle's target.",
+    "statement": "(a) ls.Nodup → 2 ≤ ls.length → Function.Injective σ → ∀ ms, runSeq ms σ ≠ pmove (cycleMoves ls) σ;  (a') a ≠ b → Function.Injective σ → ∀ ms, runSeq ms σ ≠ pmove [(a,b),(b,a)] σ;  (b) (a b : V) → a ≠ b → ls.Nodup → 2 ≤ ls.length → ¬ ∃ ms, ∀ σ : Loc → V, runSeq ms σ = pmove (cycleMoves ls) σ",
+    "hypotheses": [
+      {
+        "name": "hn : ls.Nodup",
+        "purpose": "a repeated location can change the target into a realizable non-cyclic move",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_impossibility_needs_nodup",
+          "Toy.ParMove.cycle_impossibility_uniform_needs_nodup"
+        ],
+        "applies_to": [
+          "runSeq_ne_pmove_cycle_of_injective",
+          "runSeq_ne_pmove_cycle_of_two_values"
+        ]
+      },
+      {
+        "name": "hk : 2 ≤ ls.length",
+        "purpose": "a 1-cycle is the identity",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_impossibility_needs_two",
+          "Toy.ParMove.cycle_impossibility_uniform_needs_two"
+        ],
+        "applies_to": [
+          "runSeq_ne_pmove_cycle_of_injective",
+          "runSeq_ne_pmove_cycle_of_two_values"
+        ]
+      },
+      {
+        "name": "hσ : Function.Injective σ (statements a, a')",
+        "purpose": "with equal values the empty sequence works; injectivity on the cycle alone is not enough, since two equal values elsewhere can let one location be borrowed and restored (cycle_impossibility_needs_global_injectivity)",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.cycle_impossibility_needs_injective",
+          "Toy.ParMove.swap_impossibility_needs_injective",
+          "Toy.ParMove.cycle_impossibility_needs_global_injectivity"
+        ],
+        "applies_to": [
+          "runSeq_ne_pmove_cycle_of_injective",
+          "runSeq_ne_pmove_swap_of_injective"
+        ]
+      },
+      {
+        "name": "hab : a ≠ b (swap corollary a'; a, b are locations)",
+        "purpose": "a 'swap' of a location with itself is the identity",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.swap_impossibility_needs_distinct",
+        "applies_to": [
+          "runSeq_ne_pmove_swap_of_injective"
+        ]
+      },
+      {
+        "name": "hab : a ≠ b (statement b; a, b are values)",
+        "purpose": "over a one-element value type the empty sequence works on every store",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.cycle_impossibility_uniform_needs_two_values",
+        "applies_to": [
+          "runSeq_ne_pmove_cycle_of_two_values"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "ls = [0,1] (and a = 0, b = 1) with σ = id on Nat; for (b), V = Bool.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_cycle_impossibility",
+      "Toy.ParMove.nonvacuity_swap_impossibility",
+      "Toy.ParMove.nonvacuity_cycle_impossibility_uniform"
+    ],
+    "positive_control_lean": [
+      "Toy.ParMove.cycle_impossibility_positive_control",
+      "Toy.ParMove.cycle_with_outgoing_copy_realized_without_scratch"
+    ],
+    "non_claims": [
+      "Escape hatches: allowing one location outside the cycle to be clobbered makes the cycle realizable with k + 1 moves (cycle-with-scratch-upper-bound); a swap primitive realizes it exactly with k - 1 swaps (cycle-with-swaps-upper-bound); cycle_impossibility_positive_control checks both for the 2-cycle [0, 1] at the identity store.",
+      "Escape hatch for non-isolated cycles: cycleMoves ls is an isolated cycle that fixes every location outside ls. If the parallel move also copies a cycle location to a destination outside the cycle, plain moves can suffice with no scratch location and no swap: [(3,1),(2,1),(1,2)] is realized exactly, from every store, by 3 := 1; 1 := 2; 2 := 3 (cycle_with_outgoing_copy_realized_without_scratch; the example of Rideau-Serpette-Leroy Section 9).",
+      "Function.Injective σ is injectivity on the whole location type, so an injective store exists only when the location type is no larger than the value type (a cardinality fact, not proved here); for example no store Nat → Bool is injective (no_injective_store_nat_bool, proved for every σ : Nat → Bool), and by the same cardinality argument (not proved here) no store Nat → BitVec w is injective. In such settings the injective-store statement is vacuous; use the uniform (all-stores) statement of this card, which needs only two distinct values.",
+      "Statement (a) is per store: for a constant store the empty sequence works, and injectivity on the cycle locations alone does not suffice (cycle_impossibility_needs_global_injectivity). Conversely, when no store is injective (for example a 3-cycle of Bool flags), it does not follow that some fixed plain-move sequence works for all stores: statement (b) excludes that whenever the value type has two distinct values.",
+      "Plain moves only; instructions that combine values (xor, add/sub) are not covered (the xor-swap realizes a swap without scratch).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle.",
+      "Boissinot, Darte, Rastello, Dupont de Dinechin, Guillon. \"Revisiting Out-of-SSA Translation for Correctness, Code Quality and Efficiency.\" CGO 2009, pp. 114-125, DOI 10.1109/CGO.2009.19 (bibliographic record from dblp). Text quoted from the research-report version, HAL inria-00349925v3 (titled '... Code Quality, and Efficiency'), Section III-C 'Sequentialization of parallel copies'. Copies are written a ↦ b (source, destination), the reverse of this package's (destination, source). Section III-C credits C. May (1989) with a similar algorithm and gives Algorithm 1, a ready-list/to-do-list algorithm with 'one extra fresh variable', which generates 'the same number of copies as expressed by the parallel copy, except possibly one additional copy for each circuit with no tree edge'. It also states that each variable has a unique incoming copy: 'a parallel copy (b ↦ a, c ↦ a) is possible but only if V(b) = V(c) in which case one of the copies can be removed', where V(x) is the SSA value of x (Section III-A). That condition is semantic (two possibly different source variables known to hold the same value; the closest notion here is FunctionalAt, a condition at one store), not the syntactic condition Functional (identical source locations).",
+      "Briggs, Cooper, Harvey, Simpson. \"Practical Improvements to the Construction and Destruction of Static Single Assignment Form.\" Software: Practice and Experience 28(8):859-881, 1998 (bibliographic record from dblp). Cited, as described in Boissinot et al. Section II, for identifying the 'lost copy problem' and the 'swap problem' that parallel copies cause in out-of-SSA translation."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "cycle-with-swaps-upper-bound",
+    "lean": [
+      "Toy.ParMove.runSwaps_cycleSwaps",
+      "Toy.ParMove.length_cycleSwaps"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Classical decomposition of a cycle into transpositions.",
+    "plain_claim": "For a duplicate-free cycle l0, ..., l(k-1), the swaps (l0,l1), (l0,l2), ..., (l0,l(k-1)), executed in order, realize the cycle exactly at every location, from every store; there are ls.length - 1 of them, which is k - 1 for k ≥ 1 and 0 for the empty list (truncated subtraction).",
+    "statement": "ls.Nodup → ∀ σ, runSwaps (cycleSwaps ls) σ = pmove (cycleMoves ls) σ;  (cycleSwaps ls).length = ls.length - 1",
+    "hypotheses": [
+      {
+        "name": "hn : ls.Nodup",
+        "purpose": "with a repeated location the swap list and the target can diverge",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runSwaps_cycleSwaps_needs_nodup",
+        "applies_to": [
+          "runSwaps_cycleSwaps"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "[0,1,2] (2 swaps).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_runSwaps_cycleSwaps"
+    ],
+    "non_claims": [
+      "Says nothing about how a swap is implemented; an xor-swap implementation needs distinct operands or a zero value in the aliased location (see xor-swap-correct-iff-distinct-or-zero).",
+      "At k = 0, ls.length - 1 is 0 by truncated subtraction (length_cycleSwaps_nil).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Standard fact about permutations: a k-cycle is a product of k - 1 transpositions and of no fewer. No single reference is relied on; the package proves both directions for its swap model. Boissinot et al. Section II (HAL inria-00349925v3) mention that a swap needs an extra copy 'unless an instruction can perform a swap', which is the setting of this result."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "cycle-with-swaps-lower-bound",
+    "lean": [
+      "Toy.ParMove.cycle_length_sub_one_le_of_injective_of_runSwaps",
+      "Toy.ParMove.cycle_length_sub_one_le_of_two_values_of_runSwaps"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Classical: a k-cycle is not a product of fewer than k - 1 transpositions; mechanized by a union-find potential.",
+    "plain_claim": "Let ls be a duplicate-free cycle of length k. (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)",
+    "statement": "(a) ls.Nodup → Function.Injective σ → runSwaps ss σ = pmove (cycleMoves ls) σ → ls.length - 1 ≤ ss.length;  (b) (a b : V) → a ≠ b → ls.Nodup → (∀ σ : Loc → V, runSwaps ss σ = pmove (cycleMoves ls) σ) → ls.length - 1 ≤ ss.length",
+    "hypotheses": [
+      {
+        "name": "hn : ls.Nodup",
+        "purpose": "with a repeated location the target can be a single transposition",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.swap_lower_bound_needs_nodup",
+          "Toy.ParMove.swap_lower_bound_uniform_needs_nodup"
+        ]
+      },
+      {
+        "name": "hσ : Function.Injective σ (statement a)",
+        "purpose": "with equal values no swap is needed",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.swap_lower_bound_needs_injective",
+        "applies_to": [
+          "cycle_length_sub_one_le_of_injective_of_runSwaps"
+        ]
+      },
+      {
+        "name": "hreal (statement a: the swaps realize the cycle exactly from σ)",
+        "purpose": "premise",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.swap_lower_bound_needs_realization",
+        "applies_to": [
+          "cycle_length_sub_one_le_of_injective_of_runSwaps"
+        ]
+      },
+      {
+        "name": "hab : a ≠ b (statement b)",
+        "purpose": "over a one-element value type the empty list works on every store",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.swap_lower_bound_uniform_needs_two_values",
+        "applies_to": [
+          "cycle_length_sub_one_le_of_two_values_of_runSwaps"
+        ]
+      },
+      {
+        "name": "hreal (statement b: the swaps realize the cycle exactly on every store)",
+        "purpose": "premise",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.swap_lower_bound_uniform_needs_realization",
+        "applies_to": [
+          "cycle_length_sub_one_le_of_two_values_of_runSwaps"
+        ]
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "[0,1,2] realized by its 2 swaps (the bound is attained), from σ = id on Nat and from every Bool store.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_swap_lower_bound",
+      "Toy.ParMove.nonvacuity_swap_lower_bound_uniform"
+    ],
+    "non_claims": [
+      "Swap-only sequences; mixing swaps with plain moves or a scratch location is not covered.",
+      "One cycle only.",
+      "Function.Injective σ is injectivity on the whole location type, so an injective store exists only when the location type is no larger than the value type (a cardinality fact, not proved here); for example no store Nat → Bool is injective (no_injective_store_nat_bool, proved for every σ : Nat → Bool), and by the same cardinality argument (not proved here) no store Nat → BitVec w is injective. In such settings the injective-store statement is vacuous; use the uniform (all-stores) statement of this card, which needs only two distinct values.",
+      "Swaps only permute locations: runSwaps ss σ = σ ∘ runSwaps ss id (runSwaps_comp), so a swap sequence never creates a value and cannot keep a backup copy of a cycle value in a location outside the cycle. Consequently statement (a) needs injectivity of σ only on the cycle locations ls (cycle_length_sub_one_le_of_injOn_of_runSwaps, with a store that is injective on the cycle but not globally in nonvacuity_cycle_length_sub_one_le_of_injOn_of_runSwaps); (a) states global Function.Injective σ for uniformity with the plain-move bounds, where injectivity on the cycle is not enough (cycle_lower_bound_needs_global_injectivity).",
+      "At k = 0 the bound ls.length - 1 is 0 by truncated subtraction (length_cycleSwaps_nil).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Standard fact about permutations: a k-cycle is a product of k - 1 transpositions and of no fewer. No single reference is relied on; the package proves both directions for its swap model. Boissinot et al. Section II (HAL inria-00349925v3) mention that a swap needs an extra copy 'unless an instruction can perform a swap', which is the setting of this result."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "xor-swap-correct-iff-distinct-or-zero",
+    "lean": [
+      "Toy.ParMove.xorSwap_eq_swapStore_iff",
+      "Toy.ParMove.xorSwap_eq_swapStore_of_ne",
+      "Toy.ParMove.xorSwap_self"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "The xor-swap (Warren Section 2-20) and its aliasing failure are folklore; restated and proved for BitVec stores.",
+    "plain_claim": "Over w-bit words, the sequence a ^= b; b ^= a; a ^= b exchanges the contents of locations a and b when a ≠ b, and when a = b it sets that location to zero and leaves all others unchanged; hence it equals the true swap exactly when a ≠ b or the aliased (common) operand holds zero.",
+    "statement": "∀ σ a b, xorSwap σ a b = swapStore σ a b ↔ (a ≠ b ∨ σ a = 0#w);  a ≠ b → ∀ σ, xorSwap σ a b = swapStore σ a b;  ∀ σ a, xorSwap σ a a = upd σ a 0#w",
+    "hypotheses": [
+      {
+        "name": "hab : a ≠ b (for xorSwap_eq_swapStore_of_ne)",
+        "purpose": "aliased operands are zeroed instead of left alone",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.xorSwap_eq_swapStore_needs_ne",
+        "applies_to": [
+          "xorSwap_eq_swapStore_of_ne"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "8-bit values 0x5A at location 0 and 0xC3 at location 1.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_xorSwap"
+    ],
+    "non_claims": [
+      "Illustration of the aliasing hazard (a single concrete instance with 8-bit words): if both operands of a parallel swap [(a,b),(b,a)] are allocated to the same register 0 holding 1, the parallel move and the true swap leave 1 there but the xor-swap idiom leaves 0 (xorSwap_unsafe_for_aliased_parallel_swap). By the characterization of this card the failure does not occur when the aliased location holds zero, and at width w = 0 it cannot occur (xorSwap_eq_swapStore_width_zero, stated for locations Nat).",
+      "Locations are independent keys of a store Loc → BitVec w: partial overlap between distinct register names (for example x86 al and ax, which share bits 0..7) is not modeled, and neither are xor instructions that zero-extend their 32-bit result into a 64-bit register; both can break the swap on real hardware.",
+      "Only BitVec words with bitwise xor are modeled; add/sub variants and flag side effects are not.",
+      "No claim about performance or about whether real instruction sets provide an exchange instruction.",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Warren. Hacker's Delight, 2nd edition (2012), Section 2-20 'Exchanging Registers' (publisher's online excerpt at InformIT): 'A very old trick is exchanging the contents of two registers without using a third' (the three exclusive-or sequence). The section does not discuss aliased operands; it also covers exchanging two fields of the same register with masks."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "xor-swap-sequences-sound-without-self-swaps",
+    "lean": [
+      "Toy.ParMove.runXorSwaps_eq_runSwaps_of_no_self",
+      "Toy.ParMove.runXorSwaps_cycleSwaps"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Direct consequence of the xor-swap characterization.",
+    "plain_claim": "A list of swaps none of which is a self-swap behaves the same, on every store of w-bit words, whether each swap is a true exchange or the xor-swap idiom; in particular the xor-swap implementation of the cycle swaps cycleSwaps ls realizes a duplicate-free cycle ls exactly.",
+    "statement": "(∀ p ∈ ss, p.1 ≠ p.2) → ∀ σ, runXorSwaps ss σ = runSwaps ss σ;  ls.Nodup → ∀ σ, runXorSwaps (cycleSwaps ls) σ = pmove (cycleMoves ls) σ",
+    "hypotheses": [
+      {
+        "name": "no self-swap in ss",
+        "purpose": "a self-swap is zeroed by the idiom",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runXorSwaps_needs_no_self",
+        "applies_to": [
+          "runXorSwaps_eq_runSwaps_of_no_self"
+        ]
+      },
+      {
+        "name": "hn : ls.Nodup (corollary)",
+        "purpose": "a repeated cycle location can yield a self-swap (when l₀ recurs, as in [0, 1, 0])",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runXorSwaps_cycleSwaps_needs_nodup",
+        "applies_to": [
+          "runXorSwaps_cycleSwaps"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The swap list [(0,1),(0,2)] (no self-swap), and the duplicate-free cycle [0,1,2].",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_runXorSwaps"
+    ],
+    "non_claims": [
+      "Says nothing about swap lists produced by other algorithms; each must be checked for self-swaps.",
+      "At width w = 0 every word is 0#0, so self-swaps are harmless there; the counterexamples use w = 8.",
+      "Partial sub-register aliasing and 32-bit zero-extending xor instructions are not modeled (see xor-swap-correct-iff-distinct-or-zero).",
+      "Toy model: locations are an arbitrary type with decidable equality and a store is a total function; there are no register classes, no memory operands, no stack slots with different sizes, and no cost model. Nothing is claimed about any production compiler."
+    ],
+    "prior_art": [
+      "Warren. Hacker's Delight, 2nd edition (2012), Section 2-20 'Exchanging Registers' (publisher's online excerpt at InformIT): 'A very old trick is exchanging the contents of two registers without using a third' (the three exclusive-or sequence). The section does not discuss aliased operands; it also covers exchanging two fields of the same register with masks."
+    ],
+    "design_question": "Register allocators and code generators turn a parallel move (phi-resolution copies, calling-convention shuffles) into a sequence of moves, breaking cycles with a scratch register, swaps, or xor-swaps. Which sequentializations are exactly correct, and which side conditions (destination distinctness, scratch freshness, non-aliasing of swap operands) are necessary?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "preserve-upper-lane-write-is-very-well-behaved-lens",
+    "lean": [
+      "Toy.ParMove.putLane_veryWellBehaved_of_fits",
+      "Toy.ParMove.putLane_getPut",
+      "Toy.ParMove.putLane_putGet_of_fits",
+      "Toy.ParMove.putLane_putPut"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore (a bit-field update is a lens), made precise for BitVec lanes; general lens hierarchies are mechanized elsewhere (Isabelle AFP Optics) but not for bit lanes.",
+    "plain_claim": "For a lane (off, wid) that fits in an n-bit register (off + wid ≤ n), reading the lane (getLane) and writing it while preserving all other bits (putLane) form a very well-behaved lens: GetPut, PutGet and PutPut hold. GetPut and PutPut hold even without the fit condition; only PutGet (and hence very-well-behavedness) uses it.",
+    "statement": "L.off + L.wid ≤ n → VeryWellBehaved (getLane L) (putLane L);  GetPut (getLane L) (putLane L);  L.off + L.wid ≤ n → PutGet (getLane L) (putLane L);  PutPut (getLane L) (putLane L)",
+    "hypotheses": [
+      {
+        "name": "hfit : L.Fits n (for putLane_putGet_of_fits and putLane_veryWellBehaved_of_fits)",
+        "purpose": "bits of the value beyond the register are lost",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.putLane_putGet_needs_fits",
+        "applies_to": [
+          "putLane_putGet_of_fits",
+          "putLane_veryWellBehaved_of_fits"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The lane (8, 8) (x86 ah) in a 64-bit register.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_putLane_veryWellBehaved"
+    ],
+    "non_claims": [
+      "The lens laws (GetPut, PutGet, PutPut) are defined locally for total functions; general lens frame laws and product decompositions are outside the scope of this package.",
+      "hfit is sufficient and tight but not exactly necessary: PutGet holds if and only if L.wid = 0 ∨ L.Fits n (putLane_putGet_iff_wid_zero_or_fits), because for an empty lane the view type BitVec 0 has a single element; for example the empty lane (9, 0) lies beyond an 8-bit register and still satisfies PutGet (putLane_putGet_width_zero_beyond_register). Together with the unconditional GetPut and PutPut, VeryWellBehaved therefore also holds for empty lanes.",
+      "Modeling bridge (derived, not a theorem): x86-64 8-bit and 16-bit register writes behave like putLane on lanes (0,8), (8,8), (0,16); 32-bit writes do not, they zero-extend (writeZext 64).",
+      "Which (register, lane) pairs exist as instruction operands on a real ISA, and which combinations one instruction can encode, is not modeled: every lane of every register is allowed here.",
+      "Toy model: a register is an n-bit word (BitVec n) and a lane is a contiguous bit range (off, wid); no flags, no partial-register stalls or timing, no vector registers, no memory. ISA statements are modeling bridges only (derived), not theorems about hardware."
+    ],
+    "prior_art": [
+      "Foster, Greenwald, Moore, Pierce, Schmitt. \"Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem.\" ACM TOPLAS 29(3), article 17, 2007, DOI 10.1145/1232420.1232424 (bibliographic record from dblp; content from the authors' final version). Section 3 'Semantic Foundations' defines the laws GetPut, PutGet and the optional PutPut, and calls a well-behaved lens that also satisfies PutPut 'very well behaved'. The package defines these laws itself for total functions.",
+      "Foster, Pardillo-Laursen, Zeyda. \"Optics.\" Archive of Formal Proofs, May 25, 2017 (isa-afp.org/entries/Optics.html). Its abstract describes an Isabelle/HOL mechanisation of an algebraic hierarchy of lenses, including well-behaved and very well-behaved lenses, with a library of algebraic laws. General lens theory; it is not instantiated to bit lanes of machine words here.",
+      "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture, Order Number 253665-060US (September 2016), Section 3.4.1.1 'General-Purpose Registers in 64-Bit Mode', p. 3-12. Evidence scope: only the section number, title and page were confirmed at the primary source (the table of contents of that PDF); the section body was not retrieved, so no sentence of it is quoted. The behaviour relied on is paraphrased: in 64-bit mode a 32-bit-operand write zero-extends its result into the 64-bit register, and 8-bit and 16-bit writes leave the other bits of the register unchanged. Role: normative source, paraphrased. Modeling bridge only."
+    ],
+    "design_question": "Partial writes to sub-registers (x86-64 al/ah/ax/eax/rax, AArch64 w/x) either zero-extend into the full register or preserve the other bits. Which algebraic laws describe these writes, and when do two lane writes commute or frame each other?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "disjoint-lane-writes-commute-and-frame",
+    "lean": [
+      "Toy.ParMove.putLane_comm_of_disjoint",
+      "Toy.ParMove.getLane_putLane_of_disjoint"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Folklore, made precise.",
+    "plain_claim": "Writes to two lanes with disjoint bit ranges (one of them empty, or one ending before the other begins) commute, and writing one of them does not change what the other reads; neither statement needs the lanes to fit in the register.",
+    "statement": "L₁.Disjoint L₂ → ∀ v₁ v₂ w, putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w);  L₁.Disjoint L₂ → ∀ v w, getLane L₂ (putLane L₁ v w) = getLane L₂ w.   Here L₁.Disjoint L₂ := L₁.wid = 0 ∨ L₂.wid = 0 ∨ L₁.off + L₁.wid ≤ L₂.off ∨ L₂.off + L₂.wid ≤ L₁.off, which is equivalent to disjointness of the bit sets [off, off + wid) (Lane.disjoint_iff_bits).",
+    "hypotheses": [
+      {
+        "name": "hd : L₁.Disjoint L₂",
+        "purpose": "overlapping lanes share bits",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.ParMove.putLane_overlapping_not_comm",
+          "Toy.ParMove.getLane_putLane_needs_disjoint"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Lanes (0,8) and (8,8) (al and ah).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_putLane_comm"
+    ],
+    "non_claims": [
+      "Disjoint counts bit positions beyond the register; for lanes sticking out of the register it is stronger than needed (lane-writes-commute-iff-disjoint gives the exact in-register condition).",
+      "Concrete instance of the failure for overlapping lanes: in a 16-bit register, writing 0xFF to (0,8) and 0x0000 to (0,16) in the two orders gives different words (putLane_overlapping_not_comm).",
+      "The converse of framing is not stated separately; for commutation see lane-writes-commute-iff-disjoint.",
+      "Applies only to preserve-upper writes. On x86-64 and AArch64 a 32-bit general-purpose register write zero-extends into the 64-bit register (writeZext 64 with wid = 32; see the modeling bridges stated under Findings, Modeling bridges), so the commutation and framing statements of this card do not cover it: writeZext sets every bit at a position ≥ wid to zero (writeZext_upper_zero).",
+      "Toy model: a register is an n-bit word (BitVec n) and a lane is a contiguous bit range (off, wid); no flags, no partial-register stalls or timing, no vector registers, no memory. ISA statements are modeling bridges only (derived), not theorems about hardware."
+    ],
+    "prior_art": [
+      "Foster, Pardillo-Laursen, Zeyda. \"Optics.\" Archive of Formal Proofs, May 25, 2017 (isa-afp.org/entries/Optics.html). Its abstract describes an Isabelle/HOL mechanisation of an algebraic hierarchy of lenses, including well-behaved and very well-behaved lenses, with a library of algebraic laws. General lens theory; it is not instantiated to bit lanes of machine words here.",
+      "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture, Order Number 253665-060US (September 2016), Section 3.4.1.1 'General-Purpose Registers in 64-Bit Mode', p. 3-12. Evidence scope: only the section number, title and page were confirmed at the primary source (the table of contents of that PDF); the section body was not retrieved, so no sentence of it is quoted. The behaviour relied on is paraphrased: in 64-bit mode a 32-bit-operand write zero-extends its result into the 64-bit register, and 8-bit and 16-bit writes leave the other bits of the register unchanged. Role: normative source, paraphrased. Modeling bridge only."
+    ],
+    "design_question": "Partial writes to sub-registers (x86-64 al/ah/ax/eax/rax, AArch64 w/x) either zero-extend into the full register or preserve the other bits. Which algebraic laws describe these writes, and when do two lane writes commute or frame each other?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "lane-writes-commute-iff-disjoint",
+    "lean": [
+      "Toy.ParMove.putLane_comm_iff_disjointIn",
+      "Toy.ParMove.putLane_comm_iff_disjoint_of_fits"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore, made precise with the edge cases (empty lanes, lanes beyond the register) exposed.",
+    "plain_claim": "(a) For any two lanes and any register width n, all pairs of preserve-upper writes to the two lanes commute if and only if the lanes share no bit position below n. (b) If at least one of the two lanes fits in the n-bit register, all pairs of writes commute if and only if the lanes are Disjoint (disjoint bit ranges).",
+    "statement": "(a) (∀ v₁ v₂ (w : BitVec n), putLane L₁ v₁ (putLane L₂ v₂ w) = putLane L₂ v₂ (putLane L₁ v₁ w)) ↔ L₁.DisjointIn n L₂;  (b) (L₁.Fits n ∨ L₂.Fits n) → ((∀ v₁ v₂ w, ...) ↔ L₁.Disjoint L₂).   Here L₁.DisjointIn n L₂ := ∀ i < n, ¬ (L₁.off ≤ i < L₁.off + L₁.wid ∧ L₂.off ≤ i < L₂.off + L₂.wid).",
+    "hypotheses": [
+      {
+        "name": "hfit : L₁.Fits n ∨ L₂.Fits n (statement b)",
+        "purpose": "lanes that overlap only beyond the register commute although their bit ranges intersect",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.putLane_comm_iff_needs_fits",
+        "applies_to": [
+          "putLane_comm_iff_disjoint_of_fits"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "In 64 bits: al (0,8) and ah (8,8) (fit, disjoint, commute) and al (0,8) and ax (0,16) (fit, not disjoint, do not commute).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_putLane_comm_iff",
+      "Toy.ParMove.nonvacuity_putLane_comm_iff_disjointIn"
+    ],
+    "non_claims": [
+      "Commutation for all values; specific value pairs may commute even for overlapping lanes (e.g. writing the same bits).",
+      "Empty lanes (wid = 0) are Disjoint from every lane and commute with every write; no positive-width condition is needed.",
+      "Applies only to preserve-upper writes. On x86-64 and AArch64 a 32-bit general-purpose register write zero-extends into the 64-bit register (writeZext 64 with wid = 32; see the modeling bridges stated under Findings, Modeling bridges), so the commutation and framing statements of this card do not cover it: writeZext sets every bit at a position ≥ wid to zero (writeZext_upper_zero).",
+      "Toy model: a register is an n-bit word (BitVec n) and a lane is a contiguous bit range (off, wid); no flags, no partial-register stalls or timing, no vector registers, no memory. ISA statements are modeling bridges only (derived), not theorems about hardware."
+    ],
+    "prior_art": [
+      "Foster, Pardillo-Laursen, Zeyda. \"Optics.\" Archive of Formal Proofs, May 25, 2017 (isa-afp.org/entries/Optics.html). Its abstract describes an Isabelle/HOL mechanisation of an algebraic hierarchy of lenses, including well-behaved and very well-behaved lenses, with a library of algebraic laws. General lens theory; it is not instantiated to bit lanes of machine words here.",
+      "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture, Order Number 253665-060US (September 2016), Section 3.4.1.1 'General-Purpose Registers in 64-Bit Mode', p. 3-12. Evidence scope: only the section number, title and page were confirmed at the primary source (the table of contents of that PDF); the section body was not retrieved, so no sentence of it is quoted. The behaviour relied on is paraphrased: in 64-bit mode a 32-bit-operand write zero-extends its result into the 64-bit register, and 8-bit and 16-bit writes leave the other bits of the register unchanged. Role: normative source, paraphrased. Modeling bridge only."
+    ],
+    "design_question": "Partial writes to sub-registers (x86-64 al/ah/ax/eax/rax, AArch64 w/x) either zero-extend into the full register or preserve the other bits. Which algebraic laws describe these writes, and when do two lane writes commute or frame each other?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "zero-extend-write-not-a-narrow-lens",
+    "lean": [
+      "Toy.ParMove.writeZext_not_getPut_of_lt"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Folklore consequence of zero-extension, made precise for every getter.",
+    "plain_claim": "If wid < n, no getter whatsoever from n-bit words to wid-bit values makes the zero-extending write (which replaces the whole word by the zero-extended value) satisfy GetPut; in particular it is not a lens on the full word with a wid-bit view.",
+    "statement": "wid < n → ¬ ∃ g : BitVec n → BitVec wid, GetPut g (writeZext n)",
+    "hypotheses": [
+      {
+        "name": "h : wid < n",
+        "purpose": "at full width the low-lane getter works",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.writeZext_not_getPut_needs_lt"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "wid = 32, n = 64 (x86-64 32-bit writes, AArch64 W writes).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_writeZext"
+    ],
+    "positive_control_lean": [
+      "Toy.ParMove.writeZext_getPut_full"
+    ],
+    "non_claims": [
+      "Escape hatch (whole-word view): the zero-extending write is the full-width lane write of the zero-extended value, a very well-behaved lens with the whole word as its view (zero-extend-write-is-full-word-replacement).",
+      "Escape hatch (words with zero upper bits): GetPut fails only on words with a nonzero bit at a position ≥ wid (zero-extend-write-getput-iff-upper-bits-zero). On words whose bits at positions ≥ wid are all zero (for example values produced by earlier zero-extending writes), the low-lane getter and writeZext satisfy GetPut, PutGet (for wid ≤ n, writeZext_putGet_of_le) and PutPut, and writeZext keeps words in that set (writeZext_upper_zero).",
+      "PutGet and PutPut do hold for the zero-extending write with the low-lane getter on all words (writeZext_putGet_of_le, writeZext_putPut); only GetPut fails.",
+      "writeZext n v is defined as BitVec.setWidth n v, which zero-extends when wid ≤ n and truncates to the low n bits when wid > n (the semantics of the core BitVec.setWidth; for example writeZext 8 0x1234#16 0#8 = 0x34#8, writeZext_truncates_example); the name describes the case wid ≤ n, which is the case of the modeling bridges.",
+      "That x86-64 32-bit and AArch64 W-register writes behave like writeZext 64 with wid = 32 is a modeling bridge (derived), not a theorem.",
+      "Toy model: a register is an n-bit word (BitVec n) and a lane is a contiguous bit range (off, wid); no flags, no partial-register stalls or timing, no vector registers, no memory. ISA statements are modeling bridges only (derived), not theorems about hardware."
+    ],
+    "prior_art": [
+      "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture, Order Number 253665-060US (September 2016), Section 3.4.1.1 'General-Purpose Registers in 64-Bit Mode', p. 3-12. Evidence scope: only the section number, title and page were confirmed at the primary source (the table of contents of that PDF); the section body was not retrieved, so no sentence of it is quoted. The behaviour relied on is paraphrased: in 64-bit mode a 32-bit-operand write zero-extends its result into the 64-bit register, and 8-bit and 16-bit writes leave the other bits of the register unchanged. Role: normative source, paraphrased. Modeling bridge only.",
+      "Arm, 'Learn the architecture - A64 Instruction Set Architecture Guide' (document 102374, version 1.4), page 'Registers in AArch64 - general-purpose registers': 'When a W register is written, as seen in the example above, the top 32 bits of the 64-bit register are zeroed.' Role: documentation (the normative Arm Architecture Reference Manual is not cited). Modeling bridge only.",
+      "Foster, Greenwald, Moore, Pierce, Schmitt. \"Combinators for bidirectional tree transformations: A linguistic approach to the view-update problem.\" ACM TOPLAS 29(3), article 17, 2007, DOI 10.1145/1232420.1232424 (bibliographic record from dblp; content from the authors' final version). Section 3 'Semantic Foundations' defines the laws GetPut, PutGet and the optional PutPut, and calls a well-behaved lens that also satisfies PutPut 'very well behaved'. The package defines these laws itself for total functions."
+    ],
+    "design_question": "Partial writes to sub-registers (x86-64 al/ah/ax/eax/rax, AArch64 w/x) either zero-extend into the full register or preserve the other bits. Which algebraic laws describe these writes, and when do two lane writes commute or frame each other?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "zero-extend-write-getput-iff-upper-bits-zero",
+    "lean": [
+      "Toy.ParMove.writeZext_getPut_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore, made precise.",
+    "plain_claim": "Writing back the low wid bits of an n-bit word w with a zero-extending write leaves w unchanged if and only if every bit of w at a position ≥ wid is zero.",
+    "statement": "∀ w : BitVec n, writeZext n (getLane ⟨0, wid⟩ w) w = w ↔ ∀ i, wid ≤ i → w.getLsbD i = false",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "0x00000000DEADBEEF (holds) and 0x1122334455667788 (fails) with wid = 32, n = 64.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_writeZext_getPut_iff"
+    ],
+    "non_claims": [
+      "A pointwise statement about one word; it is not a lens law.",
+      "When wid ≥ n the right-hand side holds for every w (bits at positions ≥ n read as false), so the equality holds unconditionally (writeZext_getPut_of_ge).",
+      "writeZext n v is defined as BitVec.setWidth n v, which zero-extends when wid ≤ n and truncates to the low n bits when wid > n (the semantics of the core BitVec.setWidth; for example writeZext 8 0x1234#16 0#8 = 0x34#8, writeZext_truncates_example); the name describes the case wid ≤ n, which is the case of the modeling bridges.",
+      "Toy model: a register is an n-bit word (BitVec n) and a lane is a contiguous bit range (off, wid); no flags, no partial-register stalls or timing, no vector registers, no memory. ISA statements are modeling bridges only (derived), not theorems about hardware."
+    ],
+    "prior_art": [
+      "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture, Order Number 253665-060US (September 2016), Section 3.4.1.1 'General-Purpose Registers in 64-Bit Mode', p. 3-12. Evidence scope: only the section number, title and page were confirmed at the primary source (the table of contents of that PDF); the section body was not retrieved, so no sentence of it is quoted. The behaviour relied on is paraphrased: in 64-bit mode a 32-bit-operand write zero-extends its result into the 64-bit register, and 8-bit and 16-bit writes leave the other bits of the register unchanged. Role: normative source, paraphrased. Modeling bridge only.",
+      "Arm, 'Learn the architecture - A64 Instruction Set Architecture Guide' (document 102374, version 1.4), page 'Registers in AArch64 - general-purpose registers': 'When a W register is written, as seen in the example above, the top 32 bits of the 64-bit register are zeroed.' Role: documentation (the normative Arm Architecture Reference Manual is not cited). Modeling bridge only."
+    ],
+    "design_question": "Partial writes to sub-registers (x86-64 al/ah/ax/eax/rax, AArch64 w/x) either zero-extend into the full register or preserve the other bits. Which algebraic laws describe these writes, and when do two lane writes commute or frame each other?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "zero-extend-write-is-full-word-replacement",
+    "lean": [
+      "Toy.ParMove.writeZext_eq_putLane_full",
+      "Toy.ParMove.putLane_full_veryWellBehaved",
+      "Toy.ParMove.writeZext_putGet_of_le",
+      "Toy.ParMove.writeZext_putPut"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Reference point: unfolds what a zero-extending write is in lane terms; companion to zero-extend-write-not-a-narrow-lens.",
+    "plain_claim": "A zero-extending write writeZext n v of a wid-bit value equals the full-width lane write (0, n) of v.setWidth n (the zero-extended value when wid ≤ n, the truncated value when wid > n), and the full-width lane is a very well-behaved lens; with the low-lane getter (0, wid), the zero-extending write satisfies PutGet when wid ≤ n and PutPut always.",
+    "statement": "∀ v w, writeZext n v w = putLane ⟨0, n⟩ (v.setWidth n) w;  VeryWellBehaved (getLane ⟨0, n⟩) (putLane ⟨0, n⟩);  wid ≤ n → PutGet (getLane ⟨0, wid⟩) (writeZext n);  PutPut (getLane ⟨0, wid⟩) (writeZext n)",
+    "hypotheses": [
+      {
+        "name": "h : wid ≤ n (for writeZext_putGet_of_le)",
+        "purpose": "a value wider than the register can lose bits",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.writeZext_putGet_needs_fit",
+        "applies_to": [
+          "writeZext_putGet_of_le"
+        ]
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "wid = 32 ≤ n = 64.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_writeZext"
+    ],
+    "non_claims": [
+      "The full-word lens has the whole n-bit word as its view; it is not a lens with a wid-bit view (zero-extend-write-not-a-narrow-lens).",
+      "Only writeZext_putPut holds by definitional unfolding; the other three statements need bitwise reasoning (writeZext_eq_putLane_full, writeZext_putGet_of_le) or instantiate preserve-upper-lane-write-is-very-well-behaved-lens.",
+      "writeZext n v is defined as BitVec.setWidth n v, which zero-extends when wid ≤ n and truncates to the low n bits when wid > n (the semantics of the core BitVec.setWidth; for example writeZext 8 0x1234#16 0#8 = 0x34#8, writeZext_truncates_example); the name describes the case wid ≤ n, which is the case of the modeling bridges.",
+      "Toy model: a register is an n-bit word (BitVec n) and a lane is a contiguous bit range (off, wid); no flags, no partial-register stalls or timing, no vector registers, no memory. ISA statements are modeling bridges only (derived), not theorems about hardware."
+    ],
+    "prior_art": [
+      "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 1: Basic Architecture, Order Number 253665-060US (September 2016), Section 3.4.1.1 'General-Purpose Registers in 64-Bit Mode', p. 3-12. Evidence scope: only the section number, title and page were confirmed at the primary source (the table of contents of that PDF); the section body was not retrieved, so no sentence of it is quoted. The behaviour relied on is paraphrased: in 64-bit mode a 32-bit-operand write zero-extends its result into the 64-bit register, and 8-bit and 16-bit writes leave the other bits of the register unchanged. Role: normative source, paraphrased. Modeling bridge only.",
+      "Arm, 'Learn the architecture - A64 Instruction Set Architecture Guide' (document 102374, version 1.4), page 'Registers in AArch64 - general-purpose registers': 'When a W register is written, as seen in the example above, the top 32 bits of the 64-bit register are zeroed.' Role: documentation (the normative Arm Architecture Reference Manual is not cited). Modeling bridge only."
+    ],
+    "design_question": "Partial writes to sub-registers (x86-64 al/ah/ax/eax/rax, AArch64 w/x) either zero-extend into the full register or preserve the other bits. Which algebraic laws describe these writes, and when do two lane writes commute or frame each other? (Reference point.)",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "distinct-lane-destinations-not-enough",
+    "lean": [
+      "Toy.ParMove.lanePMove_distinct_dst_lanes_not_enough"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Concrete instance of a known requirement (Rideau-Serpette-Leroy Section 8 and CompCert's overlap extension assume pairwise-disjoint destinations).",
+    "plain_claim": "With registers indexed by Nat, 16-bit words, and the register file regs16 (register 0 holds 0x1234, register 1 holds 0xABCD, all others 0), the parallel lane move M = [lm 0 0 1 0 8, lm 0 0 2 0 16] (write register 1's low byte into register 0's low byte, and register 2's low 16 bits into register 0's low 16 bits) has distinct (register, lane) destinations, violates LaneWF, and its two orders give different values in register 0. This one instance shows that distinct (register, lane) destinations (DistinctDstLanes) do not imply LaneWF and do not make the parallel lane move independent of the order of the list; it does not show which condition suffices (see the non-claims).",
+    "statement": "DistinctDstLanes [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧ ¬ LaneWF [lm 0 0 1 0 8, lm 0 0 2 0 16] ∧ lanePMove [lm 0 0 1 0 8, lm 0 0 2 0 16] regs16 0 ≠ lanePMove [lm 0 0 2 0 16, lm 0 0 1 0 8] regs16 0.   Here lm dreg doff sreg soff wid copies wid bits from bit soff of register sreg to bit doff of register dreg, and regs16 r := if r = 0 then 0x1234#16 else if r = 1 then 0xABCD#16 else 0#16.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "non_claims": [
+      "Specific values only. That LaneWF suffices for order independence is the separate result lane-parallel-move-order-independent-for-disjoint-lanes; this card does not prove it.",
+      "For positive-width moves LaneWF implies DistinctDstLanes (laneWF_implies_distinctDstLanes_of_pos_wid, an uncarded universally quantified theorem). At width 0 the implication fails: the list [lm 0 4 1 0 0, lm 0 4 2 0 0] of two empty moves into the same lane (4, 0) of register 0 is LaneWF, because empty lanes are Disjoint by definition, but not DistinctDstLanes (laneWF_not_implies_distinctDstLanes_width_zero, a single concrete instance).",
+      "lanePMove applies the destination-lane writes in list order, so on overlapping bits the later entry wins; this is the opposite tie-break from the whole-register pmove, where the first entry wins.",
+      "Toy model of lane moves: each move copies wid bits between lanes with a preserve-upper write; registers are n-bit words indexed by an arbitrary type with decidable equality. No zero-extending lane moves, no scratch location, no algorithm producing the emission order is given."
+    ],
+    "prior_art": [
+      "CompCert lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861, section 'Extension to partially overlapping registers' (also Rideau-Serpette-Leroy Section 8): parmove2_correctness_with_overlap (lines 1588-1596) assumes, for a source list sl and a destination list dl: equal lengths; every source and every destination disjoint from every temporary (disjoint_temps); pairwise-disjoint destinations (pairwise_disjoint dl); no partial overlap between any source and any destination; and no partial overlap among temporaries (forall t1 t2, is_temp t1 -> is_temp t2 -> no_overlap t1 t2). Here no_overlap r1 r2 means that r1 and r2 are equal or disjoint. A write sets its target and leaves the other registers that are not disjoint from the target undefined (weak_update). Different model from this package's exact bit-lane writes."
+    ],
+    "design_question": "When the destinations of a parallel move are lanes of registers, what must replace 'distinct destinations' for the parallel move to be well defined and for a sequential emission order to realize it?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "lane-parallel-move-order-independent-for-disjoint-lanes",
+    "lean": [
+      "Toy.ParMove.lanePMove_perm_invariant_of_laneWF"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Lane analogue of order independence for distinct destinations; folklore made precise.",
+    "plain_claim": "If the destination lanes of lane moves into the same register are pairwise disjoint (LaneWF M) and M' is a reordering of M, then the parallel lane-move semantics (all sources read from the old register file, then all destination lanes written) of M and M' agree on every register file.",
+    "statement": "LaneWF M → M.Perm M' → ∀ ρ, lanePMove M ρ = lanePMove M' ρ.   Here LaneWF M := M.Pairwise (fun m₁ m₂ => m₁.dreg = m₂.dreg → m₁.dst.Disjoint m₂.dst).",
+    "hypotheses": [
+      {
+        "name": "hwf : LaneWF M",
+        "purpose": "overlapping destination lanes can make the result order dependent",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.lanePMove_perm_needs_laneWF"
+      },
+      {
+        "name": "hp : M.Perm M'",
+        "purpose": "the other list must consist of the same lane moves",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.lanePMove_perm_needs_perm"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "The in-register byte swap [r0.(0,8) ← r0.(8,8), r0.(8,8) ← r0.(0,8)] and its reordering.",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_lanePMove_perm"
+    ],
+    "non_claims": [
+      "LaneWF is sufficient (this card) but not necessary, even when order independence is required for every register file. Three single instances, each violating LaneWF yet order-independent on every register file of the stated word size: the exact duplicate [lm 0 0 1 0 8, lm 0 0 1 0 8] of a nonempty lane move, 16-bit words, every reordering (lanePMove_perm_invariant_duplicate_not_laneWF); [lm 0 0 1 0 8, lm 0 0 1 0 16], overlapping moves that copy aligned bits from the same source register, 16-bit words, both orders (lanePMove_same_source_overlap_not_laneWF); and [lm 0 6 1 0 4, lm 0 8 1 0 4], 8-bit words, whose destination lanes overlap only at bit positions 8 and 9, beyond the register, both orders (lanePMove_beyond_register_overlap_not_laneWF). No necessary and sufficient condition for order independence of lane moves is proved.",
+      "lanePMove applies the destination-lane writes in list order, so on overlapping bits the later entry wins; this is the opposite tie-break from the whole-register pmove, where the first entry wins.",
+      "Not a model of 32-bit general-purpose register moves on x86-64 or AArch64: those zero-extend into the 64-bit register (writeZext 64), whereas every lane move here preserves the other bits (putLane).",
+      "Which (register, lane) pairs exist as instruction operands on a real ISA, and which combinations one instruction can encode, is not modeled: every lane of every register is allowed here.",
+      "Toy model of lane moves: each move copies wid bits between lanes with a preserve-upper write; registers are n-bit words indexed by an arbitrary type with decidable equality. No zero-extending lane moves, no scratch location, no algorithm producing the emission order is given."
+    ],
+    "prior_art": [
+      "CompCert lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861, section 'Extension to partially overlapping registers' (also Rideau-Serpette-Leroy Section 8): parmove2_correctness_with_overlap (lines 1588-1596) assumes, for a source list sl and a destination list dl: equal lengths; every source and every destination disjoint from every temporary (disjoint_temps); pairwise-disjoint destinations (pairwise_disjoint dl); no partial overlap between any source and any destination; and no partial overlap among temporaries (forall t1 t2, is_temp t1 -> is_temp t2 -> no_overlap t1 t2). Here no_overlap r1 r2 means that r1 and r2 are equal or disjoint. A write sets its target and leaves the other registers that are not disjoint from the target undefined (weak_update). Different model from this package's exact bit-lane writes."
+    ],
+    "design_question": "When the destinations of a parallel move are lanes of registers, what must replace 'distinct destinations' for the parallel move to be well defined and for a sequential emission order to realize it?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  },
+  {
+    "id": "lane-parallel-move-sound-for-disjoint-lanes-topological-order",
+    "lean": [
+      "Toy.ParMove.runLanes_eq_lanePMove_of_laneWF_of_topological"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Lane analogue of the topological-order theorem; Rideau-Serpette-Leroy Section 8 (and CompCert's overlap extension) prove a related statement in a different model.",
+    "plain_claim": "If a parallel lane move M has pairwise disjoint destination lanes per register (LaneWF M) and ms is a reordering of M in which no move writes bits that a later move reads (LaneTopological ms), then executing ms sequentially yields exactly the parallel lane move M, on every register file.",
+    "statement": "LaneWF M → ms.Perm M → LaneTopological ms → ∀ ρ, runLanes ms ρ = lanePMove M ρ.   Here LaneTopological ms := ms.Pairwise (fun e l => e.dreg = l.sreg → e.dst.Disjoint l.src).",
+    "hypotheses": [
+      {
+        "name": "hwf : LaneWF M",
+        "purpose": "with overlapping destination lanes the emitted order can decide which bits win",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runLanes_needs_laneWF"
+      },
+      {
+        "name": "hp : ms.Perm M",
+        "purpose": "the emitted list must consist of the moves of M",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runLanes_needs_perm"
+      },
+      {
+        "name": "htop : LaneTopological ms",
+        "purpose": "a move that overwrites bits a later move reads can change what is copied",
+        "tightness": "tight",
+        "counterexample": "Toy.ParMove.runLanes_needs_topological"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Inside register 0: shift bytes down ([0,8) ← [8,16), [8,16) ← [16,24)) emitted reader-first, which exercises lane disjointness within one register; also, across registers, r2.(0,8) ← r1.(0,8) emitted before r1.(0,8) ← r0.(0,8).",
+    "nonvacuity_witness_lean": [
+      "Toy.ParMove.nonvacuity_runLanes_same_register",
+      "Toy.ParMove.nonvacuity_runLanes"
+    ],
+    "non_claims": [
+      "When the emitted list is M itself (no reordering), LaneWF is unnecessary: LaneTopological M alone gives runLanes M ρ = lanePMove M ρ (runLanes_eq_lanePMove_of_topological), because both sides apply the writes in the same order. LaneWF is needed because the theorem allows any reordering.",
+      "LaneTopological also rejects some harmless orders: [lm 0 0 0 0 8, lm 1 0 0 0 8] (a self-copy of the low byte of register 0, then a move that reads it) is not lane-topological, yet runLanes and lanePMove agree on it for every 16-bit register file (laneTopological_rejects_benign_self_copy, a single concrete instance).",
+      "Cyclic lane moves are not covered: no theorem states that a cyclic lane move has no lane-topological order (for the in-register byte swap [lm 0 0 0 8 8, lm 0 8 0 0 8], the given order is not lane-topological: runLanes_needs_topological), and breaking such cycles with a scratch lane is not covered.",
+      "No sequentialization algorithm for lane moves is given or verified.",
+      "Unlike the overlap extension of Rideau-Serpette-Leroy and CompCert, writes here are exact preserve-upper writes, so no 'no partial overlap between sources and destinations' hypothesis appears; this is a property of the toy model, not a claim about hardware.",
+      "lanePMove applies the destination-lane writes in list order, so on overlapping bits the later entry wins; this is the opposite tie-break from the whole-register pmove, where the first entry wins.",
+      "Not a model of 32-bit general-purpose register moves on x86-64 or AArch64: those zero-extend into the 64-bit register (writeZext 64), whereas every lane move here preserves the other bits (putLane).",
+      "Which (register, lane) pairs exist as instruction operands on a real ISA, and which combinations one instruction can encode, is not modeled: every lane of every register is allowed here.",
+      "Toy model of lane moves: each move copies wid bits between lanes with a preserve-upper write; registers are n-bit words indexed by an arbitrary type with decidable equality. No zero-extending lane moves, no scratch location, no algorithm producing the emission order is given."
+    ],
+    "prior_art": [
+      "CompCert lib/Parmov.v at commit 4710ec093ddea8e6eb86ad519df61c59b654e861, section 'Extension to partially overlapping registers' (also Rideau-Serpette-Leroy Section 8): parmove2_correctness_with_overlap (lines 1588-1596) assumes, for a source list sl and a destination list dl: equal lengths; every source and every destination disjoint from every temporary (disjoint_temps); pairwise-disjoint destinations (pairwise_disjoint dl); no partial overlap between any source and any destination; and no partial overlap among temporaries (forall t1 t2, is_temp t1 -> is_temp t2 -> no_overlap t1 t2). Here no_overlap r1 r2 means that r1 and r2 are equal or disjoint. A write sets its target and leaves the other registers that are not disjoint from the target undefined (weak_update). Different model from this package's exact bit-lane writes.",
+      "Rideau, Serpette, Leroy. \"Tilting at Windmills with Coq: Formal Verification of a Compilation Algorithm for Parallel Moves.\" Journal of Automated Reasoning 40(4):307-326, 2008, DOI 10.1007/s10817-007-9096-8 (bibliographic record from dblp; content from the authors' preprint at xavierleroy.org/publi/parallel-move.pdf). Moves are written (s ↦ d), source first. Section 2 requires pairwise-distinct destinations ('windmills': 'If a register appeared twice as a destination, its final value after the parallel move would not be uniquely defined'). Section 3 serializes a simple n-cycle with one temporary in n + 1 moves and credits C. May with the general algorithm (remove moves with no successor, then break the remaining disjoint cycles with one temporary); the Coq development verifies a different, stack-based algorithm. Section 9 notes that these algorithms are not optimal in move count: (r3, r2, r1) := (r1, r1, r2) is realizable in 3 moves, r3 := r1; r1 := r2; r2 := r3, using the destination r3 to break the cycle."
+    ],
+    "design_question": "When the destinations of a parallel move are lanes of registers, what must replace 'distinct destinations' for the parallel move to be well defined and for a sequential emission order to realize it?",
+    "proof_status": "proved",
+    "evidence_role": "execution (Lean kernel check)"
+  }
+]

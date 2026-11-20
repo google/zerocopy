@@ -1,0 +1,1317 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.ParMove.DistinctDstLanes": [],
+    "Toy.ParMove.Functional": [],
+    "Toy.ParMove.FunctionalAt": [],
+    "Toy.ParMove.GetPut": [],
+    "Toy.ParMove.Lane": [],
+    "Toy.ParMove.Lane.Disjoint": [],
+    "Toy.ParMove.Lane.DisjointIn": [],
+    "Toy.ParMove.Lane.Fits": [],
+    "Toy.ParMove.Lane.Fits.eq_1": [],
+    "Toy.ParMove.Lane.casesOn": [],
+    "Toy.ParMove.Lane.ctorIdx": [],
+    "Toy.ParMove.Lane.disjoint_iff_bits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.Lane.mk": [],
+    "Toy.ParMove.Lane.mk.inj": [],
+    "Toy.ParMove.Lane.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ParMove.Lane.mk.noConfusion": [],
+    "Toy.ParMove.Lane.mk.sizeOf_spec": [],
+    "Toy.ParMove.Lane.noConfusion": [],
+    "Toy.ParMove.Lane.noConfusionType": [],
+    "Toy.ParMove.Lane.off": [],
+    "Toy.ParMove.Lane.rec": [],
+    "Toy.ParMove.Lane.recOn": [],
+    "Toy.ParMove.Lane.wid": [],
+    "Toy.ParMove.LaneMove": [],
+    "Toy.ParMove.LaneMove.casesOn": [],
+    "Toy.ParMove.LaneMove.ctorIdx": [],
+    "Toy.ParMove.LaneMove.doff": [],
+    "Toy.ParMove.LaneMove.dreg": [],
+    "Toy.ParMove.LaneMove.dst": [],
+    "Toy.ParMove.LaneMove.dst.eq_1": [],
+    "Toy.ParMove.LaneMove.mk": [],
+    "Toy.ParMove.LaneMove.mk.inj": [],
+    "Toy.ParMove.LaneMove.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ParMove.LaneMove.mk.noConfusion": [],
+    "Toy.ParMove.LaneMove.mk.sizeOf_spec": [],
+    "Toy.ParMove.LaneMove.noConfusion": [],
+    "Toy.ParMove.LaneMove.noConfusionType": [],
+    "Toy.ParMove.LaneMove.rec": [],
+    "Toy.ParMove.LaneMove.recOn": [],
+    "Toy.ParMove.LaneMove.soff": [],
+    "Toy.ParMove.LaneMove.src": [],
+    "Toy.ParMove.LaneMove.src.eq_1": [],
+    "Toy.ParMove.LaneMove.sreg": [],
+    "Toy.ParMove.LaneMove.wid": [],
+    "Toy.ParMove.LaneTopological": [],
+    "Toy.ParMove.LaneWF": [],
+    "Toy.ParMove.PutGet": [],
+    "Toy.ParMove.PutPut": [],
+    "Toy.ParMove.Topological": [],
+    "Toy.ParMove.Topological.eq_1": [],
+    "Toy.ParMove.VeryWellBehaved": [],
+    "Toy.ParMove.WellFormed": [],
+    "Toy.ParMove.WellFormed.eq_1": [],
+    "Toy.ParMove.chain": [],
+    "Toy.ParMove.chain.eq_1": [],
+    "Toy.ParMove.chain.eq_2": [],
+    "Toy.ParMove.chain.eq_def": [],
+    "Toy.ParMove.chain.match_1": [],
+    "Toy.ParMove.chain_connected": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.chain_connected.match_1_1": [],
+    "Toy.ParMove.chain_no_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.chain_no_self.match_1_1": [],
+    "Toy.ParMove.cycleMoves": [],
+    "Toy.ParMove.cycleMoves.eq_1": [],
+    "Toy.ParMove.cycleMoves.eq_2": [],
+    "Toy.ParMove.cycleMoves.match_1": [],
+    "Toy.ParMove.cycleMoves_example": [],
+    "Toy.ParMove.cycleMoves_no_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycleMoves_repeated_not_cycle": [],
+    "Toy.ParMove.cycleSeqScratch": [],
+    "Toy.ParMove.cycleSeqScratch.eq_1": [],
+    "Toy.ParMove.cycleSeqScratch.eq_2": [],
+    "Toy.ParMove.cycleSeqScratch_example": [],
+    "Toy.ParMove.cycleSwaps": [],
+    "Toy.ParMove.cycleSwaps.eq_1": [],
+    "Toy.ParMove.cycleSwaps.eq_2": [],
+    "Toy.ParMove.cycleSwaps.match_1": [],
+    "Toy.ParMove.cycleSwaps_example": [],
+    "Toy.ParMove.cycleSwaps_no_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_needs_global_injectivity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_needs_injective": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.cycle_impossibility_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_needs_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_uniform_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_uniform_needs_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_impossibility_uniform_needs_two_values": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.cycle_length_add_one_le_of_injective_of_realizes_off_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_length_add_one_le_of_two_values_of_realizes_off_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_length_sub_one_le_of_injOn_of_runSwaps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_length_sub_one_le_of_injective_of_runSwaps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_length_sub_one_le_of_two_values_of_runSwaps": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_needs_global_injectivity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_needs_injective": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_needs_realization": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_needs_tmp_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_needs_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_uniform_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_uniform_needs_realization": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_uniform_needs_tmp_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_uniform_needs_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_lower_bound_uniform_needs_two_values": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.cycle_with_outgoing_copy_realized_without_scratch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.dedupL": [
+      "propext"
+    ],
+    "Toy.ParMove.dedupL.eq_1": [
+      "propext"
+    ],
+    "Toy.ParMove.dedupL.eq_2": [
+      "propext"
+    ],
+    "Toy.ParMove.dedupL.eq_def": [
+      "propext"
+    ],
+    "Toy.ParMove.dedupL.match_1": [],
+    "Toy.ParMove.dedupL_eq_self": [
+      "propext"
+    ],
+    "Toy.ParMove.dedupL_eq_self.match_1_1": [],
+    "Toy.ParMove.disjointIn_examples": [],
+    "Toy.ParMove.disjoint_examples": [],
+    "Toy.ParMove.disjoint_symm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.distinctDstLanes_examples": [],
+    "Toy.ParMove.dsts": [],
+    "Toy.ParMove.dsts.eq_1": [],
+    "Toy.ParMove.dsts_chain": [
+      "propext"
+    ],
+    "Toy.ParMove.dsts_chain.match_1_1": [],
+    "Toy.ParMove.dsts_cons": [],
+    "Toy.ParMove.dsts_cycleMoves": [
+      "propext"
+    ],
+    "Toy.ParMove.dsts_nil": [],
+    "Toy.ParMove.dsts_renameSrc": [
+      "propext"
+    ],
+    "Toy.ParMove.dsts_subset_of_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.eq_of_forall_store": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.exists_move_to_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.exists_move_to_tmp.match_1_1": [],
+    "Toy.ParMove.fits_examples": [],
+    "Toy.ParMove.foldl_laneWrite_congr_reads": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.foldl_laneWrite_congr_reads.match_1_1": [],
+    "Toy.ParMove.foldl_laneWrite_perm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.functionalAt_equal_values_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.functionalAt_of_functional": [],
+    "Toy.ParMove.functional_duplicate_not_wellFormed": [
+      "propext"
+    ],
+    "Toy.ParMove.functional_of_perm": [
+      "propext"
+    ],
+    "Toy.ParMove.functional_of_pmove_perm_invariant_needs_perm_invariance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.functional_of_pmove_perm_invariant_needs_two_values": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.functional_of_pmove_perm_invariant_of_two_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.functional_of_subset": [],
+    "Toy.ParMove.functional_of_wellFormed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.functional_renameSrc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.getLane": [],
+    "Toy.ParMove.getLane.eq_1": [],
+    "Toy.ParMove.getLane_examples": [
+      "propext"
+    ],
+    "Toy.ParMove.getLane_putLane_needs_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.getLane_putLane_of_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.getLastD_mem_of_ne_nil": [],
+    "Toy.ParMove.getLsbD_getLane": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.getLsbD_putLane": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.injective_id_nat": [],
+    "Toy.ParMove.instDecidableDisjoint": [],
+    "Toy.ParMove.instDecidableDisjointIn": [],
+    "Toy.ParMove.instDecidableDistinctDstLanes": [],
+    "Toy.ParMove.instDecidableEqLane": [],
+    "Toy.ParMove.instDecidableEqLane.decEq": [],
+    "Toy.ParMove.instDecidableEqLane.decEq.match_1": [],
+    "Toy.ParMove.instDecidableEqLaneMove": [],
+    "Toy.ParMove.instDecidableEqLaneMove.decEq": [],
+    "Toy.ParMove.instDecidableEqLaneMove.decEq.match_1": [],
+    "Toy.ParMove.instDecidableFits": [],
+    "Toy.ParMove.instDecidableLaneTopological": [],
+    "Toy.ParMove.instDecidableLaneWF": [],
+    "Toy.ParMove.instDecidableTopological": [],
+    "Toy.ParMove.instDecidableWellFormed": [],
+    "Toy.ParMove.instReprLane": [],
+    "Toy.ParMove.instReprLane.repr": [],
+    "Toy.ParMove.instReprLaneMove": [],
+    "Toy.ParMove.instReprLaneMove.repr": [],
+    "Toy.ParMove.isReady": [
+      "propext"
+    ],
+    "Toy.ParMove.isReady.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.isReady.eq_1": [
+      "propext"
+    ],
+    "Toy.ParMove.isReady_example": [
+      "propext"
+    ],
+    "Toy.ParMove.laneHigh8": [],
+    "Toy.ParMove.laneLow16": [],
+    "Toy.ParMove.laneLow32": [],
+    "Toy.ParMove.laneLow8": [],
+    "Toy.ParMove.laneMask": [
+      "propext"
+    ],
+    "Toy.ParMove.laneMask.eq_1": [
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_beyond_register_overlap_not_laneWF": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_byte_swap_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_distinct_dst_lanes_not_enough": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_perm_invariant_duplicate_not_laneWF": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_perm_invariant_of_laneWF": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_perm_needs_laneWF": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_perm_needs_perm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.lanePMove_same_source_overlap_not_laneWF": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneTopological_examples": [],
+    "Toy.ParMove.laneTopological_rejects_benign_self_copy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneWF_examples": [],
+    "Toy.ParMove.laneWF_implies_distinctDstLanes_of_pos_wid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneWF_not_implies_distinctDstLanes_width_zero": [],
+    "Toy.ParMove.laneWrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneWrite.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneWrite.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneWrite_comm": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.laneWrite_self_copy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.length_chain": [
+      "propext"
+    ],
+    "Toy.ParMove.length_cycleSeqScratch": [
+      "propext"
+    ],
+    "Toy.ParMove.length_cycleSwaps": [
+      "propext"
+    ],
+    "Toy.ParMove.length_cycleSwaps_nil": [],
+    "Toy.ParMove.length_dedupL_le_map_merge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.length_dedupL_le_one_of_const": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.length_dedupL_ufRun": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.length_dedupL_ufRun.match_1_1": [],
+    "Toy.ParMove.length_dsts": [
+      "propext"
+    ],
+    "Toy.ParMove.length_ge_of_realizes_off_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.length_le_of_nodup_of_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.length_le_of_nodup_of_subset.match_1_1": [],
+    "Toy.ParMove.length_srcs": [
+      "propext"
+    ],
+    "Toy.ParMove.lm": [],
+    "Toy.ParMove.lm.eq_1": [],
+    "Toy.ParMove.lookupSrc": [],
+    "Toy.ParMove.lookupSrc.eq_1": [],
+    "Toy.ParMove.lookupSrc.eq_2": [],
+    "Toy.ParMove.lookupSrc.eq_def": [],
+    "Toy.ParMove.lookupSrc.match_1": [],
+    "Toy.ParMove.lookupSrc_append_of_not_mem_left": [
+      "propext"
+    ],
+    "Toy.ParMove.lookupSrc_append_of_not_mem_right": [
+      "propext"
+    ],
+    "Toy.ParMove.lookupSrc_eq_none_iff": [
+      "propext"
+    ],
+    "Toy.ParMove.lookupSrc_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.mem_dedupL": [
+      "propext"
+    ],
+    "Toy.ParMove.mem_dedupL.match_1_1": [],
+    "Toy.ParMove.mem_dsts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.mem_of_lookupSrc_eq_some": [
+      "propext"
+    ],
+    "Toy.ParMove.mem_renameSrc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.mem_srcs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.mem_srcs_chain_or_last": [
+      "propext"
+    ],
+    "Toy.ParMove.mem_srcs_chain_or_last.match_1_1": [],
+    "Toy.ParMove.mem_srcs_cycleMoves": [
+      "propext"
+    ],
+    "Toy.ParMove.no_injective_store_nat_bool": [
+      "propext"
+    ],
+    "Toy.ParMove.nodup_dedupL": [
+      "propext"
+    ],
+    "Toy.ParMove.nodup_dedupL.match_1_1": [],
+    "Toy.ParMove.nodup_dsts_of_functional_of_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_cycle_impossibility": [],
+    "Toy.ParMove.nonvacuity_cycle_impossibility_uniform": [],
+    "Toy.ParMove.nonvacuity_cycle_length_sub_one_le_of_injOn_of_runSwaps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_cycle_lower_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_cycle_lower_bound_uniform": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_lanePMove_perm": [],
+    "Toy.ParMove.nonvacuity_not_topological_cycle": [],
+    "Toy.ParMove.nonvacuity_pmove_perm_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_pmove_perm_invariant_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_pmove_perm_invariant_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_putLane_comm": [],
+    "Toy.ParMove.nonvacuity_putLane_comm_iff": [],
+    "Toy.ParMove.nonvacuity_putLane_comm_iff_disjointIn": [],
+    "Toy.ParMove.nonvacuity_putLane_veryWellBehaved": [],
+    "Toy.ParMove.nonvacuity_runLanes": [],
+    "Toy.ParMove.nonvacuity_runLanes_same_register": [],
+    "Toy.ParMove.nonvacuity_runSeq_append_realizes_off_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_runSeq_cycleSeqScratch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_runSeq_eq_pmove_of_topological": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_runSwaps_cycleSwaps": [],
+    "Toy.ParMove.nonvacuity_runXorSwaps": [],
+    "Toy.ParMove.nonvacuity_sequentialize_tmp_is_destination": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_sequentialize_tmp_is_source": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_swap_impossibility": [],
+    "Toy.ParMove.nonvacuity_swap_lower_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_swap_lower_bound_uniform": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.nonvacuity_writeZext": [],
+    "Toy.ParMove.nonvacuity_writeZext_getPut_iff": [],
+    "Toy.ParMove.nonvacuity_xorSwap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.not_functionalAt_id_example": [
+      "propext"
+    ],
+    "Toy.ParMove.not_functional_two_sources": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.not_injective_const": [],
+    "Toy.ParMove.not_isReady_example": [
+      "propext"
+    ],
+    "Toy.ParMove.not_putGet_constant_put": [],
+    "Toy.ParMove.not_topological_example": [],
+    "Toy.ParMove.not_topological_of_contains_cycleMoves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.not_topological_of_dsts_read": [
+      "propext"
+    ],
+    "Toy.ParMove.not_topological_of_perm_cycleMoves": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.not_veryWellBehaved_constant_put": [],
+    "Toy.ParMove.not_wellFormed_repeated_destination": [],
+    "Toy.ParMove.perm_pair_self": [
+      "propext"
+    ],
+    "Toy.ParMove.perm_pair_self.match_1_1": [
+      "propext"
+    ],
+    "Toy.ParMove.pmove": [],
+    "Toy.ParMove.pmove.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.pmove.eq_1": [],
+    "Toy.ParMove.pmove.match_1": [],
+    "Toy.ParMove.pmoveLast": [],
+    "Toy.ParMove.pmoveLast.eq_1": [],
+    "Toy.ParMove.pmove_break_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_comp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.pmove_const": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.pmove_cycle_facts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_cycle_swap_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_eq_pmoveLast_needs_functional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_eq_pmoveLast_of_functional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_eq_pmoveLast_of_functionalAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_eq_pmoveLast_of_wellFormed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_erase_ready": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_filter_nonself": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_of_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_of_not_mem_dsts": [
+      "propext"
+    ],
+    "Toy.ParMove.pmove_perm_invariant_at_iff_functionalAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_perm_invariant_iff_functional_of_two_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_perm_invariant_needs_functional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_perm_invariant_needs_perm": [
+      "propext"
+    ],
+    "Toy.ParMove.pmove_perm_invariant_of_functional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_readings_agree_on_equal_source_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.pmove_readings_disagree_on_repeated_destination": [],
+    "Toy.ParMove.pmove_rejects_sequential_reading": [],
+    "Toy.ParMove.pmove_swap_example": [],
+    "Toy.ParMove.putLane": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_comm_iff_disjointIn": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_comm_iff_disjointIn.match_1_1": [],
+    "Toy.ParMove.putLane_comm_iff_disjoint_of_fits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_comm_iff_needs_fits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_comm_of_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_full_veryWellBehaved": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_getPut": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_high8_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_low32_not_zext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_low8_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_overlapping_not_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_putGet_iff_wid_zero_or_fits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_putGet_needs_fits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_putGet_of_fits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_putGet_width_zero_beyond_register": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_putPut": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.putLane_veryWellBehaved_of_fits": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.regs16": [],
+    "Toy.ParMove.renameSrc": [],
+    "Toy.ParMove.renameSrc.eq_1": [],
+    "Toy.ParMove.runLanes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runLanes_byte_swap_naive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runLanes_eq_lanePMove_of_laneWF_of_topological": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runLanes_eq_lanePMove_of_topological": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runLanes_eq_lanePMove_of_topological.match_1_1": [],
+    "Toy.ParMove.runLanes_needs_laneWF": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runLanes_needs_perm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runLanes_needs_topological": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq": [],
+    "Toy.ParMove.runSeq.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSeq.eq_1": [],
+    "Toy.ParMove.runSeq_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_append_needs_disjoint_dsts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_append_needs_first_realization": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_append_needs_second_realization": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_append_needs_sources_not_overwritten": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_append_needs_tmp_not_src": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_append_realizes_off_tmp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_comp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSeq_comp.match_1_1": [],
+    "Toy.ParMove.runSeq_cons": [],
+    "Toy.ParMove.runSeq_cycleSeqScratch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_cycleSeqScratch_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_cycleSeqScratch_needs_tmp_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_eq_pmoveLast_of_topological": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_eq_pmoveLast_of_topological.match_1_1": [],
+    "Toy.ParMove.runSeq_eq_pmove_at_id_of_forall": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_eq_pmove_at_of_id": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSeq_eq_pmove_cycle_010": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_eq_pmove_needs_functional": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_eq_pmove_needs_topological": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_eq_pmove_of_id": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSeq_eq_pmove_of_topological": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_mem_image": [
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_mem_image.match_1_1": [],
+    "Toy.ParMove.runSeq_naive_swap_fails": [],
+    "Toy.ParMove.runSeq_ne_destroyed": [
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_ne_of_injective_of_values_needed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_ne_of_injective_of_values_needed.match_1_1": [],
+    "Toy.ParMove.runSeq_ne_pmove_cycle_of_injective": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_ne_pmove_cycle_of_two_values": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_ne_pmove_swap_of_injective": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_nil": [],
+    "Toy.ParMove.runSeq_of_not_mem_dsts": [
+      "propext"
+    ],
+    "Toy.ParMove.runSeq_of_not_mem_dsts.match_1_1": [],
+    "Toy.ParMove.runSeq_swap_via_scratch_example": [],
+    "Toy.ParMove.runSwaps": [],
+    "Toy.ParMove.runSwaps.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSwaps.eq_1": [],
+    "Toy.ParMove.runSwaps_comp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSwaps_comp.match_1_1": [],
+    "Toy.ParMove.runSwaps_cons": [],
+    "Toy.ParMove.runSwaps_cycleSwaps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runSwaps_cycleSwaps_needs_nodup": [],
+    "Toy.ParMove.runSwaps_eq_pmove_of_id": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.runSwaps_nil": [],
+    "Toy.ParMove.runSwaps_order_matters": [],
+    "Toy.ParMove.runXorSwaps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runXorSwaps_cycleSwaps": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runXorSwaps_cycleSwaps_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runXorSwaps_eq_runSwaps_of_no_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.runXorSwaps_eq_runSwaps_of_no_self.match_1_1": [],
+    "Toy.ParMove.runXorSwaps_needs_no_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop.eq_2": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop.eq_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop.match_1": [],
+    "Toy.ParMove.seqLoop.match_3": [],
+    "Toy.ParMove.seqLoop_agrees_off_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop_agrees_off_tmp.match_1_1": [],
+    "Toy.ParMove.seqLoop_cons_of_find_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqLoop_cons_of_find_some": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.seqStep": [],
+    "Toy.ParMove.seqStep.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.seqStep.eq_1": [],
+    "Toy.ParMove.seqStep_comp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.seqStep_eq_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_agrees_off_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_agrees_off_tmp_of_wellFormed_of_fresh": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_chain_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_clobbers_tmp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_cycle_length_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_emits_duplicates_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_loses_tmp_destination": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_needs_functional": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_needs_tmp_not_dst_or_not_src": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_swap_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.sequentialize_works_with_tmp_self_move": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.srcs": [],
+    "Toy.ParMove.srcs.eq_1": [],
+    "Toy.ParMove.srcs_chain_subset": [
+      "propext"
+    ],
+    "Toy.ParMove.srcs_chain_subset.match_1_1": [],
+    "Toy.ParMove.srcs_cons": [],
+    "Toy.ParMove.srcs_cycleMoves_subset": [
+      "propext"
+    ],
+    "Toy.ParMove.srcs_nil": [],
+    "Toy.ParMove.srcs_subset_dsts_of_stuck": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.srcs_subset_dsts_of_stuck_of_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.srcs_subset_of_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.swapStore": [],
+    "Toy.ParMove.swapStore.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.swapStore.eq_1": [],
+    "Toy.ParMove.swapStore_comp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.swapStore_example": [],
+    "Toy.ParMove.swap_impossibility_needs_distinct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.swap_impossibility_needs_injective": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.swap_lower_bound_needs_injective": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.swap_lower_bound_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.swap_lower_bound_needs_realization": [],
+    "Toy.ParMove.swap_lower_bound_uniform_needs_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.swap_lower_bound_uniform_needs_realization": [],
+    "Toy.ParMove.swap_lower_bound_uniform_needs_two_values": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.topological_chain_reverse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.topological_chain_reverse.match_1_1": [],
+    "Toy.ParMove.topological_example": [],
+    "Toy.ParMove.topological_rejects_benign_self_move": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.ufMerge": [],
+    "Toy.ParMove.ufMerge.eq_1": [],
+    "Toy.ParMove.ufRun": [],
+    "Toy.ParMove.ufRun.eq_1": [],
+    "Toy.ParMove.ufRun_invariant": [
+      "propext"
+    ],
+    "Toy.ParMove.ufRun_invariant.match_1_1": [],
+    "Toy.ParMove.upd": [],
+    "Toy.ParMove.upd.congr_simp": [
+      "Quot.sound"
+    ],
+    "Toy.ParMove.upd.eq_1": [],
+    "Toy.ParMove.upd_ne": [
+      "propext"
+    ],
+    "Toy.ParMove.upd_same": [
+      "propext"
+    ],
+    "Toy.ParMove.veryWellBehaved_fst": [],
+    "Toy.ParMove.wellFormed_cycleMoves": [
+      "propext"
+    ],
+    "Toy.ParMove.wellFormed_swap_example": [],
+    "Toy.ParMove.writeZext": [],
+    "Toy.ParMove.writeZext.eq_1": [],
+    "Toy.ParMove.writeZext_eq_putLane_full": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_example": [],
+    "Toy.ParMove.writeZext_getPut_full": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_getPut_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_getPut_of_ge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_not_getPut_needs_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_not_getPut_of_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_not_preserve_upper": [],
+    "Toy.ParMove.writeZext_putGet_needs_fit": [],
+    "Toy.ParMove.writeZext_putGet_of_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.writeZext_putPut": [],
+    "Toy.ParMove.writeZext_truncates_example": [],
+    "Toy.ParMove.writeZext_upper_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorAssign": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorAssign.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_alias_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_eq_swapStore_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_eq_swapStore_needs_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_eq_swapStore_of_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_eq_swapStore_width_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ParMove.xorSwap_unsafe_for_aliased_parallel_swap": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
