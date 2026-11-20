@@ -392,30 +392,24 @@ orchestration and `trust-review`).
 
 ## Architecture and trust boundary
 
-Anneal verifies Rust programs (including unsafe code) by extracting typed
-`Runtime(PostCleanup)` MIR and compiler facts via `anneal-rustc-capture` and
-checking the crate's `Trusted.CrateTheorem` (`VerificationResult` over every
-captured function's `Compiler.Verified` obligations) inside the Lean 4 kernel.
+Anneal's design checks `Trusted.CrateTheorem` in Lean 4 over typed
+`Runtime(PostCleanup)` MIR and compiler facts. A result asserts that its TCB
+meets its trust policy and that the verified code is UB-free and meets its
+stated specifications if its trusted code is correct and the logged
+assumptions are jointly valid. See the [trust model](docs/trust-model.md).
 
-See [`README.md`](README.md) (correctness policy and `trusted/` invariant),
-[`THREAT_MODEL.md`](THREAT_MODEL.md) (threat model, human-review surfaces, and
-assumptions), [`docs/design.md`](docs/design.md) (overall design),
-[`docs/architecture.md`](docs/architecture.md) (three-stage MIR pipeline and
-layout), and [`docs/trust-model.md`](docs/trust-model.md) (boundary
-enforcement). Before placing or modifying code, verify its boundary:
+Keep first-party verifier code that requires trust in `trusted/`. Audit the
+pinned build inputs, `ci/`, and Zerocopy's root workflows as part of boundary
+enforcement.
 
-- Only primitive semantic/theorem definitions required to state or gate
-  `Trusted.CrateTheorem` and `VerificationResult` (`trusted/lean/`) and
-  effectful components—the `.olean` kernel-environment inspector
-  (`trusted/audit/`), CLI orchestrator (`trusted/cargo-anneal/`), and `rustc`
-  MIR/attribute serializer and proof-script generator
-  (`trusted/rustc-capture/`)—belong in `trusted/`.
-- Code outside `trusted/` (`theory/`, `correspondence/`) must be pure,
-  effect-free Lean checked by `anneal-audit` and the Lean kernel.
-- `vendor/lean-miri/` holds the SHA-256-pinned upstream `lean-miri`
-  reference model for repository CI correspondence audits only (never
-  packaged or imported by `trusted/lean/` or `theory/`; audited and
-  kernel-replayed per [`docs/trust-model.md`](docs/trust-model.md)).
+- Limit `trusted/` to primitive definitions that state or gate
+  `Trusted.CrateTheorem` and `VerificationResult`, the CI correspondence
+  adapter and claims, and the effectful auditor, CLI, and capture code.
+- Keep `theory/` and `correspondence/` pure and effect-free. The auditor and
+  Lean kernel check both.
+- The SHA-256-pinned `vendor/lean-miri/` model is audited and kernel-replayed
+  for CI correspondence only. Keep it out of the toolchain archive and the
+  imports of `trusted/lean/` and `theory/`.
 
 ## Commenting in `trusted/`
 
@@ -437,8 +431,9 @@ When implementing or modifying components in `trusted/`:
 
 - **Do not hand-roll standard utilities:** Rely on battle-tested ecosystem
   crates instead of writing bespoke parsers, serializers, hashers, or loggers.
-- **Audit economy:** A concise, idiomatic interface built on a standard crate
-  is easier for human reviewers to audit than hand-rolled plumbing.
+- **Audit economy:** Established libraries reduce the amount of bespoke code
+  that maintainers must audit. For new or updated dependencies, check
+  provenance, pinned checksums, and transitive dependencies.
 - **Dependency discipline:** Prefer focused crates with minimal transitive
   dependencies and well-understood failure modes posing no Anneal-specific
   soundness risks.

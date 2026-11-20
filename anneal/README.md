@@ -8,81 +8,80 @@ those terms. -->
 
 # Anneal
 
-Anneal is a verification framework for Rust under active development. See
-[`PRINCIPLES.md`](PRINCIPLES.md) for the project principles,
-[`THREAT_MODEL.md`](THREAT_MODEL.md) for the threat model, and
-[`META_PRINCIPLES.md`](META_PRINCIPLES.md) for the invariant goals that govern
-them.
+<img src="v1/docs/images/logo.svg" width="100%" alt="Anneal logo">
 
-## Repository layout
+<p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
-The current verifier builds from this directory. The independent workspaces
-in [`v1/`](v1/) and [`v2/`](v2/) retain the earlier implementations
-and the Aeneas toolchain used by V1.
+Rust lets you express many safety requirements in types. When you write
+`unsafe` code, some requirements live in safety comments. Anneal aims to make
+those requirements explicit and use Lean 4 to check that your code meets them.
 
-Zerocopy's [Anneal workflow](../.github/workflows/anneal.yml) calls the
-[current verifier checks](../.github/workflows/anneal-current.yml). The
-standalone release and review workflows under this directory are retained
-for reference. This integration enables CI for the current verifier.
-The existing V1 workflow continues to own publication.
+> [!NOTE]
+> The current MIR-based implementation can install a locally built toolchain
+> archive and includes kernel-checked proofs for selected MIR programs.
+> End-to-end Rust crate verification is under development.
 
-## Correctness policy and `trusted/`
+## From safety comments to proof obligations
 
-[`PRINCIPLES.md`](PRINCIPLES.md) promises that if the code in a verification
-result's TCB audit log is correct, its assumptions are valid, and Anneal emits
-no errors, then the verified code is sound and satisfies any stated
-specifications. A **verification result** asserts that:
+Consider [`usize::strict_div`][strict-div]. Its safe interface can accept any
+pair of `usize` values. If the divisor is zero, the function panics.
 
-1. its **TCB** satisfies its **trust policy**, and
-2. if the trusted code in its **TCB** is correct, and its trusted assumptions
-   are jointly valid, then its requested **claim** (baseline soundness and any
-   stated specifications) holds.
+Now consider [`usize::unchecked_div_exact`][unchecked-div-exact]. The caller
+must ensure that the divisor is nonzero and that it divides the dividend
+exactly. Both operands can have type `usize` even when, as in this call,
+they violate the safety contract.
 
-The `trusted/` directory isolates every first-party component of Anneal on
-which those two assertions depend without checked evidence. The invariant of
-`trusted/` is that **auditing `trusted/` and its explicit, pinned dependency
-manifest is sufficient to verify that Anneal upholds
-[`META_PRINCIPLES.md`](META_PRINCIPLES.md), [`PRINCIPLES.md`](PRINCIPLES.md),
-and [`THREAT_MODEL.md`](THREAT_MODEL.md)**: an auditor never needs to inspect
-first-party code outside `trusted/` to trust a verification result. This must
-remain true in the face of adversarial implementations in any other part of the
-repository.
+```rust
+let res: usize = unsafe { 1usize.unchecked_div_exact(0) }; // Undefined behavior
+```
 
-To keep the human audit surface tractable and reliable, `trusted/` permits
-battle-tested, widely-used external libraries for routine utilities (such as
-command-line flag parsing, serialization, and trace logging). Using established
-libraries for generic infrastructure is strongly preferred over hand-rolling
-bespoke implementations inside `trusted/`, which inflates audit burden and
-invites defect-prone reinvented wheels.
+Anneal's goal is to let developers state such preconditions as annotations and
+prove that verified calls satisfy them. The example below states both
+preconditions.
 
-(Currently, `.github` is an exception to this rule, although we aim to tighten
-that as well.)
+```rust
+impl usize {
+    /// # Safety
+    ///
+    /// ```anneal
+    /// requires(nonzero): rhs != 0
+    /// requires(divides): self % rhs == 0
+    /// ```
+    pub unsafe fn unchecked_div_exact(self, rhs: usize) -> usize;
+}
 
-## Design documentation
+let res: usize = unsafe { 1usize.unchecked_div_exact(0) }; // Cannot prove `rhs != 0`
+```
 
-- [`META_PRINCIPLES.md`](META_PRINCIPLES.md): The invariant goals governing
-  [`PRINCIPLES.md`](PRINCIPLES.md) and [`THREAT_MODEL.md`](THREAT_MODEL.md)—the
-  end-to-end sufficiency of bounded human review, the prohibition on security
-  theater, and the hierarchy of governing documents.
-- [`PRINCIPLES.md`](PRINCIPLES.md): Anneal's mission, correctness promise, and
-  decision-making priority order.
-- [`THREAT_MODEL.md`](THREAT_MODEL.md): Threat model, the division of labor
-  between bounded human review (stated specifications and the TCB audit log)
-  and automated verification, and the explicit assumptions and in-scope threats
-  Anneal defends against.
-- [`docs/design.md`](docs/design.md): Overall system design, end-to-end
-  verification workflow, library-centric verification, multi-modal
-  specifications, and incremental adoption.
-- [`docs/architecture.md`](docs/architecture.md): The three-stage MIR pipeline,
-  repository layout, `rustc` extraction lifecycle, and multi-version toolchain
-  strategy.
-- [`docs/trust-model.md`](docs/trust-model.md): How Anneal's internal `trusted/`
-  vs. `theory/` boundary and `trusted/audit/` implement and enforce
-  [`META_PRINCIPLES.md`](META_PRINCIPLES.md), [`PRINCIPLES.md`](PRINCIPLES.md),
-  and [`THREAT_MODEL.md`](THREAT_MODEL.md).
+*Support for this example is in development. The annotation syntax may change.*
 
-## Repository checks
+| | Rust | Anneal's design |
+| --- | --- | --- |
+| **Developer checks** | `cargo check` | Rust checks and verification of the covered code |
+| **Requirements** | Rust types and the contracts of unsafe operations | Rust types, baseline soundness, and stated specifications |
+| **Guarantee** | Sound safe interfaces prevent callers from triggering undefined behavior through safe code | Successful verification establishes that the covered code is free of undefined behavior and meets its stated specifications, provided the trusted code is correct and the logged assumptions are valid |
+| **Trusted base** | The compiler, platform, and unsafe code behind safe interfaces | The Rust and Anneal toolchains, the Lean kernel, and any additional trusted code or assumptions recorded in the TCB audit log |
 
-See [the Codex review policy and diagnostics guide](docs/codex-review.md) for
-the manual merge gates, live ruleset state, read-only diagnostics, and evaluator
-tests.
+External code, such as a C function called through FFI, may require trusted
+assumptions about its behavior. Anneal's design calls for recording these in
+the TCB audit log so callers can be verified under explicit assumptions. See
+the [correctness promise](PRINCIPLES.md#anneals-promise-to-its-users) and
+[threat model](THREAT_MODEL.md) for what a verification result covers and what
+maintainers review.
+
+## Development philosophy
+
+Verification should fit into the normal Rust development loop. When you write
+an unsafe operation, you already need to explain why its safety contract holds.
+Anneal aims to let you express that reasoning as a specification and check it
+as the code changes, locally and in CI.
+
+## Try Anneal
+
+Start with [Developing Anneal](docs/README.md) to build the current verifier's
+toolchain and run its repository checks. The runnable [V1 prototype](v1/)
+includes a verification walkthrough. The historical [V2 workspace](v2/)
+builds the Aeneas toolchain used by V1.
+
+[strict-div]: https://doc.rust-lang.org/std/primitive.usize.html#method.strict_div
+[unchecked-div-exact]: https://doc.rust-lang.org/std/primitive.usize.html#method.unchecked_div_exact
