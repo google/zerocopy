@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "security/side-channels",
+    "verification/information-flow",
+    "isa/riscv",
+    "isa/x86-64",
+    "isa/aarch64",
+    "compilers/constant-time",
+    "verification/cryptography"
+  ],
+  "subjects": [
+    {
+      "name": "Spectector Symbolic Speculative Non-Interference Analyzer",
+      "identity": {
+        "repository": "spectector/spectector",
+        "revision": "839bec7d96cd5b3387377cb42d26eb8ad55ecd4c",
+        "doi": "10.1109/SP40000.2020.00011"
+      }
+    },
+    {
+      "name": "Hardware-Software Contracts for Secure Speculation (Guarnieri et al.)",
+      "identity": {
+        "doi": "10.1109/SP40001.2021.00036",
+        "arxiv": "2006.03841",
+        "venue": "IEEE S&P 2021"
+      }
+    },
+    {
+      "name": "Pitchfork Speculative Constant-Time Symbolic Analyzer (Cauligi et al.)",
+      "identity": {
+        "repository": "PLSysSec/pitchfork-angr",
+        "revision": "8a3d3253d465aa327f93075d6684d5ad03793283",
+        "doi": "10.1145/3385412.3385970"
+      }
+    },
+    {
+      "name": "Jasmin Compiler Speculative Constant-Time Checker and Coq SLH Proofs",
+      "identity": {
+        "repository": "jasmin-lang/jasmin",
+        "revision": "8c3279973a89afd969e50301f71563bb40d55724",
+        "doi": "10.1109/SP40001.2021.00046",
+        "companion_doi": "10.1109/SP46215.2023.10179418"
+      }
+    },
+    {
+      "name": "Blade Automatic Speculative Leak Elimination",
+      "identity": {
+        "repository": "PLSysSec/blade",
+        "revision": "61ac7906ddae019215ff4f33df7e774d88d6fdb1",
+        "doi": "10.1145/3434330"
+      }
+    },
+    {
+      "name": "Exorcising Spectres with Secure Compilers and Spectre Declassified",
+      "identity": {
+        "doi": "10.1145/3460120.3484534",
+        "companion_doi": "10.1109/SP46215.2023.00011",
+        "venue": "ACM CCS 2021 / IEEE S&P 2023"
+      }
+    },
+    {
+      "name": "Ultimate SLH: Taking Speculative Load Hardening to the Next Level (Zhang et al.)",
+      "identity": {
+        "isbn": "978-1-939133-37-3",
+        "doi": "10.5281/zenodo.7704637",
+        "venue": "USENIX Security 2023"
+      }
+    },
+    {
+      "name": "LLVM X86 and AArch64 Speculative Load Hardening Backends",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "1cfbf0a826d28c27ae7fb802d8db6a37174a128b"
+      }
+    },
+    {
+      "name": "Linux Kernel array_index_nospec and Cross-ISA Speculation Barriers",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "RISC-V Privileged ISA and Sail Sv39/Sv48 Radix Page-Table-Walk Specification",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05",
+        "sail_repository": "riscv/sail-riscv",
+        "sail_revision": "76f1ce3c184797178864b9869963e8b44465889e"
+      }
+    },
+    {
+      "name": "MMU Page-Table-Walk and TLB Cache Side-Channel Attacks (AnC, TLBleed, and Binoculars)",
+      "identity": {
+        "anc_doi": "10.14722/ndss.2017.23271",
+        "tlbleed_isbn": "978-1-939133-04-5",
+        "binoculars_isbn": "978-1-939133-31-1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

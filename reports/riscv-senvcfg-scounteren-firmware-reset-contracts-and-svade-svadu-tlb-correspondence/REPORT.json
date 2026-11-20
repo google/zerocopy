@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "isa/riscv",
+    "verification/os-kernels",
+    "systems/firmware",
+    "systems/os-kernels",
+    "verification/hardware"
+  ],
+  "subjects": [
+    {
+      "name": "RISC-V Privileged ISA Specification (menvcfg, senvcfg, scounteren, Svade, and Svadu)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "RISC-V Supervisor Binary Interface Specification (HSM Hart Start and FWFT Extensions)",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-sbi-doc",
+        "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+      }
+    },
+    {
+      "name": "OpenSBI M-Mode Runtime Firmware (Hart CSR Initialization and FWFT Handlers)",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
+    },
+    {
+      "name": "Sail RISC-V Formal Architecture Specification (xenvcfg Legalization and VMem PTW)",
+      "identity": {
+        "repository": "riscv/sail-riscv",
+        "revision": "76f1ce3c184797178864b9869963e8b44465889e",
+        "doi": "10.1145/3290384"
+      }
+    },
+    {
+      "name": "Linux Kernel RISC-V Boot, CPU Feature Gating, and Page-Table Primitives",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "seL4 Microkernel RISC-V Boot, Trap, and VSpace Subsystems",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7",
+        "doi": "10.1145/2560537"
+      }
+    },
+    {
+      "name": "seL4 Isabelle/HOL Abstract VSpace and RISCV64 Machine Operations",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e",
+        "doi": "10.1007/978-3-642-03359-9_20"
+      }
+    },
+    {
+      "name": "xv6-riscv M-Mode Bootstrap and Sv39 Page-Table Manager",
+      "identity": {
+        "repository": "mit-pdos/xv6-riscv",
+        "revision": "fa2ddcb7ca87a77af579380a6eafd5aff163b44f"
+      }
+    },
+    {
+      "name": "Formal Reasoning Under Cached Address Translation (Syeda and Klein)",
+      "identity": {
+        "doi": "10.1007/s10817-019-09539-7",
+        "venue": "Journal of Automated Reasoning"
+      }
+    },
+    {
+      "name": "Relaxed Virtual Memory in Armv8-A (Simner et al.)",
+      "identity": {
+        "doi": "10.1007/978-3-030-99336-8_6",
+        "arxiv": "2203.00642",
+        "venue": "ESOP 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

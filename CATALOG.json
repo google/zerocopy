@@ -65791,6 +65791,92 @@
         "lean/mechanization"
       ]
     },
+    "riscv-senvcfg-scounteren-firmware-reset-contracts-and-svade-svadu-tlb-correspondence": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Privileged ISA Specification (menvcfg, senvcfg, scounteren, Svade, and Svadu)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-sbi-doc",
+            "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+          },
+          "name": "RISC-V Supervisor Binary Interface Specification (HSM Hart Start and FWFT Extensions)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI M-Mode Runtime Firmware (Hart CSR Initialization and FWFT Handlers)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3290384",
+            "repository": "riscv/sail-riscv",
+            "revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "Sail RISC-V Formal Architecture Specification (xenvcfg Legalization and VMem PTW)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel RISC-V Boot, CPU Feature Gating, and Page-Table Primitives"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2560537",
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel RISC-V Boot, Trap, and VSpace Subsystems"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-03359-9_20",
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 Isabelle/HOL Abstract VSpace and RISCV64 Machine Operations"
+        },
+        {
+          "identity": {
+            "repository": "mit-pdos/xv6-riscv",
+            "revision": "fa2ddcb7ca87a77af579380a6eafd5aff163b44f"
+          },
+          "name": "xv6-riscv M-Mode Bootstrap and Sv39 Page-Table Manager"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-019-09539-7",
+            "venue": "Journal of Automated Reasoning"
+          },
+          "name": "Formal Reasoning Under Cached Address Translation (Syeda and Klein)"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.00642",
+            "doi": "10.1007/978-3-030-99336-8_6",
+            "venue": "ESOP 2022"
+          },
+          "name": "Relaxed Virtual Memory in Armv8-A (Simner et al.)"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "verification/os-kernels",
+        "systems/firmware",
+        "systems/os-kernels",
+        "verification/hardware"
+      ]
+    },
     "riscv-smode-kernel-sound-nondeterminism-and-spec-permitted-behaviors": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -84161,6 +84247,108 @@
         "verification/leakage-contracts",
         "compilers",
         "compilers/constant-time"
+      ]
+    },
+    "transient-execution-spectre-v1-bounds-masking-and-page-table-walk-cache-leakage": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00011",
+            "repository": "spectector/spectector",
+            "revision": "839bec7d96cd5b3387377cb42d26eb8ad55ecd4c"
+          },
+          "name": "Spectector Symbolic Speculative Non-Interference Analyzer"
+        },
+        {
+          "identity": {
+            "arxiv": "2006.03841",
+            "doi": "10.1109/SP40001.2021.00036",
+            "venue": "IEEE S&P 2021"
+          },
+          "name": "Hardware-Software Contracts for Secure Speculation (Guarnieri et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3385970",
+            "repository": "PLSysSec/pitchfork-angr",
+            "revision": "8a3d3253d465aa327f93075d6684d5ad03793283"
+          },
+          "name": "Pitchfork Speculative Constant-Time Symbolic Analyzer (Cauligi et al.)"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1109/SP46215.2023.10179418",
+            "doi": "10.1109/SP40001.2021.00046",
+            "repository": "jasmin-lang/jasmin",
+            "revision": "8c3279973a89afd969e50301f71563bb40d55724"
+          },
+          "name": "Jasmin Compiler Speculative Constant-Time Checker and Coq SLH Proofs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434330",
+            "repository": "PLSysSec/blade",
+            "revision": "61ac7906ddae019215ff4f33df7e774d88d6fdb1"
+          },
+          "name": "Blade Automatic Speculative Leak Elimination"
+        },
+        {
+          "identity": {
+            "companion_doi": "10.1109/SP46215.2023.00011",
+            "doi": "10.1145/3460120.3484534",
+            "venue": "ACM CCS 2021 / IEEE S&P 2023"
+          },
+          "name": "Exorcising Spectres with Secure Compilers and Spectre Declassified"
+        },
+        {
+          "identity": {
+            "doi": "10.5281/zenodo.7704637",
+            "isbn": "978-1-939133-37-3",
+            "venue": "USENIX Security 2023"
+          },
+          "name": "Ultimate SLH: Taking Speculative Load Hardening to the Next Level (Zhang et al.)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "1cfbf0a826d28c27ae7fb802d8db6a37174a128b"
+          },
+          "name": "LLVM X86 and AArch64 Speculative Load Hardening Backends"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel array_index_nospec and Cross-ISA Speculation Barriers"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05",
+            "sail_repository": "riscv/sail-riscv",
+            "sail_revision": "76f1ce3c184797178864b9869963e8b44465889e"
+          },
+          "name": "RISC-V Privileged ISA and Sail Sv39/Sv48 Radix Page-Table-Walk Specification"
+        },
+        {
+          "identity": {
+            "anc_doi": "10.14722/ndss.2017.23271",
+            "binoculars_isbn": "978-1-939133-31-1",
+            "tlbleed_isbn": "978-1-939133-04-5"
+          },
+          "name": "MMU Page-Table-Walk and TLB Cache Side-Channel Attacks (AnC, TLBleed, and Binoculars)"
+        }
+      ],
+      "topics": [
+        "security/side-channels",
+        "verification/information-flow",
+        "isa/riscv",
+        "isa/x86-64",
+        "isa/aarch64",
+        "compilers/constant-time",
+        "verification/cryptography"
       ]
     },
     "translation-validation-certifying-compilation-and-pass-refinement-certificates": {
