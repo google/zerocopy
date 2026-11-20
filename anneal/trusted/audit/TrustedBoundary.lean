@@ -37,8 +37,9 @@ invokes this file in three phases over JSON IPC (`run` and `main`):
   and `loadExts := false` (so no `[init]` initializers or persistent environment
   extensions from audited modules are deserialized or executed). It verifies
   module-level trust-tier separation, `Trusted` namespace hygiene, the
-  foundation axiom allowlist, and a full kernel replay of every non-foundation
-  constant against the foundation environment (`base.toKernelEnv.replay`).
+  foundation axiom allowlist, Pass 1 `Anneal.MirWp` non-backsliding theorem and
+  canary checks, and a full kernel replay of every non-foundation constant
+  against the foundation environment (`base.toKernelEnv.replay`).
 - **`"correspondence-audit"` (`lean-miri` closure audit):**
   Loads the 160-module `Miri.Interpreter.ExecutionMachine` closure at
   `trustLevel := 0` with `plugins := #[]` and `loadExts := false` (optional
@@ -761,6 +762,149 @@ def checkTierReferences (env : Environment)
         | .theory =>
           fail s!"Trusted constant {cName} references {dep} from non-Trusted module {depOrigin}"
 
+/-- Verify that `claimName` is a `.defnInfo` definition in `expectedClaimMod`
+with type `Prop` (`claimCi.type == .sort .zero`) referencing every constant in
+`reqConsts`, and that `proofName` is a `.thmInfo` theorem in
+`expectedProofMod` whose type is exactly `Expr.const claimName []`. -/
+def requireExactClaimProof (env : Environment)
+    (locals : Std.HashMap Name ConstantInfo)
+    (expectedClaimMod expectedProofMod claimName proofName : Name)
+    (reqConsts : List Name := []) : IO Unit := do
+  let some claimCi := locals.get? claimName
+    | fail s!"missing required claim {claimName}"
+  unless claimCi matches .defnInfo _ do
+    fail s!"expected {claimName} to be a definition"
+  let claimOrig ← origin env claimName
+  unless claimOrig == expectedClaimMod do
+    fail (s!"expected {claimName} to be defined in " ++
+      s!"{expectedClaimMod}, found {claimOrig}")
+  unless claimCi.type == .sort .zero do
+    fail s!"expected {claimName} to have type Prop"
+  let some claimVal := claimCi.value? true
+    | fail s!"missing definition body for {claimName}"
+  let valConsts ← expressionEdges claimVal
+  for req in reqConsts do
+    unless valConsts.contains req do
+      fail s!"claim {claimName} body must reference {req}"
+  let some proofCi := locals.get? proofName
+    | fail s!"missing required theorem {proofName}"
+  unless proofCi matches .thmInfo _ do
+    fail s!"expected {proofName} to be a theorem"
+  let proofOrig ← origin env proofName
+  unless proofOrig == expectedProofMod do
+    fail (s!"expected {proofName} to be defined in " ++
+      s!"{expectedProofMod}, found {proofOrig}")
+  unless proofCi.type == .const claimName [] do
+    fail s!"theorem {proofName} must prove {claimName} directly"
+
+/-- Verify that `proofName` is a `.thmInfo` theorem in `expectedProofMod` whose
+type is `Expr.app (Expr.const claimName []) (Expr.const argName [])`, where
+`claimName` is a `.defnInfo` definition in `expectedClaimMod` referencing every
+constant in `reqConsts`. -/
+def requireParamClaimProof (env : Environment)
+    (locals : Std.HashMap Name ConstantInfo)
+    (expectedClaimMod expectedProofMod claimName argName proofName : Name)
+    (reqConsts : List Name) : IO Unit := do
+  let some proofCi := locals.get? proofName
+    | fail s!"missing required theorem {proofName}"
+  unless proofCi matches .thmInfo _ do
+    fail s!"expected {proofName} to be a theorem"
+  let proofOrig ← origin env proofName
+  unless proofOrig == expectedProofMod do
+    fail (s!"expected {proofName} to be defined in " ++
+      s!"{expectedProofMod}, found {proofOrig}")
+  unless proofCi.type == .app (.const claimName []) (.const argName []) do
+    fail s!"theorem {proofName} must prove {claimName} {argName} directly"
+  let some claimCi := locals.get? claimName
+    | fail s!"missing required claim {claimName}"
+  unless claimCi matches .defnInfo _ do
+    fail s!"expected {claimName} to be a definition"
+  let claimOrig ← origin env claimName
+  unless claimOrig == expectedClaimMod do
+    fail (s!"expected {claimName} to be defined in " ++
+      s!"{expectedClaimMod}, found {claimOrig}")
+  let some claimVal := claimCi.value? true
+    | fail s!"missing definition body for {claimName}"
+  let valConsts ← expressionEdges claimVal
+  for req in reqConsts do
+    unless valConsts.contains req do
+      fail s!"claim {claimName} body must reference {req}"
+
+/-- Verify that `Trusted.MirAst` and `Trusted.MirSemantics` are loaded as
+`.trusted` modules and `Anneal.MirWp` is loaded as a `.theory` module (whenever
+`requireMirWp` is `true` or any MIR/`PureLift` module is loaded), and that the
+core weakest-precondition adequacy and fault-characterization theorems and all
+15 non-vacuity and parameter-boundary canaries in `Anneal.MirWp` prove the
+exact `*Claim` propositions defined in `Trusted.MirSemantics`. -/
+def verifyMirWpCoreTheorems (env : Environment)
+    (roles : Std.HashMap Name ModuleRole)
+    (locals : Std.HashMap Name ConstantInfo)
+    (requireMirWp : Bool) : IO Unit := do
+  if requireMirWp || roles.contains `Anneal.PureLift ||
+      roles.contains `Trusted.MirAst ||
+      roles.contains `Trusted.MirSemantics || roles.contains `Anneal.MirWp then
+    unless roles.get? `Trusted.MirAst matches some (.trusted _) do
+      fail "missing required trusted module Trusted.MirAst"
+    unless roles.get? `Trusted.MirSemantics matches some (.trusted _) do
+      fail "missing required trusted module Trusted.MirSemantics"
+    unless roles.get? `Anneal.MirWp matches some .theory do
+      fail "missing required theory module Anneal.MirWp"
+    let semMod := `Trusted.MirSemantics
+    let wpMod := `Anneal.MirWp
+    requireParamClaimProof env locals semMod wpMod
+      `Trusted.MirSemantics.WpSoundnessClaim
+      `Anneal.MirWp.wpProg
+      `Anneal.MirWp.wellFormed_and_spec_of_wp
+      [`Trusted.MirSemantics.SatisfiesPost, `Trusted.MirSemantics.Diverges,
+        `Trusted.MirSemantics.Behavior]
+    requireParamClaimProof env locals semMod wpMod
+      `Trusted.MirSemantics.WpFaultSoundnessClaim
+      `Anneal.MirWp.wpFaultProg
+      `Anneal.MirWp.reaches_fault_and_exclusive_of_wpFault
+      [`Trusted.MirSemantics.ReachesResult, `Trusted.MirSemantics.Diverges,
+        `Trusted.MirSemantics.WellFormed]
+    let posClaim := `Trusted.MirSemantics.PositiveCanaryClaim
+    let negClaim := `Trusted.MirSemantics.NegativeCanaryClaim
+    let widthClaim := `Trusted.MirSemantics.IntWidthBoundaryCanary
+    for (claimName, proofName, reqConsts) in [
+        (`Trusted.MirSemantics.CanaryPositiveAddAnnealClaim,
+          `Anneal.MirWp.canary_positive_add_anneal, [posClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveEmptyUnitFnClaim,
+          `Anneal.MirWp.canary_positive_empty_unit_fn, [posClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveStmtsAndCfAnnealClaim,
+          `Anneal.MirWp.canary_positive_stmts_and_cf_anneal, [posClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveUnopAnnealClaim,
+          `Anneal.MirWp.canary_positive_unop_anneal, [posClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveAllBinopsAnnealClaim,
+          `Anneal.MirWp.canary_positive_all_binops_anneal, [posClaim]),
+        (`Trusted.MirSemantics.CanaryPositiveAllIntWidthsAnnealClaim,
+          `Anneal.MirWp.canary_positive_all_int_widths_anneal, [widthClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbDivZeroAnnealClaim,
+          `Anneal.MirWp.canary_negative_ub_div_zero_anneal, [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbSignedRemOverflowI8Claim,
+          `Anneal.MirWp.canary_negative_ub_signed_rem_overflow_i8, [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUnsupportedAnnealClaim,
+          `Anneal.MirWp.canary_negative_unsupported_anneal, [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbAddUncheckedOverflowU32Claim,
+          `Anneal.MirWp.canary_negative_ub_add_unchecked_overflow_u32,
+          [negClaim, posClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbShiftUncheckedAtBitwidthAnnealClaim,
+          `Anneal.MirWp.canary_negative_ub_shift_unchecked_at_bitwidth_anneal,
+          [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbStorageDeadReadAnnealClaim,
+          `Anneal.MirWp.canary_negative_ub_storage_dead_read_anneal,
+          [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbStorageDeadReturnPlaceAnnealClaim,
+          `Anneal.MirWp.canary_negative_ub_storage_dead_return_place_anneal,
+          [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUbUnreachableAnnealClaim,
+          `Anneal.MirWp.canary_negative_ub_unreachable_anneal, [negClaim]),
+        (`Trusted.MirSemantics.CanaryNegativeUnsupportedUnsignedNegAnnealClaim,
+          `Anneal.MirWp.canary_negative_unsupported_unsigned_neg_anneal,
+          [negClaim])] do
+      requireExactClaimProof env locals semMod wpMod claimName proofName
+        reqConsts
+
 /-- Execute Phase 2 (`"audit"`) on the compiled `.olean` environment `env`. -/
 def audit (j : Json) (env : Environment) (foundation : Array Name)
     (trusted : Array Name) (theory : Array Name) : IO Json := do
@@ -773,6 +917,8 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
     | some ci => pure ci
     | none => fail s!"missing dependency declaration {n}"
   checkTierReferences env roles locals
+  let requireMirWp := (j.getObjValAs? Bool "requireMirWp").toOption.getD true
+  verifyMirWpCoreTheorems env roles locals requireMirWp
   let inventory ← locals.foldM (init := #[]) fun acc cName ci => do
     let (orig, cRole) ← constProvenance env roles cName
     match cRole with

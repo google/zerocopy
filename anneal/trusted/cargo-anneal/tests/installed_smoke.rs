@@ -291,6 +291,14 @@ fn lean_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
         &root.join("share/anneal/trusted/lean/lean-toolchain"),
         "toolchain/lean-toolchain",
     )?;
+    case.copy(
+        &root.join("share/anneal/theory/Anneal.lean"),
+        "theory/Anneal.lean",
+    )?;
+    case.copy(
+        &root.join("share/anneal/theory/Anneal/MirWp.lean"),
+        "theory/Anneal/MirWp.lean",
+    )?;
     case.write("Small.lean", b"example (n : Nat) : n = n := rfl\n")?;
     let out = case.run(&Invocation::new(&lean, &["Small.lean"]))?;
     out.expect_code(0)
@@ -461,6 +469,24 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
         include_str!("fixtures/audit-positive.lean")
     };
     case.write("fixture/trusted/lean/Trusted.lean", source.as_bytes())?;
+    if name == "audit-accepted" {
+        case.copy(
+            &root.join("share/anneal/trusted/lean/Trusted/MirAst.lean"),
+            "fixture/trusted/lean/Trusted/MirAst.lean",
+        )?;
+        case.copy(
+            &root.join("share/anneal/trusted/lean/Trusted/MirSemantics.lean"),
+            "fixture/trusted/lean/Trusted/MirSemantics.lean",
+        )?;
+        case.copy(
+            &root.join("share/anneal/theory/Anneal/MirWp.lean"),
+            "fixture/theory/Anneal/MirWp.lean",
+        )?;
+        case.write(
+            "fixture/theory/Anneal.lean",
+            b"prelude\nimport Init.NotationExtra\nimport Trusted\nimport Anneal.MirWp\n",
+        )?;
+    }
     let requested_lean = if name == "audit-missing-lean" {
         case.path().join("absent-lean")
     } else {
