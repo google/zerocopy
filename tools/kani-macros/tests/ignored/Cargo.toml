@@ -1,0 +1,24 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+[workspace]
+
+[package]
+name = "kani-contract-ignore-fixture"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[features]
+enabled_depends_ignored = []
+handwritten_depends_ignored = []
+generic_handwritten = []
+original_body = []
+
+[dependencies]
+zerocopy-kani-macros = { path = "../.." }

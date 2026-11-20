@@ -9,6 +9,7 @@
 
 target
 lcov.info
+/tools/kani/__pycache__/
 
 # VSCode workspace files
 *.code-workspace
