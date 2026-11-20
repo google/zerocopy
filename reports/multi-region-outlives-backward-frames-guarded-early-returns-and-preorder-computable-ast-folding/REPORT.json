@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "verification/rust",
+    "verification/lean4",
+    "rust/lifetimes",
+    "aeneas/borrows-regions",
+    "charon/llbc",
+    "lean/kernel",
+    "rustc/polonius"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas region-hierarchy analyzer, symbolic join matcher, and pure extractor",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+      }
+    },
+    {
+      "name": "Charon region binder, outlives predicate, and LLBC control-flow AST",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c"
+      }
+    },
+    {
+      "name": "Polonius Datalog origin-subset and loan-liveness borrow-checking engine",
+      "identity": {
+        "repository": "rust-lang/polonius",
+        "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+      }
+    },
+    {
+      "name": "Lean 4 structural recursion compiler, rewrite engine, and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean FRO Comparator trust-boundary and proof-auditing harness",
+      "identity": {
+        "repository": "leanprover/comparator",
+        "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+      }
+    },
+    {
+      "name": "lean4checker kernel environment replay verifier",
+      "identity": {
+        "repository": "leanprover/lean4checker",
+        "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation (ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547647"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674640"
+      }
+    },
+    {
+      "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs (ICFEM 2022)",
+      "identity": {
+        "doi": "10.1007/978-3-031-17244-1_6"
+      }
+    },
+    {
+      "name": "The Lean 4 Theorem Prover and Programming Language (CADE-28, 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-79876-5_37"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

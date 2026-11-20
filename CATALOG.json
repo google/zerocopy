@@ -287,6 +287,86 @@
         "verification/hybrid-systems"
       ]
     },
+    "adversarial-value-algebras-symbolic-handle-accounting-and-branch-correlated-borrow-joins": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas symbolic borrow interpreter and pure functional translation compiler"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c"
+          },
+          "name": "Charon Rust MIR-to-LLBC/ULLBC extractor"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+          },
+          "name": "Creusot prophetic Rust verification platform and creusot-std library"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "d749566d31400c9d1ab437f0853ee16d769d1b04"
+          },
+          "name": "Verus linear-ghost Rust verification framework and vstd standard specifications"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover kernel and standard prelude"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation (ICFP 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674640"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (ICFP 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1232420.1232424"
+          },
+          "name": "Combinators for Bidirectional Tree Transformations: A Linguistic Approach to the View-Update Problem (TOPLAS 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704"
+          },
+          "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (PLDI 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows (PLDI 2025)"
+        }
+      ],
+      "topics": [
+        "verification/rust",
+        "verification/lean4",
+        "rust/borrowing",
+        "aeneas/borrows-regions",
+        "charon/llbc",
+        "lean/mechanization",
+        "verification/program-logics"
+      ]
+    },
     "aeneas-architecture-translation-pipeline-and-pure-extraction": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -48237,6 +48317,87 @@
         "verification",
         "verification/certificates",
         "verification/compiler-verification"
+      ]
+    },
+    "multi-region-outlives-backward-frames-guarded-early-returns-and-preorder-computable-ast-folding": {
+      "observed_at": "2026-11-20",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas region-hierarchy analyzer, symbolic join matcher, and pure extractor"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c"
+          },
+          "name": "Charon region binder, outlives predicate, and LLBC control-flow AST"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/polonius",
+            "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df"
+          },
+          "name": "Polonius Datalog origin-subset and loan-liveness borrow-checking engine"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 structural recursion compiler, rewrite engine, and kernel"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "865edc14486c3388e9225daa971da8e157488c3e"
+          },
+          "name": "Lean FRO Comparator trust-boundary and proof-auditing harness"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4checker",
+            "revision": "91a7f0e8e9dffe927089f5a6edcfeeb8a0e07709"
+          },
+          "name": "lean4checker kernel environment replay verifier"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation (ICFP 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674640"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (ICFP 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-17244-1_6"
+          },
+          "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs (ICFEM 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-79876-5_37"
+          },
+          "name": "The Lean 4 Theorem Prover and Programming Language (CADE-28, 2021)"
+        }
+      ],
+      "topics": [
+        "verification/rust",
+        "verification/lean4",
+        "rust/lifetimes",
+        "aeneas/borrows-regions",
+        "charon/llbc",
+        "lean/kernel",
+        "rustc/polonius"
       ]
     },
     "multi-runtime-ffi-gc-interop-handles-and-shared-address-clashes": {

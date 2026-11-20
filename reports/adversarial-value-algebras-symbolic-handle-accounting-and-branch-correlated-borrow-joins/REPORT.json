@@ -1,0 +1,80 @@
+{
+  "topics": [
+    "verification/rust",
+    "verification/lean4",
+    "rust/borrowing",
+    "aeneas/borrows-regions",
+    "charon/llbc",
+    "lean/mechanization",
+    "verification/program-logics"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas symbolic borrow interpreter and pure functional translation compiler",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+      }
+    },
+    {
+      "name": "Charon Rust MIR-to-LLBC/ULLBC extractor",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c"
+      }
+    },
+    {
+      "name": "Creusot prophetic Rust verification platform and creusot-std library",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+      }
+    },
+    {
+      "name": "Verus linear-ghost Rust verification framework and vstd standard specifications",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "d749566d31400c9d1ab437f0853ee16d769d1b04"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover kernel and standard prelude",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation (ICFP 2022)",
+      "identity": {
+        "doi": "10.1145/3547647"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics (ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674640"
+      }
+    },
+    {
+      "name": "Combinators for Bidirectional Tree Transformations: A Linguistic Approach to the View-Update Problem (TOPLAS 2007)",
+      "identity": {
+        "doi": "10.1145/1232420.1232424"
+      }
+    },
+    {
+      "name": "RustHornBelt: A Semantic Foundation for Functional Verification of Rust Programs with Unsafe Code (PLDI 2022)",
+      "identity": {
+        "doi": "10.1145/3519939.3523704"
+      }
+    },
+    {
+      "name": "Tree Borrows (PLDI 2025)",
+      "identity": {
+        "doi": "10.1145/3735592"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}
